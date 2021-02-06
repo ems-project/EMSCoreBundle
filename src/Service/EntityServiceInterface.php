@@ -11,9 +11,11 @@ interface EntityServiceInterface
     public function isSortable(): bool;
 
     /**
+     * @param mixed $context
+     *
      * @return EntityInterface[]
      */
-    public function get(int $from, int $size): array;
+    public function get(int $from, int $size, $context = null): array;
 
     public function getEntityName(): string;
 

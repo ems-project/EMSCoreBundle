@@ -14,10 +14,18 @@ final class EntityTable extends TableAbstract
     private $size;
     /** @var int */
     private $from;
+    /**
+     * @var mixed|null
+     */
+    private $context;
 
-    public function __construct(EntityServiceInterface $entityService, int $from = 0, int $size = 50)
+    /**
+     * @param mixed $context
+     */
+    public function __construct(EntityServiceInterface $entityService, $context = null, int $from = 0, int $size = 50)
     {
         $this->entityService = $entityService;
+        $this->context = $context;
         $this->from = $from;
         $this->size = $size;
     }
@@ -32,7 +40,7 @@ final class EntityTable extends TableAbstract
      */
     public function getIterator(): iterable
     {
-        foreach ($this->entityService->get($this->from, $this->size) as $entity) {
+        foreach ($this->entityService->get($this->from, $this->size, $this->context) as $entity) {
             yield \strval($entity->getId()) => new EntityRow($entity);
         }
     }
@@ -44,6 +52,6 @@ final class EntityTable extends TableAbstract
 
     public function count(): int
     {
-        return $this->entityService->count();
+        return $this->entityService->count($this->context);
     }
 }

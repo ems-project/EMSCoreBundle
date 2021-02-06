@@ -72,16 +72,18 @@ final class ActionService implements EntityServiceInterface
     }
 
     /**
+     * @param mixed $context
+     *
      * @return Template[]
      */
-    public function get(int $from, int $size): array
+    public function get(int $from, int $size, $context = null): array
     {
-        return $this->templateRepository->get($from, $size);
+        return $this->templateRepository->get($context, $from, $size);
     }
 
     public function getEntityName(): string
     {
-        return 'channel';
+        return 'template';
     }
 
     /**

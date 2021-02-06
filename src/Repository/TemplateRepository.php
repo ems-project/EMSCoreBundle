@@ -84,10 +84,12 @@ class TemplateRepository extends ServiceEntityRepository
     /**
      * @return Template[]
      */
-    public function get(int $from, int $size): array
+    public function get(ContentType $contentType, int $from, int $size): array
     {
         $query = $this->createQueryBuilder('t')
+            ->where('t.contentType = :contentType')
             ->orderBy('t.orderKey', 'ASC')
+            ->setParameter('contentType', $contentType)
             ->setFirstResult($from)
             ->setMaxResults($size)
             ->getQuery();

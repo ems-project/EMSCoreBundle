@@ -30,9 +30,6 @@ final class ActionService implements EntityServiceInterface
 
     public function update(Template $template): void
     {
-        if (0 === $template->getOrderKey()) {
-            $template->setOrderKey($this->templateRepository->counter($template->getContentType()) + 1);
-        }
         $this->templateRepository->create($template);
     }
 
@@ -68,7 +65,7 @@ final class ActionService implements EntityServiceInterface
 
     public function isSortable(): bool
     {
-        return false;
+        return true;
     }
 
     /**

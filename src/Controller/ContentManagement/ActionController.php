@@ -82,10 +82,10 @@ class ActionController extends AbstractController
 //                    case EntityTable::DELETE_ACTION:
 //                        $this->channelService->deleteByIds($table->getSelected());
 //                        break;
-//                    case TableType::REORDER_ACTION:
-//                        $newOrder = $request->get($form->getName(), [])['reordered'] ?? [];
-//                        $this->channelService->reorderByIds(\array_flip(\array_values($newOrder)));
-//                        break;
+                    case TableType::REORDER_ACTION:
+                        $newOrder = $request->get($form->getName(), [])['reordered'] ?? [];
+                        $this->actionService->reorderByIds(\array_flip(\array_values($newOrder)));
+                        break;
                     default:
                         $this->logger->error('log.controller.action.unknown_action');
                 }
@@ -138,6 +138,8 @@ class ActionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $action->setOrderKey($this->actionService->count($contentType));
+
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
 

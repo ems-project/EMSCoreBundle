@@ -68,7 +68,7 @@ final class ActionService implements EntityServiceInterface
 
     public function isSortable(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -83,7 +83,7 @@ final class ActionService implements EntityServiceInterface
 
     public function getEntityName(): string
     {
-        return 'template';
+        return 'action';
     }
 
     /**

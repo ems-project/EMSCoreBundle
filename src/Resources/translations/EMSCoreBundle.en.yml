@@ -358,7 +358,19 @@ view.macros.data-field-type.collection_added_items: '{1} One %singular% has been
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
 
-
+action:
+  actions:
+    delete: 'Delete'
+    edit: 'Edit'
+    delete_confirm: 'Delete the "%label%" action?'
+    delete_selected_confirm: 'Delete all selected actions?'
+    delete_selected: 'Delete selected'
+  index:
+    column:
+      public: 'Public'
+      name: 'Name'
+      type: 'Type'
+    reorder: 'Reorder'
 table:
   index:
     button:
@@ -533,6 +545,8 @@ log:
     channel:
       unknown_action: 'Unknown action'
   service:
+    action:
+      delete: 'The action %name% has been deleted'
     channel:
       delete: 'The channel %name% has been deleted'
     content-type:
@@ -667,10 +681,10 @@ log:
       field_not_found: 'Field path %field_path% not found'
       draft_in_progress: '{0} A draft is in progress for the document ems://object:%contenttype%:%ouuid%, it''s not possible to update it|{1} There is one drafts in progress. You won’t be able to update it from here.|]1,Inf[ There are %count% drafts in progress. You won’t be able to update them from here.'
     not_found: 'View %view_id% not found'
-  template:
-    added: 'A new template %template_name% has been created'
-    updated: 'The template %template_name% has been updated'
-    deleted: 'The template %template_name% has been deleted'
+  action:
+    added: 'A new action %action_name% has been created'
+    updated: 'The action %action_name% has been updated'
+    deleted: 'The action %action_name% has been deleted'
     twig:
       error: 'Error during the Twig generation of ems://template:%template_id% with the error message: %error_message%'
   error: 'This page/action has encountered an error: %error_message%'
@@ -770,3 +784,15 @@ view:
   data:
     json-menu-nested-json-preview:
       field-type-not-found: 'The type definition associated to this item is missing (probably deleted).'
+  menu:
+    breadcrumb:
+      content-types: 'Content types'
+  action:
+    index:
+      title: '%contentType%''s actions'
+      add:
+        title: 'Add an action'
+    edit:
+      title: 'Edit the action %action% for %contentType%'
+    add:
+      title: 'Add a new action to %contentType%'

@@ -28,6 +28,8 @@ interface TableInterface extends \Countable, \IteratorAggregate
      */
     public function getTableActions(): iterable;
 
+    public function countTableActions(): int;
+
     /**
      * @return string[]
      */

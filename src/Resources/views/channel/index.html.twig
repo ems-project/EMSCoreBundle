@@ -11,9 +11,13 @@
 {% endblock %}
 
 {% block body %}
+	{%  set toolbar %}
+		<a class="btn btn-primary" href="{{ path('ems_core_channel_add') }}"><i class="fa fa-plus"></i> {{ add_label|default(form.vars.add_label)|trans }}</a>
+	{%  endset %}
+
 	{% form_theme form '@EMSCore/form/forms.html.twig' %}
 	{{ form(form, {
 		reorder_label: 'channel.index.reorder',
-		add_label: 'channel.add.title'
+		toolbar: toolbar
 	}) }}
 {% endblock %}

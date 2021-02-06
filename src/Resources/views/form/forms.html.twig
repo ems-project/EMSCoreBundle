@@ -8,7 +8,9 @@
             <div class="box ">
                 <div class="box-header with-border">
                     <div class="btn-group  pull-right">
-                        <a class="btn btn-primary" href="{{ path('ems_core_channel_add') }}"><i class="fa fa-plus"></i> {{ add_label|default(form.vars.add_label)|trans }}</a>
+                        {% if toolbar is defined %}
+                            {{ toolbar }}
+                        {% endif %}
                         {%  if table.sortable and table.count > 1 %}
                             <button type="button" class="btn" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
                                 <i class="fa fa-reorder"></i> {{ reorder_label|default(form.vars.reorder_label)|trans }}
@@ -58,6 +60,8 @@
                                             {% endif %}
                                             {%  if attribute(column.valueToIconMapping, value) is defined %}
                                                 <i class="{{ attribute(column.valueToIconMapping, value)  }}"></i> <span class="sr-only">{{ value }}</span>
+                                            {%  elseif column.iconProperty and attribute(line.data, column.iconProperty)|default(false) %}
+                                                <i class="{{ attribute(line.data, column.iconProperty)  }}"></i> {{ value }}
                                             {%  else %}
                                                 {{ value }}
                                             {% endif %}

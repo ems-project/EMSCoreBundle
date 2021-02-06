@@ -12,6 +12,7 @@ final class TableColumn
     private array $valueToIconMapping;
     private ?string $routeProperty = null;
     private ?string $routeTarget = '_blank';
+    private ?string $iconProperty = null;
 
     /**
      * @param array<mixed, string> $valueToIconMapping
@@ -59,5 +60,15 @@ final class TableColumn
     public function getRouteTarget(): ?string
     {
         return $this->routeTarget;
+    }
+
+    public function getIconProperty(): ?string
+    {
+        return $this->iconProperty;
+    }
+
+    public function setIconProperty(?string $iconProperty): void
+    {
+        $this->iconProperty = $iconProperty;
     }
 }

@@ -84,10 +84,16 @@ final class ChannelService implements EntityServiceInterface
     }
 
     /**
+     * @param mixed $context
+     *
      * @return Channel[]
      */
-    public function get(int $from, int $size): array
+    public function get(int $from, int $size, $context = null): array
     {
+        if (null !== $context) {
+            throw new \RuntimeException('Unexpected context');
+        }
+
         return $this->channelRepository->get($from, $size);
     }
 

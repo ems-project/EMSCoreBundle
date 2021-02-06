@@ -302,6 +302,11 @@ function addEventListeners(target){
             ckconfig.contentsCss = content_css;
         }
 
+        const language = $( this ).attr('data-lang');
+        if(language){
+            ckconfig.language = language;
+        }
+
 
         ckconfig.height = height;
         ckconfig.div_wrapTable = 'true';

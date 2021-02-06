@@ -1066,7 +1066,8 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
 
         foreach ($this->getFieldType()->loopChildren() as $child) {
             $extraOptions = $child->getExtraOptions();
-            $clearOnCopy = isset($extraOptions['clear_on_copy']) ? \boolval($extraOptions['clear_on_copy']) : false;
+
+            $clearOnCopy = true === $extraOptions['clear_on_copy'] ?? null;
 
             if ($clearOnCopy) {
                 $clearPropertyNames[] = $child->getName();

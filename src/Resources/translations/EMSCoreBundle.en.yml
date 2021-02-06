@@ -363,6 +363,8 @@ action:
     delete: 'Delete'
     edit: 'Edit'
     delete_confirm: 'Delete the "%label%" action?'
+    delete_selected_confirm: 'Delete all selected actions?'
+    delete_selected: 'Delete selected'
   index:
     column:
       public: 'Public'

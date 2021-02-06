@@ -7,6 +7,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Form\TemplateType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -72,16 +73,16 @@ class ActionController extends AbstractController
         $table->addColumn('action.index.column.type', 'renderOption');
         $table->addItemGetAction('ems_core_action_edit', 'action.actions.edit', 'pencil', ['contentType' => $contentType]);
         $table->addItemPostAction('ems_core_action_delete', 'action.actions.delete', 'trash', 'action.actions.delete_confirm', ['contentType' => $contentType->getId()]);
-//        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'channel.actions.delete_selected', 'channel.actions.delete_selected_confirm');
+        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'action.actions.delete_selected', 'action.actions.delete_selected_confirm');
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
                 switch ($action->getName()) {
-//                    case EntityTable::DELETE_ACTION:
-//                        $this->channelService->deleteByIds($table->getSelected());
-//                        break;
+                    case EntityTable::DELETE_ACTION:
+                        $this->actionService->deleteByIds($table->getSelected());
+                        break;
                     case TableType::REORDER_ACTION:
                         $newOrder = $request->get($form->getName(), [])['reordered'] ?? [];
                         $this->actionService->reorderByIds(\array_flip(\array_values($newOrder)));

@@ -247,11 +247,7 @@ class ActionController extends AbstractController
 
     public function delete(Template $action): RedirectResponse
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($action);
-        $em->flush();
-
+        $this->actionService->delete($action);
         $this->logger->notice('log.action.deleted', [
             'action_name' => $action->getName(),
         ]);

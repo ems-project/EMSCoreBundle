@@ -3,16 +3,19 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Form\TemplateType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Service\ActionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,9 +35,13 @@ class ActionController extends AbstractController
 
     /**
      * @Route("/template/{type}", name="template.index", methods={"GET","HEAD"})
+     *
+     * @deprecated
      */
     public function indexAction(string $type): Response
     {
+        \trigger_error('Route template.index is now deprecated, use the route ems_core_action_index', E_USER_DEPRECATED);
+
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
@@ -49,19 +56,61 @@ class ActionController extends AbstractController
             throw new NotFoundHttpException('Content type not found');
         }
 
-        return $this->render('@EMSCore/template/index.html.twig', [
-                'contentType' => $contentTypes[0],
+        return $this->redirectToRoute('ems_core_action_index', ['contentType' => $contentTypes[0]->getId()]);
+    }
+
+    public function index(Request $request, ContentType $contentType): Response
+    {
+        if ($contentType->getDeleted()) {
+            throw new \RuntimeException('Unexpected deleted contentType');
+        }
+
+        $table = new EntityTable($this->actionService, $contentType);
+        $table->addColumn('action.index.column.public', 'public', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
+        $nameColumn = $table->addColumn('action.index.column.name', 'name');
+        $nameColumn->setIconProperty('icon');
+        $table->addColumn('action.index.column.type', 'renderOption');
+        $table->addItemGetAction('ems_core_action_edit', 'action.actions.edit', 'pencil', ['contentType' => $contentType]);
+        $table->addItemPostAction('ems_core_action_delete', 'action.actions.delete', 'trash', 'action.actions.delete_confirm', ['contentType' => $contentType->getId()]);
+//        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'channel.actions.delete_selected', 'channel.actions.delete_selected_confirm');
+
+        $form = $this->createForm(TableType::class, $table);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
+                switch ($action->getName()) {
+//                    case EntityTable::DELETE_ACTION:
+//                        $this->channelService->deleteByIds($table->getSelected());
+//                        break;
+//                    case TableType::REORDER_ACTION:
+//                        $newOrder = $request->get($form->getName(), [])['reordered'] ?? [];
+//                        $this->channelService->reorderByIds(\array_flip(\array_values($newOrder)));
+//                        break;
+                    default:
+                        $this->logger->error('log.controller.action.unknown_action');
+                }
+            } else {
+                $this->logger->error('log.controller.action.unknown_action');
+            }
+
+            return $this->redirectToRoute('ems_core_action_index', ['contentType' => $contentType->getId()]);
+        }
+
+        return $this->render('@EMSCore/action/index.html.twig', [
+            'form' => $form->createView(),
+            'contentType' => $contentType,
         ]);
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @deprecated
      *
      * @Route("/template/add/{type}", name="template.add", methods={"GET","HEAD", "POST"})
      */
     public function addAction(string $type, Request $request): Response
     {
+        \trigger_error('Route template.add is now deprecated, use the route ems_core_action_add', E_USER_DEPRECATED);
+
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
@@ -76,63 +125,69 @@ class ActionController extends AbstractController
             throw new NotFoundHttpException('Content type not found');
         }
 
-        $template = new Template();
-        $template->setContentType($contentTypes[0]);
+        return $this->add($contentTypes[0], $request);
+    }
 
-        $form = $this->createForm(TemplateType::class, $template);
+    public function add(ContentType $contentType, Request $request): Response
+    {
+        $action = new Template();
+        $action->setContentType($contentType);
+
+        $form = $this->createForm(TemplateType::class, $action);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($template);
+            /** @var EntityManager $em */
+            $em = $this->getDoctrine()->getManager();
+
+            $em->persist($action);
             $em->flush();
-            $this->logger->notice('log.template.added', [
-                'template_name' => $template->getName(),
+            $this->logger->notice('log.action.added', [
+                'action_name' => $action->getName(),
             ]);
 
-            return $this->redirectToRoute('template.index', [
-                    'type' => $type,
+            return $this->redirectToRoute('ems_core_action_index', [
+                'contentType' => $contentType->getId(),
             ]);
         }
 
-        return $this->render('@EMSCore/template/add.html.twig', [
-                'contentType' => $contentTypes[0],
-                'form' => $form->createView(),
+        return $this->render('@EMSCore/action/add.html.twig', [
+            'contentType' => $contentType,
+            'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @deprecated
      *
      * @Route("/template/edit/{id}.{_format}", name="template.edit", defaults={"_format"="html"}, methods={"GET", "HEAD", "POST"})
      */
-    public function editAction(int $id, Request $request, string $_format): Response
+    public function editAction(Template $id, Request $request, string $_format): Response
+    {
+        \trigger_error('Route template.edit is now deprecated, use the route ems_core_action_edit', E_USER_DEPRECATED);
+
+        return $this->edit($id, $request, $_format);
+    }
+
+    public function edit(Template $action, Request $request, string $_format): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
-        /** @var TemplateRepository $templateRepository */
-        $templateRepository = $em->getRepository('EMSCoreBundle:Template');
+        $id = $action->getId();
 
-        /** @var Template|null $template * */
-        $template = $templateRepository->find($id);
-
-        if (null === $template) {
-            throw new NotFoundHttpException('Template type not found');
-        }
-
-        $form = $this->createForm(TemplateType::class, $template, [
-            'ajax-save-url' => $this->generateUrl('template.edit', ['id' => $id, '_format' => 'json']),
+        $form = $this->createForm(TemplateType::class, $action, [
+            'ajax-save-url' => $this->generateUrl('ems_core_action_edit', ['contentType' => $action->getContentType(), 'action' => $id, '_format' => 'json']),
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($template);
+            $em->persist($action);
             $em->flush();
 
-            $this->logger->notice('log.template.updated', [
-                'template_name' => $template->getName(),
+            $this->logger->notice('log.action.updated', [
+                'action_name' => $action->getName(),
             ]);
 
             if ('json' === $_format) {
@@ -141,8 +196,8 @@ class ActionController extends AbstractController
                 ]);
             }
 
-            return $this->redirectToRoute('template.index', [
-                    'type' => $template->getContentType()->getName(),
+            return $this->redirectToRoute('ems_core_action_index', [
+                    'contentType' => $action->getContentType()->getId(),
             ]);
         }
 
@@ -158,41 +213,49 @@ class ActionController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/template/edit.html.twig', [
-                'form' => $form->createView(),
-                'template' => $template,
+        return $this->render('@EMSCore/action/edit.html.twig', [
+            'form' => $form->createView(),
+            'action' => $action,
+            'contentType' => $action->getContentType(),
         ]);
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @deprecated
      *
      * @Route("/template/remove/{id}", name="template.remove", methods={"POST"})
      */
     public function removeAction(string $id): RedirectResponse
     {
+        \trigger_error('Route template.remove is now deprecated, use the route ems_core_action_delete', E_USER_DEPRECATED);
+
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var TemplateRepository $templateRepository */
         $templateRepository = $em->getRepository('EMSCoreBundle:Template');
 
-        /** @var Template|null $template * */
-        $template = $templateRepository->find($id);
+        $action = $templateRepository->find($id);
 
-        if (null === $template) {
+        if (!$action instanceof Template) {
             throw new NotFoundHttpException('Template type not found');
         }
 
-        $em->remove($template);
+        return $this->delete($action);
+    }
+
+    public function delete(Template $action): RedirectResponse
+    {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($action);
         $em->flush();
 
-        $this->logger->notice('log.template.deleted', [
-            'template_name' => $template->getName(),
+        $this->logger->notice('log.action.deleted', [
+            'action_name' => $action->getName(),
         ]);
 
-        return $this->redirectToRoute('template.index', [
-                'type' => $template->getContentType()->getName(),
+        return $this->redirectToRoute('ems_core_action_index', [
+            'contentType' => $action->getContentType()->getId(),
         ]);
     }
 }

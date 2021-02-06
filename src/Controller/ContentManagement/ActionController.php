@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ActionController extends AbstractController
+final class ActionController extends AbstractController
 {
     private LoggerInterface $logger;
     private ActionService $actionService;

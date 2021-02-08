@@ -25,7 +25,7 @@ class DemoteUserCommand extends RoleCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
@@ -44,7 +44,7 @@ EOT
     /**
      * {@inheritdoc}
      */
-    protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, $username, $super, $role)
+    protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, $username, $super, $role): void
     {
         if ($super) {
             $manipulator->demote($username);

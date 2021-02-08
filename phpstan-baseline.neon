@@ -1,56 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\DemoteUserCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Command/DemoteUserCommand.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\DemoteUserCommand\\:\\:executeRoleCommand\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Command/DemoteUserCommand.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\PromoteUserCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Command/PromoteUserCommand.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\PromoteUserCommand\\:\\:executeRoleCommand\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Command/PromoteUserCommand.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\RoleCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Command/RoleCommand.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\RoleCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src-user/Command/RoleCommand.php
-
-		-
-			message: "#^Parameter \\#3 \\$username of method FOS\\\\UserBundle\\\\Command\\\\RoleCommand\\:\\:executeRoleCommand\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
-			count: 1
-			path: src-user/Command/RoleCommand.php
-
-		-
-			message: "#^Parameter \\#5 \\$role of method FOS\\\\UserBundle\\\\Command\\\\RoleCommand\\:\\:executeRoleCommand\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
-			count: 1
-			path: src-user/Command/RoleCommand.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\RoleCommand\\:\\:executeRoleCommand\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Command/RoleCommand.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\RoleCommand\\:\\:interact\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Command/RoleCommand.php
-
-		-
 			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
 			count: 3
 			path: src-user/Controller/ChangePasswordController.php

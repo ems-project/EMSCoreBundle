@@ -36,7 +36,7 @@ abstract class RoleCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDefinition([
@@ -49,22 +49,32 @@ abstract class RoleCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = $input->getArgument('username');
         $role = $input->getArgument('role');
         $super = (true === $input->getOption('super'));
 
-        if (null !== $role && $super) {
+        if (!is_string($username)) {
+            throw new \RuntimeException('Username must be a string');
+        }
+
+        if (!is_string($role)) {
+            throw new \RuntimeException('Role must be a string');
+        }
+
+        if ($super && $role) {
             throw new \InvalidArgumentException('You can pass either the role or the --super option (but not both simultaneously).');
         }
 
-        if (null === $role && !$super) {
+        if (!$super && !$role) {
             throw new \RuntimeException('Not enough arguments.');
         }
 
         $manipulator = $this->userManipulator;
         $this->executeRoleCommand($manipulator, $output, $username, $super, $role);
+
+        return 1;
     }
 
     /**
@@ -74,12 +84,12 @@ abstract class RoleCommand extends Command
      * @param bool   $super
      * @param string $role
      */
-    abstract protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, $username, $super, $role);
+    abstract protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, $username, $super, $role): void;
 
     /**
      * {@inheritdoc}
      */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $questions = [];
 

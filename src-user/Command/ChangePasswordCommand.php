@@ -63,16 +63,8 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $username = $input->getArgument('username');
-        $password = $input->getArgument('password');
-
-        if (!is_string($username)) {
-            throw new \RuntimeException('Username must be a string');
-        }
-
-        if (!is_string($password)) {
-            throw new \RuntimeException('Password must be a string');
-        }
+        $username = \strval($input->getArgument('username'));
+        $password = \strval($input->getArgument('password'));
 
         $this->userManipulator->changePassword($username, $password);
 

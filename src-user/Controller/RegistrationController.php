@@ -18,7 +18,6 @@ use FOS\UserBundle\Form\Factory\FactoryInterface;
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
-use http\Exception\RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -127,8 +126,6 @@ class RegistrationController extends Controller
      * Receive the confirmation token from user email provider, login the user.
      *
      * @param string $token
-     *
-     * @return Response
      */
     public function confirmAction(Request $request, $token): Response
     {

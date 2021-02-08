@@ -80,25 +80,13 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $username = $input->getArgument('username');
-        $email = $input->getArgument('email');
-        $password = $input->getArgument('password');
+        $username = \strval($input->getArgument('username'));
+        $email = \strval($input->getArgument('email'));
+        $password = \strval($input->getArgument('password'));
         $inactive = $input->getOption('inactive');
         $superadmin = $input->getOption('super-admin');
 
-        if (!is_string($username)) {
-            throw new \RuntimeException('Username must be a string');
-        }
-
-        if (!is_string($email)) {
-            throw new \RuntimeException('Email must be a string');
-        }
-
-        if (!is_string($password)) {
-            throw new \RuntimeException('Password must be a string');
-        }
-
-        if (!is_bool($superadmin)) {
+        if (!\is_bool($superadmin)) {
             throw new \RuntimeException('Super-admin option must be a boolean');
         }
 

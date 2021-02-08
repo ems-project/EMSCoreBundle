@@ -51,17 +51,9 @@ abstract class RoleCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $username = $input->getArgument('username');
-        $role = $input->getArgument('role');
+        $username = \strval($input->getArgument('username'));
+        $role = \strval($input->getArgument('role'));
         $super = (true === $input->getOption('super'));
-
-        if (!is_string($username)) {
-            throw new \RuntimeException('Username must be a string');
-        }
-
-        if (!is_string($role)) {
-            throw new \RuntimeException('Role must be a string');
-        }
 
         if ($super && $role) {
             throw new \InvalidArgumentException('You can pass either the role or the --super option (but not both simultaneously).');

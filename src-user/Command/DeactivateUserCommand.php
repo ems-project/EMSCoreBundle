@@ -58,11 +58,7 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $username = $input->getArgument('username');
-
-        if (!is_string($username)) {
-            throw new \RuntimeException('Username must be a string');
-        }
+        $username = \strval($input->getArgument('username'));
 
         $this->userManipulator->deactivate($username);
 

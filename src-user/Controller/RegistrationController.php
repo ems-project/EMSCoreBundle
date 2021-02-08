@@ -102,7 +102,7 @@ class RegistrationController extends Controller
     /**
      * Tell the user to check their email provider.
      */
-    public function checkEmailAction(Request $request)
+    public function checkEmailAction(Request $request): Response
     {
         $email = $request->getSession()->get('fos_user_send_confirmation_email/email');
 
@@ -126,10 +126,8 @@ class RegistrationController extends Controller
      * Receive the confirmation token from user email provider, login the user.
      *
      * @param string $token
-     *
-     * @return Response
      */
-    public function confirmAction(Request $request, $token)
+    public function confirmAction(Request $request, $token): Response
     {
         $userManager = $this->userManager;
 
@@ -160,7 +158,7 @@ class RegistrationController extends Controller
     /**
      * Tell the user his account is now confirmed.
      */
-    public function confirmedAction(Request $request)
+    public function confirmedAction(Request $request): Response
     {
         $user = $this->getUser();
         if (!\is_object($user) || !$user instanceof UserInterface) {
@@ -178,7 +176,11 @@ class RegistrationController extends Controller
      */
     private function getTargetUrlFromSession(SessionInterface $session)
     {
-        $key = \sprintf('_security.%s.target_path', $this->tokenStorage->getToken()->getProviderKey());
+        if (!$token = $this->tokenStorage->getToken()) {
+            throw new \RuntimeException('Could not get token');
+        }
+
+        $key = \sprintf('_security.%s.target_path', $token);
 
         if ($session->has($key)) {
             return $session->get($key);

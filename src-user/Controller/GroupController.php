@@ -48,7 +48,7 @@ class GroupController extends Controller
     /**
      * Show all groups.
      */
-    public function listAction()
+    public function listAction(): Response
     {
         return $this->render('@FOSUser/Group/list.html.twig', [
             'groups' => $this->groupManager->findGroups(),

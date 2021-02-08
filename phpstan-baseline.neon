@@ -1,111 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 3
-			path: src-user/Controller/ChangePasswordController.php
-
-		-
-			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
-			count: 3
-			path: src-user/Controller/ChangePasswordController.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\GroupController\\:\\:listAction\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Controller/GroupController.php
-
-		-
-			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 7
-			path: src-user/Controller/GroupController.php
-
-		-
-			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
-			count: 7
-			path: src-user/Controller/GroupController.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\ProfileController\\:\\:showAction\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Controller/ProfileController.php
-
-		-
-			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 3
-			path: src-user/Controller/ProfileController.php
-
-		-
-			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
-			count: 3
-			path: src-user/Controller/ProfileController.php
-
-		-
-			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 6
-			path: src-user/Controller/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
-			count: 6
-			path: src-user/Controller/RegistrationController.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\RegistrationController\\:\\:checkEmailAction\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Controller/RegistrationController.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\RegistrationController\\:\\:confirmedAction\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Controller/RegistrationController.php
-
-		-
-			message: "#^Cannot call method getProviderKey\\(\\) on Symfony\\\\Component\\\\Security\\\\Core\\\\Authentication\\\\Token\\\\TokenInterface\\|null\\.$#"
-			count: 1
-			path: src-user/Controller/RegistrationController.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\ResettingController\\:\\:requestAction\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Controller/ResettingController.php
-
-		-
-			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 7
-			path: src-user/Controller/ResettingController.php
-
-		-
-			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
-			count: 7
-			path: src-user/Controller/ResettingController.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$session Session\\)\\: Unexpected token \"\\$session\", expected type at offset 9$#"
-			count: 1
-			path: src-user/Controller/SecurityController.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between null and Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\SessionInterface will always evaluate to false\\.$#"
-			count: 1
-			path: src-user/Controller/SecurityController.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\SecurityController\\:\\:checkAction\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Controller/SecurityController.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\SecurityController\\:\\:logoutAction\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Controller/SecurityController.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\SecurityController\\:\\:renderLogin\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/Controller/SecurityController.php
-
-		-
 			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\CheckForMailerPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src-user/DependencyInjection/Compiler/CheckForMailerPass.php
@@ -11210,3 +11105,53 @@ parameters:
 			count: 1
 			path: src/Validator/Constraints/AliasNameValidator.php
 
+# No way around these
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 3
+			path: src-user/Controller/ChangePasswordController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 3
+			path: src-user/Controller/ChangePasswordController.php
+
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 7
+			path: src-user/Controller/GroupController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 7
+			path: src-user/Controller/GroupController.php
+
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 3
+			path: src-user/Controller/ProfileController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 3
+			path: src-user/Controller/ProfileController.php
+
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 6
+			path: src-user/Controller/RegistrationController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 6
+			path: src-user/Controller/RegistrationController.php
+
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 7
+			path: src-user/Controller/ResettingController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 7
+			path: src-user/Controller/ResettingController.php

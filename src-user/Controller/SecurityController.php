@@ -14,7 +14,7 @@ namespace FOS\UserBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -39,7 +39,7 @@ class SecurityController extends Controller
      */
     public function loginAction(Request $request)
     {
-        /** @var $session Session */
+        /** @var SessionInterface $session */
         $session = $request->getSession();
 
         $authErrorKey = Security::AUTHENTICATION_ERROR;
@@ -60,7 +60,7 @@ class SecurityController extends Controller
         }
 
         // last username entered by the user
-        $lastUsername = (null === $session) ? '' : $session->get($lastUsernameKey);
+        $lastUsername = $session->get($lastUsernameKey);
 
         $csrfToken = $this->tokenManager
             ? $this->tokenManager->getToken('authenticate')->getValue()
@@ -73,12 +73,12 @@ class SecurityController extends Controller
         ]);
     }
 
-    public function checkAction()
+    public function checkAction(): void
     {
         throw new \RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
     }
 
-    public function logoutAction()
+    public function logoutAction(): void
     {
         throw new \RuntimeException('You must activate the logout in your security firewall configuration.');
     }
@@ -87,6 +87,7 @@ class SecurityController extends Controller
      * Renders the login template with the given parameters. Overwrite this function in
      * an extended controller to provide additional data for the login template.
      *
+     * @param array<string, mixed>
      * @return Response
      */
     protected function renderLogin(array $data)

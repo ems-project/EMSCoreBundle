@@ -1,46 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\CreateUserCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Command/CreateUserCommand.php
-
-		-
-			message: "#^Parameter \\#1 \\$username of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:create\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
-			count: 1
-			path: src-user/Command/CreateUserCommand.php
-
-		-
-			message: "#^Parameter \\#2 \\$password of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:create\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
-			count: 1
-			path: src-user/Command/CreateUserCommand.php
-
-		-
-			message: "#^Parameter \\#3 \\$email of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:create\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
-			count: 1
-			path: src-user/Command/CreateUserCommand.php
-
-		-
-			message: "#^Parameter \\#5 \\$superadmin of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:create\\(\\) expects bool, array\\<string\\>\\|bool\\|string\\|null given\\.$#"
-			count: 1
-			path: src-user/Command/CreateUserCommand.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\CreateUserCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src-user/Command/CreateUserCommand.php
-
-		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
-			count: 1
-			path: src-user/Command/CreateUserCommand.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\CreateUserCommand\\:\\:interact\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Command/CreateUserCommand.php
-
-		-
 			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\DeactivateUserCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src-user/Command/DeactivateUserCommand.php

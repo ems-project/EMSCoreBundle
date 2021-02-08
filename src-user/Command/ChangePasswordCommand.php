@@ -71,7 +71,7 @@ EOT
         }
 
         if (!is_string($password)) {
-            throw new \RuntimeException('Username must be a string');
+            throw new \RuntimeException('Password must be a string');
         }
 
         $this->userManipulator->changePassword($username, $password);

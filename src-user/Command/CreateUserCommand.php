@@ -40,7 +40,7 @@ class CreateUserCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('fos:user:create')
@@ -78,7 +78,7 @@ EOT
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = $input->getArgument('username');
         $email = $input->getArgument('email');
@@ -86,15 +86,33 @@ EOT
         $inactive = $input->getOption('inactive');
         $superadmin = $input->getOption('super-admin');
 
+        if (!is_string($username)) {
+            throw new \RuntimeException('Username must be a string');
+        }
+
+        if (!is_string($email)) {
+            throw new \RuntimeException('Email must be a string');
+        }
+
+        if (!is_string($password)) {
+            throw new \RuntimeException('Password must be a string');
+        }
+
+        if (!is_bool($superadmin)) {
+            throw new \RuntimeException('Super-admin option must be a boolean');
+        }
+
         $this->userManipulator->create($username, $password, $email, !$inactive, $superadmin);
 
         $output->writeln(\sprintf('Created user <comment>%s</comment>', $username));
+
+        return 1;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $questions = [];
 

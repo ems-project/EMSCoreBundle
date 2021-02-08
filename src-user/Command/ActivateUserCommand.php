@@ -12,6 +12,7 @@
 namespace FOS\UserBundle\Command;
 
 use FOS\UserBundle\Util\UserManipulator;
+use http\Exception\RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,7 +38,7 @@ class ActivateUserCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('fos:user:activate')
@@ -60,15 +61,21 @@ EOT
     {
         $username = $input->getArgument('username');
 
+        if (!is_string($username)) {
+            throw new \RuntimeException('Username must be a string');
+        }
+
         $this->userManipulator->activate($username);
 
         $output->writeln(\sprintf('User "%s" has been activated.', $username));
+
+        return 1;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): ?string
     {
         if (!$input->getArgument('username')) {
             $question = new Question('Please choose a username:');
@@ -83,5 +90,7 @@ EOT
 
             $input->setArgument('username', $answer);
         }
+
+        return null;
     }
 }

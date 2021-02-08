@@ -1,31 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\ActivateUserCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Command/ActivateUserCommand.php
-
-		-
-			message: "#^Parameter \\#1 \\$username of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:activate\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
-			count: 1
-			path: src-user/Command/ActivateUserCommand.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\ActivateUserCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src-user/Command/ActivateUserCommand.php
-
-		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
-			count: 1
-			path: src-user/Command/ActivateUserCommand.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\ActivateUserCommand\\:\\:interact\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Command/ActivateUserCommand.php
-
-		-
 			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\ChangePasswordCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src-user/Command/ChangePasswordCommand.php

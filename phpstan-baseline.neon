@@ -1,31 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\DeactivateUserCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Command/DeactivateUserCommand.php
-
-		-
-			message: "#^Parameter \\#1 \\$username of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:deactivate\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
-			count: 1
-			path: src-user/Command/DeactivateUserCommand.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\DeactivateUserCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src-user/Command/DeactivateUserCommand.php
-
-		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
-			count: 1
-			path: src-user/Command/DeactivateUserCommand.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\DeactivateUserCommand\\:\\:interact\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Command/DeactivateUserCommand.php
-
-		-
 			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\DemoteUserCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src-user/Command/DemoteUserCommand.php

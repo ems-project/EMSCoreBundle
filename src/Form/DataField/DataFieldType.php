@@ -129,6 +129,9 @@ abstract class DataFieldType extends AbstractType
         return $out;
     }
 
+    /**
+     * @return FormRegistryInterface
+     */
     public function getFormRegistry()
     {
         return $this->formRegistry;

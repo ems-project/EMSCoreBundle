@@ -13,6 +13,7 @@ namespace FOS\UserBundle\DependencyInjection;
 
 use FOS\UserBundle\Form\Type;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -32,6 +33,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('fos_user');
+
         $rootNode = $treeBuilder->getRootNode();
 
         $supportedDrivers = ['orm', 'mongodb', 'couchdb', 'custom'];
@@ -76,6 +78,7 @@ class Configuration implements ConfigurationInterface
                 ->thenInvalid('You need to specify your own group manager service when using the "custom" driver.')
             ->end();
 
+
         $this->addProfileSection($rootNode);
         $this->addChangePasswordSection($rootNode);
         $this->addRegistrationSection($rootNode);
@@ -86,7 +89,7 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
-    private function addProfileSection(ArrayNodeDefinition $node)
+    private function addProfileSection(ArrayNodeDefinition $node): void
     {
         $node
             ->children()
@@ -111,7 +114,7 @@ class Configuration implements ConfigurationInterface
             ->end();
     }
 
-    private function addRegistrationSection(ArrayNodeDefinition $node)
+    private function addRegistrationSection(ArrayNodeDefinition $node): void
     {
         $node
             ->children()
@@ -149,7 +152,7 @@ class Configuration implements ConfigurationInterface
             ->end();
     }
 
-    private function addResettingSection(ArrayNodeDefinition $node)
+    private function addResettingSection(ArrayNodeDefinition $node): void
     {
         $node
             ->children()
@@ -188,7 +191,7 @@ class Configuration implements ConfigurationInterface
             ->end();
     }
 
-    private function addChangePasswordSection(ArrayNodeDefinition $node)
+    private function addChangePasswordSection(ArrayNodeDefinition $node): void
     {
         $node
             ->children()
@@ -212,7 +215,7 @@ class Configuration implements ConfigurationInterface
             ->end();
     }
 
-    private function addServiceSection(ArrayNodeDefinition $node)
+    private function addServiceSection(ArrayNodeDefinition $node): void
     {
         $node
             ->addDefaultsIfNotSet()
@@ -231,7 +234,7 @@ class Configuration implements ConfigurationInterface
             ->end();
     }
 
-    private function addGroupSection(ArrayNodeDefinition $node)
+    private function addGroupSection(ArrayNodeDefinition $node): void
     {
         $node
             ->children()

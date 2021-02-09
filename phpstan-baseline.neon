@@ -1,226 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\CheckForMailerPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Compiler/CheckForMailerPass.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\CheckForSessionPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Compiler/CheckForSessionPass.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\InjectRememberMeServicesPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Compiler/InjectRememberMeServicesPass.php
-
-		-
-			message: "#^Binary operation \"\\.\" between 'security…' and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
-			count: 4
-			path: src-user/DependencyInjection/Compiler/InjectRememberMeServicesPass.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\InjectUserCheckerPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Compiler/InjectUserCheckerPass.php
-
-		-
-			message: "#^Binary operation \"\\.\" between 'security\\.user…' and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
-			count: 2
-			path: src-user/DependencyInjection/Compiler/InjectUserCheckerPass.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\ValidationPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Compiler/ValidationPass.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addProfileSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addChangePasswordSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addRegistrationSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addResettingSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addServiceSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addGroupSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addProfileSection\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Cannot call method scalarNode\\(\\) on Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\|null\\.$#"
-			count: 6
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addRegistrationSection\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addResettingSection\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addChangePasswordSection\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addServiceSection\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addGroupSection\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Property FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:\\$doctrineDrivers type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Property FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:\\$mailerNeeded has no typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Property FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:\\$sessionNeeded has no typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:load\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:load\\(\\) has parameter \\$configs with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:remapParameters\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:remapParameters\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:remapParameters\\(\\) has parameter \\$map with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:remapParametersNamespaces\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:remapParametersNamespaces\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:remapParametersNamespaces\\(\\) has parameter \\$namespaces with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadProfile\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadProfile\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadRegistration\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadRegistration\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadRegistration\\(\\) has parameter \\$fromEmail with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadChangePassword\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadChangePassword\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadResetting\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadResetting\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadResetting\\(\\) has parameter \\$fromEmail with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadGroups\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadGroups\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/FOSUserExtension.php
-
-		-
 			message: "#^Access to constant prePersist on an unknown class Doctrine\\\\ODM\\\\CouchDB\\\\Event\\.$#"
 			count: 1
 			path: src-user/Doctrine/CouchDB/UserListener.php
@@ -11155,3 +10935,43 @@ parameters:
 			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
 			count: 7
 			path: src-user/Controller/ResettingController.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addProfileSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addChangePasswordSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addRegistrationSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addResettingSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addServiceSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addGroupSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Cannot call method scalarNode\\(\\) on Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\|null\\.$#"
+			count: 6
+			path: src-user/DependencyInjection/Configuration.php

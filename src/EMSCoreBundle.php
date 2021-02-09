@@ -13,7 +13,7 @@ class EMSCoreBundle extends Bundle
 {
     const TRANS_DOMAIN = 'EMSCoreBundle';
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
         $container->addCompilerPass(new ViewTypeCompilerPass(), PassConfig::TYPE_OPTIMIZE);

@@ -206,7 +206,7 @@ class FileController extends AbstractController
         $file = $request->files->get('upload');
         $type = $request->get('type', false);
 
-        if ($file && !$file->getError()) {
+        if (!$file->getError()) {
             $name = $file->getClientOriginalName();
 
             if (false === $type) {
@@ -220,7 +220,7 @@ class FileController extends AbstractController
             $user = $this->getUsername();
 
             try {
-                $uploadedAsset = $fileService->uploadFile($name, $type, $file->getRealPath(), $user);
+                $uploadedAsset = $fileService->uploadFile($name, $type, \strval($file->getRealPath()), $user);
             } catch (\Exception $e) {
                 $logger->error('log.error', [
                     EmsFields::LOG_EXCEPTION_FIELD => $e,

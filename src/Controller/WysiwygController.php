@@ -44,6 +44,7 @@ class WysiwygController extends AppController
             $order = \json_decode($form->getData()['items'], true);
             $i = 1;
             foreach ($order as $id) {
+                /** @var WysiwygProfile $profile */
                 $profile = $wysiwygProfileService->get($id);
                 $profile->setOrderKey($i++);
 
@@ -62,6 +63,7 @@ class WysiwygController extends AppController
             $order = \json_decode($formStylesSet->getData()['items'], true);
             $i = 1;
             foreach ($order as $id) {
+                /** @var WysiwygStylesSet $stylesSet */
                 $stylesSet = $wysiwygStylesSetService->get($id);
                 $stylesSet->setOrderKey($i++);
 

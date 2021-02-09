@@ -66,6 +66,7 @@ class EnvironmentController extends AppController
         ]);
 
         $form->handleRequest($request);
+        /** @var int $paging_size */
         $paging_size = $this->getParameter('ems_core.paging_size');
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -95,9 +96,15 @@ class EnvironmentController extends AppController
                         }
                     }
 
+                    /** @var ContentType $revisionContentType */
+                    $revisionContentType = $revision->getContentType();
+
+                    /** @var Environment $revisionEnvironment */
+                    $revisionEnvironment = $revisionContentType->getEnvironment();
+
                     $continue = true;
                     foreach ($alignTo as $env) {
-                        if ($revision->getContentType()->getEnvironment()->getName() == $env) {
+                        if ($revisionEnvironment->getName() == $env) {
                             $this->getLogger()->warning('log.environment.cant_align_default_environment', [
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $env,
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
@@ -108,7 +115,7 @@ class EnvironmentController extends AppController
                             break;
                         }
 
-                        if (!$authorizationChecker->isGranted($revision->getContentType()->getPublishRole())) {
+                        if (!$authorizationChecker->isGranted($revisionContentType->getPublishRole())) {
                             $this->getLogger()->warning('log.environment.dont_have_publish_role', [
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $env,
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
@@ -122,7 +129,7 @@ class EnvironmentController extends AppController
 
                     if ($continue) {
                         foreach ($alignTo as $env) {
-                            $publishService->alignRevision($revision->getContentType()->getName(), $revision->getOuuid(), $revision->getEnvironments()->first()->getName(), $env);
+                            $publishService->alignRevision($revisionContentType->getName(), $revision->getOuuid(), $revision->getEnvironments()->first()->getName(), $env);
                         }
                     }
                 } elseif (\array_key_exists('alignLeft', $request->request->get('compare_environment_form'))) {
@@ -159,8 +166,10 @@ class EnvironmentController extends AppController
         }
 
         if (null != $request->query->get('page')) {
+            /** @var int $page */
             $page = $request->query->get('page');
         } else {
+            /** @var int $page */
             $page = 1;
         }
 
@@ -200,18 +209,20 @@ class EnvironmentController extends AppController
             /** @var RevisionRepository $repository */
             $repository = $em->getRepository('EMSCoreBundle:Revision');
 
+            /** @var Environment $env */
             $env = $environmentService->getAliasByName($environment);
+            /** @var Environment $withEnvi */
             $withEnvi = $environmentService->getAliasByName($withEnvironment);
 
-            $total = $repository->countDifferencesBetweenEnvironment($env->getId(), $withEnvi->getId(), $contentTypes);
+            $total = $repository->countDifferencesBetweenEnvironment(\strval($env->getId()), \strval($withEnvi->getId()), $contentTypes);
             if ($total) {
-                $lastPage = \ceil($total / $paging_size);
+                $lastPage = \intval(\ceil($total / $paging_size));
                 if ($page > $lastPage) {
                     $page = $lastPage;
                 }
                 $results = $repository->compareEnvironment(
-                    $env->getId(),
-                    $withEnvi->getId(),
+                    \strval($env->getId()),
+                    \strval($withEnvi->getId()),
                     $contentTypes,
                     ($page - 1) * $paging_size,
                     $paging_size,
@@ -225,11 +236,11 @@ class EnvironmentController extends AppController
                     $minrevid = \explode('/', $results[$index]['minrevid']); //1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
                     $maxrevid = \explode('/', $results[$index]['maxrevid']);
                     if ($minrevid[0] == $env->getId()) {
-                        $results[$index]['revisionEnvironment'] = $repository->findOneById($minrevid[1]);
-                        $results[$index]['revisionWithEnvironment'] = $repository->findOneById($maxrevid[1]);
+                        $results[$index]['revisionEnvironment'] = $repository->findOneById(\intval($minrevid[1]));
+                        $results[$index]['revisionWithEnvironment'] = $repository->findOneById(\intval($maxrevid[1]));
                     } else {
-                        $results[$index]['revisionEnvironment'] = $repository->findOneById($maxrevid[1]);
-                        $results[$index]['revisionWithEnvironment'] = $repository->findOneById($minrevid[1]);
+                        $results[$index]['revisionEnvironment'] = $repository->findOneById(\intval($maxrevid[1]));
+                        $results[$index]['revisionWithEnvironment'] = $repository->findOneById(\intval($minrevid[1]));
                     }
 
                     $contentType = $results[$index]['contentType'];
@@ -237,13 +248,13 @@ class EnvironmentController extends AppController
                         throw new \RuntimeException(\sprintf('Content type %s not found', $results[$index]['contentType']));
                     }
                     try {
-                        $document = $searchService->getDocument($contentType, $results[$index]['ouuid'], $env ? $env : null);
+                        $document = $searchService->getDocument($contentType, $results[$index]['ouuid'], $env);
                         $results[$index]['objectEnvironment'] = $document->getRaw();
                     } catch (NotFoundException $e) {
                         $results[$index]['objectEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.
                     }
                     try {
-                        $document = $searchService->getDocument($contentType, $results[$index]['ouuid'], $withEnvi ? $withEnvi : null);
+                        $document = $searchService->getDocument($contentType, $results[$index]['ouuid'], $withEnvi);
                         $results[$index]['objectWithEnvironment'] = $document->getRaw();
                     } catch (NotFoundException $e) {
                         $results[$index]['objectWithEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.
@@ -485,7 +496,9 @@ class EnvironmentController extends AppController
                     //TODO: test name format
                     $form->get('name')->addError(new FormError('Another environment named '.$environment->getName().' already exists'));
                 } else {
-                    $environment->setAlias($this->getParameter('ems_core.instance_id').$environment->getName());
+                    /** @var string $instanceId */
+                    $instanceId = $this->getParameter('ems_core.instance_id');
+                    $environment->setAlias($instanceId.$environment->getName());
                     $environment->setManaged(true);
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($environment);

@@ -50,7 +50,7 @@ class GroupManager extends BaseGroupManager
     /**
      * {@inheritdoc}
      */
-    public function deleteGroup(GroupInterface $group)
+    public function deleteGroup(GroupInterface $group): void
     {
         $this->objectManager->remove($group);
         $this->objectManager->flush();
@@ -65,17 +65,21 @@ class GroupManager extends BaseGroupManager
     }
 
     /**
-     * {@inheritdoc}
+     * @param array<string> $criteria
+     *
+     * @return array<array>
      */
-    public function findGroupBy(array $criteria)
+    public function findGroupBy(array $criteria): array
     {
         return $this->repository->findOneBy($criteria);
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @return array<mixed>
      */
-    public function findGroups()
+    public function findGroups(): iterable
     {
         return $this->repository->findAll();
     }
@@ -83,7 +87,7 @@ class GroupManager extends BaseGroupManager
     /**
      * {@inheritdoc}
      */
-    public function updateGroup(GroupInterface $group, $andFlush = true)
+    public function updateGroup(GroupInterface $group, bool $andFlush = true): void
     {
         $this->objectManager->persist($group);
         if ($andFlush) {

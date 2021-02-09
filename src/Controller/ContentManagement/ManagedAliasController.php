@@ -63,7 +63,7 @@ class ManagedAliasController extends AppController
      */
     public function editAction(Request $request, $id, AliasService $aliasService)
     {
-        $managedAlias = $aliasService->getManagedAlias($id);
+        $managedAlias = $aliasService->getManagedAlias(\intval($id));
 
         if (!$managedAlias) {
             throw new NotFoundHttpException('Unknow managed alias');
@@ -99,7 +99,7 @@ class ManagedAliasController extends AppController
      */
     public function removeAction($id, AliasService $aliasService)
     {
-        $managedAlias = $aliasService->getManagedAlias($id);
+        $managedAlias = $aliasService->getManagedAlias(\intval($id));
 
         if ($managedAlias) {
             $aliasService->removeAlias($managedAlias->getAlias());
@@ -117,12 +117,14 @@ class ManagedAliasController extends AppController
     }
 
     /**
+     * @param array<mixed> $actions
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      */
     private function save(ManagedAlias $managedAlias, array $actions, AliasService $aliasService): void
     {
-        $managedAlias->setAlias($this->getParameter('ems_core.instance_id'));
+        $managedAlias->setAlias(\strval($this->getParameter('ems_core.instance_id')));
         $aliasService->updateAlias($managedAlias->getAlias(), $actions);
 
         /* @var $em EntityManager */
@@ -132,7 +134,9 @@ class ManagedAliasController extends AppController
     }
 
     /**
-     * @return array
+     * @param FormInterface<array> $form
+     *
+     * @return array<array>
      */
     private function getIndexActions(FormInterface $form)
     {

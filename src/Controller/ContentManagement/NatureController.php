@@ -7,6 +7,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Form\Nature\ReorderType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -61,8 +62,10 @@ class NatureController extends AppController
             ]);
         }
 
+        /** @var Environment $contentTypeEnvironment */
+        $contentTypeEnvironment = $contentType->getEnvironment();
         $search = $elasticaService->convertElasticsearchSearch([
-            'index' => $contentType->getEnvironment()->getAlias(),
+            'index' => $contentTypeEnvironment->getAlias(),
             'type' => $contentType->getName(),
             'size' => 400,
             'body' => [

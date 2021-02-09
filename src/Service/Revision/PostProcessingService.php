@@ -9,6 +9,7 @@ use EMS\CommonBundle\Json\JsonMenuNested;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
@@ -20,15 +21,15 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
-use Twig\Environment;
+use Twig\Environment as TwigEnvironment;
 
 final class PostProcessingService
 {
-    private Environment $twig;
+    private TwigEnvironment $twig;
     private FormFactoryInterface $formFactory;
     private LoggerInterface $logger;
 
-    public function __construct(Environment $twig, FormFactoryInterface $formFactory, LoggerInterface $logger)
+    public function __construct(TwigEnvironment $twig, FormFactoryInterface $formFactory, LoggerInterface $logger)
     {
         $this->twig = $twig;
         $this->formFactory = $formFactory;
@@ -53,16 +54,20 @@ final class PostProcessingService
     public function postProcessing(FormInterface $form, ContentType $contentType, array &$objectArray, array $context = [], ?array &$parent = [], string $path = ''): bool
     {
         $migration = isset($context['migration']) ? \boolval($context['migration']) : false;
+
+        /** @var Environment $contentTypeEnv */
+        $contentTypeEnv = $contentType->getEnvironment();
+
         $context = \array_merge($context, [
             '_source' => &$objectArray, //if update also update the context
             '_type' => $contentType->getName(),
-            'index' => $contentType->getEnvironment()->getAlias(),
+            'index' => $contentTypeEnv->getAlias(),
             'parent' => $parent,
             'path' => $path,
         ]);
 
         $found = false;
-        /** @var DataField $dataField */
+        /** @var DataField<mixed> $dataField */
         $dataField = $form->getNormData();
 
         if (!$dataField instanceof DataField) {
@@ -71,7 +76,9 @@ final class PostProcessingService
 
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $form->getConfig()->getType()->getInnerType();
-        if (null === $fieldType = $dataField->getFieldType()) {
+        /** @var FieldType|null $fieldType */
+        $fieldType = $dataField->getFieldType();
+        if (null === $fieldType) {
             throw new \RuntimeException('Field type not found!');
         }
         $options = $fieldType->getOptions();
@@ -97,8 +104,10 @@ final class PostProcessingService
                         $objectArray[$fieldType->getName()] = $json;
                         $found = true;
                     } else {
+                        /** @var FieldType $fieldType */
+                        $fieldType = $dataField->getFieldType();
                         $this->logger->warning('service.data.json_parse_post_processing_error', [
-                            'field_name' => $dataField->getFieldType()->getName(),
+                            'field_name' => $fieldType->getName(),
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $out,
                         ]);
                     }
@@ -107,8 +116,10 @@ final class PostProcessingService
                 if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
                     if (!$migration) {
                         $form->addError(new FormError($e->getPrevious()->getMessage()));
+                        /** @var FieldType $fieldType */
+                        $fieldType = $dataField->getFieldType();
                         $this->logger->warning('service.data.cant_finalize_field', [
-                            'field_name' => $dataField->getFieldType()->getName(),
+                            'field_name' => $fieldType->getName(),
                             'field_display' => isset($fieldType->getDisplayOptions()['label']) && !empty($fieldType->getDisplayOptions()['label']) ? $fieldType->getDisplayOptions()['label'] : $fieldType->getName(),
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getPrevious()->getMessage(),
                         ]);
@@ -156,7 +167,7 @@ final class PostProcessingService
         }
 
         if ($dataFieldType->isContainer() && $form instanceof \IteratorAggregate) {
-            /** @var FormInterface $child */
+            /** @var FormInterface<mixed> $child */
             foreach ($form->getIterator() as $child) {
                 /** @var DataFieldType $childType */
                 $childType = $child->getConfig()->getType()->getInnerType();
@@ -197,6 +208,7 @@ final class PostProcessingService
         }
 
         $jsonMenuNested = JsonMenuNested::fromStructure($data);
+
         foreach ($jsonMenuNested as $item) {
             if (null === $nestedType = ($nestedTypes[$item->getType()] ?? null)) {
                 continue;

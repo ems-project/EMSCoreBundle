@@ -420,7 +420,10 @@ class UserController extends AppController
         ]);
     }
 
-    private function getExistingRoles(UserService $userService)
+    /**
+     * @return array<array>
+     */
+    private function getExistingRoles(UserService $userService): array
     {
         return $userService->getExistingRoles();
     }

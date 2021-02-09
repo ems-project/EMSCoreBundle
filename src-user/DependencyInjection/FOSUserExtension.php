@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class FOSUserExtension extends Extension
 {
     /**
-     * @var array<string, array> $doctrineDrivers
+     * @var array<string, array>
      */
     private static $doctrineDrivers = [
         'orm' => [
@@ -47,6 +47,7 @@ class FOSUserExtension extends Extension
      * {@inheritdoc}
      *
      * @param array<array> $configs
+     *
      * @throws \InvalidArgumentException|\Exception When provided tag is not defined in this extension
      */
     public function load(array $configs, ContainerBuilder $container): void
@@ -151,8 +152,7 @@ class FOSUserExtension extends Extension
     }
 
     /**
-     * @param array<array> $config
-     * @param ContainerBuilder $container
+     * @param array<array>  $config
      * @param array<string> $map
      */
     protected function remapParameters(array $config, ContainerBuilder $container, array $map): void
@@ -166,7 +166,6 @@ class FOSUserExtension extends Extension
 
     /**
      * @param array<array> $config
-     * @param ContainerBuilder $container
      * @param array<mixed> $namespaces
      */
     protected function remapParametersNamespaces(array $config, ContainerBuilder $container, array $namespaces): void
@@ -192,8 +191,7 @@ class FOSUserExtension extends Extension
 
     /**
      * @param array<array> $config
-     * @param ContainerBuilder $container
-     * @param XmlFileLoader $loader
+     *
      * @throws \Exception
      */
     private function loadProfile(array $config, ContainerBuilder $container, XmlFileLoader $loader): void
@@ -207,9 +205,8 @@ class FOSUserExtension extends Extension
 
     /**
      * @param array<array> $config
-     * @param ContainerBuilder $container
-     * @param XmlFileLoader $loader
      * @param array<array> $fromEmail
+     *
      * @throws \Exception
      */
     private function loadRegistration(array $config, ContainerBuilder $container, XmlFileLoader $loader, array $fromEmail): void
@@ -237,8 +234,7 @@ class FOSUserExtension extends Extension
 
     /**
      * @param array<array> $config
-     * @param ContainerBuilder $container
-     * @param XmlFileLoader $loader
+     *
      * @throws \Exception
      */
     private function loadChangePassword(array $config, ContainerBuilder $container, XmlFileLoader $loader): void
@@ -252,9 +248,8 @@ class FOSUserExtension extends Extension
 
     /**
      * @param array<array> $config
-     * @param ContainerBuilder $container
-     * @param XmlFileLoader $loader
      * @param array<array> $fromEmail
+     *
      * @throws \Exception
      */
     private function loadResetting(array $config, ContainerBuilder $container, XmlFileLoader $loader, array $fromEmail): void
@@ -281,9 +276,7 @@ class FOSUserExtension extends Extension
 
     /**
      * @param array<mixed> $config
-     * @param ContainerBuilder $container
-     * @param XmlFileLoader $loader
-     * @param string $dbDriver
+     *
      * @throws \Exception
      */
     private function loadGroups(array $config, ContainerBuilder $container, XmlFileLoader $loader, string $dbDriver): void

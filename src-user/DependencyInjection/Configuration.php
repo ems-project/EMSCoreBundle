@@ -13,7 +13,6 @@ namespace FOS\UserBundle\DependencyInjection;
 
 use FOS\UserBundle\Form\Type;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -77,7 +76,6 @@ class Configuration implements ConfigurationInterface
                 })
                 ->thenInvalid('You need to specify your own group manager service when using the "custom" driver.')
             ->end();
-
 
         $this->addProfileSection($rootNode);
         $this->addChangePasswordSection($rootNode);

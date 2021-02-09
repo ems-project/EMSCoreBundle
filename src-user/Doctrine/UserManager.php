@@ -46,7 +46,7 @@ class UserManager extends BaseUserManager
     /**
      * {@inheritdoc}
      */
-    public function deleteUser(UserInterface $user)
+    public function deleteUser(UserInterface $user): void
     {
         $this->objectManager->remove($user);
         $this->objectManager->flush();
@@ -67,24 +67,32 @@ class UserManager extends BaseUserManager
 
     /**
      * {@inheritdoc}
+     *
+     * @param array<string> $criteria
      */
-    public function findUserBy(array $criteria)
+    public function findUserBy(array $criteria): UserInterface
     {
-        return $this->getRepository()->findOneBy($criteria);
+        /** @var UserInterface $result */
+        $result = $this->getRepository()->findOneBy($criteria);
+
+        return $result;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findUsers()
+    public function findUsers(): UserInterface
     {
-        return $this->getRepository()->findAll();
+        /** @var UserInterface $result */
+        $result = $this->getRepository()->findAll();
+
+        return $result;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function reloadUser(UserInterface $user)
+    public function reloadUser(UserInterface $user): void
     {
         $this->objectManager->refresh($user);
     }
@@ -92,7 +100,7 @@ class UserManager extends BaseUserManager
     /**
      * {@inheritdoc}
      */
-    public function updateUser(UserInterface $user, $andFlush = true)
+    public function updateUser(UserInterface $user, bool $andFlush = true): void
     {
         $this->updateCanonicalFields($user);
         $this->updatePassword($user);

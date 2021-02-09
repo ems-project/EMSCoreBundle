@@ -25,7 +25,7 @@ class CheckForMailerPass implements CompilerPassInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         // if the mailer isn't needed, then no error needed
         if (!$container->has('fos_user.mailer')) {

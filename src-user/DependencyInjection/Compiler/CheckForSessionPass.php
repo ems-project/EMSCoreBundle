@@ -25,7 +25,7 @@ class CheckForSessionPass implements CompilerPassInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if ($container->has('fos_user.session') && !$container->has('session')) {
             $message = 'FOSUserBundle requires the "session" service to be available.';

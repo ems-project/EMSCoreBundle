@@ -11,8 +11,8 @@
 
 namespace FOS\UserBundle\Event;
 
+use FOS\UserBundle\Model\UserInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Response user event that allows null user.
@@ -24,7 +24,7 @@ class GetResponseNullableUserEvent extends GetResponseUserEvent
     /**
      * GetResponseNullableUserEvent constructor.
      */
-    public function __construct(UserInterface $user = null, Request $request)
+    public function __construct(UserInterface $user, Request $request)
     {
         $this->user = $user;
         $this->request = $request;

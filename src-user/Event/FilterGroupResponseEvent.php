@@ -32,7 +32,7 @@ class FilterGroupResponseEvent extends GroupEvent
         $this->response = $response;
     }
 
-    public function setResponse(Response $response)
+    public function setResponse(Response $response): void
     {
         $this->response = $response;
     }

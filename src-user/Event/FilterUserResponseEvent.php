@@ -39,7 +39,7 @@ class FilterUserResponseEvent extends UserEvent
     /**
      * Sets a new response object.
      */
-    public function setResponse(Response $response)
+    public function setResponse(Response $response): void
     {
         $this->response = $response;
     }

@@ -1,56 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\FilterGroupResponseEvent\\:\\:setResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Event/FilterGroupResponseEvent.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\FilterUserResponseEvent\\:\\:setResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Event/FilterUserResponseEvent.php
-
-		-
-			message: "#^Property FOS\\\\UserBundle\\\\Event\\\\FormEvent\\:\\:\\$form type has no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src-user/Event/FormEvent.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\FormEvent\\:\\:__construct\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src-user/Event/FormEvent.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\FormEvent\\:\\:getForm\\(\\) return type has no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src-user/Event/FormEvent.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\FormEvent\\:\\:setResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Event/FormEvent.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\GetResponseGroupEvent\\:\\:setResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Event/GetResponseGroupEvent.php
-
-		-
-			message: "#^Property FOS\\\\UserBundle\\\\Event\\\\UserEvent\\:\\:\\$user \\(FOS\\\\UserBundle\\\\Model\\\\UserInterface\\) does not accept Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\|null\\.$#"
-			count: 1
-			path: src-user/Event/GetResponseNullableUserEvent.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\GetResponseUserEvent\\:\\:setResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Event/GetResponseUserEvent.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\UserEvent\\:\\:getRequest\\(\\) should return Symfony\\\\Component\\\\HttpFoundation\\\\Request but returns Symfony\\\\Component\\\\HttpFoundation\\\\Request\\|null\\.$#"
-			count: 1
-			path: src-user/Event/UserEvent.php
-
-		-
 			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\AuthenticationListener\\:\\:getSubscribedEvents\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src-user/EventListener/AuthenticationListener.php

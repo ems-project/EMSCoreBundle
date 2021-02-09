@@ -37,19 +37,15 @@ interface GroupManagerInterface
 
     /**
      * Finds one group by the given criteria.
-     *
-     * @return GroupInterface
      */
-    public function findGroupBy(array $criteria);
+    public function findGroupBy(array $criteria): ?object;
 
     /**
      * Finds a group by name.
      *
      * @param string $name
-     *
-     * @return GroupInterface
      */
-    public function findGroupByName($name);
+    public function findGroupByName($name): ?object;
 
     /**
      * Returns a collection with all group instances.

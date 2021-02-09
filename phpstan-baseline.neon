@@ -1,156 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Access to constant prePersist on an unknown class Doctrine\\\\ODM\\\\CouchDB\\\\Event\\.$#"
-			count: 1
-			path: src-user/Doctrine/CouchDB/UserListener.php
-
-		-
-			message: "#^Access to constant preUpdate on an unknown class Doctrine\\\\ODM\\\\CouchDB\\\\Event\\.$#"
-			count: 1
-			path: src-user/Doctrine/CouchDB/UserListener.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\CouchDB\\\\UserListener\\:\\:prePersist\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/CouchDB/UserListener.php
-
-		-
-			message: "#^Parameter \\$args of method FOS\\\\UserBundle\\\\Doctrine\\\\CouchDB\\\\UserListener\\:\\:prePersist\\(\\) has invalid typehint type Doctrine\\\\ODM\\\\CouchDB\\\\Event\\\\LifecycleEventArgs\\.$#"
-			count: 1
-			path: src-user/Doctrine/CouchDB/UserListener.php
-
-		-
-			message: "#^Call to method getDocument\\(\\) on an unknown class Doctrine\\\\ODM\\\\CouchDB\\\\Event\\\\LifecycleEventArgs\\.$#"
-			count: 2
-			path: src-user/Doctrine/CouchDB/UserListener.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\CouchDB\\\\UserListener\\:\\:preUpdate\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/CouchDB/UserListener.php
-
-		-
-			message: "#^Parameter \\$args of method FOS\\\\UserBundle\\\\Doctrine\\\\CouchDB\\\\UserListener\\:\\:preUpdate\\(\\) has invalid typehint type Doctrine\\\\ODM\\\\CouchDB\\\\Event\\\\LifecycleEventArgs\\.$#"
-			count: 1
-			path: src-user/Doctrine/CouchDB/UserListener.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\CouchDB\\\\UserListener\\:\\:updateUserFields\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/CouchDB/UserListener.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:deleteGroup\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/GroupManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:findGroupBy\\(\\) has parameter \\$criteria with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/Doctrine/GroupManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:findGroupBy\\(\\) should return FOS\\\\UserBundle\\\\Model\\\\GroupInterface but returns object\\|null\\.$#"
-			count: 1
-			path: src-user/Doctrine/GroupManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:findGroups\\(\\) return type has no value type specified in iterable type Traversable\\.$#"
-			count: 1
-			path: src-user/Doctrine/GroupManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:findGroups\\(\\) should return Traversable but returns array\\<object\\>\\.$#"
-			count: 1
-			path: src-user/Doctrine/GroupManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:updateGroup\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/GroupManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:updateGroup\\(\\) has parameter \\$andFlush with no typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/GroupManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserListener\\:\\:prePersist\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserListener.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserListener\\:\\:preUpdate\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserListener.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserListener\\:\\:updateUserFields\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserListener.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserListener\\:\\:recomputeChangeSet\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserListener.php
-
-		-
-			message: "#^Parameter \\#1 \\$class of method Doctrine\\\\ORM\\\\UnitOfWork\\:\\:recomputeSingleEntityChangeSet\\(\\) expects Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadata, Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata given\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserListener.php
-
-		-
-			message: "#^Class Doctrine\\\\ODM\\\\MongoDB\\\\DocumentManager not found\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserListener.php
-
-		-
-			message: "#^Call to method getUnitOfWork\\(\\) on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\DocumentManager\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserListener.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:deleteUser\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:findUserBy\\(\\) has parameter \\$criteria with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:findUserBy\\(\\) should return FOS\\\\UserBundle\\\\Model\\\\UserInterface\\|null but returns object\\|null\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:findUsers\\(\\) return type has no value type specified in iterable type Traversable\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:findUsers\\(\\) should return Traversable but returns array\\<object\\>\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:reloadUser\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:updateUser\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserManager.php
-
-		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:updateUser\\(\\) has parameter \\$andFlush with no typehint specified\\.$#"
-			count: 1
-			path: src-user/Doctrine/UserManager.php
-
-		-
 			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\FilterGroupResponseEvent\\:\\:setResponse\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src-user/Event/FilterGroupResponseEvent.php
@@ -10975,3 +10825,43 @@ parameters:
 			message: "#^Cannot call method scalarNode\\(\\) on Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\|null\\.$#"
 			count: 6
 			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Access to constant prePersist on an unknown class Doctrine\\\\ODM\\\\CouchDB\\\\Event\\.$#"
+			count: 1
+			path: src-user/Doctrine/CouchDB/UserListener.php
+
+		-
+			message: "#^Access to constant preUpdate on an unknown class Doctrine\\\\ODM\\\\CouchDB\\\\Event\\.$#"
+			count: 1
+			path: src-user/Doctrine/CouchDB/UserListener.php
+
+		-
+			message: "#^Parameter \\$args of method FOS\\\\UserBundle\\\\Doctrine\\\\CouchDB\\\\UserListener\\:\\:prePersist\\(\\) has invalid typehint type Doctrine\\\\ODM\\\\CouchDB\\\\Event\\\\LifecycleEventArgs\\.$#"
+			count: 1
+			path: src-user/Doctrine/CouchDB/UserListener.php
+
+		-
+			message: "#^Call to method getDocument\\(\\) on an unknown class Doctrine\\\\ODM\\\\CouchDB\\\\Event\\\\LifecycleEventArgs\\.$#"
+			count: 2
+			path: src-user/Doctrine/CouchDB/UserListener.php
+
+		-
+			message: "#^Parameter \\$args of method FOS\\\\UserBundle\\\\Doctrine\\\\CouchDB\\\\UserListener\\:\\:preUpdate\\(\\) has invalid typehint type Doctrine\\\\ODM\\\\CouchDB\\\\Event\\\\LifecycleEventArgs\\.$#"
+			count: 1
+			path: src-user/Doctrine/CouchDB/UserListener.php
+
+		-
+			message: "#^Parameter \\#1 \\$class of method Doctrine\\\\ORM\\\\UnitOfWork\\:\\:recomputeSingleEntityChangeSet\\(\\) expects Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadata, Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata given\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserListener.php
+
+		-
+			message: "#^Class Doctrine\\\\ODM\\\\MongoDB\\\\DocumentManager not found\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserListener.php
+
+		-
+			message: "#^Call to method getUnitOfWork\\(\\) on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\DocumentManager\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserListener.php

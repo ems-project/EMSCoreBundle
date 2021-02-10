@@ -99,7 +99,7 @@ class Mapping
                 'store' => true,
                 'enabled' => true,
             ];
-        } elseif (\version_compare($this->elasticaService->getVersion(), '7.0') < 0) {
+        } elseif (\version_compare($this->elasticaService->getVersion(), '7.0') >= 0) {
             foreach ($out['properties'] as $name => &$options) {
                 if (\in_array($options['type'], ['text', 'keyword'], true)) {
                     $options['copy_to'] = \array_unique(\array_merge(['_all'], $options['copy_to'] ?? []));

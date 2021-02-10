@@ -424,9 +424,9 @@ export default class EmsListeners {
 
         fileInputs.each(function(){
             const fileField = $(this);
-            const browseLabel = fileField.data('label');
+            let browseLabel = fileField.data('label');
             if(typeof browseLabel === 'undefined') {
-                handle = 'Upload file';
+                browseLabel = 'Upload file';
             }
 
 

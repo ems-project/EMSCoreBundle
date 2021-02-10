@@ -103,7 +103,7 @@ services:
             - { name: form.type }
     ems.fieldtype.wysiwyg:
         class: EMS\CoreBundle\Form\DataField\WysiwygFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@router']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@router', '@ems.service.wysiwyg_styles_set', '@EMS\CommonBundle\Twig\AssetRuntime']
         tags:
             - { name: ems.form.datafieldtype, alias: wysiwyg }
             - { name: form.type }

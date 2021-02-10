@@ -34,7 +34,7 @@ class ChangePasswordCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('fos:user:change-password')
@@ -61,20 +61,22 @@ EOT
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $username = $input->getArgument('username');
-        $password = $input->getArgument('password');
+        $username = \strval($input->getArgument('username'));
+        $password = \strval($input->getArgument('password'));
 
         $this->userManipulator->changePassword($username, $password);
 
         $output->writeln(\sprintf('Changed password for user <comment>%s</comment>', $username));
+
+        return 1;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $questions = [];
 

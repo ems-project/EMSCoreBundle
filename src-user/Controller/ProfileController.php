@@ -46,7 +46,7 @@ class ProfileController extends Controller
     /**
      * Show the user.
      */
-    public function showAction()
+    public function showAction(): Response
     {
         $user = $this->getUser();
         if (!\is_object($user) || !$user instanceof UserInterface) {

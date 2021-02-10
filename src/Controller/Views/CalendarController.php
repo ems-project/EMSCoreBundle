@@ -93,8 +93,8 @@ class CalendarController extends AppController
         $body = $searchService->generateSearchBody($search);
 
         /** @var \DateTime $from */
-        /** @var \DateTime $to */
         $from = new \DateTime($request->query->get('from'));
+        /** @var \DateTime $to */
         $to = new \DateTime($request->query->get('to'));
         $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
 

@@ -267,11 +267,11 @@ class Mapping
     private function addCopyToAllField(array &$properties): void
     {
         foreach ($properties as $name => &$options) {
-            if (\in_array($options['type'] ?? null, ['text', 'keyword'], true)) {
+            if (\in_array(($options['type'] ?? null), ['text', 'keyword'], true)) {
                 $options['copy_to'] = \array_unique(\array_merge(['_all'], $options['copy_to'] ?? []));
                 continue;
             }
-            if (\in_array($options['type'] ?? null, ['nested'], true) && isset($options['properties'])) {
+            if (isset($options['properties'])) {
                 $this->addCopyToAllField($options['properties']);
             }
         }

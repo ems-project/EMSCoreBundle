@@ -796,3 +796,5 @@ view:
       title: 'Edit the action %action% for %contentType%'
     add:
       title: 'Add a new action to %contentType%'
+  breadcrumb:
+    wysiwyg-options: 'WYSIWYG Options'

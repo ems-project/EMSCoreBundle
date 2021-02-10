@@ -88,7 +88,7 @@ class RecomputeCommand extends EmsCommand
             ->addOption('continue', null, InputOption::VALUE_NONE, 'continue a recompute')
             ->addOption('no-align', null, InputOption::VALUE_NONE, "don't keep the revisions aligned to all already aligned environments")
             ->addOption('cron', null, InputOption::VALUE_NONE, 'optimized for automated recurring recompute calls, tries --continue, when no locks are found for user runs command without --continue')
-            ->addOption('id', null, InputOption::VALUE_OPTIONAL, 'recompute a specific id', 0)
+            ->addOption('ouuid', null, InputOption::VALUE_OPTIONAL, 'recompute a specific revision ouuid', null)
             ->addOption('deep', null, InputOption::VALUE_NONE, 'deep recompute form will be submitted and transformers triggered')
         ;
     }
@@ -123,8 +123,8 @@ class RecomputeCommand extends EmsCommand
             if (!\is_bool($cronFlag)) {
                 throw new \RuntimeException('Unexpected cron option');
             }
-            $idFlag = \intval($input->getOption('id'));
-            $this->lock($output, $contentType, $forceFlag, $cronFlag, $idFlag);
+            $ouuid = $input->getOption('ouuid') ? \strval($input->getOption('ouuid')) : null;
+            $this->lock($output, $contentType, $forceFlag, $cronFlag, $ouuid);
         }
 
         $optionDeep = \boolval($input->getOption('deep'));
@@ -225,7 +225,7 @@ class RecomputeCommand extends EmsCommand
         return 0;
     }
 
-    private function lock(OutputInterface $output, ContentType $contentType, bool $force = false, bool $ifEmpty = false, int $id = 0): int
+    private function lock(OutputInterface $output, ContentType $contentType, bool $force = false, bool $ifEmpty = false, ?string $ouuid = null): int
     {
         $application = $this->getApplication();
         if (null === $application) {
@@ -239,7 +239,7 @@ class RecomputeCommand extends EmsCommand
             '--user' => self::LOCK_BY,
             '--force' => $force,
             '--if-empty' => $ifEmpty,
-            '--id' => $id,
+            '--ouuid' => $ouuid,
         ];
 
         return $command->run(new ArrayInput($arguments), $output);

@@ -31,8 +31,10 @@ abstract class GroupManager implements GroupManagerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return array<array>
      */
-    public function findGroupByName($name): ?object
+    public function findGroupByName($name): array
     {
         return $this->findGroupBy(['name' => $name]);
     }

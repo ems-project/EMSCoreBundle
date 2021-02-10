@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
+use EMS\CoreBundle\Form\Field\FileType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
@@ -21,6 +22,22 @@ class WysiwygStylesSetType extends AbstractType
             ->add('name', IconTextType::class, [
                 'icon' => 'fa fa-tag',
                 'label' => 'Styles set\'s name',
+            ])
+            ->add('formatTags', IconTextType::class, [
+                'required' => false,
+                'icon' => 'fa fa-header',
+            ])
+            ->add('contentCss', IconTextType::class, [
+                'required' => false,
+                'icon' => 'fa fa-css3',
+            ])
+            ->add('saveDir', IconTextType::class, [
+                'required' => false,
+                'icon' => 'fa fa-folder',
+            ])
+            ->add('assets', FileType::class, [
+                'required' => false,
+                'meta_fields' => false,
             ])
             ->add('config', CodeEditorType::class, [
                 'language' => 'ace/mode/json',

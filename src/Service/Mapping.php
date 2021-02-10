@@ -100,11 +100,7 @@ class Mapping
                 'enabled' => true,
             ];
         } elseif (\version_compare($this->elasticaService->getVersion(), '7.0') >= 0) {
-            foreach ($out['properties'] as $name => &$options) {
-                if (\in_array($options['type'], ['text', 'keyword'], true)) {
-                    $options['copy_to'] = \array_unique(\array_merge(['_all'], $options['copy_to'] ?? []));
-                }
-            }
+            $this->addCopyToAllField($out['properties']);
             $out['properties'] = \array_merge(['_all' => ['type' => 'text']], $out['properties']);
         }
 
@@ -265,5 +261,19 @@ class Mapping
         $endpoint->setBody($mappings);
         $endpoint->setType($this->getTypePath($type));
         $this->elasticaClient->requestEndpoint($endpoint);
+    }
+
+    /** @param array<string, array<string, mixed>> $properties */
+    private function addCopyToAllField(array &$properties): void
+    {
+        foreach ($properties as $name => &$options) {
+            if (\in_array($options['type'] ?? null, ['text', 'keyword'], true)) {
+                $options['copy_to'] = \array_unique(\array_merge(['_all'], $options['copy_to'] ?? []));
+                continue;
+            }
+            if (\in_array($options['type'] ?? null, ['nested'], true)) {
+                $this->addCopyToAllField($options['properties']);
+            }
+        }
     }
 }

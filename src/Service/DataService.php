@@ -2138,7 +2138,7 @@ class DataService
     public function lockRevisions(ContentType $contentType, \DateTime $until, string $by): int
     {
         try {
-            return $this->revRepository->lockRevisions($contentType, $until, $by, true, false);
+            return $this->revRepository->lockRevisions($contentType, $until, $by, true);
         } catch (LockedException $e) {
             $this->logger->error('service.data.lock_revisions_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),

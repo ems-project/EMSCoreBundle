@@ -42,7 +42,7 @@ class LockCommand extends Command
             ->addOption('user', null, InputOption::VALUE_REQUIRED, 'lock username', 'EMS_COMMAND')
             ->addOption('force', null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
             ->addOption('if-empty', null, InputOption::VALUE_NONE, 'lock if there are no pending locks for the same user')
-            ->addOption('id', null, InputOption::VALUE_OPTIONAL, 'lock a specific id')
+            ->addOption('ouuid', null, InputOption::VALUE_OPTIONAL, 'lock a specific ouuid', null)
         ;
     }
 
@@ -80,7 +80,8 @@ class LockCommand extends Command
             return 0;
         }
 
-        $rows = $this->revisionRepository->lockRevisions($contentType, $until, $by, $force, $input->getOption('id'));
+        $ouuid = $input->getOption('ouuid') ? \strval($input->getOption('ouuid')) : null;
+        $rows = $this->revisionRepository->lockRevisions($contentType, $until, $by, $force, $ouuid);
 
         if (0 === $rows) {
             $io->error('no revisions locked, try force?');

@@ -1,56 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Left side of && is always true\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/FileController.php
-
-		-
-			message: "#^Parameter \\#3 \\$filename of method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:uploadFile\\(\\) expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/FileController.php
-
-		-
-			message: "#^Binary operation \"\\*\" between \\(float\\|int\\) and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/JobController.php
-
-		-
-			message: "#^Parameter \\#1 \\$size of method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:scroll\\(\\) expects int, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/JobController.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of method EMS\\\\CoreBundle\\\\Service\\\\AliasService\\:\\:getManagedAlias\\(\\) expects int, string given\\.$#"
-			count: 2
-			path: src/Controller/ContentManagement/ManagedAliasController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ManagedAliasController\\:\\:save\\(\\) has parameter \\$actions with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ManagedAliasController.php
-
-		-
-			message: "#^Parameter \\#1 \\$instanceId of method EMS\\\\CoreBundle\\\\Entity\\\\ManagedAlias\\:\\:setAlias\\(\\) expects string, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ManagedAliasController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ManagedAliasController\\:\\:getIndexActions\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ManagedAliasController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ManagedAliasController\\:\\:getIndexActions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ManagedAliasController.php
-
-		-
-			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/NatureController.php
-
-		-
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Form\\\\FormError\\|Symfony\\\\Component\\\\Form\\\\FormErrorIterator\\:\\:getMessage\\(\\)\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/ActionController.php

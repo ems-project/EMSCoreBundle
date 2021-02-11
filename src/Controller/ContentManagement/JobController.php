@@ -26,8 +26,10 @@ class JobController extends AppController
      */
     public function indexAction(Request $request, JobService $jobService): Response
     {
+        /** @var int $size */
         $size = $this->getParameter('ems_core.paging_size');
 
+        /** @var int $page */
         $page = $request->query->get('page', 1);
         $from = ($page - 1) * $size;
         $total = $jobService->count();

@@ -26,13 +26,29 @@ class WysiwygStylesSetService
 
     public function getStylesSets()
     {
+        static $stylesSets = null;
+        if (null !== $stylesSets) {
+            return $stylesSets;
+        }
+
         $em = $this->doctrine->getManager();
         /** @var WysiwygStylesSetRepository */
         $repository = $em->getRepository('EMSCoreBundle:WysiwygStylesSet');
 
-        $profiles = $repository->findAll();
+        $stylesSets = $repository->findAll();
 
-        return $profiles;
+        return $stylesSets;
+    }
+
+    public function getByName(?string $name): ?WysiwygStylesSet
+    {
+        foreach ($this->getStylesSets() as $stylesSet) {
+            if ($name === $stylesSet->getName()) {
+                return $stylesSet;
+            }
+        }
+
+        return null;
     }
 
     /**

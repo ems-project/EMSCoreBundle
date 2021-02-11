@@ -14,6 +14,7 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -94,6 +95,7 @@ class ElasticsearchController extends AppController
                 'globalStatus' => $health['status'] ?? 'red',
             ]);
 
+            /** @var string $allowOrigin */
             $allowOrigin = $this->getParameter('ems_core.health_check_allow_origin');
             if (!empty($allowOrigin)) {
                 $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
@@ -170,8 +172,10 @@ class ElasticsearchController extends AppController
             $this->createNotFoundException('Preset saved search not found');
         }
 
-        $em->remove($search);
-        $em->flush();
+        if($search instanceof Search) {
+            $em->remove($search);
+            $em->flush();
+        }
 
         return $this->redirectToRoute('elasticsearch.search');
     }
@@ -188,7 +192,7 @@ class ElasticsearchController extends AppController
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
 
-        /** @var Search $search */
+        /** @var Search|null $search */
         $search = $repository->findOneBy([
             'default' => true,
         ]);
@@ -229,7 +233,9 @@ class ElasticsearchController extends AppController
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
 
         if ($contentType) {
+            /** @var ContentType $contentType */
             $contentType = $contentTypeService->getByName($contentType);
+            /** @var Search[] $searchs */
             $searchs = $repository->findBy([
                 'contentType' => $contentType->getId(),
             ]);
@@ -239,6 +245,7 @@ class ElasticsearchController extends AppController
                 $em->persist($search);
             }
 
+            /** @var Search $search */
             $search = $repository->find($id);
             $search->setContentType($contentType);
             $em->persist($search);
@@ -255,6 +262,7 @@ class ElasticsearchController extends AppController
                 $search->setDefault(false);
                 $em->persist($search);
             }
+            /** @var Search $search */
             $search = $repository->find($id);
             $search->setDefault(true);
             $em->persist($search);
@@ -455,7 +463,9 @@ class ElasticsearchController extends AppController
                 /** @var Search $search */
                 $search = $form->getData();
                 $search->setName($request->request->get('form')['name']);
-                $search->setUser($this->getUser()->getUsername());
+                /** @var User $user */
+                $user = $this->getUser();
+                $search->setUser($user->getUsername());
 
                 /** @var SearchFilter $filter */
                 foreach ($search->getFilters() as $filter) {
@@ -472,8 +482,10 @@ class ElasticsearchController extends AppController
             }
 
             if (null != $request->query->get('page')) {
+                /** @var int $page */
                 $page = $request->query->get('page');
             } else {
+                /** @var int $page */
                 $page = 1;
             }
 
@@ -542,8 +554,10 @@ class ElasticsearchController extends AppController
             $environments = $environmentRepository->findAllAsAssociativeArray('alias');
 
             $esSearch = $searchService->generateSearch($search);
-            $esSearch->setFrom(($page - 1) * $this->getParameter('ems_core.paging_size'));
-            $esSearch->setSize($this->getParameter('ems_core.paging_size'));
+            /** @var int $pagingSize */
+            $pagingSize = $this->getParameter('ems_core.paging_size');
+            $esSearch->setFrom(($page - 1) * $pagingSize);
+            $esSearch->setSize($pagingSize);
 
             $esSearch->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, $aggregateOptionService->getContentTypeField(), 15);
             $esSearch->addTermsAggregation(AggregateOptionService::INDEXES_AGGREGATION, '_index', 15);
@@ -584,12 +598,13 @@ class ElasticsearchController extends AppController
                 $contentTypes = $this->getAllContentType($response);
                 foreach ($contentTypes as $name) {
                     $contentType = $types[$name];
-
+                    /** @var string $searchBody */
+                    $searchBody = \json_encode($searchService->generateSearchBody($search));
                     $exportForm = $this->createForm(ExportDocumentsType::class, new ExportDocuments(
                         $contentType,
                         $this->generateUrl('emsco_search_export', ['contentType' => $contentType->getId()]),
-                        \json_encode($searchService->generateSearchBody($search))
-                    ));
+                        $searchBody)
+                    );
 
                     $exportForms[] = $exportForm->createView();
                 }

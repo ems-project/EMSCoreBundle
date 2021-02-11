@@ -10652,6 +10652,6 @@ parameters:
 			path: src-user/Validator/Initializer.php
 
 		-
-			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:findGroupBy() should return array<array> but returns object\\|null\\.$#"
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:findGroupBy() should return array\\<array\\> but returns object\\|null\\.$#"
 			count: 1
 			path: src-user/Doctrine/GroupManager.php

@@ -17,6 +17,7 @@ use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Exception\DuplicateOuuidException;
@@ -62,6 +63,7 @@ use Twig\Environment as TwigEnvironment;
 use Twig\Error\Error;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
+use Twig\TemplateWrapper;
 
 class DataController extends AppController
 {
@@ -80,7 +82,7 @@ class DataController extends AppController
 
         /** @var ContentTypeRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:ContentType');
-        /** @var ContentType $contentType */
+        /** @var null|ContentType $contentType */
         $contentType = $repository->findOneBy([
             'name' => $name,
             'deleted' => false,
@@ -105,14 +107,18 @@ class DataController extends AppController
 
         $searchForm = new Search();
         $searchForm->setContentTypes([$contentType->getName()]);
-        $searchForm->setEnvironments([$contentType->getEnvironment()->getName()]);
+
+        /** @var Environment $environment */
+        $environment = $contentType->getEnvironment();
+        $searchForm->setEnvironments([$environment->getName()]);
         $searchForm->setSortBy('_finalization_datetime');
         if ($contentType->getSortBy()) {
             $searchForm->setSortBy($contentType->getSortBy());
         }
         $searchForm->setSortOrder('desc');
-        if ($contentType->getSortOrder()) {
-            $searchForm->setSortOrder($contentType->getSortOrder());
+        $sortOrder = $contentType->getSortOrder();
+        if ($sortOrder != null) {
+            $searchForm->setSortOrder($sortOrder);
         }
 
         return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::searchAction', [
@@ -136,7 +142,7 @@ class DataController extends AppController
 
         /** @var ContentTypeRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:ContentType');
-        /** @var ContentType $contentType */
+        /** @var null|ContentType $contentType */
         $contentType = $repository->findOneBy([
             'name' => $name,
             'deleted' => false,
@@ -148,18 +154,24 @@ class DataController extends AppController
 
         $searchForm = new Search();
         $searchForm->setContentTypes([$contentType->getName()]);
-        $searchForm->setEnvironments([$contentType->getEnvironment()->getName()]);
+        /** @var Environment $environment */
+        $environment = $contentType->getEnvironment();
+        $searchForm->setEnvironments([$environment->getName()]);
         $searchForm->setSortBy('_finalization_datetime');
         if ($contentType->getSortBy()) {
             $searchForm->setSortBy($contentType->getSortBy());
         }
         $searchForm->setSortOrder('desc');
-        if ($contentType->getSortOrder()) {
-            $searchForm->setSortOrder($contentType->getSortOrder());
+        $sortOrder = $contentType->getSortOrder();
+        if ($sortOrder != null) {
+            $searchForm->setSortOrder($sortOrder);
         }
 
         $searchForm->filters = [];
-        foreach ($this->getUser()->getCircles() as $cicle) {
+
+        /** @var User $user */
+        $user = $this->getUser();
+        foreach ($user->getCircles() as $cicle) {
             $filter = new SearchFilter();
             $filter->setBooleanClause('should')
                 ->setField($contentType->getCirclesField())
@@ -171,7 +183,7 @@ class DataController extends AppController
         return $this->forward('EMSCoreBundle:Elasticsearch:search', [
             'query' => null,
         ], [
-            'search_form' => \json_decode(\json_encode($searchForm), true),
+            'search_form' => \json_decode(\strval(\json_encode($searchForm)), true),
         ]);
     }
 
@@ -368,8 +380,8 @@ class DataController extends AppController
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Revision');
 
-        /* @var Revision $revision */
         if (!$revisionId) {
+            /** @var Revision $revision */
             $revision = $repository->findOneBy([
                 'endTime' => null,
                 'ouuid' => $ouuid,
@@ -377,6 +389,7 @@ class DataController extends AppController
                 'contentType' => $contentType,
             ]);
         } else {
+            /** @var Revision $revision */
             $revision = $repository->findOneById($revisionId);
         }
 
@@ -384,22 +397,29 @@ class DataController extends AppController
         if ($compareId) {
             $logger->warning('log.data.revision.compare_beta', []);
 
+            /** @var Revision $compareRevision */
+            $compareRevision = $repository->findOneById($compareId);
+            $compareData = $compareRevision->getRawData();
+
+            /** @var ContentType $revisionContentType */
+            $revisionContentType = $revision->getContentType();
+
+            /** @var ContentType $compareRevisionContentType */
+            $compareRevisionContentType = $compareRevision->getContentType();
+
             try {
-                /** @var Revision $compareRevision */
-                $compareRevision = $repository->findOneById($compareId);
-                $compareData = $compareRevision->getRawData();
-                if ($revision->getContentType() === $compareRevision->getContentType() && $revision->getOuuid() == $compareRevision->getOuuid()) {
+                if ($revisionContentType === $compareRevision->getContentType() && $revision->getOuuid() == $compareRevision->getOuuid()) {
                     if ($compareRevision->getCreated() <= $revision->getCreated()) {
                         $logger->notice('log.data.revision.compare', [
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             'compare_revision_id' => $compareRevision->getId(),
                         ]);
                     } else {
                         $logger->warning('log.data.revision.compare_more_recent', [
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             'compare_revision_id' => $compareRevision->getId(),
                         ]);
@@ -407,9 +427,9 @@ class DataController extends AppController
                 } else {
                     $logger->notice('log.data.document.compare', [
                         EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        'compare_contenttype' => $compareRevision->getContentType()->getName(),
+                        'compare_contenttype' => $compareRevisionContentType->getName(),
                         'compare_ouuid' => $compareRevision->getOuuid(),
                         'compare_revision_id' => $compareRevision->getId(),
                     ]);
@@ -417,14 +437,14 @@ class DataController extends AppController
             } catch (\Throwable $e) {
                 $logger->warning('log.data.revision.compare_revision_not_found', [
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                     'compare_revision_id' => $compareId,
                 ]);
             }
         }
 
-        if (!$revision || $revision->getOuuid() != $ouuid || $revision->getContentType() !== $contentType || $revision->getDeleted()) {
+        if ($revision->getOuuid() != $ouuid || $revision->getContentType() !== $contentType || $revision->getDeleted()) {
             throw new NotFoundHttpException('Revision not found');
         }
 
@@ -440,9 +460,10 @@ class DataController extends AppController
         $firstElemOfPage = $repository->firstElemOfPage($page);
         /** @var EnvironmentRepository $envRepository */
         $envRepository = $em->getRepository('EMSCoreBundle:Environment');
-        $availableEnv = $envRepository->findAvailableEnvironements(
-            $revision->getContentType()->getEnvironment()
-        );
+
+        /** @var Environment $environment */
+        $environment = $revision->getContentType()->getEnvironment();
+        $availableEnv = $envRepository->findAvailableEnvironements($environment);
 
         $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
 
@@ -594,15 +615,21 @@ class DataController extends AppController
     public function deleteAction(string $type, string $ouuid, DataService $dataService, LoggerInterface $logger, EnvironmentService $environmentService)
     {
         $revision = $dataService->getNewestRevision($type, $ouuid);
+
+        /** @var ContentType $contentType */
         $contentType = $revision->getContentType();
         $found = false;
-        foreach ($environmentService->getAll() as $environment) {
-            /** @var Environment $environment */
-            if ($environment !== $revision->getContentType()->getEnvironment()) {
+
+        /** @var Environment[] $environments */
+        $environments = $environmentService->getAll();
+        foreach ($environments as $environment) {
+            /** @var ContentType $revisionContentType */
+            $revisionContentType = $revision->getContentType();
+            if ($environment !== $revisionContentType->getEnvironment()) {
                 try {
-                    $sibling = $dataService->getRevisionByEnvironment($ouuid, $revision->getContentType(), $environment);
+                    $sibling = $dataService->getRevisionByEnvironment($ouuid, $revisionContentType, $environment);
                     $logger->warning('log.data.revision.cant_delete_has_published', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                         'published_in' => $environment->getName(),
                         EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                         EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -659,9 +686,12 @@ class DataController extends AppController
             throw new BadRequestHttpException('Only authorized on a draft');
         }
 
-        $contentTypeId = $revision->getContentType()->getId();
-        $type = $revision->getContentType()->getName();
-        $autoPublish = $revision->getContentType()->isAutoPublish();
+        /** @var ContentType $revisionContentType */
+        $revisionContentType = $revision->getContentType();
+
+        $contentTypeId = $revisionContentType->getId();
+        $type = $revisionContentType->getName();
+        $autoPublish = $revisionContentType->isAutoPublish();
         $ouuid = $revision->getOuuid();
 
         $previousRevisionId = $this->discardDraft($revision, $dataService);
@@ -689,8 +719,11 @@ class DataController extends AppController
      */
     public function cancelModificationsAction(Revision $revision, DataService $dataService, LoggerInterface $logger, PublishService $publishService): RedirectResponse
     {
-        $contentTypeId = $revision->getContentType()->getId();
-        $type = $revision->getContentType()->getName();
+        /** @var ContentType $revisionContentType */
+        $revisionContentType = $revision->getContentType();
+
+        $contentTypeId = $revisionContentType->getId();
+        $type = $revisionContentType->getName();
         $ouuid = $revision->getOuuid();
 
         $dataService->lockRevision($revision);
@@ -701,14 +734,20 @@ class DataController extends AppController
         $em->flush();
 
         if (null != $ouuid) {
-            if ($revision->getContentType()->isAutoPublish()) {
+            if ($revisionContentType->isAutoPublish()) {
                 $publishService->silentPublish($revision);
+
+                /** @var ContentType $revisionContentType */
+                $revisionContentType = $revision->getContentType();
+
+                /** @var Environment $environment */
+                $environment = $revisionContentType->getEnvironment();
 
                 $logger->warning('log.data.revision.auto_publish_rollback', [
                     EmsFields::LOG_OUUID_FIELD => $ouuid,
                     EmsFields::LOG_CONTENTTYPE_FIELD => $type,
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
+                    EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                 ]);
             }
 
@@ -742,16 +781,19 @@ class DataController extends AppController
 
         $dataService->lockRevision($revision);
 
+        /** @var ContentType $revisionContentType */
+        $revisionContentType = $revision->getContentType();
+
         try {
             $dataService->reloadData($revision);
             $dataService->sign($revision);
 
             /** @var Environment $environment */
             foreach ($revision->getEnvironments() as $environment) {
-                if (!$defaultOnly || $environment === $revision->getContentType()->getEnvironment()) {
+                if (!$defaultOnly || $environment === $revisionContentType->getEnvironment()) {
                     if ($indexService->indexRevision($revision, $environment)) {
                         $logger->notice('log.data.revision.reindex', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
                             EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -759,7 +801,7 @@ class DataController extends AppController
                         ]);
                     } else {
                         $logger->warning('log.data.revision.reindex_failed_in', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
                             EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -772,7 +814,7 @@ class DataController extends AppController
             $em->flush();
         } catch (\Throwable $e) {
             $logger->warning('log.data.revision.reindex_failed', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -783,7 +825,7 @@ class DataController extends AppController
 
         return $this->redirectToRoute('data.revisions', [
             'ouuid' => $revision->getOuuid(),
-            'type' => $revision->getContentType()->getName(),
+            'type' => $revisionContentType->getName(),
             'revisionId' => $revision->getId(),
         ]);
     }
@@ -913,6 +955,7 @@ class DataController extends AppController
             $filename = $ouuid;
             if (null != $template->getFilename()) {
                 try {
+                    /** @var TemplateWrapper $filename */
                     $filename = $twig->createTemplate($template->getFilename());
                 } catch (Error $e) {
                     $logger->error('log.template.twig.error', [
@@ -925,12 +968,16 @@ class DataController extends AppController
                     ], EMSCoreBundle::TRANS_DOMAIN));
                 }
 
-                $filename = $filename->render([
-                    'environment' => $environment,
-                    'contentType' => $template->getContentType(),
-                    'object' => $document,
-                    'source' => $document->getSource(),
-                ]);
+                if ($filename instanceof TemplateWrapper) {
+                    $filename = $filename->render([
+                        'environment' => $environment,
+                        'contentType' => $template->getContentType(),
+                        'object' => $document,
+                        'source' => $document->getSource(),
+                    ]);
+                }
+
+
                 $filename = \preg_replace('~[\r\n]+~', '', $filename);
             }
 
@@ -943,8 +990,8 @@ class DataController extends AppController
             }
             if (null != $template->getAllowOrigin()) {
                 \header('Access-Control-Allow-Origin: '.$template->getAllowOrigin());
-                \header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Accept-Language, If-None-Match, If-Modified-Since');
-                \header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+                \header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept, Accept-Language, If-None-Match, If-Modified-Since');
+                \header('Access-Control-Allow-Methods: GET, HEAD, OPTIONS');
             }
 
             $output = $body->render([
@@ -1063,9 +1110,12 @@ class DataController extends AppController
             throw new NotFoundHttpException('Revision not found');
         }
 
+        /** @var ContentType $revisionContentType */
+        $revisionContentType = $revision->getContentType();
+
         if (!$revision->getDraft() || null !== $revision->getEndTime()) {
             $logger->warning('log.data.revision.ajax_update_on_finalized', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -1081,7 +1131,7 @@ class DataController extends AppController
 
         if (empty($request->request->get('revision')) || empty($request->request->get('revision')['allFieldsAreThere']) || !$request->request->get('revision')['allFieldsAreThere']) {
             $logger->error('log.data.revision.not_completed_request', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -1108,13 +1158,15 @@ class DataController extends AppController
             $revision->setRawData($backup);
 
             $revision->setAutoSaveAt(new \DateTime());
-            $revision->setAutoSaveBy($this->getUser()->getUsername());
+            /** @var User $user */
+            $user = $this->getUser();
+            $revision->setAutoSaveBy($user->getUsername());
 
             $em->persist($revision);
             $em->flush();
 
             $dataService->isValid($form, null, $objectArray);
-            $dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid(), false, false);
+            $dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revisionContentType, $revisionContentType->getName(), $revision->getOuuid(), false, false);
 
             $session = $request->getSession();
             if ($session instanceof Session) {
@@ -1123,7 +1175,7 @@ class DataController extends AppController
 
             $formErrors = $form->getErrors(true, true);
 
-            if (0 === $formErrors->count() && $revision->getContentType()->isAutoPublish()) {
+            if (0 === $formErrors->count() && $revisionContentType->isAutoPublish()) {
                 $publishService->silentPublish($revision);
             }
         }
@@ -1144,11 +1196,15 @@ class DataController extends AppController
     public function finalizeDraftAction(Revision $revision, LoggerInterface $logger, DataService $dataService)
     {
         $dataService->loadDataStructure($revision);
+
+        /** @var ContentType $revisionContentType */
+        $revisionContentType = $revision->getContentType();
+
         try {
             $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
             if (!empty($revision->getAutoSave())) {
                 $logger->error('log.data.revision.can_finalized_as_pending_auto_save', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -1162,7 +1218,7 @@ class DataController extends AppController
             $revision = $dataService->finalizeDraft($revision, $form);
             if (0 !== \count($form->getErrors())) {
                 $logger->error('log.data.revision.can_finalized_as_invalid', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -1175,7 +1231,7 @@ class DataController extends AppController
             }
         } catch (\Throwable $e) {
             $logger->error('log.data.revision.can_finalized_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -1190,7 +1246,7 @@ class DataController extends AppController
 
         return $this->redirectToRoute('data.revisions', [
             'ouuid' => $revision->getOuuid(),
-            'type' => $revision->getContentType()->getName(),
+            'type' => $revisionContentType->getName(),
             'revisionId' => $revision->getId(),
         ]);
     }
@@ -1228,6 +1284,14 @@ class DataController extends AppController
         return $this->intNewDocumentFromArray($contentType, $dataService, $logger, $jsonContent);
     }
 
+    /**
+     * @param ContentType $contentType
+     * @param DataService $dataService
+     * @param LoggerInterface $logger
+     * @param array<string> $rawData
+     * @return RedirectResponse
+     * @throws HasNotCircleException
+     */
     private function intNewDocumentFromArray(ContentType $contentType, DataService $dataService, LoggerInterface $logger, array $rawData): RedirectResponse
     {
         $dataService->hasCreateRights($contentType);
@@ -1316,7 +1380,9 @@ class DataController extends AppController
      */
     public function revertRevisionAction(Revision $revision, DataService $dataService, LoggerInterface $logger)
     {
-        $type = $revision->getContentType()->getName();
+        /** @var ContentType $revisionContentType */
+        $revisionContentType = $revision->getContentType();
+        $type = $revisionContentType->getName();
         $ouuid = $revision->getOuuid();
 
         $newestRevision = $dataService->getNewestRevision($type, $ouuid);
@@ -1326,7 +1392,7 @@ class DataController extends AppController
 
         $revertedRevision = $dataService->initNewDraft($type, $ouuid, $revision);
         $logger->notice('log.data.revision.new_draft_from_revision', [
-            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+            EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -1365,8 +1431,11 @@ class DataController extends AppController
                 throw new NotFoundHttpException('Content type '.$type.'not found');
             }
 
-            /** @var Revision $revision */
-            $revision = $repository->findByOuuidAndContentTypeAndEnvironment($contentType, $ouuid, $contentType->getEnvironment());
+            /** @var Environment $environment */
+            $environment = $contentType->getEnvironment();
+
+            /** @var null|Revision $revision */
+            $revision = $repository->findByOuuidAndContentTypeAndEnvironment($contentType, $ouuid, $environment);
 
             if (!$revision) {
                 throw new NotFoundHttpException('Impossible to find this item : '.$ouuid);
@@ -1396,10 +1465,12 @@ class DataController extends AppController
 
     private function loadAutoSavedVersion(Revision $revision, LoggerInterface $logger): void
     {
+        /** @var ContentType $revisionContentType */
+        $revisionContentType = $revision->getContentType();
         if (null != $revision->getAutoSave()) {
             $revision->setRawData($revision->getAutoSave());
             $logger->warning('log.data.revision.load_from_auto_save', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revisionContentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),

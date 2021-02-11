@@ -27,7 +27,17 @@ final class PostProcessingService
         $this->logger = $logger;
     }
 
-    public function propagateDataToComputedFieldRecursive(FormInterface $form, array &$objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration, bool $finalize, ?array &$parent, string $path)
+    public function jsonMenuNested(FormInterface $form, ContentType $contentType, array &$object): void
+    {
+        $this->propagateDataToComputedFieldRecursive(
+            $form,
+            $object,
+            $contentType,
+            $contentType->getName()
+        );
+    }
+
+    public function propagateDataToComputedFieldRecursive(FormInterface $form, array &$objectArray, ContentType $contentType, string $type, ?string $ouuid = null, bool $migration = false, bool $finalize = false, ?array &$parent = [], string $path = '')
     {
         $found = false;
         /** @var DataField $dataField */

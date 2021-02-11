@@ -313,13 +313,15 @@ class DataService
     /**
      * @param string $ouuid|null
      *
-     * @return bool
-     *
      * @throws Throwable
      */
-    public function propagateDataToComputedField(FormInterface $form, array &$objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration = false, bool $finalize = true)
+    public function propagateDataToComputedField(FormInterface $form, array &$objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration = false, bool $finalize = true): bool
     {
-        return $this->postProcessingService->propagateDataToComputedFieldRecursive($form, $objectArray, $contentType, $type, $ouuid, $migration, $finalize, $objectArray, '');
+        return $this->postProcessingService->postProcessing($form, $contentType, $objectArray, [
+            '_id' => $ouuid,
+            'migration' => $migration,
+            'finalize' => $finalize,
+        ]);
     }
 
     public function getPostProcessing(): PostProcessingService

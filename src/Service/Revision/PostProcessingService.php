@@ -5,40 +5,62 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service\Revision;
 
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Json\JsonMenuNested;
+use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 use EMS\CoreBundle\Form\DataField\ComputedFieldType;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType;
+use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Twig\Environment;
 
 final class PostProcessingService
 {
     private Environment $twig;
+    private FormFactoryInterface $formFactory;
     private LoggerInterface $logger;
 
-    public function __construct(Environment $twig, LoggerInterface $logger)
+    public function __construct(Environment $twig, FormFactoryInterface $formFactory, LoggerInterface $logger)
     {
         $this->twig = $twig;
+        $this->formFactory = $formFactory;
         $this->logger = $logger;
     }
 
-    public function jsonMenuNested(FormInterface $form, ContentType $contentType, array &$object): void
+    /**
+     * @param FormInterface<FormInterface> $form
+     * @param array<mixed>                 $object
+     */
+    public function jsonMenuNested(FormInterface $form, ContentType $contentType, array &$object): bool
     {
-        $this->propagateDataToComputedFieldRecursive(
-            $form,
-            $object,
-            $contentType,
-            $contentType->getName()
-        );
+        return $this->postProcessing($form, $contentType, $object);
     }
 
-    public function propagateDataToComputedFieldRecursive(FormInterface $form, array &$objectArray, ContentType $contentType, string $type, ?string $ouuid = null, bool $migration = false, bool $finalize = false, ?array &$parent = [], string $path = '')
+    /**
+     * @param FormInterface<FormInterface> $form
+     * @param array<mixed>                 $objectArray
+     * @param array<mixed>                 $context
+     * @param array<mixed>                 $parent
+     */
+    public function postProcessing(FormInterface $form, ContentType $contentType, array &$objectArray, array $context = [], ?array &$parent = [], string $path = ''): bool
     {
+        $migration = isset($context['migration']) ? \boolval($context['migration']) : false;
+        $context = \array_merge($context, [
+            '_source' => &$objectArray, //if update also update the context
+            '_type' => $contentType->getName(),
+            'index' => $contentType->getEnvironment()->getAlias(),
+            'parent' => $parent,
+            'path' => $path,
+        ]);
+
         $found = false;
         /** @var DataField $dataField */
         $dataField = $form->getNormData();
@@ -49,33 +71,30 @@ final class PostProcessingService
 
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $form->getConfig()->getType()->getInnerType();
-
-        $options = $dataField->getFieldType()->getOptions();
+        if (null === $fieldType = $dataField->getFieldType()) {
+            throw new \RuntimeException('Field type not found!');
+        }
+        $options = $fieldType->getOptions();
 
         if (!$dataFieldType::isVirtual(!$options ? [] : $options)) {
             $path .= ('' == $path ? '' : '.').$form->getConfig()->getName();
         }
 
-        $extraOption = $dataField->getFieldType()->getExtraOptions();
+        if ($migration && JsonMenuNestedEditorFieldType::class === $fieldType->getType()) {
+            $this->jsonMenuNestedEditor($fieldType, $contentType, $objectArray, $context);
+        }
+
+        $extraOption = $fieldType->getExtraOptions();
         if (isset($extraOption['postProcessing']) && !empty($extraOption['postProcessing'])) {
             try {
-                $out = $this->twig->createTemplate($extraOption['postProcessing'])->render([
-                    '_source' => $objectArray,
-                    '_type' => $type,
-                    '_id' => $ouuid,
-                    'index' => $contentType->getEnvironment()->getAlias(),
-                    'migration' => $migration,
-                    'parent' => $parent,
-                    'path' => $path,
-                    'finalize' => $finalize,
-                ]);
+                $out = $this->twig->createTemplate($extraOption['postProcessing'])->render($context);
                 $out = \trim($out);
 
                 if (\strlen($out) > 0) {
                     $json = \json_decode($out, true);
                     $meg = \json_last_error_msg();
                     if (0 == \strcasecmp($meg, 'No error')) {
-                        $objectArray[$dataField->getFieldType()->getName()] = $json;
+                        $objectArray[$fieldType->getName()] = $json;
                         $found = true;
                     } else {
                         $this->logger->warning('service.data.json_parse_post_processing_error', [
@@ -90,13 +109,13 @@ final class PostProcessingService
                         $form->addError(new FormError($e->getPrevious()->getMessage()));
                         $this->logger->warning('service.data.cant_finalize_field', [
                             'field_name' => $dataField->getFieldType()->getName(),
-                            'field_display' => isset($dataField->getFieldType()->getDisplayOptions()['label']) && !empty($dataField->getFieldType()->getDisplayOptions()['label']) ? $dataField->getFieldType()->getDisplayOptions()['label'] : $dataField->getFieldType()->getName(),
+                            'field_display' => isset($fieldType->getDisplayOptions()['label']) && !empty($fieldType->getDisplayOptions()['label']) ? $fieldType->getDisplayOptions()['label'] : $fieldType->getName(),
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getPrevious()->getMessage(),
                         ]);
                     }
                 } else {
                     $this->logger->warning('service.data.json_parse_post_processing_error', [
-                        'field_name' => $dataField->getFieldType()->getName(),
+                        'field_name' => $fieldType->getName(),
                         EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                         EmsFields::LOG_EXCEPTION_FIELD => $e,
                     ]);
@@ -104,23 +123,14 @@ final class PostProcessingService
             }
         }
         if ($form->getConfig()->getType()->getInnerType() instanceof ComputedFieldType) {
-            $template = $dataField->getFieldType()->getDisplayOptions()['valueTemplate'] ?? '';
+            $template = $fieldType->getDisplayOptions()['valueTemplate'] ?? '';
 
             $out = null;
             if (!empty($template)) {
                 try {
-                    $out = $this->twig->createTemplate($template)->render([
-                        '_source' => $objectArray,
-                        '_type' => $type,
-                        '_id' => $ouuid,
-                        'index' => $contentType->getEnvironment()->getAlias(),
-                        'migration' => $migration,
-                        'parent' => $parent,
-                        'path' => $path,
-                        'finalize' => $finalize,
-                    ]);
+                    $out = $this->twig->createTemplate($template)->render($context);
 
-                    if ($dataField->getFieldType()->getDisplayOptions()['json']) {
+                    if ($fieldType->getDisplayOptions()['json']) {
                         $out = \json_decode($out, true);
                     } else {
                         $out = \trim($out);
@@ -133,14 +143,14 @@ final class PostProcessingService
                     $this->logger->warning('service.data.template_parse_error', [
                         EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                         EmsFields::LOG_EXCEPTION_FIELD => $e,
-                        'computed_field_name' => $dataField->getFieldType()->getName(),
+                        'computed_field_name' => $fieldType->getName(),
                     ]);
                 }
             }
             if (null !== $out && false !== $out && (!\is_array($out) || !empty($out))) {
-                $objectArray[$dataField->getFieldType()->getName()] = $out;
-            } elseif (isset($objectArray[$dataField->getFieldType()->getName()])) {
-                unset($objectArray[$dataField->getFieldType()->getName()]);
+                $objectArray[$fieldType->getName()] = $out;
+            } elseif (isset($objectArray[$fieldType->getName()])) {
+                unset($objectArray[$fieldType->getName()]);
             }
             $found = true;
         }
@@ -157,16 +167,57 @@ final class PostProcessingService
                     foreach ($child->all() as $collectionChild) {
                         if (isset($objectArray[$fieldName])) {
                             foreach ($objectArray[$fieldName] as &$elementsArray) {
-                                $found = $this->propagateDataToComputedFieldRecursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $finalize, $parent, $path.('' == $path ? '' : '.').$fieldName) || $found;
+                                $childPath = $path.('' == $path ? '' : '.').$fieldName;
+                                $found = $this->postProcessing($collectionChild, $contentType, $elementsArray, $context, $parent, $childPath) || $found;
                             }
                         }
                     }
                 } elseif ($childType instanceof DataFieldType) {
-                    $found = $this->propagateDataToComputedFieldRecursive($child, $objectArray, $contentType, $type, $ouuid, $migration, $finalize, $parent, $path) || $found;
+                    $found = $this->postProcessing($child, $contentType, $objectArray, $context, $parent, $path) || $found;
                 }
             }
         }
 
         return $found;
+    }
+
+    /**
+     * @param array<mixed> $objectArray
+     * @param array<mixed> $context
+     */
+    private function jsonMenuNestedEditor(FieldType $fieldType, ContentType $contentType, array &$objectArray, array $context): bool
+    {
+        if (null === $data = ($objectArray[$fieldType->getName()] ?? null)) {
+            return false;
+        }
+
+        $nestedTypes = [];
+        foreach ($fieldType->getChildren() as $nestedContainer) {
+            $nestedTypes[$nestedContainer->getName()] = $nestedContainer;
+        }
+
+        $jsonMenuNested = JsonMenuNested::fromStructure($data);
+        foreach ($jsonMenuNested as $item) {
+            if (null === $nestedType = ($nestedTypes[$item->getType()] ?? null)) {
+                continue;
+            }
+
+            $itemObject = $item->getObject();
+            $data = RawDataTransformer::transform($nestedType, $itemObject);
+
+            $form = $this->formFactory->create(RevisionJsonMenuNestedType::class, ['data' => $data], [
+                'field_type' => $nestedType,
+                'content_type' => $contentType,
+            ]);
+
+            $itemObject = RawDataTransformer::reverseTransform($nestedType, $form->getData()['data']);
+
+            $this->postProcessing($form->get('data'), $contentType, $itemObject, $context);
+            $item->setObject($itemObject);
+        }
+
+        $objectArray[$fieldType->getName()] = \json_encode($jsonMenuNested->toArrayStructure());
+
+        return true;
     }
 }

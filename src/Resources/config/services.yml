@@ -448,7 +448,7 @@ services:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
     ems.service.revision.post_processing:
         class: EMS\CoreBundle\Service\Revision\PostProcessingService
-        arguments: ['@twig', '@logger']
+        arguments: ['@twig', '@form.factory', '@logger']
     ems.service.revision:
         class: EMS\CoreBundle\Service\Revision\RevisionService
         arguments: ['@ems.service.data', '@logger', '@EMS\CoreBundle\Repository\RevisionRepository']

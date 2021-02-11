@@ -40,10 +40,7 @@ class RevisionJsonMenuNestedType extends AbstractType
             $labelFieldType = new FieldType();
             $labelFieldType->setName('label');
             $labelFieldType->setType(TextStringFieldType::class);
-            $labelFieldType->setOptions([
-                'displayOptions' => ['label' => 'Label'],
-                'restrictionOptions' => ['mandatory' => true],
-            ]);
+            $labelFieldType->setOptions(['displayOptions' => ['label' => 'Label']]);
             $fieldType->addChild($labelFieldType);
         }
 

@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/EnvironmentController.php
@@ -10655,3 +10650,8 @@ parameters:
 			message: "#^Method FOS\\\\UserBundle\\\\Validator\\\\Initializer\\:\\:initialize\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src-user/Validator/Initializer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:findGroupBy() should return array<array> but returns object\\|null\\.$#"
+			count: 1
+			path: src-user/Doctrine/GroupManager.php

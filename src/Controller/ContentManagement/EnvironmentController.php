@@ -95,9 +95,11 @@ class EnvironmentController extends AppController
                         }
                     }
 
+                    /** @var ContentType $revisionContentType */
+                    $revisionContentType = $revision->getContentType();
                     $continue = true;
                     foreach ($alignTo as $env) {
-                        if ($revision->getContentType()->getEnvironment()->getName() == $env) {
+                        if ($revisionContentType->getEnvironment()->getName() == $env) {
                             $this->getLogger()->warning('log.environment.cant_align_default_environment', [
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $env,
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),

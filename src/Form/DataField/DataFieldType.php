@@ -175,7 +175,7 @@ abstract class DataFieldType extends AbstractType
     public function isDisabled($options)
     {
         $sapiName = \php_sapi_name();
-        if ($sapiName && 0 !== \strcmp('cli', $sapiName)) {
+        if ('cli' === $sapiName) {
             return false;
         }
 

@@ -497,6 +497,12 @@ contenttype:
   action:
     update_from_json: 'Update from JSON'
 form:
+  form_field:
+    wysiwyg:
+      format_tags:
+        label: 'Format tags (override styles sets config)'
+      content_css:
+        label: 'Content CSS (override styles sets''s config)'
   subform:
     channel:
       attributes: 'Request extra attributes'

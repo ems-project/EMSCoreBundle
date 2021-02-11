@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CommonBundle\Twig\AssetRuntime;
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
@@ -83,8 +84,8 @@ class WysiwygFieldType extends DataFieldType
         $contentCss = $options['content_css'] ?? null;
         $styleSet = $this->wysiwygStylesSetService->getByName($styleSetName);
         if (null !== $styleSet) {
-            $formatTags = $styleSet->getFormatTags() ?? $formatTags;
-            $contentCss = $styleSet->getContentCss() ?? $contentCss;
+            $formatTags = $formatTags ?? $styleSet->getFormatTags();
+            $contentCss = $contentCss ?? $styleSet->getContentCss();
             $assets = $styleSet->getAssets();
             $hash = $assets['sha1'] ?? null;
             if (null !== $assets && \is_string($hash)) {
@@ -200,9 +201,17 @@ class WysiwygFieldType extends DataFieldType
                 'choices' => \array_flip(Locales::getNames()),
             ])
             ->add('height', IntegerType::class, ['required' => false])
-            ->add('format_tags', TextType::class, ['required' => false])
             ->add('styles_set', WysiwygStylesSetPickerType::class, ['required' => false])
-            ->add('content_css', TextType::class, ['required' => false])
+            ->add('format_tags', TextType::class, [
+                'required' => false,
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+                'label' => 'form.form_field.wysiwyg.format_tags.label',
+            ])
+            ->add('content_css', TextType::class, [
+                'required' => false,
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+                'label' => 'form.form_field.wysiwyg.content_css.label',
+            ])
         ;
         $optionsForm->get('migrationOptions')->add('transformer', TextType::class, [
             'required' => false,

@@ -111,17 +111,25 @@ class JsonMenuNestedController extends AbstractController
         $data = RawDataTransformer::transform($fieldType, $rawData);
         $data['label'] = $label;
 
-        $form = $this->createForm(RevisionJsonMenuNestedType::class, $data, ['field_type' => $fieldType]);
+        $form = $this->createForm(RevisionJsonMenuNestedType::class, ['data' => $data], [
+            'field_type' => $fieldType,
+            'content_type' => $revision->getContentType(),
+        ]);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-            $object = RawDataTransformer::reverseTransform($fieldType, $formData);
+        if ($form->isSubmitted()) {
+            $formDataField = $form->get('data');
+            $objectArray = RawDataTransformer::reverseTransform($fieldType, $form->getData()['data']);
+            $isValid = $this->dataService->isValid($formDataField, null, $objectArray);
+
+            if ($isValid && $form->isValid()) {
+                $this->dataService->getPostProcessing()->jsonMenuNested($formDataField, $revision->giveContentType(), $objectArray);
+            }
         }
 
         return new JsonResponse(\array_filter([
-            'object' => $object ?? null,
-            'label' => $form->get('label')->getData(),
+            'object' => $objectArray ?? null,
+            'label' => $objectArray['label'] ?? '???',
             'html' => $this->renderView('@EMSCore/data/json-menu-nested.html.twig', [
                 'form' => $form->createView(),
                 'fieldType' => $fieldType,

@@ -2,7 +2,10 @@
     {{ form_start(form, { 'name': 'json-menu-nested-form-' ~ fieldType.name, 'class': 'json-nested-form' }) }}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">{{ form_row(form.label) }}</div>
+            <div class="col-md-12">
+                {{ form_row(form.data.label) }}
+                {% for element in form.data %}{{ form_row(element) }}{% endfor %}
+            </div>
         </div>
     </div>
     {{ form(form) }}

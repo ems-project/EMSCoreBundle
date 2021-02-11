@@ -710,6 +710,15 @@ class Revision
         return $this->contentType;
     }
 
+    public function giveContentType(): ContentType
+    {
+        if (null === $this->contentType) {
+            throw new \RuntimeException('No contentType for revision!');
+        }
+
+        return $this->contentType;
+    }
+
     public function getContentTypeName(): string
     {
         if (null === $this->contentType) {

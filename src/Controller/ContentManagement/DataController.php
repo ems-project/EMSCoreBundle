@@ -82,7 +82,7 @@ class DataController extends AppController
 
         /** @var ContentTypeRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:ContentType');
-        /** @var null|ContentType $contentType */
+        /** @var ContentType|null $contentType */
         $contentType = $repository->findOneBy([
             'name' => $name,
             'deleted' => false,
@@ -117,7 +117,7 @@ class DataController extends AppController
         }
         $searchForm->setSortOrder('desc');
         $sortOrder = $contentType->getSortOrder();
-        if ($sortOrder != null) {
+        if (null != $sortOrder) {
             $searchForm->setSortOrder($sortOrder);
         }
 
@@ -142,7 +142,7 @@ class DataController extends AppController
 
         /** @var ContentTypeRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:ContentType');
-        /** @var null|ContentType $contentType */
+        /** @var ContentType|null $contentType */
         $contentType = $repository->findOneBy([
             'name' => $name,
             'deleted' => false,
@@ -163,7 +163,7 @@ class DataController extends AppController
         }
         $searchForm->setSortOrder('desc');
         $sortOrder = $contentType->getSortOrder();
-        if ($sortOrder != null) {
+        if (null != $sortOrder) {
             $searchForm->setSortOrder($sortOrder);
         }
 
@@ -977,7 +977,6 @@ class DataController extends AppController
                     ]);
                 }
 
-
                 $filename = \preg_replace('~[\r\n]+~', '', $filename);
             }
 
@@ -1285,11 +1284,8 @@ class DataController extends AppController
     }
 
     /**
-     * @param ContentType $contentType
-     * @param DataService $dataService
-     * @param LoggerInterface $logger
      * @param array<string> $rawData
-     * @return RedirectResponse
+     *
      * @throws HasNotCircleException
      */
     private function intNewDocumentFromArray(ContentType $contentType, DataService $dataService, LoggerInterface $logger, array $rawData): RedirectResponse
@@ -1434,7 +1430,7 @@ class DataController extends AppController
             /** @var Environment $environment */
             $environment = $contentType->getEnvironment();
 
-            /** @var null|Revision $revision */
+            /** @var Revision|null $revision */
             $revision = $repository->findByOuuidAndContentTypeAndEnvironment($contentType, $ouuid, $environment);
 
             if (!$revision) {

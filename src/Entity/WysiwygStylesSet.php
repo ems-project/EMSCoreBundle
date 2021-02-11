@@ -58,6 +58,34 @@ class WysiwygStylesSet
     private $orderKey;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="format_tags", type="string", length=255, nullable=true)
+     */
+    private $formatTags;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="content_css", type="string", length=2048, nullable=true)
+     */
+    private $contentCss;
+
+    /**
+     * @var array<string, mixed>|null
+     *
+     * @ORM\Column(name="assets", type="json", nullable=true)
+     */
+    private $assets;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="save_dir", type="string", length=2048, nullable=true)
+     */
+    private $saveDir;
+
+    /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
@@ -206,5 +234,59 @@ class WysiwygStylesSet
     public function getOrderKey()
     {
         return $this->orderKey;
+    }
+
+    public function getFormatTags(): ?string
+    {
+        return $this->formatTags;
+    }
+
+    public function setFormatTags(?string $formatTags): WysiwygStylesSet
+    {
+        $this->formatTags = $formatTags;
+
+        return $this;
+    }
+
+    public function getContentCss(): ?string
+    {
+        return $this->contentCss;
+    }
+
+    public function setContentCss(?string $contentCss): WysiwygStylesSet
+    {
+        $this->contentCss = $contentCss;
+
+        return $this;
+    }
+
+    /**
+     * @return array<string,string|int>|null
+     */
+    public function getAssets(): ?array
+    {
+        return $this->assets;
+    }
+
+    /**
+     * @param array<string, mixed>|null $assets
+     */
+    public function setAssets(?array $assets): WysiwygStylesSet
+    {
+        $this->assets = $assets;
+
+        return $this;
+    }
+
+    public function getSaveDir(): ?string
+    {
+        return $this->saveDir;
+    }
+
+    public function setSaveDir(?string $saveDir): WysiwygStylesSet
+    {
+        $this->saveDir = $saveDir;
+
+        return $this;
     }
 }

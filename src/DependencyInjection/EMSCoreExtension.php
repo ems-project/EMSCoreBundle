@@ -20,8 +20,10 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param array<array> $configs
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -59,7 +61,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.asset_config', $config['asset_config']);
         $container->setParameter('ems_core.tika_server', $config['tika_server']);
         $container->setParameter('ems_core.pre_generated_ouuids', $config['pre_generated_ouuids']);
-        $container->setParameter('ems_core.version', $this->getCoreVersion($container->getParameter('kernel.root_dir')));
+        $container->setParameter('ems_core.version', $this->getCoreVersion(\strval($container->getParameter('kernel.root_dir'))));
         $container->setParameter('ems_core.private_key', $config['private_key']);
         $container->setParameter('ems_core.public_key', $config['public_key']);
         $container->setParameter('ems_core.health_check_allow_origin', $config['health_check_allow_origin']);
@@ -75,7 +77,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $out = false;
         //try to identify the ems core version
         if (\file_exists($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')) {
-            $lockInfo = \json_decode(\file_get_contents($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock'), true);
+            $lockInfo = \json_decode(\strval(\file_get_contents($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')), true);
 
             if (!empty($lockInfo['packages'])) {
                 foreach ($lockInfo['packages'] as $package) {
@@ -92,12 +94,13 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         return $out;
     }
 
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         // get all bundles
+        /** @var array<string> $bundles */
         $bundles = $container->getParameter('kernel.bundles');
 
-        $coreVersion = $this->getCoreVersion($container->getParameter('kernel.root_dir'));
+        $coreVersion = $this->getCoreVersion(\strval($container->getParameter('kernel.root_dir')));
 
         $configs = $container->getExtensionConfig($this->getAlias());
 

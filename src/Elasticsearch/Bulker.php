@@ -29,7 +29,7 @@ class Bulker
     private $size = 500;
     /** @var bool */
     private $sign = true;
-    /** @var array */
+    /** @var array<mixed> */
     private $errors = [];
     /** @var Bulk */
     private $bulk;

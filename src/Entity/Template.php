@@ -708,12 +708,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         return $this;
     }
 
-    /**
-     * Get contentType.
-     *
-     * @return \EMS\CoreBundle\Entity\ContentType
-     */
-    public function getContentType()
+    public function getContentType(): ContentType
     {
         return $this->contentType;
     }

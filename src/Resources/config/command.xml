@@ -6,7 +6,14 @@
 
     <services>
         <!-- EMS notification -->
-        <service id="ems.notification.send" class="EMS\CoreBundle\Command\Notification\SendAllCommand">
+        <service id="ems.command.notification.bulk_action" class="EMS\CoreBundle\Command\Notification\BulkActionCommand">
+            <argument type="service" id="ems.service.notification"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.revision"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.command.notification.send" class="EMS\CoreBundle\Command\Notification\SendAllCommand">
             <argument type="service" id="doctrine"/>
             <argument type="service" id="ems.service.notification"/>
             <argument>%ems_core.notification_pending_timeout%</argument>

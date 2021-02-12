@@ -42,9 +42,9 @@ class I18nController extends AbstractController
 
         $count = $i18nService->count($filters);
         // for pagination
-        $paging_size = $this->getParameter('ems_core.paging_size');
-        $lastPage = \ceil($count / $paging_size);
-        $page = $request->query->get('page', 1);
+        $paging_size = \intval($this->getParameter('ems_core.paging_size'));
+        $lastPage = \intval(\ceil($count / $paging_size));
+        $page = \intval($request->query->get('page', 1));
 
         $i18ns = $i18nService->findAll(($page - 1) * $paging_size, $paging_size, $filters);
 

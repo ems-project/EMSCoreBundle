@@ -1149,6 +1149,15 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this->environment;
     }
 
+    public function giveEnvironment(): Environment
+    {
+        if (null === $this->environment) {
+            throw new \RuntimeException('Environment not found!');
+        }
+
+        return $this->environment;
+    }
+
     /**
      * Set categoryField.
      *

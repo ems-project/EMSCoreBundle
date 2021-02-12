@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
-use Twig_Environment;
+use Twig\Environment as TwigEnvironment;
 
 class NotificationService
 {
@@ -43,7 +43,7 @@ class NotificationService
     /** @var DataService */
     private $dataService;
     private $sender;
-    /** @var Twig_Environment */
+    /** @var TwigEnvironment */
     private $twig;
 
     //** non-service members **
@@ -51,9 +51,21 @@ class NotificationService
     private $output;
     private $dryRun;
 
-    public function __construct(Registry $doctrine, UserService $userService, Logger $logger, Session $session, Container $container, DataService $dataService, $sender, Twig_Environment $twig)
+    private TemplateRepository $actionRepository;
+
+    public function __construct(
+        Registry $doctrine,
+        TemplateRepository $actionRepository,
+        UserService $userService,
+        Logger $logger,
+        Session $session,
+        Container $container,
+        DataService $dataService,
+        $sender,
+        TwigEnvironment $twig)
     {
         $this->doctrine = $doctrine;
+        $this->actionRepository = $actionRepository;
         $this->userService = $userService;
         $this->dataService = $dataService;
         $this->logger = $logger;
@@ -63,6 +75,16 @@ class NotificationService
         $this->output = null;
         $this->dryRun = false;
         $this->sender = $sender;
+    }
+
+    public function getAction(int $actionId): ?Template
+    {
+        $action = $this->actionRepository->findOneBy([
+            'id' => $actionId,
+            'renderOption' => 'notification',
+        ]);
+
+        return $action instanceof Template ? $action : null;
     }
 
     public function publishEvent(RevisionPublishEvent $event)
@@ -181,14 +203,8 @@ class NotificationService
 
     /**
      * Call addNotification when click on a request.
-     *
-     * @param int         $templateId
-     * @param Revision    $revision
-     * @param Environment $environment
-     *
-     * @return bool|null
      */
-    public function addNotification($templateId, $revision, $environment)
+    public function addNotification(int $templateId, Revision $revision, Environment $environment, ?string $username = null): ?bool
     {
         $out = false;
         try {
@@ -239,8 +255,13 @@ class NotificationService
             $notification->setEnvironment($environment);
 
             $notification->setRevision($revision);
-            $userName = $this->userService->getCurrentUser()->getUserName();
-            $notification->setUsername($userName);
+
+            if ($username) {
+                $notification->setUsername($username);
+            } else {
+                $notification->setUsername($this->userService->getCurrentUser()->getUsername());
+            }
+
             $em->persist($notification);
             $em->flush();
 

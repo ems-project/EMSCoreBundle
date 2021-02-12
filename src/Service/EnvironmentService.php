@@ -246,6 +246,15 @@ class EnvironmentService
         return false;
     }
 
+    public function giveByName(string $name): Environment
+    {
+        if (false === $environment = $this->getByName($name)) {
+            throw new \RuntimeException(\sprintf('Could not find environment named "%s"', $name));
+        }
+
+        return $environment;
+    }
+
     /**
      * @param string $id
      *

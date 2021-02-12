@@ -209,6 +209,7 @@ final class PostProcessingService
 
         $jsonMenuNested = JsonMenuNested::fromStructure($data);
 
+        /** @var JsonMenuNested $item */
         foreach ($jsonMenuNested as $item) {
             if (null === $nestedType = ($nestedTypes[$item->getType()] ?? null)) {
                 continue;
@@ -226,6 +227,9 @@ final class PostProcessingService
 
             $this->postProcessing($form->get('data'), $contentType, $itemObject, $context);
             $item->setObject($itemObject);
+            if (isset($itemObject['label'])) {
+                $item->setLabel($itemObject['label']);
+            }
         }
 
         $objectArray[$fieldType->getName()] = \json_encode($jsonMenuNested->toArrayStructure());

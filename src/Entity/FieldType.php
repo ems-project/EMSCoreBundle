@@ -640,9 +640,15 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      *
      * @return FieldType
      */
-    public function addChild(FieldType $child)
+    public function addChild(FieldType $child, bool $prepend = false)
     {
-        $this->children[] = $child;
+        if ($prepend) {
+            $children = $this->children->toArray();
+            \array_unshift($children, $child);
+            $this->children = new ArrayCollection($children);
+        } else {
+            $this->children[] = $child;
+        }
 
         return $this;
     }

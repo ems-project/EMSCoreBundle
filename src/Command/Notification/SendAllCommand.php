@@ -14,7 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class SendNotificationsCommand extends Command
+final class SendAllCommand extends Command
 {
     private Registry $doctrine;
     private NotificationService $notificationService;

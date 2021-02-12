@@ -8,6 +8,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Json\JsonMenuNested;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
@@ -20,7 +21,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
-use Twig\Environment;
 
 final class PostProcessingService
 {
@@ -53,16 +53,20 @@ final class PostProcessingService
     public function postProcessing(FormInterface $form, ContentType $contentType, array &$objectArray, array $context = [], ?array &$parent = [], string $path = ''): bool
     {
         $migration = isset($context['migration']) ? \boolval($context['migration']) : false;
+
+        /** @var Environment $contentTypeEnv */
+        $contentTypeEnv = $contentType->getEnvironment();
+
         $context = \array_merge($context, [
             '_source' => &$objectArray, //if update also update the context
             '_type' => $contentType->getName(),
-            'index' => $contentType->getEnvironment()->getAlias(),
+            'index' => $contentTypeEnv->getAlias(),
             'parent' => $parent,
             'path' => $path,
         ]);
 
         $found = false;
-        /** @var DataField $dataField */
+        /** @var DataField<mixed> $dataField */
         $dataField = $form->getNormData();
 
         if (!$dataField instanceof DataField) {
@@ -71,6 +75,7 @@ final class PostProcessingService
 
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $form->getConfig()->getType()->getInnerType();
+        /** @var FieldType $fieldType */
         if (null === $fieldType = $dataField->getFieldType()) {
             throw new \RuntimeException('Field type not found!');
         }
@@ -156,7 +161,7 @@ final class PostProcessingService
         }
 
         if ($dataFieldType->isContainer() && $form instanceof \IteratorAggregate) {
-            /** @var FormInterface $child */
+            /** @var FormInterface<mixed> $child */
             foreach ($form->getIterator() as $child) {
                 /** @var DataFieldType $childType */
                 $childType = $child->getConfig()->getType()->getInnerType();

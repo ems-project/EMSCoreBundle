@@ -40,8 +40,8 @@ class RevisionJsonMenuNestedType extends AbstractType
             $labelFieldType = new FieldType();
             $labelFieldType->setName('label');
             $labelFieldType->setType(TextStringFieldType::class);
-            $labelFieldType->setOptions(['displayOptions' => ['label' => 'Label']]);
-            $fieldType->addChild($labelFieldType);
+            $labelFieldType->setOptions(['displayOptions' => ['label' => 'Label', 'class' => 'col-md-12']]);
+            $fieldType->addChild($labelFieldType, true);
         }
 
         $builder->add('data', $fieldType->getType(), [
@@ -63,10 +63,5 @@ class RevisionJsonMenuNestedType extends AbstractType
             ->setAllowedTypes('field_type', FieldType::class)
             ->setAllowedTypes('content_type', ContentType::class)
         ;
-    }
-
-    public function getBlockPrefix(): string
-    {
-        return 'container_field_type';
     }
 }

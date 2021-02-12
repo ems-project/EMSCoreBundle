@@ -21,14 +21,15 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use Twig\Environment as TwigEnvironment;
 
 final class PostProcessingService
 {
-    private Environment $twig;
+    private TwigEnvironment $twig;
     private FormFactoryInterface $formFactory;
     private LoggerInterface $logger;
 
-    public function __construct(Environment $twig, FormFactoryInterface $formFactory, LoggerInterface $logger)
+    public function __construct(TwigEnvironment $twig, FormFactoryInterface $formFactory, LoggerInterface $logger)
     {
         $this->twig = $twig;
         $this->formFactory = $formFactory;
@@ -75,8 +76,9 @@ final class PostProcessingService
 
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $form->getConfig()->getType()->getInnerType();
-        /** @var FieldType $fieldType */
-        if (null === $fieldType = $dataField->getFieldType()) {
+        /** @var FieldType|null $fieldType */
+        $fieldType = $dataField->getFieldType();
+        if (null === $fieldType) {
             throw new \RuntimeException('Field type not found!');
         }
         $options = $fieldType->getOptions();
@@ -102,8 +104,10 @@ final class PostProcessingService
                         $objectArray[$fieldType->getName()] = $json;
                         $found = true;
                     } else {
+                        /** @var FieldType $fieldType */
+                        $fieldType = $dataField->getFieldType();
                         $this->logger->warning('service.data.json_parse_post_processing_error', [
-                            'field_name' => $dataField->getFieldType()->getName(),
+                            'field_name' => $fieldType->getName(),
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $out,
                         ]);
                     }
@@ -112,8 +116,10 @@ final class PostProcessingService
                 if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
                     if (!$migration) {
                         $form->addError(new FormError($e->getPrevious()->getMessage()));
+                        /** @var FieldType $fieldType */
+                        $fieldType = $dataField->getFieldType();
                         $this->logger->warning('service.data.cant_finalize_field', [
-                            'field_name' => $dataField->getFieldType()->getName(),
+                            'field_name' => $fieldType->getName(),
                             'field_display' => isset($fieldType->getDisplayOptions()['label']) && !empty($fieldType->getDisplayOptions()['label']) ? $fieldType->getDisplayOptions()['label'] : $fieldType->getName(),
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getPrevious()->getMessage(),
                         ]);
@@ -202,6 +208,7 @@ final class PostProcessingService
         }
 
         $jsonMenuNested = JsonMenuNested::fromStructure($data);
+
         foreach ($jsonMenuNested as $item) {
             if (null === $nestedType = ($nestedTypes[$item->getType()] ?? null)) {
                 continue;

@@ -6,8 +6,8 @@ namespace EMS\CoreBundle\Command\Notification;
 
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
+use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
@@ -75,13 +75,18 @@ final class BulkActionCommand extends Command
         if (null !== $environmentName) {
             $environment = $this->environmentService->giveByName($environmentName);
         } else {
-            $environment = $action->getContentType()->giveEnvironment();
+            $environment = $action->giveContentType()->giveEnvironment();
         }
 
-        $documents = $this->searchDocuments($environment, $query);
+        $search = $this->elasticaService->convertElasticsearchSearch([
+            'index' => $environment->getAlias(),
+            '_source' => false,
+            'body' => $query,
+        ]);
 
+        $countDocuments = $this->elasticaService->count($search);
         $this->io->block(\vsprintf('Found %s documents for notification action "%s" in %s', [
-            \count($documents),
+            $countDocuments,
             $action->getName(),
             $environment->getName(),
         ]));
@@ -94,10 +99,10 @@ final class BulkActionCommand extends Command
 
         $username = \strval($input->getOption('username'));
         $countSend = 0;
-        $progress = $this->io->createProgressBar(\count($documents));
+        $progress = $this->io->createProgressBar($countDocuments);
         $progress->start();
 
-        foreach ($documents as $document) {
+        foreach ($this->searchDocuments($search) as $document) {
             if (null === $revision = $this->revisionService->getCurrentRevisionForDocument($document)) {
                 $this->io->warning(\sprintf('Could not find revision for ouuid "%s"', $document->getId()));
                 continue;
@@ -119,29 +124,16 @@ final class BulkActionCommand extends Command
     }
 
     /**
-     * @param array<mixed> $query
-     *
-     * @return DocumentInterface[]
+     * @return \Generator|DocumentInterface[]
      */
-    private function searchDocuments(Environment $environment, array $query): array
+    private function searchDocuments(Search $search): \Generator
     {
-        $search = $this->elasticaService->convertElasticsearchSearch([
-            'index' => $environment->getAlias(),
-            '_source' => false,
-            'body' => $query,
-        ]);
-
-        $documents = [];
-        $scroll = $this->elasticaService->scroll($search);
-
-        foreach ($scroll as $resultSet) {
+        foreach ($this->elasticaService->scroll($search) as $resultSet) {
             foreach ($resultSet as $result) {
                 if ($result) {
-                    $documents[] = Document::fromResult($result);
+                    yield Document::fromResult($result);
                 }
             }
         }
-
-        return $documents;
     }
 }

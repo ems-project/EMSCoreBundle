@@ -198,9 +198,9 @@ class NotificationController extends AppController
         $count = $countRejected + $countPending;
 
         // for pagination
-        $paging_size = $this->getParameter('ems_core.paging_size');
+        $paging_size = \intval($this->getParameter('ems_core.paging_size'));
         if (null != $request->query->get('page')) {
-            $page = $request->query->get('page');
+            $page = \intval($request->query->get('page'));
         } else {
             $page = 1;
         }

@@ -172,7 +172,7 @@ class ElasticsearchController extends AppController
             $this->createNotFoundException('Preset saved search not found');
         }
 
-        if($search instanceof Search) {
+        if ($search instanceof Search) {
             $em->remove($search);
             $em->flush();
         }

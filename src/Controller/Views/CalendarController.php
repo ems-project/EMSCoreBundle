@@ -5,6 +5,8 @@ namespace EMS\CoreBundle\Controller\Views;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
@@ -29,6 +31,7 @@ class CalendarController extends AppController
             $revision = $dataService->initNewDraft($type, $ouuid);
 
             $rawData = $revision->getRawData();
+            /** @var FieldType $field */
             $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
 
             /** @var \DateTime $from */
@@ -96,6 +99,7 @@ class CalendarController extends AppController
         $from = new \DateTime($request->query->get('from'));
         /** @var \DateTime $to */
         $to = new \DateTime($request->query->get('to'));
+        /** @var FieldType $field */
         $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
 
         if (empty($body['query']['bool']['must'])) {
@@ -135,8 +139,10 @@ class CalendarController extends AppController
             ];
         }
 
+        /** @var Environment $viewEnvironment */
+        $viewEnvironment = $view->getContentType()->getEnvironment();
         $searchQuery = [
-                'index' => $view->getContentType()->getEnvironment()->getAlias(),
+                'index' => $viewEnvironment->getAlias(),
                 'type' => $view->getContentType()->getName(),
                 'from' => 0,
                 'size' => 1000,

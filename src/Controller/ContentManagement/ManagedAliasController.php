@@ -117,9 +117,7 @@ class ManagedAliasController extends AppController
     }
 
     /**
-     * @param ManagedAlias $managedAlias
      * @param array<mixed> $actions
-     * @param AliasService $aliasService
      *
      * @throws ORMException
      * @throws OptimisticLockException

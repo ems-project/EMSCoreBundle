@@ -1,6 +1,6 @@
 <?php
 
-namespace EMS\CoreBundle\Command;
+namespace EMS\CoreBundle\Command\Notification;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\Notification;

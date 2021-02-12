@@ -659,7 +659,7 @@ services:
         tags:
             -  { name: console.command }
     ems.notification.send:
-        class: EMS\CoreBundle\Command\SendNotificationsCommand
+        class: EMS\CoreBundle\Command\Notification\SendNotificationsCommand
         arguments: ['@doctrine', '@ems.service.notification', '%ems_core.notification_pending_timeout%']
         tags:
             -  { name: console.command }

@@ -658,11 +658,6 @@ services:
         arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@service_container']
         tags:
             -  { name: console.command }
-    ems.notification.send:
-        class: EMS\CoreBundle\Command\Notification\SendNotificationsCommand
-        arguments: ['@doctrine', '@ems.service.notification', '%ems_core.notification_pending_timeout%']
-        tags:
-            -  { name: console.command }
     ems.revisions.index-file-fields:
         class: EMS\CoreBundle\Command\IndexFileCommand
         arguments: ['@logger', '@doctrine', '@ems.service.contenttype', '@ems.service.asset_extractor', '@ems.service.file']

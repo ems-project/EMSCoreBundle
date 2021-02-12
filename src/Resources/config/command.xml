@@ -6,7 +6,7 @@
 
     <services>
         <!-- EMS notification -->
-        <service id="ems.notification.send" class="EMS\CoreBundle\Command\Notification\SendNotificationsCommand">
+        <service id="ems.notification.send" class="EMS\CoreBundle\Command\Notification\SendAllCommand">
             <argument type="service" id="doctrine"/>
             <argument type="service" id="ems.service.notification"/>
             <argument>%ems_core.notification_pending_timeout%</argument>

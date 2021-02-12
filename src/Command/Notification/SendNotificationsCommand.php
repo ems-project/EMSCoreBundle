@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Notification;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -12,22 +14,17 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SendNotificationsCommand extends Command
+final class SendNotificationsCommand extends Command
 {
-    /** @var Registry */
-    private $doctrine;
-    /** @var NotificationService */
-    private $notificationService;
-    /** @var string */
-    private $notificationPendingTimeout;
+    private Registry $doctrine;
+    private NotificationService $notificationService;
+    private string $notificationPendingTimeout;
 
     public function __construct(Registry $doctrine, NotificationService $notificationService, string $notificationPendingTimeout)
     {
         $this->doctrine = $doctrine;
         $this->notificationService = $notificationService;
-
         $this->notificationPendingTimeout = $notificationPendingTimeout;
-
         parent::__construct();
     }
 
@@ -71,7 +68,7 @@ class SendNotificationsCommand extends Command
         }
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Sending pending notification and response emails to enabled users');
 

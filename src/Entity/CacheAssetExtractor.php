@@ -44,7 +44,7 @@ class CacheAssetExtractor
     private $hash;
 
     /**
-     * @var array
+     * @var array<mixed>
      *
      * @ORM\Column(name="data", type="json_array", nullable=true)
      */
@@ -54,7 +54,7 @@ class CacheAssetExtractor
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {
@@ -119,7 +119,7 @@ class CacheAssetExtractor
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      */
     public function getData()
     {
@@ -127,7 +127,7 @@ class CacheAssetExtractor
     }
 
     /**
-     * @param array $data
+     * @param array<mixed> $data
      *
      * @return CacheAssetExtractor
      */

@@ -47,7 +47,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     protected $label;
 
     /**
-     * @var array
+     * @var array<mixed>
      *
      * @ORM\Column(name="options", type="json_array")
      */
@@ -84,7 +84,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {
@@ -129,11 +129,11 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     /**
      * Set options.
      *
-     * @param array $options
+     * @param array<mixed> $options
      *
      * @return Analyzer
      */
-    public function setOptions($options)
+    public function setOptions(array $options)
     {
         $this->options = $options;
 
@@ -148,6 +148,10 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
+    /**
+     * @param string|null $esVersion
+     * @return array<mixed>
+     */
     public function getOptions(?string $esVersion = null): array
     {
         $options = $this->options ?? [];

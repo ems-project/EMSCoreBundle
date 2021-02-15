@@ -6,12 +6,16 @@ use EMS\CoreBundle\Service\Mapping as EMS;
 
 class Mappings
 {
-    /** @var array<Mappings> */
+    /** @var array<mixed> */
     private $mappings = [];
 
     /** @var array<array> */
     private $defaultProperties = [];
 
+    /**
+     * Mappings constructor.
+     * @param array<array> $languageAnalyzers
+     */
     public function __construct(array $languageAnalyzers = [])
     {
         foreach ($languageAnalyzers as $language => $analyzer) {
@@ -28,11 +32,20 @@ class Mappings
         return empty($this->mappings);
     }
 
+    /**
+     * @return Mappings[]
+     */
     public function toArray(): array
     {
         return $this->mappings;
     }
 
+    /**
+     * @param string $name
+     * @param array<array> $mapping
+     * @param string|null $type
+     * @return $this
+     */
     public function add(string $name, array $mapping, ?string $type = 'doc'): Mappings
     {
         if (!isset($this->mappings[$type])) {
@@ -44,7 +57,10 @@ class Mappings
         return $this;
     }
 
-    private function getDefaults()
+    /**
+     * @return array<mixed>
+     */
+    private function getDefaults(): array
     {
         return [
             '_all' => ['store' => true, 'enabled' => true],

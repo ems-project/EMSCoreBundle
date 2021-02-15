@@ -205,6 +205,7 @@ class SearchService
             }
         }
 
+        /** @var Search|null $search */
         $search = $searchRepository->findOneBy([
             'default' => true,
         ]);

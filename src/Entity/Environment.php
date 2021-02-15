@@ -261,8 +261,6 @@ class Environment extends JsonDeserializer implements \JsonSerializable
      * Set index.
      *
      * @param array<string> $indexes
-     *
-     * @return Environment
      */
     public function setIndexes(array $indexes): Environment
     {

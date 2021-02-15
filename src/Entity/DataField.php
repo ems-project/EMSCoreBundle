@@ -236,8 +236,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     /**
      * @param string $key
-     * @param mixed $input
+     * @param mixed  $input
+     *
      * @return $this
+     *
      * @throws \Exception
      */
     public function __set($key, $input): DataField
@@ -503,7 +505,9 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     /**
      * @param array<string>|null $rawData
+     *
      * @return $this
+     *
      * @throws DataFormatException
      */
     public function setArrayTextValue(?array $rawData): DataField
@@ -617,6 +621,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     /**
      * @return array<DateTime|false>
+     *
      * @throws DataFormatException
      */
     public function getDateValues(): array

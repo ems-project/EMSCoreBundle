@@ -44,6 +44,11 @@ class Indexer
         $this->logger->warning('Deleted index {index}', ['index' => $name]);
     }
 
+    /**
+     * @param string $name
+     * @param array<mixed> $settings
+     * @param array<mixed> $mappings
+     */
     public function create(string $name, array $settings, array $mappings): void
     {
         $body = \array_filter(['settings' => $settings, 'mappings' => $mappings]);
@@ -51,6 +56,11 @@ class Indexer
         $this->logger->info('Created index {index}', ['index' => $name]);
     }
 
+    /**
+     * @param string $name
+     * @param array<mixed> $mappings
+     * @param string $type
+     */
     public function update(string $name, array $mappings, string $type): void
     {
         $this->mapping->updateMapping($name, $mappings, $type);
@@ -87,6 +97,10 @@ class Indexer
         }
     }
 
+    /**
+     * @param string $indexName
+     * @return array<string>
+     */
     public function getAliasesByIndex(string $indexName): array
     {
         return $this->indexService->getAliasesByIndex($indexName);

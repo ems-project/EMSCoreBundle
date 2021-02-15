@@ -273,7 +273,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $sortBy;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="sort_order", type="string", length=4, nullable=true, options={"default" : "asc"})
      */
@@ -393,7 +393,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $translationField;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="localeField", type="string", length=100, nullable=true)
      */
@@ -461,7 +461,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {
@@ -1264,7 +1264,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Remove template.
      */
-    public function removeTemplate(Template $template)
+    public function removeTemplate(Template $template): void
     {
         $this->templates->removeElement($template);
     }
@@ -1272,7 +1272,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get templates.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection<int, Template>
      */
     public function getTemplates()
     {
@@ -1294,7 +1294,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Remove view.
      */
-    public function removeView(View $view)
+    public function removeView(View $view): void
     {
         $this->views->removeElement($view);
     }
@@ -1302,7 +1302,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get views.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection<int, View>
      */
     public function getViews()
     {

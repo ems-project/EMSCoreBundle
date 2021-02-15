@@ -14,6 +14,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /**
  * DataField.
  *
+ * @implements \ArrayAccess<int, mixed>
+ * @implements \IteratorAggregate<int, mixed>
+ *
  * @Assert\Callback({"Vendor\Package\Validator", "validate"})
  */
 class DataField implements \ArrayAccess, \IteratorAggregate
@@ -37,7 +40,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     private $parent;
 
-    /** @var Collection */
+    /** @var Collection<int, mixed> */
     private $children;
 
     /** @var mixed */
@@ -77,7 +80,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      *
      * @throws \Exception
      */
-    private function initChild(DataField $child, $offset)
+    private function initChild(DataField $child, $offset): void
     {
         throw new \Exception('deprecate');
     }
@@ -135,7 +138,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * @Assert\Callback
      */
-    public function isDataFieldValid(ExecutionContextInterface $context)
+    public function isDataFieldValid(ExecutionContextInterface $context): void
     {
         //TODO: why is it not working? See https://stackoverflow.com/a/25265360
         //Transformed: (but not used??)
@@ -145,9 +148,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate
             ->addViolation();
     }
 
-    public function propagateOuuid(string $ouuid)
+    public function propagateOuuid(string $ouuid): void
     {
-        if ($this->getFieldType() && 0 == \strcmp(OuuidFieldType::class, $this->getFieldType()->getType())) {
+        /** @var FieldType $fieldType */
+        $fieldType = $this->getFieldType();
+        if ($this->getFieldType() && 0 == \strcmp(OuuidFieldType::class, $fieldType->getType())) {
             $this->setTextValue($ouuid);
         }
         foreach ($this->children as $child) {
@@ -161,16 +166,19 @@ class DataField implements \ArrayAccess, \IteratorAggregate
             return $this->rawData;
         }
 
-        return \json_encode($this->rawData);
+        return \strval(\json_encode(\strval($this->rawData)));
     }
 
     public function orderChildren()
     {
         $children = null;
 
+        /** @var FieldType $fieldType */
+        $fieldType = $this->getFieldType();
+
         if (null == $this->getFieldType()) {
             $children = $this->getParent()->getFieldType()->getChildren();
-        } elseif (0 != \strcmp($this->getFieldType()->getType(), CollectionFieldType::class)) {
+        } elseif (0 != \strcmp($fieldType->getType(), CollectionFieldType::class)) {
             $children = $this->getFieldType()->getChildren();
         }
 
@@ -314,7 +322,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
             $key = \substr($key, 4);
         }
 
-        if ($this->getFieldType() && 0 == \strcmp($this->getFieldType()->getType(), CollectionFieldType::class)) {
+        /** @var FieldType $fieldType */
+        $fieldType = $this->getFieldType();
+
+        if ($this->getFieldType() && 0 == \strcmp($fieldType->getType(), CollectionFieldType::class)) {
             //Symfony wants iterate on children
             return $this;
         } else {

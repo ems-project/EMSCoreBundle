@@ -50,6 +50,9 @@ class Bulker
         return !empty($this->errors);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getErrors(): array
     {
         return $this->errors;
@@ -76,6 +79,15 @@ class Bulker
         return $this;
     }
 
+    /**
+     * @param string $contentType
+     * @param string $ouuid
+     * @param string $index
+     * @param array<mixed> $body
+     * @param bool $upsert
+     * @return bool
+     * @throws NoNodesAvailableException
+     */
     public function index(string $contentType, string $ouuid, string $index, array &$body, bool $upsert = false): bool
     {
         if ($this->sign) {
@@ -101,7 +113,7 @@ class Bulker
             $action->setSource(['doc' => $source, 'doc_as_upsert' => true]);
         } else {
             $action->setOpType(Action::OP_TYPE_INDEX);
-            $action->setSource($source);
+            $action->setSource($body);
         }
         $this->bulk->addAction($action);
         ++$this->counter;
@@ -166,7 +178,7 @@ class Bulker
         return true;
     }
 
-    private function logResponse(ResponseSet $response)
+    private function logResponse(ResponseSet $response): void
     {
         foreach ($response as $item) {
             if (!$item instanceof Response) {

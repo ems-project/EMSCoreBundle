@@ -30,7 +30,9 @@ class DocumentImportContext
         $this->shouldRawImport = $shouldRawImport;
         $this->shouldFinalize = $shouldFinalize;
         $this->shouldForce = $shouldForceImport;
-        $this->environment = $this->contentType->getEnvironment();
+        /** @var Environment $env */
+        $env = $this->contentType->getEnvironment();
+        $this->environment = $env;
     }
 
     public function getContentType(): ContentType

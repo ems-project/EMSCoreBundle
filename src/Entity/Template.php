@@ -718,6 +718,15 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         return $this->contentType;
     }
 
+    public function giveContentType(): ContentType
+    {
+        if (null === $this->contentType) {
+            throw new \RuntimeException('Not found contentType');
+        }
+
+        return $this->contentType;
+    }
+
     /**
      * Constructor.
      */

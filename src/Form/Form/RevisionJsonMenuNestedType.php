@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\DataField\TextStringFieldType;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class RevisionJsonMenuNestedType extends AbstractType
 {
@@ -32,45 +32,36 @@ class RevisionJsonMenuNestedType extends AbstractType
     {
         /** @var FieldType $fieldType */
         $fieldType = $options['field_type'];
+        /** @var ContentType $contentType */
+        $contentType = $options['content_type'];
 
-        $builder->add('label', TextType::class, [
-            'constraints' => [new NotBlank()],
+        $labelChild = $fieldType->getChildren()->filter(fn (FieldType $c) => 'label' === $c->getName());
+        if (0 === $labelChild->count()) {
+            $labelFieldType = new FieldType();
+            $labelFieldType->setName('label');
+            $labelFieldType->setType(TextStringFieldType::class);
+            $labelFieldType->setOptions(['displayOptions' => ['label' => 'Label', 'class' => 'col-md-12']]);
+            $fieldType->addChild($labelFieldType, true);
+        }
+
+        $builder->add('data', $fieldType->getType(), [
+            'metadata' => $fieldType,
+            'error_bubbling' => false,
+            'disabled_fields' => $contentType->getDisabledDataFields(),
         ]);
 
-        foreach ($fieldType->getChildren() as $child) {
-            /** @var FieldType $child */
-            if ($child->getDeleted()) {
-                continue;
-            }
-
-            $options = \array_merge([
-                'metadata' => $child,
-                'label' => false,
-            ], $child->getDisplayOptions());
-
-            $required = $child->getRestrictionOptions()['mandatory'] ?? false;
-
-            if ($required) {
-                $options['constraints'] = [new NotBlank()];
-            }
-
-            $builder->add($child->getName(), $child->getType(), $options);
-            $builder->get($child->getName())
-                ->addViewTransformer(new DataFieldViewTransformer($child, $this->formRegistry))
-                ->addModelTransformer(new DataFieldModelTransformer($child, $this->formRegistry));
-        }
+        $builder->get('data')
+            ->addModelTransformer(new DataFieldModelTransformer($fieldType, $this->formRegistry))
+            ->addViewTransformer(new DataFieldViewTransformer($fieldType, $this->formRegistry));
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
-            ->setRequired(['field_type'])
+            ->setDefaults(['raw_data' => []])
+            ->setRequired(['field_type', 'content_type'])
             ->setAllowedTypes('field_type', FieldType::class)
+            ->setAllowedTypes('content_type', ContentType::class)
         ;
-    }
-
-    public function getBlockPrefix(): string
-    {
-        return 'container_field_type';
     }
 }

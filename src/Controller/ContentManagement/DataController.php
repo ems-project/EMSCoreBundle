@@ -1286,6 +1286,7 @@ class DataController extends AppController
     /**
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @param array<string> $rawData
      *
 =======
@@ -1299,6 +1300,10 @@ class DataController extends AppController
      * @param array<string> $rawData
      *
 >>>>>>> f2045033... fix: phpcs
+=======
+     * @param array<string> $rawData
+     *
+>>>>>>> 76c4780a101b91da951b4f9ff6d1b0819fc8bcba
      * @throws HasNotCircleException
      */
     private function intNewDocumentFromArray(ContentType $contentType, DataService $dataService, LoggerInterface $logger, array $rawData): RedirectResponse

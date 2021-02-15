@@ -199,7 +199,7 @@
     					<a href="{{ path(paginationPath, app.request.query|merge({'search_form[contentTypes][0]': index.key, page: 1})) }}" class="btn btn-block btn-social bg-gray">
     						<i class="fa fa-question"></i>
     						{{ index.key|humanize }}
-    						<span class=" badge pull-right">{{ index.doc_count }}</span>
+    						<span class=" badge pull-right">{{ index.count }}</span>
     					</a>
 					{% endif %}
 				{% endfor %}

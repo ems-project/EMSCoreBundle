@@ -25,6 +25,7 @@ use EMS\CoreBundle\Service\AggregateOptionService;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\SearchService;
@@ -181,7 +182,7 @@ class ElasticsearchController extends AppController
      *
      * @Route("/quick-search", name="ems_quick_search", methods={"GET"})
      */
-    public function quickSearchAction(Request $request)
+    public function quickSearchAction(Request $request, EnvironmentService $environmentService)
     {
         $query = $request->query->get('q', false);
 
@@ -203,6 +204,7 @@ class ElasticsearchController extends AppController
             }
         } else {
             $search = new Search();
+            $search->setEnvironments($environmentService->getEnvironmentNames());
             if (false !== $query) {
                 $search->getFilters()[0]->setPattern($query)->setBooleanClause('must');
             }

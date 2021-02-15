@@ -45,7 +45,6 @@ class Indexer
     }
 
     /**
-     * @param string $name
      * @param array<mixed> $settings
      * @param array<mixed> $mappings
      */
@@ -57,9 +56,7 @@ class Indexer
     }
 
     /**
-     * @param string $name
      * @param array<mixed> $mappings
-     * @param string $type
      */
     public function update(string $name, array $mappings, string $type): void
     {
@@ -98,7 +95,6 @@ class Indexer
     }
 
     /**
-     * @param string $indexName
      * @return array<string>
      */
     public function getAliasesByIndex(string $indexName): array

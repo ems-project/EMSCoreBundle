@@ -14,6 +14,7 @@ class Mappings
 
     /**
      * Mappings constructor.
+     *
      * @param array<array> $languageAnalyzers
      */
     public function __construct(array $languageAnalyzers = [])
@@ -41,9 +42,8 @@ class Mappings
     }
 
     /**
-     * @param string $name
      * @param array<array> $mapping
-     * @param string|null $type
+     *
      * @return $this
      */
     public function add(string $name, array $mapping, ?string $type = 'doc'): Mappings

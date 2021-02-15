@@ -149,7 +149,6 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * @param string|null $esVersion
      * @return array<mixed>
      */
     public function getOptions(?string $esVersion = null): array

@@ -108,6 +108,7 @@ class Settings
 
     /**
      * @param mixed $filters
+     *
      * @return array<mixed>
      */
     private function createCustomAnalyzer($filters): array
@@ -122,6 +123,7 @@ class Settings
 
     /**
      * @param array|string[] $articles
+     *
      * @return array<mixed>
      */
     private function getFilterElision(array $articles = ['']): array
@@ -130,7 +132,6 @@ class Settings
     }
 
     /**
-     * @param string $name
      * @return string[]
      */
     private function getFilterStemmer(string $name): array
@@ -139,7 +140,6 @@ class Settings
     }
 
     /**
-     * @param string $stopWords
      * @return string[]
      */
     private function getFilterStop(string $stopWords): array

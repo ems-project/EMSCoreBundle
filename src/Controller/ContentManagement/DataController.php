@@ -1288,21 +1288,9 @@ class DataController extends AppController
 <<<<<<< HEAD
 <<<<<<< HEAD
      * @param array<string> $rawData
-     *
-=======
-     * @param ContentType $contentType
-     * @param DataService $dataService
-     * @param LoggerInterface $logger
      * @param array<string> $rawData
-     * @return RedirectResponse
->>>>>>> 238c924a... fix: PHPStan issues for Crud and DataController
-=======
      * @param array<string> $rawData
-     *
->>>>>>> f2045033... fix: phpcs
-=======
      * @param array<string> $rawData
-     *
 >>>>>>> 76c4780a101b91da951b4f9ff6d1b0819fc8bcba
      * @throws HasNotCircleException
      */
@@ -1448,7 +1436,7 @@ class DataController extends AppController
             /** @var Environment $environment */
             $environment = $contentType->getEnvironment();
 
-            /** @var null|Revision $revision */
+            /** @var Revision|null $revision */
             $revision = $repository->findByOuuidAndContentTypeAndEnvironment($contentType, $ouuid, $environment);
 
             if (!$revision) {

@@ -58,6 +58,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     /**
      * @ORM\OneToOne(targetEntity="ContentType")
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
+     *
+     * @var ContentType|null
      */
     protected $contentType;
 

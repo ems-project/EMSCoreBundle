@@ -53,7 +53,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     protected $alias;
 
     /**
-     * @var array
+     * @var array<string>
      */
     protected $indexes;
 
@@ -102,13 +102,15 @@ class Environment extends JsonDeserializer implements \JsonSerializable
 
     /**
      * @ORM\ManyToMany(targetEntity="Revision", mappedBy="environments")
+     *
+     * @var \Doctrine\Common\Collections\Collection<mixed, mixed>
      */
     protected $revisions;
 
     /**
-     * @var array
-     *
      * @ORM\Column(name="circles", type="json_array", nullable=true)
+     *
+     * @var array<string>
      */
     protected $circles;
 
@@ -128,6 +130,8 @@ class Environment extends JsonDeserializer implements \JsonSerializable
 
     /**
      * @ORM\OneToMany(targetEntity="ContentType", mappedBy="environment", cascade={"remove"})
+     *
+     * @var \Doctrine\Common\Collections\Collection<mixed, mixed>
      */
     protected $contentTypesHavingThisAsDefault;
 
@@ -147,7 +151,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {
@@ -256,9 +260,11 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     /**
      * Set index.
      *
+     * @param array<string> $indexes
+     *
      * @return Environment
      */
-    public function setIndexes(array $indexes)
+    public function setIndexes(array $indexes): Environment
     {
         $this->indexes = $indexes;
 
@@ -268,7 +274,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     /**
      * Get indexes.
      *
-     * @return array
+     * @return array<string>
      */
     public function getIndexes()
     {
@@ -362,7 +368,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     /**
      * Remove revision.
      */
-    public function removeRevision(Revision $revision)
+    public function removeRevision(Revision $revision): void
     {
         $this->revisions->removeElement($revision);
     }
@@ -370,7 +376,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     /**
      * Get revisions.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection<mixed, mixed>
      */
     public function getRevisions()
     {
@@ -583,7 +589,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     /**
      * Remove contentTypesHavingThisAsDefault.
      */
-    public function removeContentTypesHavingThisAsDefault(ContentType $contentTypesHavingThisAsDefault)
+    public function removeContentTypesHavingThisAsDefault(ContentType $contentTypesHavingThisAsDefault): void
     {
         $this->contentTypesHavingThisAsDefault->removeElement($contentTypesHavingThisAsDefault);
     }
@@ -591,7 +597,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     /**
      * Get contentTypesHavingThisAsDefault.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection<mixed, mixed>
      */
     public function getContentTypesHavingThisAsDefault()
     {

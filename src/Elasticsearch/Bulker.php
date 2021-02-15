@@ -80,12 +80,8 @@ class Bulker
     }
 
     /**
-     * @param string $contentType
-     * @param string $ouuid
-     * @param string $index
      * @param array<mixed> $body
-     * @param bool $upsert
-     * @return bool
+     *
      * @throws NoNodesAvailableException
      */
     public function index(string $contentType, string $ouuid, string $index, array &$body, bool $upsert = false): bool

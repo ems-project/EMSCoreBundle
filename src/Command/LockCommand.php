@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use EMS\CoreBundle\Entity\ContentType;
@@ -12,17 +14,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class LockCommand extends Command
+final class LockCommand extends Command
 {
-    /**
-     * @var ContentTypeRepository
-     */
-    private $contentTypeRepository;
-
-    /**
-     * @var RevisionRepository
-     */
-    private $revisionRepository;
+    private ContentTypeRepository $contentTypeRepository;
+    private RevisionRepository $revisionRepository;
+    private SymfonyStyle $io;
 
     public function __construct(ContentTypeRepository $contentTypeRepository, RevisionRepository $revisionRepository)
     {
@@ -44,6 +40,12 @@ class LockCommand extends Command
             ->addOption('if-empty', null, InputOption::VALUE_NONE, 'lock if there are no pending locks for the same user')
             ->addOption('ouuid', null, InputOption::VALUE_OPTIONAL, 'lock a specific ouuid', null)
         ;
+    }
+
+    protected function initialize(InputInterface $input, OutputInterface $output): void
+    {
+        $this->io = new SymfonyStyle($input, $output);
+        $this->io->title('Content-type lock command');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -73,8 +75,6 @@ class LockCommand extends Command
         $until = new \DateTime();
         $until->setTimestamp($time);
 
-        $io = new SymfonyStyle($input, $output);
-
         if ($input->getOption('if-empty') &&
             0 !== $this->revisionRepository->findAllLockedRevisions($contentType, $by)->count()) {
             return 0;
@@ -84,9 +84,9 @@ class LockCommand extends Command
         $rows = $this->revisionRepository->lockRevisions($contentType, $until, $by, $force, $ouuid);
 
         if (0 === $rows) {
-            $io->error('no revisions locked, try force?');
+            $this->io->error('no revisions locked, try force?');
         } else {
-            $io->success(\vsprintf('%s locked %d %s revisions until %s by %s', [
+            $this->io->success(\vsprintf('%s locked %d %s revisions until %s by %s', [
                 ($force ? 'FORCE ' : ''),
                 $rows,
                 $contentType->getName(),

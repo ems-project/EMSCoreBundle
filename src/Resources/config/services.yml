@@ -647,11 +647,6 @@ services:
         arguments: ['@doctrine', '@logger', '@ems.service.index', '@ems.service.mapping', '@service_container', '@ems.service.contenttype', '@ems.service.environment']
         tags:
             -  { name: console.command }
-    ems.contenttype.lock:
-        class: EMS\CoreBundle\Command\LockCommand
-        arguments: ['@EMS\CoreBundle\Repository\ContentTypeRepository', '@EMS\CoreBundle\Repository\RevisionRepository']
-        tags:
-            -  { name: console.command }
 
     ems.contenttype.clean:
         class: EMS\CoreBundle\Command\CleanDeletedContentTypeCommand

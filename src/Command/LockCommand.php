@@ -98,7 +98,7 @@ final class LockCommand extends Command
         }
         $this->by = $by;
 
-        if ($input->getOption(self::OPTION_QUERY) !== null) {
+        if (null !== $input->getOption(self::OPTION_QUERY)) {
             $rawQuery = \strval($input->getOption('query'));
             $this->query = \json_decode($rawQuery, true);
             if (\json_last_error() > 0) {
@@ -116,7 +116,7 @@ final class LockCommand extends Command
             return 0;
         }
 
-        if ($input->getOption(self::OPTION_QUERY) !== null) {
+        if (null !== $input->getOption(self::OPTION_QUERY)) {
             $search = $this->elasticaService->convertElasticsearchSearch([
                 'index' => (null !== $this->contentType->getEnvironment()) ? $this->contentType->getEnvironment()->getAlias() : '',
                 '_source' => false,
@@ -126,6 +126,7 @@ final class LockCommand extends Command
             $documentCount = $this->elasticaService->count($search);
             if (0 === $documentCount) {
                 $this->io->error(\sprintf('No documents found in %s with this query : %s', $this->contentType->getName(), \json_encode($this->query)));
+
                 return -1;
             }
 
@@ -141,6 +142,7 @@ final class LockCommand extends Command
 
         if (0 === $revisionCount) {
             $this->io->error('No revisions locked, try force?');
+
             return -1;
         }
 
@@ -151,6 +153,7 @@ final class LockCommand extends Command
             $this->until->format('Y-m-d H:i:s'),
             $this->by,
         ]));
+
         return 0;
     }
 

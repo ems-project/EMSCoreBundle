@@ -17,7 +17,7 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class FormSubmission
+class FormSubmission implements EntityInterface
 {
     /**
      * @var UuidInterface
@@ -92,7 +92,7 @@ class FormSubmission
     private $label;
 
     /**
-     * @var string
+     * @var \DateTime|null
      *
      * @ORM\Column(name="deadline_date", type="string", length=255)
      */
@@ -188,9 +188,14 @@ class FormSubmission
         return $this->name;
     }
 
-    public function getLabel(): string
+    public function getLabel(): ?string
     {
         return $this->label;
+    }
+
+    public function getDeadlineDate(): ?\DateTime
+    {
+        return $this->deadlineDate;
     }
 
     public function getExpireDate(): ?\DateTime

@@ -502,7 +502,7 @@ services:
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']
     ems.form_submission:
         class: EMS\CoreBundle\Service\Form\Submission\FormSubmissionService
-        arguments: ['@ems.repository.form_submission', '@ems.service.template', '@twig']
+        arguments: ['@ems.repository.form_submission', '@ems.service.template', '@twig', '@session', '@translator']
     ems.mailer:
         class: EMS\CoreBundle\Service\MailerService
         arguments: ['@mailer', '%ems_core.from_email%', '%ems_core.name%']

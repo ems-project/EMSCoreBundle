@@ -371,6 +371,30 @@ action:
       name: 'Name'
       type: 'Type'
     reorder: 'Reorder'
+form-submission:
+  form-submissions:
+    delete: 'Delete'
+    edit: 'Edit'
+    delete_confirm: 'Delete the "%label%" submission?'
+    delete_selected_confirm: 'Delete all selected submissions?'
+    delete_selected: 'Delete selected'
+    download_selected: 'Download selected'
+    export_selected: 'Export selected'
+    download: 'Download'
+    process: 'Delete Submission'
+    confirm: 'Confirm Deletion'
+  index:
+    column:
+      public: 'Public'
+      name: 'Name'
+      type: 'Type'
+      id: 'ID'
+      label: 'Label'
+      form: 'Form'
+      locale: 'Locale'
+      created: 'Created At'
+      deadline: 'Deadline Date'
+    reorder: 'Reorder'
 table:
   index:
     button:
@@ -802,5 +826,8 @@ view:
       title: 'Edit the action %action% for %contentType%'
     add:
       title: 'Add a new action to %contentType%'
+  form-submission:
+    index:
+      title: 'Form Submissions Overview'
   breadcrumb:
     wysiwyg-options: 'WYSIWYG Options'

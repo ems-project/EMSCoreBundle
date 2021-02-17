@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -16,15 +17,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class LockCommand extends Command
 {
+    private string $by;
+    private ContentType $contentType;
     private ContentTypeRepository $contentTypeRepository;
-    private RevisionRepository $revisionRepository;
+    private ElasticaService $elasticaService;
+    private bool $force;
     private SymfonyStyle $io;
+    private RevisionRepository $revisionRepository;
+    private \DateTime $until;
 
-    public function __construct(ContentTypeRepository $contentTypeRepository, RevisionRepository $revisionRepository)
+    public function __construct(ContentTypeRepository $contentTypeRepository, ElasticaService $elasticaService, RevisionRepository $revisionRepository)
     {
         parent::__construct();
 
         $this->contentTypeRepository = $contentTypeRepository;
+        $this->elasticaService = $elasticaService;
         $this->revisionRepository = $revisionRepository;
     }
 
@@ -48,12 +55,18 @@ final class LockCommand extends Command
         $this->io->title('Content-type lock command');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $timeArgument = $input->getArgument('time');
         if (!\is_string($timeArgument)) {
             throw new \RuntimeException('Unexpected time argument');
         }
+        if (($time = \strtotime($timeArgument)) === false) {
+            throw new \RuntimeException('invalid time');
+        }
+        $until = new \DateTime();
+        $until->setTimestamp($time);
+        $this->until = $until;
 
         $contentTypeName = $input->getArgument('contentType');
         if (!\is_string($contentTypeName)) {
@@ -63,35 +76,36 @@ final class LockCommand extends Command
         if (!$contentType instanceof ContentType) {
             throw new \RuntimeException('Content type not found');
         }
-        if (($time = \strtotime($timeArgument)) === false) {
-            throw new \RuntimeException('invalid time');
-        }
+        $this->contentType = $contentType;
+
         $by = $input->getOption('user');
         if (!\is_string($by)) {
             throw new \RuntimeException('Unexpected user name');
         }
-        $force = true === $input->getOption('force');
+        $this->by = $by;
 
-        $until = new \DateTime();
-        $until->setTimestamp($time);
+        $this->force = true === $input->getOption('force');
+    }
 
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
         if ($input->getOption('if-empty') &&
-            0 !== $this->revisionRepository->findAllLockedRevisions($contentType, $by)->count()) {
+            0 !== $this->revisionRepository->findAllLockedRevisions($this->contentType, $this->by)->count()) {
             return 0;
         }
 
         $ouuid = $input->getOption('ouuid') ? \strval($input->getOption('ouuid')) : null;
-        $rows = $this->revisionRepository->lockRevisions($contentType, $until, $by, $force, $ouuid);
+        $rows = $this->revisionRepository->lockRevisions($this->contentType, $this->until, $this->by, $this->force, $ouuid);
 
         if (0 === $rows) {
             $this->io->error('no revisions locked, try force?');
         } else {
             $this->io->success(\vsprintf('%s locked %d %s revisions until %s by %s', [
-                ($force ? 'FORCE ' : ''),
+                ($this->force ? 'FORCE ' : ''),
                 $rows,
-                $contentType->getName(),
-                $until->format('Y-m-d H:i:s'),
-                $by,
+                $this->contentType->getName(),
+                $this->until->format('Y-m-d H:i:s'),
+                $this->by,
             ]));
         }
 

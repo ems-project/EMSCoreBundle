@@ -26,6 +26,13 @@ final class LockCommand extends Command
     private RevisionRepository $revisionRepository;
     private \DateTime $until;
 
+    private const ARGUMENT_CONTENT_TYPE = 'contentType';
+    private const ARGUMENT_TIME = 'time';
+    private const OPTION_USER = 'user';
+    private const OPTION_FORCE = 'force';
+    private const OPTION_IF_EMPTY = 'if-empty';
+    private const OPTION_OUUID = 'ouuid';
+
     public function __construct(ContentTypeRepository $contentTypeRepository, ElasticaService $elasticaService, RevisionRepository $revisionRepository)
     {
         parent::__construct();
@@ -40,12 +47,12 @@ final class LockCommand extends Command
         $this
             ->setName('ems:contenttype:lock')
             ->setDescription('Lock a content type')
-            ->addArgument('contentType', InputArgument::REQUIRED, 'content type to recompute')
-            ->addArgument('time', InputArgument::REQUIRED, 'lock until (+1day, +5min, now)')
-            ->addOption('user', null, InputOption::VALUE_REQUIRED, 'lock username', 'EMS_COMMAND')
-            ->addOption('force', null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
-            ->addOption('if-empty', null, InputOption::VALUE_NONE, 'lock if there are no pending locks for the same user')
-            ->addOption('ouuid', null, InputOption::VALUE_OPTIONAL, 'lock a specific ouuid', null)
+            ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'content type to recompute')
+            ->addArgument(self::ARGUMENT_TIME, InputArgument::REQUIRED, 'lock until (+1day, +5min, now)')
+            ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'lock username', 'EMS_COMMAND')
+            ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
+            ->addOption(self::OPTION_IF_EMPTY, null, InputOption::VALUE_NONE, 'lock if there are no pending locks for the same user')
+            ->addOption(self::OPTION_OUUID, null, InputOption::VALUE_OPTIONAL, 'lock a specific ouuid', null)
         ;
     }
 
@@ -57,7 +64,7 @@ final class LockCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        $timeArgument = $input->getArgument('time');
+        $timeArgument = $input->getArgument(self::ARGUMENT_TIME);
         if (!\is_string($timeArgument)) {
             throw new \RuntimeException('Unexpected time argument');
         }
@@ -68,7 +75,7 @@ final class LockCommand extends Command
         $until->setTimestamp($time);
         $this->until = $until;
 
-        $contentTypeName = $input->getArgument('contentType');
+        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
         if (!\is_string($contentTypeName)) {
             throw new \RuntimeException('Unexpected content type name');
         }
@@ -78,23 +85,23 @@ final class LockCommand extends Command
         }
         $this->contentType = $contentType;
 
-        $by = $input->getOption('user');
+        $by = $input->getOption(self::OPTION_USER);
         if (!\is_string($by)) {
             throw new \RuntimeException('Unexpected user name');
         }
         $this->by = $by;
 
-        $this->force = true === $input->getOption('force');
+        $this->force = true === $input->getOption(self::OPTION_FORCE);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($input->getOption('if-empty') &&
+        if ($input->getOption(self::OPTION_IF_EMPTY) &&
             0 !== $this->revisionRepository->findAllLockedRevisions($this->contentType, $this->by)->count()) {
             return 0;
         }
 
-        $ouuid = $input->getOption('ouuid') ? \strval($input->getOption('ouuid')) : null;
+        $ouuid = $input->getOption(self::OPTION_OUUID) ? \strval($input->getOption(self::OPTION_OUUID)) : null;
         $rows = $this->revisionRepository->lockRevisions($this->contentType, $this->until, $this->by, $this->force, $ouuid);
 
         if (0 === $rows) {

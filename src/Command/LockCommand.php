@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CommonBundle\Elasticsearch\Document\Document;
+use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
+use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -23,11 +26,14 @@ final class LockCommand extends Command
     private ElasticaService $elasticaService;
     private bool $force;
     private SymfonyStyle $io;
+    /** @var mixed */
+    private $query;
     private RevisionRepository $revisionRepository;
     private \DateTime $until;
 
     private const ARGUMENT_CONTENT_TYPE = 'contentType';
     private const ARGUMENT_TIME = 'time';
+    private const OPTION_QUERY = 'query';
     private const OPTION_USER = 'user';
     private const OPTION_FORCE = 'force';
     private const OPTION_IF_EMPTY = 'if-empty';
@@ -49,6 +55,7 @@ final class LockCommand extends Command
             ->setDescription('Lock a content type')
             ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'content type to recompute')
             ->addArgument(self::ARGUMENT_TIME, InputArgument::REQUIRED, 'lock until (+1day, +5min, now)')
+            ->addOption(self::OPTION_QUERY, null, InputOption::VALUE_OPTIONAL, 'ES query', null)
             ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'lock username', 'EMS_COMMAND')
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
             ->addOption(self::OPTION_IF_EMPTY, null, InputOption::VALUE_NONE, 'lock if there are no pending locks for the same user')
@@ -91,6 +98,14 @@ final class LockCommand extends Command
         }
         $this->by = $by;
 
+        if ($input->getOption(self::OPTION_QUERY) !== null) {
+            $rawQuery = \strval($input->getOption('query'));
+            $this->query = \json_decode($rawQuery, true);
+            if (\json_last_error() > 0) {
+                throw new \RuntimeException(\sprintf('Invalid json query %s', $rawQuery));
+            }
+        }
+
         $this->force = true === $input->getOption(self::OPTION_FORCE);
     }
 
@@ -101,21 +116,55 @@ final class LockCommand extends Command
             return 0;
         }
 
-        $ouuid = $input->getOption(self::OPTION_OUUID) ? \strval($input->getOption(self::OPTION_OUUID)) : null;
-        $rows = $this->revisionRepository->lockRevisions($this->contentType, $this->until, $this->by, $this->force, $ouuid);
+        if ($input->getOption(self::OPTION_QUERY) !== null) {
+            $search = $this->elasticaService->convertElasticsearchSearch([
+                'index' => (null !== $this->contentType->getEnvironment()) ? $this->contentType->getEnvironment()->getAlias() : '',
+                '_source' => false,
+                'body' => $this->query,
+            ]);
 
-        if (0 === $rows) {
-            $this->io->error('no revisions locked, try force?');
+            $documentCount = $this->elasticaService->count($search);
+            if (0 === $documentCount) {
+                $this->io->error(\sprintf('No documents found in %s with this query : %s', $this->contentType->getName(), \json_encode($this->query)));
+                return -1;
+            }
+
+            $revisionCount = 0;
+            foreach ($this->searchDocuments($search) as $document) {
+                $this->io->comment($document->getId());
+                $revisionCount += $this->revisionRepository->lockRevisions($this->contentType, $this->until, $this->by, $this->force, $document->getId());
+            }
         } else {
-            $this->io->success(\vsprintf('%s locked %d %s revisions until %s by %s', [
-                ($this->force ? 'FORCE ' : ''),
-                $rows,
-                $this->contentType->getName(),
-                $this->until->format('Y-m-d H:i:s'),
-                $this->by,
-            ]));
+            $ouuid = $input->getOption(self::OPTION_OUUID) ? \strval($input->getOption(self::OPTION_OUUID)) : null;
+            $revisionCount = $this->revisionRepository->lockRevisions($this->contentType, $this->until, $this->by, $this->force, $ouuid);
         }
 
+        if (0 === $revisionCount) {
+            $this->io->error('No revisions locked, try force?');
+            return -1;
+        }
+
+        $this->io->success(\vsprintf('%s locked %d %s revisions until %s by %s', [
+            ($this->force ? 'FORCE ' : ''),
+            $revisionCount,
+            $this->contentType->getName(),
+            $this->until->format('Y-m-d H:i:s'),
+            $this->by,
+        ]));
         return 0;
+    }
+
+    /**
+     * @return \Generator|DocumentInterface[]
+     */
+    private function searchDocuments(Search $search): \Generator
+    {
+        foreach ($this->elasticaService->scroll($search) as $resultSet) {
+            foreach ($resultSet as $result) {
+                if ($result) {
+                    yield Document::fromResult($result);
+                }
+            }
+        }
     }
 }

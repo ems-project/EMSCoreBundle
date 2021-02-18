@@ -517,6 +517,8 @@ class NotificationService
             EmsFields::LOG_ENVIRONMENT_FIELD => $notification->getEnvironment()->getName(),
             'status' => $notification->getStatus(),
         ]);
+
+        $em->clear(); //bulk treat issue
     }
 
     public function accept(Notification $notification, TreatNotifications $treatNotifications)

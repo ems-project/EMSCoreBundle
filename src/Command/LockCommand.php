@@ -26,8 +26,7 @@ final class LockCommand extends Command
     private ElasticaService $elasticaService;
     private bool $force;
     private SymfonyStyle $io;
-    /** @var mixed */
-    private $query;
+    private string $query;
     private RevisionRepository $revisionRepository;
     private \DateTime $until;
 
@@ -55,7 +54,7 @@ final class LockCommand extends Command
             ->setDescription('Lock a content type')
             ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'content type to recompute')
             ->addArgument(self::ARGUMENT_TIME, InputArgument::REQUIRED, 'lock until (+1day, +5min, now)')
-            ->addOption(self::OPTION_QUERY, null, InputOption::VALUE_OPTIONAL, 'ES query', null)
+            ->addOption(self::OPTION_QUERY, null, InputOption::VALUE_OPTIONAL, 'ES query', '{}')
             ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'lock username', 'EMS_COMMAND')
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
             ->addOption(self::OPTION_IF_EMPTY, null, InputOption::VALUE_NONE, 'lock if there are no pending locks for the same user')
@@ -99,10 +98,10 @@ final class LockCommand extends Command
         $this->by = $by;
 
         if (null !== $input->getOption(self::OPTION_QUERY)) {
-            $rawQuery = \strval($input->getOption('query'));
-            $this->query = \json_decode($rawQuery, true);
+            $this->query = \strval($input->getOption('query'));
+            \json_decode($this->query, true);
             if (\json_last_error() > 0) {
-                throw new \RuntimeException(\sprintf('Invalid json query %s', $rawQuery));
+                throw new \RuntimeException(\sprintf('Invalid json query %s', $this->query));
             }
         }
 
@@ -116,23 +115,24 @@ final class LockCommand extends Command
             return 0;
         }
 
-        if (null !== $input->getOption(self::OPTION_QUERY)) {
+        $query = \json_decode($this->query, true);
+        if (\count($query) > 0) {
             $search = $this->elasticaService->convertElasticsearchSearch([
                 'index' => (null !== $this->contentType->getEnvironment()) ? $this->contentType->getEnvironment()->getAlias() : '',
                 '_source' => false,
-                'body' => $this->query,
+                'body' => $query,
             ]);
 
             $documentCount = $this->elasticaService->count($search);
             if (0 === $documentCount) {
-                $this->io->error(\sprintf('No documents found in %s with this query : %s', $this->contentType->getName(), \json_encode($this->query)));
+                $this->io->error(\sprintf('No document found in %s with this query : %s', $this->contentType->getName(), $this->query));
 
                 return -1;
             }
+            $this->io->comment(\sprintf('%s document(s) found in %s with this query : %s', $documentCount, $this->contentType->getName(), $this->query));
 
             $revisionCount = 0;
             foreach ($this->searchDocuments($search) as $document) {
-                $this->io->comment($document->getId());
                 $revisionCount += $this->revisionRepository->lockRevisions($this->contentType, $this->until, $this->by, $this->force, $document->getId());
             }
         } else {

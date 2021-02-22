@@ -5,6 +5,13 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <!-- EMS content-type -->
+        <service id="ems.contenttype.lock" class="EMS\CoreBundle\Command\LockCommand">
+            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
+            <tag name="console.command"/>
+        </service>
         <!-- EMS notification -->
         <service id="ems.command.notification.bulk_action" class="EMS\CoreBundle\Command\Notification\BulkActionCommand">
             <argument type="service" id="ems.service.notification"/>

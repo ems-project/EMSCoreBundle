@@ -199,7 +199,7 @@ class MigrateCommand extends Command
         $options = \array_values($input->getOptions());
         list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->dontFinalize) = $options;
 
-        $contentTypeTo = $this->contentTypeRepository->findOneBy(['name' => $this->contentTypeNameTo, 'deleted' => false]);
+        $contentTypeTo = $this->contentTypeRepository->findByName($this->contentTypeNameTo);
         if (null === $contentTypeTo || !$contentTypeTo instanceof ContentType) {
             $this->io->error(\sprintf('Content type "%s" not found', $this->contentTypeNameTo));
 

@@ -73,10 +73,7 @@ class DeleteCommand extends Command
         /** @var ContentTypeRepository $ctRepo */
         $ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
         /** @var ContentType|null $contentType */
-        $contentType = $ctRepo->findOneBy([
-                'name' => $name,
-                'deleted' => 0,
-        ]);
+        $contentType = $ctRepo->findByName($name);
 
         if (!$contentType instanceof ContentType) {
             $output->writeln('Content type '.$name.' not found');

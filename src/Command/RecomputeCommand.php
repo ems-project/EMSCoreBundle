@@ -109,7 +109,7 @@ class RecomputeCommand extends EmsCommand
         if (!\is_string($contentTypeName)) {
             throw new \RuntimeException('Unexpected content type name');
         }
-        $contentType = $this->contentTypeRepository->findOneBy(['name' => $contentTypeName]);
+        $contentType = $this->contentTypeRepository->findByName($contentTypeName);
         if (!$contentType instanceof ContentType) {
             throw new \RuntimeException('Content type not found');
         }

@@ -1043,6 +1043,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this->extra;
     }
 
+    public function hasFieldType(): bool
+    {
+        return null !== $this->fieldType;
+    }
+
     /**
      * Get fieldType.
      *

@@ -29,7 +29,7 @@ class CriteriaViewType extends ViewType
 
     public function getLabel(): string
     {
-        return 'Criteria: a view where we can massively content types having criteria';
+        return 'Criteria: a view where we can massively edit content types having criteria';
     }
 
     public function getName(): string

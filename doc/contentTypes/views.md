@@ -3,7 +3,7 @@
 Name | description 
 --- | ---
 [CalendarViewType](#calendar-view) | A view where you can schedule your object  
-[CriteriaViewType](#criteria-view) | A view where we can massively content types having criteria 
+[CriteriaViewType](#criteria-view) | A view where we can massively edit content types having criteria 
 [DataLinkViewType](#datalink-view) | Manipulate the choices in a data link of this content type
 [ExportViewType](#export-view) | Perform an elasticsearch query and generate a export with a twig template 
 [GalleryViewType](#gallery-view) | A view where you can browse images 
@@ -18,7 +18,7 @@ Name | description
 A view where you can schedule your object
 
 ## Criteria view
-A view where we can massively content types having criteria
+A view where we can massively edit content types having criteria
 
 ## DataLink view
 > Manipulate the choices in a data link of this content type.

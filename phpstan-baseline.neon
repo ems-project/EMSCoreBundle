@@ -1746,11 +1746,6 @@ parameters:
 			path: src/DependencyInjection/Compiler/StorageServiceCompilerPass.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\Compiler\\\\ViewTypeCompilerPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/DependencyInjection/Compiler/ViewTypeCompilerPass.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:load\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/DependencyInjection/EMSCoreExtension.php
@@ -8116,21 +8111,6 @@ parameters:
 			path: src/Form/Field/SubmitEmsType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ViewTypePickerType\\:\\:addViewType\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ViewTypePickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ViewTypePickerType\\:\\:addViewType\\(\\) has parameter \\$viewType with no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ViewTypePickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ViewTypePickerType\\:\\:addViewType\\(\\) has parameter \\$viewTypeId with no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ViewTypePickerType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ViewTypePickerType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/ViewTypePickerType.php
@@ -9526,11 +9506,6 @@ parameters:
 			path: src/Repository/RevisionRepository.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:lockRevisions\\(\\) has parameter \\$id with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/RevisionRepository.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:findAllLockedRevisions\\(\\) return type has no value type specified in iterable type Doctrine\\\\ORM\\\\Tools\\\\Pagination\\\\Paginator\\.$#"
 			count: 1
 			path: src/Repository/RevisionRepository.php
@@ -10861,32 +10836,7 @@ parameters:
 			path: src/Service/Revision/Copy/CopyContextFactory.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\PostProcessingService\\:\\:jsonMenuNested\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Service/Revision/PostProcessingService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\PostProcessingService\\:\\:jsonMenuNested\\(\\) has parameter \\$object with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/Revision/PostProcessingService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\PostProcessingService\\:\\:propagateDataToComputedFieldRecursive\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/Revision/PostProcessingService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\PostProcessingService\\:\\:propagateDataToComputedFieldRecursive\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Service/Revision/PostProcessingService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\PostProcessingService\\:\\:propagateDataToComputedFieldRecursive\\(\\) has parameter \\$objectArray with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/Revision/PostProcessingService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\PostProcessingService\\:\\:propagateDataToComputedFieldRecursive\\(\\) has parameter \\$parent with no value type specified in iterable type array\\.$#"
+			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 1
 			path: src/Service/Revision/PostProcessingService.php
 
@@ -10896,28 +10846,8 @@ parameters:
 			path: src/Service/Revision/PostProcessingService.php
 
 		-
-			message: "#^Cannot call method getOptions\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 1
-			path: src/Service/Revision/PostProcessingService.php
-
-		-
-			message: "#^Cannot call method getExtraOptions\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 1
-			path: src/Service/Revision/PostProcessingService.php
-
-		-
-			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 2
-			path: src/Service/Revision/PostProcessingService.php
-
-		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 9
-			path: src/Service/Revision/PostProcessingService.php
-
-		-
-			message: "#^Cannot call method getDisplayOptions\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 5
+			count: 2
 			path: src/Service/Revision/PostProcessingService.php
 
 		-

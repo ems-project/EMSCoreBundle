@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Throwable;
-use Twig_Environment;
+use Twig\Environment;
 
 class SorterViewType extends ViewType
 {
@@ -40,7 +40,7 @@ class SorterViewType extends ViewType
     /** @var ElasticaService */
     private $elasticaService;
 
-    public function __construct(FormFactory $formFactory, Twig_Environment $twig, Mapping $mapping, ElasticaService $elasticaService, LoggerInterface $logger, Session $session, DataService $dataService, RouterInterface $router)
+    public function __construct(FormFactory $formFactory, Environment $twig, Mapping $mapping, ElasticaService $elasticaService, LoggerInterface $logger, Session $session, DataService $dataService, RouterInterface $router)
     {
         parent::__construct($formFactory, $twig, $logger);
         $this->mapping = $mapping;

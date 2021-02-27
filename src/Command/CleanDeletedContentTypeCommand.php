@@ -73,11 +73,11 @@ class CleanDeletedContentTypeCommand extends Command
 
         foreach ($contentTypes as $contentType) {
             $output->writeln('Remove deleted content type '.$contentType->getName());
-            if ($contentType->getFieldType()) {
+            if ($contentType->hasFieldType()) {
                 $contentType->unsetFieldType();
                 $em->persist($contentType);
+                $em->flush($contentType);
             }
-            $em->flush($contentType);
             $fields = $fieldRepo->findBy([
                 'contentType' => $contentType,
             ]);

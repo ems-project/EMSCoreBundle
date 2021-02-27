@@ -85,8 +85,8 @@ class ObjectChoiceCacheService
                             ],
                         ]);
                     }
-                    if ($currentType->getLabelField()) {
-                        $search->setSources([$currentType->getLabelField()]);
+                    if ($currentType->hasLabelField()) {
+                        $search->setSources([$currentType->giveLabelField()]);
                     }
 
                     $scroll = $this->elasticaService->scroll($search);

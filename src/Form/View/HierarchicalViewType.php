@@ -27,7 +27,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Twig_Environment;
+use Twig\Environment;
 
 class HierarchicalViewType extends ViewType
 {
@@ -47,7 +47,7 @@ class HierarchicalViewType extends ViewType
     /** @var SearchService */
     private $searchService;
 
-    public function __construct(FormFactory $formFactory, Twig_Environment $twig, SearchService $searchService, Mapping $mapping, LoggerInterface $logger, Session $session, DataService $dataService, RouterInterface $router, ContentTypeService $contentTypeService)
+    public function __construct(FormFactory $formFactory, Environment $twig, SearchService $searchService, Mapping $mapping, LoggerInterface $logger, Session $session, DataService $dataService, RouterInterface $router, ContentTypeService $contentTypeService)
     {
         parent::__construct($formFactory, $twig, $logger);
         $this->searchService = $searchService;

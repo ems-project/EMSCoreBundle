@@ -2,37 +2,31 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
-use EMS\CoreBundle\Form\View\ViewType;
+use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ViewTypePickerType extends SelectPickerType
 {
-    private $viewTypes;
+    private ViewTypes $viewTypes;
 
-    public function __construct()
+    public function __construct(ViewTypes $viewTypes)
     {
         parent::__construct();
-        $this->viewTypes = [];
-    }
-
-    public function addViewType($viewType, $viewTypeId)
-    {
-        $this->viewTypes[$viewTypeId] = $viewType;
+        $this->viewTypes = $viewTypes;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'choices' => \array_keys($this->viewTypes),
+            'choices' => $this->viewTypes->getIds(),
             'attr' => [
                     'data-live-search' => true,
             ],
-            'choice_attr' => function ($category, $key, $index) {
-                /** @var ViewType $viewType */
-                $viewType = $this->viewTypes[$index];
+            'choice_attr' => function ($category, $key, $id) {
+                $viewType = $this->viewTypes->get($id);
 
                 return [
-                        'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$viewType->getLabel().'</div>',
+                    'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$viewType->getLabel().'</div>',
                 ];
             },
             'choice_value' => function ($value) {

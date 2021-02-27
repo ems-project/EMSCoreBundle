@@ -279,66 +279,11 @@ services:
         tags:
             - { name: form.type }
 
-
-#### Begin list available ems views type ###
     EMS\CoreBundle\Form\Form\SearchFormType:
         arguments: ['@security.authorization_checker', '@ems.service.sort_option', '@ems.service.search_field_option']
         tags:
             - { name: form.type }
-    ems.view.keywords:
-        class: EMS\CoreBundle\Form\View\KeywordsViewType
-        arguments: ['@form.factory', '@twig', '@ems_common.service.elastica', '@logger']
-        tags:
-            - { name: ems.form.viewtype, alias: keywords }
-            - { name: form.type }
-    ems.view.criteria:
-        class: EMS\CoreBundle\Form\View\CriteriaViewType
-        arguments: ['@form.factory', '@twig', '@logger', '@router']
-        tags:
-            - { name: ems.form.viewtype, alias: criteria }
-            - { name: form.type }
-    ems.view.export:
-        class: EMS\CoreBundle\Form\View\ExportViewType
-        arguments: ['@form.factory', '@twig', '@ems_common.service.elastica', '@logger']
-        tags:
-            - { name: ems.form.viewtype, alias: export }
-            - { name: form.type }
-    ems.view.sorter:
-        class: EMS\CoreBundle\Form\View\SorterViewType
-        arguments: ['@form.factory', '@twig', '@ems.service.mapping', '@ems_common.service.elastica', '@logger', '@session', '@ems.service.data', '@router']
-        tags:
-            - { name: ems.form.viewtype, alias: sorter }
-            - { name: form.type }
-    ems.view.hierarchical:
-        class: EMS\CoreBundle\Form\View\HierarchicalViewType
-        arguments: ['@form.factory', '@twig', '@ems.service.search', '@ems.service.mapping', '@logger', '@session', '@ems.service.data', '@router', '@ems.service.contenttype']
-        tags:
-            - { name: ems.form.viewtype, alias: hierarchical }
-            - { name: form.type }
-    ems.view.report:
-        class: EMS\CoreBundle\Form\View\ReportViewType
-        arguments: ['@form.factory', '@twig', '@ems_common.service.elastica', '@logger']
-        tags:
-            - { name: ems.form.viewtype, alias: report }
-            - { name: form.type }
-    ems.view.calendar:
-        class: EMS\CoreBundle\Form\View\CalendarViewType
-        arguments: ['@form.factory', '@twig', '@logger']
-        tags:
-            - { name: ems.form.viewtype, alias: calendar }
-            - { name: form.type }
-    ems.view.gallery:
-        class: EMS\CoreBundle\Form\View\GalleryViewType
-        arguments: ['@form.factory', '@twig', '@ems_common.service.elastica', '@logger', '@ems.service.search']
-        tags:
-            - { name: ems.form.viewtype, alias: gallery }
-            - { name: form.type }
-    ems.view.importer:
-        class: EMS\CoreBundle\Form\View\ImporterViewType
-        arguments: ['@form.factory', '@twig', '@logger', '@ems.service.file', '@ems.service.job', '@security.token_storage', '@router']
-        tags:
-            - { name: ems.form.viewtype, alias: importer }
-            - { name: form.type }
+
 #### End list available ems views ###
     ems.form.factories.objectChoiceListFactory:
         class: EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory
@@ -354,10 +299,6 @@ services:
     ems.form.field.contenttypefieldpickertype:
         class: EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType
         arguments: ['@ems.form.factories.contentTypeFieldChoiceListFactory']
-        tags:
-            - { name: form.type }
-    ems.form.field.viewtypepickertype:
-        class: EMS\CoreBundle\Form\Field\ViewTypePickerType
         tags:
             - { name: form.type }
     ems.form.field.datafieldtypepickertype:

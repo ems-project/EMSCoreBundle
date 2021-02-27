@@ -178,7 +178,8 @@
 							    		return {
 								        q: params.term, // search term
 								        page: params.page,
-								        type: typeFilter.val()
+								        type: typeFilter.val(),
+										locale: editor.config.language
 								      };
 								    },
 									processResults: function (data, params) {

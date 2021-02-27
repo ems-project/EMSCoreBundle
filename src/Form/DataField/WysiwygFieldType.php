@@ -93,7 +93,11 @@ class WysiwygFieldType extends DataFieldType
             }
         }
 
-        $attr['data-lang'] = $options['language'];
+        if (isset($options['language'])) {
+            $language = \strval($options['language']);
+            $attr['data-lang'] = \explode('_', $language)[0];
+        }
+
         $attr['data-height'] = $options['height'];
         $attr['data-format-tags'] = $formatTags;
         $attr['data-styles-set'] = $styleSetName;

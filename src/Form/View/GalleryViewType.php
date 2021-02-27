@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Twig_Environment;
+use Twig\Environment;
 
 class GalleryViewType extends ViewType
 {
@@ -22,7 +22,7 @@ class GalleryViewType extends ViewType
     /** @var ElasticaService */
     private $elasticaService;
 
-    public function __construct(FormFactory $formFactory, Twig_Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger, SearchService $searchService)
+    public function __construct(FormFactory $formFactory, Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger, SearchService $searchService)
     {
         parent::__construct($formFactory, $twig, $logger);
         $this->searchService = $searchService;

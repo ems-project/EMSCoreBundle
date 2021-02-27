@@ -29,7 +29,6 @@
 		"dompdf/dompdf": "^0.8",
 		"elasticms/client-helper-bundle": "^3.5",
 		"guzzlehttp/guzzle" : "^6.3",
-		"maennchen/zipstream-php" : "^0.5",
 		"psr/simple-cache": "^1.0",
 		"sensio/framework-extra-bundle": "^5.4",
 		"sensiolabs/ansi-to-html" : "^1.1",

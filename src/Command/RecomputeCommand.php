@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -11,6 +13,7 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use Symfony\Component\Console\Command\Command;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\IndexService;
@@ -25,30 +28,31 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Form\FormFactoryInterface;
 
-class RecomputeCommand extends EmsCommand
+final class RecomputeCommand extends Command
 {
     /** @var string */
     const LOCK_BY = 'SYSTEM_RECOMPUTE';
-    /** @var ObjectManager */
-    private $em;
-    /** @var DataService */
-    private $dataService;
-    /** @var FormFactoryInterface */
-    private $formFactory;
-    /** @var PublishService */
-    private $publishService;
-    /** @var ContentTypeRepository */
-    private $contentTypeRepository;
-    /** @var RevisionRepository */
-    private $revisionRepository;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var IndexService */
-    private $indexService;
-    /** @var SearchService */
-    private $searchService;
-    /** @var LoggerInterface */
-    protected $logger;
+
+    private ObjectManager $em;
+    private DataService $dataService;
+    private FormFactoryInterface $formFactory;
+    private PublishService $publishService;
+    private ContentTypeRepository $contentTypeRepository;
+    private RevisionRepository $revisionRepository;
+    private ContentTypeService $contentTypeService;
+    private IndexService $indexService;
+    private SearchService $searchService;
+    private SymfonyStyle $io;
+    protected LoggerInterface $logger;
+
+    private const ARGUMENT_CONTENT_TYPE = 'contentType';
+    private const OPTION_FORCE = 'force';
+    private const OPTION_MISSING = 'missing';
+    private const OPTION_CONTINUE = 'continue';
+    private const OPTION_NOALIGN = 'no-align';
+    private const OPTION_CRON = 'cron';
+    private const OPTION_OUUID = 'ouuid';
+    private const OPTION_DEEP = 'deep';
 
     public function __construct(
         DataService $dataService,
@@ -82,15 +86,21 @@ class RecomputeCommand extends EmsCommand
         $this
             ->setName('ems:contenttype:recompute')
             ->setDescription('Recompute a content type')
-            ->addArgument('contentType', InputArgument::REQUIRED, 'content type to recompute')
-            ->addOption('force', null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
-            ->addOption('missing', null, InputOption::VALUE_NONE, 'will recompute the objects that are missing in their default environment only')
-            ->addOption('continue', null, InputOption::VALUE_NONE, 'continue a recompute')
-            ->addOption('no-align', null, InputOption::VALUE_NONE, "don't keep the revisions aligned to all already aligned environments")
-            ->addOption('cron', null, InputOption::VALUE_NONE, 'optimized for automated recurring recompute calls, tries --continue, when no locks are found for user runs command without --continue')
-            ->addOption('ouuid', null, InputOption::VALUE_OPTIONAL, 'recompute a specific revision ouuid', null)
-            ->addOption('deep', null, InputOption::VALUE_NONE, 'deep recompute form will be submitted and transformers triggered')
+            ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'content type to recompute')
+            ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
+            ->addOption(self::OPTION_MISSING, null, InputOption::VALUE_NONE, 'will recompute the objects that are missing in their default environment only')
+            ->addOption(self::OPTION_CONTINUE, null, InputOption::VALUE_NONE, 'continue a recompute')
+            ->addOption(self::OPTION_NOALIGN, null, InputOption::VALUE_NONE, "don't keep the revisions aligned to all already aligned environments")
+            ->addOption(self::OPTION_CRON, null, InputOption::VALUE_NONE, 'optimized for automated recurring recompute calls, tries --continue, when no locks are found for user runs command without --continue')
+            ->addOption(self::OPTION_OUUID, null, InputOption::VALUE_OPTIONAL, 'recompute a specific revision ouuid', null)
+            ->addOption(self::OPTION_DEEP, null, InputOption::VALUE_NONE, 'deep recompute form will be submitted and transformers triggered')
         ;
+    }
+
+    protected function initialize(InputInterface $input, OutputInterface $output): void
+    {
+        $this->io = new SymfonyStyle($input, $output);
+        $this->io->title('content-type recompute command'); 
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -103,9 +113,9 @@ class RecomputeCommand extends EmsCommand
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->em->getConnection()->setAutoCommit(false);
 
-        $io = new SymfonyStyle($input, $output);
+        $this->io = new SymfonyStyle($input, $output);
 
-        $contentTypeName = $input->getArgument('contentType');
+        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
         if (!\is_string($contentTypeName)) {
             throw new \RuntimeException('Unexpected content type name');
         }
@@ -114,30 +124,30 @@ class RecomputeCommand extends EmsCommand
             throw new \RuntimeException('Content type not found');
         }
 
-        if (!$input->getOption('continue') || $input->getOption('cron')) {
-            $forceFlag = $input->getOption('force');
+        if (!$input->getOption('continue') || $input->getOption(self::OPTION_CRON)) {
+            $forceFlag = $input->getOption(self::OPTION_FORCE);
             if (!\is_bool($forceFlag)) {
                 throw new \RuntimeException('Unexpected force option');
             }
-            $cronFlag = $input->getOption('cron');
+            $cronFlag = $input->getOption(self::OPTION_CRON);
             if (!\is_bool($cronFlag)) {
                 throw new \RuntimeException('Unexpected cron option');
             }
-            $ouuid = $input->getOption('ouuid') ? \strval($input->getOption('ouuid')) : null;
+            $ouuid = $input->getOption(self::OPTION_OUUID) ? \strval($input->getOption(self::OPTION_OUUID)) : null;
             $this->lock($output, $contentType, $forceFlag, $cronFlag, $ouuid);
         }
 
-        $optionDeep = \boolval($input->getOption('deep'));
+        $optionDeep = \boolval($input->getOption(self::OPTION_DEEP));
         $page = 0;
         $limit = 200;
         $paginator = $this->revisionRepository->findAllLockedRevisions($contentType, self::LOCK_BY, $page, $limit);
 
-        $progress = $io->createProgressBar($paginator->count());
+        $progress = $this->io->createProgressBar($paginator->count());
         $progress->start();
 
         $missingInIndex = false;
 
-        if ($input->getOption('missing')) {
+        if ($input->getOption(self::OPTION_MISSING)) {
             $missingInIndex = $this->contentTypeService->getIndex($contentType);
         }
 
@@ -147,7 +157,7 @@ class RecomputeCommand extends EmsCommand
             foreach ($paginator as $revision) {
                 $revisionType = $this->formFactory->create(RevisionType::class, null, [
                     'migration' => true,
-                    'content_type' => $contentType,
+                    self::ARGUMENT_CONTENT_TYPE => $contentType,
                 ]);
 
                 $revisionId = $revision->getId();
@@ -234,7 +244,7 @@ class RecomputeCommand extends EmsCommand
         $command = $application->find('ems:contenttype:lock');
         $arguments = [
             'command' => 'ems:contenttype:lock',
-            'contentType' => $contentType->getName(),
+            self::ARGUMENT_CONTENT_TYPE => $contentType->getName(),
             'time' => '+1day',
             '--user' => self::LOCK_BY,
             '--force' => $force,

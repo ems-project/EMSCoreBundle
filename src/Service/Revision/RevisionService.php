@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Revision;
 
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -36,17 +37,24 @@ class RevisionService
         return $revision instanceof Revision ? $revision : null;
     }
 
+    public function get(string $ouuid, string $contentType, ?\DateTimeInterface $dateTime = null): ?Revision
+    {
+        return $this->revisionRepository->findRevision($ouuid, $contentType, $dateTime);
+    }
+
+    public function getByEmsLink(EMSLink $emsLink, ?\DateTimeInterface $dateTime = null): ?Revision
+    {
+        return $this->get($emsLink->getOuuid(), $emsLink->getContentType(), $dateTime);
+    }
+
     public function getCurrentRevisionForDocument(DocumentInterface $document): ?Revision
     {
-        return $this->revisionRepository->findCurrentByOuuidAndContentTypeName(
-            $document->getId(),
-            $document->getContentType()
-        );
+        return $this->get($document->getId(), $document->getContentType());
     }
 
     public function getCurrentRevisionByOuuidAndContentType(string $ouuid, string $contentType): ?Revision
     {
-        return $this->revisionRepository->findCurrentByOuuidAndContentTypeName($ouuid, $contentType);
+        return $this->get($ouuid, $contentType);
     }
 
     /**

@@ -30,6 +30,11 @@ use Symfony\Component\Form\FormFactoryInterface;
 
 final class RecomputeCommand extends Command
 {
+    private ContentType $contentType;
+    private bool $optionDeep;
+    private bool $forceFlag;
+    private bool $cronFlag;
+    private ?string $ouuid;
     private ObjectManager $em;
     private DataService $dataService;
     private FormFactoryInterface $formFactory;
@@ -101,6 +106,35 @@ final class RecomputeCommand extends Command
         $this->io->title('content-type recompute command');
     }
 
+    protected function interact(InputInterface $input, OutputInterface $output): void
+    {
+        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
+        if (!\is_string($contentTypeName)) {
+            throw new \RuntimeException('Unexpected content type name');
+        }
+        $contentType = $this->contentTypeRepository->findByName($contentTypeName);
+        if (!$contentType instanceof ContentType) {
+            throw new \RuntimeException('Content type not found');
+        }
+        $this->contentType = $contentType;
+
+        if (!$input->getOption(self::OPTION_CONTINUE) || $input->getOption(self::OPTION_CRON)) {
+            $forceFlag = $input->getOption(self::OPTION_FORCE);
+            if (!\is_bool($forceFlag)) {
+                throw new \RuntimeException('Unexpected force option');
+            }
+            $this->forceFlag = $forceFlag;
+            $cronFlag = $input->getOption(self::OPTION_CRON);
+            if (!\is_bool($cronFlag)) {
+                throw new \RuntimeException('Unexpected cron option');
+            }
+            $this->cronFlag = $cronFlag;
+            $this->ouuid = $input->getOption(self::OPTION_OUUID) ? \strval($input->getOption(self::OPTION_OUUID)) : null;
+        }
+
+        $this->optionDeep = \boolval($input->getOption(self::OPTION_DEEP));
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->em instanceof EntityManager) {
@@ -111,40 +145,20 @@ final class RecomputeCommand extends Command
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->em->getConnection()->setAutoCommit(false);
 
-        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
-        if (!\is_string($contentTypeName)) {
-            throw new \RuntimeException('Unexpected content type name');
-        }
-        $contentType = $this->contentTypeRepository->findByName($contentTypeName);
-        if (!$contentType instanceof ContentType) {
-            throw new \RuntimeException('Content type not found');
+        if (!$input->getOption(self::OPTION_CONTINUE) || $input->getOption(self::OPTION_CRON)) {
+            $this->lock($output, $this->contentType, $this->forceFlag, $this->cronFlag, $this->ouuid);
         }
 
-        if (!$input->getOption('continue') || $input->getOption(self::OPTION_CRON)) {
-            $forceFlag = $input->getOption(self::OPTION_FORCE);
-            if (!\is_bool($forceFlag)) {
-                throw new \RuntimeException('Unexpected force option');
-            }
-            $cronFlag = $input->getOption(self::OPTION_CRON);
-            if (!\is_bool($cronFlag)) {
-                throw new \RuntimeException('Unexpected cron option');
-            }
-            $ouuid = $input->getOption(self::OPTION_OUUID) ? \strval($input->getOption(self::OPTION_OUUID)) : null;
-            $this->lock($output, $contentType, $forceFlag, $cronFlag, $ouuid);
-        }
-
-        $optionDeep = \boolval($input->getOption(self::OPTION_DEEP));
         $page = 0;
         $limit = 200;
-        $paginator = $this->revisionRepository->findAllLockedRevisions($contentType, self::LOCK_BY, $page, $limit);
+        $paginator = $this->revisionRepository->findAllLockedRevisions($this->contentType, self::LOCK_BY, $page, $limit);
 
         $progress = $this->io->createProgressBar($paginator->count());
         $progress->start();
 
         $missingInIndex = false;
-
         if ($input->getOption(self::OPTION_MISSING)) {
-            $missingInIndex = $this->contentTypeService->getIndex($contentType);
+            $missingInIndex = $this->contentTypeService->getIndex($this->contentType);
         }
 
         do {
@@ -153,7 +167,7 @@ final class RecomputeCommand extends Command
             foreach ($paginator as $revision) {
                 $revisionType = $this->formFactory->create(RevisionType::class, null, [
                     'migration' => true,
-                    'content_type' => $contentType,
+                    'content_type' => $this->contentType,
                 ]);
 
                 $revisionId = $revision->getId();
@@ -163,7 +177,7 @@ final class RecomputeCommand extends Command
 
                 if ($missingInIndex) {
                     try {
-                        $this->searchService->getDocument($contentType, $revision->getOuuid());
+                        $this->searchService->getDocument($this->contentType, $revision->getOuuid());
                         $this->revisionRepository->unlockRevision($revisionId);
                         $progress->advance();
                         continue;
@@ -176,7 +190,7 @@ final class RecomputeCommand extends Command
                 $newRevision = $revision->convertToDraft();
                 $revisionType->setData($newRevision); //bind new revision on form
 
-                if ($optionDeep) {
+                if ($this->optionDeep) {
                     $viewData = $this->dataService->getSubmitData($revisionType->get('data')); //get view data of new revision
                     $revisionType->submit(['data' => $viewData]); // submit new revision (reverse model transformers called
                 }
@@ -185,7 +199,7 @@ final class RecomputeCommand extends Command
 
                 //@todo maybe improve the data binding like the migration?
 
-                $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $contentType, $contentType->getName(), $newRevision->getOuuid(), true);
+                $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $this->contentType, $this->contentType->getName(), $newRevision->getOuuid(), true);
                 $newRevision->setRawData($objectArray);
 
                 $revision->close(new \DateTime('now'));
@@ -221,7 +235,7 @@ final class RecomputeCommand extends Command
                 $this->em->commit();
             }
             $this->em->clear(Revision::class);
-            $paginator = $this->revisionRepository->findAllLockedRevisions($contentType, self::LOCK_BY, $page, $limit);
+            $paginator = $this->revisionRepository->findAllLockedRevisions($this->contentType, self::LOCK_BY, $page, $limit);
             $iterator = $paginator->getIterator();
         } while ($iterator instanceof \ArrayIterator && $iterator->count());
 

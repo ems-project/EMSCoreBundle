@@ -13,13 +13,13 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use Symfony\Component\Console\Command\Command;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,9 +30,6 @@ use Symfony\Component\Form\FormFactoryInterface;
 
 final class RecomputeCommand extends Command
 {
-    /** @var string */
-    const LOCK_BY = 'SYSTEM_RECOMPUTE';
-
     private ObjectManager $em;
     private DataService $dataService;
     private FormFactoryInterface $formFactory;
@@ -53,6 +50,7 @@ final class RecomputeCommand extends Command
     private const OPTION_CRON = 'cron';
     private const OPTION_OUUID = 'ouuid';
     private const OPTION_DEEP = 'deep';
+    private const LOCK_BY = 'SYSTEM_RECOMPUTE';
 
     public function __construct(
         DataService $dataService,
@@ -100,7 +98,7 @@ final class RecomputeCommand extends Command
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
-        $this->io->title('content-type recompute command'); 
+        $this->io->title('content-type recompute command');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -112,8 +110,6 @@ final class RecomputeCommand extends Command
         }
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->em->getConnection()->setAutoCommit(false);
-
-        $this->io = new SymfonyStyle($input, $output);
 
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
         if (!\is_string($contentTypeName)) {
@@ -157,7 +153,7 @@ final class RecomputeCommand extends Command
             foreach ($paginator as $revision) {
                 $revisionType = $this->formFactory->create(RevisionType::class, null, [
                     'migration' => true,
-                    self::ARGUMENT_CONTENT_TYPE => $contentType,
+                    'content_type' => $contentType,
                 ]);
 
                 $revisionId = $revision->getId();
@@ -244,7 +240,7 @@ final class RecomputeCommand extends Command
         $command = $application->find('ems:contenttype:lock');
         $arguments = [
             'command' => 'ems:contenttype:lock',
-            self::ARGUMENT_CONTENT_TYPE => $contentType->getName(),
+            'contentType' => $contentType->getName(),
             'time' => '+1day',
             '--user' => self::LOCK_BY,
             '--force' => $force,

@@ -45,6 +45,7 @@ final class RecomputeCommand extends Command
     private IndexService $indexService;
     private SearchService $searchService;
     private SymfonyStyle $io;
+    private string $query;
     protected LoggerInterface $logger;
 
     private const ARGUMENT_CONTENT_TYPE = 'contentType';
@@ -55,6 +56,7 @@ final class RecomputeCommand extends Command
     private const OPTION_CRON = 'cron';
     private const OPTION_OUUID = 'ouuid';
     private const OPTION_DEEP = 'deep';
+    private const OPTION_QUERY = 'query';
     private const LOCK_BY = 'SYSTEM_RECOMPUTE';
 
     public function __construct(
@@ -97,7 +99,8 @@ final class RecomputeCommand extends Command
             ->addOption(self::OPTION_CRON, null, InputOption::VALUE_NONE, 'optimized for automated recurring recompute calls, tries --continue, when no locks are found for user runs command without --continue')
             ->addOption(self::OPTION_OUUID, null, InputOption::VALUE_OPTIONAL, 'recompute a specific revision ouuid', null)
             ->addOption(self::OPTION_DEEP, null, InputOption::VALUE_NONE, 'deep recompute form will be submitted and transformers triggered')
-        ;
+            ->addOption(self::OPTION_QUERY, null, InputOption::VALUE_OPTIONAL, 'ES query', '{}')
+            ;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -132,6 +135,14 @@ final class RecomputeCommand extends Command
             $this->ouuid = $input->getOption(self::OPTION_OUUID) ? \strval($input->getOption(self::OPTION_OUUID)) : null;
         }
 
+        if (null !== $input->getOption(self::OPTION_QUERY)) {
+            $this->query = \strval($input->getOption('query'));
+            \json_decode($this->query, true);
+            if (\json_last_error() > 0) {
+                throw new \RuntimeException(\sprintf('Invalid json query %s', $this->query));
+            }
+        }
+
         $this->optionDeep = \boolval($input->getOption(self::OPTION_DEEP));
     }
 
@@ -146,7 +157,7 @@ final class RecomputeCommand extends Command
         $this->em->getConnection()->setAutoCommit(false);
 
         if (!$input->getOption(self::OPTION_CONTINUE) || $input->getOption(self::OPTION_CRON)) {
-            $this->lock($output, $this->contentType, $this->forceFlag, $this->cronFlag, $this->ouuid);
+            $this->lock($output, $this->contentType, $this->forceFlag, $this->cronFlag, $this->ouuid, $this->query);
         }
 
         $page = 0;
@@ -245,7 +256,7 @@ final class RecomputeCommand extends Command
         return 0;
     }
 
-    private function lock(OutputInterface $output, ContentType $contentType, bool $force = false, bool $ifEmpty = false, ?string $ouuid = null): int
+    private function lock(OutputInterface $output, ContentType $contentType, bool $force = false, bool $ifEmpty = false, ?string $ouuid = null, string $query): int
     {
         $application = $this->getApplication();
         if (null === $application) {
@@ -260,6 +271,7 @@ final class RecomputeCommand extends Command
             '--force' => $force,
             '--if-empty' => $ifEmpty,
             '--ouuid' => $ouuid,
+            '--query' => $query,
         ];
 
         return $command->run(new ArrayInput($arguments), $output);

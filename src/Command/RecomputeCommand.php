@@ -107,10 +107,7 @@ final class RecomputeCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('content-type recompute command');
-    }
 
-    protected function interact(InputInterface $input, OutputInterface $output): void
-    {
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
         if (!\is_string($contentTypeName)) {
             throw new \RuntimeException('Unexpected content type name');

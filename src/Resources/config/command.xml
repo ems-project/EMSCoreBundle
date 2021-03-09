@@ -12,6 +12,14 @@
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
             <tag name="console.command"/>
         </service>
+        <!-- EMS revision -->
+        <service id="ems.command.revision.time_machine" class="EMS\CoreBundle\Command\Revision\TimeMachineCommand">
+            <argument type="service" id="ems.service.revision"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems.service.index"/>
+            <tag name="console.command"/>
+        </service>
         <!-- EMS notification -->
         <service id="ems.command.notification.bulk_action" class="EMS\CoreBundle\Command\Notification\BulkActionCommand">
             <argument type="service" id="ems.service.notification"/>

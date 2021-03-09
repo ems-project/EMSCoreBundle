@@ -15,19 +15,30 @@ use EMS\CoreBundle\Entity\Revision;
 
 class RevisionRepository extends EntityRepository
 {
-    public function findCurrentByOuuidAndContentTypeName(string $ouuid, string $contentTypeName): ?Revision
+    public function findRevision(string $ouuid, string $contentTypeName, ?\DateTimeInterface $dateTime = null): ?Revision
     {
         $qb = $this->createQueryBuilder('r');
         $qb
             ->join('r.contentType', 'c')
             ->andWhere($qb->expr()->eq('c.name', ':content_type_name'))
             ->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))
-            ->andWhere($qb->expr()->isNull('r.endTime'))
-            ->setParameters(['ouuid' => $ouuid, 'content_type_name' => $contentTypeName]);
+            ->setParameters(['ouuid' => $ouuid, 'content_type_name' => $contentTypeName])
+            ->orderBy('r.startTime', 'DESC')
+            ->setMaxResults(1);
 
-        $revision = $qb->getQuery()->getOneOrNullResult();
+        if (null === $dateTime) {
+            $qb->andWhere($qb->expr()->isNull('r.endTime'));
+        } else {
+            $format = $this->getEntityManager()->getConnection()->getDatabasePlatform()->getDateTimeFormatString();
+            $qb
+                ->andWhere($qb->expr()->lte('r.startTime', ':dateTime'))
+                ->andWhere($qb->expr()->gte('r.endTime', ':dateTime'))
+                ->setParameter('dateTime', $dateTime->format($format));
+        }
 
-        return $revision instanceof Revision ? $revision : null;
+        $result = $qb->getQuery()->getResult();
+
+        return isset($result[0]) && $result[0] instanceof Revision ? $result[0] : null;
     }
 
     public function findByContentType(ContentType $contentType, $orderBy = null, $limit = null, $offset = null)

@@ -58,7 +58,9 @@
                                             {% if path %}
                                                 <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>
                                             {% endif %}
-                                            {%  if attribute(column.valueToIconMapping, value) is defined %}
+                                            {%  if column.dateTimeProperty == true %}
+                                                {{ value|date(date_time_format) }}
+                                            {%  elseif attribute(column.valueToIconMapping, value) is defined %}
                                                 <i class="{{ attribute(column.valueToIconMapping, value)  }}"></i> <span class="sr-only">{{ value }}</span>
                                             {%  elseif column.iconProperty and attribute(line.data, column.iconProperty)|default(false) %}
                                                 <i class="{{ attribute(line.data, column.iconProperty)  }}"></i> {{ value }}

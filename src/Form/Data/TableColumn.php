@@ -13,6 +13,7 @@ final class TableColumn
     private ?string $routeProperty = null;
     private ?string $routeTarget = '_blank';
     private ?string $iconProperty = null;
+    private ?bool $dateTimeProperty = null;
 
     /**
      * @param array<mixed, string> $valueToIconMapping
@@ -70,5 +71,15 @@ final class TableColumn
     public function setIconProperty(?string $iconProperty): void
     {
         $this->iconProperty = $iconProperty;
+    }
+
+    public function getDateTimeProperty(): ?bool
+    {
+        return $this->dateTimeProperty;
+    }
+
+    public function setDateTimeProperty(?bool $dateTimeProperty): void
+    {
+        $this->dateTimeProperty = $dateTimeProperty;
     }
 }

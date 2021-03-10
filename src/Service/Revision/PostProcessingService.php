@@ -103,7 +103,7 @@ final class PostProcessingService
                         ]);
                     }
                 }
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
                     if (!$migration) {
                         $form->addError(new FormError($e->getPrevious()->getMessage()));
@@ -135,7 +135,7 @@ final class PostProcessingService
                     } else {
                         $out = \trim($out);
                     }
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
                         $form->addError(new FormError($e->getPrevious()->getMessage()));
                     }

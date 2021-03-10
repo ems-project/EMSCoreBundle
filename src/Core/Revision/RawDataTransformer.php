@@ -82,8 +82,8 @@ final class RawDataTransformer
                         }
                     }
                 } else {
-                    if ($type::isContainer() && \is_array($data[$child->getName()])) {
-                        if (isset($data[$child->getName()]) && !empty($data[$child->getName()])) {
+                    if ($type::isContainer() && isset($data[$child->getName()]) && \is_array($data[$child->getName()])) {
+                        if (!empty($data[$child->getName()])) {
                             if ($type::isCollection()) {
                                 $out[$child->getName()] = [];
                                 foreach ($data[$child->getName()] as $itemIdx => $item) {

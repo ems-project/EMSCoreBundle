@@ -66,10 +66,7 @@ final class LockCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('Content-type lock command');
-    }
 
-    protected function interact(InputInterface $input, OutputInterface $output): void
-    {
         $timeArgument = $input->getArgument(self::ARGUMENT_TIME);
         if (!\is_string($timeArgument)) {
             throw new \RuntimeException('Unexpected time argument');

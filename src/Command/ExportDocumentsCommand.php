@@ -169,6 +169,10 @@ class ExportDocumentsCommand extends EmsCommand
             throw new \RuntimeException('Unexpected query argument');
         }
         $body = \json_decode($query, true);
+        if (\json_last_error() > 0) {
+            throw new \RuntimeException(\sprintf('Invalid json passed! %s', \json_last_error_msg()));
+        }
+
         if (isset($body['sort'])) {
             unset($body['sort']);
         }
@@ -182,6 +186,7 @@ class ExportDocumentsCommand extends EmsCommand
 
         $scroll = $this->elasticaService->scroll($search, $scrollTimeout);
         $total = $this->elasticaService->count($search);
+
         $progress = new ProgressBar($output, $total);
         $progress->start();
 
@@ -310,7 +315,8 @@ class ExportDocumentsCommand extends EmsCommand
         } else {
             $output->writeln('Export: '.$baseUrl.$this->runtime->assetPath(
                 [
-                EmsFields::CONTENT_FILE_NAME_FIELD_ => 'export.zip',
+                    EmsFields::CONTENT_FILE_NAME_FIELD_ => 'export.zip',
+                    EmsFields::CONTENT_FILE_HASH_FIELD_ => \sha1_file($outZipPath),
                 ],
                 [
                 EmsFields::ASSET_CONFIG_FILE_NAMES => [$outZipPath],

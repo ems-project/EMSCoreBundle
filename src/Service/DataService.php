@@ -889,10 +889,10 @@ class DataService
             $fieldForm = $formError->getOrigin();
             $dataField = null;
             while (null !== $fieldForm && !$fieldForm->getNormData() instanceof DataField) {
-                $fieldForm = $fieldForm->getOrigin()->getParent();
+                $fieldForm = $fieldForm->getParent();
             }
 
-            if (!$fieldForm->getNormData() instanceof DataField) {
+            if (!$fieldForm instanceof FormInterface || !$fieldForm->getNormData() instanceof DataField) {
                 continue;
             }
             /** @var DataField $dataField */

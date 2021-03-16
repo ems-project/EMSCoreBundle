@@ -150,12 +150,14 @@ final class TimeMachineCommand extends Command
                 return $currentRaw;
             }
 
-            foreach ($currentProperty as $i => &$currentItem) {
-                $currentItem = $this->goBackInTime($currentItem, $historyProperty[$i], $path);
+            foreach ($currentProperty as $i => $currentItem) {
+                $currentRaw[$property][$i] = $this->goBackInTime($currentItem, $historyProperty[$i], $path);
             }
         }
 
-        $currentRaw[$property] = $historyProperty;
+        if (0 === \count($path)) {
+            $currentRaw[$property] = $historyProperty;
+        }
 
         return $currentRaw;
     }

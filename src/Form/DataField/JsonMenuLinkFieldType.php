@@ -106,7 +106,7 @@ class JsonMenuLinkFieldType extends DataFieldType
                 'required' => false,
                 'disabled' => $this->isDisabled($options),
                 'choices' => $choices,
-                'empty_data' => null,
+                'empty_data' => [],
                 'multiple' => true,
                 'expanded' => $options['expanded'],
         ]);

@@ -1189,7 +1189,7 @@ class AppExtension extends AbstractExtension
                     }
                     $out = $icon.$out;
 
-                    if (null !== $document && $contentType->hasColorField() && isset($document->getSource()[$contentType->giveColorField()])) {
+                    if (null !== $document && $contentType->hasColorField() && \is_string($document->getSource()[$contentType->giveColorField()] ?? null)) {
                         $color = $document->getSource()[$contentType->giveColorField()];
                         $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
 

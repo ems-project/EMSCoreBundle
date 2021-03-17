@@ -1189,12 +1189,12 @@ class AppExtension extends AbstractExtension
                     }
                     $out = $icon.$out;
 
-                    if (null !== $document && $contentType->getColorField() && $document->getSource()[$contentType->getColorField()]) {
-                        $color = $document->getSource()[$contentType->getColorField()];
+                    if (null !== $document && $contentType->hasColorField() && isset($document->getSource()[$contentType->giveColorField()])) {
+                        $color = $document->getSource()[$contentType->giveColorField()];
                         $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
 
                         $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
-                        $addAttribute = ' style="background-color: '.$document->getSource()[$contentType->getColorField()].';border-color: '.$document->getSource()[$contentType->getColorField()].';"';
+                        $addAttribute = ' style="background-color: '.$color.';border-color: '.$color.';"';
                     }
 
                     if (null !== $diffMod) {

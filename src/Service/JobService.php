@@ -120,7 +120,7 @@ class JobService
             $output->writeln('Exception:'.$e->getMessage());
         }
 
-        $this->finish($job, $output);
+        $this->finish($job);
     }
 
     /**
@@ -145,7 +145,7 @@ class JobService
         return $output;
     }
 
-    public function finish(Job $job, JobOutput $output): void
+    public function finish(Job $job): void
     {
         $job->setDone(true);
         $job->setProgress(100);

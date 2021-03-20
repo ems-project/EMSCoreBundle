@@ -39,12 +39,15 @@ class DocumentCommand extends Command
     const ARGUMENT_CONTENTTYPE = 'contentTypeName';
     /** @var string */
     const ARGUMENT_ARCHIVE = 'archive';
+    /** @var int */
+    private $defaultBulkSize;
 
-    public function __construct(ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService)
+    public function __construct(ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService, int $defaultBulkSize)
     {
         $this->contentTypeService = $contentTypeService;
         $this->documentService = $documentService;
         $this->dataService = $dataService;
+        $this->defaultBulkSize = $defaultBulkSize;
         parent::__construct();
     }
 
@@ -67,7 +70,7 @@ class DocumentCommand extends Command
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Size of the elasticsearch bulk request',
-                500
+                $this->defaultBulkSize
             )
             ->addOption(
                 'raw',

@@ -535,7 +535,7 @@ services:
             -  { name: console.command }
     ems.make.document:
         class: EMS\CoreBundle\Command\DocumentCommand
-        arguments: ['@ems.service.contenttype', '@ems.service.document', '@ems.service.data']
+        arguments: ['@ems.service.contenttype', '@ems.service.document', '@ems.service.data', '%ems_core.default_bulk_size%']
         tags:
             -  { name: console.command }
     ems.contenttype.export:

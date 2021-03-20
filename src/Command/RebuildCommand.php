@@ -38,8 +38,10 @@ class RebuildCommand extends EmsCommand
     private $mapping;
     /** @var AliasService */
     private $aliasService;
+    /** @var int */
+    private $defaultBulkSize;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId, int $defaultBulkSize)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
@@ -50,6 +52,7 @@ class RebuildCommand extends EmsCommand
         $this->logger = $logger;
         $this->mapping = $mapping;
         $this->aliasService = $aliasService;
+        $this->defaultBulkSize = $defaultBulkSize;
         parent::__construct();
     }
 
@@ -86,7 +89,7 @@ class RebuildCommand extends EmsCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Number of item that will be indexed together during the same elasticsearch operation',
-                500
+                $this->defaultBulkSize
             )
         ;
     }

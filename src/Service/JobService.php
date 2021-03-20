@@ -77,7 +77,12 @@ class JobService
 
     public function count(): int
     {
-        return \intval($this->repository->countJobs());
+        return $this->repository->countJobs();
+    }
+
+    public function countPending(): int
+    {
+        return $this->repository->countPendingJobs();
     }
 
     public function createCommand(UserInterface $user, ?string $command): Job

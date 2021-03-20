@@ -80,10 +80,11 @@ class AliasService
 
     public function hasAlias(string $name): bool
     {
-        if ($this->isBuild) {
-            return isset($this->aliases[$name]);
-        }
+        return isset($this->aliases[$name]);
+    }
 
+    public function hasAliasInCluster(string $name): bool
+    {
         $endpoint = new Get();
         $endpoint->setName($name);
         try {

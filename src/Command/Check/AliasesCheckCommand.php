@@ -50,11 +50,11 @@ final class AliasesCheckCommand extends Command
             if (!$environment->getManaged()) {
                 continue;
             }
-            if ($this->aliasService->hasAlias($environment->getAlias())) {
+            if ($environment->hasAlias() && $this->aliasService->hasAliasInCluster($environment->getAlias())) {
                 $this->io->writeln(\sprintf('Environment\'s alias %s is present', $environment->getName()));
                 continue;
             }
-            $this->io->warning(\sprintf('The %s\' environment is missing', $environment->getName()));
+            $this->io->warning(\sprintf('The %s environment\'s alias is missing', $environment->getName()));
 
             if ($this->jobService->countPending() > 0) {
                 $this->io->warning('The job\'s queue is not empty');

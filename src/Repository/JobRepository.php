@@ -6,14 +6,22 @@ use Doctrine\ORM\EntityRepository;
 
 class JobRepository extends EntityRepository
 {
-    /**
-     * @return string
-     */
-    public function countJobs()
+    public function countJobs(): int
     {
-        return $this->createQueryBuilder('a')
+        return \intval($this->createQueryBuilder('a')
             ->select('COUNT(a)')
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult());
+    }
+
+    public function countPendingJobs(): int
+    {
+        $qb = $this->createQueryBuilder('a')->select('COUNT(a)');
+        $qb->where($qb->expr()->eq('a.done', ':false'));
+        $qb->setParameters([
+            ':false' => false,
+        ]);
+
+        return \intval($qb->getQuery()->getSingleScalarResult());
     }
 }

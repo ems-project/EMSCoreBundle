@@ -80,7 +80,20 @@ class AliasService
 
     public function hasAlias(string $name): bool
     {
-        return isset($this->aliases[$name]);
+        if ($this->isBuild) {
+            return isset($this->aliases[$name]);
+        }
+
+        $endpoint = new Get();
+        $endpoint->setName($name);
+        try {
+            $this->elasticaClient->requestEndpoint($endpoint)->getData();
+
+            return true;
+        } catch (\Throwable $e) {
+        }
+
+        return false;
     }
 
     /**

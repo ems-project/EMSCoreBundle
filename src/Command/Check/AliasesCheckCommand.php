@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Check;
 
+use EMS\CoreBundle\Command\RebuildCommand;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
@@ -59,6 +61,14 @@ final class AliasesCheckCommand extends Command
                 break;
             }
 
+            $fakeUser = new User();
+            $fakeUser->setUsername(self::COMMAND);
+            $command = \join(' ', [
+                RebuildCommand::COMMAND,
+                $environment->getName(),
+            ]);
+            $this->jobService->createCommand($fakeUser, $command);
+            $this->io->writeln(\sprintf('A command `%s` has been initialized', $command));
             break;
         }
 

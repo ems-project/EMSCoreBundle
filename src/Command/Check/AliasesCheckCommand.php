@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Check;
 
 use EMS\CoreBundle\Service\AliasService;
-use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,14 +15,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class AliasesCheckCommand extends Command
 {
     public const COMMAND = 'ems:check:aliases';
-    private ContentTypeService $contentTypeService;
+    private EnvironmentService $environmentService;
     private AliasService $aliasService;
     private JobService $jobService;
     private SymfonyStyle $io;
 
-    public function __construct(ContentTypeService $contentTypeService, AliasService $aliasService, JobService $jobService)
+    public function __construct(EnvironmentService $environmentService, AliasService $aliasService, JobService $jobService)
     {
-        $this->contentTypeService = $contentTypeService;
+        $this->environmentService = $environmentService;
         $this->aliasService = $aliasService;
         $this->jobService = $jobService;
         parent::__construct();
@@ -44,6 +44,15 @@ final class AliasesCheckCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->section('Start checking environment\'s aliase');
+        foreach ($this->environmentService->getEnvironments() as $environment) {
+            if (!$environment->getManaged()) {
+                continue;
+            }
+            $this->io->writeln(\sprintf('Verifying environment %s', $environment->getName()));
+            if (!$this->aliasService->hasAlias($environment->getAlias())) {
+                $this->io->warning(\sprintf('The %s\' environment is missing', $environment->getName()));
+            }
+        }
 
         return 0;
     }

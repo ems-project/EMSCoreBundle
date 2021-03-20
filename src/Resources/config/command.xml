@@ -35,7 +35,7 @@
             <tag name="console.command"/>
         </service>
         <service id="ems.command.check.aliases" class="EMS\CoreBundle\Command\Check\AliasesCheckCommand">
-            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.environment"/>
             <argument type="service" id="ems.service.alias"/>
             <argument type="service" id="ems.service.job"/>
             <tag name="console.command"/>

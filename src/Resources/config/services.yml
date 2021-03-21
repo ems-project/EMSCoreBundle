@@ -535,7 +535,7 @@ services:
             -  { name: console.command }
     ems.make.document:
         class: EMS\CoreBundle\Command\DocumentCommand
-        arguments: ['@ems.service.contenttype', '@ems.service.document', '@ems.service.data']
+        arguments: ['@ems.service.contenttype', '@ems.service.document', '@ems.service.data', '%ems_core.default_bulk_size%']
         tags:
             -  { name: console.command }
     ems.contenttype.export:
@@ -545,7 +545,7 @@ services:
             -  { name: console.command }
     ems.environment.rebuild:
         class: EMS\CoreBundle\Command\RebuildCommand
-        arguments: ['@doctrine', '@logger', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '@ems_common.service.elastica', '@ems.service.mapping', '@ems.service.alias', '%ems_core.instance_id%']
+        arguments: ['@doctrine', '@logger', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '@ems_common.service.elastica', '@ems.service.mapping', '@ems.service.alias', '%ems_core.instance_id%', '%ems_core.default_bulk_size%']
         tags:
             -  { name: console.command }
     ems.delete.orphans:
@@ -580,7 +580,7 @@ services:
             -  { name: console.command }
     ems.environment.reindex:
         class: EMS\CoreBundle\Command\ReindexCommand
-        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@ems.service.data', '@ems.elasticsearch.bulker']
+        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@ems.service.data', '@ems.elasticsearch.bulker', '%ems_core.default_bulk_size%']
         tags:
             -  { name: console.command }
     ems.contenttype.delete:

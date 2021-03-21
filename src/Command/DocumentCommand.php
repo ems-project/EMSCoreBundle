@@ -39,8 +39,7 @@ class DocumentCommand extends Command
     const ARGUMENT_CONTENTTYPE = 'contentTypeName';
     /** @var string */
     const ARGUMENT_ARCHIVE = 'archive';
-    /** @var int */
-    private $defaultBulkSize;
+    private int $defaultBulkSize;
 
     public function __construct(ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService, int $defaultBulkSize)
     {

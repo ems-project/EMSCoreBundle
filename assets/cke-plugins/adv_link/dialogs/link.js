@@ -49,7 +49,7 @@
 					uploadTab = dialog.definition.getContents( 'upload' ),
 					uploadInitiallyHidden = uploadTab && uploadTab.hidden;
 
-				if ( typeValue == 'url' ) {
+				if ( typeValue == 'url' || typeValue == 'localPage' || typeValue == 'fileLink' || typeValue == 'asset' ) {
 					if ( editor.config.linkShowTargetTab )
 						dialog.showPage( 'target' );
 					if ( !uploadInitiallyHidden )

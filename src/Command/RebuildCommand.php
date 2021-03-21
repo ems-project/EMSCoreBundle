@@ -20,6 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RebuildCommand extends EmsCommand
 {
+    public const COMMAND = 'ems:environment:rebuild';
     /** @var Registry */
     private $doctrine;
     /** @var ContentTypeService */
@@ -59,7 +60,7 @@ class RebuildCommand extends EmsCommand
     protected function configure(): void
     {
         $this
-            ->setName('ems:environment:rebuild')
+            ->setName(self::COMMAND)
             ->setDescription('Rebuild an environment in a brand new index')
             ->addArgument(
                 'name',

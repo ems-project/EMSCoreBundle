@@ -12,7 +12,7 @@ use EMS\CoreBundle\Service\TemplateService;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Translation\DataCollectorTranslator as Translator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use ZipStream\ZipStream;
 
@@ -27,14 +27,14 @@ final class FormSubmissionService implements EntityServiceInterface
     /** @var Session<mixed> */
     private Session $session;
 
-    private Translator $translator;
+    private TranslatorInterface $translator;
 
     /**
      * FormSubmissionService constructor.
      *
      * @param Session<mixed> $session
      */
-    public function __construct(FormSubmissionRepository $formSubmissionRepository, TemplateService $templateService, Environment $twig, Session $session, Translator $translator)
+    public function __construct(FormSubmissionRepository $formSubmissionRepository, TemplateService $templateService, Environment $twig, Session $session, TranslatorInterface $translator)
     {
         $this->formSubmissionRepository = $formSubmissionRepository;
         $this->templateService = $templateService;

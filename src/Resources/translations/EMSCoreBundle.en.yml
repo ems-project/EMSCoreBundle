@@ -128,7 +128,6 @@ Remove: Remove
 'Styles set''s name': 'Styles set''s name'
 'Trash for content type %name%': 'Trash for content type %name%'
 Update: Update
-'Upload file': 'Upload file'
 'User profile': 'User profile'
 'Users list': 'Users list'
 'with Symfony %version%': 'with Symfony %version%'
@@ -359,7 +358,43 @@ view.macros.data-field-type.collection_added_items: '{1} One %singular% has been
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
 
-
+action:
+  actions:
+    delete: 'Delete'
+    edit: 'Edit'
+    delete_confirm: 'Delete the "%label%" action?'
+    delete_selected_confirm: 'Delete all selected actions?'
+    delete_selected: 'Delete selected'
+  index:
+    column:
+      public: 'Public'
+      name: 'Name'
+      type: 'Type'
+    reorder: 'Reorder'
+form-submission:
+  form-submissions:
+    delete: 'Delete'
+    edit: 'Edit'
+    delete_confirm: 'Delete the "%label%" submission?'
+    delete_selected_confirm: 'Delete all selected submissions?'
+    delete_selected: 'Delete selected'
+    download_selected: 'Download selected'
+    export_selected: 'Export selected'
+    download: 'Download'
+    process: 'Delete Submission'
+    confirm: 'Confirm Deletion'
+  index:
+    column:
+      public: 'Public'
+      name: 'Name'
+      type: 'Type'
+      id: 'ID'
+      label: 'Label'
+      form: 'Form'
+      locale: 'Locale'
+      created: 'Created At'
+      deadline: 'Deadline Date'
+    reorder: 'Reorder'
 table:
   index:
     button:
@@ -486,6 +521,12 @@ contenttype:
   action:
     update_from_json: 'Update from JSON'
 form:
+  form_field:
+    wysiwyg:
+      format_tags:
+        label: 'Format tags (override styles sets config)'
+      content_css:
+        label: 'Content CSS (override styles sets''s config)'
   subform:
     channel:
       attributes: 'Request extra attributes'
@@ -534,6 +575,8 @@ log:
     channel:
       unknown_action: 'Unknown action'
   service:
+    action:
+      delete: 'The action %name% has been deleted'
     channel:
       delete: 'The channel %name% has been deleted'
     content-type:
@@ -668,10 +711,10 @@ log:
       field_not_found: 'Field path %field_path% not found'
       draft_in_progress: '{0} A draft is in progress for the document ems://object:%contenttype%:%ouuid%, it''s not possible to update it|{1} There is one drafts in progress. You won’t be able to update it from here.|]1,Inf[ There are %count% drafts in progress. You won’t be able to update them from here.'
     not_found: 'View %view_id% not found'
-  template:
-    added: 'A new template %template_name% has been created'
-    updated: 'The template %template_name% has been updated'
-    deleted: 'The template %template_name% has been deleted'
+  action:
+    added: 'A new action %action_name% has been created'
+    updated: 'The action %action_name% has been updated'
+    deleted: 'The action %action_name% has been deleted'
     twig:
       error: 'Error during the Twig generation of ems://template:%template_id% with the error message: %error_message%'
   error: 'This page/action has encountered an error: %error_message%'
@@ -740,6 +783,23 @@ form_submissions:
           Are you sure, you want to delete the form submission?
 
 view:
+  form:
+    fields:
+      asset:
+        info-modal-button: Info
+        init-upload: Upload is starting
+        upload-file: Upload file
+        upload-files: Upload files
+        drag-n-drop-files: Drag and drop your files here
+        drag-n-drop-file: Drag and drop your file here
+        view-button: 'View'
+        remove-button: 'Remove'
+        move-button: 'Move'
+        file-hash: 'File''s hash'
+        file-info: 'File''s information'
+        close-modal: 'Close'
+        preview: 'File preview of field %label%'
+        clear-button: 'Clear'
   elements:
     side-menu:
       chanel-admin:
@@ -747,3 +807,27 @@ view:
   icon:
     class:
       channel: 'fa fa-road'
+  macros:
+    data-field-type:
+      menu-option-button: 'View'
+      modal-close-button: 'Close'
+  data:
+    json-menu-nested-json-preview:
+      field-type-not-found: 'The type definition associated to this item is missing (probably deleted).'
+  menu:
+    breadcrumb:
+      content-types: 'Content types'
+  action:
+    index:
+      title: '%contentType%''s actions'
+      add:
+        title: 'Add an action'
+    edit:
+      title: 'Edit the action %action% for %contentType%'
+    add:
+      title: 'Add a new action to %contentType%'
+  form-submission:
+    index:
+      title: 'Form Submissions Overview'
+  breadcrumb:
+    wysiwyg-options: 'WYSIWYG Options'

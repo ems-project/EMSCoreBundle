@@ -4,82 +4,119 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Form;
 
-use EMS\CoreBundle\Form\Submission\ProcessType;
+use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
+use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\TableAbstract;
+use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class SubmissionController extends AbstractController
 {
-    /** @var FormSubmissionService */
-    private $formSubmissionService;
-    /** @var TranslatorInterface */
-    private $translator;
+    private FormSubmissionService $formSubmissionService;
+    private TranslatorInterface $translator;
+    private LoggerInterface $logger;
+    private SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService;
 
     public function __construct(
         FormSubmissionService $formSubmissionService,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        LoggerInterface $logger,
+        SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService
     ) {
         $this->formSubmissionService = $formSubmissionService;
         $this->translator = $translator;
+        $this->logger = $logger;
+        $this->spreadsheetGeneratorService = $spreadsheetGeneratorService;
     }
 
     /**
-     * @Route("/form/submissions", name="form.submissions", methods={"GET"})
+     * @Route("/form/submissions", name="form.submissions", methods={"GET", "POST"})
      */
-    public function indexAction(): Response
+    public function indexAction(Request $request, UserInterface $user): Response
     {
-        $processForm = $this->createForm(ProcessType::class, []);
+        $table = new EntityTable($this->formSubmissionService);
+        $table->addColumn('form-submission.index.column.id', 'id');
+        $table->addColumn('form-submission.index.column.label', 'instance');
+        $table->addColumn('form-submission.index.column.form', 'name');
+        $table->addColumn('form-submission.index.column.locale', 'locale');
+        $createdColumn = $table->addColumn('form-submission.index.column.created', 'created');
+        $createdColumn->setDateTimeProperty(true);
+        $deadlineColumn = $table->addColumn('form-submission.index.column.deadline', 'expireDate');
+        $deadlineColumn->setDateTimeProperty(true);
 
-        return $this->render('@EMSCore/submission/overview.html.twig', [
-            'submissions' => $this->formSubmissionService->getUnprocessed(),
-            'formProcess' => $processForm->createView(),
-        ]);
-    }
+        $table->addItemGetAction('form.submissions.download', 'form-submission.form-submissions.download', 'download');
+        $table->addItemPostAction('form.submissions.process', 'form-submission.form-submissions.process', 'check', 'form-submission.form-submissions.confirm');
 
-    /**
-     * @Route("/form/submissions/process", name="form.submissions.process",  methods={"POST"})
-     */
-    public function process(Request $request, UserInterface $user): RedirectResponse
-    {
-        $processForm = $this->createForm(ProcessType::class, []);
-        $processForm->handleRequest($request);
+        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'action.actions.delete_selected', 'form-submission.form-submissions.delete_selected_confirm');
+        $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'form-submission.form-submissions.download_selected', 'form-submission.form-submissions.download_selected_confirm');
+        $table->addTableAction(TableAbstract::EXPORT_ACTION, 'fa fa-file-excel-o', 'form-submission.form-submissions.export_selected', 'form-submission.form-submissions.export_selected_confirm');
 
-        if (!$processForm->isSubmitted() || !$processForm->isValid()) {
-            $this->addFlash('error', $this->translator->trans('form_submissions.process.error', [], 'EMSCoreBundle'));
+        $form = $this->createForm(TableType::class, $table);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
+                switch ($action->getName()) {
+                    case TableAbstract::DELETE_ACTION:
+                            $this->formSubmissionService->processByIds($table->getSelected(), $user);
+                        break;
+                    case TableAbstract::DOWNLOAD_ACTION:
+                        return $this->downloadMultiple($table->getSelected());
+                    case TableAbstract::EXPORT_ACTION:
+                        $config = $config = $this->formSubmissionService->generateExportConfig($table->getSelected());
+
+                        return $this->spreadsheetGeneratorService->generateSpreadsheet($config);
+                    default:
+                        $this->logger->error('log.controller.action.unknown_action');
+                }
+            } else {
+                $this->logger->error('log.controller.action.unknown_action');
+            }
 
             return $this->redirectToRoute('form.submissions');
         }
 
-        $formSubmission = $this->formSubmissionService->get($processForm->get('submissionId')->getData());
-        $this->formSubmissionService->process($formSubmission, $user);
+        return $this->render('@EMSCore/form-submission/index.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 
-        $this->addFlash('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $formSubmission->getId()], 'EMSCoreBundle'));
+    /**
+     * @Route("/form/submissions/process/{formSubmission}", name="form.submissions.process",  methods={"POST"})
+     */
+    public function process(Request $request, UserInterface $user): RedirectResponse
+    {
+        $this->formSubmissionService->process($request->get('formSubmission'), $user);
 
         return $this->redirectToRoute('form.submissions');
     }
 
     /**
-     * @Route("/form/submissions/download/{id}", name="form.submissions.download", requirements={"id"="\S+"}, methods={"GET"})
+     * @Route("/form/submissions/download/{formSubmission}", name="form.submissions.download", requirements={"id"="\S+"}, methods={"GET"})
+     *
+     * @return StreamedResponse|Response
      */
-    public function download(string $id): Response
+    public function download(string $formSubmission): Response
     {
         try {
-            $formSubmission = $this->formSubmissionService->get($id);
-            $download = $this->formSubmissionService->createDownload($formSubmission);
+            $response = $this->formSubmissionService->createDownload($formSubmission);
 
-            $response = new BinaryFileResponse($download);
             $response->headers->set('Content-Type', 'application/zip');
             $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                \sprintf('%s.zip', $formSubmission->getId())
+                \sprintf('%s.zip', $formSubmission)
             ));
 
             return $response;
@@ -88,5 +125,29 @@ final class SubmissionController extends AbstractController
 
             return $this->redirectToRoute('form.submissions');
         }
+    }
+
+    /**
+     * @param array<string> $submissionIds
+     *
+     * @return StreamedResponse|Response
+     */
+    private function downloadMultiple(array $submissionIds)
+    {
+        try {
+            $response = $this->formSubmissionService->createDownloadForMultiple($submissionIds);
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'error');
+
+            return $this->redirectToRoute('form.submissions');
+        }
+
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'submissions.zip')
+        );
+
+        return $response;
     }
 }

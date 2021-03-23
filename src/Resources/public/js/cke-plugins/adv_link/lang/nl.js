@@ -3,12 +3,18 @@ Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
 CKEDITOR.plugins.setLang( 'adv_link', 'nl', {
+    file: 'Bestand',
+    selectFileLabel: 'Upload',
+    selectFileTitle: 'Upload',
+    documentNotFound: 'Document niet gevonden',
+    selectFileFilenameLabel: 'Bestandsnaam',
+    selectFileFilenameTitle: 'Bestandsnaam',
 	localPages:'Internal link',
 	asset:'Asset',
-	localPages:'Interne link',
-	asset:'Asset',
-	selectPageLabel:'Selecteer een pagina',
-	selectPageTitle:'Selecteer de pagina waar je naar wilt verwijzen',
+	selectContentTypeLabel:'Selecteer een inhoudstype',
+	selectContentTypeTitle:'Selecteer een inhoudstype om het zoekresultaat te filteren',
+	selectPageLabel:'Selecteer een document',
+	selectPageTitle:'Selecteer de document waar je naar wilt verwijzen',
 	acccessKey: 'Toegangstoets',
 	advanced: 'Geavanceerd',
 	advisoryContentType: 'Aanbevolen content-type',

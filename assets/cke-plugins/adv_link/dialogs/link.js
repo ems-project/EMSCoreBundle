@@ -44,12 +44,12 @@
 		// Handles the event when the "Type" selection box is changed.
 		var linkTypeChanged = function() {
 				var dialog = this.getDialog(),
-					partIds = [ 'urlOptions', 'localPageOptions', 'assetOptions', 'anchorOptions', 'emailOptions' ], // added by @simo - http://blog.xoundboy.com/?p=393
+					partIds = [ 'urlOptions', 'localPageOptions', 'fileLinkOptions', 'assetOptions', 'anchorOptions', 'emailOptions' ], // added by @simo - http://blog.xoundboy.com/?p=393
 					typeValue = this.getValue(),
 					uploadTab = dialog.definition.getContents( 'upload' ),
 					uploadInitiallyHidden = uploadTab && uploadTab.hidden;
 
-				if ( typeValue == 'url' ) {
+				if ( typeValue == 'url' || typeValue == 'localPage' || typeValue == 'fileLink' || typeValue == 'asset' ) {
 					if ( editor.config.linkShowTargetTab )
 						dialog.showPage( 'target' );
 					if ( !uploadInitiallyHidden )
@@ -124,6 +124,7 @@
 						[ linkLang.toUrl, 'url' ],
 						[ linkLang.toAnchor, 'anchor' ],
 						[ linkLang.localPages, 'localPage'],// added by @simo - http://blog.xoundboy.com/?p=393
+						[ linkLang.file, 'fileLink'],
 						[ linkLang.asset, 'asset'],
 						[ linkLang.toEmail, 'email' ]
 					],
@@ -141,10 +142,10 @@
 					children : [
 					{
 						type : 'select',
-						label : linkLang.selectPageLabel,
+						label : linkLang.selectContentTypeLabel,
 						id : 'contentTypeFilter',
 						className : 'adv_link_type_filter',
-						title : linkLang.selectPageTitle,
+						title : linkLang.selectContentTypeTitle,
 						'default': ems_wysiwyg_type_filters[0][1],
 						items : ems_wysiwyg_type_filters,
 					    setup: function( data ) {
@@ -164,7 +165,7 @@
 						title : linkLang.selectPageTitle,
 						items : [],
 						onLoad : function(element) {
-							
+
 							var objectPicker = $('#'+this.domId);
 							var typeFilter = objectPicker.parents('.cke_dialog_contents_body').find('select.adv_link_type_filter');
 							
@@ -177,7 +178,8 @@
 							    		return {
 								        q: params.term, // search term
 								        page: params.page,
-								        type: typeFilter.val()
+								        type: typeFilter.val(),
+										locale: editor.config.language
 								      };
 								    },
 									processResults: function (data, params) {
@@ -204,20 +206,109 @@
 					    },
 					    setup: function( data ) {
 					    	if(data.type == 'localPage' &&  data.id){
-					    		this.setValue( data.id );
-					    		if (!$('#'+this.domId+' select.select2').find("option[value='" + data.id + "']").length) {
-					    			var newOption = new Option('Current value', data.id, false, false);
-					    			$('#'+this.domId+' select.select2').append(newOption).trigger('change');			    			
-					    		}
+                                this.setValue( data.id );
+					    		var select2Select = $('#'+this.domId+' select.select2');
+                                var itemLabel = linkLang.documentNotFound;
+					    		$.ajax({
+                                  url: object_search_url,
+                                  data: {
+                                    dataLink: data.id
+                                  },
+                                  dataType: 'json'
+                                }).done(function(result) {
+                                    if (result.items && result.items[0] && result.items[0].text) {
+                                        itemLabel = result.items[0].text;
+                                    }
+                                }).always(function() {
+                                    var newOption = new Option(itemLabel, data.id, false, false);
+                                    select2Select.html(newOption).trigger('change');
+                                });
 					    	}
 						},
 						commit : function( data )
 						{
-							if ( !data.localPage )
+							if (!data.localPage) {
 								data.localPage = {};
+							}
 							data.localPage = 'ems://object:' + this.getValue();
+							if (this.getInputElement().find('option:checked').count() > 0) {
+							    data.pageLabel = this.getInputElement().find('option:checked').getItem(0).getText();
+							} else {
+							    data.pageLabel = '';
+							}
 						}
 					}]						
+				},
+				{
+					type : 'vbox',
+					id : 'fileLinkOptions',
+					children : [
+					{
+						type : 'file',
+						label : linkLang.selectFileLabel,
+						id : 'file',
+						className : 'upload-file',
+						title : linkLang.selectFileTitle,
+						items : []
+					},{
+                        type : 'text',
+                        label : linkLang.selectFileFilenameLabel,
+                        id : 'fileLink',
+                        className : 'filename',
+                        title : linkLang.selectFileFilenameTitle,
+                        items : [],
+                        onLoad : function(element) {
+                        },
+					    setup: function( data ) {
+						    var body = $('body');
+						    var hashAlgo = body.data('hash-algo');
+						    var initUpload = body.data('init-upload');
+                            self = this;
+                            var fileUploadField = this.getDialog().getContentElement( 'info', 'file' )
+                            var fileInfo = [];
+                            fileUploadField.getInputElement().on('change', function(event){
+                                self.getDialog().getContentElement( 'info', 'fileLink' ).setValue('Upload starting...');
+                                for (var loop = 0; loop < this.$.files.length; loop++) {
+                                    var fileUploader = new FileUploader({
+                                        file: this.$.files[loop],
+                                        algo: hashAlgo,
+                                        initUrl: initUpload,
+                                        emsListener: self,
+                                        onHashAvailable: function(hash, type, name){
+                                            fileInfo['hash'] = hash;
+                                            fileInfo['type'] = type;
+                                            fileInfo['name'] = name;
+                                            self.getDialog().getContentElement( 'info', 'fileLink' ).setValue('File\'s hash: '+hash);
+                                        },
+                                        onProgress: function(status, progress, remaining){
+                                            self.getDialog().getContentElement( 'info', 'fileLink' ).setValue('Upload in progress: '+remaining);
+                                        },
+                                        onUploaded: function(assetUrl, previewUrl){
+                                            var link = 'ems://asset:' + fileInfo['hash'] + '?name=' + encodeURI(fileInfo['name']) + '&type=' + encodeURI(fileInfo['type']);
+                                            self.getDialog().getContentElement( 'info', 'fileLink' ).setValue(fileInfo['name']);
+                                            self.getDialog().getContentElement( 'info', 'fileLink' ).getInputElement().$.setAttribute('data-link', link);
+                                        },
+                                        onError: function(message, code){
+                                            alert(message);
+                                        },
+                                    });
+                                    break;
+                                }
+
+                            });
+						},
+                        commit : function( data ) {
+							if ( !data.filename ) {
+								data.filename = {};
+							}
+							data.filename = this.getValue();
+
+							if ( !data.fileLink ) {
+								data.fileLink = {};
+							}
+							data.fileLink = self.getDialog().getContentElement( 'info', 'fileLink' ).getInputElement().$.getAttribute('data-link');
+                        }
+                    }]
 				},
 				{
 					type : 'vbox',
@@ -249,7 +340,7 @@
 										// alter the remote JSON data, except to indicate that infinite
 										// scrolling can be used
 										params.page = params.page || 1;
-								
+
 								      	return {
 									        results: data.items,
 									        pagination: {
@@ -265,15 +356,15 @@
 							  	minimumInputLength: 1
 							});
 					    },
-						
+
 						commit : function( data )
 						{
-							
-							if ( !data.asset )
+							if ( !data.asset ) {
 								data.asset = {};
-								data.asset = 'ems://asset:' + this.getValue();
+							}
+                            data.asset = 'ems://asset:' + this.getValue();
 						}
-					}]						
+					}]
 				},
 				{
 					type: 'vbox',
@@ -956,16 +1047,15 @@
 
 				if ( !this._.selectedElement ) {
 					var range = selection.getRanges()[ 0 ];
-					
+
 					// Use link URL as text with a collapsed cursor.
 					if ( range.collapsed ) {
-						// @simo, if localPage do insert link
-						if( data.type == 'localPage' || data.type == 'asset' ) { 
-							if (data.type == 'localPage') {
-								var text = new CKEDITOR.dom.text(data.localPage, editor.document );
-							} else {
-								var text = new CKEDITOR.dom.text(data.asset, editor.document );
-							}
+						if (data.type == 'fileLink') {
+                            var text = new CKEDITOR.dom.text( data.filename, editor.document );
+                        } else if (data.type == 'localPage') {
+                            var text = new CKEDITOR.dom.text(data.pageLabel, editor.document );
+                        } else if(data.type == 'asset') {
+                            var text = new CKEDITOR.dom.text(data.asset, editor.document );
 						} else {
 							// Short mailto link text view (#5736).
 							var text = new CKEDITOR.dom.text( data.type == 'email' ?
@@ -973,7 +1063,7 @@
 						}
 						range.insertNode( text );
 						range.selectNodeContents( text );
-						
+
 					}
 
 					// Apply style.

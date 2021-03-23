@@ -12,7 +12,6 @@ use EMS\CoreBundle\Form\Nature\ImporterType;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\JobService;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactory;
@@ -20,21 +19,18 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Twig\Environment;
 
 class ImporterViewType extends ViewType
 {
-    /** @var FileService */
-    private $fileService;
-    /** @var JobService */
-    private $jobService;
-    /** @var TokenStorageInterface */
-    private $security;
-    /** @var Router */
-    private $router;
+    private FileService $fileService;
+    private JobService $jobService;
+    private TokenStorageInterface $security;
+    private RouterInterface $router;
 
-    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger, FileService $fileService, JobService $jobService, TokenStorageInterface $security, Router $router)
+    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger, FileService $fileService, JobService $jobService, TokenStorageInterface $security, RouterInterface $router)
     {
         parent::__construct($formFactory, $twig, $logger);
         $this->fileService = $fileService;

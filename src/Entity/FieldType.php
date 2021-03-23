@@ -98,7 +98,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     protected $parent;
 
     /**
-     * @var ArrayCollection
+     * @var ArrayCollection|FieldType[]
      * @ORM\OneToMany(targetEntity="FieldType", mappedBy="parent", cascade={"persist", "remove"})
      * @ORM\OrderBy({"orderKey" = "ASC"})
      */
@@ -640,9 +640,15 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      *
      * @return FieldType
      */
-    public function addChild(FieldType $child)
+    public function addChild(FieldType $child, bool $prepend = false)
     {
-        $this->children[] = $child;
+        if ($prepend) {
+            $children = $this->children->toArray();
+            \array_unshift($children, $child);
+            $this->children = new ArrayCollection($children);
+        } else {
+            $this->children[] = $child;
+        }
 
         return $this;
     }
@@ -663,6 +669,17 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function getChildren()
     {
         return $this->children;
+    }
+
+    /**
+     * @return \Generator|FieldType[]
+     */
+    public function loopChildren(): \Generator
+    {
+        foreach ($this->children as $child) {
+            yield $child;
+            yield from $child->loopChildren();
+        }
     }
 
     /**

@@ -5,11 +5,14 @@ namespace EMS\CoreBundle\Controller;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\ContentType\ViewTypes;
+use EMS\CoreBundle\Core\Document\DataLinks;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Form\Search;
@@ -19,12 +22,14 @@ use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\ExportDocumentsType;
 use EMS\CoreBundle\Form\Form\SearchFormType;
+use EMS\CoreBundle\Form\View\DataLinkViewType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Service\AggregateOptionService;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\SearchService;
@@ -33,6 +38,7 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -154,15 +160,6 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @Route("/admin/phpinfo", name="emsco_phpinfo")
-     */
-    public function phpInfoAction(): void
-    {
-        \phpinfo();
-        exit;
-    }
-
-    /**
      * @param int $id
      *
      * @return RedirectResponse
@@ -190,7 +187,7 @@ class ElasticsearchController extends AppController
      *
      * @Route("/quick-search", name="ems_quick_search", methods={"GET"})
      */
-    public function quickSearchAction(Request $request)
+    public function quickSearchAction(Request $request, EnvironmentService $environmentService)
     {
         $query = $request->query->get('q', false);
 
@@ -212,6 +209,7 @@ class ElasticsearchController extends AppController
             }
         } else {
             $search = new Search();
+            $search->setEnvironments($environmentService->getEnvironmentNames());
             if (false !== $query) {
                 $search->getFilters()[0]->setPattern($query)->setBooleanClause('must');
             }
@@ -299,29 +297,47 @@ class ElasticsearchController extends AppController
      *
      * @Route("/search.json", name="elasticsearch.api.search")
      */
-    public function searchApiAction(Request $request, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker)
+    public function searchApiAction(Request $request, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, ViewTypes $viewTypes)
     {
-        $pattern = $request->query->get('q', '');
-        $page = \intval($request->query->get('page', 1));
         $environments = $request->query->get('environment', null);
-        $types = $request->query->get('type', null);
         $requestSearchId = $request->query->get('searchId', null);
         $searchId = null !== $requestSearchId ? \intval($requestSearchId) : null;
         $category = $request->query->get('category', null);
         $assetName = $request->query->get('asset_name', false);
         $circleOnly = $request->query->get('circle', false);
-        $pageSize = 30;
+        $dataLink = $request->query->get('dataLink', null);
+
+        if (\is_string($dataLink)) {
+            $emsLink = EMSLink::fromText($dataLink);
+            $contentType = $contentTypeService->getByName($emsLink->getContentType());
+            if (!$contentType instanceof ContentType) {
+                throw new \RuntimeException(\sprintf('Content type %s not found', $emsLink->getContentType()));
+            }
+            $document = $searchService->getDocument($contentType, $emsLink->getOuuid());
+            $dataLinks = new DataLinks($request, $contentType);
+            $dataLinks->addDocument($document);
+
+            return new JsonResponse($dataLinks->toArray());
+        }
 
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 
-        $allTypes = $contentTypeRepository->findAllAsAssociativeArray();
+        $allContentTypes = $contentTypeRepository->findAll();
+        $dataLinks = new DataLinks($request, ...$allContentTypes);
 
-        $contentTypes = [];
-        if (!empty($types)) {
-            $contentTypes = \explode(',', $types);
+        $contentTypes = $dataLinks->getTypes();
+
+        if (1 === \count($contentTypes) && null !== $contentType = $contentTypeRepository->findByName($contentTypes[0])) {
+            /** @var DataLinkViewType $viewType */
+            $viewType = $viewTypes->get('ems.view.data_link');
+            if (null !== $view = $contentType->getFirstViewByType('ems.view.data_link')) {
+                $viewType->render($view, $dataLinks);
+
+                return new JsonResponse($dataLinks->toArray());
+            }
         }
 
         $search = null;
@@ -339,9 +355,9 @@ class ElasticsearchController extends AppController
         if ($assetName) {
             // For search only in contentType with Asset field == $assetName.
             $contentTypes = [];
-            foreach ($allTypes as $key => $value) {
-                if (!empty($value->getAssetField())) {
-                    $contentTypes[] = $key;
+            foreach ($allContentTypes as $contentType) {
+                if ($contentType->hasAssetField()) {
+                    $contentTypes[] = $contentType->getName();
                 }
             }
         }
@@ -354,7 +370,7 @@ class ElasticsearchController extends AppController
             $search->setEnvironments(\explode(',', $environments));
         }
 
-        $search->setSearchPattern($pattern, true);
+        $search->setSearchPattern($dataLinks->getPattern(), true);
         $commonSearch = $searchService->generateSearch($search);
 
         if ($circleOnly && !$authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
@@ -398,14 +414,12 @@ class ElasticsearchController extends AppController
             }
         }
 
-        $commonSearch->setFrom(($page - 1) * $pageSize);
-        $commonSearch->setSize($pageSize);
+        $commonSearch->setFrom($dataLinks->getFrom());
+        $commonSearch->setSize($dataLinks->getSize());
         $response = CommonResponse::fromResultSet($elasticaService->search($commonSearch));
+        $dataLinks->addSearchResponse($response);
 
-        return $this->render('@EMSCore/elasticsearch/search.json.twig', [
-            'results' => $response,
-            'types' => $allTypes,
-        ]);
+        return new JsonResponse($dataLinks->toArray());
     }
 
     /**

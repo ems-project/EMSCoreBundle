@@ -56,7 +56,7 @@ class SelectFieldType extends DataFieldType
                 'required' => false,
                 'disabled' => $this->isDisabled($options),
                 'choices' => $choices,
-                'empty_data' => null,
+                'empty_data' => $options['multiple'] ? [] : null,
                 'multiple' => $options['multiple'],
         ]);
     }

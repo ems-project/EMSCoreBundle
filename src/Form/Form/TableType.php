@@ -31,20 +31,23 @@ final class TableType extends AbstractType
         if (!$data instanceof TableInterface) {
             throw new \RuntimeException('Unexpected TableInterface type');
         }
+
         $choices = [];
         foreach ($data as $id => $row) {
             $choices[$id] = $id;
         }
 
-        $builder->add('selected', ChoiceType::class, [
-            'choices' => $choices,
-            'choice_label' => function ($choice, $key, $value) {
-                return false;
-            },
-            'expanded' => true,
-            'multiple' => true,
-            'label' => false,
-        ]);
+        if ($data->countTableActions() > 0) {
+            $builder->add('selected', ChoiceType::class, [
+                'choices' => $choices,
+                'choice_label' => function ($choice, $key, $value) {
+                    return false;
+                },
+                'expanded' => true,
+                'multiple' => true,
+                'label' => false,
+            ]);
+        }
 
         if (0 === $data->count()) {
             return;

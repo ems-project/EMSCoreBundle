@@ -8,9 +8,13 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ObjectRepository;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
+use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
+use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,11 +28,60 @@ class JsonMenuNestedController extends AbstractController
     private $revisionService;
     /** @var ObjectRepository|FieldTypeRepository */
     private $fieldTypeRepository;
+    private DataService $dataService;
 
-    public function __construct(RevisionService $revisionService, Registry $doctrine)
+    public function __construct(RevisionService $revisionService, Registry $doctrine, DataService $dataService)
     {
         $this->revisionService = $revisionService;
+        $this->dataService = $dataService;
         $this->fieldTypeRepository = $doctrine->getRepository(FieldType::class);
+    }
+
+    /**
+     * @Route("/data/revisions-modal/{fieldType}", name="revision.edit.nested-preview-modal", methods={"POST"})
+     */
+    public function modalPreview(Request $request, FieldType $fieldType): JsonResponse
+    {
+        $rawData = [];
+
+        if ('json' === $request->getContentType()) {
+            $requestContent = $request->getContent();
+            $rawData = \is_string($requestContent) ? \json_decode($requestContent, true) : [];
+        }
+
+        $subField = null;
+        foreach ($fieldType->getChildren() as $child) {
+            if (!$child instanceof FieldType || $child->getDeleted()) {
+                continue;
+            }
+            if ($child->getName() === $rawData['type'] ?? null) {
+                $subField = $child;
+                break;
+            }
+        }
+
+        if (!$subField instanceof FieldType) {
+            return new JsonResponse(\array_filter([
+                'html' => $this->renderView('@EMSCore/data/json-menu-nested-json-preview.html.twig', [
+                    'rawData' => $rawData['object'] ?? [],
+                ]),
+            ]));
+        }
+
+        $contentType = new ContentType();
+        $contentType->setFieldType($subField);
+        $revision = new Revision();
+        $revision->setRawData($rawData['object']);
+        $revision->setContentType($contentType);
+        $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $rawData['object']]);
+        $dataFields = $this->dataService->getDataFieldsStructure($form->get('data'));
+
+        return new JsonResponse(\array_filter([
+            'html' => $this->renderView('@EMSCore/data/json-menu-nested-preview.html.twig', [
+                'dataFields' => $dataFields,
+                'rawData' => $rawData['object'] ?? [],
+            ]),
+        ]));
     }
 
     /**
@@ -58,17 +111,25 @@ class JsonMenuNestedController extends AbstractController
         $data = RawDataTransformer::transform($fieldType, $rawData);
         $data['label'] = $label;
 
-        $form = $this->createForm(RevisionJsonMenuNestedType::class, $data, ['field_type' => $fieldType]);
+        $form = $this->createForm(RevisionJsonMenuNestedType::class, ['data' => $data], [
+            'field_type' => $fieldType,
+            'content_type' => $revision->getContentType(),
+        ]);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-            $object = RawDataTransformer::reverseTransform($fieldType, $formData);
+        if ($form->isSubmitted()) {
+            $formDataField = $form->get('data');
+            $objectArray = RawDataTransformer::reverseTransform($fieldType, $form->getData()['data']);
+            $isValid = $this->dataService->isValid($formDataField, null, $objectArray);
+
+            if ($isValid && $form->isValid()) {
+                $this->dataService->getPostProcessing()->jsonMenuNested($formDataField, $revision->giveContentType(), $objectArray);
+            }
         }
 
         return new JsonResponse(\array_filter([
-            'object' => $object ?? null,
-            'label' => $form->get('label')->getData(),
+            'object' => $objectArray ?? null,
+            'label' => $objectArray['label'] ?? ' ',
             'html' => $this->renderView('@EMSCore/data/json-menu-nested.html.twig', [
                 'form' => $form->createView(),
                 'fieldType' => $fieldType,

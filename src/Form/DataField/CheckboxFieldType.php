@@ -57,6 +57,18 @@ class CheckboxFieldType extends DataFieldType
 
     /**
      * {@inheritdoc}
+     */
+    public function modelTransform($data, FieldType $fieldType)
+    {
+        $dataField = new DataField();
+        $dataField->setRawData(\boolval($data));
+        $dataField->setFieldType($fieldType);
+
+        return $dataField;
+    }
+
+    /**
+     * {@inheritdoc}
      *
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
      */

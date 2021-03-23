@@ -37,6 +37,7 @@
         <service id="EMS\CoreBundle\Controller\Revision\JsonMenuNestedController" public="true">
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="doctrine" />
+            <argument type="service" id="ems.service.data" />
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\AuthTokenController" public="true">
@@ -53,6 +54,11 @@
         <service id="EMS\CoreBundle\Controller\ChannelController" public="true">
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.channel" />
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ActionController" public="true">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.action" />
             <tag name="controller.service_arguments"/>
         </service>
     </services>

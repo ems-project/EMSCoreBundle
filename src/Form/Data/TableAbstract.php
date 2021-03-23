@@ -9,6 +9,12 @@ abstract class TableAbstract implements TableInterface
     /** @var string */
     public const DELETE_ACTION = 'delete';
 
+    /** @var string */
+    public const DOWNLOAD_ACTION = 'download';
+
+    /** @var string */
+    public const EXPORT_ACTION = 'export';
+
     /** @var string[] */
     private $selected = [];
     /** @var string[] */
@@ -125,5 +131,10 @@ abstract class TableAbstract implements TableInterface
     public function getTableActions(): iterable
     {
         return $this->tableActions;
+    }
+
+    public function countTableActions(): int
+    {
+        return \count($this->tableActions);
     }
 }

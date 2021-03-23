@@ -528,7 +528,7 @@
 		 data-label-field="{{ form.vars.labelField|e('html_attr') }}"
 		 data-prototype-label="{{ form.vars.prototype.vars.label|e('html_attr') }}"
 		 data-prototype-name="{{ form.vars.prototype.vars.name|e('html_attr') }}"
-		data-prototype="{{ form_row(form.vars.prototype)|e }}"
+		 data-prototype="{{ form_row(form.vars.prototype)|e('html_attr') }}"
 		{% if (form|last).vars is defined  %}
 			data-index="{{ (form|last).vars.name + 1 }}"
 		{% else %}
@@ -962,8 +962,81 @@
 	</div>
 {% endblock date_time_field_type_row %}
 
+
+{% block assettype_multiple_item %}
+
+	{% set prototype = (fileItem.vars.name == '__name__') %}
+	<li class="input-file-entry">
+		<div>
+			<div class="modal" tabindex="-1" role="dialog" id="asst-details-{{ form.vars.id }}-__name__">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="{{ 'view.form.fields.asset.close-modal'|trans }}"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">{{ 'view.form.fields.asset.file-info'|trans }}</h4>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<label>{{ 'view.form.fields.asset.file-hash'|trans }}</label>
+								<div class="form-control asset-hash-signature">{% if fileItem.sha1.vars.value is defined %}{{ fileItem.sha1.vars.value }}{% endif %}</div>
+								{{- form_row(fileItem.sha1) -}}
+								{{- form_row(fileItem.mimetype) -}}
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'view.form.fields.asset.close-modal'|trans }}</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="asset-upload-tab {% if not prototype %}hidden{% endif %}">
+				<div class="progress-group">
+					<span class="progress-text">{{ 'view.form.fields.asset.init-upload'|trans }}</span>
+					<span class="progress-number">&nbsp;</span>
+					<div class="progress sm">
+						<div class="progress-bar" style="width: 0%"></div>
+					</div>
+				</div>
+			</div>
+			<div class="asset-preview-tab {% if prototype %}hidden{% endif %}">
+				<div class="input-group input-group-sm">
+					{{- form_widget(fileItem.filename) -}}
+					<span class="input-group-btn">
+						<button type="button" class="btn" title="{{ 'view.form.fields.asset.info-modal-button'|trans }}" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}-__name__">
+							<i class="fa fa-info"></i>
+							<span class="sr-only">{{ 'view.form.fields.asset.info-modal-button'|trans }}</span>
+						</button>
+						<a type="button" class="btn ui-sortable-handle move-handle" title="{{ 'view.form.fields.asset.move-button'|trans }}">
+							<i class="fa fa-arrows"></i>
+							<span class="sr-only">{{ 'view.form.fields.asset.move-button'|trans }}</span>
+						</a>
+						<a href="{% if prototype %}#{% else %}{{ ems_asset_path(fileItem.vars.value) }}{% endif %}" type="button" class="btn btn-primary view-asset-button {% if prototype %}disabled"{% endif %}" title="{{ 'view.form.fields.asset.view-button'|trans }}" target="_blank">
+							<i class="fa fa-eye"></i>
+							<span class="sr-only">{{ 'view.form.fields.asset.view-button'|trans }}</span>
+						</a>
+						<button type="button" class="btn btn-danger remove-item" title="{{ 'view.form.fields.asset.remove-button'|trans }}">
+							<i class="fa fa-trash"></i>
+							<span class="sr-only">{{ 'view.form.fields.asset.remove-button'|trans }}</span>
+						</button>
+					</span>
+				</div>
+			</div>
+
+		</div>
+	</li>
+{% endblock assettype_multiple_item %}
+
+
 {% block assettype_row %}
-<div class="panel panel-default file-uploader-row{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
+
+	{% set multipleTemplate %}
+		{% if form.children.files is defined %}
+			{% set fileItem = form.children.files.vars.prototype %}
+			{{ block('assettype_multiple_item') }}
+		{% endif %}
+	{% endset %}
+
+<div class="panel panel-default file-uploader-row{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}"{% if form.vars.multiple|default(false) %} data-multiple="{{ multipleTemplate|e('html_attr') }}"{% endif %}>
 	<div class="panel-heading">
 		<h3 class="panel-title">
 			<i class="fa fa-file-o"></i> 				
@@ -971,68 +1044,91 @@
 		</h3>
 	</div>
 	<div class="panel-body" >
-		<div class="modal" tabindex="-1" role="dialog" id="asst-details-{{ form.vars.id }}">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-              	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        		<h4 class="modal-title" id="myModalLabel">{{ 'Asset options'|trans }}</h4>
-              </div>
-              <div class="modal-body">
-              	<div class="form-group">
-              		<label>{{ 'Hash signature'|trans }}</label>
-              		<div class="form-control asset-hash-signature">{% if form.vars.value.sha1 is defined %}{{ form.vars.value.sha1 }}{% endif %}</div>
-              	</div>
-        		{{- form_widget(form) -}}
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
+		{% if form.children.files is not defined %}
+			<div class="modal" tabindex="-1" role="dialog" id="asst-details-{{ form.vars.id }}">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="{{ 'view.form.fields.asset.close-modal'|trans }}"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">{{ 'view.form.fields.asset.file-info'|trans }}</h4>
+				  </div>
+				  <div class="modal-body">
+					<div class="form-group">
+						<label>{{ 'view.form.fields.asset.file-hash'|trans }}</label>
+						<div class="form-control asset-hash-signature">{% if form.vars.value.sha1 is defined %}{{ form.vars.value.sha1 }}{% endif %}</div>
+					</div>
+					{{- form_widget(form) -}}
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'view.form.fields.asset.close-modal'|trans }}</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		{% endif %}
       <!-- Tab panes -->
-      <div class="tab-content" id="asset-tabs-{{ form.vars.id }}">
-        <div role="tabpanel" class="tab-pane {% if form.vars.value.sha1 is not defined or not form.vars.value.sha1 %}active{% endif %} asset-upload-tab" id="asset-upload-tab-{{ form.vars.id }}">
+      <div class="" id="asset-tabs-{{ form.vars.id }}">
+        <div class="tab-pane {% if (form.vars.value.sha1 is defined and form.vars.value.sha1) or (form.children.files is defined and form.vars.value|length > 0) %}hidden{% endif %} asset-upload-tab" id="asset-upload-tab-{{ form.vars.id }}">
         	{% if not form.vars.disabled %}
         		<p class="text-center asset-preview">
-                    <strong>{{ 'Drag and drop your file here' }}</strong>
+					{% if form.vars.multiple|default(false) %}
+						<strong>{{ 'view.form.fields.asset.drag-n-drop-files'|trans }}</strong>
+					{% else %}
+						<strong>{{ 'view.form.fields.asset.drag-n-drop-file'|trans }}</strong>
+					{% endif %}
                 </p>
         	{% endif %}
     		<div class="progress-group">
             	<span class="progress-text">&nbsp;</span>
     			<span class="progress-number">&nbsp;</span>
     			<div class="progress sm">
-    				<div class="progress-bar" style="width: {% if form.children.sha1.vars.value %}100{% else %}0{% endif %}%"></div>
+    				<div class="progress-bar" style="width: {% if form.children.sha1.vars.value|default(false) %}100{% else %}0{% endif %}%"></div>
     			</div>
     		</div>
         </div>
-        <div role="tabpanel" class="tab-pane asset-preview-tab {% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}active{% endif %}" id="asset-preview-tab-{{ form.vars.id }}">
+        <div class="tab-pane asset-preview-tab {% if form.vars.value.sha1 is not defined or not form.vars.value.sha1 %}hidden{% endif %}" id="asset-preview-tab-{{ form.vars.id }}">
         	<div class="text-center">
             	<img 
             		data-src="{{ path('ems_asset_processor', {'hash':'_asset_hash_', 'processor': 'preview', 'type':'_asset_mimetype_', 'name': '_asset_name_' }) }}"
             		{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %} 
             			src="{{ emsco_asset_path(form.vars.value, 'preview') }}"
             		{% endif %}
-            		class="img-responsive center-block" alt="Preview of the field {{ form_label(form)|striptags }}"
+            		class="img-responsive center-block" alt="{{ 'view.form.fields.asset.preview'|trans({'%label%': form_label(form)|striptags }) }}"
             	>
 	        </div>
         </div>
+
+		  {% if form.children.files is defined %}
+			  <div class="tab-pane asset-list-tab{% if form.vars.value|length == 0 %} hidden{% endif %}" id="asset-list-tab-{{ form.vars.id }}">
+
+				  <ol class="nested-sortable vertical" data-nested-max-level="1" data-nested-is-tree="false" data-nested-handle="a.move-handle" data-file-list-index="{{ form.children.files.children|length }}">
+					  {% for fileItem in form.children.files.children %}
+						  {{ block('assettype_multiple_item') }}
+					  {% endfor %}
+				  </ol>
+			  </div>
+		{% endif %}
         {{- form_errors(form) -}}
       </div>
 	</div>
 	<div class="panel-footer">
-		<div class="btn-group">
-			<input type="file" class="file-uploader-input" {% if form.vars.disabled %}disabled="disabled"{% endif %}>
-		</div>
-		<div class="btn-group">
-			<button type="button" class="btn btn-small btn-primary asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
-              <i class="fa fa-info"></i>
-              {{ 'Info'|trans }}
-            </button>			
-			<a href="{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}{{ ems_asset_path(form.vars.value) }}{% endif %}" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
-			<a href="#" class="btn btn-small btn-primary clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{'Clear'|trans}}"><i class="fa fa-remove"></i>&nbsp;{{'Clear'|trans}}</a>
-		</div>
+		{% if form.vars.multiple|default(false) %}
+			<div class="btn-group">
+				<input type="file" class="file-uploader-input" {% if form.vars.disabled %}disabled="disabled"{% endif %} multiple="multiple" data-label="{{ 'view.form.fields.asset.upload-files'|trans|e('html_attr') }}">
+			</div>
+		{% else %}
+			<div class="btn-group">
+				<input type="file" class="file-uploader-input" {% if form.vars.disabled %}disabled="disabled"{% endif %} data-label="{{ 'view.form.fields.asset.upload-file'|trans|e('html_attr') }}">
+			</div>
+			<div class="btn-group">
+				<button type="button" class="btn btn-small btn-primary asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
+				  	<i class="fa fa-info"></i>
+					{{ 'view.form.fields.asset.info-modal-button'|trans }}
+				</button>
+				<a href="{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}{{ ems_asset_path(form.vars.value) }}{% endif %}" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{ 'view.form.fields.asset.view-button'|trans }}"><i class="fa fa-eye">&nbsp;{{ 'view.form.fields.asset.view-button'|trans }}</i></a>
+				<a href="#" class="btn btn-small btn-primary clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{ 'view.form.fields.asset.clear-button'|trans }}"><i class="fa fa-remove"></i>&nbsp;{{ 'view.form.fields.asset.clear-button'|trans }}</a>
+			</div>
+		{% endif %}
 	</div>
 </div>
 {% endblock assettype_row %}

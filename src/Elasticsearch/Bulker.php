@@ -6,6 +6,7 @@ use Elastica\Bulk;
 use Elastica\Bulk\Action;
 use Elastica\Bulk\Response;
 use Elastica\Bulk\ResponseSet;
+use Elastica\Exception\Bulk\ResponseException;
 use Elastica\JSON;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Elasticsearch\Client;
@@ -143,6 +144,20 @@ class Bulker
                 return $this->send($force, true);
             } else {
                 throw $e;
+            }
+        } catch (ResponseException $e) {
+            $this->counter = 0;
+            $exceptions = $e->getActionExceptions();
+
+            if (\count($exceptions) > 0) {
+                $this->logger->critical('Bulk response exceptions ({count}) ', [
+                    'count' => \count($exceptions),
+                ]);
+                $this->logger->critical('First exceptions: {message}', [
+                    'message' => $exceptions[0]->getMessage(),
+                ]);
+            } else {
+                $this->logger->critical($e->getMessage());
             }
         } catch (\Throwable $e) {
             $this->errors[] = $e;

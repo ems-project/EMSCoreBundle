@@ -2,11 +2,15 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CommonBundle\Twig\AssetRuntime;
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\WysiwygStylesSetPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
+use EMS\CoreBundle\Service\WysiwygStylesSetService;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType as TextareaSymfonyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -14,6 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -21,13 +26,16 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class WysiwygFieldType extends DataFieldType
 {
-    /** @var RouterInterface */
-    private $router;
+    private RouterInterface $router;
+    private WysiwygStylesSetService $wysiwygStylesSetService;
+    private AssetRuntime $assetRuntime;
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, RouterInterface $router)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, RouterInterface $router, WysiwygStylesSetService $wysiwygStylesSetService, AssetRuntime $assetRuntime)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
         $this->router = $router;
+        $this->wysiwygStylesSetService = $wysiwygStylesSetService;
+        $this->assetRuntime = $assetRuntime;
     }
 
     /**
@@ -71,10 +79,29 @@ class WysiwygFieldType extends DataFieldType
             $attr['class'] = '';
         }
 
+        $styleSetName = $options['styles_set'] ?? null;
+        $formatTags = $options['format_tags'] ?? null;
+        $contentCss = $options['content_css'] ?? null;
+        $styleSet = $this->wysiwygStylesSetService->getByName($styleSetName);
+        if (null !== $styleSet) {
+            $formatTags = $formatTags ?? $styleSet->getFormatTags();
+            $contentCss = $contentCss ?? $styleSet->getContentCss();
+            $assets = $styleSet->getAssets();
+            $hash = $assets['sha1'] ?? null;
+            if (null !== $assets && \is_string($hash)) {
+                $this->assetRuntime->unzip($hash, $styleSet->getSaveDir() ?? 'bundles/emsch_assets');
+            }
+        }
+
+        if (isset($options['language'])) {
+            $language = \strval($options['language']);
+            $attr['data-lang'] = \explode('_', $language)[0];
+        }
+
         $attr['data-height'] = $options['height'];
-        $attr['data-format-tags'] = $options['format_tags'];
-        $attr['data-styles-set'] = $options['styles_set'];
-        $attr['data-content-css'] = $options['content_css'];
+        $attr['data-format-tags'] = $formatTags;
+        $attr['data-styles-set'] = $styleSetName;
+        $attr['data-content-css'] = $contentCss;
         $attr['class'] .= ' ckeditor_ems';
         $view->vars['attr'] = $attr;
     }
@@ -87,6 +114,7 @@ class WysiwygFieldType extends DataFieldType
         /*set the default option value for this kind of compound field*/
         parent::configureOptions($resolver);
         $resolver->setDefault('icon', null);
+        $resolver->setDefault('language', null);
         $resolver->setDefault('height', 400);
         $resolver->setDefault('format_tags', 'p;h1;h2;h3;h4;h5;h6;pre;address;div');
         $resolver->setDefault('styles_set', 'default');
@@ -171,15 +199,24 @@ class WysiwygFieldType extends DataFieldType
         ->add('copy_to', TextType::class, [
                 'required' => false,
         ]);
-        $optionsForm->get('displayOptions')->add('height', IntegerType::class, [
+        $optionsForm->get('displayOptions')
+            ->add('language', ChoiceType::class, [
                 'required' => false,
-        ])->add('format_tags', TextType::class, [
+                'choices' => \array_flip(Locales::getNames()),
+            ])
+            ->add('height', IntegerType::class, ['required' => false])
+            ->add('styles_set', WysiwygStylesSetPickerType::class, ['required' => false])
+            ->add('format_tags', TextType::class, [
                 'required' => false,
-        ])->add('styles_set', WysiwygStylesSetPickerType::class, [
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+                'label' => 'form.form_field.wysiwyg.format_tags.label',
+            ])
+            ->add('content_css', TextType::class, [
                 'required' => false,
-        ])->add('content_css', TextType::class, [
-                'required' => false,
-        ]);
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+                'label' => 'form.form_field.wysiwyg.content_css.label',
+            ])
+        ;
         $optionsForm->get('migrationOptions')->add('transformer', TextType::class, [
             'required' => false,
         ]);

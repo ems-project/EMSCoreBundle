@@ -577,12 +577,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Get icon.
-     *
-     * @return string|null
-     */
-    public function getIcon()
+    public function getIcon(): ?string
     {
         return $this->icon;
     }
@@ -721,12 +716,17 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Get labelField.
-     *
-     * @return string
-     */
-    public function getLabelField()
+    public function hasLabelField(): bool
+    {
+        return null !== $this->labelField;
+    }
+
+    public function giveLabelField(): string
+    {
+        return $this->labelField;
+    }
+
+    public function getLabelField(): ?string
     {
         return $this->labelField;
     }
@@ -1043,6 +1043,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this->extra;
     }
 
+    public function hasFieldType(): bool
+    {
+        return null !== $this->fieldType;
+    }
+
     /**
      * Get fieldType.
      *
@@ -1055,6 +1060,26 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         }
 
         return $this->fieldType;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getClearOnCopyProperties(): array
+    {
+        $clearPropertyNames = [];
+
+        foreach ($this->getFieldType()->loopChildren() as $child) {
+            $extraOptions = $child->getExtraOptions();
+
+            $clearOnCopy = true === ($extraOptions['clear_on_copy'] ?? null);
+
+            if ($clearOnCopy) {
+                $clearPropertyNames[] = $child->getName();
+            }
+        }
+
+        return $clearPropertyNames;
     }
 
     /**
@@ -1126,6 +1151,15 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      */
     public function getEnvironment()
     {
+        return $this->environment;
+    }
+
+    public function giveEnvironment(): Environment
+    {
+        if (null === $this->environment) {
+            throw new \RuntimeException('Environment not found!');
+        }
+
         return $this->environment;
     }
 
@@ -1280,6 +1314,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this->views;
     }
 
+    public function getFirstViewByType(string $type): ?View
+    {
+        $view = $this->views->filter(fn (View $view) => $view->getType() == $type)->first();
+
+        return $view instanceof View ? $view : null;
+    }
+
     /**
      * Set askForOuuid.
      *
@@ -1318,12 +1359,17 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Get colorField.
-     *
-     * @return string
-     */
-    public function getColorField()
+    public function hasColorField(): bool
+    {
+        return null !== $this->colorField;
+    }
+
+    public function giveColorField(): string
+    {
+        return $this->colorField;
+    }
+
+    public function getColorField(): ?string
     {
         return $this->colorField;
     }
@@ -1436,6 +1482,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         $this->assetField = $assetField;
 
         return $this;
+    }
+
+    public function hasAssetField(): bool
+    {
+        return null !== $this->assetField;
     }
 
     /**

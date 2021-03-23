@@ -199,7 +199,7 @@
     					<a href="{{ path(paginationPath, app.request.query|merge({'search_form[contentTypes][0]': index.key, page: 1})) }}" class="btn btn-block btn-social bg-gray">
     						<i class="fa fa-question"></i>
     						{{ index.key|humanize }}
-    						<span class=" badge pull-right">{{ index.doc_count }}</span>
+    						<span class=" badge pull-right">{{ index.count }}</span>
     					</a>
 					{% endif %}
 				{% endfor %}
@@ -269,9 +269,9 @@
 	{% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'data-index-' ~ attribute(types, form.contentTypes.vars.value.0).id
 	}%}
-{% elseif response.getAggregation('types').buckets|length == 1 %}
+{% elseif response.getAggregation('types').keys|length == 1 %}
 	{% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'data-index-' ~ attribute(types, response.getAggregation('types').buckets.0.key).id
+		'item':  'data-index-' ~ attribute(types, response.getAggregation('types').keys.0).id
 	}%}
 {% endif %}
 

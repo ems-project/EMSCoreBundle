@@ -3,10 +3,18 @@ Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
 CKEDITOR.plugins.setLang( 'adv_link', 'en', {
+    file: 'File',
+    selectFileLabel: 'Upload',
+    selectFileTitle: 'Upload',
+    documentNotFound: 'Document not found',
+    selectFileFilenameLabel: 'Filename',
+    selectFileFilenameTitle: 'Filename',
 	localPages:'Internal link',
 	asset:'Asset',
-	selectPageLabel:'Select a page',
-	selectPageTitle:'Select the page you want to link to',
+	selectContentTypeLabel:'Select a content type',
+	selectContentTypeTitle:'Select a content type in order to filter the search result',
+	selectPageLabel:'Select a document',
+	selectPageTitle:'Select the document you want to link to',
 	acccessKey: 'Access Key',
 	advanced: 'Advanced',
 	advisoryContentType: 'Advisory Content Type',

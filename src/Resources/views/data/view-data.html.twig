@@ -1,9 +1,9 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
-{% block title %}Recursive view of the {{ object._type }} : {{ object._id }}{% endblock %}
+{% block title %}Recursive view of the {{ object._source._contenttype }} : {{ object._id }}{% endblock %}
 {% block pagetitle %}
     <i class="{% if contentType and contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
-    {{ object._type|humanize }} :
+    {{ object._source._contenttype|humanize }} :
 
     {% if contentType and (contentType.labelField) and (attribute(attribute(object, '_source'), contentType.labelField)  is defined ) %}
         {{ attribute(attribute(object, '_source'), contentType.labelField) }}

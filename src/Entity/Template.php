@@ -13,7 +13,7 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\TemplateRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Template extends JsonDeserializer implements \JsonSerializable
+class Template extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
      * @var int
@@ -715,6 +715,15 @@ class Template extends JsonDeserializer implements \JsonSerializable
      */
     public function getContentType()
     {
+        return $this->contentType;
+    }
+
+    public function giveContentType(): ContentType
+    {
+        if (null === $this->contentType) {
+            throw new \RuntimeException('Not found contentType');
+        }
+
         return $this->contentType;
     }
 

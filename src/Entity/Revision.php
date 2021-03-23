@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CommonBundle\Common\ArrayHelper\RecursiveMapper;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Service\Mapping;
@@ -709,6 +710,15 @@ class Revision
         return $this->contentType;
     }
 
+    public function giveContentType(): ContentType
+    {
+        if (null === $this->contentType) {
+            throw new \RuntimeException('No contentType for revision!');
+        }
+
+        return $this->contentType;
+    }
+
     public function getContentTypeName(): string
     {
         if (null === $this->contentType) {
@@ -822,6 +832,29 @@ class Revision
         if (null !== $this->versionUuid) {
             $rawData['_version_uuid'] = $this->versionUuid;
         }
+
+        return $rawData;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getCopyRawData(): array
+    {
+        if (null === $contentType = $this->getContentType()) {
+            throw new \RuntimeException('content type not found!');
+        }
+
+        $rawData = $this->getRawData();
+        $clearProperties = $contentType->getClearOnCopyProperties();
+
+        RecursiveMapper::mapPropertyValue($rawData, function (string $property, $value) use ($clearProperties) {
+            if (\in_array($property, $clearProperties, true)) {
+                return null;
+            }
+
+            return $value;
+        });
 
         return $rawData;
     }
@@ -1066,7 +1099,7 @@ class Revision
         }
 
         if (null === $this->getVersionUuid()) {
-            $versionId = $this->rawData['_version_uuid'] ? Uuid::fromString($this->rawData['_version_uuid']) : Uuid::uuid4();
+            $versionId = isset($this->rawData['_version_uuid']) ? Uuid::fromString($this->rawData['_version_uuid']) : Uuid::uuid4();
             $this->setVersionId($versionId);
         }
         if (null === $this->getVersionTag()) {

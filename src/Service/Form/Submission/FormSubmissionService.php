@@ -7,32 +7,55 @@ namespace EMS\CoreBundle\Service\Form\Submission;
 use EMS\CoreBundle\Entity\FormSubmission;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\FormSubmissionRepository;
+use EMS\CoreBundle\Service\EntityServiceInterface;
 use EMS\CoreBundle\Service\TemplateService;
-use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
+use ZipStream\ZipStream;
 
-final class FormSubmissionService
+final class FormSubmissionService implements EntityServiceInterface
 {
-    /** @var FormSubmissionRepository */
-    private $repository;
+    private FormSubmissionRepository $formSubmissionRepository;
 
-    /** @var TemplateService */
-    private $templateService;
+    private TemplateService $templateService;
 
-    /** @var Environment */
-    private $twig;
+    private Environment $twig;
 
-    public function __construct(FormSubmissionRepository $repository, TemplateService $templateService, Environment $twig)
+    /** @var Session<mixed> */
+    private Session $session;
+
+    private TranslatorInterface $translator;
+
+    /**
+     * FormSubmissionService constructor.
+     *
+     * @param Session<mixed> $session
+     */
+    public function __construct(FormSubmissionRepository $formSubmissionRepository, TemplateService $templateService, Environment $twig, Session $session, TranslatorInterface $translator)
     {
-        $this->repository = $repository;
+        $this->formSubmissionRepository = $formSubmissionRepository;
         $this->templateService = $templateService;
         $this->twig = $twig;
+        $this->session = $session;
+        $this->translator = $translator;
     }
 
-    public function get(string $id): FormSubmission
+    /**
+     * @param mixed $context
+     *
+     * @return FormSubmission[]
+     */
+    public function get(int $from, int $size, $context = null): array
     {
-        $submission = $this->repository->findById($id);
+        return $this->formSubmissionRepository->get($from, $size);
+    }
+
+    public function getById(string $id): FormSubmission
+    {
+        $submission = $this->formSubmissionRepository->findById($id);
 
         if (null === $submission) {
             throw new \Exception(\sprintf('form submission not found!'));
@@ -41,38 +64,88 @@ final class FormSubmissionService
         return $submission;
     }
 
-    public function createDownload(FormSubmission $formSubmission): string
+    public function createDownload(string $formSubmission): StreamedResponse
     {
-        $filesystem = new Filesystem();
-        $tempFile = $filesystem->tempnam(\sys_get_temp_dir(), 'ems_form');
+        return $this->createDownloadForMultiple([$formSubmission]);
+    }
 
-        $zip = new \ZipArchive();
-        $zip->open($tempFile, \ZipArchive::CREATE);
+    /**
+     * @param array<string> $formSubmissionIds
+     *
+     * @throws \Exception
+     */
+    public function createDownloadForMultiple(array $formSubmissionIds): StreamedResponse
+    {
+        $response = new StreamedResponse(function () use ($formSubmissionIds) {
+            $zip = new ZipStream('submissionData.zip');
 
-        $data = $formSubmission->getData();
-        $data['id'] = $formSubmission->getId();
+            foreach ($formSubmissionIds as $formSubmissionId) {
+                $formSubmission = $this->getById($formSubmissionId);
+                $data = $formSubmission->getData();
 
-        $rawJson = \json_encode($data, JSON_UNESCAPED_UNICODE);
-        if (\is_string($rawJson)) {
-            $zip->addFromString('data.json', $rawJson);
-        }
+                $rawJson = \json_encode($data, JSON_UNESCAPED_UNICODE);
+                if (\is_string($rawJson)) {
+                    $zip->addFile($formSubmissionId.'/data.json', $rawJson);
+                }
 
-        foreach ($formSubmission->getFiles() as $file) {
-            $formFile = $file->getFile();
-
-            if (!\is_resource($formFile)) {
-                continue;
+                foreach ($formSubmission->getFiles() as $file) {
+                    if ($streamRead = $file->getFile()) {
+                        $zip->addFileFromStream($formSubmissionId.'/'.$file->getFilename(), $streamRead);
+                    } else {
+                        exit('Could not open stream for reading');
+                    }
+                }
             }
 
-            $formFileContents = \stream_get_contents($formFile);
-            if (\is_string($formFileContents)) {
-                $zip->addFromString($file->getFilename(), $formFileContents);
+            $zip->finish();
+        });
+
+        return $response;
+    }
+
+    /**
+     * @param array<string> $formSubmissionIds
+     *
+     * @return array<mixed> $config
+     */
+    public function generateExportConfig(array $formSubmissionIds)
+    {
+        $sheets = [];
+
+        foreach ($formSubmissionIds as $formSubmissionId) {
+            $formSubmission = $this->getById($formSubmissionId);
+            /** @var array<mixed> $data */
+            $data = $formSubmission->getData();
+            $data = \array_filter($data, function ($value) {
+                return \is_string($value);
+            });
+            $data['id'] = $formSubmission->getId();
+            $data['form'] = $formSubmission->getName();
+            $data['instance'] = $formSubmission->getInstance();
+            $data['locale'] = $formSubmission->getLocale();
+            $data['created'] = $formSubmission->getCreated();
+            $data['deadline'] = $formSubmission->getExpireDate();
+
+            $sheetName = $formSubmission->getName();
+            if (!\key_exists($sheetName, $sheets)) {
+                $titles = [];
+                foreach ($data as $key => $value) {
+                    $titles[] = $key;
+                }
+                $sheets[$sheetName] = [$titles];
             }
+            $sheets[$sheetName] = \array_merge($sheets[$sheetName], [$data]);
         }
 
-        $zip->close();
+        $config['sheets'] = [];
+        foreach ($sheets as $key => $value) {
+            $config['sheets'][] = [
+              'name' => $key,
+              'rows' => $value,
+            ];
+        }
 
-        return $tempFile;
+        return $config;
     }
 
     /**
@@ -80,7 +153,7 @@ final class FormSubmissionService
      */
     public function getUnprocessed(): array
     {
-        return $this->repository->findAllUnprocessed();
+        return $this->formSubmissionRepository->findAllUnprocessed();
     }
 
     /**
@@ -88,7 +161,7 @@ final class FormSubmissionService
      */
     public function getAllFormSubmissions(): array
     {
-        return $this->repository->findFormSubmissions();
+        return $this->formSubmissionRepository->findFormSubmissions();
     }
 
     /**
@@ -96,17 +169,43 @@ final class FormSubmissionService
      */
     public function getFormSubmissions(?string $formInstance = null): array
     {
-        return $this->repository->findFormSubmissions($formInstance);
+        return $this->formSubmissionRepository->findFormSubmissions($formInstance);
     }
 
-    public function process(FormSubmission $formSubmission, UserInterface $user): void
+    public function process(string $id, UserInterface $user): void
     {
         if (!$user instanceof User) {
             throw new \Exception('Invalid user passed for processing!');
         }
 
+        $formSubmission = $this->getById($id);
+
+        $this->session->getFlashBag()->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $formSubmission->getId()], 'EMSCoreBundle'));
+
         $formSubmission->process($user);
-        $this->repository->save($formSubmission);
+        $this->formSubmissionRepository->save($formSubmission);
+    }
+
+    /**
+     * @param array<string> $ids
+     *
+     * @throws \Exception
+     */
+    public function processByIds(array $ids, UserInterface $user): void
+    {
+        if (!$user instanceof User) {
+            throw new \Exception('Invalid user passed for processing!');
+        }
+
+        foreach ($ids as $id) {
+            $formSubmission = $this->getById($id);
+            $formSubmission->process($user);
+            $this->formSubmissionRepository->persist($formSubmission);
+
+            $this->session->getFlashBag()->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $id], 'EMSCoreBundle'));
+        }
+
+        $this->formSubmissionRepository->flush();
     }
 
     /**
@@ -116,14 +215,14 @@ final class FormSubmissionService
     {
         $formSubmission = new FormSubmission($submitRequest);
 
-        $this->repository->save($formSubmission);
+        $this->formSubmissionRepository->save($formSubmission);
 
         return ['submission_id' => $formSubmission->getId()];
     }
 
     public function removeExpiredSubmissions(): int
     {
-        return $this->repository->removeAllOutdatedSubmission();
+        return $this->formSubmissionRepository->removeAllOutdatedSubmission();
     }
 
     /**
@@ -140,5 +239,20 @@ final class FormSubmissionService
         } catch (\Exception $e) {
             return $this->twig->createTemplate('Error in body template: '.$e->getMessage())->render();
         }
+    }
+
+    public function isSortable(): bool
+    {
+        return false;
+    }
+
+    public function getEntityName(): string
+    {
+        return 'formSubmission';
+    }
+
+    public function count($context = null): int
+    {
+        return $this->formSubmissionRepository->countAllUnprocessed();
     }
 }

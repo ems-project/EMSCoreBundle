@@ -19,7 +19,7 @@ final class ChannelOptionsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('entryRoute', null, [
+            ->add('entryPath', null, [
                 'required' => false,
                 'row_attr' => [
                     'class' => 'col-md-6',

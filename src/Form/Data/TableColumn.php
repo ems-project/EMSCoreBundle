@@ -11,6 +11,7 @@ final class TableColumn
     /** @var array<mixed, string> */
     private array $valueToIconMapping;
     private ?string $routeProperty = null;
+    private ?string $routePath = null;
     private ?string $routeTarget = '_blank';
     private ?string $iconProperty = null;
     private ?bool $dateTimeProperty = null;
@@ -43,9 +44,19 @@ final class TableColumn
         return $this->valueToIconMapping;
     }
 
+    public function setRoutePath(string $routePath): void
+    {
+        $this->routePath = $routePath;
+    }
+
     public function setRouteProperty(string $routeProperty): void
     {
         $this->routeProperty = $routeProperty;
+    }
+
+    public function getRoutePath(): ?string
+    {
+        return $this->routePath;
     }
 
     public function getRouteProperty(): ?string

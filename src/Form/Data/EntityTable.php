@@ -8,12 +8,9 @@ use EMS\CoreBundle\Service\EntityServiceInterface;
 
 final class EntityTable extends TableAbstract
 {
-    /** @var EntityServiceInterface */
-    private $entityService;
-    /** @var int */
-    private $size;
-    /** @var int */
-    private $from;
+    private EntityServiceInterface $entityService;
+    private int $size;
+    private int $from;
     /**
      * @var mixed|null
      */

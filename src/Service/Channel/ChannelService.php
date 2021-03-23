@@ -2,19 +2,18 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Service;
+namespace EMS\CoreBundle\Service\Channel;
 
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Repository\ChannelRepository;
+use EMS\CoreBundle\Service\EntityServiceInterface;
 use Psr\Log\LoggerInterface;
 
 final class ChannelService implements EntityServiceInterface
 {
-    /** @var ChannelRepository */
-    private $channelRepository;
-    /** @var LoggerInterface */
-    private $logger;
+    private ChannelRepository $channelRepository;
+    private LoggerInterface $logger;
 
     public function __construct(ChannelRepository $channelRepository, LoggerInterface $logger)
     {

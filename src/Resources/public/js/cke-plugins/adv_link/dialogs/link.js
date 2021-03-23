@@ -49,7 +49,7 @@
 					uploadTab = dialog.definition.getContents( 'upload' ),
 					uploadInitiallyHidden = uploadTab && uploadTab.hidden;
 
-				if ( typeValue == 'url' ) {
+				if ( typeValue == 'url' || typeValue == 'localPage' || typeValue == 'fileLink' || typeValue == 'asset' ) {
 					if ( editor.config.linkShowTargetTab )
 						dialog.showPage( 'target' );
 					if ( !uploadInitiallyHidden )
@@ -142,10 +142,10 @@
 					children : [
 					{
 						type : 'select',
-						label : linkLang.selectPageLabel,
+						label : linkLang.selectContentTypeLabel,
 						id : 'contentTypeFilter',
 						className : 'adv_link_type_filter',
-						title : linkLang.selectPageTitle,
+						title : linkLang.selectContentTypeTitle,
 						'default': ems_wysiwyg_type_filters[0][1],
 						items : ems_wysiwyg_type_filters,
 					    setup: function( data ) {
@@ -165,7 +165,7 @@
 						title : linkLang.selectPageTitle,
 						items : [],
 						onLoad : function(element) {
-							
+
 							var objectPicker = $('#'+this.domId);
 							var typeFilter = objectPicker.parents('.cke_dialog_contents_body').find('select.adv_link_type_filter');
 							
@@ -206,11 +206,23 @@
 					    },
 					    setup: function( data ) {
 					    	if(data.type == 'localPage' &&  data.id){
-					    		this.setValue( data.id );
-					    		if (!$('#'+this.domId+' select.select2').find("option[value='" + data.id + "']").length) {
-					    			var newOption = new Option('Current value', data.id, false, false);
-					    			$('#'+this.domId+' select.select2').append(newOption).trigger('change');			    			
-					    		}
+                                this.setValue( data.id );
+					    		var select2Select = $('#'+this.domId+' select.select2');
+                                var itemLabel = linkLang.documentNotFound;
+					    		$.ajax({
+                                  url: object_search_url,
+                                  data: {
+                                    dataLink: data.id
+                                  },
+                                  dataType: 'json'
+                                }).done(function(result) {
+                                    if (result.items && result.items[0] && result.items[0].text) {
+                                        itemLabel = result.items[0].text;
+                                    }
+                                }).always(function() {
+                                    var newOption = new Option(itemLabel, data.id, false, false);
+                                    select2Select.html(newOption).trigger('change');
+                                });
 					    	}
 						},
 						commit : function( data )

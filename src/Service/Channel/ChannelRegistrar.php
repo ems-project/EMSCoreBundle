@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service\Channel;
 
 use EMS\ClientHelperBundle\Helper\Environment\Environment;
-use EMS\ClientHelperBundle\Helper\Environment\EnvironmentHelper;
+use EMS\ClientHelperBundle\Contracts\Environment\EnvironmentHelperInterface;
 use EMS\CoreBundle\Repository\ChannelRepository;
 use EMS\CoreBundle\Service\IndexService;
 use Psr\Log\LoggerInterface;
@@ -15,13 +15,13 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 final class ChannelRegistrar
 {
     private ChannelRepository $channelRepository;
-    private EnvironmentHelper $environmentHelper;
+    private EnvironmentHelperInterface $environmentHelper;
     private LoggerInterface $logger;
     private IndexService $indexService;
 
     private const EMSCO_CHANNEL_PATH_REGEX = '/^\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
 
-    public function __construct(ChannelRepository $channelRepository, EnvironmentHelper $environmentHelper, LoggerInterface $logger, IndexService $indexService)
+    public function __construct(ChannelRepository $channelRepository, EnvironmentHelperInterface $environmentHelper, LoggerInterface $logger, IndexService $indexService)
     {
         $this->channelRepository = $channelRepository;
         $this->environmentHelper = $environmentHelper;
@@ -71,7 +71,7 @@ final class ChannelRegistrar
             $options[Environment::REQUEST_CONFIG] = $attributes;
         }
 
-        $this->environmentHelper->addEnvironment(new Environment($channelName, $options));
+        $this->environmentHelper->addEnvironment($channelName, $options);
     }
 
     private function isAnonymousUser(Request $request): bool

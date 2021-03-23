@@ -24,7 +24,7 @@
         </service>
         <service id="ems.service.channel.register" class="EMS\CoreBundle\Service\Channel\ChannelRegistrar">
             <argument type="service" id="ems.repository.channel"/>
-            <argument type="service" id="emsch.helper_environment"/>
+            <argument type="service" id="EMS\ClientHelperBundle\Contracts\Environment\EnvironmentHelperInterface"/>
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.index"/>
         </service>

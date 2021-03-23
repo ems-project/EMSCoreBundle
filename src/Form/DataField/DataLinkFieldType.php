@@ -228,7 +228,7 @@ class DataLinkFieldType extends DataFieldType
         $objectPickerType = $this->formRegistry->getType(ObjectPickerType::class)->getInnerType();
 
         /** @var ObjectChoiceLoader $loader */
-        $loader = $objectPickerType->getChoiceListFactory()->createLoader($fieldType->getDisplayOptions()['type'], true /*count($choices) == 0 || !$fieldType->getDisplayOptions()['dynamicLoading']*/ );
+        $loader = $objectPickerType->getChoiceListFactory()->createLoader($fieldType->getDisplayOptions()['type'], true /*count($choices) == 0 || !$fieldType->getDisplayOptions()['dynamicLoading']*/);
         $all = $loader->loadAll();
         if (\count($choices) > 0) {
             foreach ($all as $key => $data) {

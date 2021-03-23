@@ -11,16 +11,19 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class AliasesCheckCommand extends Command
 {
     public const COMMAND = 'ems:check:aliases';
+    private const OPTION_REPAIR = 'repair';
     private EnvironmentService $environmentService;
     private AliasService $aliasService;
     private JobService $jobService;
     private SymfonyStyle $io;
+    private bool $repair = false;
 
     public function __construct(EnvironmentService $environmentService, AliasService $aliasService, JobService $jobService)
     {
@@ -34,12 +37,14 @@ final class AliasesCheckCommand extends Command
     {
         $this
             ->setName(self::COMMAND)
-            ->setDescription('Checks that all managed environments have their corresponding alias and index present in the cluster. If not and if they are no pending job a rebuild job is queued.');
+            ->setDescription('Checks that all managed environments have their corresponding alias and index present in the cluster.')
+            ->addOption(self::OPTION_REPAIR, null, InputOption::VALUE_NONE, 'If an environment does not have its alias present and if they are no pending job a rebuild job is queued.');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
+        $this->repair = true === $input->getOption(self::OPTION_REPAIR);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -54,6 +59,10 @@ final class AliasesCheckCommand extends Command
                 continue;
             }
             $this->io->warning(\sprintf('The %s environment\'s alias is missing', $environment->getName()));
+
+            if (!$this->repair) {
+                continue;
+            }
 
             if ($this->jobService->countPending() > 0) {
                 $this->io->warning('The job\'s queue is not empty');

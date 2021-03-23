@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -304,6 +305,20 @@ class ElasticsearchController extends AppController
         $category = $request->query->get('category', null);
         $assetName = $request->query->get('asset_name', false);
         $circleOnly = $request->query->get('circle', false);
+        $dataLink = $request->query->get('dataLink', null);
+
+        if (\is_string($dataLink)) {
+            $emsLink = EMSLink::fromText($dataLink);
+            $contentType = $contentTypeService->getByName($emsLink->getContentType());
+            if (!$contentType instanceof ContentType) {
+                throw new \RuntimeException(\sprintf('Content type %s not found', $emsLink->getContentType()));
+            }
+            $document = $searchService->getDocument($contentType, $emsLink->getOuuid());
+            $dataLinks = new DataLinks($request, $contentType);
+            $dataLinks->addDocument($document);
+
+            return new JsonResponse($dataLinks->toArray());
+        }
 
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();

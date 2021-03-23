@@ -41,6 +41,7 @@ class Configuration implements ConfigurationInterface
     const TIKA_SERVER = null;
     const SAVE_ASSETS_IN_DB = false;
     const LOG_LEVEL = 'info';
+    const DEFAULT_BULK_SIZE = 500;
 
     /**
      * {@inheritdoc}
@@ -89,6 +90,7 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('template_options')->defaultValue([])->prototype('variable')->end()->end()
             ->scalarNode('health_check_allow_origin')->defaultValue(null)->end()
             ->scalarNode('tika_download_url')->defaultValue(null)->end()
+            ->scalarNode('default_bulk_size')->defaultValue(self::DEFAULT_BULK_SIZE)->end()
             ->arrayNode('ldap')
             ->children()
             ->scalarNode('base_dn')->end()

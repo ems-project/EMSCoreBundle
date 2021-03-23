@@ -9,7 +9,7 @@ services:
     app.twig_extension: '@EMS\CoreBundle\Twig\AppExtension'
     EMS\CoreBundle\Twig\AppExtension:
         #class: EMS\CoreBundle\Twig\AppExtension
-        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory', '@ems.service.file' , '@ems_common.twig.runtime.request', '@mailer', '@ems_common.service.elastica', '@ems.service.search', '@twig.extension.routing', '@request_stack', '%ems_core.asset_config%']
+        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory', '@ems.service.file' , '@ems_common.twig.runtime.request', '@mailer', '@ems_common.service.elastica', '@ems.service.search', '%ems_core.asset_config%']
         #public: false
         tags:
             - { name: twig.extension, priority: -2000 }
@@ -27,15 +27,6 @@ services:
             - '@EMS\CoreBundle\Repository\UserRepository'
         tags:
             - { name: twig.runtime, priority: -2000 }
-    app.listener.request:
-        class: EMS\CoreBundle\EventListener\RequestListener
-        arguments: ['@twig', '@doctrine', '@logger', '@router', '@ems.repository.channel', '@emsch.helper_environment', '@ems.service.index']
-        tags:
-            #- { name: kernel.event_listener, event: kernel.controller, method: provideTemplateTwigObjects, priority: -20 }
-            #- { name: kernel.event_listener, event: kernel.terminate, method: startJob }
-            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 110 }
-            #kernel.response or kernel.terminate
     app.twig.extension.stringloader:
         class: Twig_Extension_StringLoader
         tags:
@@ -489,10 +480,6 @@ services:
     ems.service.document:
         class: EMS\CoreBundle\Service\DocumentService
         arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '%ems_core.instance_id%']
-    EMS\CoreBundle\Service\ChannelService: '@ems.service.channel'
-    ems.service.channel:
-        class: EMS\CoreBundle\Service\ChannelService
-        arguments: ['@ems.repository.channel', '@logger']
     EMS\CoreBundle\Service\ActionService: '@ems.service.action'
     ems.service.action:
         class: EMS\CoreBundle\Service\ActionService
@@ -535,7 +522,7 @@ services:
             -  { name: console.command }
     ems.make.document:
         class: EMS\CoreBundle\Command\DocumentCommand
-        arguments: ['@ems.service.contenttype', '@ems.service.document', '@ems.service.data']
+        arguments: ['@ems.service.contenttype', '@ems.service.document', '@ems.service.data', '%ems_core.default_bulk_size%']
         tags:
             -  { name: console.command }
     ems.contenttype.export:
@@ -545,7 +532,7 @@ services:
             -  { name: console.command }
     ems.environment.rebuild:
         class: EMS\CoreBundle\Command\RebuildCommand
-        arguments: ['@doctrine', '@logger', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '@ems_common.service.elastica', '@ems.service.mapping', '@ems.service.alias', '%ems_core.instance_id%']
+        arguments: ['@doctrine', '@logger', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '@ems_common.service.elastica', '@ems.service.mapping', '@ems.service.alias', '%ems_core.instance_id%', '%ems_core.default_bulk_size%']
         tags:
             -  { name: console.command }
     ems.delete.orphans:
@@ -580,7 +567,7 @@ services:
             -  { name: console.command }
     ems.environment.reindex:
         class: EMS\CoreBundle\Command\ReindexCommand
-        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@ems.service.data', '@ems.elasticsearch.bulker']
+        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@ems.service.data', '@ems.elasticsearch.bulker', '%ems_core.default_bulk_size%']
         tags:
             -  { name: console.command }
     ems.contenttype.delete:

@@ -86,7 +86,7 @@ final class DataLinks
         return $this->types;
     }
 
-    private function addDocument(DocumentInterface $document): void
+    public function addDocument(DocumentInterface $document): void
     {
         $item = [
             'id' => $document->getEmsId(),

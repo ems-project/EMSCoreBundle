@@ -33,6 +33,8 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $xmlLoader->load('repositories.xml');
         $xmlLoader->load('view_types.xml');
         $yamlLoader->load('services.yml');
+        $xmlLoader->load('controllers.xml');
+        $xmlLoader->load('services.xml');
 
         $container->setParameter('ems_core.from_email', $config['from_email']);
         $container->setParameter('ems_core.instance_id', $config['instance_id']);
@@ -68,6 +70,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.tika_download_url', $config['tika_download_url']);
         $container->setParameter('ems_core.log_by_pass', $config['log_by_pass']);
         $container->setParameter('ems_core.log_level', $config['log_level']);
+        $container->setParameter('ems_core.default_bulk_size', $config['default_bulk_size']);
 
         $this->loadLdap($container, $yamlLoader, $config['ldap'] ?? []);
     }

@@ -54,6 +54,8 @@
                                             {% set path = false %}
                                             {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
                                                 {% set path = path(attribute(line.data, column.routeProperty)) %}
+                                            {% elseif column.routePath and attribute(line.data, column.routePath)|default(false) %}
+                                                {% set path = attribute(line.data, column.routePath) %}
                                             {% endif %}
                                             {% if path %}
                                                 <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>

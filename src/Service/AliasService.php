@@ -83,6 +83,20 @@ class AliasService
         return isset($this->aliases[$name]);
     }
 
+    public function hasAliasInCluster(string $name): bool
+    {
+        $endpoint = new Get();
+        $endpoint->setName($name);
+        try {
+            $this->elasticaClient->requestEndpoint($endpoint)->getData();
+
+            return true;
+        } catch (\Throwable $e) {
+        }
+
+        return false;
+    }
+
     /**
      * @return array{name: string, total: int, indexes: array, environment: string, managed: bool}
      */

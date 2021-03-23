@@ -9,7 +9,7 @@ use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\ChannelType;
 use EMS\CoreBundle\Form\Form\TableType;
-use EMS\CoreBundle\Service\ChannelService;
+use EMS\CoreBundle\Service\Channel\ChannelService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
@@ -19,10 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class ChannelController extends AbstractController
 {
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var ChannelService */
-    private $channelService;
+    private LoggerInterface $logger;
+    private ChannelService $channelService;
 
     public function __construct(LoggerInterface $logger, ChannelService $channelService)
     {
@@ -34,7 +32,7 @@ final class ChannelController extends AbstractController
     {
         $table = new EntityTable($this->channelService);
         $labelColumn = $table->addColumn('channel.index.column.label', 'label');
-        $labelColumn->setRouteProperty('defaultRoute');
+        $labelColumn->setRoutePath('entryPath');
         $labelColumn->setRouteTarget('channel_%value%');
         $table->addColumn('channel.index.column.name', 'name');
         $table->addColumn('channel.index.column.alias', 'alias');

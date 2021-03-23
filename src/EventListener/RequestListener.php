@@ -95,7 +95,7 @@ class RequestListener
                     $options[Environment::REQUEST_CONFIG] = $attributes;
                 }
 
-                $this->environmentHelper->addEnvironment(new Environment($channelName, $options));
+                $this->environmentHelper->addEnvironment($channelName, $options);
             }
         }
 

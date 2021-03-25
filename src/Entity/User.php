@@ -14,7 +14,7 @@ use FOS\UserBundle\Model\User as BaseUser;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class User extends BaseUser implements UserInterface
+class User extends BaseUser implements UserInterface, EntityInterface
 {
     /**
      * @ORM\Id
@@ -476,5 +476,10 @@ class User extends BaseUser implements UserInterface
     public function isEnabled(): bool
     {
         return $this->enabled;
+    }
+
+    public function getName(): string
+    {
+        return $this->getDisplayName();
     }
 }

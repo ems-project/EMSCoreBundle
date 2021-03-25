@@ -62,6 +62,21 @@
                                             {% endif %}
                                             {%  if column.dateTimeProperty == true %}
                                                 {{ value|date(date_time_format) }}
+                                            {%  elseif column.arrayOfStrings == true %}
+                                                {% for string in value %}
+                                                    {% if not loop.first %}
+                                                        {% if loop.last %}
+                                                            &amp;
+                                                        {% else %}
+                                                            ,
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    {{ string|trans }}
+                                                {% endfor %}
+                                            {% elseif column.dataLinks == true %}
+                                                {% for item in value %}
+                                                    {{ item|data_link|raw }}
+                                                {% endfor %}
                                             {%  elseif attribute(column.valueToIconMapping, value) is defined %}
                                                 <i class="{{ attribute(column.valueToIconMapping, value)  }}"></i> <span class="sr-only">{{ value }}</span>
                                             {%  elseif column.iconProperty and attribute(line.data, column.iconProperty)|default(false) %}

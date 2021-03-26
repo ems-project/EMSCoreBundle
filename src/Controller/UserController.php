@@ -12,6 +12,7 @@ use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -73,6 +74,10 @@ class UserController extends AppController
         $createdColumn = $table->addColumn('user.index.column.lastLogin', 'lastLogin');
         $createdColumn->setDateTimeProperty(true);
 
+        $table->addDynamicItemGetAction('user.edit', 'user.user.edit', 'pencil', ['id' => 'id']);
+        $table->addDynamicItemGetAction('homepage', 'user.user.switch', 'user-secret', ['_switch_user' => 'username']);
+        $table->addDynamicItemPostAction('user.enabling', 'user.user.disable', 'user-times', 'user.user.disable_confirm', ['id' => 'id']);
+        $table->addDynamicItemPostAction('user.delete', 'user.user.delete', 'trash', 'user.user.delete_confirm', ['id' => 'id']);
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -80,10 +85,6 @@ class UserController extends AppController
         return $this->render('@EMSCore/user/index.html.twig', [
             'form' => $form->createView(),
         ]);
-
-//        return $this->render('@EMSCore/user/index.html.twig', [
-//            'paging' => $helperService->getPagingTool('EMSCoreBundle:User', 'ems.user.index', 'username'),
-//        ]);
     }
 
     /**

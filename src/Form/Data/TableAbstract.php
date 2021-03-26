@@ -88,7 +88,7 @@ abstract class TableAbstract implements TableInterface
     }
 
     /**
-     * @param array<string, mixed> $routeParameters
+     * @param array<mixed> $routeParameters
      */
     public function addItemGetAction(string $route, string $labelKey, string $icon, array $routeParameters = []): TableItemAction
     {
@@ -104,6 +104,28 @@ abstract class TableAbstract implements TableInterface
     public function addItemPostAction(string $route, string $labelKey, string $icon, string $messageKey, array $routeParameters = []): TableItemAction
     {
         $action = TableItemAction::postAction($route, $labelKey, $icon, $messageKey, $routeParameters);
+        $this->itemActions[] = $action;
+
+        return $action;
+    }
+
+    /**
+     * @param array<string, string> $routeParameters
+     */
+    public function addDynamicItemPostAction(string $route, string $labelKey, string $icon, string $messageKey, array $routeParameters = []): TableItemAction
+    {
+        $action = TableItemAction::postDynamicAction($route, $labelKey, $icon, $messageKey, $routeParameters);
+        $this->itemActions[] = $action;
+
+        return $action;
+    }
+
+    /**
+     * @param array<string, string> $routeParameters
+     */
+    public function addDynamicItemGetAction(string $route, string $labelKey, string $icon, array $routeParameters = []): TableItemAction
+    {
+        $action = TableItemAction::getDynamicAction($route, $labelKey, $icon, $routeParameters);
         $this->itemActions[] = $action;
 
         return $action;

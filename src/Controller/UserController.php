@@ -74,10 +74,11 @@ class UserController extends AppController
         $createdColumn = $table->addColumn('user.index.column.lastLogin', 'lastLogin');
         $createdColumn->setDateTimeProperty(true);
 
-        $table->addDynamicItemGetAction('user.edit', 'user.user.edit', 'pencil', ['id' => 'id']);
-        $table->addDynamicItemGetAction('homepage', 'user.user.switch', 'user-secret', ['_switch_user' => 'username']);
-        $table->addDynamicItemPostAction('user.enabling', 'user.user.disable', 'user-times', 'user.user.disable_confirm', ['id' => 'id']);
-        $table->addDynamicItemPostAction('user.delete', 'user.user.delete', 'trash', 'user.user.delete_confirm', ['id' => 'id']);
+        $table->addDynamicItemGetAction('user.edit', 'user.action.edit', 'pencil', ['id' => 'id']);
+        $table->addDynamicItemGetAction('homepage', 'user.action.switch', 'user-secret', ['_switch_user' => 'username']);
+        $table->addDynamicItemPostAction('user.enabling', 'user.action.disable', 'user-times', 'user.action.disable_confirm', ['id' => 'id']);
+        $table->addDynamicItemPostAction('EMS_user_apikey', 'user.action.generate_api', 'key', 'user.action.generate_api_confirm', ['username' => 'username']);
+        $table->addDynamicItemPostAction('user.delete', 'user.action.delete', 'trash', 'user.action.delete_confirm', ['id' => 'id']);
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);

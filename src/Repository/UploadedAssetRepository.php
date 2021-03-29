@@ -95,4 +95,19 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
         }
         throw new \RuntimeException(\sprintf('Unexpected class object %s', \get_class($uploadedAsset)));
     }
+
+    /**
+     * @return array<mixed>
+     */
+    public function get(int $from, int $size): array
+    {
+        $qb = $this->createQueryBuilder('ua');
+        $qb
+            ->andWhere($qb->expr()->isNotNull('ua.id'))
+            ->setFirstResult($from)
+            ->setMaxResults($size)
+            ->orderBy('ua.created', 'desc');
+
+        return $qb->getQuery()->execute();
+    }
 }

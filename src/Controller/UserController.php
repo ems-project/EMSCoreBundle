@@ -12,13 +12,11 @@ use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
-use EMS\CoreBundle\Service\HelperService;
 use EMS\CoreBundle\Service\UserService;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -58,7 +56,6 @@ class UserController extends AppController
      */
     public function indexAction(Request $request)
     {
-
         $table = new EntityTable($this->userService);
 
         $table->addColumn('user.index.column.id', 'id');

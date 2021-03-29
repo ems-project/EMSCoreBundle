@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CoreBundle\Entity\AuthToken;
-use EMS\CoreBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\UserRepository;

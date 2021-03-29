@@ -415,6 +415,17 @@ form-submission:
       created: 'Created At'
       deadline: 'Deadline Date'
     reorder: 'Reorder'
+uploaded-file:
+  index:
+    title: 'Uploaded Files'
+    column:
+      created: 'Created at'
+      modified: 'Last modified'
+      name: 'File name'
+      sha1: 'Sha1'
+      type: 'File type'
+      username: 'Username'
+      size: 'File size (kb)'
 table:
   index:
     button:

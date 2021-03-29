@@ -12,6 +12,7 @@ use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CommonBundle\Storage\SizeMismatchException;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CommonBundle\Storage\StorageServiceMissingException;
+use EMS\CoreBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use Exception;
@@ -20,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class FileService
+class FileService implements EntityServiceInterface
 {
     /** @var Registry */
     private $doctrine;
@@ -28,12 +29,15 @@ class FileService
     private $storageManager;
     /** @var Processor */
     private $processor;
+    /** var UploadedAssetRepository */
+    private $uploadedAssetRepository;
 
-    public function __construct(Registry $doctrine, StorageManager $storageManager, Processor $processor)
+    public function __construct(Registry $doctrine, StorageManager $storageManager, Processor $processor, UploadedAssetRepository $uploadedAssetRepository)
     {
         $this->doctrine = $doctrine;
         $this->storageManager = $storageManager;
         $this->processor = $processor;
+        $this->uploadedAssetRepository = $uploadedAssetRepository;
     }
 
     public function getBase64(string $hash): ?string
@@ -276,5 +280,25 @@ class FileService
         if ($newHash !== $hash) {
             throw new HashMismatchException($hash, $newHash);
         }
+    }
+
+    public function isSortable(): bool
+    {
+        return false;
+    }
+
+    public function get(int $from, int $size, $context = null): array
+    {
+        return $this->uploadedAssetRepository->get($from, $size);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'UploadedAsset';
+    }
+
+    public function count($context = null): int
+    {
+        return $this->uploadedAssetRepository->countHashes();
     }
 }

@@ -8,6 +8,8 @@
             prefix="/action" />
     <import resource="@EMSCoreBundle/Resources/config/routing/channel.xml"
             prefix="/channel-admin" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/uploaded-file.xml"
+            prefix="/uploaded-file-admin" />
     <import resource="@EMSCoreBundle/Resources/config/routing/asset.xml"
             prefix="/bundles" />
 </routes>

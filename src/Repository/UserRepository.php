@@ -51,7 +51,10 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserRepos
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function get($from, $size): array
+    /**
+     * @return array<mixed>
+     */
+    public function get(int $from, int $size): array
     {
         $qb = $this->createQueryBuilder('user');
         $qb

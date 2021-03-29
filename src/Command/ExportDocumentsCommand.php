@@ -99,7 +99,7 @@ class ExportDocumentsCommand extends EmsCommand
                 null,
                 InputArgument::OPTIONAL,
                 'Size of the elasticsearch scroll request',
-                100
+                '100'
             )
             ->addOption(
                 'scrollTimeout',

@@ -12,7 +12,7 @@ use EMS\CommonBundle\Helper\EmsFields;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\UploadedAssetRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class UploadedAsset
+class UploadedAsset implements EntityInterface
 {
     /**
      * @var int

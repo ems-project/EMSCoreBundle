@@ -44,10 +44,10 @@ class ReindexCommand extends EmsCommand
     private $error;
     /** @var Bulker */
     private $bulker;
-    /** @var int */
+    /** @var string */
     private $defaultBulkSize;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container, string $instanceId, DataService $dataService, Bulker $bulker, int $defaultBulkSize)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container, string $instanceId, DataService $dataService, Bulker $bulker, string $defaultBulkSize)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;

@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 
-class UserService
+class UserService implements EntityServiceInterface
 {
     /** @var Registry */
     private $doctrine;
@@ -240,5 +240,25 @@ class UserService
 
             return false;
         });
+    }
+
+    public function isSortable(): bool
+    {
+        return false;
+    }
+
+    public function get(int $from, int $size, $context = null): array
+    {
+        return $this->userRepository->get($from, $size);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'user';
+    }
+
+    public function count($context = null): int
+    {
+        return $this->userRepository->countUsers();
     }
 }

@@ -50,7 +50,7 @@
                                     <td class="text-center">{{ loop.index }}</td>
                                     {% for column in table.columns %}
                                         {% set value = attribute(line.data, column.attribute)  %}
-                                        <td class="nowrap">
+                                        <td{% if column.arrayOfStrings != true %} class="nowrap"{% endif %}>
                                             {% set path = false %}
                                             {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
                                                 {% set path = path(attribute(line.data, column.routeProperty)) %}
@@ -62,6 +62,21 @@
                                             {% endif %}
                                             {%  if column.dateTimeProperty == true %}
                                                 {{ value|date(date_time_format) }}
+                                            {%  elseif column.arrayOfStrings == true %}
+                                                {% for string in value %}
+                                                    {% if not loop.first %}
+                                                        {% if loop.last %}
+                                                            &amp;
+                                                        {% else %}
+                                                            ,
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    {{ string|trans }}
+                                                {% endfor %}
+                                            {% elseif column.dataLinks == true %}
+                                                {% for item in value %}
+                                                    {{ item|data_link|raw }}
+                                                {% endfor %}
                                             {%  elseif attribute(column.valueToIconMapping, value) is defined %}
                                                 <i class="{{ attribute(column.valueToIconMapping, value)  }}"></i> <span class="sr-only">{{ value }}</span>
                                             {%  elseif column.iconProperty and attribute(line.data, column.iconProperty)|default(false) %}
@@ -77,20 +92,30 @@
                                     <td data-search="">
                                         <div class="btn-group">
                                             {% for action in table.itemActions %}
+                                                {%  if action.dynamic == true %}
+                                                    {% set routeParameters = {} %}
+                                                    {% for name, property in action.routeParameters %}
+                                                        {% set routeParameters = routeParameters|merge({ (name): attribute(line.data, property) }) %}
+                                                    {%  endfor %}
+                                                {% else %}
+                                                    {% set routeParameters = action.routeParameters|merge({(table.attributeName): line.data.id}) %}
+                                                {% endif %}
                                                 {% if action.post %}
-                                                    {% include '@EMSCore/elements/post-button.html.twig' with {
-                                                        'url': path(action.route, action.routeParameters|merge({(table.attributeName): line.data.id})),
-                                                        'message': action.messageKey,
-                                                        'label': action.labelKey,
-                                                        'itemLabel': attribute(line.data, table.labelAttribute),
-                                                        'icon': action.icon
-                                                    }%}
+                                                    {% if action.route != 'EMS_user_apikey' or 'ROLE_API' in line.data.roles  %}
+                                                        {% include '@EMSCore/elements/post-button.html.twig' with {
+                                                            'url': path(action.route, routeParameters),
+                                                            'message': action.messageKey,
+                                                            'label': action.labelKey,
+                                                            'itemLabel': attribute(line.data, table.labelAttribute),
+                                                            'icon': action.icon
+                                                        }%}
+                                                    {% endif %}
                                                 {% else %}
                                                     {% include '@EMSCore/elements/get-button.html.twig' with {
-                                                        'url':  path(action.route, action.routeParameters|merge({(table.attributeName): line.data.id})),
-                                                        'label': action.labelKey,
-                                                        'itemLabel': attribute(line.data, table.labelAttribute),
-                                                        'icon': action.icon
+                                                    'url':  path(action.route, routeParameters),
+                                                    'label': action.labelKey,
+                                                    'itemLabel': attribute(line.data, table.labelAttribute),
+                                                    'icon': action.icon
                                                     }%}
                                                 {% endif %}
                                             {% endfor %}

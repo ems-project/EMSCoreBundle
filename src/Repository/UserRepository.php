@@ -42,4 +42,27 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserRepos
 
         return new UserList($resultSet);
     }
+
+    public function countUsers(): int
+    {
+        $qb = $this->createQueryBuilder('user');
+        $qb->select('count(user.id)');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function get(int $from, int $size): array
+    {
+        $qb = $this->createQueryBuilder('user');
+        $qb
+            ->andWhere($qb->expr()->isNotNull('user.id'))
+            ->setFirstResult($from)
+            ->setMaxResults($size)
+            ->orderBy('user.created', 'desc');
+
+        return $qb->getQuery()->execute();
+    }
 }

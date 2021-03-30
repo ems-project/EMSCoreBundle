@@ -15,6 +15,8 @@ final class TableColumn
     private ?string $routeTarget = '_blank';
     private ?string $iconProperty = null;
     private ?bool $dateTimeProperty = null;
+    private ?bool $dataLinks = null;
+    private ?bool $arrayOfStrings = null;
 
     /**
      * @param array<mixed, string> $valueToIconMapping
@@ -92,5 +94,25 @@ final class TableColumn
     public function setDateTimeProperty(?bool $dateTimeProperty): void
     {
         $this->dateTimeProperty = $dateTimeProperty;
+    }
+
+    public function getDataLinks(): ?bool
+    {
+        return $this->dataLinks;
+    }
+
+    public function setDataLinks(?bool $dataLinks): void
+    {
+        $this->dataLinks = $dataLinks;
+    }
+
+    public function getArrayOfStrings(): ?bool
+    {
+        return $this->arrayOfStrings;
+    }
+
+    public function setArrayOfStrings(?bool $arrayOfStrings): void
+    {
+        $this->arrayOfStrings = $arrayOfStrings;
     }
 }

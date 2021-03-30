@@ -11,11 +11,12 @@ use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
-use EMS\CoreBundle\Service\HelperService;
 use EMS\CoreBundle\Service\UserService;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -39,10 +40,13 @@ class UserController extends AppController
      */
     private $circleObject;
 
-    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime, ?string $circleObject)
+    private $userService;
+
+    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime, ?string $circleObject, UserService $userService)
     {
         parent::__construct($logger, $formRegistry, $requestRuntime);
         $this->circleObject = $circleObject;
+        $this->userService = $userService;
     }
 
     /**
@@ -50,10 +54,34 @@ class UserController extends AppController
      *
      * @return Response
      */
-    public function indexAction(HelperService $helperService)
+    public function indexAction(Request $request)
     {
+        $table = new EntityTable($this->userService);
+
+        $table->addColumn('user.index.column.id', 'id');
+        $table->addColumn('user.index.column.username', 'username');
+        $table->addColumn('user.index.column.displayname', 'name');
+        $table->addColumn('user.index.column.email_notification', 'emailNotification', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
+        $table->addColumn('user.index.column.email', 'email');
+        $createdColumn = $table->addColumn('user.index.column.circles', 'circles');
+        $createdColumn->setDataLinks(true);
+        $table->addColumn('user.index.column.enabled', 'enabled', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
+        $createdColumn = $table->addColumn('user.index.column.roles', 'roles');
+        $createdColumn->setArrayOfStrings(true);
+        $createdColumn = $table->addColumn('user.index.column.lastLogin', 'lastLogin');
+        $createdColumn->setDateTimeProperty(true);
+
+        $table->addDynamicItemGetAction('user.edit', 'user.action.edit', 'pencil', ['id' => 'id']);
+        $table->addDynamicItemGetAction('homepage', 'user.action.switch', 'user-secret', ['_switch_user' => 'username']);
+        $table->addDynamicItemPostAction('user.enabling', 'user.action.disable', 'user-times', 'user.action.disable_confirm', ['id' => 'id']);
+        $table->addDynamicItemPostAction('EMS_user_apikey', 'user.action.generate_api', 'key', 'user.action.generate_api_confirm', ['username' => 'username']);
+        $table->addDynamicItemPostAction('user.delete', 'user.action.delete', 'trash', 'user.action.delete_confirm', ['id' => 'id']);
+
+        $form = $this->createForm(TableType::class, $table);
+        $form->handleRequest($request);
+
         return $this->render('@EMSCore/user/index.html.twig', [
-            'paging' => $helperService->getPagingTool('EMSCoreBundle:User', 'ems.user.index', 'username'),
+            'form' => $form->createView(),
         ]);
     }
 

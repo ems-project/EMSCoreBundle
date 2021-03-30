@@ -419,11 +419,11 @@ uploaded-file:
   index:
     title: 'Uploaded Files'
     column:
-      created: 'Created at'
+      created: 'Uploaded at'
       modified: 'Last modified'
       name: 'File name'
-      sha1: 'Sha1'
-      type: 'File type'
+      sha1: 'Hash signature'
+      type: 'Mime type'
       username: 'Username'
       size: 'File size (kb)'
 table:

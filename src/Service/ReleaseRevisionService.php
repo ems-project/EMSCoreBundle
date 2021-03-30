@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
-use EMS\CoreBundle\Entity\Release;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use Psr\Log\LoggerInterface;
-use EMS\CoreBundle\Entity\Revision;
 
 final class ReleaseRevisionService implements EntityServiceInterface
 {
@@ -21,7 +20,6 @@ final class ReleaseRevisionService implements EntityServiceInterface
         $this->revisionRepository = $revisionRepository;
         $this->logger = $logger;
     }
-
 
     public function isSortable(): bool
     {

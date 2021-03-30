@@ -48,9 +48,8 @@ final class ReleaseService implements EntityServiceInterface
         $release->setName($webalized);
         $this->releaseRepository->create($release);
     }
-    
-     /**
-     * @param Release $release
+
+    /**
      * @param array<string> $ids
      */
     public function updateRevisions(Release $release, array $ids): void

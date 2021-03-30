@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 
 /**
  * @ORM\Table(name="release")
@@ -14,7 +13,7 @@ use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
  */
 class Release implements EntityInterface
 {
-     /**
+    /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -32,17 +31,17 @@ class Release implements EntityInterface
 
     /**
      * @var string
-     * @ORM\Column(type="releasestatusenum") 
+     * @ORM\Column(type="releasestatusenum")
      */
     private $status;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
-    
+
     /**
      * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
      * @ORM\JoinTable(name="environment_release",
@@ -51,7 +50,7 @@ class Release implements EntityInterface
      *      )
      */
     private $environments;
-    
+
     /**
      * @ORM\ManyToMany(targetEntity="Revision", cascade={"persist"})
      * @ORM\JoinTable(name="revision_release",
@@ -60,7 +59,6 @@ class Release implements EntityInterface
      *      )
      */
     private $revisions;
-    
 
     public function __construct()
     {
@@ -68,80 +66,54 @@ class Release implements EntityInterface
         $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    /**
-     * 
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * 
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * 
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     *
-     * @return string
-     */
     public function getStatus(): string
     {
         return $this->status;
     }
-    
-    /**
-     *
-     * @param string $status
-     */
+
     public function setStatus(string $status): void
     {
         $this->status = $status;
     }
-    
+
     /**
-     * 
      * @return \Datetime
      */
     public function getExecutionDate(): ?\Datetime
     {
         return $this->executionDate;
     }
-    
-    /**
-     * @param \Datetime $executionDate
-     */
+
     public function setExecutionDate(\Datetime $executionDate): void
     {
         $this->executionDate = $executionDate;
     }
-    
+
     /**
      * Add environment.
-     *
-     * @return Release
      */
     public function addEnvironment(Environment $environment): Release
     {
         $this->environments[] = $environment;
-        
+
         return $this;
     }
-    
+
     /**
      * Remove environment.
      */
@@ -149,7 +121,7 @@ class Release implements EntityInterface
     {
         $this->environments->removeElement($environment);
     }
-    
+
     /**
      * Get environments.
      *
@@ -159,20 +131,17 @@ class Release implements EntityInterface
     {
         return $this->environments->toArray();
     }
-    
-    
+
     /**
      * Add revision.
-     *
-     * @return Release
      */
     public function addRevision(Revision $revision): Release
     {
         $this->revisions[] = $revision;
-        
+
         return $this;
     }
-    
+
     /**
      * Remove revision.
      */
@@ -180,27 +149,27 @@ class Release implements EntityInterface
     {
         $this->revisions->removeElement($revision);
     }
-    
+
     /**
      * Get revisions.
      *
      * @return array<Revision>
      */
-    public function getRevisions():array
+    public function getRevisions(): array
     {
         return $this->revisions->toArray();
     }
-    
+
     /**
-     * 
      * @return array<string>
      */
-    public function getRevisionsIds(): array 
+    public function getRevisionsIds(): array
     {
         $ids = [];
         foreach ($this->getRevisions() as $revision) {
             $ids[] = \strval($revision->getId());
         }
+
         return $ids;
     }
 }

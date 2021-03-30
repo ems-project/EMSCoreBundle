@@ -10,4 +10,6 @@
             prefix="/channel-admin" />
     <import resource="@EMSCoreBundle/Resources/config/routing/asset.xml"
             prefix="/bundles" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/release.xml"
+            prefix="/publisher/release-admin" />
 </routes>

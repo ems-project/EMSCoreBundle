@@ -733,4 +733,23 @@ class RevisionRepository extends EntityRepository
 
         return $qbSelect->getQuery()->execute();
     }
+
+    public function counter(): int
+    {
+        return parent::count(['draft' => false]);
+    }
+
+    /**
+     * @return Revision[]
+     */
+    public function get(int $from, int $size): array
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->andWhere($query->expr()->eq('c.draft', $query->expr()->literal(false)))
+        ->orderBy('c.finalizedDate', 'desc')
+        ->setFirstResult($from)
+        ->setMaxResults($size);
+
+        return $query->getQuery()->execute();
+    }
 }

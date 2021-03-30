@@ -18,7 +18,7 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\RevisionRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Revision
+class Revision implements EntityInterface
 {
     /**
      * @var int|null

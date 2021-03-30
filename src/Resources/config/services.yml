@@ -376,7 +376,11 @@ services:
         arguments: [  '@ems.service.user' ]
         tags:
             - { name: form.type }
-
+    ems.form.form.releasetype:
+        class: EMS\CoreBundle\Form\Form\ReleaseType
+        arguments: ['@ems.service.environment']
+        tags:
+            - { name: form.type }
 
 ### regular services
     ems.service.mapping:
@@ -497,6 +501,14 @@ services:
     ems.service.action:
         class: EMS\CoreBundle\Service\ActionService
         arguments: ['@ems.repository.template', '@logger']
+    EMS\CoreBundle\Service\ReleaseService: '@ems.service.release'
+    ems.service.release:
+        class: EMS\CoreBundle\Service\ReleaseService
+        arguments: ['@ems.repository.release', '@EMS\CoreBundle\Repository\RevisionRepository', '@logger']
+    EMS\CoreBundle\Service\ReleaseRevisionService: '@ems.service.release.revision'
+    ems.service.release.revision:
+        class: EMS\CoreBundle\Service\ReleaseRevisionService
+        arguments: ['@EMS\CoreBundle\Repository\RevisionRepository', '@logger']
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']

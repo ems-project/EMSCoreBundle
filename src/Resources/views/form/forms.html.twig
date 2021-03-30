@@ -34,7 +34,9 @@
                                 {% for column in table.columns %}
                                     <th class="nowrap">{{ column.titleKey|trans }}</th>
                                 {% endfor %}
-                                <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
+                                {% if table.itemActions|length > 0  %}
+                                    <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
+                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
@@ -72,28 +74,30 @@
                                             {% endif %}
                                         </td>
                                     {% endfor %}
-                                    <td data-search="">
-                                        <div class="btn-group">
-                                            {% for action in table.itemActions %}
-                                                {% if action.post %}
-                                                    {% include '@EMSCore/elements/post-button.html.twig' with {
-                                                        'url': path(action.route, action.routeParameters|merge({(table.attributeName): line.data.id})),
-                                                        'message': action.messageKey,
-                                                        'label': action.labelKey,
-                                                        'itemLabel': attribute(line.data, table.labelAttribute),
-                                                        'icon': action.icon
-                                                    }%}
-                                                {% else %}
-                                                    {% include '@EMSCore/elements/get-button.html.twig' with {
-                                                        'url':  path(action.route, action.routeParameters|merge({(table.attributeName): line.data.id})),
-                                                        'label': action.labelKey,
-                                                        'itemLabel': attribute(line.data, table.labelAttribute),
-                                                        'icon': action.icon
-                                                    }%}
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    </td>
+                                    {% if table.itemActions|length > 0  %}
+                                        <td data-search="">
+                                            <div class="btn-group">
+                                                {% for action in table.itemActions %}
+                                                    {% if action.post %}
+                                                        {% include '@EMSCore/elements/post-button.html.twig' with {
+                                                            'url': path(action.route, action.routeParameters|merge({(table.attributeName): line.data.id})),
+                                                            'message': action.messageKey,
+                                                            'label': action.labelKey,
+                                                            'itemLabel': attribute(line.data, table.labelAttribute),
+                                                            'icon': action.icon
+                                                        }%}
+                                                    {% else %}
+                                                        {% include '@EMSCore/elements/get-button.html.twig' with {
+                                                            'url':  path(action.route, action.routeParameters|merge({(table.attributeName): line.data.id})),
+                                                            'label': action.labelKey,
+                                                            'itemLabel': attribute(line.data, table.labelAttribute),
+                                                            'icon': action.icon
+                                                        }%}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {%  endfor %}
                             </tbody>

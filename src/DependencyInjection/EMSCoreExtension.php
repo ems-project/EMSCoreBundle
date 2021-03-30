@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\DependencyInjection;
 
+use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -142,6 +143,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
                 'dbal' => [
                     'types' => [
                         'uuid' => UuidType::class,
+                        'releasestatusenum' => ReleaseStatusEnumType::class,
                     ],
                 ],
             ]);

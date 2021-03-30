@@ -61,5 +61,11 @@
             <argument type="service" id="ems.service.action" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ReleaseController" public="true">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.release" />
+            <argument type="service" id="ems.service.release.revision" />
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

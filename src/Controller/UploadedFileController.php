@@ -34,6 +34,7 @@ class UploadedFileController extends AbstractController
         $table->addColumn('uploaded-file.index.column.username', 'user');
         $table->addColumn('uploaded-file.index.column.size', 'size');
 
+
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

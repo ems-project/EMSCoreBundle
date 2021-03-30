@@ -42,6 +42,7 @@ class UploadedFileController extends AbstractController
 
         $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
 
+
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

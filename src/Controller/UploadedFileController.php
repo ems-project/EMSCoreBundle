@@ -28,13 +28,12 @@ class UploadedFileController extends AbstractController
         $table = new EntityTable($this->fileService);
         $tableColumn = $table->addColumn('uploaded-file.index.column.created', 'created');
         $tableColumn->setDateTimeProperty(true);
-        $tableColumn = $table->addColumn('uploaded-file.index.column.modified', 'modified');
-        $tableColumn->setDateTimeProperty(true);
         $table->addColumn('uploaded-file.index.column.name', 'name');
         $table->addColumn('uploaded-file.index.column.sha1', 'sha1');
         $table->addColumn('uploaded-file.index.column.type', 'type');
         $table->addColumn('uploaded-file.index.column.username', 'user');
         $table->addColumn('uploaded-file.index.column.size', 'size');
+
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);

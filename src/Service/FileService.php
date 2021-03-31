@@ -103,26 +103,9 @@ class FileService implements EntityServiceInterface
         return $this->processor->getStreamedResponse($request, $config, $filename, true);
     }
 
-    /**
-     * @param array<string> $ids
-     */
-    public function removeSingleFileEntity(array $ids): void
+    public function removeFileEntity(string $hash): void
     {
-        foreach ($ids as $id) {
-            $this->uploadedAssetRepository->removeById($id);
-        }
-    }
-
-    /**
-     * @param array<string> $ids
-     */
-    public function hardRemoveFiles(array $ids): void
-    {
-        $files = $this->uploadedAssetRepository->findByIds($ids);
-        foreach ($files as $file) {
-            $this->uploadedAssetRepository->removeByHash($file->getSha1());
-            $this->storageManager->remove($file->getSha1());
-        }
+        $this->uploadedAssetRepository->removeByHash($hash);
     }
 
     /**
@@ -143,6 +126,28 @@ class FileService implements EntityServiceInterface
 
             $zip->finish();
         });
+    }
+
+    /**
+     * @param array<string> $ids
+     */
+    public function removeSingleFileEntity(array $ids): void
+    {
+        foreach ($ids as $id) {
+            $this->uploadedAssetRepository->removeById($id);
+        }
+    }
+
+    /**
+     * @param array<string> $ids
+     */
+    public function hardRemoveFiles(array $ids): void
+    {
+        $files = $this->uploadedAssetRepository->findByIds($ids);
+        foreach ($files as $file) {
+            $this->uploadedAssetRepository->removeByHash($file->getSha1());
+            $this->storageManager->remove($file->getSha1());
+        }
     }
 
     /**

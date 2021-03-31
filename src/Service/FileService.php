@@ -103,6 +103,11 @@ class FileService implements EntityServiceInterface
         return $this->processor->getStreamedResponse($request, $config, $filename, true);
     }
 
+    public function removeFileEntity(string $hash): void
+    {
+        $this->uploadedAssetRepository->removeByHash($hash);
+    }
+
     /**
      * @param array<string> $fileIds
      *

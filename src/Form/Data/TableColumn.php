@@ -15,8 +15,10 @@ final class TableColumn
     private ?string $routeTarget = '_blank';
     private ?string $iconProperty = null;
     private ?bool $dateTimeProperty = null;
-    private ?bool $dataLinks = null;
-    private ?bool $arrayOfStrings = null;
+    private ?bool $dataLinks = false;
+    private ?bool $arrayOfStrings = false;
+    private bool $noWrap = true;
+    private bool $formatBytes = false;
 
     /**
      * @param array<mixed, string> $valueToIconMapping
@@ -114,5 +116,25 @@ final class TableColumn
     public function setArrayOfStrings(?bool $arrayOfStrings): void
     {
         $this->arrayOfStrings = $arrayOfStrings;
+    }
+
+    public function isNoWrap(): bool
+    {
+        return $this->noWrap;
+    }
+
+    public function setNoWrap(bool $noWrap): void
+    {
+        $this->noWrap = $noWrap;
+    }
+
+    public function getFormatBytes(): bool
+    {
+        return $this->formatBytes;
+    }
+
+    public function setFormatBytes(bool $formatBytes): void
+    {
+        $this->formatBytes = $formatBytes;
     }
 }

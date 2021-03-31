@@ -12,14 +12,15 @@ use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CommonBundle\Storage\SizeMismatchException;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CommonBundle\Storage\StorageServiceMissingException;
-use EMS\CoreBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use Exception;
 use Psr\Http\Message\StreamInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use ZipStream\ZipStream;
 
 class FileService implements EntityServiceInterface
 {
@@ -103,6 +104,25 @@ class FileService implements EntityServiceInterface
     }
 
     /**
+     * @param array<string> $fileIds
+     *
+     * @throws \Exception
+     */
+    public function createDownloadForMultiple(array $fileIds): StreamedResponse
+    {
+        $files = $this->uploadedAssetRepository->findByIds($fileIds);
+        return new StreamedResponse(function () use ($files) {
+            $zip = new ZipStream('files.zip');
+
+            foreach ($files as $file) {
+                $zip->addFile($file->getName(), \strval($this->getResource($file->getSha1())));
+            }
+
+            $zip->finish();
+        });
+    }
+
+    /**
      * @return UploadedAsset[]|iterable
      */
     public function getImages(): iterable
@@ -162,7 +182,7 @@ class FileService implements EntityServiceInterface
         ]);
 
         if (null === $uploadedAsset) {
-            $uploadedAsset = new UploadedAsset();
+            $uploadedAsset = new UploadedAsset($this->storageManager);
             $uploadedAsset->setSha1($hash);
             $uploadedAsset->setUser($user);
             $uploadedAsset->setSize($size);

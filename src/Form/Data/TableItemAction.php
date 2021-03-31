@@ -18,8 +18,7 @@ final class TableItemAction
     private $labelKey;
     /** @var string|null */
     private $messageKey;
-    /** @var bool */
-    private $dynamic;
+    private bool $dynamic;
 
     /**
      * @param array<string, mixed> $routeParameters

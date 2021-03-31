@@ -4,6 +4,8 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Storage\NotSavedException;
+use EMS\CommonBundle\Storage\StorageManager;
 
 /**
  * DataField.
@@ -99,6 +101,13 @@ class UploadedAsset implements EntityInterface
      * @ORM\Column(name="hash_algo", type="string", length=32, options={"default" : "sha1"})
      */
     private $hashAlgo;
+
+    private StorageManager $storageManager;
+
+    public function __construct(StorageManager $storageManager)
+    {
+        $this->storageManager = $storageManager;
+    }
 
     /**
      * @ORM\PrePersist
@@ -380,4 +389,5 @@ class UploadedAsset implements EntityInterface
 
         return $this;
     }
+
 }

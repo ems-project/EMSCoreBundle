@@ -111,4 +111,18 @@ class UploadedAssetRepository extends EntityRepository
 
         return $qb->getQuery()->execute();
     }
+
+    /**
+     * @param array<string> $ids
+     * @return array<mixed>
+     */
+    public function findByIds(array $ids): array
+    {
+        $qb = $this->createQueryBuilder('ua');
+        $qb
+            ->andWhere($qb->expr()->in('ua.id', $ids))
+            ->orderBy('ua.created', 'desc');
+
+        return $qb->getQuery()->execute();
+    }
 }

@@ -37,11 +37,17 @@ class UploadedFileController extends AbstractController
         $table->addColumn('uploaded-file.index.column.username', 'user');
         $tableColumn = $table->addColumn('uploaded-file.index.column.size', 'size');
         $tableColumn->setFormatBytes(true);
+<<<<<<< HEAD
 
         $table->addDynamicItemGetAction('ems_file_download', 'uploaded-file.action.download', 'download', ['sha1' => 'sha1', 'name' => 'name']);
 
         $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
+=======
+>>>>>>> wip: Uploaded files view
 
+        $table->addDynamicItemGetAction('ems_file_download', 'uploaded-file.action.download', 'download', ['sha1' => 'sha1', 'name' => 'name']);
+
+        $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);

@@ -416,6 +416,7 @@ form-submission:
       deadline: 'Deadline Date'
     reorder: 'Reorder'
 uploaded-file:
+  menu: 'Menu'
   index:
     title: 'Uploaded Files'
     column:
@@ -425,7 +426,11 @@ uploaded-file:
       sha1: 'Hash signature'
       type: 'Mime type'
       username: 'Username'
-      size: 'File size (kb)'
+      size: 'File size'
+  action:
+    download: 'Download'
+  uploaded-file:
+    download_selected: 'Download selected'
 table:
   index:
     button:

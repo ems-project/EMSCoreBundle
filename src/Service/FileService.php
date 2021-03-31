@@ -111,6 +111,7 @@ class FileService implements EntityServiceInterface
     public function createDownloadForMultiple(array $fileIds): StreamedResponse
     {
         $files = $this->uploadedAssetRepository->findByIds($fileIds);
+
         return new StreamedResponse(function () use ($files) {
             $zip = new ZipStream('files.zip');
 

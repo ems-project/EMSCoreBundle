@@ -357,27 +357,6 @@ view.macros.data-field-type.collection_added_items: '{1} One %singular% has been
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
 
-user:
-  action:
-    edit: 'Edit'
-    switch: 'Switch user'
-    disable: 'Disable'
-    delete: 'Delete'
-    generate_api: 'API key'
-    disable_confirm: 'Disable this user?'
-    generate_api_confirm: 'Generate API key for this user?'
-    delete_confirm: 'Delete this user?'
-  index:
-    column:
-      id: 'User ID'
-      username: 'Username'
-      displayname: 'Display name'
-      email_notification: 'E-mail notifications'
-      email: 'E-mail'
-      circles: 'Circles'
-      enabled: 'Enabled'
-      roles: 'Roles'
-      lastLogin: 'Last Login'
 action:
   actions:
     delete: 'Delete'
@@ -415,22 +394,6 @@ form-submission:
       created: 'Created At'
       deadline: 'Deadline Date'
     reorder: 'Reorder'
-uploaded-file:
-  menu: 'Menu'
-  index:
-    title: 'Uploaded Files'
-    column:
-      created: 'Uploaded at'
-      modified: 'Last modified'
-      name: 'File name'
-      sha1: 'Hash signature'
-      type: 'Mime type'
-      username: 'Username'
-      size: 'File size'
-  action:
-    download: 'Download'
-  uploaded-file:
-    download_selected: 'Download selected'
 table:
   index:
     button:
@@ -865,8 +828,5 @@ view:
   form-submission:
     index:
       title: 'Form Submissions Overview'
-  user:
-    index:
-      title: 'User list'
   breadcrumb:
     wysiwyg-options: 'WYSIWYG Options'

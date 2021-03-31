@@ -42,6 +42,18 @@ class FileController extends AbstractController
     }
 
     /**
+     * @Route("/public/file/{sha1}/delete" , name="ems_file_remove_public", methods={"POST"})
+     * @Route("/data/file/{sha1}/delete" , name="file.remove", methods={"POST"})
+     * @Route("/data/file/{sha1}/delete" , name="ems_file_remove", methods={"POST"})
+     * @Route("/api/file/{sha1}/delete" , name="file.api.remove", methods={"POST"})
+     */
+    public function removeFileAction(string $sha1, FileService $fileService): Response
+    {
+        $fileService->removeFileEntity($sha1);
+        return $this->redirectToRoute('ems_core_uploaded_file_index');
+    }
+
+    /**
      * @Route("/data/file/extract/forced/{sha1}.{_format}" , name="ems_file_extract_forced", defaults={"_format" = "json"}, methods={"GET","HEAD"})
      */
     public function extractFileContentForced(AssetExtractorService $assetExtractorService, Request $request, string $sha1): Response

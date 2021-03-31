@@ -39,6 +39,7 @@ class UploadedFileController extends AbstractController
         $tableColumn->setFormatBytes(true);
 
         $table->addDynamicItemGetAction('ems_file_download', 'uploaded-file.action.download', 'download', ['sha1' => 'sha1', 'name' => 'name']);
+        $table->addDynamicItemPostAction('ems_file_remove', 'uploaded-file.action.remove', 'delete', 'uploaded-file.delete-confirm', ['sha1' => 'sha1']);
 
         $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
 

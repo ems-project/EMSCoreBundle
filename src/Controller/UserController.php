@@ -40,7 +40,7 @@ class UserController extends AppController
      */
     private $circleObject;
 
-    private $userService;
+    private UserService $userService;
 
     public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime, ?string $circleObject, UserService $userService)
     {
@@ -68,6 +68,7 @@ class UserController extends AppController
         $table->addColumn('user.index.column.enabled', 'enabled', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
         $createdColumn = $table->addColumn('user.index.column.roles', 'roles');
         $createdColumn->setArrayOfStrings(true);
+        $createdColumn->setNoWrap(false);
         $createdColumn = $table->addColumn('user.index.column.lastLogin', 'lastLogin');
         $createdColumn->setDateTimeProperty(true);
 

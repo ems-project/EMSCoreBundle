@@ -50,7 +50,7 @@
                                     <td class="text-center">{{ loop.index }}</td>
                                     {% for column in table.columns %}
                                         {% set value = attribute(line.data, column.attribute)  %}
-                                        <td{% if column.arrayOfStrings != true %} class="nowrap"{% endif %}>
+                                        <td{% if column.noWrap %} class="nowrap"{% endif %}>
                                             {% set path = false %}
                                             {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
                                                 {% set path = path(attribute(line.data, column.routeProperty)) %}
@@ -62,6 +62,8 @@
                                             {% endif %}
                                             {%  if column.dateTimeProperty == true %}
                                                 {{ value|date(date_time_format) }}
+                                            {%  elseif column.formatBytes == true %}
+                                                {{ value|format_bytes }}
                                             {%  elseif column.arrayOfStrings == true %}
                                                 {% for string in value %}
                                                     {% if not loop.first %}

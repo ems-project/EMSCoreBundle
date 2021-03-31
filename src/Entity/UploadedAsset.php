@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CommonBundle\Storage\NotSavedException;
 use EMS\CommonBundle\Storage\StorageManager;
 
 /**
@@ -389,5 +388,4 @@ class UploadedAsset implements EntityInterface
 
         return $this;
     }
-
 }

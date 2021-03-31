@@ -103,9 +103,26 @@ class FileService implements EntityServiceInterface
         return $this->processor->getStreamedResponse($request, $config, $filename, true);
     }
 
-    public function removeFileEntity(string $hash): void
+    /**
+     * @param array<string> $ids
+     */
+    public function removeSingleFileEntity(array $ids): void
     {
-        $this->uploadedAssetRepository->removeByHash($hash);
+        foreach ($ids as $id) {
+            $this->uploadedAssetRepository->removeById($id);
+        }
+    }
+
+    /**
+     * @param array<string> $ids
+     */
+    public function hardRemoveFiles(array $ids): void
+    {
+        $files = $this->uploadedAssetRepository->findByIds($ids);
+        foreach ($files as $file) {
+            $this->uploadedAssetRepository->removeByHash($file->getSha1());
+            $this->storageManager->remove($file->getSha1());
+        }
     }
 
     /**

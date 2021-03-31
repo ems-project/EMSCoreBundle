@@ -37,18 +37,14 @@ class UploadedFileController extends AbstractController
         $table->addColumn('uploaded-file.index.column.username', 'user');
         $tableColumn = $table->addColumn('uploaded-file.index.column.size', 'size');
         $tableColumn->setFormatBytes(true);
-<<<<<<< HEAD
 
         $table->addDynamicItemGetAction('ems_file_download', 'uploaded-file.action.download', 'download', ['sha1' => 'sha1', 'name' => 'name']);
+        $table->addDynamicItemPostAction('ems_file_soft_delete', 'uploaded-file.action.soft-delete', 'minus-square', 'uploaded-file.soft-delete-confirm', ['id' => 'id']);
+        $table->addDynamicItemPostAction('ems_file_hard_delete', 'uploaded-file.action.hard-delete', 'trash', 'uploaded-file.hard-delete-confirm', ['sha1' => 'sha1']);
 
         $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
-=======
->>>>>>> wip: Uploaded files view
-
-        $table->addDynamicItemGetAction('ems_file_download', 'uploaded-file.action.download', 'download', ['sha1' => 'sha1', 'name' => 'name']);
-        $table->addDynamicItemPostAction('ems_file_remove', 'uploaded-file.action.remove', 'delete', 'uploaded-file.delete-confirm', ['sha1' => 'sha1']);
-
-        $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
+        $table->addTableAction(TableAbstract::SOFT_DELETE_ACTION, 'fa fa-minus-square', 'uploaded-file.uploaded-file.soft_delete_selected', 'uploaded-file.uploaded-file.soft_delete_selected_confirm');
+        $table->addTableAction(TableAbstract::HARD_DELETE_ACTION, 'fa fa-trash', 'uploaded-file.uploaded-file.hard_delete_selected', 'uploaded-file.uploaded-file.hard_delete_selected_confirm');
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -57,6 +53,12 @@ class UploadedFileController extends AbstractController
                 switch ($action->getName()) {
                     case TableAbstract::DOWNLOAD_ACTION:
                         return $this->downloadMultiple($table->getSelected());
+                    case TableAbstract::SOFT_DELETE_ACTION:
+                        $this->softDeleteMultiple($table->getSelected());
+                        break;
+                    case TableAbstract::HARD_DELETE_ACTION:
+                        $this->hardDeleteMultiple($table->getSelected());
+                        break;
                 }
             } else {
                 $this->logger->error('log.controller.uploaded-file.unknown_action');
@@ -92,5 +94,21 @@ class UploadedFileController extends AbstractController
         );
 
         return $response;
+    }
+
+    /**
+     * @param array<string> $fileIds
+     */
+    private function softDeleteMultiple(array $fileIds): void
+    {
+        $this->fileService->removeSingleFileEntity($fileIds);
+    }
+
+    /**
+     * @param array<string> $fileIds
+     */
+    private function hardDeleteMultiple(array $fileIds): void
+    {
+        $this->fileService->hardRemoveFiles($fileIds);
     }
 }

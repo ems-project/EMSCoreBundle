@@ -127,10 +127,20 @@ class UploadedAssetRepository extends EntityRepository
         return $qb->getQuery()->execute();
     }
 
-    public function removeByHash(string $hash)
+    public function removeByHash(string $hash): void
     {
+        /** @var UploadedAsset $uploadedAsset */
         $uploadedAsset = $this->findOneBy([
             'sha1' => $hash,
+        ]);
+        $this->remove($uploadedAsset);
+    }
+
+    public function removeById(string $id): void
+    {
+        /** @var UploadedAsset $uploadedAsset */
+        $uploadedAsset = $this->findOneBy([
+            'id' => $id,
         ]);
         $this->remove($uploadedAsset);
     }

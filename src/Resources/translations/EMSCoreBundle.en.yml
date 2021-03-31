@@ -443,22 +443,6 @@ channel:
       public: 'Public access'
     title: 'List of channels'
 not-applicable: 'N/A'
-uploaded-file:
-  menu: 'Menu'
-  index:
-    title: 'Uploaded Files'
-    column:
-      created: 'Uploaded at'
-      modified: 'Last modified'
-      name: 'File name'
-      sha1: 'Hash signature'
-      type: 'Mime type'
-      username: 'Username'
-      size: 'File size'
-  action:
-    download: 'Download'
-  uploaded-file:
-    download_selected: 'Download selected'
 views:
   elasticsearch:
     search:

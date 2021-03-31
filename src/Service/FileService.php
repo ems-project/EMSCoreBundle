@@ -12,7 +12,6 @@ use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CommonBundle\Storage\SizeMismatchException;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CommonBundle\Storage\StorageServiceMissingException;
-use EMS\CoreBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use Exception;
@@ -112,6 +111,7 @@ class FileService implements EntityServiceInterface
     public function createDownloadForMultiple(array $fileIds): StreamedResponse
     {
         $files = $this->uploadedAssetRepository->findByIds($fileIds);
+
         return new StreamedResponse(function () use ($files) {
             $zip = new ZipStream('files.zip');
 

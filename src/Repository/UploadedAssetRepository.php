@@ -114,6 +114,7 @@ class UploadedAssetRepository extends EntityRepository
 
     /**
      * @param array<string> $ids
+     *
      * @return array<mixed>
      */
     public function findByIds(array $ids): array

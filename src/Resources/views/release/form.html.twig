@@ -3,27 +3,30 @@
 <div class="row">
 	<div class="col-md-12">
 		<div class="box box-primary">
-			{{ form_start(form) }}
+			{{ form_start(form_release) }}
 			<div class="box-header with-border">
 				<h3 class="box-title">{{ label|trans }}</h3>
 			</div>
 
 			<div class="box-body">
 				<div class="row">
-					{{ form_row(form.name) }}
+					{{ form_row(form_release.name) }}
 					<div class="clearfix"></div>
-					{{ form_row(form.execution_date) }}
+					{{ form_row(form_release.execution_date) }}
 					<div class="clearfix"></div>
-					{{ form_row(form.status) }}
-                    {{ form_row(form.environments) }}
+					{{ form_row(form_release.status) }}
+                    {{ form_row(form_release.environments) }}
 				</div>
 			</div>
 			<div class="box-footer">
-				{{ form_widget(form.save, {
+				{{ form_widget(form_release.save, {
 					'label': save_action_key
 				}) }}
+				{{ form_widget(form_release.saveAndClose, {
+                    'label': saveAndClose_action_key
+                }) }}
 			</div>
-            {{ form_end(form) }}
+            {{ form_end(form_release) }}
 		</div>
 	</div>
 </div>

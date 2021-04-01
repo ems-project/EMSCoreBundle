@@ -16,7 +16,10 @@ abstract class TableAbstract implements TableInterface
     public const EXPORT_ACTION = 'export';
 
     /** @var string */
-    public const SELECT_ACTION = 'select';
+    public const ADD_ACTION = 'add';
+
+    /** @var string */
+    public const REMOVE_ACTION = 'remove';
 
     /** @var string[] */
     private $selected = [];

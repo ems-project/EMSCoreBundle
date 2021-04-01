@@ -52,20 +52,24 @@ final class ReleaseService implements EntityServiceInterface
     /**
      * @param array<string> $ids
      */
-    public function updateRevisions(Release $release, array $ids): void
+    public function addRevisions(Release $release, array $ids): void
     {
-        $toAdd = \array_diff($ids, $release->getRevisionsIds());
-        foreach ($toAdd as $id) {
+        foreach ($ids as $id) {
             $revision = $this->revisionRepository->findOneById(\intval($id));
             $release->addRevision($revision);
         }
+        $this->releaseRepository->create($release);
+    }
 
-        $toRemove = \array_diff($release->getRevisionsIds(), $ids);
-        foreach ($toRemove as $id) {
+    /**
+     * @param array<string> $ids
+     */
+    public function removeRevisions(Release $release, array $ids): void
+    {
+        foreach ($ids as $id) {
             $revision = $this->revisionRepository->findOneById(\intval($id));
             $release->removeRevision($revision);
         }
-
         $this->releaseRepository->create($release);
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service;
 
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use Psr\Log\LoggerInterface;
 
@@ -33,8 +34,12 @@ final class ReleaseRevisionService implements EntityServiceInterface
      */
     public function get(int $from, int $size, $context = null): array
     {
-        if (null !== $context) {
-            throw new \RuntimeException('Unexpected context');
+        if (isset($context['option']) && TableAbstract::REMOVE_ACTION === $context['option']) {
+            return $this->revisionRepository->getByIds($from, $size, $context['selected']);
+        }
+
+        if (isset($context['option']) && TableAbstract::ADD_ACTION === $context['option'] && \count($context['selected']) > 0) {
+            return $this->revisionRepository->getWithoutIds($from, $size, $context['selected']);
         }
 
         return $this->revisionRepository->get($from, $size);
@@ -50,8 +55,12 @@ final class ReleaseRevisionService implements EntityServiceInterface
      */
     public function count($context = null): int
     {
-        if (null !== $context) {
-            throw new \RuntimeException('Unexpected non-null object');
+        if (isset($context['option']) && TableAbstract::REMOVE_ACTION === $context['option']) {
+            return $this->revisionRepository->counterByIds($context['selected']);
+        }
+
+        if (isset($context['option']) && TableAbstract::ADD_ACTION === $context['option'] && \count($context['selected']) > 0) {
+            return $this->revisionRepository->counterWithoutIds($context['selected']);
         }
 
         return $this->revisionRepository->counter();

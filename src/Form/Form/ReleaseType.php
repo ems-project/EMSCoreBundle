@@ -83,6 +83,12 @@ final class ReleaseType extends AbstractType
                     'class' => 'btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
+            ])
+            ->add('saveAndClose', SubmitEmsType::class, [
+                'attr' => [
+                    'class' => 'btn-primary btn-sm ',
+                ],
+                'icon' => 'fa fa-save',
             ]);
     }
 

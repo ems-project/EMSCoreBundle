@@ -740,6 +740,22 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
+     * @param string[] $ids
+     */
+    public function counterByIds(array $ids): int
+    {
+        return parent::count(['draft' => false]);
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function counterWithoutIds(array $ids): int
+    {
+        return parent::count(['draft' => false]);
+    }
+
+    /**
      * @return Revision[]
      */
     public function get(int $from, int $size): array
@@ -747,6 +763,42 @@ class RevisionRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->andWhere($query->expr()->eq('c.draft', $query->expr()->literal(false)))
         ->orderBy('c.finalizedDate', 'desc')
+        ->setFirstResult($from)
+        ->setMaxResults($size);
+
+        return $query->getQuery()->execute();
+    }
+
+    /**
+     * @param string[] $ids
+     *
+     * @return Revision[]
+     */
+    public function getByIds(int $from, int $size, array $ids): array
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->andWhere($query->expr()->eq('c.draft', $query->expr()->literal(false)))
+        ->andWhere('c.id IN (:id)')
+        ->orderBy('c.finalizedDate', 'desc')
+        ->setParameters(['id' => $ids])
+        ->setFirstResult($from)
+        ->setMaxResults($size);
+
+        return $query->getQuery()->execute();
+    }
+
+    /**
+     * @param string[] $ids
+     *
+     * @return Revision[]
+     */
+    public function getWithoutIds(int $from, int $size, array $ids): array
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->andWhere($query->expr()->eq('c.draft', $query->expr()->literal(false)))
+        ->andWhere('c.id NOT IN (:id)')
+        ->orderBy('c.finalizedDate', 'desc')
+        ->setParameters(['id' => $ids])
         ->setFirstResult($from)
         ->setMaxResults($size);
 

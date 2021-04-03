@@ -71,16 +71,16 @@
                                                     {{ item|data_link|raw }}
                                                 {% endfor %}
                                             {%  elseif value is iterable %}
-                                                {% for string in value %}
-                                                    {% if not loop.first %}
-                                                        {% if loop.last %}
-                                                            &amp;
-                                                        {% else %}
-                                                            ,
-                                                        {% endif %}
-                                                    {% endif %}
-                                                    {{ string|trans }}
-                                                {% endfor %}
+                                                {%- for string in value -%}
+                                                    {%- if not loop.first -%}
+                                                        {%- if loop.last -%}
+                                                            &nbsp;&amp;&nbsp;
+                                                        {%- else -%}
+                                                            ,&nbsp;
+                                                        {%- endif -%}
+                                                    {%- endif -%}
+                                                    {{- string|trans -}}
+                                                {%- endfor -%}
                                             {%  elseif attribute(column.valueToIconMapping, value) is defined %}
                                                 <i class="{{ attribute(column.valueToIconMapping, value)  }}"></i> <span class="sr-only">{{ value }}</span>
                                             {%  elseif column.iconProperty and attribute(line.data, column.iconProperty)|default(false) %}

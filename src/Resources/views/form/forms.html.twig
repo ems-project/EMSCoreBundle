@@ -61,7 +61,7 @@
                                     {% endif %}
                                     {% for column in table.columns %}
                                         {% set value = attribute(line.data, column.attribute)  %}
-                                        <td class="{{ column.class }}">
+                                        <td class="{{ column.class }}" {% if column.dateTimeProperty and value %}data-order="{{ value|date('c') }}"{% endif %}>
                                             {% set path = false %}
                                             {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
                                                 {% set path = path(attribute(line.data, column.routeProperty)) %}
@@ -71,8 +71,10 @@
                                             {% if path %}
                                                 <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>
                                             {% endif %}
-                                            {%  if column.dateTimeProperty == true %}
-                                                {{ value|date(date_time_format) }}
+                                            {%  if column.dateTimeProperty %}
+                                                {% if value %}
+                                                    {{ value|date(date_time_format) }}
+                                                {% endif %}
                                             {% elseif column.dataLinks == true %}
                                                 {% for item in value %}
                                                     {{ item|data_link|raw }}

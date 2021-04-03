@@ -16,7 +16,7 @@ final class TableColumn
     private ?string $iconProperty = null;
     private ?bool $dateTimeProperty = null;
     private ?bool $dataLinks = null;
-    private ?bool $arrayOfStrings = null;
+    private string $class = 'nowrap';
 
     /**
      * @param array<mixed, string> $valueToIconMapping
@@ -106,13 +106,13 @@ final class TableColumn
         $this->dataLinks = $dataLinks;
     }
 
-    public function getArrayOfStrings(): ?bool
+    public function getClass(): string
     {
-        return $this->arrayOfStrings;
+        return $this->class;
     }
 
-    public function setArrayOfStrings(?bool $arrayOfStrings): void
+    public function setClass(string $class): void
     {
-        $this->arrayOfStrings = $arrayOfStrings;
+        $this->class = $class;
     }
 }

@@ -50,7 +50,7 @@
                                     <td class="text-center">{{ loop.index }}</td>
                                     {% for column in table.columns %}
                                         {% set value = attribute(line.data, column.attribute)  %}
-                                        <td{% if column.arrayOfStrings != true %} class="nowrap"{% endif %}>
+                                        <td class="{{ column.class }}">
                                             {% set path = false %}
                                             {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
                                                 {% set path = path(attribute(line.data, column.routeProperty)) %}
@@ -62,7 +62,11 @@
                                             {% endif %}
                                             {%  if column.dateTimeProperty == true %}
                                                 {{ value|date(date_time_format) }}
-                                            {%  elseif column.arrayOfStrings == true %}
+                                            {% elseif column.dataLinks == true %}
+                                                {% for item in value %}
+                                                    {{ item|data_link|raw }}
+                                                {% endfor %}
+                                            {%  elseif value is iterable %}
                                                 {% for string in value %}
                                                     {% if not loop.first %}
                                                         {% if loop.last %}
@@ -72,10 +76,6 @@
                                                         {% endif %}
                                                     {% endif %}
                                                     {{ string|trans }}
-                                                {% endfor %}
-                                            {% elseif column.dataLinks == true %}
-                                                {% for item in value %}
-                                                    {{ item|data_link|raw }}
                                                 {% endfor %}
                                             {%  elseif attribute(column.valueToIconMapping, value) is defined %}
                                                 <i class="{{ attribute(column.valueToIconMapping, value)  }}"></i> <span class="sr-only">{{ value }}</span>

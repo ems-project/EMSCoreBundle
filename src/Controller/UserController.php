@@ -67,7 +67,7 @@ class UserController extends AppController
         $createdColumn->setDataLinks(true);
         $table->addColumn('user.index.column.enabled', 'enabled', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
         $createdColumn = $table->addColumn('user.index.column.roles', 'roles');
-        $createdColumn->setArrayOfStrings(true);
+        $createdColumn->setClass('');
         $createdColumn = $table->addColumn('user.index.column.lastLogin', 'lastLogin');
         $createdColumn->setDateTimeProperty(true);
 

@@ -30,7 +30,9 @@
                                         <input type="checkbox" value="" data-grouped-checkbox-target=".{{ table.attributeName|e('html_attr') }}-to-select">
                                     </th>
                                 {% endif %}
-                                <th class="text-center fit">{{ 'table.index.column.loop_count'|trans }}</th>
+                                {% if table.sortable %}
+                                    <th class="text-center fit">{{ 'table.index.column.loop_count'|trans }}</th>
+                                {% endif %}
                                 {% for column in table.columns %}
                                     <th class="nowrap">{{ column.titleKey|trans }}</th>
                                 {% endfor %}
@@ -47,7 +49,9 @@
                                             {%  endfor %}
                                         </td>
                                     {% endif %}
-                                    <td class="text-center">{{ loop.index }}</td>
+                                    {% if table.sortable %}
+                                        <td class="text-center">{{ loop.index }}</td>
+                                    {% endif %}
                                     {% for column in table.columns %}
                                         {% set value = attribute(line.data, column.attribute)  %}
                                         <td class="{{ column.class }}">

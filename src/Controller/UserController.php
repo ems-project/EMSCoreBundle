@@ -59,7 +59,8 @@ class UserController extends AppController
         $table = new EntityTable($this->userService);
         $table->addColumn('user.index.column.username', 'username');
         $table->addColumn('user.index.column.displayname', 'name');
-        $table->addColumn('user.index.column.email_notification', 'emailNotification', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
+        $column = $table->addColumn('user.index.column.email_notification', 'emailNotification', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
+        $column->setIconClass('fa fa-bell');
         $table->addColumn('user.index.column.email', 'email');
         $createdColumn = $table->addColumn('user.index.column.circles', 'circles');
         $createdColumn->setDataLinks(true);

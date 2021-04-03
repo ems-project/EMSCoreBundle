@@ -17,6 +17,7 @@ final class TableColumn
     private ?bool $dateTimeProperty = null;
     private ?bool $dataLinks = null;
     private string $class = 'nowrap';
+    private ?string $iconClass = null;
 
     /**
      * @param array<mixed, string> $valueToIconMapping
@@ -114,5 +115,19 @@ final class TableColumn
     public function setClass(string $class): void
     {
         $this->class = $class;
+    }
+
+    public function setIconClass(string $iconClass): void
+    {
+        if (\strlen($iconClass) > 0) {
+            $this->iconClass = $iconClass;
+        } else {
+            $this->iconClass = null;
+        }
+    }
+
+    public function getIconClass(): ?string
+    {
+        return $this->iconClass;
     }
 }

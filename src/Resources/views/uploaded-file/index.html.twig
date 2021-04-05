@@ -11,11 +11,9 @@
 {% endblock %}
 
 {% block body %}
-    {%  set toolbar %}{%  endset %}
 
     {% form_theme form '@EMSCore/form/forms.html.twig' %}
     {{ form(form, {
-        reorder_label: 'uploaded-file.index.reorder',
-        toolbar: toolbar
+        reorder_label: 'uploaded-file.index.reorder'
     }) }}
 {% endblock %}

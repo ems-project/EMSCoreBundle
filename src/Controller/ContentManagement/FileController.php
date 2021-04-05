@@ -42,10 +42,7 @@ class FileController extends AbstractController
     }
 
     /**
-     * @Route("/public/file/{id}/soft-delete" , name="ems_file_soft_delete_public", methods={"POST","HEAD"})
-     * @Route("/data/file/{id}" , name="file.soft_delete", methods={"POST","HEAD"})
-     * @Route("/data/file/{id}" , name="ems_file_soft_delete", methods={"POST","HEAD"})
-     * @Route("/api/file/{id}" , name="file.api.soft_delete", methods={"POST","HEAD"})
+     * @Route("/admin/file/{id}/soft-delete" , name="ems_file_soft_delete", methods={"POST","HEAD"})
      */
     public function softDeleteFileAction(string $id, FileService $fileService): Response
     {
@@ -55,14 +52,11 @@ class FileController extends AbstractController
     }
 
     /**
-     * @Route("/public/file/{sha1}/hard-delete" , name="ems_file_hard_delete_public", methods={"POST","HEAD"})
-     * @Route("/data/file/{sha1}/hard-delete" , name="file.hard_delete", methods={"POST","HEAD"})
-     * @Route("/data/file/{sha1}/hard-delete" , name="ems_file_hard_delete", methods={"POST","HEAD"})
-     * @Route("/api/file/{sha1}/hard-delete" , name="file.api.hard_delete", methods={"POST","HEAD"})
+     * @Route("/admin/file/{hash}/hard-delete" , name="ems_file_hard_delete", methods={"POST","HEAD"})
      */
-    public function hardDeleteFileAction(string $sha1, FileService $fileService): Response
+    public function hardDeleteFileAction(string $hash, FileService $fileService): Response
     {
-        $fileService->hardRemoveFiles([$sha1]);
+        $fileService->hardRemoveFiles([$hash]);
 
         return $this->redirectToRoute('ems_core_uploaded_file_index');
     }

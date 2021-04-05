@@ -18,6 +18,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UploadedFileController extends AbstractController
 {
+    /** @var string */
+    public const SOFT_DELETE_ACTION = 'soft_delete';
+    /** @var string */
+    public const HARD_DELETE_ACTION = 'hard_delete';
+
     private LoggerInterface $logger;
     private FileService $fileService;
 
@@ -51,8 +56,8 @@ class UploadedFileController extends AbstractController
         $table->addDynamicItemPostAction('ems_file_hard_delete', 'uploaded-file.action.hard-delete', 'trash', 'uploaded-file.hard-delete-confirm', ['hash' => 'sha1']);
 
         $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
-        $table->addTableAction(TableAbstract::SOFT_DELETE_ACTION, 'fa fa-minus-square', 'uploaded-file.uploaded-file.soft_delete_selected', 'uploaded-file.uploaded-file.soft_delete_selected_confirm');
-        $table->addTableAction(TableAbstract::HARD_DELETE_ACTION, 'fa fa-trash', 'uploaded-file.uploaded-file.hard_delete_selected', 'uploaded-file.uploaded-file.hard_delete_selected_confirm');
+        $table->addTableAction(self::SOFT_DELETE_ACTION, 'fa fa-minus-square', 'uploaded-file.uploaded-file.soft_delete_selected', 'uploaded-file.uploaded-file.soft_delete_selected_confirm');
+        $table->addTableAction(self::HARD_DELETE_ACTION, 'fa fa-trash', 'uploaded-file.uploaded-file.hard_delete_selected', 'uploaded-file.uploaded-file.hard_delete_selected_confirm');
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -61,10 +66,10 @@ class UploadedFileController extends AbstractController
                 switch ($action->getName()) {
                     case TableAbstract::DOWNLOAD_ACTION:
                         return $this->downloadMultiple($table->getSelected());
-                    case TableAbstract::SOFT_DELETE_ACTION:
+                    case self::SOFT_DELETE_ACTION:
                         $this->softDeleteMultiple($table->getSelected());
                         break;
-                    case TableAbstract::HARD_DELETE_ACTION:
+                    case self::HARD_DELETE_ACTION:
                         $this->hardDeleteMultiple($table->getSelected());
                         break;
                 }

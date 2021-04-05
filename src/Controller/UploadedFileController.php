@@ -35,8 +35,6 @@ class UploadedFileController extends AbstractController
     public function index(Request $request): Response
     {
         $table = new EntityTable($this->fileService);
-        $tableColumn = $table->addColumn('uploaded-file.index.column.created', 'created');
-        $tableColumn->setDateTimeProperty(true);
         $column = $table->addColumn('uploaded-file.index.column.name', 'name');
         $column->setRoutePath('ems_file_download', function (UploadedAsset $data) {
             return [
@@ -48,6 +46,8 @@ class UploadedFileController extends AbstractController
         $table->addColumn('uploaded-file.index.column.sha1', 'sha1');
         $table->addColumn('uploaded-file.index.column.type', 'type');
         $table->addColumn('uploaded-file.index.column.username', 'user');
+        $tableColumn = $table->addColumn('uploaded-file.index.column.created', 'created');
+        $tableColumn->setDateTimeProperty(true);
         $tableColumn = $table->addColumn('uploaded-file.index.column.size', 'size');
         $tableColumn->setFormatBytes(true);
 

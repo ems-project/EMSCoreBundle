@@ -52,7 +52,6 @@ class UploadedFileController extends AbstractController
         $tableColumn = $table->addColumn('uploaded-file.index.column.size', 'size');
         $tableColumn->setFormatBytes(true);
 
-        $table->addDynamicItemGetAction('ems_file_download', 'uploaded-file.action.download', 'download', ['sha1' => 'sha1', 'name' => 'name']);
         $table->addDynamicItemPostAction('ems_file_soft_delete', 'uploaded-file.action.soft-delete', 'minus-square', 'uploaded-file.soft-delete-confirm', ['id' => 'id']);
         $table->addDynamicItemPostAction('ems_file_hard_delete', 'uploaded-file.action.hard-delete', 'trash', 'uploaded-file.hard-delete-confirm', ['hash' => 'sha1']);
 

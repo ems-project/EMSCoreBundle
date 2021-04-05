@@ -150,4 +150,23 @@ class UploadedAssetRepository extends EntityRepository
         $this->_em->remove($uploadedAsset);
         $this->_em->flush();
     }
+
+    public function getLastUploadedByHash(string $hash): ?UploadedAsset
+    {
+        $qb = $this->createQueryBuilder('ua');
+        $qb->where($qb->expr()->eq('ua.available', ':true'));
+        $qb->andWhere($qb->expr()->eq('ua.sha1', ':hash'));
+        $qb->setParameters([
+            ':true' => true,
+            ':hash' => $hash,
+        ]);
+        $qb->orderBy('ua.modified', 'DESC');
+        $qb->setMaxResults(1);
+        $uploadedAsset = $qb->getQuery()->getOneOrNullResult();
+
+        if (null === $uploadedAsset || $uploadedAsset instanceof UploadedAsset) {
+            return $uploadedAsset;
+        }
+        throw new \RuntimeException(\sprintf('Unexpected class object %s', \get_class($uploadedAsset)));
+    }
 }

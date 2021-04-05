@@ -92,13 +92,18 @@ class FileService implements EntityServiceInterface
         }
     }
 
-    public function getStreamResponse(string $sha1, string $disposition, Request $request): Response
+    public function getStreamResponse(string $hash, string $disposition, Request $request): Response
     {
-        $config = $this->processor->configFactory($sha1, [
-            EmsFields::ASSET_CONFIG_MIME_TYPE => $request->query->get('type', 'application/octet-stream'),
+        if ($request->query->has('type') && $request->query->has('name')) {
+            $lastUploaded = null;
+        } else {
+            $lastUploaded = $this->uploadedAssetRepository->getLastUploadedByHash($hash);
+        }
+        $config = $this->processor->configFactory($hash, [
+            EmsFields::ASSET_CONFIG_MIME_TYPE => $request->query->get('type', null !== $lastUploaded ? $lastUploaded->getType() : 'application/octet-stream'),
             EmsFields::ASSET_CONFIG_DISPOSITION => $disposition,
         ]);
-        $filename = $request->query->get('name', 'filename');
+        $filename = $request->query->get('name', null !== $lastUploaded ? $lastUploaded->getName() : 'filename');
 
         return $this->processor->getStreamedResponse($request, $config, $filename, true);
     }

@@ -39,6 +39,7 @@ class UploadedFileController extends AbstractController
         $column->setRoutePath('ems_file_download', function (UploadedAsset $data) {
             return [
                 'sha1' => $data->getSha1(),
+                'type' => $data->getType(),
                 'name' => $data->getName(),
             ];
         });

@@ -18,9 +18,11 @@ use Exception;
 use Psr\Http\Message\StreamInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use ZipStream\ZipStream;
 
-class FileService
+class FileService implements EntityServiceInterface
 {
     /** @var Registry */
     private $doctrine;
@@ -28,12 +30,15 @@ class FileService
     private $storageManager;
     /** @var Processor */
     private $processor;
+    /** var UploadedAssetRepository */
+    private $uploadedAssetRepository;
 
-    public function __construct(Registry $doctrine, StorageManager $storageManager, Processor $processor)
+    public function __construct(Registry $doctrine, StorageManager $storageManager, Processor $processor, UploadedAssetRepository $uploadedAssetRepository)
     {
         $this->doctrine = $doctrine;
         $this->storageManager = $storageManager;
         $this->processor = $processor;
+        $this->uploadedAssetRepository = $uploadedAssetRepository;
     }
 
     public function getBase64(string $hash): ?string
@@ -98,6 +103,53 @@ class FileService
         return $this->processor->getStreamedResponse($request, $config, $filename, true);
     }
 
+    public function removeFileEntity(string $hash): void
+    {
+        $this->uploadedAssetRepository->removeByHash($hash);
+    }
+
+    /**
+     * @param array<string> $fileIds
+     *
+     * @throws \Exception
+     */
+    public function createDownloadForMultiple(array $fileIds): StreamedResponse
+    {
+        $files = $this->uploadedAssetRepository->findByIds($fileIds);
+
+        return new StreamedResponse(function () use ($files) {
+            $zip = new ZipStream('files.zip');
+
+            foreach ($files as $file) {
+                $zip->addFile($file->getName(), \strval($this->getResource($file->getSha1())));
+            }
+
+            $zip->finish();
+        });
+    }
+
+    /**
+     * @param array<string> $ids
+     */
+    public function removeSingleFileEntity(array $ids): void
+    {
+        foreach ($ids as $id) {
+            $this->uploadedAssetRepository->removeById($id);
+        }
+    }
+
+    /**
+     * @param array<string> $ids
+     */
+    public function hardRemoveFiles(array $ids): void
+    {
+        $files = $this->uploadedAssetRepository->findByIds($ids);
+        foreach ($files as $file) {
+            $this->uploadedAssetRepository->removeByHash($file->getSha1());
+            $this->storageManager->remove($file->getSha1());
+        }
+    }
+
     /**
      * @return UploadedAsset[]|iterable
      */
@@ -158,7 +210,7 @@ class FileService
         ]);
 
         if (null === $uploadedAsset) {
-            $uploadedAsset = new UploadedAsset();
+            $uploadedAsset = new UploadedAsset($this->storageManager);
             $uploadedAsset->setSha1($hash);
             $uploadedAsset->setUser($user);
             $uploadedAsset->setSize($size);
@@ -276,5 +328,25 @@ class FileService
         if ($newHash !== $hash) {
             throw new HashMismatchException($hash, $newHash);
         }
+    }
+
+    public function isSortable(): bool
+    {
+        return false;
+    }
+
+    public function get(int $from, int $size, $context = null): array
+    {
+        return $this->uploadedAssetRepository->get($from, $size);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'UploadedAsset';
+    }
+
+    public function count($context = null): int
+    {
+        return $this->uploadedAssetRepository->countHashes();
     }
 }

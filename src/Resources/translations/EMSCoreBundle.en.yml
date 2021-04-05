@@ -428,7 +428,6 @@ uploaded-file:
       username: 'Username'
       size: 'File size'
   action:
-    download: 'Download'
     download_selected: 'Download selected'
     soft-delete: 'Soft delete'
     hard-delete: 'Hard delete'

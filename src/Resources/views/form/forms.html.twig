@@ -64,9 +64,11 @@
                                         <td class="{{ column.class }}" {% if column.dateTimeProperty and value %}data-order="{{ value|date('c') }}"{% endif %}>
                                             {% set path = false %}
                                             {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
-                                                {% set path = path(attribute(line.data, column.routeProperty)) %}
+                                                {% set path = path(attribute(line.data, column.routeProperty), column.getRouteProperties(line.data)) %}
                                             {% elseif column.routePath and attribute(line.data, column.routePath)|default(false) %}
                                                 {% set path = attribute(line.data, column.routePath) %}
+                                            {% elseif column.routePath %}
+                                                {% set path = path(column.routePath, column.getRouteProperties(line.data)) %}
                                             {% endif %}
                                             {% if path %}
                                                 <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>

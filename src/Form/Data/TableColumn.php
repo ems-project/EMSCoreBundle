@@ -132,16 +132,6 @@ final class TableColumn
         return $this->iconClass;
     }
 
-    public function isNoWrap(): bool
-    {
-        return $this->noWrap;
-    }
-
-    public function setNoWrap(bool $noWrap): void
-    {
-        $this->noWrap = $noWrap;
-    }
-
     public function getFormatBytes(): bool
     {
         return $this->formatBytes;

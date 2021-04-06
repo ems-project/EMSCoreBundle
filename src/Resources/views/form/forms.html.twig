@@ -1,5 +1,55 @@
 {% use "@EMSCore/form/fields.html.twig" %}
 {% trans_default_domain 'EMSCoreBundle' %}
+
+{% block emsco_form_table_column_data %}
+    {% set value = attribute(line.data, column.attribute)  %}
+    <td class="{{ column.class }}" {% if column.dateTimeProperty and value %}data-order="{{ value|date('c') }}"{% endif %} {% if column.formatBytes and value %}data-order="{{ value }}"{% endif %}>
+        {% set path = false %}
+        {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
+            {% set path = path(attribute(line.data, column.routeProperty), column.getRouteProperties(line.data)) %}
+        {% elseif column.routePath and attribute(line.data, column.routePath)|default(false) %}
+            {% set path = attribute(line.data, column.routePath) %}
+        {% elseif column.routePath %}
+            {% set path = path(column.routePath, column.getRouteProperties(line.data)) %}
+        {% endif %}
+        {% if path %}
+        <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>
+            {% endif %}
+            {%  if column.dateTimeProperty %}
+                {% if value %}
+                    {{ value|date(date_time_format) }}
+                {% endif %}
+            {%  elseif column.formatBytes %}
+                {{ value|format_bytes }}
+            {% elseif column.dataLinks == true %}
+                {% for item in value %}
+                    {{ item|data_link|raw }}
+                {% endfor %}
+            {%  elseif value is iterable %}
+                {%- for string in value -%}
+                    {%- if not loop.first -%}
+                        {%- if loop.last -%}
+                            &nbsp;&amp;&nbsp;
+                        {%- else -%}
+                            ,&nbsp;
+                        {%- endif -%}
+                    {%- endif -%}
+                    {{- string|trans -}}
+                {%- endfor -%}
+            {%  elseif attribute(column.valueToIconMapping, value) is defined %}
+                <i class="{{ attribute(column.valueToIconMapping, value)  }}"></i> <span class="sr-only">{{ value }}</span>
+            {%  elseif column.iconProperty and attribute(line.data, column.iconProperty)|default(false) %}
+                <i class="{{ attribute(line.data, column.iconProperty)  }}"></i> {{ value }}
+            {%  else %}
+                {{ value }}
+            {% endif %}
+            {% if path %}
+        </a>
+        {% endif %}
+    </td>
+{% endblock emsco_form_table_column_data %}
+
+
 {% block emsco_form_table_type_widget %}
     {% set table = form.vars.data %}
     <div class="row">
@@ -60,51 +110,7 @@
                                         <td class="text-center">{{ loop.index }}</td>
                                     {% endif %}
                                     {% for column in table.columns %}
-                                        {% set value = attribute(line.data, column.attribute)  %}
-                                        <td class="{{ column.class }}" {% if column.dateTimeProperty and value %}data-order="{{ value|date('c') }}"{% endif %} {% if column.formatBytes and value %}data-order="{{ value }}"{% endif %}>
-                                            {% set path = false %}
-                                            {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
-                                                {% set path = path(attribute(line.data, column.routeProperty), column.getRouteProperties(line.data)) %}
-                                            {% elseif column.routePath and attribute(line.data, column.routePath)|default(false) %}
-                                                {% set path = attribute(line.data, column.routePath) %}
-                                            {% elseif column.routePath %}
-                                                {% set path = path(column.routePath, column.getRouteProperties(line.data)) %}
-                                            {% endif %}
-                                            {% if path %}
-                                                <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>
-                                            {% endif %}
-                                            {%  if column.dateTimeProperty %}
-                                                {% if value %}
-                                                    {{ value|date(date_time_format) }}
-                                                {% endif %}
-                                            {%  elseif column.formatBytes %}
-                                                {{ value|format_bytes }}
-                                            {% elseif column.dataLinks == true %}
-                                                {% for item in value %}
-                                                    {{ item|data_link|raw }}
-                                                {% endfor %}
-                                            {%  elseif value is iterable %}
-                                                {%- for string in value -%}
-                                                    {%- if not loop.first -%}
-                                                        {%- if loop.last -%}
-                                                            &nbsp;&amp;&nbsp;
-                                                        {%- else -%}
-                                                            ,&nbsp;
-                                                        {%- endif -%}
-                                                    {%- endif -%}
-                                                    {{- string|trans -}}
-                                                {%- endfor -%}
-                                            {%  elseif attribute(column.valueToIconMapping, value) is defined %}
-                                                <i class="{{ attribute(column.valueToIconMapping, value)  }}"></i> <span class="sr-only">{{ value }}</span>
-                                            {%  elseif column.iconProperty and attribute(line.data, column.iconProperty)|default(false) %}
-                                                <i class="{{ attribute(line.data, column.iconProperty)  }}"></i> {{ value }}
-                                            {%  else %}
-                                                {{ value }}
-                                            {% endif %}
-                                            {% if path %}
-                                                </a>
-                                            {% endif %}
-                                        </td>
+                                        {{ block(column.tableDataBlock()) }}
                                     {% endfor %}
                                     <td data-search="">
                                         <div class="btn-group">

@@ -98,7 +98,7 @@ class UploadedAssetRepository extends EntityRepository
     }
 
     /**
-     * @return array<mixed>
+     * @return array<UploadedAsset>
      */
     public function get(int $from, int $size): array
     {
@@ -115,7 +115,7 @@ class UploadedAssetRepository extends EntityRepository
     /**
      * @param array<string> $ids
      *
-     * @return array<mixed>
+     * @return array<UploadedAsset>
      */
     public function findByIds(array $ids): array
     {
@@ -129,11 +129,13 @@ class UploadedAssetRepository extends EntityRepository
 
     public function removeByHash(string $hash): void
     {
-        /** @var UploadedAsset $uploadedAsset */
-        $uploadedAsset = $this->findOneBy([
-            'sha1' => $hash,
+        $qb = $this->createQueryBuilder('ua');
+        $qb->delete();
+        $qb->where($qb->expr()->eq('ua.sha1', ':hash'));
+        $qb->setParameters([
+            ':hash' => $hash,
         ]);
-        $this->remove($uploadedAsset);
+        $qb->getQuery()->execute();
     }
 
     public function removeById(string $id): void

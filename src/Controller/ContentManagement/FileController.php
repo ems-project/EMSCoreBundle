@@ -52,11 +52,11 @@ class FileController extends AbstractController
     }
 
     /**
-     * @Route("/admin/file/{hash}/hard-delete" , name="ems_file_hard_delete", methods={"POST","HEAD"})
+     * @Route("/admin/file/{id}/hard-delete" , name="ems_file_hard_delete", methods={"POST","HEAD"})
      */
-    public function hardDeleteFileAction(string $hash, FileService $fileService): Response
+    public function hardDeleteFileAction(string $id, FileService $fileService): Response
     {
-        $fileService->hardRemoveFiles([$hash]);
+        $fileService->hardRemoveFiles([$id]);
 
         return $this->redirectToRoute('ems_core_uploaded_file_index');
     }

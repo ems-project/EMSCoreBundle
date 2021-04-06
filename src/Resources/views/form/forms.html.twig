@@ -15,6 +15,7 @@
 {% block emsco_form_table_column_data_bool %}
     {%- set value = attribute(line.data, column.attribute)|default(false)  -%}
     <td data-order="{% if value %}1{% endif %}">
+        {{ iconBlock|raw }}
         {% if value %}
             <i class="fa fa-check-square-o" title="{{ 'form.data.bool_table_collum.true_value'|trans }}"></i> <span class="sr-only">{{ 'form.data.bool_table_collum.true_value'|trans }}</span>
         {% else %}
@@ -27,7 +28,7 @@
     {%- set value = attribute(line.data, column.attribute)|default(false)  -%}
     <td data-order="{% if value %}{{ value|date('c') }}{% endif %}">
         {% if value %}
-            {{ value|date(date_time_format) }}
+            {{ iconBlock|raw }}{{ value|date(date_time_format) }}
         {% endif %}
     </td>
 {% endblock emsco_form_table_column_data_datetime %}
@@ -54,7 +55,7 @@
     {%- set value = attribute(line.data, column.attribute)|default(false)  -%}
     <td data-order="{% if value %}{{ value }}{% endif %}">
         {% if value %}
-            {{ value|format_bytes }}
+            {{ iconBlock|raw }}{{ value|format_bytes }}
         {% endif %}
     </td>
 {% endblock emsco_form_table_column_data_bytes %}
@@ -63,7 +64,7 @@
     {%- set value = attribute(line.data, column.attribute)|default('')  -%}
     {%- set displayname = value|displayname  -%}
     <td data-search="{{ value }} {{ displayname }}">
-        {{- displayname -}}
+        {{ iconBlock|raw }}{{- displayname -}}
     </td>
 {% endblock emsco_form_table_column_data_user %}
 
@@ -81,10 +82,7 @@
         {% if path %}
             <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>
         {% endif %}
-        {% if column.iconProperty and attribute(line.data, column.iconProperty)|default(false) %}
-            <i class="{{ attribute(line.data, column.iconProperty)  }}"></i>
-        {% endif %}
-        {{ value }}
+        {{ iconBlock|raw }}{{ value }}
         {% if path %}
             </a>
         {% endif %}
@@ -152,6 +150,11 @@
                                         <td class="text-center">{{ loop.index }}</td>
                                     {% endif %}
                                     {% for column in table.columns %}
+                                        {% set iconBlock %}
+                                            {% if column.iconProperty and attribute(line.data, column.iconProperty)|default(false) %}
+                                                <i class="{{ attribute(line.data, column.iconProperty) }}"></i>&nbsp;
+                                            {% endif %}
+                                        {% endset %}
                                         {{ block(column.tableDataBlock()) }}
                                     {% endfor %}
                                     <td data-search="">

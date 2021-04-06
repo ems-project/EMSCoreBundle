@@ -7,14 +7,5 @@
     <route id="ems_core_uploaded_file_index" path="/" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\UploadedFileController:index</default>
     </route>
-    <route id="ems_core_uploaded_file_add" path="/add" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\UploadedFileController:add</default>
-    </route>
-    <route id="ems_core_uploaded_file_edit" path="/edit/{uploaded-file}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\UploadedFileController:edit</default>
-    </route>
-    <route id="ems_core_uploaded_file_delete" path="/delete/{uploaded-file}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\UploadedFileController:delete</default>
-    </route>
 
 </routes>

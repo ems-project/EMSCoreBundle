@@ -15,7 +15,6 @@ class TableColumn
     private ?\Closure $routeCallback;
     private ?string $routeTarget = '_blank';
     private ?string $iconProperty = null;
-    private ?bool $dateTimeProperty = null;
     private ?bool $dataLinks = null;
     private string $class = 'nowrap';
     private ?string $iconClass = null;
@@ -102,16 +101,6 @@ class TableColumn
     public function setIconProperty(?string $iconProperty): void
     {
         $this->iconProperty = $iconProperty;
-    }
-
-    public function getDateTimeProperty(): ?bool
-    {
-        return $this->dateTimeProperty;
-    }
-
-    public function setDateTimeProperty(?bool $dateTimeProperty): void
-    {
-        $this->dateTimeProperty = $dateTimeProperty;
     }
 
     public function getDataLinks(): ?bool

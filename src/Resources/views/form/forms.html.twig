@@ -1,6 +1,15 @@
 {% use "@EMSCore/form/fields.html.twig" %}
 {% trans_default_domain 'EMSCoreBundle' %}
 
+{% block emsco_form_table_column_data_datetime %}
+    {%- set value = attribute(line.data, column.attribute)|default(false)  -%}
+    <td data-order="{% if value %}{{ value|date('c') }}{% endif %}">
+        {% if value %}
+            {{ value|date(date_time_format) }}
+        {% endif %}
+    </td>
+{% endblock emsco_form_table_column_data_datetime %}
+
 {% block emsco_form_table_column_data_user %}
     {%- set value = attribute(line.data, column.attribute)|default('')  -%}
     {%- set displayname = value|displayname  -%}
@@ -11,7 +20,7 @@
 
 {% block emsco_form_table_column_data %}
     {% set value = attribute(line.data, column.attribute)  %}
-    <td class="{{ column.class }}" {% if column.dateTimeProperty and value %}data-order="{{ value|date('c') }}"{% endif %} {% if column.formatBytes and value %}data-order="{{ value }}"{% endif %}>
+    <td class="{{ column.class }}" {% if column.formatBytes and value %}data-order="{{ value }}"{% endif %}>
         {% set path = false %}
         {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
             {% set path = path(attribute(line.data, column.routeProperty), column.getRouteProperties(line.data)) %}
@@ -21,13 +30,9 @@
             {% set path = path(column.routePath, column.getRouteProperties(line.data)) %}
         {% endif %}
         {% if path %}
-        <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>
-            {% endif %}
-            {%  if column.dateTimeProperty %}
-                {% if value %}
-                    {{ value|date(date_time_format) }}
-                {% endif %}
-            {%  elseif column.formatBytes %}
+            <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>
+        {% endif %}
+            {% if column.formatBytes %}
                 {{ value|format_bytes }}
             {% elseif column.dataLinks == true %}
                 {% for item in value %}
@@ -51,8 +56,8 @@
             {%  else %}
                 {{ value }}
             {% endif %}
-            {% if path %}
-        </a>
+        {% if path %}
+            </a>
         {% endif %}
     </td>
 {% endblock emsco_form_table_column_data %}

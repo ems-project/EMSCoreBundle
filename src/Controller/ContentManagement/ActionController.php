@@ -72,7 +72,9 @@ final class ActionController extends AbstractController
         $table = new EntityTable($this->actionService, $contentType);
         $table->addColumnDefinition(new BoolTableColumn('action.index.column.public', 'public'));
         $table->addColumn('action.index.column.name', 'name')
-            ->setIconProperty('icon');
+            ->setItemIconCallback(function (Template $action) {
+                return $action->getIcon();
+            });
         $table->addColumn('action.index.column.type', 'renderOption');
         $table->addItemGetAction('ems_core_action_edit', 'action.actions.edit', 'pencil', ['contentType' => $contentType]);
         $table->addItemPostAction('ems_core_action_delete', 'action.actions.delete', 'trash', 'action.actions.delete_confirm', ['contentType' => $contentType->getId()]);

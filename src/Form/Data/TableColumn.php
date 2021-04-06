@@ -11,8 +11,8 @@ class TableColumn
     private ?string $routeName = null;
     private ?\Closure $routeParametersCallback = null;
     private ?string $routeTarget = null;
-    private ?string $iconProperty = null;
     private ?string $iconClass = null;
+    private ?\Closure $itemIconCallback = null;
 
     public function __construct(string $titleKey, string $attribute)
     {
@@ -61,14 +61,21 @@ class TableColumn
         return $this->routeTarget;
     }
 
-    public function getIconProperty(): ?string
+    public function setItemIconCallback(\Closure $callback): void
     {
-        return $this->iconProperty;
+        $this->itemIconCallback = $callback;
     }
 
-    public function setIconProperty(?string $iconProperty): void
+    /**
+     * @param mixed $data
+     */
+    public function getItemIconClass($data): ?string
     {
-        $this->iconProperty = $iconProperty;
+        if (null === $this->itemIconCallback) {
+            return null;
+        }
+
+        return $this->itemIconCallback->call($this, $data);
     }
 
     public function setIconClass(string $iconClass): void

@@ -77,8 +77,8 @@
     {%- if column.routeName -%}
         <a href="{{ path(column.routeName, column.getRouteProperties(line.data)) }}" {% if column.routeTarget %}target="{{ column.routeTarget }}"{% endif %}>
     {%- endif -%}
-    {%- if column.iconProperty and attribute(line.data, column.iconProperty)|default(false) -%}
-        <i class="{{ attribute(line.data, column.iconProperty) }}"></i>&nbsp;
+    {%- if column.itemIconClass(line.data) -%}
+        <i class="{{ column.itemIconClass(line.data) }}"></i>&nbsp;
     {%- endif -%}
 {%- endblock emsco_form_table_column_data_label_prefix %}
 

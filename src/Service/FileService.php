@@ -121,9 +121,16 @@ class FileService implements EntityServiceInterface
 
         $response = new StreamedResponse(function () use ($files) {
             $zip = new ZipStream('archive.zip');
+            $filenames = [];
 
             foreach ($files as $file) {
-                $zip->addFile($file->getName(), \strval($this->getResource($file->getSha1())));
+                $filename = $file->getName();
+                $pathinfo = \pathinfo($filename);
+                while (\in_array($filename, $filenames, true)) {
+                    $filename = \sprintf('%s-%s.%s', $pathinfo['filename'] ?? $filename, \bin2hex(\random_bytes(3)), $pathinfo['extension'] ?? '');
+                }
+                $filenames[] = $filename;
+                $zip->addFile($filename, \strval($this->getResource($file->getSha1())));
             }
 
             $zip->finish();

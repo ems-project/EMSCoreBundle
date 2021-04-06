@@ -74,8 +74,6 @@
                     {%- endif -%}
                     {{- string|trans -}}
                 {%- endfor -%}
-            {%  elseif attribute(column.valueToIconMapping, value) is defined %}
-                <i class="{{ attribute(column.valueToIconMapping, value)  }}"></i> <span class="sr-only">{{ value }}</span>
             {%  elseif column.iconProperty and attribute(line.data, column.iconProperty)|default(false) %}
                 <i class="{{ attribute(line.data, column.iconProperty)  }}"></i> {{ value }}
             {%  else %}

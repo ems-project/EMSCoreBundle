@@ -15,7 +15,6 @@
 {% block emsco_form_table_column_data_bool %}
     {%- set value = attribute(line.data, column.attribute)|default(false)  -%}
     <td data-order="{% if value %}1{% endif %}">
-        {{ iconBlock|raw }}
         {% if value %}
             <i class="fa fa-check-square-o" title="{{ 'form.data.bool_table_collum.true_value'|trans }}"></i> <span class="sr-only">{{ 'form.data.bool_table_collum.true_value'|trans }}</span>
         {% else %}
@@ -28,7 +27,9 @@
     {%- set value = attribute(line.data, column.attribute)|default(false)  -%}
     <td data-order="{% if value %}{{ value|date('c') }}{% endif %}">
         {% if value %}
-            {{ iconBlock|raw }}{{ value|date(date_time_format) }}
+            {{ block('emsco_form_table_column_data_label_prefix') }}
+            {{ value|date(date_time_format) }}
+            {{ block('emsco_form_table_column_data_label_suffix') }}
         {% endif %}
     </td>
 {% endblock emsco_form_table_column_data_datetime %}
@@ -55,7 +56,9 @@
     {%- set value = attribute(line.data, column.attribute)|default(false)  -%}
     <td data-order="{% if value %}{{ value }}{% endif %}">
         {% if value %}
-            {{ iconBlock|raw }}{{ value|format_bytes }}
+            {{ block('emsco_form_table_column_data_label_prefix') }}
+            {{ value|format_bytes }}
+            {{ block('emsco_form_table_column_data_label_suffix') }}
         {% endif %}
     </td>
 {% endblock emsco_form_table_column_data_bytes %}
@@ -64,26 +67,33 @@
     {%- set value = attribute(line.data, column.attribute)|default('')  -%}
     {%- set displayname = value|displayname  -%}
     <td data-search="{{ value }} {{ displayname }}">
-        {{ iconBlock|raw }}{{- displayname -}}
+        {{ block('emsco_form_table_column_data_label_prefix') }}
+        {{ displayname }}
+        {{ block('emsco_form_table_column_data_label_suffix') }}
     </td>
 {% endblock emsco_form_table_column_data_user %}
+
+{% block emsco_form_table_column_data_label_prefix -%}
+    {%- if column.routeName -%}
+        <a href="{{ path(column.routeName, column.getRouteProperties(line.data)) }}" {% if column.routeTarget %}target="{{ column.routeTarget }}"{% endif %}>
+    {%- endif -%}
+    {%- if column.iconProperty and attribute(line.data, column.iconProperty)|default(false) -%}
+        <i class="{{ attribute(line.data, column.iconProperty) }}"></i>&nbsp;
+    {%- endif -%}
+{%- endblock emsco_form_table_column_data_label_prefix %}
+
+{% block emsco_form_table_column_data_label_suffix -%}
+    {%- if column.routeName -%}
+        </a>
+    {%- endif -%}
+{% endblock emsco_form_table_column_data_label_suffix -%}
 
 {% block emsco_form_table_column_data %}
     {% set value = attribute(line.data, column.attribute)  %}
     <td class="nowrap">
-        {% set path = false %}
-        {% if column.routePath and attribute(line.data, column.routePath)|default(false) %}
-            {% set path = attribute(line.data, column.routePath) %}
-        {% elseif column.routePath %}
-            {% set path = path(column.routePath, column.getRouteProperties(line.data)) %}
-        {% endif %}
-        {% if path %}
-            <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>
-        {% endif %}
-        {{ iconBlock|raw }}{{ value }}
-        {% if path %}
-            </a>
-        {% endif %}
+        {{ block('emsco_form_table_column_data_label_prefix') }}
+        {{ value }}
+        {{ block('emsco_form_table_column_data_label_suffix') }}
     </td>
 {% endblock emsco_form_table_column_data %}
 
@@ -148,11 +158,6 @@
                                         <td class="text-center">{{ loop.index }}</td>
                                     {% endif %}
                                     {% for column in table.columns %}
-                                        {% set iconBlock %}
-                                            {% if column.iconProperty and attribute(line.data, column.iconProperty)|default(false) %}
-                                                <i class="{{ attribute(line.data, column.iconProperty) }}"></i>&nbsp;
-                                            {% endif %}
-                                        {% endset %}
                                         {{ block(column.tableDataBlock()) }}
                                     {% endfor %}
                                     <td data-search="">

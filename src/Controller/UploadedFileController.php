@@ -36,15 +36,14 @@ class UploadedFileController extends AbstractController
     public function index(Request $request): Response
     {
         $table = new EntityTable($this->fileService);
-        $column = $table->addColumn('uploaded-file.index.column.name', 'name');
-        $column->setRoutePath('ems_file_download', function (UploadedAsset $data) {
-            return [
-                'sha1' => $data->getSha1(),
-                'type' => $data->getType(),
-                'name' => $data->getName(),
-            ];
-        });
-        $column->setRouteTarget('_blank');
+        $table->addColumn('uploaded-file.index.column.name', 'name')
+            ->setRoute('ems_file_download', function (UploadedAsset $data) {
+                return [
+                    'sha1' => $data->getSha1(),
+                    'type' => $data->getType(),
+                    'name' => $data->getName(),
+                ];
+            });
         $table->addColumn('uploaded-file.index.column.sha1', 'sha1');
         $table->addColumn('uploaded-file.index.column.type', 'type');
         $table->addColumnDefinition(new UserTableColumn('uploaded-file.index.column.username', 'user'));

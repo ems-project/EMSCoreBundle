@@ -32,9 +32,7 @@ final class ChannelController extends AbstractController
     public function index(Request $request): Response
     {
         $table = new EntityTable($this->channelService);
-        $labelColumn = $table->addColumn('channel.index.column.label', 'label');
-        $labelColumn->setRoutePath('entryPath');
-        $labelColumn->setRouteTarget('channel_%value%');
+        $table->addColumn('channel.index.column.label', 'label');
         $table->addColumn('channel.index.column.name', 'name');
         $table->addColumn('channel.index.column.alias', 'alias');
         $table->addColumnDefinition(new BoolTableColumn('channel.index.column.public', 'public'));

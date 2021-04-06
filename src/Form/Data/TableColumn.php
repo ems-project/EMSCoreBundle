@@ -8,9 +8,9 @@ class TableColumn
 {
     private string $titleKey;
     private string $attribute;
-    private ?string $routePath = null;
-    private ?\Closure $routeCallback;
-    private ?string $routeTarget = '_blank';
+    private ?string $routeName = null;
+    private ?\Closure $routeParametersCallback = null;
+    private ?string $routeTarget = null;
     private ?string $iconProperty = null;
     private ?string $iconClass = null;
 
@@ -30,15 +30,16 @@ class TableColumn
         return $this->attribute;
     }
 
-    public function setRoutePath(string $routePath, ?\Closure $callback = null): void
+    public function setRoute(string $name, ?\Closure $callback = null, ?string $target = null): void
     {
-        $this->routePath = $routePath;
-        $this->routeCallback = $callback;
+        $this->routeName = $name;
+        $this->routeParametersCallback = $callback;
+        $this->routeTarget = $target;
     }
 
-    public function getRoutePath(): ?string
+    public function getRouteName(): ?string
     {
-        return $this->routePath;
+        return $this->routeName;
     }
 
     /**
@@ -48,16 +49,11 @@ class TableColumn
      */
     public function getRouteProperties($data): array
     {
-        if (null === $this->routeCallback) {
+        if (null === $this->routeParametersCallback) {
             return [];
         }
 
-        return $this->routeCallback->call($this, $data);
-    }
-
-    public function setRouteTarget(?string $target): ?string
-    {
-        return $this->routeTarget = $target;
+        return $this->routeParametersCallback->call($this, $data);
     }
 
     public function getRouteTarget(): ?string

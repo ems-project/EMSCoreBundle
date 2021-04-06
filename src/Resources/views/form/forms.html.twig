@@ -12,6 +12,17 @@
     </td>
 {% endblock emsco_form_table_column_data_data_links %}
 
+{% block emsco_form_table_column_data_bool %}
+    {%- set value = attribute(line.data, column.attribute)|default(false)  -%}
+    <td data-order="{% if value %}1{% endif %}">
+        {% if value %}
+            <i class="fa fa-check-square-o" title="{{ 'form.data.bool_table_collum.true_value'|trans }}"></i> <span class="sr-only">{{ 'form.data.bool_table_collum.true_value'|trans }}</span>
+        {% else %}
+            <i class="fa fa-square-o" title="{{ 'form.data.bool_table_collum.false_value'|trans }}"></i> <span class="sr-only">{{ 'form.data.bool_table_collum.false_value'|trans }}</span>
+        {% endif %}
+    </td>
+{% endblock emsco_form_table_column_data_bool %}
+
 {% block emsco_form_table_column_data_datetime %}
     {%- set value = attribute(line.data, column.attribute)|default(false)  -%}
     <td data-order="{% if value %}{{ value|date('c') }}{% endif %}">

@@ -8,8 +8,6 @@ class TableColumn
 {
     private string $titleKey;
     private string $attribute;
-    /** @var array<mixed, string> */
-    private array $valueToIconMapping;
     private ?string $routeProperty = null;
     private ?string $routePath = null;
     private ?\Closure $routeCallback;
@@ -18,14 +16,10 @@ class TableColumn
     private string $class = 'nowrap';
     private ?string $iconClass = null;
 
-    /**
-     * @param array<mixed, string> $valueToIconMapping
-     */
-    public function __construct(string $titleKey, string $attribute, array $valueToIconMapping = [])
+    public function __construct(string $titleKey, string $attribute)
     {
         $this->titleKey = $titleKey;
         $this->attribute = $attribute;
-        $this->valueToIconMapping = $valueToIconMapping;
     }
 
     public function getTitleKey(): string
@@ -36,14 +30,6 @@ class TableColumn
     public function getAttribute(): string
     {
         return $this->attribute;
-    }
-
-    /**
-     * @return array<mixed, string>
-     */
-    public function getValueToIconMapping(): array
-    {
-        return $this->valueToIconMapping;
     }
 
     public function setRoutePath(string $routePath, ?\Closure $callback = null): void

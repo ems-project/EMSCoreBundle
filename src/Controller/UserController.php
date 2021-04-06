@@ -11,6 +11,7 @@ use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\DataLinksTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
@@ -61,11 +62,11 @@ class UserController extends AppController
         $table = new EntityTable($this->userService);
         $table->addColumn('user.index.column.username', 'username');
         $table->addColumn('user.index.column.displayname', 'name');
-        $table->addColumn('user.index.column.email_notification', 'emailNotification', [true => 'fa fa-check-square-o', false => 'fa fa-square-o'])
+        $table->addColumnDefinition(new BoolTableColumn('user.index.column.email_notification', 'emailNotification'))
             ->setIconClass('fa fa-bell');
         $table->addColumn('user.index.column.email', 'email');
         $table->addColumnDefinition(new DataLinksTableColumn('user.index.column.circles', 'circles'));
-        $table->addColumn('user.index.column.enabled', 'enabled', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
+        $table->addColumnDefinition(new BoolTableColumn('user.index.column.enabled', 'enabled'));
         $createdColumn = $table->addColumn('user.index.column.roles', 'roles');
         $createdColumn->setClass('');
         $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.lastLogin', 'lastLogin'));

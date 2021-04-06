@@ -66,12 +66,9 @@ abstract class TableAbstract implements TableInterface
         $this->reordered = $reordered;
     }
 
-    /**
-     * @param array<mixed, string> $valueToIconMapping
-     */
-    public function addColumn(string $titleKey, string $attribute, array $valueToIconMapping = []): TableColumn
+    public function addColumn(string $titleKey, string $attribute): TableColumn
     {
-        $column = new TableColumn($titleKey, $attribute, $valueToIconMapping);
+        $column = new TableColumn($titleKey, $attribute);
         $this->columns[] = $column;
 
         return $column;

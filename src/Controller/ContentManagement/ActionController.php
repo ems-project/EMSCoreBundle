@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\TableType;
@@ -69,7 +70,7 @@ final class ActionController extends AbstractController
         }
 
         $table = new EntityTable($this->actionService, $contentType);
-        $table->addColumn('action.index.column.public', 'public', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
+        $table->addColumnDefinition(new BoolTableColumn('action.index.column.public', 'public'));
         $table->addColumn('action.index.column.name', 'name')
             ->setIconProperty('icon');
         $table->addColumn('action.index.column.type', 'renderOption');

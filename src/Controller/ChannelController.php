@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller;
 
 use EMS\CoreBundle\Entity\Channel;
+use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\ChannelType;
@@ -36,7 +37,7 @@ final class ChannelController extends AbstractController
         $labelColumn->setRouteTarget('channel_%value%');
         $table->addColumn('channel.index.column.name', 'name');
         $table->addColumn('channel.index.column.alias', 'alias');
-        $table->addColumn('channel.index.column.public', 'public', [true => 'fa fa-check']);
+        $table->addColumnDefinition(new BoolTableColumn('channel.index.column.public', 'public'));
         $table->addItemGetAction('ems_core_channel_edit', 'channel.actions.edit', 'pencil');
         $table->addItemPostAction('ems_core_channel_delete', 'channel.actions.delete', 'trash', 'channel.actions.delete_confirm');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'channel.actions.delete_selected', 'channel.actions.delete_selected_confirm');

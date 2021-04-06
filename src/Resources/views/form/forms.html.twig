@@ -1,6 +1,14 @@
 {% use "@EMSCore/form/fields.html.twig" %}
 {% trans_default_domain 'EMSCoreBundle' %}
 
+{% block emsco_form_table_column_data_user %}
+    {%- set value = attribute(line.data, column.attribute)|default('')  -%}
+    {%- set displayname = value|displayname  -%}
+    <td data-search="{{ value }} {{ displayname }}">
+        {{- displayname -}}
+    </td>
+{% endblock emsco_form_table_column_data_user %}
+
 {% block emsco_form_table_column_data %}
     {% set value = attribute(line.data, column.attribute)  %}
     <td class="{{ column.class }}" {% if column.dateTimeProperty and value %}data-order="{{ value|date('c') }}"{% endif %} {% if column.formatBytes and value %}data-order="{{ value }}"{% endif %}>

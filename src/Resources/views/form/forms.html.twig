@@ -32,6 +32,24 @@
     </td>
 {% endblock emsco_form_table_column_data_datetime %}
 
+{% block emsco_form_table_column_data_roles %}
+    {%- set value = attribute(line.data, column.attribute)|default([])  -%}
+    <td data-order="{% if value is iterable %}{{ value|length }}{% endif %}">
+        {% if value is iterable %}
+            {%- for string in value -%}
+                {%- if not loop.first -%}
+                    {%- if loop.last -%}
+                        &nbsp;&amp;&nbsp;
+                    {%- else -%}
+                        ,&nbsp;
+                    {%- endif -%}
+                {%- endif -%}
+                {{- string|trans -}}
+            {%- endfor -%}
+        {% endif %}
+    </td>
+{% endblock emsco_form_table_column_data_roles %}
+
 {% block emsco_form_table_column_data_bytes %}
     {%- set value = attribute(line.data, column.attribute)|default(false)  -%}
     <td data-order="{% if value %}{{ value }}{% endif %}">
@@ -51,7 +69,7 @@
 
 {% block emsco_form_table_column_data %}
     {% set value = attribute(line.data, column.attribute)  %}
-    <td class="{{ column.class }}">
+    <td class="nowrap">
         {% set path = false %}
         {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
             {% set path = path(attribute(line.data, column.routeProperty), column.getRouteProperties(line.data)) %}
@@ -63,22 +81,10 @@
         {% if path %}
             <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>
         {% endif %}
-            {% if value is iterable %}
-                {%- for string in value -%}
-                    {%- if not loop.first -%}
-                        {%- if loop.last -%}
-                            &nbsp;&amp;&nbsp;
-                        {%- else -%}
-                            ,&nbsp;
-                        {%- endif -%}
-                    {%- endif -%}
-                    {{- string|trans -}}
-                {%- endfor -%}
-            {%  elseif column.iconProperty and attribute(line.data, column.iconProperty)|default(false) %}
-                <i class="{{ attribute(line.data, column.iconProperty)  }}"></i> {{ value }}
-            {%  else %}
-                {{ value }}
-            {% endif %}
+        {% if column.iconProperty and attribute(line.data, column.iconProperty)|default(false) %}
+            <i class="{{ attribute(line.data, column.iconProperty)  }}"></i>
+        {% endif %}
+        {{ value }}
         {% if path %}
             </a>
         {% endif %}

@@ -15,6 +15,7 @@ use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\DataLinksTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\RolesTableColumn;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -67,8 +68,7 @@ class UserController extends AppController
         $table->addColumn('user.index.column.email', 'email');
         $table->addColumnDefinition(new DataLinksTableColumn('user.index.column.circles', 'circles'));
         $table->addColumnDefinition(new BoolTableColumn('user.index.column.enabled', 'enabled'));
-        $createdColumn = $table->addColumn('user.index.column.roles', 'roles');
-        $createdColumn->setClass('');
+        $table->addColumnDefinition(new RolesTableColumn('user.index.column.roles', 'roles'));
         $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.lastLogin', 'lastLogin'));
 
         $table->addDynamicItemGetAction('user.edit', 'user.action.edit', 'pencil', ['id' => 'id']);

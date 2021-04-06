@@ -13,7 +13,6 @@ class TableColumn
     private ?\Closure $routeCallback;
     private ?string $routeTarget = '_blank';
     private ?string $iconProperty = null;
-    private string $class = 'nowrap';
     private ?string $iconClass = null;
 
     public function __construct(string $titleKey, string $attribute)
@@ -85,16 +84,6 @@ class TableColumn
     public function setIconProperty(?string $iconProperty): void
     {
         $this->iconProperty = $iconProperty;
-    }
-
-    public function getClass(): string
-    {
-        return $this->class;
-    }
-
-    public function setClass(string $class): void
-    {
-        $this->class = $class;
     }
 
     public function setIconClass(string $iconClass): void

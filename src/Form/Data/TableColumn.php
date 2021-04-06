@@ -15,7 +15,6 @@ class TableColumn
     private ?\Closure $routeCallback;
     private ?string $routeTarget = '_blank';
     private ?string $iconProperty = null;
-    private ?bool $dataLinks = null;
     private string $class = 'nowrap';
     private ?string $iconClass = null;
     private bool $formatBytes = false;
@@ -103,16 +102,6 @@ class TableColumn
         $this->iconProperty = $iconProperty;
     }
 
-    public function getDataLinks(): ?bool
-    {
-        return $this->dataLinks;
-    }
-
-    public function setDataLinks(?bool $dataLinks): void
-    {
-        $this->dataLinks = $dataLinks;
-    }
-
     public function getClass(): string
     {
         return $this->class;
@@ -150,5 +139,10 @@ class TableColumn
     public function tableDataBlock(): string
     {
         return 'emsco_form_table_column_data';
+    }
+
+    public function getOrderable(): bool
+    {
+        return true;
     }
 }

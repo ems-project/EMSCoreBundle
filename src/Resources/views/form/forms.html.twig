@@ -1,6 +1,17 @@
 {% use "@EMSCore/form/fields.html.twig" %}
 {% trans_default_domain 'EMSCoreBundle' %}
 
+{% block emsco_form_table_column_data_data_links %}
+    {%- set value = attribute(line.data, column.attribute)|default([])  -%}
+    <td>
+        {% if value is iterable %}
+            {% for link in value %}
+                {{ link|data_link|raw }}
+            {% endfor %}
+        {% endif %}
+    </td>
+{% endblock emsco_form_table_column_data_data_links %}
+
 {% block emsco_form_table_column_data_datetime %}
     {%- set value = attribute(line.data, column.attribute)|default(false)  -%}
     <td data-order="{% if value %}{{ value|date('c') }}{% endif %}">
@@ -34,10 +45,6 @@
         {% endif %}
             {% if column.formatBytes %}
                 {{ value|format_bytes }}
-            {% elseif column.dataLinks == true %}
-                {% for item in value %}
-                    {{ item|data_link|raw }}
-                {% endfor %}
             {%  elseif value is iterable %}
                 {%- for string in value -%}
                     {%- if not loop.first -%}
@@ -97,7 +104,7 @@
                                     <th class="text-center fit">{{ 'table.index.column.loop_count'|trans }}</th>
                                 {% endif %}
                                 {% for column in table.columns %}
-                                    <th class="nowrap">
+                                    <th class="nowrap" data-orderable="{{ column.orderable ? 'true' : 'false' }}">
                                         {% if column.iconClass %}
                                             <i class="{{ column.iconClass }}" aria-hidden="true" title="{{ column.titleKey|trans|e('html_attr') }}"></i>
                                             <span class="sr-only">{{ column.titleKey|trans }}</span>

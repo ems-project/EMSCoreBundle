@@ -11,6 +11,7 @@ use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Form\Data\DataLinksTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
@@ -63,8 +64,7 @@ class UserController extends AppController
         $column = $table->addColumn('user.index.column.email_notification', 'emailNotification', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
         $column->setIconClass('fa fa-bell');
         $table->addColumn('user.index.column.email', 'email');
-        $createdColumn = $table->addColumn('user.index.column.circles', 'circles');
-        $createdColumn->setDataLinks(true);
+        $table->addColumnDefinition(new DataLinksTableColumn('user.index.column.circles', 'circles'));
         $table->addColumn('user.index.column.enabled', 'enabled', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
         $createdColumn = $table->addColumn('user.index.column.roles', 'roles');
         $createdColumn->setClass('');

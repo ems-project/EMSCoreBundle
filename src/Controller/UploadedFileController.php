@@ -91,7 +91,7 @@ class UploadedFileController extends AbstractController
         try {
             $response = $this->fileService->createDownloadForMultiple($fileIds);
         } catch (\Exception $e) {
-            $this->addFlash('error', 'error');
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
 
             return $this->redirectToRoute('ems_core_uploaded_file_index');
         }

@@ -8,7 +8,6 @@ class TableColumn
 {
     private string $titleKey;
     private string $attribute;
-    private ?string $routeProperty = null;
     private ?string $routePath = null;
     private ?\Closure $routeCallback;
     private ?string $routeTarget = '_blank';
@@ -37,11 +36,6 @@ class TableColumn
         $this->routeCallback = $callback;
     }
 
-    public function setRouteProperty(string $routeProperty): void
-    {
-        $this->routeProperty = $routeProperty;
-    }
-
     public function getRoutePath(): ?string
     {
         return $this->routePath;
@@ -59,11 +53,6 @@ class TableColumn
         }
 
         return $this->routeCallback->call($this, $data);
-    }
-
-    public function getRouteProperty(): ?string
-    {
-        return $this->routeProperty;
     }
 
     public function setRouteTarget(?string $target): ?string

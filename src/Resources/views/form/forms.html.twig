@@ -72,9 +72,7 @@
     {% set value = attribute(line.data, column.attribute)  %}
     <td class="nowrap">
         {% set path = false %}
-        {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
-            {% set path = path(attribute(line.data, column.routeProperty), column.getRouteProperties(line.data)) %}
-        {% elseif column.routePath and attribute(line.data, column.routePath)|default(false) %}
+        {% if column.routePath and attribute(line.data, column.routePath)|default(false) %}
             {% set path = attribute(line.data, column.routePath) %}
         {% elseif column.routePath %}
             {% set path = path(column.routePath, column.getRouteProperties(line.data)) %}

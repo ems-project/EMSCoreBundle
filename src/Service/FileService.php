@@ -18,6 +18,7 @@ use Exception;
 use Psr\Http\Message\StreamInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use ZipStream\ZipStream;
@@ -122,7 +123,7 @@ class FileService implements EntityServiceInterface
     {
         $files = $this->uploadedAssetRepository->findByIds($fileIds);
 
-        return new StreamedResponse(function () use ($files) {
+        $response = new StreamedResponse(function () use ($files) {
             $zip = new ZipStream('files.zip');
 
             foreach ($files as $file) {
@@ -131,6 +132,14 @@ class FileService implements EntityServiceInterface
 
             $zip->finish();
         });
+
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'files.zip')
+        );
+
+        return $response;
     }
 
     /**

@@ -13,8 +13,6 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UploadedFileController extends AbstractController
 {
@@ -67,10 +65,10 @@ class UploadedFileController extends AbstractController
                     case TableAbstract::DOWNLOAD_ACTION:
                         return $this->downloadMultiple($table->getSelected());
                     case self::SOFT_DELETE_ACTION:
-                        $this->softDeleteMultiple($table->getSelected());
+                        $this->fileService->removeSingleFileEntity($table->getSelected());
                         break;
                     case self::HARD_DELETE_ACTION:
-                        $this->hardDeleteMultiple($table->getSelected());
+                        $this->fileService->hardRemoveFiles($table->getSelected());
                         break;
                 }
             } else {
@@ -87,10 +85,8 @@ class UploadedFileController extends AbstractController
 
     /**
      * @param array<string> $fileIds
-     *
-     * @return StreamedResponse|Response
      */
-    private function downloadMultiple(array $fileIds)
+    private function downloadMultiple(array $fileIds): Response
     {
         try {
             $response = $this->fileService->createDownloadForMultiple($fileIds);
@@ -100,28 +96,6 @@ class UploadedFileController extends AbstractController
             return $this->redirectToRoute('ems_core_uploaded_file_index');
         }
 
-        $response->headers->set('Content-Type', 'application/zip');
-        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            'files.zip')
-        );
-
         return $response;
-    }
-
-    /**
-     * @param array<string> $fileIds
-     */
-    private function softDeleteMultiple(array $fileIds): void
-    {
-        $this->fileService->removeSingleFileEntity($fileIds);
-    }
-
-    /**
-     * @param array<string> $fileIds
-     */
-    private function hardDeleteMultiple(array $fileIds): void
-    {
-        $this->fileService->hardRemoveFiles($fileIds);
     }
 }

@@ -120,7 +120,7 @@ class FileService implements EntityServiceInterface
         $files = $this->uploadedAssetRepository->findByIds($fileIds);
 
         $response = new StreamedResponse(function () use ($files) {
-            $zip = new ZipStream('files.zip');
+            $zip = new ZipStream('archive.zip');
 
             foreach ($files as $file) {
                 $zip->addFile($file->getName(), \strval($this->getResource($file->getSha1())));
@@ -132,7 +132,7 @@ class FileService implements EntityServiceInterface
         $response->headers->set('Content-Type', 'application/zip');
         $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            'files.zip')
+            'archive.zip')
         );
 
         return $response;

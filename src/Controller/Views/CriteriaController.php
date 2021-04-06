@@ -495,8 +495,10 @@ class CriteriaController extends AppController
             $type = $structuredTarget[0];
             $ouuid = $structuredTarget[1];
 
-            /** @var Revision $revision */
             $revision = $dataService->getNewestRevision($type, $ouuid);
+            if (!$revision instanceof Revision) {
+                throw new \RuntimeException('Unexpected revision type');
+            }
 
             $authorized = $authorizationChecker->isGranted($view->getContentType()->getEditRole());
             if (!$authorized) {
@@ -529,6 +531,10 @@ class CriteriaController extends AppController
                     $dataService->finalizeDraft($revision);
                 }
             } catch (LockedException $e) {
+                if (!$revision instanceof Revision) {
+                    throw new \RuntimeException('Unexpected revision type');
+                }
+
                 $this->getLogger()->warning('log.view.criteria.locked_revision', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -831,6 +837,10 @@ class CriteriaController extends AppController
                     $dataService->finalizeDraft($revision);
                 }
             } catch (LockedException $e) {
+                if (!$revision instanceof Revision) {
+                    throw new \RuntimeException('Unexpected revision type');
+                }
+
                 $this->getLogger()->warning('log.view.criteria.locked_revision', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),

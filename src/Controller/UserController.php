@@ -57,17 +57,16 @@ class UserController extends AppController
     public function indexAction(Request $request)
     {
         $table = new EntityTable($this->userService);
-
-        $table->addColumn('user.index.column.id', 'id');
         $table->addColumn('user.index.column.username', 'username');
         $table->addColumn('user.index.column.displayname', 'name');
-        $table->addColumn('user.index.column.email_notification', 'emailNotification', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
+        $column = $table->addColumn('user.index.column.email_notification', 'emailNotification', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
+        $column->setIconClass('fa fa-bell');
         $table->addColumn('user.index.column.email', 'email');
         $createdColumn = $table->addColumn('user.index.column.circles', 'circles');
         $createdColumn->setDataLinks(true);
         $table->addColumn('user.index.column.enabled', 'enabled', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
         $createdColumn = $table->addColumn('user.index.column.roles', 'roles');
-        $createdColumn->setArrayOfStrings(true);
+        $createdColumn->setClass('');
         $createdColumn = $table->addColumn('user.index.column.lastLogin', 'lastLogin');
         $createdColumn->setDateTimeProperty(true);
 

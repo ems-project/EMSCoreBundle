@@ -21,6 +21,15 @@
     </td>
 {% endblock emsco_form_table_column_data_datetime %}
 
+{% block emsco_form_table_column_data_bytes %}
+    {%- set value = attribute(line.data, column.attribute)|default(false)  -%}
+    <td data-order="{% if value %}{{ value }}{% endif %}">
+        {% if value %}
+            {{ value|format_bytes }}
+        {% endif %}
+    </td>
+{% endblock emsco_form_table_column_data_bytes %}
+
 {% block emsco_form_table_column_data_user %}
     {%- set value = attribute(line.data, column.attribute)|default('')  -%}
     {%- set displayname = value|displayname  -%}
@@ -31,7 +40,7 @@
 
 {% block emsco_form_table_column_data %}
     {% set value = attribute(line.data, column.attribute)  %}
-    <td class="{{ column.class }}" {% if column.formatBytes and value %}data-order="{{ value }}"{% endif %}>
+    <td class="{{ column.class }}">
         {% set path = false %}
         {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
             {% set path = path(attribute(line.data, column.routeProperty), column.getRouteProperties(line.data)) %}
@@ -43,9 +52,7 @@
         {% if path %}
             <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>
         {% endif %}
-            {% if column.formatBytes %}
-                {{ value|format_bytes }}
-            {%  elseif value is iterable %}
+            {% if value is iterable %}
                 {%- for string in value -%}
                     {%- if not loop.first -%}
                         {%- if loop.last -%}

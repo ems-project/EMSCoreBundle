@@ -17,7 +17,6 @@ class TableColumn
     private ?string $iconProperty = null;
     private string $class = 'nowrap';
     private ?string $iconClass = null;
-    private bool $formatBytes = false;
 
     /**
      * @param array<mixed, string> $valueToIconMapping
@@ -124,16 +123,6 @@ class TableColumn
     public function getIconClass(): ?string
     {
         return $this->iconClass;
-    }
-
-    public function getFormatBytes(): bool
-    {
-        return $this->formatBytes;
-    }
-
-    public function setFormatBytes(bool $formatBytes): void
-    {
-        $this->formatBytes = $formatBytes;
     }
 
     public function tableDataBlock(): string

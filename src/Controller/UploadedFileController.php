@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Controller;
 
 use EMS\CoreBundle\Entity\UploadedAsset;
+use EMS\CoreBundle\Form\Data\BytesTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -48,8 +49,7 @@ class UploadedFileController extends AbstractController
         $table->addColumn('uploaded-file.index.column.type', 'type');
         $table->addColumnDefinition(new UserTableColumn('uploaded-file.index.column.username', 'user'));
         $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.created', 'created'));
-        $tableColumn = $table->addColumn('uploaded-file.index.column.size', 'size');
-        $tableColumn->setFormatBytes(true);
+        $table->addColumnDefinition(new BytesTableColumn('uploaded-file.index.column.size', 'size'));
 
         $table->addDynamicItemPostAction('ems_file_soft_delete', 'uploaded-file.action.soft-delete', 'minus-square', 'uploaded-file.soft-delete-confirm', ['id' => 'id']);
         $table->addDynamicItemPostAction('ems_file_hard_delete', 'uploaded-file.action.hard-delete', 'trash', 'uploaded-file.hard-delete-confirm', ['id' => 'id']);

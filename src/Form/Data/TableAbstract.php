@@ -77,6 +77,13 @@ abstract class TableAbstract implements TableInterface
         return $column;
     }
 
+    public function addColumnDefinition(TableColumn $column): TableColumn
+    {
+        $this->columns[] = $column;
+
+        return $column;
+    }
+
     /**
      * @return TableColumn[]
      */

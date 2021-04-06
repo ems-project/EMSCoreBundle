@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
-final class TableColumn
+class TableColumn
 {
     private string $titleKey;
     private string $attribute;

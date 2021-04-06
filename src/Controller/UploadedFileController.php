@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
+use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Service\FileService;
 use Psr\Log\LoggerInterface;
@@ -44,7 +45,7 @@ class UploadedFileController extends AbstractController
         $column->setRouteTarget('_blank');
         $table->addColumn('uploaded-file.index.column.sha1', 'sha1');
         $table->addColumn('uploaded-file.index.column.type', 'type');
-        $table->addColumn('uploaded-file.index.column.username', 'user');
+        $table->addColumnDefinition(new UserTableColumn('uploaded-file.index.column.username', 'user'));
         $tableColumn = $table->addColumn('uploaded-file.index.column.created', 'created');
         $tableColumn->setDateTimeProperty(true);
         $tableColumn = $table->addColumn('uploaded-file.index.column.size', 'size');

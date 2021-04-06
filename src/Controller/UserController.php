@@ -40,7 +40,7 @@ class UserController extends AppController
      */
     private $circleObject;
 
-    private $userService;
+    private UserService $userService;
 
     public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime, ?string $circleObject, UserService $userService)
     {

@@ -415,6 +415,28 @@ form-submission:
       created: 'Created At'
       deadline: 'Deadline Date'
     reorder: 'Reorder'
+uploaded-file:
+  menu: 'Menu'
+  index:
+    title: 'Uploaded Files'
+    column:
+      created: 'Uploaded at'
+      modified: 'Last modified'
+      name: 'File name'
+      sha1: 'Hash signature'
+      type: 'Mime type'
+      username: 'Username'
+      size: 'File size'
+  action:
+    download_selected: 'Download selected'
+    soft-delete: 'Soft delete'
+    hard-delete: 'Hard delete'
+  soft-delete-confirm: 'Are you sure you want to soft delete this file?'
+  hard-delete-confirm: 'Are you sure you want to hard delete this file?'
+  uploaded-file:
+    download_selected: 'Download selected'
+    soft_delete_selected: 'Soft delete selected'
+    hard_delete_selected: 'Hard delete selected'
 table:
   index:
     button:

@@ -12,12 +12,14 @@ final class TableColumn
     private array $valueToIconMapping;
     private ?string $routeProperty = null;
     private ?string $routePath = null;
+    private ?\Closure $routeCallback;
     private ?string $routeTarget = '_blank';
     private ?string $iconProperty = null;
     private ?bool $dateTimeProperty = null;
     private ?bool $dataLinks = null;
     private string $class = 'nowrap';
     private ?string $iconClass = null;
+    private bool $formatBytes = false;
 
     /**
      * @param array<mixed, string> $valueToIconMapping
@@ -47,9 +49,10 @@ final class TableColumn
         return $this->valueToIconMapping;
     }
 
-    public function setRoutePath(string $routePath): void
+    public function setRoutePath(string $routePath, ?\Closure $callback = null): void
     {
         $this->routePath = $routePath;
+        $this->routeCallback = $callback;
     }
 
     public function setRouteProperty(string $routeProperty): void
@@ -60,6 +63,20 @@ final class TableColumn
     public function getRoutePath(): ?string
     {
         return $this->routePath;
+    }
+
+    /**
+     * @param mixed $data
+     *
+     * @return array<string, mixed>
+     */
+    public function getRouteProperties($data): array
+    {
+        if (null === $this->routeCallback) {
+            return [];
+        }
+
+        return $this->routeCallback->call($this, $data);
     }
 
     public function getRouteProperty(): ?string
@@ -129,5 +146,15 @@ final class TableColumn
     public function getIconClass(): ?string
     {
         return $this->iconClass;
+    }
+
+    public function getFormatBytes(): bool
+    {
+        return $this->formatBytes;
+    }
+
+    public function setFormatBytes(bool $formatBytes): void
+    {
+        $this->formatBytes = $formatBytes;
     }
 }

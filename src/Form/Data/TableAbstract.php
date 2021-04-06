@@ -8,10 +8,8 @@ abstract class TableAbstract implements TableInterface
 {
     /** @var string */
     public const DELETE_ACTION = 'delete';
-
     /** @var string */
     public const DOWNLOAD_ACTION = 'download';
-
     /** @var string */
     public const EXPORT_ACTION = 'export';
 

@@ -25,14 +25,10 @@ use ZipStream\ZipStream;
 
 class FileService implements EntityServiceInterface
 {
-    /** @var Registry */
-    private $doctrine;
-    /** @var StorageManager */
-    private $storageManager;
-    /** @var Processor */
-    private $processor;
-    /** var UploadedAssetRepository */
-    private $uploadedAssetRepository;
+    private Registry $doctrine;
+    private StorageManager $storageManager;
+    private Processor $processor;
+    private UploadedAssetRepository $uploadedAssetRepository;
 
     public function __construct(Registry $doctrine, StorageManager $storageManager, Processor $processor, UploadedAssetRepository $uploadedAssetRepository)
     {

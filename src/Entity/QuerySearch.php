@@ -55,7 +55,7 @@ class QuerySearch implements EntityInterface
 
     /**
      * @var string
-     * 
+     *
      * @ORM\Column(name="query", type="json", nullable=true)
      */
     private $query;
@@ -130,17 +130,11 @@ class QuerySearch implements EntityInterface
         $this->environments = $environments;
     }
 
-    /**
-     * @return string
-     */
     public function getQuery(): string
     {
         return $this->query;
     }
-    
-    /**
-     * @param string $query
-     */
+
     public function setQuery(string $query): void
     {
         $this->query = $query;

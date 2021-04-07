@@ -189,9 +189,24 @@ abstract class TableAbstract implements TableInterface
                 ++$counter;
             }
         }
-
-        return [
+        $options = [
             'order' => [[$columnIndex, $this->orderDirection]],
         ];
+
+        $ajaxUrl = $this->getAjaxUrl();
+        if (null !== $ajaxUrl) {
+            $options = \array_merge($options, [
+                'processing' => true,
+                'serverSide' => true,
+                'ajax' => $ajaxUrl,
+            ]);
+        }
+
+        return $options;
+    }
+
+    public function getAjaxUrl(): ?string
+    {
+        return null;
     }
 }

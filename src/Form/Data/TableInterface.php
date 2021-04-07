@@ -54,4 +54,6 @@ interface TableInterface extends \Countable, \IteratorAggregate
      * @return array<string, mixed>
      */
     public function getFrontendOptions(): array;
+
+    public function getAjaxUrl(): ?string;
 }

@@ -39,6 +39,7 @@ final class ChannelController extends AbstractController
         $table->addItemGetAction('ems_core_channel_edit', 'channel.actions.edit', 'pencil');
         $table->addItemPostAction('ems_core_channel_delete', 'channel.actions.delete', 'trash', 'channel.actions.delete_confirm');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'channel.actions.delete_selected', 'channel.actions.delete_selected_confirm');
+        $table->setDefaultOrder('label');
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);

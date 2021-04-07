@@ -23,6 +23,8 @@ abstract class TableAbstract implements TableInterface
     private $itemActions = [];
     /** @var TableAction[] */
     private $tableActions = [];
+    private ?string $orderField = null;
+    private ?string $orderDirection = 'asc';
 
     public function isSortable(): bool
     {
@@ -160,5 +162,36 @@ abstract class TableAbstract implements TableInterface
     public function countTableActions(): int
     {
         return \count($this->tableActions);
+    }
+
+    public function setDefaultOrder(string $orderField, string $direction = 'asc'): void
+    {
+        $this->orderField = $orderField;
+        $this->orderDirection = $direction;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getFrontendOptions(): array
+    {
+        $columnIndex = 0;
+        if ($this->countTableActions() > 0) {
+            $columnIndex = 1;
+        }
+        if (!$this->isSortable() && null !== $this->orderField) {
+            $counter = $columnIndex;
+            foreach ($this->getColumns() as $column) {
+                if ($this->orderField === $column->getAttribute()) {
+                    $columnIndex = $counter;
+                    break;
+                }
+                ++$counter;
+            }
+        }
+
+        return [
+            'order' => [[$columnIndex, $this->orderDirection]],
+        ];
     }
 }

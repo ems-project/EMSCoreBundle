@@ -49,4 +49,9 @@ interface TableInterface extends \Countable, \IteratorAggregate
      * @param string[] $reordered
      */
     public function setReordered(array $reordered): void;
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getFrontendOptions(): array;
 }

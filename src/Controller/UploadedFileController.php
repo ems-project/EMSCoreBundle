@@ -44,10 +44,10 @@ class UploadedFileController extends AbstractController
                     'name' => $data->getName(),
                 ];
             });
+        $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.created', 'created'));
         $table->addColumn('uploaded-file.index.column.sha1', 'sha1');
         $table->addColumn('uploaded-file.index.column.type', 'type');
         $table->addColumnDefinition(new UserTableColumn('uploaded-file.index.column.username', 'user'));
-        $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.created', 'created'));
         $table->addColumnDefinition(new BytesTableColumn('uploaded-file.index.column.size', 'size'));
 
         $table->addDynamicItemPostAction('ems_file_soft_delete', 'uploaded-file.action.soft-delete', 'minus-square', 'uploaded-file.soft-delete-confirm', ['id' => 'id']);
@@ -56,6 +56,7 @@ class UploadedFileController extends AbstractController
         $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
         $table->addTableAction(self::SOFT_DELETE_ACTION, 'fa fa-minus-square', 'uploaded-file.uploaded-file.soft_delete_selected', 'uploaded-file.uploaded-file.soft_delete_selected_confirm');
         $table->addTableAction(self::HARD_DELETE_ACTION, 'fa fa-trash', 'uploaded-file.uploaded-file.hard_delete_selected', 'uploaded-file.uploaded-file.hard_delete_selected_confirm');
+        $table->setDefaultOrder('created', 'desc');
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);

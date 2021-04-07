@@ -34,24 +34,24 @@ final class QuerySearchService implements EntityServiceInterface
             $querySearch->setOrderKey($this->querySearchRepository->counter() + 1);
         }
         $encoder = new Encoder();
-        $label = $querySearch->getLabel();
-        if (null === $label) {
-            throw new \RuntimeException('Unexpected null label');
+        $name = $querySearch->getName();
+        if (null === $name) {
+            throw new \RuntimeException('Unexpected null name');
         }
-        $webalized = $encoder->webalize($label);
+        $webalized = $encoder->webalize($name);
         if (null === $webalized) {
-            throw new \RuntimeException('Unexpected null webalized label');
+            throw new \RuntimeException('Unexpected null webalized name');
         }
-        $querySearch->setLabel($webalized);
+        $querySearch->setName($webalized);
         $this->querySearchRepository->create($querySearch);
     }
 
     public function delete(QuerySearch $querySearch): void
     {
-        $label = $querySearch->getLabel();
+        $name = $querySearch->getName();
         $this->querySearchRepository->delete($querySearch);
         $this->logger->warning('log.service.querySearch.delete', [
-            'label' => $label,
+            'name' => $name,
         ]);
     }
 

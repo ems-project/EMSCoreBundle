@@ -4,31 +4,20 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
-final class TableColumn
+class TableColumn
 {
     private string $titleKey;
     private string $attribute;
-    /** @var array<mixed, string> */
-    private array $valueToIconMapping;
-    private ?string $routeProperty = null;
-    private ?string $routePath = null;
-    private ?\Closure $routeCallback;
-    private ?string $routeTarget = '_blank';
-    private ?string $iconProperty = null;
-    private ?bool $dateTimeProperty = null;
-    private ?bool $dataLinks = null;
-    private string $class = 'nowrap';
+    private ?string $routeName = null;
+    private ?\Closure $routeParametersCallback = null;
+    private ?string $routeTarget = null;
     private ?string $iconClass = null;
-    private bool $formatBytes = false;
+    private ?\Closure $itemIconCallback = null;
 
-    /**
-     * @param array<mixed, string> $valueToIconMapping
-     */
-    public function __construct(string $titleKey, string $attribute, array $valueToIconMapping = [])
+    public function __construct(string $titleKey, string $attribute)
     {
         $this->titleKey = $titleKey;
         $this->attribute = $attribute;
-        $this->valueToIconMapping = $valueToIconMapping;
     }
 
     public function getTitleKey(): string
@@ -41,28 +30,16 @@ final class TableColumn
         return $this->attribute;
     }
 
-    /**
-     * @return array<mixed, string>
-     */
-    public function getValueToIconMapping(): array
+    public function setRoute(string $name, ?\Closure $callback = null, ?string $target = null): void
     {
-        return $this->valueToIconMapping;
+        $this->routeName = $name;
+        $this->routeParametersCallback = $callback;
+        $this->routeTarget = $target;
     }
 
-    public function setRoutePath(string $routePath, ?\Closure $callback = null): void
+    public function getRouteName(): ?string
     {
-        $this->routePath = $routePath;
-        $this->routeCallback = $callback;
-    }
-
-    public function setRouteProperty(string $routeProperty): void
-    {
-        $this->routeProperty = $routeProperty;
-    }
-
-    public function getRoutePath(): ?string
-    {
-        return $this->routePath;
+        return $this->routeName;
     }
 
     /**
@@ -72,21 +49,11 @@ final class TableColumn
      */
     public function getRouteProperties($data): array
     {
-        if (null === $this->routeCallback) {
+        if (null === $this->routeParametersCallback) {
             return [];
         }
 
-        return $this->routeCallback->call($this, $data);
-    }
-
-    public function getRouteProperty(): ?string
-    {
-        return $this->routeProperty;
-    }
-
-    public function setRouteTarget(?string $target): ?string
-    {
-        return $this->routeTarget = $target;
+        return $this->routeParametersCallback->call($this, $data);
     }
 
     public function getRouteTarget(): ?string
@@ -94,44 +61,21 @@ final class TableColumn
         return $this->routeTarget;
     }
 
-    public function getIconProperty(): ?string
+    public function setItemIconCallback(\Closure $callback): void
     {
-        return $this->iconProperty;
+        $this->itemIconCallback = $callback;
     }
 
-    public function setIconProperty(?string $iconProperty): void
+    /**
+     * @param mixed $data
+     */
+    public function getItemIconClass($data): ?string
     {
-        $this->iconProperty = $iconProperty;
-    }
+        if (null === $this->itemIconCallback) {
+            return null;
+        }
 
-    public function getDateTimeProperty(): ?bool
-    {
-        return $this->dateTimeProperty;
-    }
-
-    public function setDateTimeProperty(?bool $dateTimeProperty): void
-    {
-        $this->dateTimeProperty = $dateTimeProperty;
-    }
-
-    public function getDataLinks(): ?bool
-    {
-        return $this->dataLinks;
-    }
-
-    public function setDataLinks(?bool $dataLinks): void
-    {
-        $this->dataLinks = $dataLinks;
-    }
-
-    public function getClass(): string
-    {
-        return $this->class;
-    }
-
-    public function setClass(string $class): void
-    {
-        $this->class = $class;
+        return $this->itemIconCallback->call($this, $data);
     }
 
     public function setIconClass(string $iconClass): void
@@ -148,13 +92,13 @@ final class TableColumn
         return $this->iconClass;
     }
 
-    public function getFormatBytes(): bool
+    public function tableDataBlock(): string
     {
-        return $this->formatBytes;
+        return 'emsco_form_table_column_data';
     }
 
-    public function setFormatBytes(bool $formatBytes): void
+    public function getOrderable(): bool
     {
-        $this->formatBytes = $formatBytes;
+        return true;
     }
 }

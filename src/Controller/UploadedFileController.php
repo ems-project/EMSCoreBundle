@@ -3,8 +3,11 @@
 namespace EMS\CoreBundle\Controller;
 
 use EMS\CoreBundle\Entity\UploadedAsset;
+use EMS\CoreBundle\Form\Data\BytesTableColumn;
+use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
+use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Service\FileService;
 use Psr\Log\LoggerInterface;
@@ -33,22 +36,19 @@ class UploadedFileController extends AbstractController
     public function index(Request $request): Response
     {
         $table = new EntityTable($this->fileService);
-        $column = $table->addColumn('uploaded-file.index.column.name', 'name');
-        $column->setRoutePath('ems_file_download', function (UploadedAsset $data) {
-            return [
-                'sha1' => $data->getSha1(),
-                'type' => $data->getType(),
-                'name' => $data->getName(),
-            ];
-        });
-        $column->setRouteTarget('_blank');
+        $table->addColumn('uploaded-file.index.column.name', 'name')
+            ->setRoute('ems_file_download', function (UploadedAsset $data) {
+                return [
+                    'sha1' => $data->getSha1(),
+                    'type' => $data->getType(),
+                    'name' => $data->getName(),
+                ];
+            });
         $table->addColumn('uploaded-file.index.column.sha1', 'sha1');
         $table->addColumn('uploaded-file.index.column.type', 'type');
-        $table->addColumn('uploaded-file.index.column.username', 'user');
-        $tableColumn = $table->addColumn('uploaded-file.index.column.created', 'created');
-        $tableColumn->setDateTimeProperty(true);
-        $tableColumn = $table->addColumn('uploaded-file.index.column.size', 'size');
-        $tableColumn->setFormatBytes(true);
+        $table->addColumnDefinition(new UserTableColumn('uploaded-file.index.column.username', 'user'));
+        $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.created', 'created'));
+        $table->addColumnDefinition(new BytesTableColumn('uploaded-file.index.column.size', 'size'));
 
         $table->addDynamicItemPostAction('ems_file_soft_delete', 'uploaded-file.action.soft-delete', 'minus-square', 'uploaded-file.soft-delete-confirm', ['id' => 'id']);
         $table->addDynamicItemPostAction('ems_file_hard_delete', 'uploaded-file.action.hard-delete', 'trash', 'uploaded-file.hard-delete-confirm', ['id' => 'id']);

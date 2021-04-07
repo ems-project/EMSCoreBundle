@@ -11,7 +11,11 @@ use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Form\Data\BoolTableColumn;
+use EMS\CoreBundle\Form\Data\DataLinksTableColumn;
+use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\RolesTableColumn;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -59,16 +63,13 @@ class UserController extends AppController
         $table = new EntityTable($this->userService);
         $table->addColumn('user.index.column.username', 'username');
         $table->addColumn('user.index.column.displayname', 'name');
-        $column = $table->addColumn('user.index.column.email_notification', 'emailNotification', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
-        $column->setIconClass('fa fa-bell');
+        $table->addColumnDefinition(new BoolTableColumn('user.index.column.email_notification', 'emailNotification'))
+            ->setIconClass('fa fa-bell');
         $table->addColumn('user.index.column.email', 'email');
-        $createdColumn = $table->addColumn('user.index.column.circles', 'circles');
-        $createdColumn->setDataLinks(true);
-        $table->addColumn('user.index.column.enabled', 'enabled', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
-        $createdColumn = $table->addColumn('user.index.column.roles', 'roles');
-        $createdColumn->setClass('');
-        $createdColumn = $table->addColumn('user.index.column.lastLogin', 'lastLogin');
-        $createdColumn->setDateTimeProperty(true);
+        $table->addColumnDefinition(new DataLinksTableColumn('user.index.column.circles', 'circles'));
+        $table->addColumnDefinition(new BoolTableColumn('user.index.column.enabled', 'enabled'));
+        $table->addColumnDefinition(new RolesTableColumn('user.index.column.roles', 'roles'));
+        $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.lastLogin', 'lastLogin'));
 
         $table->addDynamicItemGetAction('user.edit', 'user.action.edit', 'pencil', ['id' => 'id']);
         $table->addDynamicItemGetAction('homepage', 'user.action.switch', 'user-secret', ['_switch_user' => 'username']);

@@ -6,9 +6,9 @@ namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\QuerySearch;
-use EMS\CoreBundle\Form\Subform\QuerySearchOptionsType;
 use EMS\CoreBundle\Form\DataTransformer\QuerySearchOptionsTransformer;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Subform\QuerySearchOptionsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

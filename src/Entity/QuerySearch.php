@@ -47,18 +47,18 @@ class QuerySearch implements EntityInterface
     private $label;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private $name;
+
+    /**
      * @var Environment[]
      * @ORM\ManyToMany(targetEntity="Environment", inversedBy="contentTypesHavingThisAsDefault")
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
     protected $environments;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="query", type="json", nullable=true)
-     */
-    private $query;
 
     /**
      * @var array<string, mixed>
@@ -81,12 +81,9 @@ class QuerySearch implements EntityInterface
         $this->created = $now;
         $this->modified = $now;
         $this->environments = [];
-        $this->query = '{}';
         $this->options = [
-            'translationContentType' => 'label',
-            'routeContentType' => 'route',
-            'templateContentType' => 'template',
             'searchConfig' => '{}',
+            'query' => '',
         ];
     }
 
@@ -114,6 +111,16 @@ class QuerySearch implements EntityInterface
         $this->label = $label;
     }
 
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
     /**
      * @return Environment[]
      */
@@ -128,16 +135,6 @@ class QuerySearch implements EntityInterface
     public function setEnvironments(array $environments): void
     {
         $this->environments = $environments;
-    }
-
-    public function getQuery(): string
-    {
-        return $this->query;
-    }
-
-    public function setQuery(string $query): void
-    {
-        $this->query = $query;
     }
 
     /**

@@ -195,9 +195,6 @@
                                         <input type="checkbox" value="" data-grouped-checkbox-target=".{{ table.attributeName|e('html_attr') }}-to-select">
                                     </th>
                                 {% endif %}
-                                {% if table.sortable %}
-                                    <th class="text-center fit" data-name="_sortable">{{ 'table.index.column.loop_count'|trans }}</th>
-                                {% endif %}
                                 {% for column in table.columns %}
                                     <th class="nowrap" data-orderable="{{ column.orderable ? 'true' : 'false' }}" data-name="{{  column.attribute }}">
                                         {% if column.iconClass %}
@@ -218,9 +215,6 @@
                                         <td class="{{ table.attributeName|e('html_attr') }}-to-select">
                                             {{ block('emsco_form_table_column_action_checkbox') }}
                                         </td>
-                                    {% endif %}
-                                    {% if table.sortable %}
-                                        <td class="text-center">{{ loop.index }}</td>
                                     {% endif %}
                                     {% for column in table.columns %}
                                         {{ block(column.tableDataBlock()) }}
@@ -244,7 +238,7 @@
                     </div>
                 {% endif %}
             </div>
-            {%  if table.sortable and table.count > 1 %}
+            {%  if table.sortable and table.supportsTableActions %}
                 <div class="modal fade" id="{{ table.attributeName|e('html_attr') }}_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="{{ table.attributeName|e('html_attr') }}_modal_reorder_label">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">

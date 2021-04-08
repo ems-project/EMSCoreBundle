@@ -7,6 +7,9 @@
     {% if table.supportsTableActions %}
         {%- set row = row|merge([block('emsco_form_table_column_action_checkbox')]) -%}
     {% endif %}
+    {% if table.sortable %}
+        {%- set row = row|merge([ loop.index ]) -%}
+    {% endif %}
     {% for column in table.columns %}
         {%- set row = row|merge([block(column.tableDataValueBlock())]) -%}
     {% endfor %}

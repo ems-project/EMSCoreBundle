@@ -178,7 +178,7 @@
                         {% if toolbar is defined %}
                             {{ toolbar }}
                         {% endif %}
-                        {%  if table.sortable and table.count > 1 %}
+                        {%  if table.sortable and table.supportsTableActions %}
                             <button type="button" class="btn" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
                                 <i class="fa fa-reorder"></i> {{ reorder_label|default(form.vars.reorder_label)|trans }}
                             </button>

@@ -61,7 +61,7 @@
 
 {% block emsco_form_table_column_data_roles %}
     {%- set value = attribute(line.data, column.attribute)|default([]) -%}
-    <td data-order="{% if value is iterable %}{{ value|length }}{% endif %}">
+    <td>
         {{- block(column.tableDataValueBlock()) -}}
     </td>
 {% endblock emsco_form_table_column_data_roles %}

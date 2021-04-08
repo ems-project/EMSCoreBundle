@@ -4,6 +4,8 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
 
@@ -50,9 +52,17 @@ class TemplateRepository extends ServiceEntityRepository
         return $this->findBy(['contentType' => $contentType], ['orderKey' => 'ASC']);
     }
 
-    public function counter(ContentType $contentType): int
+    public function counter(string $searchValue, ContentType $contentType): int
     {
-        return parent::count(['contentType' => $contentType]);
+        $qb = $this->createQueryBuilder('t');
+        $qb->select('count(t.id)');
+        $this->addSearchFilters($qb, $contentType, $searchValue);
+
+        try {
+            return \intval($qb->getQuery()->getSingleScalarResult());
+        } catch (NonUniqueResultException $e) {
+            return 0;
+        }
     }
 
     public function delete(Template $template): void
@@ -84,16 +94,33 @@ class TemplateRepository extends ServiceEntityRepository
     /**
      * @return Template[]
      */
-    public function get(ContentType $contentType, int $from, int $size): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, ContentType $contentType): array
     {
-        $query = $this->createQueryBuilder('t')
-            ->where('t.contentType = :contentType')
-            ->orderBy('t.orderKey', 'ASC')
-            ->setParameter('contentType', $contentType)
+        $qb = $this->createQueryBuilder('t')
             ->setFirstResult($from)
-            ->setMaxResults($size)
-            ->getQuery();
+            ->setMaxResults($size);
+        $this->addSearchFilters($qb, $contentType, $searchValue);
 
-        return $query->execute();
+        if (\in_array($orderField, ['name', 'render_option', 'public'])) {
+            $qb->orderBy(\sprintf('t.%s', $orderField), $orderDirection);
+        } else {
+            $qb->orderBy('t.orderKey', $orderDirection);
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
+    private function addSearchFilters(QueryBuilder $qb, ContentType $contentType, string $searchValue): void
+    {
+        $qb->where('t.contentType = :contentType')
+            ->setParameter(':contentType', $contentType);
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('t.name', ':term'),
+                $qb->expr()->like('t.renderOption', ':term')
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.$searchValue.'%');
+        }
     }
 }

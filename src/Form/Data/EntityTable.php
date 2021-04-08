@@ -17,6 +17,8 @@ final class EntityTable extends TableAbstract
     private string $searchValue = '';
     private ?string $ajaxUrl = null;
     private bool $loadAll;
+    private ?int $count = null;
+    private ?int $totalCount = null;
     /**
      * @var mixed|null
      */
@@ -49,6 +51,8 @@ final class EntityTable extends TableAbstract
         $this->orderField = $dataTableRequest->getOrderField();
         $this->orderDirection = $dataTableRequest->getOrderDirection();
         $this->searchValue = $dataTableRequest->getSearchValue();
+        $this->totalCount = null;
+        $this->count = null;
     }
 
     public function isSortable(): bool
@@ -73,12 +77,20 @@ final class EntityTable extends TableAbstract
 
     public function totalCount(): int
     {
-        return $this->entityService->count('', $this->context);
+        if (null === $this->totalCount) {
+            $this->totalCount = $this->entityService->count('', $this->context);
+        }
+
+        return $this->totalCount;
     }
 
     public function count(): int
     {
-        return $this->entityService->count($this->searchValue, $this->context);
+        if (null === $this->count) {
+            $this->count = $this->entityService->count($this->searchValue, $this->context);
+        }
+
+        return $this->count;
     }
 
     public function getAjaxUrl(): ?string
@@ -88,6 +100,16 @@ final class EntityTable extends TableAbstract
 
     public function supportsTableActions(): bool
     {
-        return $this->loadAll && $this->countTableActions() > 0;
+        if (!$this->loadAll) {
+            return false;
+        }
+        if ($this->totalCount() <= 1) {
+            return false;
+        }
+        foreach ($this->getTableActions() as $action) {
+            return true;
+        }
+
+        return false;
     }
 }

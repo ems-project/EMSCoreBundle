@@ -159,11 +159,6 @@ abstract class TableAbstract implements TableInterface
         return $this->tableActions;
     }
 
-    public function countTableActions(): int
-    {
-        return \count($this->tableActions);
-    }
-
     public function setDefaultOrder(string $orderField, string $direction = 'asc'): void
     {
         $this->orderField = $orderField;
@@ -176,7 +171,7 @@ abstract class TableAbstract implements TableInterface
     public function getFrontendOptions(): array
     {
         $columnIndex = 0;
-        if ($this->countTableActions() > 0) {
+        if ($this->supportsTableActions()) {
             $columnIndex = 1;
         }
         if (!$this->isSortable() && null !== $this->orderField) {

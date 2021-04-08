@@ -15,12 +15,12 @@ interface EntityServiceInterface
      *
      * @return EntityInterface[]
      */
-    public function get(int $from, int $size, $context = null): array;
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array;
 
     public function getEntityName(): string;
 
     /**
      * @param mixed $context
      */
-    public function count($context = null): int;
+    public function count(string $searchValue = '', $context = null): int;
 }

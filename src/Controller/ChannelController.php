@@ -107,6 +107,7 @@ final class ChannelController extends AbstractController
     private function initTable(): EntityTable
     {
         $table = new EntityTable($this->channelService, $this->generateUrl('ems_core_channel_ajax_data_table'));
+        $table->addColumn('table.index.column.loop_count', 'orderKey');
         $table->addColumn('channel.index.column.label', 'label');
         $table->addColumn('channel.index.column.name', 'name');
         $table->addColumn('channel.index.column.alias', 'alias');

@@ -48,9 +48,9 @@ final class FormSubmissionService implements EntityServiceInterface
      *
      * @return FormSubmission[]
      */
-    public function get(int $from, int $size, $context = null): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
-        return $this->formSubmissionRepository->get($from, $size);
+        return $this->formSubmissionRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
     public function getById(string $id): FormSubmission
@@ -251,8 +251,8 @@ final class FormSubmissionService implements EntityServiceInterface
         return 'formSubmission';
     }
 
-    public function count($context = null): int
+    public function count(string $filterValue = '', $context = null): int
     {
-        return $this->formSubmissionRepository->countAllUnprocessed();
+        return $this->formSubmissionRepository->countAllUnprocessed($filterValue);
     }
 }

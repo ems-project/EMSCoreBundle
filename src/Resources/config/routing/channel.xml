@@ -16,5 +16,8 @@
     <route id="ems_core_channel_delete" path="/delete/{channel}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ChannelController:delete</default>
     </route>
+    <route id="ems_core_channel_ajax_data_table" path="/datatable.json" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ChannelController:ajaxDataTable</default>
+    </route>
 
 </routes>

@@ -209,4 +209,8 @@ abstract class TableAbstract implements TableInterface
     {
         return null;
     }
+
+    abstract public function supportsTableActions(): bool;
+
+    abstract public function totalCount(): int;
 }

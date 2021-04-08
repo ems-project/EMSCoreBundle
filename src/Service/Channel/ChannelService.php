@@ -71,9 +71,11 @@ final class ChannelService implements EntityServiceInterface
      */
     public function reorderByIds(array $ids): void
     {
+        $counter = 1;
         foreach ($this->channelRepository->getByIds(\array_keys($ids)) as $channel) {
-            $channel->setOrderKey($ids[$channel->getId()] ?? 0);
+            $channel->setOrderKey($counter);
             $this->channelRepository->create($channel);
+            ++$counter;
         }
     }
 
@@ -93,7 +95,7 @@ final class ChannelService implements EntityServiceInterface
             throw new \RuntimeException('Unexpected context');
         }
 
-        return $this->channelRepository->get($from, $size);
+        return $this->channelRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
     public function getEntityName(): string
@@ -110,6 +112,6 @@ final class ChannelService implements EntityServiceInterface
             throw new \RuntimeException('Unexpected non-null object');
         }
 
-        return $this->channelRepository->counter();
+        return $this->channelRepository->counter($searchValue);
     }
 }

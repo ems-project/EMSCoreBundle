@@ -9,11 +9,13 @@ use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\TableType;
+use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,25 +45,26 @@ final class SubmissionController extends AbstractController
     }
 
     /**
+     * @Route("/form/datatable.json", name="ems_core_submission_ajax", methods={"GET"})
+     */
+    public function ajaxDataTable(Request $request): Response
+    {
+        $table = $this->initTable();
+        $dataTableRequest = DataTableRequest::fromRequest($request);
+        $table->resetIterator($dataTableRequest);
+
+        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+            'dataTableRequest' => $dataTableRequest,
+            'table' => $table,
+        ], new JsonResponse());
+    }
+
+    /**
      * @Route("/form/submissions", name="form.submissions", methods={"GET", "POST"})
      */
     public function indexAction(Request $request, UserInterface $user): Response
     {
-        $table = new EntityTable($this->formSubmissionService);
-        $table->addColumn('form-submission.index.column.id', 'id');
-        $table->addColumn('form-submission.index.column.label', 'instance');
-        $table->addColumn('form-submission.index.column.form', 'name');
-        $table->addColumn('form-submission.index.column.locale', 'locale');
-        $table->addColumnDefinition(new DatetimeTableColumn('form-submission.index.column.created', 'created'));
-        $table->addColumnDefinition(new DatetimeTableColumn('form-submission.index.column.deadline', 'expireDate'));
-
-        $table->addItemGetAction('form.submissions.download', 'form-submission.form-submissions.download', 'download');
-        $table->addItemPostAction('form.submissions.process', 'form-submission.form-submissions.process', 'check', 'form-submission.form-submissions.confirm');
-
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'action.actions.delete_selected', 'form-submission.form-submissions.delete_selected_confirm');
-        $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'form-submission.form-submissions.download_selected', 'form-submission.form-submissions.download_selected_confirm');
-        $table->addTableAction(TableAbstract::EXPORT_ACTION, 'fa fa-file-excel-o', 'form-submission.form-submissions.export_selected', 'form-submission.form-submissions.export_selected_confirm');
-        $table->setDefaultOrder('created', 'desc');
+        $table = $this->initTable();
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
 
@@ -148,5 +151,26 @@ final class SubmissionController extends AbstractController
         );
 
         return $response;
+    }
+
+    private function initTable(): EntityTable
+    {
+        $table = new EntityTable($this->formSubmissionService, $this->generateUrl('ems_core_submission_ajax'));
+        $table->addColumn('form-submission.index.column.id', 'id');
+        $table->addColumn('form-submission.index.column.label', 'instance');
+        $table->addColumn('form-submission.index.column.form', 'name');
+        $table->addColumn('form-submission.index.column.locale', 'locale');
+        $table->addColumnDefinition(new DatetimeTableColumn('form-submission.index.column.created', 'created'));
+        $table->addColumnDefinition(new DatetimeTableColumn('form-submission.index.column.deadline', 'expireDate'));
+
+        $table->addItemGetAction('form.submissions.download', 'form-submission.form-submissions.download', 'download');
+        $table->addItemPostAction('form.submissions.process', 'form-submission.form-submissions.process', 'check', 'form-submission.form-submissions.confirm');
+
+        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'action.actions.delete_selected', 'form-submission.form-submissions.delete_selected_confirm');
+        $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'form-submission.form-submissions.download_selected', 'form-submission.form-submissions.download_selected_confirm');
+        $table->addTableAction(TableAbstract::EXPORT_ACTION, 'fa fa-file-excel-o', 'form-submission.form-submissions.export_selected', 'form-submission.form-submissions.export_selected_confirm');
+        $table->setDefaultOrder('created', 'desc');
+
+        return $table;
     }
 }

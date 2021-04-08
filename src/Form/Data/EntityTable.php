@@ -27,7 +27,7 @@ final class EntityTable extends TableAbstract
     /**
      * @param mixed $context
      */
-    public function __construct(EntityServiceInterface $entityService, string $ajaxUrl, $context = null, int $loadAllMaxRow = 50)
+    public function __construct(EntityServiceInterface $entityService, string $ajaxUrl, $context = null, int $loadAllMaxRow = 1)
     {
         $this->entityService = $entityService;
         $this->context = $context;

@@ -31,13 +31,12 @@ final class QuerySearchController extends AbstractController
     public function index(Request $request): Response
     {
         $table = new EntityTable($this->querySearchService);
-        $labelColumn = $table->addColumn('querysearch.index.column.label', 'label');
-        $labelColumn->setRouteTarget('querysearch_%value%');
-        $table->addColumn('querysearch.index.column.name', 'name');
-        $table->addColumn('querysearch.index.column.environments', 'environments');
-        $table->addItemGetAction('ems_core_querysearch_edit', 'querysearch.actions.edit', 'pencil');
-        $table->addItemPostAction('ems_core_querysearch_delete', 'querysearch.actions.delete', 'trash', 'querysearch.actions.delete_confirm');
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'querysearch.actions.delete_selected', 'querysearch.actions.delete_selected_confirm');
+        $labelColumn = $table->addColumn('query_search.index.column.label', 'label');
+        $table->addColumn('query_search.index.column.name', 'name');
+        $table->addColumn('query_search.index.column.environments', 'environments');
+        $table->addItemGetAction('ems_core_query_search_edit', 'query_search.actions.edit', 'pencil');
+        $table->addItemPostAction('ems_core_query_search_delete', 'query_search.actions.delete', 'trash', 'query_search.actions.delete_confirm');
+        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'query_search.actions.delete_selected', 'query_search.actions.delete_selected_confirm');
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -52,16 +51,16 @@ final class QuerySearchController extends AbstractController
                         $this->querySearchService->reorderByIds(\array_flip(\array_values($newOrder)));
                         break;
                     default:
-                        $this->logger->error('log.controller.querysearch.unknown_action');
+                        $this->logger->error('log.controller.query_search.unknown_action');
                 }
             } else {
-                $this->logger->error('log.controller.querysearch.unknown_action');
+                $this->logger->error('log.controller.query_search.unknown_action');
             }
 
-            return $this->redirectToRoute('ems_core_querysearch_index');
+            return $this->redirectToRoute('ems_core_query_search_index');
         }
 
-        return $this->render('@EMSCore/querysearch/index.html.twig', [
+        return $this->render('@EMSCore/query_search/index.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -70,10 +69,10 @@ final class QuerySearchController extends AbstractController
     {
         $querySearch = new QuerySearch();
 
-        return $this->edit($request, $querySearch, '@EMSCore/querysearch/add.html.twig');
+        return $this->edit($request, $querySearch, '@EMSCore/query_search/add.html.twig');
     }
 
-    public function edit(Request $request, QuerySearch $querySearch, string $view = '@EMSCore/querysearch/edit.html.twig'): Response
+    public function edit(Request $request, QuerySearch $querySearch, string $view = '@EMSCore/query_search/edit.html.twig'): Response
     {
         $form = $this->createForm(QuerySearchType::class, $querySearch);
         $form->handleRequest($request);
@@ -81,7 +80,7 @@ final class QuerySearchController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->querySearchService->update($querySearch);
 
-            return $this->redirectToRoute('ems_core_querysearch_index');
+            return $this->redirectToRoute('ems_core_query_search_index');
         }
 
         return $this->render($view, [
@@ -93,6 +92,6 @@ final class QuerySearchController extends AbstractController
     {
         $this->querySearchService->delete($querySearch);
 
-        return $this->redirectToRoute('ems_core_querysearch_index');
+        return $this->redirectToRoute('ems_core_query_search_index');
     }
 }

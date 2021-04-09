@@ -42,13 +42,14 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.name', $config['name']);
         $container->setParameter('ems_core.theme_color', $config['theme_color']);
         $container->setParameter('ems_core.date_time_format', $config['date_time_format']);
+        $container->setParameter('ems_core.date_format', $config['date_format']);
+        $container->setParameter('ems_core.time_format', $config['time_format']);
         $container->setParameter('ems_core.paging_size', $config['paging_size']);
         $container->setParameter('ems_core.circles_object', $config['circles_object']);
         $container->setParameter('ems_core.elasticsearch_cluster', $config['elasticsearch_cluster']);
         $container->setParameter('ems_core.datepicker_daysofweek_highlighted', $config['datepicker_daysofweek_highlighted']);
         $container->setParameter('ems_core.datepicker_weekstart', $config['datepicker_weekstart']);
         $container->setParameter('ems_core.datepicker_format', $config['datepicker_format']);
-        $container->setParameter('ems_core.date_time_format', $config['date_time_format']);
         $container->setParameter('ems_core.notification_pending_timeout', $config['notification_pending_timeout']);
         $container->setParameter('ems_core.allow_user_registration', $config['allow_user_registration']);
         $container->setParameter('ems_core.trigger_job_from_web', $config['trigger_job_from_web']);
@@ -107,24 +108,26 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $configs = $container->getExtensionConfig($this->getAlias());
 
         $globals = [
-            'theme_color' => isset($configs[0]['theme_color']) ? $configs[0]['theme_color'] : Configuration::THEME_COLOR,
-            'ems_name' => isset($configs[0]['name']) ? $configs[0]['name'] : Configuration::NAME,
-            'ems_shortname' => isset($configs[0]['shortname']) ? $configs[0]['shortname'] : Configuration::SHORTNAME,
+            'theme_color' => $configs[0]['theme_color'] ?? Configuration::THEME_COLOR,
+            'ems_name' =>  $configs[0]['name'] ?? Configuration::NAME,
+            'ems_shortname' => $configs[0]['shortname'] ?? Configuration::SHORTNAME,
             'ems_core_version' => $coreVersion,
-            'paging_size' => isset($configs[0]['paging_size']) ? $configs[0]['paging_size'] : Configuration::PAGING_SIZE,
-            'circles_object' => isset($configs[0]['circles_object']) ? $configs[0]['circles_object'] : Configuration::CIRCLES_OBJECT,
-            'datepicker_daysofweek_highlighted' => isset($configs[0]['datepicker_daysofweek_highlighted']) ? $configs[0]['datepicker_daysofweek_highlighted'] : Configuration::DATEPICKER_DAYSOFWEEK_HIGHLIGHTED,
-            'datepicker_weekstart' => isset($configs[0]['datepicker_weekstart']) ? $configs[0]['datepicker_weekstart'] : Configuration::DATEPICKER_WEEKSTART,
-            'datepicker_format' => isset($configs[0]['datepicker_format']) ? $configs[0]['datepicker_format'] : Configuration::DATEPICKER_FORMAT,
-            'date_time_format' => isset($configs[0]['date_time_format']) ? $configs[0]['date_time_format'] : Configuration::DATE_TIME_FORMAT,
-            'allow_user_registration' => isset($configs[0]['allow_user_registration']) ? $configs[0]['allow_user_registration'] : Configuration::ALLOW_USER_REGISTRATION,
-            'trigger_job_from_web' => isset($configs[0]['trigger_job_from_web']) ? $configs[0]['trigger_job_from_web'] : Configuration::TRIGGER_JOB_FROM_WEB,
-            'user_login_route' => isset($configs[0]['user_login_route']) ? $configs[0]['user_login_route'] : Configuration::USER_LOGIN_ROUTE,
-            'user_logout_route' => isset($configs[0]['user_logout_route']) ? $configs[0]['user_logout_route'] : Configuration::USER_LOGOUT_ROUTE,
-            'user_profile_route' => isset($configs[0]['user_profile_route']) ? $configs[0]['user_profile_route'] : Configuration::USER_PROFILE_ROUTE,
-            'user_registration_route' => isset($configs[0]['user_registration_route']) ? $configs[0]['user_registration_route'] : Configuration::USER_REGISTRATION_ROUTE,
-            'add_user_route' => isset($configs[0]['add_user_route']) ? $configs[0]['add_user_route'] : Configuration::ADD_USER_ROUTE,
-            'application_menu_controller' => isset($configs[0]['application_menu_controller']) ? $configs[0]['application_menu_controller'] : Configuration::APPLICATION_MENU_CONTROLLER,
+            'paging_size' => $configs[0]['paging_size'] ?? Configuration::PAGING_SIZE,
+            'circles_object' => $configs[0]['circles_object'] ?? Configuration::CIRCLES_OBJECT,
+            'datepicker_daysofweek_highlighted' => $configs[0]['datepicker_daysofweek_highlighted'] ?? Configuration::DATEPICKER_DAYSOFWEEK_HIGHLIGHTED,
+            'datepicker_weekstart' => $configs[0]['datepicker_weekstart'] ?? Configuration::DATEPICKER_WEEKSTART,
+            'datepicker_format' => $configs[0]['datepicker_format'] ?? Configuration::DATEPICKER_FORMAT,
+            'date_time_format' => $configs[0]['date_time_format'] ?? Configuration::DATE_TIME_FORMAT,
+            'date_format' => $configs[0]['date_format'] ?? Configuration::DATE_FORMAT,
+            'time_format' => $configs[0]['time_format'] ?? Configuration::TIME_FORMAT,
+            'allow_user_registration' => $configs[0]['allow_user_registration'] ?? Configuration::ALLOW_USER_REGISTRATION,
+            'trigger_job_from_web' => $configs[0]['trigger_job_from_web'] ?? Configuration::TRIGGER_JOB_FROM_WEB,
+            'user_login_route' => $configs[0]['user_login_route'] ?? Configuration::USER_LOGIN_ROUTE,
+            'user_logout_route' => $configs[0]['user_logout_route'] ?? Configuration::USER_LOGOUT_ROUTE,
+            'user_profile_route' => $configs[0]['user_profile_route'] ?? Configuration::USER_PROFILE_ROUTE,
+            'user_registration_route' => $configs[0]['user_registration_route'] ?? Configuration::USER_REGISTRATION_ROUTE,
+            'add_user_route' => $configs[0]['add_user_route'] ?? Configuration::ADD_USER_ROUTE,
+            'application_menu_controller' => $configs[0]['application_menu_controller'] ?? Configuration::APPLICATION_MENU_CONTROLLER,
         ];
 
         if (!empty($configs[0]['template_options'])) {

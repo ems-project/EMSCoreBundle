@@ -109,7 +109,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
 
         $globals = [
             'theme_color' => $configs[0]['theme_color'] ?? Configuration::THEME_COLOR,
-            'ems_name' =>  $configs[0]['name'] ?? Configuration::NAME,
+            'ems_name' => $configs[0]['name'] ?? Configuration::NAME,
             'ems_shortname' => $configs[0]['shortname'] ?? Configuration::SHORTNAME,
             'ems_core_version' => $coreVersion,
             'paging_size' => $configs[0]['paging_size'] ?? Configuration::PAGING_SIZE,

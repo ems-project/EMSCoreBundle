@@ -1,0 +1,19 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'query_search.edit.title'|trans }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path('ems_core_query_search_index') }}"><i class="{{ 'view.icon.class.query_search'|trans }}"></i> {{ 'query_search.menu'|trans }}</li></a>
+		<li>{{ block('title') }}</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+    {% include "@EMSCore/querySearch/form.html.twig" with {
+    	label: 'query_search.edit.title',
+		save_action_key: 'query_search.edit.save',
+    } %}
+{% endblock %}

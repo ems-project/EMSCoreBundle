@@ -48,7 +48,7 @@ final class QuerySearchType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => QuerySearch::class,
-            'label_format' => 'form.form.querysearch.%name%',
+            'label_format' => 'form.form.query_search.%name%',
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }

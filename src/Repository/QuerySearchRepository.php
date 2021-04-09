@@ -47,8 +47,8 @@ final class QuerySearchRepository extends ServiceEntityRepository
      */
     public function getByIds(array $ids): array
     {
-        $queryBuilder = $this->createQueryBuilder('querysearch');
-        $queryBuilder->where('querysearch.id IN (:ids)')
+        $queryBuilder = $this->createQueryBuilder('query_search');
+        $queryBuilder->where('query_search.id IN (:ids)')
             ->setParameter('ids', $ids);
 
         return $queryBuilder->getQuery()->getResult();

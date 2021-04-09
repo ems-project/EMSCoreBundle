@@ -50,7 +50,7 @@ final class QuerySearchService implements EntityServiceInterface
     {
         $name = $querySearch->getName();
         $this->querySearchRepository->delete($querySearch);
-        $this->logger->warning('log.service.querySearch.delete', [
+        $this->logger->warning('log.service.query_search.delete', [
             'name' => $name,
         ]);
     }
@@ -86,7 +86,7 @@ final class QuerySearchService implements EntityServiceInterface
      *
      * @return QuerySearch[]
      */
-    public function get(int $from, int $size, $context = null): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected context');
@@ -97,13 +97,13 @@ final class QuerySearchService implements EntityServiceInterface
 
     public function getEntityName(): string
     {
-        return 'querySearch';
+        return 'query_search';
     }
 
     /**
      * @param mixed $context
      */
-    public function count($context = null): int
+    public function count(string $searchValue = '', $context = null): int
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected non-null object');

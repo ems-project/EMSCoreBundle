@@ -45,6 +45,15 @@
         {%- endif -%}
 {% endblock emsco_form_table_column_data_value_date %}
 
+{% block emsco_form_table_column_data_value_time %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+        {%- if value -%}
+            {{- block('emsco_form_table_column_data_label_prefix') -}}
+            {{- value|date(time_format) }}
+            {{- block('emsco_form_table_column_data_label_suffix') -}}
+        {%- endif -%}
+{% endblock emsco_form_table_column_data_value_time %}
+
 {% block emsco_form_table_column_data_datetime %}
     {%- set value = attribute(line.data, column.attribute)|default(false) -%}
     <td data-order="{% if value %}{{ value|date('c') }}{% endif %}">

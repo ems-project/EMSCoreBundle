@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\UploadedAsset;
 
 /**
@@ -100,14 +101,17 @@ class UploadedAssetRepository extends EntityRepository
     /**
      * @return array<UploadedAsset>
      */
-    public function get(int $from, int $size): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
     {
         $qb = $this->createQueryBuilder('ua');
-        $qb
-            ->andWhere($qb->expr()->isNotNull('ua.id'))
-            ->setFirstResult($from)
-            ->setMaxResults($size)
-            ->orderBy('ua.created', 'desc');
+        $qb->setFirstResult($from)
+            ->setMaxResults($size);
+
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('ua.%s', $orderField), $orderDirection);
+        }
+
+        $this->addSearchFilters($qb, $searchValue);
 
         return $qb->getQuery()->execute();
     }
@@ -170,5 +174,34 @@ class UploadedAssetRepository extends EntityRepository
             return $uploadedAsset;
         }
         throw new \RuntimeException(\sprintf('Unexpected class object %s', \get_class($uploadedAsset)));
+    }
+
+    public function searchCount(string $searchValue = ''): int
+    {
+        $qb = $this->createQueryBuilder('ua');
+        $qb->select('count(ua.id)');
+        $this->addSearchFilters($qb, $searchValue);
+
+        try {
+            return \intval($qb->getQuery()->getSingleScalarResult());
+        } catch (NonUniqueResultException $e) {
+            return 0;
+        }
+    }
+
+    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    {
+        $qb->andWhere($qb->expr()->eq('ua.available', ':true'))
+            ->setParameter(':true', true);
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('ua.user', ':term'),
+                $qb->expr()->like('ua.sha1', ':term'),
+                $qb->expr()->like('ua.type', ':term'),
+                $qb->expr()->like('ua.name', ':term')
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.$searchValue.'%');
+        }
     }
 }

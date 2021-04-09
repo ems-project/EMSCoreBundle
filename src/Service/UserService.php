@@ -247,9 +247,9 @@ class UserService implements EntityServiceInterface
         return false;
     }
 
-    public function get(int $from, int $size, $context = null): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
-        return $this->userRepository->get($from, $size);
+        return $this->userRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
     public function getEntityName(): string
@@ -257,8 +257,8 @@ class UserService implements EntityServiceInterface
         return 'user';
     }
 
-    public function count($context = null): int
+    public function count(string $searchValue = '', $context = null): int
     {
-        return $this->userRepository->countUsers();
+        return $this->userRepository->countUsers($searchValue);
     }
 }

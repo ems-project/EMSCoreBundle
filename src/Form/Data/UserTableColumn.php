@@ -10,4 +10,9 @@ final class UserTableColumn extends TableColumn
     {
         return 'emsco_form_table_column_data_user';
     }
+
+    public function tableDataValueBlock(): string
+    {
+        return 'emsco_form_table_column_data_value_user';
+    }
 }

@@ -1,0 +1,24 @@
+{%- use '@EMSCore/form/forms.html.twig' -%}
+
+{%-  set data = {} -%}
+{%- for line in table -%}
+    {%- set row = {} -%}
+
+    {% if table.supportsTableActions %}
+        {%- set row = row|merge([block('emsco_form_table_column_action_checkbox')]) -%}
+    {% endif %}
+    {% for column in table.columns %}
+        {%- set row = row|merge([block(column.tableDataValueBlock())]) -%}
+    {% endfor %}
+    {%- set row = row|merge([block('emsco_form_table_column_row_actions')]) -%}
+
+    {%-  set data = data|merge([row]) -%}
+{%- endfor -%}
+
+{%- set response = {
+    data: data,
+    draw: dataTableRequest.draw,
+    recordsFiltered: table.count,
+    recordsTotal: table.totalCount,
+} -%}
+{{- response|json_encode|raw -}}

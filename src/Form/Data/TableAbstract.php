@@ -23,6 +23,8 @@ abstract class TableAbstract implements TableInterface
     private $itemActions = [];
     /** @var TableAction[] */
     private $tableActions = [];
+    private ?string $orderField = null;
+    private ?string $orderDirection = 'asc';
 
     public function isSortable(): bool
     {
@@ -157,8 +159,53 @@ abstract class TableAbstract implements TableInterface
         return $this->tableActions;
     }
 
-    public function countTableActions(): int
+    public function setDefaultOrder(string $orderField, string $direction = 'asc'): void
     {
-        return \count($this->tableActions);
+        $this->orderField = $orderField;
+        $this->orderDirection = $direction;
     }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getFrontendOptions(): array
+    {
+        $columnIndex = 0;
+        if ($this->supportsTableActions()) {
+            $columnIndex = 1;
+        }
+        if (!$this->isSortable() && null !== $this->orderField) {
+            $counter = $columnIndex;
+            foreach ($this->getColumns() as $column) {
+                if ($this->orderField === $column->getAttribute()) {
+                    $columnIndex = $counter;
+                    break;
+                }
+                ++$counter;
+            }
+        }
+        $options = [
+            'order' => [[$columnIndex, $this->orderDirection]],
+        ];
+
+        $ajaxUrl = $this->getAjaxUrl();
+        if (null !== $ajaxUrl) {
+            $options = \array_merge($options, [
+                'processing' => true,
+                'serverSide' => true,
+                'ajax' => $ajaxUrl,
+            ]);
+        }
+
+        return $options;
+    }
+
+    public function getAjaxUrl(): ?string
+    {
+        return null;
+    }
+
+    abstract public function supportsTableActions(): bool;
+
+    abstract public function totalCount(): int;
 }

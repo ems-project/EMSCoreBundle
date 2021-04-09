@@ -352,9 +352,9 @@ class FileService implements EntityServiceInterface
         return false;
     }
 
-    public function get(int $from, int $size, $context = null): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
-        return $this->uploadedAssetRepository->get($from, $size);
+        return $this->uploadedAssetRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
     public function getEntityName(): string
@@ -362,8 +362,8 @@ class FileService implements EntityServiceInterface
         return 'UploadedAsset';
     }
 
-    public function count($context = null): int
+    public function count(string $searchValue = '', $context = null): int
     {
-        return $this->uploadedAssetRepository->countHashes();
+        return $this->uploadedAssetRepository->searchCount($searchValue);
     }
 }

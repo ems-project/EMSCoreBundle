@@ -10,4 +10,9 @@ final class DatetimeTableColumn extends TableColumn
     {
         return 'emsco_form_table_column_data_datetime';
     }
+
+    public function tableDataValueBlock(): string
+    {
+        return 'emsco_form_table_column_data_value_datetime';
+    }
 }

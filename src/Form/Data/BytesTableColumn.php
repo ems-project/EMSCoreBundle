@@ -10,4 +10,9 @@ final class BytesTableColumn extends TableColumn
     {
         return 'emsco_form_table_column_data_bytes';
     }
+
+    public function tableDataValueBlock(): string
+    {
+        return 'emsco_form_table_column_data_value_bytes';
+    }
 }

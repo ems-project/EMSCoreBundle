@@ -97,6 +97,11 @@ class TableColumn
         return 'emsco_form_table_column_data';
     }
 
+    public function tableDataValueBlock(): string
+    {
+        return 'emsco_form_table_column_data_value';
+    }
+
     public function getOrderable(): bool
     {
         return true;

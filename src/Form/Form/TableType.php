@@ -37,7 +37,7 @@ final class TableType extends AbstractType
             $choices[$id] = $id;
         }
 
-        if ($data->countTableActions() > 0) {
+        if ($data->supportsTableActions()) {
             $builder->add('selected', ChoiceType::class, [
                 'choices' => $choices,
                 'choice_label' => function ($choice, $key, $value) {
@@ -66,16 +66,18 @@ final class TableType extends AbstractType
                 'label' => 'table.index.button.reorder',
             ]);
         }
-        /** @var TableAction $action */
-        foreach ($data->getTableActions() as $action) {
-            $builder
-                ->add($action->getName(), SubmitEmsType::class, [
-                    'attr' => [
-                        'class' => 'btn-danger',
-                    ],
-                    'icon' => $action->getIcon(),
-                    'label' => $action->getLabelKey(),
-                ]);
+        if ($data->supportsTableActions()) {
+            /** @var TableAction $action */
+            foreach ($data->getTableActions() as $action) {
+                $builder
+                    ->add($action->getName(), SubmitEmsType::class, [
+                        'attr' => [
+                            'class' => 'btn-danger',
+                        ],
+                        'icon' => $action->getIcon(),
+                        'label' => $action->getLabelKey(),
+                    ]);
+            }
         }
     }
 

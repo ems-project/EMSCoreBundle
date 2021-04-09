@@ -189,10 +189,7 @@ import EmsListeners from "./EmsListeners";
         $('[data-datatable]').each(function(){
             const table = $(this);
             const config = table.data('datatable');
-            const self = this;
-            table.DataTable({
-                "order": [[ config.order, "asc" ]]
-            });
+            table.DataTable(config);
         });
     }
 

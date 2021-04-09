@@ -10,11 +10,13 @@ use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\ChannelType;
 use EMS\CoreBundle\Form\Form\TableType;
+use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\Channel\ChannelService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -29,16 +31,21 @@ final class ChannelController extends AbstractController
         $this->channelService = $channelService;
     }
 
+    public function ajaxDataTable(Request $request): Response
+    {
+        $table = $this->initTable();
+        $dataTableRequest = DataTableRequest::fromRequest($request);
+        $table->resetIterator($dataTableRequest);
+
+        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+            'dataTableRequest' => $dataTableRequest,
+            'table' => $table,
+        ], new JsonResponse());
+    }
+
     public function index(Request $request): Response
     {
-        $table = new EntityTable($this->channelService);
-        $table->addColumn('channel.index.column.label', 'label');
-        $table->addColumn('channel.index.column.name', 'name');
-        $table->addColumn('channel.index.column.alias', 'alias');
-        $table->addColumnDefinition(new BoolTableColumn('channel.index.column.public', 'public'));
-        $table->addItemGetAction('ems_core_channel_edit', 'channel.actions.edit', 'pencil');
-        $table->addItemPostAction('ems_core_channel_delete', 'channel.actions.delete', 'trash', 'channel.actions.delete_confirm');
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'channel.actions.delete_selected', 'channel.actions.delete_selected_confirm');
+        $table = $this->initTable();
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -95,5 +102,21 @@ final class ChannelController extends AbstractController
         $this->channelService->delete($channel);
 
         return $this->redirectToRoute('ems_core_channel_index');
+    }
+
+    private function initTable(): EntityTable
+    {
+        $table = new EntityTable($this->channelService, $this->generateUrl('ems_core_channel_ajax_data_table'));
+        $table->addColumn('table.index.column.loop_count', 'orderKey');
+        $table->addColumn('channel.index.column.label', 'label');
+        $table->addColumn('channel.index.column.name', 'name');
+        $table->addColumn('channel.index.column.alias', 'alias');
+        $table->addColumnDefinition(new BoolTableColumn('channel.index.column.public', 'public'));
+        $table->addItemGetAction('ems_core_channel_edit', 'channel.actions.edit', 'pencil');
+        $table->addItemPostAction('ems_core_channel_delete', 'channel.actions.delete', 'trash', 'channel.actions.delete_confirm');
+        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'channel.actions.delete_selected', 'channel.actions.delete_selected_confirm');
+        $table->setDefaultOrder('label');
+
+        return $table;
     }
 }

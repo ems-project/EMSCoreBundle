@@ -57,9 +57,11 @@ final class ActionService implements EntityServiceInterface
      */
     public function reorderByIds(array $ids): void
     {
+        $counter = 1;
         foreach ($this->templateRepository->getByIds(\array_keys($ids)) as $channel) {
-            $channel->setOrderKey($ids[$channel->getId()] ?? 0);
+            $channel->setOrderKey($counter);
             $this->templateRepository->create($channel);
+            ++$counter;
         }
     }
 
@@ -73,9 +75,13 @@ final class ActionService implements EntityServiceInterface
      *
      * @return Template[]
      */
-    public function get(int $from, int $size, $context = null): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
-        return $this->templateRepository->get($context, $from, $size);
+        if (!$context instanceof ContentType) {
+            throw new \RuntimeException('Unexpected non-ContentType object');
+        }
+
+        return $this->templateRepository->get($from, $size, $orderField, $orderDirection, $searchValue, $context);
     }
 
     public function getEntityName(): string
@@ -86,12 +92,12 @@ final class ActionService implements EntityServiceInterface
     /**
      * @param mixed $context
      */
-    public function count($context = null): int
+    public function count(string $searchValue = '', $context = null): int
     {
         if (!$context instanceof ContentType) {
             throw new \RuntimeException('Unexpected non-ContentType object');
         }
 
-        return $this->templateRepository->counter($context);
+        return $this->templateRepository->counter($searchValue, $context);
     }
 }

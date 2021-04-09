@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Core\User\UserList;
 
 /**
@@ -43,10 +44,11 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserRepos
         return new UserList($resultSet);
     }
 
-    public function countUsers(): int
+    public function countUsers(string $searchValue): int
     {
         $qb = $this->createQueryBuilder('user');
         $qb->select('count(user.id)');
+        $this->addSearchFilters($qb, $searchValue);
 
         return $qb->getQuery()->getSingleScalarResult();
     }
@@ -54,15 +56,31 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserRepos
     /**
      * @return array<mixed>
      */
-    public function get(int $from, int $size): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
     {
         $qb = $this->createQueryBuilder('user');
-        $qb
-            ->andWhere($qb->expr()->isNotNull('user.id'))
-            ->setFirstResult($from)
-            ->setMaxResults($size)
-            ->orderBy('user.created', 'desc');
+        $qb->setFirstResult($from)
+            ->setMaxResults($size);
+        $this->addSearchFilters($qb, $searchValue);
+
+        if (\in_array($orderField, ['username', 'displayName', 'emailNotification', 'email', 'enabled', 'lastLogin'])) {
+            $qb->orderBy(\sprintf('user.%s', $orderField), $orderDirection);
+        }
 
         return $qb->getQuery()->execute();
+    }
+
+    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    {
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('user.username', ':term'),
+                $qb->expr()->like('user.displayName', ':term'),
+                $qb->expr()->like('user.roles', ':term'),
+                $qb->expr()->like('user.email', ':term')
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.$searchValue.'%');
+        }
     }
 }

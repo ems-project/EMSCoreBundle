@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
-final class DatetimeTableColumn extends TableColumn
+class DatetimeTableColumn extends TableColumn
 {
     public function tableDataBlock(): string
     {

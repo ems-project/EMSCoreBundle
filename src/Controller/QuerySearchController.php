@@ -30,7 +30,6 @@ final class QuerySearchController extends AbstractController
 
     public function index(Request $request): Response
     {
-        
         $table = $this->initTable();
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -91,7 +90,6 @@ final class QuerySearchController extends AbstractController
 
     private function initTable(): EntityTable
     {
-
         $table = new EntityTable($this->querySearchService, $this->generateUrl('ems_core_query_search'));
         $table->addColumn('query_search.index.column.label', 'label');
         $table->addColumn('query_search.index.column.name', 'name');

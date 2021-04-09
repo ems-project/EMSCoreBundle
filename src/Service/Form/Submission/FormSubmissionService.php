@@ -124,7 +124,8 @@ final class FormSubmissionService implements EntityServiceInterface
             $data['instance'] = $formSubmission->getInstance();
             $data['locale'] = $formSubmission->getLocale();
             $data['created'] = $formSubmission->getCreated()->format('Y-m-d H:i:s');
-            $data['deadline'] = $formSubmission->getExpireDate()->format('Y-m-d');
+            $expireDate = $formSubmission->getExpireDate();
+            $data['deadline'] = null === $expireDate ? '' : $expireDate->format('Y-m-d');
 
             $sheetName = $formSubmission->getName();
             if (!\key_exists($sheetName, $sheets)) {

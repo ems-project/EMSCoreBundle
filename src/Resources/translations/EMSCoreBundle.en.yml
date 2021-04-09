@@ -603,6 +603,10 @@ form:
     hierarchical:
       error_with_document: 'It was impossible to update the document ems://object:%contenttype%:%ouuid% : %error_message%'
       reorganized: 'The %contenttype%''s documents have been reorganized with the view "%view_name%"'
+  data:
+    bool_table_collum:
+      false_value: 'disable'
+      true_value: 'enable'
 wysiwyg:
   invalid_config_format: 'Format not valid: %msg%'
 search:

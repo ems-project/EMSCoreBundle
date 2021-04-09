@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\TableType;
@@ -69,9 +70,11 @@ final class ActionController extends AbstractController
         }
 
         $table = new EntityTable($this->actionService, $contentType);
-        $table->addColumn('action.index.column.public', 'public', [true => 'fa fa-check-square-o', false => 'fa fa-square-o']);
-        $nameColumn = $table->addColumn('action.index.column.name', 'name');
-        $nameColumn->setIconProperty('icon');
+        $table->addColumnDefinition(new BoolTableColumn('action.index.column.public', 'public'));
+        $table->addColumn('action.index.column.name', 'name')
+            ->setItemIconCallback(function (Template $action) {
+                return $action->getIcon();
+            });
         $table->addColumn('action.index.column.type', 'renderOption');
         $table->addItemGetAction('ems_core_action_edit', 'action.actions.edit', 'pencil', ['contentType' => $contentType]);
         $table->addItemPostAction('ems_core_action_delete', 'action.actions.delete', 'trash', 'action.actions.delete_confirm', ['contentType' => $contentType->getId()]);

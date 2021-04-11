@@ -68,6 +68,8 @@ class GalleryViewType extends ViewType
             $search->getFilters()[0]->setField($view->getOptions()['imageField'].'.sha1');
             $search->getFilters()[0]->setBooleanClause('must');
         }
+        $search->setContentTypes([$view->getContentType()->getName()]);
+        $search->setEnvironments([$view->getContentType()->getEnvironment()->getName()]);
 
         $form = $formFactory->create(SearchFormType::class, $search, [
                 'method' => 'GET',
@@ -78,22 +80,15 @@ class GalleryViewType extends ViewType
 
         $search = $form->getData();
 
-        $body = $this->searchService->generateSearchBody($search);
+        $elasticaSearch = $this->searchService->generateSearch($search);
+        $elasticaSearch->setFrom(0);
+        $elasticaSearch->setSize(1000);
 
-        $searchQuery = [
-                'index' => $view->getContentType()->getEnvironment()->getAlias(),
-                'type' => $view->getContentType()->getName(),
-                'from' => 0,
-                'size' => 1000,
-                'body' => $body,
-        ];
-
-        if (isset($view->getOptions()['sourceFields'])) {
-            $searchQuery['_source'] = $view->getOptions()['sourceFields'];
+        $sourceFields = $view->getOptions()['sourceFields'] ?? null;
+        if (\is_string($sourceFields) && \strlen($sourceFields) > 0) {
+            $elasticaSearch->setSources(\preg_split(',', $sourceFields));
         }
-
-        $search = $this->elasticaService->convertElasticsearchSearch($searchQuery);
-        $resultSet = $this->elasticaService->search($search);
+        $resultSet = $this->elasticaService->search($elasticaSearch);
 
         return [
             'view' => $view,

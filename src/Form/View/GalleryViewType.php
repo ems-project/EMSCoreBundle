@@ -68,6 +68,12 @@ class GalleryViewType extends ViewType
             $search->getFilters()[0]->setField($view->getOptions()['imageField'].'.sha1');
             $search->getFilters()[0]->setBooleanClause('must');
         }
+        $search->setContentTypes([$view->getContentType()->getName()]);
+        $environment = $view->getContentType()->getEnvironment();
+        if (null === $environment) {
+            throw new \RuntimeException('Unexpected environment type');
+        }
+        $search->setEnvironments([$environment->getName()]);
 
         $form = $formFactory->create(SearchFormType::class, $search, [
                 'method' => 'GET',
@@ -78,22 +84,18 @@ class GalleryViewType extends ViewType
 
         $search = $form->getData();
 
-        $body = $this->searchService->generateSearchBody($search);
+        $elasticaSearch = $this->searchService->generateSearch($search);
+        $elasticaSearch->setFrom(0);
+        $elasticaSearch->setSize(1000);
 
-        $searchQuery = [
-                'index' => $view->getContentType()->getEnvironment()->getAlias(),
-                'type' => $view->getContentType()->getName(),
-                'from' => 0,
-                'size' => 1000,
-                'body' => $body,
-        ];
-
-        if (isset($view->getOptions()['sourceFields'])) {
-            $searchQuery['_source'] = $view->getOptions()['sourceFields'];
+        $sourceFields = $view->getOptions()['sourceFields'] ?? null;
+        if (\is_string($sourceFields) && \strlen($sourceFields) > 0) {
+            $source = \preg_split('/,/', $sourceFields);
+            if (\is_array($source)) {
+                $elasticaSearch->setSources($source);
+            }
         }
-
-        $search = $this->elasticaService->convertElasticsearchSearch($searchQuery);
-        $resultSet = $this->elasticaService->search($search);
+        $resultSet = $this->elasticaService->search($elasticaSearch);
 
         return [
             'view' => $view,

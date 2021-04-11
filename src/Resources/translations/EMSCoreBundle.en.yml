@@ -736,6 +736,9 @@ log:
     created: 'The analyzer %analyzer_name% has been created'
     updated: 'The analyzer %analyzer_name% has been updated'
   view:
+    keywords:
+      warning:
+        bucket_not_found: 'Bucket %bucketPath% not found'
     calendar:
       from_date_is_missing: 'From date is missing!'
       document_not_found: 'The document ems://object:%contenttype%:%ouuid% is missing'

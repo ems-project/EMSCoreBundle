@@ -69,7 +69,11 @@ class GalleryViewType extends ViewType
             $search->getFilters()[0]->setBooleanClause('must');
         }
         $search->setContentTypes([$view->getContentType()->getName()]);
-        $search->setEnvironments([$view->getContentType()->getEnvironment()->getName()]);
+        $environment = $view->getContentType()->getEnvironment();
+        if (null === $environment) {
+            throw new \RuntimeException('Unexpected environment type');
+        }
+        $search->setEnvironments([$environment->getName()]);
 
         $form = $formFactory->create(SearchFormType::class, $search, [
                 'method' => 'GET',
@@ -86,7 +90,10 @@ class GalleryViewType extends ViewType
 
         $sourceFields = $view->getOptions()['sourceFields'] ?? null;
         if (\is_string($sourceFields) && \strlen($sourceFields) > 0) {
-            $elasticaSearch->setSources(\preg_split(',', $sourceFields));
+            $source = \preg_split('/,/', $sourceFields);
+            if (\is_array($source)) {
+                $elasticaSearch->setSources($source);
+            }
         }
         $resultSet = $this->elasticaService->search($elasticaSearch);
 

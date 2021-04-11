@@ -70,7 +70,7 @@ class AssetController extends AbstractController
         return $this->processor->getStreamedResponse($request, $config, $filename, false);
     }
 
-    private function closeSession(Request $request)
+    private function closeSession(Request $request): void
     {
         if (!$request->hasSession()) {
             return;

@@ -18,22 +18,24 @@ use Exception;
 use Psr\Http\Message\StreamInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use ZipStream\ZipStream;
 
-class FileService
+class FileService implements EntityServiceInterface
 {
-    /** @var Registry */
-    private $doctrine;
-    /** @var StorageManager */
-    private $storageManager;
-    /** @var Processor */
-    private $processor;
+    private Registry $doctrine;
+    private StorageManager $storageManager;
+    private Processor $processor;
+    private UploadedAssetRepository $uploadedAssetRepository;
 
-    public function __construct(Registry $doctrine, StorageManager $storageManager, Processor $processor)
+    public function __construct(Registry $doctrine, StorageManager $storageManager, Processor $processor, UploadedAssetRepository $uploadedAssetRepository)
     {
         $this->doctrine = $doctrine;
         $this->storageManager = $storageManager;
         $this->processor = $processor;
+        $this->uploadedAssetRepository = $uploadedAssetRepository;
     }
 
     public function getBase64(string $hash): ?string
@@ -87,15 +89,82 @@ class FileService
         }
     }
 
-    public function getStreamResponse(string $sha1, string $disposition, Request $request): Response
+    public function getStreamResponse(string $hash, string $disposition, Request $request): Response
     {
-        $config = $this->processor->configFactory($sha1, [
-            EmsFields::ASSET_CONFIG_MIME_TYPE => $request->query->get('type', 'application/octet-stream'),
+        if ($request->query->has('type') && $request->query->has('name')) {
+            $lastUploaded = null;
+        } else {
+            $lastUploaded = $this->uploadedAssetRepository->getLastUploadedByHash($hash);
+        }
+        $config = $this->processor->configFactory($hash, [
+            EmsFields::ASSET_CONFIG_MIME_TYPE => $request->query->get('type', null !== $lastUploaded ? $lastUploaded->getType() : 'application/octet-stream'),
             EmsFields::ASSET_CONFIG_DISPOSITION => $disposition,
         ]);
-        $filename = $request->query->get('name', 'filename');
+        $filename = $request->query->get('name', null !== $lastUploaded ? $lastUploaded->getName() : 'filename');
 
         return $this->processor->getStreamedResponse($request, $config, $filename, true);
+    }
+
+    public function removeFileEntity(string $hash): void
+    {
+        $this->uploadedAssetRepository->removeByHash($hash);
+    }
+
+    /**
+     * @param array<string> $fileIds
+     *
+     * @throws \Exception
+     */
+    public function createDownloadForMultiple(array $fileIds): StreamedResponse
+    {
+        $files = $this->uploadedAssetRepository->findByIds($fileIds);
+
+        $response = new StreamedResponse(function () use ($files) {
+            $zip = new ZipStream('archive.zip');
+            $filenames = [];
+
+            foreach ($files as $file) {
+                $filename = $file->getName();
+                $pathinfo = \pathinfo($filename);
+                while (\in_array($filename, $filenames, true)) {
+                    $filename = \sprintf('%s-%s.%s', $pathinfo['filename'] ?? $filename, \bin2hex(\random_bytes(3)), $pathinfo['extension'] ?? '');
+                }
+                $filenames[] = $filename;
+                $zip->addFile($filename, \strval($this->getResource($file->getSha1())));
+            }
+
+            $zip->finish();
+        });
+
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'archive.zip')
+        );
+
+        return $response;
+    }
+
+    /**
+     * @param array<string> $ids
+     */
+    public function removeSingleFileEntity(array $ids): void
+    {
+        foreach ($ids as $id) {
+            $this->uploadedAssetRepository->removeById($id);
+        }
+    }
+
+    /**
+     * @param array<string> $ids
+     */
+    public function hardRemoveFiles(array $ids): void
+    {
+        $files = $this->uploadedAssetRepository->findByIds($ids);
+        foreach ($files as $file) {
+            $this->uploadedAssetRepository->removeByHash($file->getSha1());
+            $this->storageManager->remove($file->getSha1());
+        }
     }
 
     /**
@@ -158,7 +227,7 @@ class FileService
         ]);
 
         if (null === $uploadedAsset) {
-            $uploadedAsset = new UploadedAsset();
+            $uploadedAsset = new UploadedAsset($this->storageManager);
             $uploadedAsset->setSha1($hash);
             $uploadedAsset->setUser($user);
             $uploadedAsset->setSize($size);
@@ -276,5 +345,25 @@ class FileService
         if ($newHash !== $hash) {
             throw new HashMismatchException($hash, $newHash);
         }
+    }
+
+    public function isSortable(): bool
+    {
+        return false;
+    }
+
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    {
+        return $this->uploadedAssetRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'UploadedAsset';
+    }
+
+    public function count(string $searchValue = '', $context = null): int
+    {
+        return $this->uploadedAssetRepository->searchCount($searchValue);
     }
 }

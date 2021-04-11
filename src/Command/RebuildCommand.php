@@ -39,10 +39,10 @@ class RebuildCommand extends EmsCommand
     private $mapping;
     /** @var AliasService */
     private $aliasService;
-    /** @var int */
+    /** @var string */
     private $defaultBulkSize;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId, int $defaultBulkSize)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId, string $defaultBulkSize)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;

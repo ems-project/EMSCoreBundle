@@ -42,6 +42,26 @@ class FileController extends AbstractController
     }
 
     /**
+     * @Route("/admin/file/{id}/soft-delete" , name="ems_file_soft_delete", methods={"POST","HEAD"})
+     */
+    public function softDeleteFileAction(string $id, FileService $fileService): Response
+    {
+        $fileService->removeSingleFileEntity([$id]);
+
+        return $this->redirectToRoute('ems_core_uploaded_file_index');
+    }
+
+    /**
+     * @Route("/admin/file/{id}/hard-delete" , name="ems_file_hard_delete", methods={"POST","HEAD"})
+     */
+    public function hardDeleteFileAction(string $id, FileService $fileService): Response
+    {
+        $fileService->hardRemoveFiles([$id]);
+
+        return $this->redirectToRoute('ems_core_uploaded_file_index');
+    }
+
+    /**
      * @Route("/data/file/extract/forced/{sha1}.{_format}" , name="ems_file_extract_forced", defaults={"_format" = "json"}, methods={"GET","HEAD"})
      */
     public function extractFileContentForced(AssetExtractorService $assetExtractorService, Request $request, string $sha1): Response

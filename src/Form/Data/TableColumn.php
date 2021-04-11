@@ -4,26 +4,20 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
-final class TableColumn
+class TableColumn
 {
     private string $titleKey;
     private string $attribute;
-    /** @var array<mixed, string> */
-    private array $valueToIconMapping;
-    private ?string $routeProperty = null;
-    private ?string $routePath = null;
-    private ?string $routeTarget = '_blank';
-    private ?string $iconProperty = null;
-    private ?bool $dateTimeProperty = null;
+    private ?string $routeName = null;
+    private ?\Closure $routeParametersCallback = null;
+    private ?string $routeTarget = null;
+    private ?string $iconClass = null;
+    private ?\Closure $itemIconCallback = null;
 
-    /**
-     * @param array<mixed, string> $valueToIconMapping
-     */
-    public function __construct(string $titleKey, string $attribute, array $valueToIconMapping = [])
+    public function __construct(string $titleKey, string $attribute)
     {
         $this->titleKey = $titleKey;
         $this->attribute = $attribute;
-        $this->valueToIconMapping = $valueToIconMapping;
     }
 
     public function getTitleKey(): string
@@ -36,37 +30,30 @@ final class TableColumn
         return $this->attribute;
     }
 
+    public function setRoute(string $name, ?\Closure $callback = null, ?string $target = null): void
+    {
+        $this->routeName = $name;
+        $this->routeParametersCallback = $callback;
+        $this->routeTarget = $target;
+    }
+
+    public function getRouteName(): ?string
+    {
+        return $this->routeName;
+    }
+
     /**
-     * @return array<mixed, string>
+     * @param mixed $data
+     *
+     * @return array<string, mixed>
      */
-    public function getValueToIconMapping(): array
+    public function getRouteProperties($data): array
     {
-        return $this->valueToIconMapping;
-    }
+        if (null === $this->routeParametersCallback) {
+            return [];
+        }
 
-    public function setRoutePath(string $routePath): void
-    {
-        $this->routePath = $routePath;
-    }
-
-    public function setRouteProperty(string $routeProperty): void
-    {
-        $this->routeProperty = $routeProperty;
-    }
-
-    public function getRoutePath(): ?string
-    {
-        return $this->routePath;
-    }
-
-    public function getRouteProperty(): ?string
-    {
-        return $this->routeProperty;
-    }
-
-    public function setRouteTarget(?string $target): ?string
-    {
-        return $this->routeTarget = $target;
+        return $this->routeParametersCallback->call($this, $data);
     }
 
     public function getRouteTarget(): ?string
@@ -74,23 +61,49 @@ final class TableColumn
         return $this->routeTarget;
     }
 
-    public function getIconProperty(): ?string
+    public function setItemIconCallback(\Closure $callback): void
     {
-        return $this->iconProperty;
+        $this->itemIconCallback = $callback;
     }
 
-    public function setIconProperty(?string $iconProperty): void
+    /**
+     * @param mixed $data
+     */
+    public function getItemIconClass($data): ?string
     {
-        $this->iconProperty = $iconProperty;
+        if (null === $this->itemIconCallback) {
+            return null;
+        }
+
+        return $this->itemIconCallback->call($this, $data);
     }
 
-    public function getDateTimeProperty(): ?bool
+    public function setIconClass(string $iconClass): void
     {
-        return $this->dateTimeProperty;
+        if (\strlen($iconClass) > 0) {
+            $this->iconClass = $iconClass;
+        } else {
+            $this->iconClass = null;
+        }
     }
 
-    public function setDateTimeProperty(?bool $dateTimeProperty): void
+    public function getIconClass(): ?string
     {
-        $this->dateTimeProperty = $dateTimeProperty;
+        return $this->iconClass;
+    }
+
+    public function tableDataBlock(): string
+    {
+        return 'emsco_form_table_column_data';
+    }
+
+    public function tableDataValueBlock(): string
+    {
+        return 'emsco_form_table_column_data_value';
+    }
+
+    public function getOrderable(): bool
+    {
+        return true;
     }
 }

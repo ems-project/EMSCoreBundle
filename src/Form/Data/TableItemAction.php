@@ -18,11 +18,12 @@ final class TableItemAction
     private $labelKey;
     /** @var string|null */
     private $messageKey;
+    private bool $dynamic;
 
     /**
      * @param array<string, mixed> $routeParameters
      */
-    private function __construct(bool $post, string $route, string $labelKey, string $icon, ?string $messageKey, array $routeParameters)
+    private function __construct(bool $post, string $route, string $labelKey, string $icon, ?string $messageKey, array $routeParameters, bool $dynamic = false)
     {
         $this->post = $post;
         $this->route = $route;
@@ -30,6 +31,7 @@ final class TableItemAction
         $this->labelKey = $labelKey;
         $this->icon = $icon;
         $this->messageKey = $messageKey;
+        $this->dynamic = $dynamic;
     }
 
     /**
@@ -46,6 +48,22 @@ final class TableItemAction
     public static function getAction(string $route, string $labelKey, string $icon, array $routeParameters = []): TableItemAction
     {
         return new self(false, $route, $labelKey, $icon, null, $routeParameters);
+    }
+
+    /**
+     * @param array<string, string> $routeParameters
+     */
+    public static function postDynamicAction(string $route, string $labelKey, string $icon, string $messageKey, array $routeParameters = []): TableItemAction
+    {
+        return new self(true, $route, $labelKey, $icon, $messageKey, $routeParameters, true);
+    }
+
+    /**
+     * @param array<string, string> $routeParameters
+     */
+    public static function getDynamicAction(string $route, string $labelKey, string $icon, array $routeParameters = []): TableItemAction
+    {
+        return new self(false, $route, $labelKey, $icon, null, $routeParameters, true);
     }
 
     public function isPost(): bool
@@ -79,5 +97,15 @@ final class TableItemAction
     public function getMessageKey(): ?string
     {
         return $this->messageKey;
+    }
+
+    public function isDynamic(): bool
+    {
+        return $this->dynamic;
+    }
+
+    public function setDynamic(bool $dynamic): void
+    {
+        $this->dynamic = $dynamic;
     }
 }

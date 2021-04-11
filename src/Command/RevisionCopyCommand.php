@@ -78,7 +78,7 @@ final class RevisionCopyCommand extends Command implements CommandInterface
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Bulk size',
-                25
+                '25'
             );
     }
 

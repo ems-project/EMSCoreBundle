@@ -55,9 +55,12 @@ class AssetController extends AbstractController
             throw new \RuntimeException('Unexpected asset config type');
         }
 
+        if (!isset($assetConfig[EmsFields::ASSET_CONFIG_TYPE])) {
+            $assetConfig[EmsFields::ASSET_CONFIG_TYPE] = EmsFields::ASSET_CONFIG_TYPE_IMAGE;
+        }
         $filename = $processor;
         $quality = \intval($assetConfig[EmsFields::ASSET_CONFIG_QUALITY] ?? 0);
-        if (EmsFields::ASSET_CONFIG_TYPE_IMAGE === ($assetConfig[EmsFields::ASSET_CONFIG_TYPE] ?? null) && !isset($assetConfig[EmsFields::ASSET_CONFIG_MIME_TYPE])) {
+        if (EmsFields::ASSET_CONFIG_TYPE_IMAGE === $assetConfig[EmsFields::ASSET_CONFIG_TYPE] && !isset($assetConfig[EmsFields::ASSET_CONFIG_MIME_TYPE])) {
             $assetConfig[EmsFields::ASSET_CONFIG_MIME_TYPE] = 0 === $quality ? 'image/png' : 'image/jpeg';
         }
         if (EmsFields::ASSET_CONFIG_TYPE_IMAGE === ($assetConfig[EmsFields::ASSET_CONFIG_TYPE] ?? null)) {

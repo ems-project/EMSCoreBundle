@@ -99,6 +99,10 @@ class UploadedFileController extends AbstractController
         $table = new EntityTable($this->fileService, $this->generateUrl('ems_core_uploaded_file_ajax'));
         $table->addColumn('uploaded-file.index.column.name', 'name')
             ->setRoute('ems_file_download', function (UploadedAsset $data) {
+                if (!$data->getAvailable()) {
+                    return null;
+                }
+
                 return [
                     'sha1' => $data->getSha1(),
                     'type' => $data->getType(),

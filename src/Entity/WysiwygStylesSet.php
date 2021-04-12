@@ -62,7 +62,12 @@ class WysiwygStylesSet
      *
      * @ORM\Column(name="format_tags", type="string", length=255, nullable=true)
      */
-    private $formatTags;
+    private $formatTags = 'p;h1;h2;h3;h4;h5;h6;pre;address;div';
+
+    /**
+     * @ORM\Column(name="table_default_css", type="string", length=255, nullable=false, options={"default" : "table table-bordered"})
+     */
+    private string $tableDefaultCss = 'table table-border';
 
     /**
      * @var string|null
@@ -286,6 +291,18 @@ class WysiwygStylesSet
     public function setSaveDir(?string $saveDir): WysiwygStylesSet
     {
         $this->saveDir = $saveDir;
+
+        return $this;
+    }
+
+    public function getTableDefaultCss(): string
+    {
+        return $this->tableDefaultCss;
+    }
+
+    public function setTableDefaultCss(?string $tableDefaultCss): WysiwygStylesSet
+    {
+        $this->tableDefaultCss = $tableDefaultCss ?? '';
 
         return $this;
     }

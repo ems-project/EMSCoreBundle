@@ -308,6 +308,13 @@ function addEventListeners(target){
         }
 
 
+
+        let tableDefaultCss = $( this ).attr('data-table-default-css');
+        if(typeof tableDefaultCss == 'undefined'){
+            tableDefaultCss = 'table table-bordered';
+        }
+
+
         ckconfig.height = height;
         ckconfig.div_wrapTable = 'true';
 
@@ -352,7 +359,7 @@ function addEventListeners(target){
                 const advancedTab = dialogDefinition.getContents( 'advanced' );
 
                 const advCSSClasses = advancedTab.get( 'advCSSClasses' );
-                advCSSClasses['default'] = "table table-bordered";
+                advCSSClasses['default'] = tableDefaultCss;
 
             }
         });

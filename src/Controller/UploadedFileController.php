@@ -113,6 +113,8 @@ class UploadedFileController extends AbstractController
         $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.created', 'created'));
         $table->addColumnDefinition(new UserTableColumn('uploaded-file.index.column.username', 'user'));
         $table->addColumnDefinition(new BytesTableColumn('uploaded-file.index.column.size', 'size'));
+        $table->addColumnDefinition(new BoolTableColumn('uploaded-file.index.column.hidden', 'hidden'));
+        $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.head_last', 'headLast'));
         $table->addColumn('uploaded-file.index.column.type', 'type');
         $table->addColumn('uploaded-file.index.column.sha1', 'sha1');
 

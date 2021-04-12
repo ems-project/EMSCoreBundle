@@ -43,25 +43,22 @@ final class HeadAssetCommand extends Command
 
         $counter = $this->fileService->count();
         $this->io->progressStart($counter);
-        $found = $notFound = $from = 0;
+        $found = $from = 0;
         while ($from < $counter) {
             foreach ($this->fileService->get($from, 100, 'created', 'asc', '') as $assetUpload) {
                 if (!$assetUpload instanceof UploadedAsset) {
                     throw new \RuntimeException('Unexpected UploadedAsset type');
                 }
-                $headIn = $this->fileService->headIn($assetUpload);
-                if (\count($headIn) > 0) {
+                if (\count($this->fileService->headIn($assetUpload)) > 0) {
                     ++$found;
-                } else {
-                    ++$notFound;
                 }
                 ++$from;
                 $this->io->progressAdvance();
             }
         }
         $this->io->progressFinish();
-        if (0 !== $notFound) {
-            $this->io->warning(\sprintf('%d assets have not been found from %d', $notFound, $counter));
+        if ($counter !== $found) {
+            $this->io->warning(\sprintf('%d assets have not been found from %d', $counter - $found, $counter));
         } else {
             $this->io->success(\sprintf('%d assets have been found', $counter));
         }

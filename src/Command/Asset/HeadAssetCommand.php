@@ -14,6 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class HeadAssetCommand extends Command
 {
+    protected static $defaultName = 'ems:asset:head';
     protected FileService $fileService;
     protected LoggerInterface $logger;
     private SymfonyStyle $io;
@@ -27,9 +28,7 @@ final class HeadAssetCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:asset:head')
-            ->setDescription('Loop over all known uploaded assets and update the seen information if the file is connected');
+        $this->setDescription('Loop over all known uploaded assets and update the seen information if the file is connected');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void

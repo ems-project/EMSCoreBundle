@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller;
 
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\Form;
 use EMS\CoreBundle\Entity\QuerySearch;
+use EMS\CoreBundle\Form\Form\TableType;
+use Symfony\Component\Form\SubmitButton;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
+use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Form\Form\QuerySearchType;
-use EMS\CoreBundle\Form\Form\TableType;
-use EMS\CoreBundle\Service\QuerySearchService;
-use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
+use EMS\CoreBundle\Service\QuerySearchService;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class QuerySearchController extends AbstractController
 {
@@ -26,6 +28,18 @@ final class QuerySearchController extends AbstractController
     {
         $this->logger = $logger;
         $this->querySearchService = $querySearchService;
+    }
+
+    public function ajaxDataTable(Request $request): Response
+    {
+        $table = $this->initTable();
+        $dataTableRequest = DataTableRequest::fromRequest($request);
+        $table->resetIterator($dataTableRequest);
+
+        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+            'dataTableRequest' => $dataTableRequest,
+            'table' => $table,
+        ], new JsonResponse());
     }
 
     public function index(Request $request): Response

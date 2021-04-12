@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Asset;
 
+use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Service\FileService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -39,6 +40,31 @@ final class HeadAssetCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->title('Update asset\'s seen information');
+
+        $counter = $this->fileService->count();
+        $this->io->progressStart($counter);
+        $found = $notFound = $from = 0;
+        while ($from < $counter) {
+            foreach ($this->fileService->get($from, 100, 'created', 'asc', '') as $assetUpload) {
+                if (!$assetUpload instanceof UploadedAsset) {
+                    throw new \RuntimeException('Unexpected UploadedAsset type');
+                }
+                $headIn = $this->fileService->headIn($assetUpload);
+                if (\count($headIn) > 0) {
+                    ++$found;
+                } else {
+                    ++$notFound;
+                }
+                ++$from;
+                $this->io->progressAdvance();
+            }
+        }
+        $this->io->progressFinish();
+        if (0 !== $notFound) {
+            $this->io->warning(\sprintf('%d assets have not been found from %d', $notFound, $counter));
+        } else {
+            $this->io->success(\sprintf('%d assets have been found', $counter));
+        }
 
         return 0;
     }

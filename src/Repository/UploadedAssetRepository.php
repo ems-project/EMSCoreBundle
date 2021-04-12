@@ -202,4 +202,10 @@ class UploadedAssetRepository extends EntityRepository
                 ->setParameter(':term', '%'.$searchValue.'%');
         }
     }
+
+    public function update(UploadedAsset $UploadedAsset): void
+    {
+        $this->getEntityManager()->persist($UploadedAsset);
+        $this->getEntityManager()->flush();
+    }
 }

@@ -91,6 +91,7 @@ class WysiwygFieldType extends DataFieldType
             if (null !== $assets && \is_string($hash)) {
                 $this->assetRuntime->unzip($hash, $styleSet->getSaveDir() ?? 'bundles/emsch_assets');
             }
+            $attr['data-table-default-css'] = $styleSet->getTableDefaultCss();
         }
 
         if (isset($options['language'])) {

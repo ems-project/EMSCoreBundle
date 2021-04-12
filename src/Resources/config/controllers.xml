@@ -67,5 +67,10 @@
             <argument type="service" id="ems.service.action" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\AssetController" public="true">
+            <argument type="service" id="ems_common.storage.processor" />
+            <argument>%ems_core.asset_config%</argument>
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

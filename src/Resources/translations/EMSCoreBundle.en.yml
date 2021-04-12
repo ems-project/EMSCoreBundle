@@ -426,7 +426,7 @@ uploaded-file:
       name: 'File name'
       sha1: 'Hash signature'
       type: 'Mime type'
-      username: 'Username'
+      username: 'By'
       size: 'File size'
   action:
     download_selected: 'Download selected'

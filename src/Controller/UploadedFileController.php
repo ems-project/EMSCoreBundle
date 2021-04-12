@@ -97,6 +97,7 @@ class UploadedFileController extends AbstractController
     private function initTable(): EntityTable
     {
         $table = new EntityTable($this->fileService, $this->generateUrl('ems_core_uploaded_file_ajax'));
+        $table->addColumnDefinition(new BoolTableColumn('uploaded-file.index.column.available', 'available'));
         $table->addColumn('uploaded-file.index.column.name', 'name')
             ->setRoute('ems_file_download', function (UploadedAsset $data) {
                 if (!$data->getAvailable()) {
@@ -110,11 +111,10 @@ class UploadedFileController extends AbstractController
                 ];
             });
         $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.created', 'created'));
-        $table->addColumnDefinition(new BoolTableColumn('uploaded-file.index.column.available', 'available'));
-        $table->addColumn('uploaded-file.index.column.sha1', 'sha1');
-        $table->addColumn('uploaded-file.index.column.type', 'type');
         $table->addColumnDefinition(new UserTableColumn('uploaded-file.index.column.username', 'user'));
         $table->addColumnDefinition(new BytesTableColumn('uploaded-file.index.column.size', 'size'));
+        $table->addColumn('uploaded-file.index.column.type', 'type');
+        $table->addColumn('uploaded-file.index.column.sha1', 'sha1');
 
         $table->addDynamicItemPostAction('ems_file_soft_delete', 'uploaded-file.action.soft-delete', 'minus-square', 'uploaded-file.soft-delete-confirm', ['id' => 'id']);
         $table->addDynamicItemPostAction('ems_file_hard_delete', 'uploaded-file.action.hard-delete', 'trash', 'uploaded-file.hard-delete-confirm', ['id' => 'id']);

@@ -62,7 +62,7 @@ class WysiwygStylesSet
      *
      * @ORM\Column(name="format_tags", type="string", length=255, nullable=true)
      */
-    private $formatTags;
+    private $formatTags = 'p;h1;h2;h3;h4;h5;h6;pre;address;div';
 
     /**
      * @ORM\Column(name="table_default_css", type="string", length=255, nullable=false, options={"default" : "table table-bordered"})

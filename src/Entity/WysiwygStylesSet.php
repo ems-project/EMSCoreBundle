@@ -65,6 +65,11 @@ class WysiwygStylesSet
     private $formatTags;
 
     /**
+     * @ORM\Column(name="table_default_css", type="string", length=255, nullable=false, options={"default" : "table table-bordered"})
+     */
+    private string $tableDefaultCss = 'table table-border';
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="content_css", type="string", length=2048, nullable=true)
@@ -286,6 +291,18 @@ class WysiwygStylesSet
     public function setSaveDir(?string $saveDir): WysiwygStylesSet
     {
         $this->saveDir = $saveDir;
+
+        return $this;
+    }
+
+    public function getTableDefaultCss(): string
+    {
+        return $this->tableDefaultCss;
+    }
+
+    public function setTableDefaultCss(?string $tableDefaultCss): WysiwygStylesSet
+    {
+        $this->tableDefaultCss = $tableDefaultCss ?? '';
 
         return $this;
     }

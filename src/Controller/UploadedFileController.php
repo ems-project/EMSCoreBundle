@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Controller;
 
 use EMS\CoreBundle\Entity\UploadedAsset;
+use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\BytesTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
@@ -105,6 +106,7 @@ class UploadedFileController extends AbstractController
                 ];
             });
         $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.created', 'created'));
+        $table->addColumnDefinition(new BoolTableColumn('uploaded-file.index.column.available', 'available'));
         $table->addColumn('uploaded-file.index.column.sha1', 'sha1');
         $table->addColumn('uploaded-file.index.column.type', 'type');
         $table->addColumnDefinition(new UserTableColumn('uploaded-file.index.column.username', 'user'));

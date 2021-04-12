@@ -563,6 +563,9 @@ contenttype:
   action:
     update_from_json: 'Update from JSON'
 form:
+  wysiwyg_style_set:
+    table_default_css:
+      title: 'Default Table class attribute'
   form_field:
     wysiwyg:
       format_tags:

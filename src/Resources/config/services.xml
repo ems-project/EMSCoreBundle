@@ -30,6 +30,7 @@
         </service>
         <service id="ems.service.datatable" alias="EMS\CoreBundle\Service\DatatableService"/>
         <service id="EMS\CoreBundle\Service\DatatableService">
+            <argument type="service" id="ems_common.service.elastica"/>
         </service>
         <service id="ems.twig.runtime.datatable" alias="EMS\CoreBundle\Twig\DatatableRuntime"/>
         <service id="EMS\CoreBundle\Twig\DatatableRuntime">

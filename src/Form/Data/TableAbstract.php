@@ -192,7 +192,7 @@ abstract class TableAbstract implements TableInterface
      */
     public function getFrontendOptions(): array
     {
-        $columnIndex = 0;
+        $columnIndex = null;
         if ($this->supportsTableActions()) {
             $columnIndex = 1;
         }
@@ -206,9 +206,11 @@ abstract class TableAbstract implements TableInterface
                 ++$counter;
             }
         }
-        $options = [
-            'order' => [[$columnIndex, $this->orderDirection]],
-        ];
+        $options = [];
+
+        if (null !== $columnIndex) {
+            $options['order'] = [[$columnIndex, $this->orderDirection]];
+        }
 
         if (null !== $this->ajaxUrl) {
             $options = \array_merge($options, [

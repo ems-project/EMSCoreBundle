@@ -1,6 +1,10 @@
 {% use "@EMSCore/form/fields.html.twig" %}
 {% trans_default_domain 'EMSCoreBundle' %}
 
+{% block emsco_form_table_column_data_value_template %}
+    Demo
+{% endblock emsco_form_table_column_data_value_template %}
+
 {% block emsco_form_table_column_data_value_data_links %}
     {%- set value = attribute(line.data, column.attribute)|default([]) -%}
     {%- if value is iterable -%}

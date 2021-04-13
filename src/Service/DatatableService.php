@@ -28,6 +28,17 @@ final class DatatableService
      */
     public function generateDatatable(array $environmentNames, array $contentTypeNames, array $jsonConfig): ElasticaTable
     {
+        $indexes = $this->convertToIndexes($environmentNames);
+
+        return ElasticaTable::fromConfig($this->elasticaService, $indexes, $contentTypeNames, $jsonConfig);
+    }
+
+    /**
+     * @param string[] $environmentNames
+     * @return string[]
+     */
+    public function convertToIndexes(array $environmentNames): array
+    {
         $indexes = [];
         foreach ($environmentNames as $name) {
             $environment = $this->environmentService->getByName($name);
@@ -38,6 +49,6 @@ final class DatatableService
             $indexes[] = $environment->getAlias();
         }
 
-        return ElasticaTable::fromConfig($this->elasticaService, $indexes, $contentTypeNames, $jsonConfig);
+        return $indexes;
     }
 }

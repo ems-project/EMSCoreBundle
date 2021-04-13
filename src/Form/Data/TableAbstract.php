@@ -210,12 +210,11 @@ abstract class TableAbstract implements TableInterface
             'order' => [[$columnIndex, $this->orderDirection]],
         ];
 
-        $ajaxUrl = $this->getAjaxUrl();
-        if (null !== $ajaxUrl) {
+        if (null !== $this->ajaxUrl) {
             $options = \array_merge($options, [
                 'processing' => true,
                 'serverSide' => true,
-                'ajax' => $ajaxUrl,
+                'ajax' => $this->ajaxUrl,
             ]);
         }
 
@@ -224,7 +223,7 @@ abstract class TableAbstract implements TableInterface
 
     public function getAjaxUrl(): ?string
     {
-        return null;
+        return $this->ajaxUrl;
     }
 
     public function getOrderField(): ?string

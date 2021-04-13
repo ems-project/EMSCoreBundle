@@ -7,6 +7,9 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use EMS\CoreBundle\Entity\QuerySearch;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\QueryBuilder;
+use EMS\CoreBundle\Exception\NotFoundException;
 
 final class QuerySearchRepository extends ServiceEntityRepository
 {
@@ -57,14 +60,31 @@ final class QuerySearchRepository extends ServiceEntityRepository
     /**
      * @return QuerySearch[]
      */
-    public function get(int $from, int $size): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
     {
-        $query = $this->createQueryBuilder('c')
-            ->orderBy('c.orderKey', 'ASC')
+        $qb = $this->createQueryBuilder('c')
             ->setFirstResult($from)
-            ->setMaxResults($size)
-            ->getQuery();
+            ->setMaxResults($size);
+        $this->addSearchFilters($qb, $searchValue);
 
-        return $query->execute();
+        if (\in_array($orderField, ['label', 'name'])) {
+            $qb->orderBy(\sprintf('c.%s', $orderField), $orderDirection);
+        } else {
+            $qb->orderBy('c.orderKey', $orderDirection);
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
+    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    {
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('c.label', ':term'),
+                $qb->expr()->like('c.name', ':term')
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.$searchValue.'%');
+        }
     }
 }

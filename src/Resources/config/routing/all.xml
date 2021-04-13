@@ -12,4 +12,6 @@
             prefix="/admin/uploaded-file" />
     <import resource="@EMSCoreBundle/Resources/config/routing/asset.xml"
             prefix="/bundles" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/query-search.xml"
+            prefix="/query-search" />
 </routes>

@@ -4,20 +4,24 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller;
 
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\Form;
+use EMS\CoreBundle\Service\Mapping;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\QuerySearch;
+use EMS\CoreBundle\Form\Form\TableType;
+use Symfony\Component\Form\SubmitButton;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
-use EMS\CoreBundle\Form\Form\QuerySearchType;
-use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
-use EMS\CoreBundle\Service\QuerySearchService;
-use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\SubmitButton;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use EMS\CoreBundle\Form\Form\QuerySearchType;
 use Symfony\Component\HttpFoundation\Request;
+use EMS\CoreBundle\Service\QuerySearchService;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class QuerySearchController extends AbstractController
 {
@@ -67,7 +71,7 @@ final class QuerySearchController extends AbstractController
             return $this->redirectToRoute('ems_core_query_search_index');
         }
 
-        return $this->render('@EMSCore/query_search/index.html.twig', [
+        return $this->render('@EMSCore/query-search/index.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -76,10 +80,10 @@ final class QuerySearchController extends AbstractController
     {
         $querySearch = new QuerySearch();
 
-        return $this->edit($request, $querySearch, '@EMSCore/query_search/add.html.twig');
+        return $this->edit($request, $querySearch, '@EMSCore/query-search/add.html.twig');
     }
 
-    public function edit(Request $request, QuerySearch $querySearch, string $view = '@EMSCore/query_search/edit.html.twig'): Response
+    public function edit(Request $request, QuerySearch $querySearch, string $view = '@EMSCore/query-search/edit.html.twig'): Response
     {
         $form = $this->createForm(QuerySearchType::class, $querySearch);
         $form->handleRequest($request);
@@ -102,12 +106,45 @@ final class QuerySearchController extends AbstractController
         return $this->redirectToRoute('ems_core_query_search_index');
     }
 
+    // public function viewAction(int $id, Mapping $mapping)
+    // {
+    //     /** @var EntityManager $em */
+    //     $em = $this->getDoctrine()->getManager();
+
+    //     /** @var QuerySearchRepository $repository */
+    //     $repository = $em->getRepository('EMSCoreBundle:QuerySearch');
+
+    //     /** @var QuerySearch|null $querySearch */
+    //     $querySearch = $repository->find($id);
+
+    //     if (null === $querySearch) {
+    //         throw new NotFoundHttpException('Unknow environment');
+    //     }
+
+    //     try {
+    //         $info = $mapping->getMapping([$querySearch->getName()]);
+    //     } catch (NotFoundException $e) {
+    //         $this->getLogger()->error('log.environment.alias_missing', [
+    //             EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+    //             EmsFields::LOG_EXCEPTION_FIELD => $e,
+    //             EmsFields::LOG_ENVIRONMENT_FIELD => $querySearch->getName()
+    //         ]);
+    //         $info = false;
+    //     }
+
+    //     return $this->render('@EMSCore/query-search/view.html.twig', [
+    //             'querySearch' => $querySearch,
+    //             'info' => $info,
+    //     ]);
+    // }
+    
+
     private function initTable(): EntityTable
     {
         $table = new EntityTable($this->querySearchService, $this->generateUrl('ems_core_query_search'));
         $table->addColumn('query_search.index.column.label', 'label');
         $table->addColumn('query_search.index.column.name', 'name');
-        $table->addColumn('query_search.index.column.environments', 'environments');
+        //$table->addColumn('query_search.index.column.environments', 'environments');
         $table->addItemGetAction('ems_core_query_search_edit', 'query_search.actions.edit', 'pencil');
         $table->addItemPostAction('ems_core_query_search_delete', 'query_search.actions.delete', 'trash', 'query_search.actions.delete_confirm');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'query_search.actions.delete_selected', 'query_search.actions.delete_selected_confirm');

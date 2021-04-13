@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Service;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Repository\QuerySearchRepository;
+use EMS\CoreBundle\Service\EntityServiceInterface;
 use Psr\Log\LoggerInterface;
 
 final class QuerySearchService implements EntityServiceInterface
@@ -92,7 +93,7 @@ final class QuerySearchService implements EntityServiceInterface
             throw new \RuntimeException('Unexpected context');
         }
 
-        return $this->querySearchRepository->get($from, $size);
+        return $this->querySearchRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
     public function getEntityName(): string

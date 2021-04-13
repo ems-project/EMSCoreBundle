@@ -23,19 +23,20 @@ class ElasticaTable extends TableAbstract
      */
     public function __construct(ElasticaService $elasticaService, array $indexes, array $contentTypeNames)
     {
+        parent::__construct(null, 0, 0);
         $this->elasticaService = $elasticaService;
         $this->indexes = $indexes;
         $this->contentTypeNames = $contentTypeNames;
     }
 
     /**
-     * @param string[]             $environmentNames
+     * @param string[]             $indexes
      * @param string[]             $contentTypeNames
      * @param array<string, mixed> $jsonConfig
      */
-    public static function fromConfig(ElasticaService $elasticaService, array $environmentNames, array $contentTypeNames, array $jsonConfig): ElasticaTable
+    public static function fromConfig(ElasticaService $elasticaService, array $indexes, array $contentTypeNames, array $jsonConfig): ElasticaTable
     {
-        return new self($elasticaService, $environmentNames, $contentTypeNames);
+        return new self($elasticaService, $indexes, $contentTypeNames);
     }
 
     public function getIterator()

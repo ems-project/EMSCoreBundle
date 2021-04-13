@@ -6,9 +6,11 @@ use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Elasticsearch\Response\Response;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ElasticaTable extends TableAbstract
 {
+    const COLUMNS = 'columns';
     private ElasticaService $elasticaService;
     /** @var string[] */
     private array $aliases;
@@ -32,11 +34,17 @@ class ElasticaTable extends TableAbstract
     /**
      * @param string[]             $aliases
      * @param string[]             $contentTypeNames
-     * @param array<string, mixed> $jsonConfig
+     * @param array<string, mixed> $options
      */
-    public static function fromConfig(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, array $jsonConfig): ElasticaTable
+    public static function fromConfig(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, array $options): ElasticaTable
     {
-        return new self($elasticaService, $ajaxUrl, $aliases, $contentTypeNames);
+        $datatable = new self($elasticaService, $ajaxUrl, $aliases, $contentTypeNames);
+        $options = self::resolveOptions($options);
+        foreach ($options[self::COLUMNS] as $column) {
+            $datatable->addColumnDefinition(new TemplateTableColumn($column));
+        }
+
+        return $datatable;
     }
 
     public function getIterator()
@@ -102,5 +110,25 @@ class ElasticaTable extends TableAbstract
         }
 
         return $search;
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     *
+     * @return array{columns: array}
+     */
+    private static function resolveOptions(array $options)
+    {
+        $resolver = new OptionsResolver();
+        $resolver
+            ->setDefaults([
+                self::COLUMNS => [],
+            ])
+            ->setAllowedTypes(self::COLUMNS, ['array'])
+        ;
+        /** @var array{columns: array} $resolvedParameter */
+        $resolvedParameter = $resolver->resolve($options);
+
+        return $resolvedParameter;
     }
 }

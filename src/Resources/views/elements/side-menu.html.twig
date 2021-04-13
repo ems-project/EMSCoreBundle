@@ -174,7 +174,12 @@
             <a href="{{ path('environment.align') }}" id="menu-environment-align">
             	<i class="fa fa-align-center"></i> <span>{{ 'Compare environments'|trans }}</span> 
             </a>
-        </li>
+          </li>
+          <li class="treeview">
+              <a href="{{ path('ems_core_uploaded_file_index') }}" id="menu-filter-index">
+                  <i class="fa fa-file"></i> <span>{{ 'Uploaded Files'|trans }}</span>
+              </a>
+          </li>
       </ul>	
     {% endif %}
 
@@ -250,11 +255,6 @@
           <a href="{{ path('ems_filter_index') }}" id="menu-filter-index">
           	<i class="fa fa-filter"></i> <span>{{ 'Filters'|trans }}</span> 
           </a>
-        </li>
-        <li class="treeview">
-            <a href="{{ path('ems_core_uploaded_file_index') }}" id="menu-filter-index">
-                <i class="fa fa-file"></i> <span>{{ 'Uploaded Files'|trans }}</span>
-            </a>
         </li>
 	  </ul>
 	 {% endif %}{# end role admin #}

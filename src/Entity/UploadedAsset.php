@@ -101,6 +101,23 @@ class UploadedAsset implements EntityInterface
      */
     private $hashAlgo;
 
+    /**
+     * @ORM\Column(name="hidden", type="boolean", options={"default" : 0})
+     */
+    private bool $hidden;
+
+    /**
+     * @ORM\Column(name="head_last", type="datetime", nullable=true)
+     */
+    private ?\DateTime $headLast;
+
+    /**
+     * @var string[]|null
+     *
+     * @ORM\Column(name="head_in", type="array", nullable=true)
+     */
+    private ?array $headIn;
+
     private StorageManager $storageManager;
 
     public function __construct(StorageManager $storageManager)
@@ -385,6 +402,48 @@ class UploadedAsset implements EntityInterface
     public function setHashAlgo(string $hashAlgo): UploadedAsset
     {
         $this->hashAlgo = $hashAlgo;
+
+        return $this;
+    }
+
+    public function isHidden(): bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(bool $hidden): UploadedAsset
+    {
+        $this->hidden = $hidden;
+
+        return $this;
+    }
+
+    public function getHeadLast(): ?\DateTime
+    {
+        return $this->headLast;
+    }
+
+    public function setHeadLast(?\DateTime $headLast): UploadedAsset
+    {
+        $this->headLast = $headLast;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getHeadIn(): ?array
+    {
+        return $this->headIn;
+    }
+
+    /**
+     * @param string[]|null $headIn
+     */
+    public function setHeadIn(?array $headIn): UploadedAsset
+    {
+        $this->headIn = $headIn;
 
         return $this;
     }

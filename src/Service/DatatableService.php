@@ -34,18 +34,18 @@ final class DatatableService
     /**
      * @param string[]             $environmentNames
      * @param string[]             $contentTypeNames
-     * @param array<string, mixed> $jsonConfig
+     * @param array<string, mixed> $options
      */
-    public function generateDatatable(array $environmentNames, array $contentTypeNames, array $jsonConfig): ElasticaTable
+    public function generateDatatable(array $environmentNames, array $contentTypeNames, array $options): ElasticaTable
     {
         $aliases = $this->convertToAliases($environmentNames);
         $hashConfig = $this->storageManager->saveConfig([
-            self::CONFIG => $jsonConfig,
+            self::CONFIG => $options,
             self::ALIASES => $aliases,
             self::CONTENT_TYPES => $contentTypeNames,
         ]);
 
-        return ElasticaTable::fromConfig($this->elasticaService, $this->getAjaxUrl($hashConfig), $aliases, $contentTypeNames, $jsonConfig);
+        return ElasticaTable::fromConfig($this->elasticaService, $this->getAjaxUrl($hashConfig), $aliases, $contentTypeNames, $options);
     }
 
     public function generateDatatableFromHash(string $hashConfig): ElasticaTable

@@ -22,11 +22,11 @@ final class DatatableRuntime implements RuntimeExtensionInterface
     /**
      * @param string[]             $environmentNames
      * @param string[]             $contentTypeNames
-     * @param array<string, mixed> $jsonConfig
+     * @param array<string, mixed> $options
      */
-    public function generateDatatable(array $environmentNames, array $contentTypeNames, array $jsonConfig): string
+    public function generateDatatable(array $environmentNames, array $contentTypeNames, array $options): string
     {
-        $datatable = $this->datatableService->generateDatatable($environmentNames, $contentTypeNames, $jsonConfig);
+        $datatable = $this->datatableService->generateDatatable($environmentNames, $contentTypeNames, $options);
         $template = $this->twig->load('@EMSCore/datatable/dom.html.twig');
 
         return $this->twig->render($template, [

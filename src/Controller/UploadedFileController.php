@@ -71,6 +71,10 @@ class UploadedFileController extends AbstractController
                         $this->fileService->removeSingleFileEntity($table->getSelected());
                         break;
                     case self::HARD_DELETE_ACTION:
+                        if (!$this->isGranted('ROLE_ADMIN')) {
+                            throw new AccessDeniedException($request->getPathInfo());
+                        }
+
                         $this->fileService->hardRemoveFiles($table->getSelected());
                         break;
                 }

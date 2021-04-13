@@ -28,6 +28,15 @@
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.index"/>
         </service>
+        <service id="ems.service.datatable" alias="EMS\CoreBundle\Service\DatatableService"/>
+        <service id="EMS\CoreBundle\Service\DatatableService">
+        </service>
+        <service id="ems.twig.runtime.datatable" alias="EMS\CoreBundle\Twig\DatatableRuntime"/>
+        <service id="EMS\CoreBundle\Twig\DatatableRuntime">
+            <argument type="service" id="ems.service.datatable"/>
+            <argument type="service" id="twig"/>
+            <tag name="twig.runtime"/>
+        </service>
 
     </services>
 </container>

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
 
 /**
  * @ORM\Table(name="query_search")

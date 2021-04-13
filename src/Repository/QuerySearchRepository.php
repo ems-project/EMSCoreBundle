@@ -6,10 +6,8 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use EMS\CoreBundle\Entity\QuerySearch;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
-use EMS\CoreBundle\Exception\NotFoundException;
+use EMS\CoreBundle\Entity\QuerySearch;
 
 final class QuerySearchRepository extends ServiceEntityRepository
 {

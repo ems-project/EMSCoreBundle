@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Service;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Repository\QuerySearchRepository;
-use EMS\CoreBundle\Service\EntityServiceInterface;
 use Psr\Log\LoggerInterface;
 
 final class QuerySearchService implements EntityServiceInterface

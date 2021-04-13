@@ -16,11 +16,6 @@ final class TemplateTableColumn extends TableColumn
         return false;
     }
 
-    public function tableDataBlock(): string
-    {
-        return 'emsco_form_table_column_data_template';
-    }
-
     public function tableDataValueBlock(): string
     {
         return 'emsco_form_table_column_data_value_template';

@@ -11,32 +11,32 @@ class ElasticaTable extends TableAbstract
 {
     private ElasticaService $elasticaService;
     /** @var string[] */
-    private array $indexes;
+    private array $aliases;
     /** @var string[] */
     private array $contentTypeNames;
     private ?int $count = null;
     private ?int $totalCount = null;
 
     /**
-     * @param string[] $indexes
+     * @param string[] $aliases
      * @param string[] $contentTypeNames
      */
-    public function __construct(ElasticaService $elasticaService, string $ajaxUrl, array $indexes, array $contentTypeNames)
+    public function __construct(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames)
     {
         parent::__construct($ajaxUrl, 0, 0);
         $this->elasticaService = $elasticaService;
-        $this->indexes = $indexes;
+        $this->aliases = $aliases;
         $this->contentTypeNames = $contentTypeNames;
     }
 
     /**
-     * @param string[]             $indexes
+     * @param string[]             $aliases
      * @param string[]             $contentTypeNames
      * @param array<string, mixed> $jsonConfig
      */
-    public static function fromConfig(ElasticaService $elasticaService, string $ajaxUrl, array $indexes, array $contentTypeNames, array $jsonConfig): ElasticaTable
+    public static function fromConfig(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, array $jsonConfig): ElasticaTable
     {
-        return new self($elasticaService, $ajaxUrl, $indexes, $contentTypeNames);
+        return new self($elasticaService, $ajaxUrl, $aliases, $contentTypeNames);
     }
 
     public function getIterator()
@@ -88,9 +88,9 @@ class ElasticaTable extends TableAbstract
     private function getSearch(string $searchValue): Search
     {
         if (\strlen($searchValue) > 0) {
-            $search = $this->elasticaService->convertElasticsearchBody($this->indexes, $this->contentTypeNames, []);
+            $search = $this->elasticaService->convertElasticsearchBody($this->aliases, $this->contentTypeNames, []);
         } else {
-            $search = $this->elasticaService->convertElasticsearchBody($this->indexes, $this->contentTypeNames, []);
+            $search = $this->elasticaService->convertElasticsearchBody($this->aliases, $this->contentTypeNames, []);
         }
         $search->setFrom($this->getFrom());
         $search->setSize($this->getSize());

@@ -34,15 +34,15 @@ final class DatatableService
      */
     public function generateDatatable(array $environmentNames, array $contentTypeNames, array $jsonConfig): ElasticaTable
     {
-        $indexes = $this->convertToIndexes($environmentNames);
+        $aliases = $this->convertToAliases($environmentNames);
         $hashConfig = $this->storageManager->saveConfig([
             'config' => $jsonConfig,
-            'aliases' => $indexes,
+            'aliases' => $aliases,
             'contentTypes' => $contentTypeNames,
         ]);
         $ajaxUrl = $this->router->generate('ems_core_datatable_ajax_elastica', ['hashConfig' => $hashConfig]);
 
-        return ElasticaTable::fromConfig($this->elasticaService, $ajaxUrl, $indexes, $contentTypeNames, $jsonConfig);
+        return ElasticaTable::fromConfig($this->elasticaService, $ajaxUrl, $aliases, $contentTypeNames, $jsonConfig);
     }
 
     /**
@@ -50,7 +50,7 @@ final class DatatableService
      *
      * @return string[]
      */
-    public function convertToIndexes(array $environmentNames): array
+    public function convertToAliases(array $environmentNames): array
     {
         $indexes = [];
         foreach ($environmentNames as $name) {

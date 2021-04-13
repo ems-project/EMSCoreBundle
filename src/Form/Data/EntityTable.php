@@ -10,12 +10,6 @@ use EMS\CoreBundle\Service\EntityServiceInterface;
 final class EntityTable extends TableAbstract
 {
     private EntityServiceInterface $entityService;
-    private int $size;
-    private int $from;
-    private ?string $orderField = null;
-    private string $orderDirection = 'asc';
-    private string $searchValue = '';
-    private ?string $ajaxUrl = null;
     private bool $loadAll;
     private ?int $count = null;
     private ?int $totalCount = null;
@@ -33,24 +27,17 @@ final class EntityTable extends TableAbstract
         $this->context = $context;
 
         if ($this->count() > $loadAllMaxRow) {
-            $this->ajaxUrl = $ajaxUrl;
-            $this->from = 0;
-            $this->size = 0;
+            parent::__construct($ajaxUrl, 0, 0);
             $this->loadAll = false;
         } else {
-            $this->from = 0;
-            $this->size = $loadAllMaxRow;
+            parent::__construct(null, 0, $loadAllMaxRow);
             $this->loadAll = true;
         }
     }
 
     public function resetIterator(DataTableRequest $dataTableRequest): void
     {
-        $this->from = $dataTableRequest->getFrom();
-        $this->size = $dataTableRequest->getSize();
-        $this->orderField = $dataTableRequest->getOrderField();
-        $this->orderDirection = $dataTableRequest->getOrderDirection();
-        $this->searchValue = $dataTableRequest->getSearchValue();
+        parent::resetIterator($dataTableRequest);
         $this->totalCount = null;
         $this->count = null;
     }
@@ -65,9 +52,14 @@ final class EntityTable extends TableAbstract
      */
     public function getIterator(): iterable
     {
-        foreach ($this->entityService->get($this->from, $this->size, $this->orderField, $this->orderDirection, $this->searchValue, $this->context) as $entity) {
+        foreach ($this->entityService->get($this->getFrom(), $this->getSize(), $this->getOrderField(), $this->getOrderDirection(), $this->getSearchValue(), $this->context) as $entity) {
             yield \strval($entity->getId()) => new EntityRow($entity);
         }
+    }
+
+    public function getAttributeName(): string
+    {
+        return $this->entityService->getEntityName();
     }
 
     public function totalCount(): int
@@ -82,15 +74,10 @@ final class EntityTable extends TableAbstract
     public function count(): int
     {
         if (null === $this->count) {
-            $this->count = $this->entityService->count($this->searchValue, $this->context);
+            $this->count = $this->entityService->count($this->getSearchValue(), $this->context);
         }
 
         return $this->count;
-    }
-
-    public function getAjaxUrl(): ?string
-    {
-        return $this->ajaxUrl;
     }
 
     public function supportsTableActions(): bool

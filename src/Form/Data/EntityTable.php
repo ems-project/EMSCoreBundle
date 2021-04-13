@@ -70,11 +70,6 @@ final class EntityTable extends TableAbstract
         }
     }
 
-    public function getAttributeName(): string
-    {
-        return $this->entityService->getEntityName();
-    }
-
     public function totalCount(): int
     {
         if (null === $this->totalCount) {

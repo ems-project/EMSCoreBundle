@@ -9,8 +9,6 @@ interface TableInterface extends \Countable, \IteratorAggregate
 {
     public function isSortable(): bool;
 
-    public function getAttributeName(): string;
-
     public function getLabelAttribute(): string;
 
     /**

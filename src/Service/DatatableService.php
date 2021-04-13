@@ -8,10 +8,14 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CoreBundle\Form\Data\ElasticaTable;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 
 final class DatatableService
 {
+    const CONFIG = 'config';
+    const ALIASES = 'aliases';
+    const CONTENT_TYPES = 'contentTypes';
     private ElasticaService $elasticaService;
     private EnvironmentService $environmentService;
     private LoggerInterface $logger;
@@ -36,13 +40,19 @@ final class DatatableService
     {
         $aliases = $this->convertToAliases($environmentNames);
         $hashConfig = $this->storageManager->saveConfig([
-            'config' => $jsonConfig,
-            'aliases' => $aliases,
-            'contentTypes' => $contentTypeNames,
+            self::CONFIG => $jsonConfig,
+            self::ALIASES => $aliases,
+            self::CONTENT_TYPES => $contentTypeNames,
         ]);
-        $ajaxUrl = $this->router->generate('ems_core_datatable_ajax_elastica', ['hashConfig' => $hashConfig]);
 
-        return ElasticaTable::fromConfig($this->elasticaService, $ajaxUrl, $aliases, $contentTypeNames, $jsonConfig);
+        return ElasticaTable::fromConfig($this->elasticaService, $this->getAjaxUrl($hashConfig), $aliases, $contentTypeNames, $jsonConfig);
+    }
+
+    public function generateDatatableFromHash(string $hashConfig): ElasticaTable
+    {
+        $config = $this->parsePersistedConfig($this->storageManager->getContents($hashConfig));
+
+        return ElasticaTable::fromConfig($this->elasticaService, $this->getAjaxUrl($hashConfig), $config[self::ALIASES], $config[self::CONTENT_TYPES], $config[self::CONFIG]);
     }
 
     /**
@@ -63,5 +73,37 @@ final class DatatableService
         }
 
         return $indexes;
+    }
+
+    /**
+     * @return array{contentTypes: string[], aliases: string[], config: array}
+     */
+    private function parsePersistedConfig(string $jsonConfig): array
+    {
+        $parameters = \json_decode($jsonConfig, true);
+        if (!\is_array($parameters)) {
+            throw new \RuntimeException('Unexpected JSON config');
+        }
+
+        $resolver = new OptionsResolver();
+        $resolver
+            ->setDefaults([
+                self::CONTENT_TYPES => [],
+                self::ALIASES => [],
+                self::CONFIG => [],
+            ])
+            ->setAllowedTypes(self::CONTENT_TYPES, ['array'])
+            ->setAllowedTypes(self::ALIASES, ['array'])
+            ->setAllowedTypes(self::CONFIG, ['array'])
+        ;
+        /** @var array{contentTypes: string[], aliases: string[], config: array} $resolvedParameter */
+        $resolvedParameter = $resolver->resolve($parameters);
+
+        return $resolvedParameter;
+    }
+
+    public function getAjaxUrl(string $hashConfig): string
+    {
+        return $this->router->generate('ems_core_datatable_ajax_elastica', ['hashConfig' => $hashConfig]);
     }
 }

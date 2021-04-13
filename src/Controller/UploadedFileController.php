@@ -16,6 +16,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,8 +59,15 @@ class UploadedFileController extends AbstractController
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
                 switch ($action->getName()) {
                     case TableAbstract::DOWNLOAD_ACTION:
+                        if (!$this->isGranted('ROLE_ADMIN')) {
+                            throw new AccessDeniedException($request->getPathInfo());
+                        }
+
                         return $this->downloadMultiple($table->getSelected());
                     case self::SOFT_DELETE_ACTION:
+                        if (!$this->isGranted('ROLE_ADMIN')) {
+                            throw new AccessDeniedException($request->getPathInfo());
+                        }
                         $this->fileService->removeSingleFileEntity($table->getSelected());
                         break;
                     case self::HARD_DELETE_ACTION:
@@ -118,12 +126,15 @@ class UploadedFileController extends AbstractController
         $table->addColumn('uploaded-file.index.column.type', 'type');
         $table->addColumn('uploaded-file.index.column.sha1', 'sha1');
 
-        $table->addDynamicItemPostAction('ems_file_soft_delete', 'uploaded-file.action.soft-delete', 'minus-square', 'uploaded-file.soft-delete-confirm', ['id' => 'id']);
-        $table->addDynamicItemPostAction('ems_file_hard_delete', 'uploaded-file.action.hard-delete', 'trash', 'uploaded-file.hard-delete-confirm', ['id' => 'id']);
-
         $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
-        $table->addTableAction(self::SOFT_DELETE_ACTION, 'fa fa-minus-square', 'uploaded-file.uploaded-file.soft_delete_selected', 'uploaded-file.uploaded-file.soft_delete_selected_confirm');
-        $table->addTableAction(self::HARD_DELETE_ACTION, 'fa fa-trash', 'uploaded-file.uploaded-file.hard_delete_selected', 'uploaded-file.uploaded-file.hard_delete_selected_confirm');
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $table->addDynamicItemPostAction('ems_file_soft_delete', 'uploaded-file.action.soft-delete', 'minus-square', 'uploaded-file.soft-delete-confirm', ['id' => 'id']);
+            $table->addDynamicItemPostAction('ems_file_hard_delete', 'uploaded-file.action.hard-delete', 'trash', 'uploaded-file.hard-delete-confirm', ['id' => 'id']);
+            $table->addTableAction(self::SOFT_DELETE_ACTION, 'fa fa-minus-square', 'uploaded-file.uploaded-file.soft_delete_selected', 'uploaded-file.uploaded-file.soft_delete_selected_confirm');
+            $table->addTableAction(self::HARD_DELETE_ACTION, 'fa fa-trash', 'uploaded-file.uploaded-file.hard_delete_selected', 'uploaded-file.uploaded-file.hard_delete_selected_confirm');
+        }
+
         $table->setDefaultOrder('created', 'desc');
 
         return $table;

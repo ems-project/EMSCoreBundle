@@ -6,14 +6,19 @@ namespace EMS\CoreBundle\Service;
 
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Form\Data\ElasticaTable;
+use Psr\Log\LoggerInterface;
 
 final class DatatableService
 {
     private ElasticaService $elasticaService;
+    private EnvironmentService $environmentService;
+    private LoggerInterface $logger;
 
-    public function __construct(ElasticaService $elasticaService)
+    public function __construct(LoggerInterface $logger, ElasticaService $elasticaService, EnvironmentService $environmentService)
     {
         $this->elasticaService = $elasticaService;
+        $this->logger = $logger;
+        $this->environmentService = $environmentService;
     }
 
     /**
@@ -23,6 +28,16 @@ final class DatatableService
      */
     public function generateDatatable(array $environmentNames, array $contentTypeNames, array $jsonConfig): ElasticaTable
     {
-        return ElasticaTable::fromConfig($this->elasticaService, $environmentNames, $contentTypeNames, $jsonConfig);
+        $indexes = [];
+        foreach ($environmentNames as $name) {
+            $environment = $this->environmentService->getByName($name);
+            if (false === $environment) {
+                $this->logger->warning('log.service.datatable.environment-not-found', ['name' => $name]);
+                continue;
+            }
+            $indexes[] = $environment->getAlias();
+        }
+
+        return ElasticaTable::fromConfig($this->elasticaService, $indexes, $contentTypeNames, $jsonConfig);
     }
 }

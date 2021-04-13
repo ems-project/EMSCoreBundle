@@ -21,9 +21,9 @@ class ElasticaTable extends TableAbstract
      * @param string[] $indexes
      * @param string[] $contentTypeNames
      */
-    public function __construct(ElasticaService $elasticaService, array $indexes, array $contentTypeNames)
+    public function __construct(ElasticaService $elasticaService, string $ajaxUrl, array $indexes, array $contentTypeNames)
     {
-        parent::__construct(null, 0, 0);
+        parent::__construct($ajaxUrl, 0, 0);
         $this->elasticaService = $elasticaService;
         $this->indexes = $indexes;
         $this->contentTypeNames = $contentTypeNames;
@@ -34,9 +34,9 @@ class ElasticaTable extends TableAbstract
      * @param string[]             $contentTypeNames
      * @param array<string, mixed> $jsonConfig
      */
-    public static function fromConfig(ElasticaService $elasticaService, array $indexes, array $contentTypeNames, array $jsonConfig): ElasticaTable
+    public static function fromConfig(ElasticaService $elasticaService, string $ajaxUrl, array $indexes, array $contentTypeNames, array $jsonConfig): ElasticaTable
     {
-        return new self($elasticaService, $indexes, $contentTypeNames);
+        return new self($elasticaService, $ajaxUrl, $indexes, $contentTypeNames);
     }
 
     public function getIterator()

@@ -18,7 +18,7 @@ final class DatatableService
     private RouterInterface $router;
     private StorageManager $storageManager;
 
-    public function __construct(LoggerInterface $logger, ElasticaService $elasticaService, EnvironmentService $environmentService, RouterInterface $router, StorageManager $storageManager)
+    public function __construct(LoggerInterface $logger, RouterInterface $router, ElasticaService $elasticaService, StorageManager $storageManager, EnvironmentService $environmentService)
     {
         $this->elasticaService = $elasticaService;
         $this->logger = $logger;

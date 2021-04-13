@@ -34,6 +34,7 @@
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.service.environment"/>
             <argument type="service" id="router"/>
+            <argument type="service" id="ems_common.storage.manager"/>
         </service>
         <service id="ems.twig.runtime.datatable" alias="EMS\CoreBundle\Twig\DatatableRuntime"/>
         <service id="EMS\CoreBundle\Twig\DatatableRuntime">

@@ -1,1 +1,62 @@
-Foobar
+{%- use '@EMSCore/form/forms.html.twig' -%}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% dump(datatable) %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-body with-border">
+                <div class="table-responsive">
+                    <table class="table table-condensed table-striped" data-datatable="{{ datatable.frontendOptions|json_encode|e('html_attr') }}">
+                        <thead>
+                        <tr role="row">
+                            {% if datatable.supportsTableActions %}
+                                <th class="fit" data-orderable="false" data-name="_checkbox">
+                                    <input type="checkbox" value="" data-grouped-checkbox-target=".{{ datatable.attributeName|e('html_attr') }}-to-select">
+                                </th>
+                            {% endif %}
+                            {% for column in datatable.columns %}
+                                <th class="nowrap" data-orderable="{{ column.orderable ? 'true' : 'false' }}" data-name="{{  column.attribute }}">
+                                    {% if column.iconClass %}
+                                        <i class="{{ column.iconClass }}" aria-hidden="true" title="{{ column.titleKey|trans|e('html_attr') }}"></i>
+                                        <span class="sr-only">{{ column.titleKey|trans }}</span>
+                                    {% else %}
+                                        {{ column.titleKey|trans }}
+                                    {% endif %}
+                                </th>
+                            {% endfor %}
+                            <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for line in datatable %}
+                            <tr>
+                                {% if datatable.supportsTableActions %}
+                                    <td class="{{ datatable.attributeName|e('html_attr') }}-to-select">
+                                        {{ block('emsco_form_table_column_action_checkbox') }}
+                                    </td>
+                                {% endif %}
+                                {% for column in datatable.columns %}
+                                    {{ block(column.tableDataBlock()) }}
+                                {% endfor %}
+                                <td data-search="">
+                                    {{ block('emsco_form_table_column_row_actions') }}
+                                </td>
+                            </tr>
+                        {%  endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% if datatable.supportsTableActions %}
+                <div class="box-footer with-border">
+                    <div class="btn-group">
+                        {% for action in datatable.tableActions %}
+                            {{ form_widget(attribute(form, action.name)) }}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

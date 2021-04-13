@@ -40,7 +40,7 @@ final class DataTableRequest
         $orderDirection = \strval($order[0]['dir'] ?? 'asc');
         $orderColumn = \intval($order[0]['column'] ?? 0);
         $orderField = null;
-        if (isset($columns[$orderColumn]['name'])) {
+        if (isset($columns[$orderColumn]['name']) && 'true' === $columns[$orderColumn]['orderable'] ?? null) {
             $orderField = \strval($columns[$orderColumn]['name']);
         }
         $search = $request->get('search', []);

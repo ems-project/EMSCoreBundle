@@ -59,10 +59,6 @@ class UploadedFileController extends AbstractController
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
                 switch ($action->getName()) {
                     case TableAbstract::DOWNLOAD_ACTION:
-                        if (!$this->isGranted('ROLE_ADMIN')) {
-                            throw new AccessDeniedException($request->getPathInfo());
-                        }
-
                         return $this->downloadMultiple($table->getSelected());
                     case self::SOFT_DELETE_ACTION:
                         if (!$this->isGranted('ROLE_ADMIN')) {
@@ -71,6 +67,10 @@ class UploadedFileController extends AbstractController
                         $this->fileService->removeSingleFileEntity($table->getSelected());
                         break;
                     case self::HARD_DELETE_ACTION:
+                        if (!$this->isGranted('ROLE_ADMIN')) {
+                            throw new AccessDeniedException($request->getPathInfo());
+                        }
+
                         $this->fileService->hardRemoveFiles($table->getSelected());
                         break;
                 }

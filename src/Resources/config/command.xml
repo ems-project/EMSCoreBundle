@@ -40,5 +40,10 @@
             <argument type="service" id="ems.service.job"/>
             <tag name="console.command"/>
         </service>
+        <service id="ems.command.asset.head" class="EMS\CoreBundle\Command\Asset\HeadAssetCommand">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.file"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>

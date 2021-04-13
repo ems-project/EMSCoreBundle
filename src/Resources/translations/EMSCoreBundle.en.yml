@@ -420,12 +420,15 @@ uploaded-file:
   index:
     title: 'Uploaded Files'
     column:
+      head_last: 'Last seen'
+      hidden: 'Hidden'
+      available: 'Available'
       created: 'Uploaded at'
       modified: 'Last modified'
       name: 'File name'
       sha1: 'Hash signature'
       type: 'Mime type'
-      username: 'Username'
+      username: 'By'
       size: 'File size'
   action:
     download_selected: 'Download selected'

@@ -191,8 +191,6 @@ class UploadedAssetRepository extends EntityRepository
 
     private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
     {
-        $qb->andWhere($qb->expr()->eq('ua.available', ':true'))
-            ->setParameter(':true', true);
         if (\strlen($searchValue) > 0) {
             $or = $qb->expr()->orX(
                 $qb->expr()->like('ua.user', ':term'),
@@ -203,5 +201,11 @@ class UploadedAssetRepository extends EntityRepository
             $qb->andWhere($or)
                 ->setParameter(':term', '%'.$searchValue.'%');
         }
+    }
+
+    public function update(UploadedAsset $UploadedAsset): void
+    {
+        $this->getEntityManager()->persist($UploadedAsset);
+        $this->getEntityManager()->flush();
     }
 }

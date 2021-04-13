@@ -45,9 +45,9 @@ class TableColumn
     /**
      * @param mixed $data
      *
-     * @return array<string, mixed>
+     * @return array<string, mixed>|null
      */
-    public function getRouteProperties($data): array
+    public function getRouteProperties($data): ?array
     {
         if (null === $this->routeParametersCallback) {
             return [];

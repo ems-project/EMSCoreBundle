@@ -117,7 +117,7 @@
 {% endblock emsco_form_table_column_data_user %}
 
 {% block emsco_form_table_column_data_label_prefix -%}
-    {%- if column.routeName -%}
+    {%- if column.routeName and column.getRouteProperties(line.data)-%}
         <a href="{{ path(column.routeName, column.getRouteProperties(line.data)) }}" {% if column.routeTarget %}target="{{ column.routeTarget }}"{% endif %}>
     {%- endif -%}
     {%- if column.itemIconClass(line.data) -%}
@@ -126,7 +126,7 @@
 {%- endblock emsco_form_table_column_data_label_prefix %}
 
 {% block emsco_form_table_column_data_label_suffix -%}
-    {%- if column.routeName -%}
+    {%- if column.routeName and column.getRouteProperties(line.data) -%}
         </a>
     {%- endif -%}
 {% endblock emsco_form_table_column_data_label_suffix -%}

@@ -104,7 +104,7 @@ class UploadedAsset implements EntityInterface
     /**
      * @ORM\Column(name="hidden", type="boolean", options={"default" : 0})
      */
-    private bool $hidden;
+    private bool $hidden = false;
 
     /**
      * @ORM\Column(name="head_last", type="datetime", nullable=true)

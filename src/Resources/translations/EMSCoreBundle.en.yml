@@ -608,6 +608,7 @@ form:
     query_search:
       name: 'Name'
       label: 'Label'
+      environments: 'Environments'
   contenttype:
     json_update:
       deleteExitingTemplates: 'Delete existing templates'
@@ -890,7 +891,7 @@ view:
   icon:
     class:
       channel: 'fa fa-road'
-      query_search : 'fa fa-share'
+      query_search : 'fa fa-list-alt'
   macros:
     data-field-type:
       menu-option-button: 'View'

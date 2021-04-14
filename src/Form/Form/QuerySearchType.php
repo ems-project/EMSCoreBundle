@@ -6,15 +6,26 @@ namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\QuerySearch;
-use EMS\CoreBundle\Form\DataTransformer\QuerySearchOptionsTransformer;
-use EMS\CoreBundle\Form\Field\SubmitEmsType;
-use EMS\CoreBundle\Form\Subform\QuerySearchOptionsType;
 use Symfony\Component\Form\AbstractType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Service\EnvironmentService;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use EMS\CoreBundle\Form\Subform\QuerySearchOptionsType;
+use EMS\CoreBundle\Form\DataTransformer\QuerySearchOptionsTransformer;
 
 final class QuerySearchType extends AbstractType
 {
+
+    private $service;
+
+    public function __construct(EnvironmentService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * @param FormBuilderInterface<AbstractType> $builder
      * @param array<string, mixed>               $options
@@ -25,14 +36,34 @@ final class QuerySearchType extends AbstractType
             ->add('label', null, [
                 'required' => true,
                 'row_attr' => [
-                    'class' => 'col-md-3',
+                    'class' => 'col-md-6',
                 ],
             ])
             ->add('name', null, [
                 'required' => true,
                 'row_attr' => [
-                    'class' => 'col-md-3',
+                    'class' => 'col-md-6',
                 ],
+            ])
+            ->add('environments', ChoiceType::class, [
+                'attr' => [
+                    'class' => 'select2',
+                ],
+                 'multiple' => true,
+                'choices' => $this->service->getEnvironments(),
+                'required' => false,
+                'row_attr' => [
+                    'class' => 'col-md-6',
+                ],
+                'choice_label' => function (Environment $value) {
+                    return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
+                },
+                'choice_value' => function (Environment $value) {
+                    if (null != $value) {
+                        return $value->getId();
+                    }
+                    return $value;
+                },
             ])
             ->add('options', QuerySearchOptionsType::class)
             ->add('save', SubmitEmsType::class, [

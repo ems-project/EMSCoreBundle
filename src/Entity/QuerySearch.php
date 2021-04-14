@@ -41,23 +41,23 @@ class QuerySearch implements EntityInterface
     private $modified;
 
     /**
-     * @var string
      *
      * @ORM\Column(name="label", type="string", length=255)
      */
-    private $label;
+    private string  $label;
 
     /**
-     * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
-     * @var Environment[]
-     * @ORM\ManyToMany(targetEntity="Environment", inversedBy="contentTypesHavingThisAsDefault")
-     * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
+     * @ORM\JoinTable(name="environment_query_search",
+     *      joinColumns={@ORM\JoinColumn(name="query_search_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="environment_id", referencedColumnName="id")}
+     *      )
      */
     protected $environments;
 
@@ -81,7 +81,7 @@ class QuerySearch implements EntityInterface
         $this->id = Uuid::uuid4();
         $this->created = $now;
         $this->modified = $now;
-        $this->environments = [];
+        $this->environments = new \Doctrine\Common\Collections\ArrayCollection();
         $this->options = [
             'searchConfig' => '{}',
             'query' => '',
@@ -123,11 +123,33 @@ class QuerySearch implements EntityInterface
     }
 
     /**
-     * @return Environment[]
+     * Add environment.
+     *
+     * @return QuerySearch
      */
-    public function getEnvironments(): array
+    public function addEnvironment(Environment $environment)
     {
-        return $this->environments;
+        $this->environments[] = $environment;
+
+        return $this;
+    }
+
+    /**
+     * Remove environment.
+     */
+    public function removeEnvironment(Environment $environment)
+    {
+        $this->environments->removeElement($environment);
+    }
+
+    /**
+     * Get environments.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEnvironments()
+    {
+        return $this->environments->toArray();
     }
 
     /**
@@ -136,6 +158,24 @@ class QuerySearch implements EntityInterface
     public function setEnvironments(array $environments): void
     {
         $this->environments = $environments;
+    }
+
+    /**
+     * is Environment Exist.
+     *
+     * Use in twig object-views-button.html.twig
+     *
+     * @return bool
+     */
+    public function isEnvironmentExist($name)
+    {
+        foreach ($this->environments as $environment) {
+            if ($environment->getName() === $name) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

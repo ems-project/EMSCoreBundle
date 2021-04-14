@@ -23,13 +23,13 @@ final class QuerySearchOptionsType extends AbstractType
                 'required' => true,
                 'language' => 'ace/mode/json',
                 'row_attr' => [
-                    'class' => 'col-md-6',
+                    'class' => 'col-md-12',
                 ],
             ])
             ->add('query', null, [
                 'required' => false,
                 'row_attr' => [
-                    'class' => 'col-md-6',
+                    'class' => 'col-md-12',
                 ],
             ]);
     }

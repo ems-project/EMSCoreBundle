@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
@@ -41,25 +42,25 @@ class QuerySearch implements EntityInterface
     private $modified;
 
     /**
-     *
      * @ORM\Column(name="label", type="string", length=255)
      */
-    private string  $label;
+    private string $label;
 
     /**
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
     private string $name;
 
     /**
+     * @var Collection <int,Environment>
+     *
      * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
      * @ORM\JoinTable(name="environment_query_search",
      *      joinColumns={@ORM\JoinColumn(name="query_search_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="environment_id", referencedColumnName="id")}
      *      )
      */
-    protected $environments;
+    protected Collection $environments;
 
     /**
      * @var array<string, mixed>
@@ -86,6 +87,11 @@ class QuerySearch implements EntityInterface
             'searchConfig' => '{}',
             'query' => '',
         ];
+    }
+
+    public function __toString()
+    {
+        return $this->id->toString();
     }
 
     public function getId(): string
@@ -122,52 +128,38 @@ class QuerySearch implements EntityInterface
         $this->name = $name;
     }
 
-    /**
-     * Add environment.
-     *
-     * @return QuerySearch
-     */
-    public function addEnvironment(Environment $environment)
+    public function addEnvironment(Environment $environment): QuerySearch
     {
         $this->environments[] = $environment;
 
         return $this;
     }
 
-    /**
-     * Remove environment.
-     */
-    public function removeEnvironment(Environment $environment)
+    public function removeEnvironment(Environment $environment): void
     {
         $this->environments->removeElement($environment);
     }
 
     /**
-     * Get environments.
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return array <int, Environment>
      */
-    public function getEnvironments()
+    public function getEnvironments(): array
     {
         return $this->environments->toArray();
     }
 
     /**
-     * @param Environment[] $environments
+     * @param Collection<int, Environment> $environments
      */
-    public function setEnvironments(array $environments): void
+    public function setEnvironments(Collection $environments): void
     {
         $this->environments = $environments;
     }
 
     /**
-     * is Environment Exist.
-     *
-     * Use in twig object-views-button.html.twig
-     *
-     * @return bool
+     * @param string $name
      */
-    public function isEnvironmentExist($name)
+    public function isEnvironmentExist($name): bool
     {
         foreach ($this->environments as $environment) {
             if ($environment->getName() === $name) {

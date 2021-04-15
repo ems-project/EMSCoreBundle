@@ -292,6 +292,11 @@ services:
         arguments: ['@ems.form.factories.contentTypeFieldChoiceListFactory']
         tags:
             - { name: form.type }
+    ems.form.field.querySearchPickerType:
+        class: EMS\CoreBundle\Form\Field\QuerySearchPickerType
+        arguments: ['@ems.service.query_search']
+        tags:
+            - { name: form.type }
     ems.form.field.datafieldtypepickertype:
         class: EMS\CoreBundle\Form\Field\FieldTypePickerType
         tags:

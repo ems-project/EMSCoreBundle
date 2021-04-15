@@ -5,20 +5,19 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
-use EMS\CoreBundle\Entity\QuerySearch;
-use Symfony\Component\Form\AbstractType;
-use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\QuerySearch;
+use EMS\CoreBundle\Form\DataTransformer\QuerySearchOptionsTransformer;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Subform\QuerySearchOptionsType;
 use EMS\CoreBundle\Service\EnvironmentService;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use EMS\CoreBundle\Form\Subform\QuerySearchOptionsType;
-use EMS\CoreBundle\Form\DataTransformer\QuerySearchOptionsTransformer;
 
 final class QuerySearchType extends AbstractType
 {
-
     private $service;
 
     public function __construct(EnvironmentService $service)
@@ -62,6 +61,7 @@ final class QuerySearchType extends AbstractType
                     if (null != $value) {
                         return $value->getId();
                     }
+
                     return $value;
                 },
             ])

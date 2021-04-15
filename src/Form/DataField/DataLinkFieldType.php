@@ -4,21 +4,20 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
-use Symfony\Component\Form\FormEvent;
-use EMS\CoreBundle\Entity\QuerySearch;
-use Symfony\Component\Form\FormEvents;
-use EMS\CoreBundle\Form\Field\ObjectPickerType;
-use EMS\CoreBundle\Service\ElasticsearchService;
-use Symfony\Component\Form\FormBuilderInterface;
+use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\ObjectChoiceLoader;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\FormRegistryInterface;
-use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use EMS\CoreBundle\Form\Field\ObjectPickerType;
+use EMS\CoreBundle\Form\Field\QuerySearchPickerType;
+use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
@@ -169,6 +168,7 @@ class DataLinkFieldType extends DataFieldType
             'disabled' => $this->isDisabled($options),
             'multiple' => $options['multiple'],
             'type' => $options['type'],
+            'querySearch' => $options['querySearch'],
             'searchId' => $options['searchId'],
             'dynamicLoading' => $options['dynamicLoading'],
             'sortable' => $options['sortable'],
@@ -196,6 +196,7 @@ class DataLinkFieldType extends DataFieldType
         $resolver->setDefault('required', false);
         $resolver->setDefault('sortable', false);
         $resolver->setDefault('dynamicLoading', true);
+        $resolver->setDefault('querySearch', null);
     }
 
     /**
@@ -207,6 +208,7 @@ class DataLinkFieldType extends DataFieldType
 
         $out['displayOptions']['dynamicLoading'] = true;
         $out['mappingOptions']['index'] = 'not_analyzed';
+        $out['displayOptions']['querySearch'] = null;
 
         return $out;
     }
@@ -259,9 +261,8 @@ class DataLinkFieldType extends DataFieldType
                 'required' => false,
         ])->add('sortable', CheckboxType::class, [
                 'required' => false,
-        ])->add('querySearch', EntityType::class, [
-                'choice_label' => 'name',
-                'class' => QuerySearch::class,
+        ])->add('querySearch', QuerySearchPickerType::class, [
+                'multiple' => true,
                 'required' => false,
         ])->add('type', TextType::class, [
             'required' => false,

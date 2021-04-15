@@ -170,9 +170,10 @@ class ElasticaTable extends TableAbstract
     private function getQuery(string $searchValue): string
     {
         $encoded = \json_encode($searchValue);
-        if (false === $encoded) {
+        if (false === $encoded || \strlen($encoded) < 2) {
             throw new \RuntimeException(\sprintf('Unexpected error while JSON encoding "%s"', $searchValue));
         }
+        $encoded = \substr($encoded, 1, \strlen($encoded) - 2);
 
         return \str_replace('%query%', $encoded, $this->query);
     }

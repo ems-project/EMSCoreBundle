@@ -269,6 +269,24 @@ class FileService implements EntityServiceInterface
         return $this->storageManager->head($hash);
     }
 
+    /**
+     * @return string[]
+     */
+    public function headIn(UploadedAsset $uploadedAsset): array
+    {
+        $headIn = $this->storageManager->headIn($uploadedAsset->getSha1());
+        if (0 === \count($headIn)) {
+            return $headIn;
+        }
+
+        $uploadedAsset->setHeadIn(\array_unique(\array_merge($headIn, $uploadedAsset->getHeadIn() ?? [])));
+        $uploadedAsset->setHeadLast(new \DateTime());
+        $uploadedAsset->setAvailable(true);
+        $this->uploadedAssetRepository->update($uploadedAsset);
+
+        return $headIn;
+    }
+
     public function getSize(string $hash): int
     {
         try {

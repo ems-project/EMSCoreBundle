@@ -420,12 +420,15 @@ uploaded-file:
   index:
     title: 'Uploaded Files'
     column:
+      head_last: 'Last seen'
+      hidden: 'Hidden'
+      available: 'Available'
       created: 'Uploaded at'
       modified: 'Last modified'
       name: 'File name'
       sha1: 'Hash signature'
       type: 'Mime type'
-      username: 'Username'
+      username: 'By'
       size: 'File size'
   action:
     download_selected: 'Download selected'
@@ -585,6 +588,9 @@ contenttype:
   action:
     update_from_json: 'Update from JSON'
 form:
+  wysiwyg_style_set:
+    table_default_css:
+      title: 'Default Table class attribute'
   form_field:
     wysiwyg:
       format_tags:

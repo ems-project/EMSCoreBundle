@@ -26,3 +26,59 @@ The third parameter is an options array:
         - `data`: EMS\CommonBundle\Elasticsearch\Document\DocumentInterface
         - `column`: EMS\CoreBundle\Form\Data\TemplateTableColumn
     - `orderField`: this value will be used in the elasticsearch query, when the table is sorted by this column, in order to sort the result set. If not defined, or set to null, this column won't be sortable. (string)
+   
+## Optional options
+
+### query
+It's the elasticsearch query (array or string) used to get the data when a query string is defined in the datatable's search field. I.e.:
+
+```twig
+{{ emsco_datatable(['ldap'],['ldap_user'], {
+    "query": {
+        "multi_match": {
+          "query": "%query%",
+          "operator": "and",
+          "type": "bool_prefix",
+          "fields": [
+            "live_search",
+            "live_search._2gram",
+            "live_search._3gram"
+          ]
+        }
+      },
+    "columns": [{
+        "label": "Name",
+        "template": "{{ data.source.name|default('') }}",
+        "orderField": "name.keyword"
+    }]
+}) }}
+```
+
+You can use the `%query%` pattern to inject the query string in your query. In this example we are using a [`search_as_you_type`](https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-as-you-type.html) search field. This kind of field type are particularly suitable for this kind of search. You can defined such field with this config:
+
+```json
+{
+   "live_search": {
+      "type": "search_as_you_type"
+   }
+}
+```
+
+Default value:
+
+```json
+{
+   "query_string": {
+      "query": "%query%"
+   }
+}
+```
+
+## emptyQuery
+
+It's the elasticsearch query (array or string) used when nothing is defined in the datatable's search field. Default value:
+
+```json
+{
+}
+```

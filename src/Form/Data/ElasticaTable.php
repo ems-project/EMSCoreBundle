@@ -6,11 +6,14 @@ use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Elasticsearch\Response\Response;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ElasticaTable extends TableAbstract
 {
     const COLUMNS = 'columns';
+    const QUERY = 'query';
+    const EMPTY_QUERY = 'empty_query';
     private ElasticaService $elasticaService;
     /** @var string[] */
     private array $aliases;
@@ -18,17 +21,21 @@ class ElasticaTable extends TableAbstract
     private array $contentTypeNames;
     private ?int $count = null;
     private ?int $totalCount = null;
+    private string $emptyQuery;
+    private string $query;
 
     /**
      * @param string[] $aliases
      * @param string[] $contentTypeNames
      */
-    public function __construct(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames)
+    public function __construct(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, string $emptyQuery, string $query)
     {
         parent::__construct($ajaxUrl, 0, 0);
         $this->elasticaService = $elasticaService;
         $this->aliases = $aliases;
         $this->contentTypeNames = $contentTypeNames;
+        $this->emptyQuery = $emptyQuery;
+        $this->query = $query;
     }
 
     /**
@@ -38,8 +45,8 @@ class ElasticaTable extends TableAbstract
      */
     public static function fromConfig(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, array $options): ElasticaTable
     {
-        $datatable = new self($elasticaService, $ajaxUrl, $aliases, $contentTypeNames);
         $options = self::resolveOptions($options);
+        $datatable = new self($elasticaService, $ajaxUrl, $aliases, $contentTypeNames, $options[self::EMPTY_QUERY], $options[self::QUERY]);
         foreach ($options[self::COLUMNS] as $column) {
             $datatable->addColumnDefinition(new TemplateTableColumn($column));
         }
@@ -96,9 +103,9 @@ class ElasticaTable extends TableAbstract
     private function getSearch(string $searchValue): Search
     {
         if (\strlen($searchValue) > 0) {
-            $search = $this->elasticaService->convertElasticsearchBody($this->aliases, $this->contentTypeNames, []);
+            $search = $this->elasticaService->convertElasticsearchBody($this->aliases, $this->contentTypeNames, ['query' => $this->getQuery($searchValue)]);
         } else {
-            $search = $this->elasticaService->convertElasticsearchBody($this->aliases, $this->contentTypeNames, []);
+            $search = $this->elasticaService->convertElasticsearchBody($this->aliases, $this->contentTypeNames, ['query' => $this->emptyQuery]);
         }
         $search->setFrom($this->getFrom());
         $search->setSize($this->getSize());
@@ -115,7 +122,7 @@ class ElasticaTable extends TableAbstract
     /**
      * @param array<string, mixed> $options
      *
-     * @return array{columns: array}
+     * @return array{columns: array, query: string, empty_query: string}
      */
     private static function resolveOptions(array $options)
     {
@@ -123,12 +130,50 @@ class ElasticaTable extends TableAbstract
         $resolver
             ->setDefaults([
                 self::COLUMNS => [],
+                self::EMPTY_QUERY => [],
+                self::QUERY => [
+                    'query_string' => [
+                        'query' => '%query%',
+                    ],
+                ],
             ])
             ->setAllowedTypes(self::COLUMNS, ['array'])
+            ->setAllowedTypes(self::QUERY, ['array', 'string'])
+            ->setAllowedTypes(self::QUERY, ['array', 'string'])
+            ->setNormalizer(self::QUERY, function (Options $options, $value) {
+                if (\is_array($value)) {
+                    $value = \json_encode($value);
+                }
+                if (!\is_string($value)) {
+                    throw new \RuntimeException('Unexpected query type');
+                }
+
+                return $value;
+            })
+            ->setNormalizer(self::EMPTY_QUERY, function (Options $options, $value) {
+                if (\is_array($value)) {
+                    $value = \json_encode($value);
+                }
+                if (!\is_string($value)) {
+                    throw new \RuntimeException('Unexpected emptyQuery type');
+                }
+
+                return $value;
+            })
         ;
-        /** @var array{columns: array} $resolvedParameter */
+        /** @var array{columns: array, query: string, empty_query: string} $resolvedParameter */
         $resolvedParameter = $resolver->resolve($options);
 
         return $resolvedParameter;
+    }
+
+    private function getQuery(string $searchValue): string
+    {
+        $encoded = \json_encode($searchValue);
+        if (false === $encoded) {
+            throw new \RuntimeException(\sprintf('Unexpected error while JSON encoding "%s"', $searchValue));
+        }
+
+        return \str_replace('%query%', $encoded, $this->query);
     }
 }

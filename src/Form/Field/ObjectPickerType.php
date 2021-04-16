@@ -82,7 +82,6 @@ class ObjectPickerType extends Select2Type
         $view->vars['attr']['data-circle-only'] = $options['circle-only'];
         $view->vars['attr']['data-dynamic-loading'] = $options['dynamicLoading'];
         $view->vars['attr']['data-sortable'] = $options['sortable'];
-        $view->vars['attr']['data-query-search'] = $options['querySearch'];
     }
 
     /**

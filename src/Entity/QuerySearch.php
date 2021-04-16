@@ -18,28 +18,22 @@ use Ramsey\Uuid\UuidInterface;
 class QuerySearch implements EntityInterface
 {
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
-    private $id;
+    private UuidInterface $id;
 
     /**
-     * @var \Datetime
-     *
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    private \Datetime $created;
 
     /**
-     * @var \Datetime
-     *
      * @ORM\Column(name="modified", type="datetime")
      */
-    private $modified;
+    private \Datetime $modified;
 
     /**
      * @ORM\Column(name="label", type="string", length=255)
@@ -67,14 +61,12 @@ class QuerySearch implements EntityInterface
      *
      * @ORM\Column(name="options", type="json", nullable=true)
      */
-    private $options;
+    private array $options;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="order_key", type="integer")
      */
-    private $orderKey;
+    private int $orderKey;
 
     public function __construct()
     {
@@ -84,14 +76,8 @@ class QuerySearch implements EntityInterface
         $this->modified = $now;
         $this->environments = new \Doctrine\Common\Collections\ArrayCollection();
         $this->options = [
-            'searchConfig' => '{}',
-            'query' => '',
+            'query' => '{}',
         ];
-    }
-
-    public function __toString()
-    {
-        return $this->id->toString();
     }
 
     public function getId(): string

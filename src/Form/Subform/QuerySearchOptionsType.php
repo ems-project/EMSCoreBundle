@@ -19,15 +19,9 @@ final class QuerySearchOptionsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('searchConfig', CodeEditorType::class, [
+            ->add('query', CodeEditorType::class, [
                 'required' => true,
                 'language' => 'ace/mode/json',
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
-            ])
-            ->add('query', null, [
-                'required' => false,
                 'row_attr' => [
                     'class' => 'col-md-12',
                 ],

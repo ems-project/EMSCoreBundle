@@ -4,24 +4,21 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller;
 
-use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
-use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\QuerySearchType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
-use EMS\CoreBundle\Service\Mapping;
 use EMS\CoreBundle\Service\QuerySearchService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class QuerySearchController extends AbstractController
 {
@@ -99,44 +96,12 @@ final class QuerySearchController extends AbstractController
         ]);
     }
 
-    public function delete(QuerySearch $query_search): Response
+    public function delete(QuerySearch $query_search): RedirectResponse
     {
         $this->querySearchService->delete($query_search);
 
         return $this->redirectToRoute('ems_core_query_search_index');
     }
-
-    // public function viewAction(int $id, Mapping $mapping)
-    // {
-    //     /** @var EntityManager $em */
-    //     $em = $this->getDoctrine()->getManager();
-
-    //     /** @var QuerySearchRepository $repository */
-    //     $repository = $em->getRepository('EMSCoreBundle:QuerySearch');
-
-    //     /** @var QuerySearch|null $querySearch */
-    //     $querySearch = $repository->find($id);
-
-    //     if (null === $querySearch) {
-    //         throw new NotFoundHttpException('Unknow environment');
-    //     }
-
-    //     try {
-    //         $info = $mapping->getMapping([$querySearch->getName()]);
-    //     } catch (NotFoundException $e) {
-    //         $this->getLogger()->error('log.environment.alias_missing', [
-    //             EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-    //             EmsFields::LOG_EXCEPTION_FIELD => $e,
-    //             EmsFields::LOG_ENVIRONMENT_FIELD => $querySearch->getName()
-    //         ]);
-    //         $info = false;
-    //     }
-
-    //     return $this->render('@EMSCore/query-search/view.html.twig', [
-    //             'querySearch' => $querySearch,
-    //             'info' => $info,
-    //     ]);
-    // }
 
     private function initTable(): EntityTable
     {

@@ -29,7 +29,6 @@ class QuerySearchPickerType extends ChoiceType
             $this->choices[$choice->getName()] = $choice;
         }
         parent::configureOptions($resolver);
-        //dd($keys);
 
         $resolver->setDefaults([
             'choices' => $keys,

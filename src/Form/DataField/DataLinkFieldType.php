@@ -262,7 +262,6 @@ class DataLinkFieldType extends DataFieldType
         ])->add('sortable', CheckboxType::class, [
                 'required' => false,
         ])->add('querySearch', QuerySearchPickerType::class, [
-                'multiple' => true,
                 'required' => false,
         ])->add('type', TextType::class, [
             'required' => false,

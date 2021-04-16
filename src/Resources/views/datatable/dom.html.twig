@@ -24,7 +24,9 @@
                                     {% endif %}
                                 </th>
                             {% endfor %}
-                            <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
+                            {% if datatable.itemActions|length > 0 %}
+                                <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
+                            {% endif %}
                         </tr>
                         </thead>
                         <tbody>
@@ -38,9 +40,11 @@
                                 {% for column in datatable.columns %}
                                     {{ block(column.tableDataBlock()) }}
                                 {% endfor %}
-                                <td data-search="">
-                                    {{ block('emsco_form_table_column_row_actions') }}
-                                </td>
+                                {% if datatable.itemActions|length > 0 %}
+                                    <td data-search="">
+                                        {{ block('emsco_form_table_column_row_actions') }}
+                                    </td>
+                                {% endif %}
                             </tr>
                         {%  endfor %}
                         </tbody>

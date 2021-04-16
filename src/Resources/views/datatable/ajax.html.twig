@@ -10,7 +10,9 @@
     {% for column in table.columns %}
         {%- set row = row|merge([block(column.tableDataValueBlock())]) -%}
     {% endfor %}
-    {%- set row = row|merge([block('emsco_form_table_column_row_actions')]) -%}
+    {%- if table.itemActions|length > 0 -%}
+        {%- set row = row|merge([block('emsco_form_table_column_row_actions')]) -%}
+    {%- endif -%}
 
     {%-  set data = data|merge([row]) -%}
 {%- endfor -%}

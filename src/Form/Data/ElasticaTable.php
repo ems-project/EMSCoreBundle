@@ -11,9 +11,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ElasticaTable extends TableAbstract
 {
-    const COLUMNS = 'columns';
-    const QUERY = 'query';
-    const EMPTY_QUERY = 'empty_query';
+    private const COLUMNS = 'columns';
+    private const QUERY = 'query';
+    private const EMPTY_QUERY = 'empty_query';
     private ElasticaService $elasticaService;
     /** @var string[] */
     private array $aliases;

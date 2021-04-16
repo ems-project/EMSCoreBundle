@@ -8,9 +8,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class TemplateTableColumn extends TableColumn
 {
-    const LABEL = 'label';
-    const TEMPLATE = 'template';
-    const ORDER_FIELD = 'orderField';
+    private const LABEL = 'label';
+    private const TEMPLATE = 'template';
+    private const ORDER_FIELD = 'orderField';
     private bool $orderable;
     private string $template;
 

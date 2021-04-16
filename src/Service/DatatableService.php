@@ -13,9 +13,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 final class DatatableService
 {
-    const CONFIG = 'config';
-    const ALIASES = 'aliases';
-    const CONTENT_TYPES = 'contentTypes';
+    private const CONFIG = 'config';
+    private const ALIASES = 'aliases';
+    private const CONTENT_TYPES = 'contentTypes';
     private ElasticaService $elasticaService;
     private EnvironmentService $environmentService;
     private LoggerInterface $logger;

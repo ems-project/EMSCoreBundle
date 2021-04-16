@@ -21,11 +21,11 @@ The second parameter is an array of content types.
 The third parameter is an options array:
 
  - `columns`: Definition of columns (array)
-    - `label`: Column's label (string)
-    - `template`: Twig template (string) where the following variables are available:
+    - `label`: Column's label (string). Default value `'Label'`
+    - `template`: Twig template (string) where the following variables are available. Default value `'''`. Available variable in the Twig context:
         - `data`: EMS\CommonBundle\Elasticsearch\Document\DocumentInterface
         - `column`: EMS\CoreBundle\Form\Data\TemplateTableColumn
-    - `orderField`: this value will be used in the elasticsearch query, when the table is sorted by this column, in order to sort the result set. If not defined, or set to null, this column won't be sortable. (string)
+    - `orderField`: this value (string) will be used in the elasticsearch query, when the table is sorted by this column, in order to sort the result set. If not defined, or set to null, this column won't be sortable. If not defined the column wont't be sortable.
    
 ## Optional options
 
@@ -54,7 +54,7 @@ It's the elasticsearch query (array or string) used to get the data when a query
 }) }}
 ```
 
-You can use the `%query%` pattern to inject the query string in your query. In this example we are using a [`search_as_you_type`](https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-as-you-type.html) search field. This kind of field type are particularly suitable for this kind of search. You can defined such field with this config:
+You can use the `%query%` pattern to inject the query string in your query. In this example we are using a [`search_as_you_type`](https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-as-you-type.html) search field. This kind of field type are particularly suitable for this kind of search. You can define such field type with this mapping's config:
 
 ```json
 {

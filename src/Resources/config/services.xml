@@ -36,12 +36,6 @@
             <argument type="service" id="ems_common.storage.manager"/>
             <argument type="service" id="ems.service.environment"/>
         </service>
-        <service id="ems.twig.runtime.datatable" alias="EMS\CoreBundle\Twig\DatatableRuntime"/>
-        <service id="EMS\CoreBundle\Twig\DatatableRuntime">
-            <argument type="service" id="ems.service.datatable"/>
-            <argument type="service" id="twig"/>
-            <tag name="twig.runtime"/>
-        </service>
 
     </services>
 </container>

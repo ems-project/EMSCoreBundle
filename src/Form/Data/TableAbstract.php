@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
+use EMS\CoreBundle\Helper\DataTableRequest;
+
 abstract class TableAbstract implements TableInterface
 {
     /** @var string */
@@ -24,11 +26,31 @@ abstract class TableAbstract implements TableInterface
     /** @var TableAction[] */
     private $tableActions = [];
     private ?string $orderField = null;
-    private ?string $orderDirection = 'asc';
+    private string $orderDirection = 'asc';
+    private int $size;
+    private int $from;
+    private string $searchValue = '';
+    private ?string $ajaxUrl = null;
+
+    public function __construct(?string $ajaxUrl, int $from, int $to)
+    {
+        $this->ajaxUrl = $ajaxUrl;
+        $this->from = $from;
+        $this->size = $to;
+    }
 
     public function isSortable(): bool
     {
         return false;
+    }
+
+    public function resetIterator(DataTableRequest $dataTableRequest): void
+    {
+        $this->from = $dataTableRequest->getFrom();
+        $this->size = $dataTableRequest->getSize();
+        $this->orderField = $dataTableRequest->getOrderField();
+        $this->orderDirection = $dataTableRequest->getOrderDirection();
+        $this->searchValue = $dataTableRequest->getSearchValue();
     }
 
     public function getLabelAttribute(): string
@@ -170,7 +192,7 @@ abstract class TableAbstract implements TableInterface
      */
     public function getFrontendOptions(): array
     {
-        $columnIndex = 0;
+        $columnIndex = null;
         if ($this->supportsTableActions()) {
             $columnIndex = 1;
         }
@@ -184,16 +206,17 @@ abstract class TableAbstract implements TableInterface
                 ++$counter;
             }
         }
-        $options = [
-            'order' => [[$columnIndex, $this->orderDirection]],
-        ];
+        $options = [];
 
-        $ajaxUrl = $this->getAjaxUrl();
-        if (null !== $ajaxUrl) {
+        if (null !== $columnIndex) {
+            $options['order'] = [[$columnIndex, $this->orderDirection]];
+        }
+
+        if (null !== $this->ajaxUrl) {
             $options = \array_merge($options, [
                 'processing' => true,
                 'serverSide' => true,
-                'ajax' => $ajaxUrl,
+                'ajax' => $this->ajaxUrl,
             ]);
         }
 
@@ -202,7 +225,32 @@ abstract class TableAbstract implements TableInterface
 
     public function getAjaxUrl(): ?string
     {
-        return null;
+        return $this->ajaxUrl;
+    }
+
+    public function getOrderField(): ?string
+    {
+        return $this->orderField;
+    }
+
+    public function getOrderDirection(): string
+    {
+        return $this->orderDirection;
+    }
+
+    public function getSize(): int
+    {
+        return $this->size;
+    }
+
+    public function getFrom(): int
+    {
+        return $this->from;
+    }
+
+    public function getSearchValue(): string
+    {
+        return $this->searchValue;
     }
 
     abstract public function supportsTableActions(): bool;

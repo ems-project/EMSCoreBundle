@@ -67,5 +67,9 @@
             <argument>%ems_core.asset_config%</argument>
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\DatatableController" public="true">
+            <argument type="service" id="ems.service.datatable" />
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

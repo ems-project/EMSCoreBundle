@@ -43,6 +43,14 @@ class TableColumn
     }
 
     /**
+     * @return array<mixed>
+     */
+    public function getFrontendOptions(): array
+    {
+        return [];
+    }
+
+    /**
      * @param mixed $data
      *
      * @return array<string, mixed>|null

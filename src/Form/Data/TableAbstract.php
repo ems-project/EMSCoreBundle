@@ -220,6 +220,19 @@ abstract class TableAbstract implements TableInterface
             ]);
         }
 
+        $columnOptions = [];
+        $columnTarget = 0;
+        if ($this->supportsTableActions()) {
+            $columnOptions[] = [
+                'targets' => $columnTarget++,
+            ];
+        }
+
+        foreach ($this->getColumns() as $column) {
+            $columnOptions[] = \array_merge($column->getFrontendOptions(), ['targets' => $columnTarget++]);
+        }
+        $options['columnDefs'] = $columnOptions;
+
         return $options;
     }
 

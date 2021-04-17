@@ -11,6 +11,8 @@ final class TemplateTableColumn extends TableColumn
     private const LABEL = 'label';
     private const TEMPLATE = 'template';
     private const ORDER_FIELD = 'orderField';
+    const CELL_TYPE = 'cellType';
+    const CELL_CLASS = 'cellClass';
     private bool $orderable;
     private string $template;
 
@@ -23,6 +25,8 @@ final class TemplateTableColumn extends TableColumn
         $this->orderable = null !== $options[self::ORDER_FIELD];
         $this->template = $options[self::TEMPLATE];
         parent::__construct($options[self::LABEL], $options[self::ORDER_FIELD] ?? 'not orderable');
+        $this->setCellClass($options[self::CELL_CLASS]);
+        $this->setCellType($options[self::CELL_TYPE]);
     }
 
     public function getOrderable(): bool
@@ -43,7 +47,7 @@ final class TemplateTableColumn extends TableColumn
     /**
      * @param array<string, mixed> $options
      *
-     * @return array{label: string, template: string, orderField: string|null}
+     * @return array{label: string, template: string, orderField: string|null, cellType: string, cellClass: string}
      */
     private static function resolveOptions(array $options)
     {
@@ -53,12 +57,16 @@ final class TemplateTableColumn extends TableColumn
                 self::LABEL => 'Label',
                 self::TEMPLATE => '',
                 self::ORDER_FIELD => null,
+                self::CELL_TYPE => 'td',
+                self::CELL_CLASS => '',
             ])
             ->setAllowedTypes(self::LABEL, ['string'])
             ->setAllowedTypes(self::TEMPLATE, ['string'])
             ->setAllowedTypes(self::ORDER_FIELD, ['string', 'null'])
+            ->setAllowedTypes(self::CELL_TYPE, ['string'])
+            ->setAllowedTypes(self::CELL_CLASS, ['string'])
         ;
-        /** @var array{label: string, template: string, orderField: string|null} $resolvedParameter */
+        /** @var array{label: string, template: string, orderField: string|null, cellType: string, cellClass: string} $resolvedParameter */
         $resolvedParameter = $resolver->resolve($options);
 
         return $resolvedParameter;

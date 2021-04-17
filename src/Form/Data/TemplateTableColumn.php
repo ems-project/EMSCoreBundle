@@ -11,8 +11,8 @@ final class TemplateTableColumn extends TableColumn
     private const LABEL = 'label';
     private const TEMPLATE = 'template';
     private const ORDER_FIELD = 'orderField';
-    const CELL_TYPE = 'cellType';
-    const CELL_CLASS = 'cellClass';
+    private const CELL_TYPE = 'cellType';
+    private const CELL_CLASS = 'cellClass';
     private bool $orderable;
     private string $template;
 

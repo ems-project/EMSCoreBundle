@@ -26,6 +26,8 @@ The third parameter is an options array:
         - `data`: EMS\CommonBundle\Elasticsearch\Document\DocumentInterface
         - `column`: EMS\CoreBundle\Form\Data\TemplateTableColumn
     - `orderField`: this value (string) will be used in the elasticsearch query, when the table is sorted by this column, in order to sort the result set. If not defined, or set to null, this column won't be sortable. If not defined the column wont't be sortable.
+    - `cellType`: The HTML tag for the column's items. `td` or `th`. Default value `td`
+    - `cellClass`: The class attribute for the column's items. The default value is an empty string.  
    
 ## Optional options
 
@@ -82,3 +84,4 @@ It's the elasticsearch query (array or string) used when nothing is defined in t
 {
 }
 ```
+

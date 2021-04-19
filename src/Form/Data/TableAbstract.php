@@ -55,6 +55,17 @@ abstract class TableAbstract implements TableInterface
         $this->searchValue = $dataTableRequest->getSearchValue();
     }
 
+    public function next(int $pagingSize = 100): bool
+    {
+        if ($this->from + $this->size >= $this->count()) {
+            return false;
+        }
+        $this->from = $this->from + $this->size;
+        $this->size = $pagingSize;
+
+        return true;
+    }
+
     public function getLabelAttribute(): string
     {
         return 'name';

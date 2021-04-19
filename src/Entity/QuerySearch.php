@@ -66,7 +66,7 @@ class QuerySearch implements EntityInterface
     /**
      * @ORM\Column(name="order_key", type="integer")
      */
-    private int $orderKey;
+    private int $orderKey = 9999;
 
     public function __construct()
     {
@@ -174,7 +174,7 @@ class QuerySearch implements EntityInterface
 
     public function getOrderKey(): int
     {
-        return $this->orderKey ?? 0;
+        return $this->orderKey ?? 9999;
     }
 
     public function setOrderKey(int $orderKey): void

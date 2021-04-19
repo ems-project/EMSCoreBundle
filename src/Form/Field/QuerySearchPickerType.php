@@ -10,7 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class QuerySearchPickerType extends ChoiceType
 {
     /** @var array<QuerySearch> */
-    private $choices;
+    private array $choices = [];
     private QuerySearchService $querySearchService;
 
     public function __construct(QuerySearchService $querySearchService)

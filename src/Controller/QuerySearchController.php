@@ -108,7 +108,6 @@ final class QuerySearchController extends AbstractController
         $table = new EntityTable($this->querySearchService, $this->generateUrl('ems_core_query_search'));
         $table->addColumn('query_search.index.column.label', 'label');
         $table->addColumn('query_search.index.column.name', 'name');
-        //$table->addColumn('query_search.index.column.environments', 'environments');
         $table->addItemGetAction('ems_core_query_search_edit', 'query_search.actions.edit', 'pencil');
         $table->addItemPostAction('ems_core_query_search_delete', 'query_search.actions.delete', 'trash', 'query_search.actions.delete_confirm');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'query_search.actions.delete_selected', 'query_search.actions.delete_selected_confirm');

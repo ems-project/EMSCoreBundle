@@ -46,12 +46,13 @@ final class DatatableController extends AbstractController
             $headers[] = $column->getTitleKey();
         }
         $rows = [$headers];
+        $template = $this->twig->load('@EMSCore/datatable/excel-cell.html.twig');
 
         while ($table->next()) {
             foreach ($table as $line) {
                 $row = [];
                 foreach ($table->getColumns() as $column) {
-                    $row[] = $this->twig->render('@EMSCore/datatable/excel-cell.html.twig', [
+                    $row[] = $template->render([
                         'line' => $line,
                         'column' => $column,
                     ]);

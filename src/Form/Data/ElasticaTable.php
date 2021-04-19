@@ -14,6 +14,7 @@ class ElasticaTable extends TableAbstract
     private const COLUMNS = 'columns';
     private const QUERY = 'query';
     private const EMPTY_QUERY = 'empty_query';
+    private const FRONTEND_OPTIONS = 'frontendOptions';
     private ElasticaService $elasticaService;
     /** @var string[] */
     private array $aliases;
@@ -50,6 +51,7 @@ class ElasticaTable extends TableAbstract
         foreach ($options[self::COLUMNS] as $column) {
             $datatable->addColumnDefinition(new TemplateTableColumn($column));
         }
+        $datatable->setExtraFrontendOption($options[self::FRONTEND_OPTIONS]);
 
         return $datatable;
     }
@@ -122,7 +124,7 @@ class ElasticaTable extends TableAbstract
     /**
      * @param array<string, mixed> $options
      *
-     * @return array{columns: array, query: string, empty_query: string}
+     * @return array{columns: array, query: string, empty_query: string, frontendOptions: array}
      */
     private static function resolveOptions(array $options)
     {
@@ -136,6 +138,7 @@ class ElasticaTable extends TableAbstract
                         'query' => '%query%',
                     ],
                 ],
+                self::FRONTEND_OPTIONS => [],
             ])
             ->setAllowedTypes(self::COLUMNS, ['array'])
             ->setAllowedTypes(self::QUERY, ['array', 'string'])
@@ -161,7 +164,7 @@ class ElasticaTable extends TableAbstract
                 return $value;
             })
         ;
-        /** @var array{columns: array, query: string, empty_query: string} $resolvedParameter */
+        /** @var array{columns: array, query: string, empty_query: string, frontendOptions: array} $resolvedParameter */
         $resolvedParameter = $resolver->resolve($options);
 
         return $resolvedParameter;

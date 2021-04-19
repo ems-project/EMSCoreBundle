@@ -31,6 +31,8 @@ abstract class TableAbstract implements TableInterface
     private int $from;
     private string $searchValue = '';
     private ?string $ajaxUrl = null;
+    /** @var array<mixed> */
+    private array $extraFrontendOption = [];
 
     public function __construct(?string $ajaxUrl, int $from, int $to)
     {
@@ -188,6 +190,16 @@ abstract class TableAbstract implements TableInterface
     }
 
     /**
+     * @param array<mixed> $extraFrontendOption
+     */
+    public function setExtraFrontendOption(array $extraFrontendOption): TableAbstract
+    {
+        $this->extraFrontendOption = $extraFrontendOption;
+
+        return $this;
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function getFrontendOptions(): array
@@ -219,6 +231,21 @@ abstract class TableAbstract implements TableInterface
                 'ajax' => $this->ajaxUrl,
             ]);
         }
+
+        $columnOptions = [];
+        $columnTarget = 0;
+        if ($this->supportsTableActions()) {
+            $columnOptions[] = [
+                'targets' => $columnTarget++,
+            ];
+        }
+
+        foreach ($this->getColumns() as $column) {
+            $columnOptions[] = \array_merge($column->getFrontendOptions(), ['targets' => $columnTarget++]);
+        }
+        $options['columnDefs'] = $columnOptions;
+
+        $options = \array_merge($options, $this->extraFrontendOption);
 
         return $options;
     }

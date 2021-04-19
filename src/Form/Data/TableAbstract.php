@@ -34,11 +34,11 @@ abstract class TableAbstract implements TableInterface
     /** @var array<mixed> */
     private array $extraFrontendOption = [];
 
-    public function __construct(?string $ajaxUrl, int $from, int $to)
+    public function __construct(?string $ajaxUrl, int $from, int $size)
     {
         $this->ajaxUrl = $ajaxUrl;
         $this->from = $from;
-        $this->size = $to;
+        $this->size = $size;
     }
 
     public function isSortable(): bool

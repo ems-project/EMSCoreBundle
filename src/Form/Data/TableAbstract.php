@@ -34,11 +34,11 @@ abstract class TableAbstract implements TableInterface
     /** @var array<mixed> */
     private array $extraFrontendOption = [];
 
-    public function __construct(?string $ajaxUrl, int $from, int $to)
+    public function __construct(?string $ajaxUrl, int $from, int $size)
     {
         $this->ajaxUrl = $ajaxUrl;
         $this->from = $from;
-        $this->size = $to;
+        $this->size = $size;
     }
 
     public function isSortable(): bool
@@ -53,6 +53,17 @@ abstract class TableAbstract implements TableInterface
         $this->orderField = $dataTableRequest->getOrderField();
         $this->orderDirection = $dataTableRequest->getOrderDirection();
         $this->searchValue = $dataTableRequest->getSearchValue();
+    }
+
+    public function next(int $pagingSize = 100): bool
+    {
+        if ($this->from + $this->size >= $this->count()) {
+            return false;
+        }
+        $this->from = $this->from + $this->size;
+        $this->size = $pagingSize;
+
+        return true;
     }
 
     public function getLabelAttribute(): string

@@ -113,3 +113,19 @@ I.e.:
     }]
 }) }}
 ```
+
+# emsco_datatable_excel_path
+
+This function is generating a path to an excel generator. This twig function has the same signature as the [emsco_datatable](#emsco_datatable) twig function. I.e.:
+
+```twig
+<a href="{{ emsco_datatable(['default'],['miniature'], {
+    "columns": [{
+        "label": "ID",
+        "template": "{{ data.source.identifier }}"
+    },{
+        "label": "Name",
+        "template": "{{ data.source.name }}"
+    }]
+}) }}">Download Excel</a>
+```

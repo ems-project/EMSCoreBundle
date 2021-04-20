@@ -1,13 +1,11 @@
 {% trans_default_domain 'EMSCoreBundle' %}
-{% extends '@EMSCore/base.html.twig' %}
 {% extends '@EMSCore/query-search/form.html.twig' %}
 
 {% block title %}{{ 'query_search.edit.title'|trans }}{% endblock %}
 {% block pagetitle %}{{ block('title') }}{% endblock %}
 
 {% block body %}
-    {% include "@EMSCore/query-search/form.html.twig" with {
-    	label: 'query_search.edit.title',
-		save_action_key: 'query_search.edit.save',
-    } %}
+  {% set label = 'query_search.edit.title' %}
+  {% set save_action_key = 'query_search.add.save' %}
+  {{ parent() }}
 {% endblock %}

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Field;
 
@@ -36,12 +37,12 @@ class QuerySearchPickerType extends ChoiceType
                     'data-live-search' => false,
                     'class' => 'selectpicker',
             ],
-            'choice_attr' => function ($category, $key, $index) {
+            'choice_attr' => function ($name, $key, $index) {
                 /** @var QuerySearch $querySearch */
                 $querySearch = $this->choices[$index];
 
                 return [
-                        'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$querySearch->getName().'</div>',
+                        'data-content' => "<div class='text-".$name."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$querySearch->getName().'</div>',
                 ];
             },
             'choice_value' => function ($value) {

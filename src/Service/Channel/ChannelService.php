@@ -112,6 +112,6 @@ final class ChannelService implements EntityServiceInterface
             throw new \RuntimeException('Unexpected non-null object');
         }
 
-        return $this->channelRepository->counter();
+        return $this->channelRepository->counter($searchValue);
     }
 }

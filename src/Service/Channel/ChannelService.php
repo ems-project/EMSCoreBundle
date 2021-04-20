@@ -2,19 +2,18 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Service;
+namespace EMS\CoreBundle\Service\Channel;
 
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Repository\ChannelRepository;
+use EMS\CoreBundle\Service\EntityServiceInterface;
 use Psr\Log\LoggerInterface;
 
 final class ChannelService implements EntityServiceInterface
 {
-    /** @var ChannelRepository */
-    private $channelRepository;
-    /** @var LoggerInterface */
-    private $logger;
+    private ChannelRepository $channelRepository;
+    private LoggerInterface $logger;
 
     public function __construct(ChannelRepository $channelRepository, LoggerInterface $logger)
     {
@@ -72,9 +71,11 @@ final class ChannelService implements EntityServiceInterface
      */
     public function reorderByIds(array $ids): void
     {
+        $counter = 1;
         foreach ($this->channelRepository->getByIds(\array_keys($ids)) as $channel) {
-            $channel->setOrderKey($ids[$channel->getId()] ?? 0);
+            $channel->setOrderKey($counter);
             $this->channelRepository->create($channel);
+            ++$counter;
         }
     }
 
@@ -88,13 +89,13 @@ final class ChannelService implements EntityServiceInterface
      *
      * @return Channel[]
      */
-    public function get(int $from, int $size, $context = null): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected context');
         }
 
-        return $this->channelRepository->get($from, $size);
+        return $this->channelRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
     public function getEntityName(): string
@@ -105,12 +106,12 @@ final class ChannelService implements EntityServiceInterface
     /**
      * @param mixed $context
      */
-    public function count($context = null): int
+    public function count(string $searchValue = '', $context = null): int
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected non-null object');
         }
 
-        return $this->channelRepository->counter();
+        return $this->channelRepository->counter($searchValue);
     }
 }

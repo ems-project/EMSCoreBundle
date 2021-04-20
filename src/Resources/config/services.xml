@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <defaults public="false" />
+
+        <!-- event listeners -->
+        <service id="ems.event_listener.request_listener" class="EMS\CoreBundle\EventListener\RequestListener">
+            <argument type="service" id="ems.service.channel.register"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="router"/>
+            <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" />
+            <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" priority="110" />
+        </service>
+
+        <!-- core service -->
+        <service id="ems.service.channel" class="EMS\CoreBundle\Service\Channel\ChannelService">
+            <argument type="service" id="ems.repository.channel"/>
+            <argument type="service" id="logger"/>
+        </service>
+        <service id="ems.service.channel.register" class="EMS\CoreBundle\Service\Channel\ChannelRegistrar">
+            <argument type="service" id="ems.repository.channel"/>
+            <argument type="service" id="EMS\ClientHelperBundle\Contracts\Environment\EnvironmentHelperInterface"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.index"/>
+        </service>
+        <service id="ems.service.datatable" alias="EMS\CoreBundle\Service\DatatableService"/>
+        <service id="EMS\CoreBundle\Service\DatatableService">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems_common.storage.manager"/>
+            <argument type="service" id="ems.service.environment"/>
+        </service>
+
+    </services>
+</container>

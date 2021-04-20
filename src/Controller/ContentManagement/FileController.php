@@ -10,6 +10,7 @@ use EMS\CoreBundle\Service\FileService;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,6 +40,32 @@ class FileController extends AbstractController
     public function downloadFileAction(string $sha1, Request $request, FileService $fileService): Response
     {
         return $fileService->getStreamResponse($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
+    }
+
+    /**
+     * @Route("/admin/file/{id}/soft-delete" , name="ems_file_soft_delete", methods={"POST","HEAD"})
+     */
+    public function softDeleteFileAction(Request $request, string $id, FileService $fileService): Response
+    {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException($request->getPathInfo());
+        }
+        $fileService->removeSingleFileEntity([$id]);
+
+        return $this->redirectToRoute('ems_core_uploaded_file_index');
+    }
+
+    /**
+     * @Route("/admin/file/{id}/hard-delete" , name="ems_file_hard_delete", methods={"POST","HEAD"})
+     */
+    public function hardDeleteFileAction(Request $request, string $id, FileService $fileService): Response
+    {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException($request->getPathInfo());
+        }
+        $fileService->hardRemoveFiles([$id]);
+
+        return $this->redirectToRoute('ems_core_uploaded_file_index');
     }
 
     /**

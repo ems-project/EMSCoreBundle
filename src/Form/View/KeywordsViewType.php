@@ -65,12 +65,24 @@ class KeywordsViewType extends ViewType
         $search = $this->elasticaService->convertElasticsearchSearch($searchQuery);
         $resultSet = $this->elasticaService->search($search);
 
-        foreach (\explode('.', $view->getOptions()['pathToBuckets']) as $attribute) {
-            $retDoc = $resultSet->getResponse()->getData()[$attribute];
+        $bucketPath = $view->getOptions()['pathToBuckets'] ?? null;
+        $keywords = $resultSet->getResponse()->getData();
+        if (!\is_array($keywords)) {
+            throw new \RuntimeException('Unexpected response type');
+        }
+        if (\is_string($bucketPath)) {
+            foreach (\explode('.', $bucketPath) as $attribute) {
+                if (!isset($keywords[$attribute])) {
+                    $keywords = [];
+                    $this->logger->warning('log.view.keywords.warning.bucket_not_found', ['bucketPath' => $bucketPath]);
+                    break;
+                }
+                $keywords = $keywords[$attribute];
+            }
         }
 
         return [
-            'keywords' => $resultSet->getResponse()->getData(),
+            'keywords' => $keywords,
             'view' => $view,
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),

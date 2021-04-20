@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Storage\StorageManager;
 
 /**
  * DataField.
@@ -12,7 +13,7 @@ use EMS\CommonBundle\Helper\EmsFields;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\UploadedAssetRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class UploadedAsset
+class UploadedAsset implements EntityInterface
 {
     /**
      * @var int
@@ -99,6 +100,30 @@ class UploadedAsset
      * @ORM\Column(name="hash_algo", type="string", length=32, options={"default" : "sha1"})
      */
     private $hashAlgo;
+
+    /**
+     * @ORM\Column(name="hidden", type="boolean", options={"default" : 0})
+     */
+    private bool $hidden = false;
+
+    /**
+     * @ORM\Column(name="head_last", type="datetime", nullable=true)
+     */
+    private ?\DateTime $headLast;
+
+    /**
+     * @var string[]|null
+     *
+     * @ORM\Column(name="head_in", type="array", nullable=true)
+     */
+    private ?array $headIn;
+
+    private StorageManager $storageManager;
+
+    public function __construct(StorageManager $storageManager)
+    {
+        $this->storageManager = $storageManager;
+    }
 
     /**
      * @ORM\PrePersist
@@ -377,6 +402,48 @@ class UploadedAsset
     public function setHashAlgo(string $hashAlgo): UploadedAsset
     {
         $this->hashAlgo = $hashAlgo;
+
+        return $this;
+    }
+
+    public function isHidden(): bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(bool $hidden): UploadedAsset
+    {
+        $this->hidden = $hidden;
+
+        return $this;
+    }
+
+    public function getHeadLast(): ?\DateTime
+    {
+        return $this->headLast;
+    }
+
+    public function setHeadLast(?\DateTime $headLast): UploadedAsset
+    {
+        $this->headLast = $headLast;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getHeadIn(): ?array
+    {
+        return $this->headIn;
+    }
+
+    /**
+     * @param string[]|null $headIn
+     */
+    public function setHeadIn(?array $headIn): UploadedAsset
+    {
+        $this->headIn = $headIn;
 
         return $this;
     }

@@ -3,6 +3,18 @@ Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
 CKEDITOR.plugins.setLang( 'adv_link', 'de', {
+    file: 'Datei',
+    selectFileLabel: 'Hochladen',
+    selectFileTitle: 'Hochladen',
+    documentNotFound: 'Dokument nicht gefunden',
+	selectContentTypeLabel:'Wählen Sie einen Inhaltstyp',
+	selectContentTypeTitle:'Wählen Sie einen Inhaltstyp aus, um das Suchergebnis zu filtern',
+    selectFileFilenameLabel: 'Dateinamen',
+    selectFileFilenameTitle: 'Dateinamen',
+	localPages:'Interner Link',
+	asset:'Anlagegut',
+	selectPageLabel:'Wählen Sie ein Dokument aus',
+	selectPageTitle:'Wählen Sie die Seite aus, zu der Sie einen Link erstellen möchten',
 	acccessKey: 'Zugriffstaste',
 	advanced: 'Erweitert',
 	advisoryContentType: 'Inhaltstyp',

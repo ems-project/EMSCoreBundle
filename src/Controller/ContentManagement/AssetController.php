@@ -4,8 +4,8 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\NotFoundException;
+use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Storage\Processor\Processor;
-use EMS\CoreBundle\Twig\AppExtension;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,15 +14,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AssetController extends AbstractController
 {
-    /** @var Processor */
-    private $processor;
-    /** @var AppExtension */
-    private $appExtension;
+    private Processor $processor;
+    /** @var array<string, mixed> */
+    protected array $assetConfig;
 
-    public function __construct(Processor $processor, AppExtension $appExtension)
+    /**
+     * @param array<string, mixed> $assetConfig
+     */
+    public function __construct(Processor $processor, array $assetConfig)
     {
         $this->processor = $processor;
-        $this->appExtension = $appExtension;
+        $this->assetConfig = $assetConfig;
     }
 
     /**
@@ -33,6 +35,7 @@ class AssetController extends AbstractController
      */
     public function assetAction(string $hash, string $hash_config, string $filename, Request $request)
     {
+        $this->closeSession($request);
         try {
             return $this->processor->getResponse($request, $hash, $hash_config, $filename);
         } catch (NotFoundException $e) {
@@ -46,12 +49,39 @@ class AssetController extends AbstractController
      */
     public function assetProcessorAction(Request $request, string $processor, string $hash): Response
     {
-        @\trigger_error(\sprintf('The "%s::assetProcessorAction" controller is deprecated. Used "%s::assetAction" instead.', AssetController::class, AssetController::class), E_USER_DEPRECATED);
+        $this->closeSession($request);
+        $assetConfig = $this->assetConfig[$processor] ?? [];
+        if (!\is_array($assetConfig)) {
+            throw new \RuntimeException('Unexpected asset config type');
+        }
 
-        return $this->redirect($this->appExtension->assetPath([
-            EmsFields::CONTENT_FILE_HASH_FIELD => $hash,
-            EmsFields::CONTENT_FILE_NAME_FIELD => $request->query->get('name', 'filename'),
-            EmsFields::CONTENT_MIME_TYPE_FIELD => $request->query->get('type', 'application/octet-stream'),
-        ], $processor, [], 'emsco_asset_public'));
+        if (!isset($assetConfig[EmsFields::ASSET_CONFIG_TYPE])) {
+            $assetConfig[EmsFields::ASSET_CONFIG_TYPE] = EmsFields::ASSET_CONFIG_TYPE_IMAGE;
+        }
+        $filename = $processor;
+        $quality = \intval($assetConfig[EmsFields::ASSET_CONFIG_QUALITY] ?? 0);
+        if (EmsFields::ASSET_CONFIG_TYPE_IMAGE === $assetConfig[EmsFields::ASSET_CONFIG_TYPE] && !isset($assetConfig[EmsFields::ASSET_CONFIG_MIME_TYPE])) {
+            $assetConfig[EmsFields::ASSET_CONFIG_MIME_TYPE] = 0 === $quality ? 'image/png' : 'image/jpeg';
+        }
+        if (EmsFields::ASSET_CONFIG_TYPE_IMAGE === ($assetConfig[EmsFields::ASSET_CONFIG_TYPE] ?? null)) {
+            $filename .= 0 === $quality ? '.png' : '.jpg';
+        }
+
+        $assetConfig = \array_intersect_key($assetConfig, Config::getDefaults());
+        $config = $this->processor->configFactory($hash, $assetConfig);
+
+        return $this->processor->getStreamedResponse($request, $config, $filename, false);
+    }
+
+    private function closeSession(Request $request): void
+    {
+        if (!$request->hasSession()) {
+            return;
+        }
+
+        $session = $request->getSession();
+        if ($session->isStarted()) {
+            $session->save();
+        }
     }
 }

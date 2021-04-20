@@ -11,11 +11,17 @@ use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Form\Data\BoolTableColumn;
+use EMS\CoreBundle\Form\Data\DataLinksTableColumn;
+use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
+use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\RolesTableColumn;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Form\TableType;
+use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
-use EMS\CoreBundle\Service\HelperService;
 use EMS\CoreBundle\Service\UserService;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -27,6 +33,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,10 +46,28 @@ class UserController extends AppController
      */
     private $circleObject;
 
-    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime, ?string $circleObject)
+    private UserService $userService;
+
+    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime, ?string $circleObject, UserService $userService)
     {
         parent::__construct($logger, $formRegistry, $requestRuntime);
         $this->circleObject = $circleObject;
+        $this->userService = $userService;
+    }
+
+    /**
+     * @Route("/user/datatable.json", name="ems_core_user_ajax_data_table")
+     */
+    public function ajaxDataTableAction(Request $request): Response
+    {
+        $table = $this->initTable();
+        $dataTableRequest = DataTableRequest::fromRequest($request);
+        $table->resetIterator($dataTableRequest);
+
+        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+            'dataTableRequest' => $dataTableRequest,
+            'table' => $table,
+        ], new JsonResponse());
     }
 
     /**
@@ -50,10 +75,15 @@ class UserController extends AppController
      *
      * @return Response
      */
-    public function indexAction(HelperService $helperService)
+    public function indexAction(Request $request)
     {
+        $table = $this->initTable();
+
+        $form = $this->createForm(TableType::class, $table);
+        $form->handleRequest($request);
+
         return $this->render('@EMSCore/user/index.html.twig', [
-            'paging' => $helperService->getPagingTool('EMSCoreBundle:User', 'ems.user.index', 'username'),
+            'form' => $form->createView(),
         ]);
     }
 
@@ -446,5 +476,27 @@ class UserController extends AppController
         }
 
         return true;
+    }
+
+    private function initTable(): EntityTable
+    {
+        $table = new EntityTable($this->userService, $this->generateUrl('ems_core_user_ajax_data_table'));
+        $table->addColumn('user.index.column.username', 'username');
+        $table->addColumn('user.index.column.displayname', 'displayName');
+        $table->addColumnDefinition(new BoolTableColumn('user.index.column.email_notification', 'emailNotification'))
+            ->setIconClass('fa fa-bell');
+        $table->addColumn('user.index.column.email', 'email');
+        $table->addColumnDefinition(new DataLinksTableColumn('user.index.column.circles', 'circles'));
+        $table->addColumnDefinition(new BoolTableColumn('user.index.column.enabled', 'enabled'));
+        $table->addColumnDefinition(new RolesTableColumn('user.index.column.roles', 'roles'));
+        $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.lastLogin', 'lastLogin'));
+
+        $table->addDynamicItemGetAction('user.edit', 'user.action.edit', 'pencil', ['id' => 'id']);
+        $table->addDynamicItemGetAction('homepage', 'user.action.switch', 'user-secret', ['_switch_user' => 'username']);
+        $table->addDynamicItemPostAction('user.enabling', 'user.action.disable', 'user-times', 'user.action.disable_confirm', ['id' => 'id']);
+        $table->addDynamicItemPostAction('EMS_user_apikey', 'user.action.generate_api', 'key', 'user.action.generate_api_confirm', ['username' => 'username']);
+        $table->addDynamicItemPostAction('user.delete', 'user.action.delete', 'trash', 'user.action.delete_confirm', ['id' => 'id']);
+
+        return $table;
     }
 }

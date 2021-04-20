@@ -12,35 +12,38 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    const PAGING_SIZE = 20;
-    const SHORTNAME = 'e<b>ms</b>';
-    const NAME = 'elastic<b>ms</b>';
-    const THEME_COLOR = 'blue';
-    const DATE_TIME_FORMAT = 'j/m/Y \a\t G:i';
-    const FROM_EMAIL_ADDRESS = 'noreply@example.com';
-    const FROM_EMAIL_NAME = 'elasticms';
-    const INSTANCE_ID = 'ems_';
-    const CIRCLES_OBJECT = null;
-    const ELASTICSEARCH_DEFAULT_CLUSTER = ['http://localhost:9200'];
-    const DATEPICKER_FORMAT = 'dd/mm/yyyy';
-    const DATEPICKER_WEEKSTART = 1;
-    const DATEPICKER_DAYSOFWEEK_HIGHLIGHTED = [0, 6];
-    const NOTIFICATION_PENDING_TIMEOUT = 'P0Y0M15DT0H0M0S';
-    const ALLOW_USER_REGISTRATION = false;
-    const TRIGGER_JOB_FROM_WEB = true;
-    const LOCK_TIME = '+1 minutes';
-    const USER_LOGIN_ROUTE = 'fos_user_security_login';
-    const USER_PROFILE_ROUTE = 'fos_user_profile_show';
-    const USER_LOGOUT_ROUTE = 'fos_user_security_logout';
-    const USER_REGISTRATION_ROUTE = 'fos_user_registration_register';
-    const ADD_USER_ROUTE = 'user.add';
-    const APPLICATION_MENU_CONTROLLER = null;
-    const PRIVATE_KEY = null;
-    const PUBLIC_KEY = null;
-    const ASSET_CONFIG = [];
-    const TIKA_SERVER = null;
-    const SAVE_ASSETS_IN_DB = false;
-    const LOG_LEVEL = 'info';
+    public const PAGING_SIZE = 20;
+    public const SHORTNAME = 'e<b>ms</b>';
+    public const NAME = 'elastic<b>ms</b>';
+    public const THEME_COLOR = 'blue';
+    public const DATE_TIME_FORMAT = 'j/m/Y \a\t G:i';
+    public const DATE_FORMAT = 'j/m/Y';
+    public const TIME_FORMAT = 'G:i:s';
+    public const FROM_EMAIL_ADDRESS = 'noreply@example.com';
+    public const FROM_EMAIL_NAME = 'elasticms';
+    public const INSTANCE_ID = 'ems_';
+    public const CIRCLES_OBJECT = null;
+    public const ELASTICSEARCH_DEFAULT_CLUSTER = ['http://localhost:9200'];
+    public const DATEPICKER_FORMAT = 'dd/mm/yyyy';
+    public const DATEPICKER_WEEKSTART = 1;
+    public const DATEPICKER_DAYSOFWEEK_HIGHLIGHTED = [0, 6];
+    public const NOTIFICATION_PENDING_TIMEOUT = 'P0Y0M15DT0H0M0S';
+    public const ALLOW_USER_REGISTRATION = false;
+    public const TRIGGER_JOB_FROM_WEB = true;
+    public const LOCK_TIME = '+1 minutes';
+    public const USER_LOGIN_ROUTE = 'fos_user_security_login';
+    public const USER_PROFILE_ROUTE = 'fos_user_profile_show';
+    public const USER_LOGOUT_ROUTE = 'fos_user_security_logout';
+    public const USER_REGISTRATION_ROUTE = 'fos_user_registration_register';
+    public const ADD_USER_ROUTE = 'user.add';
+    public const APPLICATION_MENU_CONTROLLER = null;
+    public const PRIVATE_KEY = null;
+    public const PUBLIC_KEY = null;
+    public const ASSET_CONFIG = [];
+    public const TIKA_SERVER = null;
+    public const SAVE_ASSETS_IN_DB = false;
+    public const LOG_LEVEL = 'info';
+    public const DEFAULT_BULK_SIZE = 500;
 
     /**
      * {@inheritdoc}
@@ -57,6 +60,8 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('name')->defaultValue(self::NAME)->end()
             ->scalarNode('theme_color')->defaultValue(self::THEME_COLOR)->end()
             ->scalarNode('date_time_format')->defaultValue(self::DATE_TIME_FORMAT)->end()
+            ->scalarNode('date_format')->defaultValue(self::DATE_FORMAT)->end()
+            ->scalarNode('time_format')->defaultValue(self::TIME_FORMAT)->end()
             ->scalarNode('instance_id')->defaultValue(self::INSTANCE_ID)->end()
             ->scalarNode('datepicker_format')->defaultValue(self::DATEPICKER_FORMAT)->end()
             ->scalarNode('datepicker_weekstart')->defaultValue(self::DATEPICKER_WEEKSTART)->end()
@@ -89,6 +94,7 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('template_options')->defaultValue([])->prototype('variable')->end()->end()
             ->scalarNode('health_check_allow_origin')->defaultValue(null)->end()
             ->scalarNode('tika_download_url')->defaultValue(null)->end()
+            ->scalarNode('default_bulk_size')->defaultValue(self::DEFAULT_BULK_SIZE)->end()
             ->arrayNode('ldap')
             ->children()
             ->scalarNode('base_dn')->end()

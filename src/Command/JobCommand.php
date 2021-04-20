@@ -62,7 +62,12 @@ class JobCommand extends Command
             \sprintf('Created: %s', $job->getCreated()->format($this->dateFormat)),
         ]);
         $start = new \DateTime();
-        $this->jobService->run($job);
+        try {
+            $this->jobService->run($job);
+        } catch (\Throwable $e) {
+            $this->jobService->finish($job);
+            throw $e;
+        }
         $interval = \date_diff($start, new \DateTime());
 
         $this->io->success(\sprintf('Job completed with the return status "%s" in %s', $job->getStatus(), $interval->format('%a days, %h hours, %i minutes and %s seconds')));

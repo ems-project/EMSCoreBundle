@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
+use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 
 final class EntityTable extends TableAbstract
 {
-    /** @var EntityServiceInterface */
-    private $entityService;
-    /** @var int */
-    private $size;
-    /** @var int */
-    private $from;
+    private EntityServiceInterface $entityService;
+    private bool $loadAll;
+    private ?int $count = null;
+    private ?int $totalCount = null;
     /**
      * @var mixed|null
      */
@@ -22,12 +21,25 @@ final class EntityTable extends TableAbstract
     /**
      * @param mixed $context
      */
-    public function __construct(EntityServiceInterface $entityService, $context = null, int $from = 0, int $size = 50)
+    public function __construct(EntityServiceInterface $entityService, string $ajaxUrl, $context = null, int $loadAllMaxRow = 400)
     {
         $this->entityService = $entityService;
         $this->context = $context;
-        $this->from = $from;
-        $this->size = $size;
+
+        if ($this->count() > $loadAllMaxRow) {
+            parent::__construct($ajaxUrl, 0, 0);
+            $this->loadAll = false;
+        } else {
+            parent::__construct(null, 0, $loadAllMaxRow);
+            $this->loadAll = true;
+        }
+    }
+
+    public function resetIterator(DataTableRequest $dataTableRequest): void
+    {
+        parent::resetIterator($dataTableRequest);
+        $this->totalCount = null;
+        $this->count = null;
     }
 
     public function isSortable(): bool
@@ -40,7 +52,7 @@ final class EntityTable extends TableAbstract
      */
     public function getIterator(): iterable
     {
-        foreach ($this->entityService->get($this->from, $this->size, $this->context) as $entity) {
+        foreach ($this->entityService->get($this->getFrom(), $this->getSize(), $this->getOrderField(), $this->getOrderDirection(), $this->getSearchValue(), $this->context) as $entity) {
             yield \strval($entity->getId()) => new EntityRow($entity);
         }
     }
@@ -50,8 +62,36 @@ final class EntityTable extends TableAbstract
         return $this->entityService->getEntityName();
     }
 
+    public function totalCount(): int
+    {
+        if (null === $this->totalCount) {
+            $this->totalCount = $this->entityService->count('', $this->context);
+        }
+
+        return $this->totalCount;
+    }
+
     public function count(): int
     {
-        return $this->entityService->count($this->context);
+        if (null === $this->count) {
+            $this->count = $this->entityService->count($this->getSearchValue(), $this->context);
+        }
+
+        return $this->count;
+    }
+
+    public function supportsTableActions(): bool
+    {
+        if (!$this->loadAll) {
+            return false;
+        }
+        if ($this->totalCount() <= 1) {
+            return false;
+        }
+        foreach ($this->getTableActions() as $action) {
+            return true;
+        }
+
+        return false;
     }
 }

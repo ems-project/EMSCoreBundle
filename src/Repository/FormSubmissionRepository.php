@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\FormSubmission;
 
 class FormSubmissionRepository extends ServiceEntityRepository
@@ -25,14 +26,18 @@ class FormSubmissionRepository extends ServiceEntityRepository
     /**
      * @return FormSubmission[]
      */
-    public function get(int $from, int $size): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
     {
         $qb = $this->createQueryBuilder('fs');
-        $qb
-            ->andWhere($qb->expr()->isNotNull('fs.data'))
-            ->setFirstResult($from)
-            ->setMaxResults($size)
-            ->orderBy('fs.created', 'desc');
+        $qb->setFirstResult($from)
+            ->setMaxResults($size);
+        $this->addSearchFilters($qb, $searchValue);
+
+        if (\in_array($orderField, ['id', 'instance', 'name', 'locale', 'created', 'expireDate'])) {
+            $qb->orderBy(\sprintf('fs.%s', $orderField), $orderDirection);
+        } else {
+            $qb->orderBy('fs.created', $orderDirection);
+        }
 
         return $qb->getQuery()->execute();
     }
@@ -50,10 +55,11 @@ class FormSubmissionRepository extends ServiceEntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
-    public function countAllUnprocessed(): int
+    public function countAllUnprocessed(string $searchValue): int
     {
         $qb = $this->createQueryBuilder('fs');
-        $qb->select('count(fs.data)');
+        $qb->select('count(fs.id)');
+        $this->addSearchFilters($qb, $searchValue);
 
         return $qb->getQuery()->getSingleScalarResult();
     }
@@ -116,5 +122,20 @@ class FormSubmissionRepository extends ServiceEntityRepository
     public function flush(): void
     {
         $this->_em->flush();
+    }
+
+    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    {
+        $qb->andWhere($qb->expr()->isNotNull('fs.data'));
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('fs.id', ':term'),
+                $qb->expr()->like('fs.instance', ':term'),
+                $qb->expr()->like('fs.name', ':term'),
+                $qb->expr()->like('fs.locale', ':term')
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.$searchValue.'%');
+        }
     }
 }

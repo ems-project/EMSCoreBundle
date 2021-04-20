@@ -44,8 +44,10 @@ class ReindexCommand extends EmsCommand
     private $error;
     /** @var Bulker */
     private $bulker;
+    /** @var string */
+    private $defaultBulkSize;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container, string $instanceId, DataService $dataService, Bulker $bulker)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container, string $instanceId, DataService $dataService, Bulker $bulker, string $defaultBulkSize)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -54,6 +56,7 @@ class ReindexCommand extends EmsCommand
         $this->instanceId = $instanceId;
         $this->dataService = $dataService;
         $this->bulker = $bulker;
+        $this->defaultBulkSize = $defaultBulkSize;
         parent::__construct();
 
         $this->count = 0;
@@ -93,7 +96,7 @@ class ReindexCommand extends EmsCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Number of item that will be indexed together during the same elasticsearch operation',
-                1000
+                $this->defaultBulkSize
             );
     }
 

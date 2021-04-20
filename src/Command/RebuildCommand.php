@@ -20,6 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RebuildCommand extends EmsCommand
 {
+    public const COMMAND = 'ems:environment:rebuild';
     /** @var Registry */
     private $doctrine;
     /** @var ContentTypeService */
@@ -38,8 +39,10 @@ class RebuildCommand extends EmsCommand
     private $mapping;
     /** @var AliasService */
     private $aliasService;
+    /** @var string */
+    private $defaultBulkSize;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId, string $defaultBulkSize)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
@@ -50,13 +53,14 @@ class RebuildCommand extends EmsCommand
         $this->logger = $logger;
         $this->mapping = $mapping;
         $this->aliasService = $aliasService;
+        $this->defaultBulkSize = $defaultBulkSize;
         parent::__construct();
     }
 
     protected function configure(): void
     {
         $this
-            ->setName('ems:environment:rebuild')
+            ->setName(self::COMMAND)
             ->setDescription('Rebuild an environment in a brand new index')
             ->addArgument(
                 'name',
@@ -86,7 +90,7 @@ class RebuildCommand extends EmsCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Number of item that will be indexed together during the same elasticsearch operation',
-                500
+                $this->defaultBulkSize
             )
         ;
     }

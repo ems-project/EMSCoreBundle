@@ -32,6 +32,7 @@
             <argument type="service" id="form.registry" />
             <argument type="service" id="ems_common.twig.runtime.request" />
             <argument>%ems_core.circles_object%</argument>
+            <argument type="service" id="ems.service.user" />
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Revision\JsonMenuNestedController" public="true">
@@ -65,6 +66,15 @@
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.release" />
             <argument type="service" id="ems.service.release.revision" />
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\AssetController" public="true">
+            <argument type="service" id="ems_common.storage.processor" />
+            <argument>%ems_core.asset_config%</argument>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\DatatableController" public="true">
+            <argument type="service" id="ems.service.datatable" />
             <tag name="controller.service_arguments"/>
         </service>
     </services>

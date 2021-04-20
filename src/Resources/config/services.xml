@@ -28,6 +28,14 @@
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.index"/>
         </service>
+        <service id="ems.service.datatable" alias="EMS\CoreBundle\Service\DatatableService"/>
+        <service id="EMS\CoreBundle\Service\DatatableService">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems_common.storage.manager"/>
+            <argument type="service" id="ems.service.environment"/>
+        </service>
 
         <service id="ems.service.query_search" class="EMS\CoreBundle\Service\QuerySearchService">
             <argument type="service" id="ems.repository.query_search"/>

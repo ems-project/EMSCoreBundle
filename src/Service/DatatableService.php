@@ -39,13 +39,22 @@ final class DatatableService
     public function generateDatatable(array $environmentNames, array $contentTypeNames, array $options): ElasticaTable
     {
         $aliases = $this->convertToAliases($environmentNames);
-        $hashConfig = $this->storageManager->saveConfig([
-            self::CONFIG => $options,
-            self::ALIASES => $aliases,
-            self::CONTENT_TYPES => $contentTypeNames,
-        ]);
+        $hashConfig = $this->saveConfig($options, $aliases, $contentTypeNames);
 
         return ElasticaTable::fromConfig($this->elasticaService, $this->getAjaxUrl($hashConfig), $aliases, $contentTypeNames, $options);
+    }
+
+    /**
+     * @param string[]             $environmentNames
+     * @param string[]             $contentTypeNames
+     * @param array<string, mixed> $options
+     */
+    public function getExcelPath(array $environmentNames, array $contentTypeNames, array $options): string
+    {
+        $aliases = $this->convertToAliases($environmentNames);
+        $hashConfig = $this->saveConfig($options, $aliases, $contentTypeNames);
+
+        return $this->router->generate('ems_core_datatable_excel_elastica', ['hashConfig' => $hashConfig]);
     }
 
     public function generateDatatableFromHash(string $hashConfig): ElasticaTable
@@ -105,5 +114,19 @@ final class DatatableService
     public function getAjaxUrl(string $hashConfig): string
     {
         return $this->router->generate('ems_core_datatable_ajax_elastica', ['hashConfig' => $hashConfig]);
+    }
+
+    /**
+     * @param array<mixed> $options
+     * @param string[]     $aliases
+     * @param string[]     $contentTypeNames
+     */
+    private function saveConfig(array $options, array $aliases, array $contentTypeNames): string
+    {
+        return $this->storageManager->saveConfig([
+            self::CONFIG => $options,
+            self::ALIASES => $aliases,
+            self::CONTENT_TYPES => $contentTypeNames,
+        ]);
     }
 }

@@ -12,4 +12,6 @@
             prefix="/publisher/uploaded-file" />
     <import resource="@EMSCoreBundle/Resources/config/routing/asset.xml"
             prefix="/bundles" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/datatable.xml"
+            prefix="/datatable" />
 </routes>

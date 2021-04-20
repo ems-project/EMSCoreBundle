@@ -1,6 +1,13 @@
 {% use "@EMSCore/form/fields.html.twig" %}
 {% trans_default_domain 'EMSCoreBundle' %}
 
+{% block emsco_form_table_column_data_value_template %}
+    {{- include(template_from_string(column.template), {
+        data: line.data,
+        column: column
+    }, with_context = false) -}}
+{% endblock emsco_form_table_column_data_value_template %}
+
 {% block emsco_form_table_column_data_value_data_links %}
     {%- set value = attribute(line.data, column.attribute)|default([]) -%}
     {%- if value is iterable -%}
@@ -223,7 +230,9 @@
                                         {% endif %}
                                     </th>
                                 {% endfor %}
-                                <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
+                                {% if table.itemActions|length > 0 %}
+                                    <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
+                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
@@ -237,9 +246,11 @@
                                     {% for column in table.columns %}
                                         {{ block(column.tableDataBlock()) }}
                                     {% endfor %}
-                                    <td data-search="">
-                                        {{ block('emsco_form_table_column_row_actions') }}
-                                    </td>
+                                    {% if table.itemActions|length > 0 %}
+                                        <td data-search="">
+                                            {{ block('emsco_form_table_column_row_actions') }}
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {%  endfor %}
                             </tbody>

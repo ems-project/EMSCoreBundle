@@ -13,6 +13,8 @@ class TableColumn
     private ?string $routeTarget = null;
     private ?string $iconClass = null;
     private ?\Closure $itemIconCallback = null;
+    private string $cellType = 'td';
+    private string $cellClass = '';
 
     public function __construct(string $titleKey, string $attribute)
     {
@@ -40,6 +42,34 @@ class TableColumn
     public function getRouteName(): ?string
     {
         return $this->routeName;
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function getFrontendOptions(): array
+    {
+        return [
+            'cellType' => $this->cellType,
+            'className' => $this->cellClass,
+        ];
+    }
+
+    public function setCellType(string $cellType): TableColumn
+    {
+        if (!\in_array($cellType, ['td', 'tr'])) {
+            throw new \RuntimeException(\sprintf('Unexpected cellType option %s, only td and tr are accepted', $cellType));
+        }
+        $this->cellType = $cellType;
+
+        return $this;
+    }
+
+    public function setCellClass(string $cellClass): TableColumn
+    {
+        $this->cellClass = $cellClass;
+
+        return $this;
     }
 
     /**

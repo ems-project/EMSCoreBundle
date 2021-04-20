@@ -176,10 +176,16 @@
             </a>
           </li>
           <li class="treeview">
+              <a href="{{ path('ems_core_release_index') }}">
+                <i class="{{ 'view.icon.class.release'|trans }}"></i> <span>{{ 'view.elements.side-menu.release-admin.index-link'|trans }}</span>
+              </a>
+          </li>
+          <li class="treeview">
               <a href="{{ path('ems_core_uploaded_file_index') }}" id="menu-filter-index">
                   <i class="fa fa-file"></i> <span>{{ 'Uploaded Files'|trans }}</span>
               </a>
           </li>
+        </li>
       </ul>	
     {% endif %}
 

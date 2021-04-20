@@ -25,5 +25,8 @@
             <argument type="service" id="doctrine"/>
             <tag name="doctrine.repository_service"/>
         </service>
+        <service id="ems.repository.release" class="EMS\CoreBundle\Repository\ReleaseRepository" public="true">
+            <argument type="service" id="doctrine"/>
+        </service>
     </services>
 </container>

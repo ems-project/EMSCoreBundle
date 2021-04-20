@@ -134,6 +134,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_users_enabled', [UserRuntime::class, 'getUsersEnabled']),
             new TwigFunction('emsco_uuid', [Uuid::class, 'uuid4']),
             new TwigFunction('emsco_datatable', [DatatableRuntime::class, 'generateDatatable'], ['is_safe' => ['html']]),
+            new TwigFunction('emsco_datatable_excel_path', [DatatableRuntime::class, 'getExcelPath'], ['is_safe' => ['html']]),
         ];
     }
 

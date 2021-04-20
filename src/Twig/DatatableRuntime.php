@@ -33,4 +33,14 @@ final class DatatableRuntime implements RuntimeExtensionInterface
             'datatable' => $datatable,
         ]);
     }
+
+    /**
+     * @param string[]             $environmentNames
+     * @param string[]             $contentTypeNames
+     * @param array<string, mixed> $options
+     */
+    public function getExcelPath(array $environmentNames, array $contentTypeNames, array $options): string
+    {
+        return $this->datatableService->getExcelPath($environmentNames, $contentTypeNames, $options);
+    }
 }

@@ -21,55 +21,33 @@ class MigrateCommand extends Command
 {
     protected static $defaultName = 'ems:contenttype:migrate';
 
-    /** @var ElasticaService */
-    private $elasticaService;
-    /** @var Registry */
-    protected $doctrine;
-    /** @var DocumentService */
-    private $documentService;
-    /** @var string */
-    private $elasticsearchIndex;
-    /** @var string */
-    private $contentTypeNameFrom;
-    /** @var string */
-    private $contentTypeNameTo;
-    /** @var int */
-    private $scrollSize;
-    /** @var string */
-    private $scrollTimeout;
-    /** @var bool */
-    private $indexInDefaultEnv;
-    /** @var Environment */
-    private $defaultEnv;
-    /** @var ContentType */
-    private $contentTypeTo;
-    /** @var int */
-    private $bulkSize;
-    /** @var bool */
-    private $forceImport;
-    /** @var bool */
-    private $rawImport;
-    /** @var bool */
-    private $signData;
-    /** @var string */
-    private $searchQuery;
-    /** @var bool */
-    private $dontFinalize;
-    /** @var ContentTypeRepository */
-    private $contentTypeRepository;
-    /** @var SymfonyStyle */
-    private $io;
+    private ElasticaService $elasticaService;
+    protected Registry $doctrine;
+    private DocumentService $documentService;
 
-    /** @var string */
-    const ARGUMENT_CONTENTTYPE_NAME_FROM = 'contentTypeNameFrom';
-    /** @var string */
-    const ARGUMENT_CONTENTTYPE_NAME_TO = 'contentTypeNameTo';
-    /** @var string */
-    const ARGUMENT_SCROLL_SIZE = 'scrollSize';
-    /** @var string */
-    const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
-    /** @var string */
-    const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
+    private string $elasticsearchIndex;
+    private string $contentTypeNameFrom;
+    private string $contentTypeNameTo;
+    private int  $scrollSize;
+    private string $scrollTimeout;
+    private bool $indexInDefaultEnv;
+
+    private Environment $defaultEnv;
+    private ContentType $contentTypeTo;
+    private int $bulkSize;
+    private bool $forceImport;
+    private bool $rawImport;
+    private bool $signData;
+    private string $searchQuery;
+    private bool $dontFinalize;
+    private ContentTypeRepository $contentTypeRepository;
+    private SymfonyStyle  $io;
+
+    private const ARGUMENT_CONTENTTYPE_NAME_FROM = 'contentTypeNameFrom';
+    private const ARGUMENT_CONTENTTYPE_NAME_TO = 'contentTypeNameTo';
+    private const ARGUMENT_SCROLL_SIZE = 'scrollSize';
+    private const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
+    private const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
 
     public function __construct(Registry $doctrine, ElasticaService $elasticaService, DocumentService $documentService)
     {

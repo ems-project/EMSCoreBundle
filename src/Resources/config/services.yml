@@ -292,6 +292,11 @@ services:
         arguments: ['@ems.form.factories.contentTypeFieldChoiceListFactory']
         tags:
             - { name: form.type }
+    ems.form.field.querySearchPickerType:
+        class: EMS\CoreBundle\Form\Field\QuerySearchPickerType
+        arguments: ['@ems.service.query_search']
+        tags:
+            - { name: form.type }
     ems.form.field.datafieldtypepickertype:
         class: EMS\CoreBundle\Form\Field\FieldTypePickerType
         tags:
@@ -325,6 +330,11 @@ services:
     ems.form.form.templatetype:
         class: EMS\CoreBundle\Form\Form\TemplateType
         arguments: ['%ems_core.circles_object%', '@ems.service.environment']
+        tags:
+            - { name: form.type }
+    ems.form.form.querysearchtype:
+        class: EMS\CoreBundle\Form\Form\QuerySearchType
+        arguments: ['@ems.service.environment']
         tags:
             - { name: form.type }
     ems.form.form.notificationtype:

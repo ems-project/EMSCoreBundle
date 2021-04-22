@@ -6,28 +6,45 @@ namespace EMS\CoreBundle\Service\Revision;
 
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
+use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
 
 class RevisionService
 {
-    /** @var DataService */
-    private $dataService;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var RevisionRepository */
-    private $revisionRepository;
+    private DataService $dataService;
+    private LoggerInterface $logger;
+    private RevisionRepository $revisionRepository;
+    private PublishService $publishService;
 
     public function __construct(
         DataService $dataService,
         LoggerInterface $logger,
-        RevisionRepository $revisionRepository
+        RevisionRepository $revisionRepository,
+        PublishService $publishService
     ) {
         $this->dataService = $dataService;
         $this->logger = $logger;
         $this->revisionRepository = $revisionRepository;
+        $this->publishService = $publishService;
+    }
+
+    public function archive(Revision $revision, string $archivedBy, bool $flush = true): bool
+    {
+        $this->publishService->silentUnpublish($revision, $flush);
+
+        $revision
+            ->setArchived(true)
+            ->setArchivedBy($archivedBy);
+
+        if ($flush) {
+            $this->revisionRepository->save($revision);
+        }
+
+        return true;
     }
 
     public function find(int $revisionId): ?Revision
@@ -55,6 +72,14 @@ class RevisionService
     public function getCurrentRevisionByOuuidAndContentType(string $ouuid, string $contentType): ?Revision
     {
         return $this->get($ouuid, $contentType);
+    }
+
+    /**
+     * @param array<mixed> $search
+     */
+    public function search(array $search): Revisions
+    {
+        return $this->revisionRepository->search($search);
     }
 
     /**

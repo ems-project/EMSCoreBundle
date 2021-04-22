@@ -383,7 +383,7 @@ services:
         arguments: ['@twig', '@form.factory', '@logger']
     ems.service.revision:
         class: EMS\CoreBundle\Service\Revision\RevisionService
-        arguments: ['@ems.service.data', '@logger', '@EMS\CoreBundle\Repository\RevisionRepository']
+        arguments: ['@ems.service.data', '@logger', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.publish']
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@logger', '@ems_common.elastica.client', '@EMS\CoreBundle\Repository\EnvironmentRepository', '@EMS\CoreBundle\Repository\ManagedAliasRepository', '@ems_common.service.elastica']
@@ -517,7 +517,7 @@ services:
             - '@ems.service.revision'
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
-        arguments: ['@doctrine', '@ems_common.service.elastica', '@ems.service.document']
+        arguments: ['@ems.service.revision', '@doctrine', '@ems_common.service.elastica', '@ems.service.document']
         tags:
             -  { name: console.command }
     ems.make.document:

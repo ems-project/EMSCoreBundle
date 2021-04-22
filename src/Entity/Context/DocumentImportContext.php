@@ -11,6 +11,7 @@ class DocumentImportContext
     private ContentType $contentType;
     private string $lockUser;
     private bool $shouldRawImport;
+    private bool $shouldOnlyChanged = false;
     private bool $shouldIndexInDefaultEnv;
     private bool $shouldFinalize;
     private bool $shouldForce;
@@ -45,6 +46,18 @@ class DocumentImportContext
     public function shouldRawImport(): bool
     {
         return $this->shouldRawImport;
+    }
+
+    public function shouldOnlyChanged(): bool
+    {
+        return $this->shouldOnlyChanged;
+    }
+
+    public function setShouldOnlyChanged(bool $onlyChanged): self
+    {
+        $this->shouldOnlyChanged = $onlyChanged;
+
+        return $this;
     }
 
     public function shouldIndexInDefaultEnv(): bool

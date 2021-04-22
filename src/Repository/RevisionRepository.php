@@ -9,6 +9,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
@@ -46,6 +47,32 @@ class RevisionRepository extends EntityRepository
         return $this->findBy([
                 'contentType' => $contentType,
             ], $orderBy, $limit, $offset);
+    }
+
+    /**
+     * @param array<mixed> $search
+     */
+    public function search(array $search): Revisions
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->join('r.contentType', 'c')
+            ->join('c.environment', 'e');
+
+        if (isset($search['contentType'])) {
+            $qb->andWhere($qb->expr()->eq('r.contentType', ':contentType'))->setParameter('contentType', $search['contentType']);
+        }
+        if (isset($search['modifiedBefore'])) {
+            $qb->andWhere($qb->expr()->lt('r.modified', ':modified'))->setParameter('modified', $search['modifiedBefore']);
+        }
+        if (isset($search['lockBy'])) {
+            $qb->andWhere($qb->expr()->eq('r.lockBy', ':lock_by'))->setParameter('lock_by', $search['lockBy']);
+        }
+        if (isset($search['archived'])) {
+            $qb->andWhere($qb->expr()->eq('r.archived', ':archived'))->setParameter('archived', $search['archived']);
+        }
+
+        return new Revisions($qb);
     }
 
     public function save(Revision $revision): void

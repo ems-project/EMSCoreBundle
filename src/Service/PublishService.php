@@ -178,6 +178,18 @@ class PublishService
         }
     }
 
+    public function silentUnpublish(Revision $revision, bool $flush = true): void
+    {
+        $environment = $revision->giveContentType()->giveEnvironment();
+        $revision->removeEnvironment($environment);
+        $this->indexService->delete($revision, $environment);
+
+        if ($flush) {
+            $this->doctrine->getManager()->persist($revision);
+            $this->doctrine->getManager()->flush();
+        }
+    }
+
     /**
      * @param bool $command
      *

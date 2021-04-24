@@ -189,7 +189,10 @@ import EmsListeners from "./EmsListeners";
         $('[data-datatable]').each(function(){
             const table = $(this);
             const config = table.data('datatable');
-            table.DataTable(config);
+            const datatable = table.DataTable(config);
+            datatable.on( 'draw', function () {
+                new EmsListeners(this);
+            } );
         });
     }
 

@@ -18,7 +18,10 @@ class TemplateRuntime
         $this->twig = $twig;
     }
 
-    public function generateAjaxEditButton(string $emsLink, string $label, bool $labelHtmlSafe = false): string
+    /**
+     * @param array<string, string> $attributes
+     */
+    public function generateAjaxEditButton(string $emsLink, string $label, bool $labelHtmlSafe = false, array $attributes = []): string
     {
         list($contentTypename, $ouuid) = \explode(':', $emsLink);
         $template = $this->getTemplate('@EMSCore/runtime/ajax-edit-button.html.twig');
@@ -28,6 +31,7 @@ class TemplateRuntime
             'ouuid' => $ouuid,
             'label' => $label,
             'labelHtmlSafe' => $labelHtmlSafe,
+            'attr' => $attributes,
         ]);
     }
 

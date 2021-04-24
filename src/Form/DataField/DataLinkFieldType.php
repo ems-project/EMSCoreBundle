@@ -8,6 +8,7 @@ use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\ObjectChoiceLoader;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
+use EMS\CoreBundle\Form\Field\QuerySearchPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -167,6 +168,7 @@ class DataLinkFieldType extends DataFieldType
             'disabled' => $this->isDisabled($options),
             'multiple' => $options['multiple'],
             'type' => $options['type'],
+            'querySearch' => $options['querySearch'],
             'searchId' => $options['searchId'],
             'dynamicLoading' => $options['dynamicLoading'],
             'sortable' => $options['sortable'],
@@ -194,6 +196,7 @@ class DataLinkFieldType extends DataFieldType
         $resolver->setDefault('required', false);
         $resolver->setDefault('sortable', false);
         $resolver->setDefault('dynamicLoading', true);
+        $resolver->setDefault('querySearch', null);
     }
 
     /**
@@ -205,6 +208,7 @@ class DataLinkFieldType extends DataFieldType
 
         $out['displayOptions']['dynamicLoading'] = true;
         $out['mappingOptions']['index'] = 'not_analyzed';
+        $out['displayOptions']['querySearch'] = null;
 
         return $out;
     }
@@ -256,6 +260,8 @@ class DataLinkFieldType extends DataFieldType
         ])->add('dynamicLoading', CheckboxType::class, [
                 'required' => false,
         ])->add('sortable', CheckboxType::class, [
+                'required' => false,
+        ])->add('querySearch', QuerySearchPickerType::class, [
                 'required' => false,
         ])->add('type', TextType::class, [
             'required' => false,

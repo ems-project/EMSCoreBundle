@@ -114,6 +114,14 @@ I.e.:
 }) }}
 ```
 
+## asc_missing_values_position
+
+The `asc_missing_values_position` parameter specifies how docs which are missing the sort field, in `asc` direction, should be treated: The missing value can be set to `_last`, `_first`. The default is `_last`.
+
+## desc_missing_values_position
+
+The `desc_missing_values_position` parameter specifies how docs which are missing the sort field, in `desc` direction, should be treated: The missing value can be set to `_last`, `_first`. The default is `_first`.
+
 # emsco_datatable_excel_path
 
 This function is generating a path to an excel generator. This twig function has the same signature as the [emsco_datatable](#emsco_datatable) twig function. I.e.:

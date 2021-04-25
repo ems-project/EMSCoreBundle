@@ -37,6 +37,7 @@ export default class EmsListeners {
         this.addFieldsToDisplayByValue();
         this.addFileUploaderListerners();
         this.addA2LixLibSfCollection();
+        this.initAjaxEditButtons();
     }
 
     addFieldsToDisplayByValue() {
@@ -680,6 +681,12 @@ export default class EmsListeners {
                     remove: $(this).data('lang-remove'),
                 }
             });
+        });
+    }
+
+    initAjaxEditButtons() {
+        jquery(this.target).find('a[data-content-type]').each(function(){
+            console.log('Found button');
         });
     }
 

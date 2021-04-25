@@ -114,7 +114,10 @@ class ElasticaTable extends TableAbstract
         $orderField = $this->getOrderField();
         if (null !== $orderField) {
             $search->setSort([
-                $orderField => $this->getOrderDirection(),
+                $orderField => [
+                    'missing' => 0 === \strcasecmp($this->getOrderDirection(), 'desc') ? '_first' : '_last',
+                    'order' => $this->getOrderDirection(),
+                ],
             ]);
         }
 

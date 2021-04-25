@@ -114,6 +114,22 @@ I.e.:
 }) }}
 ```
 
+Another good example is to define a default sort column:
+
+```twig
+{{ emsco_datatable(['ldap'],['ldap_user'], {
+    "frontendOptions": {
+        "order": [[1, 'desc']]
+    },
+    "columns": [{
+        "label": "Name",
+        "template": "{{ data.source.name|default('') }}",
+        "orderField": "name.keyword"
+    }]
+}) }}
+```
+
+
 ## asc_missing_values_position
 
 The `asc_missing_values_position` parameter specifies how docs which are missing the sort field, in `asc` direction, should be treated: The missing value can be set to `_last`, `_first`. The default is `_last`.

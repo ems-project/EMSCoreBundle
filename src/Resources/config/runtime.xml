@@ -13,5 +13,11 @@
             <tag name="twig.runtime"/>
         </service>
 
+        <service id="ems.twig.runtime.template" alias="EMS\CoreBundle\Twig\TemplateRuntime"/>
+        <service id="EMS\CoreBundle\Twig\TemplateRuntime">
+            <argument type="service" id="twig"/>
+            <tag name="twig.runtime"/>
+        </service>
+
     </services>
 </container>

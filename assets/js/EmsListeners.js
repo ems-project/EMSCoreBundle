@@ -685,9 +685,11 @@ export default class EmsListeners {
     }
 
     initAjaxEditButtons() {
-        jquery(this.target).find('a[data-content-type]').each(function(){
-            console.log('Found button');
-        });
+        jquery(this.target).find('a[data-content-type]')
+            .on('click', function(event) {
+                event.preventDefault();
+                console.log('Click button');
+            });
     }
 
 }

@@ -15,6 +15,8 @@ class ElasticaTable extends TableAbstract
     private const QUERY = 'query';
     private const EMPTY_QUERY = 'empty_query';
     private const FRONTEND_OPTIONS = 'frontendOptions';
+    private const ASC_MISSING_VALUES_POSITION = 'asc_missing_values_position';
+    private const DESC_MISSING_VALUES_POSITION = 'desc_missing_values_position';
     private ElasticaService $elasticaService;
     /** @var string[] */
     private array $aliases;
@@ -24,12 +26,14 @@ class ElasticaTable extends TableAbstract
     private ?int $totalCount = null;
     private string $emptyQuery;
     private string $query;
+    private string $ascMissingValuesPosition;
+    private string $descMissingValuesPosition;
 
     /**
      * @param string[] $aliases
      * @param string[] $contentTypeNames
      */
-    public function __construct(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, string $emptyQuery, string $query)
+    public function __construct(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, string $emptyQuery, string $query, string $ascMissingValuesPosition, string $descMissingValuesPosition)
     {
         parent::__construct($ajaxUrl, 0, 0);
         $this->elasticaService = $elasticaService;
@@ -37,6 +41,8 @@ class ElasticaTable extends TableAbstract
         $this->contentTypeNames = $contentTypeNames;
         $this->emptyQuery = $emptyQuery;
         $this->query = $query;
+        $this->ascMissingValuesPosition = $ascMissingValuesPosition;
+        $this->descMissingValuesPosition = $descMissingValuesPosition;
     }
 
     /**
@@ -47,7 +53,7 @@ class ElasticaTable extends TableAbstract
     public static function fromConfig(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, array $options): ElasticaTable
     {
         $options = self::resolveOptions($options);
-        $datatable = new self($elasticaService, $ajaxUrl, $aliases, $contentTypeNames, $options[self::EMPTY_QUERY], $options[self::QUERY]);
+        $datatable = new self($elasticaService, $ajaxUrl, $aliases, $contentTypeNames, $options[self::EMPTY_QUERY], $options[self::QUERY], $options[self::ASC_MISSING_VALUES_POSITION], $options[self::DESC_MISSING_VALUES_POSITION]);
         foreach ($options[self::COLUMNS] as $column) {
             $datatable->addColumnDefinition(new TemplateTableColumn($column));
         }
@@ -115,7 +121,7 @@ class ElasticaTable extends TableAbstract
         if (null !== $orderField) {
             $search->setSort([
                 $orderField => [
-                    'missing' => 0 === \strcasecmp($this->getOrderDirection(), 'desc') ? '_first' : '_last',
+                    'missing' => 0 === \strcasecmp($this->getOrderDirection(), 'desc') ? $this->descMissingValuesPosition : $this->ascMissingValuesPosition,
                     'order' => $this->getOrderDirection(),
                 ],
             ]);
@@ -127,7 +133,7 @@ class ElasticaTable extends TableAbstract
     /**
      * @param array<string, mixed> $options
      *
-     * @return array{columns: array, query: string, empty_query: string, frontendOptions: array}
+     * @return array{columns: array, query: string, empty_query: string, frontendOptions: array, asc_missing_values_position: string, desc_missing_values_position: string}
      */
     private static function resolveOptions(array $options)
     {
@@ -142,10 +148,15 @@ class ElasticaTable extends TableAbstract
                     ],
                 ],
                 self::FRONTEND_OPTIONS => [],
+                self::ASC_MISSING_VALUES_POSITION => '_last',
+                self::DESC_MISSING_VALUES_POSITION => '_first',
             ])
             ->setAllowedTypes(self::COLUMNS, ['array'])
             ->setAllowedTypes(self::QUERY, ['array', 'string'])
-            ->setAllowedTypes(self::QUERY, ['array', 'string'])
+            ->setAllowedTypes(self::ASC_MISSING_VALUES_POSITION, ['string'])
+            ->setAllowedTypes(self::DESC_MISSING_VALUES_POSITION, ['string'])
+            ->setAllowedValues(self::ASC_MISSING_VALUES_POSITION, ['_last', '_first'])
+            ->setAllowedValues(self::DESC_MISSING_VALUES_POSITION, ['_last', '_first'])
             ->setNormalizer(self::QUERY, function (Options $options, $value) {
                 if (\is_array($value)) {
                     $value = \json_encode($value);
@@ -167,7 +178,7 @@ class ElasticaTable extends TableAbstract
                 return $value;
             })
         ;
-        /** @var array{columns: array, query: string, empty_query: string, frontendOptions: array} $resolvedParameter */
+        /** @var array{columns: array, query: string, empty_query: string, frontendOptions: array, asc_missing_values_position: string, desc_missing_values_position: string} $resolvedParameter */
         $resolvedParameter = $resolver->resolve($options);
 
         return $resolvedParameter;

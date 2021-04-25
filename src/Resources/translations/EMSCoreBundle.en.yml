@@ -925,3 +925,6 @@ view:
       title: 'User list'
   breadcrumb:
     wysiwyg-options: 'WYSIWYG Options'
+modal:
+  loading: 'Loading ...'
+  close: 'Close'

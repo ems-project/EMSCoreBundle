@@ -19,4 +19,7 @@
     <route id="ems_core_release_add_revisions" path="/{release}/add-revisions" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:addRevisions</default>
     </route>
+    <route id="ems_core_release_ajax_data_table" path="/datatable.json" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:ajaxDataTable</default>
+    </route>
 </routes>

@@ -32,7 +32,7 @@ final class ReleaseRevisionService implements EntityServiceInterface
      *
      * @return array<Revision>
      */
-    public function get(int $from, int $size, $context = null): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
         if (isset($context['option']) && TableAbstract::REMOVE_ACTION === $context['option']) {
             return $this->revisionRepository->getByIds($from, $size, $context['selected']);
@@ -53,7 +53,7 @@ final class ReleaseRevisionService implements EntityServiceInterface
     /**
      * @param mixed $context
      */
-    public function count($context = null): int
+    public function count(string $searchValue = '', $context = null): int
     {
         if (isset($context['option']) && TableAbstract::REMOVE_ACTION === $context['option']) {
             return $this->revisionRepository->counterByIds($context['selected']);

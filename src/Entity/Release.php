@@ -99,7 +99,7 @@ class Release implements EntityInterface
         return $this->executionDate;
     }
 
-    public function setExecutionDate(\Datetime $executionDate): void
+    public function setExecutionDate(?\Datetime $executionDate): void
     {
         $this->executionDate = $executionDate;
     }

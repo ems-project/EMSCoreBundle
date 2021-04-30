@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CoreBundle\Entity\Release;
+use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\ReleaseType;
 use EMS\CoreBundle\Form\Form\TableType;
+use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\ReleaseRevisionService;
 use EMS\CoreBundle\Service\ReleaseService;
 use Psr\Log\LoggerInterface;
@@ -16,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -35,14 +38,23 @@ final class ReleaseController extends AbstractController
         $this->releaseRevisionService = $releaseRevisionService;
     }
 
+    public function ajaxDataTable(Request $request): Response
+    {
+        $table = $this->initTable();
+        $dataTableRequest = DataTableRequest::fromRequest($request);
+        $table->resetIterator($dataTableRequest);
+        
+        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+            'dataTableRequest' => $dataTableRequest,
+            'table' => $table,
+        ], new JsonResponse());
+    }
+    
     public function index(Request $request): Response
     {
-        $table = new EntityTable($this->releaseService);
-        $labelColumn = $table->addColumn('release.index.column.name', 'name');
-        $labelColumn->setRouteProperty('defaultRoute');
-        $labelColumn->setRouteTarget('release_%value%');
-        $dateColumn = $table->addColumn('release.index.column.executionDate', 'executionDate');
-        $dateColumn->setDateTimeProperty(true);
+        $table = new EntityTable($this->releaseService, $this->generateUrl('ems_core_release_ajax_data_table'));
+        $table->addColumn('release.index.column.name', 'name');
+        $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.executionDate', 'executionDate'));
         $table->addColumn('release.index.column.status', 'status');
         $table->addItemGetAction('ems_core_release_edit', 'release.actions.edit', 'pencil');
         $table->addItemGetAction('ems_core_release_add_revisions', 'release.actions.add.revisions', 'plus');
@@ -83,14 +95,12 @@ final class ReleaseController extends AbstractController
 
     public function edit(Request $request, Release $release, string $view = '@EMSCore/release/edit.html.twig'): Response
     {
-        $table = new EntityTable($this->releaseRevisionService, ['option' => TableAbstract::REMOVE_ACTION, 'selected' => $release->getRevisionsIds()]);
-        $labelColumn = $table->addColumn('release.revision.index.column.label', 'labelField');
-        $labelColumn->setRouteProperty('defaultRoute');
-        $labelColumn->setRouteTarget('revision_%value%');
+        $table = new EntityTable($this->releaseRevisionService, $this->generateUrl('ems_core_release_ajax_data_table'), ['option' => TableAbstract::REMOVE_ACTION, 'selected' => $release->getRevisionsIds()]);
+        $table->addColumn('release.revision.index.column.label', 'labelField');
         $table->addColumn('release.revision.index.column.CT', 'contentTypeName');
         $table->addColumn('release.revision.index.column.finalizedBy', 'finalizedBy');
-        $dateColumn = $table->addColumn('release.revision.index.column.finalizeDate', 'finalizedDate');
-        $dateColumn->setDateTimeProperty(true);
+        $table->addColumnDefinition(new DatetimeTableColumn('release.revision.index.column.finalizeDate', 'finalizedDate'));
+
         $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
 
         $form = $this->createForm(TableType::class, $table);

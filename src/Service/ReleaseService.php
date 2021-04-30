@@ -102,7 +102,7 @@ final class ReleaseService implements EntityServiceInterface
      *
      * @return Release[]
      */
-    public function get(int $from, int $size, $context = null): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected context');
@@ -119,7 +119,7 @@ final class ReleaseService implements EntityServiceInterface
     /**
      * @param mixed $context
      */
-    public function count($context = null): int
+    public function count(string $searchValue = '', $context = null): int
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected non-null object');

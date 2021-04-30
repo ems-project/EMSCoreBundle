@@ -66,4 +66,20 @@ final class ReleaseRepository extends ServiceEntityRepository
 
         return $query->execute();
     }
+    
+//     public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+//     {
+//         $qb = $this->createQueryBuilder('c')
+//         ->setFirstResult($from)
+//         ->setMaxResults($size);
+//         $this->addSearchFilters($qb, $searchValue);
+        
+//         if (\in_array($orderField, ['label', 'name', 'alias', 'public'])) {
+//             $qb->orderBy(\sprintf('c.%s', $orderField), $orderDirection);
+//         } else {
+//             $qb->orderBy('c.orderKey', $orderDirection);
+//         }
+        
+//         return $qb->getQuery()->execute();
+//     }
 }

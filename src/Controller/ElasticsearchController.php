@@ -299,6 +299,15 @@ class ElasticsearchController extends AppController
      */
     public function searchApiAction(Request $request, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, ViewTypes $viewTypes)
     {
+        return $this->deprecatedSearchApiAction($request, $logger, $searchService, $elasticaService, $contentTypeService, $authorizationChecker, $viewTypes);
+    }
+
+    /**
+     * @deprecated
+     * @return Response
+     */
+    private function deprecatedSearchApiAction(Request $request, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, ViewTypes $viewTypes)
+    {
         $environments = $request->query->get('environment', null);
         $requestSearchId = $request->query->get('searchId', null);
         $searchId = null !== $requestSearchId ? \intval($requestSearchId) : null;

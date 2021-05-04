@@ -27,8 +27,8 @@ class QuerySearchPickerType extends ChoiceType
         $keys = [];
         /** @var QuerySearch $choice */
         foreach ($this->querySearchService->getAll() as $choice) {
-            $keys[] = $choice->getName();
-            $this->choices[$choice->getName()] = $choice;
+            $keys[] = $choice->getId();
+            $this->choices[$choice->getId()] = $choice;
         }
         parent::configureOptions($resolver);
 
@@ -43,7 +43,7 @@ class QuerySearchPickerType extends ChoiceType
                 $querySearch = $this->choices[$index];
 
                 return [
-                        'data-content' => "<div class='text-".$name."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$querySearch->getName().'</div>',
+                    'data-content' => "<div class='text-".$name."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$querySearch->getName().'</div>',
                 ];
             },
             'choice_value' => function ($value) {

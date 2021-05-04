@@ -82,6 +82,16 @@ final class QuerySearchService implements EntityServiceInterface
     }
 
     /**
+     * @param string[] $ids
+     *
+     * @return QuerySearch[]
+     */
+    public function getByIds(array $ids): array
+    {
+        return $this->querySearchRepository->getByIds($ids);
+    }
+
+    /**
      * @param mixed $context
      *
      * @return QuerySearch[]

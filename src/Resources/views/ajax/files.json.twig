@@ -1,0 +1,8 @@
+[{% for file in files %}
+	{
+		"file": {{ ('ems://asset:'~ file.sha1 ~ '?name='~ file.name ~ '&type=' ~ file.type)|json_encode|raw}},
+		"name": {{ file.name|json_encode|raw }},
+		"type": {{ file.type|json_encode|raw }},
+		"folder": {{ file.user|json_encode|raw }}
+	}{% if not loop.last %},{% endif %}{% endfor %}
+]

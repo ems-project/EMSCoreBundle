@@ -188,6 +188,26 @@ class FileService implements EntityServiceInterface
         return $query->getResult();
     }
 
+    /**
+     * @return UploadedAsset[]|iterable
+     */
+    public function getFiles(): iterable
+    {
+        /** @var EntityManager $em */
+        $em = $this->doctrine->getManager();
+        /** @var UploadedAssetRepository $repository */
+        $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
+
+        $qb = $repository
+        ->createQueryBuilder('a')
+        ->select('a.type, a.name, a.sha1, a.user')
+        ->groupBy('a.type, a.name, a.sha1, a.user');
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+    }
+
     public function uploadFile(string $name, string $type, string $filename, string $user): UploadedAsset
     {
         $hash = $this->storageManager->computeFileHash($filename);

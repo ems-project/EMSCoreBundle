@@ -10,11 +10,9 @@ final class QuerySearchOptionsTransformer implements DataTransformerInterface
 {
     public function transform($value)
     {
-        $searchConfig = $this->jsonFormat($value, 'searchConfig');
         $query = $this->jsonFormat($value, 'query');
 
         return [
-            'searchConfig' => $searchConfig,
             'query' => $query,
         ];
     }
@@ -22,7 +20,6 @@ final class QuerySearchOptionsTransformer implements DataTransformerInterface
     public function reverseTransform($value)
     {
         return [
-            'searchConfig' => $value['searchConfig'] ?? '',
             'query' => $value['query'] ?? '',
         ];
     }

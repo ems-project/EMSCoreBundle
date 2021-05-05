@@ -160,6 +160,5 @@ class DocumentService
         $this->entityManager->persist($newRevision);
         $this->revisionRepository->finaliseRevision($documentImportContext->getContentType(), $ouuid, $newRevision->getStartTime(), $documentImportContext->getLockUser());
         $this->revisionRepository->publishRevision($newRevision, $newRevision->getDraft());
-        $this->entityManager->flush();
     }
 }

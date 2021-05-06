@@ -27,8 +27,8 @@ class QuerySearchPickerType extends ChoiceType
         $keys = [];
         /** @var QuerySearch $choice */
         foreach ($this->querySearchService->getAll() as $choice) {
-            $keys[] = $choice->getId();
-            $this->choices[$choice->getId()] = $choice;
+            $keys[] = $choice->getName();
+            $this->choices[$choice->getName()] = $choice;
         }
         parent::configureOptions($resolver);
 

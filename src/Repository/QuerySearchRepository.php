@@ -41,6 +41,12 @@ final class QuerySearchRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function getByName(string $name): ?QuerySearch
+    {
+        /** @var QuerySearch|null */
+        return $this->findOneBy(['name' => $name]);
+    }
+
     /**
      * @param string[] $ids
      *

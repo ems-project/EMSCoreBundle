@@ -41,7 +41,7 @@ class QuerySearch implements EntityInterface
     private string $label;
 
     /**
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     private string $name;
 

@@ -70,9 +70,10 @@ final class QuerySearchService implements EntityServiceInterface
         return true;
     }
 
-    public function getByName(string $name): ?QuerySearch
+    public function getOneByName(string $name): ?QuerySearch
     {
-        return $this->querySearchRepository->getByName($name);
+        /** @var QuerySearch|null */
+        return $this->querySearchRepository->findOneBy(['name' => $name]);
     }
 
     /**

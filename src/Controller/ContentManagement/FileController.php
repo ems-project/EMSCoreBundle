@@ -224,20 +224,6 @@ class FileController extends AbstractController
     /**
      * @return Response
      *
-     * @Route("/files/index", name="ems_files_index", defaults={"_format"="json"}, methods={"GET", "HEAD"})
-     */
-    public function indexFilesAction(FileService $fileService)
-    {
-        $files = $fileService->getFiles();
-
-        return $this->render('@EMSCore/ajax/files.json.twig', [
-            'files' => $files,
-        ]);
-    }
-
-    /**
-     * @return Response
-     *
      * @Route("/file/upload", name="ems_image_upload_url", defaults={"_format"="json"}, methods={"POST"})
      * @Route("/api/file", name="ems_api_image_upload_url", defaults={"_format"="json"}, methods={"POST"})
      */

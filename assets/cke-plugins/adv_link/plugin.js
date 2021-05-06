@@ -169,16 +169,11 @@
 					return menu;
 				} );
 			}
-			var filesUrl = $('#revision-primary-box').data('files-url');
-            editor.config.filebrowserUploadMethod = 'form';
-            if (typeof(filesUrl) === 'undefined' || filesUrl === null) {
-                this.compiledProtectionFunction = getCompiledProtectionFunction( editor );
-                return;
-            }
-            var url = editor.plugins.adv_link.path + "browser/browser.html?listUrl=" + encodeURIComponent(filesUrl);
+			var url = $('#revision-primary-box').data('files-url');
             if (editor.config.baseHref) {
                 url += "&baseHref=" + encodeURIComponent(editor.config.baseHref);
             }
+            editor.config.filebrowserUploadMethod = 'form';
             editor.config.filebrowserBrowseUrl = url;
 			this.compiledProtectionFunction = getCompiledProtectionFunction( editor );
 		},

@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CommonBundle\Helper\Text\Encoder;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -111,7 +112,7 @@ class QuerySearch implements EntityInterface
 
     public function setName(string $name): void
     {
-        $this->name = $name;
+        $this->name = Encoder::webalize($name) ?? '';
     }
 
     public function addEnvironment(Environment $environment): QuerySearch

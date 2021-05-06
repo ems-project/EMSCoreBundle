@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
-use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Repository\QuerySearchRepository;
 use Psr\Log\LoggerInterface;
@@ -33,16 +32,6 @@ final class QuerySearchService implements EntityServiceInterface
         if (0 === $querySearch->getOrderKey()) {
             $querySearch->setOrderKey($this->querySearchRepository->counter() + 1);
         }
-        $encoder = new Encoder();
-        $name = $querySearch->getName();
-        if (null === $name) {
-            throw new \RuntimeException('Unexpected null name');
-        }
-        $webalized = $encoder->webalize($name);
-        if (null === $webalized) {
-            throw new \RuntimeException('Unexpected null webalized name');
-        }
-        $querySearch->setName($webalized);
         $this->querySearchRepository->create($querySearch);
     }
 

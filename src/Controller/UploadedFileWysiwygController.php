@@ -1,10 +1,12 @@
 <?php
 
 declare(strict_types=1);
+
 namespace EMS\CoreBundle\Controller;
 
+use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\UploadedAsset;
-use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\BytesTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
@@ -56,9 +58,11 @@ final class UploadedFileWysiwygController extends AbstractController
 
     private function initTable(): EntityTable
     {
-        $table = new EntityTable($this->fileService, $this->generateUrl('ems_core_uploaded_file_ajax'));
-        $table->addColumnDefinition(new BoolTableColumn('uploaded-file.index.column.available', 'available'));
+        $table = new EntityTable($this->fileService, $this->generateUrl('ems_core_uploaded_file_ajax'), ['available' => false]);
         $table->addColumn('uploaded-file.index.column.name', 'name')
+            ->addHtmlAttribute('data-url', function (UploadedAsset $data) {
+                return EmsFields::ASSET_EMSLINK_PREFIX.$data->getSha1();
+            })
             ->setRoute('ems_file_download', function (UploadedAsset $data) {
                 if (!$data->getAvailable()) {
                     return null;
@@ -70,12 +74,13 @@ final class UploadedFileWysiwygController extends AbstractController
                     'name' => $data->getName(),
                 ];
             });
+
         $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.created', 'created'));
         $table->addColumnDefinition(new UserTableColumn('uploaded-file.index.column.username', 'user'));
         $table->addColumnDefinition(new BytesTableColumn('uploaded-file.index.column.size', 'size'));
-        $table->addColumnDefinition(new BoolTableColumn('uploaded-file.index.column.hidden', 'hidden'));
-        $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.head_last', 'headLast'));
-        $table->addColumn('uploaded-file.index.column.type', 'type');
+        $table->addColumn('uploaded-file.index.column.type', 'type')->setItemIconCallback(function (UploadedAsset $data) {
+            return EmsFields::FONTAWESOME_PREFIX.Encoder::getFontAwesomeFromMimeType($data->getType());
+        });
 
         $table->setDefaultOrder('created', 'desc');
 

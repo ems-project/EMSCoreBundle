@@ -59,23 +59,10 @@
       data-init-upload="{{ path('emsco_file_data_init_upload')|e('html_attr') }}"
       data-file-extract="{{ path('ems_file_extract', { sha1: '__file_identifier__', name: '__file_name__' })|e('html_attr') }}"
       data-file-extract-forced="{{ path('ems_file_extract_forced', { sha1: '__file_identifier__', name: '__file_name__' })|e('html_attr') }}">
-<div class="wrapper">
+<div class="main">
 
-  <!-- Main Header -->
-  <header class="main-header">
-
-    <!-- Logo -->
-    <a href="{{ path('homepage') }}" class="logo">
-      <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini">{{ ems_shortname|raw }}</span>
-      <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg">{{ ems_name|raw }}</span>
-    </a>
-  
-  </header>
-  
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <!-- container Main. Contains page content -->
+  <div class="container">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
@@ -95,22 +82,9 @@
     </section>
     <!-- /.content -->
   </div>
-  <!-- /.content-wrapper -->
-
-  <!-- Main Footer -->
-  <footer class="main-footer no-print">
-    <!-- To the right -->
-    <div class="pull-right">
-    	{% if ems_core_version %}
-    		{{ 'Core %version%'|trans({'%version%': ems_core_version }) }}
-    	{% endif %}
-      	{{ 'with Symfony %version%'|trans({'%version%':constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }) }}
-    </div>
-    <!-- Default to the left -->
-    <a href="http://www.elasticms.eu/">elastic<b>ms</b></a>
-  </footer>
+  <!-- /.container -->
 </div>
-<!-- ./wrapper -->
+<!-- ./main -->
 
 
     <!-- centralized webpack javascript -->

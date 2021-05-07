@@ -3,13 +3,7 @@
 
 {% block title %}{{ 'uploaded-file.index.title'|trans }}{% endblock %}
 {% block pagetitle %}{{ block('title') }}{% endblock %}
-
-{% block breadcrumb %}
-    <ol class="breadcrumb">
-        <li><i class="{{ 'view.icon.class.uploaded-file'|trans }}"></i> {{ 'uploaded-file.menu'|trans }}</li>
-    </ol>
-{% endblock %}
-
+{% block subtitle %}{% endblock %}
 {% block body %}
 
     {% form_theme form '@EMSCore/form/forms.html.twig' %}
@@ -20,8 +14,8 @@
 
 {% block javascripts %}
  <script>  
-   $(document).on('click', 'a', function () {
-     let fileUrl = $(this).attr('href');
+   $(document).on('click', 'td a', function () {
+     let fileUrl = $(this).parent().data('url');
      let data = $(this).text();
      window.opener.CKEDITOR.tools.callFunction({{ CKEditorFuncNum }}, fileUrl, function() {
          // Get the reference to a dialog window.

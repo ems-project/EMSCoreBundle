@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class UploadedFileWysiwygController extends AbstractController
+final class UploadedFileWysiwygController extends AbstractController
 {
     private LoggerInterface $logger;
     private FileService $fileService;

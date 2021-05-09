@@ -102,8 +102,6 @@ final class DataLinks
         $source = $document->getSource();
         if ($contentType && $contentType->hasColorField() && isset($source[$contentType->giveColorField()])) {
             $item['color'] = $source[$contentType->giveColorField()];
-        } else {
-            $item['color'] = 'red';
         }
 
         if ($contentType && $contentType->hasLabelField() && isset($source[$contentType->giveLabelField()])) {

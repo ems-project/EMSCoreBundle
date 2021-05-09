@@ -94,22 +94,30 @@ final class DataLinks
             'ouuid' => $document->getId(),
         ];
 
-        if (null === $contentType = ($this->contentTypes[$document->getContentType()] ?? null)) {
+        $contentType = $this->contentTypes[$document->getContentType()] ?? null;
+        if (null === $contentType && '' === $document->getContentType()) {
             return;
         }
 
         $source = $document->getSource();
-        if ($contentType->hasColorField() && isset($source[$contentType->giveColorField()])) {
+        if ($contentType && $contentType->hasColorField() && isset($source[$contentType->giveColorField()])) {
             $item['color'] = $source[$contentType->giveColorField()];
+        } else {
+            $item['color'] = 'red';
         }
 
-        if ($contentType->hasLabelField() && isset($source[$contentType->giveLabelField()])) {
+        if ($contentType && $contentType->hasLabelField() && isset($source[$contentType->giveLabelField()])) {
             $text = $source[$contentType->giveLabelField()];
         } else {
-            $text = $document->getId();
+            $text = $this->guessLabelText($document);
         }
 
-        $icon = $contentType->getIcon() ?? 'fa fa-question';
+        if ($contentType && $contentType->getIcon()) {
+            $icon = $contentType->getIcon();
+        } else {
+            $icon = ($contentType) ? 'fa fa-question' : 'fa fa-external-link-square';
+        }
+
         $item['text'] = \sprintf('<i class="%s"></i> %s', $icon, $text);
 
         $this->items[] = $item;
@@ -125,5 +133,17 @@ final class DataLinks
             'incomplete_results' => $this->total !== \count($this->items),
             'items' => $this->items,
         ];
+    }
+
+    private function guessLabelText(DocumentInterface $document): string
+    {
+        $source = $document->getSource();
+        foreach (['name', 'label', 'search_label'] as $field) {
+            if (\is_string($source[$field]) && '' !== $source[$field]) {
+                return $source[$field];
+            }
+        }
+
+        return $document->getId();
     }
 }

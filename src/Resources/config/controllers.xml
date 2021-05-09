@@ -76,5 +76,19 @@
             <argument type="service" id="ems.service.datatable" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\ElasticsearchController" public="true">
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\Search\QuerySearchController" public="true">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.search" />
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface" />
+            <argument type="service" id="ems.content_type.view_types" />
+            <argument type="service" id="ems.service.query_search" />
+            <argument type="service" id="EMS\CoreBundle\Controller\ElasticsearchController" />
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

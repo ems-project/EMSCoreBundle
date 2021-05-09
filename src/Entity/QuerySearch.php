@@ -112,7 +112,11 @@ class QuerySearch implements EntityInterface
 
     public function setName(string $name): void
     {
-        $this->name = Encoder::webalize($name) ?? '';
+        $webalizedName = Encoder::webalize($name);
+        if (null === $webalizedName) {
+            throw new \RuntimeException('Unexpected null webalized name');
+        }
+        $this->name = $webalizedName;
     }
 
     public function addEnvironment(Environment $environment): QuerySearch

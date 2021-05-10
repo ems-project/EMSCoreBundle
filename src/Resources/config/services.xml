@@ -37,5 +37,10 @@
             <argument type="service" id="ems.service.environment"/>
         </service>
 
+        <service id="ems.service.query_search" class="EMS\CoreBundle\Service\QuerySearchService">
+            <argument type="service" id="ems.repository.query_search"/>
+            <argument type="service" id="logger"/>
+        </service>
+
     </services>
 </container>

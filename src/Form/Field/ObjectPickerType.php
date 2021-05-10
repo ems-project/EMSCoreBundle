@@ -58,6 +58,7 @@ class ObjectPickerType extends Select2Type
             'type' => null,
             'searchId' => null,
             'circle-only' => false,
+            'querySearch' => null,
         ]);
     }
 

@@ -472,6 +472,28 @@ channel:
       label: 'Label'
       public: 'Public access'
     title: 'List of channels'
+query_search:
+  actions:
+    delete_selected_confirm: 'Delete all selected QuerySearch?'
+    delete_selected: 'Delete selected'
+    delete_confirm: 'Delete the "%label%" QuerySearch?'
+    delete: 'Delete'
+    edit: 'Edit'
+  menu: 'QuerySearch'
+  add:
+    title: 'Add a QuerySearch'
+    save: 'Create'
+  edit:
+    title: 'Edit a QuerySearch'
+    save: 'Save'
+  index:
+    reorder: 'Reorder QuerySearch'
+    column:
+      name: 'Name'
+      alias: 'Alias'
+      label: 'Label'
+      public: 'Public access'
+    title: 'List of QuerySearch'
 not-applicable: 'N/A'
 views:
   elasticsearch:
@@ -580,12 +602,19 @@ form:
       attributes: 'Request extra attributes'
       entryPath: 'Default entry path'
       searchConfig: 'Search config'
+    searchquery:
+      query: 'Default query'
+      searchConfig: 'Search config'
   form:
     channel:
       name: 'Name'
       alias: 'Alias'
       public: 'Does this channel can be available to non-authenticated users ?'
       label: 'Label'
+    query_search:
+      name: 'Name'
+      label: 'Label'
+      environments: 'Environments'
   contenttype:
     json_update:
       deleteExitingTemplates: 'Delete existing templates'
@@ -626,11 +655,15 @@ log:
   controller:
     channel:
       unknown_action: 'Unknown action'
+    query_search:
+      unknown_action: 'Unknown action'
   service:
     action:
       delete: 'The action %name% has been deleted'
     channel:
       delete: 'The channel %name% has been deleted'
+    query_search:
+      delete: 'The QuerySearch %name% has been deleted'
     content-type:
       get-unreferenced-content-type:
         unexpected-error: 'Unexpected error while get unreferenced content type from environment %environment%: %error_message%'
@@ -859,9 +892,12 @@ view:
     side-menu:
       chanel-admin:
         index-link: 'Channels'
+      query_search:
+        index-link: 'QuerySearch'
   icon:
     class:
       channel: 'fa fa-road'
+      query_search : 'fa fa-list-alt'
   macros:
     data-field-type:
       menu-option-button: 'View'

@@ -372,6 +372,10 @@ class FileService implements EntityServiceInterface
 
     public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
+        if (null !== $context && ($context['available'] ?? false)) {
+            return $this->uploadedAssetRepository->getAvailable($from, $size, $orderField, $orderDirection, $searchValue);
+        }
+
         return $this->uploadedAssetRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 

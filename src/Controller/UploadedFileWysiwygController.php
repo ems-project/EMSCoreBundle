@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller;
 
-use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Form\Data\BytesTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
@@ -61,7 +62,7 @@ final class UploadedFileWysiwygController extends AbstractController
         $table = new EntityTable($this->fileService, $this->generateUrl('ems_core_uploaded_file_ajax'), ['available' => false]);
         $table->addColumn('uploaded-file.index.column.name', 'name')
             ->addHtmlAttribute('data-url', function (UploadedAsset $data) {
-                return EmsFields::ASSET_EMSLINK_PREFIX.$data->getSha1();
+                return EMSLink::EMSLINK_ASSET_PREFIX.$data->getSha1();
             })
             ->setRoute('ems_file_download', function (UploadedAsset $data) {
                 if (!$data->getAvailable()) {
@@ -79,7 +80,7 @@ final class UploadedFileWysiwygController extends AbstractController
         $table->addColumnDefinition(new UserTableColumn('uploaded-file.index.column.username', 'user'));
         $table->addColumnDefinition(new BytesTableColumn('uploaded-file.index.column.size', 'size'));
         $table->addColumn('uploaded-file.index.column.type', 'type')->setItemIconCallback(function (UploadedAsset $data) {
-            return EmsFields::FONTAWESOME_PREFIX.Encoder::getFontAwesomeFromMimeType($data->getType());
+            return Encoder::getFontAwesomeFromMimeType($data->getType(), EMSCoreBundle::FONTAWESOME_VERSION);
         });
 
         $table->setDefaultOrder('created', 'desc');

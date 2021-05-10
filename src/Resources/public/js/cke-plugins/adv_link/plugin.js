@@ -169,7 +169,12 @@
 					return menu;
 				} );
 			}
-
+			var url = $('#revision-primary-box').data('files-url');
+            if (editor.config.baseHref) {
+                url += "&baseHref=" + encodeURIComponent(editor.config.baseHref);
+            }
+            editor.config.filebrowserUploadMethod = 'form';
+            editor.config.filebrowserBrowseUrl = url;
 			this.compiledProtectionFunction = getCompiledProtectionFunction( editor );
 		},
 

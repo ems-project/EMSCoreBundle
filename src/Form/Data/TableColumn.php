@@ -15,6 +15,8 @@ class TableColumn
     private ?\Closure $itemIconCallback = null;
     private string $cellType = 'td';
     private string $cellClass = '';
+    /** @var array <string, \Closure> */
+    private array $htmlAttributes = [];
 
     public function __construct(string $titleKey, string $attribute)
     {
@@ -120,6 +122,28 @@ class TableColumn
     public function getIconClass(): ?string
     {
         return $this->iconClass;
+    }
+
+    public function addHtmlAttribute(string $key, \Closure $callback): TableColumn
+    {
+        $this->htmlAttributes[$key] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $data
+     *
+     * @return array<string, \Closure>
+     */
+    public function getHtmlAttributes($data): array
+    {
+        $out = [];
+        foreach ($this->htmlAttributes as $htmlAttribute => $callValue) {
+            $out[$htmlAttribute] = $callValue->call($this, $data);
+        }
+
+        return $out;
     }
 
     public function tableDataBlock(): string

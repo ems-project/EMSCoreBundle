@@ -138,6 +138,11 @@
     {%- endif -%}
 {% endblock emsco_form_table_column_data_label_suffix -%}
 
+{% block emsco_form_table_column_data_html_atributes %}
+    {% for key, value in column.htmlAttributes(line.data) %}
+        {{ key }}="{{ value }}" 
+    {% endfor %}
+{% endblock emsco_form_table_column_data_html_atributes %}
 
 {% block emsco_form_table_column_data_value %}
     {%- set value = attribute(line.data, column.attribute) -%}
@@ -147,7 +152,7 @@
 {% endblock emsco_form_table_column_data_value %}
 
 {% block emsco_form_table_column_data %}
-    <td>
+    <td {{ column.htmlAttributes(line.data)|length > 0 ? block('emsco_form_table_column_data_html_atributes') : ''}}>
         {{ block(column.tableDataValueBlock()) }}
     </td>
 {% endblock emsco_form_table_column_data %}

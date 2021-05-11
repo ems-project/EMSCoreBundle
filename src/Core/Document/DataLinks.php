@@ -107,7 +107,7 @@ final class DataLinks
         if ($contentType && $contentType->hasLabelField() && isset($source[$contentType->giveLabelField()])) {
             $text = $source[$contentType->giveLabelField()];
         } else {
-            $text = $this->guessLabelText($document);
+            $text = $document->getId();
         }
 
         if ($contentType && $contentType->getIcon()) {
@@ -131,17 +131,5 @@ final class DataLinks
             'incomplete_results' => $this->total !== \count($this->items),
             'items' => $this->items,
         ];
-    }
-
-    private function guessLabelText(DocumentInterface $document): string
-    {
-        $source = $document->getSource();
-        foreach (['name', 'label', 'search_label'] as $field) {
-            if (\is_string($source[$field]) && '' !== $source[$field]) {
-                return $source[$field];
-            }
-        }
-
-        return $document->getId();
     }
 }

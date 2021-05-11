@@ -7,4 +7,7 @@
     <route id="elasticsearch.api.search" path="/search.json" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\Search\QuerySearchController</default>
     </route>
+    <route id="emsco_ajax_query_search" path="/search.json" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\Search\QuerySearchController</default>
+    </route>
 </routes>

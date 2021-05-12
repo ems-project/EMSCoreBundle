@@ -4,20 +4,30 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
-use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
+use EMS\CommonBundle\Elasticsearch\Response\ResponseInterface;
+use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\Document\DataLinks;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Repository\QuerySearchRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 final class QuerySearchService implements EntityServiceInterface
 {
+    private ElasticaService $elasticaService;
     private QuerySearchRepository $querySearchRepository;
     private LoggerInterface $logger;
+    private ContentTypeService $contentTypeService;
 
-    public function __construct(QuerySearchRepository $querySearchRepository, LoggerInterface $logger)
+    public function __construct(ContentTypeService $contentTypeService, ElasticaService $elasticaService, QuerySearchRepository $querySearchRepository, LoggerInterface $logger)
     {
+        $this->elasticaService = $elasticaService;
         $this->querySearchRepository = $querySearchRepository;
         $this->logger = $logger;
+        $this->contentTypeService = $contentTypeService;
     }
 
     /**
@@ -33,16 +43,6 @@ final class QuerySearchService implements EntityServiceInterface
         if (0 === $querySearch->getOrderKey()) {
             $querySearch->setOrderKey($this->querySearchRepository->counter() + 1);
         }
-        $encoder = new Encoder();
-        $name = $querySearch->getName();
-        if (null === $name) {
-            throw new \RuntimeException('Unexpected null name');
-        }
-        $webalized = $encoder->webalize($name);
-        if (null === $webalized) {
-            throw new \RuntimeException('Unexpected null webalized name');
-        }
-        $querySearch->setName($webalized);
         $this->querySearchRepository->create($querySearch);
     }
 
@@ -81,6 +81,14 @@ final class QuerySearchService implements EntityServiceInterface
         return true;
     }
 
+    public function getOneByName(string $name): ?QuerySearch
+    {
+        /** @var QuerySearch|null $querySearch */
+        $querySearch = $this->querySearchRepository->findOneBy(['name' => $name]);
+
+        return $querySearch;
+    }
+
     /**
      * @param mixed $context
      *
@@ -110,5 +118,46 @@ final class QuerySearchService implements EntityServiceInterface
         }
 
         return $this->querySearchRepository->counter();
+    }
+
+    public function searchAndGetDatalinks(Request $request): JsonResponse
+    {
+        $commonSearchResponse = $this->commonSearch($request);
+
+        $dataLinks = new DataLinks($request);
+        $dataLinks->addSearchResponse($commonSearchResponse);
+
+        return new JsonResponse($dataLinks->toArray());
+    }
+
+    private function commonSearch(Request $request): ResponseInterface
+    {
+        $querySearchName = $request->query->get('querySearch', null);
+        $querySearch = $this->getOneByName($querySearchName);
+        if (!$querySearch instanceof QuerySearch) {
+            throw new \RuntimeException(\sprintf('QuerySearch %s not found', $querySearchName));
+        }
+
+        $aliases = $this->getAliasesFromEnvironments($querySearch->getEnvironments());
+        $query = \json_decode($querySearch->getOptions()['query'], true);
+
+        $commonSearch = $this->elasticaService->convertElasticsearchBody($aliases, [], $query);
+
+        return CommonResponse::fromResultSet($this->elasticaService->search($commonSearch));
+    }
+
+    /**
+     * @param Environment[] $environments
+     *
+     * @return string[]
+     */
+    private function getAliasesFromEnvironments(array $environments): array
+    {
+        $aliases = [];
+        foreach ($environments as $environment) {
+            $aliases[] = $environment->getAlias();
+        }
+
+        return $aliases;
     }
 }

@@ -293,12 +293,13 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @return Response
+     * @deprecated
      *
-     * @Route("/search.json", name="elasticsearch.api.search")
+     * @return JsonResponse
      */
-    public function searchApiAction(Request $request, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, ViewTypes $viewTypes)
+    public function deprecatedSearchApiAction(Request $request, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, ViewTypes $viewTypes)
     {
+        @\trigger_error('QuerySearch not defined, you should refer to one', E_USER_DEPRECATED);
         $environments = $request->query->get('environment', null);
         $requestSearchId = $request->query->get('searchId', null);
         $searchId = null !== $requestSearchId ? \intval($requestSearchId) : null;

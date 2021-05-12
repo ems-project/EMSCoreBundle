@@ -4,41 +4,35 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\DataTransformer;
 
+use EMS\CommonBundle\Common\Standard\Json;
 use Symfony\Component\Form\DataTransformerInterface;
 
 final class QuerySearchOptionsTransformer implements DataTransformerInterface
 {
-    public function transform($value)
+    /** @return array<string, mixed> */
+    public function transform($value): array
     {
-        $searchConfig = $this->jsonFormat($value, 'searchConfig');
-        $query = $this->jsonFormat($value, 'query');
+        $query = $this->jsonFormat($value['query']);
 
         return [
-            'searchConfig' => $searchConfig,
             'query' => $query,
         ];
     }
 
-    public function reverseTransform($value)
+    /** @return array<string, mixed> */
+    public function reverseTransform($value): array
     {
         return [
-            'searchConfig' => $value['searchConfig'] ?? '',
-            'query' => $value['query'] ?? '',
+            'query' => $value['query'] ?? '{}',
         ];
     }
 
-    /**
-     * @param array<string, mixed> $value
-     */
-    private function jsonFormat(array $value, string $attribute): string
+    private function jsonFormat(string $value): string
     {
-        $formatted = \json_decode($value[$attribute] ?? '', true);
-        if (null === $formatted) {
-            $formatted = $value[$attribute] ?? '';
-        } else {
-            $formatted = \json_encode($formatted ?? '', JSON_PRETTY_PRINT);
+        try {
+            return Json::encode(Json::decode($value), true);
+        } catch (\Throwable $e) {
+            return $value;
         }
-
-        return $formatted;
     }
 }

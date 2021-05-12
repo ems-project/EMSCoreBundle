@@ -117,6 +117,28 @@ class UploadedAssetRepository extends EntityRepository
     }
 
     /**
+     * @return array<UploadedAsset>
+     */
+    public function getAvailable(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->createQueryBuilder('ua');
+        $qb->where($qb->expr()->eq('ua.available', ':true'));
+        $qb->setFirstResult($from)
+        ->setMaxResults($size);
+        $qb->setParameters([
+            ':true' => true,
+        ]);
+
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('ua.%s', $orderField), $orderDirection);
+        }
+
+        $this->addSearchFilters($qb, $searchValue);
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
      * @param array<string> $ids
      *
      * @return array<UploadedAsset>

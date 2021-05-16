@@ -1525,6 +1525,9 @@ class DataService
         unset($object[Mapping::FINALIZATION_DATETIME_FIELD]);
         unset($object[Mapping::VERSION_TAG]);
         unset($object[Mapping::VERSION_UUID]);
+        unset($object[Mapping::START_DATETIME_FIELD]);
+        unset($object[Mapping::CREATED_DATETIME_FIELD]);
+        unset($object[Mapping::VERSION_FIELD]);
         if (\count($object) > 0) {
             $html = DataService::arrayToHtml($object);
 

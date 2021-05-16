@@ -120,6 +120,9 @@ class Mapping
                 Mapping::CONTENT_TYPE_FIELD => $this->elasticsearchService->getKeywordMapping(),
                 Mapping::FINALIZATION_DATETIME_FIELD => $this->elasticsearchService->getDateTimeMapping(),
                 Mapping::PUBLISHED_DATETIME_FIELD => $this->elasticsearchService->getDateTimeMapping(),
+                Mapping::START_DATETIME_FIELD => $this->elasticsearchService->getDateTimeMapping(),
+                Mapping::CREATED_DATETIME_FIELD => $this->elasticsearchService->getDateTimeMapping(),
+                Mapping::VERSION_FIELD => $this->elasticsearchService->getLongMapping(),
             ],
             $out['properties']
         );

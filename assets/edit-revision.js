@@ -319,7 +319,7 @@ function addEventListeners(target){
         ckconfig.div_wrapTable = 'true';
 
         //http://stackoverflow.com/questions/18250404/ckeditor-strips-i-tag
-        //TODO: see if we could moved it to the wyysiwyg templates tools
+        //TODO: see if we could moved it to the wysiwyg templates tools
         ckconfig.allowedContent = true;
         ckconfig.extraAllowedContent = 'p(*)[*]{*};div(*)[*]{*};li(*)[*]{*};ul(*)[*]{*}';
         CKEDITOR.dtd.$removeEmpty.i = 0;

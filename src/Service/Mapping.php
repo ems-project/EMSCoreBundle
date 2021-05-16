@@ -35,7 +35,7 @@ class Mapping
     /** @var string */
     const CREATED_DATETIME_FIELD = '_created';
     /** @var string */
-    const VERSION_FIELD = '_version';
+    const VERSION_FIELD = '_revision_version';
     /** @var array<string, string> */
     const MAPPING_INTERNAL_FIELDS = [
         Mapping::PUBLISHED_DATETIME_FIELD => Mapping::PUBLISHED_DATETIME_FIELD,

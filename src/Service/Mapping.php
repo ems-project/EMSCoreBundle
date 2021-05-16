@@ -31,6 +31,11 @@ class Mapping
     /** @var string */
     const VERSION_TAG = '_version_tag';
     /** @var string */
+    const START_DATETIME_FIELD = '_start_datetime';
+    /** @var string */
+    const CREATED_DATETIME_FIELD = '_created';
+    /** @var string */
+    const VERSION_FIELD = '_version';
     /** @var array<string, string> */
     const MAPPING_INTERNAL_FIELDS = [
         Mapping::PUBLISHED_DATETIME_FIELD => Mapping::PUBLISHED_DATETIME_FIELD,
@@ -41,6 +46,9 @@ class Mapping
         Mapping::CONTENT_TYPE_FIELD => Mapping::CONTENT_TYPE_FIELD,
         Mapping::VERSION_UUID => Mapping::VERSION_UUID,
         Mapping::VERSION_TAG => Mapping::VERSION_TAG,
+        Mapping::START_DATETIME_FIELD => Mapping::START_DATETIME_FIELD,
+        Mapping::CREATED_DATETIME_FIELD => Mapping::CREATED_DATETIME_FIELD,
+        Mapping::VERSION_FIELD => Mapping::VERSION_FIELD,
     ];
     /** @var string */
     const CONTENT_TYPE_META_FIELD = 'content_type';

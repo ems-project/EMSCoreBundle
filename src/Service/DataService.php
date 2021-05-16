@@ -602,6 +602,9 @@ class DataService
         }
 
         $objectArray[Mapping::CONTENT_TYPE_FIELD] = $revision->getContentType()->getName();
+        $objectArray[Mapping::START_DATETIME_FIELD] = $revision->getStartTime()->format(\DateTime::ISO8601);
+        $objectArray[Mapping::CREATED_DATETIME_FIELD] = $revision->getCreated()->format(\DateTime::ISO8601);
+        $objectArray[Mapping::VERSION_FIELD] = $revision->getVersion();
         if ($revision->hasVersionTags()) {
             $objectArray[Mapping::VERSION_UUID] = $revision->getVersionUuid();
             $objectArray[Mapping::VERSION_TAG] = $revision->getVersionTag();

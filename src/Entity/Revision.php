@@ -827,7 +827,7 @@ class Revision
      */
     public function getRawData()
     {
-        $rawData = $this->rawData;
+        $rawData = $this->rawData ?? [];
 
         if (null !== $this->versionUuid) {
             $rawData['_version_uuid'] = $this->versionUuid;

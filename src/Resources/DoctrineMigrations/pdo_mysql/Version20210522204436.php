@@ -20,7 +20,6 @@ final class Version20210522204436 extends AbstractMigration
     {
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP TABLE session');
         $this->addSql('DROP INDEX UNIQ_C164B8C35E237E06 ON query_search');
     }
 }

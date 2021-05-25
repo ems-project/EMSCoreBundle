@@ -55,7 +55,7 @@ final class ChannelRegistrar
         if (!$this->indexService->hasIndex($alias)) {
             $this->logger->warning('log.channel.alias_not_found', [
                 'alias' => $alias,
-                'channel' => $channel,
+                'channel' => $channel->getName(),
             ]);
 
             return;

@@ -16,9 +16,9 @@ module.exports = {
                 from: './node_modules/ace-builds/src-noconflict',
                 to: 'js/ace',
             }, {
-                from: './node_modules/ckeditor',
+                from: '{config.js,contents.css,styles.js,adapters/**/*,lang/**/*,plugins/**/*,skins/**/*,vendor/**/*}',
                 to: 'js/ckeditor',
-
+                context: './node_modules/ckeditor4',
             },
         ], {
             ignore: [{

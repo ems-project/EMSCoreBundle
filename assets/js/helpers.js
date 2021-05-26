@@ -46,7 +46,7 @@ window.objectPickerListeners = function(objectPicker, maximumSelectionLength){
     const type = objectPicker.data('type');
     const dynamicLoading = objectPicker.data('dynamic-loading');
     const searchId = objectPicker.data('search-id');
-
+    const querySearch = objectPicker.data('query-search');
 
     let params = {
         escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
@@ -62,9 +62,7 @@ window.objectPickerListeners = function(objectPicker, maximumSelectionLength){
         params.closeOnSelect = false;
     }
 
-
-
-    if(dynamicLoading){
+    if (dynamicLoading) {
         //params.minimumInputLength = 1,
         params.ajax = {
             url: object_search_url,
@@ -75,7 +73,8 @@ window.objectPickerListeners = function(objectPicker, maximumSelectionLength){
                     q: params.term, // search term
                     page: params.page,
                     type: type,
-                    searchId: searchId
+                    searchId: searchId,
+                    querySearch: querySearch
                 };
             },
             processResults: function (data, params) {

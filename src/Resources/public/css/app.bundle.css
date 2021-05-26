@@ -4621,10 +4621,10 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
 }
 
 /*!
- * Datetimepicker for Bootstrap 3
- * version : 4.17.47
- * https://github.com/Eonasdan/bootstrap-datetimepicker/
- */
+   * Bootstrap Datetime Picker v4.17.49
+   * Copyright 2015-2020 Jonathan Peterson
+   * Licensed under MIT (https://github.com/Eonasdan/bootstrap-datetimepicker/blob/master/LICENSE)
+   */
 .bootstrap-datetimepicker-widget {
   list-style: none;
 }
@@ -4895,7 +4895,7 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
   width: 54px;
 }
 .bootstrap-datetimepicker-widget table td.cw {
-  font-size: .8em;
+  font-size: 0.8em;
   height: 20px;
   line-height: 20px;
   color: #777777;

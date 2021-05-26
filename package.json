@@ -6,10 +6,11 @@
     "bootstrap-fileinput": "^4.5.0",
     "bootstrap-sass": "3.4.1",
     "bootstrap-select": "^1.13.18",
+    "ckeditor4": "^4.16.0",
     "crypto-js": "^3.3.0",
     "datepicker": "^0.0.0",
     "daterangepicker": "^3.1.0",
-    "eonasdan-bootstrap-datetimepicker": "^4.17.47",
+    "eonasdan-bootstrap-datetimepicker": "^4.17.49",
     "fullcalendar": "^3.10.2",
     "icheck": "^1.0.2",
     "jquery-lazyload": "^1.9.7",
@@ -34,16 +35,16 @@
     "watch": "webpack --mode development --watch"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
+    "@babel/core": "^7.14.2",
     "@babel/polyfill": "^7.12.1",
-    "@babel/preset-env": "^7.12.10",
-    "@babel/register": "^7.12.10",
+    "@babel/preset-env": "^7.14.2",
+    "@babel/register": "^7.13.16",
     "babel-loader": "^8.2.2",
     "bootstrap-timepicker": "^0.5.2",
     "copy-webpack-plugin": "^5.1.2",
     "css-loader": "^1.0.0",
     "file-loader": "^2.0.0",
-    "less": "^3.13.0",
+    "less": "^3.13.1",
     "less-loader": "^4.1.0",
     "mini-css-extract-plugin": "^0.4.2",
     "node-sass": "^4.14.1",
@@ -51,7 +52,7 @@
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.0",
     "url-loader": "^1.1.1",
-    "webpack": "^4.44.2",
+    "webpack": "^4.46.0",
     "webpack-cli": "^3.3.12"
   }
 }

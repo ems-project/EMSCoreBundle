@@ -51,11 +51,9 @@ class Revision
     private $autoSaveAt;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="archived", type="boolean", options={"default": false})
      */
-    private $archived;
+    private bool $archived;
 
     /**
      * @var bool

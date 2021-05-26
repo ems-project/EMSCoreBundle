@@ -22,7 +22,7 @@ final class Version20210526190542 extends AbstractMigration
         , auto_save CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:json_array)
         , circles CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:simple_array)
         , labelField CLOB DEFAULT NULL COLLATE BINARY, sha1 VARCHAR(255) DEFAULT NULL COLLATE BINARY, version_uuid CHAR(36) DEFAULT NULL COLLATE BINARY --(DC2Type:uuid)
-        , version_tag VARCHAR(255) DEFAULT NULL COLLATE BINARY, ouuid VARCHAR(255) DEFAULT NULL COLLATE utf8_bin, archived BOOLEAN DEFAULT \'0\' NOT NULL, archived_by VARCHAR(255) DEFAULT NULL, CONSTRAINT FK_6D6315CC1A445520 FOREIGN KEY (content_type_id) REFERENCES content_type (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
+        , version_tag VARCHAR(255) DEFAULT NULL COLLATE BINARY, ouuid VARCHAR(255) DEFAULT NULL COLLATE BINARY, archived BOOLEAN DEFAULT \'0\' NOT NULL, archived_by VARCHAR(255) DEFAULT NULL, CONSTRAINT FK_6D6315CC1A445520 FOREIGN KEY (content_type_id) REFERENCES content_type (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO revision (id, content_type_id, created, modified, auto_save_at, deleted, version, start_time, end_time, draft, finalized_by, finalized_date, deleted_by, lock_by, auto_save_by, lock_until, raw_data, auto_save, circles, labelField, sha1, version_uuid, version_tag, ouuid) SELECT id, content_type_id, created, modified, auto_save_at, deleted, version, start_time, end_time, draft, finalized_by, finalized_date, deleted_by, lock_by, auto_save_by, lock_until, raw_data, auto_save, circles, labelField, sha1, version_uuid, version_tag, ouuid FROM __temp__revision');
         $this->addSql('DROP TABLE __temp__revision');
     }

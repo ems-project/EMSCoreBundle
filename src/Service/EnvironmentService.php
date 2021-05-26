@@ -65,7 +65,7 @@ class EnvironmentService
         $this->instanceId = $instanceId;
     }
 
-    public function createEnvironment(string $name, $snapshot = false): Environment
+    public function createEnvironment(string $name, bool $updateReferrers = false): Environment
     {
         if (!$this->validateEnvironmentName($name)) {
             throw new \Exception('An environment name must respects the following regex /^[a-z][a-z0-9\-_]*$/');
@@ -75,7 +75,7 @@ class EnvironmentService
         $environment->setName($name);
         $environment->setAlias($this->instanceId.$environment->getName());
         $environment->setManaged(true);
-        $environment->setSnapshot($snapshot);
+        $environment->setUpdateReferrers($updateReferrers);
 
         try {
             $em = $this->doctrine->getManager();

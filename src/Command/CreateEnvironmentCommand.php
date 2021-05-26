@@ -30,7 +30,7 @@ class CreateEnvironmentCommand extends Command
 
     const ARGUMENT_ENV_NAME = 'name';
     const OPTION_STRICT = 'strict';
-    const OPTION_UPDATE_REFERRERS = 'updateReferrers';
+    const OPTION_UPDATE_REFERRERS = 'update-referrers';
 
     public function __construct(LoggerInterface $logger, EnvironmentService $environmentService, DataService $dataService)
     {

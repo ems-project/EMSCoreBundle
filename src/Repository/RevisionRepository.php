@@ -140,7 +140,7 @@ class RevisionRepository extends EntityRepository
 
             return \intval($query->getSingleScalarResult());
         } catch (NonUniqueResultException $e) {
-            throw new \RuntimeException('Revisiono has referenced returned non unique result!');
+            throw new \RuntimeException(sprintf('Revision with hash "%s" has non unique results!', $hash));
         }
     }
 

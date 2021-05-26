@@ -53,7 +53,7 @@ class Revision
     /**
      * @var bool
      *
-     * @ORM\Column(name="archived", type="boolean")
+     * @ORM\Column(name="archived", type="boolean", options={"default": false})
      */
     private $archived;
 

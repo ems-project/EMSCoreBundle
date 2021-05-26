@@ -33,20 +33,21 @@ final class ArchiveCommand extends Command implements CommandInterface
     protected static $defaultName = 'ems:revision:archive';
     private const USER = 'SYSTEM_ARCHIVE';
 
-    public function __construct(ContentTypeService $contentTypeService, RevisionService $revisionService)
+    public function __construct(ContentTypeService $contentTypeService, RevisionService $revisionService, int $defaultBulkSize)
     {
         parent::__construct();
         $this->contentTypeService = $contentTypeService;
         $this->revisionService = $revisionService;
+        $this->batchSize = $defaultBulkSize;
     }
 
     protected function configure(): void
     {
         $this
-            ->addArgument('contentType', InputArgument::REQUIRED, 'ContentType name')
+            ->addArgument('content-type', InputArgument::REQUIRED, 'ContentType name')
             ->addOption('force', null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
-            ->addOption('modifiedBefore', '', InputOption::VALUE_REQUIRED, 'Y-m-dTH:i:s (2019-07-15T11:38:16)')
-            ->addOption('batchSize', '', InputOption::VALUE_REQUIRED, 'db records batch size', '250')
+            ->addOption('modified-before', '', InputOption::VALUE_REQUIRED, 'Y-m-dTH:i:s (2019-07-15T11:38:16)')
+            ->addOption('batch-size', '', InputOption::VALUE_REQUIRED, 'db records batch size', '250')
         ;
     }
 

@@ -16,6 +16,7 @@
         <service id="ems.command.revision.archive" class="EMS\CoreBundle\Command\Revision\ArchiveCommand">
             <argument type="service" id="ems.service.contenttype"/>
             <argument type="service" id="ems.service.revision"/>
+            <argument>%ems_core.default_bulk_size%</argument>
             <tag name="console.command"/>
         </service>
         <service id="ems.command.revision.time_machine" class="EMS\CoreBundle\Command\Revision\TimeMachineCommand">

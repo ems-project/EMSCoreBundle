@@ -30,6 +30,7 @@ class CreateEnvironmentCommand extends Command
 
     const ARGUMENT_ENV_NAME = 'name';
     const OPTION_STRICT = 'strict';
+    const OPTION_UPDATE_REFERRERS = 'updateReferrers';
 
     public function __construct(LoggerInterface $logger, EnvironmentService $environmentService, DataService $dataService)
     {
@@ -53,6 +54,12 @@ class CreateEnvironmentCommand extends Command
                 null,
                 InputOption::VALUE_NONE,
                 'If set, the check failed will throw an exception'
+            )
+            ->addOption(
+                self::OPTION_UPDATE_REFERRERS,
+                null,
+                InputOption::VALUE_NONE,
+                'If set, update referrers is true'
             )
         ;
     }
@@ -83,7 +90,8 @@ class CreateEnvironmentCommand extends Command
 
         $this->io->note(\sprintf('Creation of the environment "%s"...', $environmentName));
         try {
-            $environment = $this->environmentService->createEnvironment($environmentName);
+            $updateReferrers = \boolval($input->getOption(self::OPTION_UPDATE_REFERRERS));
+            $environment = $this->environmentService->createEnvironment($environmentName,  $updateReferrers);
         } catch (\Exception $e) {
             $this->io->error($e->getMessage());
 

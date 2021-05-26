@@ -47,7 +47,7 @@ final class ArchiveCommand extends Command implements CommandInterface
             ->addArgument('content-type', InputArgument::REQUIRED, 'ContentType name')
             ->addOption('force', null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
             ->addOption('modified-before', '', InputOption::VALUE_REQUIRED, 'Y-m-dTH:i:s (2019-07-15T11:38:16)')
-            ->addOption('batch-size', '', InputOption::VALUE_REQUIRED, 'db records batch size', (string) $this->batchSize)
+            ->addOption('batch-size', '', InputOption::VALUE_REQUIRED, 'db records batch size', 'default_bulk_size')
         ;
     }
 
@@ -56,11 +56,15 @@ final class ArchiveCommand extends Command implements CommandInterface
         $this->style = new SymfonyStyle($input, $output);
         $this->style->title('EMS - Revision - Archive');
 
-        $this->batchSize = \intval($input->getOption('batchSize'));
-        $contentTypeName = \strval($input->getArgument('contentType'));
+        $batchSize = \intval($input->getOption('batch-size'));
+        if ($batchSize > 0) {
+            $this->batchSize = $batchSize;
+        }
+
+        $contentTypeName = \strval($input->getArgument('content-type'));
         $this->contentType = $this->contentTypeService->giveByName($contentTypeName);
 
-        $modifiedBefore = $input->getOption('modifiedBefore');
+        $modifiedBefore = $input->getOption('modified-before');
 
         $this->search = \array_filter([
             'lockBy' => self::USER,

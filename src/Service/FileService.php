@@ -222,9 +222,12 @@ class FileService implements EntityServiceInterface
         /** @var UploadedAsset|null $uploadedAsset */
         $uploadedAsset = $repository->findOneBy([
             'sha1' => $hash,
-            'available' => false,
             'user' => $user,
         ]);
+
+        if ($uploadedAsset && $uploadedAsset->getAvailable()) {
+            return $uploadedAsset;
+        }
 
         if (null === $uploadedAsset) {
             $uploadedAsset = new UploadedAsset($this->storageManager);

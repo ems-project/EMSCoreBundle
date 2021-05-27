@@ -120,14 +120,22 @@ class DocumentService
         }
 
         if ($currentRevision) {
+            $currentRevision->setLockBy($documentImportContext->getLockUser());
+            $currentRevision->setLockUntil($newRevision->getLockUntil());
+
+            if ($documentImportContext->shouldOnlyChanged() && $currentRevision->getHash() === $newRevision->getHash()) {
+                $this->entityManager->persist($currentRevision); // updateModified
+                $this->entityManager->flush();
+
+                return;
+            }
+
             $currentRevision->setEndTime($newRevision->getStartTime());
             $currentRevision->setDraft(false);
             $currentRevision->setAutoSave(null);
             if ($documentImportContext->shouldFinalize()) {
                 $currentRevision->removeEnvironment($documentImportContext->getEnvironment());
             }
-            $currentRevision->setLockBy($documentImportContext->getLockUser());
-            $currentRevision->setLockUntil($newRevision->getLockUntil());
             $this->entityManager->persist($currentRevision);
         }
 
@@ -152,6 +160,5 @@ class DocumentService
         $this->entityManager->persist($newRevision);
         $this->revisionRepository->finaliseRevision($documentImportContext->getContentType(), $ouuid, $newRevision->getStartTime(), $documentImportContext->getLockUser());
         $this->revisionRepository->publishRevision($newRevision, $newRevision->getDraft());
-        $this->entityManager->flush();
     }
 }

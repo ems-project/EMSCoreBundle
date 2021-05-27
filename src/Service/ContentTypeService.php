@@ -227,6 +227,19 @@ class ContentTypeService
         }
     }
 
+    public function giveByName(string $name): ContentType
+    {
+        $this->loadEnvironment();
+
+        $contentType = $this->contentTypeArrayByName[$name] ?? false;
+
+        if (!$contentType) {
+            throw new \RuntimeException(\sprintf('Could not find contentType with name %s', $name));
+        }
+
+        return $contentType;
+    }
+
     /**
      * @param string $name
      *

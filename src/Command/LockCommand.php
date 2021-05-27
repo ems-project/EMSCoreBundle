@@ -38,6 +38,8 @@ final class LockCommand extends Command
     private const OPTION_IF_EMPTY = 'if-empty';
     private const OPTION_OUUID = 'ouuid';
 
+    public const RESULT_SUCCESS = 0;
+
     public function __construct(ContentTypeRepository $contentTypeRepository, ElasticaService $elasticaService, RevisionRepository $revisionRepository)
     {
         parent::__construct();
@@ -151,7 +153,7 @@ final class LockCommand extends Command
             $this->by,
         ]));
 
-        return 0;
+        return self::RESULT_SUCCESS;
     }
 
     /**

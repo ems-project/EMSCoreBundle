@@ -51,6 +51,11 @@ class Revision
     private $autoSaveAt;
 
     /**
+     * @ORM\Column(name="archived", type="boolean", options={"default": false})
+     */
+    private bool $archived;
+
+    /**
      * @var bool
      *
      * @ORM\Column(name="deleted", type="boolean")
@@ -121,6 +126,13 @@ class Revision
      * @var \DateTime
      */
     private $tryToFinalizeOn;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="archived_by", type="string", length=255, nullable=true)
+     */
+    private $archivedBy;
 
     /**
      * @var string|null
@@ -264,6 +276,7 @@ class Revision
 
     public function __construct()
     {
+        $this->archived = false;
         $this->deleted = false;
         $this->allFieldsAreThere = false;
         $this->environments = new ArrayCollection();
@@ -448,26 +461,26 @@ class Revision
         return $this->modified;
     }
 
-    /**
-     * Set deleted.
-     *
-     * @param bool $deleted
-     *
-     * @return Revision
-     */
-    public function setDeleted($deleted)
+    public function isArchived(): bool
+    {
+        return $this->archived;
+    }
+
+    public function setArchived(bool $archived): self
+    {
+        $this->archived = $archived;
+
+        return $this;
+    }
+
+    public function setDeleted(bool $deleted): self
     {
         $this->deleted = $deleted;
 
         return $this;
     }
 
-    /**
-     * Get deleted.
-     *
-     * @return bool
-     */
-    public function getDeleted()
+    public function getDeleted(): bool
     {
         return $this->deleted;
     }
@@ -638,26 +651,24 @@ class Revision
         return $this->finalizedBy;
     }
 
-    /**
-     * Set deletedBy.
-     *
-     * @param string|null $deletedBy
-     *
-     * @return Revision
-     */
-    public function setDeletedBy($deletedBy)
+    public function getArchivedBy(): ?string
+    {
+        return $this->archivedBy;
+    }
+
+    public function setArchivedBy(?string $archivedBy): void
+    {
+        $this->archivedBy = $archivedBy;
+    }
+
+    public function setDeletedBy(?string $deletedBy): self
     {
         $this->deletedBy = $deletedBy;
 
         return $this;
     }
 
-    /**
-     * Get deletedBy.
-     *
-     * @return string|null
-     */
-    public function getDeletedBy()
+    public function getDeletedBy(): ?string
     {
         return $this->deletedBy;
     }
@@ -788,12 +799,11 @@ class Revision
         return $this;
     }
 
-    /**
-     * Remove environment.
-     */
-    public function removeEnvironment(Environment $environment)
+    public function removeEnvironment(Environment $environment): self
     {
         $this->environments->removeElement($environment);
+
+        return $this;
     }
 
     /**
@@ -834,6 +844,17 @@ class Revision
         }
 
         return $rawData;
+    }
+
+    public function getHash(): string
+    {
+        $hash = $this->rawData[Mapping::HASH_FIELD] ?? null;
+
+        if (null === $hash) {
+            throw new \RuntimeException('Hash field not found in raw data!');
+        }
+
+        return $hash;
     }
 
     /**

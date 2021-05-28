@@ -294,9 +294,9 @@ class MigrateCommand extends Command
 
             return $application->find('ems:revision:archive')->run(
                 new ArrayInput([
-                    'contentType' => $this->contentTypeTo->getName(),
+                    'content-type' => $this->contentTypeTo->getName(),
                     '--force' => true,
-                    '--modifiedBefore' => $archiveModifiedBefore,
+                    '--modified-before' => $archiveModifiedBefore,
                 ]),
                 $output
             );

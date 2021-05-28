@@ -7,30 +7,30 @@ use EMS\CoreBundle\Entity\Environment;
 
 class DocumentImportContext
 {
-    /** @var ContentType */
-    private $contentType;
-    /** @var string */
-    private $lockUser;
-    /** @var bool */
-    private $shouldRawImport;
-    /** @var bool */
-    private $shouldIndexInDefaultEnv;
-    /** @var Environment */
-    private $environment;
-    /** @var bool */
-    private $shouldFinalize;
-    /** @var bool */
-    private $shouldForce;
+    private Environment $environment;
+    private ContentType $contentType;
+    private string $lockUser;
+    private bool $shouldRawImport;
+    private bool $shouldOnlyChanged = false;
+    private bool $shouldIndexInDefaultEnv;
+    private bool $shouldFinalize;
+    private bool $shouldForce;
 
-    public function __construct(ContentType $contentType, string $lockUser, bool $shouldRawImport, bool $shouldIndexInDefaultEnv, bool $shouldFinalize, bool $shouldForceImport)
-    {
+    public function __construct(
+        ContentType $contentType,
+        string $lockUser,
+        bool $shouldRawImport,
+        bool $shouldIndexInDefaultEnv,
+        bool $shouldFinalize,
+        bool $shouldForceImport
+    ) {
         $this->contentType = $contentType;
         $this->shouldIndexInDefaultEnv = $shouldIndexInDefaultEnv;
         $this->lockUser = $lockUser;
         $this->shouldRawImport = $shouldRawImport;
         $this->shouldFinalize = $shouldFinalize;
         $this->shouldForce = $shouldForceImport;
-        $this->environment = $this->contentType->getEnvironment();
+        $this->environment = $this->contentType->giveEnvironment();
     }
 
     public function getContentType(): ContentType
@@ -46,6 +46,18 @@ class DocumentImportContext
     public function shouldRawImport(): bool
     {
         return $this->shouldRawImport;
+    }
+
+    public function shouldOnlyChanged(): bool
+    {
+        return $this->shouldOnlyChanged;
+    }
+
+    public function setShouldOnlyChanged(bool $onlyChanged): self
+    {
+        $this->shouldOnlyChanged = $onlyChanged;
+
+        return $this;
     }
 
     public function shouldIndexInDefaultEnv(): bool

@@ -34,7 +34,7 @@ require('bootstrap-slider');
 require('bootstrap-select');
 require('admin-lte/plugins/timepicker/bootstrap-timepicker');
 require('chart.js');
-require('ckeditor');
+require('ckeditor4');
 require('datatables.net');
 require('datatables.net-bs');
 require('fastclick');

@@ -16,7 +16,7 @@ final class Version20210111193957 extends AbstractMigration
     {
         $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
-        $this->addSql('ALTER TABLE channel ADD COLUMN alias VARCHAR(255) NOT NULL');
+        $this->addSql('ALTER TABLE channel ADD COLUMN alias VARCHAR(255) DEFAULT \'alias\' NOT NULL');
     }
 
     public function down(Schema $schema): void

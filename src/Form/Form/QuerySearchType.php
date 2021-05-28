@@ -11,6 +11,7 @@ use EMS\CoreBundle\Form\DataTransformer\QuerySearchOptionsTransformer;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Subform\QuerySearchOptionsType;
 use EMS\CoreBundle\Service\EnvironmentService;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -48,7 +49,7 @@ final class QuerySearchType extends AbstractType
                 'attr' => [
                     'class' => 'select2',
                 ],
-                 'multiple' => true,
+                'multiple' => true,
                 'choices' => $this->service->getEnvironments(),
                 'required' => false,
                 'row_attr' => [
@@ -81,6 +82,9 @@ final class QuerySearchType extends AbstractType
             'data_class' => QuerySearch::class,
             'label_format' => 'form.form.query_search.%name%',
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+            'constraints' => [
+                new UniqueEntity(['fields' => ['name']]),
+            ],
         ]);
     }
 }

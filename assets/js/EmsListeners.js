@@ -523,7 +523,6 @@ export default class EmsListeners {
         });
     }
 
-
     addObjectPickerListeners() {
         const searchApiUrl = $('body').data('search-api');
 
@@ -532,6 +531,7 @@ export default class EmsListeners {
 
             const type = selectItem.data('type');
             const searchId = selectItem.data('search-id');
+            const querySearch = selectItem.data('query-search');
             const circleOnly = selectItem.data('circleOnly');
             const dynamicLoading = selectItem.data('dynamic-loading');
             const sortable = selectItem.data('sortable');
@@ -560,7 +560,8 @@ export default class EmsListeners {
                             q: params.term, // search term
                             page: params.page,
                             type: type,
-                            searchId: searchId
+                            searchId: searchId,
+                            querySearch: querySearch
                         };
 
                         if (circleOnly !== undefined) {

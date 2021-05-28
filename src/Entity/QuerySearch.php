@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CommonBundle\Helper\Text\Encoder;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -41,7 +42,7 @@ class QuerySearch implements EntityInterface
     private string $label;
 
     /**
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     private string $name;
 
@@ -111,7 +112,11 @@ class QuerySearch implements EntityInterface
 
     public function setName(string $name): void
     {
-        $this->name = $name;
+        $webalizedName = Encoder::webalize($name);
+        if (null === $webalizedName) {
+            throw new \RuntimeException('Unexpected null webalized name');
+        }
+        $this->name = $webalizedName;
     }
 
     public function addEnvironment(Environment $environment): QuerySearch

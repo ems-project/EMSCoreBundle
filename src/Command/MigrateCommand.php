@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -10,7 +11,9 @@ use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Service\DocumentService;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,58 +24,44 @@ class MigrateCommand extends Command
 {
     protected static $defaultName = 'ems:contenttype:migrate';
 
-    /** @var ElasticaService */
-    private $elasticaService;
-    /** @var Registry */
-    protected $doctrine;
-    /** @var DocumentService */
-    private $documentService;
-    /** @var string */
-    private $elasticsearchIndex;
-    /** @var string */
-    private $contentTypeNameFrom;
-    /** @var string */
-    private $contentTypeNameTo;
-    /** @var int */
-    private $scrollSize;
-    /** @var string */
-    private $scrollTimeout;
-    /** @var bool */
-    private $indexInDefaultEnv;
-    /** @var Environment */
-    private $defaultEnv;
-    /** @var ContentType */
-    private $contentTypeTo;
-    /** @var int */
-    private $bulkSize;
-    /** @var bool */
-    private $forceImport;
-    /** @var bool */
-    private $rawImport;
-    /** @var bool */
-    private $signData;
-    /** @var string */
-    private $searchQuery;
-    /** @var bool */
-    private $dontFinalize;
-    /** @var ContentTypeRepository */
-    private $contentTypeRepository;
-    /** @var SymfonyStyle */
-    private $io;
+    private RevisionService $revisionService;
+    private ElasticaService $elasticaService;
+    protected Registry $doctrine;
+    private DocumentService $documentService;
 
-    /** @var string */
-    const ARGUMENT_CONTENTTYPE_NAME_FROM = 'contentTypeNameFrom';
-    /** @var string */
-    const ARGUMENT_CONTENTTYPE_NAME_TO = 'contentTypeNameTo';
-    /** @var string */
-    const ARGUMENT_SCROLL_SIZE = 'scrollSize';
-    /** @var string */
-    const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
-    /** @var string */
-    const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
+    private string $elasticsearchIndex;
+    private string $contentTypeNameFrom;
+    private string $contentTypeNameTo;
+    private int  $scrollSize;
+    private string $scrollTimeout;
+    private bool $indexInDefaultEnv;
 
-    public function __construct(Registry $doctrine, ElasticaService $elasticaService, DocumentService $documentService)
+    private Environment $defaultEnv;
+    private ContentType $contentTypeTo;
+    private int $bulkSize;
+    private bool $forceImport;
+    private bool $rawImport;
+    private bool $onlyChanged;
+    private ?\DateTimeInterface $archiveModifiedBefore = null;
+    private bool $signData;
+    private string $searchQuery;
+    private bool $dontFinalize;
+    private ContentTypeRepository $contentTypeRepository;
+    private SymfonyStyle  $io;
+
+    private const ARGUMENT_CONTENTTYPE_NAME_FROM = 'contentTypeNameFrom';
+    private const ARGUMENT_CONTENTTYPE_NAME_TO = 'contentTypeNameTo';
+    private const ARGUMENT_SCROLL_SIZE = 'scrollSize';
+    private const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
+    private const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
+
+    public function __construct(
+        RevisionService $revisionService,
+        Registry $doctrine,
+        ElasticaService $elasticaService,
+        DocumentService $documentService)
     {
+        $this->revisionService = $revisionService;
         $this->doctrine = $doctrine;
         $this->elasticaService = $elasticaService;
         $this->documentService = $documentService;
@@ -155,7 +144,20 @@ class MigrateCommand extends Command
                 null,
                 InputOption::VALUE_NONE,
                 'Don\'t finalize document'
-            );
+            )
+            ->addOption(
+                'changed',
+                null,
+                InputOption::VALUE_NONE,
+                'Will only migrate if the hash is different, If equal it will only update the modified dateTime of the current revision'
+            )
+            ->addOption(
+                'archive',
+                null,
+                InputOption::VALUE_NONE,
+                'Will archive revisions that were not modified (see changed option)'
+            )
+        ;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -197,7 +199,7 @@ class MigrateCommand extends Command
         $this->scrollTimeout = $scrollTimeout;
 
         $options = \array_values($input->getOptions());
-        list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->dontFinalize) = $options;
+        list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->dontFinalize, $this->onlyChanged) = $options;
 
         $contentTypeTo = $this->contentTypeRepository->findByName($this->contentTypeNameTo);
         if (null === $contentTypeTo || !$contentTypeTo instanceof ContentType) {
@@ -228,6 +230,12 @@ class MigrateCommand extends Command
             $this->indexInDefaultEnv = false;
         }
 
+        $archive = \boolval($input->getOption('archive'));
+        if ($archive) {
+            $this->archiveModifiedBefore = DateTime::create('now');
+            $this->io->note(\sprintf('Will archive not updated revisions before %s', $this->archiveModifiedBefore->format(\DateTimeInterface::ATOM)));
+        }
+
         return 0;
     }
 
@@ -247,6 +255,7 @@ class MigrateCommand extends Command
 
         $progress = $this->io->createProgressBar($total);
         $importerContext = $this->documentService->initDocumentImporterContext($this->contentTypeTo, 'SYSTEM_MIGRATE', $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, !$this->dontFinalize, $this->forceImport);
+        $importerContext->setShouldOnlyChanged($this->onlyChanged);
 
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
@@ -265,9 +274,36 @@ class MigrateCommand extends Command
             $this->documentService->flushAndSend($importerContext);
         }
         $progress->finish();
+
+        if (null !== $archiveModifiedBefore = $this->archiveModifiedBefore) {
+            $this->archive($output, $archiveModifiedBefore->format(\DateTimeInterface::ATOM));
+        }
+
         $this->io->writeln('');
         $this->io->writeln('Migration done');
 
         return 0;
+    }
+
+    private function archive(OutputInterface $output, string $archiveModifiedBefore): int
+    {
+        try {
+            if (null === $application = $this->getApplication()) {
+                throw new \RuntimeException('could not find application');
+            }
+
+            return $application->find('ems:revision:archive')->run(
+                new ArrayInput([
+                    'content-type' => $this->contentTypeTo->getName(),
+                    '--force' => true,
+                    '--modified-before' => $archiveModifiedBefore,
+                ]),
+                $output
+            );
+        } catch (\Throwable $e) {
+            $this->io->error(\sprintf('Archived failed! (%s)', $e->getMessage()));
+
+            return 0;
+        }
     }
 }

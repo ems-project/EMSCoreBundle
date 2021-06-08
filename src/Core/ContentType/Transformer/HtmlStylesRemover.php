@@ -1,6 +1,8 @@
 <?php
 
-namespace EMS\CoreBundle\ContentTransformer;
+declare(strict_types=1);
+
+namespace EMS\CoreBundle\Core\ContentType\Transformer;
 
 use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
 

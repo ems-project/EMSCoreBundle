@@ -59,7 +59,7 @@ final class UploadedFileWysiwygController extends AbstractController
 
     private function initTable(): EntityTable
     {
-        $table = new EntityTable($this->fileService, $this->generateUrl('ems_core_uploaded_file_ajax'), ['available' => false]);
+        $table = new EntityTable($this->fileService, $this->generateUrl('ems_core_uploaded_file_wysiwyg_ajax'), ['available' => false]);
         $table->addColumn('uploaded-file.index.column.name', 'name')
             ->addHtmlAttribute('data-url', function (UploadedAsset $data) {
                 return EMSLink::EMSLINK_ASSET_PREFIX.$data->getSha1().'?name='.$data->getName().'&type='.$data->getType();

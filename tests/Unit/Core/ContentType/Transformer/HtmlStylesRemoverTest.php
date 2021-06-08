@@ -1,12 +1,14 @@
 <?php
 
-namespace EMS\CoreBundle\Tests\ContentTransformer;
+declare(strict_types=1);
 
-use EMS\CoreBundle\ContentTransformer\ContentTransformContext;
-use EMS\CoreBundle\ContentTransformer\HtmlStylesRemover;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+namespace EMS\CoreBundle\Tests\Unit\Core\ContentType\Transformer;
 
-class HtmlStylesRemoverTest extends WebTestCase
+use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformContext;
+use EMS\CoreBundle\Core\ContentType\Transformer\HtmlStylesRemover;
+use PHPUnit\Framework\TestCase;
+
+class HtmlStylesRemoverTest extends TestCase
 {
     private function assertEqualsInputOutPut($input, $output)
     {
@@ -187,11 +189,12 @@ HTML;
 </div> 
 HTML;
         $output = <<<HTML
-<ul>
-    <li>Consectetur</li>
-    <li><em>Adipiscing</em></li>
-    <li>Elit</li>
-</ul>
+
+    <ul>
+        <li>Consectetur</li>
+        <li><em>Adipiscing</em></li>
+        <li>Elit</li>
+    </ul>
 HTML;
 
         $this->assertEqualsInputOutPut($input, $output);

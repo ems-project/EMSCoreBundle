@@ -6,12 +6,9 @@ namespace EMS\CoreBundle\Core\ContentType\Transformer;
 
 class ContentTransformContext
 {
-    /** @var string */
-    private $dataFieldType;
-
+    private string $dataFieldType;
     /** @var mixed */
     private $data;
-
     /** @var mixed */
     private $transformedData;
 

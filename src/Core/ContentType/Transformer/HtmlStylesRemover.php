@@ -8,14 +8,9 @@ use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
 
 class HtmlStylesRemover implements ContentTransformInterface
 {
-    /** @var string */
-    private $classNamePrefix;
-
-    /** @var \DOMDocument */
-    protected $doc;
-
-    /** @var \DOMXPath */
-    protected $xpath;
+    private string $classNamePrefix;
+    protected ?\DOMDocument $doc = null;
+    protected ?\DOMXPath $xpath = null;
 
     public function __construct(string $classNamePrefix = 'removable-style-')
     {

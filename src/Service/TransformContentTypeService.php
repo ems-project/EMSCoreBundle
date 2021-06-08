@@ -13,6 +13,7 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\Form\RevisionType;
+use EMS\CoreBundle\Service\Revision\LoggingContext;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 
@@ -55,12 +56,7 @@ class TransformContentTypeService
                 $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
 
                 if ($revision->getDraft()) {
-                    $this->logger->warning('service.data.transform_content_type.cant_process_draft', [
-                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                        EmsFields::LOG_ENVIRONMENT_FIELD => $contentType->getEnvironment()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    ]);
+                    $this->logger->warning('service.data.transform_content_type.cant_process_draft', LoggingContext::read($revision));
                     yield $revision;
                     continue;
                 }
@@ -99,14 +95,12 @@ class TransformContentTypeService
                     $revision->setRawData($result);
                     $this->dataService->finalizeDraft($revision, $revisionType, $user);
                 } catch (\Throwable $e) {
-                    $this->logger->error('service.data.transform_content_tyoe.errer_on_save', [
-                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                        EmsFields::LOG_ENVIRONMENT_FIELD => $contentType->getEnvironment()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                        EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                        EmsFields::LOG_EXCEPTION_FIELD => $e,
-                    ]);
+                    $this->logger->error('service.data.transform_content_tyoe.errer_on_save',
+                        \array_merge(LoggingContext::read($revision), [
+                            EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                            EmsFields::LOG_EXCEPTION_FIELD => $e,
+                        ])
+                    );
                 }
                 yield $revision;
             }

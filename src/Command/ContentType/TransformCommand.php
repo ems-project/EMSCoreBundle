@@ -2,47 +2,38 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Command;
+namespace EMS\CoreBundle\Command\ContentType;
 
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\TransformContentTypeService;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class TransformContentTypeCommand extends Command
+final class TransformCommand extends AbstractCommand
 {
-    /** @var string */
-    protected static $defaultName = 'ems:contenttype:transform';
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var ContentTypeService */
-    protected $contentTypeService;
-    /** @var TransformContentTypeService */
-    protected $transformContentTypeService;
-    /** @var SymfonyStyle */
-    private $io;
-    /** @var ContentType */
-    private $contentType;
-    /** @var string */
-    private $user;
+    private LoggerInterface $logger;
+    private ContentTypeService $contentTypeService;
+    private TransformContentTypeService $transformContentTypeService;
+    private ContentType $contentType;
+    private string $user;
 
     private const ARGUMENT_CONTENT_TYPE = 'contentType';
     private const ARGUMENT_USER = 'user';
     private const OPTION_STRICT = 'strict';
     private const DEFAULT_USER = 'TRANSFORM_CONTENT';
 
+    protected static $defaultName = 'ems:contenttype:transform';
+
     public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, TransformContentTypeService $transformContentTypeService)
     {
         $this->logger = $logger;
         $this->contentTypeService = $contentTypeService;
         $this->transformContentTypeService = $transformContentTypeService;
-
         parent::__construct();
     }
 
@@ -72,7 +63,7 @@ final class TransformContentTypeCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->io = new SymfonyStyle($input, $output);
+        parent::initialize($input, $output);
         $this->io->title('Transform content-type');
     }
 
@@ -82,23 +73,14 @@ final class TransformContentTypeCommand extends Command
         $this->checkContentTypeArgument($input);
         $this->checkUserArgument($input);
 
-        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
-        if (!\is_string($contentTypeName)) {
-            throw new \RuntimeException('Unexpected content type name');
-        }
-        $contentType = $this->contentTypeService->getByName($contentTypeName);
-        if (false === $contentType) {
-            throw new \RuntimeException('Unexpected content type name');
-        }
+        $contentTypeName = $this->getArgumentString(self::ARGUMENT_CONTENT_TYPE);
+        $contentType = $this->contentTypeService->giveByName($contentTypeName);
+
         $this->contentType = $contentType;
-        $user = $input->getArgument(self::ARGUMENT_USER);
-        if (!\is_string($user)) {
-            throw new \RuntimeException('Unexpected user name');
-        }
-        $this->user = $user;
+        $this->user = $this->getArgumentString(self::ARGUMENT_USER);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->logger->info('Execute the TransformContentType command');
 
@@ -120,15 +102,12 @@ final class TransformContentTypeCommand extends Command
 
     private function checkContentTypeArgument(InputInterface $input): void
     {
-        if (null === $input->getArgument(self::ARGUMENT_CONTENT_TYPE)) {
+        if ('' === $input->getArgument(self::ARGUMENT_CONTENT_TYPE)) {
             $message = 'The content type name is not provided';
             $this->setContentTypeArgument($input, $message);
         }
 
-        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
-        if (!\is_string($contentTypeName)) {
-            throw new \RuntimeException('Content type name as to be a string');
-        }
+        $contentTypeName = $this->getArgumentString(self::ARGUMENT_CONTENT_TYPE);
 
         if (false === $this->contentTypeService->getByName($contentTypeName)) {
             $message = \sprintf('The content type "%s" not found', $contentTypeName);
@@ -139,7 +118,7 @@ final class TransformContentTypeCommand extends Command
 
     private function setContentTypeArgument(InputInterface $input, string $message): void
     {
-        if ($input->getOption(self::OPTION_STRICT)) {
+        if ($this->getOptionBool(self::OPTION_STRICT)) {
             $this->logger->error($message);
             throw new \Exception($message);
         }

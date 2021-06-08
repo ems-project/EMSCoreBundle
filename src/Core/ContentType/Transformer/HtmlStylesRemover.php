@@ -9,12 +9,19 @@ use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
 class HtmlStylesRemover implements ContentTransformInterface
 {
     private string $classNamePrefix;
-    protected ?\DOMDocument $doc = null;
-    protected ?\DOMXPath $xpath = null;
+    protected \DOMDocument $doc;
+    protected \DOMXPath $xpath;
 
     public function __construct(string $classNamePrefix = 'removable-style-')
     {
         $this->classNamePrefix = $classNamePrefix;
+
+        $doc = new \DOMDocument('1.0', 'UTF-8');
+        $doc->preserveWhiteSpace = false;
+        $doc->formatOutput = true;
+
+        $this->doc = $doc;
+        $this->xpath = new \DOMXPath($this->doc);
     }
 
     public function canTransform(ContentTransformContext $contentTransformContext): bool
@@ -24,9 +31,7 @@ class HtmlStylesRemover implements ContentTransformInterface
 
     public function transform(ContentTransformContext $contentTransformContext): string
     {
-        $this->doc = $this->initDocument($contentTransformContext->getData());
-        $this->xpath = new \DOMXPath($this->doc);
-
+        $this->initDocument($contentTransformContext->getData());
         $this->removeHtmlStyles();
 
         return $this->outputDocument();
@@ -70,18 +75,13 @@ class HtmlStylesRemover implements ContentTransformInterface
         return $fragment;
     }
 
-    protected function initDocument(string $input): \DOMDocument
+    protected function initDocument(string $input): void
     {
-        $doc = new \DOMDocument('1.0', 'UTF-8');
-        $doc->preserveWhiteSpace = false;
-        $doc->formatOutput = true;
-
-        @$doc->loadHtml( // Need @ to bypass the htmlParseEntityRef warnings/errors
+        @$this->doc->loadHtml( // Need @ to bypass the htmlParseEntityRef warnings/errors
             \mb_convert_encoding($this->addTemporaryWrapper($input), 'HTML-ENTITIES', 'UTF-8'),
             \LIBXML_HTML_NOIMPLIED | \LIBXML_HTML_NODEFDTD
         );
-
-        return $doc;
+        $this->xpath = new \DOMXPath($this->doc);
     }
 
     protected function outputDocument(): string

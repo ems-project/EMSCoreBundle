@@ -1,35 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Service;
 
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle\ContentTransformer\ContentTransformContext;
-use EMS\CoreBundle\ContentTransformer\ContentTransformInterface;
+use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformContext;
+use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformInterface;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\Form\RevisionType;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 
 class TransformContentTypeService
 {
-    /** @var int */
-    const DEFAULT_SCROLL_SIZE = 100;
+    private LoggerInterface $logger;
+    private ContentTypeService $contentTypeService;
+    private DataService $dataService;
+    private FormFactoryInterface $formFactory;
+    private ElasticaService $elasticaService;
 
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var DataService */
-    private $dataService;
-    /** @var FormFactoryInterface */
-    private $formFactory;
-    /** @var ElasticaService */
-    private $elasticaService;
+    private const DEFAULT_SCROLL_SIZE = 100;
 
     public function __construct(
         LoggerInterface $logger,
@@ -103,7 +98,7 @@ class TransformContentTypeService
                     $revision = $this->dataService->initNewDraft($contentType->getName(), $ouuid, null, $user);
                     $revision->setRawData($result);
                     $this->dataService->finalizeDraft($revision, $revisionType, $user);
-                } catch (Exception $e) {
+                } catch (\Throwable $e) {
                     $this->logger->error('service.data.transform_content_tyoe.errer_on_save', [
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),

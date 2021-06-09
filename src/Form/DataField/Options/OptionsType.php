@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Form\DataField\Options;
 use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * It's the default option compound field of eMS data type.
@@ -22,8 +23,13 @@ class OptionsType extends AbstractType
         $builder->add('displayOptions', DisplayOptionsType::class);
         $builder->add('mappingOptions', MappingOptionsType::class);
         $builder->add('restrictionOptions', RestrictionOptionsType::class);
-        $builder->add('migrationOptions', MigrationOptionsType::class);
+        $builder->add('migrationOptions', MigrationOptionsType::class, $options);
         $builder->add('extraOptions', ExtraOptionsType::class);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults(['field_type' => null]);
     }
 
     /**

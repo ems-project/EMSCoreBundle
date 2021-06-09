@@ -1445,6 +1445,24 @@
 	</div>             
 {%- endblock i18n_content_row %}
 
+{%- block data_field_migration_transformer_row -%}
+	<div style="margin-bottom:10px; padding: 15px;" class="bg-gray-light">
+		<div style="margin-bottom: 15px;">
+			{{ form_label(form.transformer) }}
+			{{ form_widget(form.transformer) }}
+		</div>
+		<div style="margin-bottom: 15px;">
+			{{ form_label(form.options) }}
+			{{ form_widget(form.options) }}
+		</div>
+	</div>
+
+
+
+
+
+{%- endblock -%}
+
 {%- block form_end -%}
 	{{ parent() }}
 	{%- for modalName in form.vars.json_menu_nested_modal_names|default([]) -%}

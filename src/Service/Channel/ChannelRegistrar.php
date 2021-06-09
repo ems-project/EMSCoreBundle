@@ -20,7 +20,7 @@ final class ChannelRegistrar
     private LoggerInterface $logger;
     private IndexService $indexService;
 
-    private const EMSCO_CHANNEL_PATH_REGEX = '/^\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
+    private const EMSCO_CHANNEL_PATH_REGEX = '/^(\\/index\\.php)?\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
 
     public function __construct(ChannelRepository $channelRepository, EnvironmentHelperInterface $environmentHelper, LoggerInterface $logger, IndexService $indexService)
     {
@@ -90,6 +90,12 @@ final class ChannelRegistrar
 
         $referer = $request->headers->get('referer', null);
         if (!\is_string($referer)) {
+            $referer = $request->headers->get('Referer', null);
+        }
+        if (!\is_string($referer)) {
+            $referer = $request->headers->get('REFERER', null);
+        }
+        if (!\is_string($referer)) {
             return;
         }
 
@@ -115,6 +121,6 @@ final class ChannelRegistrar
             return;
         }
 
-        $request->headers->set(AssetController::REQUEST_HEADER_CHANNEL_ALIAS, $alias);
+        $request->headers->set(AssetController::REQUEST_HEADER_ENVIRONMENT_ALIAS, $alias);
     }
 }

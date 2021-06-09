@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service\Channel;
 
 use EMS\ClientHelperBundle\Contracts\Environment\EnvironmentHelperInterface;
-use EMS\ClientHelperBundle\Controller\AssetController;
 use EMS\ClientHelperBundle\Helper\Environment\Environment;
 use EMS\CoreBundle\Repository\ChannelRepository;
 use EMS\CoreBundle\Service\IndexService;
@@ -20,7 +19,7 @@ final class ChannelRegistrar
     private LoggerInterface $logger;
     private IndexService $indexService;
 
-    private const EMSCO_CHANNEL_PATH_REGEX = '/^(\\/index\\.php)?\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
+    public const EMSCO_CHANNEL_PATH_REGEX = '/^(\\/index\\.php)?\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
 
     public function __construct(ChannelRepository $channelRepository, EnvironmentHelperInterface $environmentHelper, LoggerInterface $logger, IndexService $indexService)
     {
@@ -36,8 +35,6 @@ final class ChannelRegistrar
         \preg_match(self::EMSCO_CHANNEL_PATH_REGEX, $request->getPathInfo(), $matches);
 
         if (null === $channelName = $matches['channel'] ?? null) {
-            $this->tryToAddAliasHeaderInRequest($request);
-
             return;
         }
 
@@ -80,47 +77,5 @@ final class ChannelRegistrar
     private function isAnonymousUser(Request $request): bool
     {
         return null === $request->getSession()->get('_security_main');
-    }
-
-    private function tryToAddAliasHeaderInRequest(Request $request): void
-    {
-        if (!\preg_match('/^\/bundles\//', $request->getPathInfo())) {
-            return;
-        }
-
-        $referer = $request->headers->get('referer', null);
-        if (!\is_string($referer)) {
-            $referer = $request->headers->get('Referer', null);
-        }
-        if (!\is_string($referer)) {
-            $referer = $request->headers->get('REFERER', null);
-        }
-        if (!\is_string($referer)) {
-            return;
-        }
-
-        $position = \strpos($referer, $request->getBaseUrl());
-        if (false === $position) {
-            return;
-        }
-
-        $refererPathInfo = \substr($referer, $position + \strlen($request->getBaseUrl()));
-        \preg_match(self::EMSCO_CHANNEL_PATH_REGEX, $refererPathInfo, $matches);
-        if (null === $channelName = $matches['channel'] ?? null) {
-            return;
-        }
-
-        try {
-            $channel = $this->channelRepository->findRegistered($channelName);
-        } catch (\Throwable $e) {
-            return;
-        }
-
-        $alias = $channel->getAlias();
-        if (null === $alias) {
-            return;
-        }
-
-        $request->headers->set(AssetController::REQUEST_HEADER_ENVIRONMENT_ALIAS, $alias);
     }
 }

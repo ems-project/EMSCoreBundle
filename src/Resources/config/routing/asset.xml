@@ -9,4 +9,16 @@
         <requirement key="requestPath">.+</requirement>
     </route>
 
+    <route id="ems_asset" path="/data/asset/{hash_config}/{hash}/{filename}" methods="GET,HEAD">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\AssetController:assetAction</default>
+    </route>
+
+    <route id="emsco_asset_public" path="/public/asset/{hash_config}/{hash}/{filename}" methods="GET,HEAD">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\AssetController:assetAction</default>
+    </route>
+
+    <route id="ems_asset_processor" path="/asset/{processor}/{hash}" methods="GET,HEAD">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\AssetController:assetProcessorAction</default>
+    </route>
+
 </routes>

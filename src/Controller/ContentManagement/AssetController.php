@@ -13,7 +13,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
 class AssetController extends AbstractController
 {
@@ -34,10 +33,6 @@ class AssetController extends AbstractController
         $this->assetConfig = $assetConfig;
     }
 
-    /**
-     * @Route("/data/asset/{hash_config}/{hash}/{filename}" , name="ems_asset", methods={"GET","HEAD"})
-     * @Route("/public/asset/{hash_config}/{hash}/{filename}" , name="emsco_asset_public", methods={"GET","HEAD"})
-     */
     public function assetAction(string $hash, string $hash_config, string $filename, Request $request): Response
     {
         $this->closeSession($request);
@@ -48,10 +43,6 @@ class AssetController extends AbstractController
         }
     }
 
-    /**
-     * @deprecated
-     * @Route("/asset/{processor}/{hash}", name="ems_asset_processor", methods={"GET","HEAD"})
-     */
     public function assetProcessorAction(Request $request, string $processor, string $hash): Response
     {
         $this->closeSession($request);
@@ -100,7 +91,7 @@ class AssetController extends AbstractController
             throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));
         }
 
-        $refererPathInfo = \substr($refererPath, \strlen($$baseUrl));
+        $refererPathInfo = \substr($refererPath, \strlen($baseUrl));
         \preg_match(ChannelRegistrar::EMSCO_CHANNEL_PATH_REGEX, $refererPathInfo, $matches);
         if (null === $channelName = $matches['channel'] ?? null) {
             throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));

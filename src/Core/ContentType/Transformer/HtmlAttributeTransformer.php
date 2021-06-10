@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\ContentType\Transformer;
 
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,41 +21,77 @@ final class HtmlAttributeTransformer implements ContentTransformerInterface
         return WysiwygFieldType::class === $class;
     }
 
+    public function validateConfig(string $config): ?string
+    {
+        try {
+            $options = Json::decode($config);
+            $this->resolveOptions($options);
+
+            return null;
+        } catch (\Throwable $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function transform(TransformContext $context): void
     {
-        $options = $this->resolveOptions($context);
+        if (null == $data = $context->getData()) {
+            return;
+        }
 
         $crawler = new Crawler();
         $crawler->addContent($context->getData());
+        $options = $this->resolveOptions($context->getOptions());
+        $results = 0;
 
         if ($options['remove_value_prefix']) {
-            $this->removeValue($crawler, $options);
+            $results = $results + $this->removeValue($crawler, $options);
         }
-
         if ($options['remove']) {
-            $this->removeAttribute($crawler, $options);
+            $results = $results + $this->removeAttribute($crawler, $options);
         }
 
-        $context->setTransformed($crawler->filterXPath('//body')->html());
+        if ($results > 0) {
+            $this->setTransformed($context, $crawler);
+        }
+    }
+
+    private function setTransformed(TransformContext $context, Crawler $crawler): void
+    {
+        $data = $context->getData();
+        $transformed = $crawler->outerHtml();
+
+        if (false === \strpos($data, '<html>')) {
+            $transformed = \str_replace(['<html>', '</html>'], '', $transformed);
+        }
+        if (false === \strpos($data, '<body>')) {
+            $transformed = \str_replace(['<body>', '</body>'], '', $transformed);
+        }
+
+        $context->setTransformed($transformed);
     }
 
     /**
      * @param array<mixed> $options
      */
-    private function removeAttribute(Crawler $crawler, array $options): void
+    private function removeAttribute(Crawler $crawler, array $options): int
     {
+        $result = 0;
         $attribute = $options['attribute'];
         $xpath = \sprintf('//%s[@%s]', $options['element'], $attribute);
 
         foreach ($this->crawl($crawler, $xpath) as $element) {
             $element->removeAttribute($attribute);
+            ++$result;
         }
+
+        return $result;
     }
 
     /**
      * @param array<mixed> $options
      */
-    private function removeValue(Crawler $crawler, array $options): void
+    private function removeValue(Crawler $crawler, array $options): int
     {
         $attribute = $options['attribute'];
         $removeValuePrefix = $options['remove_value_prefix'];
@@ -64,18 +101,22 @@ final class HtmlAttributeTransformer implements ContentTransformerInterface
         $elements = $this->crawl($crawler, $xpath);
 
         if ('class' === $attribute) {
-            $this->removeValueClass($elements, $removeValuePrefix);
+            return $this->removeValueClass($elements, $removeValuePrefix);
         }
         if ('style' === $attribute) {
-            $this->removeValueStyle($elements, $removeValuePrefix);
+            return $this->removeValueStyle($elements, $removeValuePrefix);
         }
+
+        return 0;
     }
 
     /**
      * @param \DOMElement[] $elements
      */
-    private function removeValueClass(iterable $elements, string $removeValuePrefix): void
+    private function removeValueClass(iterable $elements, string $removeValuePrefix): int
     {
+        $result = 0;
+
         foreach ($elements as $element) {
             $attributeValue = $element->getAttribute('class');
 
@@ -83,6 +124,10 @@ final class HtmlAttributeTransformer implements ContentTransformerInterface
             $filter = \array_filter($exploded,
                 fn (string $class) => \substr(\trim($class), 0, \strlen($removeValuePrefix)) !== $removeValuePrefix
             );
+
+            if ($filter !== $exploded) {
+                ++$result;
+            }
 
             if (0 === \count($filter)) {
                 $element->removeAttribute('class');
@@ -92,13 +137,17 @@ final class HtmlAttributeTransformer implements ContentTransformerInterface
             $imploded = \implode(' ', $filter);
             $element->setAttribute('class', $imploded);
         }
+
+        return $result;
     }
 
     /**
      * @param \DOMElement[] $elements
      */
-    private function removeValueStyle(iterable $elements, string $removeValuePrefix): void
+    private function removeValueStyle(iterable $elements, string $removeValuePrefix): int
     {
+        $result = 0;
+
         foreach ($elements as $element) {
             $styleValue = $element->getAttribute('style');
 
@@ -106,6 +155,10 @@ final class HtmlAttributeTransformer implements ContentTransformerInterface
             $filter = \array_filter(\array_filter($exploded,
                 fn (string $style) => \substr(\trim($style), 0, \strlen($removeValuePrefix)) !== $removeValuePrefix)
             );
+
+            if ($filter !== $exploded) {
+                ++$result;
+            }
 
             if (0 === \count($filter)) {
                 $element->removeAttribute('style');
@@ -115,6 +168,8 @@ final class HtmlAttributeTransformer implements ContentTransformerInterface
             $imploded = \implode(';', $filter);
             $element->setAttribute('style', $imploded.';');
         }
+
+        return $result;
     }
 
     /**
@@ -130,9 +185,11 @@ final class HtmlAttributeTransformer implements ContentTransformerInterface
     }
 
     /**
+     * @param array<mixed> $options
+     *
      * @return array<mixed>
      */
-    private function resolveOptions(TransformContext $context): array
+    private function resolveOptions(array $options): array
     {
         $resolver = new OptionsResolver();
         $resolver
@@ -144,6 +201,6 @@ final class HtmlAttributeTransformer implements ContentTransformerInterface
             ])
         ;
 
-        return $resolver->resolve($context->getOptions());
+        return $resolver->resolve($options);
     }
 }

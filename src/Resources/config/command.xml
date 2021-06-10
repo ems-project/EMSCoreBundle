@@ -13,9 +13,10 @@
             <tag name="console.command"/>
         </service>
         <service id="ems.contenttype.transform" class="EMS\CoreBundle\Command\ContentType\TransformCommand">
-            <argument type="service" id="logger" />
-            <argument type="service" id="ems.service.contenttype" />
-            <argument type="service" id="ems.service.content_type.transform" />
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems_core.core_content_type_transformer.content_transformer"/>
+            <argument type="service" id="ems.service.revision"/>
+            <argument>%ems_core.default_bulk_size%</argument>
             <tag name="console.command"/>
         </service>
 

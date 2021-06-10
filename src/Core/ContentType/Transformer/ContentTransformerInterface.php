@@ -8,6 +8,8 @@ interface ContentTransformerInterface
 {
     public function getName(): string;
 
+    public function validateConfig(string $config): ?string;
+
     public function supports(string $fieldTypeClass): bool;
 
     public function transform(TransformContext $context): void;

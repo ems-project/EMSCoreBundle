@@ -18,10 +18,10 @@ final class MigrationOptionsTransformerType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('transformer', ChoiceType::class, [
+        $builder->add('class', ChoiceType::class, [
             'choices' => $options['transformers'],
         ]);
-        $builder->add('options', TextType::class);
+        $builder->add('config', TextType::class);
     }
 
     public function getBlockPrefix(): string

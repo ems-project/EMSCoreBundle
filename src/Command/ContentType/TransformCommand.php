@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\ContentType;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\LockCommand;
+use EMS\CoreBundle\Command\UnlockRevisionsCommand;
+use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformer;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\TransformContentTypeService;
-use Psr\Log\LoggerInterface;
+use EMS\CoreBundle\Service\Revision\RevisionService;
+use PhpCsFixer\Tokenizer\TransformerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,145 +19,148 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class TransformCommand extends AbstractCommand
 {
-    private LoggerInterface $logger;
     private ContentTypeService $contentTypeService;
-    private TransformContentTypeService $transformContentTypeService;
     private ContentType $contentType;
-    private string $user;
+    private ContentTransformer $contentTransformer;
+    private RevisionService $revisionService;
+    /** @var array<mixed> */
+    private array $search = [];
+    private int $batchSize;
 
-    private const ARGUMENT_CONTENT_TYPE = 'contentType';
-    private const ARGUMENT_USER = 'user';
-    private const OPTION_STRICT = 'strict';
-    private const DEFAULT_USER = 'TRANSFORM_CONTENT';
+    private const USER = 'TRANSFORM_CONTENT';
 
-    protected static $defaultName = 'ems:contenttype:transform';
+    public const name = 'ems:contenttype:transform';
+    protected static $defaultName = self::name;
 
-    public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, TransformContentTypeService $transformContentTypeService)
+    public function __construct(
+        ContentTypeService $contentTypeService,
+        ContentTransformer $contentTransformer,
+        RevisionService $revisionService,
+        int $defaultBulkSize)
     {
-        $this->logger = $logger;
-        $this->contentTypeService = $contentTypeService;
-        $this->transformContentTypeService = $transformContentTypeService;
         parent::__construct();
+        $this->contentTypeService = $contentTypeService;
+        $this->contentTransformer = $contentTransformer;
+        $this->revisionService = $revisionService;
+        $this->batchSize = $defaultBulkSize;
     }
 
     protected function configure(): void
     {
         $this
-            ->setDescription('Transform the content-type defined')
-            ->addArgument(
-                self::ARGUMENT_CONTENT_TYPE,
-                InputArgument::REQUIRED,
-                'Content Type name'
-            )
-            ->addArgument(
-                self::ARGUMENT_USER,
-                InputArgument::OPTIONAL,
-                'The user name: the user must correspond to the lock user.',
-                self::DEFAULT_USER
-            )
-            ->addOption(
-                self::OPTION_STRICT,
-                null,
-                InputOption::VALUE_NONE,
-                'If set, the check failed will throw an exception'
-            )
+            ->addArgument('content-type', InputArgument::REQUIRED, 'ContentType name')
+            ->addOption('batch-size', '', InputOption::VALUE_REQUIRED, 'db records batch size', 'default_bulk_size')
+            ->addOption('ouuid', '', InputOption::VALUE_REQUIRED, 'revision ouuid')
+            ->addOption('dry-run', '', InputOption::VALUE_NONE, 'dry run')
         ;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
+
         $this->io->title('Transform content-type');
-    }
 
-    protected function interact(InputInterface $input, OutputInterface $output): void
-    {
-        $this->io->section('Check environment name argument');
-        $this->checkContentTypeArgument($input);
-        $this->checkUserArgument($input);
+        $batchSize = \intval($input->getOption('batch-size'));
+        if ($batchSize > 0) {
+            $this->batchSize = $batchSize;
+        }
 
-        $contentTypeName = $this->getArgumentString(self::ARGUMENT_CONTENT_TYPE);
-        $contentType = $this->contentTypeService->giveByName($contentTypeName);
+        $contentTypeName = \strval($input->getArgument('content-type'));
+        $this->contentType = $this->contentTypeService->giveByName($contentTypeName);
 
-        $this->contentType = $contentType;
-        $this->user = $this->getArgumentString(self::ARGUMENT_USER);
+        $this->search = [
+            'lockBy' => ContentTransformer::USER,
+            'contentType' => $this->contentType,
+            'ouuid' => $this->getOptionStringNull('ouuid'),
+        ];
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->logger->info('Execute the TransformContentType command');
+        $transformerDefinitions = $this->contentTransformer->getTransformerDefinitions($this->contentType);
+        if (0 === \count($transformerDefinitions)) {
+            $this->io->warning('No transformers defined!');
 
-        $total = $this->transformContentTypeService->getTotal($this->contentType);
-        $hits = $this->transformContentTypeService->transform($this->contentType, $this->user);
-
-        $this->io->note(\sprintf('Start transformation of "%s"', $this->contentType->getPluralName()));
-
-        $this->io->progressStart($total);
-        foreach ($hits as $hit) {
-            $this->io->progressAdvance();
+            return 1;
         }
-        $this->io->progressFinish();
 
-        $this->io->success(\sprintf('Transformation of "%s" content type done', $this->contentType->getPluralName()));
+        if (false === $validate = $this->validateTransformerDefinitions($transformerDefinitions)) {
+            $this->io->error('Transformers are not valid defined!');
+
+            return 1;
+        }
+
+        if ($dryRun = $this->getOptionBool('dry-run')) {
+            $this->io->note('Dry run enabled, no database changes');
+        }
+
+        if (!$dryRun) {
+            $this->io->section('Locking');
+            $this->executeCommand(
+                LockCommand::name,
+                ['theme_document', '+1day', '--user='.ContentTransformer::USER, '--force']
+            );
+        }
+
+        $this->io->section('Transforming');
+        $progressBar = $this->io->createProgressBar();
+        $revisions = $this->revisionService->search($this->search);
+        $transformation = $this->contentTransformer->transform($revisions, $transformerDefinitions, $this->batchSize, $dryRun);
+
+        $transformed = 0;
+        foreach ($transformation as list($ouuid, $result)) {
+            if ($result) {
+                ++$transformed;
+            }
+            $progressBar->advance();
+        }
+        $progressBar->finish();
+        $this->io->newLine(2);
+
+        if (!$dryRun) {
+            $this->io->section('Unlock');
+            $this->executeCommand(
+                UnlockRevisionsCommand::name,
+                [ContentTransformer::USER, $this->contentType->getName()]
+            );
+        }
+
+        if ($dryRun) {
+            $this->io->warning(\sprintf('%d revisions', $transformed));
+        } else {
+            $this->io->success(\sprintf('Transformed %d revisions', $transformed));
+        }
 
         return 0;
     }
 
-    private function checkContentTypeArgument(InputInterface $input): void
+    /**
+     * @param array<mixed> $transformerDefinitions
+     */
+    private function validateTransformerDefinitions(array $transformerDefinitions): bool
     {
-        if ('' === $input->getArgument(self::ARGUMENT_CONTENT_TYPE)) {
-            $message = 'The content type name is not provided';
-            $this->setContentTypeArgument($input, $message);
-        }
+        $this->io->section('Validate transformers');
+        $valid = true;
 
-        $contentTypeName = $this->getArgumentString(self::ARGUMENT_CONTENT_TYPE);
+        foreach ($transformerDefinitions as $field => $definitions) {
+            foreach ($definitions as $definition) {
+                /** @var TransformerInterface $transformer */
+                $transformer = $definition['transformer'];
 
-        if (false === $this->contentTypeService->getByName($contentTypeName)) {
-            $message = \sprintf('The content type "%s" not found', $contentTypeName);
-            $this->setContentTypeArgument($input, $message);
-            $this->checkContentTypeArgument($input);
-        }
-    }
+                $this->io->definitionList(
+                    ['Field' => $field],
+                    ['Name' => $transformer->getName()],
+                    ['Config' => $definition['config']],
+                    ['Valid Config' => $definition['valid_config'] ?: 'Yes'],
+                );
 
-    private function setContentTypeArgument(InputInterface $input, string $message): void
-    {
-        if ($this->getOptionBool(self::OPTION_STRICT)) {
-            $this->logger->error($message);
-            throw new \Exception($message);
-        }
-
-        $this->io->caution($message);
-        $contentTypeName = $this->io->choice('Select an existing content type', $this->contentTypeService->getAllNames());
-        $input->setArgument(self::ARGUMENT_CONTENT_TYPE, $contentTypeName);
-    }
-
-    private function checkUserArgument(InputInterface $input): void
-    {
-        if (null === $input->getArgument(self::ARGUMENT_USER)) {
-            $message = 'The user name is not provided';
-            $this->setUserArgument($input, $message);
-        }
-    }
-
-    private function setUserArgument(InputInterface $input, string $message): void
-    {
-        if ($input->getOption(self::OPTION_STRICT)) {
-            $this->logger->error($message);
-            throw new \Exception($message);
-        }
-
-        $this->io->caution($message);
-        $user = $this->io->ask(
-            'Insert a user name: the user must correspond to the "lock user"',
-            null,
-            function ($user) {
-                if (empty($user)) {
-                    throw new \RuntimeException('User cannot be empty.');
+                if ($definition['valid_config']) {
+                    $valid = false;
                 }
-
-                return $user;
             }
-        );
-        $input->setArgument(self::ARGUMENT_USER, $user);
+        }
+
+        return $valid;
     }
 }

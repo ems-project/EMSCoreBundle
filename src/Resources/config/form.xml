@@ -5,13 +5,6 @@
         http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <defaults public="false" />
-
-        <service id="ems_core.form_field.content_type_transformer_picker_type" class="EMS\CoreBundle\Form\Field\ContentTypeTransformerPickerType">
-
-
-            <tag name="form.type"/>
-        </service>
-
         <service id="ems_core.form_data_field_options.migration_options_type" class="EMS\CoreBundle\Form\DataField\Options\MigrationOptionsType">
             <argument type="service" id="ems_core.core_content_type_transformer.content_transformers"/>
             <tag name="form.type"/>

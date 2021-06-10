@@ -17,8 +17,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class UnlockRevisionsCommand extends Command
 {
-    /** @var string */
-    protected static $defaultName = 'ems:revisions:unlock';
     /** @var LoggerInterface */
     private $logger;
     /** @var DataService */
@@ -33,6 +31,9 @@ final class UnlockRevisionsCommand extends Command
     private $contentType;
     /** @var bool */
     private $all;
+
+    public const name = 'ems:revisions:unlock';
+    protected static $defaultName = self::name;
 
     private const ARGUMENT_USER = 'user';
     private const ARGUMENT_CONTENT_TYPE = 'contentType';

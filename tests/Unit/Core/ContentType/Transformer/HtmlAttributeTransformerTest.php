@@ -22,7 +22,7 @@ class HtmlAttributeTransformerTest extends TestCase
         $context = new TransformContext($input, $options);
         $this->transformer->transform($context);
 
-        $this->assertEquals($output, $context->getTransformed());
+        $this->assertSame($output, $context->getTransformed());
     }
 
     public function testRemoveOneClass(): void
@@ -168,7 +168,49 @@ HTML;
         $this->assertEqualsInputOutPut($input, $output, [
             'attribute' => 'style',
             'element' => 'table',
-            'clear' => true,
+            'remove' => true,
+        ]);
+    }
+
+    public function testHtmlEntitiesTransform(): void
+    {
+        $input = '<h1 style="font-size: 20px">Test encoding</h1><p><strong>*&nbsp;</strong>l&apos;test.<br /></p>';
+        $output = "<h1>Test encoding</h1><p><strong>* </strong>l'test.<br></p>";
+
+        $this->assertEqualsInputOutPut($input, $output, [
+            'attribute' => 'style',
+            'element' => 'h1',
+            'remove' => true,
+        ]);
+    }
+
+    public function testNothingTransformedKeepEntities(): void
+    {
+        $input = <<<HTML
+<h1>Test encoding</h1>
+<p><strong>*</strong>l&apos;test.&nbsp;.<br />
+HTML;
+        $output = <<<HTML
+<h1>Test encoding</h1>
+<p><strong>*</strong>l&apos;test.&nbsp;.<br />
+HTML;
+
+        $this->assertEqualsInputOutPut($input, $output, [
+            'attribute' => 'style',
+            'element' => 'table',
+            'remove' => true,
+        ]);
+    }
+
+    public function testHtmlBodyTagsNotRemoved(): void
+    {
+        $input = '<html> <body> <h1 style="font-size: 10px;">TEST</h1> </body> </html>';
+        $output = '<html> <body> <h1>TEST</h1> </body> </html>';
+
+        $this->assertEqualsInputOutPut($input, $output, [
+            'attribute' => 'style',
+            'element' => 'h1',
+            'remove' => true,
         ]);
     }
 }

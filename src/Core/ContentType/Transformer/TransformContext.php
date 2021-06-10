@@ -20,7 +20,13 @@ final class TransformContext
     public function __construct($data, array $options)
     {
         $this->data = $data;
+        $this->transformed = $data;
         $this->options = $options;
+    }
+
+    public function isTransformed(): bool
+    {
+        return $this->data !== $this->transformed;
     }
 
     /**

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
-use EMS\CommonBundle\Contracts\CsvGeneratorServiceInterface;
 use EMS\CoreBundle\Form\Data\ElasticaTable;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\DatatableService;
@@ -20,14 +19,12 @@ final class DatatableController extends AbstractController
     private DatatableService $datatableService;
     private Environment $twig;
     private SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService;
-    private CsvGeneratorServiceInterface $csvGeneratorService;
 
-    public function __construct(DatatableService $datatableService, Environment $twig, SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService, CsvGeneratorServiceInterface $csvGeneratorService)
+    public function __construct(DatatableService $datatableService, Environment $twig, SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService)
     {
         $this->datatableService = $datatableService;
         $this->twig = $twig;
         $this->spreadsheetGeneratorService = $spreadsheetGeneratorService;
-        $this->csvGeneratorService = $csvGeneratorService;
     }
 
     public function ajaxElastica(Request $request, string $hashConfig): Response
@@ -44,31 +41,12 @@ final class DatatableController extends AbstractController
 
     public function excelElastica(string $hashConfig): Response
     {
-        $table = $this->datatableService->generateDatatableFromHash($hashConfig);
-        $rows = $this->buildTableRows($table);
-
-        $spreadsheetConfig = [
-            'sheets' => [[
-                'name' => 'sheet',
-                'rows' => $rows,
-            ]],
-            'filename' => $table->getFilename(),
-            'disposition' => $table->getDisposition(),
-        ];
-
-        return $this->spreadsheetGeneratorService->generateSpreadsheet($spreadsheetConfig);
+        return $this->spreadsheetElastica($hashConfig, SpreadsheetGeneratorServiceInterface::XLSX_WRITER);
     }
 
     public function csvElastica(string $hashConfig): Response
     {
-        $table = $this->datatableService->generateDatatableFromHash($hashConfig);
-        $rows = $this->buildTableRows($table);
-
-        return $this->csvGeneratorService->generateCsv([
-            'table' => $rows,
-            'filename' => $table->getFilename(),
-            'disposition' => $table->getDisposition(),
-        ]);
+        return $this->spreadsheetElastica($hashConfig, SpreadsheetGeneratorServiceInterface::CSV_WRITER);
     }
 
     /**
@@ -97,5 +75,21 @@ final class DatatableController extends AbstractController
         }
 
         return $rows;
+    }
+
+    private function spreadsheetElastica(string $hashConfig, string $spreadsheetWriter): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $table = $this->datatableService->generateDatatableFromHash($hashConfig);
+        $rows = $this->buildTableRows($table);
+
+        return $this->spreadsheetGeneratorService->generateSpreadsheet([
+            SpreadsheetGeneratorServiceInterface::SHEETS => [[
+                'name' => 'sheet',
+                'rows' => $rows,
+            ]],
+            SpreadsheetGeneratorServiceInterface::CONTENT_FILENAME => $table->getFilename(),
+            SpreadsheetGeneratorServiceInterface::CONTENT_DISPOSITION => $table->getDisposition(),
+            SpreadsheetGeneratorServiceInterface::WRITER => $spreadsheetWriter,
+        ]);
     }
 }

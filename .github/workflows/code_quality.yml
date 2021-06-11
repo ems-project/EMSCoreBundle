@@ -1,5 +1,10 @@
 name: Code Quality
 on: [pull_request, push]
+
+env:
+  PHP_VERSION: 7.4
+  PHPUNIT_FLAGS: "-v"
+
 jobs:
   php-cs-fixer:
     name: PHP-CS-Fixer
@@ -15,8 +20,7 @@ jobs:
     name: PHPStan
     runs-on: ubuntu-latest
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - name: PHPStan
         uses: docker://oskarstark/phpstan-ga:0.12.88
         env:
@@ -24,3 +28,24 @@ jobs:
           REQUIRE_DEV: true
         with:
           args: analyse --configuration=phpstan.neon.dist
+
+  phpunit:
+    name: PHPUnit
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v2
+      - name: "Install PHP with extensions"
+        uses: shivammathur/setup-php@2.7.0
+        with:
+          coverage: "none"
+          php-version: ${{ env.PHP_VERSION }}
+          tools: composer:v2
+      - name: "Composer install"
+        uses: "ramsey/composer-install@v1"
+      - name: "Install PHPUnit"
+        run: vendor/bin/simple-phpunit install
+      - name: "PHPUnit version"
+        run: vendor/bin/simple-phpunit --version
+      - name: "Run tests"
+        run: vendor/bin/simple-phpunit ${{ env.PHPUNIT_FLAGS }}

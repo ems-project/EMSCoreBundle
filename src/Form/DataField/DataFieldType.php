@@ -431,11 +431,7 @@ abstract class DataFieldType extends AbstractType
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
-        /*
-         * preset with the most used options
-         */
-        $builder->add('options', OptionsType::class, [
-        ]);
+        $builder->add('options', OptionsType::class, ['field_type' => $options['data']]);
     }
 
     /**

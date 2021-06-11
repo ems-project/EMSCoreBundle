@@ -59,6 +59,9 @@ class RevisionRepository extends EntityRepository
             ->join('r.contentType', 'c')
             ->join('c.environment', 'e');
 
+        if (isset($search['ouuid'])) {
+            $qb->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))->setParameter('ouuid', $search['ouuid']);
+        }
         if (isset($search['contentType'])) {
             $qb->andWhere($qb->expr()->eq('r.contentType', ':contentType'))->setParameter('contentType', $search['contentType']);
         }

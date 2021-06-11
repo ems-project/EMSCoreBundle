@@ -23,9 +23,9 @@ final class Revisions implements \IteratorAggregate
     }
 
     /**
-     * @return \Traversable<int, Revision>
+     * @return \Generator|Revision[]
      */
-    public function getIterator()
+    public function getIterator(): \Generator
     {
         $iterator = $this->qb->getQuery()->iterate();
 
@@ -43,10 +43,8 @@ final class Revisions implements \IteratorAggregate
             $this->entityManager->persist($revision);
 
             if (0 === ++$totalProcessed % $size) {
-                $this->entityManager->flush();
                 $this->entityManager->clear();
             }
         }
-        $this->entityManager->flush();
     }
 }

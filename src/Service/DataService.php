@@ -12,6 +12,7 @@ use Doctrine\ORM\ORMException;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -1029,8 +1030,9 @@ class DataService
                 $defaultValue = $template->render([
                     'environment' => $contentType->getEnvironment(),
                     'contentType' => $contentType,
+                    'currentUser' => $this->userService->getCurrentUser(),
                 ]);
-                $raw = \json_decode($defaultValue, true);
+                $raw = Json::decode($defaultValue);
                 if (null === $raw) {
                     $this->logger->error('service.data.default_value_error', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),

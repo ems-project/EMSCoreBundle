@@ -246,7 +246,6 @@ class ContentTypeType extends AbstractType
         if ($contentType->getEnvironment()->getManaged()) {
             $builder->add('defaultValue', CodeEditorType::class, [
                 'required' => false,
-                'language' => 'ace/mode/json',
             ])->add('askForOuuid', CheckboxType::class, [
                 'label' => 'Ask for OUUID',
                 'required' => false,

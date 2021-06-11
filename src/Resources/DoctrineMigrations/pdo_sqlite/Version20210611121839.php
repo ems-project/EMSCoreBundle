@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Application\Migrations;
 
@@ -7,9 +9,9 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20210611121839 extends AbstractMigration
 {
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TEMPORARY TABLE __temp__content_type AS SELECT id, field_types_id, environment_id, created, modified, name, pluralName, singularName, icon, description, indexTwig, extra, lockBy, lockUntil, circles_field, deleted, have_pipelines, ask_for_ouuid, dirty, color, labelField, color_field, userField, dateField, startDateField, endDateField, locationField, referer_field_name, category_field, ouuidField, imageField, videoField, email_field, asset_field, order_field, sort_by, create_role, edit_role, view_role, orderKey, rootContentType, edit_twig_with_wysiwyg, active, publish_role, trash_role, sort_order, web_content, default_value, auto_publish, business_id_field, translationField, localeField, searchLinkDisplayRole, createLinkDisplayRole, version_date_from_field, version_tags, version_date_to_field FROM content_type');
         $this->addSql('DROP TABLE content_type');
@@ -19,9 +21,9 @@ final class Version20210611121839 extends AbstractMigration
         $this->addSql('DROP TABLE __temp__content_type');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TEMPORARY TABLE __temp__content_type AS SELECT id, field_types_id, environment_id, created, modified, name, pluralName, singularName, icon, description, indexTwig, extra, lockBy, lockUntil, circles_field, business_id_field, deleted, have_pipelines, ask_for_ouuid, dirty, color, labelField, color_field, userField, dateField, startDateField, endDateField, locationField, referer_field_name, category_field, ouuidField, imageField, videoField, email_field, asset_field, order_field, sort_by, sort_order, create_role, edit_role, view_role, publish_role, trash_role, orderKey, rootContentType, edit_twig_with_wysiwyg, web_content, auto_publish, active, default_value, translationField, localeField, searchLinkDisplayRole, createLinkDisplayRole, version_tags, version_date_from_field, version_date_to_field FROM content_type');
         $this->addSql('DROP TABLE content_type');

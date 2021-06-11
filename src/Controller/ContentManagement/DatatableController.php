@@ -84,7 +84,7 @@ final class DatatableController extends AbstractController
 
         return $this->spreadsheetGeneratorService->generateSpreadsheet([
             SpreadsheetGeneratorServiceInterface::SHEETS => [[
-                'name' => 'sheet',
+                'name' => $table->getSheetName(),
                 'rows' => $rows,
             ]],
             SpreadsheetGeneratorServiceInterface::CONTENT_FILENAME => $table->getFilename(),

@@ -93,13 +93,26 @@ php bin/console ems:contenttype:recompute [options] [--] <contentType>
 * **--deep** : deep recompute form will be submitted and transformers triggered
 
 ### Transform
->Transform the content-type defined
+> Apply defined field transformers in the migration mapping.
+> More information about [contentType transformers](../master/doc/ContentTypes/transformers.md).
 
 ```bash
-php bin/console eems:contenttype:transform [options] [--] <contentType> [<user>]
+php bin/console ems:contenttype:transform --help
+Usage:
+  ems:contenttype:transform [options] [--] <content-type>
+
+Arguments:
+  content-type                 ContentType name
+
+Options:
+      --batch-size=BATCH-SIZE  db records batch size [default: "default_bulk_size"]
+      --ouuid=OUUID            revision ouuid
+      --dry-run                dry run
 ```
 
-* **--strict** : If set, the check failed will throw an exception
+* **--batch-size** : size of entities for transactional commits
+* **--ouuid** : only transform revisions with this ouuid
+* **--dry-run** : will not commit the database transactions
 
 ## Notification
 

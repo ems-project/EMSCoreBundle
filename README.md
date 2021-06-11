@@ -1,8 +1,8 @@
 CoreBundle
 =============
 
-[Api documentation](../master/Resources/doc/api.md)
-[Elasticms documentation](../master/Resources/doc/elasticms.md)
+[Api documentation](../master/doc/api.md)
+[Elasticms documentation](../master/doc/elasticms.md)
 
 Coding standards
 ----------------
@@ -31,6 +31,6 @@ vendor/bin/phpstan analyse --generate-baseline
 
 Documentation
 -------------
-* [Installation](../master/Resources/doc/install.md)
-* [API](../master/Resources/doc/api.md)
-* [Todo](../master/Resources/doc/todo.md)
+* [Installation](../master/doc/install.md)
+* [API](../master/doc/api.md)
+* [Todo](../master/doc/todo.md)

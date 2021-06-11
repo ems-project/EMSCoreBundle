@@ -30,9 +30,7 @@ final class ContentTransformers
      */
     public function getMigrationOptionsChoices(string $fieldTypeClass): array
     {
-        $choices = [
-            '' => '',
-        ];
+        $choices = [];
 
         foreach ($this->transformers as $transformer) {
             if (!$transformer->supports($fieldTypeClass)) {

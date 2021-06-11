@@ -13,7 +13,7 @@ final class HtmlAttributeTransformer implements ContentTransformerInterface
 {
     public function getName(): string
     {
-        return 'HTML Attribute Value';
+        return 'HTML Attribute';
     }
 
     public function supports(string $class): bool

@@ -35,22 +35,24 @@ class MigrationOptionsType extends AbstractType
         $fieldType = $options['field_type'];
         $transformers = $this->transformers->getMigrationOptionsChoices($fieldType->getType());
 
-        $builder->add('transformers', CollectionType::class, [
-            'entry_type' => MigrationOptionsTransformerType::class,
-            'label' => false,
-            'attr' => [
-                'class' => 'a2lix_lib_sf_collection',
-                'data-lang-add' => 'Add transformer',
-                'data-lang-remove' => 'Delete transformer',
-                'data-entry-remove-class' => 'btn btn-sm btn-default',
-            ],
-            'entry_options' => [
-                'transformers' => $transformers,
-            ],
-            'allow_add' => true,
-            'allow_delete' => true,
-            'block_prefix' => 'tags',
-        ]);
+        if (\count($transformers) > 0) {
+            $builder->add('transformers', CollectionType::class, [
+                'entry_type' => MigrationOptionsTransformerType::class,
+                'entry_options' => [
+                    'transformers' => \array_merge(['Select a transformer' => ''], $transformers),
+                ],
+                'label' => false,
+                'attr' => [
+                    'class' => 'a2lix_lib_sf_collection',
+                    'data-lang-add' => 'Add transformer',
+                    'data-lang-remove' => 'Delete transformer',
+                    'data-entry-remove-class' => 'btn btn-sm btn-default',
+                ],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'block_prefix' => 'tags',
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -17,9 +17,9 @@ class ElasticaTable extends TableAbstract
     private const FRONTEND_OPTIONS = 'frontendOptions';
     private const ASC_MISSING_VALUES_POSITION = 'asc_missing_values_position';
     private const DESC_MISSING_VALUES_POSITION = 'desc_missing_values_position';
-    const FILENAME = 'filename';
-    const DISPOSITION = 'disposition';
-    const SHEET_NAME = 'sheet_name';
+    public const FILENAME = 'filename';
+    public const DISPOSITION = 'disposition';
+    public const SHEET_NAME = 'sheet_name';
     private ElasticaService $elasticaService;
     /** @var string[] */
     private array $aliases;

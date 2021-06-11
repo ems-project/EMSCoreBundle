@@ -1032,14 +1032,13 @@ class DataService
                     'contentType' => $contentType,
                     'currentUser' => $this->userService->getCurrentUser(),
                 ]);
-                $raw = Json::decode($defaultValue);
-                if (null === $raw) {
+                try {
+                    $revision->setRawData(Json::decode($defaultValue));
+                } catch (\Throwable $e) {
                     $this->logger->error('service.data.default_value_error', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                         EmsFields::LOG_OUUID_FIELD => $ouuid,
                     ]);
-                } else {
-                    $revision->setRawData($raw);
                 }
             } catch (Twig_Error $e) {
                 $this->logger->error('service.data.default_value_template_error', [

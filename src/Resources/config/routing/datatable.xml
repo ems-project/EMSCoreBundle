@@ -12,7 +12,7 @@
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DatatableController:excelElastica</default>
     </route>
 
-    <route id="ems_core_datatable_csv_elastica" path="/csv/{hashConfig}.json" methods="GET HEAD">
+    <route id="ems_core_datatable_csv_elastica" path="/csv/{hashConfig}.csv" methods="GET HEAD">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DatatableController:csvElastica</default>
     </route>
 

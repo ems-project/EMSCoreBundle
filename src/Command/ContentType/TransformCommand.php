@@ -95,13 +95,11 @@ final class TransformCommand extends AbstractCommand
             $this->io->note('Dry run enabled, no database changes');
         }
 
-        if (!$dryRun) {
-            $this->io->section('Locking');
-            $this->executeCommand(
-                LockCommand::name,
-                ['theme_document', '+1day', '--user='.ContentTransformer::USER, '--force']
-            );
-        }
+        $this->io->section('Locking');
+        $this->executeCommand(
+            LockCommand::name,
+            ['theme_document', '+1day', '--user='.ContentTransformer::USER, '--force']
+        );
 
         $this->io->section('Transforming');
         $progressBar = $this->io->createProgressBar();
@@ -118,13 +116,11 @@ final class TransformCommand extends AbstractCommand
         $progressBar->finish();
         $this->io->newLine(2);
 
-        if (!$dryRun) {
-            $this->io->section('Unlock');
-            $this->executeCommand(
-                UnlockRevisionsCommand::name,
-                [ContentTransformer::USER, $this->contentType->getName()]
-            );
-        }
+        $this->io->section('Unlock');
+        $this->executeCommand(
+            UnlockRevisionsCommand::name,
+            [ContentTransformer::USER, $this->contentType->getName()]
+        );
 
         if ($dryRun) {
             $this->io->warning(\sprintf('%d revisions', $transformed));

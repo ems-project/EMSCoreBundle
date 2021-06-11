@@ -99,7 +99,7 @@ final class SelectUserPropertyType extends AbstractType
 
         \natcasesort($values);
 
-        return \array_combine($values, $values);
+        return \array_merge(['' => null], \array_combine($values, $values));
     }
 
     /**

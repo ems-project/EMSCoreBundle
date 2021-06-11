@@ -40,6 +40,29 @@ final class DatatableController extends AbstractController
 
     public function excelElastica(string $hashConfig): Response
     {
+        $rows = $this->buildTableRows($hashConfig);
+
+        $spreadsheetConfig = [
+            'sheets' => [[
+                'name' => 'sheet',
+                'rows' => $rows,
+        ]], ];
+
+        return $this->spreadsheetGeneratorService->generateSpreadsheet($spreadsheetConfig);
+    }
+
+    public function csvElastica(string $hashConfig): Response
+    {
+        $rows = $this->buildTableRows($hashConfig);
+        //TODO: string[][] to CSV
+        return new Response();
+    }
+
+    /**
+     * @return string[][]
+     */
+    private function buildTableRows(string $hashConfig): array
+    {
         $table = $this->datatableService->generateDatatableFromHash($hashConfig);
         $headers = [];
         foreach ($table->getColumns() as $column) {
@@ -61,12 +84,6 @@ final class DatatableController extends AbstractController
             }
         }
 
-        $spreadsheetConfig = [
-            'sheets' => [[
-                'name' => 'sheet',
-                'rows' => $rows,
-        ]], ];
-
-        return $this->spreadsheetGeneratorService->generateSpreadsheet($spreadsheetConfig);
+        return $rows;
     }
 }

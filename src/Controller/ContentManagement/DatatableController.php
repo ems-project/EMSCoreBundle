@@ -77,7 +77,7 @@ final class DatatableController extends AbstractController
         return $rows;
     }
 
-    private function spreadsheetElastica(string $hashConfig, string $spreadsheetWriter): \Symfony\Component\HttpFoundation\StreamedResponse
+    private function spreadsheetElastica(string $hashConfig, string $spreadsheetWriter): Response
     {
         $table = $this->datatableService->generateDatatableFromHash($hashConfig);
         $rows = $this->buildTableRows($table);

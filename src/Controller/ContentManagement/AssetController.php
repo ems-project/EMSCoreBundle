@@ -92,6 +92,17 @@ class AssetController extends AbstractController
         }
 
         $refererPathInfo = \substr($refererPath, \strlen($baseUrl));
+
+        if (\preg_match('/^(\\/index\\.php)?\\/bundles\\/(?P<assetsBundles>([a-z\\-0-9_]+))(\\/)?/', $refererPathInfo)) {
+            $alias = $this->getLastAliasFromAssetReferer($request, $refererPathInfo);
+
+            if (\is_string($alias)) {
+                return $this->emschAssetController->proxyToEnvironmentAlias($requestPath, $alias);
+            }
+
+            throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));
+        }
+
         \preg_match(ChannelRegistrar::EMSCO_CHANNEL_PATH_REGEX, $refererPathInfo, $matches);
         if (null === $channelName = $matches['channel'] ?? null) {
             throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));
@@ -108,6 +119,8 @@ class AssetController extends AbstractController
             throw new NotFoundHttpException(\sprintf('Alias for channel %s not found', $channelName));
         }
 
+        $this->saveLastAliasForAssetPath($request, $alias);
+
         return $this->emschAssetController->proxyToEnvironmentAlias($requestPath, $alias);
     }
 
@@ -121,5 +134,15 @@ class AssetController extends AbstractController
         if ($session->isStarted()) {
             $session->save();
         }
+    }
+
+    private function saveLastAliasForAssetPath(Request $request, string $alias): void
+    {
+        $request->getSession()->set(\sprintf('EMS_ASSETS_REFERER_%s', $request->getPathInfo()), $alias);
+    }
+
+    private function getLastAliasFromAssetReferer(Request $request, string $referer): ?string
+    {
+        return $request->getSession()->get(\sprintf('EMS_ASSETS_REFERER_%s', $referer), null);
     }
 }

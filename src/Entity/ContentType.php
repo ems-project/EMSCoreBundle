@@ -308,6 +308,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $publishRole;
 
     /**
+     * @ORM\Column(name="delete_role", type="string", length=100, nullable=true)
+     */
+    protected ?string $deleteRole = null;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="trash_role", type="string", length=100, nullable=true)
@@ -1617,6 +1622,23 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function getPublishRole()
     {
         return $this->publishRole;
+    }
+
+    public function hasDeleteRole(): bool
+    {
+        return null !== $this->deleteRole;
+    }
+
+    public function getDeleteRole(): ?string
+    {
+        return $this->deleteRole;
+    }
+
+    public function setDeleteRole(?string $deleteRole): ContentType
+    {
+        $this->deleteRole = $deleteRole;
+
+        return $this;
     }
 
     /**

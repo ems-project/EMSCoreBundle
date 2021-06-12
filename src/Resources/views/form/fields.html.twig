@@ -1445,6 +1445,13 @@
 	</div>             
 {%- endblock i18n_content_row %}
 
+{%- block data_field_migration_transformer_row -%}
+	<div>
+		{{ form_row(form.class) }}
+		{{ form_row(form.config) }}
+	</div>
+{%- endblock -%}
+
 {%- block form_end -%}
 	{{ parent() }}
 	{%- for modalName in form.vars.json_menu_nested_modal_names|default([]) -%}

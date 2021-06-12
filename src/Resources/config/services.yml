@@ -484,9 +484,6 @@ services:
     EMS\CoreBundle\Service\JobService:
         class: EMS\CoreBundle\Service\JobService
         arguments: ['@doctrine', '@kernel', '@logger', '@EMS\CoreBundle\Repository\JobRepository']
-    ems.service.transformcontenttype:
-        class: EMS\CoreBundle\Service\TransformContentTypeService
-        arguments: ['@logger', '@ems_common.service.elastica', '@ems.service.contenttype', '@ems.service.data', '@form.factory']
     ems.service.document:
         class: EMS\CoreBundle\Service\DocumentService
         arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '%ems_core.instance_id%']
@@ -619,11 +616,6 @@ services:
             - { name: console.command }
     EMS\CoreBundle\Command\ExtractAssetCommand:
         arguments: ['@logger', '@ems.service.asset_extractor', '@ems_common.storage.manager']
-        tags:
-            - { name: console.command }
-    ems.contenttype.transform:
-        class: EMS\CoreBundle\Command\TransformContentTypeCommand
-        arguments: ['@logger', '@ems.service.contenttype', '@ems.service.transformcontenttype']
         tags:
             - { name: console.command }
     ems.contenttype.activate:

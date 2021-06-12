@@ -218,8 +218,5 @@ class WysiwygFieldType extends DataFieldType
                 'label' => 'form.form_field.wysiwyg.content_css.label',
             ])
         ;
-        $optionsForm->get('migrationOptions')->add('transformer', TextType::class, [
-            'required' => false,
-        ]);
     }
 }

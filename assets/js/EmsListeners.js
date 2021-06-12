@@ -620,6 +620,7 @@ export default class EmsListeners {
         //Initialize Select2 Elements
         jquery(this.target).find(".select2").select2({
             allowClear: true,
+            placeholder: "",
             escapeMarkup: function (markup) { return markup; }
         });
     }

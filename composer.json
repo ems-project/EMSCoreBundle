@@ -2,7 +2,8 @@
 	"name" : "elasticms/core-bundle",
 	"description" : "The elasticms core bundle",
 	"type" : "symfony-bundle",
-	"authors" : [{
+	"authors" : [
+		{
 			"name" : "Mathieu De Keyzer",
 			"email" : "mathieu@dekeyzer.net"
 		},
@@ -59,15 +60,17 @@
 	"require-dev" : {
 		"friendsofphp/php-cs-fixer" : "^2.16",
 		"phpstan/phpstan": "^0.12",
-		"phpunit/phpunit" : "^7.1",
-		"symfony/test-pack": "^1.0",
-		"squizlabs/php_codesniffer": "3.4"
+		"phpunit/phpunit" : "^9.5",
+		"symfony/test-pack": "^1.0"
 	},
 	"autoload" : {
 		"psr-4" : {
 			"EMS\\CoreBundle\\" : "src/",
 			"FOS\\UserBundle\\" : "src-user/"
-		}
+		},
+		"exclude-from-classmap" : [
+			"tests/"
+		]
 	},
 	"autoload-dev" : {
 		"psr-4" : {

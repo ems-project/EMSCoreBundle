@@ -51,10 +51,17 @@ final class DatatableService
      */
     public function getExcelPath(array $environmentNames, array $contentTypeNames, array $options): string
     {
-        $aliases = $this->convertToAliases($environmentNames);
-        $hashConfig = $this->saveConfig($options, $aliases, $contentTypeNames);
+        return $this->getRoutePath('ems_core_datatable_excel_elastica', $environmentNames, $contentTypeNames, $options);
+    }
 
-        return $this->router->generate('ems_core_datatable_excel_elastica', ['hashConfig' => $hashConfig]);
+    /**
+     * @param string[]             $environmentNames
+     * @param string[]             $contentTypeNames
+     * @param array<string, mixed> $options
+     */
+    public function getCsvPath(array $environmentNames, array $contentTypeNames, array $options): string
+    {
+        return $this->getRoutePath('ems_core_datatable_csv_elastica', $environmentNames, $contentTypeNames, $options);
     }
 
     public function generateDatatableFromHash(string $hashConfig): ElasticaTable
@@ -128,5 +135,18 @@ final class DatatableService
             self::ALIASES => $aliases,
             self::CONTENT_TYPES => $contentTypeNames,
         ]);
+    }
+
+    /**
+     * @param string[]             $environmentNames
+     * @param string[]             $contentTypeNames
+     * @param array<string, mixed> $options
+     */
+    private function getRoutePath(string $route, array $environmentNames, array $contentTypeNames, array $options): string
+    {
+        $aliases = $this->convertToAliases($environmentNames);
+        $hashConfig = $this->saveConfig($options, $aliases, $contentTypeNames);
+
+        return $this->router->generate($route, ['hashConfig' => $hashConfig]);
     }
 }

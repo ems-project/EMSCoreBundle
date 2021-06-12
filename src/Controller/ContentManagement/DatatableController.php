@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
+use EMS\CoreBundle\Form\Data\ElasticaTable;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\DatatableService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,7 +41,19 @@ final class DatatableController extends AbstractController
 
     public function excelElastica(string $hashConfig): Response
     {
-        $table = $this->datatableService->generateDatatableFromHash($hashConfig);
+        return $this->spreadsheetElastica($hashConfig, SpreadsheetGeneratorServiceInterface::XLSX_WRITER);
+    }
+
+    public function csvElastica(string $hashConfig): Response
+    {
+        return $this->spreadsheetElastica($hashConfig, SpreadsheetGeneratorServiceInterface::CSV_WRITER);
+    }
+
+    /**
+     * @return string[][]
+     */
+    private function buildTableRows(ElasticaTable $table): array
+    {
         $headers = [];
         foreach ($table->getColumns() as $column) {
             $headers[] = $column->getTitleKey();
@@ -61,12 +74,22 @@ final class DatatableController extends AbstractController
             }
         }
 
-        $spreadsheetConfig = [
-            'sheets' => [[
-                'name' => 'sheet',
-                'rows' => $rows,
-        ]], ];
+        return $rows;
+    }
 
-        return $this->spreadsheetGeneratorService->generateSpreadsheet($spreadsheetConfig);
+    private function spreadsheetElastica(string $hashConfig, string $spreadsheetWriter): Response
+    {
+        $table = $this->datatableService->generateDatatableFromHash($hashConfig);
+        $rows = $this->buildTableRows($table);
+
+        return $this->spreadsheetGeneratorService->generateSpreadsheet([
+            SpreadsheetGeneratorServiceInterface::SHEETS => [[
+                'name' => $table->getSheetName(),
+                'rows' => $rows,
+            ]],
+            SpreadsheetGeneratorServiceInterface::CONTENT_FILENAME => $table->getFilename(),
+            SpreadsheetGeneratorServiceInterface::CONTENT_DISPOSITION => $table->getDisposition(),
+            SpreadsheetGeneratorServiceInterface::WRITER => $spreadsheetWriter,
+        ]);
     }
 }

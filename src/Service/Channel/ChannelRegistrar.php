@@ -19,7 +19,7 @@ final class ChannelRegistrar
     private LoggerInterface $logger;
     private IndexService $indexService;
 
-    private const EMSCO_CHANNEL_PATH_REGEX = '/^\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
+    public const EMSCO_CHANNEL_PATH_REGEX = '/^(\\/index\\.php)?\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
 
     public function __construct(ChannelRepository $channelRepository, EnvironmentHelperInterface $environmentHelper, LoggerInterface $logger, IndexService $indexService)
     {

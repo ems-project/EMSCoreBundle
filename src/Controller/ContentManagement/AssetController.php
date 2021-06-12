@@ -87,7 +87,7 @@ class AssetController extends AbstractController
         }
         $baseUrl = $request->getBaseUrl() ?? '';
 
-        if (\strlen($refererPath) > 0 && 0 !== \strpos($refererPath, $baseUrl)) {
+        if (\strlen($baseUrl) > 0 && 0 !== \strpos($refererPath, $baseUrl)) {
             throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));
         }
 

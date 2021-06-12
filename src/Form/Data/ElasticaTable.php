@@ -33,7 +33,7 @@ class ElasticaTable extends TableAbstract
     private string $descMissingValuesPosition;
     private string $filename;
     private string $disposition;
-    private $sheetName;
+    private string $sheetName;
 
     /**
      * @param string[] $aliases

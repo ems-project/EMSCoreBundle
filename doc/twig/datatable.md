@@ -140,10 +140,19 @@ The `desc_missing_values_position` parameter specifies how docs which are missin
 
 # emsco_datatable_excel_path
 
-This function is generating a path to an excel generator. This twig function has the same signature as the [emsco_datatable](#emsco_datatable) twig function. I.e.:
+This function is generating a path to an Excel generator route. This twig function has the same signature as the [emsco_datatable](#emsco_datatable) twig function.
+
+With the following extra options:
+
+ - `filename`: filename of the generated Excel file (without extension). Default value `datatable`
+ - `disposition`: `attachment` or `inline`. Default value `attachment` 
+ - `sheet_name`: Name of the only sheet. Default value  `Sheet`
+
+
+I.e.:
 
 ```twig
-<a href="{{ emsco_datatable(['default'],['miniature'], {
+<a href="{{ emsco_datatable_excel_path(['default'],['miniature'], {
     "columns": [{
         "label": "ID",
         "template": "{{ data.source.identifier }}"
@@ -153,3 +162,28 @@ This function is generating a path to an excel generator. This twig function has
     }]
 }) }}">Download Excel</a>
 ```
+
+# emsco_datatable_csv_path
+
+This function is generating a path to an CSV generator route. This twig function has the same signature as the [emsco_datatable](#emsco_datatable) twig function.
+
+With the following extra options:
+
+- `filename`: filename of the generated CSV file (without extension). Default value `datatable`
+- `disposition`: `attachment` or `inline`. Default value `attachment`
+
+
+I.e.:
+
+```twig
+<a href="{{ emsco_datatable_csv_path(['default'],['miniature'], {
+    "columns": [{
+        "label": "ID",
+        "template": "{{ data.source.identifier }}"
+    },{
+        "label": "Name",
+        "template": "{{ data.source.name }}"
+    }]
+}) }}">Download CSV</a>
+```
+

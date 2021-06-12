@@ -594,7 +594,13 @@ class DataController extends AppController
     public function deleteAction(string $type, string $ouuid, DataService $dataService, LoggerInterface $logger, EnvironmentService $environmentService)
     {
         $revision = $dataService->getNewestRevision($type, $ouuid);
-        $contentType = $revision->getContentType();
+        $contentType = $revision->giveContentType();
+        $deleteRole = $contentType->getDeleteRole();
+
+        if ($deleteRole && !$this->isGranted($deleteRole)) {
+            throw $this->createAccessDeniedException('Delete not granted!');
+        }
+
         $found = false;
         foreach ($environmentService->getAll() as $environment) {
             /** @var Environment $environment */

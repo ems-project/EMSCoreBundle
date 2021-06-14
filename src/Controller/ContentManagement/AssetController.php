@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\ClientHelperBundle\Controller\AssetController as EmschAssetController;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CommonBundle\Storage\Processor\Config;
@@ -19,18 +18,16 @@ class AssetController extends AbstractController
 {
     private Processor $processor;
     private ChannelRepository $channelRepository;
-    private EmschAssetController $emschAssetController;
     /** @var array<string, mixed> */
     protected array $assetConfig;
 
     /**
      * @param array<string, mixed> $assetConfig
      */
-    public function __construct(Processor $processor, ChannelRepository $channelRepository, EmschAssetController $emschAssetController, array $assetConfig)
+    public function __construct(Processor $processor, ChannelRepository $channelRepository, array $assetConfig)
     {
         $this->processor = $processor;
         $this->channelRepository = $channelRepository;
-        $this->emschAssetController = $emschAssetController;
         $this->assetConfig = $assetConfig;
     }
 

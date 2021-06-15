@@ -17,6 +17,8 @@ class TableColumn
     private string $cellClass = '';
     /** @var array <string, \Closure> */
     private array $htmlAttributes = [];
+    private ?\Closure $pathCallback = null;
+    private string $pathTarget = '';
 
     public function __construct(string $titleKey, string $attribute)
     {
@@ -159,5 +161,40 @@ class TableColumn
     public function getOrderable(): bool
     {
         return true;
+    }
+
+    public function setPathCallback(\Closure $pathCallback, string $target = ''): void
+    {
+        $this->pathCallback = $pathCallback;
+        $this->pathTarget = $target;
+    }
+
+    /**
+     * @param mixed $context
+     */
+    public function hasPath($context): bool
+    {
+        return null !== $this->pathCallback && \is_string($this->pathCallback->call($this, $context));
+    }
+
+    /**
+     * @param mixed $context
+     */
+    public function getPath($context): string
+    {
+        if (null === $this->pathCallback) {
+            throw new \RuntimeException('Unexpected null pathCallback. use the hasPathCallback first');
+        }
+        $path = $this->pathCallback->call($this, $context);
+        if (!\is_string($path)) {
+            throw new \RuntimeException('Unexpected null pathCallback. use the hasPathCallback first');
+        }
+
+        return $path;
+    }
+
+    public function getPathTarget(): string
+    {
+        return $this->pathTarget;
     }
 }

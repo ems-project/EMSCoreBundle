@@ -57,6 +57,9 @@ class MigrationOptionsType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['field_type' => null]);
+        $resolver
+            ->setRequired(['field_type'])
+            ->setAllowedTypes('field_type', FieldType::class)
+        ;
     }
 }

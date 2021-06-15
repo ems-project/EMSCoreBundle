@@ -22,7 +22,7 @@ class OptionsType extends AbstractType
     {
         $builder->add('displayOptions', DisplayOptionsType::class);
         $builder->add('mappingOptions', MappingOptionsType::class);
-        $builder->add('restrictionOptions', RestrictionOptionsType::class);
+        $builder->add('restrictionOptions', RestrictionOptionsType::class, $options);
         $builder->add('migrationOptions', MigrationOptionsType::class, $options);
         $builder->add('extraOptions', ExtraOptionsType::class);
     }

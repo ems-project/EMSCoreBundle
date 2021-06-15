@@ -630,7 +630,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      *
      * @return \EMS\CoreBundle\Entity\FieldType
      */
-    public function getParent()
+    public function getParent(): ?FieldType
     {
         return $this->parent;
     }

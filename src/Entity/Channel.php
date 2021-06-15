@@ -202,6 +202,6 @@ class Channel implements EntityInterface
             $entryPath = '';
         }
 
-        return \sprintf('../channel/%s%s', $this->getName(), $entryPath);
+        return \sprintf('/channel/%s%s', $this->getName(), $entryPath);
     }
 }

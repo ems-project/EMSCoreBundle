@@ -172,20 +172,20 @@ class TableColumn
     /**
      * @param mixed $context
      */
-    public function hasPath($context): bool
+    public function hasPath($context, string $baseUrl): bool
     {
-        return null !== $this->pathCallback && \is_string($this->pathCallback->call($this, $context));
+        return null !== $this->pathCallback && \is_string($this->pathCallback->call($this, $context, $baseUrl));
     }
 
     /**
      * @param mixed $context
      */
-    public function getPath($context): string
+    public function getPath($context, string $baseUrl): string
     {
         if (null === $this->pathCallback) {
             throw new \RuntimeException('Unexpected null pathCallback. use the hasPathCallback first');
         }
-        $path = $this->pathCallback->call($this, $context);
+        $path = $this->pathCallback->call($this, $context, $baseUrl);
         if (!\is_string($path)) {
             throw new \RuntimeException('Unexpected null pathCallback. use the hasPathCallback first');
         }

@@ -6,7 +6,7 @@
     {%- set currentNode = currentNode|merge({
         'url': path('revision.edit.nested-modal', {'revisionId': revision.id, 'fieldTypeId': currentNode.id, 'parentLevel': level })
     }) -%}
-    {% if maxDepth > 0 and level <= maxDepth %}
+    {% if maxDepth == 0 or level <= maxDepth %}
         <li id="{{ child.id|default('%uuid%') }}" class="collapsible-container nestedSortable mjs-nestedSortable"
             data-label="{{ child.label|default('%label%') }}"
             {% if child.object is defined %}data-object="{{ child.object|json_encode }}"{% endif %}
@@ -68,7 +68,7 @@
 {% endblock %}
 
 {% block button_add %}
-    {%- if (maxDepth > 0 and level < maxDepth) and currentNode.isLeaf|default(false) == false -%}
+    {%- if (maxDepth == 0 or level < maxDepth) and currentNode.isLeaf|default(false) == false -%}
         {%- set deny = currentNode.deny|default([]) -%}
         <button type="button" class="btn btn-primary dropdown-toggle" data-level="{{ level }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="fa fa-plus"></span>

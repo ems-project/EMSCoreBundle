@@ -58,7 +58,7 @@ class RestrictionOptionsType extends AbstractType
         }
 
         if ($fieldType->isJsonMenuNestedEditor()) {
-            $builder->add('json_nested_max_depth', IntegerType::class);
+            $builder->add('json_nested_max_depth', IntegerType::class, ['required' => false]);
         }
 
         if ($fieldType->isJsonMenuNestedEditorNode()) {

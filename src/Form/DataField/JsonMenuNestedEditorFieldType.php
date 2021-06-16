@@ -93,8 +93,13 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
     {
         parent::buildOptionsForm($builder, $options);
 
-        $builder->get('options')->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
-        $builder->get('options')->get('displayOptions')->add('icon', IconPickerType::class, [
+        $optionsForm = $builder->get('options');
+
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
+        }
+
+        $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
             'required' => false,
         ]);
     }

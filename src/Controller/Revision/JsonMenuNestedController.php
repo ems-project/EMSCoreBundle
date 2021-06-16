@@ -105,12 +105,12 @@ class JsonMenuNestedController extends AbstractController
             throw new NotFoundException('Unknown fieldtype');
         }
 
-        if (null === $jsonEditorField = $fieldType->getJsonMenuNestedEditorFieldType()) {
+        if (null === $jsonMenuNestedEditor = $fieldType->getJsonMenuNestedEditor()) {
             throw new NotFoundException('Json menu editor field type');
         }
 
         $level = $parentLevel + 1;
-        $maxDepth = $jsonEditorField->getRestrictionOption('json_nested_max_depth', 0);
+        $maxDepth = $jsonMenuNestedEditor->getRestrictionOption('json_nested_max_depth', 0);
         if ($maxDepth > 0 && $level > $maxDepth) {
             throw new \RuntimeException(\sprintf('Max depth is %d', $maxDepth));
         }

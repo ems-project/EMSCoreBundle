@@ -20,8 +20,15 @@ class OptionsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var FieldType $fieldType */
+        $fieldType = $options['field_type'];
+
         $builder->add('displayOptions', DisplayOptionsType::class);
-        $builder->add('mappingOptions', MappingOptionsType::class);
+
+        if (!$fieldType->isJsonMenuNestedEditorField()) {
+            $builder->add('mappingOptions', MappingOptionsType::class, $options);
+        }
+
         $builder->add('restrictionOptions', RestrictionOptionsType::class, $options);
         $builder->add('migrationOptions', MigrationOptionsType::class, $options);
         $builder->add('extraOptions', ExtraOptionsType::class);
@@ -29,7 +36,10 @@ class OptionsType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['field_type' => null]);
+        $resolver
+            ->setRequired(['field_type'])
+            ->setAllowedTypes('field_type', FieldType::class)
+        ;
     }
 
     /**

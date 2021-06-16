@@ -304,14 +304,13 @@ class DateRangeFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific display options
-        $optionsForm->get('mappingOptions')->add('fromDateMachineName', TextType::class, [
-                'required' => false,
-        ])->add('toDateMachineName', TextType::class, [
-                'required' => false,
-        ])->add('nested', CheckboxType::class, [
-                'required' => false,
-        ]);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm
+                ->get('mappingOptions')
+                ->add('fromDateMachineName', TextType::class, ['required' => false])
+                ->add('toDateMachineName', TextType::class, ['required' => false])
+                ->add('nested', CheckboxType::class, ['required' => false]);
+        }
 
         $optionsForm->get('displayOptions')->add('locale', SubOptionsType::class, [
                 'required' => false,

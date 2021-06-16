@@ -112,12 +112,12 @@ final class SelectUserPropertyFieldType extends DataFieldType
                 'choices' => $this->userService->listUserRoles(),
             ])
         ;
-        $optionsForm->get('mappingOptions')
-            ->add('analyzer', AnalyzerPickerType::class)
-            ->add('copy_to', TextType::class, [
-                'required' => false,
-            ])
-        ;
+
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')
+                ->add('analyzer', AnalyzerPickerType::class)
+                ->add('copy_to', TextType::class, ['required' => false]);
+        }
     }
 
     /**

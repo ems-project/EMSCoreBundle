@@ -484,24 +484,42 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $valid;
     }
 
-    public function getJsonMenuNestedEditorFieldType(): ?FieldType
+    public function isJsonMenuNestedEditor(): bool
     {
-        if (JsonMenuNestedEditorFieldType::class === $this->getType()) {
-            return $this;
-        }
+        return JsonMenuNestedEditorFieldType::class === $this->getType();
+    }
 
+    public function isJsonMenuNestedEditorNode(): bool
+    {
         $parent = $this->getParent();
 
-        if ($parent && JsonMenuNestedEditorFieldType::class === $parent->getType()) {
-            return $parent;
-        }
-
-        return null;
+        return $parent && JsonMenuNestedEditorFieldType::class === $parent->getType();
     }
 
     public function isJsonMenuNestedEditorField(): bool
     {
-        return null !== $this->getJsonMenuNestedEditorFieldType();
+        if ($this->isJsonMenuNestedEditor()) {
+            return true;
+        }
+
+        if (null !== $parent = $this->getParent()) {
+            return $parent->isJsonMenuNestedEditorField();
+        }
+
+        return false;
+    }
+
+    public function getJsonMenuNestedEditor(): ?FieldType
+    {
+        if ($this->isJsonMenuNestedEditor()) {
+            return $this;
+        }
+
+        if ($this->isJsonMenuNestedEditorNode()) {
+            return $this->getParent();
+        }
+
+        return null;
     }
 
     /**
@@ -511,11 +529,11 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     {
         $nodes = [];
 
-        if (null === $editorField = $this->getJsonMenuNestedEditorFieldType()) {
+        if (null === $jsonMenuNestedEditor = $this->getJsonMenuNestedEditor()) {
             return $nodes;
         }
 
-        foreach ($editorField->children as $child) {
+        foreach ($jsonMenuNestedEditor->children as $child) {
             if ($child->getDeleted() || !$child->getType()::isContainer()) {
                 continue;
             }

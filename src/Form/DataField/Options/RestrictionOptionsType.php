@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\DataField\Options;
 
 use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType;
 use EMS\CoreBundle\Form\Field\RolePickerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -32,9 +31,7 @@ class RestrictionOptionsType extends AbstractType
             ->add('minimum_role', RolePickerType::class, ['required' => false])
         ;
 
-        if ($fieldType->isJsonMenuNestedEditorField()) {
-            $this->addJsonMenuNestedRestrictionFields($builder, $fieldType);
-        }
+        $this->addJsonMenuNestedRestrictionFields($builder, $fieldType);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -50,18 +47,21 @@ class RestrictionOptionsType extends AbstractType
      */
     private function addJsonMenuNestedRestrictionFields(FormBuilderInterface $builder, FieldType $fieldType): void
     {
-        $nodes = $fieldType->getJsonMenuNestedEditorNodes();
+        if ($fieldType->isJsonMenuNestedEditor() || $fieldType->isJsonMenuNestedEditorNode()) {
+            $nodes = $fieldType->getJsonMenuNestedEditorNodes();
+            $builder->add('json_nested_deny', ChoiceType::class, [
+                'multiple' => true,
+                'required' => false,
+                'choices' => \array_map(fn (array $node) => $node['name'], $nodes),
+                'block_prefix' => 'select2',
+            ]);
+        }
 
-        $builder->add('json_nested_deny', ChoiceType::class, [
-            'multiple' => true,
-            'required' => false,
-            'choices' => \array_map(fn (array $node) => $node['name'], $nodes),
-            'block_prefix' => 'select2',
-        ]);
-
-        if (JsonMenuNestedEditorFieldType::class === $fieldType->getType()) {
+        if ($fieldType->isJsonMenuNestedEditor()) {
             $builder->add('json_nested_max_depth', IntegerType::class);
-        } else {
+        }
+
+        if ($fieldType->isJsonMenuNestedEditorNode()) {
             $builder->add('json_nested_is_leaf', CheckboxType::class, ['required' => false]);
         }
     }

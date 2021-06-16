@@ -6,11 +6,11 @@ namespace EMS\CoreBundle\Controller\Revision;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ObjectRepository;
-use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Exception\NotFoundException;
 use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
@@ -91,9 +91,9 @@ class JsonMenuNestedController extends AbstractController
     }
 
     /**
-     * @Route("/data/draft/edit/{revisionId}/nested-modal/{fieldTypeId}", name="revision.edit.nested-modal", methods={"POST"})
+     * @Route("/data/draft/edit/{revisionId}/nested-modal/{fieldTypeId}/{parentLevel}", name="revision.edit.nested-modal", methods={"POST"})
      */
-    public function modal(Request $request, int $revisionId, int $fieldTypeId): JsonResponse
+    public function modal(Request $request, int $revisionId, int $fieldTypeId, int $parentLevel): JsonResponse
     {
         if (null === $revision = $this->revisionService->find($revisionId)) {
             throw new NotFoundHttpException('Unknown revision');
@@ -103,6 +103,16 @@ class JsonMenuNestedController extends AbstractController
 
         if (null === $fieldType || !$fieldType instanceof FieldType) {
             throw new NotFoundException('Unknown fieldtype');
+        }
+
+        if (null === $jsonEditorField = $fieldType->getJsonMenuNestedEditorFieldType()) {
+            throw new NotFoundException('Json menu editor field type');
+        }
+
+        $level = $parentLevel + 1;
+        $maxLevel = $jsonEditorField->getRestrictionOption('json_nested_max_depth', 0);
+        if ($maxLevel > 0 && $level > $maxLevel) {
+            throw new \RuntimeException(\sprintf('Max level %d', $maxLevel));
         }
 
         $label = null;
@@ -130,7 +140,7 @@ class JsonMenuNestedController extends AbstractController
 
             if ($isValid && $form->isValid()) {
                 $this->dataService->getPostProcessing()->jsonMenuNested($formDataField, $revision->giveContentType(), $objectArray);
-                $buttons = $this->renderButtons($revision, $fieldType);
+                $buttons = $this->renderButtons($revision, $fieldType, $level, $maxLevel);
             }
         }
 
@@ -145,7 +155,7 @@ class JsonMenuNestedController extends AbstractController
         ]));
     }
 
-    private function renderButtons(Revision $revision, FieldType $fieldType): string
+    private function renderButtons(Revision $revision, FieldType $fieldType, int $level, int $maxLevel): string
     {
         $editorNodes = $fieldType->getJsonMenuNestedEditorNodes();
         $editorTemplate = $this->templating->load('@EMSCore/form/fields/json_menu_nested_editor.html.twig');
@@ -154,6 +164,8 @@ class JsonMenuNestedController extends AbstractController
             'revision' => $revision,
             'nodes' => $editorNodes,
             'node' => $editorNodes[$fieldType->getName()],
+            'level' => $level,
+            'maxLevel' => $maxLevel,
         ]);
     }
 }

@@ -845,7 +845,8 @@
 
 {% block json_menu_nested_editor_fieldtype_widget %}
 	{{  form_widget(form) }}
-	{%- set maxLevel = data.fieldType.restrictionOption('json_nested_max_depth', null)  %}
+	{%- set level = 0 -%}
+	{%- set maxLevel = data.fieldType.restrictionOption('json_nested_max_depth', 0)  %}
 	{%- set rootDeny = [] %}
 	{%- for d in data.fieldType.restrictionOption('json_nested_deny', []) -%}{%- set rootDeny = rootDeny|merge([d]) -%}{%- endfor -%}
 	{%- set nodes = data.fieldType.getJsonMenuNestedEditorNodes -%}
@@ -853,14 +854,14 @@
 		 data-prototype-nested="{{ block('itemPrototype', '@EMSCore/form/fields/json_menu_nested_editor.html.twig')|e('html_attr') }}">
 		<div class="input-group">
 			<span class="input-group-btn">
-				{% with { nodes: nodes, deny: rootDeny, revision: revision } only %}
+				{% with { nodes: nodes, deny: rootDeny, revision: revision, level: 0, maxLevel: maxLevel  } only %}
 					{{ block('button_add', '@EMSCore/form/fields/json_menu_nested_editor.html.twig') }}
 				{% endwith %}
 			</span>
 		</div>
-		<ol class="json_menu_sortable vertical not-collapsible" data-node="{{ {'name': 'root', 'deny': rootDeny, 'maxLevel': maxLevel}|json_encode }}">
+		<ol class="json_menu_sortable vertical not-collapsible" data-node="{{ {'name': 'root', 'deny': rootDeny}|json_encode }}">
 			{%- for child in form.vars.data.rawData|default('[]')|json_decode -%}
-				{% with { nodes: nodes, child: child, revision: revision } only %}
+				{% with { nodes: nodes, child: child, revision: revision, level: level, maxLevel: maxLevel } only %}
 					{{ block('item', '@EMSCore/form/fields/json_menu_nested_editor.html.twig') }}
 				{% endwith %}
 			{%- endfor -%}

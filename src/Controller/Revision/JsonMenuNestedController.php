@@ -165,7 +165,7 @@ class JsonMenuNestedController extends AbstractController
         return $editorTemplate->renderBlock('itemButtons', [
             'revision' => $revision,
             'nodes' => $editorNodes,
-            'node' => $editorNodes[$fieldType->getName()],
+            'currentNode' => $editorNodes[$fieldType->getName()],
             'level' => $level,
             'maxDepth' => $maxDepth,
         ]);

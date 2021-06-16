@@ -854,7 +854,7 @@
 		 data-prototype-nested="{{ block('itemPrototype', '@EMSCore/form/fields/json_menu_nested_editor.html.twig')|e('html_attr') }}">
 		<div class="input-group">
 			<span class="input-group-btn">
-				{% with { nodes: nodes, deny: rootDeny, revision: revision, level: 0, maxDepth: maxDepth  } only %}
+				{% with { nodes: nodes, currentNode: {'deny': rootDeny}, revision: revision, level: 0, maxDepth: maxDepth  } only %}
 					{{ block('button_add', '@EMSCore/form/fields/json_menu_nested_editor.html.twig') }}
 				{% endwith %}
 			</span>

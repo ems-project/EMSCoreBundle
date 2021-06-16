@@ -25,7 +25,6 @@ class RestrictionOptionsType extends AbstractType
     {
         /** @var FieldType $fieldType */
         $fieldType = $options['field_type'];
-        $parent = $fieldType->getParent();
 
         $builder
             ->add('mandatory', CheckboxType::class, ['required' => false])
@@ -33,11 +32,8 @@ class RestrictionOptionsType extends AbstractType
             ->add('minimum_role', RolePickerType::class, ['required' => false])
         ;
 
-        if (JsonMenuNestedEditorFieldType::class === $fieldType->getType()) {
-            $this->addJsonMenuNestedRestrictionFields($builder, $fieldType, true);
-        }
-        if ($parent && JsonMenuNestedEditorFieldType::class === $parent->getType()) {
-            $this->addJsonMenuNestedRestrictionFields($builder, $parent, false);
+        if ($fieldType->isJsonMenuNestedEditorField()) {
+            $this->addJsonMenuNestedRestrictionFields($builder, $fieldType);
         }
     }
 
@@ -52,20 +48,18 @@ class RestrictionOptionsType extends AbstractType
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      */
-    private function addJsonMenuNestedRestrictionFields(FormBuilderInterface $builder, FieldType $jsonMenuNested, bool $isRoot): void
+    private function addJsonMenuNestedRestrictionFields(FormBuilderInterface $builder, FieldType $fieldType): void
     {
-        $choices = [];
-        foreach ($jsonMenuNested->getJsonMenuNestedNodeChildren() as $child) {
-            $choices[$child->getName()] = $child->getName();
-        }
+        $nodes = $fieldType->getJsonMenuNestedEditorNodes();
+
         $builder->add('json_nested_deny', ChoiceType::class, [
             'multiple' => true,
             'required' => false,
-            'choices' => $choices,
+            'choices' => array_map(fn (array $node) => $node['name'], $nodes),
             'block_prefix' => 'select2',
         ]);
 
-        if ($isRoot) {
+        if ($fieldType->getType() === JsonMenuNestedEditorFieldType::class) {
             $builder->add('json_nested_max_depth', IntegerType::class);
         } else {
             $builder->add('json_nested_is_leaf', CheckboxType::class, ['required' => false]);

@@ -21,20 +21,26 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Environment;
 
 class JsonMenuNestedController extends AbstractController
 {
-    /** @var RevisionService */
-    private $revisionService;
+    private RevisionService $revisionService;
     /** @var ObjectRepository|FieldTypeRepository */
     private $fieldTypeRepository;
     private DataService $dataService;
+    private Environment $templating;
 
-    public function __construct(RevisionService $revisionService, Registry $doctrine, DataService $dataService)
-    {
+    public function __construct(
+        RevisionService $revisionService,
+        Registry $doctrine,
+        DataService $dataService,
+        Environment $templating
+    ) {
         $this->revisionService = $revisionService;
         $this->dataService = $dataService;
         $this->fieldTypeRepository = $doctrine->getRepository(FieldType::class);
+        $this->templating = $templating;
     }
 
     /**
@@ -124,6 +130,7 @@ class JsonMenuNestedController extends AbstractController
 
             if ($isValid && $form->isValid()) {
                 $this->dataService->getPostProcessing()->jsonMenuNested($formDataField, $revision->giveContentType(), $objectArray);
+                $buttons = $this->renderButtons($revision, $fieldType);
             }
         }
 
@@ -134,6 +141,19 @@ class JsonMenuNestedController extends AbstractController
                 'form' => $form->createView(),
                 'fieldType' => $fieldType,
             ]),
+            'buttons' => $buttons ?? null,
         ]));
+    }
+
+    private function renderButtons(Revision $revision, FieldType $fieldType): string
+    {
+        $editorNodes = $fieldType->getJsonMenuNestedEditorNodes();
+        $editorTemplate = $this->templating->load('@EMSCore/form/fields/json_menu_nested_editor.html.twig');
+
+        return $editorTemplate->renderBlock('itemButtons', [
+            'revision' => $revision,
+            'nodes' => $editorNodes,
+            'node' => $editorNodes[$fieldType->getName()]
+        ]);
     }
 }

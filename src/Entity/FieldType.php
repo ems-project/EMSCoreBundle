@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -403,7 +404,17 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return [];
     }
 
-    public function getMigrationgOption($key, $default = null)
+    public function getRestrictionOption($key, $default = null)
+    {
+        $options = $this->getRestrictionOptions();
+        if (isset($options[$key])) {
+            return $options[$key];
+        }
+
+        return $default;
+    }
+
+    public function getMigrationOption($key, $default = null)
     {
         $options = $this->getMigrationOptions();
         if (isset($options[$key])) {
@@ -460,21 +471,53 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $valid;
     }
 
-    /**
-     * @return iterable|FieldType[]
-     */
-    public function getJsonMenuNestedNodeChildren(): iterable
+    public function getJsonMenuNestedEditorFieldType(): ?FieldType
     {
-        foreach ($this->children as $child) {
-            /** @var FieldType $child */
-            $type = $child->getType();
+        if ($this->getType() === JsonMenuNestedEditorFieldType::class) {
+            return $this;
+        }
 
-            if ($child->getDeleted() || !$type::isContainer()) {
+        $parent = $this->getParent();
+
+        if ($parent && $parent->getType() === JsonMenuNestedEditorFieldType::class) {
+            return $parent;
+        }
+
+        return null;
+    }
+
+    public function isJsonMenuNestedEditorField(): bool
+    {
+        return null !== $this->getJsonMenuNestedEditorFieldType();
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function getJsonMenuNestedEditorNodes(): array
+    {
+        $nodes = [];
+
+        if (null === $editorField = $this->getJsonMenuNestedEditorFieldType()) {
+            return $nodes;
+        }
+
+        foreach ($editorField->children as $child) {
+            if ($child->getDeleted() || !$child->getType()::isContainer()) {
                 continue;
             }
 
-            yield $child;
+            $nodes[$child->getName()] = [
+                'id' => $child->getId(),
+                'name' => $child->getName(),
+                'label' => $child->getDisplayOption('label', $child->getName()),
+                'icon' => $child->getDisplayOption('icon', null),
+                'deny' => array_merge(['root'], $child->getRestrictionOption('json_nested_deny', [])),
+                'is_leaf' => $child->getRestrictionOption('json_nested_is_leaf', false),
+            ];
         }
+
+        return $nodes;
     }
 
     /**

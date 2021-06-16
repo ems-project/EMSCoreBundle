@@ -106,26 +106,12 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
-
         /** @var Revision $revision */
         $revision = $form->getRoot()->getData();
         /** @var FieldType $fieldType */
         $fieldType = $options['metadata'];
 
-        $nodes = [];
-        foreach ($fieldType->getJsonMenuNestedNodeChildren() as $node) {
-            $nodes[$node->getName()] = [
-                'name' => $node->getName(),
-                'label' => $node->getDisplayOption('label', $node->getName()),
-                'icon' => $node->getDisplayOption('icon', null),
-                'url' => $this->urlGenerator->generate('revision.edit.nested-modal', [
-                    'revisionId' => $revision->getId(),
-                    'fieldTypeId' => $node->getId(),
-                ]),
-            ];
-        }
-
         $view->vars['disabled'] = !$this->authorizationChecker->isGranted($fieldType->getMinimumRole());
-        $view->vars['nodes'] = $nodes;
+        $view->vars['revision'] = $revision;
     }
 }

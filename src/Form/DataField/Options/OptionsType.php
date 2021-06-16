@@ -25,7 +25,7 @@ class OptionsType extends AbstractType
 
         $builder->add('displayOptions', DisplayOptionsType::class);
 
-        if (!$fieldType->isJsonMenuNestedEditorField()) {
+        if (!$fieldType->isJsonMenuNestedEditorField() || $fieldType->isJsonMenuNestedEditor()) {
             $builder->add('mappingOptions', MappingOptionsType::class, $options);
         }
 

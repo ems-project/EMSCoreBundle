@@ -110,9 +110,9 @@ class JsonMenuNestedController extends AbstractController
         }
 
         $level = $parentLevel + 1;
-        $maxLevel = $jsonEditorField->getRestrictionOption('json_nested_max_depth', 0);
-        if ($maxLevel > 0 && $level > $maxLevel) {
-            throw new \RuntimeException(\sprintf('Max level %d', $maxLevel));
+        $maxDepth = $jsonEditorField->getRestrictionOption('json_nested_max_depth', 0);
+        if ($maxDepth > 0 && $level > $maxDepth) {
+            throw new \RuntimeException(\sprintf('Max depth is %d', $maxDepth));
         }
 
         $label = null;
@@ -140,7 +140,7 @@ class JsonMenuNestedController extends AbstractController
 
             if ($isValid && $form->isValid()) {
                 $this->dataService->getPostProcessing()->jsonMenuNested($formDataField, $revision->giveContentType(), $objectArray);
-                $buttons = $this->renderButtons($revision, $fieldType, $level, $maxLevel);
+                $buttons = $this->renderButtons($revision, $fieldType, $level, $maxDepth);
             }
         }
 
@@ -155,7 +155,7 @@ class JsonMenuNestedController extends AbstractController
         ]));
     }
 
-    private function renderButtons(Revision $revision, FieldType $fieldType, int $level, int $maxLevel): string
+    private function renderButtons(Revision $revision, FieldType $fieldType, int $level, int $maxDepth): string
     {
         $editorNodes = $fieldType->getJsonMenuNestedEditorNodes();
         $editorTemplate = $this->templating->load('@EMSCore/form/fields/json_menu_nested_editor.html.twig');
@@ -165,7 +165,7 @@ class JsonMenuNestedController extends AbstractController
             'nodes' => $editorNodes,
             'node' => $editorNodes[$fieldType->getName()],
             'level' => $level,
-            'maxLevel' => $maxLevel,
+            'maxDepth' => $maxDepth,
         ]);
     }
 }

@@ -6,7 +6,7 @@
     {%- set node = node|merge({
         'url': path('revision.edit.nested-modal', {'revisionId': revision.id, 'fieldTypeId': node.id, 'parentLevel': level })
     }) -%}
-    {% if maxLevel > 0 and level <= maxLevel %}
+    {% if maxDepth > 0 and level <= maxDepth %}
         <li id="{{ child.id|default('%uuid%') }}" class="collapsible-container nestedSortable mjs-nestedSortable"
             data-label="{{ child.label|default('%label%') }}"
             {% if child.object is defined %}data-object="{{ child.object|json_encode }}"{% endif %}
@@ -49,7 +49,7 @@
 
 {% block itemButtons %}
     <div class="btn-group btn-group-sm">
-        {% with { nodes: nodes, deny: node.deny, revision: revision, level: level, maxLevel: maxLevel } only %}
+        {% with { nodes: nodes, deny: node.deny, revision: revision, level: level, maxDepth: maxDepth } only %}
             {{ block('button_add') }}
         {% endwith %}
         <button type="button" class="btn btn-primary json-menu-nested-edit" data-action="edit"
@@ -68,7 +68,7 @@
 {% endblock %}
 
 {% block button_add %}
-    {% if maxLevel > 0 and level < maxLevel %}
+    {% if maxDepth > 0 and level < maxDepth %}
         <button type="button" class="btn btn-primary dropdown-toggle" data-level="{{ level }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="fa fa-plus"></span>
             {{ 'field_type.json_menu_editor.add'|trans }}

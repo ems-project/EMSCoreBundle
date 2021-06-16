@@ -140,18 +140,20 @@ class JsonMenuNestedController extends AbstractController
 
             if ($isValid && $form->isValid()) {
                 $this->dataService->getPostProcessing()->jsonMenuNested($formDataField, $revision->giveContentType(), $objectArray);
-                $buttons = $this->renderButtons($revision, $fieldType, $level, $maxDepth);
+
+                return new JsonResponse([
+                    'object' => $objectArray,
+                    'label' => $objectArray['label'] ?? ' ',
+                    'buttons' => $this->renderButtons($revision, $fieldType, $level, $maxDepth),
+                ]);
             }
         }
 
         return new JsonResponse(\array_filter([
-            'object' => $objectArray ?? null,
-            'label' => $objectArray['label'] ?? ' ',
             'html' => $this->renderView('@EMSCore/data/json-menu-nested.html.twig', [
                 'form' => $form->createView(),
                 'fieldType' => $fieldType,
             ]),
-            'buttons' => $buttons ?? null,
         ]));
     }
 

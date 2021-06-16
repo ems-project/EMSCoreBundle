@@ -55,11 +55,11 @@ class RestrictionOptionsType extends AbstractType
         $builder->add('json_nested_deny', ChoiceType::class, [
             'multiple' => true,
             'required' => false,
-            'choices' => array_map(fn (array $node) => $node['name'], $nodes),
+            'choices' => \array_map(fn (array $node) => $node['name'], $nodes),
             'block_prefix' => 'select2',
         ]);
 
-        if ($fieldType->getType() === JsonMenuNestedEditorFieldType::class) {
+        if (JsonMenuNestedEditorFieldType::class === $fieldType->getType()) {
             $builder->add('json_nested_max_depth', IntegerType::class);
         } else {
             $builder->add('json_nested_is_leaf', CheckboxType::class, ['required' => false]);

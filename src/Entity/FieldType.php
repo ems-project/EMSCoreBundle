@@ -394,7 +394,10 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return [];
     }
 
-    public function getRestrictionOptions()
+    /**
+     * @return array<mixed>
+     */
+    public function getRestrictionOptions(): array
     {
         $options = $this->getOptions();
         if (isset($options['restrictionOptions'])) {
@@ -404,7 +407,12 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return [];
     }
 
-    public function getRestrictionOption($key, $default = null)
+    /**
+     * @param mixed $default
+     *
+     * @return mixed
+     */
+    public function getRestrictionOption(string $key, $default = null)
     {
         $options = $this->getRestrictionOptions();
         if (isset($options[$key])) {
@@ -414,7 +422,12 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $default;
     }
 
-    public function getMigrationOption($key, $default = null)
+    /**
+     * @param mixed $default
+     *
+     * @return mixed
+     */
+    public function getMigrationOption(string $key, $default = null)
     {
         $options = $this->getMigrationOptions();
         if (isset($options[$key])) {
@@ -473,13 +486,13 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
 
     public function getJsonMenuNestedEditorFieldType(): ?FieldType
     {
-        if ($this->getType() === JsonMenuNestedEditorFieldType::class) {
+        if (JsonMenuNestedEditorFieldType::class === $this->getType()) {
             return $this;
         }
 
         $parent = $this->getParent();
 
-        if ($parent && $parent->getType() === JsonMenuNestedEditorFieldType::class) {
+        if ($parent && JsonMenuNestedEditorFieldType::class === $parent->getType()) {
             return $parent;
         }
 
@@ -512,7 +525,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
                 'name' => $child->getName(),
                 'label' => $child->getDisplayOption('label', $child->getName()),
                 'icon' => $child->getDisplayOption('icon', null),
-                'deny' => array_merge(['root'], $child->getRestrictionOption('json_nested_deny', [])),
+                'deny' => \array_merge(['root'], $child->getRestrictionOption('json_nested_deny', [])),
                 'is_leaf' => $child->getRestrictionOption('json_nested_is_leaf', false),
             ];
         }

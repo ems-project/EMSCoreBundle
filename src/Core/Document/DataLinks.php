@@ -38,7 +38,7 @@ final class DataLinks
         }
 
         foreach ($contentTypes as $contentType) {
-            $this->contentTypes[$contentType->getName()] = $contentType;
+            $this->addContentType($contentType);
         }
     }
 
@@ -131,5 +131,10 @@ final class DataLinks
             'incomplete_results' => $this->total !== \count($this->items),
             'items' => $this->items,
         ];
+    }
+
+    public function addContentType(ContentType $contentType): void
+    {
+        $this->contentTypes[$contentType->getName()] = $contentType;
     }
 }

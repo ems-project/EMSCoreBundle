@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Elasticsearch\Response\ResponseInterface;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Document\DataLinks;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Repository\QuerySearchRepository;
@@ -154,10 +156,25 @@ final class QuerySearchService implements EntityServiceInterface
         $query = \json_decode($query, true);
 
         $commonSearch = $this->elasticaService->convertElasticsearchBody($aliases, [], $query);
+        $commonSearch->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, EMSSource::FIELD_CONTENT_TYPE, 30);
         $commonSearch->setFrom($dataLinks->getFrom());
         $commonSearch->setSize($dataLinks->getSize());
+        $resultSet = $this->elasticaService->search($commonSearch);
 
-        return CommonResponse::fromResultSet($this->elasticaService->search($commonSearch));
+        foreach ($resultSet->getAggregation('types')['buckets'] ?? [] as $bucket) {
+            if (!\is_string($bucket['key'] ?? null)) {
+                continue;
+            }
+
+            $contentType = $this->contentTypeService->getByName($bucket['key']);
+            if (!$contentType instanceof ContentType) {
+                continue;
+            }
+
+            $dataLinks->addContentType($contentType);
+        }
+
+        return CommonResponse::fromResultSet($resultSet);
     }
 
     /**

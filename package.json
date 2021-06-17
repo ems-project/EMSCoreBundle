@@ -41,6 +41,7 @@
     "@babel/register": "^7.13.16",
     "babel-loader": "^8.2.2",
     "bootstrap-timepicker": "^0.5.2",
+    "chokidar": "^3.5.2",
     "copy-webpack-plugin": "^5.1.2",
     "css-loader": "^1.0.0",
     "file-loader": "^2.0.0",

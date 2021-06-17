@@ -180,11 +180,13 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
             ->add('query', CodeEditorType::class, ['required' => false, 'language' => 'ace/mode/json'])
         ;
 
-        $builder->get('options')->get('mappingOptions')
-            ->add('analyzer', AnalyzerPickerType::class)
-            ->add('copy_to', TextType::class, [
-                'required' => false,
-            ]);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')
+                ->add('analyzer', AnalyzerPickerType::class)
+                ->add('copy_to', TextType::class, [
+                    'required' => false,
+                ]);
+        }
     }
 
     /**

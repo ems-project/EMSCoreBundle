@@ -126,12 +126,13 @@ class FileAttachmentFieldType extends DataFieldType
         $optionsForm = $builder->get('options');
         //         $optionsForm->remove ( 'mappingOptions' );
 
-        // specific mapping options
-        $optionsForm->get('mappingOptions')
-        ->add('analyzer', AnalyzerPickerType::class)
-        ->add('copy_to', TextType::class, [
-                'required' => false,
-        ]);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')
+            ->add('analyzer', AnalyzerPickerType::class)
+            ->add('copy_to', TextType::class, [
+                    'required' => false,
+            ]);
+        }
 
         $optionsForm->get('displayOptions')
             ->add('icon', IconPickerType::class, [

@@ -288,14 +288,13 @@ class DateFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific display options
-        $optionsForm->get('mappingOptions')->add('format', TextType::class, [
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')->add('format', TextType::class, [
                 'required' => false,
                 'empty_data' => 'yyyy/MM/dd',
-                'attr' => [
-                        'placeholder' => 'i.e. yyyy/MM/dd',
-                ],
-        ]);
+                'attr' => ['placeholder' => 'i.e. yyyy/MM/dd'],
+            ]);
+        }
 
         // String specific display options
         $optionsForm->get('displayOptions')->add('displayFormat', TextType::class, [

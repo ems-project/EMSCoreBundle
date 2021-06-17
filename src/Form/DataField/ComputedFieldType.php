@@ -85,15 +85,19 @@ class ComputedFieldType extends DataFieldType
                 ],
         ]);
 
-        $optionsForm->get('mappingOptions')->remove('index')->remove('analyzer')->add('mappingOptions', TextareaType::class, [
-                'required' => false,
-                'attr' => [
-                    'rows' => 8,
-                ],
-        ])
-        ->add('copy_to', TextType::class, [
-                'required' => false,
-        ]);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm
+                ->get('mappingOptions')->remove('index')->remove('analyzer')->add('mappingOptions', TextareaType::class, [
+                    'required' => false,
+                    'attr' => [
+                        'rows' => 8,
+                    ],
+            ])
+            ->add('copy_to', TextType::class, [
+                    'required' => false,
+            ]);
+        }
+
         $optionsForm->remove('restrictionOptions');
         $optionsForm->remove('migrationOptions');
     }

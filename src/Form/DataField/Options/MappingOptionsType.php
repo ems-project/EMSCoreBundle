@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\DataField\Options;
 
+use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * It's a coumpound field for field specific mapping option.
+ * It's a compound field for field specific mapping option.
  * All options defined here are passed to
  * Elasticsearch as field mapping.
  *
@@ -16,18 +20,27 @@ use Symfony\Component\Form\FormBuilderInterface;
 class MappingOptionsType extends AbstractType
 {
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<mixed>                               $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('index', ChoiceType::class, [
-                'required' => false,
-                'choices' => [
-                        'Not defined' => null,
-                        'No' => 'no',
-                        'Analyzed' => 'analyzed',
-                        'Not Analyzed' => 'not_analyzed',
-                ],
+            'required' => false,
+            'choices' => [
+                'Not defined' => null,
+                'No' => 'no',
+                'Analyzed' => 'analyzed',
+                'Not Analyzed' => 'not_analyzed',
+            ],
         ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver
+            ->setRequired(['field_type'])
+            ->setAllowedTypes('field_type', FieldType::class)
+        ;
     }
 }

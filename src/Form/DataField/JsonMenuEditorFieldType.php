@@ -99,7 +99,10 @@ class JsonMenuEditorFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
+        }
+
         $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
             'required' => false,
         ])->add('maxDepth', IntegerType::class, [

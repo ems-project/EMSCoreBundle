@@ -845,86 +845,29 @@
 
 {% block json_menu_nested_editor_fieldtype_widget %}
 	{{  form_widget(form) }}
-	{%- set nodes = form.vars.nodes -%}
-	{% set addMenu %}
-		{% if nodes|length > 0 %}
-			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<span class="fa fa-plus"></span>
-				{{ 'field_type.json_menu_editor.add'|trans }}
-				<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu">
-				{% for node in nodes %}
-					<li>
-						<a type="button" class="json-menu-nested-add" data-action="add" data-node="{{ node|json_encode }}">
-							{%- if node.icon|default(false) -%}<i class="{{ node.icon }}"></i>{%- endif -%}
-							{{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': node.label}) }}
-						</a>
-					</li>
-				{% endfor %}
-			</ul>
-		{% endif %}
-	{% endset %}
+	{%- set level = 0 -%}
+	{%- set maxDepth = data.fieldType.restrictionOption('json_nested_max_depth', 0)  %}
+	{%- set rootDeny = [] %}
+	{%- for d in data.fieldType.restrictionOption('json_nested_deny', []) -%}{%- set rootDeny = rootDeny|merge([d]) -%}{%- endfor -%}
+	{%- set nodes = data.fieldType.getJsonMenuNestedEditorNodes -%}
 	<div class="json_menu_editor_fieldtype_widget collapsible-container"
-		 data-prototype-nested="{{ block('json_menu_editor_nested_node')|e('html_attr') }}">
+		 data-prototype-nested="{{ block('itemPrototype', '@EMSCore/form/fields/json_menu_nested_editor.html.twig')|e('html_attr') }}">
 		<div class="input-group">
 			<span class="input-group-btn">
-				{{ addMenu }}
+				{% with { nodes: nodes, currentNode: {'deny': rootDeny}, revision: revision, level: 0, maxDepth: maxDepth  } only %}
+					{{ block('button_add', '@EMSCore/form/fields/json_menu_nested_editor.html.twig') }}
+				{% endwith %}
 			</span>
 		</div>
-		<ol class="json_menu_sortable vertical not-collapsible">
+		<ol class="json_menu_sortable vertical not-collapsible" data-node="{{ {'name': 'root', 'deny': rootDeny}|json_encode }}">
 			{%- for child in form.vars.data.rawData|default('[]')|json_decode -%}
-				{% set node = attribute(nodes, child.type|default(''))|default([]) %}
-				{{ block('json_menu_editor_nested_node') }}
+				{% with { nodes: nodes, child: child, revision: revision, level: level, maxDepth: maxDepth } only %}
+					{{ block('item', '@EMSCore/form/fields/json_menu_nested_editor.html.twig') }}
+				{% endwith %}
 			{%- endfor -%}
 		</ol>
 	</div>
 {% endblock json_menu_nested_editor_fieldtype_widget %}
-
-{%- block json_menu_editor_nested_node -%}
-	<li id="{{ child.id|default('%uuid%') }}" class="collapsible-container nestedSortable mjs-nestedSortable"
-		data-label="{{ child.label|default('%label%') }}"
-		{% if child.object is defined %}data-object="{{ child.object|json_encode }}"{% endif %}
-		data-type="{{ child.type|default('%type%') }}">
-		<div class="nestedSortable clearfix">
-			<span>
-				<button style="display:none;" class="btn btn-default btn-sm button-collapse" role="button" aria-expanded="true"></button>
-			</span>
-			<span><i class="{{ node.icon|default('%icon%') }}"></i></span>
-			<span class="itemLabel">{{ child.label|default('%label%') }}</span>
-			<span class="pull-right">
-				<div class="btn-group btn-group-sm">
-					{{ addMenu }}
-					<button type="button" class="btn btn-primary json-menu-nested-edit"
-					   data-action="edit"
-					   {% if node is defined %}data-node="{{ node|json_encode }}"{% endif %}
-					   title="{{- 'field_type.json_menu_editor.edit'|trans -}}">
-						<i class="fa fa-pencil"></i>
-						<span class="">{{ 'field_type.json_menu_editor.edit'|trans }}</span>
-					</button>
-					<a type="button" class="btn btn-primary json_menu_sortable_handle_button"
-					   title="{{- 'field_type.json_menu_editor.move_item'|trans -}}">
-						<i class="fa fa-arrows"></i>
-						<span class="">{{ 'field_type.json_menu_editor.move_item'|trans }}</span>
-					</a>
-					<button type="button" class="btn btn-danger json_menu_sortable_remove_button"
-					   title="{{- 'field_type.json_menu_editor.delete_item'|trans -}}">
-						<i class="fa fa-trash"></i>
-						<span class="sr-only">{{- 'field_type.json_menu_editor.delete_item'|trans -}}</span>
-					</button>
-				</div>
-			</span>
-		</div>
-		{% if child is defined and child.children|default([])|length > 0 %}
-			<ol style="display:none;">
-				{%- for child in child.children -%}
-					{% set node = attribute(nodes, child.type|default(''))|default([]) %}
-					{{ block('json_menu_editor_nested_node') }}
-				{%- endfor -%}
-			</ol>
-		{% endif %}
-    </li>
-{%- endblock json_menu_editor_nested_node -%}
 
 {% block datefieldtype_row %}
 <div class="form-group">

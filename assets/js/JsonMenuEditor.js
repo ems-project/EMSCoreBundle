@@ -25,6 +25,17 @@ export default class JsonMenuEditor {
             toleranceElement: '> div',
             stop: function () {
                 self.relocate();
+            },
+            isAllowed: function(placeholder, parent, current) {
+                const item = $(current).data();
+                const parentData = parent ?  $(parent).data() : $(current).closest('ol.json_menu_sortable').data();
+
+                if (parentData.hasOwnProperty('node') && parentData.node.hasOwnProperty('deny')) {
+                    const deny = parentData.node.deny;
+                    return deny.indexOf(item.node.name) === -1;
+                }
+
+                return true;
             }
         });
 
@@ -90,7 +101,7 @@ export default class JsonMenuEditor {
             item.data('object', data.object);
         }
         if (data.hasOwnProperty('node')) {
-            item.find('.json-menu-nested-edit').data('node', data.node);
+            item.data('node', data.node);
         }
 
         let list = $target.closest('.nestedSortable').closest('li');
@@ -175,7 +186,8 @@ export default class JsonMenuEditor {
             self.$nestedModal.data('target', $target);
 
             let action = $target.data('action'); //add or edit
-            let node = $target.data('node');
+            let node = action === 'edit' ? $target.closest('li').data('node') : $target.data('node');
+
             let nodeIcon = node.icon ? `<i class="${node.icon}"></i>` : '';
             let prefixTitle = action === 'edit' ? 'Edit: ' : 'Add: ';
             $(this).find('.modal-title').html(`${nodeIcon} <span>${prefixTitle} ${node.label}</span>`);
@@ -193,7 +205,7 @@ export default class JsonMenuEditor {
         this.$nestedModal.on('click', '.btn-json-menu-nested-save', function () {
             let $target = self.$nestedModal.data('target');
             let action = $target.data('action');
-            let node = $target.data('node');
+            let node = action === 'edit' ? $target.closest('li').data('node') : $target.data('node');
 
             for (let i in CKEDITOR.instances) {
                 if(CKEDITOR.instances.hasOwnProperty(i)) { CKEDITOR.instances[i].updateElement(); }
@@ -215,6 +227,7 @@ export default class JsonMenuEditor {
                         'type': node.name,
                         'object': response.object,
                         'node': node,
+                        'buttons': response.buttons,
                     });
                 } else if (action === 'edit') {
                     $target.closest('li').data('label', response.label).data('object', response.object);

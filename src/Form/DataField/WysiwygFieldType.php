@@ -194,12 +194,11 @@ class WysiwygFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific mapping options
-        $optionsForm->get('mappingOptions')
-        ->add('analyzer', AnalyzerPickerType::class)
-        ->add('copy_to', TextType::class, [
-                'required' => false,
-        ]);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')
+                ->add('analyzer', AnalyzerPickerType::class)
+                ->add('copy_to', TextType::class, ['required' => false]);
+        }
         $optionsForm->get('displayOptions')
             ->add('language', ChoiceType::class, [
                 'required' => false,

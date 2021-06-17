@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -393,7 +394,10 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return [];
     }
 
-    public function getRestrictionOptions()
+    /**
+     * @return array<mixed>
+     */
+    public function getRestrictionOptions(): array
     {
         $options = $this->getOptions();
         if (isset($options['restrictionOptions'])) {
@@ -403,7 +407,27 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return [];
     }
 
-    public function getMigrationgOption($key, $default = null)
+    /**
+     * @param mixed $default
+     *
+     * @return mixed
+     */
+    public function getRestrictionOption(string $key, $default = null)
+    {
+        $options = $this->getRestrictionOptions();
+        if (isset($options[$key])) {
+            return $options[$key];
+        }
+
+        return $default;
+    }
+
+    /**
+     * @param mixed $default
+     *
+     * @return mixed
+     */
+    public function getMigrationOption(string $key, $default = null)
     {
         $options = $this->getMigrationOptions();
         if (isset($options[$key])) {
@@ -460,21 +484,72 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $valid;
     }
 
-    /**
-     * @return iterable|FieldType[]
-     */
-    public function getJsonMenuNestedNodeChildren(): iterable
+    public function isJsonMenuNestedEditor(): bool
     {
-        foreach ($this->children as $child) {
-            /** @var FieldType $child */
-            $type = $child->getType();
+        return JsonMenuNestedEditorFieldType::class === $this->getType();
+    }
 
-            if ($child->getDeleted() || !$type::isContainer()) {
+    public function isJsonMenuNestedEditorNode(): bool
+    {
+        $parent = $this->getParent();
+
+        return $parent && JsonMenuNestedEditorFieldType::class === $parent->getType();
+    }
+
+    public function isJsonMenuNestedEditorField(): bool
+    {
+        if ($this->isJsonMenuNestedEditor()) {
+            return true;
+        }
+
+        if (null !== $parent = $this->getParent()) {
+            return $parent->isJsonMenuNestedEditorField();
+        }
+
+        return false;
+    }
+
+    public function getJsonMenuNestedEditor(): ?FieldType
+    {
+        if ($this->isJsonMenuNestedEditor()) {
+            return $this;
+        }
+
+        if ($this->isJsonMenuNestedEditorNode()) {
+            return $this->getParent();
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function getJsonMenuNestedEditorNodes(): array
+    {
+        $nodes = [];
+
+        if (null === $jsonMenuNestedEditor = $this->getJsonMenuNestedEditor()) {
+            return $nodes;
+        }
+
+        foreach ($jsonMenuNestedEditor->children as $child) {
+            if ($child->getDeleted() || !$child->getType()::isContainer()) {
                 continue;
             }
 
-            yield $child;
+            $nodes[$child->getName()] = [
+                'id' => $child->getId(),
+                'name' => $child->getName(),
+                'minimumRole' => $child->getRestrictionOption('minimum_role', null),
+                'label' => $child->getDisplayOption('label', $child->getName()),
+                'icon' => $child->getDisplayOption('icon', null),
+                'deny' => \array_merge(['root'], $child->getRestrictionOption('json_nested_deny', [])),
+                'isLeaf' => $child->getRestrictionOption('json_nested_is_leaf', false),
+            ];
         }
+
+        return $nodes;
     }
 
     /**
@@ -630,7 +705,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      *
      * @return \EMS\CoreBundle\Entity\FieldType
      */
-    public function getParent()
+    public function getParent(): ?FieldType
     {
         return $this->parent;
     }

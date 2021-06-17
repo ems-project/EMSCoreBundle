@@ -6,11 +6,11 @@ namespace EMS\CoreBundle\Controller\Revision;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ObjectRepository;
-use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Exception\NotFoundException;
 use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
@@ -21,20 +21,26 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Environment;
 
 class JsonMenuNestedController extends AbstractController
 {
-    /** @var RevisionService */
-    private $revisionService;
+    private RevisionService $revisionService;
     /** @var ObjectRepository|FieldTypeRepository */
     private $fieldTypeRepository;
     private DataService $dataService;
+    private Environment $templating;
 
-    public function __construct(RevisionService $revisionService, Registry $doctrine, DataService $dataService)
-    {
+    public function __construct(
+        RevisionService $revisionService,
+        Registry $doctrine,
+        DataService $dataService,
+        Environment $templating
+    ) {
         $this->revisionService = $revisionService;
         $this->dataService = $dataService;
         $this->fieldTypeRepository = $doctrine->getRepository(FieldType::class);
+        $this->templating = $templating;
     }
 
     /**
@@ -85,9 +91,9 @@ class JsonMenuNestedController extends AbstractController
     }
 
     /**
-     * @Route("/data/draft/edit/{revisionId}/nested-modal/{fieldTypeId}", name="revision.edit.nested-modal", methods={"POST"})
+     * @Route("/data/draft/edit/{revisionId}/nested-modal/{fieldTypeId}/{parentLevel}", name="revision.edit.nested-modal", methods={"POST"})
      */
-    public function modal(Request $request, int $revisionId, int $fieldTypeId): JsonResponse
+    public function modal(Request $request, int $revisionId, int $fieldTypeId, int $parentLevel): JsonResponse
     {
         if (null === $revision = $this->revisionService->find($revisionId)) {
             throw new NotFoundHttpException('Unknown revision');
@@ -97,6 +103,16 @@ class JsonMenuNestedController extends AbstractController
 
         if (null === $fieldType || !$fieldType instanceof FieldType) {
             throw new NotFoundException('Unknown fieldtype');
+        }
+
+        if (null === $jsonMenuNestedEditor = $fieldType->getJsonMenuNestedEditor()) {
+            throw new NotFoundException('Json menu editor field type');
+        }
+
+        $level = $parentLevel + 1;
+        $maxDepth = $jsonMenuNestedEditor->getRestrictionOption('json_nested_max_depth', 0);
+        if ($maxDepth > 0 && $level > $maxDepth) {
+            throw new \RuntimeException(\sprintf('Max depth is %d', $maxDepth));
         }
 
         $label = null;
@@ -124,16 +140,34 @@ class JsonMenuNestedController extends AbstractController
 
             if ($isValid && $form->isValid()) {
                 $this->dataService->getPostProcessing()->jsonMenuNested($formDataField, $revision->giveContentType(), $objectArray);
+
+                return new JsonResponse([
+                    'object' => $objectArray,
+                    'label' => $objectArray['label'] ?? ' ',
+                    'buttons' => $this->renderButtons($revision, $fieldType, $level, $maxDepth),
+                ]);
             }
         }
 
         return new JsonResponse(\array_filter([
-            'object' => $objectArray ?? null,
-            'label' => $objectArray['label'] ?? ' ',
             'html' => $this->renderView('@EMSCore/data/json-menu-nested.html.twig', [
                 'form' => $form->createView(),
                 'fieldType' => $fieldType,
             ]),
         ]));
+    }
+
+    private function renderButtons(Revision $revision, FieldType $fieldType, int $level, int $maxDepth): string
+    {
+        $editorNodes = $fieldType->getJsonMenuNestedEditorNodes();
+        $editorTemplate = $this->templating->load('@EMSCore/form/fields/json_menu_nested_editor.html.twig');
+
+        return $editorTemplate->renderBlock('itemButtons', [
+            'revision' => $revision,
+            'nodes' => $editorNodes,
+            'currentNode' => $editorNodes[$fieldType->getName()],
+            'level' => $level,
+            'maxDepth' => $maxDepth,
+        ]);
     }
 }

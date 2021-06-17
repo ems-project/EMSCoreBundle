@@ -88,14 +88,13 @@ class PasswordFieldType extends DataFieldType
                 'empty_data' => 'sha1',
         ]);
 
-        // String specific mapping options
-        $optionsForm->get('mappingOptions')->add('index', ChoiceType::class, [
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')->add('index', ChoiceType::class, [
                 'required' => false,
-                'choices' => [
-                    'No' => 'no',
-                ],
+                'choices' => ['No' => 'no'],
                 'empty_data' => 'no',
-        ]);
+            ]);
+        }
     }
 
     /**

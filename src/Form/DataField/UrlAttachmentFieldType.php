@@ -142,12 +142,13 @@ class UrlAttachmentFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // specific mapping options
-        $optionsForm->get('mappingOptions')
-        ->add('analyzer', AnalyzerPickerType::class)
-        ->add('copy_to', TextType::class, [
-                'required' => false,
-        ]);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')
+            ->add('analyzer', AnalyzerPickerType::class)
+            ->add('copy_to', TextType::class, [
+                    'required' => false,
+            ]);
+        }
 
         $optionsForm->get('displayOptions')
         ->add('icon', IconPickerType::class, [

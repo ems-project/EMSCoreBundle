@@ -60,11 +60,12 @@ class CopyToFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific mapping options
-        $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
-        $optionsForm->get('mappingOptions')->add('store', CheckboxType::class, [
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
+            $optionsForm->get('mappingOptions')->add('store', CheckboxType::class, [
                 'required' => false,
-        ]);
+            ]);
+        }
         $optionsForm->remove('restrictionOptions');
         $optionsForm->remove('migrationOptions');
         $optionsForm->remove('extraOptions');

@@ -122,15 +122,15 @@ final class QuerySearchService implements EntityServiceInterface
 
     public function searchAndGetDatalinks(Request $request): JsonResponse
     {
-        $commonSearchResponse = $this->commonSearch($request);
-
         $dataLinks = new DataLinks($request);
+        $commonSearchResponse = $this->commonSearch($request, $dataLinks);
+
         $dataLinks->addSearchResponse($commonSearchResponse);
 
         return new JsonResponse($dataLinks->toArray());
     }
 
-    private function commonSearch(Request $request): ResponseInterface
+    private function commonSearch(Request $request, DataLinks $dataLinks): ResponseInterface
     {
         $querySearchName = $request->query->get('querySearch', null);
         $querySearch = $this->getOneByName($querySearchName);
@@ -138,10 +138,25 @@ final class QuerySearchService implements EntityServiceInterface
             throw new \RuntimeException(\sprintf('QuerySearch %s not found', $querySearchName));
         }
 
+        $query = $querySearch->getOptions()['query'] ?? null;
+        if (!\is_string($query)) {
+            throw new \RuntimeException('Query search not defined');
+        }
+
+        $encodedPattern = \json_encode($dataLinks->getPattern());
+        if (!\is_string($encodedPattern)) {
+            throw new \RuntimeException(\sprintf('String %s can\'t be JSON encoded', $encodedPattern));
+        }
+
+        $encodedPattern = \substr($encodedPattern, 1, \strlen($encodedPattern) - 2);
+        $query = \str_replace(['%query%'], [$encodedPattern], $query);
+
         $aliases = $this->getAliasesFromEnvironments($querySearch->getEnvironments());
-        $query = \json_decode($querySearch->getOptions()['query'], true);
+        $query = \json_decode($query, true);
 
         $commonSearch = $this->elasticaService->convertElasticsearchBody($aliases, [], $query);
+        $commonSearch->setFrom($dataLinks->getFrom());
+        $commonSearch->setSize($dataLinks->getSize());
 
         return CommonResponse::fromResultSet($this->elasticaService->search($commonSearch));
     }

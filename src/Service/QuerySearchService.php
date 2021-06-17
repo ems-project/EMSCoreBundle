@@ -120,19 +120,18 @@ final class QuerySearchService implements EntityServiceInterface
         return $this->querySearchRepository->counter();
     }
 
-    public function searchAndGetDatalinks(Request $request): JsonResponse
+    public function searchAndGetDatalinks(Request $request, string $querySearchName): JsonResponse
     {
         $dataLinks = new DataLinks($request);
-        $commonSearchResponse = $this->commonSearch($request, $dataLinks);
+        $commonSearchResponse = $this->commonSearch($querySearchName, $dataLinks);
 
         $dataLinks->addSearchResponse($commonSearchResponse);
 
         return new JsonResponse($dataLinks->toArray());
     }
 
-    private function commonSearch(Request $request, DataLinks $dataLinks): ResponseInterface
+    private function commonSearch(string $querySearchName, DataLinks $dataLinks): ResponseInterface
     {
-        $querySearchName = $request->query->get('querySearch', null);
         $querySearch = $this->getOneByName($querySearchName);
         if (!$querySearch instanceof QuerySearch) {
             throw new \RuntimeException(\sprintf('QuerySearch %s not found', $querySearchName));

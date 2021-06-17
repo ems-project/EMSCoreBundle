@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Common\Standard\Json;
+use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Elasticsearch\Response\ResponseInterface;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Document\DataLinks;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Repository\QuerySearchRepository;
@@ -120,30 +123,55 @@ final class QuerySearchService implements EntityServiceInterface
         return $this->querySearchRepository->counter();
     }
 
-    public function searchAndGetDatalinks(Request $request): JsonResponse
+    public function searchAndGetDatalinks(Request $request, string $querySearchName): JsonResponse
     {
-        $commonSearchResponse = $this->commonSearch($request);
-
         $dataLinks = new DataLinks($request);
+        $commonSearchResponse = $this->commonSearch($querySearchName, $dataLinks);
+
         $dataLinks->addSearchResponse($commonSearchResponse);
 
         return new JsonResponse($dataLinks->toArray());
     }
 
-    private function commonSearch(Request $request): ResponseInterface
+    private function commonSearch(string $querySearchName, DataLinks $dataLinks): ResponseInterface
     {
-        $querySearchName = $request->query->get('querySearch', null);
         $querySearch = $this->getOneByName($querySearchName);
         if (!$querySearch instanceof QuerySearch) {
             throw new \RuntimeException(\sprintf('QuerySearch %s not found', $querySearchName));
         }
 
+        $query = $querySearch->getOptions()['query'] ?? null;
+        if (!\is_string($query)) {
+            throw new \RuntimeException('Query search not defined');
+        }
+
+        $encodedPattern = Json::encode($dataLinks->getPattern());
+        $encodedPattern = \substr($encodedPattern, 1, \strlen($encodedPattern) - 2);
+        $query = \str_replace(['%query%'], [$encodedPattern], $query);
+
         $aliases = $this->getAliasesFromEnvironments($querySearch->getEnvironments());
-        $query = \json_decode($querySearch->getOptions()['query'], true);
+        $query = Json::decode($query);
 
         $commonSearch = $this->elasticaService->convertElasticsearchBody($aliases, [], $query);
+        $commonSearch->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, EMSSource::FIELD_CONTENT_TYPE, 30);
+        $commonSearch->setFrom($dataLinks->getFrom());
+        $commonSearch->setSize($dataLinks->getSize());
+        $resultSet = $this->elasticaService->search($commonSearch);
 
-        return CommonResponse::fromResultSet($this->elasticaService->search($commonSearch));
+        foreach ($resultSet->getAggregation('types')['buckets'] ?? [] as $bucket) {
+            if (!\is_string($bucket['key'] ?? null)) {
+                continue;
+            }
+
+            $contentType = $this->contentTypeService->getByName($bucket['key']);
+            if (!$contentType instanceof ContentType) {
+                continue;
+            }
+
+            $dataLinks->addContentType($contentType);
+        }
+
+        return CommonResponse::fromResultSet($resultSet);
     }
 
     /**

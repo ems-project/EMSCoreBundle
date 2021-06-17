@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Elasticsearch\Response\ResponseInterface;
@@ -144,16 +145,12 @@ final class QuerySearchService implements EntityServiceInterface
             throw new \RuntimeException('Query search not defined');
         }
 
-        $encodedPattern = \json_encode($dataLinks->getPattern());
-        if (!\is_string($encodedPattern)) {
-            throw new \RuntimeException(\sprintf('String %s can\'t be JSON encoded', $encodedPattern));
-        }
-
+        $encodedPattern = Json::encode($dataLinks->getPattern());
         $encodedPattern = \substr($encodedPattern, 1, \strlen($encodedPattern) - 2);
         $query = \str_replace(['%query%'], [$encodedPattern], $query);
 
         $aliases = $this->getAliasesFromEnvironments($querySearch->getEnvironments());
-        $query = \json_decode($query, true);
+        $query = Json::decode($query);
 
         $commonSearch = $this->elasticaService->convertElasticsearchBody($aliases, [], $query);
         $commonSearch->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, EMSSource::FIELD_CONTENT_TYPE, 30);

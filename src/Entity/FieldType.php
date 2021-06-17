@@ -541,6 +541,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
             $nodes[$child->getName()] = [
                 'id' => $child->getId(),
                 'name' => $child->getName(),
+                'minimumRole' => $child->getRestrictionOption('minimum_role', null),
                 'label' => $child->getDisplayOption('label', $child->getName()),
                 'icon' => $child->getDisplayOption('icon', null),
                 'deny' => \array_merge(['root'], $child->getRestrictionOption('json_nested_deny', [])),

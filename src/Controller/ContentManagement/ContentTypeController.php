@@ -610,7 +610,9 @@ class ContentTypeController extends AppController
                 if ($this->isValidName($formArray['ems:internal:add:subfield:target_name'])) {
                     $new = clone $fieldType;
                     $new->setName($formArray['ems:internal:add:subfield:target_name']);
-                    $new->getParent()->addChild($new);
+                    if ($parent = $new->getParent()) {
+                        $parent->addChild($new);
+                    }
 
                     $logger->notice('log.contenttype.field.added', [
                         'field_name' => $formArray['ems:internal:add:subfield:target_name'],

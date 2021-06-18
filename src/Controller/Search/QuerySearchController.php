@@ -51,7 +51,7 @@ final class QuerySearchController extends AbstractController
     {
         $querySearchName = $request->query->get('querySearch', null);
         if (\is_string($querySearchName) && '' !== $querySearchName) {
-            return $this->querySearchService->searchAndGetDatalinks($request);
+            return $this->querySearchService->searchAndGetDatalinks($request, $querySearchName);
         }
 
         return $this->elasticsearchController->deprecatedSearchApiAction($request, $this->logger, $this->searchService, $this->elasticaService, $this->contentTypeService, $this->authorizationChecker, $this->viewTypes);

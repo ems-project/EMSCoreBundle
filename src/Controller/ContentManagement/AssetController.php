@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\ClientHelperBundle\Controller\AssetController as EmschAssetController;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CommonBundle\Storage\Processor\Config;
@@ -10,6 +9,7 @@ use EMS\CommonBundle\Storage\Processor\Processor;
 use EMS\CoreBundle\Repository\ChannelRepository;
 use EMS\CoreBundle\Service\Channel\ChannelRegistrar;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,18 +18,16 @@ class AssetController extends AbstractController
 {
     private Processor $processor;
     private ChannelRepository $channelRepository;
-    private EmschAssetController $emschAssetController;
     /** @var array<string, mixed> */
     protected array $assetConfig;
 
     /**
      * @param array<string, mixed> $assetConfig
      */
-    public function __construct(Processor $processor, ChannelRepository $channelRepository, EmschAssetController $emschAssetController, array $assetConfig)
+    public function __construct(Processor $processor, ChannelRepository $channelRepository, array $assetConfig)
     {
         $this->processor = $processor;
         $this->channelRepository = $channelRepository;
-        $this->emschAssetController = $emschAssetController;
         $this->assetConfig = $assetConfig;
     }
 
@@ -71,6 +69,7 @@ class AssetController extends AbstractController
 
     public function proxyAssetForChannel(Request $request, string $requestPath): Response
     {
+        $this->closeSession($request);
         $referer = $request->headers->get('Referer', null);
         if (!\is_string($referer)) {
             throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));
@@ -93,16 +92,6 @@ class AssetController extends AbstractController
 
         $refererPathInfo = \substr($refererPath, \strlen($baseUrl));
 
-        if (\preg_match('/^(\\/index\\.php)?\\/bundles\\/(?P<assetsBundles>([a-z\\-0-9_]+))(\\/)?/', $refererPathInfo)) {
-            $alias = $this->getLastAliasFromAssetReferer($request, $refererPathInfo);
-
-            if (\is_string($alias)) {
-                return $this->emschAssetController->proxyToEnvironmentAlias($requestPath, $alias);
-            }
-
-            throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));
-        }
-
         \preg_match(ChannelRegistrar::EMSCO_CHANNEL_PATH_REGEX, $refererPathInfo, $matches);
         if (null === $channelName = $matches['channel'] ?? null) {
             throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));
@@ -119,9 +108,22 @@ class AssetController extends AbstractController
             throw new NotFoundHttpException(\sprintf('Alias for channel %s not found', $channelName));
         }
 
-        $this->saveLastAliasForAssetPath($request, $alias);
+        if (\preg_match('/\/index\.php$/', $baseUrl, $matches)) {
+            $baseUrl = \substr($baseUrl, 0, \strlen($baseUrl) - 10);
+        }
+        $slugs = [
+            $baseUrl,
+            'bundles',
+            $alias,
+            $requestPath,
+        ];
 
-        return $this->emschAssetController->proxyToEnvironmentAlias($requestPath, $alias);
+        $url = \sprintf('%s?%s', \implode('/', $slugs), $request->getQueryString());
+        $response = new RedirectResponse($url, 302);
+        $response->setMaxAge(0);
+        $response->mustRevalidate();
+
+        return $response;
     }
 
     private function closeSession(Request $request): void
@@ -134,15 +136,5 @@ class AssetController extends AbstractController
         if ($session->isStarted()) {
             $session->save();
         }
-    }
-
-    private function saveLastAliasForAssetPath(Request $request, string $alias): void
-    {
-        $request->getSession()->set(\sprintf('EMS_ASSETS_REFERER_%s', $request->getPathInfo()), $alias);
-    }
-
-    private function getLastAliasFromAssetReferer(Request $request, string $referer): ?string
-    {
-        return $request->getSession()->get(\sprintf('EMS_ASSETS_REFERER_%s', $referer), null);
     }
 }

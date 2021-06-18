@@ -46,12 +46,11 @@ class SubfieldType extends DataFieldType
         $optionsForm = $builder->get('options');
         $optionsForm->remove('displayOptions')->remove('migrationOptions')->remove('restrictionOptions');
 
-        // String specific mapping options
-        $optionsForm->get('mappingOptions')
-            ->add('analyzer', AnalyzerPickerType::class)
-            ->add('fielddata', CheckboxType::class, [
-                    'required' => false,
-            ]);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')
+                ->add('analyzer', AnalyzerPickerType::class)
+                ->add('fielddata', CheckboxType::class, ['required' => false]);
+        }
     }
 
     /**

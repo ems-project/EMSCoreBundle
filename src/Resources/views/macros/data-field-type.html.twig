@@ -740,8 +740,8 @@
 
 {% block EMS_CoreBundle_Form_DataField_JsonMenuNestedEditorFieldType %}
 	{% set nestedIcons = [] %}
-	{% for node in dataField.fieldType.getJsonMenuNestedNodeChildren() %}
-		{% set nestedIcons = nestedIcons|merge({ (node.name) : node.displayOption('icon') }) %}
+	{% for node in dataField.fieldType.getJsonMenuNestedEditorNodes() %}
+		{% set nestedIcons = nestedIcons|merge({ (node.name) : node.icon }) %}
 	{% endfor %}
 	{% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
 	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}

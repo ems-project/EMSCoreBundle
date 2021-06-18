@@ -105,8 +105,9 @@ class SelectFieldType extends DataFieldType
                 'required' => false,
         ]);
 
-        // String specific mapping options
-        $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
+        }
     }
 
     /**

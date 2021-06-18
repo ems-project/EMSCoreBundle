@@ -168,12 +168,15 @@ class JSONFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        $optionsForm->get('mappingOptions')->remove('index')->remove('analyzer')->add('mappingOptions', TextareaType::class, [
-                'required' => false,
-                'attr' => [
-                    'rows' => 8,
-                ],
-        ]);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')->remove('index')->remove('analyzer')->add('mappingOptions', TextareaType::class, [
+                    'required' => false,
+                    'attr' => [
+                        'rows' => 8,
+                    ],
+            ]);
+        }
+
         $optionsForm->get('displayOptions')->add('rows', IntegerType::class, [
                 'required' => false,
         ]);

@@ -194,14 +194,15 @@ class TimeFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific display options
-        $optionsForm->get('mappingOptions')->add('format', TextType::class, [
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')->add('format', TextType::class, [
                 'required' => false,
                 'empty_data' => 'HH:mm:ss',
                 'attr' => [
                     'placeholder' => 'i.e. HH:mm:ss',
                 ],
-        ]);
+            ]);
+        }
 
         $optionsForm->get('displayOptions')->add('minuteStep', IntegerType::class, [
                 'required' => false,

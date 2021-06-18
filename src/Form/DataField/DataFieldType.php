@@ -186,7 +186,7 @@ abstract class DataFieldType extends AbstractType
             return true;
         }
 
-        $enable = ($options['migration'] && !$fieldType->getMigrationgOption('protected', true)) || $this->authorizationChecker->isGranted($fieldType->getMinimumRole());
+        $enable = ($options['migration'] && !$fieldType->getMigrationOption('protected', true)) || $this->authorizationChecker->isGranted($fieldType->getMinimumRole());
 
         return !$enable;
     }

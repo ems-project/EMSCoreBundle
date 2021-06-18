@@ -166,12 +166,14 @@ class CollectionFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        $optionsForm->get('mappingOptions')
-            ->add('renumbering', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Items will be renumbered',
-            ])
-            ->remove('index');
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')
+                ->add('renumbering', CheckboxType::class, [
+                    'required' => false,
+                    'label' => 'Items will be renumbered',
+                ])
+                ->remove('index');
+        }
 
         // an optional icon can't be specified ritgh to the container label
         $optionsForm->get('displayOptions')->add('singularLabel', TextType::class, [

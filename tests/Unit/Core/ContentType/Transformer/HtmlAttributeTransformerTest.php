@@ -4,25 +4,14 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Tests\Unit\Core\ContentType\Transformer;
 
+use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformerInterface;
 use EMS\CoreBundle\Core\ContentType\Transformer\HtmlAttributeTransformer;
-use EMS\CoreBundle\Core\ContentType\Transformer\TransformContext;
-use PHPUnit\Framework\TestCase;
 
-class HtmlAttributeTransformerTest extends TestCase
+class HtmlAttributeTransformerTest extends AbstractTransformerTest
 {
-    private HtmlAttributeTransformer $transformer;
-
-    protected function setUp(): void
+    protected function getTransformer(): ContentTransformerInterface
     {
-        $this->transformer = new HtmlAttributeTransformer();
-    }
-
-    private function assertEqualsInputOutPut(string $input, string $output, array $options): void
-    {
-        $context = new TransformContext($input, $options);
-        $this->transformer->transform($context);
-
-        $this->assertSame($output, $context->getTransformed());
+        return new HtmlAttributeTransformer();
     }
 
     public function testRemoveOneClass(): void

@@ -49,14 +49,16 @@ final class ContentTransformer
 
             foreach ($definedTransformers as $definition) {
                 $transformer = $this->transformers->get($definition['class']);
+                $config = $definition['config'] ?? '';
+
                 if (!$transformer->supports($fieldType->getType())) {
                     continue;
                 }
 
                 $transformerDefinitions[$fieldType->getName()][] = [
                     'transformer' => $transformer,
-                    'config' => $definition['config'],
-                    'valid_config' => $transformer->validateConfig($definition['config']),
+                    'config' => $config,
+                    'valid_config' => $transformer->validateConfig($config),
                 ];
             }
         }
@@ -137,7 +139,7 @@ final class ContentTransformer
         foreach ($transformerDefinitions as $definition) {
             /** @var ContentTransformerInterface $transformer */
             $transformer = $definition['transformer'];
-            $context = new TransformContext($value, Json::decode($definition['config']));
+            $context = new TransformContext($value, Json::decode($definition['config'] ?? '{}'));
             $transformer->transform($context);
 
             if ($context->isTransformed()) {

@@ -609,7 +609,7 @@ form:
     channel:
       name: 'Name'
       alias: 'Alias'
-      public: 'Does this channel can be available to non-authenticated users ?'
+      public: 'Make channel available for non-authenticated users ?'
       label: 'Label'
     query_search:
       name: 'Name'

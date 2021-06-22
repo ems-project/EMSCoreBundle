@@ -9,7 +9,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractTransformer implements ContentTransformerInterface
 {
-    abstract protected function configureOptions(OptionsResolver $resolver): void;
+    protected function configureOptions(OptionsResolver $resolver): void
+    {
+    }
 
     public function validateConfig(string $config): ?string
     {

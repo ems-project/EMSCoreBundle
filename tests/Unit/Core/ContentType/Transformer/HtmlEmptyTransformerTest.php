@@ -20,7 +20,7 @@ final class HtmlEmptyTransformerTest extends AbstractTransformerTest
 <p style="text-align: justify;"> </p> <div class="readMoreContent" style="text-align: justify;"> </div> <p> </p>
 HTML;
 
-        $this->assertEqualsInputOutPut($input, null);
+        $this->assertEqualsInputOutPut($input, '');
     }
 
     public function testRemoveEmptyWithEntities(): void
@@ -32,7 +32,7 @@ HTML;
         </div>
  HTML;
 
-        $this->assertEqualsInputOutPut($input, null);
+        $this->assertEqualsInputOutPut($input, '');
     }
 
     public function testRemoveSpaces(): void
@@ -44,7 +44,7 @@ HTML;
                 &nbsp;
  HTML;
 
-        $this->assertEqualsInputOutPut($input, null);
+        $this->assertEqualsInputOutPut($input, '');
     }
 
     public function testRemoveHtml(): void
@@ -58,7 +58,7 @@ HTML;
 </html>
 HTML;
 
-        $this->assertEqualsInputOutPut($input, null);
+        $this->assertEqualsInputOutPut($input, '');
     }
 
     public function testKeepNotEmpty(): void

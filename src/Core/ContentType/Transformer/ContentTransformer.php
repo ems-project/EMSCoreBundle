@@ -49,7 +49,7 @@ final class ContentTransformer
 
             foreach ($definedTransformers as $definition) {
                 $transformer = $this->transformers->get($definition['class']);
-                $config = $definition['config'] ?? '';
+                $config = $definition['config'] ?? '{}';
 
                 if (!$transformer->supports($fieldType->getType())) {
                     continue;

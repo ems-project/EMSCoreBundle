@@ -6,7 +6,7 @@ When running the transform command these transformers will be applied.
 Name | description 
 --- | ---
 [Html Attribute Transformer](#html-attribute-transformer) | Remove html attribute or remove attribute values.
-[Html Empty Transformer](#html-empty-transformer) | Clean empty html coent
+[Html Empty Transformer](#html-empty-transformer) | Clean empty html content
 
 ## Html Attribute Transformer
 Only available for WYSIWYG field types.

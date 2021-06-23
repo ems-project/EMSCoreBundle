@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Form\Form;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
-use EMS\CoreBundle\Form\Field\Select2Type;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

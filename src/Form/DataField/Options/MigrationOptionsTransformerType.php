@@ -21,7 +21,7 @@ final class MigrationOptionsTransformerType extends AbstractType
         $builder->add('class', ChoiceType::class, [
             'choices' => $options['transformers'],
         ]);
-        $builder->add('config', TextType::class);
+        $builder->add('config', TextType::class, ['required' => false]);
     }
 
     public function getBlockPrefix(): string

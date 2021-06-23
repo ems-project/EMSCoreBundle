@@ -6,14 +6,15 @@ When running the transform command these transformers will be applied.
 Name | description 
 --- | ---
 [Html Attribute Transformer](#html-attribute-transformer) | Remove html attribute or remove attribute values.
+[Html Empty Transformer](#html-empty-transformer) | Clean empty html content
 
 ## Html Attribute Transformer
 Only available for WYSIWYG field types.
 ### Config
-* **--attribute** : required, which attribute you want to transform
-* **--element** : default (*), which html element
-* **--remove** : default (false), remove the attribute
-* **--remove_value_prefix** : default (null), remove all values starting by from **class** or **style** attributes.
+* **attribute** : required, which attribute you want to transform
+* **element** : default (*), which html element
+* **remove** : default (false), remove the attribute
+* **remove_value_prefix** : default (null), remove all values starting by from **class** or **style** attributes.
 
 ### Examples
 > Remove all style attributes for all table elements
@@ -33,8 +34,18 @@ Only available for WYSIWYG field types.
 {"attribute": "class", "element": "div", "remove_value_prefix": "font-"}
 ```
 
+## Html Empty Transformer
+Clean content without textual content
+### Config
+> No config required
 
-
+Example transformer to null
+```html
+<p style="text-align: justify;"> </p> <div class="example" style="text-align: justify;"> </div> <p> </p>
+```
+```html
+<html><body><h1>            </h1><p>&nbsp;       </p></body>        </html>
+```
 
 
 

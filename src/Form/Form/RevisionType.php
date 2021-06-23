@@ -5,9 +5,9 @@ namespace EMS\CoreBundle\Form\Form;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
-use EMS\CoreBundle\Form\Field\Select2Type;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -110,7 +110,7 @@ class RevisionType extends AbstractType
 
             if (null !== $environment && null !== $contentType && $contentType->hasVersionTags()) {
                 $builder
-                    ->add('publish_version_tags', Select2Type::class, [
+                    ->add('publish_version_tags', ChoiceType::class, [
                         'placeholder' => $revision->getOuuid() ? 'Silent' : null,
                         'choices' => \array_combine($contentType->getVersionTags(), $contentType->getVersionTags()),
                         'mapped' => false,

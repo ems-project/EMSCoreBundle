@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\ContentType\Transformer;
 
-use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class HtmlAttributeTransformer implements ContentTransformerInterface
+final class HtmlAttributeTransformer extends AbstractTransformer
 {
     public function getName(): string
     {
@@ -19,18 +18,6 @@ final class HtmlAttributeTransformer implements ContentTransformerInterface
     public function supports(string $class): bool
     {
         return WysiwygFieldType::class === $class;
-    }
-
-    public function validateConfig(string $config): ?string
-    {
-        try {
-            $options = Json::decode($config);
-            $this->resolveOptions($options);
-
-            return null;
-        } catch (\Throwable $e) {
-            return $e->getMessage();
-        }
     }
 
     public function transform(TransformContext $context): void
@@ -184,14 +171,8 @@ final class HtmlAttributeTransformer implements ContentTransformerInterface
         }
     }
 
-    /**
-     * @param array<mixed> $options
-     *
-     * @return array<mixed>
-     */
-    private function resolveOptions(array $options): array
+    protected function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver = new OptionsResolver();
         $resolver
             ->setRequired(['attribute'])
             ->setDefaults([
@@ -200,7 +181,5 @@ final class HtmlAttributeTransformer implements ContentTransformerInterface
                 'remove' => false,
             ])
         ;
-
-        return $resolver->resolve($options);
     }
 }

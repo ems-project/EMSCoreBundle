@@ -48,11 +48,11 @@
 {% endblock %}
 
 {% block itemButtons %}
-    {%- if currentNode.minimumRole is null or is_granted(currentNode.minimumRole) -%}
-        <div class="btn-group btn-group-sm">
-            {% with { nodes: nodes, currentNode: currentNode, revision: revision, level: level, maxDepth: maxDepth } only %}
-                {{ block('button_add') }}
-            {% endwith %}
+    <div class="btn-group btn-group-sm">
+        {% with { nodes: nodes, currentNode: currentNode, revision: revision, level: level, maxDepth: maxDepth } only %}
+            {{ block('button_add') }}
+        {% endwith %}
+        {%- if currentNode.minimumRole is null or is_granted(currentNode.minimumRole) -%}
             <button type="button" class="btn btn-primary json-menu-nested-edit" data-action="edit"
                     title="{{- 'field_type.json_menu_editor.edit'|trans -}}">
                 <i class="fa fa-pencil"></i>&nbsp;<span>{{ 'field_type.json_menu_editor.edit'|trans }}</span>
@@ -65,31 +65,35 @@
                     title="{{- 'field_type.json_menu_editor.delete_item'|trans -}}">
                 <i class="fa fa-trash"></i>&nbsp;<span class="sr-only">{{- 'field_type.json_menu_editor.delete_item'|trans -}}</span>
             </button>
-        </div>
-    {%- endif -%}
+        {%- endif -%}
+    </div>
 {% endblock %}
 
 {% block button_add %}
     {%- if (maxDepth == 0 or level < maxDepth) and currentNode.isLeaf|default(false) == false -%}
         {%- set deny = currentNode.deny|default([]) -%}
-        <button type="button" class="btn btn-primary dropdown-toggle" data-level="{{ level }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="fa fa-plus"></span>
-            {{ 'field_type.json_menu_editor.add'|trans }}
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-            {%- for addNode in nodes|filter(n => n.name not in deny and ( n.minimumRole is null or is_granted(n.minimumRole) )) -%}
-                {%- set addNode = addNode|merge({
-                    'url': path('revision.edit.nested-modal', {'revisionId': revision.id, 'fieldTypeId': addNode.id, 'parentLevel': level })
-                }) -%}
-                <li>
-                    <a type="button" class="json-menu-nested-add" data-action="add" data-node="{{ addNode|json_encode }}">
-                        {%- if addNode.icon|default(false) -%}<i class="{{ addNode.icon }}"></i>{%- endif -%}
-                        {{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': addNode.label}) }}
-                    </a>
-                </li>
-            {%- endfor -%}
-        </ul>
+        {%- set addNodes = nodes|filter(n => n.name not in deny and ( n.minimumRole is null or is_granted(n.minimumRole) ) ) -%}
+
+        {%- if addNodes|length > 0 -%}
+            <button type="button" class="btn btn-primary dropdown-toggle" data-level="{{ level }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="fa fa-plus"></span>
+                {{ 'field_type.json_menu_editor.add'|trans }}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                {%- for addNode in addNodes -%}
+                    {%- set addNode = addNode|merge({
+                        'url': path('revision.edit.nested-modal', {'revisionId': revision.id, 'fieldTypeId': addNode.id, 'parentLevel': level })
+                    }) -%}
+                    <li>
+                        <a type="button" class="json-menu-nested-add" data-action="add" data-node="{{ addNode|json_encode }}">
+                            {%- if addNode.icon|default(false) -%}<i class="{{ addNode.icon }}"></i>{%- endif -%}
+                            {{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': addNode.label}) }}
+                        </a>
+                    </li>
+                {%- endfor -%}
+            </ul>
+        {%- endif -%}
     {%- endif -%}
 {% endblock %}
 

@@ -185,7 +185,7 @@ class ElasticaTable extends TableAbstract
                 self::FILENAME => 'datatable',
                 self::DISPOSITION => 'attachment',
                 self::SHEET_NAME => 'Sheet',
-                self::ROW_CONTEXT => 'null',
+                self::ROW_CONTEXT => '',
             ])
             ->setAllowedTypes(self::COLUMNS, ['array'])
             ->setAllowedTypes(self::QUERY, ['array', 'string'])

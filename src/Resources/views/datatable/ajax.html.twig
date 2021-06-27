@@ -1,20 +1,8 @@
-{%- use '@EMSCore/form/forms.html.twig' -%}
-
 {%-  set data = {} -%}
+{%-  set rowContextTemplate = template_from_string("{%- use '@EMSCore/datatable/row.json.twig' -%}"~table.rowContext~"{{ block('emsco_datatable_row') }}") -%}
+
 {%- for line in table -%}
-    {%- set row = {} -%}
-
-    {% if table.supportsTableActions %}
-        {%- set row = row|merge([block('emsco_form_table_column_action_checkbox')]) -%}
-    {% endif %}
-    {% for column in table.columns %}
-        {%- set row = row|merge([block(column.tableDataValueBlock())]) -%}
-    {% endfor %}
-    {%- if table.itemActions|length > 0 -%}
-        {%- set row = row|merge([block('emsco_form_table_column_row_actions')]) -%}
-    {%- endif -%}
-
-    {%-  set data = data|merge([row]) -%}
+    {% set data = data|merge([ include(rowContextTemplate)|json_decode ]) %}
 {%- endfor -%}
 
 {%- set response = {

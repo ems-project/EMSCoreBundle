@@ -4,8 +4,9 @@
 {% block emsco_form_table_column_data_value_template %}
     {{- include(template_from_string(column.template), {
         data: line.data,
-        column: column
-    }, with_context = false) -}}
+        column: column,
+        row_context: row_context|default({}),
+    }) -}}
 {% endblock emsco_form_table_column_data_value_template %}
 
 {% block emsco_form_table_column_data_value_data_links %}

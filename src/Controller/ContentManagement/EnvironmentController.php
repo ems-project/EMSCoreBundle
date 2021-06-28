@@ -122,7 +122,10 @@ class EnvironmentController extends AppController
 
                     if ($continue) {
                         foreach ($alignTo as $env) {
-                            $publishService->alignRevision($revision->getContentType()->getName(), $revision->getOuuid(), $revision->getEnvironments()->first()->getName(), $env);
+                            $firstEnvironment = $revision->getEnvironments()->first();
+                            if (false !== $firstEnvironment) {
+                                $publishService->alignRevision($revision->getContentType()->getName(), $revision->getOuuid(), $firstEnvironment->getName(), $env);
+                            }
                         }
                     }
                 } elseif (\array_key_exists('alignLeft', $request->request->get('compare_environment_form'))) {

@@ -16,8 +16,6 @@ services:
     app.twig_extension_revision: '@EMS\CoreBundle\Twig\RevisionRuntime'
     EMS\CoreBundle\Twig\RevisionRuntime:
         arguments:
-            - '@ems.service.contenttype'
-            - '@ems.service.environment'
             - '@ems.service.revision'
         tags:
             - { name: twig.runtime, priority: -2000 }

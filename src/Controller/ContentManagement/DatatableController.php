@@ -51,11 +51,6 @@ final class DatatableController extends AbstractController
             'recordsFiltered' => $table->count(),
             'recordsTotal' => $table->totalCount(),
         ]);
-
-//        return $this->render('@EMSCore/datatable/ajax.html.twig', [
-//            'dataTableRequest' => $dataTableRequest,
-//            'table' => $table,
-//        ], );
     }
 
     public function excelElastica(string $hashConfig): Response

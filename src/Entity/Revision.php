@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Common\ArrayHelper\RecursiveMapper;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
@@ -807,9 +808,7 @@ class Revision
     }
 
     /**
-     * Get environments.
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection<int, Environment>
      */
     public function getEnvironments()
     {

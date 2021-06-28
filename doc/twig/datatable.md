@@ -138,6 +138,46 @@ The `asc_missing_values_position` parameter specifies how docs which are missing
 
 The `desc_missing_values_position` parameter specifies how docs which are missing the sort field, in `desc` direction, should be treated: The missing value can be set to `_last`, `_first`. The default is `_first`.
 
+## row_context
+
+The `row_context` parameter allows you to define variables in a twig template, which variables will be available in your column's template:
+
+```twig
+{{ emsco_datatable(['preview'],['page'], {
+    "frontendOptions": {
+        "pageLength": 100
+    },
+    "query": {
+        "bool": {
+          "must": must|merge(filterQuery)
+        }
+      },
+    "row_context": "{% set docInfo = [data.contentType, data.id]|join(':')|emsco_document_info %}",
+    "columns": [{
+        "label": "Label",
+        "template": '<a href="' ~ "{{path('data.revisions', {ouuid: data.id, type: data.contentType} ) }}"~'">' ~"{{ data.source.label }}</a>",
+        "orderField": "label.alpha_order"
+    },{
+        "label": "Locale",
+        "template": "{{ data.source.locale }}",
+        "orderField": "locale"
+    },{
+        "label": "Draft",
+        "template": "{{ docInfo.draft }}"
+    },{
+        "label": "Published",
+        "template": "{{ docInfo.published }}"
+    },{
+        "label": "Aligned",
+        "template": "{{ docInfo.aligned }}"
+    },{
+        "label": "Path",
+        "template": "{{ data.source.path }}",
+        "orderField": "path"
+    }]
+}) }}
+```
+
 # emsco_datatable_excel_path
 
 This function is generating a path to an Excel generator route. This twig function has the same signature as the [emsco_datatable](#emsco_datatable) twig function.

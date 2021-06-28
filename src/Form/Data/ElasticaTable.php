@@ -234,4 +234,9 @@ class ElasticaTable extends TableAbstract
 
         return \str_replace('%query%', $encoded, $this->query);
     }
+
+    public function getRowTemplate(): string
+    {
+        return \sprintf("{%%- use '@EMSCore/datatable/row.json.twig' -%%}%s{{ block('emsco_datatable_row') }}", $this->getRowContext());
+    }
 }

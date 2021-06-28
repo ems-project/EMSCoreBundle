@@ -32,11 +32,30 @@ final class DatatableController extends AbstractController
         $table = $this->datatableService->generateDatatableFromHash($hashConfig);
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
+        $template = $this->twig->createTemplate($table->getRowTemplate());
+        $rows = [];
+        foreach ($table as $line) {
+            $row = \json_decode($template->render([
+                'table' => $table,
+                'line' => $line,
+            ]));
+            if (!\is_array($row)) {
+                throw new \RuntimeException('Unexpected non array object');
+            }
+            $rows[] = $row;
+        }
 
-        return $this->render('@EMSCore/datatable/ajax.html.twig', [
-            'dataTableRequest' => $dataTableRequest,
-            'table' => $table,
-        ], new JsonResponse());
+        return new JsonResponse([
+            'data' => $rows,
+            'draw' => $dataTableRequest->getDraw(),
+            'recordsFiltered' => $table->count(),
+            'recordsTotal' => $table->totalCount(),
+        ]);
+
+//        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+//            'dataTableRequest' => $dataTableRequest,
+//            'table' => $table,
+//        ], );
     }
 
     public function excelElastica(string $hashConfig): Response
@@ -59,16 +78,16 @@ final class DatatableController extends AbstractController
             $headers[] = $column->getTitleKey();
         }
         $rows = [$headers];
-        $template = $this->twig->load('@EMSCore/datatable/excel-cell.html.twig');
+        $template = $this->twig->createTemplate($table->getRowTemplate());
 
         while ($table->next()) {
             foreach ($table as $line) {
-                $row = [];
-                foreach ($table->getColumns() as $column) {
-                    $row[] = $template->render([
-                        'line' => $line,
-                        'column' => $column,
-                    ]);
+                $row = \json_decode($template->render([
+                    'table' => $table,
+                    'line' => $line,
+                ]));
+                if (!\is_array($row)) {
+                    throw new \RuntimeException('Unexpected non array object');
                 }
                 $rows[] = $row;
             }

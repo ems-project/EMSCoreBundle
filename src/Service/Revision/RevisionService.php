@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Service\Revision;
 
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
+use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -136,5 +137,10 @@ class RevisionService
         $this->dataService->finalizeDraft($previousVersion);
 
         return $newVersion;
+    }
+
+    public function getDocumentInfo(EMSLink $documentLink): DocumentInfo
+    {
+        return new DocumentInfo($documentLink, $this->revisionRepository->findAllPublishedRevision($documentLink));
     }
 }

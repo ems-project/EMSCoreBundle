@@ -9,6 +9,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -734,6 +735,32 @@ class RevisionRepository extends EntityRepository
         ;
 
         return new Paginator($qb->getQuery());
+    }
+
+    /**
+     * @return Revision[]
+     */
+    public function findAllPublishedRevision(EMSLink $documentLink): array
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb->join('r.contentType', 'c');
+        $qb->join('r.environments', 'e');
+
+        $qb->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'));
+        $qb->andWhere($qb->expr()->eq('c.name', ':contentType'));
+        $qb->andWhere($qb->expr()->eq('c.deleted', ':false'));
+        $qb->andWhere($qb->expr()->eq('c.active', ':true'));
+        $qb->andWhere($qb->expr()->eq('r.deleted', ':false'));
+        $qb->andWhere($qb->expr()->isNotNull('e.id'));
+
+        $qb->setParameters([
+            'ouuid' => $documentLink->getOuuid(),
+            'contentType' => $documentLink->getContentType(),
+            'true' => true,
+            'false' => false,
+        ]);
+
+        return $qb->getQuery()->execute();
     }
 
     public function findDraftsByContentType(ContentType $contentType): array

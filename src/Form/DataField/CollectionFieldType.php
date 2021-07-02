@@ -212,9 +212,12 @@ class CollectionFieldType extends DataFieldType
         return 'collectionfieldtype';
     }
 
-    public static function getJsonName(FieldType $current)
+    /**
+     * @return string[]
+     */
+    public static function getJsonNames(FieldType $current): array
     {
-        return $current->getName();
+        return [$current->getName()];
     }
 
     public function generateMapping(FieldType $current, $withPipeline)

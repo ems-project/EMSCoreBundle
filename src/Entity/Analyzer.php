@@ -157,7 +157,9 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
         }
 
         if (isset($options['filter']) && \version_compare($esVersion, '7.0') >= 0) {
-            $options['filter'] = \array_filter($options['filter'], function (string $f) { return 'standard' !== $f; });
+            $options['filter'] = \array_values(\array_filter($options['filter'], function (string $f) {
+                return 'standard' !== $f;
+            }));
         }
 
         return \array_filter($options);

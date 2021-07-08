@@ -162,7 +162,7 @@ final class SubmissionController extends AbstractController
         $table->addColumn('form-submission.index.column.form', 'name');
         $table->addColumn('form-submission.index.column.locale', 'locale');
         $table->addColumnDefinition(new DatetimeTableColumn('form-submission.index.column.created', 'created'));
-        $table->addColumnDefinition(new DateTableColumn('form-submission.index.column.deadline', 'expireDate'));
+        $table->addColumnDefinition(new DateTableColumn('form-submission.index.column.expire_date', 'expireDate'));
 
         $table->addItemGetAction('form.submissions.download', 'form-submission.form-submissions.download', 'download');
         $table->addItemPostAction('form.submissions.process', 'form-submission.form-submissions.process', 'check', 'form-submission.form-submissions.confirm');

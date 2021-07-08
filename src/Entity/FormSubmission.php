@@ -80,7 +80,7 @@ class FormSubmission implements EntityInterface
 
     /**
      * @var \DateTime|null
-     * @ORM\Column(name="expire_date", type="date")
+     * @ORM\Column(name="expire_date", type="date", nullable=true)
      */
     private $expireDate;
 
@@ -90,13 +90,6 @@ class FormSubmission implements EntityInterface
      * @ORM\Column(name="label", type="string", length=255)
      */
     private $label;
-
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="deadline_date", type="string", length=255)
-     */
-    private $deadlineDate;
 
     /**
      * @var int
@@ -191,11 +184,6 @@ class FormSubmission implements EntityInterface
     public function getLabel(): ?string
     {
         return $this->label;
-    }
-
-    public function getDeadlineDate(): ?\DateTime
-    {
-        return $this->deadlineDate;
     }
 
     public function getExpireDate(): ?\DateTime

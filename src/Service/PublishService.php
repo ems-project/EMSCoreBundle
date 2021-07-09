@@ -256,6 +256,7 @@ class PublishService
 
         $this->dataService->sign($revision, true);
         if ($this->indexService->indexRevision($revision, $environment)) {
+            $this->revRepository->save($revision);
             $this->logger->notice('service.publish.publish', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),

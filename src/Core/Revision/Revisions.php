@@ -44,7 +44,10 @@ final class Revisions implements \IteratorAggregate
 
             if (0 === ++$totalProcessed % $size) {
                 $this->entityManager->clear();
+                $this->entityManager->flush();
             }
         }
+
+        $this->entityManager->flush();
     }
 }

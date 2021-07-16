@@ -658,7 +658,7 @@ class DataService
 
         foreach ($revision->getEnvironments() as $environment) {
             try {
-                $document = $this->searchService->getDocument($contentType, $revision->getOuuid());
+                $document = $this->searchService->getDocument($contentType, $revision->getOuuid(), $environment);
                 $indexedItem = $document->getSource();
 
                 ArrayTool::normalizeArray($indexedItem);

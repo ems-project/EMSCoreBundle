@@ -1038,7 +1038,7 @@ class AppExtension extends AbstractExtension
                     'type' => $type,
                     'ouuid' => $ouuid,
                     'revisionId' => $revisionId,
-                ], UrlGeneratorInterface::RELATIVE_PATH).'" '.$addAttribute.' >'.$out.'</a>';
+                ]).'" '.$addAttribute.' >'.$out.'</a>';
         }
 
         return $out;

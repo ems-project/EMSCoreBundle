@@ -72,7 +72,7 @@ final class IndexService
         $objectArray = $revision->getRawData();
 
         $ouuid = $this->indexDocument($this->contentTypeService->getIndex($contentType, $environment), $contentType->getName(), $revision->getOuuid(), $objectArray);
-        if (null !== $ouuid) {
+        if (null !== $ouuid && !$revision->hasOuuid()) {
             $revision->setOuuid($ouuid);
         }
 

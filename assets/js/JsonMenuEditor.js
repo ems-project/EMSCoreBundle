@@ -140,9 +140,24 @@ export default class JsonMenuEditor {
     }
 
     relocate() {
+        const recursiveMapHierarchy = (obj, results = []) => {
+           const r = results;
+           Object.keys(obj).forEach(key => {
+              const value = obj[key];
+              const result = {'id': value.id, 'label': value.label, 'type': value.type, 'object': value.object};
+              if (value.hasOwnProperty('children')) {
+                result.children = recursiveMapHierarchy(value.children);
+              }
+              r.push(result);
+           });
+           return r;
+        };
+
         this.updateCollapseButtons();
-        const hierarchy = this.nestedSortable.nestedSortable('toHierarchy', {startDepthCount: 0});
-        this.hiddenField.val(JSON.stringify(hierarchy)).trigger("input").trigger("change");
+        const toHierarchy = this.nestedSortable.nestedSortable('toHierarchy', {startDepthCount: 0});
+        const hierarchyValue = JSON.stringify(recursiveMapHierarchy(toHierarchy));
+
+        this.hiddenField.val(hierarchyValue).trigger("input").trigger("change");
     }
 
     initNestedModal()

@@ -48,6 +48,9 @@
         <service id="ems_core.core_content_type_transformer.html_empty_transformer" class="EMS\CoreBundle\Core\ContentType\Transformer\HtmlEmptyTransformer">
             <tag name="ems_core.content_type.transformer"/>
         </service>
+        <service id="ems_core.core_content_type_transformer.html_remove_node_transformer" class="EMS\CoreBundle\Core\ContentType\Transformer\HtmlRemoveNodeTransformer">
+            <tag name="ems_core.content_type.transformer"/>
+        </service>
 
         <service id="ems.service.query_search" alias="EMS\CoreBundle\Service\QuerySearchService"/>
         <service id="EMS\CoreBundle\Service\QuerySearchService">

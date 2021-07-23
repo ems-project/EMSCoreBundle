@@ -154,6 +154,10 @@ class WysiwygFieldType extends DataFieldType
     {
         $out = parent::viewTransform($data);
 
+        if (!\is_string($out)) {
+            throw new \RuntimeException('Unexpected non string WYSIWYG content');
+        }
+
         if (empty($out)) {
             return '';
         }

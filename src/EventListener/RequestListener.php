@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment as TwigEnvironment;
@@ -53,6 +54,15 @@ class RequestListener
 //            $event->setResponse($response);
 //        }
 //
+    }
+
+    public function onKernelResponse(ResponseEvent $event): void
+    {
+        $response = $event->getResponse();
+        $redirectUrl = $event->getRequest()->get('redirectToUrl');
+        if ($response instanceof RedirectResponse && \is_string($redirectUrl)) {
+            $response->setTargetUrl($redirectUrl);
+        }
     }
 
     public function onKernelException(ExceptionEvent $event)

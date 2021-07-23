@@ -228,6 +228,9 @@ class Revision
      */
     private $versionTag;
 
+    /** @ORM\Embedded(class="RevisionTasks", columnPrefix="task_") */
+    private RevisionTasks $tasks;
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -282,6 +285,7 @@ class Revision
         $this->allFieldsAreThere = false;
         $this->environments = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->tasks = new RevisionTasks();
 
         $a = \func_get_args();
         $i = \func_num_args();
@@ -377,6 +381,7 @@ class Revision
         $clone->startTime = new \DateTime('now');
         $clone->environments = new ArrayCollection(); //clear publications
         $clone->notifications = new ArrayCollection(); //clear notifications
+        $clone->tasks = new RevisionTasks();
 
         return $clone;
     }

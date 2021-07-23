@@ -213,7 +213,6 @@ class Search implements JsonSerializable
         return $this->filters;
     }
 
-
     public function setSortBy(?string $sortBy): Search
     {
         $this->sortBy = $sortBy;

@@ -122,7 +122,7 @@ class UrlAttachmentFieldType extends DataFieldType
     public function viewTransform(DataField $data)
     {
         $out = parent::viewTransform($data);
-        if (\is_array($out)) {
+        if (\is_array($out) && !empty($out)) {
             if (!empty($out['_url'])) {
                 if (\is_string($out['_url'])) {
                     return $out['_url'];

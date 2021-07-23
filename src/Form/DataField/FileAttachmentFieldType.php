@@ -110,7 +110,7 @@ class FileAttachmentFieldType extends DataFieldType
     {
         $rawData = $dataField->getRawData();
 
-        if (!empty($rawData) && !empty($rawData['sha1'])) {
+        if (\is_array($rawData) && !empty($rawData) && !empty($rawData['sha1'])) {
             unset($rawData['content']);
             unset($rawData['filesize']);
         } else {

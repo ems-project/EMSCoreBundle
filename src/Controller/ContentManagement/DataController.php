@@ -80,13 +80,12 @@ class DataController extends AppController
 
         /** @var ContentTypeRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:ContentType');
-        /** @var ContentType $contentType */
         $contentType = $repository->findOneBy([
             'name' => $name,
             'deleted' => false,
         ]);
 
-        if (!$contentType) {
+        if (!$contentType instanceof ContentType) {
             throw new NotFoundHttpException('Content type '.$name.' not found');
         }
 

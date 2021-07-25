@@ -101,7 +101,7 @@ class ElasticsearchController extends AppController
             ]);
 
             $allowOrigin = $this->getParameter('ems_core.health_check_allow_origin');
-            if (!empty($allowOrigin)) {
+            if (\is_string($allowOrigin) && \strlen($allowOrigin) > 0) {
                 $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
             }
 

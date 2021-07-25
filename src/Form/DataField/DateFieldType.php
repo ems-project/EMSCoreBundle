@@ -68,7 +68,7 @@ class DateFieldType extends DataFieldType
             $format = \DateTime::ISO8601;
         }
         $out = [];
-        if (!empty($data)) {
+        if (\is_iterable($data) && !empty($data)) {
             foreach ($data as $data) {
                 if ($data) {
                     $out[] = $data->format($format);
@@ -91,7 +91,7 @@ class DateFieldType extends DataFieldType
         $data = parent::viewTransform($dataField);
         $out = [];
         $format = DateFieldType::convertJavascriptDateFormat($dataField->getFieldType()->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
-        if (!empty($data)) {
+        if (\is_iterable($data) && !empty($data)) {
             foreach ($data as $date) {
                 if ($date) {
                     $out[] = $date->format($format);

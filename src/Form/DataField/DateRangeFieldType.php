@@ -287,7 +287,7 @@ class DateRangeFieldType extends DataFieldType
                 $out[$data->getFieldType()->getName()] = $data->getRawData();
             } else {
                 $rawData = $data->getRawData();
-                if (empty($rawData)) {
+                if (!\is_array($rawData) || empty($rawData)) {
                     $rawData = [];
                 }
 

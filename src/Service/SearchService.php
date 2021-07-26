@@ -101,7 +101,7 @@ class SearchService
         $commonSearch = new CommonSearch($indexes, $this->elasticaService->filterByContentTypes($boolQuery, $search->getContentTypes()));
 
         $sortBy = $search->getSortBy();
-        if (null != $sortBy && \strlen($sortBy) > 0) {
+        if (null !== $sortBy && \strlen($sortBy) > 0) {
             $commonSearch->setSort([
                 $search->getSortBy() => \array_filter([
                     'order' => (empty($search->getSortOrder()) ? 'asc' : $search->getSortOrder()),

@@ -274,7 +274,7 @@ class ContentTypeController extends AppController
                     /** @var UploadedFile $file */
                     $file = $request->files->get('form')['import'];
                     $path = $file->getRealPath() ?: $file->getPathname();
-                    
+
                     $json = \file_get_contents($path);
 
                     if (!\is_string($json)) {

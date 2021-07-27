@@ -145,8 +145,30 @@ class DocumentCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $options = \array_values($input->getOptions());
-        list($bulkSize, $rawImport, $dontSignData, $force, $dontFinalize, $replaceBusinessKey) = $options;
+        $bulkSize = \intval($input->getOption(self::OPTION_BULK_SIZE));
+        if ($bulkSize <= 0) {
+            throw new \RuntimeException('Invalid bulk size');
+        }
+        $rawImport = $input->getOption(self::OPTION_RAW);
+        if (!\is_bool($rawImport)) {
+            throw new \RuntimeException('Unexpected force option');
+        }
+        $dontSignData = $input->getOption(self::OPTION_DONT_SIGN_DATA);
+        if (!\is_bool($dontSignData)) {
+            throw new \RuntimeException('Unexpected force option');
+        }
+        $force = $input->getOption(self::OPTION_FORCE);
+        if (!\is_bool($force)) {
+            throw new \RuntimeException('Unexpected force option');
+        }
+        $dontFinalize = $input->getOption(self::OPTION_DONT_FINALIZE);
+        if (!\is_bool($dontFinalize)) {
+            throw new \RuntimeException('Unexpected force option');
+        }
+        $replaceBusinessKey = $input->getOption(self::OPTION_BUSINESS_KEY);
+        if (!\is_bool($replaceBusinessKey)) {
+            throw new \RuntimeException('Unexpected force option');
+        }
 
         $signData = !$dontSignData;
         $finalize = !$dontFinalize;

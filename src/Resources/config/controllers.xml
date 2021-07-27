@@ -42,6 +42,12 @@
             <argument type="service" id="twig"/>
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Revision\TaskController" public="true">
+            <argument type="service" id="ems_core.core_revision_task.task_manager" />
+            <argument type="service" id="twig" />
+            <argument type="service" id="translator" />
+            <tag name="controller.service_arguments"/>
+        </service>
         <service id="EMS\CoreBundle\Controller\AuthTokenController" public="true">
             <argument type="service" id="ems.security.authenticator" />
             <argument type="service" id="twig" />

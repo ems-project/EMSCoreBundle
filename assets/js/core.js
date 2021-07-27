@@ -6,7 +6,6 @@ window.jQuery = $;
 const assetPath = document.querySelector("BODY").getAttribute('data-asset-path') ;
 window.CryptoJS = require("crypto-js");
 
-
 import FileUploader from "./FileUploader";
 window.FileUploader = FileUploader;
 import AjaxRequest from "./AjaxRequest";

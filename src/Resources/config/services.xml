@@ -59,5 +59,11 @@
             <argument type="service" id="ems.repository.query_search"/>
             <argument type="service" id="logger"/>
         </service>
+
+        <service id="ems_core.core_revision_task.task_manager" class="EMS\CoreBundle\Core\Revision\Task\TaskManager">
+            <argument type="service" id="ems.repository.task" />
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
+            <argument type="service" id="logger" />
+        </service>
     </services>
 </container>

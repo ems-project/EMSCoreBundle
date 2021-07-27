@@ -29,10 +29,9 @@ final class Task
      */
     private string $title;
 
-    public function __construct(string $title)
+    public function __construct()
     {
         $this->id = Uuid::uuid4();
-        $this->title = $title;
     }
 
     public function getId(): string
@@ -43,5 +42,10 @@ final class Task
     public function getTitle(): string
     {
         return $this->title;
+    }
+
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
     }
 }

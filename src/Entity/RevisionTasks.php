@@ -17,14 +17,14 @@ final class RevisionTasks
     private ?string $currentId;
 
     /**
-     * @var null|string[]
+     * @var string[]|null
      *
      * @ORM\Column(name="planned_ids", type="json", nullable=true)
      */
     private ?array $plannedIds = [];
 
     /**
-     * @var null|string[]
+     * @var string[]|null
      *
      * @ORM\Column(name="approved_ids", type="json", nullable=true)
      */

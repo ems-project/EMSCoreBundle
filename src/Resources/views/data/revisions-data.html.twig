@@ -29,6 +29,7 @@
 	</small>
 {% endblock %}
 
+
 {% block body %}
 	<div class="row">
 		<div class="col-md-3">
@@ -182,13 +183,10 @@
 				{% endif %}
 			</h3>
 		</div>
-		<!-- /.box-header -->
-		<!-- form start -->
 		<div class="box-body">
 			{% set compare = compareData?true:false %}
 			{{ macros.renderDataField(dataFields, revision.rawData, compare, compareData) }}
 		</div>
-		<!-- /.box-body -->
 		<div class="box-footer">
 			{% include '@EMSCore/elements/revision-toolbar.html.twig' with {
 				'revisionId' : revision.id,
@@ -225,7 +223,6 @@
 								</div>
 							{% endif %}
 						</div>
-
 						<div class="box-footer">
 							<div class="btn-group">
 								<a href="{{ path('ems_search', {'search_form': referrersForm} ) }}" class="btn btn-primary">
@@ -236,11 +233,8 @@
 						</div>
 					</div>
 				</div>
-				<!-- /.tab-pane -->
 				<div class="tab-pane" id="tab_revisions">
-
 					<div class="box">
-						<!-- /.box-header -->
 						<div class="box-body">
 							<div class="table-responsive">
 								<table class="table table-bordered">
@@ -337,10 +331,7 @@
 							} %}
 						</div>
 					</div>
-
 				</div>
-				<!-- /.tab-pane -->
 			</div>
-			<!-- /.tab-content -->
 		</div>
 {% endblock %}

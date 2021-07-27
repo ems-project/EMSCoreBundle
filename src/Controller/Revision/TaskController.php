@@ -42,13 +42,14 @@ final class TaskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $this->taskManager->create($task, $revisionId);
+
                 return new JsonResponse([
-                    'messages' => [ ['success' => $this->translator->trans('task.creation.success') ] ],
+                    'messages' => [['success' => $this->translator->trans('task.creation.success')]],
                     'body' => null,
                     'buttons' => null,
                 ]);
             } catch (\Throwable $e) {
-                $messages[] = ['error' => $this->translator->trans('task.creation.failed') ];
+                $messages[] = ['error' => $this->translator->trans('task.creation.failed')];
             }
         }
 

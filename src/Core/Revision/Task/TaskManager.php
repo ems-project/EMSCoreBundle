@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Task;
 
-use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TaskRepository;
@@ -36,7 +35,4 @@ final class TaskManager
             throw $e;
         }
     }
-
-
-
 }

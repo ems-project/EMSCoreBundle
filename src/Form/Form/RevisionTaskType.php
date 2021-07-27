@@ -20,14 +20,14 @@ final class RevisionTaskType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('title', TextType::class, [
-            'constraints' => [new Assert\NotBlank()]
+            'constraints' => [new Assert\NotBlank()],
         ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Task::class
+            'data_class' => Task::class,
         ]);
     }
 }

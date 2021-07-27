@@ -154,7 +154,7 @@ class WysiwygFieldType extends DataFieldType
     {
         $out = parent::viewTransform($data);
 
-        if (empty($out)) {
+        if (!\is_string($out)) {
             return '';
         }
 

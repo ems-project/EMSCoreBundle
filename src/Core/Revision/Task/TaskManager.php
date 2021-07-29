@@ -31,7 +31,7 @@ final class TaskManager
         $task = $this->taskRepository->findOneBy(['id' => $taskId]);
 
         if (!$task instanceof Task) {
-            throw new RuntimeException(sprintf('Task with id "%s" not found', $taskId));
+            throw new RuntimeException(\sprintf('Task with id "%s" not found', $taskId));
         }
 
         return $task;
@@ -77,7 +77,6 @@ final class TaskManager
 
             $this->revisionRepository->save($revision);
             $this->revisionRepository->unlockRevision($revisionId);
-
         } catch (\Throwable $e) {
             $this->logger->error($e->getMessage(), ['exception' => $e]);
             throw $e;

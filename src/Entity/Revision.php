@@ -1179,4 +1179,9 @@ class Revision
             $this->rawData[$dateToField] = $date->format(\DateTimeImmutable::ATOM);
         }
     }
+
+    public function getTasks(): RevisionTasks
+    {
+        return $this->tasks;
+    }
 }

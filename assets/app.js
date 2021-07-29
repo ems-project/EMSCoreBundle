@@ -6,7 +6,7 @@ import './css/app.less';
 
 
 import EmsListeners from './js/EmsListeners';
-import RevisionTask from "./js/RevisionTask";
+import RevisionTask from "./js/module/revisionTask";
 
 window.EmsListeners = EmsListeners;
 

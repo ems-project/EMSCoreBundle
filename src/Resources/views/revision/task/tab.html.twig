@@ -1,9 +1,13 @@
 {# @var revision EMS\CoreBundle\Entity\Revision #}
 
 {% block tab %}
-    <button id="btn-new-task"
-            data-url="{{ path('revision.task.add-modal', {'revisionId': revision.id}) }}"
+    <ul id="revision-tasks" class="list-group"
+        data-url="{{ path('revision.tasks', {'revisionId': revision.id }) }}"
+        data-load="{{ revision.tasks.isEmpty ? "false" : "true" }}">
+        {# ajax loaded #}
+    </ul>
+    <button id="btn-modal-create-task"
+            data-url="{{ path('revision.tasks.create-modal', {'revisionId': revision.id}) }}"
             data-title="Create new task"
             class="btn btn-sm btn-primary">Create new task</button>
-    {% embed '@EMSCore/core/modal.html.twig' with {'id': 'core-modal'} %}{% endembed %}
 {% endblock %}

@@ -1,0 +1,31 @@
+{% block modalCreateBody %}
+    {{ form_start(form) }}
+    {{ form_row(form.title) }}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block modalCreateButtons %}
+    <button id="ajax-modal-submit" class="btn btn-primary">Create</button>
+{% endblock %}
+
+{% block taskItem %}
+{% trans_default_domain 'EMSCoreBundle' %}
+<li class="list-group-item clearfix">
+    <div class="task-title">{{ task.title }}</div>
+    <button class="btn-modal-edit-task pull-right"
+        data-title="{{ 'task.edit.title'|trans }}"
+        data-url="{{ path('revision.tasks.update-modal', { revisionId: revision.id, taskId: task.id }) }}">
+        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+    </button>
+</li>
+{% endblock %}
+
+{% block modalUpdateBody %}
+    {{ form_start(form) }}
+    {{ form_row(form.title) }}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block modalUpdateButtons %}
+    <button id="ajax-modal-submit" class="btn btn-primary">Update</button>
+{% endblock %}

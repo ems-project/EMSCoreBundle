@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Field;
 
-use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Form\AbstractType;
@@ -62,13 +61,16 @@ final class SelectUserPropertyType extends AbstractType
                 'user_roles' => [],
                 'event_dispatcher' => null,
                 'multiple' => false,
+                'label_property' => null,
             ])
             ->setNormalizer('choices', function (Options $options, $value) {
                 if (true === $options['is_dynamic']) {
                     return $value; //choices overwitten by allowDynamicChoices method
                 }
 
-                return $this->getChoices($options['user_property'], $options['user_roles']);
+                $labelProperty = $options['label_property'] ?? $options['user_property'];
+
+                return $this->getChoices($options['user_property'], $labelProperty, $options['user_roles']);
             })
             ->setNormalizer('attr', function (Options $options, $value) {
                 $allowAdd = \boolval($options['allow_add']) ? true : false;
@@ -86,20 +88,26 @@ final class SelectUserPropertyType extends AbstractType
      *
      * @return array<string, string>
      */
-    private function getChoices(string $property, array $roles): array
+    private function getChoices(string $property, string $propertyLabel, array $roles): array
     {
         $accessor = new PropertyAccessor();
         $users = $this->userService->findUsersWithRoles($roles);
 
-        $values = \array_map(function (User $user) use ($accessor, $property) {
-            $readable = $accessor->isReadable($user, $property);
+        $choices = [];
 
-            return $readable ? $accessor->getValue($user, $property) : $user->getDisplayName();
-        }, $users);
+        foreach ($users as $user) {
+            $readableValue = $accessor->isReadable($user, $property);
+            $readableLabel = $accessor->isReadable($user, $propertyLabel);
 
-        \natcasesort($values);
+            $value = $readableValue ? $accessor->getValue($user, $property) : $user->getUsername();
+            $label = $readableLabel ? $accessor->getValue($user, $propertyLabel) : $user->getUsername();
 
-        return \array_merge(['' => null], \array_combine($values, $values));
+            $choices[$value] = $label;
+        }
+
+        \natcasesort($choices);
+
+        return \array_flip($choices);
     }
 
     /**

@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CommonBundle\Common\Standard\DateTime;
+use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
+use EMS\CoreBundle\Core\Revision\Task\TaskLog;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -29,9 +32,48 @@ final class Task
      */
     private string $title;
 
-    public function __construct()
+    /**
+     * @ORM\Column(name="deadline", type="datetime_immutable", nullable=false)
+     */
+    private \DateTimeInterface $deadline;
+
+    /**
+     * @ORM\Column(name="assignee", type="text", nullable=false)
+     */
+    private string $assignee;
+
+    /**
+     * @ORM\Column(name="description", type="text", nullable=false)
+     */
+    private string $description;
+
+    /**
+     * @var TaskLog[]
+     *
+     * @ORM\Column(name="logs", type="json", nullable=false)
+     */
+    private array $logs;
+
+    public function __construct(string $username)
     {
         $this->id = Uuid::uuid4();
+        $this->logs[] = new TaskLog($username, 'created');
+    }
+
+    public static function createFromDTO(TaskDTO $dto): Task
+    {
+        $task = new self('test');
+        $task->updateFromDTO($dto);
+
+        return $task;
+    }
+
+    public function updateFromDTO(TaskDTO $taskDTO): void
+    {
+        $this->title = $taskDTO->giveTitle();
+        $this->description = $taskDTO->giveDescription();
+        $this->assignee = $taskDTO->giveAssignee();
+        $this->deadline = DateTime::createFromFormat($taskDTO->giveDeadline(), 'd/m/Y');
     }
 
     public function getId(): string
@@ -44,8 +86,18 @@ final class Task
         return $this->title;
     }
 
-    public function setTitle(string $title): void
+    public function getDeadline(): \DateTimeInterface
     {
-        $this->title = $title;
+        return $this->deadline;
+    }
+
+    public function getAssignee(): string
+    {
+        return $this->assignee;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
     }
 }

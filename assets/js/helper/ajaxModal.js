@@ -33,7 +33,7 @@ class AjaxModal {
         this.loadingElement.style.display = 'block';
 
         this.modal
-            .querySelectorAll('input, button')
+            .querySelectorAll('input, button, .select2, textarea')
             .forEach((e) => { e.setAttribute("disabled","disabled"); });
 
     }
@@ -90,6 +90,11 @@ class AjaxModal {
                 var message = m[messageType];
                 this.printMessage(messageType, message);
             });
+
+            var modelForm = this.modal.querySelector('form');
+            if (modelForm) {
+                editRevisionAddEventListeners(this.$modal.find('form'));
+            }
 
             var btnAjaxSubmit = this.modal.querySelector('#ajax-modal-submit');
             if (btnAjaxSubmit) {

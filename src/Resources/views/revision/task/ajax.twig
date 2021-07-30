@@ -1,7 +1,5 @@
 {% block modalCreateBody %}
-    {{ form_start(form) }}
-    {{ form_row(form.title) }}
-    {{ form_end(form) }}
+    {{ block('taskForm') }}
 {% endblock %}
 
 {% block modalCreateButtons %}
@@ -21,11 +19,22 @@
 {% endblock %}
 
 {% block modalUpdateBody %}
-    {{ form_start(form) }}
-    {{ form_row(form.title) }}
-    {{ form_end(form) }}
+    {{ block('taskForm') }}
 {% endblock %}
 
 {% block modalUpdateButtons %}
     <button id="ajax-modal-submit" class="btn btn-primary">Update</button>
+{% endblock %}
+
+{% block taskForm %}
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-12">{{ form_row(form.title) }}</div>
+        <div class="col-md-6">{{ form_row(form.deadline) }}</div>
+        <div class="col-md-6">{{ form_row(form.assignee) }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">{{ form_row(form.description) }}</div>
+    </div>
+    {{ form_end(form) }}
 {% endblock %}

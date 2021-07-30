@@ -46,12 +46,13 @@ final class TaskManager
         return new TaskCollection($revision, $results);
     }
 
-    public function create(Task $task, int $revisionId): void
+    public function create(TaskDTO $taskDTO, int $revisionId): void
     {
         try {
             $now = new \DateTimeImmutable('now');
             $this->revisionRepository->lockRevision($revisionId, 'SYSTEM_TASK', $now->modify('+1min'));
 
+            $task = Task::createFromDTO($taskDTO);
             $revision = $this->revisionRepository->findOneById($revisionId);
 
             $this->taskRepository->save($task);
@@ -65,7 +66,7 @@ final class TaskManager
         }
     }
 
-    public function update(Task $task, int $revisionId): void
+    public function update(Task $task, TaskDTO $taskDTO, int $revisionId): void
     {
         try {
             $now = new \DateTimeImmutable('now');
@@ -73,6 +74,7 @@ final class TaskManager
 
             $revision = $this->revisionRepository->findOneById($revisionId);
 
+            $task->updateFromDTO($taskDTO);
             $this->taskRepository->save($task);
 
             $this->revisionRepository->save($revision);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Revision;
 
+use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Form\Form\RevisionTaskType;
@@ -54,52 +55,23 @@ final class TaskController extends AbstractController
      */
     public function createModal(Request $request, int $revisionId): JsonResponse
     {
-        try {
-            return $this->ajaxModal('create', $request, new Task(), $revisionId);
-        } catch (\Throwable $e) {
-            return new JsonResponse([
-                'messages' => [['error' => $e]],
-            ]);
-        }
-    }
+        $taskDTO = new TaskDTO();
 
-    /**
-     * @Route("/tasks/{revisionId}/update-modal/{taskId}", name="revision.tasks.update-modal", methods={"GET", "POST"})
-     */
-    public function updateModal(Request $request, int $revisionId, string $taskId): JsonResponse
-    {
-        try {
-            $task = $this->taskManager->getTask($taskId);
-
-            return $this->ajaxModal('update', $request, $task, $revisionId);
-        } catch (\Throwable $e) {
-            return new JsonResponse([
-                'messages' => [['error' => $e->getMessage()]],
-            ]);
-        }
-    }
-
-    private function ajaxModal(string $type, Request $request, Task $task, int $revisionId): JsonResponse
-    {
-        $form = $this->createForm(RevisionTaskType::class, $task);
+        $form = $this->createForm(RevisionTaskType::class, $taskDTO);
         $form->handleRequest($request);
 
         $messages = [];
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                if ('create' === $type) {
-                    $this->taskManager->create($task, $revisionId);
-                } elseif ('update' === $type) {
-                    $this->taskManager->update($task, $revisionId);
-                }
+                $this->taskManager->create($taskDTO, $revisionId);
 
                 return new JsonResponse([
-                    'messages' => [['success' => $this->translator->trans(\sprintf('task.%s.success', $type))]],
+                    'messages' => [['success' => $this->translator->trans('task.create.success')]],
                     'body' => null,
                     'buttons' => null,
                 ]);
             } catch (\Throwable $e) {
-                $messages[] = ['error' => $this->translator->trans(\sprintf('task.%s.failed', $type))];
+                $messages[] = ['error' => $this->translator->trans('task.create.failed')];
             }
         }
 
@@ -107,8 +79,43 @@ final class TaskController extends AbstractController
 
         return new JsonResponse([
             'messages' => $messages,
-            'body' => $ajaxTemplate->renderBlock(\sprintf('modal%sBody', \ucfirst($type)), ['form' => $form->createView()]),
-            'buttons' => $ajaxTemplate->renderBlock(\sprintf('modal%sButtons', \ucfirst($type))),
+            'body' => $ajaxTemplate->renderBlock('modalCreateBody', ['form' => $form->createView()]),
+            'buttons' => $ajaxTemplate->renderBlock('modalCreateButtons'),
+        ]);
+    }
+
+    /**
+     * @Route("/tasks/{revisionId}/update-modal/{taskId}", name="revision.tasks.update-modal", methods={"GET", "POST"})
+     */
+    public function updateModal(Request $request, int $revisionId, string $taskId): JsonResponse
+    {
+        $task = $this->taskManager->getTask($taskId);
+        $taskDTO = TaskDTO::fromEntity($task);
+
+        $form = $this->createForm(RevisionTaskType::class, $taskDTO);
+        $form->handleRequest($request);
+
+        $messages = [];
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $this->taskManager->update($task, $taskDTO, $revisionId);
+
+                return new JsonResponse([
+                    'messages' => [['success' => $this->translator->trans('task.update.success')]],
+                    'body' => null,
+                    'buttons' => null,
+                ]);
+            } catch (\Throwable $e) {
+                $messages[] = ['error' => $this->translator->trans('task.update.failed')];
+            }
+        }
+
+        $ajaxTemplate = $this->getAjaxTemplate();
+
+        return new JsonResponse([
+            'messages' => $messages,
+            'body' => $ajaxTemplate->renderBlock('modalUpdateBody', ['form' => $form->createView()]),
+            'buttons' => $ajaxTemplate->renderBlock('modalUpdateButtons'),
         ]);
     }
 

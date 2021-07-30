@@ -51,6 +51,12 @@ final class TaskRepository extends ServiceEntityRepository
         return $collection;
     }
 
+    public function delete(Task $task): void
+    {
+        $this->_em->remove($task);
+        $this->_em->flush();
+    }
+
     public function save(Task $task): void
     {
         $this->_em->persist($task);

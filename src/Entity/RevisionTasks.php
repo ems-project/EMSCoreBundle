@@ -83,4 +83,31 @@ final class RevisionTasks
             $this->plannedIds[] = $task->getId();
         }
     }
+
+    public function delete(Task $task): bool
+    {
+        $taskId = $task->getId();
+
+        if ($taskId === $this->currentId) {
+            $plannedIds = $this->getPlannedIds();
+            $this->currentId = \array_shift($plannedIds);
+            $this->plannedIds = $plannedIds;
+
+            return true;
+        }
+
+        if (\in_array($taskId, $this->getPlannedIds(), true)) {
+            $this->plannedIds = \array_diff($this->getPlannedIds(), [$taskId]);
+
+            return true;
+        }
+
+        if (\in_array($taskId, $this->getApprovedIds(), true)) {
+            $this->approvedIds = \array_diff($this->getApprovedIds(), [$taskId]);
+
+            return true;
+        }
+
+        return false;
+    }
 }

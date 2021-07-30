@@ -11,14 +11,20 @@
     </li>
 {% endblock %}
 
+{% block modalFooterClose %}
+    <div class="pull-left">
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+    </div>
+{% endblock %}
+
 {% block modalCreateBody %}
     {{ block('taskForm') }}
 {% endblock %}
 
 {% block modalCreateFooter %}
     <div class="pull-left">
-        <button id="ajax-modal-submit" class="btn btn-primary">{{ 'task.create.submit'|trans }}</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button id="ajax-modal-submit" class="btn btn-sm btn-primary">{{ 'task.create.submit'|trans }}</button>
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cancel</button>
     </div>
 {% endblock %}
 
@@ -28,8 +34,13 @@
 
 {% block modalUpdateFooter %}
     <div class="pull-left">
-        <button id="ajax-modal-submit" class="btn btn-primary">{{ 'task.update.submit'|trans }}</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button id="ajax-modal-submit" class="btn btn-sm btn-primary">{{ 'task.update.submit'|trans }}</button>
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cancel</button>
+    </div>
+    <div class="pull-right">
+        <button type="button" id="btn-delete-task"
+                data-url="{{ path('revision.tasks.delete', {'revisionId': revisionId, 'taskId': task.id}) }}"
+                class="btn btn-sm btn-danger">{{ 'task.delete.submit'|trans }}</button>
     </div>
 {% endblock %}
 

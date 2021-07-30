@@ -1,6 +1,6 @@
 import {addEventListeners as editRevisionAddEventListeners} from "./../../edit-revision";
 
-import { ajaxJsonGet, ajaxJsonSubmit } from "./ajax";
+import { ajaxJsonGet, ajaxJsonPost, ajaxJsonSubmit } from "./ajax";
 
 class AjaxModal {
 
@@ -33,12 +33,14 @@ class AjaxModal {
         this.modal.querySelector('.ajax-modal-footer').innerHTML = '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
     }
     stateLoading() {
+        this.modal
+            .querySelectorAll('.ajax-modal-body > div.alert')
+            .forEach((e) => {e.remove();});
         this.loadingElement.style.display = 'block';
 
         this.modal
             .querySelectorAll('input, button, .select2, textarea')
             .forEach((e) => { e.setAttribute("disabled","disabled"); });
-
     }
     stateReady() {
         this.loadingElement.style.display = 'none';
@@ -64,12 +66,20 @@ class AjaxModal {
         });
     }
 
-    submitForm(options)
+    postRequest(url) {
+        this.stateLoading();
+        ajaxJsonPost(url, (json, request) => {
+            this.ajaxReady(json, request);
+            this.stateReady();
+        });
+    }
+
+    submitForm(url)
     {
         var formData = this.$modal.find('form').serialize();
 
         this.stateLoading();
-        ajaxJsonSubmit(options.url, formData, (json, request) => {
+        ajaxJsonSubmit(url, formData, (json, request) => {
             this.ajaxReady(json, request);
             this.stateReady();
         });
@@ -107,11 +117,11 @@ class AjaxModal {
             var btnAjaxSubmit = this.modal.querySelector('#ajax-modal-submit');
             if (btnAjaxSubmit) {
                 btnAjaxSubmit.addEventListener('click', () => {
-                    ajaxModal.submitForm({ url: request.responseURL });
+                    ajaxModal.submitForm( request.responseURL);
                 });
             }
 
-            if (this.ajaxCallback !== null) {
+            if (typeof this.ajaxCallback == 'function') {
                 this.ajaxCallback(json, request);
             }
         } else {

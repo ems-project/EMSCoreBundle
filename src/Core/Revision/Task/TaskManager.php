@@ -48,42 +48,46 @@ final class TaskManager
 
     public function create(TaskDTO $taskDTO, int $revisionId): Task
     {
-        try {
-            $now = new \DateTimeImmutable('now');
-            $this->revisionRepository->lockRevision($revisionId, 'SYSTEM_TASK', $now->modify('+1min'));
+        $now = new \DateTimeImmutable('now');
+        $this->revisionRepository->lockRevision($revisionId, 'SYSTEM_TASK', $now->modify('+1min'));
 
-            $task = Task::createFromDTO($taskDTO);
-            $revision = $this->revisionRepository->findOneById($revisionId);
+        $task = Task::createFromDTO($taskDTO);
+        $revision = $this->revisionRepository->findOneById($revisionId);
 
-            $this->taskRepository->save($task);
-            $revision->getTasks()->add($task);
+        $this->taskRepository->save($task);
 
-            $this->revisionRepository->save($revision);
-            $this->revisionRepository->unlockRevision($revisionId);
+        $revision->getTasks()->add($task);
+        $this->revisionRepository->save($revision);
+        $this->revisionRepository->unlockRevision($revisionId);
 
-            return $task;
-        } catch (\Throwable $e) {
-            $this->logger->error($e->getMessage(), ['exception' => $e]);
-            throw $e;
-        }
+        return $task;
     }
 
     public function update(Task $task, TaskDTO $taskDTO, int $revisionId): void
     {
-        try {
-            $now = new \DateTimeImmutable('now');
-            $this->revisionRepository->lockRevision($revisionId, 'SYSTEM_TASK', $now->modify('+1min'));
+        $now = new \DateTimeImmutable('now');
+        $this->revisionRepository->lockRevision($revisionId, 'SYSTEM_TASK', $now->modify('+1min'));
 
-            $revision = $this->revisionRepository->findOneById($revisionId);
+        $task->updateFromDTO($taskDTO);
+        $this->taskRepository->save($task);
 
-            $task->updateFromDTO($taskDTO);
-            $this->taskRepository->save($task);
+        $this->revisionRepository->unlockRevision($revisionId);
+    }
 
-            $this->revisionRepository->save($revision);
-            $this->revisionRepository->unlockRevision($revisionId);
-        } catch (\Throwable $e) {
-            $this->logger->error($e->getMessage(), ['exception' => $e]);
-            throw $e;
+    public function delete(Task $task, int $revisionId): void
+    {
+        $now = new \DateTimeImmutable('now');
+        $this->revisionRepository->lockRevision($revisionId, 'SYSTEM_TASK', $now->modify('+1min'));
+
+        $revision = $this->revisionRepository->findOneById($revisionId);
+
+        if (!$revision->getTasks()->delete($task)) {
+            throw new \RuntimeException(\sprintf('Task with id "%s" not attached to revision', $task->getId()));
         }
+
+        $this->revisionRepository->save($revision);
+        $this->revisionRepository->unlockRevision($revisionId);
+
+        $this->taskRepository->delete($task);
     }
 }

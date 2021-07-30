@@ -9,24 +9,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class TaskDTO
 {
-    /**
-     * @Assert\NotBlank
-     */
+    /** @Assert\NotBlank */
     public ?string $title;
-
-    /**
-     * @Assert\NotBlank
-     */
+    /** @Assert\NotBlank */
     public ?string $description;
-
-    /**
-     * @Assert\NotBlank
-     */
+    /** @Assert\NotBlank */
     public ?string $assignee;
-
-    /**
-     * @Assert\NotBlank
-     */
+    /** @Assert\NotBlank */
     public ?string $deadline;
 
     public static function fromEntity(Task $task): TaskDTO

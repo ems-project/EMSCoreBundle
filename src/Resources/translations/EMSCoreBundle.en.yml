@@ -939,8 +939,12 @@ task:
     button: 'Add a task'
     title: 'Add a new task'
     submit: 'Create task'
-    success: 'Task "%title%" succescfull created.'
+    success: 'Task "%title%" successfully created.'
   update:
     title: 'Edit task : %title%'
     submit: 'Edit task'
-    success: 'Task "%title%" succescfull updated.'
+    success: 'Task "%title%" successfully updated.'
+  delete:
+    title: 'Deleted task : %title%'
+    submit: 'Delete task'
+    success: 'Task "%title%" successfully deleted.'

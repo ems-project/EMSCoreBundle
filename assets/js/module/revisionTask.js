@@ -33,33 +33,23 @@ export default class RevisionTask {
     }
 
     modalCreate() {
-        var modalCreateCallback = (json, request) => {
-            // var btnCreate = ajaxModal.modal.querySelector('#btn-create-task');
-            // if (btnCreate) {
-            //     btnCreate.addEventListener('click', () => {
-            //         ajaxModal.submitForm({ url: request.responseURL });
-            //     });
-            // }
-        };
-
         var buttonModalCreate = document.querySelector('#btn-modal-create-task');
         buttonModalCreate.onclick = (event) => {
             event.preventDefault();
             ajaxModal.load(
-                { url: buttonModalCreate.dataset.url, title: buttonModalCreate.dataset.title},
-                modalCreateCallback
+                { url: buttonModalCreate.dataset.url, title: buttonModalCreate.dataset.title}
             );
         }
     }
 
     modalEdit() {
         var modalEditCallback = (json, request) => {
-            // var btnUpdate = ajaxModal.modal.querySelector('#btn-update-task');
-            // if (btnUpdate) {
-            //     btnCreate.addEventListener('click', () => {
-            //         ajaxModal.submitForm({ url: request.responseURL });
-            //     });
-            // }
+            var btnDelete = ajaxModal.modal.querySelector('#btn-delete-task');
+            if (btnDelete) {
+                btnDelete.addEventListener('click', () => {
+                    ajaxModal.postRequest(btnDelete.dataset.url);
+                });
+            }
         }
 
         var modalEditButtons = document.getElementsByClassName("btn-modal-edit-task");

@@ -63,24 +63,25 @@ final class TaskController extends AbstractController
         $messages = [];
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->taskManager->create($taskDTO, $revisionId);
+                $task = $this->taskManager->create($taskDTO, $revisionId);
 
                 return new JsonResponse([
-                    'messages' => [['success' => $this->translator->trans('task.create.success')]],
-                    'body' => null,
-                    'buttons' => null,
+                    'modalMessages' => [['success' => $this->translator->trans('task.create.success', [
+                        '%title%' => $task->getTitle(),
+                    ], 'EMSCoreBundle')]],
+                    'modalBody' => null,
                 ]);
             } catch (\Throwable $e) {
-                $messages[] = ['error' => $this->translator->trans('task.create.failed')];
+                $messages[] = ['error' => $this->translator->trans('task.error.ajax', [], 'EMSCoreBundle')];
             }
         }
 
         $ajaxTemplate = $this->getAjaxTemplate();
 
         return new JsonResponse([
-            'messages' => $messages,
-            'body' => $ajaxTemplate->renderBlock('modalCreateBody', ['form' => $form->createView()]),
-            'buttons' => $ajaxTemplate->renderBlock('modalCreateButtons'),
+            'modalMessages' => $messages,
+            'modalBody' => $ajaxTemplate->renderBlock('modalCreateBody', ['form' => $form->createView()]),
+            'modalFooter' => $ajaxTemplate->renderBlock('modalCreateFooter'),
         ]);
     }
 
@@ -91,6 +92,7 @@ final class TaskController extends AbstractController
     {
         $task = $this->taskManager->getTask($taskId);
         $taskDTO = TaskDTO::fromEntity($task);
+        $ajaxTemplate = $this->getAjaxTemplate();
 
         $form = $this->createForm(RevisionTaskType::class, $taskDTO);
         $form->handleRequest($request);
@@ -101,21 +103,24 @@ final class TaskController extends AbstractController
                 $this->taskManager->update($task, $taskDTO, $revisionId);
 
                 return new JsonResponse([
-                    'messages' => [['success' => $this->translator->trans('task.update.success')]],
-                    'body' => null,
-                    'buttons' => null,
+                    'modalMessages' => [['success' => $this->translator->trans('task.update.success', [
+                        '%title%' => $task->getTitle(),
+                    ], 'EMSCoreBundle')]],
+                    'modalTitle' => $this->translator->trans('task.update.title', [
+                        '%title%' => $task->getTitle(),
+                    ], 'EMSCoreBundle'),
+                    'modalBody' => $ajaxTemplate->renderBlock('modalUpdateBody', ['form' => $form->createView()]),
+                    'modalFooter' => $ajaxTemplate->renderBlock('modalUpdateFooter'),
                 ]);
             } catch (\Throwable $e) {
-                $messages[] = ['error' => $this->translator->trans('task.update.failed')];
+                $messages[] = ['error' => $this->translator->trans('task.error.ajax', [], 'EMSCoreBundle')];
             }
         }
 
-        $ajaxTemplate = $this->getAjaxTemplate();
-
         return new JsonResponse([
-            'messages' => $messages,
-            'body' => $ajaxTemplate->renderBlock('modalUpdateBody', ['form' => $form->createView()]),
-            'buttons' => $ajaxTemplate->renderBlock('modalUpdateButtons'),
+            'modalMessages' => $messages,
+            'modalBody' => $ajaxTemplate->renderBlock('modalUpdateBody', ['form' => $form->createView()]),
+            'modalFooter' => $ajaxTemplate->renderBlock('modalUpdateFooter'),
         ]);
     }
 

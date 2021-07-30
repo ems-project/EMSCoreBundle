@@ -46,7 +46,7 @@ final class TaskManager
         return new TaskCollection($revision, $results);
     }
 
-    public function create(TaskDTO $taskDTO, int $revisionId): void
+    public function create(TaskDTO $taskDTO, int $revisionId): Task
     {
         try {
             $now = new \DateTimeImmutable('now');
@@ -60,6 +60,8 @@ final class TaskManager
 
             $this->revisionRepository->save($revision);
             $this->revisionRepository->unlockRevision($revisionId);
+
+            return $task;
         } catch (\Throwable $e) {
             $this->logger->error($e->getMessage(), ['exception' => $e]);
             throw $e;

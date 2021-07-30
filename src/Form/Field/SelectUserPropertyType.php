@@ -62,6 +62,7 @@ final class SelectUserPropertyType extends AbstractType
                 'event_dispatcher' => null,
                 'multiple' => false,
                 'label_property' => null,
+                'choice_translation_domain' => false,
             ])
             ->setNormalizer('choices', function (Options $options, $value) {
                 if (true === $options['is_dynamic']) {

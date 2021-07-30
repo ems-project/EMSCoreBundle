@@ -1,6 +1,7 @@
 {# @var revision EMS\CoreBundle\Entity\Revision #}
 
 {% block tab %}
+    {% trans_default_domain 'EMSCoreBundle' %}
     <ul id="revision-tasks" class="list-group"
         data-url="{{ path('revision.tasks', {'revisionId': revision.id }) }}"
         data-load="{{ revision.tasks.isEmpty ? "false" : "true" }}">
@@ -8,6 +9,6 @@
     </ul>
     <button id="btn-modal-create-task"
             data-url="{{ path('revision.tasks.create-modal', {'revisionId': revision.id}) }}"
-            data-title="Create new task"
-            class="btn btn-sm btn-primary">Create new task</button>
+            data-title="{{ 'task.create.title'|trans }}"
+            class="btn btn-sm btn-primary">{{ 'task.create.button'|trans }}</button>
 {% endblock %}

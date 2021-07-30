@@ -925,3 +925,22 @@ view:
       title: 'User list'
   breadcrumb:
     wysiwyg-options: 'WYSIWYG Options'
+
+task:
+  tab_tasks: 'Tasks'
+  error:
+    ajax: 'Error: something went wrong!'
+  field:
+    title: 'Name'
+    deadline: 'Deadline'
+    assignee: 'Assignee'
+    description: 'Description'
+  create:
+    button: 'Add a task'
+    title: 'Add a new task'
+    submit: 'Create task'
+    success: 'Task "%title%" succescfull created.'
+  update:
+    title: 'Edit task : %title%'
+    submit: 'Edit task'
+    success: 'Task "%title%" succescfull updated.'

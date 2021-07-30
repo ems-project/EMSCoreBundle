@@ -12,22 +12,22 @@ final class TaskDTO
     /**
      * @Assert\NotBlank
      */
-    public string $title;
+    public ?string $title;
 
     /**
      * @Assert\NotBlank
      */
-    public string $description;
+    public ?string $description;
 
     /**
      * @Assert\NotBlank
      */
-    public string $assignee;
+    public ?string $assignee;
 
     /**
      * @Assert\NotBlank
      */
-    public string $deadline;
+    public ?string $deadline;
 
     public static function fromEntity(Task $task): TaskDTO
     {
@@ -41,23 +41,14 @@ final class TaskDTO
         return $dto;
     }
 
-    public function giveTitle(): string
+    public function give(string $property): string
     {
-        return $this->title;
-    }
+        $property = $this->{$property};
 
-    public function giveDescription(): string
-    {
-        return $this->description;
-    }
+        if (!\is_string($property)) {
+            throw new \RuntimeException(\sprintf('Missing %s', $property));
+        }
 
-    public function giveAssignee(): string
-    {
-        return $this->assignee;
-    }
-
-    public function giveDeadline(): string
-    {
-        return $this->deadline;
+        return $property;
     }
 }

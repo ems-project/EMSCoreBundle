@@ -20,9 +20,11 @@ final class RevisionTaskType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title', Type\TextType::class, ['required' => true])
+            ->add('title', Type\TextType::class, [
+                'label' => 'task.field.title',
+            ])
             ->add('deadline', Type\TextType::class, [
-                'required' => true,
+                'label' => 'task.field.deadline',
                 'attr' => [
                     'class' => 'datetime-picker',
                     'data-date-format' => 'D/MM/YYYY',
@@ -30,14 +32,14 @@ final class RevisionTaskType extends AbstractType
                 ],
             ])
             ->add('assignee', SelectUserPropertyType::class, [
-                'placeholder' => 'TEST',
-                'required' => true,
+                'placeholder' => '',
+                'label' => 'task.field.assignee',
                 'allow_add' => false,
                 'user_property' => 'username',
                 'label_property' => 'displayName',
             ])
             ->add('description', Type\TextareaType::class, [
-                'required' => true,
+                'label' => 'task.field.description',
                 'attr' => ['rows' => 5],
             ])
         ;
@@ -47,6 +49,7 @@ final class RevisionTaskType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => TaskDTO::class,
+            'translation_domain' => 'EMSCoreBundle',
         ]);
     }
 }

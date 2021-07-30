@@ -70,10 +70,10 @@ final class Task
 
     public function updateFromDTO(TaskDTO $taskDTO): void
     {
-        $this->title = $taskDTO->giveTitle();
-        $this->description = $taskDTO->giveDescription();
-        $this->assignee = $taskDTO->giveAssignee();
-        $this->deadline = DateTime::createFromFormat($taskDTO->giveDeadline(), 'd/m/Y');
+        $this->title = $taskDTO->give('title');
+        $this->description = $taskDTO->give('description');
+        $this->assignee = $taskDTO->give('assignee');
+        $this->deadline = DateTime::createFromFormat($taskDTO->give('deadline'), 'd/m/Y');
     }
 
     public function getId(): string

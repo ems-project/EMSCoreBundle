@@ -18,6 +18,7 @@ final class AjaxModal
     private ?string $title = null;
     private ?string $body = null;
     private ?string $footer = null;
+    private bool $success = false;
 
     /** @var array<mixed> */
     private array $messages = [];
@@ -34,6 +35,8 @@ final class AjaxModal
      */
     public function addMessageSuccess(string $key, array $parameters = []): self
     {
+        $this->success = true;
+
         return $this->addMessage('success', $key, $parameters);
     }
 
@@ -100,6 +103,7 @@ final class AjaxModal
             'modalTitle' => $this->title,
             'modalBody' => $this->body,
             'modalFooter' => $this->footer,
+            'modalSuccess' => $this->success,
         ], fn ($value) => null !== $value));
     }
 

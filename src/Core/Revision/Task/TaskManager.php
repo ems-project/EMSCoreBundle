@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Core\Revision\Task;
 use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TaskRepository;
-use http\Exception\RuntimeException;
 use Psr\Log\LoggerInterface;
 
 final class TaskManager
@@ -31,7 +30,7 @@ final class TaskManager
         $task = $this->taskRepository->findOneBy(['id' => $taskId]);
 
         if (!$task instanceof Task) {
-            throw new RuntimeException(\sprintf('Task with id "%s" not found', $taskId));
+            throw new \RuntimeException(\sprintf('Task with id "%s" not found', $taskId));
         }
 
         return $task;

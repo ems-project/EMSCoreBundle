@@ -16,12 +16,22 @@ export default class RevisionTask {
     }
 
     loadTasks() {
+        console.debug('loading tasks!!!');
+
         var url = this.taskList.dataset.url;
+        var loading = this.taskList.querySelector('#task-loading');
+        loading.style.display = 'block';
+
+        this.taskList.querySelectorAll('.task-item').forEach((e) => {
+            e.remove();
+        });
 
         ajaxJsonGet(url, (json, request) => {
             if (200 !== request.status) {
                 return;
             }
+
+            loading.style.display = 'none';
 
             var tasks = json.hasOwnProperty('tasks') ? json.tasks : [];
             tasks.forEach((task) => {
@@ -33,11 +43,19 @@ export default class RevisionTask {
     }
 
     modalCreate() {
+        var modalCreateCallback = (json, request) => {
+            var success = json.hasOwnProperty('modalSuccess') ? json.modalSuccess : false;
+            if (success) {
+                this.loadTasks();
+            }
+        };
+
         var buttonModalCreate = document.querySelector('#btn-modal-create-task');
         buttonModalCreate.onclick = (event) => {
             event.preventDefault();
             ajaxModal.load(
-                { url: buttonModalCreate.dataset.url, title: buttonModalCreate.dataset.title}
+                { url: buttonModalCreate.dataset.url, title: buttonModalCreate.dataset.title},
+                modalCreateCallback
             );
         }
     }
@@ -49,6 +67,11 @@ export default class RevisionTask {
                 btnDelete.addEventListener('click', () => {
                     ajaxModal.postRequest(btnDelete.dataset.url);
                 });
+            }
+
+            var success = json.hasOwnProperty('modalSuccess') ? json.modalSuccess : false;
+            if (success) {
+                this.loadTasks();
             }
         }
 
@@ -62,5 +85,4 @@ export default class RevisionTask {
             });
         });
     }
-
 }

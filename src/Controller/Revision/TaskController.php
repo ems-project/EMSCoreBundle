@@ -8,7 +8,6 @@ use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Core\UI\AjaxModal;
 use EMS\CoreBundle\Core\UI\AjaxService;
-use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Form\Form\RevisionTaskType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -36,16 +35,18 @@ final class TaskController extends AbstractController
         $revision = $taskCollection->getRevision();
         $ajaxTemplate = $this->getAjaxTemplate();
 
-        return new JsonResponse([
-            'tasks' => \array_map(function (Task $task) use ($ajaxTemplate, $revision) {
-                return [
-                    'html' => $ajaxTemplate->renderBlock('taskItem', [
-                        'revision' => $revision,
-                        'task' => $task,
-                    ]),
-                ];
-            }, $taskCollection->getTasks()),
-        ]);
+        $tasks = [];
+
+        foreach ($taskCollection->getTasks() as $task) {
+            $tasks[] = [
+                'html' => $ajaxTemplate->renderBlock('taskItem', [
+                    'task' => $task,
+                    'revision' => $revision,
+                ]),
+            ];
+        }
+
+        return new JsonResponse(['tasks' => $tasks]);
     }
 
     /**

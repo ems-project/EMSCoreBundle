@@ -1,12 +1,18 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
 {% block taskItem %}
-    <li class="list-group-item clearfix">
-        <div class="task-title">{{ task.title }}</div>
-        <button class="btn-modal-edit-task pull-right"
+    <li class="list-group-item task-item">
+        <div class="task-info">
+            <i class="fa fa-circle-o"></i>
+            <div>
+                <div class="task-title">{{ task.title }}</div>
+                <div>{{ 'task.assigned_to'|trans({ '%user%': task.assignee })|raw }}</div>
+            </div>
+        </div>
+        <button class="btn-modal-edit-task btn btn-sm pull-right"
                 data-title="{{ 'task.update.title'|trans({ '%title%': task.title }) }}"
                 data-url="{{ path('revision.tasks.update-modal', { revisionId: revision.id, taskId: task.id }) }}">
-            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+            <i class="fa fa-pencil-square-o"></i>
         </button>
     </li>
 {% endblock %}
@@ -29,7 +35,48 @@
 {% endblock %}
 
 {% block modalUpdateBody %}
-    {{ block('taskForm') }}
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_task_info" data-toggle="tab" aria-expanded="true">{{ 'task.update.tab.info'|trans }}</a></li>
+            <li><a href="#tab_task_history" data-toggle="tab" aria-expanded="false">{{ 'task.update.tab.history'|trans }}</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_task_info">
+                {{ block('taskForm') }}
+            </div>
+            <div class="tab-pane" id="tab_task_history">
+                <ul class="timeline">
+                    <li>
+                        <i class="fa fa-close bg-red"></i>
+                        <div class="timeline-item">
+                            <span class="time"><i class="fa fa-clock-o"></i> 5 days ago</span>
+                            <h3 class="timeline-header bg-info"><a href="#">You</a> rejected</h3>
+                            <div class="timeline-body bg-gray-light">
+                                Not good please correct
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa fa-commenting-o bg-blue"></i>
+                        <div class="timeline-item">
+                            <span class="time"><i class="fa fa-clock-o"></i> 5 days ago</span>
+                            <h4 class="timeline-header bg-info"><a href="#">John doe</a> finished</h4>
+                            <div class="timeline-body bg-gray-light">
+                                J'ai terminé les modifications. Je ne suis pas certain pour la partie après le paragraphe 2
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa fa-plus bg-green"></i>
+                        <div class="timeline-item">
+                            <span class="time"><i class="fa fa-clock-o"></i> 5 days ago</span>
+                            <h3 class="timeline-header bg-info"><a href="#">You</a> created a new task</h3>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block modalUpdateFooter %}
@@ -40,7 +87,7 @@
     <div class="pull-right">
         <button type="button" id="btn-delete-task"
                 data-url="{{ path('revision.tasks.delete', {'revisionId': revisionId, 'taskId': task.id}) }}"
-                class="btn btn-sm btn-danger">{{ 'task.delete.submit'|trans }}</button>
+                class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> {{ 'task.delete.submit'|trans }}</button>
     </div>
 {% endblock %}
 

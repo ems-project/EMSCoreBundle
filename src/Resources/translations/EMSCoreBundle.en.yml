@@ -928,6 +928,9 @@ view:
 
 task:
   tab_tasks: 'Tasks'
+  info:
+    change_order: 'Change task order'
+  assigned_to: 'Assigned to <strong>%user%</strong>'
   error:
     ajax: 'Error: something went wrong!'
   field:
@@ -944,7 +947,13 @@ task:
     title: 'Edit task : %title%'
     submit: 'Edit task'
     success: 'Task "%title%" successfully updated.'
+    tab:
+      info: 'Information'
+      history: 'History'
   delete:
     title: 'Deleted task : %title%'
     submit: 'Delete task'
     success: 'Task "%title%" successfully deleted.'
+  finished:
+    show: 'View finished tasks (%number%)'
+    hide: 'Hide finished tasks (%number%)'

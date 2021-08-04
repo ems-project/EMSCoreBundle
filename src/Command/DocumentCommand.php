@@ -21,6 +21,15 @@ class DocumentCommand extends Command
 {
     public const COMMAND = 'ems:contenttype:import';
 
+    private const ARGUMENT_CONTENT_TYPE = 'content-type-name';
+    private const ARGUMENT_ARCHIVE = 'archive';
+    private const OPTION_BULK_SIZE = 'bulk-size';
+    private const OPTION_RAW = 'raw';
+    private const OPTION_DONT_SIGN_DATA = 'dont-sign-data';
+    private const OPTION_FORCE = 'force';
+    private const OPTION_DONT_FINALIZE = 'dont-finalize';
+    private const OPTION_BUSINESS_KEY = 'business-key';
+
     /** @var string */
     protected static $defaultName = self::COMMAND;
     /** @var DocumentService */
@@ -35,10 +44,6 @@ class DocumentCommand extends Command
     private $contentType;
     /** @var string */
     private $archiveFilename;
-    /** @var string */
-    const ARGUMENT_CONTENTTYPE = 'contentTypeName';
-    /** @var string */
-    const ARGUMENT_ARCHIVE = 'archive';
     private string $defaultBulkSize;
 
     public function __construct(ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService, string $defaultBulkSize)
@@ -55,7 +60,7 @@ class DocumentCommand extends Command
         $this
             ->setDescription('Import json files from a zip file as content type\'s documents')
             ->addArgument(
-                self::ARGUMENT_CONTENTTYPE,
+                self::ARGUMENT_CONTENT_TYPE,
                 InputArgument::REQUIRED,
                 'Content type name to import into'
             )
@@ -65,38 +70,38 @@ class DocumentCommand extends Command
                 'The archive (zip file or directory) containing the json files'
             )
             ->addOption(
-                'bulkSize',
+                self::OPTION_BULK_SIZE,
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Size of the elasticsearch bulk request',
                 $this->defaultBulkSize
             )
             ->addOption(
-                'raw',
+                self::OPTION_RAW,
                 null,
                 InputOption::VALUE_NONE,
                 'The content will be imported as is. Without any field validation, data stripping or field protection'
             )
             ->addOption(
-                'dont-sign-data',
+                self::OPTION_DONT_SIGN_DATA,
                 null,
                 InputOption::VALUE_NONE,
                 'The content will not be signed during the import process'
             )
             ->addOption(
-                'force',
+                self::OPTION_FORCE,
                 null,
                 InputOption::VALUE_NONE,
                 'Also treat document in draft mode'
             )
             ->addOption(
-                'dont-finalize',
+                self::OPTION_DONT_FINALIZE,
                 null,
                 InputOption::VALUE_NONE,
                 'Don\'t finalize document'
             )
             ->addOption(
-                'businessKey',
+                self::OPTION_BUSINESS_KEY,
                 null,
                 InputOption::VALUE_NONE,
                 'Try to identify documents by their business keys'
@@ -110,7 +115,7 @@ class DocumentCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENTTYPE);
+        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
         $archiveFilename = $input->getArgument(self::ARGUMENT_ARCHIVE);
         if (!\is_string($contentTypeName)) {
             throw new \RuntimeException('Content Type name as to be a string');
@@ -140,8 +145,30 @@ class DocumentCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $options = \array_values($input->getOptions());
-        list($bulkSize, $rawImport, $dontSignData, $force, $dontFinalize, $replaceBusinessKey) = $options;
+        $bulkSize = \intval($input->getOption(self::OPTION_BULK_SIZE));
+        if ($bulkSize <= 0) {
+            throw new \RuntimeException('Invalid bulk size');
+        }
+        $rawImport = $input->getOption(self::OPTION_RAW);
+        if (!\is_bool($rawImport)) {
+            throw new \RuntimeException('Unexpected force option');
+        }
+        $dontSignData = $input->getOption(self::OPTION_DONT_SIGN_DATA);
+        if (!\is_bool($dontSignData)) {
+            throw new \RuntimeException('Unexpected force option');
+        }
+        $force = $input->getOption(self::OPTION_FORCE);
+        if (!\is_bool($force)) {
+            throw new \RuntimeException('Unexpected force option');
+        }
+        $dontFinalize = $input->getOption(self::OPTION_DONT_FINALIZE);
+        if (!\is_bool($dontFinalize)) {
+            throw new \RuntimeException('Unexpected force option');
+        }
+        $replaceBusinessKey = $input->getOption(self::OPTION_BUSINESS_KEY);
+        if (!\is_bool($replaceBusinessKey)) {
+            throw new \RuntimeException('Unexpected force option');
+        }
 
         $signData = !$dontSignData;
         $finalize = !$dontFinalize;

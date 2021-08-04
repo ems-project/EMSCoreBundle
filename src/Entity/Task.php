@@ -33,6 +33,11 @@ final class Task
     private string $title;
 
     /**
+     * @ORM\Column(name="status", type="string", length=25, nullable=false)
+     */
+    private string $status;
+
+    /**
      * @ORM\Column(name="deadline", type="datetime_immutable", nullable=false)
      */
     private \DateTimeInterface $deadline;
@@ -54,9 +59,16 @@ final class Task
      */
     private array $logs;
 
+    private const STATUS_PROGRESS = 'progress';
+    private const STATUS_PLANNED = 'planned';
+    private const STATUS_FINISHED = 'finished';
+    private const STATUS_REJECTED = 'rejected';
+    private const STATUS_APPROVED = 'approved';
+
     public function __construct(string $username)
     {
         $this->id = Uuid::uuid4();
+        $this->status = self::STATUS_PLANNED;
         $this->logs[] = new TaskLog($username, 'created');
     }
 
@@ -81,6 +93,11 @@ final class Task
         return $this->id->toString();
     }
 
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
     public function getTitle(): string
     {
         return $this->title;
@@ -99,5 +116,13 @@ final class Task
     public function getDescription(): string
     {
         return $this->description;
+    }
+
+    /**
+     * @return TaskLog[]
+     */
+    public function getLogs(): array
+    {
+        return $this->logs;
     }
 }

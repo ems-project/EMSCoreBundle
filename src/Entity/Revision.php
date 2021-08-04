@@ -228,6 +228,11 @@ class Revision
      */
     private $versionTag;
 
+    /**
+     * @ORM\Column(name="owner", type="text", nullable=true)
+     */
+    private ?string $owner = null;
+
     /** @ORM\Embedded(class="RevisionTasks", columnPrefix="task_") */
     private RevisionTasks $tasks;
 

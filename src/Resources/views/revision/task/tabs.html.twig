@@ -1,0 +1,46 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+{# @var revision EMS\CoreBundle\Entity\Revision #}
+
+{% block task %}
+    <div class="task-title">{{ task.title }}</div>
+    <div class="task-info">
+        <span class="task-deadline {{ task.deadline.timestamp < 'now'|date('U') ? 'task-deadline-red' }}">
+            <i class="fa fa-clock-o" aria-hidden="true"></i>{{ task.deadline.format('d/m/Y') }}
+        </span>
+        {% if task.assignee != app.user.username %}
+            <span>{{ 'task.for'|trans }}&nbsp;{{ task.assignee|displayname }}</span>
+        {% endif %}
+    </div>
+    <div class="task-description">{{ task.description }}</div>
+    {% if task.assignee == app.user.username %}
+        <div id="task-send-validation">
+            <hr />
+            <label for="#task-comment">{{ 'task.validation.comment'|trans }}</label>
+            <textarea id="task-comment" class="form-control" rows="4"></textarea>
+            <button class="btn btn-sm btn-primary">{{ 'task.validation.button'|trans  }}</button>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block tasks %}
+    <div id="revision-tasks-empty" style="display:none;">{{ 'task.info.empty'|trans }}</div>
+    <div id="revision-tasks-info" style="display:none;">
+        <span>{{ 'task.info.change_order'|trans }}</span><i class="fa fa-arrows" aria-hidden="true"></i>
+    </div>
+    <ul id="revision-tasks" class="list-group"
+        data-url="{{ path('revision.tasks', {'revisionId': revision.id }) }}"
+        data-load="{{ revision.tasks.isEmpty ? "false" : "true" }}">
+        <li id="task-loading" {{ revision.tasks.isEmpty ? 'style="display:none;"' }}>
+            <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+        </li>
+        {# ajax loaded #}
+    </ul>
+    <div class="revision-task-actions">
+        <button id="btn-modal-create-task"
+                data-url="{{ path('revision.tasks.create-modal', {'revisionId': revision.id}) }}"
+                data-title="{{ 'task.create.title'|trans }}"
+                class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> {{ 'task.create.button'|trans }}</button>
+{#        <a href="#" id="btn-task-finished-show" {{ revision.tasks.isEmpty ? 'style="display:none;"' }}>{{ 'task.finished.show'|trans({ '%number%': 3 }) }}</a>#}
+{#        <a href="#" id="btn-task-finished-hide" style="display: none;">{{ 'task.finished.hide'|trans({ '%number%': 3 }) }}</a>#}
+    </div>
+{% endblock %}

@@ -1,12 +1,15 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
 {% block taskItem %}
-    <li class="list-group-item task-item">
+    <li class="list-group-item task-item {{ isCurrent|default(false) ? 'task-current' }}">
         <div class="task-info">
             <i class="fa fa-circle-o"></i>
             <div>
                 <div class="task-title">{{ task.title }}</div>
-                <div>{{ 'task.assigned_to'|trans({ '%user%': task.assignee })|raw }}</div>
+                <div>{{ 'task.assigned_to'|trans }}<strong>{{ task.assignee|displayname }}</strong></div>
+                {% if isCurrent|default(false) %}
+                    <div>{{ 'task.in_progress'|trans|raw }}<strong>{{ 'in progress' }}</strong></div>
+                {% endif %}
             </div>
         </div>
         <button class="btn-modal-edit-task btn btn-sm pull-right"

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Task;
 
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TaskRepository;
@@ -23,6 +24,15 @@ final class TaskManager
         $this->taskRepository = $taskRepository;
         $this->revisionRepository = $revisionRepository;
         $this->logger = $logger;
+    }
+
+    public function getCurrentTask(Revision $revision): ?Task
+    {
+        if (!$revision->getTasks()->hasCurrentId()) {
+            return null;
+        }
+
+        return $this->getTask($revision->getTasks()->getCurrentId());
     }
 
     public function getTask(string $taskId): Task

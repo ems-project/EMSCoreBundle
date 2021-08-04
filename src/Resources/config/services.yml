@@ -671,6 +671,7 @@ services:
     EMS\CoreBundle\Service\NotificationService: '@ems.service.notification'
     EMS\CoreBundle\Service\HelperService: '@ems.service.helper'
     EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory: '@ems.form.factories.objectChoiceListFactory'
+    EMS\CoreBundle\Core\Revision\Task\TaskManager: '@ems_core.core_revision_task.task_manager'
 
 
 #### Will be mark as deprecated soon

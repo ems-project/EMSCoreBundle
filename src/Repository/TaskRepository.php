@@ -37,7 +37,9 @@ final class TaskRepository extends ServiceEntityRepository
             $qb->setParameter('planned_ids', $revisionTasks->getPlannedIds());
         }
 
-        $qb->andWhere($orExpr);
+        if ($orExpr->count() > 0) {
+            $qb->andWhere($orExpr);
+        }
 
         /** @var Task[] $results */
         $results = $qb->getQuery()->getResult();

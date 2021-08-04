@@ -4,24 +4,28 @@ import { ajaxJsonGet } from "./../helper/ajax";
 
 export default class RevisionTask {
     constructor() {
+        this.taskTab = document.querySelector('#tab_tasks');
         this.taskList = document.querySelector('ul#revision-tasks');
+        this.tasksEmpty = this.taskTab.querySelector('#revision-tasks-empty');
+        this.tasksInfo = this.taskTab.querySelector('#revision-tasks-info');
 
         if (this.taskList !== null) {
             this.modalCreate();
 
-            if (true === Boolean(this.taskList.dataset.load)) {
+            if ('true' === this.taskList.dataset.load) {
                 this.loadTasks();
+            } else {
+                this.tasksEmpty.style.display = 'block';
             }
         }
     }
 
     loadTasks() {
-        console.debug('loading tasks!!!');
-
         var url = this.taskList.dataset.url;
         var loading = this.taskList.querySelector('#task-loading');
         loading.style.display = 'block';
 
+        this.tasksEmpty.style.display = 'none';
         this.taskList.querySelectorAll('.task-item').forEach((e) => {
             e.remove();
         });
@@ -33,12 +37,20 @@ export default class RevisionTask {
 
             loading.style.display = 'none';
 
+            var hasTasks = false;
             var tasks = json.hasOwnProperty('tasks') ? json.tasks : [];
             tasks.forEach((task) => {
                 this.taskList.insertAdjacentHTML('beforeend', task.html);
+                hasTasks = true;
             });
 
-            this.modalEdit();
+            if (hasTasks) {
+                this.tasksInfo.style.display = 'block';
+                this.modalEdit();
+            } else {
+                this.tasksEmpty.style.display = 'block';
+                this.tasksInfo.style.display = 'none';
+            }
         });
     }
 

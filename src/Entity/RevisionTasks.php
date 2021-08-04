@@ -35,6 +35,11 @@ final class RevisionTasks
         return !$this->hasCurrentId() && !$this->hasPlannedIds() && !$this->hasApprovedIds();
     }
 
+    public function isCurrent(Task $task): bool
+    {
+        return $this->currentId === $task->getId();
+    }
+
     public function hasCurrentId(): bool
     {
         return null !== $this->currentId;

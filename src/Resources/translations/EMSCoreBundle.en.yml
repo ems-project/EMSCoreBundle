@@ -204,6 +204,7 @@ ROLE_REVIEWER: Reviewer
 ROLE_SUPER: Super user
 ROLE_TRADUCTOR: Traductor
 ROLE_FORM_CRM: Form CRM
+ROLE_TASK_MANAGER: Task Manager
 Save: Save
 Search: Search
 Should: Should
@@ -927,10 +928,17 @@ view:
     wysiwyg-options: 'WYSIWYG Options'
 
 task:
+  tab_task: 'Task'
   tab_tasks: 'Tasks'
   info:
+    empty: 'No tasks for this document'
     change_order: 'Change task order'
-  assigned_to: 'Assigned to <strong>%user%</strong>'
+  assigned_to: 'Assigned to '
+  in_progress: 'This task is '
+  for: 'for'
+  validation:
+     comment: 'Comment for validation'
+     button: 'Send for validation'
   error:
     ajax: 'Error: something went wrong!'
   field:

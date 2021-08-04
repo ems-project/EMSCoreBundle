@@ -42,6 +42,7 @@ final class TaskController extends AbstractController
                 'html' => $ajaxTemplate->renderBlock('taskItem', [
                     'task' => $task,
                     'revision' => $revision,
+                    'isCurrent' => $revision->getTasks()->isCurrent($task),
                 ]),
             ];
         }

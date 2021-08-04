@@ -81,14 +81,30 @@
 {% endblock %}
 
 {% block revisionSidebar %}
+	{% set tabs = [{name: 'tab_about_revision', label: 'Revision'|trans}] %}
+	{% if is_granted('ROLE_TASK_MANAGER') %}{% set tabs = tabs|merge([{ name: 'tab_tasks', label: 'task.tab_tasks'|trans }]) %}{% endif %}
+	{% if task %}{% set tabs = tabs|merge([{ name: 'tab_task', label: 'task.tab_task'|trans }]) %}{% endif %}
+
 	<div id="revision-tabs" class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
-			<li class="active"><a href="#tab_tasks" data-toggle="tab" aria-expanded="true">{{ 'task.tab_tasks'|trans }}</a></li>
-			<li><a href="#tab_about_revision" data-toggle="tab" aria-expanded="false">{{ 'About this revision'|trans }}</a></li>
+			{% for tab in tabs|reverse %}
+				<li {{ loop.first ? 'class="active"' }}>
+					<a href="#{{ tab.name }}" data-toggle="tab" aria-expanded="{{ loop.first ? 'true' : 'false' }}">{{ tab.label }}</a>
+				</li>
+			{% endfor %}
 		</ul>
 		<div class="tab-content">
-			<div class="tab-pane active" id="tab_tasks">{{ block('tab', '@EMSCore/revision/task/tab.html.twig') }}</div>
-			<div class="tab-pane" id="tab_about_revision">{{ block('revisionTabAboutRevision') }}</div>
+			{% for tab in tabs|reverse %}
+				<div class="tab-pane {{ loop.first ? 'active' }}" id="{{ tab.name }}">
+					{% if tab.name == 'tab_about_revision' %}
+						{{ block('revisionTabAboutRevision') }}
+					{% elseif tab.name == 'tab_tasks' %}
+						{{ block('tasks', '@EMSCore/revision/task/tabs.html.twig') }}
+					{% elseif tab.name == 'tab_task' %}
+						{{ block('task', '@EMSCore/revision/task/tabs.html.twig') }}
+					{% endif %}
+				</div>
+			{% endfor %}
 		</div>
 	</div>
 {% endblock %}

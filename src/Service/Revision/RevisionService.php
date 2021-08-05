@@ -9,6 +9,7 @@ use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\RevisionTasks;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
@@ -133,6 +134,7 @@ class RevisionService
         $this->dataService->discardDraft($revision); //discard draft changes previous revision
 
         $previousVersion = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->getOuuid());
+        $previousVersion->setTasks(new RevisionTasks());
         $previousVersion->setVersionDate('to', $now);
         $this->dataService->finalizeDraft($previousVersion);
 

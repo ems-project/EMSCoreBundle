@@ -10,24 +10,63 @@ use EMS\CoreBundle\Core\UI\AjaxModal;
 use EMS\CoreBundle\Core\UI\AjaxService;
 use EMS\CoreBundle\Form\Form\RevisionTaskType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Twig\TemplateWrapper;
 
 final class TaskController extends AbstractController
 {
     private TaskManager $taskManager;
     private AjaxService $ajax;
+    private FormFactoryInterface $formFactory;
 
-    public function __construct(TaskManager $taskManager, AjaxService $ajax)
+    public function __construct(TaskManager $taskManager, AjaxService $ajax, FormFactoryInterface $formFactory)
     {
         $this->taskManager = $taskManager;
         $this->ajax = $ajax;
+        $this->formFactory = $formFactory;
     }
 
     /**
-     * @Route("/tasks/{revisionId}", name="revision.tasks", methods={"GET", "POST"})
+     * @Route("/tasks/{revisionId}/current", name="revision.task", methods={"GET", "POST"})
+     */
+    public function getTask(Request $request, int $revisionId): JsonResponse
+    {
+        $currentTask = $this->taskManager->getCurrentTask($revisionId);
+        $ajaxTemplate = $this->getAjaxTemplate();
+
+        if ($currentTask && $this->taskManager->canRequestValidation($currentTask)) {
+            $form = $this->formFactory->createNamed('request_validation');
+            $form->add('comment', TextareaType::class, [
+                'attr' => ['rows' => 4],
+                'constraints' => [new NotBlank()],
+            ]);
+
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $data = $form->getData();
+                $this->taskManager->requestValidation($currentTask, $revisionId, $data['comment']);
+
+                return new JsonResponse([
+                    'html' => $ajaxTemplate->renderBlock('currentTask', ['task' => $currentTask]),
+                ]);
+            }
+        }
+
+        return new JsonResponse([
+            'html' => $ajaxTemplate->renderBlock('currentTask', [
+                'task' => $currentTask,
+                'form' => isset($form) ? $form->createView() : null,
+            ]),
+        ]);
+    }
+
+    /**
+     * @Route("/tasks/{revisionId}/list", name="revision.tasks", methods={"GET", "POST"})
      */
     public function getTasks(int $revisionId): JsonResponse
     {

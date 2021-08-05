@@ -228,11 +228,6 @@ class Revision
      */
     private $versionTag;
 
-    /**
-     * @ORM\Column(name="owner", type="text", nullable=true)
-     */
-    private ?string $owner = null;
-
     /** @ORM\Embedded(class="RevisionTasks", columnPrefix="task_") */
     private RevisionTasks $tasks;
 
@@ -386,7 +381,6 @@ class Revision
         $clone->startTime = new \DateTime('now');
         $clone->environments = new ArrayCollection(); //clear publications
         $clone->notifications = new ArrayCollection(); //clear notifications
-        $clone->tasks = new RevisionTasks();
 
         return $clone;
     }
@@ -1183,6 +1177,11 @@ class Revision
         if ('to' === $field && null !== $dateToField = $contentType->getVersionDateToField()) {
             $this->rawData[$dateToField] = $date->format(\DateTimeImmutable::ATOM);
         }
+    }
+
+    public function setTasks(RevisionTasks $tasks): void
+    {
+        $this->tasks = $tasks;
     }
 
     public function getTasks(): RevisionTasks

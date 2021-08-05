@@ -20,7 +20,7 @@ final class Version20210802113300 extends AbstractMigration
         $this->addSql('CREATE TABLE task (id UUID NOT NULL, title VARCHAR(255) NOT NULL, status VARCHAR(25) NOT NULL, deadline TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, assignee TEXT NOT NULL, description TEXT NOT NULL, logs JSON NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN task.id IS \'(DC2Type:uuid)\'');
         $this->addSql('COMMENT ON COLUMN task.deadline IS \'(DC2Type:datetime_immutable)\'');
-        $this->addSql('ALTER TABLE revision ADD owner TEXT DEFAULT NULL');
+        $this->addSql('ALTER TABLE revision ADD task_owner TEXT DEFAULT NULL');
         $this->addSql('ALTER TABLE revision ADD task_current_id UUID DEFAULT NULL');
         $this->addSql('ALTER TABLE revision ADD task_planned_ids JSON DEFAULT NULL');
         $this->addSql('ALTER TABLE revision ADD task_approved_ids JSON DEFAULT NULL');
@@ -33,7 +33,7 @@ final class Version20210802113300 extends AbstractMigration
         $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('DROP TABLE task');
-        $this->addSql('ALTER TABLE revision DROP owner');
+        $this->addSql('ALTER TABLE revision DROP task_owner');
         $this->addSql('ALTER TABLE revision DROP task_current_id');
         $this->addSql('ALTER TABLE revision DROP task_planned_ids');
         $this->addSql('ALTER TABLE revision DROP task_approved_ids');

@@ -30,6 +30,11 @@ final class RevisionTasks
      */
     private ?array $approvedIds = [];
 
+    /**
+     * @ORM\Column(name="owner", type="text", nullable=true)
+     */
+    private ?string $owner = null;
+
     public function isEmpty(): bool
     {
         return !$this->hasCurrentId() && !$this->hasPlannedIds() && !$this->hasApprovedIds();
@@ -53,6 +58,15 @@ final class RevisionTasks
     public function hasApprovedIds(): bool
     {
         return \count($this->approvedIds ?? []) > 0;
+    }
+
+    public function getOwner(): string
+    {
+        if (null === $owner = $this->owner) {
+            throw new \RuntimeException('Revision has no owner');
+        }
+
+        return $owner;
     }
 
     public function getCurrentId(): string
@@ -80,8 +94,16 @@ final class RevisionTasks
         return $this->approvedIds ?? [];
     }
 
-    public function add(Task $task): void
+    public function add(Task $task, UserInterface $user): void
     {
+        if (null === $this->owner) {
+            $this->owner = $user->getUsername();
+        }
+
+        if ($this->owner !== $user->getUsername()) {
+            throw new \RuntimeException(sprintf('User %s is not the owner!', $user->getUsername()));
+        }
+
         if (null === $this->currentId) {
             $this->currentId = $task->getId();
         } else {

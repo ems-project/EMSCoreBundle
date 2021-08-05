@@ -8,24 +8,27 @@ final class TaskLog implements \JsonSerializable
 {
     private \DateTimeImmutable $date;
     private string $user;
-    private string $log;
+    private string $status;
+    private ?string $comment;
 
-    public function __construct(string $user, string $log)
+    public function __construct(string $user, string $status, ?string $comment)
     {
-        $this->date = new \DateTimeImmutable('now');
         $this->user = $user;
-        $this->log = $log;
+        $this->status = $status;
+        $this->comment = $comment;
+        $this->date = new \DateTimeImmutable('now');
     }
 
     /**
-     * @return array{date: string, user: string, log: string}
+     * @return array<mixed>
      */
     public function jsonSerialize(): array
     {
-        return [
-            'date' => $this->date->format(\DATE_ATOM),
+        return \array_filter([
             'user' => $this->user,
-            'log' => $this->log,
-        ];
+            'status' => $this->status,
+            'comment' => $this->comment,
+            'date' => $this->date->format(\DATE_ATOM),
+        ]);
     }
 }

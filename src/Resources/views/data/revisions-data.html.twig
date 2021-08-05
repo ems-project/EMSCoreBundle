@@ -83,7 +83,9 @@
 {% block revisionSidebar %}
 	{% set tabs = [{name: 'tab_about_revision', label: 'Revision'|trans}] %}
 	{% if is_granted('ROLE_TASK_MANAGER') %}{% set tabs = tabs|merge([{ name: 'tab_tasks', label: 'task.tab_tasks'|trans }]) %}{% endif %}
-	{% if task %}{% set tabs = tabs|merge([{ name: 'tab_task', label: 'task.tab_task'|trans }]) %}{% endif %}
+	{% if revision.tasks.hasCurrentId and revision.tasks.owner != app.user.username %}
+		{% set tabs = tabs|merge([{ name: 'tab_task', label: 'task.tab_task'|trans }]) %}
+	{% endif %}
 
 	<div id="revision-tabs" class="nav-tabs-custom">
 		<ul class="nav nav-tabs">

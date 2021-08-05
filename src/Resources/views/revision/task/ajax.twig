@@ -1,5 +1,29 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
+{% block currentTask %}
+    {%- if task == null -%}
+        <div>No task found!</div>
+    {%- else -%}
+        <div class="task-title">{{ task.title }}</div>
+        <div class="task-info">
+            <span class="task-deadline {{ task.deadline.timestamp < 'now'|date('U') ? 'task-deadline-red' }}">
+                <i class="fa fa-clock-o" aria-hidden="true"></i>{{ task.deadline.format('d/m/Y') }}
+            </span>
+            {% if task.assignee != app.user.username %}
+                <span>{{ 'task.for'|trans }}&nbsp;{{ task.assignee|displayname }}</span>
+            {% endif %}
+        </div>
+        <div class="task-description">{{ task.description }}</div>
+        {% if form != null %}
+            <div id="task-send-validation">
+                <hr />
+                {{ form(form) }}
+                <button id="btn-request-validation" class="btn btn-sm btn-primary">{{ 'task.validation.button'|trans  }}</button>
+            </div>
+        {% endif %}
+    {%- endif -%}
+{% endblock %}
+
 {% block taskItem %}
     <li class="list-group-item task-item {{ isCurrent|default(false) ? 'task-current' }}">
         <div class="task-info">

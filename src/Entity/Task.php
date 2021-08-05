@@ -59,22 +59,33 @@ final class Task
      */
     private array $logs;
 
-    private const STATUS_PROGRESS = 'progress';
-    private const STATUS_PLANNED = 'planned';
-    private const STATUS_FINISHED = 'finished';
-    private const STATUS_REJECTED = 'rejected';
-    private const STATUS_APPROVED = 'approved';
+    public const STATUS_PROGRESS = 'progress';
+    public const STATUS_PLANNED = 'planned';
+    public const STATUS_FINISHED = 'finished';
+    public const STATUS_REJECTED = 'rejected';
+    public const STATUS_APPROVED = 'approved';
 
-    public function __construct(string $username)
+    public function __construct(string $username, string $status)
     {
         $this->id = Uuid::uuid4();
         $this->status = self::STATUS_PLANNED;
-        $this->logs[] = new TaskLog($username, 'created');
+        $this->logs[] = new TaskLog($username, $status, 'created');
     }
 
-    public static function createFromDTO(TaskDTO $dto): Task
+    public function changeStatus(string $newStatus, string $username, ?string $comment): void
     {
-        $task = new self('test');
+        $this->status = $newStatus;
+        $this->logs[] = new TaskLog($username, $newStatus, $comment);
+    }
+
+    public function setAssignee(string $assignee): void
+    {
+        $this->assignee = $assignee;
+    }
+
+    public static function createFromDTO(TaskDTO $dto, string $username): Task
+    {
+        $task = new self($username, self::STATUS_PLANNED);
         $task->updateFromDTO($dto);
 
         return $task;

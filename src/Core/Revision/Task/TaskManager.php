@@ -4,30 +4,35 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Task;
 
-use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TaskRepository;
+use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
 
 final class TaskManager
 {
     private TaskRepository $taskRepository;
     private RevisionRepository $revisionRepository;
+    private UserService $userService;
     private LoggerInterface $logger;
 
     public function __construct(
         TaskRepository $taskRepository,
         RevisionRepository $revisionRepository,
+        UserService $userService,
         LoggerInterface $logger
     ) {
         $this->taskRepository = $taskRepository;
         $this->revisionRepository = $revisionRepository;
+        $this->userService = $userService;
         $this->logger = $logger;
     }
 
-    public function getCurrentTask(Revision $revision): ?Task
+    public function getCurrentTask(int $revisionId): ?Task
     {
+        $revision = $this->revisionRepository->findOneById($revisionId);
+
         if (!$revision->getTasks()->hasCurrentId()) {
             return null;
         }
@@ -57,15 +62,17 @@ final class TaskManager
 
     public function create(TaskDTO $taskDTO, int $revisionId): Task
     {
+        $user = $this->userService->getCurrentUser();
+
         $now = new \DateTimeImmutable('now');
         $this->revisionRepository->lockRevision($revisionId, 'SYSTEM_TASK', $now->modify('+1min'));
 
-        $task = Task::createFromDTO($taskDTO);
+        $task = Task::createFromDTO($taskDTO, $user->getUsername());
         $revision = $this->revisionRepository->findOneById($revisionId);
 
         $this->taskRepository->save($task);
 
-        $revision->getTasks()->add($task);
+        $revision->getTasks()->add($task, $user);
         $this->revisionRepository->save($revision);
         $this->revisionRepository->unlockRevision($revisionId);
 
@@ -98,5 +105,30 @@ final class TaskManager
         $this->revisionRepository->unlockRevision($revisionId);
 
         $this->taskRepository->delete($task);
+    }
+
+    public function canRequestValidation(Task $task): bool
+    {
+        $user = $this->userService->getCurrentUser();
+
+        return $task->getAssignee() === $user->getUsername();
+    }
+
+    public function requestValidation(Task $task, int $revisionId, string $comment): void
+    {
+        $user = $this->userService->getCurrentUser();
+
+        $now = new \DateTimeImmutable('now');
+        $this->revisionRepository->lockRevision($revisionId, $user->getUsername(), $now->modify('+10min'));
+
+        $this->revisionRepository->clear();
+        $revision = $this->revisionRepository->findOneById($revisionId);
+        $owner = $revision->getTasks()->getOwner();
+
+        $task->changeStatus(Task::STATUS_FINISHED, $user->getUsername(), $comment);
+        $task->setAssignee($owner);
+
+        $this->taskRepository->save($task);
+        $this->revisionRepository->unlockRevision($revisionId);
     }
 }

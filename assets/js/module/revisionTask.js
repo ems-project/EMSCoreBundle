@@ -1,15 +1,19 @@
 import ajaxModal from "./../helper/ajaxModal";
-
-import { ajaxJsonGet } from "./../helper/ajax";
+import {ajaxJsonGet, ajaxJsonSubmit} from "./../helper/ajax";
 
 export default class RevisionTask {
     constructor() {
-        this.taskTab = document.querySelector('#tab_tasks');
-        this.taskList = document.querySelector('ul#revision-tasks');
-        this.tasksEmpty = this.taskTab.querySelector('#revision-tasks-empty');
-        this.tasksInfo = this.taskTab.querySelector('#revision-tasks-info');
+        this.taskTab = document.querySelector('#tab_task');
+        if (this.taskTab !== null) {
+            this.loadTask();
+        }
 
-        if (this.taskList !== null) {
+        this.tasksTab = document.querySelector('#tab_tasks');
+        if (this.tasksTab !== null) {
+            this.taskList = document.querySelector('ul#revision-tasks');
+            this.tasksEmpty = this.tasksTab.querySelector('#revision-tasks-empty');
+            this.tasksInfo = this.tasksTab.querySelector('#revision-tasks-info');
+
             this.modalCreate();
 
             if ('true' === this.taskList.dataset.load) {
@@ -20,9 +24,37 @@ export default class RevisionTask {
         }
     }
 
+    loadTask() {
+        var revisionTask = this.taskTab.querySelector('#revision-task');
+
+        var url = revisionTask.dataset.url;
+        var loading = this.taskTab.querySelector('.task-loading');
+        loading.style.display = 'block';
+
+        var callbackRequest = (json, request) => {
+            if (200 !== request.status) { return; }
+
+            loading.style.display = 'none';
+            if (json.hasOwnProperty('html')) { revisionTask.innerHTML = json.html; }
+
+            var buttonRequestValidation = this.taskTab.querySelector('#btn-request-validation');
+            if (buttonRequestValidation) {
+                buttonRequestValidation.onclick = (event) => {
+                    event.preventDefault();
+                    var formData = $('form[name="request_validation"]').serialize();
+                    revisionTask.innerHTML = '';
+                    loading.style.display = 'block';
+                    ajaxJsonSubmit(url, formData, callbackRequest);
+                }
+            }
+        };
+
+        ajaxJsonGet(url, callbackRequest);
+    }
+
     loadTasks() {
         var url = this.taskList.dataset.url;
-        var loading = this.taskList.querySelector('#task-loading');
+        var loading = this.taskList.querySelector('li.task-loading');
         loading.style.display = 'block';
 
         this.tasksEmpty.style.display = 'none';
@@ -31,9 +63,7 @@ export default class RevisionTask {
         });
 
         ajaxJsonGet(url, (json, request) => {
-            if (200 !== request.status) {
-                return;
-            }
+            if (200 !== request.status) { return; }
 
             loading.style.display = 'none';
 

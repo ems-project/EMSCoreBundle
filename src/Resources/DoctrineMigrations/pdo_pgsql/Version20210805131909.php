@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20210802113300 extends AbstractMigration
+final class Version20210805131909 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
@@ -20,11 +20,13 @@ final class Version20210802113300 extends AbstractMigration
         $this->addSql('CREATE TABLE task (id UUID NOT NULL, title VARCHAR(255) NOT NULL, status VARCHAR(25) NOT NULL, deadline TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, assignee TEXT NOT NULL, description TEXT NOT NULL, logs JSON NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN task.id IS \'(DC2Type:uuid)\'');
         $this->addSql('COMMENT ON COLUMN task.deadline IS \'(DC2Type:datetime_immutable)\'');
-        $this->addSql('ALTER TABLE revision ADD task_owner TEXT DEFAULT NULL');
         $this->addSql('ALTER TABLE revision ADD task_current_id UUID DEFAULT NULL');
         $this->addSql('ALTER TABLE revision ADD task_planned_ids JSON DEFAULT NULL');
         $this->addSql('ALTER TABLE revision ADD task_approved_ids JSON DEFAULT NULL');
+        $this->addSql('ALTER TABLE revision ADD owner TEXT DEFAULT NULL');
         $this->addSql('COMMENT ON COLUMN revision.task_current_id IS \'(DC2Type:uuid)\'');
+        $this->addSql('ALTER TABLE revision ADD CONSTRAINT FK_6D6315CCE99931F3 FOREIGN KEY (task_current_id) REFERENCES task (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('CREATE INDEX IDX_6D6315CCE99931F3 ON revision (task_current_id)');
     }
 
     public function down(Schema $schema): void
@@ -32,10 +34,12 @@ final class Version20210802113300 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
 
+        $this->addSql('ALTER TABLE revision DROP CONSTRAINT FK_6D6315CCE99931F3');
         $this->addSql('DROP TABLE task');
-        $this->addSql('ALTER TABLE revision DROP task_owner');
+        $this->addSql('DROP INDEX IDX_6D6315CCE99931F3');
         $this->addSql('ALTER TABLE revision DROP task_current_id');
         $this->addSql('ALTER TABLE revision DROP task_planned_ids');
         $this->addSql('ALTER TABLE revision DROP task_approved_ids');
+        $this->addSql('ALTER TABLE revision DROP owner');
     }
 }

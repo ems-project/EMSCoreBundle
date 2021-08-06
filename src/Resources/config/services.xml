@@ -69,9 +69,13 @@
 
         <service id="ems_core.core_revision_task.task_manager" class="EMS\CoreBundle\Core\Revision\Task\TaskManager">
             <argument type="service" id="ems.repository.task" />
+            <argument type="service" id="ems_core.core_revision_task.task_table_service" />
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
             <argument type="service" id="ems.service.user" />
             <argument type="service" id="logger" />
+        </service>
+        <service id="ems_core.core_revision_task.task_table_service" class="EMS\CoreBundle\Core\Revision\Task\TaskTableService">
+            <argument type="service" id="ems.repository.task" />
         </service>
     </services>
 </container>

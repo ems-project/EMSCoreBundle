@@ -20,13 +20,12 @@ final class TaskCollection
     public function __construct(Revision $revision, ArrayCollection $results)
     {
         $this->revision = $revision;
-        $revisionTasks = $revision->getTasks();
 
-        if ($revisionTasks->hasCurrentId() && $currentTask = $results->get($revisionTasks->getCurrentId())) {
+        if ($revision->hasTaskCurrent() && $currentTask = $results->get($revision->getTaskCurrent()->getId())) {
             $this->tasks[] = $currentTask;
         }
 
-        foreach ($revisionTasks->getPlannedIds() as $plannedId) {
+        foreach ($revision->getTaskPlannedIds() as $plannedId) {
             if (null !== $plannedTask = $results->get($plannedId)) {
                 $this->tasks[] = $plannedTask;
             }

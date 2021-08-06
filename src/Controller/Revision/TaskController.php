@@ -9,11 +9,15 @@ use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Core\UI\AjaxModal;
 use EMS\CoreBundle\Core\UI\AjaxService;
 use EMS\CoreBundle\Form\Form\RevisionTaskType;
+use EMS\CoreBundle\Form\Form\TableType;
+use EMS\CoreBundle\Helper\DataTableRequest;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Twig\TemplateWrapper;
@@ -23,12 +27,48 @@ final class TaskController extends AbstractController
     private TaskManager $taskManager;
     private AjaxService $ajax;
     private FormFactoryInterface $formFactory;
+    private LoggerInterface $logger;
 
-    public function __construct(TaskManager $taskManager, AjaxService $ajax, FormFactoryInterface $formFactory)
-    {
+    public function __construct(
+        TaskManager $taskManager,
+        AjaxService $ajax,
+        FormFactoryInterface $formFactory,
+        LoggerInterface $logger
+    ) {
         $this->taskManager = $taskManager;
         $this->ajax = $ajax;
         $this->formFactory = $formFactory;
+        $this->logger = $logger;
+    }
+
+    /**
+     * @Route("/task/datatable.json", name="revision.task.dashboard.json")
+     */
+    public function ajaxDataTableAction(Request $request): Response
+    {
+        $table = $this->taskManager->getTable($this->generateUrl('revision.task.dashboard.json'));
+        $dataTableRequest = DataTableRequest::fromRequest($request);
+        $table->resetIterator($dataTableRequest);
+
+        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+            'dataTableRequest' => $dataTableRequest,
+            'table' => $table,
+        ], new JsonResponse());
+    }
+
+    /**
+     * @Route("/dashboard/tasks", name="revision.task.dashboard")
+     */
+    public function dashboard(Request $request): Response
+    {
+        $table = $this->taskManager->getTable($this->generateUrl('revision.task.dashboard.json'));
+
+        $form = $this->createForm(TableType::class, $table);
+        $form->handleRequest($request);
+
+        return $this->render('@EMSCore/revision/task/dashboard.html.twig', [
+            'table' => $form->createView(),
+        ]);
     }
 
     /**
@@ -81,7 +121,7 @@ final class TaskController extends AbstractController
                 'html' => $ajaxTemplate->renderBlock('taskItem', [
                     'task' => $task,
                     'revision' => $revision,
-                    'isCurrent' => $revision->getTasks()->isCurrent($task),
+                    'isCurrent' => $revision->isTaskCurrent($task),
                 ]),
             ];
         }
@@ -110,6 +150,7 @@ final class TaskController extends AbstractController
                     ->setFooter('modalFooterClose')
                     ->getResponse();
             } catch (\Throwable $e) {
+                $this->logger->error($e->getMessage(), ['e' => $e]);
                 $ajaxModal->addMessageError('task.error.ajax', [], $e);
             }
         }
@@ -144,6 +185,7 @@ final class TaskController extends AbstractController
                     ->setBody('modalUpdateBody', ['form' => $form->createView()])
                     ->getResponse();
             } catch (\Throwable $e) {
+                $this->logger->error($e->getMessage(), ['e' => $e]);
                 $ajaxModal->addMessageError('task.error.ajax', [], $e);
             }
         }
@@ -168,6 +210,7 @@ final class TaskController extends AbstractController
             $this->taskManager->delete($task, $revisionId);
             $ajaxModal->addMessageSuccess('task.delete.success', ['%title%' => $task->getTitle()]);
         } catch (\Throwable $e) {
+            $this->logger->error($e->getMessage(), ['e' => $e]);
             $ajaxModal->addMessageError('task.error.ajax');
         }
 

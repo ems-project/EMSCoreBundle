@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Revision\Task;
 
 use EMS\CoreBundle\Entity\Task;
+use EMS\CoreBundle\Form\Data\DateTableColumn;
+use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
+use EMS\CoreBundle\Form\Data\TemplateTableColumn;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TaskRepository;
 use EMS\CoreBundle\Service\UserService;
@@ -13,31 +17,48 @@ use Psr\Log\LoggerInterface;
 final class TaskManager
 {
     private TaskRepository $taskRepository;
+    private TaskTableService $taskTableService;
     private RevisionRepository $revisionRepository;
     private UserService $userService;
     private LoggerInterface $logger;
 
     public function __construct(
         TaskRepository $taskRepository,
+        TaskTableService $taskTableService,
         RevisionRepository $revisionRepository,
         UserService $userService,
         LoggerInterface $logger
     ) {
         $this->taskRepository = $taskRepository;
+        $this->taskTableService = $taskTableService;
         $this->revisionRepository = $revisionRepository;
         $this->userService = $userService;
         $this->logger = $logger;
+    }
+
+    public function getTable(string $ajaxUrl): EntityTable
+    {
+        $table = new EntityTable($this->taskTableService, $ajaxUrl, []);
+        $table->addColumnDefinition(new TemplateBlockTableColumn(
+            '', 'iconColumn', '@EMSCore/revision/task/columns.twig'
+        ))->setCellClass('col-status');
+        $table->addColumn('task.dashboard.title', 'taskTitle');
+        $table->addColumn('task.dashboard.document', 'label');
+        $table->addColumn('task.dashboard.status', 'taskStatus');
+        $table->addColumnDefinition(new DateTableColumn('task.dashboard.deadline', 'taskDeadline'));
+        $table->addColumnDefinition(new TemplateTableColumn([
+            'label' => 'Actions',
+            'template' => "{{ block('actionsColumn', '@EMSCore/revision/task/columns.twig') }}",
+        ]))->setCellClass('col-actions');
+
+        return $table;
     }
 
     public function getCurrentTask(int $revisionId): ?Task
     {
         $revision = $this->revisionRepository->findOneById($revisionId);
 
-        if (!$revision->getTasks()->hasCurrentId()) {
-            return null;
-        }
-
-        return $this->getTask($revision->getTasks()->getCurrentId());
+        return $revision->hasTaskCurrent() ? $revision->getTaskCurrent() : null;
     }
 
     public function getTask(string $taskId): Task
@@ -70,9 +91,13 @@ final class TaskManager
         $task = Task::createFromDTO($taskDTO, $user->getUsername());
         $revision = $this->revisionRepository->findOneById($revisionId);
 
+        $revision->addTask($task, $user);
+        if ($revision->isTaskCurrent($task)) {
+            $task->statusProgress();
+        }
+
         $this->taskRepository->save($task);
 
-        $revision->getTasks()->add($task, $user);
         $this->revisionRepository->save($revision);
         $this->revisionRepository->unlockRevision($revisionId);
 
@@ -97,8 +122,21 @@ final class TaskManager
 
         $revision = $this->revisionRepository->findOneById($revisionId);
 
-        if (!$revision->getTasks()->delete($task)) {
-            throw new \RuntimeException(\sprintf('Task with id "%s" not attached to revision', $task->getId()));
+        if ($revision->isTaskCurrent($task)) {
+            $nextPlannedId = $revision->getTaskNextPlannedId();
+            $nextPlannedTask = $nextPlannedId ? $this->getTask($nextPlannedId) : null;
+
+            if ($nextPlannedTask) {
+                $nextPlannedTask->statusProgress();
+                $revision->setTaskCurrent($nextPlannedTask);
+                $this->taskRepository->save($nextPlannedTask);
+            } else {
+                $revision->setTaskCurrent(null);
+            }
+        } elseif ($revision->isTaskPlanned($task)) {
+            $revision->deleteTaskPlanned($task);
+        } elseif ($revision->isTaskApproved($task)) {
+            $revision->deleteTaskApproved($task);
         }
 
         $this->revisionRepository->save($revision);
@@ -123,7 +161,7 @@ final class TaskManager
 
         $this->revisionRepository->clear();
         $revision = $this->revisionRepository->findOneById($revisionId);
-        $owner = $revision->getTasks()->getOwner();
+        $owner = $revision->getOwner();
 
         $task->changeStatus(Task::STATUS_FINISHED, $user->getUsername(), $comment);
         $task->setAssignee($owner);

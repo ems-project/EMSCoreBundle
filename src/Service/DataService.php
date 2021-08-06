@@ -24,7 +24,6 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Entity\RevisionTasks;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
@@ -1212,9 +1211,8 @@ class DataService
             }
 
             $newDraft->setStartTime($now);
-            $newDraft->setTasks($revision->getTasks());
             $revision->setEndTime($now);
-            $revision->setTasks(new RevisionTasks());
+            $revision->clearTasks();
 
             $this->lockRevision($newDraft, null, false, $username);
 

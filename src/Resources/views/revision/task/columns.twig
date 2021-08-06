@@ -1,0 +1,17 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block iconColumn %}
+    <i class="fa fa-circle-o"></i>
+{% endblock %}
+
+{% block actionsColumn %}
+    <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            action <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="#"><i class="fa fa-file" aria-hidden="true"></i> {{ 'task.dashboard.go_revision'|trans }}</a></li>
+            <li><a href="#"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'task.dashboard.edit_revision'|trans }}</a></li>
+        </ul>
+    </div>
+{% endblock %}

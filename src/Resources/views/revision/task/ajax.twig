@@ -14,7 +14,7 @@
             {% endif %}
         </div>
         <div class="task-description">{{ task.description }}</div>
-        {% if form != null %}
+        {% if form is defined and form != null %}
             <div id="task-send-validation">
                 <hr />
                 {{ form(form) }}
@@ -32,7 +32,7 @@
                 <div class="task-title">{{ task.title }}</div>
                 <div>{{ 'task.assigned_to'|trans }}<strong>{{ task.assignee|displayname }}</strong></div>
                 {% if isCurrent|default(false) %}
-                    <div>{{ 'task.in_progress'|trans|raw }}<strong>{{ 'in progress' }}</strong></div>
+                    <div><strong>{{ task.status }}</strong></div>
                 {% endif %}
             </div>
         </div>

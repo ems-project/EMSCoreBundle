@@ -18,23 +18,51 @@ final class TaskRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param array<mixed> $context
+     */
+    public function countTable(string $searchValue, array $context = []): int
+    {
+        $qb = $this->createQueryBuilder('t');
+        $qb->select('count(t.id)');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * @param array<mixed> $context
+     *
+     * @return Revision[]
+     */
+    public function findTable(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, array $context = []): array
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb
+            ->select('r', 't')
+            ->from(Revision::class, 'r')
+            ->join('r.taskCurrent', 't')
+            ->setFirstResult($from)
+            ->setMaxResults($size);
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
      * @return ArrayCollection<string, Task>
      */
     public function getTasks(Revision $revision): ArrayCollection
     {
         $qb = $this->createQueryBuilder('t');
-        $revisionTasks = $revision->getTasks();
 
         $orExpr = $qb->expr()->orX();
 
-        if ($revisionTasks->hasCurrentId()) {
+        if ($revision->hasTaskCurrent()) {
             $orExpr->add($qb->expr()->eq('t.id', ':current_id'));
-            $qb->setParameter('current_id', $revisionTasks->getCurrentId());
+            $qb->setParameter('current_id', $revision->getTaskCurrent()->getId());
         }
 
-        if ($revisionTasks->hasPlannedIds()) {
+        if ($revision->hasTaskPlannedIds()) {
             $orExpr->add($qb->expr()->in('t.id', ':planned_ids'));
-            $qb->setParameter('planned_ids', $revisionTasks->getPlannedIds());
+            $qb->setParameter('planned_ids', $revision->getTaskPlannedIds());
         }
 
         if ($orExpr->count() > 0) {

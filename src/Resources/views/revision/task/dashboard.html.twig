@@ -1,0 +1,21 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block body %}
+
+<div id="task-dashboard" class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#assigned-user" data-toggle="tab" aria-expanded="true">{{ 'task.dashboard.assigned'|trans }}</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="assigned-user">
+            {% form_theme table '@EMSCore/form/forms.html.twig' %}
+            {{ form(table) }}
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

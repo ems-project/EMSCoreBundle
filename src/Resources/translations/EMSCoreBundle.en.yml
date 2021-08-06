@@ -930,6 +930,14 @@ view:
 task:
   tab_task: 'Task'
   tab_tasks: 'Tasks'
+  dashboard:
+      assigned: 'Assigned to me'
+      go_revision: 'Go to revision'
+      edit_revision: 'Edit to revision'
+      title: 'Task'
+      document: 'Document'
+      status: 'Status'
+      deadline: 'Deadline'
   info:
     empty: 'No tasks for this document'
     change_order: 'Change task order'

@@ -1,0 +1,90 @@
+div#task-dashboard {
+  form[name="emsco_form_table_type"] {
+      .box-header { display: none; }
+      .box { border: 0; }
+      .table-responsive { min-height: 250px; }
+
+      td.col-status { width: 50px; text-align: center; }
+      td.col-actions { width: 200px; text-align: left; }
+  }
+}
+
+div#revision-tabs {
+  div.tab-content { padding: 0; }
+  div.tab-pane {padding: 10px;}
+
+  .task-loading {
+    text-align: center;
+    color: #ccc;
+    padding: 25px 0;
+  }
+
+  div#tab_task {
+    padding: 15px;
+    div.task-title { font-size: 14px; margin-bottom: 5px; font-weight: bold; }
+    div.task-info {
+      margin-bottom: 10px;
+      font-size: 12px;
+      span.task-deadline { font-weight: bold; i { margin-right: 5px; } }
+      span.task-deadline-red { color: red; }
+    }
+    div.task-description { font-size: 12px; margin-bottom: 10px; }
+
+    div#task-send-validation {
+      hr { border-color: #f5f5f5; margin: 10px 0; }
+      label { color: #666; font-size: 12px; }
+      textarea { margin-bottom: 10px; resize: none; }
+    }
+  }
+
+  div#tab_tasks {
+    padding: 0;
+
+    div#revision-tasks-empty {
+      font-weight: bold;
+      padding: 15px 15px 0;
+    }
+
+    div#revision-tasks-info {
+      background-color: #f5f5f5;
+      font-size: 12px;
+      padding: 5px;
+      text-align: right;
+      margin-top: 1px;
+      & i { padding: 0 10px; }
+    }
+
+    ul#revision-tasks {
+      li.task-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0;
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+
+        & .task-info {
+          padding: 10px;
+          display: flex;
+          align-items: flex-start;
+          font-size: 12px;
+
+          & i { padding: 3px 10px 0 0; }
+          & .task-title { font-size: 14px; margin-bottom: 5px; }
+        }
+
+        & .btn-modal-edit-task { background-color: #fff; outline: 0;}
+      }
+    }
+
+    div.revision-task-actions {
+      padding: 0 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      & > * {
+        margin-bottom: 15px;
+      }
+    }
+  }
+}

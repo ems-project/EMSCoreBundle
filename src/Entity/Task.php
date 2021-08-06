@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskLog;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -16,14 +15,14 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Table(name="task")
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
+ *
+ * @final
  */
-final class Task
+class Task implements EntityInterface
 {
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
     private UuidInterface $id;
 
@@ -70,6 +69,11 @@ final class Task
         $this->id = Uuid::uuid4();
         $this->status = self::STATUS_PLANNED;
         $this->logs[] = new TaskLog($username, $status, 'created');
+    }
+
+    public function statusProgress(): void
+    {
+        $this->status = self::STATUS_PROGRESS;
     }
 
     public function changeStatus(string $newStatus, string $username, ?string $comment): void

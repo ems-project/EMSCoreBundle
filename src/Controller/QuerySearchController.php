@@ -55,8 +55,8 @@ final class QuerySearchController extends AbstractController
                         $this->querySearchService->deleteByIds($table->getSelected());
                         break;
                     case TableType::REORDER_ACTION:
-                        $newOrder = $request->get($form->getName(), [])['reordered'] ?? [];
-                        $this->querySearchService->reorderByIds(\array_flip(\array_values($newOrder)));
+                        $newOrder = TableType::getReorderedKeys($form->getName(), $request);
+                        $this->querySearchService->reorderByIds($newOrder);
                         break;
                     default:
                         $this->logger->error('log.controller.query_search.unknown_action');

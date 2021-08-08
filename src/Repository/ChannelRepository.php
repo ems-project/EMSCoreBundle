@@ -80,6 +80,16 @@ final class ChannelRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
+    public function getById(string $id): Channel
+    {
+        $channel = $this->find($id);
+        if (!$channel instanceof Channel) {
+            throw new \RuntimeException('Unexpected channel type');
+        }
+
+        return $channel;
+    }
+
     /**
      * @return Channel[]
      */

@@ -123,4 +123,14 @@ class TemplateRepository extends ServiceEntityRepository
                 ->setParameter(':term', '%'.$searchValue.'%');
         }
     }
+
+    public function getById(string $id): Template
+    {
+        $action = $this->find($id);
+        if (!$action instanceof Template) {
+            throw new \RuntimeException('Unexpected action type');
+        }
+
+        return $action;
+    }
 }

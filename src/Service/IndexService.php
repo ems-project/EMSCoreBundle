@@ -159,15 +159,20 @@ final class IndexService
     public function getAliasesByIndex(?string $indexName): array
     {
         $aliases = [];
-        foreach ($this->getAliases($indexName) as $index) {
-            $aliases = \array_merge($aliases, \array_keys($index['aliases'] ?? []));
+        foreach ($this->getAliases($indexName) as $indexInfo) {
+            foreach ($indexInfo['aliases'] ?? [] as $alias => $aliasInfo) {
+                if (!\is_string($alias)) {
+                    throw new \RuntimeException('Unexpected non string alias name');
+                }
+                $aliases[] = $alias;
+            }
         }
 
         return $aliases;
     }
 
     /**
-     * @return array<string, array{aliases: array<string, array<mixed>> }>
+     * @return array<string, mixed>
      */
     private function getAliases(?string $indexName): array
     {

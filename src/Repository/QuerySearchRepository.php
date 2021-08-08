@@ -85,4 +85,14 @@ final class QuerySearchRepository extends ServiceEntityRepository
                 ->setParameter(':term', '%'.$searchValue.'%');
         }
     }
+
+    public function getById(string $id): QuerySearch
+    {
+        $querySearch = $this->find($id);
+        if (!$querySearch instanceof QuerySearch) {
+            throw new \RuntimeException('Unexpected querySearch type');
+        }
+
+        return $querySearch;
+    }
 }

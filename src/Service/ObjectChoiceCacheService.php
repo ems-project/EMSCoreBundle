@@ -85,9 +85,7 @@ class ObjectChoiceCacheService
                             ],
                         ]);
                     }
-                    if ($currentType->hasLabelField()) {
-                        $search->setSources([$currentType->giveLabelField()]);
-                    }
+                    $search->setSources($currentType->getRenderingSourceFields());
 
                     $scroll = $this->elasticaService->scroll($search);
 
@@ -177,9 +175,10 @@ class ObjectChoiceCacheService
                 }
 
                 $contentType = $this->contentTypeService->getByName($type);
-                if (false !== $contentType && !empty($contentType->getLabelField()) && !\in_array($contentType->getLabelField(), $sourceField)) {
-                    $sourceField[] = $contentType->getLabelField();
+                if (false === $contentType) {
+                    continue;
                 }
+                $sourceField = \array_unique(\array_merge($sourceField, $contentType->getRenderingSourceFields()), SORT_STRING);
             }
             $boolQuery->setMinimumShouldMatch(1);
 

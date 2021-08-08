@@ -12,10 +12,10 @@
 			{{ form_start(form) }}
 			{{ form_end(form) }}
 		</div>
-		
+
 	 	<form role="form" id="criteria-form"
 			data-api-search="{{ path("elasticsearch.api.search")|e('html_attr') }}"
-			data-category="{% if view.options.criteriaMode == 'internal' and config.category and config.category.rawData %}{{ config.category.rawData|e('html_attr') }}{% endif %}"
+			data-category="{{ config.category.rawData|default('')|e('html_attr') }}"
 			data-environment-name="{% if targetContentType %}{{ targetContentType.environment.name|e('html_attr') }}{% else %}{{ view.contentType.environment.name|e('html_attr') }}{% endif %}"
 			data-type-name="{% if targetContentType %}{{ targetContentType.name|e('html_attr') }}{% else %}{{ view.contentType.name|e('html_attr') }}{% endif %}"
 			data-add-url="{{ path('views.criteria.add', {view: view.id}) |e('html_attr') }}"

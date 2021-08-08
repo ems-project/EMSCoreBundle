@@ -1270,6 +1270,25 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
+     * @return string[]
+     */
+    public function getRenderingSourceFields(): array
+    {
+        $sourceFields = [];
+        if ($this->hasLabelField()) {
+            $sourceFields[] = $this->giveLabelField();
+        }
+        if ($this->hasColorField()) {
+            $sourceFields[] = $this->giveColorField();
+        }
+        if ($this->hasCategoryField()) {
+            $sourceFields[] = $this->giveCategoryField();
+        }
+
+        return $sourceFields;
+    }
+
+    /**
      * Add template.
      *
      * @return ContentType

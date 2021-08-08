@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Response\Response as EmsResponse;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\DataField;
@@ -582,32 +583,16 @@ class CriteriaController extends AppController
     {
         $multipleField = $this->getMultipleField($view->getContentType()->getFieldType());
 
-        $body = [
-                'query' => [
-                        'bool' => [
-                                'must' => [
-                                ],
-                        ],
-                ],
-        ];
+        $boolQuery = $elasticaService->getBoolQuery();
 
         foreach ($rawData as $name => $key) {
-            if ($multipleField != $name) {
-                $body['query']['bool']['must'][] = [
-                    'term' => [
-                        $name => [
-                            'value' => $key,
-                        ],
-                    ],
-                ];
+            if ($multipleField !== $name) {
+                $boolQuery->addMust($elasticaService->getTermsQuery($name, [$key]));
             }
         }
+        $query = $elasticaService->filterByContentTypes($boolQuery, [$view->getContentType()->getName()]);
 
-        $search = $elasticaService->convertElasticsearchSearch([
-            'body' => $body,
-            'index' => $view->getContentType()->getEnvironment()->getAlias(),
-            'type' => $view->getContentType()->getName(),
-        ]);
+        $search = new Search([$view->getContentType()->getEnvironment()->getAlias()], $query);
         $response = EmsResponse::fromResultSet($elasticaService->search($search));
 
         if (0 == $response->getTotal()) {

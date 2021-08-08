@@ -92,6 +92,9 @@ class ObjectChoiceCacheService
                     if ($currentType->hasColorField()) {
                         $sourceFields[] = $currentType->giveColorField();
                     }
+                    if ($currentType->hasCategoryField()) {
+                        $sourceFields[] = $currentType->giveCategoryField();
+                    }
                     $search->setSources($sourceFields);
 
                     $scroll = $this->elasticaService->scroll($search);
@@ -187,6 +190,9 @@ class ObjectChoiceCacheService
                 }
                 if (false !== $contentType && !empty($contentType->getColorField()) && !\in_array($contentType->getColorField(), $sourceField)) {
                     $sourceField[] = $contentType->getColorField();
+                }
+                if (false !== $contentType && !empty($contentType->getCategoryField()) && !\in_array($contentType->getCategoryField(), $sourceField)) {
+                    $sourceField[] = $contentType->getCategoryField();
                 }
             }
             $boolQuery->setMinimumShouldMatch(1);

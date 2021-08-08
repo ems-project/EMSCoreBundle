@@ -615,6 +615,7 @@ class CriteriaController extends AppController
             $multipleValueToAdd = $rawData[$multipleField];
             if (!$revision) {
                 $revision = new Revision();
+                $revision->setStartTime(new \DateTime());
                 $revision->setContentType($view->getContentType());
                 $rawData[$multipleField] = [];
                 $revision->setRawData($rawData);
@@ -656,7 +657,7 @@ class CriteriaController extends AppController
 
             $multipleValueToAdd = $rawData[$multipleField];
             $rawData = $revision->getRawData();
-            if (\in_array($multipleValueToAdd, $rawData[$multipleField])) {
+            if (\in_array($multipleValueToAdd, $rawData[$multipleField] ?? [])) {
                 $this->getLogger()->warning('log.view.criteria.already_exists', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -933,7 +934,7 @@ class CriteriaController extends AppController
                         $message .= ', '.$value;
                     }
                 }
-                $this->getLogger()->warning('log.view.criteria.removed', [
+                $this->getLogger()->info('log.view.criteria.removed', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),

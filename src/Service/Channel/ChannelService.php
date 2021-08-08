@@ -67,15 +67,15 @@ final class ChannelService implements EntityServiceInterface
     }
 
     /**
-     * @param array<string, int> $ids
+     * @param string[] $ids
      */
     public function reorderByIds(array $ids): void
     {
         $counter = 1;
-        foreach ($this->channelRepository->getByIds(\array_keys($ids)) as $channel) {
-            $channel->setOrderKey($counter);
+        foreach ($ids as $id) {
+            $channel = $this->channelRepository->getById($id);
+            $channel->setOrderKey($counter++);
             $this->channelRepository->create($channel);
-            ++$counter;
         }
     }
 

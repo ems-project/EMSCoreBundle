@@ -56,8 +56,8 @@ final class ChannelController extends AbstractController
                         $this->channelService->deleteByIds($table->getSelected());
                         break;
                     case TableType::REORDER_ACTION:
-                        $newOrder = $request->get($form->getName(), [])['reordered'] ?? [];
-                        $this->channelService->reorderByIds(\array_flip(\array_values($newOrder)));
+                        $newOrder = TableType::getReorderedKeys($form->getName(), $request);
+                        $this->channelService->reorderByIds($newOrder);
                         break;
                     default:
                         $this->logger->error('log.controller.channel.unknown_action');

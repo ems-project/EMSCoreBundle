@@ -69,12 +69,14 @@ final class QuerySearchService implements EntityServiceInterface
     }
 
     /**
-     * @param array<string, int> $ids
+     * @param string[] $ids
      */
     public function reorderByIds(array $ids): void
     {
-        foreach ($this->querySearchRepository->getByIds(\array_keys($ids)) as $querySearch) {
-            $querySearch->setOrderKey(isset($ids[$querySearch->getId()]) ? $ids[$querySearch->getId()] + 1 : 0);
+        $counter = 1;
+        foreach ($ids as $id) {
+            $querySearch = $this->querySearchRepository->getById($id);
+            $querySearch->setOrderKey($counter++);
             $this->querySearchRepository->create($querySearch);
         }
     }

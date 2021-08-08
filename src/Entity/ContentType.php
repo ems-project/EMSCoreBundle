@@ -1182,6 +1182,16 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
+    public function hasCategoryField(): bool
+    {
+        return null !== $this->categoryField;
+    }
+
+    public function giveCategoryField(): string
+    {
+        return $this->categoryField;
+    }
+
     /**
      * Get categoryField.
      *

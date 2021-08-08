@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Response\Response as EmsResponse;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\DataField;
@@ -28,6 +29,7 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -216,7 +218,7 @@ class CriteriaController extends AppController
      *
      * @Route("/views/criteria/table/{view}", name="views.criteria.table", methods={"GET", "POST"})
      */
-    public function generateCriteriaTableAction(View $view, Request $request, ElasticaService $elasticaService, AuthorizationCheckerInterface $authorizationChecker, ContentTypeService $contentTypeService, ObjectChoiceListFactory $objectChoiceListFactory)
+    public function generateCriteriaTableAction(View $view, Request $request, ElasticaService $elasticaService, AuthorizationCheckerInterface $authorizationChecker, ContentTypeService $contentTypeService, ObjectChoiceListFactory $objectChoiceListFactory, LoggerInterface $logger)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -232,7 +234,7 @@ class CriteriaController extends AppController
             }
         }
 
-        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $request->getSession());
+        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $logger);
 
         $form = $this->createForm(CriteriaFilterType::class, $criteriaUpdateConfig, [
                 'view' => $view,
@@ -581,32 +583,16 @@ class CriteriaController extends AppController
     {
         $multipleField = $this->getMultipleField($view->getContentType()->getFieldType());
 
-        $body = [
-                'query' => [
-                        'bool' => [
-                                'must' => [
-                                ],
-                        ],
-                ],
-        ];
+        $boolQuery = $elasticaService->getBoolQuery();
 
         foreach ($rawData as $name => $key) {
-            if ($multipleField != $name) {
-                $body['query']['bool']['must'][] = [
-                    'term' => [
-                        $name => [
-                            'value' => $key,
-                        ],
-                    ],
-                ];
+            if ($multipleField !== $name) {
+                $boolQuery->addMust($elasticaService->getTermsQuery($name, [$key]));
             }
         }
+        $query = $elasticaService->filterByContentTypes($boolQuery, [$view->getContentType()->getName()]);
 
-        $search = $elasticaService->convertElasticsearchSearch([
-            'body' => $body,
-            'index' => $view->getContentType()->getEnvironment()->getAlias(),
-            'type' => $view->getContentType()->getName(),
-        ]);
+        $search = new Search([$view->getContentType()->getEnvironment()->getAlias()], $query);
         $response = EmsResponse::fromResultSet($elasticaService->search($search));
 
         if (0 == $response->getTotal()) {
@@ -629,6 +615,7 @@ class CriteriaController extends AppController
             $multipleValueToAdd = $rawData[$multipleField];
             if (!$revision) {
                 $revision = new Revision();
+                $revision->setStartTime(new \DateTime());
                 $revision->setContentType($view->getContentType());
                 $rawData[$multipleField] = [];
                 $revision->setRawData($rawData);
@@ -670,7 +657,7 @@ class CriteriaController extends AppController
 
             $multipleValueToAdd = $rawData[$multipleField];
             $rawData = $revision->getRawData();
-            if (\in_array($multipleValueToAdd, $rawData[$multipleField])) {
+            if (\in_array($multipleValueToAdd, $rawData[$multipleField] ?? [])) {
                 $this->getLogger()->warning('log.view.criteria.already_exists', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -947,7 +934,7 @@ class CriteriaController extends AppController
                         $message .= ', '.$value;
                     }
                 }
-                $this->getLogger()->warning('log.view.criteria.removed', [
+                $this->getLogger()->info('log.view.criteria.removed', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),

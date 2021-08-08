@@ -97,13 +97,7 @@ final class ActionController extends AbstractController
                         $this->actionService->deleteByIds($table->getSelected());
                         break;
                     case TableType::REORDER_ACTION:
-                        $newOrder = [];
-                        foreach ($request->get($form->getName(), [])['reordered'] ?? [] as $id) {
-                            if (!\is_string($id)) {
-                                throw new \RuntimeException('Unexpected type for action id');
-                            }
-                            $newOrder[] = $id;
-                        }
+                        $newOrder = TableType::getReorderedKeys($form->getName(), $request);
                         $this->actionService->reorderByIds($newOrder);
                         break;
                     default:

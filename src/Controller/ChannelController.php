@@ -56,13 +56,7 @@ final class ChannelController extends AbstractController
                         $this->channelService->deleteByIds($table->getSelected());
                         break;
                     case TableType::REORDER_ACTION:
-                        $newOrder = [];
-                        foreach (\array_keys($request->get($form->getName(), [])['reordered'] ?? []) as $id) {
-                            if (!\is_string($id)) {
-                                throw new \RuntimeException('Unexpected type for channel id');
-                            }
-                            $newOrder[] = $id;
-                        }
+                        $newOrder = TableType::getReorderedKeys($form->getName(), $request);
                         $this->channelService->reorderByIds($newOrder);
                         break;
                     default:

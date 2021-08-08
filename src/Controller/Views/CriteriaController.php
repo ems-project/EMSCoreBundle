@@ -28,6 +28,7 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -216,7 +217,7 @@ class CriteriaController extends AppController
      *
      * @Route("/views/criteria/table/{view}", name="views.criteria.table", methods={"GET", "POST"})
      */
-    public function generateCriteriaTableAction(View $view, Request $request, ElasticaService $elasticaService, AuthorizationCheckerInterface $authorizationChecker, ContentTypeService $contentTypeService, ObjectChoiceListFactory $objectChoiceListFactory)
+    public function generateCriteriaTableAction(View $view, Request $request, ElasticaService $elasticaService, AuthorizationCheckerInterface $authorizationChecker, ContentTypeService $contentTypeService, ObjectChoiceListFactory $objectChoiceListFactory, LoggerInterface $logger)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -232,7 +233,7 @@ class CriteriaController extends AppController
             }
         }
 
-        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $request->getSession());
+        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $logger);
 
         $form = $this->createForm(CriteriaFilterType::class, $criteriaUpdateConfig, [
                 'view' => $view,

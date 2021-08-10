@@ -34,6 +34,24 @@ php bin/console ems:environment:updatemetafield preview
 php bin/console ems:env:rebuild preview
 ```
 
+### Document Tasks
+For enabling the task feature you have to specify the **owner role** on a content type. 
+Tasks are only visibly on the current revision. 
+
+#### Owners
+When you have the owner role you can become the owner of a elasticms document. 
+This is only possible for documents without tasks. Only task managers can change the ownership of a document. 
+Owners can create, update, delete and reorder task into the **tasks** tab in the revision sidebar.
+Other users can see the owners display name in the revision info tab.
+
+#### Assigned Users
+...
+
+#### Task Managers
+...
+
+
+
 
 
  

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="ems_core_task_dashboard" path="/dashboard/{tab}" methods="GET POST">
+        <requirement key="tab">user|owner|manager</requirement>
+        <default key="tab">user</default>
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::dashboard</default>
+    </route>
+    <route id="ems_core_task_ajax_datatable" path="/datatable-{tab}.json" methods="GET POST">
+        <requirement key="tab">user|owner|manager</requirement>
+        <default key="tab">user</default>
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxDataTable</default>
+    </route>
+
+    <route id="ems_core_task_ajax_current" path="/{revisionId}/current" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTask</default>
+    </route>
+    <route id="ems_core_task_ajax_list" path="/{revisionId}/list" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTasks</default>
+    </route>
+
+    <route id="ems_core_task_ajax_create_modal" path="/{revisionId}/create-modal" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxCreateModal</default>
+    </route>
+    <route id="ems_core_task_ajax_update_modal" path="/{revisionId}/update-modal" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxUpdateModal</default>
+    </route>
+    <route id="ems_core_task_ajax_delete" path="/{revisionId}/delete/{taskId}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxDelete</default>
+    </route>
+</routes>

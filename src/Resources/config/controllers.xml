@@ -8,6 +8,11 @@
         <defaults autowire="true" autoconfigure="true" public="true"/>
         <prototype namespace="EMS\CoreBundle\Controller\" resource="../../Controller/*" exclude="../../Controller/{UserController.php,Api,AuthTokenController.php,Form,Revision/EditController.php,Revision/JsonMenuNestedController.php}"/>
 
+        <service id="EMS\CoreBundle\Controller\DashboardController" public="true">
+            <argument type="service" id="ems_core.core_revision_task.task_manager" />
+            <tag name="controller.service_arguments"/>
+        </service>
+
         <service id="EMS\CoreBundle\Controller\Api\Form\SubmissionController" public="true">
             <argument type="service" id="ems.form_submission" />
             <argument type="service" id="logger" />

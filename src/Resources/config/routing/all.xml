@@ -4,6 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
+    <import resource="@EMSCoreBundle/Resources/config/routing/dashboard.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/action.xml"
             prefix="/action" />
     <import resource="@EMSCoreBundle/Resources/config/routing/channel.xml"
@@ -19,4 +20,6 @@
     <import resource="@EMSCoreBundle/Resources/config/routing/datatable.xml"
             prefix="/datatable" />
     <import resource="@EMSCoreBundle/Resources/config/routing/search.xml" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/task.xml"
+            prefix="/tasks" />
 </routes>

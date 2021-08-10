@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20210805131909 extends AbstractMigration
+final class Version20210809075429 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
@@ -27,6 +27,7 @@ final class Version20210805131909 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN revision.task_current_id IS \'(DC2Type:uuid)\'');
         $this->addSql('ALTER TABLE revision ADD CONSTRAINT FK_6D6315CCE99931F3 FOREIGN KEY (task_current_id) REFERENCES task (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('CREATE INDEX IDX_6D6315CCE99931F3 ON revision (task_current_id)');
+        $this->addSql('ALTER TABLE content_type ADD owner_role VARCHAR(100) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
@@ -36,6 +37,7 @@ final class Version20210805131909 extends AbstractMigration
 
         $this->addSql('ALTER TABLE revision DROP CONSTRAINT FK_6D6315CCE99931F3');
         $this->addSql('DROP TABLE task');
+        $this->addSql('ALTER TABLE content_type DROP owner_role');
         $this->addSql('DROP INDEX IDX_6D6315CCE99931F3');
         $this->addSql('ALTER TABLE revision DROP task_current_id');
         $this->addSql('ALTER TABLE revision DROP task_planned_ids');

@@ -82,11 +82,14 @@
 
 {% block revisionSidebar %}
 	{% set tabs = [{name: 'tab_about_revision', label: 'Revision'|trans}] %}
-	{% if is_granted('ROLE_TASK_MANAGER') %}{% set tabs = tabs|merge([{ name: 'tab_tasks', label: 'task.tab_tasks'|trans }]) %}{% endif %}
-	{% if revision.hasTaskCurrent and revision.owner != app.user.username %}
-		{% set tabs = tabs|merge([{ name: 'tab_task', label: 'task.tab_task'|trans }]) %}
+	{% if revision.ownershipAllowed %}
+		{% if (revision.hasOwner and revision.owner == app.user.username) or (revision.hasTasks == false and is_granted(revision.giveContentType.ownerRole)) %}
+			{% set tabs = tabs|merge([{ name: 'tab_tasks', label: 'task.tab_tasks'|trans }]) %}
+		{% endif %}
+		{% if revision.hasTaskCurrent and revision.owner != app.user.username %}
+			{% set tabs = tabs|merge([{ name: 'tab_task', label: 'task.tab_task'|trans }]) %}
+		{% endif %}
 	{% endif %}
-
 	<div id="revision-tabs" class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
 			{% for tab in tabs|reverse %}
@@ -131,6 +134,12 @@
 			Previous revision ({{ revision.created|date(date_time_format) }})
 		{% endif %}
 	</p>
+
+	{% if revision.hasOwner %}
+		<hr/>
+		<strong><i class="fa fa-user-circle-o margin-r-5"></i> Owner</strong>
+		<p class="text-muted">{{ revision.owner|displayname }}</p>
+	{% endif %}
 
 	{% if revision.finalizedBy %}
 		<hr>

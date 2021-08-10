@@ -38,7 +38,7 @@
         </div>
         <button class="btn-modal-edit-task btn btn-sm pull-right"
                 data-title="{{ 'task.update.title'|trans({ '%title%': task.title }) }}"
-                data-url="{{ path('revision.tasks.update-modal', { revisionId: revision.id, taskId: task.id }) }}">
+                data-url="{{ path('ems_core_task_ajax_update_modal', { revisionId: revision.id, taskId: task.id }) }}">
             <i class="fa fa-pencil-square-o"></i>
         </button>
     </li>
@@ -113,7 +113,7 @@
     </div>
     <div class="pull-right">
         <button type="button" id="btn-delete-task"
-                data-url="{{ path('revision.tasks.delete', {'revisionId': revisionId, 'taskId': task.id}) }}"
+                data-url="{{ path('ems_core_task_ajax_delete', {'revisionId': revisionId, 'taskId': task.id}) }}"
                 class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> {{ 'task.delete.submit'|trans }}</button>
     </div>
 {% endblock %}

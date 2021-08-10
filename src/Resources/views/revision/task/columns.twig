@@ -1,17 +1,28 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
-{% block iconColumn %}
+{% block icon %}
     <i class="fa fa-circle-o"></i>
 {% endblock %}
 
-{% block actionsColumn %}
+{% block owner %}{{- data.owner|displayname -}}{% endblock %}
+{% block assignee %}{{- data.taskCurrent.assignee|displayname -}}{% endblock %}
+
+{% block actions %}
     <div class="btn-group">
         <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             action <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-            <li><a href="#"><i class="fa fa-file" aria-hidden="true"></i> {{ 'task.dashboard.go_revision'|trans }}</a></li>
-            <li><a href="#"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'task.dashboard.edit_revision'|trans }}</a></li>
+            <li>
+                <a href="{{ path('data.revisions', { 'type': data.giveContentType.name, 'ouuid': data.ouuid }) }}">
+                    <i class="fa fa-file" aria-hidden="true"></i> {{ 'task.dashboard.action.go_revision'|trans }}
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('revision.new-draft', { 'type': data.giveContentType.name, 'ouuid': data.ouuid }) }}">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'task.dashboard.action.edit_revision'|trans }}
+                </a>
+            </li>
         </ul>
     </div>
 {% endblock %}

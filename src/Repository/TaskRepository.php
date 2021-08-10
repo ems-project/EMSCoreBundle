@@ -7,8 +7,12 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\QueryBuilder;
+use EMS\CoreBundle\Core\Revision\Task\TaskManager;
+use EMS\CoreBundle\Core\Revision\Task\TaskTableContext;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
+use EMS\CoreBundle\Entity\UserInterface;
 
 final class TaskRepository extends ServiceEntityRepository
 {
@@ -17,33 +21,89 @@ final class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    /**
-     * @param array<mixed> $context
-     */
-    public function countTable(string $searchValue, array $context = []): int
+    public function countForOwner(UserInterface $user): int
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb
+            ->select('count(r.id)')
+            ->from(Revision::class, 'r')
+            ->andWhere($qb->expr()->eq('r.owner', ':username'))
+            ->setParameter('username', $user->getUsername());
+
+        return \intval($qb->getQuery()->getSingleScalarResult());
+    }
+
+    public function countForUser(UserInterface $user): int
     {
         $qb = $this->createQueryBuilder('t');
-        $qb->select('count(t.id)');
+        $qb
+            ->select('count(t.id)')
+            ->andWhere($qb->expr()->eq('t.assignee', ':username'))
+            ->setParameter('username', $user->getUsername());
+
+        return \intval($qb->getQuery()->getSingleScalarResult());
+    }
+
+    public function countTable(string $searchValue, TaskTableContext $context): int
+    {
+        $qb = $this->getTableQueryBuilder($searchValue, $context);
+        $qb->select('count(r.id)');
 
         return $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
-     * @param array<mixed> $context
-     *
      * @return Revision[]
      */
-    public function findTable(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, array $context = []): array
+    public function findTable(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, TaskTableContext $context): array
+    {
+        $qb = $this->getTableQueryBuilder($searchValue, $context);
+        $qb
+            ->setFirstResult($from)
+            ->setMaxResults($size);
+
+        if ($orderField && \array_key_exists($orderField, $context->columns)) {
+            $qb->orderBy($context->columns[$orderField], $orderDirection);
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
+    private function getTableQueryBuilder(string $searchValue, TaskTableContext $context): QueryBuilder
     {
         $qb = $this->_em->createQueryBuilder();
         $qb
             ->select('r', 't')
             ->from(Revision::class, 'r')
-            ->join('r.taskCurrent', 't')
-            ->setFirstResult($from)
-            ->setMaxResults($size);
+            ->join('r.taskCurrent', 't');
 
-        return $qb->getQuery()->execute();
+        switch ($context->tab) {
+            case TaskManager::TAB_USER:
+                $qb
+                    ->andWhere($qb->expr()->eq('t.assignee', ':username'))
+                    ->setParameter('username', $context->user->getUsername());
+                break;
+            case TaskManager::TAB_OWNER:
+                $qb
+                    ->andWhere($qb->expr()->eq('r.owner', ':username'))
+                    ->setParameter('username', $context->user->getUsername());
+                break;
+        }
+
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX();
+
+            foreach ($context->columns as $col) {
+                if ('t.deadline' !== $col) {
+                    $or->add($qb->expr()->like($col, ':term'));
+                }
+            }
+            if ($or->count() > 0) {
+                $qb->andWhere($or)->setParameter(':term', '%'.$searchValue.'%');
+            }
+        }
+
+        return $qb;
     }
 
     /**

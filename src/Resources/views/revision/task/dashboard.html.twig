@@ -1,21 +1,30 @@
 {% extends '@EMSCore/base.html.twig' %}
 {% trans_default_domain 'EMSCoreBundle' %}
 
-{% block body %}
+{% block title %}{{ 'task.title'|trans }}{% endblock %}
 
+{% block pagetitle %}{{ 'task.title'|trans }}{% endblock %}
+
+{% block body %}
 <div id="task-dashboard" class="nav-tabs-custom">
     <ul class="nav nav-tabs">
-        <li class="active">
-            <a href="#assigned-user" data-toggle="tab" aria-expanded="true">{{ 'task.dashboard.assigned'|trans }}</a>
-        </li>
+        {% for tabName in tabs %}
+            {% if currentTab == tabName %}
+                <li class="active">
+                    <a href="#{{ currentTab }}" data-toggle="tab" aria-expanded="true">{{ "task.dashboard.tab.#{tabName}"|trans }}</a>
+                </li>
+            {% else %}
+                <li>
+                    <a href="{{ path('ems_core_task_dashboard', {'tab': tabName}) }}">{{ "task.dashboard.tab.#{tabName}"|trans }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
     </ul>
     <div class="tab-content">
-        <div class="tab-pane active" id="assigned-user">
+        <div class="tab-pane active" id="{{ currentTab }}">
             {% form_theme table '@EMSCore/form/forms.html.twig' %}
             {{ form(table) }}
         </div>
     </div>
 </div>
-
-
 {% endblock %}

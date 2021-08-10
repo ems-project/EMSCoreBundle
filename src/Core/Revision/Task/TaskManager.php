@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Revision\Task;
 
 use EMS\CoreBundle\Entity\Task;
-use EMS\CoreBundle\Form\Data\DateTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
-use EMS\CoreBundle\Form\Data\TemplateTableColumn;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TaskRepository;
 use EMS\CoreBundle\Service\UserService;
@@ -21,6 +18,10 @@ final class TaskManager
     private RevisionRepository $revisionRepository;
     private UserService $userService;
     private LoggerInterface $logger;
+
+    public const TAB_USER = 'user';
+    public const TAB_OWNER = 'owner';
+    public const TAB_MANAGER = 'manager';
 
     public function __construct(
         TaskRepository $taskRepository,
@@ -36,20 +37,12 @@ final class TaskManager
         $this->logger = $logger;
     }
 
-    public function getTable(string $ajaxUrl): EntityTable
+    public function getTable(string $ajaxUrl, string $tab): EntityTable
     {
-        $table = new EntityTable($this->taskTableService, $ajaxUrl, []);
-        $table->addColumnDefinition(new TemplateBlockTableColumn(
-            '', 'iconColumn', '@EMSCore/revision/task/columns.twig'
-        ))->setCellClass('col-status');
-        $table->addColumn('task.dashboard.title', 'taskTitle');
-        $table->addColumn('task.dashboard.document', 'label');
-        $table->addColumn('task.dashboard.status', 'taskStatus');
-        $table->addColumnDefinition(new DateTableColumn('task.dashboard.deadline', 'taskDeadline'));
-        $table->addColumnDefinition(new TemplateTableColumn([
-            'label' => 'Actions',
-            'template' => "{{ block('actionsColumn', '@EMSCore/revision/task/columns.twig') }}",
-        ]))->setCellClass('col-actions');
+        $taskTableContext = new TaskTableContext($this->userService->getCurrentUser(), $tab);
+
+        $table = new EntityTable($this->taskTableService, $ajaxUrl, $taskTableContext);
+        $this->taskTableService->buildTable($table, $taskTableContext);
 
         return $table;
     }
@@ -143,6 +136,42 @@ final class TaskManager
         $this->revisionRepository->unlockRevision($revisionId);
 
         $this->taskRepository->delete($task);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getDashboardTabs(): array
+    {
+        return \array_filter([
+            self::TAB_USER,
+            ($this->isTaskOwner() ? self::TAB_OWNER : null),
+            ($this->isTaskManager() ? self::TAB_MANAGER : null),
+        ]);
+    }
+
+    public function hasDashboard(): bool
+    {
+        return $this->isTaskUser() || $this->isTaskOwner() || $this->isTaskManager();
+    }
+
+    public function isTaskUser(): bool
+    {
+        $user = $this->userService->getCurrentUser();
+
+        return $this->taskRepository->countForUser($user) > 0;
+    }
+
+    public function isTaskOwner(): bool
+    {
+        $user = $this->userService->getCurrentUser();
+
+        return $this->taskRepository->countForOwner($user) > 0;
+    }
+
+    public function isTaskManager(): bool
+    {
+        return $this->userService->isGrantedRole('ROLE_TASK_MANAGER');
     }
 
     public function canRequestValidation(Task $task): bool

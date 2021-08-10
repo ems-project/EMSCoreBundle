@@ -928,16 +928,26 @@ view:
     wysiwyg-options: 'WYSIWYG Options'
 
 task:
+  title: 'Tasks'
   tab_task: 'Task'
   tab_tasks: 'Tasks'
   dashboard:
-      assigned: 'Assigned to me'
-      go_revision: 'Go to revision'
-      edit_revision: 'Edit to revision'
-      title: 'Task'
-      document: 'Document'
-      status: 'Status'
-      deadline: 'Deadline'
+      tab:
+        user: 'Assigned to me'
+        owner: 'Created tasks'
+        manager: 'All tasks'
+      action:
+        go_revision: 'Go to revision'
+        edit_revision: 'Edit to revision'
+      column:
+        icon: ''
+        taskTitle: 'Task'
+        label: 'Document'
+        taskStatus: 'Status'
+        assignee: 'Assignee'
+        owner: 'Owner'
+        taskDeadline: 'Deadline'
+        actions: 'Actions'
   info:
     empty: 'No tasks for this document'
     change_order: 'Change task order'

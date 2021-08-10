@@ -18,7 +18,6 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Twig\TemplateWrapper;
 
@@ -41,12 +40,26 @@ final class TaskController extends AbstractController
         $this->logger = $logger;
     }
 
-    /**
-     * @Route("/task/datatable.json", name="revision.task.dashboard.json")
-     */
-    public function ajaxDataTableAction(Request $request): Response
+    public function dashboard(Request $request, string $tab): Response
     {
-        $table = $this->taskManager->getTable($this->generateUrl('revision.task.dashboard.json'));
+        $tableUrl = $this->generateUrl('ems_core_task_ajax_datatable', ['tab' => $tab]);
+        $table = $this->taskManager->getTable($tableUrl, $tab);
+
+        $form = $this->createForm(TableType::class, $table);
+        $form->handleRequest($request);
+
+        return $this->render('@EMSCore/revision/task/dashboard.html.twig', [
+            'table' => $form->createView(),
+            'currentTab' => $tab,
+            'tabs' => $this->taskManager->getDashboardTabs(),
+        ]);
+    }
+
+    public function ajaxDataTable(Request $request, string $tab): Response
+    {
+        $tableUrl = $this->generateUrl('ems_core_task_ajax_datatable', ['tab' => $tab]);
+        $table = $this->taskManager->getTable($tableUrl, $tab);
+
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
@@ -56,25 +69,7 @@ final class TaskController extends AbstractController
         ], new JsonResponse());
     }
 
-    /**
-     * @Route("/dashboard/tasks", name="revision.task.dashboard")
-     */
-    public function dashboard(Request $request): Response
-    {
-        $table = $this->taskManager->getTable($this->generateUrl('revision.task.dashboard.json'));
-
-        $form = $this->createForm(TableType::class, $table);
-        $form->handleRequest($request);
-
-        return $this->render('@EMSCore/revision/task/dashboard.html.twig', [
-            'table' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/tasks/{revisionId}/current", name="revision.task", methods={"GET", "POST"})
-     */
-    public function getTask(Request $request, int $revisionId): JsonResponse
+    public function ajaxGetTask(Request $request, int $revisionId): JsonResponse
     {
         $currentTask = $this->taskManager->getCurrentTask($revisionId);
         $ajaxTemplate = $this->getAjaxTemplate();
@@ -105,10 +100,7 @@ final class TaskController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/tasks/{revisionId}/list", name="revision.tasks", methods={"GET", "POST"})
-     */
-    public function getTasks(int $revisionId): JsonResponse
+    public function ajaxGetTasks(int $revisionId): JsonResponse
     {
         $taskCollection = $this->taskManager->getTaskCollection($revisionId);
         $revision = $taskCollection->getRevision();
@@ -129,10 +121,7 @@ final class TaskController extends AbstractController
         return new JsonResponse(['tasks' => $tasks]);
     }
 
-    /**
-     * @Route("/tasks/{revisionId}/create-modal", name="revision.tasks.create-modal", methods={"GET", "POST"})
-     */
-    public function createModal(Request $request, int $revisionId): JsonResponse
+    public function ajaxCreateModal(Request $request, int $revisionId): JsonResponse
     {
         $taskDTO = new TaskDTO();
         $ajaxModal = $this->getAjaxModal();
@@ -161,10 +150,7 @@ final class TaskController extends AbstractController
             ->getResponse();
     }
 
-    /**
-     * @Route("/tasks/{revisionId}/update-modal/{taskId}", name="revision.tasks.update-modal", methods={"GET", "POST"})
-     */
-    public function updateModal(Request $request, int $revisionId, string $taskId): JsonResponse
+    public function ajaxUpdateModal(Request $request, int $revisionId, string $taskId): JsonResponse
     {
         $task = $this->taskManager->getTask($taskId);
         $taskDTO = TaskDTO::fromEntity($task);
@@ -195,10 +181,7 @@ final class TaskController extends AbstractController
             ->getResponse();
     }
 
-    /**
-     * @Route("/tasks/{revisionId}/delete/{taskId}", name="revision.tasks.delete", methods={"POST"})
-     */
-    public function deleteTask(int $revisionId, string $taskId): JsonResponse
+    public function ajaxDelete(int $revisionId, string $taskId): JsonResponse
     {
         $task = $this->taskManager->getTask($taskId);
         $ajaxModal = $this->getAjaxModal()

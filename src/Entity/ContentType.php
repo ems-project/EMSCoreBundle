@@ -728,7 +728,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
 
     public function hasLabelField(): bool
     {
-        return null !== $this->labelField;
+        return null !== $this->labelField && \strlen($this->labelField) > 0;
     }
 
     public function giveLabelField(): string
@@ -1187,6 +1187,16 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
+    public function hasCategoryField(): bool
+    {
+        return null !== $this->categoryField && \strlen($this->categoryField) > 0;
+    }
+
+    public function giveCategoryField(): string
+    {
+        return $this->categoryField;
+    }
+
     /**
      * Get categoryField.
      *
@@ -1262,6 +1272,25 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function getWebContent()
     {
         return $this->webContent;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getRenderingSourceFields(): array
+    {
+        $sourceFields = [];
+        if ($this->hasLabelField()) {
+            $sourceFields[] = $this->giveLabelField();
+        }
+        if ($this->hasColorField()) {
+            $sourceFields[] = $this->giveColorField();
+        }
+        if ($this->hasCategoryField()) {
+            $sourceFields[] = $this->giveCategoryField();
+        }
+
+        return $sourceFields;
     }
 
     /**
@@ -1371,7 +1400,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
 
     public function hasColorField(): bool
     {
-        return null !== $this->colorField;
+        return null !== $this->colorField && \strlen($this->colorField) > 0;
     }
 
     public function giveColorField(): string
@@ -1496,7 +1525,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
 
     public function hasAssetField(): bool
     {
-        return null !== $this->assetField;
+        return null !== $this->assetField && \strlen($this->assetField) > 0;
     }
 
     /**

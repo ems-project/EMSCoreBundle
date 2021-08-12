@@ -83,7 +83,10 @@ final class TaskController extends AbstractController
                 $this->taskManager->taskValidateRequest($currentTask, $revisionId, $data['comment']);
 
                 return new JsonResponse([
-                    'html' => $ajaxTemplate->renderBlock('currentTask', ['task' => $currentTask]),
+                    'html' => $ajaxTemplate->renderBlock('currentTask', [
+                        'task' => $currentTask,
+                        'revisionId' => $revisionId,
+                    ]),
                 ]);
             }
         }

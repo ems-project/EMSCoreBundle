@@ -66,7 +66,7 @@ final class TaskLog
     public static function fromData(array $data): self
     {
         $log = new self($data['username'], $data['status'], $data['comment'] ?? null);
-        $log->date = DateTime::createFromFormat(\DATE_ATOM, $data['date']);
+        $log->date = DateTime::createFromFormat($data['date'], \DATE_ATOM);
 
         return $log;
     }

@@ -11,6 +11,9 @@
 {% endblock %}
 
 {% block tasks %}
+{#    {{ dump(revision.taskCurrent.logs) }}#}
+
+
     <div id="revision-tasks-empty" style="display:none;">{{ 'task.info.empty'|trans }}</div>
     <div id="revision-tasks-info" style="display:none;">
         <span>{{ 'task.info.change_order'|trans }}</span><i class="fa fa-arrows" aria-hidden="true"></i>

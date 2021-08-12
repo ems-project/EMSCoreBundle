@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Task;
 
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -37,6 +38,18 @@ final class TaskManager
         $this->logger = $logger;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getDashboardTabs(): array
+    {
+        return \array_filter([
+            self::TAB_USER,
+            ($this->isTaskOwner() ? self::TAB_OWNER : null),
+            ($this->isTaskManager() ? self::TAB_MANAGER : null),
+        ]);
+    }
+
     public function getTable(string $ajaxUrl, string $tab): EntityTable
     {
         $taskTableContext = new TaskTableContext($this->userService->getCurrentUser(), $tab);
@@ -45,13 +58,6 @@ final class TaskManager
         $this->taskTableService->buildTable($table, $taskTableContext);
 
         return $table;
-    }
-
-    public function getCurrentTask(int $revisionId): ?Task
-    {
-        $revision = $this->revisionRepository->findOneById($revisionId);
-
-        return $revision->hasTaskCurrent() ? $revision->getTaskCurrent() : null;
     }
 
     public function getTask(string $taskId): Task
@@ -67,92 +73,31 @@ final class TaskManager
 
     public function getTaskCollection(int $revisionId): TaskCollection
     {
+        $user = $this->userService->getCurrentUser();
         $revision = $this->revisionRepository->findOneById($revisionId);
 
         $results = $this->taskRepository->getTasks($revision);
 
-        return new TaskCollection($revision, $results);
+        return new TaskCollection($user, $revision, $results);
     }
 
-    public function create(TaskDTO $taskDTO, int $revisionId): Task
+    public function getTaskCurrent(int $revisionId): ?Task
     {
-        $user = $this->userService->getCurrentUser();
-
-        $now = new \DateTimeImmutable('now');
-        $this->revisionRepository->lockRevision($revisionId, 'SYSTEM_TASK', $now->modify('+1min'));
-
-        $task = Task::createFromDTO($taskDTO, $user->getUsername());
         $revision = $this->revisionRepository->findOneById($revisionId);
 
-        $revision->addTask($task, $user);
-        if ($revision->isTaskCurrent($task)) {
-            $task->statusProgress();
-        }
-
-        $this->taskRepository->save($task);
-
-        $this->revisionRepository->save($revision);
-        $this->revisionRepository->unlockRevision($revisionId);
-
-        return $task;
-    }
-
-    public function update(Task $task, TaskDTO $taskDTO, int $revisionId): void
-    {
-        $now = new \DateTimeImmutable('now');
-        $this->revisionRepository->lockRevision($revisionId, 'SYSTEM_TASK', $now->modify('+1min'));
-
-        $task->updateFromDTO($taskDTO);
-        $this->taskRepository->save($task);
-
-        $this->revisionRepository->unlockRevision($revisionId);
-    }
-
-    public function delete(Task $task, int $revisionId): void
-    {
-        $now = new \DateTimeImmutable('now');
-        $this->revisionRepository->lockRevision($revisionId, 'SYSTEM_TASK', $now->modify('+1min'));
-
-        $revision = $this->revisionRepository->findOneById($revisionId);
-
-        if ($revision->isTaskCurrent($task)) {
-            $nextPlannedId = $revision->getTaskNextPlannedId();
-            $nextPlannedTask = $nextPlannedId ? $this->getTask($nextPlannedId) : null;
-
-            if ($nextPlannedTask) {
-                $nextPlannedTask->statusProgress();
-                $revision->setTaskCurrent($nextPlannedTask);
-                $this->taskRepository->save($nextPlannedTask);
-            } else {
-                $revision->setTaskCurrent(null);
-            }
-        } elseif ($revision->isTaskPlanned($task)) {
-            $revision->deleteTaskPlanned($task);
-        } elseif ($revision->isTaskApproved($task)) {
-            $revision->deleteTaskApproved($task);
-        }
-
-        $this->revisionRepository->save($revision);
-        $this->revisionRepository->unlockRevision($revisionId);
-
-        $this->taskRepository->delete($task);
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getDashboardTabs(): array
-    {
-        return \array_filter([
-            self::TAB_USER,
-            ($this->isTaskOwner() ? self::TAB_OWNER : null),
-            ($this->isTaskManager() ? self::TAB_MANAGER : null),
-        ]);
+        return $revision->hasTaskCurrent() ? $revision->getTaskCurrent() : null;
     }
 
     public function hasDashboard(): bool
     {
         return $this->isTaskUser() || $this->isTaskOwner() || $this->isTaskManager();
+    }
+
+    public function isTaskAssignee(Task $task): bool
+    {
+        $user = $this->userService->getCurrentUser();
+
+        return $task->getAssignee() === $user->getUsername();
     }
 
     public function isTaskUser(): bool
@@ -174,28 +119,117 @@ final class TaskManager
         return $this->userService->isGrantedRole('ROLE_TASK_MANAGER');
     }
 
-    public function canRequestValidation(Task $task): bool
+    public function taskCreate(TaskDTO $taskDTO, int $revisionId): Task
     {
-        $user = $this->userService->getCurrentUser();
+        $transaction = $this->taskTransaction(function (Revision $revision) use ($taskDTO) {
+            $user = $this->userService->getCurrentUser();
+            $task = Task::createFromDTO($taskDTO, $user);
 
-        return $task->getAssignee() === $user->getUsername();
+            $revision->addTask($task, $user->getUsername());
+            if ($revision->isTaskCurrent($task)) {
+                $task->statusProgress($user->getUsername());
+            }
+
+            $this->taskRepository->save($task);
+            $this->revisionRepository->save($revision);
+
+            return $task;
+        });
+
+        return $transaction($revisionId);
     }
 
-    public function requestValidation(Task $task, int $revisionId, string $comment): void
+    public function taskDelete(Task $task, int $revisionId): void
     {
-        $user = $this->userService->getCurrentUser();
+        $transaction = $this->taskTransaction(function (Revision $revision) use ($task) {
+            if ($revision->isTaskCurrent($task)) {
+                $this->setNextPlanned($revision);
+            } elseif ($revision->isTaskPlanned($task)) {
+                $revision->deleteTaskPlanned($task);
+            } elseif ($revision->isTaskApproved($task)) {
+                $revision->deleteTaskApproved($task);
+            }
 
-        $now = new \DateTimeImmutable('now');
-        $this->revisionRepository->lockRevision($revisionId, $user->getUsername(), $now->modify('+10min'));
+            $this->revisionRepository->save($revision);
+            $this->taskRepository->delete($task);
+        });
+        $transaction($revisionId);
+    }
 
-        $this->revisionRepository->clear();
-        $revision = $this->revisionRepository->findOneById($revisionId);
-        $owner = $revision->getOwner();
+    public function taskUpdate(Task $task, TaskDTO $taskDTO, int $revisionId): void
+    {
+        $transaction = $this->taskTransaction(function () use ($task, $taskDTO) {
+            $task->updateFromDTO($taskDTO);
+            $this->taskRepository->save($task);
+        });
+        $transaction($revisionId);
+    }
 
-        $task->changeStatus(Task::STATUS_FINISHED, $user->getUsername(), $comment);
-        $task->setAssignee($owner);
+    public function taskValidate(Revision $revision, bool $approve, ?string $comment): void
+    {
+        $transaction = $this->taskTransaction(function (Revision $revision) use ($approve, $comment) {
+            $user = $this->userService->getCurrentUser();
+            $task = $revision->getTaskCurrent();
 
-        $this->taskRepository->save($task);
-        $this->revisionRepository->unlockRevision($revisionId);
+            if ($approve) {
+                $task->changeStatus(Task::STATUS_APPROVED, $user->getUsername(), $comment);
+                $revision->addTask($task, $revision->getOwner());
+                $this->setNextPlanned($revision);
+                $this->revisionRepository->save($revision);
+            } else {
+                $task->changeStatus(Task::STATUS_REJECTED, $user->getUsername(), $comment);
+            }
+
+            $task->setAssignee($task->getLatestCompletedUsername() ?? $revision->getOwner());
+            $this->taskRepository->save($task);
+        });
+        $transaction($revision->getId());
+    }
+
+    public function taskValidateRequest(Task $task, int $revisionId, string $comment): void
+    {
+        $transaction = $this->taskTransaction(function () use ($task, $comment) {
+            $user = $this->userService->getCurrentUser();
+            $task->changeStatus(Task::STATUS_COMPLETED, $user->getUsername(), $comment);
+            $this->taskRepository->save($task);
+        });
+        $transaction($revisionId);
+    }
+
+    private function setNextPlanned(Revision $revision): void
+    {
+        $nextPlannedId = $revision->getTaskNextPlannedId();
+        $nextPlannedTask = $nextPlannedId ? $this->getTask($nextPlannedId) : null;
+
+        if ($nextPlannedTask) {
+            $nextPlannedTask->statusProgress($revision->getOwner());
+            $revision->setTaskCurrent($nextPlannedTask);
+            $this->taskRepository->save($nextPlannedTask);
+        } else {
+            $revision->setTaskCurrent(null);
+            $this->revisionRepository->save($revision);
+        }
+    }
+
+    private function taskTransaction(callable $execute): callable
+    {
+        return function (int $revisionId) use ($execute) {
+            try {
+                $user = $this->userService->getCurrentUser();
+                $now = new \DateTimeImmutable('now');
+                $this->revisionRepository->lockRevision($revisionId, $user->getUsername(), $now->modify('+1min'));
+
+                $this->revisionRepository->clear();
+                $revision = $this->revisionRepository->findOneById($revisionId);
+
+                $result = $execute($revision);
+
+                $this->revisionRepository->unlockRevision($revisionId);
+
+                return $result;
+            } catch (\Throwable $e) {
+                $this->logger->error($e->getMessage());
+            }
+        };
     }
 }

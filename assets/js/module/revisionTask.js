@@ -10,13 +10,15 @@ export default class RevisionTask {
 
         this.tasksTab = document.querySelector('#tab_tasks');
         if (this.tasksTab !== null) {
-            this.taskList = document.querySelector('ul#revision-tasks');
+            this.tasksList = document.querySelector('ul#revision-tasks');
+            this.tasksUrl = this.tasksList.dataset.url;
+            this.tasksListLoading = this.tasksList.querySelector('li.task-loading');
             this.tasksEmpty = this.tasksTab.querySelector('#revision-tasks-empty');
             this.tasksInfo = this.tasksTab.querySelector('#revision-tasks-info');
 
             this.modalCreate();
 
-            if ('true' === this.taskList.dataset.load) {
+            if ('true' === this.tasksList.dataset.load) {
                 this.loadTasks();
             } else {
                 this.tasksEmpty.style.display = 'block';
@@ -37,51 +39,62 @@ export default class RevisionTask {
             loading.style.display = 'none';
             if (json.hasOwnProperty('html')) { revisionTask.innerHTML = json.html; }
 
-            var buttonRequestValidation = this.taskTab.querySelector('#btn-request-validation');
+            var buttonRequestValidation = this.taskTab.querySelector('#btn-validation-request');
             if (buttonRequestValidation) {
                 buttonRequestValidation.onclick = (event) => {
                     event.preventDefault();
-                    var formData = $('form[name="request_validation"]').serialize();
+                    var formData = $('form[name="validation-request"]').serialize();
                     revisionTask.innerHTML = '';
                     loading.style.display = 'block';
                     ajaxJsonSubmit(url, formData, callbackRequest);
                 }
             }
+            this.taskTab.querySelectorAll('.btn-modal-history-task').forEach((btn) => {
+                btn.onclick = (event) => {
+                    event.preventDefault();
+                    ajaxModal.load({ url: btn.dataset.url, title: btn.dataset.title});
+                }
+            });
         };
 
         ajaxJsonGet(url, callbackRequest);
     }
 
-    loadTasks() {
-        var url = this.taskList.dataset.url;
-        var loading = this.taskList.querySelector('li.task-loading');
-        loading.style.display = 'block';
-
+    clearTasks() {
+        this.tasksListLoading.style.display = 'block';
         this.tasksEmpty.style.display = 'none';
-        this.taskList.querySelectorAll('.task-item').forEach((e) => {
+        this.tasksList.querySelectorAll('.task-item').forEach((e) => {
             e.remove();
         });
+    }
 
-        ajaxJsonGet(url, (json, request) => {
+    loadTasks() {
+        this.clearTasks();
+        ajaxJsonGet(this.tasksUrl, this.callbackGetTasks());
+    }
+
+    callbackGetTasks() {
+        return (json, request) => {
             if (200 !== request.status) { return; }
 
-            loading.style.display = 'none';
+            this.tasksListLoading.style.display = 'none';
 
             var hasTasks = false;
             var tasks = json.hasOwnProperty('tasks') ? json.tasks : [];
             tasks.forEach((task) => {
-                this.taskList.insertAdjacentHTML('beforeend', task.html);
+                this.tasksList.insertAdjacentHTML('beforeend', task.html);
                 hasTasks = true;
             });
 
             if (hasTasks) {
                 this.tasksInfo.style.display = 'block';
                 this.modalEdit();
+                this.validationForm();
             } else {
                 this.tasksEmpty.style.display = 'block';
                 this.tasksInfo.style.display = 'none';
             }
-        });
+        }
     }
 
     modalCreate() {
@@ -101,7 +114,6 @@ export default class RevisionTask {
             );
         }
     }
-
     modalEdit() {
         var modalEditCallback = (json, request) => {
             var btnDelete = ajaxModal.modal.querySelector('#btn-delete-task');
@@ -126,5 +138,27 @@ export default class RevisionTask {
                 )
             });
         });
+    }
+    validationForm() {
+        var sendValidation = (action) => {
+            return (event) => {
+                event.preventDefault();
+                var formElement = this.tasksTab.querySelector('form[name="validation"]');
+                var formData = new FormData(formElement);
+                formData.append('action', action);
+                var submitData = Array.from(formData, e => e.map(encodeURIComponent).join('=')).join('&');
+                this.clearTasks();
+                ajaxJsonSubmit(this.tasksUrl, submitData, this.callbackGetTasks());
+            }
+        };
+
+        var buttonApproveValidation = this.tasksTab.querySelector('#btn-validation-approve');
+        if (buttonApproveValidation) {
+            buttonApproveValidation.onclick = sendValidation('approve');
+        }
+        var buttonRejectValidation = this.tasksTab.querySelector('#btn-validation-reject');
+        if (buttonRejectValidation) {
+            buttonRejectValidation.onclick = sendValidation('reject');
+        }
     }
 }

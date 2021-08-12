@@ -18,15 +18,18 @@
     <route id="ems_core_task_ajax_current" path="/{revisionId}/current" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTask</default>
     </route>
-    <route id="ems_core_task_ajax_list" path="/{revisionId}/list" methods="GET">
+    <route id="ems_core_task_ajax_list" path="/{revisionId}/list" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTasks</default>
     </route>
 
     <route id="ems_core_task_ajax_create_modal" path="/{revisionId}/create-modal" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxCreateModal</default>
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalCreate</default>
     </route>
-    <route id="ems_core_task_ajax_update_modal" path="/{revisionId}/update-modal" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxUpdateModal</default>
+    <route id="ems_core_task_ajax_update_modal" path="/{revisionId}/update-modal/{taskId}" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalUpdate</default>
+    </route>
+    <route id="ems_core_task_ajax_history_modal" path="/{revisionId}/history-modal/{taskId}" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalHistory</default>
     </route>
     <route id="ems_core_task_ajax_delete" path="/{revisionId}/delete/{taskId}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxDelete</default>

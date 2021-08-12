@@ -52,7 +52,7 @@ class Task implements EntityInterface
     private string $description;
 
     /**
-     * @var TaskLog[]
+     * @var array<mixed>
      *
      * @ORM\Column(name="logs", type="json", nullable=false)
      */
@@ -60,36 +60,20 @@ class Task implements EntityInterface
 
     public const STATUS_PROGRESS = 'progress';
     public const STATUS_PLANNED = 'planned';
-    public const STATUS_FINISHED = 'finished';
+    public const STATUS_COMPLETED = 'completed';
     public const STATUS_REJECTED = 'rejected';
     public const STATUS_APPROVED = 'approved';
 
-    public function __construct(string $username, string $status)
+    public function __construct(string $username)
     {
         $this->id = Uuid::uuid4();
         $this->status = self::STATUS_PLANNED;
-        $this->logs[] = new TaskLog($username, $status, 'created');
+        $this->addLog($username);
     }
 
-    public function statusProgress(): void
+    public static function createFromDTO(TaskDTO $dto, UserInterface $user): Task
     {
-        $this->status = self::STATUS_PROGRESS;
-    }
-
-    public function changeStatus(string $newStatus, string $username, ?string $comment): void
-    {
-        $this->status = $newStatus;
-        $this->logs[] = new TaskLog($username, $newStatus, $comment);
-    }
-
-    public function setAssignee(string $assignee): void
-    {
-        $this->assignee = $assignee;
-    }
-
-    public static function createFromDTO(TaskDTO $dto, string $username): Task
-    {
-        $task = new self($username, self::STATUS_PLANNED);
+        $task = new self($user->getUsername());
         $task->updateFromDTO($dto);
 
         return $task;
@@ -103,6 +87,12 @@ class Task implements EntityInterface
         $this->deadline = DateTime::createFromFormat($taskDTO->give('deadline'), 'd/m/Y');
     }
 
+    public function changeStatus(string $newStatus, string $username, ?string $comment = null): void
+    {
+        $this->status = $newStatus;
+        $this->addLog($username, $comment);
+    }
+
     public function getId(): string
     {
         return $this->id->toString();
@@ -111,6 +101,21 @@ class Task implements EntityInterface
     public function getStatus(): string
     {
         return $this->status;
+    }
+
+    public function getStatusClass(): string
+    {
+        switch ($this->status) {
+            case self::STATUS_PROGRESS:
+                return 'primary';
+            case self::STATUS_APPROVED:
+            case self::STATUS_COMPLETED:
+                return 'success';
+            case self::STATUS_REJECTED:
+                return 'danger';
+            default:
+                return 'default';
+        }
     }
 
     public function getTitle(): string
@@ -133,11 +138,66 @@ class Task implements EntityInterface
         return $this->description;
     }
 
+    public function getLatestCompleted(): ?TaskLog
+    {
+        if (self::STATUS_COMPLETED !== $this->status) {
+            return null;
+        }
+
+        return $this->getLogLatestByStatus(self::STATUS_COMPLETED);
+    }
+
+    public function getLatestRejection(): ?TaskLog
+    {
+        if (self::STATUS_REJECTED !== $this->status) {
+            return null;
+        }
+
+        return $this->getLogLatestByStatus(self::STATUS_REJECTED);
+    }
+
+    public function getLatestCompletedUsername(): ?string
+    {
+        $latestCompleted = $this->getLogLatestByStatus(self::STATUS_COMPLETED);
+
+        return $latestCompleted ? $latestCompleted->getUsername() : null;
+    }
+
     /**
      * @return TaskLog[]
      */
     public function getLogs(): array
     {
-        return $this->logs;
+        return \array_map(fn (array $log) => TaskLog::fromData($log), $this->logs);
+    }
+
+    public function isOpen(): bool
+    {
+        return !\in_array($this->status, [Task::STATUS_COMPLETED, Task::STATUS_APPROVED], true);
+    }
+
+    public function statusProgress(string $username): void
+    {
+        $this->status = self::STATUS_PROGRESS;
+        $this->addLog($username);
+    }
+
+    public function setAssignee(string $assignee): void
+    {
+        $this->assignee = $assignee;
+    }
+
+    private function addLog(string $username, ?string $comment = null): void
+    {
+        $this->logs[] = (new TaskLog($username, $this->status, $comment))->getData();
+    }
+
+    private function getLogLatestByStatus(string $status): ?TaskLog
+    {
+        $logs = $this->getLogs();
+        $statusLogs = \array_filter($logs, fn (TaskLog $log) => $log->getStatus() === $status);
+        $latestStatusLog = \array_pop($statusLogs);
+
+        return $latestStatusLog instanceof TaskLog ? $latestStatusLog : null;
     }
 }

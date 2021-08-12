@@ -4,43 +4,68 @@
     {%- if task == null -%}
         <div>No task found!</div>
     {%- else -%}
-        <div class="task-title">{{ task.title }}</div>
-        <div class="task-info">
-            <span class="task-deadline {{ task.deadline.timestamp < 'now'|date('U') ? 'task-deadline-red' }}">
-                <i class="fa fa-clock-o" aria-hidden="true"></i>{{ task.deadline.format('d/m/Y') }}
+        <div id="task-title">{{ task.title }}</div>
+        <div id="task-info">
+            <span id="task-deadline {{ task.deadline.timestamp < 'now'|date('U') ? 'task-deadline-red' }}">
+                <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{ task.deadline.format('d/m/Y') }}
             </span>
-            {% if task.assignee != app.user.username %}
-                <span>{{ 'task.for'|trans }}&nbsp;{{ task.assignee|displayname }}</span>
-            {% endif %}
+            <span>{{ 'task.for'|trans }}&nbsp;{{ task.assignee|displayname }}</span>
         </div>
-        <div class="task-description">{{ task.description }}</div>
-        {% if form is defined and form != null %}
+        <span class="label label-{{ task.statusClass }}">{{ "task.status.#{task.status}"|trans }}</span>
+        <p id="task-description">{{ task.description }}</p>
+        {% if formRequestValidation is defined and formRequestValidation != null %}
+            {% set logRejection = task.getLatestRejection %}
             <div id="task-send-validation">
                 <hr />
-                {{ form(form) }}
-                <button id="btn-request-validation" class="btn btn-sm btn-primary">{{ 'task.validation.button'|trans  }}</button>
+                {%- if null != logRejection -%}<p class="task-comment bg-danger">{{ logRejection.comment }}</p>{%- endif -%}
+                {{ form(formRequestValidation) }}
+                <button id="btn-validation-request" class="btn btn-sm btn-primary">{{ 'task.validation.request'|trans  }}</button>
             </div>
         {% endif %}
+        <div class="clearfix">
+            <button class="btn-modal-history-task btn btn-sm btn-default pull-right"
+                    data-url="{{ path('ems_core_task_ajax_history_modal', {'revisionId': revisionId, 'taskId': task.id }) }}"
+                    data-title="{{ 'task.show_history'|trans }} : {{ task.title }}">
+                    {{ 'task.show_history'|trans }}
+            </button>
+        </div>
     {%- endif -%}
 {% endblock %}
 
 {% block taskItem %}
     <li class="list-group-item task-item {{ isCurrent|default(false) ? 'task-current' }}">
-        <div class="task-info">
-            <i class="fa fa-circle-o"></i>
-            <div>
-                <div class="task-title">{{ task.title }}</div>
-                <div>{{ 'task.assigned_to'|trans }}<strong>{{ task.assignee|displayname }}</strong></div>
-                {% if isCurrent|default(false) %}
-                    <div><strong>{{ task.status }}</strong></div>
+        <div class="task-item-block">
+            <div class="task-item-block-info">
+                <i class="fa {{ isCurrent|default(false) ? 'fa-circle-o' : 'fa-hourglass-o' }} "></i>
+                <div>
+                    <div class="task-title">{{ task.title }}</div>
+                    <div>{{ 'task.assigned_to'|trans }}<strong>{{ task.assignee|displayname }}</strong></div>
+                    {% if isCurrent|default(false) %}
+                        <div><span class="label label-{{ task.statusClass }}">{{ "task.status.#{task.status}"|trans }}</span></div>
+                    {% endif %}
+                </div>
+            </div>
+            <button class="btn-modal-edit-task btn btn-sm pull-right"
+                    data-title="{{ 'task.update.title'|trans({ '%title%': task.title }) }}"
+                    data-url="{{ path('ems_core_task_ajax_update_modal', { revisionId: revision.id, taskId: task.id }) }}">
+                <i class="fa fa-pencil-square-o"></i>
+            </button>
+        </div>
+        {% if formValidation is defined %}
+            <div id="task-validation">
+                {% set logCompleted = task.getLatestCompleted %}
+                {% if task.assignee != app.user.username and logCompleted != null %}
+                    <p class="task-comment bg-gray-light">{{ logCompleted.comment }}</p>
+                {% endif %}
+                {{ form(formValidation) }}
+                {% if task.assignee == app.user.username %}
+                    <button id="btn-validation-approve" class="btn btn-sm btn-primary">{{ 'task.validation.done'|trans  }}</button>
+                {% else %}
+                    <button id="btn-validation-approve" class="btn btn-sm btn-primary">{{ 'task.validation.approve'|trans  }}</button>
+                    <button id="btn-validation-reject" class="btn btn-sm btn-default pull-right">{{ 'task.validation.reject'|trans  }}</button>
                 {% endif %}
             </div>
-        </div>
-        <button class="btn-modal-edit-task btn btn-sm pull-right"
-                data-title="{{ 'task.update.title'|trans({ '%title%': task.title }) }}"
-                data-url="{{ path('ems_core_task_ajax_update_modal', { revisionId: revision.id, taskId: task.id }) }}">
-            <i class="fa fa-pencil-square-o"></i>
-        </button>
+        {% endif %}
     </li>
 {% endblock %}
 
@@ -68,40 +93,8 @@
             <li><a href="#tab_task_history" data-toggle="tab" aria-expanded="false">{{ 'task.update.tab.history'|trans }}</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane active" id="tab_task_info">
-                {{ block('taskForm') }}
-            </div>
-            <div class="tab-pane" id="tab_task_history">
-                <ul class="timeline">
-                    <li>
-                        <i class="fa fa-close bg-red"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fa fa-clock-o"></i> 5 days ago</span>
-                            <h3 class="timeline-header bg-info"><a href="#">You</a> rejected</h3>
-                            <div class="timeline-body bg-gray-light">
-                                Not good please correct
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <i class="fa fa-commenting-o bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fa fa-clock-o"></i> 5 days ago</span>
-                            <h4 class="timeline-header bg-info"><a href="#">John doe</a> finished</h4>
-                            <div class="timeline-body bg-gray-light">
-                                J'ai terminé les modifications. Je ne suis pas certain pour la partie après le paragraphe 2
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <i class="fa fa-plus bg-green"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fa fa-clock-o"></i> 5 days ago</span>
-                            <h3 class="timeline-header bg-info"><a href="#">You</a> created a new task</h3>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+            <div class="tab-pane active" id="tab_task_info">{{ block('taskForm') }}</div>
+            <div class="tab-pane" id="tab_task_history">{{ block('renderHistoryTimeline') }}</div>
         </div>
     </div>
 {% endblock %}
@@ -109,7 +102,7 @@
 {% block modalUpdateFooter %}
     <div class="pull-left">
         <button id="ajax-modal-submit" class="btn btn-sm btn-primary">{{ 'task.update.submit'|trans }}</button>
-        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
     </div>
     <div class="pull-right">
         <button type="button" id="btn-delete-task"
@@ -117,6 +110,8 @@
                 class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> {{ 'task.delete.submit'|trans }}</button>
     </div>
 {% endblock %}
+
+{% block modalHistoryBody %}{{ block('renderHistoryTimeline') }}{% endblock %}
 
 {% block taskForm %}
     {{ form_start(form) }}
@@ -129,4 +124,22 @@
         <div class="col-md-12">{{ form_row(form.description) }}</div>
     </div>
     {{ form_end(form) }}
+{% endblock %}
+
+{% block renderHistoryTimeline %}
+    <ul class="timeline">
+        {% for log in task.logs|reverse %}
+            <li>
+                <i class="fa {{ log.iconClass }}"></i>
+                <div class="timeline-item">
+                    <span class="time"><i class="fa fa-clock-o"></i> {{ log.date.format('d/m/Y H:i') }}</span>
+                    <h3 class="timeline-header bg-info">
+                        <strong>{{ log.username == app.user.username ? 'You' : log.username|displayname }}</strong>
+                        {{ "task.status.#{log.status}"|trans|lower }}
+                    </h3>
+                    {% if log.comment %}<div class="timeline-body bg-gray-light">{{ log.comment }}</div>{% endif %}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

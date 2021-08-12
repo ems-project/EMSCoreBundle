@@ -1,3 +1,17 @@
+div#ajax-modal {
+  .timeline {
+    margin: 15px 0 0;
+    &:before { left: 13px; }
+    & > li > i { left: 0; }
+  }
+  ul.timeline li { margin: 0 0 15px 0; }
+  div.timeline-item {
+    margin: 0 0 0 42px;
+    .time { color: #333; }
+    .timeline-header { font-size: 14px; }
+  }
+}
+
 div#task-dashboard {
   form[name="emsco_form_table_type"] {
       .box-header { display: none; }
@@ -13,23 +27,24 @@ div#revision-tabs {
   div.tab-content { padding: 0; }
   div.tab-pane {padding: 10px;}
 
-  .task-loading {
-    text-align: center;
-    color: #ccc;
-    padding: 25px 0;
+  .task-loading { text-align: center; color: #ccc; padding: 25px 0; }
+  p.task-comment { font-size: 12px; margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; }
+
+  form[name="validation"], form[name="request-validation"] {
+    label { color: #666; font-size: 12px; }
+    textarea { resize: none; }
+    div.form-group {margin-bottom: 10px;}
   }
 
   div#tab_task {
     padding: 15px;
-    div.task-title { font-size: 14px; margin-bottom: 5px; font-weight: bold; }
-    div.task-info {
-      margin-bottom: 10px;
+    div#task-title { font-size: 14px; margin-bottom: 5px; font-weight: bold; }
+    div#task-info {
       font-size: 12px;
-      span.task-deadline { font-weight: bold; i { margin-right: 5px; } }
-      span.task-deadline-red { color: red; }
+      span#task-deadline { font-weight: bold;}
+      span#task-deadline-red { color: red; }
     }
-    div.task-description { font-size: 12px; margin-bottom: 10px; }
-
+    p#task-description { font-size: 12px; margin: 10px 0; }
     div#task-send-validation {
       hr { border-color: #f5f5f5; margin: 10px 0; }
       label { color: #666; font-size: 12px; }
@@ -39,12 +54,7 @@ div#revision-tabs {
 
   div#tab_tasks {
     padding: 0;
-
-    div#revision-tasks-empty {
-      font-weight: bold;
-      padding: 15px 15px 0;
-    }
-
+    div#revision-tasks-empty { font-weight: bold; padding: 15px 15px 0;}
     div#revision-tasks-info {
       background-color: #f5f5f5;
       font-size: 12px;
@@ -56,24 +66,32 @@ div#revision-tabs {
 
     ul#revision-tasks {
       li.task-item {
-        display: flex;
-        justify-content: space-between;
         padding: 0;
-        border-radius: 0;
         border-left: 0;
         border-right: 0;
+        border-radius: 0;
 
-        & .task-info {
-          padding: 10px;
-          display: flex;
-          align-items: flex-start;
-          font-size: 12px;
-
-          & i { padding: 3px 10px 0 0; }
-          & .task-title { font-size: 14px; margin-bottom: 5px; }
+        &.task-current {
+          background-color: lighten($brand-info, 35%);
+          & div.task-item-block-info i, div.task-title {  color: $brand-primary; font-weight: bold; }
         }
 
-        & .btn-modal-edit-task { background-color: #fff; outline: 0;}
+        div.task-item-block{
+          display: flex;
+          justify-content: space-between;
+
+          & div.task-item-block-info {
+            padding: 10px;
+            display: flex;
+            align-items: flex-start;
+            font-size: 12px;
+            & i { padding: 3px 10px 0 0; }
+            & .task-title { font-size: 14px; margin-bottom: 5px; }
+          }
+
+          & .btn-modal-edit-task { background-color: transparent; outline: 0;}
+        }
+        div#task-validation { margin-bottom: 10px; padding: 0 10px 0 30px; }
       }
     }
 

@@ -31,20 +31,22 @@ trait RevisionTaskTrait
      */
     private ?string $owner = null;
 
-    public function addTask(Task $task, UserInterface $user): void
+    public function addTask(Task $task, string $username): void
     {
         if (null === $this->owner) {
-            $this->owner = $user->getUsername();
+            $this->owner = $username;
         }
 
-        if ($this->owner !== $user->getUsername()) {
-            throw new \RuntimeException(\sprintf('User %s is not the owner!', $user->getUsername()));
+        if ($this->owner !== $username) {
+            throw new \RuntimeException(\sprintf('User %s is not the owner!', $username));
         }
 
         if (null === $this->taskCurrent) {
             $this->taskCurrent = $task;
-        } else {
+        } elseif (Task::STATUS_PLANNED === $task->getStatus()) {
             $this->taskPlannedIds[] = $task->getId();
+        } elseif (Task::STATUS_APPROVED === $task->getStatus()) {
+            $this->taskApprovedIds[] = $task->getId();
         }
     }
 

@@ -948,15 +948,25 @@ task:
         owner: 'Owner'
         taskDeadline: 'Deadline'
         actions: 'Actions'
+  status:
+    progress: 'In progress'
+    planned: 'Planned'
+    completed: 'Completed'
+    rejected: 'Rejected'
+    approved: 'Approved'
   info:
     empty: 'No tasks for this document'
     change_order: 'Change task order'
   assigned_to: 'Assigned to '
   in_progress: 'This task is '
   for: 'for'
+  show_history: 'Show history'
   validation:
      comment: 'Comment for validation'
-     button: 'Send for validation'
+     request: 'Send for validation'
+     done: 'Finish'
+     approve: 'Approve'
+     reject: 'Reject'
   error:
     ajax: 'Error: something went wrong!'
   field:

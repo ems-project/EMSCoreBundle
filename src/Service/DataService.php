@@ -1477,8 +1477,13 @@ class DataService
     {
         $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
         if ($dataFieldType instanceof DataFieldType) {
-            $fieldName = $dataFieldType->getJsonName($dataField->getFieldType());
-            if (null === $fieldName) {//Virtual container
+            $fieldType = $dataField->getFieldType();
+            if (null === $fieldType) {
+                throw new \RuntimeException('Unexpected null fieldType');
+            }
+
+            $fieldNames = $dataFieldType->getJsonNames($fieldType);
+            if (0 === \count($fieldNames)) {//Virtual container
                 /** @var DataField $child */
                 foreach ($dataField->getChildren() as $child) {
                     $this->updateDataValue($child, $elasticIndexDatas, $isMigration);
@@ -1489,10 +1494,14 @@ class DataService
                     foreach ($treatedFields as $fieldName) {
                         unset($elasticIndexDatas[$fieldName]);
                     }
-                } elseif (\array_key_exists($fieldName, $elasticIndexDatas)) {
-                    $treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas[$fieldName], $isMigration);
-                    foreach ($treatedFields as $fieldName) {
-                        unset($elasticIndexDatas[$fieldName]);
+                } else {
+                    foreach ($fieldNames as $fieldName) {
+                        if (\array_key_exists($fieldName, $elasticIndexDatas)) {
+                            $treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas[$fieldName], $isMigration);
+                            foreach ($treatedFields as $fieldName) {
+                                unset($elasticIndexDatas[$fieldName]);
+                            }
+                        }
                     }
                 }
             }

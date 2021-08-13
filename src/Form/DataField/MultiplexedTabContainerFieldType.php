@@ -154,4 +154,9 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
                 ->addModelTransformer(new DataFieldModelTransformer($fieldType, $this->formRegistry));
         }
     }
+
+    public static function isVirtual(array $option = [])
+    {
+        return true;
+    }
 }

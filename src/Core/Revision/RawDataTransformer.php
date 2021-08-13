@@ -26,7 +26,19 @@ final class RawDataTransformer
                 $type = $child->getType();
                 if ($type::isVirtual($child->getOptions())) {
                     if ($type::isContainer()) {
-                        $out[$child->getName()] = self::transform($child, $data);
+
+                        $jsonNames = $type::getJsonNames($child);
+                        if (0 === \count($jsonNames)) {
+                            $out[$child->getName()] = self::transform($child, $data);
+                        } else {
+                            $colectedData = [];
+                            foreach ($jsonNames as $name) {
+                                if (isset($data[$name])) {
+                                    $colectedData[$name] = self::transform($child, $data[$name]);
+                                }
+                            }
+                            $out[$child->getName()] = $colectedData;
+                        }
                     } else {
                         $out[$child->getName()] = $type::filterSubField($data, $child->getOptions());
                     }
@@ -76,7 +88,12 @@ final class RawDataTransformer
                 if ($type::isVirtual($child->getOptions())) {
                     if (isset($data[$child->getName()]) && !empty($data[$child->getName()])) {
                         if ($type::isContainer()) {
-                            $out = \array_merge_recursive($out, self::reverseTransform($child, $data[$child->getName()]));
+                            $jsonNames = $type::getJsonNames($child);
+                            if (0 === \count($jsonNames)) {
+                                $out = \array_merge_recursive($out, self::reverseTransform($child, $data[$child->getName()]));
+                            } else {
+                                $out = \array_merge($out,  $data[$child->getName()]);
+                            }
                         } else {
                             $out = \array_merge_recursive($out, $data[$child->getName()]);
                         }

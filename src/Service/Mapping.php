@@ -127,9 +127,6 @@ class Mapping
             Mapping::INSTANCE_ID_META_FIELD => $this->instanceId,
         ];
 
-        dump($out);
-        exit;
-
         $elasticsearchVersion = $this->elasticaService->getVersion();
         if (\version_compare($elasticsearchVersion, '7.0') >= 0) {
             return $out;

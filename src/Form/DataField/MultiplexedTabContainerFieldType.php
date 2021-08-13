@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class MultiplexedTabContainerFieldType extends DataFieldType
 {
@@ -49,17 +50,27 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+        $resolver->setDefault('values', '');
+        $resolver->setDefault('labels', '');
+    }
+
     public function generateMapping(FieldType $current, $withPipeline)
     {
         $values = $current->getDisplayOption('values');
         if (null === $values) {
-            return [$current->getName() => []];
+            return [];
         }
 
         $values = self::textAreaToArray($values);
         $mapping = [];
         foreach ($values as $value) {
-            $mapping[$value] = [];
+            $mapping[$value] = ['properties' => []];
         }
 
         return $mapping;
@@ -72,7 +83,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     {
         $values = $current->getDisplayOption('values');
         if (null === $values) {
-            return [$current->getName()];
+            return [];
         }
 
         return self::textAreaToArray($values);

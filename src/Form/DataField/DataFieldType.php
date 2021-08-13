@@ -38,12 +38,16 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * @param string $textArea
      * @return string[]
      */
     public static function textAreaToArray(?string $textArea): array
     {
-        return \explode("\n", \str_replace("\r", '', $textArea));
+        if (null === $textArea || 0 === \strlen($textArea)) {
+            return [];
+        }
+        $cleaned = \str_replace("\r", '', $textArea);
+
+        return \explode("\n", $cleaned);
     }
 
     public function getBlockPrefix()

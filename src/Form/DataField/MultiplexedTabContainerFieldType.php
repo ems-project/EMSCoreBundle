@@ -11,21 +11,35 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class MultiplexedTabContainerFieldType extends DataFieldType
 {
+    /**
+     * @return string
+     */
     public function getLabel()
     {
         return 'Multiplexed Tab Container';
     }
 
+    /**
+     * @return bool
+     */
     public static function isContainer()
     {
         return true;
     }
 
+    /**
+     * @return bool
+     */
     public static function isNested()
     {
         return true;
     }
 
+    /**
+     * @param array<mixed> $options
+     *
+     * @return void
+     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildOptionsForm($builder, $options);
@@ -51,7 +65,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -60,6 +74,11 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         $resolver->setDefault('labels', '');
     }
 
+    /**
+     * @param bool $withPipeline
+     *
+     * @return array<mixed>
+     */
     public function generateMapping(FieldType $current, $withPipeline)
     {
         $values = $current->getDisplayOption('values');

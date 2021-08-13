@@ -124,7 +124,7 @@ final class TaskRepository extends ServiceEntityRepository
             ->setParameter('id', $id);
 
         if (null === $task = $qb->getQuery()->getOneOrNullResult()) {
-            throw new \RuntimeException(sprintf('Task with id "%s" not found!', $id));
+            throw new \RuntimeException(\sprintf('Task with id "%s" not found!', $id));
         }
 
         return $task;

@@ -26,7 +26,7 @@ final class TaskLog
     {
         $style = Task::STYLES[$this->status] ?? null;
 
-        return $style ? sprintf('%s bg-%s', $style['icon'], $style['bg']) : 'fa-dot-circle-o bg-gray';
+        return $style ? \sprintf('%s bg-%s', $style['icon'], $style['bg']) : 'fa-dot-circle-o bg-gray';
     }
 
     public function getStatus(): string

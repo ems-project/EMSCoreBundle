@@ -1,7 +1,9 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
 {%- block icon -%}
-    <i class="fa fa-circle-o"></i>
+    <div class="text-center">
+        <i class="{{ data.taskCurrent.statusIcon }}"></i>
+    </div>
 {%- endblock -%}
 
 {%- block taskTitle -%}

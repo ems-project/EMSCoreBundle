@@ -58,11 +58,19 @@ class Task implements EntityInterface
      */
     private array $logs;
 
-    public const STATUS_PROGRESS = 'progress';
     public const STATUS_PLANNED = 'planned';
+    public const STATUS_PROGRESS = 'progress';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_REJECTED = 'rejected';
     public const STATUS_APPROVED = 'approved';
+
+    public const STYLES = [
+        self::STATUS_PLANNED    => ['icon' => 'fa fa-hourglass-o', 'bg' => 'gray', 'text' => 'muted', 'label' => 'default'],
+        self::STATUS_PROGRESS   => ['icon' => 'fa fa-paper-plane-o', 'bg' => 'blue', 'text' => 'primary', 'label' => 'primary'],
+        self::STATUS_COMPLETED  => ['icon' => 'fa fa-check', 'bg' => 'green', 'text' => 'success', 'label' => 'success'],
+        self::STATUS_REJECTED   => ['icon' => 'fa fa-close', 'bg' => 'red', 'text' => 'danger', 'label' => 'danger'],
+        self::STATUS_APPROVED   => ['icon' => 'fa fa-flag-checkered', 'bg' => 'green', 'text' => 'success', 'label' => 'success'],
+    ];
 
     public function __construct(string $username)
     {
@@ -103,19 +111,16 @@ class Task implements EntityInterface
         return $this->status;
     }
 
-    public function getStatusClass(): string
+    public function getStatusIcon(): string
     {
-        switch ($this->status) {
-            case self::STATUS_PROGRESS:
-                return 'primary';
-            case self::STATUS_APPROVED:
-            case self::STATUS_COMPLETED:
-                return 'success';
-            case self::STATUS_REJECTED:
-                return 'danger';
-            default:
-                return 'default';
-        }
+        $style = Task::STYLES[$this->status] ?? null;
+
+        return $style ? sprintf('%s text-%s', $style['icon'], $style['text']) : 'fa-dot-circle-o';
+    }
+
+    public function getStatusLabel(): string
+    {
+        return self::STYLES[$this->status]['label'] ?? 'default';
     }
 
     public function getTitle(): string

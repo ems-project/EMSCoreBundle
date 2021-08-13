@@ -22,22 +22,11 @@ final class TaskLog
         $this->date = new \DateTimeImmutable('now');
     }
 
-    public function getIconClass(): string
+    public function getIcon(): string
     {
-        switch ($this->status) {
-            case Task::STATUS_PLANNED:
-                return 'fa fa-hourglass-o bg-gray';
-            case Task::STATUS_PROGRESS:
-                return 'fa-paper-plane-o bg-blue';
-            case Task::STATUS_COMPLETED:
-                return 'fa-commenting-o bg-green';
-            case Task::STATUS_APPROVED:
-                return 'fa-check bg-green';
-            case Task::STATUS_REJECTED:
-                return 'fa-close bg-red';
-            default:
-                return 'fa-dot-circle-o bg-gray';
-        }
+        $style = Task::STYLES[$this->status] ?? null;
+
+        return $style ? sprintf('%s bg-%s', $style['icon'], $style['bg']) : 'fa-dot-circle-o bg-gray';
     }
 
     public function getStatus(): string

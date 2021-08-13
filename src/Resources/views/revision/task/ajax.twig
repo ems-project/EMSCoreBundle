@@ -11,7 +11,7 @@
             </span>
             <span>{{ 'task.for'|trans }}&nbsp;{{ task.assignee|displayname }}</span>
         </div>
-        <span class="label label-{{ task.statusClass }}">{{ "task.status.#{task.status}"|trans }}</span>
+        <span class="label label-{{ task.statusLabel }}">{{ "task.status.#{task.status}"|trans }}</span>
         <p id="task-description">{{ task.description }}</p>
         {% if formRequestValidation is defined and formRequestValidation != null %}
             {% set logRejection = task.getLatestRejection %}
@@ -36,12 +36,12 @@
     <li class="list-group-item tasks-item {{ isCurrent|default(false) ? 'tasks-item-current' }}">
         <div class="tasks-item-block">
             <div class="tasks-item-info">
-                <i class="fa {{ isCurrent|default(false) ? 'fa-circle-o' : 'fa-hourglass-o' }} "></i>
+                <i class="{{ task.statusIcon }}"></i>
                 <div>
                     <div class="tasks-item-title">{{ task.title }}</div>
                     <div>{{ 'task.assigned_to'|trans }}<strong>{{ task.assignee|displayname }}</strong></div>
                     {% if isCurrent|default(false) %}
-                        <div><span class="label label-{{ task.statusClass }}">{{ "task.status.#{task.status}"|trans }}</span></div>
+                        <div><span class="label label-{{ task.statusLabel }}">{{ "task.status.#{task.status}"|trans }}</span></div>
                     {% endif %}
                 </div>
             </div>
@@ -75,10 +75,10 @@
         data-title="Task: {{ task.title }}">
         <div class="tasks-item-block">
             <div class="tasks-item-info">
-                <i class="fa fa-check"></i>
+                <i class="{{ task.statusIcon }}"></i>
                 <div>
                     <div class="tasks-item-title">{{ task.title }}</div>
-                    <div>{{ 'task.assigned_to'|trans }} {{ task.assignee|displayname }}</div>
+                    <div>{{ 'task.assigned_to'|trans }} <strong>{{ task.assignee|displayname }}</strong></div>
                 </div>
             </div>
         </div>
@@ -185,7 +185,7 @@
     <ul class="timeline">
         {% for log in task.logs|reverse %}
             <li>
-                <i class="fa {{ log.iconClass }}"></i>
+                <i class="{{ log.icon }}"></i>
                 <div class="timeline-item">
                     <span class="time"><i class="fa fa-clock-o"></i> {{ log.date.format('d/m/Y H:i') }}</span>
                     <h3 class="timeline-header bg-info">

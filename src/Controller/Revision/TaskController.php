@@ -102,11 +102,11 @@ final class TaskController extends AbstractController
 
     public function ajaxGetTasks(Request $request, int $revisionId): Response
     {
-        $taskCollection = $this->taskManager->getTaskCollection($revisionId);
-        $revision = $taskCollection->getRevision();
+        $tasks = $this->taskManager->getTasks($revisionId);
+        $revision = $tasks->getRevision();
         $ajaxTemplate = $this->getAjaxTemplate();
 
-        if ($taskCollection->isOwner()) {
+        if ($this->taskManager->isTaskOwnerRevision($revision)) {
             $action = $request->get('action');
             $formValidation = $this->createCommentForm('validation', 'approve' !== $action);
             $formValidation->handleRequest($request);
@@ -115,26 +115,50 @@ final class TaskController extends AbstractController
                 $comment = $formValidation->getData()['comment'];
                 $this->taskManager->taskValidate($revision, 'approve' === $action, $comment);
 
-                return $this->redirectToRoute('ems_core_task_ajax_list', ['revisionId' => $revisionId]);
+                return $this->redirectToRoute('ems_core_task_ajax_tasks', ['revisionId' => $revisionId]);
             }
         }
 
-        $tasks = [];
-        foreach ($taskCollection->getTasks() as $task) {
-            $taskItemContext = [
-                'task' => $task,
-                'revision' => $revision,
-                'isCurrent' => $revision->isTaskCurrent($task),
-            ];
-
+        $tasksList = [];
+        foreach ($tasks as $task) {
+            $taskItemContext = ['task' => $task, 'revision' => $revision, 'isCurrent' => $revision->isTaskCurrent($task)];
             if ($revision->isTaskCurrent($task) && isset($formValidation)) {
                 $taskItemContext['formValidation'] = $formValidation->createView();
             }
-
-            $tasks[] = ['html' => $ajaxTemplate->renderBlock('taskItem', $taskItemContext)];
+            $tasksList[] = ['html' => $ajaxTemplate->renderBlock('taskItem', $taskItemContext)];
         }
 
-        return new JsonResponse(['tasks' => $tasks]);
+        return new JsonResponse([
+            'tasks' => $tasksList,
+            'tasks_approved_link' => $ajaxTemplate->renderBlock('tasksApprovedLink', [
+                'count' => $this->taskManager->countApprovedTasks($revision),
+            ]),
+        ]);
+    }
+
+    public function ajaxGetTasksApproved(int $revisionId): JsonResponse
+    {
+        $tasks = $this->taskManager->getTasksApproved($revisionId);
+        $revision = $tasks->getRevision();
+        $ajaxTemplate = $this->getAjaxTemplate();
+
+        $tasksList = [];
+        foreach ($tasks as $task) {
+            $tasksList[] = ['html' => $ajaxTemplate->renderBlock(
+                'taskItemApproved',
+                ['task' => $task, 'revision' => $revision]
+            )];
+        }
+
+        return new JsonResponse(['tasks' => $tasksList]);
+    }
+
+    public function ajaxModalTask(string $taskId): JsonResponse
+    {
+        return $this->getAjaxModal()
+            ->setFooter('modalFooterClose')
+            ->setBody('modalTaskBody', ['task' => $this->taskManager->getTask($taskId)])
+            ->getResponse();
     }
 
     public function ajaxModalCreate(Request $request, int $revisionId): JsonResponse
@@ -184,7 +208,7 @@ final class TaskController extends AbstractController
                 return $ajaxModal
                     ->setTitle('task.update.title', ['%title%' => $task->getTitle()])
                     ->addMessageSuccess('task.update.success', ['%title%' => $task->getTitle()])
-                    ->setBody('modalUpdateBody', ['form' => $form->createView(), 'task' => $task])
+                    ->setBody('modalTaskBody', ['form' => $form->createView(), 'task' => $task])
                     ->getResponse();
             } catch (\Throwable $e) {
                 $this->logger->error($e->getMessage(), ['e' => $e]);
@@ -193,7 +217,7 @@ final class TaskController extends AbstractController
         }
 
         return $ajaxModal
-            ->setBody('modalUpdateBody', ['form' => $form->createView(), 'task' => $task])
+            ->setBody('modalTaskBody', ['form' => $form->createView(), 'task' => $task])
             ->getResponse();
     }
 

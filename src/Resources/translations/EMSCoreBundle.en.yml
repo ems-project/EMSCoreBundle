@@ -960,7 +960,7 @@ task:
   assigned_to: 'Assigned to '
   in_progress: 'This task is '
   for: 'for'
-  show_history: 'Show history'
+  history: 'History'
   validation:
      comment: 'Comment for validation'
      request: 'Send for validation'
@@ -991,5 +991,5 @@ task:
     submit: 'Delete task'
     success: 'Task "%title%" successfully deleted.'
   finished:
-    show: 'View finished tasks (%number%)'
+    show: 'Show finished tasks (%number%)'
     hide: 'Hide finished tasks (%number%)'

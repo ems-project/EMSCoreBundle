@@ -156,13 +156,6 @@ class Task implements EntityInterface
         return $this->getLogLatestByStatus(self::STATUS_REJECTED);
     }
 
-    public function getLatestCompletedUsername(): ?string
-    {
-        $latestCompleted = $this->getLogLatestByStatus(self::STATUS_COMPLETED);
-
-        return $latestCompleted ? $latestCompleted->getUsername() : null;
-    }
-
     /**
      * @return TaskLog[]
      */

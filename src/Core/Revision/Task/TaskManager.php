@@ -38,6 +38,11 @@ final class TaskManager
         $this->logger = $logger;
     }
 
+    public function countApprovedTasks(Revision $revision): int
+    {
+        return $this->taskRepository->countApproved($revision);
+    }
+
     /**
      * @return string[]
      */
@@ -71,14 +76,31 @@ final class TaskManager
         return $task;
     }
 
-    public function getTaskCollection(int $revisionId): TaskCollection
+    public function getTasks(int $revisionId): TaskCollection
     {
-        $user = $this->userService->getCurrentUser();
         $revision = $this->revisionRepository->findOneById($revisionId);
+        $tasks = new TaskCollection($revision);
 
-        $results = $this->taskRepository->getTasks($revision);
+        if ($revision->hasTaskCurrent()) {
+            $tasks->addTask($this->taskRepository->findTaskById($revision->getTaskCurrent()->getId()));
+        }
+        if ($revision->hasTaskPlannedIds()) {
+            $tasks->addTasks($this->taskRepository->findTasksByIds($revision->getTaskPlannedIds()));
+        }
 
-        return new TaskCollection($user, $revision, $results);
+        return $tasks;
+    }
+
+    public function getTasksApproved(int $revisionId): TaskCollection
+    {
+        $revision = $this->revisionRepository->findOneById($revisionId);
+        $tasks = new TaskCollection($revision);
+
+        if ($revision->hasTaskApprovedIds()) {
+            $tasks->addTasks($this->taskRepository->findTasksByIds($revision->getTaskApprovedIds()));
+        }
+
+        return $tasks;
     }
 
     public function getTaskCurrent(int $revisionId): ?Task
@@ -112,6 +134,13 @@ final class TaskManager
         $user = $this->userService->getCurrentUser();
 
         return $this->taskRepository->countForOwner($user) > 0;
+    }
+
+    public function isTaskOwnerRevision(Revision $revision): bool
+    {
+        $user = $this->userService->getCurrentUser();
+
+        return $revision->hasOwner() && $revision->getOwner() === $user->getUsername();
     }
 
     public function isTaskManager(): bool
@@ -180,7 +209,6 @@ final class TaskManager
                 $task->changeStatus(Task::STATUS_REJECTED, $user->getUsername(), $comment);
             }
 
-            $task->setAssignee($task->getLatestCompletedUsername() ?? $revision->getOwner());
             $this->taskRepository->save($task);
         });
         $transaction($revision->getId());

@@ -10,6 +10,7 @@ div#ajax-modal {
     .time { color: #333; }
     .timeline-header { font-size: 14px; }
   }
+  div.nav-tabs-custom { margin-bottom: 0; }
 }
 
 div#task-dashboard {
@@ -54,9 +55,11 @@ div#revision-tabs {
 
   div#tab_tasks {
     padding: 0;
+    padding-bottom: 15px;
     div#revision-tasks-empty { font-weight: bold; padding: 15px 15px 0;}
     div#revision-tasks-info {
       background-color: #f5f5f5;
+      border-bottom: 1px solid $gray-lighter;
       font-size: 12px;
       padding: 5px;
       text-align: right;
@@ -64,44 +67,46 @@ div#revision-tabs {
       & i { padding: 0 10px; }
     }
 
-    ul#revision-tasks {
-      li.task-item {
+    ul.revision-tasks {
+      margin: 0;
+      li.tasks-item {
         padding: 0;
-        border-left: 0;
-        border-right: 0;
+        border: 0;
         border-radius: 0;
+        border: 0;
+        border-bottom: 1px solid $gray-lighter;
+        background: transparent;
 
-        &.task-current {
+        &.tasks-item-current {
           background-color: lighten($brand-info, 35%);
-          & div.task-item-block-info i, div.task-title {  color: $brand-primary; font-weight: bold; }
+          & div.tasks-item-block-info i, div.tasks-item-title {  color: $brand-primary; font-weight: bold; }
         }
 
-        div.task-item-block{
+        div.tasks-item-validation { padding: 0 10px 10px 30px; }
+        div.tasks-item-block{
           display: flex;
           justify-content: space-between;
 
-          & div.task-item-block-info {
-            padding: 10px;
-            display: flex;
-            align-items: flex-start;
-            font-size: 12px;
+          & div.tasks-item-info {
+            padding: 10px; display: flex; align-items: flex-start; font-size: 12px;
             & i { padding: 3px 10px 0 0; }
-            & .task-title { font-size: 14px; margin-bottom: 5px; }
+            & .tasks-item-title { font-size: 14px; margin-bottom: 5px; }
           }
-
-          & .btn-modal-edit-task { background-color: transparent; outline: 0;}
+          & .btn-task-update-modal { background-color: transparent; outline: 0;}
         }
-        div#task-validation { margin-bottom: 10px; padding: 0 10px 0 30px; }
       }
     }
+    button#btn-task-create-modal { margin: 15px; }
 
-    div.revision-task-actions {
-      padding: 0 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      & > * {
-        margin-bottom: 15px;
+    div#revision-tasks-approved {
+      a#btn-tasks-approved { padding: 15px; display: block; }
+
+      ul.revision-tasks li {
+        &:hover { cursor: pointer; }
+        div.tasks-item-info {
+          & i { color: $green; }
+          .tasks-item-title { color: $green; }
+        }
       }
     }
   }

@@ -1,13 +1,21 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
-{% block icon %}
+{%- block icon -%}
     <i class="fa fa-circle-o"></i>
-{% endblock %}
+{%- endblock -%}
 
-{% block owner %}{{- data.owner|displayname -}}{% endblock %}
-{% block assignee %}{{- data.taskCurrent.assignee|displayname -}}{% endblock %}
+{%- block taskTitle -%}
+    <a href="#" class="task-modal"
+        data-url="{{ path('ems_core_task_ajax_task_modal', { 'revisionId': data.id, 'taskId': data.taskCurrent.id }) }}"
+        data-title="Task: {{ data.taskCurrent.title }}">
+        {{ data.taskCurrent.title }}
+    </a>
+{%- endblock -%}
 
-{% block actions %}
+{%- block owner -%}{{- data.owner|displayname -}}{%- endblock -%}
+{%- block assignee -%}{{- data.taskCurrent.assignee|displayname -}}{%- endblock -%}
+
+{%- block actions -%}
     <div class="btn-group">
         <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             action <span class="caret"></span>
@@ -25,4 +33,4 @@
             </li>
         </ul>
     </div>
-{% endblock %}
+{%- endblock -%}

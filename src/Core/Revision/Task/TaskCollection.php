@@ -4,52 +4,50 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Task;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
-use EMS\CoreBundle\Entity\UserInterface;
 
-final class TaskCollection
+/**
+ * @implements \IteratorAggregate<int, Task>
+ */
+final class TaskCollection implements \IteratorAggregate
 {
     private Revision $revision;
     /** @var Task[] */
     private array $tasks = [];
-    private bool $isOwner;
 
-    /**
-     * @param ArrayCollection<string, Task> $results
-     */
-    public function __construct(UserInterface $user, Revision $revision, ArrayCollection $results)
+    public function __construct(Revision $revision)
     {
         $this->revision = $revision;
-        $this->isOwner = $user->getUsername() === $revision->getOwner();
+    }
 
-        if ($revision->hasTaskCurrent() && $currentTask = $results->get($revision->getTaskCurrent()->getId())) {
-            $this->tasks[] = $currentTask;
-        }
+    /**
+     * @return \ArrayIterator<int, Task>
+     */
+    public function getIterator(): \ArrayIterator
+    {
+        return new \ArrayIterator($this->tasks);
+    }
 
-        foreach ($revision->getTaskPlannedIds() as $plannedId) {
-            if (null !== $plannedTask = $results->get($plannedId)) {
-                $this->tasks[] = $plannedTask;
-            }
+    public function addTask(object $task): void
+    {
+        if ($task instanceof Task) {
+            $this->tasks[] = $task;
         }
     }
 
-    public function isOwner(): bool
+    /**
+     * @param Task[] $tasks
+     */
+    public function addTasks(array $tasks): void
     {
-        return $this->isOwner;
+        foreach ($tasks as $task) {
+            $this->tasks[] = $task;
+        }
     }
 
     public function getRevision(): Revision
     {
         return $this->revision;
-    }
-
-    /**
-     * @return Task[]
-     */
-    public function getTasks(): array
-    {
-        return $this->tasks;
     }
 }

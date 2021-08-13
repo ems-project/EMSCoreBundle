@@ -20,6 +20,5 @@
     <import resource="@EMSCoreBundle/Resources/config/routing/datatable.xml"
             prefix="/datatable" />
     <import resource="@EMSCoreBundle/Resources/config/routing/search.xml" />
-    <import resource="@EMSCoreBundle/Resources/config/routing/task.xml"
-            prefix="/tasks" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/task.xml"/>
 </routes>

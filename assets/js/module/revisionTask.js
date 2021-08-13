@@ -3,6 +3,8 @@ import {ajaxJsonGet, ajaxJsonSubmit} from "./../helper/ajax";
 
 export default class RevisionTask {
     constructor() {
+        this.dashboard();
+
         this.taskTab = document.querySelector('#tab_task');
         if (this.taskTab !== null) {
             this.loadTask();
@@ -11,19 +13,25 @@ export default class RevisionTask {
         this.tasksTab = document.querySelector('#tab_tasks');
         if (this.tasksTab !== null) {
             this.tasksList = document.querySelector('ul#revision-tasks');
-            this.tasksUrl = this.tasksList.dataset.url;
-            this.tasksListLoading = this.tasksList.querySelector('li.task-loading');
+            this.tasksListApproved = document.querySelector('ul#revision-tasks-approved');
             this.tasksEmpty = this.tasksTab.querySelector('#revision-tasks-empty');
             this.tasksInfo = this.tasksTab.querySelector('#revision-tasks-info');
-
-            this.modalCreate();
+            this.tasksApprovedLink = this.tasksTab.querySelector('#revision-tasks-approved-link');
 
             if ('true' === this.tasksList.dataset.load) {
                 this.loadTasks();
             } else {
                 this.tasksEmpty.style.display = 'block';
+                this.btnTaskCreateModal();
             }
         }
+    }
+
+    dashboard() {
+        document.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('task-modal')) { return; }
+            ajaxModal.load({ url: e.target.dataset.url, title: e.target.dataset.title});
+        });
     }
 
     loadTask() {
@@ -59,25 +67,32 @@ export default class RevisionTask {
 
         ajaxJsonGet(url, callbackRequest);
     }
+    loadTasks() {
+        this.tasksClear();
+        ajaxJsonGet(this.tasksList.dataset.url, this.callbackGetTasks());
+    }
+    loadTasksApproved() {
+        var loading = this.tasksListApproved.querySelector('.task-loading');
+        loading.style.display = 'block'
 
-    clearTasks() {
-        this.tasksListLoading.style.display = 'block';
-        this.tasksEmpty.style.display = 'none';
-        this.tasksList.querySelectorAll('.task-item').forEach((e) => {
-            e.remove();
+        ajaxJsonGet(this.tasksListApproved.dataset.url, (json, request) => {
+            if (200 !== request.status) { return; }
+            loading.style.display = 'none';
+
+            var tasks = json.hasOwnProperty('tasks') ? json.tasks : [];
+            tasks.forEach((task) => {
+                this.tasksListApproved.insertAdjacentHTML('beforeend', task.html);
+            });
+            this.tasksListApproved.querySelectorAll('.tasks-item').forEach((item) => {
+                item.onclick = () => { ajaxModal.load({ url: item.dataset.url, title: item.dataset.title}); }
+            })
         });
     }
-
-    loadTasks() {
-        this.clearTasks();
-        ajaxJsonGet(this.tasksUrl, this.callbackGetTasks());
-    }
-
     callbackGetTasks() {
         return (json, request) => {
             if (200 !== request.status) { return; }
 
-            this.tasksListLoading.style.display = 'none';
+            this.tasksList.querySelector('.task-loading').style.display = 'none';
 
             var hasTasks = false;
             var tasks = json.hasOwnProperty('tasks') ? json.tasks : [];
@@ -88,49 +103,50 @@ export default class RevisionTask {
 
             if (hasTasks) {
                 this.tasksInfo.style.display = 'block';
-                this.modalEdit();
-                this.validationForm();
+                this.btnTaskUpdateModal();
+                this.btnTaskValidation();
             } else {
                 this.tasksEmpty.style.display = 'block';
                 this.tasksInfo.style.display = 'none';
             }
+
+            this.btnTaskCreateModal();
+            if (json.hasOwnProperty('tasks_approved_link')) {
+                this.tasksApprovedLink.innerHTML = json.tasks_approved_link;
+                this.btnTasksApproved();
+            }
         }
     }
+    tasksClear() {
+        this.tasksList.querySelector('.task-loading').style.display = 'block';
+        this.tasksTab.querySelector('#btn-task-create-modal').setAttribute('disabled','disabled');
+        this.tasksEmpty.style.display = 'none';
+        this.tasksApprovedLink.innerHTML = '';
+        this.tasksList.querySelectorAll('.tasks-item').forEach((e) => { e.remove();});
+        this.tasksListApproved.querySelectorAll('.tasks-item').forEach((e) => { e.remove();});
+    }
+    btnTaskCreateModal() {
+        var button = document.querySelector('#btn-task-create-modal');
+        button.onclick = (event) => {
+            event.preventDefault();
+            ajaxModal.load(
+                { url: button.dataset.url, title: button.dataset.title},
+                modalCreateCallback
+            );
+        }
+        button.style.display = 'block';
+        button.removeAttribute('disabled');
 
-    modalCreate() {
         var modalCreateCallback = (json, request) => {
             var success = json.hasOwnProperty('modalSuccess') ? json.modalSuccess : false;
             if (success) {
                 this.loadTasks();
             }
         };
-
-        var buttonModalCreate = document.querySelector('#btn-modal-create-task');
-        buttonModalCreate.onclick = (event) => {
-            event.preventDefault();
-            ajaxModal.load(
-                { url: buttonModalCreate.dataset.url, title: buttonModalCreate.dataset.title},
-                modalCreateCallback
-            );
-        }
     }
-    modalEdit() {
-        var modalEditCallback = (json, request) => {
-            var btnDelete = ajaxModal.modal.querySelector('#btn-delete-task');
-            if (btnDelete) {
-                btnDelete.addEventListener('click', () => {
-                    ajaxModal.postRequest(btnDelete.dataset.url);
-                });
-            }
-
-            var success = json.hasOwnProperty('modalSuccess') ? json.modalSuccess : false;
-            if (success) {
-                this.loadTasks();
-            }
-        }
-
-        var modalEditButtons = document.getElementsByClassName("btn-modal-edit-task");
-        Array.from(modalEditButtons).forEach((buttonModalEdit) => {
+    btnTaskUpdateModal() {
+        var buttons = document.getElementsByClassName("btn-task-update-modal");
+        Array.from(buttons).forEach((buttonModalEdit) => {
             buttonModalEdit.addEventListener('click', () => {
                 ajaxModal.load(
                     { url: buttonModalEdit.dataset.url, title: buttonModalEdit.dataset.title  },
@@ -138,8 +154,22 @@ export default class RevisionTask {
                 )
             });
         });
+
+        var modalEditCallback = (json, request) => {
+            this.btnTaskDelete();
+            var success = json.hasOwnProperty('modalSuccess') ? json.modalSuccess : false;
+            if (success) {
+                this.loadTasks();
+            }
+        }
     }
-    validationForm() {
+    btnTaskDelete() {
+        var button = ajaxModal.modal.querySelector('#btn-task-delete');
+        if (button) {
+            button.addEventListener('click', () => { ajaxModal.postRequest(button.dataset.url); });
+        }
+    }
+    btnTaskValidation() {
         var sendValidation = (action) => {
             return (event) => {
                 event.preventDefault();
@@ -147,18 +177,34 @@ export default class RevisionTask {
                 var formData = new FormData(formElement);
                 formData.append('action', action);
                 var submitData = Array.from(formData, e => e.map(encodeURIComponent).join('=')).join('&');
-                this.clearTasks();
-                ajaxJsonSubmit(this.tasksUrl, submitData, this.callbackGetTasks());
+
+                this.tasksClear();
+                ajaxJsonSubmit(this.tasksList.dataset.url, submitData, this.callbackGetTasks());
             }
         };
 
-        var buttonApproveValidation = this.tasksTab.querySelector('#btn-validation-approve');
-        if (buttonApproveValidation) {
-            buttonApproveValidation.onclick = sendValidation('approve');
-        }
-        var buttonRejectValidation = this.tasksTab.querySelector('#btn-validation-reject');
-        if (buttonRejectValidation) {
-            buttonRejectValidation.onclick = sendValidation('reject');
+        var btnApprove = this.tasksTab.querySelector('#btn-task-validation-approve');
+        if (btnApprove) { btnApprove.onclick = sendValidation('approve'); }
+        var btnReject = this.tasksTab.querySelector('#btn-task-validation-reject');
+        if (btnReject) { btnReject.onclick = sendValidation('reject'); }
+    }
+    btnTasksApproved() {
+        var button = document.querySelector('#btn-tasks-approved');
+        if (!button) { return; }
+
+        button.onclick = (event) => {
+            event.preventDefault();
+            var btnText = button.textContent;
+            var toggleText = button.dataset.toggleText;
+            button.dataset.toggle = button.dataset.toggle == 'false';
+            button.dataset.toggleText = btnText;
+            button.innerHTML = toggleText;
+
+            if (button.dataset.toggle == 'true') {
+                this.loadTasksApproved();
+            } else {
+                this.tasksListApproved.querySelectorAll('.tasks-item').forEach((e) => { e.remove();});
+            }
         }
     }
 }

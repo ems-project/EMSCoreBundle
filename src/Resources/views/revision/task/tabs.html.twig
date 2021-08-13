@@ -5,33 +5,36 @@
     <div class="task-loading">
         <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
     </div>
-    <div id="revision-task" data-url="{{ path('ems_core_task_ajax_current', { revisionId: revision.id  }) }}">
+    <div id="revision-task" data-url="{{ path('ems_core_task_ajax_task', { revisionId: revision.id  }) }}">
         {# ajax loaded #}
     </div>
 {% endblock %}
 
 {% block tasks %}
-{#    {{ dump(revision.taskCurrent.logs) }}#}
-
-
     <div id="revision-tasks-empty" style="display:none;">{{ 'task.info.empty'|trans }}</div>
     <div id="revision-tasks-info" style="display:none;">
         <span>{{ 'task.info.change_order'|trans }}</span><i class="fa fa-arrows" aria-hidden="true"></i>
     </div>
-    <ul id="revision-tasks" class="list-group"
-        data-url="{{ path('ems_core_task_ajax_list', {'revisionId': revision.id }) }}"
+    <ul id="revision-tasks" class="list-group revision-tasks"
+        data-url="{{ path('ems_core_task_ajax_tasks', {'revisionId': revision.id }) }}"
         data-load="{{ revision.hasTasks ? "true" : "false" }}">
         <li class="task-loading" {{ revision.hasTasks == false ? 'style="display:none;"' }}>
             <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
         </li>
         {# ajax loaded #}
     </ul>
-    <div class="revision-task-actions">
-        <button id="btn-modal-create-task"
-                data-url="{{ path('ems_core_task_ajax_create_modal', {'revisionId': revision.id}) }}"
-                data-title="{{ 'task.create.title'|trans }}"
-                class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> {{ 'task.create.button'|trans }}</button>
-{#        <a href="#" id="btn-task-finished-show" {{ revision.tasks.isEmpty ? 'style="display:none;"' }}>{{ 'task.finished.show'|trans({ '%number%': 3 }) }}</a>#}
-{#        <a href="#" id="btn-task-finished-hide" style="display: none;">{{ 'task.finished.hide'|trans({ '%number%': 3 }) }}</a>#}
+    <button id="btn-task-create-modal" style="display: none;"
+            data-url="{{ path('ems_core_task_ajax_create_modal', {'revisionId': revision.id}) }}"
+            data-title="{{ 'task.create.title'|trans }}"
+            class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> {{ 'task.create.button'|trans }}</button>
+    <div id="revision-tasks-approved">
+        <div id="revision-tasks-approved-link">{# ajax loaded #}</div>
+        <ul id="revision-tasks-approved" class="list-group revision-tasks"
+            data-url="{{ path('ems_core_task_ajax_tasks_approved', {'revisionId': revision.id}) }}">
+            <li class="task-loading" style="display:none;">
+                <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+            </li>
+            {# ajax loaded #}
+        </ul>
     </div>
 {% endblock %}

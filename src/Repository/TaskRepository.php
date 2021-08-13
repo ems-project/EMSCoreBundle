@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Core\Revision\Task\TaskTableContext;
@@ -40,6 +39,17 @@ final class TaskRepository extends ServiceEntityRepository
             ->select('count(t.id)')
             ->andWhere($qb->expr()->eq('t.assignee', ':username'))
             ->setParameter('username', $user->getUsername());
+
+        return \intval($qb->getQuery()->getSingleScalarResult());
+    }
+
+    public function countApproved(Revision $revision): int
+    {
+        $qb = $this->createQueryBuilder('t');
+        $qb
+            ->select('count(t.id)')
+            ->andWhere($qb->expr()->in('t.id', ':approved_ids'))
+            ->setParameter('approved_ids', $revision->getTaskApprovedIds());
 
         return \intval($qb->getQuery()->getSingleScalarResult());
     }
@@ -106,39 +116,33 @@ final class TaskRepository extends ServiceEntityRepository
         return $qb;
     }
 
-    /**
-     * @return ArrayCollection<string, Task>
-     */
-    public function getTasks(Revision $revision): ArrayCollection
+    public function findTaskById(string $id): Task
     {
         $qb = $this->createQueryBuilder('t');
+        $qb
+            ->andWhere($qb->expr()->eq('t.id', ':id'))
+            ->setParameter('id', $id);
 
-        $orExpr = $qb->expr()->orX();
-
-        if ($revision->hasTaskCurrent()) {
-            $orExpr->add($qb->expr()->eq('t.id', ':current_id'));
-            $qb->setParameter('current_id', $revision->getTaskCurrent()->getId());
+        if (null === $task = $qb->getQuery()->getOneOrNullResult()) {
+            throw new \RuntimeException(sprintf('Task with id "%s" not found!', $id));
         }
 
-        if ($revision->hasTaskPlannedIds()) {
-            $orExpr->add($qb->expr()->in('t.id', ':planned_ids'));
-            $qb->setParameter('planned_ids', $revision->getTaskPlannedIds());
-        }
+        return $task;
+    }
 
-        if ($orExpr->count() > 0) {
-            $qb->andWhere($orExpr);
-        }
+    /**
+     * @param string[] $ids
+     *
+     * @return Task[]
+     */
+    public function findTasksByIds(array $ids): array
+    {
+        $qb = $this->createQueryBuilder('t');
+        $qb
+            ->andWhere($qb->expr()->in('t.id', ':ids'))
+            ->setParameter('ids', $ids);
 
-        /** @var Task[] $results */
-        $results = $qb->getQuery()->getResult();
-
-        $collection = new ArrayCollection();
-
-        foreach ($results as $result) {
-            $collection->set($result->getId(), $result);
-        }
-
-        return $collection;
+        return $qb->getQuery()->getResult();
     }
 
     public function delete(Task $task): void

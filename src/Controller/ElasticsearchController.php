@@ -101,7 +101,7 @@ class ElasticsearchController extends AppController
             ]);
 
             $allowOrigin = $this->getParameter('ems_core.health_check_allow_origin');
-            if (!empty($allowOrigin)) {
+            if (\is_string($allowOrigin) && \strlen($allowOrigin) > 0) {
                 $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
             }
 
@@ -399,8 +399,8 @@ class ElasticsearchController extends AppController
         if (null !== $category && 1 === \count($contentTypes)) {
             $contentType = $contentTypeService->getByName(\array_values($contentTypes)[0]);
             if (false !== $contentType) {
-                $categoryField = $contentType->getCategoryField();
-                if (null !== $categoryField) {
+                if ($contentType->hasCategoryField()) {
+                    $categoryField = $contentType->giveCategoryField();
                     $boolQuery = $elasticaService->getBoolQuery();
                     $query = $commonSearch->getQuery();
                     if (!$query instanceof $boolQuery) {

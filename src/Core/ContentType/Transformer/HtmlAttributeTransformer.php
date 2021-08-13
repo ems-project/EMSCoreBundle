@@ -8,7 +8,7 @@ use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class HtmlAttributeTransformer extends AbstractTransformer
+final class HtmlAttributeTransformer extends BaseHtmlTransformer
 {
     public function getName(): string
     {
@@ -43,19 +43,16 @@ final class HtmlAttributeTransformer extends AbstractTransformer
         }
     }
 
-    private function setTransformed(TransformContext $context, Crawler $crawler): void
+    protected function configureOptions(OptionsResolver $resolver): void
     {
-        $data = $context->getData();
-        $transformed = $crawler->outerHtml();
-
-        if (false === \strpos($data, '<html>')) {
-            $transformed = \str_replace(['<html>', '</html>'], '', $transformed);
-        }
-        if (false === \strpos($data, '<body>')) {
-            $transformed = \str_replace(['<body>', '</body>'], '', $transformed);
-        }
-
-        $context->setTransformed($transformed);
+        $resolver
+            ->setRequired(['attribute'])
+            ->setDefaults([
+                'element' => '*',
+                'remove_value_prefix' => null,
+                'remove' => false,
+            ])
+        ;
     }
 
     /**
@@ -157,29 +154,5 @@ final class HtmlAttributeTransformer extends AbstractTransformer
         }
 
         return $result;
-    }
-
-    /**
-     * @return \Generator|\DOMElement[]
-     */
-    private function crawl(Crawler $crawler, string $xPath): \Generator
-    {
-        foreach ($crawler->filterXPath($xPath) as $element) {
-            if ($element instanceof \DOMElement) {
-                yield $element;
-            }
-        }
-    }
-
-    protected function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver
-            ->setRequired(['attribute'])
-            ->setDefaults([
-                'element' => '*',
-                'remove_value_prefix' => null,
-                'remove' => false,
-            ])
-        ;
     }
 }

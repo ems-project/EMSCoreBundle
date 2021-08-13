@@ -53,15 +53,15 @@ final class ActionService implements EntityServiceInterface
     }
 
     /**
-     * @param array<string, int> $ids
+     * @param string[] $ids
      */
     public function reorderByIds(array $ids): void
     {
         $counter = 1;
-        foreach ($this->templateRepository->getByIds(\array_keys($ids)) as $channel) {
-            $channel->setOrderKey($counter);
-            $this->templateRepository->create($channel);
-            ++$counter;
+        foreach ($ids as $id) {
+            $action = $this->templateRepository->getById($id);
+            $action->setOrderKey($counter++);
+            $this->templateRepository->create($action);
         }
     }
 

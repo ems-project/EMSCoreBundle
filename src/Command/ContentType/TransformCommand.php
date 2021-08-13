@@ -82,13 +82,13 @@ final class TransformCommand extends AbstractCommand
         if (0 === \count($transformerDefinitions)) {
             $this->io->warning('No transformers defined!');
 
-            return 1;
+            return self::EXECUTE_SUCCESS;
         }
 
-        if (false === $validate = $this->validateTransformerDefinitions($transformerDefinitions)) {
+        if (false === $this->validateTransformerDefinitions($transformerDefinitions)) {
             $this->io->error('Transformers are not valid defined!');
 
-            return 1;
+            return self::EXECUTE_ERROR;
         }
 
         if ($dryRun = $this->getOptionBool('dry-run')) {
@@ -128,7 +128,7 @@ final class TransformCommand extends AbstractCommand
             $this->io->success(\sprintf('Transformed %d revisions', $transformed));
         }
 
-        return 0;
+        return self::EXECUTE_SUCCESS;
     }
 
     /**

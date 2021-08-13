@@ -413,7 +413,7 @@ form-submission:
       form: 'Form'
       locale: 'Locale'
       created: 'Created At'
-      deadline: 'Deadline Date'
+      expire_date: 'Expire Date'
     reorder: 'Reorder'
 uploaded-file:
   menu: 'Menu'

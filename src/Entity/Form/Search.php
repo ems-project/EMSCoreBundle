@@ -71,18 +71,14 @@ class Search implements JsonSerializable
     private $contentType;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="sort_by", type="string", length=100, nullable=true)
      */
-    public $sortBy;
+    public ?string $sortBy = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="sort_order", type="string", length=100, nullable=true)
      */
-    public $sortOrder;
+    public ?string $sortOrder = null;
 
     /**
      * @var int
@@ -217,50 +213,26 @@ class Search implements JsonSerializable
         return $this->filters;
     }
 
-    /**
-     * Set sortBy.
-     *
-     * @param string $sortBy
-     *
-     * @return Search
-     */
-    public function setSortBy($sortBy)
+    public function setSortBy(?string $sortBy): Search
     {
         $this->sortBy = $sortBy;
 
         return $this;
     }
 
-    /**
-     * Get sortBy.
-     *
-     * @return string
-     */
-    public function getSortBy()
+    public function getSortBy(): ?string
     {
         return $this->sortBy;
     }
 
-    /**
-     * Set sortOrder.
-     *
-     * @param string $sortOrder
-     *
-     * @return Search
-     */
-    public function setSortOrder($sortOrder)
+    public function setSortOrder(?string $sortOrder): Search
     {
         $this->sortOrder = $sortOrder;
 
         return $this;
     }
 
-    /**
-     * Get sortOrder.
-     *
-     * @return string
-     */
-    public function getSortOrder()
+    public function getSortOrder(): ?string
     {
         return $this->sortOrder;
     }

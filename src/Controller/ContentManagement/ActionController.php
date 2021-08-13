@@ -97,8 +97,8 @@ final class ActionController extends AbstractController
                         $this->actionService->deleteByIds($table->getSelected());
                         break;
                     case TableType::REORDER_ACTION:
-                        $newOrder = $request->get($form->getName(), [])['reordered'] ?? [];
-                        $this->actionService->reorderByIds(\array_flip(\array_values($newOrder)));
+                        $newOrder = TableType::getReorderedKeys($form->getName(), $request);
+                        $this->actionService->reorderByIds($newOrder);
                         break;
                     default:
                         $this->logger->error('log.controller.action.unknown_action');

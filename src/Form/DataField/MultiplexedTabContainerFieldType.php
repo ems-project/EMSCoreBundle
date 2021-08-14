@@ -13,36 +13,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class MultiplexedTabContainerFieldType extends DataFieldType
 {
-    /**
-     * @return string
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Multiplexed Tab Container';
     }
 
-    /**
-     * @return bool
-     */
-    public static function isContainer()
+    public static function isContainer(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public static function isNested()
+    public static function isNested(): bool
     {
         return true;
     }
 
     /**
      * @param array<mixed> $options
-     *
-     * @return void
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -66,10 +55,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         }
     }
 
-    /**
-     * @return void
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
         $resolver->setDefault('values', '');
@@ -81,7 +67,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
      *
      * @return array<mixed>
      */
-    public function generateMapping(FieldType $current, $withPipeline)
+    public function generateMapping(FieldType $current, $withPipeline): array
     {
         $values = $current->getDisplayOption('values');
         if (null === $values) {
@@ -110,20 +96,15 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         return self::textAreaToArray($values);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'tabsfieldtype';
     }
 
     /**
      * @param array<mixed> $options
-     *
-     * @return void
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $fieldType = $builder->getOptions()['metadata'];
         if (!$fieldType instanceof FieldType) {
@@ -157,10 +138,8 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
 
     /**
      * @param array<mixed> $option
-     *
-     * @return bool
      */
-    public static function isVirtual(array $option = [])
+    public static function isVirtual(array $option = []): bool
     {
         return true;
     }

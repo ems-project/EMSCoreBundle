@@ -1446,7 +1446,7 @@ class DataService
 
         if ($isContainer) {
             /** @var FieldType $field */
-            foreach ($meta->getChildren() as $field) {
+            foreach ($meta->getChildren() as $key => $field) {
                 //no need to generate the structure for delete field
                 if (!$field->getDeleted()) {
                     $child = $dataField->__get('ems_'.$field->getName());
@@ -1455,7 +1455,7 @@ class DataService
                         $child->setFieldType($field);
                         $child->setOrderKey($field->getOrderKey());
                         $child->setParent($dataField);
-                        $dataField->addChild($child);
+                        $dataField->addChild($child, $key);
                         if (isset($field->getDisplayOptions()['defaultValue'])) {
                             $child->setEncodedText($field->getDisplayOptions()['defaultValue']);
                         }
@@ -1812,9 +1812,9 @@ class DataService
     {
         /** @var DataField $out */
         $out = $form->getNormData();
-        foreach ($form as $item) {
+        foreach ($form as $key => $item) {
             if ($item->getNormData() instanceof DataField) {
-                $out->addChild($item->getNormData());
+                $out->addChild($item->getNormData(), $key);
                 $this->getDataFieldsStructure($item);
             }
         }

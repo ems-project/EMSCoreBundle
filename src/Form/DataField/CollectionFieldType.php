@@ -62,7 +62,7 @@ class CollectionFieldType extends DataFieldType
                 $colItem = new DataField();
                 $colItem->setOrderKey($idx);
                 $colItem->setFieldType(null); // it's a collection item
-                foreach ($dataField->getFieldType()->getChildren() as $childFieldType) {
+                foreach ($dataField->getFieldType()->getChildren() as $grandChildKey => $childFieldType) {
                     /** @var FieldType $childFieldType */
                     if (!$childFieldType->getDeleted()) {
                         $grandChild = new DataField();
@@ -79,11 +79,11 @@ class CollectionFieldType extends DataFieldType
                             ]);
                         }
 
-                        $colItem->addChild($grandChild);
+                        $colItem->addChild($grandChild, $grandChildKey);
                     }
                 }
 
-                $dataField->addChild($colItem);
+                $dataField->addChild($colItem, $idx);
                 $colItem->setParent($dataField);
             }
         }

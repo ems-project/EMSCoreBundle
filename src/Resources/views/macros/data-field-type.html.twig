@@ -437,11 +437,11 @@
 			{% endfor %}
 		</ul>
 		<div class="tab-content">
-			{% for key, child in dataField.children|default([]) %}
+			{% for value in values|default([]) %}
 				<div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~loop.index }}__tab">
-					{% set childData = source[attribute(values, loop.index0)|default]|default([]) %}
-					{% set childCompareData = compareRawData[attribute(values, loop.index0)|default]|default([]) %}
-					{% for grandchild in child.children|default([]) %}
+					{% set childData = source[value]|default([]) %}
+					{% set childCompareData = compareRawData[value]|default([]) %}
+					{% for grandchild in dataField.children.get(value).children|default([]) %}
 						{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData) }}
 					{% endfor %}
 				</div>

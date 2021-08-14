@@ -26,7 +26,6 @@ final class RawDataTransformer
                 $type = $child->getType();
                 if ($type::isVirtual($child->getOptions())) {
                     if ($type::isContainer()) {
-
                         $jsonNames = $type::getJsonNames($child);
                         if (0 === \count($jsonNames)) {
                             $out[$child->getName()] = self::transform($child, $data);
@@ -92,7 +91,7 @@ final class RawDataTransformer
                             if (0 === \count($jsonNames)) {
                                 $out = \array_merge_recursive($out, self::reverseTransform($child, $data[$child->getName()]));
                             } else {
-                                $out = \array_merge($out,  $data[$child->getName()]);
+                                $out = \array_merge($out, $data[$child->getName()]);
                             }
                         } else {
                             $out = \array_merge_recursive($out, $data[$child->getName()]);

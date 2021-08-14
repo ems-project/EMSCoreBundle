@@ -155,6 +155,11 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         }
     }
 
+    /**
+     * @param array<mixed> $option
+     *
+     * @return bool
+     */
     public static function isVirtual(array $option = [])
     {
         return true;

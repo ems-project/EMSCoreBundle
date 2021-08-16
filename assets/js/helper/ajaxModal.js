@@ -8,12 +8,14 @@ class AjaxModal {
         this.$modal = $(selector);
 
         this.modal = document.querySelector(this.selector);
-        this.loadingElement = this.modal.querySelector('.modal-loading');
-        this.ajaxDataElements = this.modal.querySelectorAll('.ajax-data');
+        if (this.modal) {
+            this.loadingElement = this.modal.querySelector('.modal-loading');
+            this.ajaxDataElements = this.modal.querySelectorAll('.ajax-data');
 
-        this.setAjaxCallback = (ajaxCallback) => { this.ajaxCallback = ajaxCallback; };
+            this.setAjaxCallback = (ajaxCallback) => { this.ajaxCallback = ajaxCallback; };
 
-        $(document).on('hide.bs.modal', '.core-modal', () => { this.reset(); });
+            $(document).on('hide.bs.modal', '.core-modal', () => { this.reset(); });
+        }
     }
 
     reset() {

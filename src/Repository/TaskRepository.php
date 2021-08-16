@@ -142,7 +142,14 @@ final class TaskRepository extends ServiceEntityRepository
             ->andWhere($qb->expr()->in('t.id', ':ids'))
             ->setParameter('ids', $ids);
 
-        return $qb->getQuery()->getResult();
+        $tasks = \array_fill_keys($ids, null);
+        foreach ($qb->getQuery()->getResult() as $task) {
+            if ($task instanceof Task) {
+                $tasks[$task->getId()] = $task;
+            }
+        }
+
+        return \array_filter($tasks);
     }
 
     public function delete(Task $task): void

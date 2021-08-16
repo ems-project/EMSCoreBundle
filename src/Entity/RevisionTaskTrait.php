@@ -59,12 +59,12 @@ trait RevisionTaskTrait
 
     public function deleteTaskPlanned(Task $task): void
     {
-        $this->taskPlannedIds = \array_diff($this->getTaskPlannedIds(), [$task->getId()]);
+        $this->taskPlannedIds = \array_values(\array_diff($this->getTaskPlannedIds(), [$task->getId()]));
     }
 
     public function deleteTaskApproved(Task $task): void
     {
-        $this->taskApprovedIds = \array_diff($this->getTaskApprovedIds(), [$task->getId()]);
+        $this->taskApprovedIds = \array_values(\array_diff($this->getTaskApprovedIds(), [$task->getId()]));
     }
 
     /**

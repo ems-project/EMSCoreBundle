@@ -28,6 +28,7 @@ class XliffTest extends KernelTestCase
         '',
         '<p>Hello</p>',
         '<p>Hello Mathieu, please visits<a href="https://elasticms.eu"> <i class="elasticms"></i>The elastic<b>ms</b> web site</a></p>',
+        '<p title="Information about Mount Hood">This is Mount Hood: <img src="mthood.jpg" alt="Mount Hood with its snow-covered top"></p>',
     ];
 
     private array $htmlTarget = [
@@ -35,16 +36,107 @@ class XliffTest extends KernelTestCase
         '<p>Bonjour</p>',
         '<p>Bonjour</p>',
         '<p>Bonjour Mathieu <a href="https://elasticms.eu">Le site d&acute;elasticms</a></p>',
+        '<p title="Information à propos de Mount Hood">Ceci est Mount Hood: <img src="mthood.jpg" alt="Mount Hood avec son sommet enneigé"></p>',
     ];
 
     /**
      * @var string[]
      */
     private array $htmlResults = [
-        '<body><trans-unit id="1" restype="x-html-h1" html:class="title"><source xml:lang="en">Report</source></trans-unit><group restype="table" html:border="1" html:width="100%"><group restype="row"><trans-unit id="2" restype="cell" html:valign="top"><source xml:lang="en">Text in cell r1-c1</source></trans-unit><trans-unit id="3" restype="cell" html:valign="top"><source xml:lang="en">Text in cell r1-c2</source></trans-unit></group><group restype="row"><trans-unit id="4" restype="cell" html:bgcolor="#C0C0C0"><source xml:lang="en">Text in cell r2-c1</source></trans-unit><trans-unit id="5" restype="cell"><source xml:lang="en">Text in cell r2-c2</source></trans-unit></group></group><trans-unit id="6" restype="x-html-p"><source xml:lang="en">All rights reserved (c) Gandalf Inc.</source></trans-unit></body>',
-        '<body/>',
-        '<body><trans-unit id="7" restype="x-html-p"><source xml:lang="en">Hello</source><target xml:lang="fr">Bonjour</target></trans-unit></body>',
-        '<body><group restype="x-html-p"><trans-unit id="8"><source xml:lang="en">Hello Mathieu, please visits</source><target xml:lang="fr">Bonjour Mathieu</target></trans-unit><group restype="x-html-a" html:href="https://elasticms.eu"><trans-unit id="9"><source xml:lang="en">The elastic</source></trans-unit><trans-unit id="10" restype="bold"><source xml:lang="en">ms</source></trans-unit><trans-unit id="11"><source xml:lang="en"> web site</source></trans-unit></group></group></body>',
+        '<?xml version="1.0"?>
+<file>
+  <unit id="/html/body/h1">
+    <segment id="/html/body/h1/text()">
+      <source>Report</source>
+    </segment>
+  </unit>
+  <group id="/html/body/table">
+    <group id="/html/body/table/tr[1]">
+      <unit id="/html/body/table/tr[1]/td[1]">
+        <segment id="/html/body/table/tr[1]/td[1]/text()">
+          <source>Text in cell r1-c1</source>
+        </segment>
+      </unit>
+      <unit id="/html/body/table/tr[1]/td[2]">
+        <segment id="/html/body/table/tr[1]/td[2]/text()">
+          <source>Text in cell r1-c2</source>
+        </segment>
+      </unit>
+    </group>
+    <group id="/html/body/table/tr[2]">
+      <unit id="/html/body/table/tr[2]/td[1]">
+        <segment id="/html/body/table/tr[2]/td[1]/text()">
+          <source>Text in cell r2-c1</source>
+        </segment>
+      </unit>
+      <unit id="/html/body/table/tr[2]/td[2]">
+        <segment id="/html/body/table/tr[2]/td[2]/text()">
+          <source>Text in cell r2-c2</source>
+        </segment>
+      </unit>
+    </group>
+  </group>
+  <unit id="/html/body/p">
+    <segment id="/html/body/p/text()">
+      <source>All rights reserved (c) Gandalf Inc.</source>
+    </segment>
+  </unit>
+</file>
+',
+        '<?xml version="1.0"?>
+<file/>
+',
+        '<?xml version="1.0"?>
+<file>
+  <unit id="/html/body/p">
+    <segment id="/html/body/p/text()">
+      <source>Hello</source>
+      <target>Bonjour</target>
+    </segment>
+  </unit>
+</file>
+',
+        '<?xml version="1.0"?>
+<file>
+  <unit id="/html/body/p">
+    <segment id="/html/body/p/text()">
+      <source>Hello Mathieu, please visits</source>
+      <target>Bonjour Mathieu</target>
+    </segment>
+    <segment id="/html/body/p/a/text()[1]">
+      <source> </source>
+      <target>Le site d&#xB4;elasticms</target>
+    </segment>
+    <segment id="/html/body/p/a/text()[2]">
+      <source>The elastic</source>
+    </segment>
+    <segment id="/html/body/p/a/b/text()">
+      <source>ms</source>
+    </segment>
+    <segment id="/html/body/p/a/text()[3]">
+      <source> web site</source>
+    </segment>
+  </unit>
+</file>
+',
+        '<?xml version="1.0"?>
+<file>
+  <unit id="/html/body/p">
+    <segment id="/html/body/p/title">
+      <source>Information about Mount Hood</source>
+      <target>Information &#xE0; propos de Mount Hood</target>
+    </segment>
+    <segment id="/html/body/p/text()">
+      <source>This is Mount Hood: </source>
+      <target>Ceci est Mount Hood:</target>
+    </segment>
+    <segment id="/html/body/p/img/alt">
+      <source>Mount Hood with its snow-covered top</source>
+      <target>Mount Hood avec son sommet enneig&#xE9;</target>
+    </segment>
+  </unit>
+</file>
+',
     ];
 
     private XliffService $xliffService;
@@ -58,11 +150,14 @@ class XliffTest extends KernelTestCase
     {
         $loop = 0;
         foreach ($this->htmlSources as $htmlSource) {
-            $node = new \SimpleXMLElement('<body/>');
+            $node = new \SimpleXMLElement('<file/>');
             $this->xliffService->htmlNode($node, $htmlSource, $this->htmlTarget[$loop], 'en', 'fr');
-            $xml = \explode("\n", $node->saveXML());
-            $this->assertArrayHasKey(1, $xml);
-            $this->assertEquals($this->htmlResults[$loop], $xml[1]);
+            $dom = \dom_import_simplexml($node)->ownerDocument;
+            $dom->formatOutput = true;
+            $dom->preserveWhiteSpace = false;
+            $xml = $dom->saveXML();
+            echo $xml;
+            $this->assertEquals($this->htmlResults[$loop], $xml);
             ++$loop;
         }
     }

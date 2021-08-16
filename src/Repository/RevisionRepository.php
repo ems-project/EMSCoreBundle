@@ -525,7 +525,7 @@ class RevisionRepository extends EntityRepository
      *
      * @return mixed
      */
-    public function lockRevision($revisionId, $username, \DateTime $lockUntil)
+    public function lockRevision($revisionId, $username, \DateTimeInterface $lockUntil)
     {
         $qb = $this->createQueryBuilder('r')->update()
             ->set('r.lockBy', '?1')

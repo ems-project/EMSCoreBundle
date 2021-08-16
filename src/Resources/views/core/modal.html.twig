@@ -1,0 +1,21 @@
+<div class="modal core-modal fade" id="{{ id }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-{{ size|default('md') }}" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body modal-loading">
+                <div class="progress" style="margin-bottom: 0;">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                        <span class="sr-only">100% Complete</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body ajax-modal-body" style="display:none;"></div>
+            <div class="modal-footer ajax-modal-footer">
+                <button type="button" class="btn  btn-sm btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

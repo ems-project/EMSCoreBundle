@@ -133,6 +133,7 @@ class RevisionService
         $this->dataService->discardDraft($revision); //discard draft changes previous revision
 
         $previousVersion = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->getOuuid());
+        $previousVersion->clearTasks();
         $previousVersion->setVersionDate('to', $now);
         $this->dataService->finalizeDraft($previousVersion);
 

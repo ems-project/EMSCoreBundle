@@ -6,7 +6,7 @@ namespace EMS\CoreBundle\Form\Data;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class TemplateTableColumn extends TableColumn
+class TemplateTableColumn extends TableColumn
 {
     private const LABEL = 'label';
     private const TEMPLATE = 'template';

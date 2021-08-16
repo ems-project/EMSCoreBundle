@@ -19,8 +19,10 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\RevisionRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Revision
+class Revision implements EntityInterface
 {
+    use RevisionTaskTrait;
+
     /**
      * @var int|null
      *
@@ -198,11 +200,9 @@ class Revision
     private $circles;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="labelField", type="text", nullable=true)
      */
-    private $labelField;
+    private ?string $labelField;
 
     /**
      * @var string
@@ -297,6 +297,10 @@ class Revision
                 $this->rawData = $ancestor->rawData;
                 $this->circles = $ancestor->circles;
                 $this->dataField = new DataField($ancestor->dataField);
+                $this->owner = $ancestor->owner;
+                $this->taskCurrent = $ancestor->taskCurrent;
+                $this->taskPlannedIds = $ancestor->taskPlannedIds;
+                $this->taskApprovedIds = $ancestor->taskApprovedIds;
 
                 if (null !== $versionUuid = $ancestor->getVersionUuid()) {
                     $this->setVersionId($versionUuid);
@@ -951,26 +955,34 @@ class Revision
         return $this->autoSave;
     }
 
-    /**
-     * Set localField.
-     *
-     * @param string$labelField
-     *
-     * @return Revision
-     */
-    public function setLabelField($labelField)
+    public function getLabel(): string
+    {
+        if (null !== $labelField = $this->getLabelField()) {
+            return $labelField;
+        }
+
+        $contentType = $this->giveContentType();
+        $contentTypeLabelField = $contentType->getLabelField();
+
+        if (null !== $contentTypeLabelField) {
+            $label = $this->rawData[$contentTypeLabelField] ?? null;
+
+            if (null !== $label) {
+                return $label;
+            }
+        }
+
+        return \sprintf('%s:%s', $contentType->getName(), $this->ouuid);
+    }
+
+    public function setLabelField(?string $labelField): self
     {
         $this->labelField = $labelField;
 
         return $this;
     }
 
-    /**
-     * Get labelField.
-     *
-     * @return string
-     */
-    public function getLabelField()
+    public function getLabelField(): ?string
     {
         return $this->labelField;
     }

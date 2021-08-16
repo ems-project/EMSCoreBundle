@@ -39,7 +39,11 @@ class XliffService
         $sourceCrawler = new Crawler($sourceHtml);
         $targetCrawler = new Crawler($targetHtml);
 
-        foreach ($sourceCrawler as $domNode) {
+        if (0 === $sourceCrawler->count()) {
+            return;
+        }
+
+        foreach ($sourceCrawler->filter('body')->children() as $domNode) {
             $this->domNodeToXliff($xliff, $domNode, $domNode, $sourceLocale, $targetLocale);
         }
     }

@@ -37,6 +37,19 @@ abstract class DataFieldType extends AbstractType
         $this->elasticsearchService = $elasticsearchService;
     }
 
+    /**
+     * @return string[]
+     */
+    public static function textAreaToArray(?string $textArea): array
+    {
+        if (null === $textArea || 0 === \strlen($textArea)) {
+            return [];
+        }
+        $cleaned = \str_replace("\r", '', $textArea);
+
+        return \explode("\n", $cleaned);
+    }
+
     public function getBlockPrefix()
     {
         return 'data_field_type';
@@ -457,13 +470,11 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * Return the json path.
-     *
-     * @return string|null
+     * @return string[]
      */
-    public static function getJsonName(FieldType $current)
+    public static function getJsonNames(FieldType $current): array
     {
-        return $current->getName();
+        return [$current->getName()];
     }
 
     /**

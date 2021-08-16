@@ -11,9 +11,10 @@ export default class JsonMenuEditor {
         this.parent = $(target);
         this.hiddenField = this.parent.find('input').first();
         this.name = this.parent.data('name');
+        this.blockPrefix = this.parent.data('block-prefix');
         this.isNested = this.parent.hasClass('json_menu_nested_editor');
         if(this.isNested) {
-            this.$nestedModal = $('#json-menu-nested-modal-'+this.name);
+            this.$nestedModal = $('#json-menu-nested-modal'+this.blockPrefix);
             this.initNestedModal();
         }
 
@@ -188,12 +189,12 @@ export default class JsonMenuEditor {
         }
 
         $(document).on('hide.bs.modal', '.json-menu-nested-modal', function (event) {
-            if (event.target.id === `json-menu-nested-modal-${self.name}`) {
+            if (event.target.id === `json-menu-nested-modal${self.blockPrefix}`) {
                 modalStateloading($(this));
             }
         });
         $(document).on('show.bs.modal', '.json-menu-nested-modal', function (event) {
-            if (event.target.id !== `json-menu-nested-modal-${self.name}`) {
+            if (event.target.id !== `json-menu-nested-modal${self.blockPrefix}`) {
                 return;
             }
 

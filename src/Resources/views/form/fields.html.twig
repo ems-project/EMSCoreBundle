@@ -836,7 +836,7 @@
 
 {% block json_menu_nested_editor_fieldtype_row %}
 	<div class="form-group {% if form.vars.errors|length %} has-error{% endif %} json_menu_editor_fieldtype json_menu_nested_editor"
-		data-name="{{ form.vars.name }}">
+		data-name="{{ form.vars.name }}" data-block-prefix="{{ form.vars.unique_block_prefix }}">
 		{{ form_label(form) }}
 		{{ form_widget(form) }}
 		{{ form_errors(form) }}

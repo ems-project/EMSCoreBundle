@@ -39,16 +39,12 @@ class XliffService
         $sourceCrawler = new Crawler($sourceHtml);
         $targetCrawler = new Crawler($targetHtml);
 
-        if (0 === $sourceCrawler->count()) {
-            return;
-        }
-
-        foreach ($sourceCrawler->filter('body')->children() as $domNode) {
-            $this->domNodeToXliff($xliff, $domNode, $domNode, $sourceLocale, $targetLocale);
+        foreach ($sourceCrawler->filterXPath('//body/*') as $domNode) {
+            $this->domNodeToXliff($xliff, $domNode, $targetCrawler, $sourceLocale, $targetLocale);
         }
     }
 
-    private function domNodeToXliff(\SimpleXMLElement $xliffElement, \DOMNode $sourceNode, \DOMNode $targetNode, string $sourceLocale, string $targetLocale): void
+    private function domNodeToXliff(\SimpleXMLElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler, string $sourceLocale, string $targetLocale): void
     {
         if ($sourceNode->hasChildNodes()) {
             $nodeName = 'group';
@@ -58,7 +54,7 @@ class XliffService
 
             $group = $xliffElement->addChild($nodeName);
             foreach ($sourceNode->childNodes as $childNode) {
-                $this->domNodeToXliff($group, $childNode, $targetNode, $sourceLocale, $targetLocale);
+                $this->domNodeToXliff($group, $childNode, $targetCrawler, $sourceLocale, $targetLocale);
             }
             $group->addAttribute('restype', self::getRestype($sourceNode->nodeName));
             if (null !== $attributes = $sourceNode->attributes) {
@@ -74,6 +70,24 @@ class XliffService
             $xliffElement->addAttribute('id', \strval($this->nextId++));
             $source = $xliffElement->addChild('source', $nodeValue);
             $source->addAttribute('xml:xml:lang', $sourceLocale);
+
+            $nodePath = $sourceNode->getNodePath();
+            if (null === $nodePath) {
+                return;
+            }
+
+            $foundTarget = $targetCrawler->filterXPath(\str_replace(['/html/'], ['//'], $nodePath));
+            if (1 !== $foundTarget->count()) {
+                return;
+            }
+
+            $targetValue = $foundTarget->text();
+            if (\ctype_space($targetValue) || '' === $targetValue) {
+                return;
+            }
+
+            $target = $xliffElement->addChild('target', $targetValue);
+            $target->addAttribute('xml:xml:lang', $targetLocale);
         }
     }
 

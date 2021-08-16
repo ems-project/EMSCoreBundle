@@ -59,7 +59,7 @@ class XliffTest extends KernelTestCase
             $this->xliffService->htmlNode($node, $htmlSource, $this->htmlTarget[$loop], 'en', 'fr');
             $xml = \explode("\n", $node->saveXML());
             $this->assertArrayHasKey(1, $xml);
-            $this->assertEquals($xml[1], $this->htmlResults[$loop]);
+            $this->assertEquals($this->htmlResults[$loop], $xml[1]);
             ++$loop;
         }
     }

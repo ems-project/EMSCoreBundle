@@ -1212,6 +1212,7 @@ class DataService
 
             $newDraft->setStartTime($now);
             $revision->setEndTime($now);
+            $revision->clearTasks();
 
             $this->lockRevision($newDraft, null, false, $username);
 

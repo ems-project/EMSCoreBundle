@@ -1,0 +1,25 @@
+$spacer: 1rem !default;
+
+.mt-1 { margin-top: ($spacer * .25) !important; }
+.mt-2 { margin-top: ($spacer * .5) !important; }
+.mt-3 { margin-top: ($spacer) !important; }
+.mt-4 { margin-top: ($spacer * 1.5) !important; }
+.mt-5 { margin-top: ($spacer * 3) !important; }
+
+.mr-1 { margin-right: ($spacer * .25) !important; }
+.mr-2 { margin-right: ($spacer * .5) !important; }
+.mr-3 { margin-right: ($spacer) !important; }
+.mr-4 { margin-right: ($spacer * 1.5) !important; }
+.mr-5 { margin-right: ($spacer * 3) !important; }
+
+.mb-1 { margin-bottom: ($spacer * .25) !important; }
+.mb-2 { margin-bottom: ($spacer * .5) !important; }
+.mb-3 { margin-bottom: ($spacer) !important; }
+.mb-4 { margin-bottom: ($spacer * 1.5) !important; }
+.mb-5 { margin-bottom: ($spacer * 3) !important; }
+
+.ml-1 { margin-left: ($spacer * .25) !important; }
+.ml-2 { margin-left: ($spacer * .5) !important; }
+.ml-3 { margin-left: ($spacer) !important; }
+.ml-4 { margin-left: ($spacer * 1.5) !important; }
+.ml-5 { margin-left: ($spacer * 3) !important; }

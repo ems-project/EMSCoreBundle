@@ -9,6 +9,7 @@ use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TaskRepository;
+use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
 
@@ -17,6 +18,7 @@ final class TaskManager
     private TaskRepository $taskRepository;
     private TaskTableService $taskTableService;
     private RevisionRepository $revisionRepository;
+    private DataService $dataService;
     private UserService $userService;
     private LoggerInterface $logger;
 
@@ -28,12 +30,14 @@ final class TaskManager
         TaskRepository $taskRepository,
         TaskTableService $taskTableService,
         RevisionRepository $revisionRepository,
+        DataService $dataService,
         UserService $userService,
         LoggerInterface $logger
     ) {
         $this->taskRepository = $taskRepository;
         $this->taskTableService = $taskTableService;
         $this->revisionRepository = $revisionRepository;
+        $this->dataService = $dataService;
         $this->userService = $userService;
         $this->logger = $logger;
     }
@@ -41,6 +45,16 @@ final class TaskManager
     public function countApprovedTasks(Revision $revision): int
     {
         return $this->taskRepository->countApproved($revision);
+    }
+
+    public function changeOwner(Revision $revision, string $newOwner): void
+    {
+        $transaction = $this->revisionTransaction(function (Revision $revision) use ($newOwner) {
+            $revision->setOwner($newOwner);
+            $this->revisionRepository->save($revision);
+        });
+
+        $transaction($revision->getId());
     }
 
     /**
@@ -53,6 +67,11 @@ final class TaskManager
             ($this->isTaskOwner() ? self::TAB_OWNER : null),
             ($this->isTaskManager() ? self::TAB_MANAGER : null),
         ]);
+    }
+
+    public function getRevision(int $revisionId): Revision
+    {
+        return $this->revisionRepository->findOneById($revisionId);
     }
 
     public function getTable(string $ajaxUrl, string $tab): EntityTable
@@ -150,7 +169,7 @@ final class TaskManager
 
     public function taskCreate(TaskDTO $taskDTO, int $revisionId): Task
     {
-        $transaction = $this->taskTransaction(function (Revision $revision) use ($taskDTO) {
+        $transaction = $this->revisionTransaction(function (Revision $revision) use ($taskDTO) {
             $user = $this->userService->getCurrentUser();
             $task = Task::createFromDTO($taskDTO, $user);
 
@@ -170,7 +189,7 @@ final class TaskManager
 
     public function taskDelete(Task $task, int $revisionId): void
     {
-        $transaction = $this->taskTransaction(function (Revision $revision) use ($task) {
+        $transaction = $this->revisionTransaction(function (Revision $revision) use ($task) {
             if ($revision->isTaskCurrent($task)) {
                 $this->setNextPlanned($revision);
             } elseif ($revision->isTaskPlanned($task)) {
@@ -187,7 +206,7 @@ final class TaskManager
 
     public function taskUpdate(Task $task, TaskDTO $taskDTO, int $revisionId): void
     {
-        $transaction = $this->taskTransaction(function () use ($task, $taskDTO) {
+        $transaction = $this->revisionTransaction(function () use ($task, $taskDTO) {
             $task->updateFromDTO($taskDTO);
             $this->taskRepository->save($task);
         });
@@ -196,7 +215,7 @@ final class TaskManager
 
     public function taskValidate(Revision $revision, bool $approve, ?string $comment): void
     {
-        $transaction = $this->taskTransaction(function (Revision $revision) use ($approve, $comment) {
+        $transaction = $this->revisionTransaction(function (Revision $revision) use ($approve, $comment) {
             $user = $this->userService->getCurrentUser();
             $task = $revision->getTaskCurrent();
 
@@ -216,7 +235,7 @@ final class TaskManager
 
     public function taskValidateRequest(Task $task, int $revisionId, string $comment): void
     {
-        $transaction = $this->taskTransaction(function () use ($task, $comment) {
+        $transaction = $this->revisionTransaction(function () use ($task, $comment) {
             $user = $this->userService->getCurrentUser();
             $task->changeStatus(Task::STATUS_COMPLETED, $user->getUsername(), $comment);
             $this->taskRepository->save($task);
@@ -239,20 +258,19 @@ final class TaskManager
         }
     }
 
-    private function taskTransaction(callable $execute): callable
+    private function revisionTransaction(callable $execute): callable
     {
         return function (int $revisionId) use ($execute) {
             try {
-                $user = $this->userService->getCurrentUser();
-                $now = new \DateTimeImmutable('now');
-                $this->revisionRepository->lockRevision($revisionId, $user->getUsername(), $now->modify('+1min'));
+                $revision = $this->revisionRepository->findOneById($revisionId);
+                $this->dataService->lockRevision($revision);
 
                 $this->revisionRepository->clear();
-                $revision = $this->revisionRepository->findOneById($revisionId);
+                $revisionLocked = $this->revisionRepository->findOneById($revisionId);
 
-                $result = $execute($revision);
+                $result = $execute($revisionLocked);
 
-                $this->revisionRepository->unlockRevision($revisionId);
+                $this->dataService->unlockRevision($revisionLocked);
 
                 return $result;
             } catch (\Throwable $e) {

@@ -59,6 +59,7 @@ final class SelectUserPropertyType extends AbstractType
             ->setDefaults([
                 'is_dynamic' => false,
                 'user_roles' => [],
+                'exclude_values' => [],
                 'event_dispatcher' => null,
                 'multiple' => false,
                 'label_property' => null,
@@ -71,7 +72,12 @@ final class SelectUserPropertyType extends AbstractType
 
                 $labelProperty = $options['label_property'] ?? $options['user_property'];
 
-                return $this->getChoices($options['user_property'], $labelProperty, $options['user_roles']);
+                return $this->getChoices(
+                    $options['user_property'],
+                    $labelProperty,
+                    $options['user_roles'],
+                    $options['exclude_values']
+                );
             })
             ->setNormalizer('attr', function (Options $options, $value) {
                 $allowAdd = \boolval($options['allow_add']) ? true : false;
@@ -86,10 +92,11 @@ final class SelectUserPropertyType extends AbstractType
 
     /**
      * @param string[] $roles
+     * @param string[] $excludeValues
      *
      * @return array<string, string>
      */
-    private function getChoices(string $property, string $propertyLabel, array $roles): array
+    private function getChoices(string $property, string $propertyLabel, array $roles, array $excludeValues): array
     {
         $accessor = new PropertyAccessor();
         $users = $this->userService->findUsersWithRoles($roles);
@@ -103,7 +110,9 @@ final class SelectUserPropertyType extends AbstractType
             $value = $readableValue ? $accessor->getValue($user, $property) : $user->getUsername();
             $label = $readableLabel ? $accessor->getValue($user, $propertyLabel) : $user->getUsername();
 
-            $choices[$value] = $label;
+            if (!\in_array($value, $excludeValues)) {
+                $choices[$value] = $label;
+            }
         }
 
         \natcasesort($choices);

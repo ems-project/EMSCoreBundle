@@ -939,6 +939,7 @@ task:
       action:
         go_revision: 'Go to revision'
         edit_revision: 'Edit to revision'
+        change_owner: 'Change owner'
       column:
         icon: ''
         taskTitle: 'Task'
@@ -990,6 +991,13 @@ task:
     title: 'Deleted task : %title%'
     submit: 'Delete task'
     success: 'Task "%title%" successfully deleted.'
+  change_owner:
+    title: 'Change owner for %revision%'
+    change: 'New owner'
+    current: 'The current ower for document "%revision%" is "%owner%"'
+    missing: 'The document "%revision%" has no owner'
+    submit: 'Change'
+    success: 'Successfully changed ownership!'
   finished:
     show: 'Show finished tasks (%number%)'
     hide: 'Hide finished tasks (%number%)'

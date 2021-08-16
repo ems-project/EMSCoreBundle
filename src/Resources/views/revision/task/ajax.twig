@@ -24,7 +24,7 @@
         {% endif %}
         <div class="clearfix">
             <button class="btn-modal-history-task btn btn-sm btn-default pull-right"
-                    data-url="{{ path('ems_core_task_ajax_history_modal', {'revisionId': revisionId, 'taskId': task.id }) }}"
+                    data-url="{{ path('ems_core_task_ajax_modal_history', {'revisionId': revisionId, 'taskId': task.id }) }}"
                     data-title="{{ 'task.history'|trans }} : {{ task.title }}">
                     <i class="fa fa-comments" aria-hidden="true"></i>
             </button>
@@ -47,7 +47,7 @@
             </div>
             <button class="btn-task-update-modal btn btn-sm pull-right"
                     data-title="{{ 'task.update.title'|trans({ '%title%': task.title }) }}"
-                    data-url="{{ path('ems_core_task_ajax_update_modal', { revisionId: revision.id, taskId: task.id }) }}">
+                    data-url="{{ path('ems_core_task_ajax_modal_update', { revisionId: revision.id, taskId: task.id }) }}">
                 <i class="fa fa-pencil-square-o"></i>
             </button>
         </div>
@@ -71,7 +71,7 @@
 
 {% block taskItemApproved %}
     <li class="list-group-item tasks-item"
-        data-url="{{ path('ems_core_task_ajax_task_modal', {'revisionId': revision.id, 'taskId': task.id }) }}"
+        data-url="{{ path('ems_core_task_ajax_modal_task', {'revisionId': revision.id, 'taskId': task.id }) }}"
         data-title="Task: {{ task.title }}">
         <div class="tasks-item-block">
             <div class="tasks-item-info">
@@ -169,6 +169,23 @@
 {% endblock %}
 
 {% block modalHistoryBody %}{{ block('renderHistoryTimeline') }}{% endblock %}
+
+{% block modalChangeOwnerBody %}
+    {%- if revision.hasOwner -%}
+        {% set info = 'task.change_owner.current'|trans({'%revision%': revision.label, '%owner%': revision.owner|displayname }) %}
+    {%- else -%}
+        {% set info = 'task.change_owner.missing'|trans({'%revision%': revision}) %}
+    {%- endif -%}
+    <div class="alert alert-info" role="alert">{{ info }}</div>
+    {{ form(form) }}
+{% endblock %}
+
+{% block modalChangeOwnerFooter %}
+    <div class="pull-left">
+        <button id="ajax-modal-submit" class="btn btn-sm btn-primary">{{ 'task.change_owner.submit'|trans }}</button>
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+    </div>
+{% endblock %}
 
 {% block taskForm %}
     {{ form_start(form) }}

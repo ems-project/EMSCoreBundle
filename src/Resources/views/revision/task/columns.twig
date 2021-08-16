@@ -8,7 +8,7 @@
 
 {%- block taskTitle -%}
     <a href="#" class="task-modal"
-        data-url="{{ path('ems_core_task_ajax_task_modal', { 'revisionId': data.id, 'taskId': data.taskCurrent.id }) }}"
+        data-url="{{ path('ems_core_task_ajax_modal_task', { 'revisionId': data.id, 'taskId': data.taskCurrent.id }) }}"
         data-title="Task: {{ data.taskCurrent.title }}">
         {{ data.taskCurrent.title }}
     </a>
@@ -33,6 +33,15 @@
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'task.dashboard.action.edit_revision'|trans }}
                 </a>
             </li>
+            {% if table.context.tab|default('') == 'manager' %}
+                <li>
+                    <a href="#task-change-owner" class="btn-task-change-owner-modal"
+                       data-url="{{ path('ems_core_task_ajax_modal_change_owner', { 'revisionId': data.id }) }}"
+                       data-title="{{ 'task.dashboard.action.change_owner'|trans }}">
+                        <i class="fa fa-user-circle-o" aria-hidden="true"></i> {{ 'task.dashboard.action.change_owner'|trans }}
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 {%- endblock -%}

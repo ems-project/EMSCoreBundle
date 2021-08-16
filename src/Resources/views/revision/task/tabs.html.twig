@@ -24,7 +24,7 @@
         {# ajax loaded #}
     </ul>
     <button id="btn-task-create-modal" style="display: none;"
-            data-url="{{ path('ems_core_task_ajax_create_modal', {'revisionId': revision.id}) }}"
+            data-url="{{ path('ems_core_task_ajax_modal_create', {'revisionId': revision.id}) }}"
             data-title="{{ 'task.create.title'|trans }}"
             class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> {{ 'task.create.button'|trans }}</button>
     <div id="revision-tasks-approved">

@@ -8,11 +8,13 @@ use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Core\UI\AjaxModal;
 use EMS\CoreBundle\Core\UI\AjaxService;
+use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use EMS\CoreBundle\Form\Form\RevisionTaskType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -246,6 +248,51 @@ final class TaskController extends AbstractController
         }
 
         return $ajaxModal->getResponse();
+    }
+
+    public function ajaxModalChangeOwner(Request $request, int $revisionId): JsonResponse
+    {
+        $revision = $this->taskManager->getRevision($revisionId);
+        $contentType = $revision->giveContentType();
+
+        $ajaxModal = $this->getAjaxModal();
+        $ajaxModal->setTitle('task.change_owner.title', ['%revision%' => $revision->getLabel()]);
+
+        $form = $this->formFactory->createNamed('task_change_owner', FormType::class, [], [
+            'translation_domain' => 'EMSCoreBundle',
+        ]);
+        $form->add('new_owner', SelectUserPropertyType::class, [
+            'constraints' => [new NotBlank()],
+            'user_roles' => [$contentType->getOwnerRole()],
+            'exclude_values' => $revision->hasOwner() ? [$revision->getOwner()] : [],
+            'placeholder' => '',
+            'label' => 'task.change_owner.change',
+            'allow_add' => false,
+            'user_property' => 'username',
+            'label_property' => 'displayName',
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $this->taskManager->changeOwner($revision, $form->get('new_owner')->getData());
+
+                return $ajaxModal
+                    ->addMessageSuccess('task.change_owner.success')
+                    ->setBodyHtml('')
+                    ->setFooter('modalFooterClose')
+                    ->getResponse();
+            } catch (\Throwable $e) {
+                $this->logger->error($e->getMessage(), ['e' => $e]);
+                $ajaxModal->addMessageError('task.error.ajax', [], $e);
+            }
+        }
+
+        return $ajaxModal
+            ->setBody('modalChangeOwnerBody', ['revision' => $revision, 'form' => $form->createView()])
+            ->setFooter('modalChangeOwnerFooter')
+            ->getResponse();
     }
 
     /**

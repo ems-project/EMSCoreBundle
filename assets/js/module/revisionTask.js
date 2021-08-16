@@ -29,8 +29,22 @@ export default class RevisionTask {
 
     dashboard() {
         document.addEventListener('click', (e) => {
-            if (!e.target.classList.contains('task-modal')) { return; }
-            ajaxModal.load({ url: e.target.dataset.url, title: e.target.dataset.title});
+            if (e.target.classList.contains('task-modal')) {
+                e.preventDefault();
+                ajaxModal.load({ url: e.target.dataset.url, title: e.target.dataset.title});
+            }
+            if (e.target.classList.contains('btn-task-change-owner-modal')) {
+                e.preventDefault();
+                ajaxModal.load(
+                    { url: e.target.dataset.url, title: e.target.dataset.title},
+                    (json, request) => {
+                        var success = json.hasOwnProperty('modalSuccess') ? json.modalSuccess : false;
+                        if (success) {
+                            window.location.reload();
+                        }
+                    }
+                );
+            }
         });
     }
 

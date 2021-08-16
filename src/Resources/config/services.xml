@@ -71,6 +71,7 @@
             <argument type="service" id="ems.repository.task" />
             <argument type="service" id="ems_core.core_revision_task.task_table_service" />
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
+            <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems.service.user" />
             <argument type="service" id="logger" />
         </service>

@@ -3,7 +3,6 @@ import {addEventListeners as editRevisionAddEventListeners} from "./../../edit-r
 import { ajaxJsonGet, ajaxJsonPost, ajaxJsonSubmit } from "./ajax";
 
 class AjaxModal {
-
     constructor(selector) {
         this.selector = selector;
         this.$modal = $(selector);
@@ -53,6 +52,14 @@ class AjaxModal {
 
     load(options, ajaxCallback)
     {
+        var dialog = this.modal.querySelector('.modal-dialog');
+        dialog.classList.remove('modal-xs', 'modal-sm', 'modal-md', 'modal-lg');
+        if (options.hasOwnProperty('size')) {
+            dialog.classList.add('modal-'+options.size);
+        } else {
+            dialog.classList.add('modal-md');
+        }
+
         this.modal.querySelector('.modal-title').innerHTML = options.title;
         this.$modal.modal('show');
 
@@ -140,10 +147,7 @@ class AjaxModal {
 
         this.modal.querySelector('.ajax-modal-body').insertAdjacentHTML(
             'afterbegin',
-            '<div class="alert '+ messageClass +'" role="alert">'
-                    + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                    + message
-                    +'</div>'
+            '<div class="alert '+ messageClass +'" role="alert">' + message +'</div>'
         );
     }
 }

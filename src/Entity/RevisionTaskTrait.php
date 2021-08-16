@@ -179,6 +179,11 @@ trait RevisionTaskTrait
         return $this->giveContentType()->hasOwnerRole();
     }
 
+    public function setOwner(string $owner): void
+    {
+        $this->owner = $owner;
+    }
+
     public function setTaskCurrent(?Task $task): void
     {
         $this->taskCurrent = $task;

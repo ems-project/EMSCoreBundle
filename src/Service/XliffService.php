@@ -67,6 +67,10 @@ class XliffService
             if (\ctype_space($nodeValue) || '' === $nodeValue) {
                 return;
             }
+
+            if ('group' === $xliffElement->getName()) {
+                $xliffElement = $xliffElement->addChild('trans-unit');
+            }
             $xliffElement->addAttribute('id', \strval($this->nextId++));
             $source = $xliffElement->addChild('source', $nodeValue);
             $source->addAttribute('xml:xml:lang', $sourceLocale);
@@ -81,7 +85,7 @@ class XliffService
                 return;
             }
 
-            $targetValue = $foundTarget->text();
+            $targetValue = $foundTarget->text(null, true);
             if (\ctype_space($targetValue) || '' === $targetValue) {
                 return;
             }

@@ -28,37 +28,48 @@ class XliffService
         'u' => 'underlined',
     ];
 
+    private int $nextId = 1;
+
     public function __construct()
     {
     }
 
-    public function htmlNode(string $ouuid, string $sourceHtml, string $targetHtml, string $sourceLocale, string $targetLocale): \SimpleXMLElement
+    public function htmlNode(\SimpleXMLElement $xliff, string $sourceHtml, string $targetHtml, string $sourceLocale, string $targetLocale): void
     {
         $sourceCrawler = new Crawler($sourceHtml);
         $targetCrawler = new Crawler($targetHtml);
 
-        $xliffNode = new \SimpleXMLElement('<body></body>');
-        $this->domToXliff($xliffNode, $sourceCrawler, $targetCrawler, $sourceLocale, $targetLocale);
-
-        return $xliffNode;
+        foreach ($sourceCrawler as $domNode) {
+            $this->domNodeToXliff($xliff, $domNode, $domNode, $sourceLocale, $targetLocale);
+        }
     }
 
-    /**
-     * @param \DOMNode[] $sourceNodeList
-     * @param \DOMNode[] $targetNodeList
-     */
-    private function domToXliff(\SimpleXMLElement $xliffNode, iterable $sourceNodeList, iterable $targetNodeList, string $sourceLocale, string $targetLocale): void
+    private function domNodeToXliff(\SimpleXMLElement $xliffElement, \DOMNode $sourceNode, \DOMNode $targetNode, string $sourceLocale, string $targetLocale): void
     {
-        foreach ($sourceNodeList as $sourceNode) {
-            if (!$sourceNode instanceof \DOMNode) {
-                throw new \RuntimeException('Unexpected DOM object');
+        if ($sourceNode->hasChildNodes()) {
+            $nodeName = 'group';
+            if ($sourceNode->firstChild === $sourceNode->lastChild && null !== $sourceNode->firstChild && !$sourceNode->firstChild->hasChildNodes()) {
+                $nodeName = 'trans-unit';
             }
 
-            if ($sourceNode->hasChildNodes()) {
-                $child = $xliffNode->addChild('group');
-                $child->addAttribute('restype', self::getRestype($sourceNode->nodeName));
-                $this->domToXliff($child, $sourceNode->childNodes, $sourceNode->childNodes, $sourceLocale, $targetLocale);
+            $group = $xliffElement->addChild($nodeName);
+            foreach ($sourceNode->childNodes as $childNode) {
+                $this->domNodeToXliff($group, $childNode, $targetNode, $sourceLocale, $targetLocale);
             }
+            $group->addAttribute('restype', self::getRestype($sourceNode->nodeName));
+            if (null !== $attributes = $sourceNode->attributes) {
+                foreach ($attributes as $attribute) {
+                    $group->addAttribute(\sprintf('html:html:%s', $attribute->name), $attribute->value);
+                }
+            }
+        } else {
+            $nodeValue = $sourceNode->nodeValue;
+            if (\ctype_space($nodeValue) || '' === $nodeValue) {
+                return;
+            }
+            $xliffElement->addAttribute('id', \strval($this->nextId++));
+            $source = $xliffElement->addChild('source', $nodeValue);
+            $source->addAttribute('xml:xml:lang', $sourceLocale);
         }
     }
 

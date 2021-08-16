@@ -1447,7 +1447,7 @@ class DataService
 
         if ($isContainer) {
             /** @var FieldType $field */
-            foreach ($meta->getChildren() as $field) {
+            foreach ($meta->getChildren() as $key => $field) {
                 //no need to generate the structure for delete field
                 if (!$field->getDeleted()) {
                     $child = $dataField->__get('ems_'.$field->getName());
@@ -1456,7 +1456,7 @@ class DataService
                         $child->setFieldType($field);
                         $child->setOrderKey($field->getOrderKey());
                         $child->setParent($dataField);
-                        $dataField->addChild($child);
+                        $dataField->addChild($child, $key);
                         if (isset($field->getDisplayOptions()['defaultValue'])) {
                             $child->setEncodedText($field->getDisplayOptions()['defaultValue']);
                         }
@@ -1478,8 +1478,13 @@ class DataService
     {
         $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
         if ($dataFieldType instanceof DataFieldType) {
-            $fieldName = $dataFieldType->getJsonName($dataField->getFieldType());
-            if (null === $fieldName) {//Virtual container
+            $fieldType = $dataField->getFieldType();
+            if (null === $fieldType) {
+                throw new \RuntimeException('Unexpected null fieldType');
+            }
+
+            $fieldNames = $dataFieldType->getJsonNames($fieldType);
+            if (0 === \count($fieldNames)) {//Virtual container
                 /** @var DataField $child */
                 foreach ($dataField->getChildren() as $child) {
                     $this->updateDataValue($child, $elasticIndexDatas, $isMigration);
@@ -1490,10 +1495,14 @@ class DataService
                     foreach ($treatedFields as $fieldName) {
                         unset($elasticIndexDatas[$fieldName]);
                     }
-                } elseif (\array_key_exists($fieldName, $elasticIndexDatas)) {
-                    $treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas[$fieldName], $isMigration);
-                    foreach ($treatedFields as $fieldName) {
-                        unset($elasticIndexDatas[$fieldName]);
+                } else {
+                    foreach ($fieldNames as $fieldName) {
+                        if (\array_key_exists($fieldName, $elasticIndexDatas)) {
+                            $treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas[$fieldName], $isMigration);
+                            foreach ($treatedFields as $fieldName) {
+                                unset($elasticIndexDatas[$fieldName]);
+                            }
+                        }
                     }
                 }
             }
@@ -1804,9 +1813,9 @@ class DataService
     {
         /** @var DataField $out */
         $out = $form->getNormData();
-        foreach ($form as $item) {
+        foreach ($form as $key => $item) {
             if ($item->getNormData() instanceof DataField) {
-                $out->addChild($item->getNormData());
+                $out->addChild($item->getNormData(), $key);
                 $this->getDataFieldsStructure($item);
             }
         }

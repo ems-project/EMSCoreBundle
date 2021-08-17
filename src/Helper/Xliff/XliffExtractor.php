@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Service;
+namespace EMS\CoreBundle\Helper\Xliff;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-class XliffService
+class XliffExtractor
 {
     //Source: https://docs.oasis-open.org/xliff/v1.2/xliff-profile-html/xliff-profile-html-1.2.html#SectionDetailsElements
     private const PRE_DEFINED_VALUES = [
@@ -28,7 +28,7 @@ class XliffService
         'u' => 'underlined',
     ];
 
-    private const TRANSLATABLE_ATTRIBUTES = ['title', 'alt'];
+    private const TRANSLATABLE_ATTRIBUTES = ['title', 'alt', 'aria-label'];
     public const XLIFF_1_2 = '1.2';
     public const XLIFF_2_0 = '2.0';
     public const XLIFF_VERSIONS = [self::XLIFF_1_2, self::XLIFF_2_0];

@@ -10,11 +10,8 @@ use Symfony\Component\Finder\Finder;
 
 class XliffTest extends KernelTestCase
 {
-    private XliffService $xliffService;
-
     protected function setUp(): void
     {
-        $this->xliffService = new XliffService();
     }
 
     public function testXliffExtractions(): void
@@ -26,15 +23,31 @@ class XliffTest extends KernelTestCase
             $absoluteFilePath = $file->getRealPath();
             $fileNameWithExtension = $file->getRelativePathname();
             $htmlSource = \file_get_contents($absoluteFilePath.DIRECTORY_SEPARATOR.'source.html');
-            $htmlTarget = '';
+            $this->assertNotFalse($htmlSource);
+            $htmlTarget = null;
             if (\file_exists($absoluteFilePath.DIRECTORY_SEPARATOR.'target.html')) {
                 $htmlTarget = \file_get_contents($absoluteFilePath.DIRECTORY_SEPARATOR.'target.html');
             }
-            $node = new \SimpleXMLElement('<file/>');
-            $this->assertNotFalse($node);
-            $this->xliffService->htmlNode($node, $htmlSource ?: '', $htmlTarget ?: '', 'en', 'fr');
-            $expected = new \SimpleXMLElement($absoluteFilePath.DIRECTORY_SEPARATOR.'expected.xlif', 0, true);
-            $this->assertEquals($expected, $node, \sprintf('testXliffExtractions: %s', $fileNameWithExtension));
+
+            foreach (XliffService::XLIFF_VERSIONS as $version) {
+                $xliffParser = new XliffService('en', 'fr', $version);
+                $document = $xliffParser->addDocument('contentType', 'ouuid_1', 'revisionId_1');
+                $xliffParser->addSimpleField($document, 'title_%locale%', 'Foo', 'Bar');
+                $document = $xliffParser->addDocument('contentType', 'ouuid_2', 'revisionId_2');
+                $xliffParser->addSimpleField($document, 'title_%locale%', 'Hello', 'Bonjour');
+                $xliffParser->addSimpleField($document, 'keywords_%locale%', 'test xliff');
+                $xliffParser->addHtmlField($document, '%locale%.body', $htmlSource, $htmlTarget ?: null);
+
+                $expectedFilename = $absoluteFilePath.DIRECTORY_SEPARATOR.'expected_'.$version.'.xlif';
+                if (!\file_exists($expectedFilename)) {
+                    $xliffParser->saveXML($expectedFilename);
+                }
+
+                $expected = new \SimpleXMLElement($expectedFilename, 0, true);
+                $actual = new \SimpleXMLElement($xliffParser->asXML()->saveXML());
+
+                $this->assertEquals($expected, $actual, \sprintf('testXliffExtractions: %s', $fileNameWithExtension));
+            }
         }
     }
 }

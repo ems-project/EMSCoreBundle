@@ -27,40 +27,183 @@ class XliffService
         'tr' => 'row',
         'u' => 'underlined',
     ];
+
     private const TRANSLATABLE_ATTRIBUTES = ['title', 'alt'];
+    public const XLIFF_1_2 = '1.2';
+    public const XLIFF_2_0 = '2.0';
+    public const XLIFF_VERSIONS = [self::XLIFF_1_2, self::XLIFF_2_0];
 
     private int $nextId = 1;
+    private string $xliffVersion;
+    private string $sourceLocale;
+    private ?string $targetLocale;
+    private \SimpleXMLElement $xliff;
 
-    public function __construct()
+    public function __construct(string $sourceLocale, ?string $targetLocale = null, string $xliffVersion = self::XLIFF_1_2)
     {
-    }
+        if (!\in_array($xliffVersion, self::XLIFF_VERSIONS)) {
+            throw new \RuntimeException(\sprintf('Unsupported XLIFF version "%s", use one of the supported one: %s', $xliffVersion, \join(', ', self::XLIFF_VERSIONS)));
+        }
 
-    public function htmlNode(\SimpleXMLElement $xliff, string $sourceHtml, string $targetHtml, string $sourceLocale, string $targetLocale): void
-    {
-        $sourceCrawler = new Crawler($sourceHtml);
-        $targetCrawler = new Crawler($targetHtml);
+        $this->nextId = 1;
+        $this->sourceLocale = $sourceLocale;
+        $this->targetLocale = $targetLocale;
+        $this->xliffVersion = $xliffVersion;
 
-        foreach ($sourceCrawler->filterXPath('//body/*') as $domNode) {
-            $this->domNodeToXliff($xliff, $domNode, $targetCrawler, $sourceLocale, $targetLocale);
+        switch ($xliffVersion) {
+            case self::XLIFF_1_2:
+                $xliffAttributes = [
+                    'xmlns:xmlns:html' => 'http://www.w3.org/1999/xhtml',
+                    'xmlns:xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+                    'xsi:xsi:schemaLocation' => 'urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd',
+                ];
+                break;
+            case self::XLIFF_2_0:
+                $xliffAttributes = [
+                    'srcLang' => $sourceLocale,
+                ];
+                if (null !== $targetLocale) {
+                    $xliffAttributes['trgLang'] = $targetLocale;
+                }
+                break;
+            default:
+                throw new \RuntimeException('Unexpected XLIFF version');
+        }
+
+        $this->xliff = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><xliff/>');
+        $this->xliff->addAttribute('version', $xliffVersion);
+        $this->xliff->addAttribute('xmlns', 'urn:oasis:names:tc:xliff:document:'.$xliffVersion);
+        foreach ($xliffAttributes as $attribute => $value) {
+            $this->xliff->addAttribute($attribute, $value);
         }
     }
 
-    private function domNodeToXliff(\SimpleXMLElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler, string $sourceLocale, string $targetLocale): void
+    public function addDocument(string $contentType, string $ouuid, string $revisionId): \SimpleXMLElement
+    {
+        $id = \join(':', [$contentType, $ouuid, $revisionId]);
+        if (\version_compare($this->xliffVersion, '2.0') < 0) {
+            $subNode = 'body';
+            $xliffAttributes = [
+                'source-language' => $this->sourceLocale,
+                'original' => $id,
+                'datatype' => 'ems-revision',
+            ];
+        } else {
+            $subNode = null;
+            $xliffAttributes = [
+                'id' => $id,
+            ];
+        }
+        $document = $this->xliff->addChild('file');
+        foreach ($xliffAttributes as $attribute => $value) {
+            $document->addAttribute($attribute, $value);
+        }
+
+        if (null !== $subNode) {
+            $document = $document->addChild($subNode);
+        }
+
+        return $document;
+    }
+
+    public function saveXML(string $filename): bool
+    {
+        return true === $this->xliff->saveXML($filename);
+    }
+
+    public function asXML(): \SimpleXMLElement
+    {
+        return $this->xliff;
+    }
+
+    public function addSimpleField(\SimpleXMLElement $document, string $fieldPath, string $source, ?string $target = null): void
+    {
+        $xliffAttributes = [
+            'id' => $fieldPath,
+        ];
+        if (\version_compare($this->xliffVersion, '2.0') < 0) {
+            $qualifiedName = 'trans-unit';
+        } else {
+            $qualifiedName = 'unit';
+        }
+        $unit = $document->addChild($qualifiedName);
+        foreach ($xliffAttributes as $attribute => $value) {
+            $unit->addAttribute($attribute, $value);
+        }
+
+        $this->addSegment($unit, $source, $target);
+    }
+
+    public function addHtmlField(\SimpleXMLElement $document, string $fieldPath, string $sourceHtml, ?string $targetHtml = null): void
+    {
+        $sourceCrawler = new Crawler($sourceHtml);
+        $targetCrawler = new Crawler($targetHtml);
+        $id = $fieldPath;
+        if (\version_compare($this->xliffVersion, '2.0') < 0) {
+            $xliffAttributes = [
+                'id' => $id,
+            ];
+        } else {
+            $xliffAttributes = [
+                'id' => $id,
+            ];
+        }
+        $group = $document->addChild('group');
+        foreach ($xliffAttributes as $attribute => $value) {
+            $group->addAttribute($attribute, $value);
+        }
+
+        foreach ($sourceCrawler->filterXPath('//body/*') as $domNode) {
+            $domNode->normalize();
+            $this->domNodeToXliff($group, $domNode, $targetCrawler);
+        }
+    }
+
+    private function domNodeToXliff(\SimpleXMLElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler): void
     {
         if (!$this->hasSomethingToTranslate($sourceNode)) {
             return;
         }
 
         if ($this->isGroupNode($sourceNode)) {
+            if (\version_compare($this->xliffVersion, '2.0') < 0) {
+                $xliffAttributes = [
+                    'restype' => $this->getRestype($sourceNode->nodeName),
+                ];
+                $sourceAttributes = $sourceNode->attributes;
+                if (null !== $sourceAttributes) {
+                    foreach ($sourceAttributes as $value) {
+                        if (!$value instanceof \DOMAttr) {
+                            throw new \RuntimeException('Unexpecte attribute object');
+                        }
+                        if (\in_array($value->nodeName, self::TRANSLATABLE_ATTRIBUTES, true)) {
+                            continue;
+                        }
+                        $xliffAttributes['html:html:'.$value->nodeName] = $value->nodeValue;
+                    }
+                }
+            } else {
+                $xliffAttributes = [];
+            }
             $group = $xliffElement->addChild('group');
+            foreach ($xliffAttributes as $attribute => $value) {
+                $group->addAttribute($attribute, $value);
+            }
             $this->addId($group, $sourceNode);
             foreach ($sourceNode->childNodes as $childNode) {
-                $this->domNodeToXliff($group, $childNode, $targetCrawler, $sourceLocale, $targetLocale);
+                $this->domNodeToXliff($group, $childNode, $targetCrawler);
             }
         } else {
-            $unit = $xliffElement->addChild('unit');
-            $this->addId($unit, $sourceNode);
-            $this->addSegments($unit, $sourceNode, $targetCrawler);
+            if (\version_compare($this->xliffVersion, '2.0') < 0) {
+                $qualifiedName = null;
+            } else {
+                $qualifiedName = 'unit';
+            }
+            if (null !== $qualifiedName) {
+                $xliffElement = $xliffElement->addChild($qualifiedName);
+                $this->addId($xliffElement, $sourceNode);
+            }
+            $this->addSegments($xliffElement, $sourceNode, $targetCrawler);
         }
     }
 
@@ -82,19 +225,54 @@ class XliffService
             $id = \strval($this->nextId++);
         }
         if (null !== $attributeName) {
-            $id = \sprintf('%s/%s', $id, $attributeName);
+            $id = \sprintf('%s[@%s]', $id, $attributeName);
         }
         $xliffElement->addAttribute('id', $id);
     }
 
-    private function addSegments(\SimpleXMLElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler): void
+    /**
+     * @param string[] $attributes
+     */
+    private function addSegments(\SimpleXMLElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler, array $attributes = []): void
     {
+        $sourceAttributes = $sourceNode->attributes;
+        if (null !== $sourceAttributes && \version_compare($this->xliffVersion, '2.0') < 0) {
+            foreach ($sourceAttributes as $value) {
+                if (!$value instanceof \DOMAttr) {
+                    throw new \RuntimeException('Unexpecte attribute object');
+                }
+                if (\in_array($value->nodeName, self::TRANSLATABLE_ATTRIBUTES, true)) {
+                    continue;
+                }
+                $attributes['html:html:'.$value->nodeName] = $value->nodeValue;
+            }
+        }
+
         $this->addAttributeSegments($xliffElement, $sourceNode, $targetCrawler);
         foreach ($sourceNode->childNodes as $child) {
             if ($child instanceof \DOMText) {
-                $segment = $xliffElement->addChild('segment');
+                $targetAttributes = [];
+                if (\version_compare($this->xliffVersion, '2.0') < 0) {
+                    $qualifiedName = 'trans-unit';
+                    $sourceAttributes = [
+                        'xml:xml:lang' => $this->sourceLocale,
+                    ];
+                    if (null !== $this->targetLocale) {
+                        $targetAttributes['xml:xml:lang'] = $this->targetLocale;
+                    }
+                } else {
+                    $qualifiedName = 'segment';
+                    $sourceAttributes = [];
+                }
+                $segment = $xliffElement->addChild($qualifiedName);
+                foreach ($attributes as $attribute => $value) {
+                    $segment->addAttribute($attribute, $value);
+                }
                 $this->addId($segment, $child);
-                $segment->addChild('source', $child->nodeValue);
+                $source = $segment->addChild('source', \trim($child->textContent));
+                foreach ($sourceAttributes as $attribute => $value) {
+                    $source->addAttribute($attribute, $value);
+                }
                 $nodeXPath = $this->getXPath($child);
                 if (null === $nodeXPath) {
                     continue;
@@ -104,11 +282,12 @@ class XliffService
                 if (1 !== $foundTarget->count()) {
                     continue;
                 }
-                foreach ($foundTarget as $item) {
-                    $segment->addChild('target', $foundTarget->text(null, true));
+                $target = $segment->addChild('target', $foundTarget->text(null, true));
+                foreach ($targetAttributes as $attribute => $value) {
+                    $target->addAttribute($attribute, $value);
                 }
             } else {
-                $this->addSegments($xliffElement, $child, $targetCrawler);
+                $this->addSegments($xliffElement, $child, $targetCrawler, $attributes);
             }
         }
     }
@@ -158,9 +337,26 @@ class XliffService
         }
         foreach (self::TRANSLATABLE_ATTRIBUTES as $attributeName) {
             if (null !== $attributeValue = $attributes->getNamedItem($attributeName)) {
-                $segment = $xliffElement->addChild('segment');
+                $targetAttributes = [];
+                if (\version_compare($this->xliffVersion, '2.0') < 0) {
+                    $qualifiedName = 'trans-unit';
+                    $sourceAttributes = [
+                        'xml:xml:lang' => $this->sourceLocale,
+                    ];
+                    if (null !== $this->targetLocale) {
+                        $targetAttributes['xml:xml:lang'] = $this->targetLocale;
+                    }
+                } else {
+                    $qualifiedName = 'segment';
+                    $sourceAttributes = [];
+                }
+
+                $segment = $xliffElement->addChild($qualifiedName);
                 $this->addId($segment, $sourceNode, $attributeName);
-                $segment->addChild('source', $attributeValue->nodeValue);
+                $source = $segment->addChild('source', $attributeValue->nodeValue);
+                foreach ($sourceAttributes as $key => $value) {
+                    $source->addAttribute($key, $value);
+                }
 
                 $nodeXPath = $this->getXPath($sourceNode);
                 if (null === $nodeXPath) {
@@ -172,8 +368,49 @@ class XliffService
                 if (null === $targetAttribute) {
                     continue;
                 }
-                $segment->addChild('target', $targetAttribute);
+                $target = $segment->addChild('target', $targetAttribute);
+                foreach ($targetAttributes as $key => $value) {
+                    $target->addAttribute($key, $value);
+                }
             }
         }
+    }
+
+    private function addSegment(\SimpleXMLElement $unit, string $source, ?string $target): void
+    {
+        if (\version_compare($this->xliffVersion, '2.0') < 0) {
+            $qualifiedName = null;
+            $sourceAttributes = [
+                'xml:xml:lang' => $this->sourceLocale,
+            ];
+            $targetAttributes = [];
+            if (null !== $this->targetLocale) {
+                $targetAttributes['xml:xml:lang'] = $this->targetLocale;
+            }
+        } else {
+            $qualifiedName = 'segment';
+            $sourceAttributes = [];
+            $targetAttributes = [];
+        }
+        if (null !== $qualifiedName) {
+            $unit = $unit->addChild($qualifiedName);
+        }
+        $sourceChild = $unit->addChild('source', $source);
+        foreach ($sourceAttributes as $attribute => $value) {
+            $sourceChild->addAttribute($attribute, $value);
+        }
+
+        if (null === $target) {
+            return;
+        }
+        $targetChild = $unit->addChild('target', $target);
+        foreach ($targetAttributes as $attribute => $value) {
+            $targetChild->addAttribute($attribute, $value);
+        }
+    }
+
+    public static function getRestype(string $nodeName): string
+    {
+        return self::PRE_DEFINED_VALUES[$nodeName] ?? \sprintf('x-html-%s', $nodeName);
     }
 }

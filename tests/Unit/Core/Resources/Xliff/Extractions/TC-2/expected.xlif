@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<file>
-    <unit id="/html/body/p">
-        <segment id="/html/body/p/text()">
-            <source>Hello</source>
-            <target>Bonjour</target>
-        </segment>
-    </unit>
-</file>

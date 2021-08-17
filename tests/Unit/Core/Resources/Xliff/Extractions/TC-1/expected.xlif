@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<file>
+    <unit id="/html/body/h1">
+        <segment id="/html/body/h1/text()">
+            <source>Report</source>
+        </segment>
+    </unit>
+    <group id="/html/body/table">
+        <group id="/html/body/table/tr[1]">
+            <unit id="/html/body/table/tr[1]/td[1]">
+                <segment id="/html/body/table/tr[1]/td[1]/text()">
+                    <source>Text in cell r1-c1</source>
+                </segment>
+            </unit>
+            <unit id="/html/body/table/tr[1]/td[2]">
+                <segment id="/html/body/table/tr[1]/td[2]/text()">
+                    <source>Text in cell r1-c2</source>
+                </segment>
+            </unit>
+        </group>
+        <group id="/html/body/table/tr[2]">
+            <unit id="/html/body/table/tr[2]/td[1]">
+                <segment id="/html/body/table/tr[2]/td[1]/text()">
+                    <source>Text in cell r2-c1</source>
+                </segment>
+            </unit>
+            <unit id="/html/body/table/tr[2]/td[2]">
+                <segment id="/html/body/table/tr[2]/td[2]/text()">
+                    <source>Text in cell r2-c2</source>
+                </segment>
+            </unit>
+        </group>
+    </group>
+    <unit id="/html/body/p">
+        <segment id="/html/body/p/text()">
+            <source>All rights reserved (c) Gandalf Inc.</source>
+        </segment>
+    </unit>
+</file>

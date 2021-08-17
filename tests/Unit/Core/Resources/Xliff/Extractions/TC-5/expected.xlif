@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<file>
+    <unit id="/html/body/p">
+        <segment id="/html/body/p/title">
+            <source>Information about Mount Hood</source>
+            <target>Information &#xE0; propos de Mount Hood</target>
+        </segment>
+        <segment id="/html/body/p/text()">
+            <source>This is Mount Hood: </source>
+            <target>Ceci est Mount Hood:</target>
+        </segment>
+        <segment id="/html/body/p/img/alt">
+            <source>Mount Hood with its snow-covered top</source>
+            <target>Mount Hood avec son sommet enneig&#xE9;</target>
+        </segment>
+    </unit>
+</file>

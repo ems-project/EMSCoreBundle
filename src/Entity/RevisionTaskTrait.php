@@ -52,12 +52,12 @@ trait RevisionTaskTrait
 
     public function taskCurrentReplace(Task $newTaskCurrent, string $username): bool
     {
-        if ($this->hasTaskCurrent() && $newTaskCurrent->getId() === $this->taskCurrent->getId()) {
+        if ($this->hasTaskCurrent() && $newTaskCurrent->getId() === $this->getTaskCurrent()->getId()) {
             return false;
         }
 
-        $this->taskCurrent->statusPlanned($username);
-        $this->addTask($this->taskCurrent, $username);
+        $this->getTaskCurrent()->statusPlanned($username);
+        $this->addTask($this->getTaskCurrent(), $username);
 
         $newTaskCurrent->statusProgress($username);
         $this->taskCurrent = $newTaskCurrent;

@@ -201,7 +201,7 @@ final class TaskController extends AbstractController
         $ajaxModal = $this->getAjaxModal();
         $ajaxModal->setFooter('modalUpdateFooter', ['task' => $task, 'revisionId' => $revisionId]);
 
-        $form = $this->createForm(RevisionTaskType::class, $taskDTO);
+        $form = $this->createForm(RevisionTaskType::class, $taskDTO, ['task_status' => $task->getStatus()]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

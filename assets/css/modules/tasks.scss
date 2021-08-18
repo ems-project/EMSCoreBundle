@@ -65,7 +65,7 @@ div#revision-tabs {
       div#tasks-item-validation,
       span.task-current-status { display: none; }
 
-      ul#revision-tasks { i.task-icon::before { content: "\f047" !important; } }
+      ul#revision-tasks { i.task-icon { color: #000 !important; &::before { content: "\f047" !important; } }}
     }
 
     div#revision-tasks-empty { font-weight: bold; padding: 15px 15px 0;}
@@ -97,13 +97,10 @@ div#revision-tabs {
 
         &.tasks-item-current {
           background-color: lighten($brand-info, 35%);
-          & i.task-icon { color: $brand-primary; }
-          & i.task-icon::before { content: "\f1d9"; }
           & div.tasks-item-block-info i, div.tasks-item-title {  color: $brand-primary; font-weight: bold; }
         }
 
         i.task-icon { padding: 3px 10px 0 0; @include fa-icon(); }
-        i.task-icon::before { content: "\f250"; }
 
         div#tasks-item-validation { padding: 0 10px 10px 30px; }
         div.tasks-item-block{
@@ -122,8 +119,6 @@ div#revision-tabs {
 
       ul.revision-tasks li {
         &:hover { cursor: pointer; }
-        & i.task-icon { color: $green; }
-        & i.task-icon::before { content: "\f11e"; }
         div.tasks-item-info {
           .tasks-item-title { color: $green; }
         }

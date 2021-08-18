@@ -423,6 +423,33 @@
 	{{ _self.messages(dataField) }}
 {% endblock %}
 
+{% block EMS_CoreBundle_Form_DataField_MultiplexedTabContainerFieldType %}
+	{% set labels = dataField.fieldType.displayOptions.labels|default('')|replace({"\r":''})|split('\n') %}
+	{% set values = dataField.fieldType.displayOptions.values|default('')|replace({"\r":''})|split('\n') %}
+	<div class="nav-tabs-custom">
+		<ul class="nav nav-tabs">
+			{% for value in values|default([]) %}
+				<li class="{% if loop.index == 1%}active{% endif %}">
+					<a href="#item_{{ dataField.fieldType.id~'_'~loop.index }}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{% else %}false{% endif %}">
+						{{ attribute(labels, loop.index0)|default(values|default) }}
+					</a>
+				</li>
+			{% endfor %}
+		</ul>
+		<div class="tab-content">
+			{% for value in values|default([]) %}
+				<div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~loop.index }}__tab">
+					{% set childData = source[value]|default([]) %}
+					{% set childCompareData = compareRawData[value]|default([]) %}
+					{% for grandchild in dataField.children.get(value).children|default([]) %}
+						{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData) }}
+					{% endfor %}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}
+
 {% block EMS_CoreBundle_Form_DataField_TabsFieldType %}
 	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
@@ -439,17 +466,17 @@
                         {% endif %}
 					</a>
     			</li>
-            	{% endfor %}
-            </ul>
-            <div class="tab-content">
-            	{% for child in dataField.children if not child.fieldType.deleted %}
-	              <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~loop.index }}__tab">
-					{{ _self.renderDataFieldBlock(child, source, compare, compareRawData) }}
-	              </div>
-              {% endfor %}
-            </div>
-            <!-- /.tab-content -->
-         </div>  
+			{% endfor %}
+		</ul>
+		<div class="tab-content">
+			{% for child in dataField.children if not child.fieldType.deleted %}
+			  <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~loop.index }}__tab">
+				{{ _self.renderDataFieldBlock(child, source, compare, compareRawData) }}
+			  </div>
+		  {% endfor %}
+		</div>
+		<!-- /.tab-content -->
+	 </div>
 	{{ _self.messages(dataField) }}
 {% endblock %}
 

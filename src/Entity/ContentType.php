@@ -320,6 +320,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $trashRole;
 
     /**
+     * @ORM\Column(name="owner_role", type="string", length=100, nullable=true)
+     */
+    protected ?string $ownerRole = null;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
@@ -1951,5 +1956,31 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
             $this->getVersionDateFromField(),
             $this->getVersionDateToField(),
         ]);
+    }
+
+    public function hasOwnerRole(): bool
+    {
+        return null !== $this->ownerRole;
+    }
+
+    public function giveOwnerRole(): string
+    {
+        $ownerRole = $this->ownerRole;
+
+        if (null === $ownerRole) {
+            throw new \RuntimeException('No owner role specified');
+        }
+
+        return $ownerRole;
+    }
+
+    public function getOwnerRole(): ?string
+    {
+        return $this->ownerRole;
+    }
+
+    public function setOwnerRole(?string $ownerRole): void
+    {
+        $this->ownerRole = $ownerRole;
     }
 }

@@ -36,6 +36,11 @@ class TableColumn
         return $this->attribute;
     }
 
+    public function setAttribute(string $attribute): void
+    {
+        $this->attribute = $attribute;
+    }
+
     public function setRoute(string $name, ?\Closure $callback = null, ?string $target = null): void
     {
         $this->routeName = $name;

@@ -118,11 +118,11 @@ class TabsFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
-    public static function getJsonName(FieldType $current)
+    public static function getJsonNames(FieldType $current): array
     {
-        return null;
+        return [];
     }
 
     /**

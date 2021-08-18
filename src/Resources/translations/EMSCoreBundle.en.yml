@@ -204,6 +204,7 @@ ROLE_REVIEWER: Reviewer
 ROLE_SUPER: Super user
 ROLE_TRADUCTOR: Traductor
 ROLE_FORM_CRM: Form CRM
+ROLE_TASK_MANAGER: Task Manager
 Save: Save
 Search: Search
 Should: Should
@@ -925,3 +926,78 @@ view:
       title: 'User list'
   breadcrumb:
     wysiwyg-options: 'WYSIWYG Options'
+
+task:
+  title: 'Tasks'
+  tab_task: 'Task'
+  tab_tasks: 'Tasks'
+  dashboard:
+      tab:
+        user: 'Assigned to me'
+        owner: 'Created tasks'
+        manager: 'All tasks'
+      action:
+        go_revision: 'Go to revision'
+        edit_revision: 'Edit to revision'
+        change_owner: 'Change owner'
+      column:
+        icon: ''
+        taskTitle: 'Task'
+        label: 'Document'
+        taskStatus: 'Status'
+        assignee: 'Assignee'
+        owner: 'Owner'
+        taskDeadline: 'Deadline'
+        actions: 'Actions'
+  status:
+    progress: 'In progress'
+    planned: 'Planned'
+    completed: 'Completed'
+    rejected: 'Rejected'
+    approved: 'Approved'
+  info:
+    empty: 'No tasks for this document'
+    change_order: 'Change task order'
+  assigned_to: 'Assigned to '
+  in_progress: 'This task is '
+  for: 'for'
+  history: 'History'
+  validation:
+     comment: 'Comment for validation'
+     request: 'Send for validation'
+     done: 'Finish'
+     approve: 'Approve'
+     reject: 'Reject'
+  error:
+    ajax: 'Error: something went wrong!'
+  field:
+    title: 'Name'
+    deadline: 'Deadline'
+    assignee: 'Assignee'
+    description: 'Description'
+  create:
+    button: 'Add a task'
+    title: 'Add a new task'
+    submit: 'Create task'
+    success: 'Task "%title%" successfully created.'
+  update:
+    title: 'Edit task : %title%'
+    submit: 'Edit task'
+    success: 'Task "%title%" successfully updated.'
+    tab:
+      info: 'Information'
+      history: 'History'
+  delete:
+    title: 'Deleted task : %title%'
+    submit: 'Delete task'
+    success: 'Task "%title%" successfully deleted.'
+  change_owner:
+    title: 'Change owner for %revision%'
+    change: 'New owner'
+    current: 'The current ower for document "%revision%" is "%owner%"'
+    missing: 'The document "%revision%" has no owner'
+    submit: 'Change'
+    success: 'Successfully changed ownership!'
+  finished:
+    show: 'Show finished tasks (%number%)'
+    hide: 'Hide finished tasks (%number%)'

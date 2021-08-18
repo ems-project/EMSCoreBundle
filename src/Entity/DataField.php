@@ -215,8 +215,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
                 $this->parent = $a[1];
             }
 
-            foreach ($ancestor->getChildren() as $child) {
-                $this->addChild(new DataField($child, $this));
+            foreach ($ancestor->getChildren() as $key => $child) {
+                $this->addChild(new DataField($child, $this), $key);
             }
         }
     }
@@ -723,13 +723,15 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Add child.
-     *
-     * @return DataField
+     * @param int|string|null $key
      */
-    public function addChild(DataField $child)
+    public function addChild(DataField $child, $key = null): DataField
     {
-        $this->children[] = $child;
+        if (null === $key) {
+            $this->children[] = $child;
+        } else {
+            $this->children[$key] = $child;
+        }
 
         return $this;
     }

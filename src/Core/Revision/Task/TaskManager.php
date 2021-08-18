@@ -248,7 +248,7 @@ final class TaskManager
      */
     public function tasksReorder(int $revisionId, array $orderedTaskIds): void
     {
-        if (count($orderedTaskIds) === 0) {
+        if (0 === \count($orderedTaskIds)) {
             return;
         }
 

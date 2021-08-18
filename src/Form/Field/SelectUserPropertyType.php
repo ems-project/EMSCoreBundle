@@ -94,7 +94,7 @@ final class SelectUserPropertyType extends AbstractType
      * @param string[] $roles
      * @param string[] $excludeValues
      *
-     * @return array<string, string>
+     * @return array<int|string, int|string>
      */
     private function getChoices(string $property, string $propertyLabel, array $roles, array $excludeValues): array
     {

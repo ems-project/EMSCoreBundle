@@ -52,7 +52,7 @@ trait RevisionTaskTrait
 
     public function taskCurrentReplace(Task $newTaskCurrent, string $username): bool
     {
-        if ($newTaskCurrent->getId() === $this->taskCurrent->getId()) {
+        if ($this->hasTaskCurrent() && $newTaskCurrent->getId() === $this->taskCurrent->getId()) {
             return false;
         }
 
@@ -210,7 +210,7 @@ trait RevisionTaskTrait
      */
     public function setTaskPlanned(array $taskPlanned): void
     {
-        if (\count($taskPlanned) !== \count($this->taskPlannedIds)) {
+        if (\count($taskPlanned) !== \count($this->taskPlannedIds ?? [])) {
             return;
         }
 

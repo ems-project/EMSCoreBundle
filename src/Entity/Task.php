@@ -27,29 +27,29 @@ class Task implements EntityInterface
     private UuidInterface $id;
 
     /**
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     * @ORM\Column(name="title", type="string", length=255)
      */
     private string $title;
 
     /**
-     * @ORM\Column(name="status", type="string", length=25, nullable=false)
+     * @ORM\Column(name="status", type="string", length=25)
      */
     private string $status;
 
     /**
-     * @ORM\Column(name="deadline", type="datetime_immutable", nullable=false)
+     * @ORM\Column(name="deadline", type="datetime_immutable", nullable=true)
      */
-    private \DateTimeInterface $deadline;
+    private ?\DateTimeInterface $deadline = null;
 
     /**
-     * @ORM\Column(name="assignee", type="text", nullable=false)
+     * @ORM\Column(name="assignee", type="text")
      */
     private string $assignee;
 
     /**
-     * @ORM\Column(name="description", type="text", nullable=false)
+     * @ORM\Column(name="description", type="text", nullable=true)
      */
-    private string $description;
+    private ?string $description = null;
 
     /**
      * @var array<mixed>
@@ -90,9 +90,9 @@ class Task implements EntityInterface
     public function updateFromDTO(TaskDTO $taskDTO): void
     {
         $this->title = $taskDTO->give('title');
-        $this->description = $taskDTO->give('description');
+        $this->description = $taskDTO->description;
         $this->assignee = $taskDTO->give('assignee');
-        $this->deadline = DateTime::createFromFormat($taskDTO->give('deadline'), 'd/m/Y');
+        $this->deadline = $taskDTO->deadline ? DateTime::createFromFormat($taskDTO->deadline, 'd/m/Y') : null;
     }
 
     public function changeStatus(string $newStatus, string $username, ?string $comment = null): void
@@ -128,9 +128,18 @@ class Task implements EntityInterface
         return $this->title;
     }
 
+    public function hasDeadline(): bool
+    {
+        return null !== $this->deadline;
+    }
+
     public function getDeadline(): \DateTimeInterface
     {
-        return $this->deadline;
+        if (null === $deadline = $this->deadline) {
+            throw new \RuntimeException('No deadline!');
+        }
+
+        return $deadline;
     }
 
     public function getAssignee(): string
@@ -138,9 +147,18 @@ class Task implements EntityInterface
         return $this->assignee;
     }
 
+    public function hasDescription(): bool
+    {
+        return null !== $this->description;
+    }
+
     public function getDescription(): string
     {
-        return $this->description;
+        if (null === $description = $this->description) {
+            throw new \RuntimeException('No description!');
+        }
+
+        return $description;
     }
 
     public function getLatestCompleted(): ?TaskLog

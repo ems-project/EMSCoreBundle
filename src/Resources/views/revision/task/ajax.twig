@@ -137,16 +137,27 @@
                             <div>{{ task.title }}</div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <div class="mb-1"><strong>{{ 'task.field.deadline'|trans }}</strong></div>
-                            <div>{{ task.deadline.format('d/m/y') }}</div>
-                        </div>
-                        <div class="col-md-6 mb-3">
                             <div class="mb-1"><strong>{{ 'task.field.assignee'|trans }}</strong></div>
                             <div>{{ task.assignee|displayname }}</div>
                         </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="mb-1"><strong>{{ 'task.field.deadline'|trans }}</strong></div>
+                            {%- if task.hasDeadline -%}
+                                <div>
+                                    {%- set deadline = task.deadline.format('d/m/Y') -%}
+                                    {%- if task.deadline.timestamp < date('now').timestamp -%}
+                                        <span class="text-danger"><strong>{{ deadline }}</strong></span>
+                                    {%- else -%}
+                                        {{ deadline }}
+                                    {%- endif -%}
+                                </div>
+                            {%- else -%}
+                                /
+                            {%- endif -%}
+                        </div>
                         <div class="col-md-12 mb-3">
                             <div class="mb-1"><strong>{{ 'task.field.description'|trans }}</strong></div>
-                            <div>{{ task.description|displayname }}</div>
+                            {%- if task.hasDescription -%}<div>{{ task.description|displayname }}</div>{% else %}/{% endif %}
                         </div>
                     </div>
                 {% endif %}
@@ -191,8 +202,8 @@
     {{ form_start(form) }}
     <div class="row">
         <div class="col-md-12">{{ form_row(form.title) }}</div>
-        <div class="col-md-6">{{ form_row(form.deadline) }}</div>
         <div class="col-md-6">{{ form_row(form.assignee) }}</div>
+        <div class="col-md-6">{{ form_row(form.deadline) }}</div>
         <div class="col-md-12">{{ form_row(form.description) }}</div>
     </div>
     {{ form_end(form) }}

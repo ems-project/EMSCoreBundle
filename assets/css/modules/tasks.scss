@@ -1,3 +1,5 @@
+@import "~font-awesome/scss/_mixins.scss";
+
 div#ajax-modal {
   .timeline {
     margin: 15px 0 0;
@@ -56,8 +58,18 @@ div#revision-tabs {
   div#tab_tasks {
     padding: 0;
     padding-bottom: 15px;
+
+    &.reorder {
+      button#btn-task-create-modal,
+      button.btn-task-update-modal,
+      div#tasks-item-validation,
+      span.task-current-status { display: none; }
+
+      ul#revision-tasks { i.task-icon::before { content: "\f047" !important; } }
+    }
+
     div#revision-tasks-empty { font-weight: bold; padding: 15px 15px 0;}
-    div#revision-tasks-info {
+    div#revision-tasks-reorder {
       background-color: #f5f5f5;
       border-bottom: 1px solid $gray-lighter;
       font-size: 12px;
@@ -74,25 +86,32 @@ div#revision-tabs {
         border: 0;
         border-radius: 0;
         border: 0;
-        border-bottom: 1px solid $gray-lighter;
-        background: transparent;
+        border-bottom: 2px solid $gray-lighter;
+        background: #FFF;
+
+        &.dragging {
+          background-color: lighten($brand-info, 35%);
+          border: solid $brand-primary 1px !important;
+          z-index: 1 !important;
+        }
 
         &.tasks-item-current {
           background-color: lighten($brand-info, 35%);
+          & i.task-icon { color: $brand-primary; }
+          & i.task-icon::before { content: "\f1d9"; }
           & div.tasks-item-block-info i, div.tasks-item-title {  color: $brand-primary; font-weight: bold; }
         }
 
-        div.tasks-item-validation { padding: 0 10px 10px 30px; }
+        i.task-icon { padding: 3px 10px 0 0; @include fa-icon(); }
+        i.task-icon::before { content: "\f250"; }
+
+        div#tasks-item-validation { padding: 0 10px 10px 30px; }
         div.tasks-item-block{
           display: flex;
           justify-content: space-between;
-
-          & div.tasks-item-info {
-            padding: 10px; display: flex; align-items: flex-start; font-size: 12px;
-            & i { padding: 3px 10px 0 0; }
-            & .tasks-item-title { font-size: 14px; margin-bottom: 5px; }
-          }
-          & .btn-task-update-modal { background-color: transparent; outline: 0;}
+          .tasks-item-info { padding: 10px; display: flex; align-items: flex-start; font-size: 12px; }
+          .tasks-item-title { font-size: 14px; margin-bottom: 5px; }
+          .btn-task-update-modal { background-color: transparent; outline: 0;}
         }
       }
     }
@@ -103,8 +122,9 @@ div#revision-tabs {
 
       ul.revision-tasks li {
         &:hover { cursor: pointer; }
+        & i.task-icon { color: $green; }
+        & i.task-icon::before { content: "\f11e"; }
         div.tasks-item-info {
-          & i { color: $green; }
           .tasks-item-title { color: $green; }
         }
       }

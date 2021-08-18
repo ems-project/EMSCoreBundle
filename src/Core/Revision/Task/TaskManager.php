@@ -243,6 +243,34 @@ final class TaskManager
         $transaction($revisionId);
     }
 
+    /**
+     * @param string[] $orderedTaskIds
+     */
+    public function tasksReorder(int $revisionId, array $orderedTaskIds): void
+    {
+        if (count($orderedTaskIds) === 0) {
+            return;
+        }
+
+        $transaction = $this->revisionTransaction(function (Revision $revision) use ($orderedTaskIds) {
+            $user = $this->userService->getCurrentUser();
+
+            $orderCurrentTaskId = \array_shift($orderedTaskIds);
+            $oldCurrentTask = $revision->getTaskCurrent();
+            $orderTaskCurrent = $this->getTask($orderCurrentTaskId);
+
+            if ($revision->taskCurrentReplace($orderTaskCurrent, $user->getUsername())) {
+                $this->taskRepository->save($oldCurrentTask);
+                $this->taskRepository->save($orderTaskCurrent);
+            }
+
+            $revision->setTaskPlanned($this->taskRepository->findTasksByIds($orderedTaskIds));
+
+            $this->revisionRepository->save($revision);
+        });
+        $transaction($revisionId);
+    }
+
     private function setNextPlanned(Revision $revision): void
     {
         $nextPlannedId = $revision->getTaskNextPlannedId();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Revision;
 
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Core\UI\AjaxModal;
@@ -231,25 +232,6 @@ final class TaskController extends AbstractController
             ->getResponse();
     }
 
-    public function ajaxDelete(int $revisionId, string $taskId): JsonResponse
-    {
-        $task = $this->taskManager->getTask($taskId);
-        $ajaxModal = $this->getAjaxModal()
-            ->setTitle('task.delete.title', ['%title%' => $task->getTitle()])
-            ->setBodyHtml('')
-            ->setFooter('modalFooterClose');
-
-        try {
-            $this->taskManager->taskDelete($task, $revisionId);
-            $ajaxModal->addMessageSuccess('task.delete.success', ['%title%' => $task->getTitle()]);
-        } catch (\Throwable $e) {
-            $this->logger->error($e->getMessage(), ['e' => $e]);
-            $ajaxModal->addMessageError('task.error.ajax');
-        }
-
-        return $ajaxModal->getResponse();
-    }
-
     public function ajaxModalChangeOwner(Request $request, int $revisionId): JsonResponse
     {
         $revision = $this->taskManager->getRevision($revisionId);
@@ -293,6 +275,36 @@ final class TaskController extends AbstractController
             ->setBody('modalChangeOwnerBody', ['revision' => $revision, 'form' => $form->createView()])
             ->setFooter('modalChangeOwnerFooter')
             ->getResponse();
+    }
+
+    public function ajaxDelete(int $revisionId, string $taskId): JsonResponse
+    {
+        $task = $this->taskManager->getTask($taskId);
+        $ajaxModal = $this->getAjaxModal()
+            ->setTitle('task.delete.title', ['%title%' => $task->getTitle()])
+            ->setBodyHtml('')
+            ->setFooter('modalFooterClose');
+
+        try {
+            $this->taskManager->taskDelete($task, $revisionId);
+            $ajaxModal->addMessageSuccess('task.delete.success', ['%title%' => $task->getTitle()]);
+        } catch (\Throwable $e) {
+            $this->logger->error($e->getMessage(), ['e' => $e]);
+            $ajaxModal->addMessageError('task.error.ajax');
+        }
+
+        return $ajaxModal->getResponse();
+    }
+
+    public function ajaxReorder(Request $request, int $revisionId): JsonResponse
+    {
+        $content = $request->getContent();
+        $data = is_string($content) ? Json::decode($content) : [];
+        $taskIds = $data['taskIds'] ?? [];
+
+        $this->taskManager->tasksReorder($revisionId, $taskIds);
+        
+        return new JsonResponse([], Response::HTTP_ACCEPTED);
     }
 
     /**

@@ -58,8 +58,8 @@ class Task implements EntityInterface
      */
     private array $logs;
 
-    public const STATUS_PLANNED = 'planned';
     public const STATUS_PROGRESS = 'progress';
+    public const STATUS_PLANNED = 'planned';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_REJECTED = 'rejected';
     public const STATUS_APPROVED = 'approved';
@@ -172,6 +172,12 @@ class Task implements EntityInterface
     public function isOpen(): bool
     {
         return !\in_array($this->status, [Task::STATUS_COMPLETED, Task::STATUS_APPROVED], true);
+    }
+
+    public function statusPlanned(string $username): void
+    {
+        $this->status = self::STATUS_PLANNED;
+        $this->addLog($username);
     }
 
     public function statusProgress(string $username): void

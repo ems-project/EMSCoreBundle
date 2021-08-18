@@ -50,6 +50,22 @@ trait RevisionTaskTrait
         }
     }
 
+    public function taskCurrentReplace(Task $newTaskCurrent, string $username): bool
+    {
+        if ($newTaskCurrent->getId() === $this->taskCurrent->getId()) {
+            return false;
+        }
+
+        $this->taskCurrent->statusPlanned($username);
+        $this->addTask($this->taskCurrent, $username);
+
+        $newTaskCurrent->statusProgress($username);
+        $this->taskCurrent = $newTaskCurrent;
+        $this->deleteTaskPlanned($newTaskCurrent);
+
+        return true;
+    }
+
     public function clearTasks(): void
     {
         $this->taskCurrent = null;
@@ -187,5 +203,17 @@ trait RevisionTaskTrait
     public function setTaskCurrent(?Task $task): void
     {
         $this->taskCurrent = $task;
+    }
+
+    /**
+     * @param Task[] $taskPlanned
+     */
+    public function setTaskPlanned(array $taskPlanned): void
+    {
+        if (\count($taskPlanned) !== \count($this->taskPlannedIds)) {
+            return;
+        }
+
+        $this->taskPlannedIds = \array_map(fn (Task $task) => $task->getId(), $taskPlanned);
     }
 }

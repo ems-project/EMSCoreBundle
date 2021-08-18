@@ -140,7 +140,7 @@ final class TaskRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('t');
         $qb
             ->andWhere($qb->expr()->in('t.id', ':ids'))
-            ->setParameter('ids', $ids);
+            ->setParameter('ids', \array_values($ids));
 
         $tasks = \array_fill_keys($ids, null);
         foreach ($qb->getQuery()->getResult() as $task) {

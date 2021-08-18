@@ -33,15 +33,15 @@
 {% endblock %}
 
 {% block taskItem %}
-    <li class="list-group-item tasks-item {{ isCurrent|default(false) ? 'tasks-item-current' }}">
+    <li class="list-group-item tasks-item {{ isCurrent|default(false) ? 'tasks-item-current' }}" data-id="{{ task.id }}">
         <div class="tasks-item-block">
             <div class="tasks-item-info">
-                <i class="{{ task.statusIcon }}"></i>
+                <i class="task-icon"></i>
                 <div>
                     <div class="tasks-item-title">{{ task.title }}</div>
                     <div>{{ 'task.assigned_to'|trans }}<strong>{{ task.assignee|displayname }}</strong></div>
                     {% if isCurrent|default(false) %}
-                        <div><span class="label label-{{ task.statusLabel }}">{{ "task.status.#{task.status}"|trans }}</span></div>
+                        <div><span class="task-current-status label label-{{ task.statusLabel }}">{{ "task.status.#{task.status}"|trans }}</span></div>
                     {% endif %}
                 </div>
             </div>
@@ -52,7 +52,7 @@
             </button>
         </div>
         {% if formValidation is defined %}
-            <div class="tasks-item-validation">
+            <div id="tasks-item-validation">
                 {% set logCompleted = task.getLatestCompleted %}
                 {% if task.assignee != app.user.username and logCompleted != null %}
                     <p class="task-comment bg-gray-light">{{ logCompleted.comment }}</p>
@@ -75,7 +75,7 @@
         data-title="Task: {{ task.title }}">
         <div class="tasks-item-block">
             <div class="tasks-item-info">
-                <i class="{{ task.statusIcon }}"></i>
+                <i class="task-icon"></i>
                 <div>
                     <div class="tasks-item-title">{{ task.title }}</div>
                     <div>{{ 'task.assigned_to'|trans }} <strong>{{ task.assignee|displayname }}</strong></div>

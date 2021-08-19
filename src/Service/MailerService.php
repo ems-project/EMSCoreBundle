@@ -8,17 +8,11 @@ use Swift_Message;
 class MailerService
 {
     /** @var array<string> */
-    private $fromMail;
-
-    /** @var string */
-    private $fromName;
-
-    /** @var Swift_Mailer */
-    private $mailer;
+    private array $fromMail;
+    private string $fromName;
+    private \Swift_Mailer $mailer;
 
     /**
-     * MailerService constructor.
-     *
      * @param array<string> $fromMail
      */
     public function __construct(Swift_Mailer $mailer, array $fromMail, string $fromName)

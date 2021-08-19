@@ -955,6 +955,14 @@ task:
     completed: 'Completed'
     rejected: 'Rejected'
     approved: 'Approved'
+    history:
+       created: '%user% created the task'
+       updated: '%user% updated the task'
+       progress: 'The task became active for %assignee% (in progress)'
+       planned: '%user% planned the task'
+       completed: '%user% completed the task'
+       rejected: '%user% rejected the task'
+       approved: '%user% approved the task'
   info:
     empty: 'No tasks for this document'
     change_order: 'Change task order'
@@ -971,7 +979,7 @@ task:
   error:
     ajax: 'Error: something went wrong!'
   field:
-    title: 'Name'
+    title: 'Title'
     deadline: 'Deadline'
     assignee: 'Assignee'
     description: 'Description'

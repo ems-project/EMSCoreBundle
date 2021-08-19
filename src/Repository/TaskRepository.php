@@ -158,6 +158,22 @@ final class TaskRepository extends ServiceEntityRepository
         $this->_em->flush();
     }
 
+    /**
+     * @return array<mixed>
+     */
+    public function update(Task $task): array
+    {
+        $uow = $this->_em->getUnitOfWork();
+        $uow->computeChangeSets();
+
+        $changeSet = $uow->getEntityChangeSet($task);
+
+        $this->_em->persist($task);
+        $this->_em->flush();
+
+        return $changeSet;
+    }
+
     public function save(Task $task): void
     {
         $this->_em->persist($task);

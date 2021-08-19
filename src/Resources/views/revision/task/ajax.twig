@@ -165,7 +165,7 @@
                         </div>
                         <div class="col-md-12 mb-3">
                             <div class="mb-1"><strong>{{ 'task.field.description'|trans }}</strong></div>
-                            {%- if task.hasDescription -%}<div>{{ task.description|displayname }}</div>{% else %}/{% endif %}
+                            {%- if task.hasDescription -%}<div>{{ task.description|nl2br }}</div>{% else %}/{% endif %}
                         </div>
                     </div>
                 {% endif %}
@@ -227,10 +227,34 @@
                 <div class="timeline-item">
                     <span class="time"><i class="fa fa-clock-o"></i> {{ log.date.format('d/m/Y H:i') }}</span>
                     <h3 class="timeline-header bg-info">
-                        <strong>{{ log.username == app.user.username ? 'You' : log.username|displayname }}</strong>
-                        {{ "task.status.#{log.status}"|trans|lower }}
+                        {{ "task.status.history.#{log.status}"|trans({
+                            '%user%': "<strong>#{log.username|displayname}</strong>",
+                            '%assignee%': "<strong>#{log.assignee|displayname}</strong>"
+                        })|raw }}
                     </h3>
                     {% if log.comment %}<div class="timeline-body bg-gray-light">{{ log.comment }}</div>{% endif %}
+                    {% if log.hasTaskData %}
+                        <div class="timeline-body bg-gray-light">
+                            <dl class="dl-horizontal task-info">
+                                {% if null != log.taskTitle %}
+                                    <dt>{{ 'task.field.title'|trans }}</dt>
+                                    <dd>{{ log.taskTitle }}</dd>
+                                {% endif %}
+                                {% if null != log.taskAssignee %}
+                                    <dt>{{ 'task.field.assignee'|trans }}</dt>
+                                    <dd>{{ log.taskAssignee|displayname }}</dd>
+                                {% endif %}
+                                {% if null != log.taskDeadline %}
+                                    <dt>{{ 'task.field.deadline'|trans }}</dt>
+                                    <dd>{{ log.taskDeadline.format('d/m/Y') }}</dd>
+                                {% endif %}
+                                {% if null != log.taskDescription %}
+                                    <dt>{{ 'task.field.description'|trans }}</dt>
+                                    <dd>{{ log.taskDescription|nl2br }}</dd>
+                                {% endif %}
+                            </dl>
+                        </div>
+                    {% endif %}
                 </div>
             </li>
         {% endfor %}

@@ -26,6 +26,8 @@ div#task-dashboard {
   }
 }
 
+dl.task-info { margin-bottom: 0; dt { text-align: left; } }
+
 div#revision-tabs {
   div.tab-content { padding: 0; }
   div.tab-pane {padding: 10px;}

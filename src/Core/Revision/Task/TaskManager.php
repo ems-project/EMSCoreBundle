@@ -12,6 +12,8 @@ use EMS\CoreBundle\Repository\TaskRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+
 
 final class TaskManager
 {
@@ -20,6 +22,7 @@ final class TaskManager
     private RevisionRepository $revisionRepository;
     private DataService $dataService;
     private UserService $userService;
+    private EventDispatcherInterface $eventDispatcher;
     private LoggerInterface $logger;
 
     public const TAB_USER = 'user';
@@ -32,6 +35,7 @@ final class TaskManager
         RevisionRepository $revisionRepository,
         DataService $dataService,
         UserService $userService,
+        EventDispatcherInterface $eventDispatcher,
         LoggerInterface $logger
     ) {
         $this->taskRepository = $taskRepository;
@@ -39,6 +43,7 @@ final class TaskManager
         $this->revisionRepository = $revisionRepository;
         $this->dataService = $dataService;
         $this->userService = $userService;
+        $this->eventDispatcher = $eventDispatcher;
         $this->logger = $logger;
     }
 
@@ -171,14 +176,14 @@ final class TaskManager
     {
         $transaction = $this->revisionTransaction(function (Revision $revision) use ($taskDTO) {
             $user = $this->userService->getCurrentUser();
-            $task = Task::createFromDTO($taskDTO, $user);
+            $task = Task::createFromDTO($taskDTO);
+            $this->dispatchEvent($task, $revision, TaskEvent::CREATE);
 
             $revision->addTask($task, $user->getUsername());
             if ($revision->isTaskCurrent($task)) {
-                $task->statusProgress($user->getUsername());
+                $this->dispatchEvent($task, $revision, TaskEvent::PROGRESS);
             }
 
-            $this->taskRepository->save($task);
             $this->revisionRepository->save($revision);
 
             return $task;
@@ -200,15 +205,18 @@ final class TaskManager
 
             $this->revisionRepository->save($revision);
             $this->taskRepository->delete($task);
+
+            $this->dispatchEvent($task, $revision, TaskEvent::DELETE);
         });
         $transaction($revisionId);
     }
 
     public function taskUpdate(Task $task, TaskDTO $taskDTO, int $revisionId): void
     {
-        $transaction = $this->revisionTransaction(function () use ($task, $taskDTO) {
+        $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $taskDTO) {
             $task->updateFromDTO($taskDTO);
-            $this->taskRepository->save($task);
+            $changeSet = $this->taskRepository->update($task);
+            $this->dispatchEvent($task, $revision, TaskEvent::UPDATE, null, $changeSet);
         });
         $transaction($revisionId);
     }
@@ -216,29 +224,24 @@ final class TaskManager
     public function taskValidate(Revision $revision, bool $approve, ?string $comment): void
     {
         $transaction = $this->revisionTransaction(function (Revision $revision) use ($approve, $comment) {
-            $user = $this->userService->getCurrentUser();
             $task = $revision->getTaskCurrent();
 
             if ($approve) {
-                $task->changeStatus(Task::STATUS_APPROVED, $user->getUsername(), $comment);
+                $this->dispatchEvent($task, $revision, TaskEvent::APPROVED, $comment);
                 $revision->addTask($task, $revision->getOwner());
                 $this->setNextPlanned($revision);
                 $this->revisionRepository->save($revision);
             } else {
-                $task->changeStatus(Task::STATUS_REJECTED, $user->getUsername(), $comment);
+                $this->dispatchEvent($task, $revision, TaskEvent::REJECTED, $comment);
             }
-
-            $this->taskRepository->save($task);
         });
         $transaction($revision->getId());
     }
 
     public function taskValidateRequest(Task $task, int $revisionId, string $comment): void
     {
-        $transaction = $this->revisionTransaction(function () use ($task, $comment) {
-            $user = $this->userService->getCurrentUser();
-            $task->changeStatus(Task::STATUS_COMPLETED, $user->getUsername(), $comment);
-            $this->taskRepository->save($task);
+        $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $comment) {
+            $this->dispatchEvent($task, $revision, TaskEvent::COMPLETED, $comment);
         });
         $transaction($revisionId);
     }
@@ -260,8 +263,8 @@ final class TaskManager
             $orderTaskCurrent = $this->getTask($orderCurrentTaskId);
 
             if ($revision->taskCurrentReplace($orderTaskCurrent, $user->getUsername())) {
-                $this->taskRepository->save($oldCurrentTask);
-                $this->taskRepository->save($orderTaskCurrent);
+                $this->dispatchEvent($oldCurrentTask, $revision, TaskEvent::PLANNED);
+                $this->dispatchEvent($orderTaskCurrent, $revision, TaskEvent::PROGRESS);
             }
 
             $revision->setTaskPlanned($this->taskRepository->findTasksByIds($orderedTaskIds));
@@ -271,15 +274,26 @@ final class TaskManager
         $transaction($revisionId);
     }
 
+    /**
+     * @param array<mixed> $changeSet
+     */
+    private function dispatchEvent(Task $task, Revision $revision, string $eventName, ?string $comment = null, array $changeSet = []): void
+    {
+        $user = $this->userService->getCurrentUser();
+        $event = new TaskEvent($task, $revision, $user);
+        $event->setComment($comment);
+        $event->setChangeSet($changeSet);
+        $this->eventDispatcher->dispatch($event, $eventName); /* @phpstan-ignore-line */
+    }
+
     private function setNextPlanned(Revision $revision): void
     {
         $nextPlannedId = $revision->getTaskNextPlannedId();
         $nextPlannedTask = $nextPlannedId ? $this->getTask($nextPlannedId) : null;
 
         if ($nextPlannedTask) {
-            $nextPlannedTask->statusProgress($revision->getOwner());
             $revision->setTaskCurrent($nextPlannedTask);
-            $this->taskRepository->save($nextPlannedTask);
+            $this->dispatchEvent($nextPlannedTask, $revision, TaskEvent::PROGRESS);
         } else {
             $revision->setTaskCurrent(null);
             $this->revisionRepository->save($revision);

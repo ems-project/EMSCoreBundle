@@ -56,10 +56,7 @@ trait RevisionTaskTrait
             return false;
         }
 
-        $this->getTaskCurrent()->statusPlanned($username);
         $this->addTask($this->getTaskCurrent(), $username);
-
-        $newTaskCurrent->statusProgress($username);
         $this->taskCurrent = $newTaskCurrent;
         $this->deleteTaskPlanned($newTaskCurrent);
 
@@ -210,10 +207,6 @@ trait RevisionTaskTrait
      */
     public function setTaskPlanned(array $taskPlanned): void
     {
-        if (\count($taskPlanned) !== \count($this->taskPlannedIds ?? [])) {
-            return;
-        }
-
         $this->taskPlannedIds = \array_map(fn (Task $task) => $task->getId(), $taskPlanned);
     }
 }

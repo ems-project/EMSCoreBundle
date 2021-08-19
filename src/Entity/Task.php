@@ -72,16 +72,20 @@ class Task implements EntityInterface
         self::STATUS_APPROVED => ['icon' => 'fa fa-flag-checkered', 'bg' => 'green', 'text' => 'success', 'label' => 'success'],
     ];
 
-    public function __construct(string $username)
+    public function __construct()
     {
         $this->id = Uuid::uuid4();
         $this->status = self::STATUS_PLANNED;
-        $this->addLog($username);
     }
 
-    public static function createFromDTO(TaskDTO $dto, UserInterface $user): Task
+    public function addLog(TaskLog $taskLog): void
     {
-        $task = new self($user->getUsername());
+        $this->logs[] = $taskLog->getData();
+    }
+
+    public static function createFromDTO(TaskDTO $dto): Task
+    {
+        $task = new self();
         $task->updateFromDTO($dto);
 
         return $task;
@@ -89,16 +93,15 @@ class Task implements EntityInterface
 
     public function updateFromDTO(TaskDTO $taskDTO): void
     {
-        $this->title = $taskDTO->give('title');
-        $this->description = $taskDTO->description;
-        $this->assignee = $taskDTO->give('assignee');
-        $this->deadline = $taskDTO->deadline ? DateTime::createFromFormat($taskDTO->deadline, 'd/m/Y') : null;
-    }
+        $this->title = $taskDTO->giveTitle();
+        $this->description = $taskDTO->giveDescription();
+        $this->assignee = $taskDTO->giveAssignee();
 
-    public function changeStatus(string $newStatus, string $username, ?string $comment = null): void
-    {
-        $this->status = $newStatus;
-        $this->addLog($username, $comment);
+        $currentDeadline = $this->hasDeadline() ? $this->getDeadline()->format('Y-m-d') : null;
+        $updateDeadline = $taskDTO->hasDeadline() ? $taskDTO->giveDeadline()->format('Y-m-d') : null;
+        if ($currentDeadline !== $updateDeadline) {
+            $this->deadline = $taskDTO->giveDeadline();
+        }
     }
 
     public function getId(): string
@@ -109,6 +112,11 @@ class Task implements EntityInterface
     public function getStatus(): string
     {
         return $this->status;
+    }
+
+    public function setStatus(string $status): void
+    {
+        $this->status = $status;
     }
 
     public function getStatusIcon(): string
@@ -192,26 +200,9 @@ class Task implements EntityInterface
         return !\in_array($this->status, [Task::STATUS_COMPLETED, Task::STATUS_APPROVED], true);
     }
 
-    public function statusPlanned(string $username): void
-    {
-        $this->status = self::STATUS_PLANNED;
-        $this->addLog($username);
-    }
-
-    public function statusProgress(string $username): void
-    {
-        $this->status = self::STATUS_PROGRESS;
-        $this->addLog($username);
-    }
-
     public function setAssignee(string $assignee): void
     {
         $this->assignee = $assignee;
-    }
-
-    private function addLog(string $username, ?string $comment = null): void
-    {
-        $this->logs[] = (new TaskLog($username, $this->status, $comment))->getData();
     }
 
     private function getLogLatestByStatus(string $status): ?TaskLog

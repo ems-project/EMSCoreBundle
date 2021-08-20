@@ -11,15 +11,11 @@ class AjaxModal {
         if (this.modal) {
             this.loadingElement = this.modal.querySelector('.modal-loading');
             this.ajaxDataElements = this.modal.querySelectorAll('.ajax-data');
-
-            this.setAjaxCallback = (ajaxCallback) => { this.ajaxCallback = ajaxCallback; };
-
             $(document).on('hide.bs.modal', '.core-modal', () => { this.reset(); });
         }
     }
 
     reset() {
-        this.ajaxCallback = null;
         this.loadingElement.style.display = 'block';
 
         this.$modal.find('.ckeditor_ems').each(function () {
@@ -52,7 +48,7 @@ class AjaxModal {
             .forEach((e) => { e.removeAttribute("disabled"); });
     }
 
-    load(options, ajaxCallback)
+    load(options, callback)
     {
         var dialog = this.modal.querySelector('.modal-dialog');
         dialog.classList.remove('modal-xs', 'modal-sm', 'modal-md', 'modal-lg');
@@ -65,36 +61,32 @@ class AjaxModal {
         this.modal.querySelector('.modal-title').innerHTML = options.title;
         this.$modal.modal('show');
 
-        if (typeof ajaxCallback !== 'undefined') {
-            this.setAjaxCallback(ajaxCallback);
-        }
-
         ajaxJsonGet(options.url, (json, request) => {
-            this.ajaxReady(json, request);
+            this.ajaxReady(json, request, callback);
             this.stateReady();
         });
     }
 
-    postRequest(url) {
+    postRequest(url, callback) {
         this.stateLoading();
-        ajaxJsonPost(url, (json, request) => {
-            this.ajaxReady(json, request);
+        ajaxJsonPost(url, {}, (json, request) => {
+            this.ajaxReady(json, request, callback);
             this.stateReady();
         });
     }
 
-    submitForm(url)
+    submitForm(url, callback)
     {
         var formData = this.$modal.find('form').serialize();
 
         this.stateLoading();
         ajaxJsonSubmit(url, formData, (json, request) => {
-            this.ajaxReady(json, request);
+            this.ajaxReady(json, request, callback);
             this.stateReady();
         });
     }
 
-    ajaxReady(json, request) {
+    ajaxReady(json, request, callback) {
         if (request.status === 200) {
             if (json.hasOwnProperty('modalTitle')) {
                 this.$modal.find('.modal-title').html(json.modalTitle);
@@ -126,13 +118,11 @@ class AjaxModal {
             var btnAjaxSubmit = this.modal.querySelector('#ajax-modal-submit');
             if (btnAjaxSubmit) {
                 btnAjaxSubmit.addEventListener('click', () => {
-                    ajaxModal.submitForm( request.responseURL);
+                    ajaxModal.submitForm( request.responseURL, callback);
                 });
             }
 
-            if (typeof this.ajaxCallback == 'function') {
-                this.ajaxCallback(json, request);
-            }
+            if (typeof callback === 'function') { callback(json, request); };
         } else {
             this.printMessage('error', 'Error loading ...');
         }

@@ -43,4 +43,7 @@
     <route id="ems_core_task_ajax_delete" path="/data/revisions/{revisionId}/delete/{taskId}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxDelete</default>
     </route>
+    <route id="ems_core_task_ajax_reorder" path="/data/revisions/{revisionId}/reorder" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxReorder</default>
+    </route>
 </routes>

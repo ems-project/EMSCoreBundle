@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Task;
 
-use EMS\CoreBundle\Form\Data\DateTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
 use EMS\CoreBundle\Repository\TaskRepository;
@@ -32,7 +31,7 @@ final class TaskTableService implements EntityServiceInterface
         self::COL_OWNER => ['type' => 'block', 'column' => 'r.owner'],
         self::COL_ASSIGNEE => ['type' => 'block', 'column' => 't.assignee'],
         self::COL_STATUS => ['column' => 't.status'],
-        self::COL_DEADLINE => ['type' => 'date', 'column' => 't.deadline'],
+        self::COL_DEADLINE => ['type' => 'block', 'column' => 't.deadline'],
         self::COL_ACTIONS => ['type' => 'block'],
     ];
 
@@ -63,8 +62,6 @@ final class TaskTableService implements EntityServiceInterface
                 $orderField = isset($options['column']) ? $name : null;
                 $def = new TemplateBlockTableColumn($label, $name, self::TEMPLATE, $orderField);
                 $table->addColumnDefinition($def)->setCellClass('col-'.$name);
-            } elseif ('date' == $type) {
-                $table->addColumnDefinition(new DateTableColumn($label, $name));
             } else {
                 $table->addColumn($label, $name);
             }

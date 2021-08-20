@@ -10,24 +10,40 @@ jobs:
     name: PHP-CS-Fixer
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: PHP-CS-Fixer
-        uses: docker://oskarstark/php-cs-fixer-ga:2.17.5
+      - name: "Checkout code"
+        uses: actions/checkout@v2
+
+      - name: "Install PHP"
+        uses: shivammathur/setup-php@v2
         with:
-          args: --diff --dry-run --config=.php_cs.dist
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+
+      - name: "Install Composer Dependencies"
+        uses: ramsey/composer-install@v1
+
+      - name: "Run php-cs-fixer"
+        run: vendor/bin/php-cs-fixer fix --diff --dry-run --config=.php_cs.dist
 
   phpstan:
     name: PHPStan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: PHPStan
-        uses: docker://oskarstark/phpstan-ga:0.12.88
-        env:
-          CHECK_PLATFORM_REQUIREMENTS: false
-          REQUIRE_DEV: true
-        with:
-          args: analyse --configuration=phpstan.neon.dist
+      -   name: "Checkout code"
+          uses: actions/checkout@v2
+
+      -   name: "Install PHP"
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: ${{ env.PHP_VERSION }}
+            coverage: none
+            tools: cs2pr
+
+      -   name: "Install Composer Dependencies"
+          uses: ramsey/composer-install@v1
+
+      -   name: "Run phpstan"
+          run: vendor/bin/phpstan analyse --no-progress --error-format=checkstyle | cs2pr
 
   phpunit:
     name: PHPUnit
@@ -42,7 +58,7 @@ jobs:
           php-version: ${{ env.PHP_VERSION }}
           tools: composer:v2
       - name: "Composer install"
-        uses: "ramsey/composer-install@v1"
+        uses: ramsey/composer-install@v1
       - name: "Install PHPUnit"
         run: vendor/bin/simple-phpunit install
       - name: "PHPUnit version"

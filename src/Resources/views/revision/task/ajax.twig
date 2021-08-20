@@ -4,22 +4,24 @@
     {%- if task == null -%}
         <div>No task found!</div>
     {%- else -%}
-        <div id="task-title">{{ task.title }}</div>
+        <div id="task-title"> <i class="{{ task.statusIcon }}"></i> {{ task.title }}</div>
         <div id="task-info">
-            <span id="task-deadline {{ task.deadline.timestamp < 'now'|date('U') ? 'task-deadline-red' }}">
-                <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{ task.deadline.format('d/m/Y') }}
-            </span>
+            {%- if task.hasDeadline -%}
+                <span id="task-deadline {{ task.deadline.timestamp < 'now'|date('U') ? 'task-deadline-red' }}">
+                    <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{ task.deadline.format(date_format) }}
+                </span>
+            {%- endif -%}
             <span>{{ 'task.for'|trans }}&nbsp;{{ task.assignee|displayname }}</span>
         </div>
         <span class="label label-{{ task.statusLabel }}">{{ "task.status.#{task.status}"|trans }}</span>
-        <p id="task-description">{{ task.description }}</p>
+        {%- if task.hasDescription -%}<p id="task-description">{{ task.description }}</p>{%- endif -%}
         {% if formRequestValidation is defined and formRequestValidation != null %}
             {% set logRejection = task.getLatestRejection %}
             <div id="task-send-validation">
                 <hr />
                 {%- if null != logRejection -%}<p class="task-comment bg-danger">{{ logRejection.comment }}</p>{%- endif -%}
                 {{ form(formRequestValidation) }}
-                <button id="btn-validation-request" class="btn btn-sm btn-primary">{{ 'task.validation.request'|trans  }}</button>
+                <button id="btn-validation-request" class="btn btn-sm btn-primary"> <i class="fa fa-paper-plane"></i>&nbsp;{{ 'task.validation.request'|trans  }}</button>
             </div>
         {% endif %}
         <div class="clearfix">
@@ -33,15 +35,15 @@
 {% endblock %}
 
 {% block taskItem %}
-    <li class="list-group-item tasks-item {{ isCurrent|default(false) ? 'tasks-item-current' }}">
+    <li class="list-group-item tasks-item {{ isCurrent|default(false) ? 'tasks-item-current' }}" data-id="{{ task.id }}">
         <div class="tasks-item-block">
             <div class="tasks-item-info">
-                <i class="{{ task.statusIcon }}"></i>
+                <i class="task-icon {{ task.statusIcon }}"></i>
                 <div>
                     <div class="tasks-item-title">{{ task.title }}</div>
                     <div>{{ 'task.assigned_to'|trans }}<strong>{{ task.assignee|displayname }}</strong></div>
                     {% if isCurrent|default(false) %}
-                        <div><span class="label label-{{ task.statusLabel }}">{{ "task.status.#{task.status}"|trans }}</span></div>
+                        <div><span class="task-current-status label label-{{ task.statusLabel }}">{{ "task.status.#{task.status}"|trans }}</span></div>
                     {% endif %}
                 </div>
             </div>
@@ -52,17 +54,23 @@
             </button>
         </div>
         {% if formValidation is defined %}
-            <div class="tasks-item-validation">
+            <div id="tasks-item-validation">
                 {% set logCompleted = task.getLatestCompleted %}
                 {% if task.assignee != app.user.username and logCompleted != null %}
                     <p class="task-comment bg-gray-light">{{ logCompleted.comment }}</p>
                 {% endif %}
                 {{ form(formValidation) }}
                 {% if task.assignee == app.user.username %}
-                    <button id="btn-task-validation-approve" class="btn btn-sm btn-primary">{{ 'task.validation.done'|trans  }}</button>
+                    <button id="btn-task-validation-approve" class="btn btn-sm btn-primary">
+                        <i class="fa fa-flag-checkered"></i>&nbsp;{{ 'task.validation.done'|trans  }}
+                    </button>
                 {% else %}
-                    <button id="btn-task-validation-approve" class="btn btn-sm btn-primary">{{ 'task.validation.approve'|trans  }}</button>
-                    <button id="btn-task-validation-reject" class="btn btn-sm btn-default pull-right">{{ 'task.validation.reject'|trans  }}</button>
+                    <button id="btn-task-validation-approve" class="btn btn-sm btn-primary">
+                        <i class="fa fa-flag-checkered"></i>&nbsp;{{ 'task.validation.approve'|trans  }}
+                    </button>
+                    <button id="btn-task-validation-reject" class="btn btn-sm btn-default pull-right">
+                        <i class="fa fa-close"></i>&nbsp;{{ 'task.validation.reject'|trans  }}
+                    </button>
                 {% endif %}
             </div>
         {% endif %}
@@ -75,7 +83,7 @@
         data-title="Task: {{ task.title }}">
         <div class="tasks-item-block">
             <div class="tasks-item-info">
-                <i class="{{ task.statusIcon }}"></i>
+                <i class="task-icon {{ task.statusIcon }}"></i>
                 <div>
                     <div class="tasks-item-title">{{ task.title }}</div>
                     <div>{{ 'task.assigned_to'|trans }} <strong>{{ task.assignee|displayname }}</strong></div>
@@ -137,16 +145,27 @@
                             <div>{{ task.title }}</div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <div class="mb-1"><strong>{{ 'task.field.deadline'|trans }}</strong></div>
-                            <div>{{ task.deadline.format('d/m/y') }}</div>
-                        </div>
-                        <div class="col-md-6 mb-3">
                             <div class="mb-1"><strong>{{ 'task.field.assignee'|trans }}</strong></div>
                             <div>{{ task.assignee|displayname }}</div>
                         </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="mb-1"><strong>{{ 'task.field.deadline'|trans }}</strong></div>
+                            {%- if task.hasDeadline -%}
+                                <div>
+                                    {%- set deadline = task.deadline.format(date_format) -%}
+                                    {%- if task.deadline.timestamp < date('now').timestamp -%}
+                                        <span class="text-danger"><strong>{{ deadline }}</strong></span>
+                                    {%- else -%}
+                                        {{ deadline }}
+                                    {%- endif -%}
+                                </div>
+                            {%- else -%}
+                                /
+                            {%- endif -%}
+                        </div>
                         <div class="col-md-12 mb-3">
                             <div class="mb-1"><strong>{{ 'task.field.description'|trans }}</strong></div>
-                            <div>{{ task.description|displayname }}</div>
+                            {%- if task.hasDescription -%}<div>{{ task.description|nl2br }}</div>{% else %}/{% endif %}
                         </div>
                     </div>
                 {% endif %}
@@ -158,7 +177,9 @@
 
 {% block modalUpdateFooter %}
     <div class="pull-left">
-        <button id="ajax-modal-submit" class="btn btn-sm btn-primary">{{ 'task.update.submit'|trans }}</button>
+        {%- if task.status != 'completed' -%}
+            <button id="ajax-modal-submit" class="btn btn-sm btn-primary">{{ 'task.update.submit'|trans }}</button>
+        {%- endif -%}
         <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
     </div>
     <div class="pull-right">
@@ -191,8 +212,8 @@
     {{ form_start(form) }}
     <div class="row">
         <div class="col-md-12">{{ form_row(form.title) }}</div>
-        <div class="col-md-6">{{ form_row(form.deadline) }}</div>
         <div class="col-md-6">{{ form_row(form.assignee) }}</div>
+        <div class="col-md-6">{{ form_row(form.deadline) }}</div>
         <div class="col-md-12">{{ form_row(form.description) }}</div>
     </div>
     {{ form_end(form) }}
@@ -204,12 +225,36 @@
             <li>
                 <i class="{{ log.icon }}"></i>
                 <div class="timeline-item">
-                    <span class="time"><i class="fa fa-clock-o"></i> {{ log.date.format('d/m/Y H:i') }}</span>
+                    <span class="time"><i class="fa fa-clock-o"></i> {{ log.date.format(date_time_format) }}</span>
                     <h3 class="timeline-header bg-info">
-                        <strong>{{ log.username == app.user.username ? 'You' : log.username|displayname }}</strong>
-                        {{ "task.status.#{log.status}"|trans|lower }}
+                        {{ "task.status.history.#{log.status}"|trans({
+                            '%user%': "<strong>#{log.username|displayname}</strong>",
+                            '%assignee%': "<strong>#{log.assignee|displayname}</strong>"
+                        })|raw }}
                     </h3>
                     {% if log.comment %}<div class="timeline-body bg-gray-light">{{ log.comment }}</div>{% endif %}
+                    {% if log.hasTaskData %}
+                        <div class="timeline-body bg-gray-light">
+                            <dl class="dl-horizontal task-info">
+                                {% if null != log.taskTitle %}
+                                    <dt>{{ 'task.field.title'|trans }}</dt>
+                                    <dd>{{ log.taskTitle }}</dd>
+                                {% endif %}
+                                {% if null != log.taskAssignee %}
+                                    <dt>{{ 'task.field.assignee'|trans }}</dt>
+                                    <dd>{{ log.taskAssignee|displayname }}</dd>
+                                {% endif %}
+                                {% if null != log.taskDeadline %}
+                                    <dt>{{ 'task.field.deadline'|trans }}</dt>
+                                    <dd>{{ log.taskDeadline.format(date_format) }}</dd>
+                                {% endif %}
+                                {% if null != log.taskDescription %}
+                                    <dt>{{ 'task.field.description'|trans }}</dt>
+                                    <dd>{{ log.taskDescription|nl2br }}</dd>
+                                {% endif %}
+                            </dl>
+                        </div>
+                    {% endif %}
                 </div>
             </li>
         {% endfor %}

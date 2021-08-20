@@ -5,11 +5,11 @@ function ajaxJsonGet(url, onready) {
     _sendRequest(httpRequest, onready);
 }
 
-function ajaxJsonPost(url, onready) {
+function ajaxJsonPost(url, data, onready) {
     var httpRequest = new XMLHttpRequest();
     httpRequest.open('POST', url, true);
     httpRequest.setRequestHeader('Content-Type', 'application/json');
-    _sendRequest(httpRequest, onready);
+    _sendRequest(httpRequest, onready, data);
 }
 
 function ajaxJsonSubmit(url, formData, onready) {
@@ -23,7 +23,7 @@ function _sendRequest(httpRequest, onready, data) {
     httpRequest.onreadystatechange = () => {
         if (httpRequest.readyState === XMLHttpRequest.DONE) {
             var json = JSON.parse(httpRequest.responseText);
-            onready(json, httpRequest);
+            if (typeof onready == 'function') { onready(json, httpRequest); }
         }
     };
     httpRequest.send(data);

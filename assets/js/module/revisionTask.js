@@ -1,5 +1,6 @@
 import ajaxModal from "./../helper/ajaxModal";
-import {ajaxJsonGet, ajaxJsonSubmit} from "./../helper/ajax";
+import {ajaxJsonGet, ajaxJsonPost, ajaxJsonSubmit} from "./../helper/ajax";
+import Sortable from 'sortablejs';
 
 export default class RevisionTask {
     constructor() {
@@ -15,7 +16,7 @@ export default class RevisionTask {
             this.tasksList = document.querySelector('ul#revision-tasks');
             this.tasksListApproved = document.querySelector('ul#revision-tasks-approved');
             this.tasksEmpty = this.tasksTab.querySelector('#revision-tasks-empty');
-            this.tasksInfo = this.tasksTab.querySelector('#revision-tasks-info');
+            this.tasksReorder = this.tasksTab.querySelector('#revision-tasks-reorder');
             this.tasksApprovedLink = this.tasksTab.querySelector('#revision-tasks-approved-link');
 
             if ('true' === this.tasksList.dataset.load) {
@@ -108,20 +109,17 @@ export default class RevisionTask {
 
             this.tasksList.querySelector('.task-loading').style.display = 'none';
 
-            var hasTasks = false;
             var tasks = json.hasOwnProperty('tasks') ? json.tasks : [];
             tasks.forEach((task) => {
                 this.tasksList.insertAdjacentHTML('beforeend', task.html);
-                hasTasks = true;
             });
 
-            if (hasTasks) {
-                this.tasksInfo.style.display = 'block';
+            if (tasks.length > 0) {
                 this.btnTaskUpdateModal();
                 this.btnTaskValidation();
+                if (tasks.length > 1) { this.reorderTasks(); } else {  }
             } else {
                 this.tasksEmpty.style.display = 'block';
-                this.tasksInfo.style.display = 'none';
             }
 
             this.btnTaskCreateModal();
@@ -134,53 +132,51 @@ export default class RevisionTask {
     tasksClear() {
         this.tasksList.querySelector('.task-loading').style.display = 'block';
         this.tasksTab.querySelector('#btn-task-create-modal').setAttribute('disabled','disabled');
+        this.tasksTab.querySelector('#btn-tasks-reorder-save').setAttribute('disabled','disabled');
+        this.tasksTab.querySelector('#btn-tasks-reorder-cancel').setAttribute('disabled','disabled');
         this.tasksEmpty.style.display = 'none';
+        this.tasksReorder.style.display = 'none';
         this.tasksApprovedLink.innerHTML = '';
         this.tasksList.querySelectorAll('.tasks-item').forEach((e) => { e.remove();});
         this.tasksListApproved.querySelectorAll('.tasks-item').forEach((e) => { e.remove();});
     }
+    modalFinish(json) {
+        var success = json.hasOwnProperty('modalSuccess') ? json.modalSuccess : false;
+        if (success) { this.loadTasks(); }
+    }
     btnTaskCreateModal() {
-        var button = document.querySelector('#btn-task-create-modal');
+        var button = this.tasksTab.querySelector('#btn-task-create-modal');
         button.onclick = (event) => {
             event.preventDefault();
             ajaxModal.load(
                 { url: button.dataset.url, title: button.dataset.title},
-                modalCreateCallback
+                (json, request) => { this.modalFinish(json); }
             );
         }
-        button.style.display = 'block';
         button.removeAttribute('disabled');
-
-        var modalCreateCallback = (json, request) => {
-            var success = json.hasOwnProperty('modalSuccess') ? json.modalSuccess : false;
-            if (success) {
-                this.loadTasks();
-            }
-        };
     }
     btnTaskUpdateModal() {
-        var buttons = document.getElementsByClassName("btn-task-update-modal");
+        var buttons = this.tasksTab.getElementsByClassName("btn-task-update-modal");
         Array.from(buttons).forEach((buttonModalEdit) => {
             buttonModalEdit.addEventListener('click', () => {
                 ajaxModal.load(
                     { url: buttonModalEdit.dataset.url, title: buttonModalEdit.dataset.title  },
-                    modalEditCallback
+                    (json, request) => {
+                        this.btnTaskDelete();
+                        this.modalFinish(json);
+                    }
                 )
             });
         });
-
-        var modalEditCallback = (json, request) => {
-            this.btnTaskDelete();
-            var success = json.hasOwnProperty('modalSuccess') ? json.modalSuccess : false;
-            if (success) {
-                this.loadTasks();
-            }
-        }
     }
     btnTaskDelete() {
         var button = ajaxModal.modal.querySelector('#btn-task-delete');
         if (button) {
-            button.addEventListener('click', () => { ajaxModal.postRequest(button.dataset.url); });
+            button.addEventListener('click', () => {
+                ajaxModal.postRequest(button.dataset.url, (json) => {
+                    this.modalFinish(json);
+                });
+            });
         }
     }
     btnTaskValidation() {
@@ -203,7 +199,7 @@ export default class RevisionTask {
         if (btnReject) { btnReject.onclick = sendValidation('reject'); }
     }
     btnTasksApproved() {
-        var button = document.querySelector('#btn-tasks-approved');
+        var button = this.tasksTab.querySelector('#btn-tasks-approved');
         if (!button) { return; }
 
         button.onclick = (event) => {
@@ -220,5 +216,57 @@ export default class RevisionTask {
                 this.tasksListApproved.querySelectorAll('.tasks-item').forEach((e) => { e.remove();});
             }
         }
+    }
+    reorderTasks() {
+
+        var btnReorder = this.tasksReorder.querySelector('#btn-tasks-reorder');
+        var btnReorderCancel = this.tasksReorder.querySelector('#btn-tasks-reorder-cancel');
+        var btnReorderSave = this.tasksReorder.querySelector('#btn-tasks-reorder-save');
+        this.tasksReorder.style.display = 'block';
+        btnReorder.style.display = 'block';
+
+        btnReorder.onclick = (event) => {
+            event.preventDefault();
+            btnReorder.style.display = 'none';
+            btnReorderSave.style.display = 'inline-block';
+            btnReorderCancel.style.display = 'inline-block';
+            btnReorderCancel.removeAttribute('disabled');
+
+            this.tasksTab.classList.add('reorder');
+            this.tasksList.querySelectorAll('.tasks-item').item(0).classList.remove('tasks-item-current');
+
+            var sortable = Sortable.create(this.tasksList, {
+                fallbackTolerance: 3,
+                animation: 150,
+                ghostClass: 'dragging',
+                onUpdate: function (e) {
+                    btnReorderSave.removeAttribute('disabled');
+                },
+            });
+
+            var finishReorder = () => {
+                this.tasksReorder.style.display = 'none';
+                btnReorder.style.display = 'none';
+                btnReorderSave.style.display = 'none';
+                btnReorderCancel.style.display = 'none';
+
+                sortable.destroy();
+                this.loadTasks();
+                this.tasksTab.classList.remove('reorder');
+            }
+
+            btnReorderCancel.onclick = (event) => { event.preventDefault(); finishReorder(); };
+            btnReorderSave.onclick = (event) => {
+                event.preventDefault();
+                var taskIds = [];
+                this.tasksList.querySelectorAll('.tasks-item').forEach((item) => {
+                    taskIds.push(item.dataset.id);
+                });
+                this.tasksClear();
+                ajaxJsonPost(btnReorderSave.dataset.url, JSON.stringify({taskIds: taskIds}), (json) => {
+                    finishReorder();
+                })
+            }
+        };
     }
 }

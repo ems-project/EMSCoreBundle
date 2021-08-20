@@ -17,6 +17,17 @@
 {%- block owner -%}{{- data.owner|displayname -}}{%- endblock -%}
 {%- block assignee -%}{{- data.taskCurrent.assignee|displayname -}}{%- endblock -%}
 
+{%- block taskDeadline -%}
+    {%- if data.taskCurrent.hasDeadline -%}
+        {%- set deadline = data.taskCurrent.deadline.format(date_format) -%}
+        {%- if data.taskCurrent.deadline.timestamp < date('now').timestamp -%}
+            <span class="text-danger"><strong>{{ deadline }}</strong></span>
+        {%- else -%}
+            {{ deadline }}
+        {%- endif -%}
+    {%- endif -%}
+{%- endblock -%}
+
 {%- block actions -%}
     <div class="btn-group">
         <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

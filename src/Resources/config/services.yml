@@ -501,9 +501,6 @@ services:
     ems.form_submission:
         class: EMS\CoreBundle\Service\Form\Submission\FormSubmissionService
         arguments: ['@ems.repository.form_submission', '@ems.service.template', '@twig', '@session', '@translator']
-    ems.mailer:
-        class: EMS\CoreBundle\Service\MailerService
-        arguments: ['@mailer', '%ems_core.from_email%', '%ems_core.name%']
     ems.form_verification:
         class: EMS\CoreBundle\Service\Form\Verification\FormVerificationService
         arguments: ['@ems.repository.form_verification']
@@ -563,7 +560,7 @@ services:
             -  { name: console.command }
     ems.environment.emailsubmissions:
         class: EMS\CoreBundle\Command\EmailSubmissionsCommand
-        arguments: ['@ems.form_submission', '@logger', '@ems.mailer']
+        arguments: ['@ems.form_submission', '@logger', '@ems_core.core_mail.mailer_service']
         tags:
             -  { name: console.command }
     ems.environment.updatemetafield:

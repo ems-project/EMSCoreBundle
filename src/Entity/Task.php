@@ -187,6 +187,15 @@ class Task implements EntityInterface
         return $this->getLogLatestByStatus(self::STATUS_REJECTED);
     }
 
+    public function getLatestApproved(): ?TaskLog
+    {
+        if (self::STATUS_APPROVED !== $this->status) {
+            return null;
+        }
+
+        return $this->getLogLatestByStatus(self::STATUS_APPROVED);
+    }
+
     /**
      * @return TaskLog[]
      */

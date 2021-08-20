@@ -3,8 +3,8 @@
 namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Command\CommandInterface;
+use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
-use EMS\CoreBundle\Service\MailerService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -14,18 +14,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EmailSubmissionsCommand extends Command implements CommandInterface
 {
-    /** @var FormSubmissionService */
-    protected $formSubmissionService;
-
-    /** @var LoggerInterface */
-    protected $logger;
-
-    /** @var MailerService */
-    protected $mailerService;
+    protected FormSubmissionService $formSubmissionService;
+    protected LoggerInterface $logger;
+    protected MailerService $mailerService;
 
     protected static $defaultName = 'ems:submissions:email';
 
-    const TITLE = 'Form submissions';
+    private const TITLE = 'Form submissions';
 
     public function __construct(FormSubmissionService $formSubmissionService, LoggerInterface $logger, MailerService $mailerService)
     {
@@ -60,7 +55,7 @@ class EmailSubmissionsCommand extends Command implements CommandInterface
 
         $body = $this->formSubmissionService->generateMailBody($submissions);
 
-        $this->mailerService->sendMail($emails, self::TITLE, $body);
+        $this->mailerService->send($emails, self::TITLE, $body);
 
         $this->logger->notice('Submission list was sent');
         $output->writeln('Submission list was sent');

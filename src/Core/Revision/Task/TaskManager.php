@@ -14,7 +14,6 @@ use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-
 final class TaskManager
 {
     private TaskRepository $taskRepository;
@@ -177,9 +176,9 @@ final class TaskManager
         $transaction = $this->revisionTransaction(function (Revision $revision) use ($taskDTO) {
             $user = $this->userService->getCurrentUser();
             $task = Task::createFromDTO($taskDTO);
-            $this->dispatchEvent($task, $revision, TaskEvent::CREATE);
-
             $revision->addTask($task, $user->getUsername());
+
+            $this->dispatchEvent($task, $revision, TaskEvent::CREATE);
             if ($revision->isTaskCurrent($task)) {
                 $this->dispatchEvent($task, $revision, TaskEvent::PROGRESS);
             }

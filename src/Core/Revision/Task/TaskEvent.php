@@ -35,6 +35,16 @@ class TaskEvent extends Event
         $this->user = $user;
     }
 
+    public function isTaskCurrent(): bool
+    {
+        return $this->revision->isTaskCurrent($this->task);
+    }
+
+    public function isAssigneeIsOwner(): bool
+    {
+        return $this->revision->hasOwner() && $this->revision->getOwner() === $this->task->getAssignee();
+    }
+
     public function setComment(?string $comment): void
     {
         $this->comment = $comment;

@@ -8,7 +8,7 @@
         <div id="task-info">
             {%- if task.hasDeadline -%}
                 <span id="task-deadline {{ task.deadline.timestamp < 'now'|date('U') ? 'task-deadline-red' }}">
-                    <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{ task.deadline.format('d/m/Y') }}
+                    <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{ task.deadline.format(date_format) }}
                 </span>
             {%- endif -%}
             <span>{{ 'task.for'|trans }}&nbsp;{{ task.assignee|displayname }}</span>
@@ -152,7 +152,7 @@
                             <div class="mb-1"><strong>{{ 'task.field.deadline'|trans }}</strong></div>
                             {%- if task.hasDeadline -%}
                                 <div>
-                                    {%- set deadline = task.deadline.format('d/m/Y') -%}
+                                    {%- set deadline = task.deadline.format(date_format) -%}
                                     {%- if task.deadline.timestamp < date('now').timestamp -%}
                                         <span class="text-danger"><strong>{{ deadline }}</strong></span>
                                     {%- else -%}
@@ -225,7 +225,7 @@
             <li>
                 <i class="{{ log.icon }}"></i>
                 <div class="timeline-item">
-                    <span class="time"><i class="fa fa-clock-o"></i> {{ log.date.format('d/m/Y H:i') }}</span>
+                    <span class="time"><i class="fa fa-clock-o"></i> {{ log.date.format(date_time_format) }}</span>
                     <h3 class="timeline-header bg-info">
                         {{ "task.status.history.#{log.status}"|trans({
                             '%user%': "<strong>#{log.username|displayname}</strong>",
@@ -246,7 +246,7 @@
                                 {% endif %}
                                 {% if null != log.taskDeadline %}
                                     <dt>{{ 'task.field.deadline'|trans }}</dt>
-                                    <dd>{{ log.taskDeadline.format('d/m/Y') }}</dd>
+                                    <dd>{{ log.taskDeadline.format(date_format) }}</dd>
                                 {% endif %}
                                 {% if null != log.taskDescription %}
                                     <dt>{{ 'task.field.description'|trans }}</dt>

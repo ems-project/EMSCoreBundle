@@ -19,7 +19,7 @@
 
 {%- block taskDeadline -%}
     {%- if data.taskCurrent.hasDeadline -%}
-        {%- set deadline = data.taskCurrent.deadline.format('d/m/Y') -%}
+        {%- set deadline = data.taskCurrent.deadline.format(date_format) -%}
         {%- if data.taskCurrent.deadline.timestamp < date('now').timestamp -%}
             <span class="text-danger"><strong>{{ deadline }}</strong></span>
         {%- else -%}

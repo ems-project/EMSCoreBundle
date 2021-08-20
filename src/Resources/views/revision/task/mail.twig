@@ -80,7 +80,7 @@
     <p>
         <strong>title:&nbsp;</strong>{{ task.title }}<br/>
         {% if task.assignee != receiver.username %}<strong>assignee:&nbsp;</strong>{{ task.assignee|displayname }}<br/>{% endif %}
-        {% if task.hasDeadline %}<strong>deadline:&nbsp;</strong>{{ task.deadline.format('d/m/Y') }}<br/>{% endif %}
+        {% if task.hasDeadline %}<strong>deadline:&nbsp;</strong>{{ task.deadline.format(date_format) }}<br/>{% endif %}
         {% if task.hasDescription %}
             <strong>description:&nbsp;</strong><br/>
             {{ task.description|nl2br }}

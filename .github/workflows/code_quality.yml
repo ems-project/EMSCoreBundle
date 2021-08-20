@@ -16,18 +16,44 @@ jobs:
         with:
           args: --diff --dry-run --config=.php_cs.dist
 
+#  phpstan:
+#    name: PHPStan
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: PHPStan
+#        uses: docker://oskarstark/phpstan-ga:0.12.88
+#        env:
+#          CHECK_PLATFORM_REQUIREMENTS: false
+#          REQUIRE_DEV: true
+#        with:
+#          args: analyse --configuration=phpstan.neon.dist
+
   phpstan:
-    name: PHPStan
-    runs-on: ubuntu-latest
+    name: "PHPStan"
+    runs-on: "ubuntu-20.04"
+
+    strategy:
+      matrix:
+        php-version:
+          - "7.4"
+
     steps:
-      - uses: actions/checkout@v2
-      - name: PHPStan
-        uses: docker://oskarstark/phpstan-ga:0.12.88
-        env:
-          CHECK_PLATFORM_REQUIREMENTS: false
-          REQUIRE_DEV: true
+      - name: "Checkout code"
+        uses: "actions/checkout@v2"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
         with:
-          args: analyse --configuration=phpstan.neon.dist
+          coverage: "none"
+          php-version: "${{ matrix.php-version }}"
+          tools: "cs2pr"
+
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v2"
+
+      - name: "Run a static analysis with phpstan/phpstan"
+        run: "vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr"
 
   phpunit:
     name: PHPUnit

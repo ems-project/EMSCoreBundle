@@ -20,7 +20,7 @@ jobs:
           coverage: none
 
       - name: "Run php-cs-fixer"
-        run: vendor/bin/php-cs-fixer fix --diff --dry-run --config=.php_cs.dist
+        run: ./vendor/bin/php-cs-fixer fix --diff --dry-run --config=.php_cs.dist
 
   phpstan:
     name: PHPStan

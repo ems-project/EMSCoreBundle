@@ -6,7 +6,7 @@ namespace EMS\CoreBundle\Helper\Xliff;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-class XliffExtractor
+class Extractor
 {
     //Source: https://docs.oasis-open.org/xliff/v1.2/xliff-profile-html/xliff-profile-html-1.2.html#SectionDetailsElements
     private const PRE_DEFINED_VALUES = [

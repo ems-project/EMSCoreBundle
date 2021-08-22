@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Tests\Unit\Core\Service;
+namespace EMS\CoreBundle\Tests\Unit\Core\Helper\Xliff;
 
-use EMS\CoreBundle\Helper\Xliff\XliffExtractor;
+use EMS\CoreBundle\Helper\Xliff\Extractor;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Finder\Finder;
 
-class XliffTest extends KernelTestCase
+class ExtractorTest extends KernelTestCase
 {
     public function testXliffExtractions(): void
     {
         $finder = new Finder();
-        $finder->in(\join(DIRECTORY_SEPARATOR, [__DIR__, '..', 'Resources', 'Xliff', 'Extractions']))->directories();
+        $finder->in(\join(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'Resources', 'Xliff', 'Extractions']))->directories();
 
         foreach ($finder as $file) {
             $absoluteFilePath = $file->getRealPath();
@@ -25,8 +25,8 @@ class XliffTest extends KernelTestCase
                 $htmlTarget = \file_get_contents($absoluteFilePath.DIRECTORY_SEPARATOR.'target.html');
             }
 
-            foreach (XliffExtractor::XLIFF_VERSIONS as $version) {
-                $xliffParser = new XliffExtractor('en', 'fr', $version);
+            foreach (Extractor::XLIFF_VERSIONS as $version) {
+                $xliffParser = new Extractor('en', 'fr', $version);
                 $document = $xliffParser->addDocument('contentType', 'ouuid_1', 'revisionId_1');
                 $xliffParser->addSimpleField($document, 'title_%locale%', 'Foo', 'Bar');
                 $document = $xliffParser->addDocument('contentType', 'ouuid_2', 'revisionId_2');

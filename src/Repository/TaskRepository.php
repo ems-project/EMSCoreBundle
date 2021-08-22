@@ -140,7 +140,7 @@ final class TaskRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('t');
         $qb
             ->andWhere($qb->expr()->in('t.id', ':ids'))
-            ->setParameter('ids', $ids);
+            ->setParameter('ids', \array_values($ids));
 
         $tasks = \array_fill_keys($ids, null);
         foreach ($qb->getQuery()->getResult() as $task) {
@@ -156,6 +156,22 @@ final class TaskRepository extends ServiceEntityRepository
     {
         $this->_em->remove($task);
         $this->_em->flush();
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function update(Task $task): array
+    {
+        $uow = $this->_em->getUnitOfWork();
+        $uow->computeChangeSets();
+
+        $changeSet = $uow->getEntityChangeSet($task);
+
+        $this->_em->persist($task);
+        $this->_em->flush();
+
+        return $changeSet;
     }
 
     public function save(Task $task): void

@@ -35,6 +35,7 @@ use EMS\CoreBundle\Exception\HasNotCircleException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
+use EMS\CoreBundle\Form\DataField\CollectionItemFieldType;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\DataLinkFieldType;
 use EMS\CoreBundle\Form\Form\RevisionType;
@@ -1814,10 +1815,18 @@ class DataService
         /** @var DataField $out */
         $out = $form->getNormData();
         foreach ($form as $key => $item) {
-            if ($item->getNormData() instanceof DataField) {
-                $out->addChild($item->getNormData(), $key);
-                $this->getDataFieldsStructure($item);
+            $dataField = $item->getNormData();
+            if (!$dataField instanceof DataField) {
+                continue;
             }
+
+            if ($dataField->isFieldType(CollectionItemFieldType::class)) {
+                $out->addChild($item->getNormData());
+            } else {
+                $out->addChild($item->getNormData(), $key);
+            }
+
+            $this->getDataFieldsStructure($item);
         }
 
         return $out;

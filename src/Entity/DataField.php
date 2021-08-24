@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
 use EMS\CoreBundle\Exception\DataFormatException;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
+use EMS\CoreBundle\Form\DataField\CollectionItemFieldType;
 use EMS\CoreBundle\Form\DataField\OuuidFieldType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -216,9 +217,19 @@ class DataField implements \ArrayAccess, \IteratorAggregate
             }
 
             foreach ($ancestor->getChildren() as $key => $child) {
-                $this->addChild(new DataField($child, $this), $key);
+                $dataField = new DataField($child, $this);
+                if ($this->fieldType && CollectionItemFieldType::class === $this->fieldType->getType()) {
+                    $this->addChild($dataField);
+                } else {
+                    $this->addChild($dataField, $key);
+                }
             }
         }
+    }
+
+    public function isFieldType(string $fieldType): bool
+    {
+        return $this->fieldType && $this->fieldType->getType() === $fieldType;
     }
 
     public function __set($key, $input)

@@ -10,7 +10,7 @@ final class HtmlEmptyTransformer extends AbstractTransformer
 {
     public function getName(): string
     {
-        return 'HTML empty';
+        return 'HTML Empty';
     }
 
     public function supports(string $class): bool

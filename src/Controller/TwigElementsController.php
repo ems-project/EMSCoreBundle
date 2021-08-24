@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TwigElementsController extends AbstractController
 {
-    const ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
+    public const ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
 
     public function sideMenuAction(AssetExtractorService $assetExtractorService, ElasticaService $elasticaService, UserService $userService): Response
     {

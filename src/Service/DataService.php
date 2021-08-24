@@ -68,7 +68,7 @@ use Twig_Error;
  */
 class DataService
 {
-    const ALGO = OPENSSL_ALGO_SHA1;
+    public const ALGO = OPENSSL_ALGO_SHA1;
     protected const SCROLL_TIMEOUT = '1m';
 
     /** @var resource|false|null */

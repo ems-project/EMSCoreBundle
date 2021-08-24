@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class EMSCoreExtension extends Extension implements PrependExtensionInterface
 {
-    const TRANS_DOMAIN = 'EMSCoreBundle';
+    public const TRANS_DOMAIN = 'EMSCoreBundle';
 
     /**
      * {@inheritdoc}

@@ -54,11 +54,10 @@
 		"symfony/webpack-encore-bundle": "^1.0",
 		"symfony/yaml": "^4.4",
 		"symfony/ldap": "^4.4",
-		"ramsey/uuid-doctrine": "^1.6",
-		"rector/rector": "^0.8.56"
+		"ramsey/uuid-doctrine": "^1.6"
 	},
 	"require-dev" : {
-		"friendsofphp/php-cs-fixer" : "^2.16",
+		"friendsofphp/php-cs-fixer" : "^3.0",
 		"phpstan/phpstan": "^0.12",
 		"phpunit/phpunit" : "^9.5",
 		"symfony/test-pack": "^1.0"

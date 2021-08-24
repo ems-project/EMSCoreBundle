@@ -28,7 +28,7 @@ use Twig\Environment;
 class SorterViewType extends ViewType
 {
     /** @var int */
-    const SEARCH_SIZE = 100;
+    public const SEARCH_SIZE = 100;
     /** @var Session */
     protected $session;
     /** @var DataService */

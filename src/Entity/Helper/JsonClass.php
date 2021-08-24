@@ -15,9 +15,9 @@ class JsonClass implements \JsonSerializable
     /** @var array */
     private $properties;
 
-    const CLASS_INDEX = 'class';
-    const CONSTRUCTOR_ARGUMNETS_INDEX = 'arguments';
-    const PROPERTIES_INDEX = 'properties';
+    public const CLASS_INDEX = 'class';
+    public const CONSTRUCTOR_ARGUMNETS_INDEX = 'arguments';
+    public const PROPERTIES_INDEX = 'properties';
 
     public function __construct(array $properties, string $class, array $constructorArguments = [])
     {

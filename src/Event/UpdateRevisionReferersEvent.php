@@ -11,7 +11,7 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class UpdateRevisionReferersEvent extends Event
 {
-    const NAME = 'ems_core.revision.update_referers';
+    public const NAME = 'ems_core.revision.update_referers';
 
     private $targetField;
     private $id;

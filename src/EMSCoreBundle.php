@@ -11,8 +11,8 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class EMSCoreBundle extends Bundle
 {
-    const TRANS_DOMAIN = 'EMSCoreBundle';
-    const FONTAWESOME_VERSION = '4';
+    public const TRANS_DOMAIN = 'EMSCoreBundle';
+    public const FONTAWESOME_VERSION = '4';
 
     public function build(ContainerBuilder $container)
     {

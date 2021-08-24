@@ -15,7 +15,7 @@ use EMS\CoreBundle\Entity\UploadedAsset;
  */
 class UploadedAssetRepository extends EntityRepository
 {
-    const PAGE_SIZE = 100;
+    public const PAGE_SIZE = 100;
 
     /**
      * @return int

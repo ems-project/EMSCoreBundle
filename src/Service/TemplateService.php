@@ -12,12 +12,12 @@ use Twig\TemplateWrapper;
 
 class TemplateService
 {
-    const EMS_INDEX_PREFIX = '_ems_index_';
-    const JSON_FORMAT = 'json';
-    const XML_FORMAT = 'xml';
-    const MERGED_JSON_FORMAT = 'merged-json';
-    const MERGED_XML_FORMAT = 'merged-xml';
-    const EXPORT_FORMATS = [self::JSON_FORMAT, self::XML_FORMAT, self::MERGED_JSON_FORMAT, self::MERGED_XML_FORMAT];
+    public const EMS_INDEX_PREFIX = '_ems_index_';
+    public const JSON_FORMAT = 'json';
+    public const XML_FORMAT = 'xml';
+    public const MERGED_JSON_FORMAT = 'merged-json';
+    public const MERGED_XML_FORMAT = 'merged-xml';
+    public const EXPORT_FORMATS = [self::JSON_FORMAT, self::XML_FORMAT, self::MERGED_JSON_FORMAT, self::MERGED_XML_FORMAT];
 
     /** @var LoggerInterface */
     private $logger;

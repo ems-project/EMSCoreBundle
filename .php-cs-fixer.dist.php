@@ -11,12 +11,14 @@ $finder = PhpCsFixer\Finder::create()
     ->exclude('tests/tmp')
 ;
 
-return PhpCsFixer\Config::create()
+$config = new PhpCsFixer\Config();
+
+return $config
     ->setRules([
         '@Symfony' => true,
         //'declare_strict_types' => true,
         //'final_class' => true,
-        'native_function_invocation' => true,
+        'native_function_invocation' => ['include' => ['@all']],
         'no_unused_imports' => true
     ])
     ->setRiskyAllowed(true)

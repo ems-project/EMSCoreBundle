@@ -12,7 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class FilterOptionsType extends AbstractType
 {
-    const FIELDS_BY_TYPE = [
+    public const FIELDS_BY_TYPE = [
             'standard' => [],
             'stop' => [
                 'stopwords',

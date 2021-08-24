@@ -7,12 +7,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RenderOptionType extends ChoiceType
 {
-    const EMBED = 'embed';
-    const EXPORT = 'export';
-    const EXTERNALLINK = 'externalLink';
-    const NOTIFICATION = 'notification';
-    const JOB = 'job';
-    const PDF = 'pdf';
+    public const EMBED = 'embed';
+    public const EXPORT = 'export';
+    public const EXTERNALLINK = 'externalLink';
+    public const NOTIFICATION = 'notification';
+    public const JOB = 'job';
+    public const PDF = 'pdf';
 
     private $choices = [
         'Embed' => self::EMBED,

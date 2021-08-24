@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class AnalyzerOptionsType extends AbstractType
 {
-    const FIELDS_BY_TYPE = [
+    public const FIELDS_BY_TYPE = [
         'standard' => [
             'stopwords',
             'max_token_length',

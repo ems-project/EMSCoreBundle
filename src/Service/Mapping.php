@@ -17,22 +17,22 @@ use Psr\Log\LoggerInterface;
 class Mapping
 {
     /** @var string */
-    const FINALIZATION_DATETIME_FIELD = '_finalization_datetime';
+    public const FINALIZATION_DATETIME_FIELD = '_finalization_datetime';
     /** @var string */
-    const FINALIZED_BY_FIELD = '_finalized_by';
+    public const FINALIZED_BY_FIELD = '_finalized_by';
     /** @var string */
-    const HASH_FIELD = '_sha1';
+    public const HASH_FIELD = '_sha1';
     /** @var string */
-    const SIGNATURE_FIELD = '_signature';
+    public const SIGNATURE_FIELD = '_signature';
     /** @var string */
-    const CONTENT_TYPE_FIELD = '_contenttype';
+    public const CONTENT_TYPE_FIELD = '_contenttype';
     /** @var string */
-    const VERSION_UUID = '_version_uuid';
+    public const VERSION_UUID = '_version_uuid';
     /** @var string */
-    const VERSION_TAG = '_version_tag';
+    public const VERSION_TAG = '_version_tag';
     /** @var string */
     /** @var array<string, string> */
-    const MAPPING_INTERNAL_FIELDS = [
+    public const MAPPING_INTERNAL_FIELDS = [
         Mapping::PUBLISHED_DATETIME_FIELD => Mapping::PUBLISHED_DATETIME_FIELD,
         Mapping::FINALIZATION_DATETIME_FIELD => Mapping::FINALIZATION_DATETIME_FIELD,
         Mapping::FINALIZED_BY_FIELD => Mapping::FINALIZED_BY_FIELD,
@@ -43,17 +43,17 @@ class Mapping
         Mapping::VERSION_TAG => Mapping::VERSION_TAG,
     ];
     /** @var string */
-    const CONTENT_TYPE_META_FIELD = 'content_type';
+    public const CONTENT_TYPE_META_FIELD = 'content_type';
     /** @var string */
-    const GENERATOR_META_FIELD = 'generator';
+    public const GENERATOR_META_FIELD = 'generator';
     /** @var string */
-    const GENERATOR_META_FIELD_VALUE = 'elasticms';
+    public const GENERATOR_META_FIELD_VALUE = 'elasticms';
     /** @var string */
-    const CORE_VERSION_META_FIELD = 'core_version';
+    public const CORE_VERSION_META_FIELD = 'core_version';
     /** @var string */
-    const INSTANCE_ID_META_FIELD = 'instance_id';
+    public const INSTANCE_ID_META_FIELD = 'instance_id';
     /** @var string */
-    const PUBLISHED_DATETIME_FIELD = '_published_datetime';
+    public const PUBLISHED_DATETIME_FIELD = '_published_datetime';
 
     /** @var EnvironmentService */
     private $environmentService;

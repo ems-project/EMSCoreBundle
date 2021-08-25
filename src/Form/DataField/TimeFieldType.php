@@ -20,8 +20,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TimeFieldType extends DataFieldType
 {
-    const STOREFORMAT = 'H:i:s';
-    const INDEXFORMAT = 'HH:mm:ss';
+    public const STOREFORMAT = 'H:i:s';
+    public const INDEXFORMAT = 'HH:mm:ss';
 
     /**
      * {@inheritdoc}

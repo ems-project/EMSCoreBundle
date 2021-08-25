@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class NatureController extends AppController
 {
-    const MAX_ELEM = 400;
+    public const MAX_ELEM = 400;
 
     /**
      * @return RedirectResponse|Response

@@ -13,9 +13,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 class AggregateOptionService extends EntityService
 {
     /** @var string */
-    const CONTENT_TYPES_AGGREGATION = 'types';
+    public const CONTENT_TYPES_AGGREGATION = 'types';
     /** @var string */
-    const INDEXES_AGGREGATION = 'indexes';
+    public const INDEXES_AGGREGATION = 'indexes';
     /** @var ElasticaService */
     private $elasticaService;
 

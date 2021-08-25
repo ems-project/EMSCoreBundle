@@ -23,7 +23,7 @@ use ZipArchive;
 
 class ExportDocumentsCommand extends EmsCommand
 {
-    const OUTPUT_FILE_ARGUMENT = 'outputFile';
+    public const OUTPUT_FILE_ARGUMENT = 'outputFile';
     /** @var LoggerInterface */
     protected $logger;
     /** @var DataService */

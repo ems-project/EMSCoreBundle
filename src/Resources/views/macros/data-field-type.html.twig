@@ -367,7 +367,7 @@
 	{% endif %}
 
 	<div class="row">
-		{% for child in dataField.children if not child.fieldType.deleted %}
+		{% for child in dataField.children|filter(c => false == c.fieldType.deleted) %}
 		
 			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
 				{{ _self.renderDataFieldBlock(child, source, compare, compareRawData) }}

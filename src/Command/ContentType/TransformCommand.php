@@ -27,8 +27,6 @@ final class TransformCommand extends AbstractCommand
     private array $search = [];
     private int $batchSize;
 
-    private const USER = 'TRANSFORM_CONTENT';
-
     public const name = 'ems:contenttype:transform';
     protected static $defaultName = self::name;
 
@@ -98,7 +96,7 @@ final class TransformCommand extends AbstractCommand
         $this->io->section('Locking');
         $this->executeCommand(
             LockCommand::name,
-            ['theme_document', '+1day', '--user='.ContentTransformer::USER, '--force']
+            [$this->contentType->getName(), '+1day', '--user='.ContentTransformer::USER, '--force']
         );
 
         $this->io->section('Transforming');

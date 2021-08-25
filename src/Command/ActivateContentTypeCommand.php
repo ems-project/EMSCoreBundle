@@ -28,10 +28,10 @@ class ActivateContentTypeCommand extends Command
     /** @var bool */
     private $deactivate;
 
-    const ARGUMENT_CONTENTTYPES = 'contenttypes';
-    const OPTION_ALL = 'all';
-    const DEACTIVATE = 'deactivate';
-    const FORCE = 'force';
+    public const ARGUMENT_CONTENTTYPES = 'contenttypes';
+    public const OPTION_ALL = 'all';
+    public const DEACTIVATE = 'deactivate';
+    public const FORCE = 'force';
 
     public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService)
     {

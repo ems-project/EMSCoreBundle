@@ -31,7 +31,7 @@ class UserService implements EntityServiceInterface
     private UserRepository $userRepository;
     private Security $security;
 
-    const DONT_DETACH = false;
+    public const DONT_DETACH = false;
 
     public function __construct(Registry $doctrine, Session $session, TokenStorageInterface $tokenStorage, Security $security, $securityRoles)
     {

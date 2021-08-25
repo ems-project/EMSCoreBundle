@@ -1014,6 +1014,6 @@ task:
     assignee_changed: 'Assignee changed task "%title%" for "%document%"'
     deleted: 'Deleted task "%title%" for "%document%"'
     updated: 'Update task "%title%" for "%document%"'
-    completed: 'Ready for valiation, task "%title%" for "%document%"'
+    completed: 'Ready for validation, task "%title%" for "%document%"'
     rejected: 'Rejected task "%title%" for "%document%"'
     approved: 'Approved task "%title%" for "%document%"'

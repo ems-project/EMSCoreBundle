@@ -958,7 +958,7 @@ task:
     history:
        created: '%user% created the task'
        updated: '%user% updated the task'
-       progress: 'The task became active for %assignee% (in progress)'
+       progress: 'The task became active for %assignee%'
        planned: '%user% planned the task'
        completed: '%user% completed the task'
        rejected: '%user% rejected the task'

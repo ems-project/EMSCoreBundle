@@ -70,7 +70,7 @@ div#revision-tabs {
       ul#revision-tasks { i.task-icon { color: #000 !important; &::before { content: "\f047" !important; } }}
     }
 
-    div#revision-tasks-empty { font-weight: bold; padding: 15px 15px 0;}
+    div.revision-tasks-info { font-weight: bold; padding: 15px 15px 0;}
     div#revision-tasks-reorder {
       background-color: #f5f5f5;
       border-bottom: 1px solid $gray-lighter;

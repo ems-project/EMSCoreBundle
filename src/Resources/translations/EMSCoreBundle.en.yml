@@ -966,6 +966,7 @@ task:
   info:
     empty: 'No tasks for this document'
     change_order: 'Change task order'
+    locked: 'Revision locked by %user% until %time%'
   assigned_to: 'Assigned to '
   in_progress: 'This task is '
   for: 'for'

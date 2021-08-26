@@ -136,6 +136,7 @@ final class TaskController extends AbstractController
         }
 
         return new JsonResponse([
+            'revision' => $revision,
             'tasks' => $tasksList,
             'tasks_approved_link' => $ajaxTemplate->renderBlock('tasksApprovedLink', [
                 'count' => $this->taskManager->countApprovedTasks($revision),

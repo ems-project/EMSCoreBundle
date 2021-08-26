@@ -19,11 +19,13 @@ export default class RevisionTask {
             this.tasksReorder = this.tasksTab.querySelector('#revision-tasks-reorder');
             this.tasksApprovedLink = this.tasksTab.querySelector('#revision-tasks-approved-link');
 
-            if ('true' === this.tasksList.dataset.load) {
-                this.loadTasks();
-            } else {
-                this.tasksEmpty.style.display = 'block';
-                this.btnTaskCreateModal();
+            if (this.tasksList) {
+                if ('true' === this.tasksList.dataset.load) {
+                    this.loadTasks();
+                } else {
+                    this.tasksEmpty.style.display = 'block';
+                    this.btnTaskCreateModal();
+                }
             }
         }
     }

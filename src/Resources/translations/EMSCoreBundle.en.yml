@@ -958,7 +958,7 @@ task:
     history:
        created: '%user% created the task'
        updated: '%user% updated the task'
-       progress: 'The task became active for %assignee% (in progress)'
+       progress: 'The task became active for %assignee%'
        planned: '%user% planned the task'
        completed: '%user% completed the task'
        rejected: '%user% rejected the task'
@@ -966,6 +966,7 @@ task:
   info:
     empty: 'No tasks for this document'
     change_order: 'Change task order'
+    locked: 'Revision locked by %user% until %time%'
   assigned_to: 'Assigned to '
   in_progress: 'This task is '
   for: 'for'
@@ -1014,6 +1015,6 @@ task:
     assignee_changed: 'Assignee changed task "%title%" for "%document%"'
     deleted: 'Deleted task "%title%" for "%document%"'
     updated: 'Update task "%title%" for "%document%"'
-    completed: 'Ready for valiation, task "%title%" for "%document%"'
+    completed: 'Ready for validation, task "%title%" for "%document%"'
     rejected: 'Rejected task "%title%" for "%document%"'
     approved: 'Approved task "%title%" for "%document%"'

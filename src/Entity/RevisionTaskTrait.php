@@ -38,7 +38,7 @@ trait RevisionTaskTrait
         }
 
         if ($this->owner !== $username) {
-            throw new \RuntimeException(\sprintf('User %s is not the owner!', $username));
+            throw new \RuntimeException(\sprintf('User %s is the owner!', $this->owner));
         }
 
         if (null === $this->taskCurrent) {

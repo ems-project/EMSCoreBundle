@@ -247,8 +247,8 @@ class DataService
         } else {
             $lockerUsername = $username;
         }
-        $now = new \DateTime();
-        if ($revision->getLockBy() != $lockerUsername && $now < $revision->getLockUntil()) {
+
+        if ($revision->isLockedFor($lockerUsername)) {
             throw new LockedException($revision);
         }
 

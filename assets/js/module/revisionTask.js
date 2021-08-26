@@ -19,11 +19,13 @@ export default class RevisionTask {
             this.tasksReorder = this.tasksTab.querySelector('#revision-tasks-reorder');
             this.tasksApprovedLink = this.tasksTab.querySelector('#revision-tasks-approved-link');
 
-            if ('true' === this.tasksList.dataset.load) {
-                this.loadTasks();
-            } else {
-                this.tasksEmpty.style.display = 'block';
-                this.btnTaskCreateModal();
+            if (this.tasksList) {
+                if ('true' === this.tasksList.dataset.load) {
+                    this.loadTasks();
+                } else {
+                    this.tasksEmpty.style.display = 'block';
+                    this.btnTaskCreateModal();
+                }
             }
         }
     }
@@ -57,6 +59,7 @@ export default class RevisionTask {
         loading.style.display = 'block';
 
         var callbackRequest = (json, request) => {
+            if (400 === request.status) { location.reload(); }
             if (200 !== request.status) { return; }
 
             loading.style.display = 'none';
@@ -173,7 +176,7 @@ export default class RevisionTask {
         var button = ajaxModal.modal.querySelector('#btn-task-delete');
         if (button) {
             button.addEventListener('click', () => {
-                ajaxModal.postRequest(button.dataset.url, (json) => {
+                ajaxModal.submitForm(button.dataset.url, (json) => {
                     this.modalFinish(json);
                 });
             });
@@ -189,7 +192,12 @@ export default class RevisionTask {
                 var submitData = Array.from(formData, e => e.map(encodeURIComponent).join('=')).join('&');
 
                 this.tasksClear();
-                ajaxJsonSubmit(this.tasksList.dataset.url, submitData, this.callbackGetTasks());
+                ajaxJsonSubmit(this.tasksList.dataset.url, submitData, (json, request) => {
+                    if (400 === request.status) { location.reload(); }
+                    if (200 !== request.status) { return; }
+
+                    this.callbackGetTasks()(json, request);
+                });
             }
         };
 
@@ -218,7 +226,6 @@ export default class RevisionTask {
         }
     }
     reorderTasks() {
-
         var btnReorder = this.tasksReorder.querySelector('#btn-tasks-reorder');
         var btnReorderCancel = this.tasksReorder.querySelector('#btn-tasks-reorder-cancel');
         var btnReorderSave = this.tasksReorder.querySelector('#btn-tasks-reorder-save');
@@ -263,7 +270,10 @@ export default class RevisionTask {
                     taskIds.push(item.dataset.id);
                 });
                 this.tasksClear();
-                ajaxJsonPost(btnReorderSave.dataset.url, JSON.stringify({taskIds: taskIds}), (json) => {
+                ajaxJsonPost(btnReorderSave.dataset.url, JSON.stringify({taskIds: taskIds}), (json, request) => {
+                    if (400 === request.status) { location.reload(); }
+                    if (200 !== request.status) { return; }
+
                     finishReorder();
                 })
             }

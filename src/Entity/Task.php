@@ -214,6 +214,11 @@ class Task implements EntityInterface
         $this->assignee = $assignee;
     }
 
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
     private function getLogLatestByStatus(string $status): ?TaskLog
     {
         $logs = $this->getLogs();

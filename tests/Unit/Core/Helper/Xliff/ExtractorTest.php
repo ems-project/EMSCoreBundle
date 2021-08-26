@@ -34,7 +34,7 @@ class ExtractorTest extends KernelTestCase
                 $xliffParser->addSimpleField($document, 'keywords_%locale%', 'test xliff');
                 $xliffParser->addHtmlField($document, '%locale%.body', $htmlSource, $htmlTarget ?: null);
 
-                $expectedFilename = $absoluteFilePath.DIRECTORY_SEPARATOR.'expected_'.$version.'.xlif';
+                $expectedFilename = $absoluteFilePath.DIRECTORY_SEPARATOR.'expected_'.$version.'.xlf';
                 if (!\file_exists($expectedFilename)) {
                     $xliffParser->saveXML($expectedFilename);
                 }

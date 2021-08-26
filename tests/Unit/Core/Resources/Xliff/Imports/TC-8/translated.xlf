@@ -41,7 +41,7 @@
                 </segment>
                 <segment id="/html/body/p/a/text()[3]">
                     <source>web site</source>
-                    <target></target>
+                    <target/>
                 </segment>
             </unit>
         </group>

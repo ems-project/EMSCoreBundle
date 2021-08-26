@@ -176,6 +176,10 @@ class ImporterRevision
         }
         $sourceValue = \strval($source);
 
+        if (0 === $target->count()) {
+            throw new \RuntimeException(\sprintf('Target not found for @id=%s', $propertyPath));
+        }
+
         $sourceLocale = $this->getAttributeValue($field->source, 'xml:lang', $this->sourceLocale);
         if (null === $sourceLocale) {
             throw new \RuntimeException('Unexpected missing source locale');

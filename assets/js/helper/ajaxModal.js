@@ -67,9 +67,9 @@ class AjaxModal {
         });
     }
 
-    postRequest(url, callback) {
+    postRequest(url, data, callback) {
         this.stateLoading();
-        ajaxJsonPost(url, {}, (json, request) => {
+        ajaxJsonPost(url, data, (json, request) => {
             this.ajaxReady(json, request, callback);
             this.stateReady();
         });
@@ -108,6 +108,10 @@ class AjaxModal {
                 var messageType = Object.keys(m)[0];
                 var message = m[messageType];
                 this.printMessage(messageType, message);
+
+                if (messageType == 'error') {
+                    location.reload();
+                }
             });
 
             var modelForm = this.modal.querySelector('form');

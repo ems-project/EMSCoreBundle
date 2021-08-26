@@ -15,7 +15,6 @@ use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use EMS\CoreBundle\Form\Form\RevisionTaskType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -33,20 +32,17 @@ final class TaskController extends AbstractController
     private AjaxService $ajax;
     private FormFactoryInterface $formFactory;
     private TableExporter $tableExporter;
-    private LoggerInterface $logger;
 
     public function __construct(
         TaskManager $taskManager,
         AjaxService $ajax,
         FormFactoryInterface $formFactory,
-        TableExporter $tableExporter,
-        LoggerInterface $logger
+        TableExporter $tableExporter
     ) {
         $this->taskManager = $taskManager;
         $this->ajax = $ajax;
         $this->formFactory = $formFactory;
         $this->tableExporter = $tableExporter;
-        $this->logger = $logger;
     }
 
     public function dashboard(Request $request, string $tab): Response
@@ -100,15 +96,19 @@ final class TaskController extends AbstractController
             $form = $this->createCommentForm('validation-request', true);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $data = $form->getData();
-                $this->taskManager->taskValidateRequest($currentTask, $revisionId, $data['comment']);
+                try {
+                    $data = $form->getData();
+                    $this->taskManager->taskValidateRequest($currentTask, $revisionId, $data['comment']);
 
-                return new JsonResponse([
-                    'html' => $ajaxTemplate->renderBlock('currentTask', [
-                        'task' => $currentTask,
-                        'revisionId' => $revisionId,
-                    ]),
-                ]);
+                    return new JsonResponse([
+                        'html' => $ajaxTemplate->renderBlock('currentTask', [
+                            'task' => $currentTask,
+                            'revisionId' => $revisionId,
+                        ]),
+                    ]);
+                } catch (\Throwable $e) {
+                    return new JsonResponse(['error' => $e->getMessage()], 400);
+                }
             }
         }
 
@@ -133,10 +133,14 @@ final class TaskController extends AbstractController
             $formValidation->handleRequest($request);
 
             if ($formValidation->isSubmitted() && $formValidation->isValid()) {
-                $comment = $formValidation->getData()['comment'];
-                $this->taskManager->taskValidate($revision, 'approve' === $action, $comment);
+                try {
+                    $comment = $formValidation->getData()['comment'];
+                    $this->taskManager->taskValidate($revision, 'approve' === $action, $comment);
 
-                return $this->redirectToRoute('ems_core_task_ajax_tasks', ['revisionId' => $revisionId]);
+                    return $this->redirectToRoute('ems_core_task_ajax_tasks', ['revisionId' => $revisionId]);
+                } catch (\Throwable $e) {
+                    return new JsonResponse(['error' => $e->getMessage()], 400);
+                }
             }
         }
 
@@ -150,6 +154,7 @@ final class TaskController extends AbstractController
         }
 
         return new JsonResponse([
+            'revision' => $revision,
             'tasks' => $tasksList,
             'tasks_approved_link' => $ajaxTemplate->renderBlock('tasksApprovedLink', [
                 'count' => $this->taskManager->countApprovedTasks($revision),
@@ -200,8 +205,7 @@ final class TaskController extends AbstractController
                     ->setFooter('modalFooterClose')
                     ->getResponse();
             } catch (\Throwable $e) {
-                $this->logger->error($e->getMessage(), ['e' => $e]);
-                $ajaxModal->addMessageError('task.error.ajax', [], $e);
+                $ajaxModal->addMessageError('task.error.ajax');
             }
         }
 
@@ -232,8 +236,7 @@ final class TaskController extends AbstractController
                     ->setBody('modalTaskBody', ['form' => $form->createView(), 'task' => $task])
                     ->getResponse();
             } catch (\Throwable $e) {
-                $this->logger->error($e->getMessage(), ['e' => $e]);
-                $ajaxModal->addMessageError('task.error.ajax', [], $e);
+                $ajaxModal->addMessageError('task.error.ajax');
             }
         }
 
@@ -284,8 +287,7 @@ final class TaskController extends AbstractController
                     ->setFooter('modalFooterClose')
                     ->getResponse();
             } catch (\Throwable $e) {
-                $this->logger->error($e->getMessage(), ['e' => $e]);
-                $ajaxModal->addMessageError('task.error.ajax', [], $e);
+                $ajaxModal->addMessageError('task.error.ajax');
             }
         }
 
@@ -295,7 +297,7 @@ final class TaskController extends AbstractController
             ->getResponse();
     }
 
-    public function ajaxDelete(int $revisionId, string $taskId): JsonResponse
+    public function ajaxDelete(Request $request, int $revisionId, string $taskId): JsonResponse
     {
         $task = $this->taskManager->getTask($taskId);
         $ajaxModal = $this->getAjaxModal()
@@ -304,10 +306,13 @@ final class TaskController extends AbstractController
             ->setFooter('modalFooterClose');
 
         try {
-            $this->taskManager->taskDelete($task, $revisionId);
+            $taskDTO = TaskDTO::fromEntity($task);
+            $form = $this->createForm(RevisionTaskType::class, $taskDTO, ['task_status' => $task->getStatus()]);
+            $form->handleRequest($request);
+
+            $this->taskManager->taskDelete($task, $revisionId, $taskDTO->description);
             $ajaxModal->addMessageSuccess('task.delete.success', ['%title%' => $task->getTitle()]);
         } catch (\Throwable $e) {
-            $this->logger->error($e->getMessage(), ['e' => $e]);
             $ajaxModal->addMessageError('task.error.ajax');
         }
 
@@ -320,9 +325,13 @@ final class TaskController extends AbstractController
         $data = \is_string($content) ? Json::decode($content) : [];
         $taskIds = $data['taskIds'] ?? [];
 
-        $this->taskManager->tasksReorder($revisionId, $taskIds);
+        try {
+            $this->taskManager->tasksReorder($revisionId, $taskIds);
 
-        return new JsonResponse([], Response::HTTP_ACCEPTED);
+            return new JsonResponse([], Response::HTTP_ACCEPTED);
+        } catch (\Throwable $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        }
     }
 
     /**

@@ -82,7 +82,7 @@ final class TaskManager
     {
         $taskTableContext = new TaskTableContext($this->userService->getCurrentUser(), $tab);
 
-        $table = new EntityTable($this->taskTableService, $ajaxUrl, $taskTableContext, 0);
+        $table = new EntityTable($this->taskTableService, $ajaxUrl, $taskTableContext);
 
         if ($export) {
             $this->taskTableService->buildTableExport($table, $taskTableContext);

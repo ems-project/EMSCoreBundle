@@ -26,13 +26,13 @@ final class TaskTableService implements EntityServiceInterface
     private const TEMPLATE = '@EMSCore/revision/task/columns.twig';
 
     public const COLUMNS = [
-        self::COL_ICON => ['type' => 'block'],
-        self::COL_TITLE => ['type' => 'block', 'column' => 'taskTitle'],
-        self::COL_DOCUMENT => ['column' => 'label'],
-        self::COL_OWNER => ['type' => 'block', 'column' => 'owner'],
-        self::COL_ASSIGNEE => ['type' => 'block', 'column' => 'taskAssignee'],
-        self::COL_STATUS => ['type' => 'block', 'column' => 'taskStatus'],
-        self::COL_DEADLINE => ['type' => 'block', 'column' => 'taskDeadline'],
+        self::COL_ICON => ['type' => 'block', 'mapping' => 't.status'],
+        self::COL_TITLE => ['type' => 'block', 'column' => 'taskTitle', 'mapping' => 't.title'],
+        self::COL_DOCUMENT => ['column' => 'label', 'mapping' => 'r.labelField'],
+        self::COL_OWNER => ['type' => 'block', 'column' => 'owner', 'mapping' => 'r.owner'],
+        self::COL_ASSIGNEE => ['type' => 'block', 'column' => 'taskAssignee', 'mapping' => 't.assignee'],
+        self::COL_STATUS => ['type' => 'block', 'column' => 'taskStatus', 'mapping' => 't.status'],
+        self::COL_DEADLINE => ['type' => 'block', 'column' => 'taskDeadline', 'mapping' => 't.deadline'],
         self::COL_ACTIONS => ['type' => 'block'],
     ];
 
@@ -47,14 +47,15 @@ final class TaskTableService implements EntityServiceInterface
         $columns = $this->getColumns($context->tab);
 
         foreach ($columns as $name => $options) {
-            if (isset($options['column'])) {
-                $context->addColumn($name, $options['column']);
+            $orderField = self::COL_ACTIONS !== $name ? $name : null;
+
+            if (isset($options['mapping'])) {
+                $context->addColumn($name, $options['mapping']);
             }
 
             $type = $options['type'] ?? null;
 
             if ('block' === $type) {
-                $orderField = isset($options['column']) ? $name : null;
                 $def = new TemplateBlockTableColumn($options['label'], $name, self::TEMPLATE, $orderField);
                 $table->addColumnDefinition($def)->setCellClass('col-'.$name);
             } else {

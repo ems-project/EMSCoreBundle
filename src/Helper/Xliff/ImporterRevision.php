@@ -23,19 +23,17 @@ class ImporterRevision
     /**
      * @param string[] $nameSpaces
      */
-    public function __construct(\SimpleXMLElement $document, string $version, array $nameSpaces)
+    public function __construct(\SimpleXMLElement $document, string $version, array $nameSpaces, ?string $sourceLocale, ?string $targetLocale)
     {
         $this->document = $document;
         $this->version = $version;
         $this->nameSpaces = $nameSpaces;
+        $this->sourceLocale = $sourceLocale;
+        $this->targetLocale = $targetLocale;
         if (\version_compare($this->version, '2.0') < 0) {
             list($this->contentType, $this->ouuid, $this->revisionId) = \explode(':', \strval($document['original']));
-            $this->sourceLocale = null;
-            $this->targetLocale = null;
         } else {
             list($this->contentType, $this->ouuid, $this->revisionId) = \explode(':', \strval($document['id']));
-            $this->sourceLocale = \strval($this->document['srcLang']);
-            $this->targetLocale = \strval($this->document['trgLang']);
         }
     }
 
@@ -163,15 +161,24 @@ class ImporterRevision
     {
         $propertyPath = \strval($field['id']);
 
-        $source = \strval($field->source);
+
+        if (\version_compare($this->version, '2.0') < 0) {
+            $source = $field->source;
+            $target = $field->target;
+        } else {
+            $source = $field->segment->source;
+            $target = $field->segment->target;
+        }
+        $sourceValue = \strval($source);
+
         $sourceLocale = $this->getAttributeValue($field->source, 'xml:lang', $this->sourceLocale);
         if (null === $sourceLocale) {
             throw new \RuntimeException('Unexpected missing source locale');
         }
         $sourcePropertyPath = \str_replace('%locale%', $sourceLocale, $propertyPath);
 
-        $target = \strval($field->target);
-        $targetLocale = $this->getAttributeValue($field->target, 'xml:lang', $this->targetLocale);
+        $targetValue = \strval($target);
+        $targetLocale = $this->getAttributeValue($target, 'xml:lang', $this->targetLocale);
         if (null === $targetLocale) {
             throw new \RuntimeException('Unexpected missing target locale');
         }
@@ -182,13 +189,13 @@ class ImporterRevision
         }
 
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        $sourceValue = $propertyAccessor->getValue($rawData, $sourcePropertyPath);
+        $expectedSourceValue = $propertyAccessor->getValue($rawData, $sourcePropertyPath);
 
-        if ($sourceValue !== $source) {
-            throw new \RuntimeException(\sprintf('Unexpected mismatched sources expected "%s" got "%s" for property %s', $sourceValue, $source, $sourcePropertyPath));
+        if ($expectedSourceValue !== $sourceValue) {
+            throw new \RuntimeException(\sprintf('Unexpected mismatched sources expected "%s" got "%s" for property %s', $expectedSourceValue, $sourceValue, $sourcePropertyPath));
         }
 
-        $propertyAccessor->setValue($rawData, $targetPropertyPath, $target);
+        $propertyAccessor->setValue($rawData, $targetPropertyPath, $targetValue);
     }
 
     public function getAttributeValue(\SimpleXMLElement $field, string $attributeName, ?string $defaultValue = null): ?string

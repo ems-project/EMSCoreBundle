@@ -31,7 +31,7 @@ class ImporterRevisionTest extends KernelTestCase
      */
     private function forDocument(\SimpleXMLElement $document, string $version, array $nameSpaces): void
     {
-        $object = new ImporterRevision($document, $version, $nameSpaces);
+        $object = new ImporterRevision($document, $version, $nameSpaces, null, null);
         foreach ($object->getTranslatedFields() as $field) {
             $this->assertNull($object->getAttributeValue($field, 'toto'));
             $this->assertEquals('en', $object->getAttributeValue($field->source, 'xml:lang', 'en'));

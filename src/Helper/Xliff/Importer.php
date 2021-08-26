@@ -8,6 +8,8 @@ class Importer
     /** @var string[] */
     private array $nameSpaces;
     private \SimpleXMLElement $xliff;
+    private ?string $sourceLocale;
+    private ?string $targetLocale;
 
     public function __construct(\SimpleXMLElement $xliff)
     {
@@ -16,6 +18,10 @@ class Importer
             throw new \RuntimeException(\sprintf('Not supported %s XLIFF version', $this->version));
         }
 
+        $srcLang = $xliff['srcLang'];
+        $this->sourceLocale = (null === $srcLang ? null : strval($srcLang));
+        $trgLang = $xliff['trgLang'];
+        $this->targetLocale = (null === $trgLang ? null : strval($trgLang));
         $this->xliff = $xliff;
         $this->nameSpaces = $xliff->getNameSpaces(true);
     }
@@ -26,7 +32,7 @@ class Importer
     public function getDocuments(): iterable
     {
         foreach ($this->xliff->children() as $document) {
-            yield new ImporterRevision($document, $this->version, $this->nameSpaces);
+            yield new ImporterRevision($document, $this->version, $this->nameSpaces, $this->sourceLocale, $this->targetLocale);
         }
     }
 }

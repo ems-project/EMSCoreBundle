@@ -149,8 +149,14 @@ class ImporterRevision
         }
 
         $crawler = new Crawler($sourceValue);
+        if (0 === $crawler->count()) {
+            $propertyAccessor->setValue($rawData, $targetPropertyPath, '');
+
+            return;
+        }
         $extractor = new Extractor($sourceLocale, $targetLocale, $this->version);
         $extractor->translateDom($crawler, $field, $this->nameSpaces['']);
+
         $propertyAccessor->setValue($rawData, $targetPropertyPath, $crawler->filterXPath('//body')->html());
     }
 
@@ -160,7 +166,6 @@ class ImporterRevision
     private function importSimpleField(\SimpleXMLElement $field, array &$rawData): void
     {
         $propertyPath = \strval($field['id']);
-
 
         if (\version_compare($this->version, '2.0') < 0) {
             $source = $field->source;

@@ -19,9 +19,9 @@ class Importer
         }
 
         $srcLang = $xliff['srcLang'];
-        $this->sourceLocale = (null === $srcLang ? null : strval($srcLang));
+        $this->sourceLocale = (null === $srcLang ? null : \strval($srcLang));
         $trgLang = $xliff['trgLang'];
-        $this->targetLocale = (null === $trgLang ? null : strval($trgLang));
+        $this->targetLocale = (null === $trgLang ? null : \strval($trgLang));
         $this->xliff = $xliff;
         $this->nameSpaces = $xliff->getNameSpaces(true);
     }

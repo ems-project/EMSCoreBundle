@@ -406,23 +406,13 @@ class Extractor
     {
         $field->registerXPathNamespace('ns', $nameSpace);
         if (\version_compare($this->xliffVersion, '2.0') < 0) {
-            $xpath = "//ns:trans-unit[@id='%s/text()']/ns:target";
+            $xpath = "//ns:trans-unit[@id='%s']/ns:target";
         } else {
-            $xpath = "//ns:segment[@id='%s/text()']/ns:target";
+            $xpath = "//ns:segment[@id='%s']/ns:target";
         }
 
-        foreach ($crawler->filterXPath('//*') as $domNode) {
-            if (!$this->hasSomethingToTranslate($domNode)) {
-                continue;
-            }
-            if (!$this->isGroupNode($domNode)) {
-                $id = $this->getId($domNode);
-                $targets = $field->xpath(\sprintf($xpath, $id));
-                if (false === $targets || 1 !== \count($targets)) {
-                    throw new \RuntimeException(\sprintf('Target not fount for DOM %s', $id));
-                }
-                $domNode->nodeValue = \strval($targets[0]);
-            }
+        foreach ($crawler->children() as $child) {
+            $this->recursiveTranslateDom($child, $field, $xpath);
         }
     }
 
@@ -437,5 +427,24 @@ class Extractor
         }
 
         return $id;
+    }
+
+    private function recursiveTranslateDom(\DOMNode $node, \SimpleXMLElement $field, string $xpath): void
+    {
+        foreach ($node->childNodes as $domNode) {
+            if (!$this->hasSomethingToTranslate($domNode)) {
+                continue;
+            }
+            if ($domNode instanceof \DOMText) {
+                $id = $this->getId($domNode);
+                $targets = $field->xpath(\sprintf($xpath, $id));
+                if (false === $targets || 1 !== \count($targets)) {
+                    throw new \RuntimeException(\sprintf('Target not fount for DOM %s', $id));
+                }
+                $domNode->nodeValue = \strval($targets[0]);
+            } else {
+                $this->recursiveTranslateDom($domNode, $field, $xpath);
+            }
+        }
     }
 }

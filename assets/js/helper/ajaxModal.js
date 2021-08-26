@@ -67,9 +67,9 @@ class AjaxModal {
         });
     }
 
-    postRequest(url, callback) {
+    postRequest(url, data, callback) {
         this.stateLoading();
-        ajaxJsonPost(url, {}, (json, request) => {
+        ajaxJsonPost(url, data, (json, request) => {
             this.ajaxReady(json, request, callback);
             this.stateReady();
         });

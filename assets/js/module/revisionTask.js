@@ -176,7 +176,7 @@ export default class RevisionTask {
         var button = ajaxModal.modal.querySelector('#btn-task-delete');
         if (button) {
             button.addEventListener('click', () => {
-                ajaxModal.postRequest(button.dataset.url, (json) => {
+                ajaxModal.submitForm(button.dataset.url, (json) => {
                     this.modalFinish(json);
                 });
             });

@@ -279,7 +279,7 @@ final class TaskController extends AbstractController
             ->getResponse();
     }
 
-    public function ajaxDelete(int $revisionId, string $taskId): JsonResponse
+    public function ajaxDelete(Request $request, int $revisionId, string $taskId): JsonResponse
     {
         $task = $this->taskManager->getTask($taskId);
         $ajaxModal = $this->getAjaxModal()
@@ -288,7 +288,11 @@ final class TaskController extends AbstractController
             ->setFooter('modalFooterClose');
 
         try {
-            $this->taskManager->taskDelete($task, $revisionId);
+            $taskDTO = TaskDTO::fromEntity($task);
+            $form = $this->createForm(RevisionTaskType::class, $taskDTO, ['task_status' => $task->getStatus()]);
+            $form->handleRequest($request);
+
+            $this->taskManager->taskDelete($task, $revisionId, $taskDTO->description);
             $ajaxModal->addMessageSuccess('task.delete.success', ['%title%' => $task->getTitle()]);
         } catch (\Throwable $e) {
             $ajaxModal->addMessageError('task.error.ajax');

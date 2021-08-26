@@ -191,9 +191,14 @@ final class TaskManager
         return $transaction($revisionId);
     }
 
-    public function taskDelete(Task $task, int $revisionId): void
+    public function taskDelete(Task $task, int $revisionId, ?string $description = null): void
     {
-        $transaction = $this->revisionTransaction(function (Revision $revision) use ($task) {
+        $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $description) {
+            if ($description !== $task->getDescription()) {
+                $task->setDescription($description);
+                $this->taskRepository->save($task);
+            }
+
             if ($revision->isTaskCurrent($task)) {
                 $this->setNextPlanned($revision);
             } elseif ($revision->isTaskPlanned($task)) {

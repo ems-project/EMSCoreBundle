@@ -93,5 +93,14 @@
             <argument>%ems_core.from_email%</argument>
             <argument>%ems_core.name%</argument>
         </service>
+
+        <service id="ems_core.core_data_table.table_renderer" class="EMS\CoreBundle\Core\DataTable\TableRenderer">
+            <argument type="service" id="twig"/>
+            <argument type="service" id="translator"/>
+        </service>
+        <service id="ems_core.core_data_table.table_exporter" class="EMS\CoreBundle\Core\DataTable\TableExporter">
+            <argument type="service" id="ems_core.core_data_table.table_renderer"/>
+            <argument type="service" id="EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface"/>
+        </service>
     </services>
 </container>

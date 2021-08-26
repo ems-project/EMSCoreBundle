@@ -51,6 +51,7 @@
             <argument type="service" id="ems_core.core_revision_task.task_manager" />
             <argument type="service" id="ems_core.core_ui.ajax_service" />
             <argument type="service" id="form.factory" />
+            <argument type="service" id="ems_core.core_data_table.table_exporter" />
             <argument type="service" id="logger" />
             <tag name="controller.service_arguments"/>
         </service>
@@ -88,6 +89,8 @@
         </service>
         <service id="EMS\CoreBundle\Controller\ContentManagement\DatatableController" public="true">
             <argument type="service" id="ems.service.datatable" />
+            <argument type="service" id="ems_core.core_data_table.table_renderer" />
+            <argument type="service" id="ems_core.core_data_table.table_exporter" />
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\ElasticsearchController" public="true">

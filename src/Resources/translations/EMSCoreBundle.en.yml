@@ -941,13 +941,12 @@ task:
         edit_revision: 'Edit to revision'
         change_owner: 'Change owner'
       column:
-        icon: ''
-        taskTitle: 'Task'
+        title: 'Task'
         label: 'Document'
-        taskStatus: 'Status'
+        status: 'Status'
         assignee: 'Assignee'
         owner: 'Owner'
-        taskDeadline: 'Deadline'
+        deadline: 'Deadline'
         actions: 'Actions'
   status:
     progress: 'In progress'

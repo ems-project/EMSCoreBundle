@@ -96,9 +96,9 @@ trait RevisionTaskTrait
         return $this->taskPlannedIds ?? [];
     }
 
-    public function getTaskDeadline(): \DateTimeInterface
+    public function getTaskDeadline(): ?\DateTimeInterface
     {
-        return $this->getTaskCurrent()->getDeadline();
+        return $this->taskCurrent->hasDeadline() ? $this->taskCurrent->getDeadline() : null;
     }
 
     public function getTaskCurrent(): Task

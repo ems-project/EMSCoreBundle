@@ -78,12 +78,17 @@ final class TaskManager
         return $this->revisionRepository->findOneById($revisionId);
     }
 
-    public function getTable(string $ajaxUrl, string $tab): EntityTable
+    public function getTable(string $ajaxUrl, string $tab, bool $export): EntityTable
     {
         $taskTableContext = new TaskTableContext($this->userService->getCurrentUser(), $tab);
 
-        $table = new EntityTable($this->taskTableService, $ajaxUrl, $taskTableContext);
-        $this->taskTableService->buildTable($table, $taskTableContext);
+        $table = new EntityTable($this->taskTableService, $ajaxUrl, $taskTableContext, 0);
+
+        if ($export) {
+            $this->taskTableService->buildTableExport($table, $taskTableContext);
+        } else {
+            $this->taskTableService->buildTable($table, $taskTableContext);
+        }
 
         return $table;
     }

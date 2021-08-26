@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Task;
 
+use EMS\CoreBundle\Form\Data\DateTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
 use EMS\CoreBundle\Repository\TaskRepository;
@@ -14,24 +15,24 @@ final class TaskTableService implements EntityServiceInterface
     private TaskRepository $taskRepository;
 
     private const COL_ICON = 'icon';
-    private const COL_TITLE = 'taskTitle';
+    private const COL_TITLE = 'title';
     private const COL_DOCUMENT = 'label';
     private const COL_OWNER = 'owner';
     private const COL_ASSIGNEE = 'assignee';
-    private const COL_STATUS = 'taskStatus';
-    private const COL_DEADLINE = 'taskDeadline';
+    private const COL_STATUS = 'status';
+    private const COL_DEADLINE = 'deadline';
     private const COL_ACTIONS = 'actions';
 
     private const TEMPLATE = '@EMSCore/revision/task/columns.twig';
 
     public const COLUMNS = [
         self::COL_ICON => ['type' => 'block'],
-        self::COL_TITLE => ['type' => 'block', 'column' => 't.title'],
-        self::COL_DOCUMENT => ['column' => 'r.label'],
-        self::COL_OWNER => ['type' => 'block', 'column' => 'r.owner'],
-        self::COL_ASSIGNEE => ['type' => 'block', 'column' => 't.assignee'],
-        self::COL_STATUS => ['column' => 't.status'],
-        self::COL_DEADLINE => ['type' => 'block', 'column' => 't.deadline'],
+        self::COL_TITLE => ['type' => 'block', 'column' => 'taskTitle'],
+        self::COL_DOCUMENT => ['column' => 'label'],
+        self::COL_OWNER => ['type' => 'block', 'column' => 'owner'],
+        self::COL_ASSIGNEE => ['type' => 'block', 'column' => 'taskAssignee'],
+        self::COL_STATUS => ['type' => 'block', 'column' => 'taskStatus'],
+        self::COL_DEADLINE => ['type' => 'block', 'column' => 'taskDeadline'],
         self::COL_ACTIONS => ['type' => 'block'],
     ];
 
@@ -42,28 +43,37 @@ final class TaskTableService implements EntityServiceInterface
 
     public function buildTable(EntityTable $table, TaskTableContext $context): void
     {
-        $columns = self::COLUMNS;
-        if (TaskManager::TAB_USER === $context->tab) {
-            unset($columns[self::COL_ASSIGNEE]);
-        }
-        if (TaskManager::TAB_OWNER === $context->tab) {
-            unset($columns[self::COL_OWNER]);
-        }
+        /** @var array<string, array{type: ?string, column: ?string, label: string}> $columns */
+        $columns = $this->getColumns($context->tab);
 
         foreach ($columns as $name => $options) {
             if (isset($options['column'])) {
                 $context->addColumn($name, $options['column']);
             }
 
-            $label = \sprintf('task.dashboard.column.%s', $name);
             $type = $options['type'] ?? null;
 
             if ('block' === $type) {
                 $orderField = isset($options['column']) ? $name : null;
-                $def = new TemplateBlockTableColumn($label, $name, self::TEMPLATE, $orderField);
+                $def = new TemplateBlockTableColumn($options['label'], $name, self::TEMPLATE, $orderField);
                 $table->addColumnDefinition($def)->setCellClass('col-'.$name);
             } else {
-                $table->addColumn($label, $name);
+                $table->addColumn($options['label'], $name);
+            }
+        }
+    }
+
+    public function buildTableExport(EntityTable $table, TaskTableContext $context): void
+    {
+        $columns = $this->getColumns($context->tab);
+        unset($columns[self::COL_ICON]);
+        unset($columns[self::COL_ACTIONS]);
+
+        foreach ($columns as $name => $options) {
+            if (self::COL_DEADLINE === $name) {
+                $table->addColumnDefinition(new DateTableColumn($options['label'], $options['column']));
+            } else {
+                $table->addColumn($options['label'], $options['column']);
             }
         }
     }
@@ -94,5 +104,29 @@ final class TaskTableService implements EntityServiceInterface
         }
 
         return $this->taskRepository->countTable($searchValue, $context);
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    private function getColumns(string $tab): array
+    {
+        $columns = self::COLUMNS;
+        if (TaskManager::TAB_USER === $tab) {
+            unset($columns[self::COL_ASSIGNEE]);
+        }
+        if (TaskManager::TAB_OWNER === $tab) {
+            unset($columns[self::COL_OWNER]);
+        }
+
+        foreach ($columns as $name => &$column) {
+            if (self::COL_ICON === $name) {
+                $column['label'] = '';
+            } else {
+                $column['label'] = \sprintf('task.dashboard.column.%s', $name);
+            }
+        }
+
+        return $columns;
     }
 }

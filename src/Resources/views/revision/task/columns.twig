@@ -6,7 +6,7 @@
     </div>
 {%- endblock -%}
 
-{%- block taskTitle -%}
+{%- block title -%}
     <a href="#" class="task-modal"
         data-url="{{ path('ems_core_task_ajax_modal_task', { 'revisionId': data.id, 'taskId': data.taskCurrent.id }) }}"
         data-title="Task: {{ data.taskCurrent.title }}">
@@ -17,7 +17,11 @@
 {%- block owner -%}{{- data.owner|displayname -}}{%- endblock -%}
 {%- block assignee -%}{{- data.taskCurrent.assignee|displayname -}}{%- endblock -%}
 
-{%- block taskDeadline -%}
+{% block status %}
+    {{ "task.status.#{data.taskCurrent.status}"|trans }}
+{% endblock %}
+
+{%- block deadline -%}
     {%- if data.taskCurrent.hasDeadline -%}
         {%- set deadline = data.taskCurrent.deadline.format(date_format) -%}
         {%- if data.taskCurrent.deadline.timestamp < date('now').timestamp -%}

@@ -71,24 +71,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * @deprecated
-     *
-     * @param int $offset
-     *
-     * @throws \Exception
-     */
-    private function initChild(DataField $child, $offset)
-    {
-        throw new \Exception('deprecate');
-    }
-
-    /**
      * @param mixed $offset
      * @param mixed $value
      */
     public function offsetSet($offset, $value): void
     {
-        $this->initChild($value, $offset);
         $this->children->offsetSet($offset, $value);
     }
 
@@ -99,7 +86,6 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     {
         if ((\is_int($offset) || \ctype_digit($offset)) && !$this->children->offsetExists($offset) && null !== $this->fieldType && $this->fieldType->getChildren()->count() > 0) {
             $value = new DataField();
-            $this->initChild($value, $offset);
             $this->children->offsetSet($offset, $value);
 
             return true;
@@ -121,10 +107,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function offsetGet($offset)
     {
-        $value = $this->children->offsetGet($offset);
-        $this->initChild($value, $offset);
-
-        return $value;
+        return ('children' === $offset) ? $this->children : $this->children->offsetGet($offset);
     }
 
     public function getIterator()

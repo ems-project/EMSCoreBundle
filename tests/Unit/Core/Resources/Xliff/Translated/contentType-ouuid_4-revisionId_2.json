@@ -1,0 +1,12 @@
+{
+    "title_en": "Hello",
+    "keywords_en": "test xliff",
+    "en": {
+        "body": "<p>Hello<\/p>"
+    },
+    "title_fr": "Bonjour",
+    "keywords_fr": "test xliff",
+    "fr": {
+        "body": "<p>Bonjour<\/p>"
+    }
+}

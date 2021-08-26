@@ -445,6 +445,21 @@ class Extractor
             } else {
                 $this->recursiveTranslateDom($domNode, $field, $xpath);
             }
+
+            $attributes = $domNode->attributes;
+            if (null === $attributes) {
+                continue;
+            }
+            foreach (self::TRANSLATABLE_ATTRIBUTES as $attributeName) {
+                if (null !== $attributeValue = $attributes->getNamedItem($attributeName)) {
+                    $id = $this->getId($domNode, $attributeValue->nodeName);
+                    $targets = $field->xpath(\sprintf($xpath, $id));
+                    if (false === $targets || 1 !== \count($targets)) {
+                        throw new \RuntimeException(\sprintf('Target not fount for attribute %s in DOM %s', $attributeValue->nodeName, $id));
+                    }
+                    $attributeValue->nodeValue = \strval($targets[0]);
+                }
+            }
         }
     }
 }

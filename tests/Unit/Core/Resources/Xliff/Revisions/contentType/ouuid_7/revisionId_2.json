@@ -1,0 +1,9 @@
+{
+  "title_en": "Hello",
+  "keywords_en": "test xliff",
+  "en": {
+    "body": "\n<p title=\"Information about Mount Hood\">\n    This is Mount Hood:\n    <img src=\"mthood.jpg\" alt=\"Mount Hood with its snow-covered top\">\n</p>"
+  },
+  "fr": {
+  }
+}

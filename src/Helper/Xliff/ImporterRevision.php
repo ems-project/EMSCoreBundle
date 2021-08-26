@@ -77,7 +77,7 @@ class ImporterRevision
         }
     }
 
-    private function getTranslatedFields(): \SimpleXMLElement
+    public function getTranslatedFields(): \SimpleXMLElement
     {
         if (\version_compare($this->version, '2.0') < 0) {
             $fields = $this->document->body->children();
@@ -118,15 +118,27 @@ class ImporterRevision
         $source = \strval($field->source);
         $target = \strval($field->target);
         $propertyPath = \strval($field['id']);
-        $sourceLocale = $this->getAttributeValue($field->source, 'xml:langjh', $this->sourceLocale);
+        $sourceLocale = $this->getAttributeValue($field->source, 'xml:lang', $this->sourceLocale);
 //        $sourceLocale = $this->getSourceLocale($field);
 //        dump($sourceLocale);
     }
 
-    private function getAttributeValue(\SimpleXMLElement $field, string $attributeName, ?string $defaultValue = null): ?string
+    public function getAttributeValue(\SimpleXMLElement $field, string $attributeName, ?string $defaultValue = null): ?string
     {
-        list($nameSpace, $attribute) = \explode(':', $attributeName);
-        $attribute = $field->attributes($this->nameSpaces[$nameSpace])[$attribute] ?? null;
+        if (false === \strpos($attributeName, ':')) {
+            $nameSpace = null;
+            $tag = $attributeName;
+        } else {
+            list($nameSpace, $tag) = \explode(':', $attributeName);
+        }
+
+        if (null === $nameSpace) {
+            $attribute = $field->attributes()[$tag] ?? null;
+        } elseif (!isset($this->nameSpaces[$nameSpace])) {
+            return $defaultValue;
+        } else {
+            $attribute = $field->attributes($this->nameSpaces[$nameSpace])[$tag] ?? null;
+        }
         if (null === $attribute) {
             return $defaultValue;
         }

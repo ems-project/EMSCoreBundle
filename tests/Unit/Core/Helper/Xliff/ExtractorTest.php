@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Tests\Unit\Core\Helper\Xliff;
+namespace Unit\Core\Helper\Xliff;
 
 use EMS\CoreBundle\Helper\Xliff\Extractor;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

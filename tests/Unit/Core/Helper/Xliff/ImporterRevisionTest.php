@@ -1,13 +1,14 @@
 <?php
 
-namespace EMS\CoreBundle\Tests\Unit\Core\Helper\Xliff;
+declare(strict_types=1);
 
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+namespace Unit\Core\Helper\Xliff;
+
 use EMS\CoreBundle\Helper\Xliff\ImporterRevision;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ImporterRevisionTest extends KernelTestCase
 {
-
     public function testAttributeGetter(): void
     {
         $sourceFile = \join(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'Resources', 'Xliff', 'ImporterRevision', 'testAttributes_1.2.xlf']);
@@ -25,8 +26,17 @@ class ImporterRevisionTest extends KernelTestCase
         }
     }
 
+    /**
+     * @param string[] $nameSpaces
+     */
     private function forDocument(\SimpleXMLElement $document, string $version, array $nameSpaces): void
     {
         $object = new ImporterRevision($document, $version, $nameSpaces);
+        foreach ($object->getTranslatedFields() as $field) {
+            $this->assertNull($object->getAttributeValue($field, 'toto'));
+            $this->assertEquals('en', $object->getAttributeValue($field->source, 'xml:lang', 'en'));
+            $this->assertEquals('fr', $object->getAttributeValue($field->target, 'xml:lang', 'fr'));
+            $this->assertNotNull($object->getAttributeValue($field, 'id'));
+        }
     }
 }

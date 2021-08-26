@@ -27,6 +27,11 @@ class ImporterTest extends KernelTestCase
                 $correspondingJson = \json_decode($corresponding, true);
                 $this->assertIsArray($correspondingJson);
                 $document->importTranslations($correspondingJson);
+
+                $expectedFilename = \join(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'Resources', 'Xliff', 'Translated', $document->getContentType().'-'.$document->getOuuid().'-'.$document->getRevisionId().'.json']);
+                if (!\file_exists($expectedFilename)) {
+                    \file_put_contents($expectedFilename, \json_encode($correspondingJson, JSON_PRETTY_PRINT));
+                }
             }
         }
     }

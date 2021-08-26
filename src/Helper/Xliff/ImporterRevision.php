@@ -65,10 +65,10 @@ class ImporterRevision
     {
         foreach ($this->getTranslatedFields() as $field) {
             switch ($this->filedType($field)) {
-                case ImporterRevision::HTML_FIELD:
+                case self::HTML_FIELD:
                     $this->importHtmlField($field, $rawData);
                     break;
-                case ImporterRevision::SIMPLE_FIELD:
+                case self::SIMPLE_FIELD:
                     $this->importSimpleField($field, $rawData);
                     break;
                 default:
@@ -92,13 +92,13 @@ class ImporterRevision
     {
         $nodeName = $field->getName();
         if ('group' === $nodeName) {
-            return ImporterRevision::HTML_FIELD;
+            return self::HTML_FIELD;
         } elseif ('trans-unit' === $nodeName && \version_compare($this->version, '2.0') < 0) {
-            return ImporterRevision::SIMPLE_FIELD;
+            return self::SIMPLE_FIELD;
         } elseif ('unit' === $nodeName && \version_compare($this->version, '2.0') >= 0) {
-            return ImporterRevision::SIMPLE_FIELD;
+            return self::SIMPLE_FIELD;
         } else {
-            return ImporterRevision::UNKNOWN_FIELD_TYPE;
+            return self::UNKNOWN_FIELD_TYPE;
         }
     }
 
@@ -121,6 +121,10 @@ class ImporterRevision
         $sourceLocale = $this->getAttributeValue($field->source, 'xml:lang', $this->sourceLocale);
         $targetLocale = $this->getAttributeValue($field->target, 'xml:lang', $this->targetLocale);
 
+        if (null === $sourceLocale || null === $targetLocale) {
+            throw new \RuntimeException('Unexpected missing locales');
+        }
+
         $sourcePropertyPath = \str_replace('%locale%', $sourceLocale, $propertyPath);
         $targetPropertyPath = \str_replace('%locale%', $targetLocale, $propertyPath);
 
@@ -129,8 +133,12 @@ class ImporterRevision
         }
 
         $sourceValue = $propertyAccessor->getValue($rawData, $sourcePropertyPath);
-        dump($sourceValue);
 
+        if ($sourceValue !== $source) {
+            throw new \RuntimeException(\sprintf('Unexpected mismatched sources expected "%s" got "%s" for property %s', $sourceValue, $source, $sourcePropertyPath));
+        }
+
+        $propertyAccessor->setValue($rawData, $targetPropertyPath, $target);
     }
 
     public function getAttributeValue(\SimpleXMLElement $field, string $attributeName, ?string $defaultValue = null): ?string

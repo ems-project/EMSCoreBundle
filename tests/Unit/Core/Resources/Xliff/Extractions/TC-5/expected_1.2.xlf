@@ -25,8 +25,8 @@
                     <target xml:lang="fr">Information à propos de Mount Hood</target>
                 </trans-unit>
                 <trans-unit id="/html/body/p/text()[1]">
-                    <source xml:lang="en">This is Mount Hood:</source>
-                    <target xml:lang="fr">Ceci est Mount Hood:</target>
+                    <source xml:lang="en"> This is Mount Hood: </source>
+                    <target xml:lang="fr"> Ceci est Mount Hood: </target>
                 </trans-unit>
                 <trans-unit id="/html/body/p/img[@alt]">
                     <source xml:lang="en">Mount Hood with its snow-covered top</source>

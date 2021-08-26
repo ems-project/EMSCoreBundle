@@ -148,7 +148,6 @@ class Extractor
         }
 
         foreach ($sourceCrawler->filterXPath('//body/*') as $domNode) {
-            $domNode->normalize();
             $this->domNodeToXliff($group, $domNode, $targetCrawler);
         }
     }
@@ -257,7 +256,7 @@ class Extractor
                     $segment->addAttribute($attribute, $value);
                 }
                 $this->addId($segment, $child);
-                $source = $segment->addChild('source', \trim($child->textContent));
+                $source = $segment->addChild('source', \preg_replace('!\s+!', ' ', $child->textContent));
                 foreach ($sourceAttributes as $attribute => $value) {
                     $source->addAttribute($attribute, $value);
                 }
@@ -270,7 +269,7 @@ class Extractor
                 if (1 !== $foundTarget->count()) {
                     continue;
                 }
-                $target = $segment->addChild('target', $foundTarget->text(null, true));
+                $target = $segment->addChild('target', \preg_replace('!\s+!', ' ', $foundTarget->text(null, false)));
                 foreach ($targetAttributes as $attribute => $value) {
                     $target->addAttribute($attribute, $value);
                 }

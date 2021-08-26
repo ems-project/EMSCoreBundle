@@ -27,8 +27,8 @@
                     <target>Information à propos de Mount Hood</target>
                 </segment>
                 <segment id="/html/body/p/text()[1]">
-                    <source>This is Mount Hood:</source>
-                    <target>Ceci est Mount Hood:</target>
+                    <source> This is Mount Hood: </source>
+                    <target> Ceci est Mount Hood: </target>
                 </segment>
                 <segment id="/html/body/p/img[@alt]">
                     <source>Mount Hood with its snow-covered top</source>

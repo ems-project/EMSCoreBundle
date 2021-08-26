@@ -28,11 +28,11 @@ class ExtractorTest extends KernelTestCase
             foreach (Extractor::XLIFF_VERSIONS as $version) {
                 $xliffParser = new Extractor('en', 'fr', $version);
                 $document = $xliffParser->addDocument('contentType', 'ouuid_1', 'revisionId_1');
-                $xliffParser->addSimpleField($document, 'title_%locale%', 'Foo', 'Bar');
+                $xliffParser->addSimpleField($document, '[title_%locale%]', 'Foo', 'Bar');
                 $document = $xliffParser->addDocument('contentType', 'ouuid_2', 'revisionId_2');
-                $xliffParser->addSimpleField($document, 'title_%locale%', 'Hello', 'Bonjour');
-                $xliffParser->addSimpleField($document, 'keywords_%locale%', 'test xliff');
-                $xliffParser->addHtmlField($document, '%locale%.body', $htmlSource, $htmlTarget ?: null);
+                $xliffParser->addSimpleField($document, '[title_%locale%]', 'Hello', 'Bonjour');
+                $xliffParser->addSimpleField($document, '[keywords_%locale%]', 'test xliff');
+                $xliffParser->addHtmlField($document, '[%locale%][body]', $htmlSource, $htmlTarget ?: null);
 
                 $expectedFilename = $absoluteFilePath.DIRECTORY_SEPARATOR.'expected_'.$version.'.xlf';
                 if (!\file_exists($expectedFilename)) {

@@ -4,7 +4,7 @@
        xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
     <file source-language="en" original="contentType:ouuid_1:revisionId_1" datatype="ems-revision">
         <body>
-            <trans-unit id="title_%locale%">
+            <trans-unit id="[title_%locale%]">
                 <source xml:lang="en">Foo</source>
                 <target xml:lang="fr">Bar</target>
             </trans-unit>
@@ -12,14 +12,14 @@
     </file>
     <file source-language="en" original="contentType:ouuid_2:revisionId_2" datatype="ems-revision">
         <body>
-            <trans-unit id="title_%locale%">
+            <trans-unit id="[title_%locale%]">
                 <source xml:lang="en">Hello</source>
                 <target xml:lang="fr">Bonjour</target>
             </trans-unit>
-            <trans-unit id="keywords_%locale%">
+            <trans-unit id="[keywords_%locale%]">
                 <source xml:lang="en">test xliff</source>
             </trans-unit>
-            <group id="%locale%.body">
+            <group id="[%locale%][body]">
                 <trans-unit id="/html/body/p[@title]">
                     <source xml:lang="en">Information about Mount Hood</source>
                     <target xml:lang="fr">Information à propos de Mount Hood</target>

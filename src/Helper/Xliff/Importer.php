@@ -5,6 +5,8 @@ namespace EMS\CoreBundle\Helper\Xliff;
 class Importer
 {
     private string $version;
+    /** @var string[] */
+    private array $nameSpaces;
     private \SimpleXMLElement $xliff;
 
     public function __construct(\SimpleXMLElement $xliff)
@@ -15,6 +17,7 @@ class Importer
         }
 
         $this->xliff = $xliff;
+        $this->nameSpaces = $xliff->getNameSpaces(true);
     }
 
     /**
@@ -23,7 +26,7 @@ class Importer
     public function getDocuments(): iterable
     {
         foreach ($this->xliff->children() as $document) {
-            yield new ImporterRevision($document, $this->version);
+            yield new ImporterRevision($document, $this->version, $this->nameSpaces);
         }
     }
 }

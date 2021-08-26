@@ -16,17 +16,23 @@ class ImporterRevision
     private \SimpleXMLElement $document;
     private ?string $sourceLocale;
     private ?string $targetLocale;
+    /** @var string[] */
+    private array $nameSpaces;
 
-    public function __construct(\SimpleXMLElement $document, string $version)
+    /**
+     * @param string[] $nameSpaces
+     */
+    public function __construct(\SimpleXMLElement $document, string $version, array $nameSpaces)
     {
         $this->document = $document;
         $this->version = $version;
-        $original = \strval($document['original']);
-        list($this->contentType, $this->ouuid, $this->revisionId) = \explode(':', $original);
+        $this->nameSpaces = $nameSpaces;
         if (\version_compare($this->version, '2.0') < 0) {
+            list($this->contentType, $this->ouuid, $this->revisionId) = \explode(':', \strval($document['original']));
             $this->sourceLocale = null;
             $this->targetLocale = null;
         } else {
+            list($this->contentType, $this->ouuid, $this->revisionId) = \explode(':', \strval($document['id']));
             $this->sourceLocale = \strval($this->document['srcLang']);
             $this->targetLocale = \strval($this->document['trgLang']);
         }
@@ -59,10 +65,10 @@ class ImporterRevision
     {
         foreach ($this->getTranslatedFields() as $field) {
             switch ($this->filedType($field)) {
-                case self::HTML_FIELD:
+                case ImporterRevision::HTML_FIELD:
                     $this->importHtmlField($field, $rawData);
                     break;
-                case self::SIMPLE_FIELD:
+                case ImporterRevision::SIMPLE_FIELD:
                     $this->importSimpleField($field, $rawData);
                     break;
                 default:
@@ -78,20 +84,21 @@ class ImporterRevision
         } else {
             $fields = $this->document->children();
         }
+
         return $fields;
     }
 
     private function filedType(\SimpleXMLElement $field): string
     {
         $nodeName = $field->getName();
-        if ($nodeName === 'group') {
-            return self::HTML_FIELD;
-        } elseif ($nodeName === 'trans-unit' && \version_compare($this->version, '2.0') < 0) {
-            return self::SIMPLE_FIELD;
-        } elseif ($nodeName === 'unit' && \version_compare($this->version, '2.0') >= 0) {
-            return self::SIMPLE_FIELD;
+        if ('group' === $nodeName) {
+            return ImporterRevision::HTML_FIELD;
+        } elseif ('trans-unit' === $nodeName && \version_compare($this->version, '2.0') < 0) {
+            return ImporterRevision::SIMPLE_FIELD;
+        } elseif ('unit' === $nodeName && \version_compare($this->version, '2.0') >= 0) {
+            return ImporterRevision::SIMPLE_FIELD;
         } else {
-            return self::UNKNOWN_FIELD_TYPE;
+            return ImporterRevision::UNKNOWN_FIELD_TYPE;
         }
     }
 
@@ -110,14 +117,20 @@ class ImporterRevision
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
         $source = \strval($field->source);
         $target = \strval($field->target);
-        $propertyPath= \strval($field['id']);
-        $sourceLocale = $this->getSourceLocale($field);
-        dump($sourceLocale);
+        $propertyPath = \strval($field['id']);
+        $sourceLocale = $this->getAttributeValue($field->source, 'xml:langjh', $this->sourceLocale);
+//        $sourceLocale = $this->getSourceLocale($field);
+//        dump($sourceLocale);
     }
 
-    private function getSourceLocale(\SimpleXMLElement $field): string
+    private function getAttributeValue(\SimpleXMLElement $field, string $attributeName, ?string $defaultValue = null): ?string
     {
-        dump($field->source->attributes());
-        return $this->sourceLocale ?? \strval($field->source['xml:xml:lang']);
+        list($nameSpace, $attribute) = \explode(':', $attributeName);
+        $attribute = $field->attributes($this->nameSpaces[$nameSpace])[$attribute] ?? null;
+        if (null === $attribute) {
+            return $defaultValue;
+        }
+
+        return \strval($attribute);
     }
 }

@@ -19,9 +19,9 @@ div#task-dashboard {
   form[name="emsco_form_table_type"] {
       .box-header { display: none; }
       .box { border: 0; }
-      .table-responsive { min-height: 250px; }
+      .table-responsive { min-height: 210px; }
 
-      td.col-status { width: 50px; text-align: center; }
+      td.col-deadline { width: 100px; text-align: left; }
       td.col-actions { width: 200px; text-align: left; }
   }
 }

@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Revision;
 
 use EMS\CommonBundle\Common\Standard\Json;
+use EMS\CoreBundle\Core\DataTable\TableExporter;
 use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Core\UI\AjaxModal;
 use EMS\CoreBundle\Core\UI\AjaxService;
+use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use EMS\CoreBundle\Form\Form\RevisionTaskType;
 use EMS\CoreBundle\Form\Form\TableType;
@@ -29,27 +31,29 @@ final class TaskController extends AbstractController
     private TaskManager $taskManager;
     private AjaxService $ajax;
     private FormFactoryInterface $formFactory;
+    private TableExporter $tableExporter;
 
     public function __construct(
         TaskManager $taskManager,
         AjaxService $ajax,
-        FormFactoryInterface $formFactory
+        FormFactoryInterface $formFactory,
+        TableExporter $tableExporter
     ) {
         $this->taskManager = $taskManager;
         $this->ajax = $ajax;
         $this->formFactory = $formFactory;
+        $this->tableExporter = $tableExporter;
     }
 
     public function dashboard(Request $request, string $tab): Response
     {
-        $tableUrl = $this->generateUrl('ems_core_task_ajax_datatable', ['tab' => $tab]);
-        $table = $this->taskManager->getTable($tableUrl, $tab);
-
+        $table = $this->getTable($tab);
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
 
         return $this->render('@EMSCore/revision/task/dashboard.html.twig', [
-            'table' => $form->createView(),
+            'table' => $table,
+            'formTable' => $form->createView(),
             'currentTab' => $tab,
             'tabs' => $this->taskManager->getDashboardTabs(),
         ]);
@@ -57,9 +61,7 @@ final class TaskController extends AbstractController
 
     public function ajaxDataTable(Request $request, string $tab): Response
     {
-        $tableUrl = $this->generateUrl('ems_core_task_ajax_datatable', ['tab' => $tab]);
-        $table = $this->taskManager->getTable($tableUrl, $tab);
-
+        $table = $this->getTable($tab);
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
@@ -67,6 +69,22 @@ final class TaskController extends AbstractController
             'dataTableRequest' => $dataTableRequest,
             'table' => $table,
         ], new JsonResponse());
+    }
+
+    public function ajaxDataTableCSV(string $tab): Response
+    {
+        $table = $this->getTable($tab, true);
+        $table->setExportFileName('tasks');
+
+        return $this->tableExporter->exportCSV($table);
+    }
+
+    public function ajaxDataTableExcel(string $tab): Response
+    {
+        $table = $this->getTable($tab, true);
+        $table->setExportFileName('tasks');
+
+        return $this->tableExporter->exportExcel($table);
     }
 
     public function ajaxGetTask(Request $request, int $revisionId): JsonResponse
@@ -338,5 +356,12 @@ final class TaskController extends AbstractController
     private function getAjaxTemplate(): TemplateWrapper
     {
         return $this->ajax->getTemplating()->load('@EMSCore/revision/task/ajax.twig');
+    }
+
+    private function getTable(string $tab, bool $export = false): EntityTable
+    {
+        $tableUrl = $this->generateUrl('ems_core_task_ajax_datatable', ['tab' => $tab]);
+
+        return $this->taskManager->getTable($tableUrl, $tab, $export);
     }
 }

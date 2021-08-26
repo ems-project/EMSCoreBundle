@@ -32,9 +32,6 @@ class ElasticaTable extends TableAbstract
     private string $query;
     private string $ascMissingValuesPosition;
     private string $descMissingValuesPosition;
-    private string $filename;
-    private string $disposition;
-    private string $sheetName;
     private string $rowContext;
 
     /**
@@ -51,9 +48,9 @@ class ElasticaTable extends TableAbstract
         $this->query = $query;
         $this->ascMissingValuesPosition = $ascMissingValuesPosition;
         $this->descMissingValuesPosition = $descMissingValuesPosition;
-        $this->filename = $filename;
-        $this->disposition = $disposition;
-        $this->sheetName = $sheetName;
+        $this->setExportFileName($filename);
+        $this->setExportDisposition($disposition);
+        $this->setExportSheetName($sheetName);
         $this->rowContext = $rowContext;
     }
 
@@ -118,21 +115,6 @@ class ElasticaTable extends TableAbstract
     public function getAttributeName(): string
     {
         return 'dataLink';
-    }
-
-    public function getFilename(): string
-    {
-        return $this->filename;
-    }
-
-    public function getSheetName(): string
-    {
-        return $this->sheetName;
-    }
-
-    public function getDisposition(): string
-    {
-        return $this->disposition;
     }
 
     public function getRowContext(): string

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Helper\Xliff;
 
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class ImporterRevision
@@ -107,6 +108,52 @@ class ImporterRevision
      */
     private function importHtmlField(\SimpleXMLElement $field, array &$rawData): void
     {
+        $propertyPath = \strval($field['id']);
+        $field->registerXPathNamespace('ns', $this->nameSpaces['']);
+
+        $sourceLocale = $this->sourceLocale;
+        $firstSource = $field->xpath('(//ns:source)[1]');
+        if (false === $firstSource) {
+            throw new \RuntimeException('Unexpected missing source');
+        }
+        foreach ($firstSource as $item) {
+            $sourceLocale = $this->getAttributeValue($item, 'xml:lang', $this->sourceLocale);
+            break;
+        }
+        if (null === $sourceLocale) {
+            throw new \RuntimeException('Unexpected missing source locale');
+        }
+        $sourcePropertyPath = \str_replace('%locale%', $sourceLocale, $propertyPath);
+
+        $targetLocale = $this->targetLocale;
+        $firstTarget = $field->xpath('(//ns:target)[1]');
+        if (false === $firstTarget) {
+            throw new \RuntimeException('Unexpected missing source');
+        }
+        foreach ($firstTarget as $item) {
+            $targetLocale = $this->getAttributeValue($item, 'xml:lang', $this->targetLocale);
+            break;
+        }
+        if (null === $targetLocale) {
+            throw new \RuntimeException('Unexpected missing target locale');
+        }
+        $targetPropertyPath = \str_replace('%locale%', $targetLocale, $propertyPath);
+
+        if ($sourcePropertyPath === $targetPropertyPath) {
+            throw new \RuntimeException(\sprintf('Unexpected identical source and target id: %s', $targetPropertyPath));
+        }
+
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $sourceValue = $propertyAccessor->getValue($rawData, $sourcePropertyPath);
+
+        if (null === $sourceValue) {
+            throw new \RuntimeException(\sprintf('Unexpected missing source value for field %s', $sourcePropertyPath));
+        }
+
+        $crawler = new Crawler($sourceValue);
+        $extractor = new Extractor($sourceLocale, $targetLocale, $this->version);
+        $extractor->translateDom($crawler, $field, $this->nameSpaces['']);
+        $propertyAccessor->setValue($rawData, $targetPropertyPath, $crawler->filterXPath('//body')->html());
     }
 
     /**
@@ -114,24 +161,27 @@ class ImporterRevision
      */
     private function importSimpleField(\SimpleXMLElement $field, array &$rawData): void
     {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        $source = \strval($field->source);
-        $target = \strval($field->target);
         $propertyPath = \strval($field['id']);
+
+        $source = \strval($field->source);
         $sourceLocale = $this->getAttributeValue($field->source, 'xml:lang', $this->sourceLocale);
-        $targetLocale = $this->getAttributeValue($field->target, 'xml:lang', $this->targetLocale);
-
-        if (null === $sourceLocale || null === $targetLocale) {
-            throw new \RuntimeException('Unexpected missing locales');
+        if (null === $sourceLocale) {
+            throw new \RuntimeException('Unexpected missing source locale');
         }
-
         $sourcePropertyPath = \str_replace('%locale%', $sourceLocale, $propertyPath);
+
+        $target = \strval($field->target);
+        $targetLocale = $this->getAttributeValue($field->target, 'xml:lang', $this->targetLocale);
+        if (null === $targetLocale) {
+            throw new \RuntimeException('Unexpected missing target locale');
+        }
         $targetPropertyPath = \str_replace('%locale%', $targetLocale, $propertyPath);
 
         if ($sourcePropertyPath === $targetPropertyPath) {
             throw new \RuntimeException(\sprintf('Unexpected identical source and target id: %s', $targetPropertyPath));
         }
 
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
         $sourceValue = $propertyAccessor->getValue($rawData, $sourcePropertyPath);
 
         if ($sourceValue !== $source) {

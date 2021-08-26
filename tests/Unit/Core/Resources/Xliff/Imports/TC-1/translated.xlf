@@ -49,7 +49,7 @@
                 </group>
                 <trans-unit id="/html/body/p/text()">
                     <source xml:lang="en">All rights reserved (c) Gandalf Inc.</source>
-                    <target xml:lang="fr">All rights reserved (c) Gandalf Inc.</target>
+                    <target xml:lang="fr">Tous droits réservés (c) Gandalf Inc.</target>
                 </trans-unit>
             </group>
         </body>

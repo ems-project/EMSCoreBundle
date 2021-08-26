@@ -32,6 +32,8 @@ class ImporterTest extends KernelTestCase
                 if (!\file_exists($expectedFilename)) {
                     \file_put_contents($expectedFilename, \json_encode($correspondingJson, JSON_PRETTY_PRINT));
                 }
+                $expected = \json_decode(\file_get_contents($expectedFilename), true);
+                $this->assertEquals($expected, $correspondingJson);
             }
         }
     }

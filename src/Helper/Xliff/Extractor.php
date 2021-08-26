@@ -139,15 +139,9 @@ class Extractor
         $sourceCrawler = new Crawler($sourceHtml);
         $targetCrawler = new Crawler($targetHtml);
         $id = $fieldPath;
-        if (\version_compare($this->xliffVersion, '2.0') < 0) {
-            $xliffAttributes = [
-                'id' => $id,
-            ];
-        } else {
-            $xliffAttributes = [
-                'id' => $id,
-            ];
-        }
+        $xliffAttributes = [
+            'id' => $id,
+        ];
         $group = $document->addChild('group');
         foreach ($xliffAttributes as $attribute => $value) {
             $group->addAttribute($attribute, $value);
@@ -174,7 +168,7 @@ class Extractor
                 if (null !== $sourceAttributes) {
                     foreach ($sourceAttributes as $value) {
                         if (!$value instanceof \DOMAttr) {
-                            throw new \RuntimeException('Unexpecte attribute object');
+                            throw new \RuntimeException('Unexpected attribute object');
                         }
                         if (\in_array($value->nodeName, self::TRANSLATABLE_ATTRIBUTES, true)) {
                             continue;
@@ -220,13 +214,7 @@ class Extractor
 
     private function addId(\SimpleXMLElement $xliffElement, \DOMNode $domNode, string $attributeName = null): void
     {
-        $id = $domNode->getNodePath();
-        if (null === $id) {
-            $id = \strval($this->nextId++);
-        }
-        if (null !== $attributeName) {
-            $id = \sprintf('%s[@%s]', $id, $attributeName);
-        }
+        $id = $this->getId($domNode, $attributeName);
         $xliffElement->addAttribute('id', $id);
     }
 
@@ -239,7 +227,7 @@ class Extractor
         if (null !== $sourceAttributes && \version_compare($this->xliffVersion, '2.0') < 0) {
             foreach ($sourceAttributes as $value) {
                 if (!$value instanceof \DOMAttr) {
-                    throw new \RuntimeException('Unexpecte attribute object');
+                    throw new \RuntimeException('Unexpected attribute object');
                 }
                 if (\in_array($value->nodeName, self::TRANSLATABLE_ATTRIBUTES, true)) {
                     continue;
@@ -412,5 +400,42 @@ class Extractor
     public static function getRestype(string $nodeName): string
     {
         return self::PRE_DEFINED_VALUES[$nodeName] ?? \sprintf('x-html-%s', $nodeName);
+    }
+
+    public function translateDom(Crawler $crawler, \SimpleXMLElement $field, string $nameSpace): void
+    {
+        $field->registerXPathNamespace('ns', $nameSpace);
+        if (\version_compare($this->xliffVersion, '2.0') < 0) {
+            $xpath = "//ns:trans-unit[@id='%s/text()']/ns:target";
+        } else {
+            $xpath = "//ns:segment[@id='%s/text()']/ns:target";
+        }
+
+        foreach ($crawler->filterXPath('//*') as $domNode) {
+            if (!$this->hasSomethingToTranslate($domNode)) {
+                continue;
+            }
+            if (!$this->isGroupNode($domNode)) {
+                $id = $this->getId($domNode);
+                $targets = $field->xpath(\sprintf($xpath, $id));
+                if (false === $targets || 1 !== \count($targets)) {
+                    throw new \RuntimeException(\sprintf('Target not fount for DOM %s', $id));
+                }
+                $domNode->nodeValue = \strval($targets[0]);
+            }
+        }
+    }
+
+    private function getId(\DOMNode $domNode, ?string $attributeName = null): string
+    {
+        $id = $domNode->getNodePath();
+        if (null === $id) {
+            $id = \strval($this->nextId++);
+        }
+        if (null !== $attributeName) {
+            $id = \sprintf('%s[@%s]', $id, $attributeName);
+        }
+
+        return $id;
     }
 }

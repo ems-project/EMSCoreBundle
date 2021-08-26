@@ -33,7 +33,7 @@ class ImporterTest extends KernelTestCase
                     \file_put_contents($expectedFilename, \json_encode($correspondingJson, JSON_PRETTY_PRINT));
                 }
                 $expected = \json_decode(\file_get_contents($expectedFilename), true);
-                $this->assertEquals($expected, $correspondingJson);
+                $this->assertEquals($expected, $correspondingJson, \sprintf('For the document ems://%s:%s revision %s during the test %s', $document->getContentType(), $document->getOuuid(), $document->getRevisionId(), $fileNameWithExtension));
             }
         }
     }

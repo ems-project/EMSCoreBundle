@@ -108,6 +108,10 @@ class AjaxModal {
                 var messageType = Object.keys(m)[0];
                 var message = m[messageType];
                 this.printMessage(messageType, message);
+
+                if (messageType == 'error') {
+                    location.reload();
+                }
             });
 
             var modelForm = this.modal.querySelector('form');

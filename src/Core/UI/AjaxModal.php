@@ -13,7 +13,6 @@ final class AjaxModal
 {
     private TemplateWrapper $template;
     private TranslatorInterface $translator;
-    private LoggerInterface $logger;
 
     private ?string $title = null;
     private ?string $body = null;
@@ -23,11 +22,10 @@ final class AjaxModal
     /** @var array<mixed> */
     private array $messages = [];
 
-    public function __construct(TemplateWrapper $template, TranslatorInterface $translator, LoggerInterface $logger)
+    public function __construct(TemplateWrapper $template, TranslatorInterface $translator)
     {
         $this->template = $template;
         $this->translator = $translator;
-        $this->logger = $logger;
     }
 
     /**
@@ -43,12 +41,8 @@ final class AjaxModal
     /**
      * @param array<mixed> $parameters
      */
-    public function addMessageError(string $key, array $parameters = [], \Throwable $exception = null): self
+    public function addMessageError(string $key, array $parameters = []): self
     {
-        if (null !== $exception) {
-            $this->logger->error($exception->getMessage(), ['exception' => $exception]);
-        }
-
         return $this->addMessage('error', $key, $parameters);
     }
 

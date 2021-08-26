@@ -229,10 +229,12 @@ final class TaskManager
                 $this->dispatchEvent($task, $revision, TaskEvent::APPROVED, $comment);
                 $revision->addTask($task, $revision->getOwner());
                 $this->setNextPlanned($revision);
-                $this->revisionRepository->save($revision);
             } else {
+                $revision->updateModified();
                 $this->dispatchEvent($task, $revision, TaskEvent::REJECTED, $comment);
             }
+
+            $this->revisionRepository->save($revision);
         });
         $transaction($revision->getId());
     }
@@ -316,6 +318,7 @@ final class TaskManager
                 return $result;
             } catch (\Throwable $e) {
                 $this->logger->error($e->getMessage());
+                throw $e;
             }
         };
     }

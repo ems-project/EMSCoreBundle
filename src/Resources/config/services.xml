@@ -63,7 +63,6 @@
 
         <service id="ems_core.core_ui.ajax_service" class="EMS\CoreBundle\Core\UI\AjaxService">
             <argument type="service" id="twig" />
-            <argument type="service" id="logger" />
             <argument type="service" id="translator" />
         </service>
 

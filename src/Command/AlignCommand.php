@@ -43,27 +43,27 @@ class AlignCommand extends Command
     /** @var string */
     private $searchQuery;
     /** @var string */
-    const ARGUMENT_SOURCE = 'source';
+    public const ARGUMENT_SOURCE = 'source';
     /** @var string */
-    const ARGUMENT_TARGET = 'target';
+    public const ARGUMENT_TARGET = 'target';
     /** @var string */
-    const ARGUMENT_SCROLL_SIZE = 'scrollSize';
+    public const ARGUMENT_SCROLL_SIZE = 'scrollSize';
     /** @var string */
-    const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
+    public const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
     /** @var string */
-    const OPTION_FORCE = 'force';
+    public const OPTION_FORCE = 'force';
     /** @var string */
-    const OPTION_SEARCH_QUERY = 'searchQuery';
+    public const OPTION_SEARCH_QUERY = 'searchQuery';
     /** @var string */
-    const OPTION_SNAPSHOT = 'snapshot';
+    public const OPTION_SNAPSHOT = 'snapshot';
     /** @var string */
-    const OPTION_STRICT = 'strict';
+    public const OPTION_STRICT = 'strict';
     /** @var string */
-    const DEFAULT_SCROLL_SIZE = '100';
+    public const DEFAULT_SCROLL_SIZE = '100';
     /** @var string */
-    const DEFAULT_SCROLL_TIMEOUT = '1m';
+    public const DEFAULT_SCROLL_TIMEOUT = '1m';
     /** @var string */
-    const DEFAULT_SEARCH_QUERY = '{}';
+    public const DEFAULT_SEARCH_QUERY = '{}';
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, ElasticaService $elasticaService, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
     {

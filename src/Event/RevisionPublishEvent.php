@@ -7,7 +7,7 @@ use EMS\CoreBundle\Entity\Revision;
 
 class RevisionPublishEvent extends RevisionEvent
 {
-    const NAME = 'revision.publish';
+    public const NAME = 'revision.publish';
 
     protected $environment;
 

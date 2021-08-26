@@ -48,7 +48,7 @@ class AliasService
     }
 
     /**
-     * @return array<int, array{ add: array{alias: string, index: string}} | array{remove: array{alias: string, index: string}} >
+     * @return array<int, array{ add: array{alias: string, index: string}}>|array<int, array{remove: array{alias: string, index: string}}>
      */
     public function atomicSwitch(Environment $environment, string $newIndex): array
     {

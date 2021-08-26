@@ -18,7 +18,7 @@ class ImporterTest extends KernelTestCase
         foreach ($finder as $file) {
             $absoluteFilePath = $file->getRealPath();
             $fileNameWithExtension = $file->getRelativePathname();
-            $translatedXliff = new \SimpleXMLElement($absoluteFilePath.DIRECTORY_SEPARATOR.'translated.xlif', 0, true);
+            $translatedXliff = new \SimpleXMLElement($absoluteFilePath.DIRECTORY_SEPARATOR.'translated.xlf', 0, true);
 
             $extractor = new Importer($translatedXliff);
             foreach ($extractor->getDocuments() as $document) {
@@ -26,6 +26,7 @@ class ImporterTest extends KernelTestCase
                 $this->assertNotFalse($corresponding);
                 $correspondingJson = \json_decode($corresponding, true);
                 $this->assertIsArray($correspondingJson);
+                $document->importTranslations($correspondingJson);
             }
         }
     }

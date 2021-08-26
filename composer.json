@@ -24,7 +24,7 @@
 		"ext-soap": "*",
 		"ext-zip": "*",
 		"ext-dom": "*",
-		"ext-libxml": "*",,
+		"ext-libxml": "*",
 		"ext-simplexml": "*",
 		"caxy/php-htmldiff": "^0.1",
 		"doctrine/doctrine-migrations-bundle" : "^1.3",

@@ -119,8 +119,18 @@ class ImporterRevision
         $target = \strval($field->target);
         $propertyPath = \strval($field['id']);
         $sourceLocale = $this->getAttributeValue($field->source, 'xml:lang', $this->sourceLocale);
-//        $sourceLocale = $this->getSourceLocale($field);
-//        dump($sourceLocale);
+        $targetLocale = $this->getAttributeValue($field->target, 'xml:lang', $this->targetLocale);
+
+        $sourcePropertyPath = \str_replace('%locale%', $sourceLocale, $propertyPath);
+        $targetPropertyPath = \str_replace('%locale%', $targetLocale, $propertyPath);
+
+        if ($sourcePropertyPath === $targetPropertyPath) {
+            throw new \RuntimeException(\sprintf('Unexpected identical source and target id: %s', $targetPropertyPath));
+        }
+
+        $sourceValue = $propertyAccessor->getValue($rawData, $sourcePropertyPath);
+        dump($sourceValue);
+
     }
 
     public function getAttributeValue(\SimpleXMLElement $field, string $attributeName, ?string $defaultValue = null): ?string

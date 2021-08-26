@@ -13,7 +13,6 @@ use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use EMS\CoreBundle\Form\Form\RevisionTaskType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;

@@ -58,17 +58,18 @@ class InsertionRevision
     }
 
     /**
-     * @param array<mixed> $rawData
+     * @param array<mixed> $rawDataSource
+     * @param array<mixed> $rawDataTarget
      */
-    public function insertTranslations(array &$rawData): void
+    public function extractTranslations(array &$rawDataSource, array &$rawDataTarget): void
     {
         foreach ($this->getTranslatedFields() as $field) {
             switch ($this->filedType($field)) {
                 case self::HTML_FIELD:
-                    $this->importHtmlField($field, $rawData);
+                    $this->importHtmlField($field, $rawDataSource, $rawDataTarget);
                     break;
                 case self::SIMPLE_FIELD:
-                    $this->importSimpleField($field, $rawData);
+                    $this->importSimpleField($field, $rawDataSource, $rawDataTarget);
                     break;
                 default:
                     throw new \RuntimeException('Unexpected field type');
@@ -102,9 +103,10 @@ class InsertionRevision
     }
 
     /**
-     * @param array<mixed> $rawData
+     * @param array<mixed> $rawDataSource
+     * @param array<mixed> $rawDataTarget
      */
-    private function importHtmlField(\SimpleXMLElement $field, array &$rawData): void
+    private function importHtmlField(\SimpleXMLElement $field, array &$rawDataSource, array &$rawDataTarget): void
     {
         $propertyPath = \strval($field['id']);
         $field->registerXPathNamespace('ns', $this->nameSpaces['']);
@@ -142,7 +144,7 @@ class InsertionRevision
         }
 
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        $sourceValue = $propertyAccessor->getValue($rawData, $sourcePropertyPath);
+        $sourceValue = $propertyAccessor->getValue($rawDataSource, $sourcePropertyPath);
 
         if (null === $sourceValue) {
             throw new \RuntimeException(\sprintf('Unexpected missing source value for field %s', $sourcePropertyPath));
@@ -150,20 +152,21 @@ class InsertionRevision
 
         $crawler = new Crawler($sourceValue);
         if (0 === $crawler->count()) {
-            $propertyAccessor->setValue($rawData, $targetPropertyPath, '');
+            $propertyAccessor->setValue($rawDataTarget, $targetPropertyPath, '');
 
             return;
         }
         $extractor = new Extractor($sourceLocale, $targetLocale, $this->version);
         $extractor->translateDom($crawler, $field, $this->nameSpaces['']);
 
-        $propertyAccessor->setValue($rawData, $targetPropertyPath, $crawler->filterXPath('//body')->html());
+        $propertyAccessor->setValue($rawDataTarget, $targetPropertyPath, $crawler->filterXPath('//body')->html());
     }
 
     /**
-     * @param array<mixed> $rawData
+     * @param array<mixed> $rawDataSource
+     * @param array<mixed> $rawDataTarget
      */
-    private function importSimpleField(\SimpleXMLElement $field, array &$rawData): void
+    private function importSimpleField(\SimpleXMLElement $field, array &$rawDataSource, array &$rawDataTarget): void
     {
         $propertyPath = \strval($field['id']);
 
@@ -198,13 +201,13 @@ class InsertionRevision
         }
 
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        $expectedSourceValue = $propertyAccessor->getValue($rawData, $sourcePropertyPath);
+        $expectedSourceValue = $propertyAccessor->getValue($rawDataSource, $sourcePropertyPath);
 
         if ($expectedSourceValue !== $sourceValue) {
             throw new \RuntimeException(\sprintf('Unexpected mismatched sources expected "%s" got "%s" for property %s', $expectedSourceValue, $sourceValue, $sourcePropertyPath));
         }
 
-        $propertyAccessor->setValue($rawData, $targetPropertyPath, $targetValue);
+        $propertyAccessor->setValue($rawDataTarget, $targetPropertyPath, $targetValue);
     }
 
     public function getAttributeValue(\SimpleXMLElement $field, string $attributeName, ?string $defaultValue = null): ?string

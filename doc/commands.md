@@ -120,8 +120,8 @@ Options:
 > Create revision task based on ES query
 
 The command will not create tasks:
-    - if tasks are not enabled (see [tasks documentation](../master/doc/elasticms.md#document-tasks))
-    - if the revision has a current task or planned tasks
+* if tasks are not enabled (see [tasks documentation](elasticms.md#document-tasks))
+* if the revision has a current task or planned tasks
 
 ```bash
 Usage:

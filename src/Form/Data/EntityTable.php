@@ -102,4 +102,9 @@ final class EntityTable extends TableAbstract
 
         return false;
     }
+
+    public function getRowTemplate(): string
+    {
+        return \sprintf("{%%- use '@EMSCore/datatable/row.json.twig' -%%}{{ block('emsco_datatable_row') }}");
+    }
 }

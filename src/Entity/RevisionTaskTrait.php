@@ -38,7 +38,7 @@ trait RevisionTaskTrait
         }
 
         if ($this->owner !== $username) {
-            throw new \RuntimeException(\sprintf('User %s is not the owner!', $username));
+            throw new \RuntimeException(\sprintf('User %s is the owner!', $this->owner));
         }
 
         if (null === $this->taskCurrent) {
@@ -96,9 +96,9 @@ trait RevisionTaskTrait
         return $this->taskPlannedIds ?? [];
     }
 
-    public function getTaskDeadline(): \DateTimeInterface
+    public function getTaskDeadline(): ?\DateTimeInterface
     {
-        return $this->getTaskCurrent()->getDeadline();
+        return $this->getTaskCurrent()->hasDeadline() ? $this->getTaskCurrent()->getDeadline() : null;
     }
 
     public function getTaskCurrent(): Task

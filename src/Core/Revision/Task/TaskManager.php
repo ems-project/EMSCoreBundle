@@ -78,12 +78,17 @@ final class TaskManager
         return $this->revisionRepository->findOneById($revisionId);
     }
 
-    public function getTable(string $ajaxUrl, string $tab): EntityTable
+    public function getTable(string $ajaxUrl, string $tab, bool $export): EntityTable
     {
         $taskTableContext = new TaskTableContext($this->userService->getCurrentUser(), $tab);
 
         $table = new EntityTable($this->taskTableService, $ajaxUrl, $taskTableContext);
-        $this->taskTableService->buildTable($table, $taskTableContext);
+
+        if ($export) {
+            $this->taskTableService->buildTableExport($table, $taskTableContext);
+        } else {
+            $this->taskTableService->buildTable($table, $taskTableContext);
+        }
 
         return $table;
     }
@@ -191,9 +196,14 @@ final class TaskManager
         return $transaction($revisionId);
     }
 
-    public function taskDelete(Task $task, int $revisionId): void
+    public function taskDelete(Task $task, int $revisionId, ?string $description = null): void
     {
-        $transaction = $this->revisionTransaction(function (Revision $revision) use ($task) {
+        $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $description) {
+            if ($description !== $task->getDescription()) {
+                $task->setDescription($description);
+                $this->taskRepository->save($task);
+            }
+
             if ($revision->isTaskCurrent($task)) {
                 $this->setNextPlanned($revision);
             } elseif ($revision->isTaskPlanned($task)) {
@@ -229,10 +239,12 @@ final class TaskManager
                 $this->dispatchEvent($task, $revision, TaskEvent::APPROVED, $comment);
                 $revision->addTask($task, $revision->getOwner());
                 $this->setNextPlanned($revision);
-                $this->revisionRepository->save($revision);
             } else {
+                $revision->updateModified();
                 $this->dispatchEvent($task, $revision, TaskEvent::REJECTED, $comment);
             }
+
+            $this->revisionRepository->save($revision);
         });
         $transaction($revision->getId());
     }
@@ -316,6 +328,7 @@ final class TaskManager
                 return $result;
             } catch (\Throwable $e) {
                 $this->logger->error($e->getMessage());
+                throw $e;
             }
         };
     }

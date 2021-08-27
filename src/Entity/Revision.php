@@ -615,6 +615,13 @@ class Revision implements EntityInterface
         return $this->lockBy;
     }
 
+    public function isLockedFor(string $username): bool
+    {
+        $now = new \DateTime();
+
+        return $this->getLockBy() !== $username && $now < $this->getLockUntil();
+    }
+
     /**
      * Set rawDataFinalizedBy.
      *

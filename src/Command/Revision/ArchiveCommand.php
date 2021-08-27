@@ -85,12 +85,13 @@ final class ArchiveCommand extends Command implements CommandInterface
 
         $countArchived = 0;
         $revisions = $this->revisionService->search($this->search);
+        $revisions->setBatchSize($this->batchSize);
 
         $revisions->batch(function (Revision $revision) use ($progress, &$countArchived) {
             $this->revisionService->archive($revision, $revision->getLockBy(), false);
             $progress->advance();
             ++$countArchived;
-        }, $this->batchSize);
+        });
 
         $progress->finish();
 

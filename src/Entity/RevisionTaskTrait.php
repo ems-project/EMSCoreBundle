@@ -147,9 +147,9 @@ trait RevisionTaskTrait
         return $nextPlannedId;
     }
 
-    public function hasTasks(): bool
+    public function hasTasks(bool $includeApproved = true): bool
     {
-        return $this->hasTaskCurrent() || $this->hasTaskPlannedIds() || $this->hasTaskApprovedIds();
+        return $this->hasTaskCurrent() || $this->hasTaskPlannedIds() || ($includeApproved && $this->hasTaskApprovedIds());
     }
 
     public function hasOwner(): bool
@@ -187,7 +187,7 @@ trait RevisionTaskTrait
         return \in_array($task->getId(), $this->getTaskApprovedIds(), true);
     }
 
-    public function isOwnershipAllowed(): bool
+    public function isTaskEnabled(): bool
     {
         return $this->giveContentType()->hasOwnerRole();
     }

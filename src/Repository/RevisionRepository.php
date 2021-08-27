@@ -10,7 +10,6 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use EMS\CommonBundle\Common\EMSLink;
-use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
@@ -53,7 +52,7 @@ class RevisionRepository extends EntityRepository
     /**
      * @param array<mixed> $search
      */
-    public function search(array $search): Revisions
+    public function search(array $search): QueryBuilder
     {
         $qb = $this->createQueryBuilder('r');
         $qb
@@ -76,7 +75,23 @@ class RevisionRepository extends EntityRepository
             $qb->andWhere($qb->expr()->eq('r.archived', ':archived'))->setParameter('archived', $search['archived']);
         }
 
-        return new Revisions($qb);
+        return $qb;
+    }
+
+    /**
+     * @param string[] $ouuids
+     */
+    public function searchByOuuids(array $ouuids): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->join('r.contentType', 'c')
+            ->join('c.environment', 'e')
+            ->andWhere($qb->expr()->isNull('r.endTime'))
+            ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
+            ->setParameter('ouuids', $ouuids);
+
+        return $qb;
     }
 
     public function save(Revision $revision): void
@@ -678,6 +693,22 @@ class RevisionRepository extends EntityRepository
         return $qbUpdate->getQuery()->execute();
     }
 
+    /**
+     * @param int[] $ids
+     */
+    public function lockRevisionsById(array $ids, string $by, \DateTime $until): int
+    {
+        $qbUpdate = $this->createQueryBuilder('r');
+        $qbUpdate
+            ->update()
+            ->set('r.lockBy', ':by')
+            ->set('r.lockUntil', ':until')
+            ->andWhere($qbUpdate->expr()->in('r.id', ':ids'))
+            ->setParameters(['ids' => $ids, 'by' => $by, 'until' => $until]);
+
+        return $qbUpdate->getQuery()->execute();
+    }
+
     public function lockAllRevisions(\DateTime $until, string $by): int
     {
         return $this->lockRevisions(null, $until, $by, true);
@@ -708,6 +739,22 @@ class RevisionRepository extends EntityRepository
         }
 
         $qbUpdate->andWhere($qbUpdate->expr()->in('u.id', $qbSelect->getDQL()));
+
+        return $qbUpdate->getQuery()->execute();
+    }
+
+    /**
+     * @param int[] $ids
+     */
+    public function unlockRevisionsById(array $ids): int
+    {
+        $qbUpdate = $this->createQueryBuilder('r');
+        $qbUpdate
+            ->update()
+            ->set('r.lockBy', ':null')
+            ->set('r.lockUntil', ':null')
+            ->andWhere($qbUpdate->expr()->in('r.id', ':ids'))
+            ->setParameters(['ids' => $ids, 'null' => null]);
 
         return $qbUpdate->getQuery()->execute();
     }

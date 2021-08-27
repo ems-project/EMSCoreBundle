@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Core\Revision\Task;
 
 use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CoreBundle\Entity\Task;
-use EMS\CoreBundle\Entity\UserInterface;
 
 final class TaskLog
 {
@@ -52,18 +51,18 @@ final class TaskLog
         return $log;
     }
 
-    public static function logStatusUpdate(Task $task, UserInterface $user, ?string $comment): self
+    public static function logStatusUpdate(Task $task, string $username, ?string $comment): self
     {
-        $log = new self($task->getAssignee(), $user->getUsername());
+        $log = new self($task->getAssignee(), $username);
         $log->status = $task->getStatus();
         $log->comment = $comment;
 
         return $log;
     }
 
-    public static function logCreate(Task $task, UserInterface $user): self
+    public static function logCreate(Task $task, string $username): self
     {
-        $log = new self($task->getAssignee(), $user->getUsername());
+        $log = new self($task->getAssignee(), $username);
         $log->status = self::STATUS_CREATED;
         $log->taskTitle = $task->getTitle();
         $log->taskAssignee = $task->getAssignee();
@@ -76,9 +75,9 @@ final class TaskLog
     /**
      * @param array<mixed> $changeSet
      */
-    public static function logUpdate(Task $task, UserInterface $user, array $changeSet): self
+    public static function logUpdate(Task $task, string $username, array $changeSet): self
     {
-        $log = new self($task->getAssignee(), $user->getUsername());
+        $log = new self($task->getAssignee(), $username);
         $log->status = self::STATUS_UPDATED;
 
         if (isset($changeSet['title'])) {

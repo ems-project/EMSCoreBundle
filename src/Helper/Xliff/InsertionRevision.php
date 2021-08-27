@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Helper\Xliff;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class ImporterRevision
+class InsertionRevision
 {
     private const HTML_FIELD = 'html_field';
     private const SIMPLE_FIELD = 'simple_field';
@@ -60,7 +60,7 @@ class ImporterRevision
     /**
      * @param array<mixed> $rawData
      */
-    public function importTranslations(array &$rawData): void
+    public function insertTranslations(array &$rawData): void
     {
         foreach ($this->getTranslatedFields() as $field) {
             switch ($this->filedType($field)) {

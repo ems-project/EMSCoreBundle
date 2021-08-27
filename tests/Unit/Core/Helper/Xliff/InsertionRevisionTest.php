@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Unit\Core\Helper\Xliff;
 
-use EMS\CoreBundle\Helper\Xliff\ImporterRevision;
+use EMS\CoreBundle\Helper\Xliff\InsertionRevision;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class ImporterRevisionTest extends KernelTestCase
+class InsertionRevisionTest extends KernelTestCase
 {
     public function testAttributeGetter(): void
     {
@@ -31,7 +31,7 @@ class ImporterRevisionTest extends KernelTestCase
      */
     private function forDocument(\SimpleXMLElement $document, string $version, array $nameSpaces): void
     {
-        $object = new ImporterRevision($document, $version, $nameSpaces, null, null);
+        $object = new InsertionRevision($document, $version, $nameSpaces, null, null);
         foreach ($object->getTranslatedFields() as $field) {
             $this->assertNull($object->getAttributeValue($field, 'toto'));
             $this->assertEquals('en', $object->getAttributeValue($field->source, 'xml:lang', 'en'));

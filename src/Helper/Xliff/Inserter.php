@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Helper\Xliff;
 
-class Importer
+class Inserter
 {
     private string $version;
     /** @var string[] */
@@ -27,12 +27,12 @@ class Importer
     }
 
     /**
-     * @return iterable<ImporterRevision>
+     * @return iterable<InsertionRevision>
      */
     public function getDocuments(): iterable
     {
         foreach ($this->xliff->children() as $document) {
-            yield new ImporterRevision($document, $this->version, $this->nameSpaces, $this->sourceLocale, $this->targetLocale);
+            yield new InsertionRevision($document, $this->version, $this->nameSpaces, $this->sourceLocale, $this->targetLocale);
         }
     }
 }

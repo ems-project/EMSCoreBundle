@@ -256,7 +256,7 @@ class Extractor
                     $segment->addAttribute($attribute, $value);
                 }
                 $this->addId($segment, $child);
-                $source = $segment->addChild('source', \preg_replace('!\s+!', ' ', $child->textContent));
+                $source = $segment->addChild('source', $this->trimUselessWhiteSpaces($child->textContent));
                 foreach ($sourceAttributes as $attribute => $value) {
                     $source->addAttribute($attribute, $value);
                 }
@@ -269,7 +269,7 @@ class Extractor
                 if (1 !== $foundTarget->count()) {
                     continue;
                 }
-                $target = $segment->addChild('target', \preg_replace('!\s+!', ' ', $foundTarget->text(null, false)));
+                $target = $segment->addChild('target', $this->trimUselessWhiteSpaces($foundTarget->text(null, false)));
                 foreach ($targetAttributes as $attribute => $value) {
                     $target->addAttribute($attribute, $value);
                 }
@@ -460,5 +460,15 @@ class Extractor
                 }
             }
         }
+    }
+
+    private function trimUselessWhiteSpaces(string $text): string
+    {
+        $trimmed = \preg_replace('!\s+!', ' ', $text);
+        if (!\is_string($trimmed)) {
+            throw new \RuntimeException('Unexpected non string preg_replace output');
+        }
+
+        return $trimmed;
     }
 }

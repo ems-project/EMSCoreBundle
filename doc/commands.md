@@ -114,6 +114,41 @@ Options:
 * **--ouuid** : only transform revisions with this ouuid
 * **--dry-run** : will not commit the database transactions
 
+## Revision
+
+### Task create
+> Create revision task based on ES query
+
+The command will not create tasks:
+* if tasks are not enabled (see [tasks documentation](elasticms.md#document-tasks))
+* if the revision has a current task or planned tasks
+
+```bash
+Usage:
+  ems:revision:task:create [options] [--] <environment>
+
+Arguments:
+  environment
+
+Options:
+      --query=QUERY                  elasticSearch query
+      --task=TASK                    {\"title\":\"title\",\"assignee\":\"username\",\"description\":\"optional\"}
+      --fieldAssignee=FIELDASSIGNEE  assignee field in es document
+      --fieldDeadline=FIELDDEADLINE  deadline field in es document
+      --defaultOwner=DEFAULTOWNER    default owner username
+      --notPublished=NOTPUBLISHED    only for revisions not published in this environment
+      --bulkSize=BULKSIZE            batch size [default: "default_bulk_size"]
+```
+
+* **environment** : name of the environment for running the es query
+* **--query**: json escaped string with es query
+* **--task**: json escaped string for task definition  
+* **--fieldAssignee**: use document value for assignee (will search username, displayName, email)
+* **--fieldDeadline**: use document value for deadline
+* **--defaultOwner**: if the revision has no owner, this username will be used  
+* **--notPublished**: only created task for revision that are not published in the given environment name.
+* **--batch-size** : size of entities for transactional commits
+
 ## Notification
 
 ### Send

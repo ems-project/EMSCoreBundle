@@ -94,6 +94,26 @@ class RevisionRepository extends EntityRepository
         return $qb;
     }
 
+    /**
+     * @param string[] $ouuids
+     */
+    public function searchByEnvironmentOuuids(Environment $environment, array $ouuids): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->join('r.contentType', 'c')
+            ->join('c.environment', 'ce')
+            ->join('r.environments', 're')
+            ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
+            ->andWhere($qb->expr()->in('re.id', ':environment_id'))
+            ->setParameters([
+                'environment_id' => $environment->getId(),
+                'ouuids' => $ouuids,
+            ]);
+
+        return $qb;
+    }
+
     public function save(Revision $revision): void
     {
         $this->_em->persist($revision);

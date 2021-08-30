@@ -48,8 +48,9 @@ final class Revisions implements \IteratorAggregate
      */
     public function getIterator(): SimpleBatchIteratorAggregate
     {
-        return SimpleBatchIteratorAggregate::fromQuery(
-            $this->qb->getQuery(),
+        return SimpleBatchIteratorAggregate::fromArrayResult(
+            $this->qb->getQuery()->getResult(),
+            $this->qb->getEntityManager(),
             $this->batchSize
         );
     }

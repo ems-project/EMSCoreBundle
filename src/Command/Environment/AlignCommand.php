@@ -11,6 +11,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\PublishService;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,6 +21,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AlignCommand extends AbstractCommand
 {
+    private RevisionService $revisionService;
     private LoggerInterface $logger;
     private DataService $data;
     private ContentTypeService $contentTypeService;
@@ -47,9 +49,17 @@ class AlignCommand extends AbstractCommand
 
     protected static $defaultName = 'ems:environment:align';
 
-    public function __construct(LoggerInterface $logger, ElasticaService $elasticaService, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
-    {
+    public function __construct(
+        RevisionService $revisionService,
+        LoggerInterface $logger,
+        ElasticaService $elasticaService,
+        DataService $data,
+        ContentTypeService $contentTypeService,
+        EnvironmentService $environmentService,
+        PublishService $publishService
+    ) {
         parent::__construct();
+        $this->revisionService = $revisionService;
         $this->logger = $logger;
         $this->elasticaService = $elasticaService;
         $this->data = $data;
@@ -89,11 +99,11 @@ class AlignCommand extends AbstractCommand
 
         $environmentNames = $this->environmentService->getEnvironmentNames();
 
-        $sourceName = $this->choiceArgumentString(self::ARGUMENT_SOURCE, 'Select an existing environment as source', $environmentNames);
-        $targetName = $this->choiceArgumentString(self::ARGUMENT_TARGET, 'Select an existing environment as target', $environmentNames);
+        $this->choiceArgumentString(self::ARGUMENT_SOURCE, 'Select an existing environment as source', $environmentNames);
+        $this->choiceArgumentString(self::ARGUMENT_TARGET, 'Select an existing environment as target', $environmentNames);
 
-        $this->source = $this->environmentService->giveByName($sourceName);
-        $this->target = $this->environmentService->giveByName($targetName);
+        $this->source = $this->environmentService->giveByName($this->getArgumentString(self::ARGUMENT_SOURCE));
+        $this->target = $this->environmentService->giveByName($this->getArgumentString(self::ARGUMENT_TARGET));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -102,17 +112,13 @@ class AlignCommand extends AbstractCommand
 
         if (!$input->getOption(self::OPTION_FORCE)) {
             $this->io->error('Has protection, the force option is mandatory.');
+
             return self::EXECUTE_ERROR;
         }
 
-        $search = $this->elasticaService->convertElasticsearchSearch([
-            'index' => $this->source->getAlias(),
-            'size' => $this->scrollSize,
-            'body' => $this->searchQuery,
-        ]);
-
-        $scroll = $this->elasticaService->scroll($search, $this->scrollTimeout);
-        $total = $this->elasticaService->count($search);
+        $search = $this->revisionService->querySearchEnvironment($this->source, $this->searchQuery, $this->scrollSize);
+        $scroll = $this->revisionService->scrollByEnvironment($this->source, $search, $this->scrollTimeout);
+        $total = $this->revisionService->querySearchTotal($search);
 
         $this->io->note(\sprintf('The source environment contains %s elements, start aligning environments...', $total));
         $this->io->progressStart($total);
@@ -121,19 +127,13 @@ class AlignCommand extends AbstractCommand
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];
 
-        foreach ($scroll as $resultSet) {
-            foreach ($resultSet as $result) {
-                if (false === $result) {
-                    continue;
-                }
-                $contentType = $this->contentTypeService->getByName($result->getSource()['_contenttype']);
-                if (false === $contentType) {
-                    throw new \RuntimeException('Unexpected null content type');
-                }
-                $revision = $this->data->getRevisionByEnvironment($result->getId(), $contentType, $this->source);
+        foreach ($scroll as $revisions) {
+            foreach ($revisions as $revision) {
+                $contentType = $revision->giveContentType();
+
                 if ($revision->getDeleted()) {
                     ++$deletedRevision;
-                } elseif ($contentType->getEnvironment() === $this->target) {
+                } elseif ($contentType->giveEnvironment()->getName() === $this->target->getName()) {
                     if (!isset($targetIsPreviewEnvironment[$contentType->getName()])) {
                         $targetIsPreviewEnvironment[$contentType->getName()] = 0;
                     }
@@ -143,30 +143,37 @@ class AlignCommand extends AbstractCommand
                         ++$alreadyAligned;
                     }
                 }
+
                 $this->io->progressAdvance();
             }
         }
 
         $this->io->progressFinish();
 
-        if ($deletedRevision) {
-            $this->io->caution(\sprintf('%s deleted revisions were not aligned', $deletedRevision));
-        }
-
-        if ($alreadyAligned) {
-            $this->io->note(\sprintf('%s revisions were already aligned', $alreadyAligned));
-        }
-
-        foreach ($targetIsPreviewEnvironment as $ctName => $counter) {
-            $this->io->caution(\sprintf('%s %s revisions were not aligned as %s is the default environment', $counter, $ctName, $this->target->getName()));
-        }
-
         if ($input->getOption(self::OPTION_SNAPSHOT)) {
             $this->environmentService->setSnapshotTag($this->target);
             $this->io->note(\sprintf('The target environment "%s" was tagged as a snapshot', $this->target->getName()));
         }
 
-        $this->io->success(\sprintf('Environments %s -> %s were aligned.', $this->source->getName(), $this->target->getName()));
+        if ($deletedRevision > 0) {
+            $this->io->caution(\sprintf('%s deleted revisions were not aligned', $deletedRevision));
+        }
+
+        if ($alreadyAligned > 0) {
+            $this->io->note(\sprintf('%s revisions were already aligned', $alreadyAligned));
+        }
+
+        foreach ($targetIsPreviewEnvironment as $ctName => $counter) {
+            $this->io->caution(\sprintf(
+                '%s %s revisions were not aligned as %s is the default environment',
+                $counter, $ctName, $this->target->getName()
+            ));
+        }
+
+        $this->io->success(\vsprintf('Environments %s -> %s were aligned.', [
+            $this->source->getName(),
+            $this->target->getName(),
+        ]));
 
         return self::EXECUTE_SUCCESS;
     }

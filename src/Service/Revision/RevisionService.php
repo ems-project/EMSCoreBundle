@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Revision;
 
+use Elastica\Document;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
+use EMS\CommonBundle\Search\Search;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Core\Revision\Revisions;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
@@ -20,17 +25,20 @@ class RevisionService
     private LoggerInterface $logger;
     private RevisionRepository $revisionRepository;
     private PublishService $publishService;
+    private ElasticaService $elasticaService;
 
     public function __construct(
         DataService $dataService,
         LoggerInterface $logger,
         RevisionRepository $revisionRepository,
-        PublishService $publishService
+        PublishService $publishService,
+        ElasticaService $elasticaService
     ) {
         $this->dataService = $dataService;
         $this->logger = $logger;
         $this->revisionRepository = $revisionRepository;
         $this->publishService = $publishService;
+        $this->elasticaService = $elasticaService;
     }
 
     public function archive(Revision $revision, string $archivedBy, bool $flush = true): bool
@@ -89,6 +97,45 @@ class RevisionService
     public function searchByOuuids(array $ouuids): Revisions
     {
         return new Revisions($this->revisionRepository->searchByOuuids($ouuids));
+    }
+
+    /**
+     * @param string[] $ouuids
+     */
+    public function searchByEnvironmentOuuids(Environment $environment, array $ouuids): Revisions
+    {
+        return new Revisions($this->revisionRepository->searchByEnvironmentOuuids($environment, $ouuids));
+    }
+
+    public function querySearchEnvironment(Environment $environment, string $query, int $size): Search
+    {
+        $search = $this->elasticaService->convertElasticsearchBody(
+            [$environment->getAlias()],
+            [],
+            ['query' => Json::decode($query)]
+        );
+        $search->setSize($size);
+
+        return $search;
+    }
+
+    public function querySearchTotal(Search $search): int
+    {
+        return $this->elasticaService->count($search);
+    }
+
+    /**
+     * @return iterable|Revisions[]
+     */
+    public function scrollByEnvironment(Environment $environment, Search $search, string $timeout): iterable
+    {
+        foreach ($this->elasticaService->scroll($search, $timeout) as $resultSet) {
+            $documents = $resultSet->getDocuments();
+            /** @var string[] $ouuids */
+            $ouuids = \array_map(fn (Document $doc) => $doc->getId(), $documents);
+
+            yield $this->searchByEnvironmentOuuids($environment, $ouuids);
+        }
     }
 
     public function lockRevisions(Revisions $revisions, string $by, string $until = '+5 minutes'): void

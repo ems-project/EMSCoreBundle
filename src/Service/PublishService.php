@@ -12,6 +12,7 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\Revision\LoggingContext;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -200,35 +201,24 @@ class PublishService
      */
     public function publish(Revision $revision, Environment $environment, $command = false)
     {
+        $logContext = LoggingContext::publish($revision, $environment);
         if (!$command) {
             $user = $this->userService->getCurrentUser();
             if (!empty($environment->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(\array_intersect($environment->getCircles(), $user->getCircles()))) {
-                $this->logger->warning('service.publish.not_in_circles', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                ]);
+                $this->logger->warning('service.publish.not_in_circles', $logContext);
 
                 return 0;
             }
 
             if (!$this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole())) {
-                $this->logger->warning('service.publish.not_authorized', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                ]);
+                $this->logger->warning('service.publish.not_authorized', $logContext);
 
                 return 0;
             }
         }
 
         if ($revision->getContentType()->getEnvironment() === $environment && !empty($revision->getEndTime())) {
-            $this->logger->warning('service.publish.not_in_default_environment', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-            ]);
+            $this->logger->warning('service.publish.not_in_default_environment', $logContext);
 
             return 0;
         }
@@ -240,12 +230,7 @@ class PublishService
         $already = false;
         if ($item === $revision) {
             $already = true;
-            $this->logger->notice('service.publish.already_published', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                EmsFields::LOG_REVISION_ID_FIELD => $environment->getId(),
-            ]);
+            $this->logger->notice('service.publish.already_published', $logContext);
         } elseif ($item) {
             /** @var Statement $statement */
             $statement = $connection->prepare('delete from environment_revision where environment_id = :envId and revision_id = :revId');
@@ -257,20 +242,13 @@ class PublishService
         $this->dataService->sign($revision, true);
         if ($this->indexService->indexRevision($revision, $environment)) {
             $this->revRepository->save($revision);
-            $this->logger->notice('service.publish.publish', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+            $this->logger->notice('service.publish.publish', \array_merge([
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-            ]);
+            ], $logContext));
         } else {
-            $this->logger->warning('service.publish.publish_failed', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+            $this->logger->warning('service.publish.publish_failed', \array_merge([
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-            ]);
+            ], $logContext));
         }
 
         if (!$already) {
@@ -280,25 +258,16 @@ class PublishService
             $statement->bindValue('revId', $revision->getId());
             $statement->execute();
             if (!$command) {
-                $this->logger->notice('service.publish.published', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $environment->getId(),
-                ]);
+                $this->logger->notice('service.publish.published', $logContext);
             }
 
             $this->dispatcher->dispatch(RevisionPublishEvent::NAME, new RevisionPublishEvent($revision, $environment));
         }
 
         if (!$command) {
-            $this->logger->info('log.data.revision.publish', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+            $this->logger->info('log.data.revision.publish', \array_merge([
                 EmsFields::LOG_OPERATION_FIELD => $already ? EmsFields::LOG_OPERATION_UPDATE : EmsFields::LOG_OPERATION_CREATE,
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-            ]);
+            ], $logContext));
         }
 
         return $already ? 0 : 1;

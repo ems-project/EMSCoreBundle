@@ -136,6 +136,7 @@ Options:
       --fieldAssignee=FIELDASSIGNEE  assignee field in es document
       --fieldDeadline=FIELDDEADLINE  deadline field in es document
       --defaultOwner=DEFAULTOWNER    default owner username
+      --notPublished=NOTPUBLISHED    only for revisions not published in this environment
       --bulkSize=BULKSIZE            batch size [default: "default_bulk_size"]
 ```
 
@@ -145,6 +146,7 @@ Options:
 * **--fieldAssignee**: use document value for assignee (will search username, displayName, email)
 * **--fieldDeadline**: use document value for deadline
 * **--defaultOwner**: if the revision has no owner, this username will be used  
+* **--notPublished**: only created task for revision that are not published in the given environment name.
 * **--batch-size** : size of entities for transactional commits
 
 ## Notification

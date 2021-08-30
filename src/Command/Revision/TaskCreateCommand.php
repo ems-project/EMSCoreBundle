@@ -40,6 +40,7 @@ final class TaskCreateCommand extends AbstractCommand
     private string $defaultOwner;
     private ?string $fieldAssignee = null;
     private ?string $fieldDeadline = null;
+    private ?string $notPublished = null;
 
     private const USER = 'SYSTEM_TASK_MANAGER';
     protected static $defaultName = 'ems:revision:task:create';
@@ -70,6 +71,7 @@ final class TaskCreateCommand extends AbstractCommand
             ->addOption('fieldAssignee', null, InputOption::VALUE_REQUIRED, 'assignee field in es document')
             ->addOption('fieldDeadline', null, InputOption::VALUE_REQUIRED, 'deadline field in es document')
             ->addOption('defaultOwner', null, InputOption::VALUE_REQUIRED, 'default owner username')
+            ->addOption('notPublished', null, InputOption::VALUE_REQUIRED, 'only for revisions not published in this environment')
             ->addOption('bulkSize', null, InputOption::VALUE_REQUIRED, 'batch size', 'default_bulk_size')
         ;
     }
@@ -89,6 +91,7 @@ final class TaskCreateCommand extends AbstractCommand
         $this->defaultOwner = $this->getOptionString('defaultOwner');
         $this->fieldAssignee = $this->getOptionStringNull('fieldAssignee');
         $this->fieldDeadline = $this->getOptionStringNull('fieldDeadline');
+        $this->notPublished = $this->getOptionStringNull('notPublished');
 
         $this->bulkSize = $this->getOptionIntNull('bulkSize') ?? $this->bulkSize;
     }
@@ -128,6 +131,10 @@ final class TaskCreateCommand extends AbstractCommand
 
     private function createTask(Revision $revision, Document $document): void
     {
+        if ('adaef08d0d02f09a32d0c065dd71f4ae215a94af' === $revision->getOuuid()) {
+            $test = 1;
+        }
+
         if (!$revision->isTaskEnabled()) {
             $this->io->warning(\sprintf('Skipping revision %s tasks not enabled', $revision));
 
@@ -135,6 +142,10 @@ final class TaskCreateCommand extends AbstractCommand
         }
 
         if ($revision->hasTasks(false)) {
+            return;
+        }
+
+        if ($this->notPublished && $revision->isPublished($this->notPublished)) {
             return;
         }
 

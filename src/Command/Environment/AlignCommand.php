@@ -1,6 +1,6 @@
 <?php
 
-namespace EMS\CoreBundle\Command;
+namespace EMS\CoreBundle\Command\Environment;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -18,8 +18,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AlignCommand extends Command
 {
-    /** @var string */
-    protected static $defaultName = 'ems:environment:align';
     /** @var Registry */
     protected $doctrine;
     /** @var LoggerInterface */
@@ -42,28 +40,20 @@ class AlignCommand extends Command
     private $scrollTimeout;
     /** @var string */
     private $searchQuery;
-    /** @var string */
+
     public const ARGUMENT_SOURCE = 'source';
-    /** @var string */
     public const ARGUMENT_TARGET = 'target';
-    /** @var string */
     public const ARGUMENT_SCROLL_SIZE = 'scrollSize';
-    /** @var string */
     public const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
-    /** @var string */
     public const OPTION_FORCE = 'force';
-    /** @var string */
     public const OPTION_SEARCH_QUERY = 'searchQuery';
-    /** @var string */
     public const OPTION_SNAPSHOT = 'snapshot';
-    /** @var string */
     public const OPTION_STRICT = 'strict';
-    /** @var string */
     public const DEFAULT_SCROLL_SIZE = '100';
-    /** @var string */
     public const DEFAULT_SCROLL_TIMEOUT = '1m';
-    /** @var string */
     public const DEFAULT_SEARCH_QUERY = '{}';
+
+    protected static $defaultName = 'ems:environment:align';
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, ElasticaService $elasticaService, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
     {
@@ -80,57 +70,16 @@ class AlignCommand extends Command
 
     protected function configure(): void
     {
-        $this->logger->info('Configure the AlignCommand');
-
         $this
             ->setDescription('Align an environment from another one')
-            ->addArgument(
-                self::ARGUMENT_SOURCE,
-                InputArgument::REQUIRED,
-                'Environment source name'
-            )
-            ->addArgument(
-                self::ARGUMENT_TARGET,
-                InputArgument::REQUIRED,
-                'Environment target name'
-            )
-            ->addArgument(
-                self::ARGUMENT_SCROLL_SIZE,
-                InputArgument::OPTIONAL,
-                'Size of the elasticsearch scroll request',
-                self::DEFAULT_SCROLL_SIZE
-            )
-            ->addArgument(
-                self::ARGUMENT_SCROLL_TIMEOUT,
-                InputArgument::OPTIONAL,
-                'Time to migrate "scrollSize" items i.e. 30s or 2m',
-                self::DEFAULT_SCROLL_TIMEOUT
-            )
-            ->addOption(
-                self::OPTION_SEARCH_QUERY,
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Query used to find elasticsearch records to import',
-                self::DEFAULT_SEARCH_QUERY
-            )
-            ->addOption(
-                self::OPTION_FORCE,
-                null,
-                InputOption::VALUE_NONE,
-                'If set, the task will be performed (protection)'
-            )
-            ->addOption(
-                self::OPTION_SNAPSHOT,
-                null,
-                InputOption::VALUE_NONE,
-                'If set, the target environment will be tagged as a snapshot after the alignment'
-            )
-            ->addOption(
-                self::OPTION_STRICT,
-                null,
-                InputOption::VALUE_NONE,
-                'If set, a failed check will throw an exception'
-            )
+            ->addArgument(self::ARGUMENT_SOURCE, InputArgument::REQUIRED, 'Environment source name')
+            ->addArgument(self::ARGUMENT_TARGET, InputArgument::REQUIRED, 'Environment target name')
+            ->addArgument(self::ARGUMENT_SCROLL_SIZE, InputArgument::OPTIONAL, 'Size of the elasticsearch scroll request', self::DEFAULT_SCROLL_SIZE)
+            ->addArgument(self::ARGUMENT_SCROLL_TIMEOUT, InputArgument::OPTIONAL, 'Time to migrate "scrollSize" items i.e. 30s or 2m', self::DEFAULT_SCROLL_TIMEOUT)
+            ->addOption(self::OPTION_SEARCH_QUERY, null, InputOption::VALUE_OPTIONAL, 'Query used to find elasticsearch records to import', self::DEFAULT_SEARCH_QUERY)
+            ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'If set, the task will be performed (protection)')
+            ->addOption(self::OPTION_SNAPSHOT, null, InputOption::VALUE_NONE, 'If set, the target environment will be tagged as a snapshot after the alignment')
+            ->addOption(self::OPTION_STRICT, null, InputOption::VALUE_NONE, 'If set, a failed check will throw an exception')
         ;
     }
 

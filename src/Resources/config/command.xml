@@ -20,6 +20,18 @@
             <tag name="console.command"/>
         </service>
 
+        <!-- EMS environment -->
+        <service id="ems.command.environment.align" class="EMS\CoreBundle\Command\Environment\AlignCommand">
+            <argument type="service" id="Doctrine\Bundle\DoctrineBundle\Registry" />
+            <argument type="service" id="logger" />
+            <argument type="service" id="EMS\CommonBundle\Service\ElasticaService" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="ems.service.publish" />
+            <tag name="console.command"/>
+        </service>
+
         <!-- EMS revision -->
         <service id="ems.command.revision.archive" class="EMS\CoreBundle\Command\Revision\ArchiveCommand">
             <argument type="service" id="ems.service.contenttype"/>

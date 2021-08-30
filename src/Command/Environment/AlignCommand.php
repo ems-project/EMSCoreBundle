@@ -1,45 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Environment;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class AlignCommand extends Command
+class AlignCommand extends AbstractCommand
 {
-    /** @var Registry */
-    protected $doctrine;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var DataService */
-    protected $data;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var EnvironmentService */
-    private $environmentService;
-    /** @var PublishService */
-    private $publishService;
-    /** @var ElasticaService */
-    private $elasticaService;
-    /** @var SymfonyStyle */
-    private $io;
-    /** @var int */
-    private $scrollSize;
-    /** @var string */
-    private $scrollTimeout;
-    /** @var string */
-    private $searchQuery;
+    private LoggerInterface $logger;
+    private DataService $data;
+    private ContentTypeService $contentTypeService;
+    private EnvironmentService $environmentService;
+    private PublishService $publishService;
+    private ElasticaService $elasticaService;
+
+    private Environment $source;
+    private Environment $target;
+
+    private int $scrollSize;
+    private string $scrollTimeout;
+    private string $searchQuery;
 
     public const ARGUMENT_SOURCE = 'source';
     public const ARGUMENT_TARGET = 'target';
@@ -48,24 +41,21 @@ class AlignCommand extends Command
     public const OPTION_FORCE = 'force';
     public const OPTION_SEARCH_QUERY = 'searchQuery';
     public const OPTION_SNAPSHOT = 'snapshot';
-    public const OPTION_STRICT = 'strict';
-    public const DEFAULT_SCROLL_SIZE = '100';
+    public const DEFAULT_SCROLL_SIZE = 100;
     public const DEFAULT_SCROLL_TIMEOUT = '1m';
     public const DEFAULT_SEARCH_QUERY = '{}';
 
     protected static $defaultName = 'ems:environment:align';
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, ElasticaService $elasticaService, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
+    public function __construct(LoggerInterface $logger, ElasticaService $elasticaService, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
     {
-        $this->doctrine = $doctrine;
+        parent::__construct();
         $this->logger = $logger;
         $this->elasticaService = $elasticaService;
         $this->data = $data;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->publishService = $publishService;
-
-        parent::__construct();
     }
 
     protected function configure(): void
@@ -79,73 +69,44 @@ class AlignCommand extends Command
             ->addOption(self::OPTION_SEARCH_QUERY, null, InputOption::VALUE_OPTIONAL, 'Query used to find elasticsearch records to import', self::DEFAULT_SEARCH_QUERY)
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'If set, the task will be performed (protection)')
             ->addOption(self::OPTION_SNAPSHOT, null, InputOption::VALUE_NONE, 'If set, the target environment will be tagged as a snapshot after the alignment')
-            ->addOption(self::OPTION_STRICT, null, InputOption::VALUE_NONE, 'If set, a failed check will throw an exception')
         ;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
+        parent::initialize($input, $output);
         $this->io = new SymfonyStyle($input, $output);
-        $this->io->title('Align environments');
+        $this->io->title('EMS - Environment - Align');
 
-        $scrollSize = \intval($input->getArgument(self::ARGUMENT_SCROLL_SIZE));
-        if (0 === $scrollSize) {
-            throw new \RuntimeException('Unexpected scroll size argument');
-        }
-        $this->scrollSize = $scrollSize;
-        $scrollTimeout = $input->getArgument(self::ARGUMENT_SCROLL_TIMEOUT);
-        if (!\is_string($scrollTimeout)) {
-            throw new \RuntimeException('Unexpected scroll timeout argument');
-        }
-        $this->scrollTimeout = $scrollTimeout;
-        $searchQuery = $input->getOption(self::OPTION_SEARCH_QUERY);
-        if (!\is_string($searchQuery)) {
-            throw new \RuntimeException('Unexpected query argument');
-        }
-        $this->searchQuery = $searchQuery;
+        $this->scrollSize = $this->getArgumentInt(self::ARGUMENT_SCROLL_SIZE);
+        $this->scrollTimeout = $this->getArgumentString(self::ARGUMENT_SCROLL_TIMEOUT);
+        $this->searchQuery = $this->getOptionString(self::OPTION_SEARCH_QUERY);
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $this->logger->info('Interact with AlignCommand');
 
-        $this->io->section('Check inputs');
-        $this->checkSource($input);
-        $this->checkTarget($input);
+        $environmentNames = $this->environmentService->getEnvironmentNames();
+
+        $sourceName = $this->choiceArgumentString(self::ARGUMENT_SOURCE, 'Select an existing environment as source', $environmentNames);
+        $targetName = $this->choiceArgumentString(self::ARGUMENT_TARGET, 'Select an existing environment as target', $environmentNames);
+
+        $this->source = $this->environmentService->giveByName($sourceName);
+        $this->target = $this->environmentService->giveByName($targetName);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->logger->info('Execute the AlignCommand');
-
         $this->io->section('Execute');
+
         if (!$input->getOption(self::OPTION_FORCE)) {
             $this->io->error('Has protection, the force option is mandatory.');
-
-            return -1;
-        }
-
-        $sourceName = $input->getArgument(self::ARGUMENT_SOURCE);
-        $targetName = $input->getArgument(self::ARGUMENT_TARGET);
-        if (!\is_string($targetName)) {
-            throw new \RuntimeException('Target name as to be a string');
-        }
-        if (!\is_string($sourceName)) {
-            throw new \RuntimeException('Source name as to be a string');
-        }
-
-        $this->environmentService->clearCache();
-        $source = $this->environmentService->getAliasByName($sourceName);
-        if (false === $source) {
-            throw new \RuntimeException('Source environment not found');
-        }
-        $target = $this->environmentService->getAliasByName($targetName);
-        if (false === $target) {
-            throw new \RuntimeException('Target environment not found');
+            return self::EXECUTE_ERROR;
         }
 
         $search = $this->elasticaService->convertElasticsearchSearch([
-            'index' => $source->getAlias(),
+            'index' => $this->source->getAlias(),
             'size' => $this->scrollSize,
             'body' => $this->searchQuery,
         ]);
@@ -154,7 +115,6 @@ class AlignCommand extends Command
         $total = $this->elasticaService->count($search);
 
         $this->io->note(\sprintf('The source environment contains %s elements, start aligning environments...', $total));
-
         $this->io->progressStart($total);
 
         $deletedRevision = 0;
@@ -170,16 +130,16 @@ class AlignCommand extends Command
                 if (false === $contentType) {
                     throw new \RuntimeException('Unexpected null content type');
                 }
-                $revision = $this->data->getRevisionByEnvironment($result->getId(), $contentType, $source);
+                $revision = $this->data->getRevisionByEnvironment($result->getId(), $contentType, $this->source);
                 if ($revision->getDeleted()) {
                     ++$deletedRevision;
-                } elseif ($contentType->getEnvironment() === $target) {
+                } elseif ($contentType->getEnvironment() === $this->target) {
                     if (!isset($targetIsPreviewEnvironment[$contentType->getName()])) {
                         $targetIsPreviewEnvironment[$contentType->getName()] = 0;
                     }
                     ++$targetIsPreviewEnvironment[$contentType->getName()];
                 } else {
-                    if (0 == $this->publishService->publish($revision, $target, true)) {
+                    if (0 == $this->publishService->publish($revision, $this->target, true)) {
                         ++$alreadyAligned;
                     }
                 }
@@ -198,113 +158,16 @@ class AlignCommand extends Command
         }
 
         foreach ($targetIsPreviewEnvironment as $ctName => $counter) {
-            $this->io->caution(\sprintf('%s %s revisions were not aligned as %s is the default environment', $counter, $ctName, $targetName));
+            $this->io->caution(\sprintf('%s %s revisions were not aligned as %s is the default environment', $counter, $ctName, $this->target->getName()));
         }
 
         if ($input->getOption(self::OPTION_SNAPSHOT)) {
-            $this->environmentService->setSnapshotTag($target);
-            $this->io->note(\sprintf('The target environment "%s" was tagged as a snapshot', $targetName));
+            $this->environmentService->setSnapshotTag($this->target);
+            $this->io->note(\sprintf('The target environment "%s" was tagged as a snapshot', $this->target->getName()));
         }
 
-        $this->io->success(\sprintf('Environments %s -> %s were aligned.', $sourceName, $targetName));
+        $this->io->success(\sprintf('Environments %s -> %s were aligned.', $this->source->getName(), $this->target->getName()));
 
-        return 0;
-    }
-
-    private function checkSource(InputInterface $input): void
-    {
-        $sourceName = $input->getArgument(self::ARGUMENT_SOURCE);
-        if (null === $sourceName) {
-            $message = 'Source environment not provided';
-            $this->setSourceArgument($input, $message);
-
-            return;
-        }
-        if (!\is_string($sourceName)) {
-            throw new \RuntimeException('Source name as to be a string');
-        }
-
-        $source = $this->environmentService->getAliasByName($sourceName);
-        if (false === $source) {
-            $message = \sprintf('Source environment "%s" not found', $sourceName);
-            $this->setSourceArgument($input, $message);
-            $this->checkSource($input);
-
-            return;
-        }
-
-        $this->io->note(\sprintf('Continuing with the source environment "%s"', $sourceName));
-    }
-
-    private function setSourceArgument(InputInterface $input, string $message): void
-    {
-        if ($input->getOption(self::OPTION_STRICT)) {
-            $this->logger->error($message);
-            throw new \Exception($message);
-        }
-
-        $this->io->caution($message);
-        $sourceName = $this->io->choice('Select an existing environment as source', $this->environmentService->getEnvironmentNames());
-        $input->setArgument(self::ARGUMENT_SOURCE, $sourceName);
-    }
-
-    private function checkTarget(InputInterface $input): void
-    {
-        $targetName = $input->getArgument(self::ARGUMENT_TARGET);
-        if (null === $targetName) {
-            $message = 'Target environment not provided';
-            $this->setTargetArgument($input, $message);
-
-            return;
-        }
-        if (!\is_string($targetName)) {
-            throw new \RuntimeException('Target name as to be a string');
-        }
-
-        $this->environmentService->clearCache();
-        $target = $this->environmentService->getByName($targetName);
-        if (false === $target) {
-            $message = \sprintf('Target environment "%s" not found', $targetName);
-            $this->setTargetArgument($input, $message);
-            $this->checkTarget($input);
-
-            return;
-        }
-
-        if ($target->getSnapshot()) {
-            $message = 'Target cannot be a snapshot';
-            $this->setTargetArgument($input, $message);
-            $this->checkTarget($input);
-
-            return;
-        }
-
-        $sourceName = $input->getArgument(self::ARGUMENT_SOURCE);
-        if (!\is_string($sourceName)) {
-            throw new \RuntimeException('Source name as to be a string');
-        }
-        $source = $this->environmentService->getAliasByName($sourceName);
-
-        if ($source === $target) {
-            $message = 'Target and source are the same environment, it\'s aligned ;-)';
-            $this->setTargetArgument($input, $message);
-            $this->checkTarget($input);
-
-            return;
-        }
-
-        $this->io->note(\sprintf('Continuing with the target environment "%s"', $targetName));
-    }
-
-    private function setTargetArgument(InputInterface $input, string $message): void
-    {
-        if ($input->getOption(self::OPTION_STRICT)) {
-            $this->logger->error($message);
-            throw new \Exception($message);
-        }
-
-        $this->io->caution($message);
-        $targetName = $this->io->choice('Select an existing (not snapshot) environment as target', $this->environmentService->getNotSnapshotEnvironmentsNames());
-        $input->setArgument(self::ARGUMENT_TARGET, $targetName);
+        return self::EXECUTE_SUCCESS;
     }
 }

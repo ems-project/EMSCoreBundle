@@ -22,7 +22,6 @@
 
         <!-- EMS environment -->
         <service id="ems.command.environment.align" class="EMS\CoreBundle\Command\Environment\AlignCommand">
-            <argument type="service" id="Doctrine\Bundle\DoctrineBundle\Registry" />
             <argument type="service" id="logger" />
             <argument type="service" id="EMS\CommonBundle\Service\ElasticaService" />
             <argument type="service" id="ems.service.data" />

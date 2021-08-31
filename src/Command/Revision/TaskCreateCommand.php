@@ -42,13 +42,13 @@ final class TaskCreateCommand extends AbstractCommand
 
     public const ARGUMENT_ENVIRONMENT = 'environment';
     public const OPTION_TASK = 'task';
-    public const OPTION_FIELD_ASSIGNEE = 'fieldAssignee';
-    public const OPTION_FIELD_DEADLINE = 'fieldDeadline';
-    public const OPTION_DEFAULT_OWNER = 'defaultOwner';
-    public const OPTION_NOT_PUBLISHED = 'notPublished';
-    public const OPTION_SCROLL_SIZE = 'scrollSize';
-    public const OPTION_SCROLL_TIMEOUT = 'scrollTimeout';
-    public const OPTION_SEARCH_QUERY = 'searchQuery';
+    public const OPTION_FIELD_ASSIGNEE = 'field-assignee';
+    public const OPTION_FIELD_DEADLINE = 'field-deadline';
+    public const OPTION_DEFAULT_OWNER = 'default-owner';
+    public const OPTION_NOT_PUBLISHED = 'not-published';
+    public const OPTION_SCROLL_SIZE = 'scroll-size';
+    public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
+    public const OPTION_SEARCH_QUERY = 'search-query';
 
     protected static $defaultName = Commands::REVISION_TASK_CREATE;
 

@@ -30,10 +30,10 @@ class AlignCommand extends AbstractCommand
 
     public const ARGUMENT_SOURCE = 'source';
     public const ARGUMENT_TARGET = 'target';
-    public const OPTION_SCROLL_SIZE = 'scrollSize';
-    public const OPTION_SCROLL_TIMEOUT = 'scrollTimeout';
+    public const OPTION_SCROLL_SIZE = 'scroll-size';
+    public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
     public const OPTION_FORCE = 'force';
-    public const OPTION_SEARCH_QUERY = 'searchQuery';
+    public const OPTION_SEARCH_QUERY = 'search-query';
     public const OPTION_SNAPSHOT = 'snapshot';
 
     protected static $defaultName = Commands::ENVIRONMENT_ALIGN;

@@ -25,11 +25,11 @@ final class TransformCommand extends AbstractCommand
     private ContentType $contentType;
     private string $searchQuery;
 
-    public const ARGUMENT_CONTENT_TYPE = 'contentType';
-    public const OPTION_SCROLL_SIZE = 'scrollSize';
-    public const OPTION_SCROLL_TIMEOUT = 'scrollTimeout';
-    public const OPTION_SEARCH_QUERY = 'searchQuery';
-    public const OPTION_DRY_RUN = 'dryRun';
+    public const ARGUMENT_CONTENT_TYPE = 'content-type';
+    public const OPTION_SCROLL_SIZE = 'scroll-size';
+    public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
+    public const OPTION_SEARCH_QUERY = 'search-query';
+    public const OPTION_DRY_RUN = 'dry-run';
 
     protected static $defaultName = Commands::CONTENT_TYPE_TRANSFORM;
 

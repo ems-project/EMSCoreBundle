@@ -104,16 +104,16 @@ Arguments:
   contentType                        ContentType name
 
 Options:
-      --scrollSize=SCROLLSIZE        Size of the elasticsearch scroll request
-      --scrollTimeout=SCROLLTIMEOUT  Time to migrate "scrollSize" items i.e. 30s or 2m
-      --searchQuery[=SEARCHQUERY]    Query used to find elasticsearch records to transform [default: "{}"]
-      --dryRun                       dry run
+      --scroll-size=SCROLLSIZE        Size of the elasticsearch scroll request
+      --scroll-timeout=SCROLLTIMEOUT  Time to migrate "scrollSize" items i.e. 30s or 2m
+      --search-query[=SEARCHQUERY]    Query used to find elasticsearch records to transform [default: "{}"]
+      --dry-run                       dry run
 ```
 
-* **--scrollSize**: Size of the elasticsearch scroll request
-* **--scrollTimeout**: Time to migrate "scrollSize" items i.e. 30s or 2m
-* **--searchQuery**: json escaped string with es query
-* **--dryRun** : will not commit the database transactions
+* **--scroll-size**: Size of the elasticsearch scroll request
+* **--scroll-timeout**: Time to migrate "scrollSize" items i.e. 30s or 2m
+* **--search-query**: json escaped string with es query
+* **--dry-run** : will not commit the database transactions
 
 ## Revision
 
@@ -133,24 +133,24 @@ Arguments:
 
 Options:
       --task=TASK                    {\"title\":\"title\",\"assignee\":\"username\",\"description\":\"optional\"}
-      --fieldAssignee=FIELDASSIGNEE  assignee field in es document
-      --fieldDeadline=FIELDDEADLINE  deadline field in es document
-      --defaultOwner=DEFAULTOWNER    default owner username
-      --notPublished=NOTPUBLISHED    only for revisions not published in this environment
-      --scrollSize=SCROLLSIZE        Size of the elasticsearch scroll request
-      --scrollTimeout=SCROLLTIMEOUT  Time to migrate "scrollSize" items i.e. 30s or 2m
+      --field-assignee=FIELDASSIGNEE  assignee field in es document
+      --field-deadline=FIELDDEADLINE  deadline field in es document
+      --default-owner=DEFAULTOWNER    default owner username
+      --not-published=NOTPUBLISHED    only for revisions not published in this environment
+      --scroll-size=SCROLLSIZE        Size of the elasticsearch scroll request
+      --scroll-timeout=SCROLLTIMEOUT  Time to migrate "scrollSize" items i.e. 30s or 2m
       --searchQuery[=SEARCHQUERY]    Query used to find elasticsearch records to import [default: "{}"]
 ```
 
 * **environment** : name of the environment for running the es query
 * **--task**: json escaped string for task definition  
-* **--fieldAssignee**: use document value for assignee (will search username, displayName, email)
-* **--fieldDeadline**: use document value for deadline
-* **--defaultOwner**: if the revision has no owner, this username will be used  
-* **--notPublished**: only created task for revision that are not published in the given environment name.
-* **--scrollSize**: Size of the elasticsearch scroll request
-* **--scrollTimeout**: Time to migrate "scrollSize" items i.e. 30s or 2m
-* **--searchQuery**: json escaped string with es query
+* **--field-assignee**: use document value for assignee (will search username, displayName, email)
+* **--field-deadline**: use document value for deadline
+* **--default-owner**: if the revision has no owner, this username will be used  
+* **--not-published**: only created task for revision that are not published in the given environment name.
+* **--scroll-size**: Size of the elasticsearch scroll request
+* **--scroll-timeout**: Time to migrate "scrollSize" items i.e. 30s or 2m
+* **--search-query**: json escaped string with es query
 
 ## Notification
 

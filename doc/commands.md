@@ -97,22 +97,23 @@ php bin/console ems:contenttype:recompute [options] [--] <contentType>
 > More information about [contentType transformers](../master/doc/ContentTypes/transformers.md).
 
 ```bash
-php bin/console ems:contenttype:transform --help
 Usage:
-  ems:contenttype:transform [options] [--] <content-type>
+  emsco:contenttype:transform [options] [--] <contentType>
 
 Arguments:
-  content-type                 ContentType name
+  contentType                        ContentType name
 
 Options:
-      --batch-size=BATCH-SIZE  db records batch size [default: "default_bulk_size"]
-      --ouuid=OUUID            revision ouuid
-      --dry-run                dry run
+      --scrollSize=SCROLLSIZE        Size of the elasticsearch scroll request
+      --scrollTimeout=SCROLLTIMEOUT  Time to migrate "scrollSize" items i.e. 30s or 2m
+      --searchQuery[=SEARCHQUERY]    Query used to find elasticsearch records to transform [default: "{}"]
+      --dryRun                       dry run
 ```
 
-* **--batch-size** : size of entities for transactional commits
-* **--ouuid** : only transform revisions with this ouuid
-* **--dry-run** : will not commit the database transactions
+* **--scrollSize**: Size of the elasticsearch scroll request
+* **--scrollTimeout**: Time to migrate "scrollSize" items i.e. 30s or 2m
+* **--searchQuery**: json escaped string with es query
+* **--dryRun** : will not commit the database transactions
 
 ## Revision
 
@@ -125,29 +126,31 @@ The command will not create tasks:
 
 ```bash
 Usage:
-  ems:revision:task:create [options] [--] <environment>
+  emsco:revision:task:create [options] [--] <environment>
 
 Arguments:
   environment
 
 Options:
-      --query=QUERY                  elasticSearch query
       --task=TASK                    {\"title\":\"title\",\"assignee\":\"username\",\"description\":\"optional\"}
       --fieldAssignee=FIELDASSIGNEE  assignee field in es document
       --fieldDeadline=FIELDDEADLINE  deadline field in es document
       --defaultOwner=DEFAULTOWNER    default owner username
       --notPublished=NOTPUBLISHED    only for revisions not published in this environment
-      --bulkSize=BULKSIZE            batch size [default: "default_bulk_size"]
+      --scrollSize=SCROLLSIZE        Size of the elasticsearch scroll request
+      --scrollTimeout=SCROLLTIMEOUT  Time to migrate "scrollSize" items i.e. 30s or 2m
+      --searchQuery[=SEARCHQUERY]    Query used to find elasticsearch records to import [default: "{}"]
 ```
 
 * **environment** : name of the environment for running the es query
-* **--query**: json escaped string with es query
 * **--task**: json escaped string for task definition  
 * **--fieldAssignee**: use document value for assignee (will search username, displayName, email)
 * **--fieldDeadline**: use document value for deadline
 * **--defaultOwner**: if the revision has no owner, this username will be used  
 * **--notPublished**: only created task for revision that are not published in the given environment name.
-* **--batch-size** : size of entities for transactional commits
+* **--scrollSize**: Size of the elasticsearch scroll request
+* **--scrollTimeout**: Time to migrate "scrollSize" items i.e. 30s or 2m
+* **--searchQuery**: json escaped string with es query
 
 ## Notification
 

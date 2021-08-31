@@ -6,6 +6,8 @@ namespace EMS\CoreBundle\Core\Revision\Search;
 
 use Doctrine\ORM\QueryBuilder;
 use DoctrineBatchUtils\BatchProcessing\SimpleBatchIteratorAggregate;
+use Elastica\Document;
+use Elastica\ResultSet;
 use EMS\CoreBundle\Entity\Revision;
 
 /**
@@ -14,11 +16,13 @@ use EMS\CoreBundle\Entity\Revision;
 final class Revisions implements \IteratorAggregate
 {
     private QueryBuilder $qb;
+    private ResultSet $resultSet;
     private int $batchSize;
 
-    public function __construct(QueryBuilder $qb, int $batchSize = 50)
+    public function __construct(QueryBuilder $qb, ResultSet $resultSet, int $batchSize = 50)
     {
         $this->qb = $qb;
+        $this->resultSet = $resultSet;
         $this->batchSize = $batchSize;
     }
 
@@ -33,6 +37,17 @@ final class Revisions implements \IteratorAggregate
         $results = $qb->getQuery()->getScalarResult();
 
         return \array_map(fn (array $result) => $result['id'], $results);
+    }
+
+    public function getDocument(Revision $revision): ?Document
+    {
+        foreach ($this->resultSet->getDocuments() as $document) {
+            if ($document instanceof Document && $document->getId() === $revision->giveOuuid()) {
+                return $document;
+            }
+        }
+
+        return null;
     }
 
     /**

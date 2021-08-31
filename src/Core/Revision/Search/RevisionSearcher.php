@@ -49,15 +49,17 @@ final class RevisionSearcher
     /**
      * @param string[] $contentTypes
      */
-    public function create(Environment $environment, string $query, array $contentTypes = []): RevisionSearch
+    public function create(Environment $environment, string $query, array $contentTypes = [], bool $docs = false): RevisionSearch
     {
         $search = $this->elasticaService->convertElasticsearchBody(
             [$environment->getAlias()],
             $contentTypes,
             ['query' => Json::decode($query)]
         );
-        $search->setSources(['includes' => ['_id', Mapping::CONTENT_TYPE_FIELD]]);
         $search->setSize($this->size);
+        if (!$docs) {
+            $search->setSources(['includes' => ['_id', Mapping::CONTENT_TYPE_FIELD]]);
+        }
 
         $scroll = $this->elasticaService->scroll($search, $this->timeout);
         $total = $this->elasticaService->count($search);
@@ -74,10 +76,9 @@ final class RevisionSearcher
             $documents = $resultSet->getDocuments();
             /** @var string[] $ouuids */
             $ouuids = \array_map(fn (Document $doc) => $doc->getId(), $documents);
-
             $qb = $this->revisionRepository->searchByEnvironmentOuuids($environment, $ouuids);
 
-            yield new Revisions($qb, $this->size);
+            yield new Revisions($qb, $resultSet, $this->size);
         }
     }
 

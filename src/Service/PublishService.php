@@ -181,8 +181,9 @@ class PublishService
         }
     }
 
-    public function bulkPublishStart(): void
+    public function bulkPublishStart(int $bulkSize): void
     {
+        $this->bulker->setSize($bulkSize);
         $this->bulker->setSign(false);
     }
 

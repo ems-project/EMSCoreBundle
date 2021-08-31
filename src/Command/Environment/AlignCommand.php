@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Environment;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
-use EMS\CommonBundle\Common\Standard\Json;
-use EMS\CommonBundle\Search\Search;
-use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Commands;
+use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\PublishService;
-use EMS\CoreBundle\Service\Revision\RevisionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,43 +19,37 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AlignCommand extends AbstractCommand
 {
-    private RevisionService $revisionService;
+    private RevisionSearcher $revisionSearcher;
     private LoggerInterface $logger;
     private EnvironmentService $environmentService;
     private PublishService $publishService;
-    private ElasticaService $elasticaService;
 
     private Environment $source;
     private Environment $target;
 
-    private int $scrollSize;
-    private string $scrollTimeout;
     private string $searchQuery;
 
     public const ARGUMENT_SOURCE = 'source';
     public const ARGUMENT_TARGET = 'target';
-    public const ARGUMENT_SCROLL_SIZE = 'scrollSize';
-    public const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
+    public const OPTION_SCROLL_SIZE = 'scrollSize';
+    public const OPTION_SCROLL_TIMEOUT = 'scrollTimeout';
     public const OPTION_FORCE = 'force';
     public const OPTION_SEARCH_QUERY = 'searchQuery';
     public const OPTION_SNAPSHOT = 'snapshot';
-    public const DEFAULT_SCROLL_SIZE = 100;
-    public const DEFAULT_SCROLL_TIMEOUT = '1m';
+
     public const DEFAULT_SEARCH_QUERY = '{}';
 
-    protected static $defaultName = 'ems:environment:align';
+    protected static $defaultName = Commands::ENVIRONMENT_ALIGN;
 
     public function __construct(
-        RevisionService $revisionService,
+        RevisionSearcher $revisionSearcher,
         LoggerInterface $logger,
-        ElasticaService $elasticaService,
         EnvironmentService $environmentService,
         PublishService $publishService
     ) {
         parent::__construct();
-        $this->revisionService = $revisionService;
+        $this->revisionSearcher = $revisionSearcher;
         $this->logger = $logger;
-        $this->elasticaService = $elasticaService;
         $this->environmentService = $environmentService;
         $this->publishService = $publishService;
     }
@@ -68,8 +60,8 @@ class AlignCommand extends AbstractCommand
             ->setDescription('Align an environment from another one')
             ->addArgument(self::ARGUMENT_SOURCE, InputArgument::REQUIRED, 'Environment source name')
             ->addArgument(self::ARGUMENT_TARGET, InputArgument::REQUIRED, 'Environment target name')
-            ->addArgument(self::ARGUMENT_SCROLL_SIZE, InputArgument::OPTIONAL, 'Size of the elasticsearch scroll request', self::DEFAULT_SCROLL_SIZE)
-            ->addArgument(self::ARGUMENT_SCROLL_TIMEOUT, InputArgument::OPTIONAL, 'Time to migrate "scrollSize" items i.e. 30s or 2m', self::DEFAULT_SCROLL_TIMEOUT)
+            ->addOption(self::OPTION_SCROLL_SIZE, null, InputOption::VALUE_REQUIRED, 'Size of the elasticsearch scroll request')
+            ->addOption(self::OPTION_SCROLL_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Time to migrate "scrollSize" items i.e. 30s or 2m')
             ->addOption(self::OPTION_SEARCH_QUERY, null, InputOption::VALUE_OPTIONAL, 'Query used to find elasticsearch records to import', self::DEFAULT_SEARCH_QUERY)
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'If set, the task will be performed (protection)')
             ->addOption(self::OPTION_SNAPSHOT, null, InputOption::VALUE_NONE, 'If set, the target environment will be tagged as a snapshot after the alignment')
@@ -82,8 +74,13 @@ class AlignCommand extends AbstractCommand
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('EMS - Environment - Align');
 
-        $this->scrollSize = $this->getArgumentInt(self::ARGUMENT_SCROLL_SIZE);
-        $this->scrollTimeout = $this->getArgumentString(self::ARGUMENT_SCROLL_TIMEOUT);
+        if ($scrollSize = $this->getOptionIntNull(self::OPTION_SCROLL_SIZE)) {
+            $this->revisionSearcher->setSize($scrollSize);
+        }
+        if ($scrollTimeout = $this->getOptionStringNull(self::OPTION_SCROLL_TIMEOUT)) {
+            $this->revisionSearcher->setTimeout($scrollTimeout);
+        }
+
         $this->searchQuery = $this->getOptionString(self::OPTION_SEARCH_QUERY);
     }
 
@@ -110,21 +107,18 @@ class AlignCommand extends AbstractCommand
             return self::EXECUTE_ERROR;
         }
 
-        $search = $this->createSearch();
-        $scroll = $this->elasticaService->scroll($search, $this->scrollTimeout);
-        $total = $this->elasticaService->count($search);
+        $search = $this->revisionSearcher->create($this->source, $this->searchQuery);
+        $bulkSize = $this->revisionSearcher->getSize();
 
-        $this->io->note(\sprintf('The source environment contains %s elements, start aligning environments...', $total));
-        $this->io->progressStart($total);
+        $this->io->note(\sprintf('The source environment contains %s elements, start aligning environments...', $search->getTotal()));
+        $this->io->progressStart($search->getTotal());
 
         $deletedRevision = 0;
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];
 
-        foreach ($scroll as $resultSet) {
-            $this->publishService->bulkPublishStart();
-            $revisions = $this->revisionService->searchByResultSetEnvironment($resultSet, $this->source);
-
+        foreach ($this->revisionSearcher->search($this->source, $search) as $revisions) {
+            $this->publishService->bulkPublishStart($bulkSize);
             foreach ($revisions as $revision) {
                 $contentType = $revision->giveContentType();
 
@@ -174,17 +168,5 @@ class AlignCommand extends AbstractCommand
         ]));
 
         return self::EXECUTE_SUCCESS;
-    }
-
-    private function createSearch(): Search
-    {
-        $search = $this->elasticaService->convertElasticsearchBody(
-            [$this->source->getAlias()],
-            [],
-            ['query' => Json::decode($this->searchQuery)]
-        );
-        $search->setSize($this->scrollSize);
-
-        return $search;
     }
 }

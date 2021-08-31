@@ -10,7 +10,6 @@ use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Core\Revision\Revisions;
-use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
@@ -93,15 +92,6 @@ class RevisionService
         $ouuids = \array_map(fn (Document $doc) => $doc->getId(), $documents);
 
         return new Revisions($this->revisionRepository->searchByOuuids($ouuids));
-    }
-
-    public function searchByResultSetEnvironment(ResultSet $resultSet, Environment $environment): Revisions
-    {
-        $documents = $resultSet->getDocuments();
-        /** @var string[] $ouuids */
-        $ouuids = \array_map(fn (Document $doc) => $doc->getId(), $documents);
-
-        return new Revisions($this->revisionRepository->searchByEnvironmentOuuids($environment, $ouuids));
     }
 
     public function lockRevisions(Revisions $revisions, string $by, string $until = '+5 minutes'): void

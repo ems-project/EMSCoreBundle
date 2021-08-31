@@ -22,9 +22,8 @@
 
         <!-- EMS environment -->
         <service id="ems.command.environment.align" class="EMS\CoreBundle\Command\Environment\AlignCommand">
-            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="ems_core.core_revision_search.revision_searcher" />
             <argument type="service" id="logger" />
-            <argument type="service" id="EMS\CommonBundle\Service\ElasticaService" />
             <argument type="service" id="ems.service.environment" />
             <argument type="service" id="ems.service.publish" />
             <tag name="console.command"/>

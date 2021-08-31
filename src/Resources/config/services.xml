@@ -66,6 +66,12 @@
             <argument type="service" id="translator" />
         </service>
 
+        <service id="ems_core.core_revision_search.revision_searcher" class="EMS\CoreBundle\Core\Revision\Search\RevisionSearcher">
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
+            <argument>%ems_core.default_bulk_size%%</argument>
+        </service>
+
         <service id="ems_core.core_revision_task.task_manager" class="EMS\CoreBundle\Core\Revision\Task\TaskManager">
             <argument type="service" id="ems.repository.task" />
             <argument type="service" id="ems_core.core_revision_task.task_table_service" />

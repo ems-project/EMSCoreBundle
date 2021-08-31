@@ -81,15 +81,19 @@ class RevisionRepository extends EntityRepository
     /**
      * @param string[] $ouuids
      */
-    public function searchByOuuids(array $ouuids): QueryBuilder
+    public function searchByEnvironmentOuuids(Environment $environment, array $ouuids): QueryBuilder
     {
         $qb = $this->createQueryBuilder('r');
         $qb
             ->join('r.contentType', 'c')
-            ->join('c.environment', 'e')
-            ->andWhere($qb->expr()->isNull('r.endTime'))
+            ->join('c.environment', 'ce')
+            ->join('r.environments', 're')
             ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
-            ->setParameter('ouuids', $ouuids);
+            ->andWhere($qb->expr()->in('re.id', ':environment_id'))
+            ->setParameters([
+                'environment_id' => $environment->getId(),
+                'ouuids' => $ouuids,
+            ]);
 
         return $qb;
     }
@@ -98,6 +102,26 @@ class RevisionRepository extends EntityRepository
     {
         $this->_em->persist($revision);
         $this->_em->flush();
+    }
+
+    public function addEnvironment(Revision $revision, Environment $environment): int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare('insert into environment_revision (environment_id, revision_id) VALUES(:envId, :revId)');
+        $stmt->bindValue('envId', $environment->getId());
+        $stmt->bindValue('revId', $revision->getId());
+
+        return $stmt->executeStatement();
+    }
+
+    public function removeEnvironment(Revision $revision, Environment $environment): int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare('delete from environment_revision where environment_id = :envId and revision_id = :revId');
+        $stmt->bindValue('envId', $environment->getId());
+        $stmt->bindValue('revId', $revision->getId());
+
+        return $stmt->executeStatement();
     }
 
     /**

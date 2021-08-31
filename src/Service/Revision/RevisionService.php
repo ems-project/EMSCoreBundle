@@ -84,27 +84,6 @@ class RevisionService
     }
 
     /**
-     * @param string[] $ouuids
-     */
-    public function searchByOuuids(array $ouuids): Revisions
-    {
-        return new Revisions($this->revisionRepository->searchByOuuids($ouuids));
-    }
-
-    public function lockRevisions(Revisions $revisions, string $by, string $until = '+5 minutes'): void
-    {
-        $untilDateTime = new \DateTime();
-        $untilDateTime->modify($until);
-
-        $this->revisionRepository->lockRevisionsById($revisions->getIds(), $by, $untilDateTime);
-    }
-
-    public function unlockRevisions(Revisions $revisions): void
-    {
-        $this->revisionRepository->unlockRevisionsById($revisions->getIds());
-    }
-
-    /**
      * @param array<mixed> $rawData
      */
     public function save(Revision $revision, array $rawData): void

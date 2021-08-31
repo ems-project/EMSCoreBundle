@@ -13,10 +13,18 @@
             <tag name="console.command"/>
         </service>
         <service id="ems.contenttype.transform" class="EMS\CoreBundle\Command\ContentType\TransformCommand">
+            <argument type="service" id="ems_core.core_revision_search.revision_searcher"/>
             <argument type="service" id="ems.service.contenttype"/>
             <argument type="service" id="ems_core.core_content_type_transformer.content_transformer"/>
-            <argument type="service" id="ems.service.revision"/>
-            <argument>%ems_core.default_bulk_size%</argument>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- EMS environment -->
+        <service id="ems.command.environment.align" class="EMS\CoreBundle\Command\Environment\AlignCommand">
+            <argument type="service" id="ems_core.core_revision_search.revision_searcher" />
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="ems.service.publish" />
             <tag name="console.command"/>
         </service>
 
@@ -35,12 +43,10 @@
             <tag name="console.command"/>
         </service>
         <service id="ems.command_revision.task_create_command" class="EMS\CoreBundle\Command\Revision\TaskCreateCommand">
+            <argument type="service" id="ems_core.core_revision_search.revision_searcher"/>
             <argument type="service" id="ems.service.environment"/>
-            <argument type="service" id="ems_common.service.elastica"/>
-            <argument type="service" id="ems.service.revision"/>
             <argument type="service" id="ems.service.user"/>
             <argument type="service" id="ems_core.core_revision_task.task_manager"/>
-            <argument>%ems_core.default_bulk_size%</argument>
             <tag name="console.command"/>
         </service>
         <!-- EMS notification -->

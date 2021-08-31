@@ -8,14 +8,13 @@ use Elastica\Document;
 use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CommonBundle\Common\Standard\Json;
-use EMS\CommonBundle\Search\Search;
-use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Commands;
+use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
 use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\EnvironmentService;
-use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,18 +23,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class TaskCreateCommand extends AbstractCommand
 {
+    private RevisionSearcher $revisionSearcher;
     private EnvironmentService $environmentService;
-    private ElasticaService $elasticaService;
-    private RevisionService $revisionService;
     private UserService $userService;
     private TaskManager $taskManager;
 
     private Environment $environment;
     /** @var array<mixed> */
-    private array $query;
-    /** @var array<mixed> */
     private array $task;
-    private int $bulkSize;
+    private string $searchQuery;
 
     private string $defaultOwner;
     private ?string $fieldAssignee = null;
@@ -43,36 +39,44 @@ final class TaskCreateCommand extends AbstractCommand
     private ?string $notPublished = null;
 
     private const USER = 'SYSTEM_TASK_MANAGER';
-    protected static $defaultName = 'ems:revision:task:create';
+
+    public const ARGUMENT_ENVIRONMENT = 'environment';
+    public const OPTION_TASK = 'task';
+    public const OPTION_FIELD_ASSIGNEE = 'field-assignee';
+    public const OPTION_FIELD_DEADLINE = 'field-deadline';
+    public const OPTION_DEFAULT_OWNER = 'default-owner';
+    public const OPTION_NOT_PUBLISHED = 'not-published';
+    public const OPTION_SCROLL_SIZE = 'scroll-size';
+    public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
+    public const OPTION_SEARCH_QUERY = 'search-query';
+
+    protected static $defaultName = Commands::REVISION_TASK_CREATE;
 
     public function __construct(
+        RevisionSearcher $revisionSearcher,
         EnvironmentService $environmentService,
-        ElasticaService $elasticaService,
-        RevisionService $revisionService,
         UserService $userService,
-        TaskManager $taskManager,
-        int $batchSize)
-    {
+        TaskManager $taskManager
+    ) {
         parent::__construct();
+        $this->revisionSearcher = $revisionSearcher;
         $this->environmentService = $environmentService;
-        $this->elasticaService = $elasticaService;
-        $this->revisionService = $revisionService;
         $this->userService = $userService;
         $this->taskManager = $taskManager;
-        $this->bulkSize = $batchSize;
     }
 
     protected function configure(): void
     {
         $this
-            ->addArgument('environment', InputArgument::REQUIRED)
-            ->addOption('query', null, InputOption::VALUE_REQUIRED, 'elasticSearch query')
-            ->addOption('task', null, InputOption::VALUE_REQUIRED, '{\"title\":\"title\",\"assignee\":\"username\",\"description\":\"optional\"}')
-            ->addOption('fieldAssignee', null, InputOption::VALUE_REQUIRED, 'assignee field in es document')
-            ->addOption('fieldDeadline', null, InputOption::VALUE_REQUIRED, 'deadline field in es document')
-            ->addOption('defaultOwner', null, InputOption::VALUE_REQUIRED, 'default owner username')
-            ->addOption('notPublished', null, InputOption::VALUE_REQUIRED, 'only for revisions not published in this environment')
-            ->addOption('bulkSize', null, InputOption::VALUE_REQUIRED, 'batch size', 'default_bulk_size')
+            ->addArgument(self::ARGUMENT_ENVIRONMENT, InputArgument::REQUIRED)
+            ->addOption(self::OPTION_TASK, null, InputOption::VALUE_REQUIRED, '{\"title\":\"title\",\"assignee\":\"username\",\"description\":\"optional\"}')
+            ->addOption(self::OPTION_FIELD_ASSIGNEE, null, InputOption::VALUE_REQUIRED, 'assignee field in es document')
+            ->addOption(self::OPTION_FIELD_DEADLINE, null, InputOption::VALUE_REQUIRED, 'deadline field in es document')
+            ->addOption(self::OPTION_DEFAULT_OWNER, null, InputOption::VALUE_REQUIRED, 'default owner username')
+            ->addOption(self::OPTION_NOT_PUBLISHED, null, InputOption::VALUE_REQUIRED, 'only for revisions not published in this environment')
+            ->addOption(self::OPTION_SCROLL_SIZE, null, InputOption::VALUE_REQUIRED, 'Size of the elasticsearch scroll request')
+            ->addOption(self::OPTION_SCROLL_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Time to migrate "scrollSize" items i.e. 30s or 2m')
+            ->addOption(self::OPTION_SEARCH_QUERY, null, InputOption::VALUE_OPTIONAL, 'Query used to find elasticsearch records to import', '{}')
         ;
     }
 
@@ -85,56 +89,49 @@ final class TaskCreateCommand extends AbstractCommand
         $environmentName = $this->getArgumentString('environment');
         $this->environment = $this->environmentService->giveByName($environmentName);
 
-        $this->query = Json::decode($this->getOptionString('query'));
         $this->task = Json::decode($this->getOptionString('task'));
-
         $this->defaultOwner = $this->getOptionString('defaultOwner');
         $this->fieldAssignee = $this->getOptionStringNull('fieldAssignee');
         $this->fieldDeadline = $this->getOptionStringNull('fieldDeadline');
         $this->notPublished = $this->getOptionStringNull('notPublished');
 
-        $this->bulkSize = $this->getOptionIntNull('bulkSize') ?? $this->bulkSize;
+        if ($scrollSize = $this->getOptionIntNull(self::OPTION_SCROLL_SIZE)) {
+            $this->revisionSearcher->setSize($scrollSize);
+        }
+        if ($scrollTimeout = $this->getOptionStringNull(self::OPTION_SCROLL_TIMEOUT)) {
+            $this->revisionSearcher->setTimeout($scrollTimeout);
+        }
+
+        $this->searchQuery = $this->getOptionString(self::OPTION_SEARCH_QUERY);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $search = $this->createSearch();
-        $scroll = $this->elasticaService->scroll($search);
-        $total = $this->elasticaService->count($search);
+        $search = $this->revisionSearcher->create($this->environment, $this->searchQuery, [], true);
 
-        $this->io->comment(\sprintf('Found %s hits', $total));
-        $progress = $this->io->createProgressBar($total);
+        $this->io->comment(\sprintf('Found %s hits', $search->getTotal()));
+        $this->io->progressStart($search->getTotal());
 
-        foreach ($scroll as $resultSet) {
-            $documents = $resultSet->getDocuments();
-            /** @var string[] $ouuids */
-            $ouuids = \array_map(fn (Document $doc) => $doc->getId(), $documents);
-            $revisions = $this->revisionService->searchByOuuids($ouuids);
-            $this->revisionService->lockRevisions($revisions, self::USER);
+        foreach ($this->revisionSearcher->search($this->environment, $search) as $revisions) {
+            $this->revisionSearcher->lock($revisions, self::USER);
 
-            foreach ($revisions as $revision) {
-                $documentsOuuid = \array_filter($documents, fn (Document $doc) => $doc->getId() === $revision->getOuuid());
-                $document = \array_shift($documentsOuuid);
-                if (!$document instanceof Document) {
-                    continue;
+            foreach ($revisions->transaction() as $revision) {
+                if (null !== $document = $revisions->getDocument($revision)) {
+                    $this->createTask($revision, $document);
                 }
-
-                $this->createTask($revision, $document);
-                $progress->advance();
+                $this->io->progressAdvance();
             }
 
-            $this->revisionService->unlockRevisions($revisions);
+            $this->revisionSearcher->unlock($revisions);
         }
+
+        $this->io->progressFinish();
 
         return self::EXECUTE_SUCCESS;
     }
 
     private function createTask(Revision $revision, Document $document): void
     {
-        if ('adaef08d0d02f09a32d0c065dd71f4ae215a94af' === $revision->getOuuid()) {
-            $test = 1;
-        }
-
         if (!$revision->isTaskEnabled()) {
             $this->io->warning(\sprintf('Skipping revision %s tasks not enabled', $revision));
 
@@ -169,18 +166,5 @@ final class TaskCreateCommand extends AbstractCommand
         }
 
         $this->taskManager->taskCreateFromRevision($taskDTO, $revision, $owner);
-    }
-
-    private function createSearch(): Search
-    {
-        $search = $this->elasticaService->convertElasticsearchBody(
-            [$this->environment->getAlias()],
-            [],
-            ['query' => $this->query]
-        );
-
-        $search->setSize($this->bulkSize);
-
-        return $search;
     }
 }

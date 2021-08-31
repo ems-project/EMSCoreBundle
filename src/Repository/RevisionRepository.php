@@ -81,22 +81,6 @@ class RevisionRepository extends EntityRepository
     /**
      * @param string[] $ouuids
      */
-    public function searchByOuuids(array $ouuids): QueryBuilder
-    {
-        $qb = $this->createQueryBuilder('r');
-        $qb
-            ->join('r.contentType', 'c')
-            ->join('c.environment', 'e')
-            ->andWhere($qb->expr()->isNull('r.endTime'))
-            ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
-            ->setParameter('ouuids', $ouuids);
-
-        return $qb;
-    }
-
-    /**
-     * @param string[] $ouuids
-     */
     public function searchByEnvironmentOuuids(Environment $environment, array $ouuids): QueryBuilder
     {
         $qb = $this->createQueryBuilder('r');

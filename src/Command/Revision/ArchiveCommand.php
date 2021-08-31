@@ -8,6 +8,7 @@ use EMS\CommonBundle\Command\CommandInterface;
 use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CoreBundle\Command\LockCommand;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use Symfony\Component\Console\Command\Command;
@@ -86,11 +87,12 @@ final class ArchiveCommand extends Command implements CommandInterface
         $revisions = $this->revisionService->search($this->search);
         $revisions->setBatchSize($this->batchSize);
 
-        foreach ($revisions->batch() as $revision) {
+        $revisions->batch(function (Revision $revision) use ($progress, &$countArchived) {
             $this->revisionService->archive($revision, $revision->getLockBy(), false);
             $progress->advance();
             ++$countArchived;
-        }
+        });
+
         $progress->finish();
 
         $this->style->success(\sprintf('Archived %d revisions', $countArchived));

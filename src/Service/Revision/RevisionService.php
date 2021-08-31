@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Revision;
 
-use Elastica\Document;
-use Elastica\ResultSet;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CoreBundle\Common\DocumentInfo;
@@ -83,28 +81,6 @@ class RevisionService
     public function search(array $search): Revisions
     {
         return new Revisions($this->revisionRepository->search($search));
-    }
-
-    public function searchByResultSet(ResultSet $resultSet): Revisions
-    {
-        $documents = $resultSet->getDocuments();
-        /** @var string[] $ouuids */
-        $ouuids = \array_map(fn (Document $doc) => $doc->getId(), $documents);
-
-        return new Revisions($this->revisionRepository->searchByOuuids($ouuids));
-    }
-
-    public function lockRevisions(Revisions $revisions, string $by, string $until = '+5 minutes'): void
-    {
-        $untilDateTime = new \DateTime();
-        $untilDateTime->modify($until);
-
-        $this->revisionRepository->lockRevisionsById($revisions->getIds(), $by, $untilDateTime);
-    }
-
-    public function unlockRevisions(Revisions $revisions): void
-    {
-        $this->revisionRepository->unlockRevisionsById($revisions->getIds());
     }
 
     /**

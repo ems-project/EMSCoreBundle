@@ -80,4 +80,17 @@ final class RevisionSearcher
             yield new Revisions($qb, $this->size);
         }
     }
+
+    public function lock(Revisions $revisions, string $lockBy, string $until = '+5 minutes'): void
+    {
+        $untilDateTime = new \DateTime();
+        $untilDateTime->modify($until);
+
+        $this->revisionRepository->lockRevisionsById($revisions->getIds(), $lockBy, $untilDateTime);
+    }
+
+    public function unlock(Revisions $revisions): void
+    {
+        $this->revisionRepository->unlockRevisionsById($revisions->getIds());
+    }
 }

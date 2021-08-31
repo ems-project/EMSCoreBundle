@@ -66,42 +66,42 @@ final class ContentTransformer
         return $transformerDefinitions;
     }
 
+//    /**
+//     * @param array<mixed> $transformerDefinitions
+//     *
+//     * @return \Generator|array[]
+//     */
+//    public function transform(Revisions $revisions, array $transformerDefinitions, int $batchSize, bool $dryRun): \Generator
+//    {
+//        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
+//        $this->em->getConnection()->setAutoCommit(false);
+//        $activeTransaction = false;
+//
+//        foreach ($revisions as $i => $revision) {
+//            $transformed = $this->transformRevision($revision, $transformerDefinitions, $dryRun);
+//
+//            if ($transformed) {
+//                $activeTransaction = true;
+//            }
+//
+//            yield [$revision->getOuuid(), $transformed];
+//
+//            if (($i % $batchSize) === 0 && $activeTransaction && !$dryRun) {
+//                $this->em->commit();
+//                $this->em->clear(Revision::class);
+//            }
+//        }
+//
+//        if ($activeTransaction && !$dryRun) {
+//            $this->em->commit();
+//            $this->em->clear(Revision::class);
+//        }
+//    }
+
     /**
      * @param array<mixed> $transformerDefinitions
-     *
-     * @return \Generator|array[]
      */
-    public function transform(Revisions $revisions, array $transformerDefinitions, int $batchSize, bool $dryRun): \Generator
-    {
-        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
-        $this->em->getConnection()->setAutoCommit(false);
-        $activeTransaction = false;
-
-        foreach ($revisions as $i => $revision) {
-            $transformed = $this->transformRevision($revision, $transformerDefinitions, $dryRun);
-
-            if ($transformed) {
-                $activeTransaction = true;
-            }
-
-            yield [$revision->getOuuid(), $transformed];
-
-            if (($i % $batchSize) === 0 && $activeTransaction && !$dryRun) {
-                $this->em->commit();
-                $this->em->clear(Revision::class);
-            }
-        }
-
-        if ($activeTransaction && !$dryRun) {
-            $this->em->commit();
-            $this->em->clear(Revision::class);
-        }
-    }
-
-    /**
-     * @param array<mixed> $transformerDefinitions
-     */
-    private function transformRevision(Revision $revision, array $transformerDefinitions, bool $dryRun): bool
+    public function transform(Revision $revision, array $transformerDefinitions, bool $dryRun): bool
     {
         $rawData = $revision->getRawData();
         RecursiveMapper::mapPropertyValue(

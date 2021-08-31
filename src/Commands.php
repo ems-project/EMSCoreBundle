@@ -6,5 +6,7 @@ namespace EMS\CoreBundle;
 
 final class Commands
 {
+    public const CONTENT_TYPE_TRANSFORM = 'emsco:contenttype:transform';
+
     public const ENVIRONMENT_ALIGN = 'emsco:environment:align';
 }

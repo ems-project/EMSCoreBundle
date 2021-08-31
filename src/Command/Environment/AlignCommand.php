@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AlignCommand extends AbstractCommand
 {
@@ -36,8 +35,6 @@ class AlignCommand extends AbstractCommand
     public const OPTION_FORCE = 'force';
     public const OPTION_SEARCH_QUERY = 'searchQuery';
     public const OPTION_SNAPSHOT = 'snapshot';
-
-    public const DEFAULT_SEARCH_QUERY = '{}';
 
     protected static $defaultName = Commands::ENVIRONMENT_ALIGN;
 
@@ -62,7 +59,7 @@ class AlignCommand extends AbstractCommand
             ->addArgument(self::ARGUMENT_TARGET, InputArgument::REQUIRED, 'Environment target name')
             ->addOption(self::OPTION_SCROLL_SIZE, null, InputOption::VALUE_REQUIRED, 'Size of the elasticsearch scroll request')
             ->addOption(self::OPTION_SCROLL_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Time to migrate "scrollSize" items i.e. 30s or 2m')
-            ->addOption(self::OPTION_SEARCH_QUERY, null, InputOption::VALUE_OPTIONAL, 'Query used to find elasticsearch records to import', self::DEFAULT_SEARCH_QUERY)
+            ->addOption(self::OPTION_SEARCH_QUERY, null, InputOption::VALUE_OPTIONAL, 'Query used to find elasticsearch records to import', '{}')
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'If set, the task will be performed (protection)')
             ->addOption(self::OPTION_SNAPSHOT, null, InputOption::VALUE_NONE, 'If set, the target environment will be tagged as a snapshot after the alignment')
         ;
@@ -71,7 +68,6 @@ class AlignCommand extends AbstractCommand
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
-        $this->io = new SymfonyStyle($input, $output);
         $this->io->title('EMS - Environment - Align');
 
         if ($scrollSize = $this->getOptionIntNull(self::OPTION_SCROLL_SIZE)) {

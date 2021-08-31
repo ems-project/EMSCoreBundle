@@ -120,6 +120,26 @@ class RevisionRepository extends EntityRepository
         $this->_em->flush();
     }
 
+    public function addEnvironment(Revision $revision, Environment $environment): int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare('insert into environment_revision (environment_id, revision_id) VALUES(:envId, :revId)');
+        $stmt->bindValue('envId', $environment->getId());
+        $stmt->bindValue('revId', $revision->getId());
+
+        return $stmt->executeStatement();
+    }
+
+    public function removeEnvironment(Revision $revision, Environment $environment): int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare('delete from environment_revision where environment_id = :envId and revision_id = :revId');
+        $stmt->bindValue('envId', $environment->getId());
+        $stmt->bindValue('revId', $revision->getId());
+
+        return $stmt->executeStatement();
+    }
+
     /**
      * @param int $page
      *

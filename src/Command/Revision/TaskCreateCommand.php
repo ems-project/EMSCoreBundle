@@ -107,12 +107,11 @@ final class TaskCreateCommand extends AbstractCommand
 
         foreach ($scroll as $resultSet) {
             $documents = $resultSet->getDocuments();
-            /** @var string[] $ouuids */
-            $ouuids = \array_map(fn (Document $doc) => $doc->getId(), $documents);
-            $revisions = $this->revisionService->searchByOuuids($ouuids);
+
+            $revisions = $this->revisionService->searchByResultSet($resultSet);
             $this->revisionService->lockRevisions($revisions, self::USER);
 
-            foreach ($revisions as $revision) {
+            foreach ($revisions->batch() as $revision) {
                 $documentsOuuid = \array_filter($documents, fn (Document $doc) => $doc->getId() === $revision->getOuuid());
                 $document = \array_shift($documentsOuuid);
                 if (!$document instanceof Document) {

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Environment;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CommonBundle\Common\Standard\Json;
+use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
@@ -23,8 +23,6 @@ class AlignCommand extends AbstractCommand
 {
     private RevisionService $revisionService;
     private LoggerInterface $logger;
-    private DataService $data;
-    private ContentTypeService $contentTypeService;
     private EnvironmentService $environmentService;
     private PublishService $publishService;
     private ElasticaService $elasticaService;
@@ -53,8 +51,6 @@ class AlignCommand extends AbstractCommand
         RevisionService $revisionService,
         LoggerInterface $logger,
         ElasticaService $elasticaService,
-        DataService $data,
-        ContentTypeService $contentTypeService,
         EnvironmentService $environmentService,
         PublishService $publishService
     ) {
@@ -62,8 +58,6 @@ class AlignCommand extends AbstractCommand
         $this->revisionService = $revisionService;
         $this->logger = $logger;
         $this->elasticaService = $elasticaService;
-        $this->data = $data;
-        $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->publishService = $publishService;
     }
@@ -116,9 +110,9 @@ class AlignCommand extends AbstractCommand
             return self::EXECUTE_ERROR;
         }
 
-        $search = $this->revisionService->querySearchEnvironment($this->source, $this->searchQuery, $this->scrollSize);
-        $scroll = $this->revisionService->scrollByEnvironment($this->source, $search, $this->scrollTimeout);
-        $total = $this->revisionService->querySearchTotal($search);
+        $search = $this->createSearch();
+        $scroll = $this->elasticaService->scroll($search, $this->scrollTimeout);
+        $total = $this->elasticaService->count($search);
 
         $this->io->note(\sprintf('The source environment contains %s elements, start aligning environments...', $total));
         $this->io->progressStart($total);
@@ -127,7 +121,10 @@ class AlignCommand extends AbstractCommand
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];
 
-        foreach ($scroll as $revisions) {
+        foreach ($scroll as $resultSet) {
+            $this->publishService->bulkPublishStart();
+            $revisions = $this->revisionService->searchByResultSetEnvironment($resultSet, $this->source);
+
             foreach ($revisions as $revision) {
                 $contentType = $revision->giveContentType();
 
@@ -139,13 +136,14 @@ class AlignCommand extends AbstractCommand
                     }
                     ++$targetIsPreviewEnvironment[$contentType->getName()];
                 } else {
-                    if (0 == $this->publishService->publish($revision, $this->target, true)) {
+                    if (0 == $this->publishService->bulkPublish($revision, $this->target)) {
                         ++$alreadyAligned;
                     }
                 }
 
                 $this->io->progressAdvance();
             }
+            $this->publishService->bulkPublishFinished();
         }
 
         $this->io->progressFinish();
@@ -176,5 +174,17 @@ class AlignCommand extends AbstractCommand
         ]));
 
         return self::EXECUTE_SUCCESS;
+    }
+
+    private function createSearch(): Search
+    {
+        $search = $this->elasticaService->convertElasticsearchBody(
+            [$this->source->getAlias()],
+            [],
+            ['query' => Json::decode($this->searchQuery)]
+        );
+        $search->setSize($this->scrollSize);
+
+        return $search;
     }
 }

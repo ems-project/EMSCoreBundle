@@ -25,8 +25,6 @@
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="logger" />
             <argument type="service" id="EMS\CommonBundle\Service\ElasticaService" />
-            <argument type="service" id="ems.service.data" />
-            <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.environment" />
             <argument type="service" id="ems.service.publish" />
             <tag name="console.command"/>

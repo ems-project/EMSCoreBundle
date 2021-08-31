@@ -7,6 +7,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Statement;
 use Doctrine\ORM\NonUniqueResultException;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
@@ -22,34 +23,21 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class PublishService
 {
-    /** @var Registry */
-    protected $doctrine;
-    /** @var AuthorizationCheckerInterface */
-    protected $authorizationChecker;
-    /** @var TokenStorageInterface */
-    protected $tokenStorage;
-    /** @var Mapping */
-    protected $mapping;
-    /** @var string */
-    protected $instanceId;
-    /** @var RevisionRepository */
-    protected $revRepository;
-    /** @var Session */
-    protected $session;
-    /** @var ContentTypeService */
-    protected $contentTypeService;
-    /** @var EnvironmentService */
-    protected $environmentService;
-    /** @var DataService */
-    protected $dataService;
-    /** @var UserService */
-    protected $userService;
-    /** @var EventDispatcherInterface */
-    protected $dispatcher;
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var IndexService */
-    private $indexService;
+    private Registry $doctrine;
+    private AuthorizationCheckerInterface $authorizationChecker;
+    private TokenStorageInterface $tokenStorage;
+    private Mapping $mapping;
+    private string $instanceId;
+    private RevisionRepository $revRepository;
+    private Session $session;
+    private ContentTypeService $contentTypeService;
+    private EnvironmentService $environmentService;
+    private DataService $dataService;
+    private UserService $userService;
+    private EventDispatcherInterface $dispatcher;
+    private LoggerInterface $logger;
+    private IndexService $indexService;
+    private Bulker $bulker;
 
     public function __construct(
         Registry $doctrine,
@@ -64,7 +52,8 @@ class PublishService
         DataService $dataService,
         UserService $userService,
         EventDispatcherInterface $dispatcher,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        Bulker $bulker
     ) {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
@@ -80,6 +69,7 @@ class PublishService
         $this->userService = $userService;
         $this->dispatcher = $dispatcher;
         $this->logger = $logger;
+        $this->bulker = $bulker;
     }
 
     /**
@@ -191,6 +181,49 @@ class PublishService
         }
     }
 
+    public function bulkPublishStart(): void
+    {
+        $this->bulker->setSign(false);
+    }
+
+    public function bulkPublish(Revision $revision, Environment $environment): int
+    {
+        if (!$revision->hasOuuid()) {
+            throw new \RuntimeException('Draft revision passed to bulk publish!');
+        }
+
+        $logContext = LoggingContext::publish($revision, $environment);
+        if ($revision->giveContentType()->giveEnvironment() === $environment && !$revision->hasEndTime()) {
+            $this->logger->warning('service.publish.not_in_default_environment', $logContext);
+
+            return 0;
+        }
+
+        $revisionEnvironment = $this->revRepository->findByOuuidContentTypeAndEnvironment($revision, $environment);
+        $already = $revisionEnvironment === $revision;
+
+        if (!$already && $revisionEnvironment) {
+            $this->revRepository->removeEnvironment($revisionEnvironment, $environment);
+        }
+        if (!$already) {
+            $this->revRepository->addEnvironment($revision, $environment);
+        }
+
+        $this->dataService->sign($revision, true);
+        $contentTypeName = $revision->giveContentType()->getName();
+        $rawData = $revision->getRawData();
+
+        $this->bulker->index($contentTypeName, $revision->giveOuuid(), $environment->getAlias(), $rawData);
+
+        return $already ? 0 : 1;
+    }
+
+    public function bulkPublishFinished(): void
+    {
+        $this->bulker->send(true);
+        $this->bulker->setSign(true);
+    }
+
     /**
      * @param bool $command
      *
@@ -225,18 +258,12 @@ class PublishService
 
         $item = $this->revRepository->findByOuuidContentTypeAndEnvironment($revision, $environment);
 
-        $connection = $this->doctrine->getConnection();
-
         $already = false;
         if ($item === $revision) {
             $already = true;
             $this->logger->notice('service.publish.already_published', $logContext);
         } elseif ($item) {
-            /** @var Statement $statement */
-            $statement = $connection->prepare('delete from environment_revision where environment_id = :envId and revision_id = :revId');
-            $statement->bindValue('envId', $environment->getId());
-            $statement->bindValue('revId', $item->getId());
-            $statement->execute();
+            $this->revRepository->removeEnvironment($item, $environment);
         }
 
         $this->dataService->sign($revision, true);
@@ -252,11 +279,8 @@ class PublishService
         }
 
         if (!$already) {
-            /** @var Statement $statement */
-            $statement = $connection->prepare('insert into environment_revision (environment_id, revision_id) VALUES(:envId, :revId)');
-            $statement->bindValue('envId', $environment->getId());
-            $statement->bindValue('revId', $revision->getId());
-            $statement->execute();
+            $this->revRepository->addEnvironment($revision, $environment);
+
             if (!$command) {
                 $this->logger->notice('service.publish.published', $logContext);
             }

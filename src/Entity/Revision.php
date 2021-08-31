@@ -516,6 +516,15 @@ class Revision implements EntityInterface
         return $this->ouuid;
     }
 
+    public function giveOuuid(): string
+    {
+        if (null === $this->ouuid) {
+            throw new \RuntimeException('Revision has no ouuid!');
+        }
+
+        return $this->ouuid;
+    }
+
     public function hasOuuid(): bool
     {
         return null !== $this->ouuid;
@@ -557,6 +566,11 @@ class Revision implements EntityInterface
         $this->endTime = $endTime;
 
         return $this;
+    }
+
+    public function hasEndTime(): bool
+    {
+        return null !== $this->endTime;
     }
 
     /**

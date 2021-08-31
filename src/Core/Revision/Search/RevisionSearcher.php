@@ -9,6 +9,7 @@ use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\Mapping;
 
 final class RevisionSearcher
 {
@@ -55,7 +56,7 @@ final class RevisionSearcher
             $contentTypes,
             ['query' => Json::decode($query)]
         );
-        $search->setSources(['includes' => ['_id']]);
+        $search->setSources(['includes' => ['_id', Mapping::CONTENT_TYPE_FIELD]]);
         $search->setSize($this->size);
 
         $scroll = $this->elasticaService->scroll($search, $this->timeout);

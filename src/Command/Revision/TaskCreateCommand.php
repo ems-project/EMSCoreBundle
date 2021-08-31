@@ -89,11 +89,11 @@ final class TaskCreateCommand extends AbstractCommand
         $environmentName = $this->getArgumentString('environment');
         $this->environment = $this->environmentService->giveByName($environmentName);
 
-        $this->task = Json::decode($this->getOptionString('task'));
-        $this->defaultOwner = $this->getOptionString('defaultOwner');
-        $this->fieldAssignee = $this->getOptionStringNull('fieldAssignee');
-        $this->fieldDeadline = $this->getOptionStringNull('fieldDeadline');
-        $this->notPublished = $this->getOptionStringNull('notPublished');
+        $this->task = Json::decode($this->getOptionString(self::OPTION_TASK));
+        $this->defaultOwner = $this->getOptionString(self::OPTION_DEFAULT_OWNER);
+        $this->fieldAssignee = $this->getOptionStringNull(self::OPTION_FIELD_ASSIGNEE);
+        $this->fieldDeadline = $this->getOptionStringNull(self::OPTION_FIELD_DEADLINE);
+        $this->notPublished = $this->getOptionStringNull(self::OPTION_NOT_PUBLISHED);
 
         if ($scrollSize = $this->getOptionIntNull(self::OPTION_SCROLL_SIZE)) {
             $this->revisionSearcher->setSize($scrollSize);

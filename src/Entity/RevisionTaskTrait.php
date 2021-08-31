@@ -38,7 +38,7 @@ trait RevisionTaskTrait
         }
 
         if ($this->owner !== $username) {
-            throw new \RuntimeException(\sprintf('User %s is not the owner!', $username));
+            throw new \RuntimeException(\sprintf('User %s is the owner!', $this->owner));
         }
 
         if (null === $this->taskCurrent) {
@@ -96,9 +96,9 @@ trait RevisionTaskTrait
         return $this->taskPlannedIds ?? [];
     }
 
-    public function getTaskDeadline(): \DateTimeInterface
+    public function getTaskDeadline(): ?\DateTimeInterface
     {
-        return $this->getTaskCurrent()->getDeadline();
+        return $this->getTaskCurrent()->hasDeadline() ? $this->getTaskCurrent()->getDeadline() : null;
     }
 
     public function getTaskCurrent(): Task
@@ -147,9 +147,9 @@ trait RevisionTaskTrait
         return $nextPlannedId;
     }
 
-    public function hasTasks(): bool
+    public function hasTasks(bool $includeApproved = true): bool
     {
-        return $this->hasTaskCurrent() || $this->hasTaskPlannedIds() || $this->hasTaskApprovedIds();
+        return $this->hasTaskCurrent() || $this->hasTaskPlannedIds() || ($includeApproved && $this->hasTaskApprovedIds());
     }
 
     public function hasOwner(): bool
@@ -187,7 +187,7 @@ trait RevisionTaskTrait
         return \in_array($task->getId(), $this->getTaskApprovedIds(), true);
     }
 
-    public function isOwnershipAllowed(): bool
+    public function isTaskEnabled(): bool
     {
         return $this->giveContentType()->hasOwnerRole();
     }

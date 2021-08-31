@@ -166,11 +166,13 @@ class Revision implements EntityInterface
     private $lockUntil;
 
     /**
+     * @var ArrayCollection<int, Environment>|Environment[]
+     *
      * @ORM\ManyToMany(targetEntity="Environment", inversedBy="revisions", cascade={"persist"})
      * @ORM\JoinTable(name="environment_revision")
      * @ORM\OrderBy({"orderKey":"ASC"})
      */
-    private $environments;
+    private Collection $environments;
 
     /**
      * @ORM\OneToMany(targetEntity="Notification", mappedBy="revision", cascade={"persist", "remove"})
@@ -514,6 +516,15 @@ class Revision implements EntityInterface
         return $this->ouuid;
     }
 
+    public function giveOuuid(): string
+    {
+        if (null === $this->ouuid) {
+            throw new \RuntimeException('Revision has no ouuid!');
+        }
+
+        return $this->ouuid;
+    }
+
     public function hasOuuid(): bool
     {
         return null !== $this->ouuid;
@@ -555,6 +566,11 @@ class Revision implements EntityInterface
         $this->endTime = $endTime;
 
         return $this;
+    }
+
+    public function hasEndTime(): bool
+    {
+        return null !== $this->endTime;
     }
 
     /**
@@ -613,6 +629,13 @@ class Revision implements EntityInterface
     public function getLockBy()
     {
         return $this->lockBy;
+    }
+
+    public function isLockedFor(string $username): bool
+    {
+        $now = new \DateTime();
+
+        return $this->getLockBy() !== $username && $now < $this->getLockUntil();
     }
 
     /**
@@ -817,6 +840,17 @@ class Revision implements EntityInterface
     public function getEnvironments()
     {
         return $this->environments;
+    }
+
+    public function isPublished(string $environmentName): bool
+    {
+        foreach ($this->environments as $environment) {
+            if ($environment->getName() === $environmentName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

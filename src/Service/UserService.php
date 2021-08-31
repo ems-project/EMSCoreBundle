@@ -44,6 +44,21 @@ class UserService implements EntityServiceInterface
         $this->userRepository = $doctrine->getManager()->getRepository(User::class);
     }
 
+    public function searchUser(string $search): ?UserInterface
+    {
+        /** @var UserInterface[] $cache */
+        static $cache = [];
+
+        if (\array_key_exists($search, $cache)) {
+            return $cache[$search];
+        }
+
+        $user = $this->userRepository->search($search);
+        $cache[$search] = $user;
+
+        return $user;
+    }
+
     public function findUsernameByApikey($apiKey)
     {
         $em = $this->doctrine->getManager();

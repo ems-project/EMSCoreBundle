@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service\Revision;
 
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 
 final class LoggingContext
@@ -34,6 +35,17 @@ final class LoggingContext
     /**
      * @return array<string, int|string|null>
      */
+    public static function publish(Revision $revision, Environment $environment): array
+    {
+        $context = self::context($revision);
+        $context[EmsFields::LOG_ENVIRONMENT_FIELD] = $environment->getName();
+
+        return $context;
+    }
+
+    /**
+     * @return array<string, int|string|null>
+     */
     private static function context(Revision $revision): array
     {
         $context = [
@@ -44,8 +56,8 @@ final class LoggingContext
         if ($contentType = $revision->getContentType()) {
             $context[EmsFields::LOG_CONTENTTYPE_FIELD] = $contentType->getName();
 
-            if ($environment = $contentType->getEnvironment()) {
-                $context[EmsFields::LOG_ENVIRONMENT_FIELD] = $environment->getName();
+            if ($contentTypeEnvironment = $contentType->getEnvironment()) {
+                $context[EmsFields::LOG_ENVIRONMENT_FIELD] = $contentTypeEnvironment->getName();
             }
         }
 

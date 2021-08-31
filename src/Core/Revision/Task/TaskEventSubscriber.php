@@ -48,7 +48,7 @@ final class TaskEventSubscriber implements EventSubscriberInterface
     public function onTaskCreate(TaskEvent $event): void
     {
         $task = $event->task;
-        $task->addLog(TaskLog::logCreate($task, $event->user));
+        $task->addLog(TaskLog::logCreate($task, $event->username));
         $this->taskRepository->save($task);
     }
 
@@ -60,13 +60,16 @@ final class TaskEventSubscriber implements EventSubscriberInterface
 
         $changeSet = $event->changeSet;
         $task = $event->task;
-        $task->addLog(TaskLog::logUpdate($task, $event->user, $changeSet));
+        $task->addLog(TaskLog::logUpdate($task, $event->username, $changeSet));
         $this->taskRepository->save($task);
 
         if ($event->isTaskCurrent()) {
             if (isset($changeSet['assignee'])) {
                 $this->sendMail($event, 'assignee_changed', $changeSet['assignee'][0]);
                 $this->sendMail($event, 'created', $changeSet['assignee'][1]);
+
+                $task->addLog(TaskLog::logStatusUpdate($event->task, $event->username, $event->comment));
+                $this->taskRepository->save($task);
             } else {
                 $this->sendMail($event, 'updated');
             }
@@ -124,7 +127,7 @@ final class TaskEventSubscriber implements EventSubscriberInterface
         $task = $event->task;
         $task->setStatus($status);
 
-        $task->addLog(TaskLog::logStatusUpdate($event->task, $event->user, $event->comment));
+        $task->addLog(TaskLog::logStatusUpdate($event->task, $event->username, $event->comment));
         $this->taskRepository->save($task);
     }
 

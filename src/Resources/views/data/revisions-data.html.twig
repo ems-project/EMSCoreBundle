@@ -82,8 +82,8 @@
 
 {% block revisionSidebar %}
 	{% set tabs = [{name: 'tab_about_revision', label: 'Revision'|trans}] %}
-	{% if revision.ownershipAllowed %}
-		{% if (revision.hasOwner and revision.owner == app.user.username) or (revision.hasTasks == false and is_granted(revision.giveContentType.ownerRole)) %}
+	{% if revision.isTaskEnabled %}
+		{% if (revision.hasOwner and revision.owner == app.user.username) or (revision.hasTasks == false and is_granted(revision.giveContentType.ownerRole) and revision.hasOwner == false) %}
 			{% set tabs = tabs|merge([{ name: 'tab_tasks', label: 'task.tab_tasks'|trans }]) %}
 		{% endif %}
 		{% if revision.hasTaskCurrent and revision.owner != app.user.username %}

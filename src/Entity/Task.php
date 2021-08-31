@@ -94,7 +94,7 @@ class Task implements EntityInterface
     public function updateFromDTO(TaskDTO $taskDTO): void
     {
         $this->title = $taskDTO->giveTitle();
-        $this->description = $taskDTO->giveDescription();
+        $this->description = $taskDTO->getDescription();
         $this->assignee = $taskDTO->giveAssignee();
 
         $currentDeadline = $this->hasDeadline() ? $this->getDeadline()->format('Y-m-d') : null;
@@ -212,6 +212,11 @@ class Task implements EntityInterface
     public function setAssignee(string $assignee): void
     {
         $this->assignee = $assignee;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
     }
 
     private function getLogLatestByStatus(string $status): ?TaskLog

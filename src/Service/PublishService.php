@@ -16,6 +16,7 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\Revision\LoggingContext;
 use Exception;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -184,6 +185,7 @@ class PublishService
     public function bulkPublishStart(int $bulkSize): void
     {
         $this->bulker->setSize($bulkSize);
+        $this->bulker->setLogger(new NullLogger());
         $this->bulker->setSign(false);
     }
 
@@ -222,6 +224,7 @@ class PublishService
     public function bulkPublishFinished(): void
     {
         $this->bulker->send(true);
+        $this->bulker->setLogger($this->logger);
         $this->bulker->setSign(true);
     }
 

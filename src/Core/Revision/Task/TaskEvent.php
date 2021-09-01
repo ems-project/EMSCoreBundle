@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Core\Revision\Task;
 
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
-use EMS\CoreBundle\Entity\UserInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class TaskEvent extends Event
@@ -23,16 +22,16 @@ class TaskEvent extends Event
 
     public Task $task;
     public Revision $revision;
-    public UserInterface $user;
-    public ?string $comment;
+    public string $username;
+    public ?string $comment = null;
     /** @var array<mixed> */
     public array $changeSet = [];
 
-    public function __construct(Task $task, Revision $revision, UserInterface $user)
+    public function __construct(Task $task, Revision $revision, string $username)
     {
         $this->task = $task;
         $this->revision = $revision;
-        $this->user = $user;
+        $this->username = $username;
     }
 
     public function isTaskCurrent(): bool

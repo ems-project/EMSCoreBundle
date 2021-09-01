@@ -80,7 +80,7 @@ class RevisionService
      */
     public function search(array $search): Revisions
     {
-        return $this->revisionRepository->search($search);
+        return new Revisions($this->revisionRepository->search($search));
     }
 
     /**

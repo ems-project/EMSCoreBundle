@@ -5,10 +5,12 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use Dompdf\Dompdf;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CommonBundle\Service\Pdf\DomPdfPrinter;
+use EMS\CommonBundle\Service\Pdf\Pdf;
+use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
@@ -838,7 +840,7 @@ class DataController extends AppController
      * @Route("/data/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="data.customview")
      * @Route("/data/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="ems_data_custom_template_protected")
      */
-    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, LoggerInterface $logger, TranslatorInterface $translator, SearchService $searchService, TwigEnvironment $twig)
+    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, LoggerInterface $logger, TranslatorInterface $translator, SearchService $searchService, TwigEnvironment $twig, DomPdfPrinter $pdfPrinter)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -890,54 +892,38 @@ class DataController extends AppController
                 'contentType' => $template->getContentType(),
                 'object' => $document,
                 'source' => $document->getSource(),
-                '_download' => ($_download || !$template->getPreview()),
+                '_download' => true,
+            ]);
+            $filename = $this->generateFilename($twig, $template->getFilename() ?? 'document.pdf', [
+                'environment' => $environment,
+                'contentType' => $template->getContentType(),
+                'object' => $document,
+                'source' => $document->getSource(),
+                '_download' => true,
             ]);
 
-            // instantiate and use the dompdf class
-            $dompdf = new Dompdf();
-            $dompdf->loadHtml($output);
-
-            // (Optional) Setup the paper size and orientation
-            $dompdf->setPaper($template->getSize() ? $template->getSize() : 'A3', $template->getOrientation() ? $template->getOrientation() : 'portrait');
-
-            // Render the HTML as PDF
-            $dompdf->render();
-
-            // Output the generated PDF to Browser
-            $dompdf->stream($template->getFilename() ?? 'document.pdf', [
-                'compress' => 1,
-                'Attachment' => ($template->getDisposition() && 'attachment' === $template->getDisposition()) ? 1 : 0,
+            $pdf = new Pdf($filename, $output);
+            $printOptions = new PdfPrintOptions([
+                PdfPrintOptions::ATTACHMENT => PdfPrintOptions::ATTACHMENT === $template->getDisposition(),
+                PdfPrintOptions::COMPRESS => true,
+                PdfPrintOptions::HTML5_PARSING => true,
+                PdfPrintOptions::ORIENTATION => $template->getOrientation() ?? 'portrait',
+                PdfPrintOptions::SIZE => $template->getSize() ?? 'A4',
             ]);
-            exit;
+
+            return $pdfPrinter->getStreamedResponse($pdf, $printOptions);
         }
         if ($_download || (0 === \strcmp($template->getRenderOption(), RenderOptionType::EXPORT) && !$template->getPreview())) {
             if (null != $template->getMimeType()) {
                 \header('Content-Type: '.$template->getMimeType());
             }
 
-            $filename = $ouuid;
-            if (null != $template->getFilename()) {
-                try {
-                    $filename = $twig->createTemplate($template->getFilename());
-                } catch (Error $e) {
-                    $logger->error('log.template.twig.error', [
-                        'template_id' => $template->getId(),
-                        'template_name' => $template->getName(),
-                    ]);
-                    $body = $twig->createTemplate($translator->trans('log.template.twig.error', [
-                        '%template_id%' => $template->getId(),
-                        '%template_name%' => $template->getName(),
-                    ], EMSCoreBundle::TRANS_DOMAIN));
-                }
-
-                $filename = $filename->render([
-                    'environment' => $environment,
-                    'contentType' => $template->getContentType(),
-                    'object' => $document,
-                    'source' => $document->getSource(),
-                ]);
-                $filename = \preg_replace('~[\r\n]+~', '', $filename);
-            }
+            $filename = $this->generateFilename($twig, $template->getFilename() ?? $ouuid, [
+                'environment' => $environment,
+                'contentType' => $template->getContentType(),
+                'object' => $document,
+                'source' => $document->getSource(),
+            ]);
 
             if (!empty($template->getDisposition())) {
                 $attachment = ResponseHeaderBag::DISPOSITION_ATTACHMENT;
@@ -1436,5 +1422,21 @@ class DataController extends AppController
                 $this->reorderCollection($elem);
             }
         }
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    private function generateFilename(TwigEnvironment $twig, string $rawTemplate, array $options): string
+    {
+        try {
+            $template = $twig->createTemplate($rawTemplate);
+            $filename = $template->render($options);
+            $filename = \preg_replace('~[\r\n]+~', '', $filename);
+        } catch (\Throwable $e) {
+            $filename = null;
+        }
+
+        return $filename ?? 'error-in-filename-template';
     }
 }

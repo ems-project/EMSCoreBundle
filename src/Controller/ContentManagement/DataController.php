@@ -894,7 +894,15 @@ class DataController extends AppController
                 'source' => $document->getSource(),
                 '_download' => true,
             ]);
-            $pdf = new Pdf($template->getFilename() ?? 'document.pdf', $output);
+            $filename = $this->generateFilename($twig, $template->getFilename() ?? 'document.pdf', [
+                'environment' => $environment,
+                'contentType' => $template->getContentType(),
+                'object' => $document,
+                'source' => $document->getSource(),
+                '_download' => true,
+            ]);
+
+            $pdf = new Pdf($filename, $output);
             $printOptions = new PdfPrintOptions([
                 PdfPrintOptions::ATTACHMENT => PdfPrintOptions::ATTACHMENT === $template->getDisposition(),
                 PdfPrintOptions::COMPRESS => true,
@@ -910,29 +918,12 @@ class DataController extends AppController
                 \header('Content-Type: '.$template->getMimeType());
             }
 
-            $filename = $ouuid;
-            if (null != $template->getFilename()) {
-                try {
-                    $filename = $twig->createTemplate($template->getFilename());
-                } catch (Error $e) {
-                    $logger->error('log.template.twig.error', [
-                        'template_id' => $template->getId(),
-                        'template_name' => $template->getName(),
-                    ]);
-                    $body = $twig->createTemplate($translator->trans('log.template.twig.error', [
-                        '%template_id%' => $template->getId(),
-                        '%template_name%' => $template->getName(),
-                    ], EMSCoreBundle::TRANS_DOMAIN));
-                }
-
-                $filename = $filename->render([
-                    'environment' => $environment,
-                    'contentType' => $template->getContentType(),
-                    'object' => $document,
-                    'source' => $document->getSource(),
-                ]);
-                $filename = \preg_replace('~[\r\n]+~', '', $filename);
-            }
+            $filename = $this->generateFilename($twig, $template->getFilename() ?? $ouuid, [
+                'environment' => $environment,
+                'contentType' => $template->getContentType(),
+                'object' => $document,
+                'source' => $document->getSource(),
+            ]);
 
             if (!empty($template->getDisposition())) {
                 $attachment = ResponseHeaderBag::DISPOSITION_ATTACHMENT;
@@ -1431,5 +1422,21 @@ class DataController extends AppController
                 $this->reorderCollection($elem);
             }
         }
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    private function generateFilename(TwigEnvironment $twig, string $rawTemplate, array $options): string
+    {
+        try {
+            $template = $twig->createTemplate($rawTemplate);
+            $filename = $template->render($options);
+            $filename = \preg_replace('~[\r\n]+~', '', $filename);
+        } catch (\Throwable $e) {
+            $filename = null;
+        }
+
+        return $filename ?? 'error-in-filename-template';
     }
 }

@@ -107,7 +107,8 @@ Options:
       --scroll-size=SCROLLSIZE        Size of the elasticsearch scroll request
       --scroll-timeout=SCROLLTIMEOUT  Time to migrate "scrollSize" items i.e. 30s or 2m
       --search-query[=SEARCHQUERY]    Query used to find elasticsearch records to transform [default: "{}"]
-      --dry-run                       dry run
+      --dry-run                       Dry run
+      --user=USER                     Lock user [default: "SYSTEM_CONTENT_TRANSFORM"]
 ```
 
 * **--scroll-size**: Size of the elasticsearch scroll request

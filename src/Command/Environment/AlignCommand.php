@@ -84,6 +84,7 @@ class AlignCommand extends AbstractCommand
     {
         $this->logger->info('Interact with AlignCommand');
 
+        $this->environmentService->clearCache();
         $environmentNames = $this->environmentService->getEnvironmentNames();
 
         $this->choiceArgumentString(self::ARGUMENT_SOURCE, 'Select an existing environment as source', $environmentNames);

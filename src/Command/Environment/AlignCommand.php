@@ -25,6 +25,7 @@ class AlignCommand extends AbstractCommand
 
     private Environment $source;
     private Environment $target;
+    private string $user = 'SYSTEM_ALIGN';
 
     private string $searchQuery;
 
@@ -35,6 +36,7 @@ class AlignCommand extends AbstractCommand
     public const OPTION_FORCE = 'force';
     public const OPTION_SEARCH_QUERY = 'search-query';
     public const OPTION_SNAPSHOT = 'snapshot';
+    public const OPTION_USER = 'user';
 
     protected static $defaultName = Commands::ENVIRONMENT_ALIGN;
 
@@ -62,6 +64,7 @@ class AlignCommand extends AbstractCommand
             ->addOption(self::OPTION_SEARCH_QUERY, null, InputOption::VALUE_OPTIONAL, 'Query used to find elasticsearch records to import', '{}')
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'If set, the task will be performed (protection)')
             ->addOption(self::OPTION_SNAPSHOT, null, InputOption::VALUE_NONE, 'If set, the target environment will be tagged as a snapshot after the alignment')
+            ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'Lock user', $this->user)
         ;
     }
 
@@ -77,6 +80,7 @@ class AlignCommand extends AbstractCommand
             $this->revisionSearcher->setTimeout($scrollTimeout);
         }
 
+        $this->user = $this->getOptionString(self::OPTION_USER, $this->user);
         $this->searchQuery = $this->getOptionString(self::OPTION_SEARCH_QUERY);
     }
 
@@ -107,15 +111,17 @@ class AlignCommand extends AbstractCommand
         $bulkSize = $this->revisionSearcher->getSize();
 
         $this->io->note(\sprintf('The source environment contains %s elements, start aligning environments...', $search->getTotal()));
-        $this->io->progressStart($search->getTotal());
 
         $deletedRevision = 0;
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];
 
+        $this->io->progressStart($search->getTotal());
         foreach ($this->revisionSearcher->search($this->source, $search) as $revisions) {
+            $this->revisionSearcher->lock($revisions, $this->user);
             $this->publishService->bulkPublishStart($bulkSize);
-            foreach ($revisions as $revision) {
+
+            foreach ($revisions->transaction() as $revision) {
                 $contentType = $revision->giveContentType();
 
                 if ($revision->getDeleted()) {
@@ -133,9 +139,10 @@ class AlignCommand extends AbstractCommand
 
                 $this->io->progressAdvance();
             }
-            $this->publishService->bulkPublishFinished();
-        }
 
+            $this->publishService->bulkPublishFinished();
+            $this->revisionSearcher->unlock($revisions);
+        }
         $this->io->progressFinish();
 
         if ($input->getOption(self::OPTION_SNAPSHOT)) {

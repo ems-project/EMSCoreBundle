@@ -107,13 +107,35 @@ Options:
       --scroll-size=SCROLLSIZE        Size of the elasticsearch scroll request
       --scroll-timeout=SCROLLTIMEOUT  Time to migrate "scrollSize" items i.e. 30s or 2m
       --search-query[=SEARCHQUERY]    Query used to find elasticsearch records to transform [default: "{}"]
-      --dry-run                       dry run
+      --dry-run                       Dry run
+      --user=USER                     Lock user [default: "SYSTEM_CONTENT_TRANSFORM"]
 ```
 
 * **--scroll-size**: Size of the elasticsearch scroll request
 * **--scroll-timeout**: Time to migrate "scrollSize" items i.e. 30s or 2m
 * **--search-query**: json escaped string with es query
 * **--dry-run** : will not commit the database transactions
+
+## Environment
+
+### Align
+
+```bash
+Usage:
+  emsco:environment:align [options] [--] <source> <target>
+
+Arguments:
+  source                               Environment source name
+  target                               Environment target name
+
+Options:
+      --scroll-size=SCROLL-SIZE        Size of the elasticsearch scroll request
+      --scroll-timeout=SCROLL-TIMEOUT  Time to migrate "scrollSize" items i.e. 30s or 2m
+      --search-query[=SEARCH-QUERY]    Query used to find elasticsearch records to import [default: "{}"]
+      --force                          If set, the task will be performed (protection)
+      --snapshot                       If set, the target environment will be tagged as a snapshot after the alignment
+      --user=USER                      Lock user [default: "SYSTEM_ALIGN"]
+```
 
 ## Revision
 

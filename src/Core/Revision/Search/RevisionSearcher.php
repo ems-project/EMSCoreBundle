@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Search;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Elastica\Document;
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -15,6 +16,7 @@ final class RevisionSearcher
 {
     private ElasticaService $elasticaService;
     private RevisionRepository $revisionRepository;
+    private EntityManagerInterface $entityManager;
     private int $size;
     private string $timeout;
 
@@ -23,10 +25,12 @@ final class RevisionSearcher
     public function __construct(
         ElasticaService $elasticaService,
         RevisionRepository $revisionRepository,
+        EntityManagerInterface $entityManager,
         string $defaultScrollSize
     ) {
         $this->elasticaService = $elasticaService;
         $this->revisionRepository = $revisionRepository;
+        $this->entityManager = $entityManager;
         $this->timeout = self::DEFAULT_TIME_OUT;
         $this->size = \intval($defaultScrollSize);
     }
@@ -70,8 +74,12 @@ final class RevisionSearcher
     /**
      * @return iterable|Revisions[]
      */
-    public function search(Environment $environment, RevisionSearch $search): iterable
+    public function search(Environment $environment, RevisionSearch $search, ?string $lockBy = null, string $until = '+5 minutes'): iterable
     {
+        $config = $this->entityManager->getConnection()->getConfiguration();
+        $logger = $config->getSQLLogger();
+        $config->setSQLLogger(null);
+
         foreach ($search->getScroll() as $resultSet) {
             $documents = $resultSet->getDocuments();
             /** @var string[] $ouuids */
@@ -80,6 +88,8 @@ final class RevisionSearcher
 
             yield new Revisions($qb, $resultSet, $this->size);
         }
+
+        $config->setSQLLogger($logger);
     }
 
     public function lock(Revisions $revisions, string $lockBy, string $until = '+5 minutes'): void

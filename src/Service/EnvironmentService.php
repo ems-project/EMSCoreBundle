@@ -66,7 +66,11 @@ class EnvironmentService
         $this->elasticaService = $elasticaService;
         $this->instanceId = $instanceId;
 
-        $this->environmentRepository = $doctrine->getRepository(Environment::class);
+        $environmentRepository = $doctrine->getRepository(Environment::class);
+        if (!$environmentRepository instanceof EnvironmentRepository) {
+            throw new \RuntimeException('Not found repository');
+        }
+        $this->environmentRepository = $environmentRepository;
     }
 
     public function createEnvironment(string $name, bool $updateReferrers = false): Environment
@@ -103,8 +107,6 @@ class EnvironmentService
 
     public function setSnapshotTag(Environment $environment, bool $value = true): void
     {
-        $this->doctrine->getManager()->refresh($environment);
-
         $environment->setSnapshot($value);
 
         $em = $this->doctrine->getManager();

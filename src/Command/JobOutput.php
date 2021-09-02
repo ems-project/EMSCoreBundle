@@ -19,8 +19,7 @@ class JobOutput extends Output
 
     public function doWrite($message, $newline): void
     {
-        $job = $this->jobRepository->findOneBy(['id' => $this->jobId]);
-
+        $job = $this->jobRepository->findById($this->jobId);
         $job->setStatus($message);
         $job->setOutput($job->getOutput().$this->getFormatter()->format($message).($newline ? PHP_EOL : ''));
 

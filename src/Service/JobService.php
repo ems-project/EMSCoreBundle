@@ -143,9 +143,9 @@ class JobService
         return $output;
     }
 
-    public function finish(string $jobId): void
+    public function finish(int $jobId): void
     {
-        $job = $this->repository->findOneBy(['id' => $jobId]);
+        $job = $this->repository->findById($jobId);
         $job->setDone(true);
         $job->setProgress(100);
 

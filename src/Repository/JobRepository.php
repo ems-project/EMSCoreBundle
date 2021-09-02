@@ -26,4 +26,10 @@ class JobRepository extends EntityRepository
 
         return \intval($qb->getQuery()->getSingleScalarResult());
     }
+
+    public function save(Job $job): void
+    {
+        $this->getEntityManager()->persist($job);
+        $this->getEntityManager()->flush();;
+    }
 }

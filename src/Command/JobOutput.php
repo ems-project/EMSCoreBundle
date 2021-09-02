@@ -2,31 +2,28 @@
 
 namespace EMS\CoreBundle\Command;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use EMS\CoreBundle\Entity\Job;
+use EMS\CoreBundle\Repository\JobRepository;
 use Symfony\Component\Console\Output\Output;
 
 class JobOutput extends Output
 {
-    /** @var Registry */
-    private $doctrine;
+    private int $jobId;
+    private JobRepository $jobRepository;
 
-    /** @var Job */
-    private $job;
-
-    public function __construct(Registry $doctrine, Job $job)
+    public function __construct(JobRepository $jobRepository, int $jobId)
     {
         parent::__construct();
-        $this->doctrine = $doctrine;
-        $this->job = $job;
+        $this->jobRepository = $jobRepository;
+        $this->jobId = $jobId;
     }
 
     public function doWrite($message, $newline): void
     {
-        $this->job->setStatus($message);
-        $this->job->setOutput($this->job->getOutput().$this->getFormatter()->format($message).($newline ? PHP_EOL : ''));
-        $manager = $this->doctrine->getManager();
-        $manager->persist($this->job);
-        $manager->flush();
+        $job = $this->jobRepository->findOneBy(['id' => $this->jobId]);
+
+        $job->setStatus($message);
+        $job->setOutput($job->getOutput().$this->getFormatter()->format($message).($newline ? PHP_EOL : ''));
+
+        $this->jobRepository->save($job);
     }
 }

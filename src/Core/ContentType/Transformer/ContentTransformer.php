@@ -15,8 +15,6 @@ final class ContentTransformer
     private ContentTransformers $transformers;
     private DataService $dataService;
 
-    public const USER = 'SYSTEM_CONTENT_TRANSFORM';
-
     public function __construct(ContentTransformers $transformers, DataService $dataService)
     {
         $this->transformers = $transformers;
@@ -56,7 +54,7 @@ final class ContentTransformer
     /**
      * @param array<mixed> $transformerDefinitions
      */
-    public function transform(Revision $revision, array $transformerDefinitions, bool $dryRun): bool
+    public function transform(Revision $revision, array $transformerDefinitions, string $user, bool $dryRun): bool
     {
         $rawData = $revision->getRawData();
         RecursiveMapper::mapPropertyValue(
@@ -75,9 +73,9 @@ final class ContentTransformer
         }
 
         if (!$dryRun) {
-            $revision = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->getOuuid(), null, self::USER);
+            $revision = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->getOuuid(), null, $user);
             $revision->setRawData($rawData);
-            $this->dataService->finalizeDraft($revision, $revisionType, self::USER, false);
+            $this->dataService->finalizeDraft($revision, $revisionType, $user, false);
         }
 
         return true;

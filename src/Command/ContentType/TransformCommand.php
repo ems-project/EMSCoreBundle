@@ -24,12 +24,14 @@ final class TransformCommand extends AbstractCommand
 
     private ContentType $contentType;
     private string $searchQuery;
+    private string $user = 'SYSTEM_CONTENT_TRANSFORM';
 
     public const ARGUMENT_CONTENT_TYPE = 'content-type';
     public const OPTION_SCROLL_SIZE = 'scroll-size';
     public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
     public const OPTION_SEARCH_QUERY = 'search-query';
     public const OPTION_DRY_RUN = 'dry-run';
+    public const OPTION_USER = 'user';
 
     protected static $defaultName = Commands::CONTENT_TYPE_TRANSFORM;
 
@@ -51,7 +53,8 @@ final class TransformCommand extends AbstractCommand
             ->addOption(self::OPTION_SCROLL_SIZE, null, InputOption::VALUE_REQUIRED, 'Size of the elasticsearch scroll request')
             ->addOption(self::OPTION_SCROLL_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Time to migrate "scrollSize" items i.e. 30s or 2m')
             ->addOption(self::OPTION_SEARCH_QUERY, null, InputOption::VALUE_OPTIONAL, 'Query used to find elasticsearch records to transform', '{}')
-            ->addOption(self::OPTION_DRY_RUN, '', InputOption::VALUE_NONE, 'dry run')
+            ->addOption(self::OPTION_DRY_RUN, '', InputOption::VALUE_NONE, 'Dry run')
+            ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'Lock user', $this->user)
         ;
     }
 
@@ -68,6 +71,7 @@ final class TransformCommand extends AbstractCommand
             $this->revisionSearcher->setTimeout($scrollTimeout);
         }
 
+        $this->user = $this->getOptionString(self::OPTION_USER, $this->user);
         $this->searchQuery = $this->getOptionString(self::OPTION_SEARCH_QUERY);
         $this->contentType = $this->contentTypeService->giveByName($this->getArgumentString(self::ARGUMENT_CONTENT_TYPE));
     }
@@ -98,18 +102,14 @@ final class TransformCommand extends AbstractCommand
         $transformed = 0;
 
         foreach ($this->revisionSearcher->search($environment, $search) as $revisions) {
-            $this->revisionSearcher->lock($revisions, ContentTransformer::USER);
-
             foreach ($revisions->transaction() as $revision) {
-                $result = $this->contentTransformer->transform($revision, $transformerDefinitions, $dryRun);
+                $result = $this->contentTransformer->transform($revision, $transformerDefinitions, $this->user, $dryRun);
                 if ($result) {
                     ++$transformed;
                 }
 
                 $this->io->progressAdvance();
             }
-
-            $this->revisionSearcher->unlock($revisions);
         }
         $this->io->progressFinish();
 

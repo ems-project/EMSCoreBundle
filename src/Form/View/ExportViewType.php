@@ -3,8 +3,10 @@
 namespace EMS\CoreBundle\Form\View;
 
 use Dompdf\Adapter\CPDF;
-use Dompdf\Dompdf;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CommonBundle\Service\Pdf\DomPdfPrinter;
+use EMS\CommonBundle\Service\Pdf\Pdf;
+use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use Psr\Log\LoggerInterface;
@@ -21,13 +23,14 @@ use Twig\Environment;
 
 class ExportViewType extends ViewType
 {
-    /** @var ElasticaService */
-    private $elasticaService;
+    private ElasticaService $elasticaService;
+    private DomPdfPrinter $pdfPrinter;
 
-    public function __construct(FormFactory $formFactory, Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger)
+    public function __construct(FormFactory $formFactory, Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger, DomPdfPrinter $pdfPrinter)
     {
         parent::__construct($formFactory, $twig, $logger);
         $this->elasticaService = $elasticaService;
+        $this->pdfPrinter = $pdfPrinter;
     }
 
     public function getLabel(): string
@@ -121,25 +124,15 @@ class ExportViewType extends ViewType
         $parameters = $this->getParameters($view, $this->formFactory, $request);
 
         if (isset($view->getOptions()['export_type']) || 'dompdf' === $view->getOptions()['export_type']) {
-            // instantiate and use the dompdf class
-            $dompdf = new Dompdf();
-            $dompdf->loadHtml($parameters['render']);
-
-            // (Optional) Setup the paper size and orientation
-            $dompdf->setPaper(
-                (isset($view->getOptions()['pdf_size']) && $view->getOptions()['pdf_size']) ? $view->getOptions()['pdf_size'] : 'A4',
-                (isset($view->getOptions()['pdf_orientation']) && $view->getOptions()['pdf_orientation']) ? $view->getOptions()['pdf_orientation'] : 'portrait'
-            );
-
-            // Render the HTML as PDF
-            $dompdf->render();
-
-            // Output the generated PDF to Browser
-            $dompdf->stream($parameters['filename'] ?? 'document.pdf', [
-                'compress' => 1,
-                'Attachment' => (isset($view->getOptions()['disposition']) && 'attachment' === $view->getOptions()['disposition']) ? 1 : 0,
+            $pdf = new Pdf($parameters['filename'] ?? 'document.pdf', $parameters['render'] ?? 'empty template?');
+            $pdfOptions = new PdfPrintOptions([
+                PdfPrintOptions::SIZE => $view->getOptions()['pdf_size'] ?? 'A4',
+                PdfPrintOptions::ORIENTATION => $view->getOptions()['pdf_orientation'] ?? 'portrait',
+                PdfPrintOptions::COMPRESS => true,
+                PdfPrintOptions::ATTACHMENT => PdfPrintOptions::ATTACHMENT === ($view->getOptions()['disposition'] ?? null),
             ]);
-            exit;
+
+            return $this->pdfPrinter->getStreamedResponse($pdf, $pdfOptions);
         }
 
         $response = new Response();

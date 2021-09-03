@@ -120,7 +120,7 @@ class JobService
             $output->writeln('Exception:'.$e->getMessage());
         }
 
-        $this->finish($job);
+        $this->finish($job->getId());
     }
 
     /**
@@ -133,20 +133,19 @@ class JobService
 
     public function start(Job $job): JobOutput
     {
-        $output = new JobOutput($this->doctrine, $job);
+        $job->setStarted(true);
+        $this->repository->save($job);
+
+        $output = new JobOutput($this->repository, $job->getId());
         $output->setDecorated(true);
         $output->writeln('Job ready to be launch');
-
-        $job->setStarted(true);
-
-        $this->em->persist($job);
-        $this->em->flush();
 
         return $output;
     }
 
-    public function finish(Job $job): void
+    public function finish(int $jobId): void
     {
+        $job = $this->repository->findById($jobId);
         $job->setDone(true);
         $job->setProgress(100);
 

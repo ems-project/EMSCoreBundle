@@ -11,13 +11,7 @@ class JobRepository extends EntityRepository
 {
     public function findById(int $jobId): Job
     {
-        $qb = $this->createQueryBuilder('j');
-        $query = $qb
-            ->andWhere($qb->expr()->eq('j.id', ':job_id'))
-            ->setParameter('job_id', $jobId)
-            ->getQuery();
-
-        $job = $query->getSingleResult();
+        $job = $this->findOneBy(['id' => $jobId]);
 
         if (!$job instanceof Job) {
             throw new \RuntimeException('Job not found');

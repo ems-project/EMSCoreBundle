@@ -88,14 +88,13 @@ class AlignCommand extends AbstractCommand
     {
         $this->logger->info('Interact with AlignCommand');
 
-        $this->environmentService->clearCache();
         $environmentNames = $this->environmentService->getEnvironmentNames();
 
         $this->choiceArgumentString(self::ARGUMENT_SOURCE, 'Select an existing environment as source', $environmentNames);
         $this->choiceArgumentString(self::ARGUMENT_TARGET, 'Select an existing environment as target', $environmentNames);
 
-        $this->source = $this->environmentService->giveByName($this->getArgumentString(self::ARGUMENT_SOURCE));
-        $this->target = $this->environmentService->giveByName($this->getArgumentString(self::ARGUMENT_TARGET));
+        $this->source = $this->environmentService->findByName($this->getArgumentString(self::ARGUMENT_SOURCE));
+        $this->target = $this->environmentService->findByName($this->getArgumentString(self::ARGUMENT_TARGET));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -147,8 +146,9 @@ class AlignCommand extends AbstractCommand
         $this->io->progressFinish();
 
         if ($input->getOption(self::OPTION_SNAPSHOT)) {
-            $this->environmentService->setSnapshotTag($this->target);
-            $this->io->note(\sprintf('The target environment "%s" was tagged as a snapshot', $this->target->getName()));
+            $snapShot = $this->environmentService->findByName($this->target->getName());
+            $this->environmentService->setSnapshotTag($snapShot);
+            $this->io->note(\sprintf('The target environment "%s" was tagged as a snapshot', $snapShot->getName()));
         }
 
         if ($deletedRevision > 0) {

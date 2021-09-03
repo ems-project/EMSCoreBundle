@@ -65,7 +65,7 @@ class JobCommand extends Command
         try {
             $this->jobService->run($job);
         } catch (\Throwable $e) {
-            $this->jobService->finish($job);
+            $this->jobService->finish($job->getId());
             throw $e;
         }
         $interval = \date_diff($start, new \DateTime());

@@ -65,7 +65,7 @@ final class TaskDTO
         return DateTime::createFromFormat($this->deadline, 'd/m/Y');
     }
 
-    public function giveDescription(): ?string
+    public function getDescription(): ?string
     {
         return $this->description;
     }

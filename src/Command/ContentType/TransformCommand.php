@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\ContentType;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
-use EMS\CoreBundle\Command\LockCommand;
-use EMS\CoreBundle\Command\UnlockRevisionsCommand;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformer;
+use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformerInterface;
+use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\Revision\RevisionService;
-use PhpCsFixer\Tokenizer\TransformerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,37 +18,43 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class TransformCommand extends AbstractCommand
 {
+    private RevisionSearcher $revisionSearcher;
     private ContentTypeService $contentTypeService;
-    private ContentType $contentType;
     private ContentTransformer $contentTransformer;
-    private RevisionService $revisionService;
-    /** @var array<mixed> */
-    private array $search = [];
-    private int $batchSize;
 
-    public const name = 'ems:contenttype:transform';
-    protected static $defaultName = self::name;
+    private ContentType $contentType;
+    private string $searchQuery;
+    private string $user = 'SYSTEM_CONTENT_TRANSFORM';
+
+    public const ARGUMENT_CONTENT_TYPE = 'content-type';
+    public const OPTION_SCROLL_SIZE = 'scroll-size';
+    public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
+    public const OPTION_SEARCH_QUERY = 'search-query';
+    public const OPTION_DRY_RUN = 'dry-run';
+    public const OPTION_USER = 'user';
+
+    protected static $defaultName = Commands::CONTENT_TYPE_TRANSFORM;
 
     public function __construct(
+        RevisionSearcher $revisionSearcher,
         ContentTypeService $contentTypeService,
-        ContentTransformer $contentTransformer,
-        RevisionService $revisionService,
-        int $defaultBulkSize)
-    {
+        ContentTransformer $contentTransformer
+    ) {
         parent::__construct();
+        $this->revisionSearcher = $revisionSearcher;
         $this->contentTypeService = $contentTypeService;
         $this->contentTransformer = $contentTransformer;
-        $this->revisionService = $revisionService;
-        $this->batchSize = $defaultBulkSize;
     }
 
     protected function configure(): void
     {
         $this
-            ->addArgument('content-type', InputArgument::REQUIRED, 'ContentType name')
-            ->addOption('batch-size', '', InputOption::VALUE_REQUIRED, 'db records batch size', 'default_bulk_size')
-            ->addOption('ouuid', '', InputOption::VALUE_REQUIRED, 'revision ouuid')
-            ->addOption('dry-run', '', InputOption::VALUE_NONE, 'dry run')
+            ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'ContentType name')
+            ->addOption(self::OPTION_SCROLL_SIZE, null, InputOption::VALUE_REQUIRED, 'Size of the elasticsearch scroll request')
+            ->addOption(self::OPTION_SCROLL_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Time to migrate "scrollSize" items i.e. 30s or 2m')
+            ->addOption(self::OPTION_SEARCH_QUERY, null, InputOption::VALUE_OPTIONAL, 'Query used to find elasticsearch records to transform', '{}')
+            ->addOption(self::OPTION_DRY_RUN, '', InputOption::VALUE_NONE, 'Dry run')
+            ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'Lock user', $this->user)
         ;
     }
 
@@ -57,21 +62,18 @@ final class TransformCommand extends AbstractCommand
     {
         parent::initialize($input, $output);
 
-        $this->io->title('Transform content-type');
+        $this->io->title('EMS - Content Type - Transform');
 
-        $batchSize = \intval($input->getOption('batch-size'));
-        if ($batchSize > 0) {
-            $this->batchSize = $batchSize;
+        if ($scrollSize = $this->getOptionIntNull(self::OPTION_SCROLL_SIZE)) {
+            $this->revisionSearcher->setSize($scrollSize);
+        }
+        if ($scrollTimeout = $this->getOptionStringNull(self::OPTION_SCROLL_TIMEOUT)) {
+            $this->revisionSearcher->setTimeout($scrollTimeout);
         }
 
-        $contentTypeName = \strval($input->getArgument('content-type'));
-        $this->contentType = $this->contentTypeService->giveByName($contentTypeName);
-
-        $this->search = [
-            'lockBy' => ContentTransformer::USER,
-            'contentType' => $this->contentType,
-            'ouuid' => $this->getOptionStringNull('ouuid'),
-        ];
+        $this->user = $this->getOptionString(self::OPTION_USER, $this->user);
+        $this->searchQuery = $this->getOptionString(self::OPTION_SEARCH_QUERY);
+        $this->contentType = $this->contentTypeService->giveByName($this->getArgumentString(self::ARGUMENT_CONTENT_TYPE));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -89,36 +91,27 @@ final class TransformCommand extends AbstractCommand
             return self::EXECUTE_ERROR;
         }
 
-        if ($dryRun = $this->getOptionBool('dry-run')) {
+        if ($dryRun = $this->getOptionBool(self::OPTION_DRY_RUN)) {
             $this->io->note('Dry run enabled, no database changes');
         }
 
-        $this->io->section('Locking');
-        $this->executeCommand(
-            LockCommand::name,
-            [$this->contentType->getName(), '+1day', '--user='.ContentTransformer::USER, '--force']
-        );
-
-        $this->io->section('Transforming');
-        $progressBar = $this->io->createProgressBar();
-        $revisions = $this->revisionService->search($this->search);
-        $transformation = $this->contentTransformer->transform($revisions, $transformerDefinitions, $this->batchSize, $dryRun);
+        $environment = $this->contentType->giveEnvironment();
+        $search = $this->revisionSearcher->create($environment, $this->searchQuery, [$this->contentType->getName()]);
+        $this->io->progressStart($search->getTotal());
 
         $transformed = 0;
-        foreach ($transformation as list($ouuid, $result)) {
-            if ($result) {
-                ++$transformed;
-            }
-            $progressBar->advance();
-        }
-        $progressBar->finish();
-        $this->io->newLine(2);
 
-        $this->io->section('Unlock');
-        $this->executeCommand(
-            UnlockRevisionsCommand::name,
-            [ContentTransformer::USER, $this->contentType->getName()]
-        );
+        foreach ($this->revisionSearcher->search($environment, $search) as $revisions) {
+            foreach ($revisions->transaction() as $revision) {
+                $result = $this->contentTransformer->transform($revision, $transformerDefinitions, $this->user, $dryRun);
+                if ($result) {
+                    ++$transformed;
+                }
+
+                $this->io->progressAdvance();
+            }
+        }
+        $this->io->progressFinish();
 
         if ($dryRun) {
             $this->io->warning(\sprintf('%d revisions', $transformed));
@@ -139,7 +132,7 @@ final class TransformCommand extends AbstractCommand
 
         foreach ($transformerDefinitions as $field => $definitions) {
             foreach ($definitions as $definition) {
-                /** @var TransformerInterface $transformer */
+                /** @var ContentTransformerInterface $transformer */
                 $transformer = $definition['transformer'];
 
                 $this->io->definitionList(

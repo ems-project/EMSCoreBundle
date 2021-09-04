@@ -47,6 +47,8 @@ class EnvironmentService
     /** @var string */
     private $instanceId;
 
+    private EnvironmentRepository $environmentRepository;
+
     public function __construct(
         Registry $doctrine,
         Session $session,
@@ -63,6 +65,12 @@ class EnvironmentService
         $this->logger = $logger;
         $this->elasticaService = $elasticaService;
         $this->instanceId = $instanceId;
+
+        $environmentRepository = $doctrine->getRepository(Environment::class);
+        if (!$environmentRepository instanceof EnvironmentRepository) {
+            throw new \RuntimeException('Not found repository');
+        }
+        $this->environmentRepository = $environmentRepository;
     }
 
     public function createEnvironment(string $name, bool $updateReferrers = false): Environment
@@ -115,7 +123,7 @@ class EnvironmentService
             return $this->environments;
         }
 
-        $environments = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment')->findAll();
+        $environments = $this->environmentRepository->findAll();
 
         /** @var Environment $environment */
         foreach ($environments as $environment) {
@@ -244,6 +252,11 @@ class EnvironmentService
         }
 
         return false;
+    }
+
+    public function findByName(string $name): Environment
+    {
+        return $this->environmentRepository->findOneByName($name);
     }
 
     public function giveByName(string $name): Environment

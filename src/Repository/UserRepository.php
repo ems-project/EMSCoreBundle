@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Core\User\UserList;
+use EMS\CoreBundle\Entity\User;
 
 /**
  * UserRepository.
@@ -13,6 +14,25 @@ use EMS\CoreBundle\Core\User\UserList;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository implements UserRepositoryInterface
 {
+    public function search(string $search): ?User
+    {
+        $qb = $this->createQueryBuilder('u');
+        $qb
+            ->setParameter('search', $search)
+            ->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->eq('u.displayName', ':search'),
+                    $qb->expr()->eq('u.username', ':search'),
+                    $qb->expr()->eq('u.usernameCanonical', ':search'),
+                    $qb->expr()->eq('u.email', ':search'),
+                )
+            );
+
+        $result = $qb->getQuery()->getResult();
+
+        return isset($result[0]) && $result[0] instanceof User ? $result[0] : null;
+    }
+
     public function findForRoleAndCircles($role, $circles): array
     {
         $resultSet = $this->createQueryBuilder('u')

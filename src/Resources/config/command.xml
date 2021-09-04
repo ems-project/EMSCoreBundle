@@ -74,5 +74,11 @@
             <argument type="service" id="ems.service.file"/>
             <tag name="console.command"/>
         </service>
+        <service id="ems.command.xliff.extract" class="EMS\CoreBundle\Command\Xliff\ExtractCommand">
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument>%ems_core.default_bulk_size%</argument>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>

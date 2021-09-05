@@ -60,6 +60,14 @@ final class TaskLog
         return $log;
     }
 
+    public static function logNewAssignee(Task $task, string $username): self
+    {
+        $log = new self($task->getAssignee(), $username);
+        $log->status = Task::STATUS_PROGRESS;
+
+        return $log;
+    }
+
     public static function logCreate(Task $task, string $username): self
     {
         $log = new self($task->getAssignee(), $username);

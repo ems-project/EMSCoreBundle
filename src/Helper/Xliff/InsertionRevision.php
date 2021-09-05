@@ -10,6 +10,7 @@ class InsertionRevision
     private const HTML_FIELD = 'html_field';
     private const SIMPLE_FIELD = 'simple_field';
     private const UNKNOWN_FIELD_TYPE = 'UNKNOWN_FIELD_TYPE';
+    public const LOCALE_PLACE_HOLDER = '%locale%';
     private string $version;
     private string $contentType;
     private string $ouuid;
@@ -123,7 +124,7 @@ class InsertionRevision
         if (null === $sourceLocale) {
             throw new \RuntimeException('Unexpected missing source locale');
         }
-        $sourcePropertyPath = \str_replace('%locale%', $sourceLocale, $propertyPath);
+        $sourcePropertyPath = \str_replace(self::LOCALE_PLACE_HOLDER, $sourceLocale, $propertyPath);
 
         $targetLocale = $this->targetLocale;
         $firstTarget = $field->xpath('(//ns:target)[1]');
@@ -137,7 +138,7 @@ class InsertionRevision
         if (null === $targetLocale) {
             throw new \RuntimeException('Unexpected missing target locale');
         }
-        $targetPropertyPath = \str_replace('%locale%', $targetLocale, $propertyPath);
+        $targetPropertyPath = \str_replace(self::LOCALE_PLACE_HOLDER, $targetLocale, $propertyPath);
 
         if ($sourcePropertyPath === $targetPropertyPath) {
             throw new \RuntimeException(\sprintf('Unexpected identical source and target id: %s', $targetPropertyPath));
@@ -187,14 +188,14 @@ class InsertionRevision
         if (null === $sourceLocale) {
             throw new \RuntimeException('Unexpected missing source locale');
         }
-        $sourcePropertyPath = \str_replace('%locale%', $sourceLocale, $propertyPath);
+        $sourcePropertyPath = \str_replace(self::LOCALE_PLACE_HOLDER, $sourceLocale, $propertyPath);
 
         $targetValue = \strval($target);
         $targetLocale = $this->getAttributeValue($target, 'xml:lang', $this->targetLocale);
         if (null === $targetLocale) {
             throw new \RuntimeException('Unexpected missing target locale');
         }
-        $targetPropertyPath = \str_replace('%locale%', $targetLocale, $propertyPath);
+        $targetPropertyPath = \str_replace(self::LOCALE_PLACE_HOLDER, $targetLocale, $propertyPath);
 
         if ($sourcePropertyPath === $targetPropertyPath) {
             throw new \RuntimeException(\sprintf('Unexpected identical source and target id: %s', $targetPropertyPath));

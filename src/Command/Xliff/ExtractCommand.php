@@ -10,8 +10,10 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Helper\Xliff\InsertionRevision;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\Internationalization\XliffService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,6 +24,7 @@ final class ExtractCommand extends AbstractCommand
     private ContentTypeService $contentTypeService;
     private EnvironmentService $environmentService;
     private ElasticaService $elasticaService;
+    private XliffService $xliffService;
     private int $defaultBulkSize;
 
     private ContentType $sourceContentType;
@@ -55,12 +58,14 @@ final class ExtractCommand extends AbstractCommand
         ContentTypeService $contentTypeService,
         EnvironmentService $environmentService,
         ElasticaService $elasticaService,
+        XliffService $xliffService,
         int $defaultBulkSize
     ) {
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->elasticaService = $elasticaService;
         $this->defaultBulkSize = $defaultBulkSize;
+        $this->xliffService = $xliffService;
         parent::__construct();
     }
 
@@ -107,6 +112,7 @@ final class ExtractCommand extends AbstractCommand
 
         $search = $this->elasticaService->convertElasticsearchBody([$this->sourceEnvironment->getAlias()], [$this->sourceContentType->getName()], $this->searchQuery);
         $search->setSize($this->bulkSize);
+        $search->setSources($this->getSources());
         $scroll = $this->elasticaService->scroll($search);
         $total = $this->elasticaService->count($search);
         $this->io->progressStart($total);
@@ -122,5 +128,28 @@ final class ExtractCommand extends AbstractCommand
         $this->io->progressFinish();
 
         return self::EXECUTE_SUCCESS;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getSources(): array
+    {
+        $sources = [];
+        foreach ($this->fields as $field) {
+            if (false === \strpos($field, InsertionRevision::LOCALE_PLACE_HOLDER)) {
+                $sources[] = $field;
+                continue;
+            }
+            foreach ([$this->sourceLocale, $this->targetLocale] as $locale) {
+                $localized = \str_replace(InsertionRevision::LOCALE_PLACE_HOLDER, $locale, $field);
+                if (!\is_string($localized)) {
+                    throw new \RuntimeException('Unexpected str_replace error');
+                }
+                $sources[] = $localized;
+            }
+        }
+
+        return $sources;
     }
 }

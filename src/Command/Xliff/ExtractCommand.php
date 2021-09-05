@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Command\Xliff;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Common\Standard\Json;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -20,22 +21,22 @@ final class ExtractCommand extends AbstractCommand
 {
     private ContentTypeService $contentTypeService;
     private EnvironmentService $environmentService;
+    private ElasticaService $elasticaService;
+    private int $defaultBulkSize;
 
     private ContentType $sourceContentType;
-    private string $searchQuery;
-    private int $defaultBulkSize;
-    private int $bulkSize;
     private string $sourceLocale;
-    private string $targetLocale;
-    private ContentType $targetContentType;
     private Environment $sourceEnvironment;
+    private ContentType $targetContentType;
+    private string $targetLocale;
     private Environment $targetEnvironment;
     /** @var string[] */
     private array $fields;
     /**
      * @var array<mixed>
      */
-    private array $query;
+    private array $searchQuery;
+    private int $bulkSize;
 
     public const ARGUMENT_SOURCE_CONTENT_TYPE = 'source-content-type';
     public const ARGUMENT_FIELDS = 'fields';
@@ -53,10 +54,12 @@ final class ExtractCommand extends AbstractCommand
     public function __construct(
         ContentTypeService $contentTypeService,
         EnvironmentService $environmentService,
+        ElasticaService $elasticaService,
         int $defaultBulkSize
     ) {
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
+        $this->elasticaService = $elasticaService;
         $this->defaultBulkSize = $defaultBulkSize;
         parent::__construct();
     }
@@ -84,11 +87,10 @@ final class ExtractCommand extends AbstractCommand
         $this->io->title('EMS Core - XLIFF - Extract');
 
         $this->bulkSize = $this->getOptionInt(self::OPTION_BULK_SIZE);
-        $this->searchQuery = $this->getOptionString(self::OPTION_SEARCH_QUERY);
+        $this->searchQuery = Json::decode($this->getOptionString(self::OPTION_SEARCH_QUERY));
         $this->sourceContentType = $this->contentTypeService->giveByName($this->getArgumentString(self::ARGUMENT_SOURCE_CONTENT_TYPE));
         $this->sourceLocale = $this->getArgumentString(self::ARGUMENT_SOURCE_LOCALE);
         $this->targetLocale = $this->getArgumentString(self::ARGUMENT_TARGET_LOCALE);
-        $this->query = Json::decode($this->getOptionString(self::OPTION_SEARCH_QUERY));
         $this->fields = $this->getArgumentStringArray(self::ARGUMENT_FIELDS);
         $this->targetContentType = $this->getOptionStringNull(self::OPTION_TARGET_CONTENT_TYPE) ? $this->contentTypeService->giveByName($this->getOptionString(self::OPTION_TARGET_CONTENT_TYPE)) : $this->sourceContentType;
         $this->sourceEnvironment = $this->getOptionStringNull(self::OPTION_SOURCE_ENVIRONMENT) ? $this->environmentService->giveByName($this->getOptionString(self::OPTION_SOURCE_ENVIRONMENT)) : $this->sourceContentType->giveEnvironment();
@@ -102,6 +104,22 @@ final class ExtractCommand extends AbstractCommand
             \sprintf('In order to insert them as %s for %s fields to %s', $this->targetContentType->getPluralName(), $this->targetLocale, $this->targetEnvironment->getName()),
             \sprintf('For fields: %s', \implode(' ', $this->fields)),
         ]);
+
+        $search = $this->elasticaService->convertElasticsearchBody([$this->sourceEnvironment->getAlias()], [$this->sourceContentType->getName()], $this->searchQuery);
+        $search->setSize($this->bulkSize);
+        $scroll = $this->elasticaService->scroll($search);
+        $total = $this->elasticaService->count($search);
+        $this->io->progressStart($total);
+
+        foreach ($scroll as $resultSet) {
+            foreach ($resultSet as $result) {
+                if (false === $result) {
+                    continue;
+                }
+                $this->io->progressAdvance();
+            }
+        }
+        $this->io->progressFinish();
 
         return self::EXECUTE_SUCCESS;
     }

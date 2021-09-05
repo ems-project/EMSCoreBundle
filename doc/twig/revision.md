@@ -1,6 +1,18 @@
 # Twig core extension about Revision
 
-## `emsco_document_info` filter
+# Functions
+
+## emsco_revisions_draft
+
+Returns a iteratable result of revisions for the given contentTypeName
+
+```twig
+{% set ouuidsPagesInDraft = emsco_revisions_draft('page')|map(r => r.ouuid) %}
+```
+
+# Filters
+
+## emsco_document_info
 
 The `emsco_document_info` filter on a EMSLink object or on a EMSId string (i.e. `contentTypeName:ouuid`) returns a [`DocumentInfo`](../../src/Common/DocumentInfo.php) object with the following method:
  - revision(string environmentName): returning null of a Revision. False otherwise.

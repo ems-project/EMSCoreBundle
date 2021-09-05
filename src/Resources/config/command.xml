@@ -79,6 +79,7 @@
             <argument type="service" id="ems.service.environment"/>
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.service.internationalization.xliff"/>
+            <argument type="service" id="ems_common.twig.runtime.asset"/>
             <argument>%ems_core.default_bulk_size%</argument>
             <tag name="console.command"/>
         </service>

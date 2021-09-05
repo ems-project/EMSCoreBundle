@@ -6,10 +6,14 @@ namespace EMS\CoreBundle\Command\Xliff;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Common\Standard\Json;
+use EMS\CommonBundle\Elasticsearch\Document\Document;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Helper\Xliff\Extractor;
 use EMS\CoreBundle\Helper\Xliff\InsertionRevision;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
@@ -18,6 +22,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class ExtractCommand extends AbstractCommand
 {
@@ -51,14 +56,23 @@ final class ExtractCommand extends AbstractCommand
     public const OPTION_SOURCE_ENVIRONMENT = 'source-environment';
     public const OPTION_TARGET_ENVIRONMENT = 'target-environment';
     public const OPTION_TARGET_CONTENT_TYPE = 'target-content-type';
+    public const OPTION_XLIFF_VERSION = 'xliff-version';
+    public const OPTION_FILENAME = 'filename';
+    public const OPTION_BASE_URL = 'base-url';
 
     protected static $defaultName = Commands::XLIFF_EXTRACTOR;
+    private ?string $sourceDocumentField;
+    private string $xliffFilename;
+    private ?string $baseUrl;
+    private string $xliffVersion;
+    private AssetRuntime $assetRuntime;
 
     public function __construct(
         ContentTypeService $contentTypeService,
         EnvironmentService $environmentService,
         ElasticaService $elasticaService,
         XliffService $xliffService,
+        AssetRuntime $assetRuntime,
         int $defaultBulkSize
     ) {
         $this->contentTypeService = $contentTypeService;
@@ -66,6 +80,7 @@ final class ExtractCommand extends AbstractCommand
         $this->elasticaService = $elasticaService;
         $this->defaultBulkSize = $defaultBulkSize;
         $this->xliffService = $xliffService;
+        $this->assetRuntime = $assetRuntime;
         parent::__construct();
     }
 
@@ -82,7 +97,9 @@ final class ExtractCommand extends AbstractCommand
             ->addOption(self::OPTION_SOURCE_ENVIRONMENT, null, InputOption::VALUE_OPTIONAL, 'Environment with the source documents')
             ->addOption(self::OPTION_TARGET_ENVIRONMENT, null, InputOption::VALUE_OPTIONAL, 'Environment with the target documents')
             ->addOption(self::OPTION_TARGET_CONTENT_TYPE, null, InputOption::VALUE_OPTIONAL, 'Target ContentType name')
-        ;
+            ->addOption(self::OPTION_XLIFF_VERSION, null, InputOption::VALUE_OPTIONAL, 'XLIFF format version: '.\implode(' ', Extractor::XLIFF_VERSIONS), Extractor::XLIFF_1_2)
+            ->addOption(self::OPTION_FILENAME, null, InputOption::VALUE_OPTIONAL, 'Generate the XLIFF specified file')
+            ->addOption(self::OPTION_BASE_URL, null, InputOption::VALUE_OPTIONAL, 'Base url, in order to generate a download link to the XLIFF file');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -100,6 +117,11 @@ final class ExtractCommand extends AbstractCommand
         $this->targetContentType = $this->getOptionStringNull(self::OPTION_TARGET_CONTENT_TYPE) ? $this->contentTypeService->giveByName($this->getOptionString(self::OPTION_TARGET_CONTENT_TYPE)) : $this->sourceContentType;
         $this->sourceEnvironment = $this->getOptionStringNull(self::OPTION_SOURCE_ENVIRONMENT) ? $this->environmentService->giveByName($this->getOptionString(self::OPTION_SOURCE_ENVIRONMENT)) : $this->sourceContentType->giveEnvironment();
         $this->targetEnvironment = $this->getOptionStringNull(self::OPTION_TARGET_ENVIRONMENT) ? $this->environmentService->giveByName($this->getOptionString(self::OPTION_TARGET_ENVIRONMENT)) : $this->targetContentType->giveEnvironment();
+        $this->sourceDocumentField = $this->getOptionStringNull(self::OPTION_SOURCE_DOCUMENT_FIELD);
+        $xliffFilename = $this->getOptionStringNull(self::OPTION_FILENAME);
+        $this->xliffFilename = $xliffFilename ?? \tempnam(\sys_get_temp_dir(), 'ems-extract-').'.xlf';
+        $this->baseUrl = $this->getOptionStringNull(self::OPTION_BASE_URL);
+        $this->xliffVersion = $this->getOptionString(self::OPTION_XLIFF_VERSION);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -111,21 +133,50 @@ final class ExtractCommand extends AbstractCommand
         ]);
 
         $search = $this->elasticaService->convertElasticsearchBody([$this->sourceEnvironment->getAlias()], [$this->sourceContentType->getName()], $this->searchQuery);
+        $searchSource = $this->getSources();
         $search->setSize($this->bulkSize);
-        $search->setSources($this->getSources());
+        $search->setSources($searchSource);
         $scroll = $this->elasticaService->scroll($search);
         $total = $this->elasticaService->count($search);
         $this->io->progressStart($total);
+
+        $extractor = new Extractor($this->sourceLocale, $this->targetLocale, $this->xliffVersion);
 
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
                 if (false === $result) {
                     continue;
                 }
+                $source = Document::fromResult($result);
+                $this->xliffService->extract($source, $extractor, $this->fields, $this->targetContentType, $this->targetEnvironment, $this->sourceDocumentField);
                 $this->io->progressAdvance();
             }
         }
         $this->io->progressFinish();
+
+        if (!$extractor->saveXML($this->xliffFilename)) {
+            throw new \RuntimeException(\sprintf('Unexpected error while saving the XLIFF to the file %s', $this->xliffFilename));
+        }
+
+        if (null !== $this->baseUrl) {
+            $this->xliffFilename = $this->baseUrl.$this->assetRuntime->assetPath(
+                    [
+                        EmsFields::CONTENT_FILE_NAME_FIELD_ => 'extract.xlf',
+                        EmsFields::CONTENT_FILE_HASH_FIELD_ => \sha1_file($this->xliffFilename),
+                    ],
+                    [
+                        EmsFields::ASSET_CONFIG_FILE_NAMES => [$this->xliffFilename],
+                    ],
+                    'ems_asset',
+                    EmsFields::CONTENT_FILE_HASH_FIELD,
+                    EmsFields::CONTENT_FILE_NAME_FIELD,
+                    EmsFields::CONTENT_MIME_TYPE_FIELD,
+                    UrlGeneratorInterface::ABSOLUTE_PATH
+                );
+        }
+
+        $output->writeln('');
+        $output->writeln('XLIFF file: '.$this->xliffFilename);
 
         return self::EXECUTE_SUCCESS;
     }
@@ -136,6 +187,9 @@ final class ExtractCommand extends AbstractCommand
     private function getSources(): array
     {
         $sources = [];
+        if (null !== $this->sourceDocumentField) {
+            $sources[] = $this->sourceDocumentField;
+        }
         foreach ($this->fields as $field) {
             if (false === \strpos($field, InsertionRevision::LOCALE_PLACE_HOLDER)) {
                 $sources[] = $field;

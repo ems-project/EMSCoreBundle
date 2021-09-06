@@ -13,6 +13,7 @@ use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Exception\XliffException;
 use EMS\CoreBundle\Helper\Xliff\Extractor;
 use EMS\CoreBundle\Helper\Xliff\InsertionRevision;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -148,7 +149,11 @@ final class ExtractCommand extends AbstractCommand
                     continue;
                 }
                 $source = Document::fromResult($result);
-                $this->xliffService->extract($source, $extractor, $this->fields, $this->targetContentType, $this->targetEnvironment, $this->sourceDocumentField);
+                try {
+                    $this->xliffService->extract($source, $extractor, $this->fields, $this->targetContentType, $this->targetEnvironment, $this->sourceDocumentField);
+                } catch (XliffException $e) {
+                    $this->io->warning($e->getMessage());
+                }
                 $this->io->progressAdvance();
             }
         }

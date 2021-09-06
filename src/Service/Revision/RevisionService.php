@@ -8,11 +8,14 @@ use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Core\Revision\Revisions;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 
 class RevisionService
 {
@@ -68,6 +71,11 @@ class RevisionService
     public function getCurrentRevisionForDocument(DocumentInterface $document): ?Revision
     {
         return $this->get($document->getId(), $document->getContentType());
+    }
+
+    public function getCurrentRevisionForEnvironment(string $ouuid, ContentType $contentType, Environment $environment): ?Revision
+    {
+        return $this->revisionRepository->findByEnvironment($ouuid, $contentType, $environment);
     }
 
     public function getCurrentRevisionByOuuidAndContentType(string $ouuid, string $contentType): ?Revision
@@ -143,5 +151,13 @@ class RevisionService
     public function getDocumentInfo(EMSLink $documentLink): DocumentInfo
     {
         return new DocumentInfo($documentLink, $this->revisionRepository->findAllPublishedRevision($documentLink));
+    }
+
+    public function generate(): Revision
+    {
+        $revision = new Revision();
+        $revision->setOuuid(Uuid::uuid4()->toString());
+
+        return $revision;
     }
 }

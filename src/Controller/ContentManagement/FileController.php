@@ -43,7 +43,7 @@ class FileController extends AbstractController
     }
 
     /**
-     * @Route("/admin/file/{id}/soft-delete" , name="ems_file_soft_delete", methods={"POST","HEAD"})
+     * @Route("/admin/file/{id}/delete" , name="ems_file_soft_delete", methods={"POST","HEAD"})
      */
     public function softDeleteFileAction(Request $request, string $id, FileService $fileService): Response
     {
@@ -51,19 +51,6 @@ class FileController extends AbstractController
             throw new AccessDeniedException($request->getPathInfo());
         }
         $fileService->removeSingleFileEntity([$id]);
-
-        return $this->redirectToRoute('ems_core_uploaded_file_index');
-    }
-
-    /**
-     * @Route("/admin/file/{id}/hard-delete" , name="ems_file_hard_delete", methods={"POST","HEAD"})
-     */
-    public function hardDeleteFileAction(Request $request, string $id, FileService $fileService): Response
-    {
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            throw new AccessDeniedException($request->getPathInfo());
-        }
-        $fileService->hardRemoveFiles([$id]);
 
         return $this->redirectToRoute('ems_core_uploaded_file_index');
     }

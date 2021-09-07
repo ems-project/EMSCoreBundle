@@ -10,13 +10,14 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20210907064726 extends AbstractMigration
+final class Version20210907082939 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
         $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('ALTER TABLE environment ADD label VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE managed_alias ADD label VARCHAR(255) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
@@ -24,5 +25,6 @@ final class Version20210907064726 extends AbstractMigration
         $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('ALTER TABLE environment DROP label');
+        $this->addSql('ALTER TABLE managed_alias DROP label');
     }
 }

@@ -36,6 +36,11 @@ class ManagedAlias
     private $name;
 
     /**
+     * @ORM\Column(name="label", type="string", length=255, nullable=true)
+     */
+    protected ?string $label;
+
+    /**
      * @var string
      * @ORM\Column(name="alias", type="string", length=255, unique=true)
      */
@@ -240,5 +245,24 @@ class ManagedAlias
         $this->extra = $extra;
 
         return $this;
+    }
+
+    public function getLabel(): string
+    {
+        if (null === $this->label) {
+            $replaced = \preg_replace(['/([A-Z])/', '/[_\s]+/'], ['_$1', ' '], $this->name);
+            if (!\is_string($replaced)) {
+                $replaced = $this->name;
+            }
+
+            return \ucfirst(\strtolower(\trim($replaced)));
+        }
+
+        return $this->label;
+    }
+
+    public function setLabel(?string $label): void
+    {
+        $this->label = $label;
     }
 }

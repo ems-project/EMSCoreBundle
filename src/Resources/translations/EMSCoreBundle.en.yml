@@ -669,9 +669,7 @@ task:
 uploaded-file:
   action:
     download_selected: "Download selected"
-    hard-delete: "Hard delete"
-    soft-delete: "Soft delete"
-  hard-delete-confirm: "Are you sure you want to hard delete this file?"
+    soft-delete: "Delete"
   index:
     column:
       available: Available
@@ -686,11 +684,10 @@ uploaded-file:
       username: By
     title: "Uploaded Files"
   menu: Menu
-  soft-delete-confirm: "Are you sure you want to soft delete this file?"
+  soft-delete-confirm: "Are you sure you want to delete this file?"
   uploaded-file:
     download_selected: "Download selected"
-    hard_delete_selected: "Hard delete selected"
-    soft_delete_selected: "Soft delete selected"
+    soft_delete_selected: "Delete selected"
 user:
   action:
     delete: Delete

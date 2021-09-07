@@ -36,6 +36,7 @@ class ManagedAliasType extends AbstractType
 
         $builder
             ->add('name', IconTextType::class, ['icon' => 'fa fa-tag'])
+            ->add('label', IconTextType::class, ['icon' => 'fa fa-header'])
             ->add('color', ColorPickerType::class, ['required' => false])
             ->add('extra', TextareaType::class, [
                 'required' => false,

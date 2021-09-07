@@ -39,7 +39,7 @@
 			  		<span class="text-{{ attribute(types, result.contentType).color }}">
 					  	<i class="{{ attribute(types, result.contentType).icon }}"></i>
 						{% if form.vars.data.environments|length != 1 %}
-						  	{{ attribute(types, result.contentType).singularName|humanize }} |
+						  	{{ attribute(types, result.contentType).singularName }} |
 						{% endif %}
 
 					  	{% set contentType=attribute(types, result.contentType) %}
@@ -234,7 +234,7 @@
 					{% for index in response.getAggregation('indexes').buckets %}
 							<a href="{{ path(paginationPath, cleanedFilters|merge({'search_form[environments][0]': attribute(indexes, index.key).name})) }}" class="btn btn-block btn-social {% if attribute(indexes, index.key).color %}bg-{{ attribute(indexes, index.key).color }}{% else %}bg-gray{% endif %}">
 								<i class="fa fa-eye"></i>
-					            {{ attribute(indexes, index.key).name|humanize }}
+					            {{ attribute(indexes, index.key).label }}
 								<span class=" badge pull-right">
 									{{ index.count }}
 								</span>

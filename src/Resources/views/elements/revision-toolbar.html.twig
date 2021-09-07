@@ -125,7 +125,7 @@
 				   		{% for env in availableEnv %}
 				   			<li>
 							{% if env not in environments and env.circles|in_my_circles %}
-					   				<a href="{{ path('revision.publish_to', {'revisionId': revisionId, 'envId': env.id}) }}">{{ env.name|humanize }}</a>
+					   				<a href="{{ path('revision.publish_to', {'revisionId': revisionId, 'envId': env.id}) }}">{{ env.label }}</a>
 					   		{% endif %}
 					   		</li>
 				   		{% endfor %}
@@ -143,7 +143,7 @@
 				   <ul class="dropdown-menu">
 				   		{% for env in availableEnv if env in environments and env.circles|in_my_circles %}
 				   			<li>
-				   				<a href="{{ path('revision.unpublish', {'revisionId': revisionId, 'envId': env.id}) }}">{{ env.name|humanize }}</a>
+				   				<a href="{{ path('revision.unpublish', {'revisionId': revisionId, 'envId': env.id}) }}">{{ env.label }}</a>
 				   			</li>
 				   		{% endfor %}
 				   </ul>

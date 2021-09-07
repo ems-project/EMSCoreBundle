@@ -80,6 +80,95 @@ field_type:
     item_label_placeholder: "Define a label for this entry"
     move_item: Move
 form:
+  analyzer:
+    char_filter: "Char Filter"
+    char_filter.html_strip: "HTML Strip"
+    filter: Filter
+    filter.built_in: Built-in
+    filter.built_in.asciifolding: "ASCII Folding"
+    filter.built_in.edge_n_gram: "Edge NGram"
+    filter.built_in.flatten_graph: "Flatten graph"
+    filter.built_in.lowercase: Lowercase
+    filter.built_in.n_gram: NGram
+    filter.built_in.porter_stem: "Porter Stem"
+    filter.built_in.standard: Standard
+    filter.built_in.stop: Stop
+    filter.built_in.uppercase: Uppercase
+    filter.built_in.word_delimiter: "Word Delimiter"
+    filter.customized: Customized
+    flags: Flags
+    flags.canon_eq: CANON_EQ
+    flags.case_insensitive: CASE_INSENSITIVE
+    flags.comments: COMMENTS
+    flags.dotall: DOTALL
+    flags.literal: LITERAL
+    flags.multiline: MULTILINE
+    flags.unicode_case: UNICODE_CASE
+    flags.unicode_character_class: UNICODE_CHARACTER_CLASS
+    flags.unix_lines: UNIX_LINES
+    label: Label
+    lowercase: Lowercase
+    max_output_size: "Max Output Size"
+    max_token_length: "Max Token Length"
+    name: Name
+    pattern: Pattern
+    position_increment_gap: "Position Increment Gap"
+    save: Save
+    separator: Separator
+    stopwords: Stopwords
+    stopwords._arabic_: Arabic
+    stopwords._armenian_: Armenian
+    stopwords._basque_: Basque
+    stopwords._brazilian_: Brazilian
+    stopwords._bulgarian_: Bulgarian
+    stopwords._catalan_: Catalan
+    stopwords._cjk_: CJK
+    stopwords._czech_: Czech
+    stopwords._danish_: Danish
+    stopwords._dutch_: Dutch
+    stopwords._english_: English
+    stopwords._finnish_: Finnish
+    stopwords._french_: French
+    stopwords._galician_: Galician
+    stopwords._german_: German
+    stopwords._greek_: Greek
+    stopwords._hindi_: Hindi
+    stopwords._hungarian_: Hungarian
+    stopwords._indonesian_: Indonesian
+    stopwords._irish_: Irish
+    stopwords._italian_: Italian
+    stopwords._latvian_: Latvian
+    stopwords._lithuanian_: Lithuanian
+    stopwords._none_: None
+    stopwords._norwegian_: Norwegian
+    stopwords._persian_: Persian
+    stopwords._portuguese_: Portuguese
+    stopwords._romanian_: Romanian
+    stopwords._russian_: Russian
+    stopwords._sorani_: Sorani
+    stopwords._spanish_: Spanish
+    stopwords._swedish_: Swedish
+    stopwords._thai_: Thai
+    stopwords._turkish_: Turkish
+    tokenizer: Tokenizer
+    tokenizer.classic: Classic
+    tokenizer.edge_ngram: "Edge N-Gram"
+    tokenizer.keyword: Keyword
+    tokenizer.letter: Letter
+    tokenizer.lowercase: Lowercase
+    tokenizer.ngram: N-Gram
+    tokenizer.path_hierarchy: Path
+    tokenizer.pattern: Pattern
+    tokenizer.standard: Standard
+    tokenizer.thai: Thai
+    tokenizer.uax_url_email: "UAX URL Email"
+    tokenizer.whitespace: Whitespace
+    type: Type
+    type.custom: Custom
+    type.fingerprint: Fingerprint
+    type.pattern: Pattern
+    type.standard: Standard
+    type.stop: Stop
   contenttype:
     json_update:
       deleteExitingTemplates: "Delete existing templates"
@@ -99,6 +188,7 @@ form:
       import_not_an_array: "Some data were not imported for the collection field %field_name% as is was not an array"
     file_attachment:
       file_not_found: "File not found with the hash \"%file_hash%\""
+  email: Email
   form:
     channel:
       alias: Alias
@@ -123,6 +213,7 @@ form:
     searchquery:
       query: "Default query"
       searchConfig: "Search config"
+  username: Username
   view:
     hierarchical:
       error_with_document: "It was impossible to update the document ems://object:%contenttype%:%ouuid% : %error_message%"
@@ -158,96 +249,6 @@ form-submission:
       public: Public
       type: Type
     reorder: Reorder
-form.analyzer.char_filter: "Char Filter"
-form.analyzer.char_filter.html_strip: "HTML Strip"
-form.analyzer.filter: Filter
-form.analyzer.filter.built_in: Built-in
-form.analyzer.filter.built_in.asciifolding: "ASCII Folding"
-form.analyzer.filter.built_in.edge_n_gram: "Edge NGram"
-form.analyzer.filter.built_in.flatten_graph: "Flatten graph"
-form.analyzer.filter.built_in.lowercase: Lowercase
-form.analyzer.filter.built_in.n_gram: NGram
-form.analyzer.filter.built_in.porter_stem: "Porter Stem"
-form.analyzer.filter.built_in.standard: Standard
-form.analyzer.filter.built_in.stop: Stop
-form.analyzer.filter.built_in.uppercase: Uppercase
-form.analyzer.filter.built_in.word_delimiter: "Word Delimiter"
-form.analyzer.filter.customized: Customized
-form.analyzer.flags: Flags
-form.analyzer.flags.canon_eq: CANON_EQ
-form.analyzer.flags.case_insensitive: CASE_INSENSITIVE
-form.analyzer.flags.comments: COMMENTS
-form.analyzer.flags.dotall: DOTALL
-form.analyzer.flags.literal: LITERAL
-form.analyzer.flags.multiline: MULTILINE
-form.analyzer.flags.unicode_case: UNICODE_CASE
-form.analyzer.flags.unicode_character_class: UNICODE_CHARACTER_CLASS
-form.analyzer.flags.unix_lines: UNIX_LINES
-form.analyzer.label: Label
-form.analyzer.lowercase: Lowercase
-form.analyzer.max_output_size: "Max Output Size"
-form.analyzer.max_token_length: "Max Token Length"
-form.analyzer.name: Name
-form.analyzer.pattern: Pattern
-form.analyzer.position_increment_gap: "Position Increment Gap"
-form.analyzer.save: Save
-form.analyzer.separator: Separator
-form.analyzer.stopwords: Stopwords
-form.analyzer.stopwords._arabic_: Arabic
-form.analyzer.stopwords._armenian_: Armenian
-form.analyzer.stopwords._basque_: Basque
-form.analyzer.stopwords._brazilian_: Brazilian
-form.analyzer.stopwords._bulgarian_: Bulgarian
-form.analyzer.stopwords._catalan_: Catalan
-form.analyzer.stopwords._cjk_: CJK
-form.analyzer.stopwords._czech_: Czech
-form.analyzer.stopwords._danish_: Danish
-form.analyzer.stopwords._dutch_: Dutch
-form.analyzer.stopwords._english_: English
-form.analyzer.stopwords._finnish_: Finnish
-form.analyzer.stopwords._french_: French
-form.analyzer.stopwords._galician_: Galician
-form.analyzer.stopwords._german_: German
-form.analyzer.stopwords._greek_: Greek
-form.analyzer.stopwords._hindi_: Hindi
-form.analyzer.stopwords._hungarian_: Hungarian
-form.analyzer.stopwords._indonesian_: Indonesian
-form.analyzer.stopwords._irish_: Irish
-form.analyzer.stopwords._italian_: Italian
-form.analyzer.stopwords._latvian_: Latvian
-form.analyzer.stopwords._lithuanian_: Lithuanian
-form.analyzer.stopwords._none_: None
-form.analyzer.stopwords._norwegian_: Norwegian
-form.analyzer.stopwords._persian_: Persian
-form.analyzer.stopwords._portuguese_: Portuguese
-form.analyzer.stopwords._romanian_: Romanian
-form.analyzer.stopwords._russian_: Russian
-form.analyzer.stopwords._sorani_: Sorani
-form.analyzer.stopwords._spanish_: Spanish
-form.analyzer.stopwords._swedish_: Swedish
-form.analyzer.stopwords._thai_: Thai
-form.analyzer.stopwords._turkish_: Turkish
-form.analyzer.tokenizer: Tokenizer
-form.analyzer.tokenizer.classic: Classic
-form.analyzer.tokenizer.edge_ngram: "Edge N-Gram"
-form.analyzer.tokenizer.keyword: Keyword
-form.analyzer.tokenizer.letter: Letter
-form.analyzer.tokenizer.lowercase: Lowercase
-form.analyzer.tokenizer.ngram: N-Gram
-form.analyzer.tokenizer.path_hierarchy: Path
-form.analyzer.tokenizer.pattern: Pattern
-form.analyzer.tokenizer.standard: Standard
-form.analyzer.tokenizer.thai: Thai
-form.analyzer.tokenizer.uax_url_email: "UAX URL Email"
-form.analyzer.tokenizer.whitespace: Whitespace
-form.analyzer.type: Type
-form.analyzer.type.custom: Custom
-form.analyzer.type.fingerprint: Fingerprint
-form.analyzer.type.pattern: Pattern
-form.analyzer.type.standard: Standard
-form.analyzer.type.stop: Stop
-form.email: Email
-form.username: Username
 form_submissions:
   download: Download
   overview: Overview
@@ -712,6 +713,10 @@ view:
       title: "%contentType%'s actions"
   breadcrumb:
     wysiwyg-options: "WYSIWYG Options"
+  contenttype:
+    reorder_item:
+      edit_field_button: "Edit %name%"
+      edit_main_container_button: "Edit the main container"
   data:
     json-menu-nested-json-preview:
       field-type-not-found: "The type definition associated to this item is missing (probably deleted)."
@@ -721,6 +726,54 @@ view:
         index-link: Channels
       query_search:
         index-link: QuerySearch
+  environment:
+    index:
+      action_label: Action
+      add_alias_button: "Add alias"
+      add_environment_button: "Add Environment"
+      add_managed_alias_button: "Add managed alias"
+      alias_label: Alias
+      all_indexes_are_referenced: "All aliases are referenced"
+      attach_alias_confirm: "Attache the alias %name%?"
+      attach_button: Atach
+      close_modal_button: Close
+      confirm_delete: "Do you want to delete %name%?"
+      confirm_dettach: "Do you want to detach %name%?"
+      count_label: "#"
+      delete_alias_confirm: "Do you want to delete the alias %name%?"
+      delete_all_button: "Delete all"
+      delete_all_ophan_indexes_confirm: "Do you confirm?"
+      delete_button: Delete
+      delete_index_button: Delete
+      delete_index_confirm: "Are you sure to delete the index %name%?"
+      delete_managed_environemnt_button: Delete
+      dettach_button: Detach
+      edit_button: Edit
+      environment_breadcrumb: Environments
+      environment_index_count: "{0} There are no index|{1} There is one index|]1,Inf[ There are %count% indexes"
+      environment_indexes_modal_title: Indexes
+      external_environments_title: "External environments"
+      index_breadcrumb: List
+      indexes_label: Indexes
+      label: Label
+      local_environment_label: "Local Environments"
+      managed_alias_title: "Managed alias"
+      name_label: Name
+      no_environment_yet: "There is no environment defined yet."
+      no_external_environment_yet: "There is no external environment defined yet."
+      orphan_index_title: "Orphan indexes"
+      pagetitle: "All Environments"
+      rebuild_button: Rebuild
+      reorder_button: Reorder
+      reorder_title: Reorder
+      there_is_no_orphan_index: "There is no orphan indexes"
+      title: "All Environments"
+      total_in_ems: "Total in ems"
+      total_indexed_label: "Total in ES"
+      total_label: Total
+      total_mark_has_deleted: "Total deleted"
+      unreferenced_aliases_title: "Unreferenced aliases"
+      view_button: View
   form:
     fields:
       asset:
@@ -747,6 +800,9 @@ view:
       query_search: "fa fa-list-alt"
   macros:
     data-field-type:
+      macros:
+        data-field-type.collection_added_items: "{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added"
+        data-field-type.collection_removed_items: "{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed"
       menu-option-button: View
       modal-close-button: Close
   menu:
@@ -755,56 +811,6 @@ view:
   user:
     index:
       title: "User list"
-view.contenttype.reorder_item.edit_field_button: "Edit %name%"
-view.contenttype.reorder_item.edit_main_container_button: "Edit the main container"
-view.environment.index.action_label: Action
-view.environment.index.add_alias_button: "Add alias"
-view.environment.index.add_environment_button: "Add Environment"
-view.environment.index.add_managed_alias_button: "Add managed alias"
-view.environment.index.alias_label: Alias
-view.environment.index.all_indexes_are_referenced: "All aliases are referenced"
-view.environment.index.attach_alias_confirm: "Attache the alias %name%?"
-view.environment.index.attach_button: Atach
-view.environment.index.close_modal_button: Close
-view.environment.index.confirm_delete: "Do you want to delete %name%?"
-view.environment.index.confirm_dettach: "Do you want to detach %name%?"
-view.environment.index.count_label: "#"
-view.environment.index.delete_alias_confirm: "Do you want to delete the alias %name%?"
-view.environment.index.delete_all_button: "Delete all"
-view.environment.index.delete_all_ophan_indexes_confirm: "Do you confirm?"
-view.environment.index.delete_button: Delete
-view.environment.index.delete_index_button: Delete
-view.environment.index.delete_index_confirm: "Are you sure to delete the index %name%?"
-view.environment.index.delete_managed_environemnt_button: Delete
-view.environment.index.dettach_button: Detach
-view.environment.index.edit_button: Edit
-view.environment.index.environment_breadcrumb: Environments
-view.environment.index.environment_index_count: "{0} There are no index|{1} There is one index|]1,Inf[ There are %count% indexes"
-view.environment.index.environment_indexes_modal_title: Indexes
-view.environment.index.external_environments_title: "External environments"
-view.environment.index.index_breadcrumb: List
-view.environment.index.indexes_label: Indexes
-view.environment.index.label: Label
-view.environment.index.local_environment_label: "Local Environments"
-view.environment.index.managed_alias_title: "Managed alias"
-view.environment.index.name_label: Name
-view.environment.index.no_environment_yet: "There is no environment defined yet."
-view.environment.index.no_external_environment_yet: "There is no external environment defined yet."
-view.environment.index.orphan_index_title: "Orphan indexes"
-view.environment.index.pagetitle: "All Environments"
-view.environment.index.rebuild_button: Rebuild
-view.environment.index.reorder_button: Reorder
-view.environment.index.reorder_title: Reorder
-view.environment.index.there_is_no_orphan_index: "There is no orphan indexes"
-view.environment.index.title: "All Environments"
-view.environment.index.total_in_ems: "Total in ems"
-view.environment.index.total_indexed_label: "Total in ES"
-view.environment.index.total_label: Total
-view.environment.index.total_mark_has_deleted: "Total deleted"
-view.environment.index.unreferenced_aliases_title: "Unreferenced aliases"
-view.environment.index.view_button: View
-view.macros.data-field-type.collection_added_items: "{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added"
-view.macros.data-field-type.collection_removed_items: "{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed"
 views:
   elasticsearch:
     export-search:

@@ -317,6 +317,7 @@ view.environment.index.reorder_title: Reorder
 view.environment.index.close_modal_button: Close
 view.environment.index.no_environment_yet: 'There is no environment defined yet.'
 view.environment.index.count_label: '#'
+view.environment.index.label: Label
 view.environment.index.name_label: Name
 view.environment.index.alias_label: Alias
 view.environment.index.indexes_label: Indexes

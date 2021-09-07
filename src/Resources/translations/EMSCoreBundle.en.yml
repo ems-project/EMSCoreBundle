@@ -1,1016 +1,833 @@
-'#': '#'
-'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.': 'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.'
-'Add a Filter': 'Add a Filter'
-'Add a profile': 'Add a profile'
-'Add a Sort Option': 'Add a Sort Option'
-'Add a style set': 'Add a style set'
-'Add an Aggregate Option': 'Add an Aggregate Option'
-'Add an Analyzer': 'Add an Analyzer'
-'Add an analyzer': 'Add an analyzer'
-'Add analyzer': 'Add analyzer'
-'Add filter': 'Add a Filter'
-'Add managed alias': 'Add managed alias'
-'Add user': 'Add user'
-'Aggregate Options': 'Aggregate Options'
-'Align Environments': 'Align Environments'
-'All content types': 'All content types'
-'All environments have to be re-builded each times that the analyzers configuration is updated.': 'All environments have to be re-builded each times that the analyzers configuration is updated.'
-'All environments have to be re-builded each times that the filters configuration is updated.': 'All environments have to be re-builded each times that the filters configuration is updated.'
-'Allowed to configure wysiwyg': 'Allowed to configure wysiwyg'
-'An Error Occurred': 'An Error Occurred'
-'Asset options': 'Asset options'
-'Author :': 'Author :'
-'Boolean clause': 'Boolean clause'
-'Build date': 'Build date'
-'Certificate is missing': 'Certificate is missing'
-'Certificate''s information': 'Certificate''s information'
-'Click on ''Add a profile'' to create a first WYSIWYG profile': 'Click on ''Add a profile'' to create a first WYSIWYG profile'
-'Click on ''Add a Sort Option'' to create a first Sort Option': 'Click on ''Add a Sort Option'' to create a first Sort Option'
-'Click on ''Add a styles set'' to create a first styles set': 'Click on ''Add a styles set'' to create a first styles set'
-'Click on ''Add an aggregate option'' to create a first Aggregate Option': 'Click on ''Add an aggregate option'' to create a first Aggregate Option'
-'Cluster''s UUID': 'Cluster''s UUID'
-'Compare environments': 'Compare environments'
-Config: Config
-'Content :': 'Content :'
-'Content type': 'Content type'
-'Content types': 'Content types'
-'Copy data': 'Copy data'
-'Core %version%': 'Core %version%'
-'Created by': 'Created by'
-'Date :': 'Date :'
-'Deleted by': 'Deleted by'
-'Discard this draft ?': 'Discard this draft ?'
-'Display name': 'Display name'
-'Edit %entity_name%': 'Edit %entity_name%'
-'Edit a Filter': 'Edit a Filter'
-'Edit an Analyzer': 'Edit an Analyzer'
-'Edit draft': 'Edit draft'
-'Edit managed alias': 'Edit managed alias'
-'Edit WYSIWYG profile': 'Edit WYSIWYG profile'
-'Edit WYSIWYG styles set': 'Edit WYSIWYG styles set'
-'Elasticsearch''s version': 'Elasticsearch''s version'
-'Email notification': 'Email notification'
-'Empty Trash ?': 'Empty Trash ?'
-'Empty Trash': 'Empty Trash'
-'expert mode': 'expert mode'
-'Export results': 'Export results'
-'Extract content': 'Extract content'
-'Finalize draft': 'Finalize draft'
-'Finalized by': 'Finalized by'
-form.email: Email
-form.username: Username
-'gallery view plugin': 'gallery view plugin'
-'Hash signature': 'Hash signature'
-'I18N create': 'I18N create'
-'I18N edit': 'I18N edit'
-'Language :': 'Language :'
-'Last login': 'Last login'
-'Last update': 'Last update'
-'Layout boxed': 'Layout boxed'
-'Linked documents': 'Linked documents'
-'List analyzers': 'List analyzers'
-'List filters': 'List filters'
-'Local environments': 'Local environments'
-'Logged in as': 'Logged in as'
-'Lucene''s version': 'Lucene''s version'
-'Managed Aliases': 'Managed Aliases'
-'Match (and)': 'Match (and)'
-'Match (or)': 'Match (or)'
-'MIME Type :': 'MIME Type :'
-'Must not': 'Must not'
-'New %entity_name%': 'New %entity_name%'
-'New WYSIWYG profile': 'New WYSIWYG profile'
-'New WYSIWYG styles set': 'New WYSIWYG styles set'
-'No pending notifications': 'No pending notifications'
-'No result for this filters combinaison': 'No result for this filters combinaison'
-'No result to display': 'No result to display'
-'Node''s name': 'Node''s name'
-'Not defined': 'Not defined'
-'Oops! An Error Occurred': 'Oops! An Error Occurred'
-'Profile''s name': 'Profile''s name'
-'Public key': 'Public key'
-'Put back': 'Put back'
-'Put it back ?': 'Put it back ?'
-'Query (and)': 'Query (and)'
-'Query (or)': 'Query (or)'
-'Raw view': 'Raw view'
-Remove: Remove
-'Reorder %name%''s fields': 'Reorder %name%''s fields'
-'Reorder Environment': 'Reorder Environment'
-'Reorder the content type "%content_type%"': 'Reorder the content type "%content_type%"'
-'Reorganise: ': 'Reorganise: '
-'Search options': 'Search options'
-'Select a language': 'Select a language'
-'Select a theme': 'Select a theme'
-'Select Environments to compare': 'Select Environments to compare'
-'Sidebar collapse': 'Sidebar collapse'
-'Sidebar mini': 'Sidebar mini'
-'Sign out': 'Sign out'
-'Size :': 'Size :'
-'Sort by': 'Sort by'
-'Sort options': 'Sort options'
-'Sort Options': 'Sort Options'
-'Sort order': 'Sort order'
-'Specified version': 'Specified version'
-'Template is missing': 'Template is missing'
-'The server returned a %status_code%': 'The server returned a %status_code%'
-'The trash is empty': 'The trash is empty'
-'This document does not have any linked document': 'This document does not have any linked document'
-'This item %ouuid% is already presents in this structure/menu': 'This item %ouuid% is already presents in this structure/menu'
-'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.': 'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.'
-'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID': 'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID'
-'Tika server is not configured': 'Tika server is not configured'
-'Tika server': 'Tika server'
-'time to align environments?': 'time to align environments?'
-'Title :': 'Title :'
-'To be treated': 'To be treated'
-'Styles set''s name': 'Styles set''s name'
-'Trash for content type %name%': 'Trash for content type %name%'
-Update: Update
-'User profile': 'User profile'
-'Users list': 'Users list'
-'with Symfony %version%': 'with Symfony %version%'
-'With the message "%status_text%".': 'With the message "%status_text%".'
-'WYSIWYG custom options': 'WYSIWYG custom options'
-'WYSIWYG options': 'WYSIWYG options'
-'WYSIWYG profile': 'WYSIWYG profile'
-'WYSIWYG profiles': 'WYSIWYG profiles'
-'WYSIWYG styles sets': 'WYSIWYG styles sets'
-Action: Action
-Actions: Actions
-Add: Add
-Analyzers: Analyzers
-Ascending: Ascending
-Bits: Bits
-Boost: Boost
-Bright: Bright
-Cancel: Cancel
-Circles: Circles
-Clear: Clear
-Copy: Copy
-Dark: Dark
-Date: Date
-Descending: Descending
-Discard: Discard
-Documentation: Documentation
-Download: Download
-Edit: Edit
-email: email
-Empty: Empty
-Enabled: Enabled
-Environment: Environment
-Environments: Environments
-Exit: Exit
-Field: Field
-Filter: Filter
-Filters: Filters
-I18N: I18N
-Inbox: Inbox
-Info: Info
-Label: Label
-Locked: Locked
-Menu: Menu
-Must: Must
-Name: Name
-Nothing: Nothing
-Notice: Notice
-Notification: Notification
-Operator: Operator
-Outbox: Outbox
-OUUID: OUUID
-Pattern: Pattern
-Pending: Pending
-Reorder: Reorder
-Revision: Revision
-Revisions: Revisions
+---
 ROLE_ADMIN: Administrator
-ROLE_ALLOW_ALIGN: 'Align Environment'
+ROLE_ALLOW_ALIGN: "Align Environment"
 ROLE_API: API
 ROLE_AUTHOR: Author
 ROLE_COPY_PASTE: Copy/Paste
-ROLE_DEFAULT_SEARCH: 'Default search'
+ROLE_DEFAULT_SEARCH: "Default search"
+ROLE_FORM_CRM: "Form CRM"
 ROLE_PUBLISHER: Publisher
-ROLE_SUPER_ADMIN: 'Super Admin'
-ROLE_SUPER_AUTHOR: 'Super Author'
-ROLE_SUPER_PUBLISHER: 'Super Publisher'
-ROLE_SUPER_USER: 'Super User'
-ROLE_SUPER_WEBMASTER: 'Super Webmaster'
-ROLE_USER: User
-ROLE_USER_READ: User read
-ROLE_USER_MANAGEMENT: User Management
-ROLE_WEBMASTER: Webmaster
-Roles: Roles
 ROLE_REVIEWER: Reviewer
-ROLE_SUPER: Super user
+ROLE_SUPER: "Super user"
+ROLE_SUPER_ADMIN: "Super Admin"
+ROLE_SUPER_AUTHOR: "Super Author"
+ROLE_SUPER_PUBLISHER: "Super Publisher"
+ROLE_SUPER_USER: "Super User"
+ROLE_SUPER_WEBMASTER: "Super Webmaster"
+ROLE_TASK_MANAGER: "Task Manager"
 ROLE_TRADUCTOR: Traductor
-ROLE_FORM_CRM: Form CRM
-ROLE_TASK_MANAGER: Task Manager
-Save: Save
-Search: Search
-Should: Should
-Tagline: Tagline
-Template: Template
-Term: Term
-Username: Username
-Users: Users
-View: View
-Warnings: Warnings
-WYSIWYG: WYSIWYG
-Command: Command
-Launch: Launch
-form.analyzer.name: Name
-form.analyzer.label: Label
-form.analyzer.save: Save
-form.analyzer.type: Type
-form.analyzer.type.standard: Standard
-form.analyzer.type.stop: Stop
-form.analyzer.type.pattern: Pattern
-form.analyzer.type.fingerprint: Fingerprint
-form.analyzer.type.custom: Custom
-form.analyzer.tokenizer: Tokenizer
-form.analyzer.tokenizer.standard: Standard
-form.analyzer.tokenizer.letter: Letter
-form.analyzer.tokenizer.lowercase: Lowercase
-form.analyzer.tokenizer.whitespace: Whitespace
-form.analyzer.tokenizer.uax_url_email: 'UAX URL Email'
-form.analyzer.tokenizer.classic: Classic
-form.analyzer.tokenizer.thai: Thai
-form.analyzer.tokenizer.ngram: N-Gram
-form.analyzer.tokenizer.edge_ngram: 'Edge N-Gram'
-form.analyzer.tokenizer.keyword: Keyword
-form.analyzer.tokenizer.pattern: Pattern
-form.analyzer.tokenizer.path_hierarchy: Path
-form.analyzer.max_token_length: 'Max Token Length'
-form.analyzer.max_output_size: 'Max Output Size'
-form.analyzer.lowercase: Lowercase
-form.analyzer.position_increment_gap: 'Position Increment Gap'
-form.analyzer.stopwords: Stopwords
-form.analyzer.stopwords._none_: None
-form.analyzer.stopwords._arabic_: Arabic
-form.analyzer.stopwords._armenian_: Armenian
-form.analyzer.stopwords._basque_: Basque
-form.analyzer.stopwords._brazilian_: Brazilian
-form.analyzer.stopwords._bulgarian_: Bulgarian
-form.analyzer.stopwords._catalan_: Catalan
-form.analyzer.stopwords._cjk_: CJK
-form.analyzer.stopwords._czech_: Czech
-form.analyzer.stopwords._danish_: Danish
-form.analyzer.stopwords._dutch_: Dutch
-form.analyzer.stopwords._english_: English
-form.analyzer.stopwords._finnish_: Finnish
-form.analyzer.stopwords._french_: French
-form.analyzer.stopwords._galician_: Galician
-form.analyzer.stopwords._german_: German
-form.analyzer.stopwords._greek_: Greek
-form.analyzer.stopwords._hindi_: Hindi
-form.analyzer.stopwords._hungarian_: Hungarian
-form.analyzer.stopwords._indonesian_: Indonesian
-form.analyzer.stopwords._irish_: Irish
-form.analyzer.stopwords._italian_: Italian
-form.analyzer.stopwords._latvian_: Latvian
-form.analyzer.stopwords._lithuanian_: Lithuanian
-form.analyzer.stopwords._norwegian_: Norwegian
-form.analyzer.stopwords._persian_: Persian
-form.analyzer.stopwords._portuguese_: Portuguese
-form.analyzer.stopwords._romanian_: Romanian
-form.analyzer.stopwords._russian_: Russian
-form.analyzer.stopwords._sorani_: Sorani
-form.analyzer.stopwords._spanish_: Spanish
-form.analyzer.stopwords._swedish_: Swedish
-form.analyzer.stopwords._turkish_: Turkish
-form.analyzer.stopwords._thai_: Thai
-form.analyzer.filter: Filter
-form.analyzer.filter.built_in: Built-in
-form.analyzer.filter.built_in.standard: Standard
-form.analyzer.filter.built_in.asciifolding: 'ASCII Folding'
-form.analyzer.filter.built_in.flatten_graph: 'Flatten graph'
-form.analyzer.filter.built_in.lowercase: Lowercase
-form.analyzer.filter.built_in.uppercase: Uppercase
-form.analyzer.filter.built_in.n_gram: NGram
-form.analyzer.filter.built_in.edge_n_gram: 'Edge NGram'
-form.analyzer.filter.built_in.porter_stem: 'Porter Stem'
-form.analyzer.filter.built_in.stop: Stop
-form.analyzer.filter.built_in.word_delimiter: 'Word Delimiter'
-form.analyzer.filter.customized: Customized
-form.analyzer.char_filter: 'Char Filter'
-form.analyzer.char_filter.html_strip: 'HTML Strip'
-form.analyzer.flags: Flags
-form.analyzer.flags.canon_eq: CANON_EQ
-form.analyzer.flags.case_insensitive: CASE_INSENSITIVE
-form.analyzer.flags.comments: COMMENTS
-form.analyzer.flags.dotall: DOTALL
-form.analyzer.flags.literal: LITERAL
-form.analyzer.flags.multiline: MULTILINE
-form.analyzer.flags.unicode_case: UNICODE_CASE
-form.analyzer.flags.unicode_character_class: UNICODE_CHARACTER_CLASS
-form.analyzer.flags.unix_lines: UNIX_LINES
-form.analyzer.separator: Separator
-form.analyzer.pattern: Pattern
-view.environment.index.title: 'All Environments'
-view.environment.index.pagetitle: 'All Environments'
-view.environment.index.environment_breadcrumb: Environments
-view.environment.index.index_breadcrumb: List
-view.environment.index.local_environment_label: 'Local Environments'
-view.environment.index.add_environment_button: 'Add Environment'
-view.environment.index.reorder_button: Reorder
-view.environment.index.reorder_title: Reorder
-view.environment.index.close_modal_button: Close
-view.environment.index.no_environment_yet: 'There is no environment defined yet.'
-view.environment.index.count_label: '#'
-view.environment.index.name_label: Name
-view.environment.index.alias_label: Alias
-view.environment.index.indexes_label: Indexes
-view.environment.index.total_indexed_label: 'Total in ES'
-view.environment.index.total_in_ems: 'Total in ems'
-view.environment.index.total_mark_has_deleted: 'Total deleted'
-view.environment.index.action_label: Action
-view.environment.index.environment_index_count: '{0} There are no index|{1} There is one index|]1,Inf[ There are %count% indexes'
-view.environment.index.rebuild_button: 'Rebuild'
-view.environment.index.view_button: 'View'
-view.environment.index.confirm_delete: 'Do you want to delete %name%?'
-view.environment.index.delete_button: 'Delete'
-view.environment.index.external_environments_title: 'External environments'
-view.environment.index.no_external_environment_yet: 'There is no external environment defined yet.'
-view.environment.index.total_label: 'Total'
-view.environment.index.edit_button: 'Edit'
-view.environment.index.confirm_dettach: 'Do you want to detach %name%?'
-view.environment.index.dettach_button: 'Detach'
-view.environment.index.environment_indexes_modal_title: 'Indexes'
-view.environment.index.managed_alias_title: 'Managed alias'
-view.environment.index.add_managed_alias_button: 'Add managed alias'
-view.environment.index.delete_managed_environemnt_button: 'Delete'
-view.environment.index.unreferenced_aliases_title: 'Unreferenced aliases'
-view.environment.index.all_indexes_are_referenced: 'All aliases are referenced'
-view.environment.index.attach_alias_confirm: 'Attache the alias %name%?'
-view.environment.index.attach_button: 'Atach'
-view.environment.index.delete_alias_confirm: 'Do you want to delete the alias %name%?'
-view.environment.index.orphan_index_title: 'Orphan indexes'
-view.environment.index.delete_all_button: 'Delete all'
-view.environment.index.there_is_no_orphan_index: 'There is no orphan indexes'
-view.environment.index.add_alias_button: 'Add alias'
-view.environment.index.delete_index_confirm: 'Are you sure to delete the index %name%?'
-view.environment.index.delete_index_button: 'Delete'
-view.environment.index.delete_all_ophan_indexes_confirm: 'Do you confirm?'
-controller.environment.index.reorder_submit_button: 'Reorder'
-view.contenttype.reorder_item.edit_field_button: 'Edit %name%'
-view.contenttype.reorder_item.edit_main_container_button: 'Edit the main container'
-view.macros.data-field-type.collection_added_items: '{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added'
-view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
-data.edit_revision.save_draft: Save draft
-
-user:
-  action:
-    edit: 'Edit'
-    switch: 'Switch user'
-    disable: 'Disable'
-    delete: 'Delete'
-    generate_api: 'API key'
-    disable_confirm: 'Disable this user?'
-    generate_api_confirm: 'Generate API key for this user?'
-    delete_confirm: 'Delete this user?'
-  index:
-    column:
-      id: 'User ID'
-      username: 'Username'
-      displayname: 'Display name'
-      email_notification: 'E-mail notifications'
-      email: 'E-mail'
-      circles: 'Circles'
-      enabled: 'Enabled'
-      roles: 'Roles'
-      lastLogin: 'Last Login'
+ROLE_USER: User
+ROLE_USER_MANAGEMENT: "User Management"
+ROLE_USER_READ: "User read"
+ROLE_WEBMASTER: Webmaster
 action:
   actions:
-    delete: 'Delete'
-    edit: 'Edit'
-    delete_confirm: 'Delete the "%label%" action?'
-    delete_selected_confirm: 'Delete all selected actions?'
-    delete_selected: 'Delete selected'
+    delete: Delete
+    delete_confirm: "Delete the \"%label%\" action?"
+    delete_selected: "Delete selected"
+    delete_selected_confirm: "Delete all selected actions?"
+    edit: Edit
   index:
     column:
-      public: 'Public'
-      name: 'Name'
-      type: 'Type'
-    reorder: 'Reorder'
+      name: Name
+      public: Public
+      type: Type
+    reorder: Reorder
+channel:
+  actions:
+    delete: Delete
+    delete_confirm: "Delete the \"%label%\" channel?"
+    delete_selected: "Delete selected"
+    delete_selected_confirm: "Delete all selected channels?"
+    edit: Edit
+  add:
+    save: Create
+    title: "Add a channel"
+  edit:
+    save: Save
+    title: "Edit a channel"
+  index:
+    column:
+      alias: Alias
+      label: Label
+      name: Name
+      public: "Public access"
+    reorder: "Reorder channels"
+    title: "List of channels"
+  menu: Channels
+command:
+  reindex:
+    end: "The content type %contenttype%'s documents have been reindexed in %environment% (index: %index%)"
+    environment_not_found: "Environment named \"%environment%\" not found"
+    start: "Start reindexing %contenttype% in %environment%"
+contenttype:
+  action:
+    update_from_json: "Update from JSON"
+controller:
+  environment:
+    index:
+      reorder_submit_button: Reorder
+data:
+  custom-view:
+    pagetitle: "View %name% of the %contentType% \"%label%\" as indexed in %environment%"
+  edit_revision:
+    save_draft: "Save draft"
+field_type:
+  json_menu_editor:
+    add: Add
+    add_item: "Add a new item %singular%"
+    add_node: "Add a new node %singular%"
+    collapse_all_button: "Expand/Collapse all"
+    collapse_button: Expand/Collapse
+    delete_item: "Delete this entry"
+    edit: Edit
+    item_label_placeholder: "Define a label for this entry"
+    move_item: Move
+form:
+  analyzer:
+    char_filter:
+      html_strip: "HTML Strip"
+      label: "Char Filter"
+    filter:
+      built_in:
+        asciifolding: "ASCII Folding"
+        edge_n_gram: "Edge NGram"
+        flatten_graph: "Flatten graph"
+        label: Built-in
+        lowercase: Lowercase
+        n_gram: NGram
+        porter_stem: "Porter Stem"
+        standard: Standard
+        stop: Stop
+        uppercase: Uppercase
+        word_delimiter: "Word Delimiter"
+      customized: Customized
+      label: Filter
+    flags:
+      canon_eq: CANON_EQ
+      case_insensitive: CASE_INSENSITIVE
+      comments: COMMENTS
+      dotall: DOTALL
+      label: Flags
+      literal: LITERAL
+      multiline: MULTILINE
+      unicode_case: UNICODE_CASE
+      unicode_character_class: UNICODE_CHARACTER_CLASS
+      unix_lines: UNIX_LINES
+    label: Label
+    lowercase: Lowercase
+    max_output_size: "Max Output Size"
+    max_token_length: "Max Token Length"
+    name: Name
+    pattern: Pattern
+    position_increment_gap: "Position Increment Gap"
+    save: Save
+    separator: Separator
+    stopwords:
+      _arabic_: Arabic
+      _armenian_: Armenian
+      _basque_: Basque
+      _brazilian_: Brazilian
+      _bulgarian_: Bulgarian
+      _catalan_: Catalan
+      _cjk_: CJK
+      _czech_: Czech
+      _danish_: Danish
+      _dutch_: Dutch
+      _english_: English
+      _finnish_: Finnish
+      _french_: French
+      _galician_: Galician
+      _german_: German
+      _greek_: Greek
+      _hindi_: Hindi
+      _hungarian_: Hungarian
+      _indonesian_: Indonesian
+      _irish_: Irish
+      _italian_: Italian
+      _latvian_: Latvian
+      _lithuanian_: Lithuanian
+      _none_: None
+      _norwegian_: Norwegian
+      _persian_: Persian
+      _portuguese_: Portuguese
+      _romanian_: Romanian
+      _russian_: Russian
+      _sorani_: Sorani
+      _spanish_: Spanish
+      _swedish_: Swedish
+      _thai_: Thai
+      _turkish_: Turkish
+      label: Stopwords
+    tokenizer:
+      classic: Classic
+      edge_ngram: "Edge N-Gram"
+      keyword: Keyword
+      label: Tokenizer
+      letter: Letter
+      lowercase: Lowercase
+      ngram: N-Gram
+      path_hierarchy: Path
+      pattern: Pattern
+      standard: Standard
+      thai: Thai
+      uax_url_email: "UAX URL Email"
+      whitespace: Whitespace
+    type:
+      custom: Custom
+      fingerprint: Fingerprint
+      label: Type
+      pattern: Pattern
+      standard: Standard
+      stop: Stop
+  contenttype:
+    json_update:
+      deleteExitingTemplates: "Delete existing templates"
+      deleteExitingViews: "Delete existing views"
+      filename: Filename
+      json: "Content Type's JSON file"
+      mimetype: "Media Type"
+      subtitle: "from a Content Type's JSON file"
+      title: "Update the content type \"%content_type%\""
+      update: "Update content type from JSON"
+  data:
+    bool_table_collum:
+      false_value: disable
+      true_value: enable
+  data_field:
+    collection:
+      import_not_an_array: "Some data were not imported for the collection field %field_name% as is was not an array"
+    file_attachment:
+      file_not_found: "File not found with the hash \"%file_hash%\""
+  email: Email
+  form:
+    channel:
+      alias: Alias
+      label: Label
+      name: Name
+      public: "Make channel available for non-authenticated users ?"
+    query_search:
+      environments: Environments
+      label: Label
+      name: Name
+  form_field:
+    wysiwyg:
+      content_css:
+        label: "Content CSS (override styles sets's config)"
+      format_tags:
+        label: "Format tags (override styles sets config)"
+  subform:
+    channel:
+      attributes: "Request extra attributes"
+      entryPath: "Default entry path"
+      searchConfig: "Search config"
+    searchquery:
+      query: "Default query"
+      searchConfig: "Search config"
+  username: Username
+  view:
+    hierarchical:
+      error_with_document: "It was impossible to update the document ems://object:%contenttype%:%ouuid% : %error_message%"
+      reorganized: "The %contenttype%'s documents have been reorganized with the view \"%view_name%\""
+    sorter:
+      error_with_document: "It was impossible to update the document ems://object:%contenttype%:%ouuid% : %error_message%"
+      ordered: "The %contenttype%'s documents have been ordered with the view \"%view_name%\""
+      too_many_documents: "This content type have to much document (%total%) to be reorder them all in once"
+  wysiwyg_style_set:
+    table_default_css:
+      title: "Default Table class attribute"
 form-submission:
   form-submissions:
-    delete: 'Delete'
-    edit: 'Edit'
-    delete_confirm: 'Delete the "%label%" submission?'
-    delete_selected_confirm: 'Delete all selected submissions?'
-    delete_selected: 'Delete selected'
-    download_selected: 'Download selected'
-    export_selected: 'Export selected'
-    download: 'Download'
-    process: 'Delete Submission'
-    confirm: 'Confirm Deletion'
+    confirm: "Confirm Deletion"
+    delete: Delete
+    delete_confirm: "Delete the \"%label%\" submission?"
+    delete_selected: "Delete selected"
+    delete_selected_confirm: "Delete all selected submissions?"
+    download: Download
+    download_selected: "Download selected"
+    edit: Edit
+    export_selected: "Export selected"
+    process: "Delete Submission"
   index:
     column:
-      public: 'Public'
-      name: 'Name'
-      type: 'Type'
-      id: 'ID'
-      label: 'Label'
-      form: 'Form'
-      locale: 'Locale'
-      created: 'Created At'
-      expire_date: 'Expire Date'
-    reorder: 'Reorder'
-uploaded-file:
-  menu: 'Menu'
-  index:
-    title: 'Uploaded Files'
-    column:
-      head_last: 'Last seen'
-      hidden: 'Hidden'
-      available: 'Available'
-      created: 'Uploaded at'
-      modified: 'Last modified'
-      name: 'File name'
-      sha1: 'Hash signature'
-      type: 'Mime type'
-      username: 'By'
-      size: 'File size'
+      created: "Created At"
+      expire_date: "Expire Date"
+      form: Form
+      id: ID
+      label: Label
+      locale: Locale
+      name: Name
+      public: Public
+      type: Type
+    reorder: Reorder
+form_submissions:
+  download: Download
+  overview: Overview
+  process:
+    button: "Delete Submission"
+    confirm_body: |
+      After confirmation you can NOT download the form data anymore!
+      Are you sure, you want to delete the form submission?
+    confirm_title: "Confirm deletion"
+    error: "Form deletion failed!"
+    success: "Form submission with id \"%id%\" has been deleted!"
+  title: "Form Submissions"
+log:
   action:
-    download_selected: 'Download selected'
-    soft-delete: 'Delete'
-  soft-delete-confirm: 'Are you sure you want to delete this file?'
-  uploaded-file:
-    download_selected: 'Download selected'
-    soft_delete_selected: 'Delete selected'
+    added: "A new action %action_name% has been created"
+    deleted: "The action %action_name% has been deleted"
+    twig:
+      error: "Error during the Twig generation of ems://template:%template_id% with the error message: %error_message%"
+    updated: "The action %action_name% has been updated"
+  analyzer:
+    created: "The analyzer %analyzer_name% has been created"
+    deleted: "The analyzer %analyzer_name% has been deleted"
+    updated: "The analyzer %analyzer_name% has been updated"
+  channel:
+    alias_not_found: "The channel %channel% can't be registered as it's alias %alias% is missing"
+  contenttype:
+    action_not_found: "Action not found on the content type %contenttype%"
+    created: "The content type %contenttype% has been created"
+    created_failed: "Some required fields are missing"
+    deleted: "The content type %contenttype% has been deleted"
+    dirty: "The content type %contenttype% is dirty (its mapping might be out-of date), try to update its mapping"
+    field:
+      added: "A field %field_name% has been added"
+      deleted: "The field %field_name% has been deleted"
+      name_mandatory: "The field name is mandatory"
+      name_not_valid: "The field is not valid : (format: %field_format%)"
+      reordered: "The the subfields of the field %field_name% have been reordered"
+    mapping:
+      not_found: "Content type %contenttype%'s mapping not found"
+    not_found: "Content type %contenttype% not found"
+    referenced: "The content type %contenttype% has been referenced"
+    reordered: "Content types have been reordered"
+    subfield:
+      added: "A subfield %field_name% has been added"
+      name_mandatory: "The subfield name is mandatory"
+      name_not_valid: "The subfield is not valid : (format: %field_format%)"
+    unreferenced_not_found: "Unreferenced content type not found"
+    updated: "The content type %contenttype% has been updated"
+  controller:
+    channel:
+      unknown_action: "Unknown action"
+    query_search:
+      unknown_action: "Unknown action"
+  crud:
+    create_error: "The revision for contenttype %contenttype% can not be created, reason: %error_message%"
+    delete_error: "The revision ems://revision:%revision_id% for contenttype %contenttype% can not be deleted, reason: %error_message%"
+    deleted: "The document ems://object:%contenttype%:%ouuid% has been deleted"
+    discard_error: "The revision ems://revision:%revision_id% for contenttype %contenttype% can not be discarded, reason: %error_message%"
+    finalize_error: "The revision ems://revision:%revision_id% for content type %contenttype% can not be finalized, reason: %error_message%"
+    merge_error: "The revision ems://revision:%revision_id% for contenttype %contenttype% can not be merged/updated, reason: %error_message%"
+    read_error: "The revision for contenttype %contenttype% can not be found, reason: %error_message%"
+    replace_error: "The revision ems://revision:%revision_id% for contenttype %contenttype% can not be replaced/updated, reason: %error_message%"
+  data:
+    document:
+      cant_duplicate_when_waiting_ouuid: "It's impossible to duplicate the document ems://object:%contenttype%:%ouuid% has the content type %contenttype% requests first an OUUID"
+      compare: "Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id% of the document ems://object:%compare_contenttype%:%compare_ouuid%"
+      copy: "The content of the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been copied into the clipboard"
+      duplicated: "The document ems://object:%contenttype%:%ouuid% has been used to initiate a new document"
+      paste: "Clipboard's content has been paste in the document ems://object:%contenttype%:%ouuid%"
+    job:
+      done: "The job %job_id% is done"
+      initialize_failed: "A job %template_name% has failed for the document ems://object:%contenttype%:%ouuid% in the environment %environment%"
+      initialized: "A job %template_name% has been initialized for the document ems://object:%contenttype%:%ouuid% in the environment %environment%"
+      started: "A job %template_name% has been started for the document ems://object:%contenttype%:%ouuid% in the environment %environment%"
+    revision:
+      add_from_json_error: "It was not possible to initiate a new %contenttype% document due to an internal error"
+      ajax_update_on_finalized: "It's impossible to save the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has this revision is already finalized"
+      auto_publish_rollback: "The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been silently published back in %environment%"
+      auto_save_off_with_auto_publish: "The auto-save has been disabled as the auto-publish is enabled for the content type %contenttype%. Press Ctrl+S (Cmd+S) in order to publish in %environment%"
+      can_finalized: "The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can't be finalized as it is"
+      can_finalized_as_invalid: "{1} The document ems://object:%contenttype%:%ouuid% can't be finalized has there is one error |]1,Inf[ The document ems://object:%contenttype%:%ouuid% can't be finalized as there is %count% errors"
+      can_finalized_as_pending_auto_save: "The document ems://object:%contenttype%:%ouuid% can't be finalized as an auto save is pending"
+      can_finalized_error: "The document ems://object:%contenttype%:%ouuid% can't be finalized due to an error: %error_message%"
+      cant_delete_has_published: "The document ems://object:%contenttype%:%ouuid% can't be deleted as the revision ems://revision:%revision_id% is published in %published_in%"
+      compare: "Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id%"
+      compare_beta: "The comparaison tools between two revisions is a beta functionality"
+      compare_more_recent: "Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id%, wich one is more recent"
+      compare_revision_not_found: "Impossible to compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision id %compare_revision_id% as this revision does not exists"
+      finalized: "The revision ems://revision:%revision_id% has been finalized in %environment% for the document ems://object:%contenttype%:%ouuid%"
+      init_document_from_array: "It was not possible to initiate a new %contenttype% document due to an internal error"
+      load_from_auto_save: "Data were loaded from an auto-saved version for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%"
+      new_draft_from_revision: "A new draft has been initiated, from the revision ems://revision:%revision_id%, for the document ems://object:%contenttype%:%ouuid%"
+      not_completed_request: "Incomplete request! It's not possible to save the document ems://object:%contenttype%:%ouuid%. Please check your PHP/Web configuration (i.e.: max_input_vars in php.ini)"
+      not_found_in_environment: "It's impossible to identify a revision for the document ems://object:%contenttype%:%ouuid% in the environment %environment%"
+      only_super_can_finalize_an_archive: "Only a super user can finalize an archived revision"
+      reindex: "The revision ems://revision:%revision_id% has been reindex in %environment% for the document ems://object:%contenttype%:%ouuid%"
+      reindex_failed: "The document ems://object:%contenttype%:%ouuid% has encountered an exception during its reindexing %error_message%"
+      reindex_failed_in: "The document ems://object:%contenttype%:%ouuid% has encountered an exception during its reindexing in %environment%"
+  elasticsearch:
+    alias_added: "A new alias \"%alias_name%\" has been added to the index \"%index_name%\""
+    cluster_red: "There is something wrong with the cluster, actions are required now!"
+    cluster_yellow: "There is something wrong with the cluster, status color: %color_status%"
+    default_search: "This search has been defined as default search"
+    default_search_for_content_type: "This search has been defined as default search form for the content type %contenttype%"
+    index_deleted': "The index %index_name% has been deleted"
+    index_not_found: "Index %index_name% not found"
+    not_able_to_deserialize_filters: "Error during the deserialization of the filters"
+    paging_limit_exceeded: "The paging is limited to the first %paging% items"
+    search_deleted: "A search has been deleted"
+    search_not_accurate: "The search result is limited to the first %total% documents"
+    template_error: "There is something wrong with the template %template_name%"
+    template_filename_error: "There is something wrong with the template %template_name%'s filename"
+    too_few_document_result: "Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%"
+    too_many_document_result: "Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%"
+  environment:
+    alia_missing: "The alias for the environment %environment% is missing, consider to rebuild a brand new alias"
+    alias_attached: "The alias %alias% has been attached"
+    alias_not_found: "Alias %alias% not found"
+    alias_removed: "The alias %alias% has been removed"
+    aligned: "Environment %environment% and %with_environment% are aligned for those content types"
+    cant_align_default_environment: "The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% cant't be published in %environment% has it's  the %contenttype% default environment"
+    cant_attach_xti_alias_to_environment: "Can't attach %alias% as it's an alias with multiple indexes"
+    created: "The environment %environment% has been created"
+    deleted: "The environment %environment% has been deleted"
+    dont_have_publish_role: "You don't have enough privileges to publish \"%contenttype%\" documents"
+    is_default: "The environment %environment% is used as default environment for at least one content type"
+    not_empty: "The environment %environment% is not empty"
+    rebuild_unknown_option: "Impossible to rebuild the environment %environment% due to unknown option \"%option%\""
+    reordered: "The environments have been reordered"
+    updated: "The environment %environment% has been updated"
+    wrong_ouuid: "Malformed OUUID %ouuid%"
+  error: "This page/action has encountered an error: %error_message%"
+  file:
+    upload_error: "Error during file upload: %error_message%"
+  filter:
+    deleted: "The filter %filter_name% has been deleted"
+  index:
+    delete_orphan_index: "Elasticsearch index %index_name% has been deleted"
+    index_not_found: "Elasticsearch index %index_name% not found"
+  job:
+    prepared: "A job ems://job:%job_id% has been prepared (%command%)"
+  managed_alias:
+    created: "Managed alias %managed_alias_name% has been created"
+    deleted: "Managed alias %managed_alias_name% has been deleteddeleted"
+    updated: "Managed alias %managed_alias_name% has been updated"
+  nature:
+    issue_with_document: "It was impossible to reorder the document ems://object:%contenttype%:%ouuid%: %error_message%"
+    not_authorized: "Your user does not have privileges to to reorder the content type %contenttype%"
+    order_field_is_missing: "The order field %order_field_name% is missing for the content type %contenttype%"
+    order_field_not_defined: "The content type %contenttype% does not have any order field defined"
+    reordered: "The content type %contenttype%'s documents have been reordered"
+    too_many_documents: "The content type %contenttype% have to much documents (%total%) to be reorder all at once"
+  notification:
+    notification_not_found: "Notification #%notification_id% not found"
+  reindex:
+    revision:
+      deleted_but_referenced: "The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is marked as deleted but is still  referenced in %environment%"
+      error: "En error occurred while indexing the document ems://object:%contenttype%:%ouuid%"
+  revision_error: "Error \"%error_message%\" with the document ems://object:%contenttype%:%ouuid%"
+  service:
+    action:
+      delete: "The action %name% has been deleted"
+    channel:
+      delete: "The channel %name% has been deleted"
+    content-type:
+      get-unreferenced-content-type:
+        unexpected-error: "Unexpected error while get unreferenced content type from environment %environment%: %error_message%"
+    query_search:
+      delete: "The QuerySearch %name% has been deleted"
+  user:
+    api_key: "New API key for the user %user_display_name%: %api_key%"
+    deleted: "The user %user_display_name% has been deleted"
+    disabled: "The user %user_display_name% has been disabled"
+    enabled: "The user %user_display_name% has been enabled"
+    locked: "The user %user_display_name% has been locked"
+    unlocked: "The user %user_display_name% has been unlocked"
+    updated: "The user %user_display_name% has been updated"
+  view:
+    calendar:
+      document_not_found: "The document ems://object:%contenttype%:%ouuid% is missing"
+      from_date_is_missing: "From date is missing!"
+    created: "A new view %view_name% has been created"
+    criteria:
+      added: "A criteria has been added for field %field_name% with value %field_data%"
+      already_exists: "A criteria already exist for field %field_name% with value %field_data%"
+      already_missing: "A criteria is already missing for field %field_name% with value %field_data%"
+      document_key_not_found: "Document reference \"%document_reference%\" not found for the document ems://object:%contenttype%:%ouuid%"
+      draft_in_progress: "{0} A draft is in progress for the document ems://object:%contenttype%:%ouuid%, it's not possible to update it|{1} There is one drafts in progress. You won’t be able to update it from here.|]1,Inf[ There are %count% drafts in progress. You won’t be able to update them from here."
+      field_not_found: "Field path %field_path% not found"
+      locked_revision: "Impossible to update the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% as the revision is locked by %locked_by%"
+      new_criteria: "A new criteria has been created for %target_field_name%:%target_field_data%"
+      not_found: "Criteria not found for the field %field_name%"
+      removed: "A criteria has been removed for field %field_name% with value %field_data%"
+      too_many_criteria: "Too many criteria found (%total%). There is something wrong with this combination of criteria!: %message%"
+      update_not_authorized: "You don't have enough privileges to use this view to updates criterion"
+      update_privilege_issue: "You are not authorized to update the document ems://object:%contenttype%:%ouuid%"
+    deleted: "A new view %view_name% has been deleted"
+    keywords:
+      warning:
+        bucket_not_found: "Bucket %bucketPath% not found"
+    not_found: "View %view_id% not found"
+    updated: "A new view %view_name% has been updated"
+  warning:
+    asset_extract:
+      file_to_large: "As this file is larger (%filesize%) than %max_size% its content has not been automatically extracted. You can either force the extraction or specify it manually in the \"Info\" menu."
+not-applicable: N/A
+query_search:
+  actions:
+    delete: Delete
+    delete_confirm: "Delete the \"%label%\" QuerySearch?"
+    delete_selected: "Delete selected"
+    delete_selected_confirm: "Delete all selected QuerySearch?"
+    edit: Edit
+  add:
+    save: Create
+    title: "Add a QuerySearch"
+  edit:
+    save: Save
+    title: "Edit a QuerySearch"
+  index:
+    column:
+      alias: Alias
+      label: Label
+      name: Name
+      public: "Public access"
+    reorder: "Reorder QuerySearch"
+    title: "List of QuerySearch"
+  menu: QuerySearch
+search:
+  aggregate_option_label: "Aggregate Option"
+  search_field_option_label: "Search Field Option"
+  sort_option_label: "Sort Option"
+service:
+  alias:
+    too_many_indexes: "There is too many indexes"
+  asset_extractor:
+    extract_error: "An issue has been raised while extracting information from the asset/file ems://asset:%file_hash% : %error_message%"
+    persist_error: "An issue has been raised while persisting the information extracted from the asset/file ems://asset:%file_hash% : %error_message%"
+  contenttype:
+    field_not_found: "Field %field_id% not found and ignored"
+    mappings_error: "Mappings update for %contenttype% in %environments% failed : %elasticsearch_dump%"
+    mappings_updated: "Mappings successfully updated/created for %contenttype% in %environments%"
+    pipelines: "Pipelines have been updated/created for %contenttype%"
+    pipelines_error: "elasticms was not able to generate pipelines for the content type %contenttype%, they are disabled. Please consider to update your elasticsearch cluster (>=5.0). %elasticsearch_error_type% : %elasticsearch_error_reason%"
+    reordered: "Content type \"%contenttype% has been reordered"
+    should_reindex: "You should try to rebuild the indexes for  %contenttype%. Message from Elasticsearch; %elasticsearch_error_type% : %elasticsearch_error_reason%"
+  data:
+    already_unpublished: "The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already deleted from %environment%"
+    cant_be_finalized: "The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can't be finalized as it is (see previous warnings)"
+    cant_finalize_field: "%error_message%"
+    check_signature_failed': "Signature mismatch in %environment% for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%"
+    computed_hash_mismatch: "Computed hash mismatch in %environment% for document ems://object:%contenttype%:%ouuid%, computed hash: %computed_hash%, DB hash: %db_hash%"
+    data_not_consumed: "{1} A data of this revision was not consumed: %data%|]1,Inf[ Some data (%count%} of this revision were not consumed: %data%"
+    default_value_error: "It was not possible to initiate the default value (json_decode) for the content type %contenttype%, please check the content type's configuration"
+    default_value_template_error: "It was not possible to initiate the default value (compile template) for the content type %contenttype%, please check the content type's configuration"
+    deleted: "The document ems://object:%contenttype%:%ouuid% has been deleted"
+    error_check_signature: "Error checking signature in %environment% the revisions's data for the document ems://object:%contenttype%:%ouuid% : %error_message%"
+    error_with_fields: "The field %path% is in error with the message %error_message%"
+    hash_mismatch: "Hash mismatch in %environment% for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%, hash in the index %index_hash%, hash in the DB %db_hash%"
+    hash_missing: "Hash missing in %environment% for document ems://object:%contenttype%:%ouuid%"
+    integrity_failed: "Issue in %environment% while checking integrity of the document ems://object:%contenttype%:%ouuid%: %error_message%"
+    json_parse_post_processing_error: "Error to JSON parse the result of the post processing script of field %field_name% (|json_encode|raw): %template%"
+    not_a_data_field: "Unexpected %field_name% field in the revision form"
+    not_a_draft: "The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already finalized"
+    not_able_to_load_the_private_key: "It's impossible to load the private key %private_key_filename% : %error_message%"
+    not_able_to_sign: "It was not possible to sign the revisions's data for the document ems://object:%contenttype%:%ouuid% : %error_message%"
+    post_finalize_failed: "Error while finalize the post processing of the document ems://object:%contenttype%:%ouuid% : %error_message%"
+    revision_not_signed: "Revision not signed in %environment% for document ems://object:%contenttype%:%ouuid%"
+    template_parse_error: "Error to parse the computed field %computed_field_name%: %error_message%"
+    transform_content_type:
+      cant_process_draft: "The document ems://object:%contenttype%:%ouuid% can't be transformed as it's last revision ems://revision:%revision_id% is in draft mode"
+    unknown_update_type: "The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has not been replaced or replaced as the update type \"%update_type%\" is unknown"
+    unpublished: "The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been unpublished from %environment%"
+    update_referrers_error: "It was impossible to update referrers of the document ems://object:%contenttype%:%ouuid%"
+  entity:
+    created: "%entity_type% %entity_name% has been created"
+    deleted: "%entity_type% %entity_name% has been deleted"
+    updated: "%entity_type% %entity_name% has been updated"
+  notification:
+    another_one_is_pending: "Another notification %notification_name% is already pending for document ems://object:%contenttype%:%ouuid% in %environment% by %notification_username%"
+    notification_will_be_lost_finalize: "An \"%notification_name%\" notification will be lost for this %contenttype% document (%ouuid%) on finalize"
+    send: "%notification_name% for document ems://object:%contenttype%:%ouuid% in %environment% has been send"
+    send_error: "Error while sending notification (%notification_id%) : %error_message%"
+    treated: "%notification_name% for document ems://object:%contenttype%:%ouuid% in %environment% has been %status%"
+    update: "A \"%notification_name%\" notification has been %notification_status% for a \"%contenttype%\" document (%ouuid%)"
+  object_choice_cache:
+    alias_not_found: "Alias not found for content type %contenttype%"
+    contenttype_not_found: "Content type %contenttype% not found"
+    object_key_not_found: "Object key %object_key% not found"
+  publish:
+    already_published: "The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already published in %environment%"
+    already_unpublished: "The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already unpublished from %environment%"
+    draft_published: "A draft of the document ems://object:%contenttype%:%ouuid% has been published in %environment%"
+    not_authorized: "You can not (un)publish the content type %contenttype%"
+    not_in_circles: "You can not (un)publish the content type %contenttype% as you don't share any circle"
+    not_in_default_environment: "You can not (un)publish in the default environment %environment% of the document ems://object:%contenttype%:%ouuid%"
+    publish_draft_error: "A draft of the document ems://object:%contenttype%:%ouuid% can't be published in %environment% : %error_message%"
+    published: "The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been published in %environment%"
+    revision_not_found_in_source: "Missing revision in the environment %environment% for the document ems://object:%contenttype%:%ouuid%"
+    unpublished: "The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been unpublished from %environment%"
+  wysiwyg_profile:
+    deleted: "Profile %profile_name% has been deleted"
+    updated: "Profile %profile_name% has been updated"
+  wysiwyg_styles_set:
+    deleted: "Style set \"%wysiwyg_styles_set_name% has been deleted"
+    updated: "Style set \"%wysiwyg_styles_set_name% has been updated"
 table:
   index:
     button:
-      reorder: 'Reorder'
-      close: 'Close'
-      add: 'Add'
+      add: Add
+      close: Close
+      reorder: Reorder
     column:
-      actions: 'Actions'
-      loop_count: '#'
-    empty: 'Nothing to show here'
-channel:
-  actions:
-    delete_selected_confirm: 'Delete all selected channels?'
-    delete_selected: 'Delete selected'
-    delete_confirm: 'Delete the "%label%" channel?'
-    delete: 'Delete'
-    edit: 'Edit'
-  menu: 'Channels'
-  add:
-    title: 'Add a channel'
-    save: 'Create'
-  edit:
-    title: 'Edit a channel'
-    save: 'Save'
-  index:
-    reorder: 'Reorder channels'
-    column:
-      name: 'Name'
-      alias: 'Alias'
-      label: 'Label'
-      public: 'Public access'
-    title: 'List of channels'
-query_search:
-  actions:
-    delete_selected_confirm: 'Delete all selected QuerySearch?'
-    delete_selected: 'Delete selected'
-    delete_confirm: 'Delete the "%label%" QuerySearch?'
-    delete: 'Delete'
-    edit: 'Edit'
-  menu: 'QuerySearch'
-  add:
-    title: 'Add a QuerySearch'
-    save: 'Create'
-  edit:
-    title: 'Edit a QuerySearch'
-    save: 'Save'
-  index:
-    reorder: 'Reorder QuerySearch'
-    column:
-      name: 'Name'
-      alias: 'Alias'
-      label: 'Label'
-      public: 'Public access'
-    title: 'List of QuerySearch'
-not-applicable: 'N/A'
-views:
-  elasticsearch:
-    search:
-      pagetitle: 'Search'
-      title: 'Search engine: %total% results'
-      subtitle: '%total%'
-      error_title: Error with the search result
-    export-search:
-      title: Export documents
-command:
-  reindex:
-    environment_not_found: 'Environment named "%environment%" not found'
-    start: 'Start reindexing %contenttype% in %environment%'
-    end: 'The content type %contenttype%''s documents have been reindexed in %environment% (index: %index%)'
-service:
-  alias:
-    too_many_indexes: 'There is too many indexes'
-  contenttype:
-    should_reindex: 'You should try to rebuild the indexes for  %contenttype%. Message from Elasticsearch; %elasticsearch_error_type% : %elasticsearch_error_reason%'
-    mappings_error: 'Mappings update for %contenttype% in %environments% failed : %elasticsearch_dump%'
-    mappings_updated: 'Mappings successfully updated/created for %contenttype% in %environments%'
-    pipelines_error: 'elasticms was not able to generate pipelines for the content type %contenttype%, they are disabled. Please consider to update your elasticsearch cluster (>=5.0). %elasticsearch_error_type% : %elasticsearch_error_reason%'
-    pipelines: 'Pipelines have been updated/created for %contenttype%'
-    reordered: 'Content type "%contenttype% has been reordered'
-    field_not_found: 'Field %field_id% not found and ignored'
-  wysiwyg_profile:
-    updated: 'Profile %profile_name% has been updated'
-    deleted: 'Profile %profile_name% has been deleted'
-  entity:
-    created: '%entity_type% %entity_name% has been created'
-    deleted: '%entity_type% %entity_name% has been deleted'
-    updated: '%entity_type% %entity_name% has been updated'
-  notification:
-    treated: '%notification_name% for document ems://object:%contenttype%:%ouuid% in %environment% has been %status%'
-    send: '%notification_name% for document ems://object:%contenttype%:%ouuid% in %environment% has been send'
-    send_error: 'Error while sending notification (%notification_id%) : %error_message%'
-    another_one_is_pending: 'Another notification %notification_name% is already pending for document ems://object:%contenttype%:%ouuid% in %environment% by %notification_username%'
-    notification_will_be_lost_finalize: 'An "%notification_name%" notification will be lost for this %contenttype% document (%ouuid%) on finalize'
-    update: 'A "%notification_name%" notification has been %notification_status% for a "%contenttype%" document (%ouuid%)'
-  wysiwyg_styles_set:
-    deleted: 'Style set "%wysiwyg_styles_set_name% has been deleted'
-    updated: 'Style set "%wysiwyg_styles_set_name% has been updated'
-  object_choice_cache:
-    contenttype_not_found: 'Content type %contenttype% not found'
-    alias_not_found: 'Alias not found for content type %contenttype%'
-    object_key_not_found: 'Object key %object_key% not found'
-  publish:
-    unpublished: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been unpublished from %environment%'
-    already_unpublished: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already unpublished from %environment%'
-    published: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been published in %environment%'
-    already_published: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already published in %environment%'
-    publish_draft_error: 'A draft of the document ems://object:%contenttype%:%ouuid% can''t be published in %environment% : %error_message%'
-    draft_published: 'A draft of the document ems://object:%contenttype%:%ouuid% has been published in %environment%'
-    not_in_circles: 'You can not (un)publish the content type %contenttype% as you don''t share any circle'
-    not_authorized: 'You can not (un)publish the content type %contenttype%'
-    revision_not_found_in_source: 'Missing revision in the environment %environment% for the document ems://object:%contenttype%:%ouuid%'
-    not_in_default_environment: 'You can not (un)publish in the default environment %environment% of the document ems://object:%contenttype%:%ouuid%'
-  asset_extractor:
-    extract_error: 'An issue has been raised while extracting information from the asset/file ems://asset:%file_hash% : %error_message%'
-    persist_error: 'An issue has been raised while persisting the information extracted from the asset/file ems://asset:%file_hash% : %error_message%'
-  data:
-    transform_content_type:
-      cant_process_draft: 'The document ems://object:%contenttype%:%ouuid% can''t be transformed as it''s last revision ems://revision:%revision_id% is in draft mode'
-    error_with_fields: 'The field %path% is in error with the message %error_message%'
-    cant_finalize_field: '%error_message%'
-    update_referrers_error: 'It was impossible to update referrers of the document ems://object:%contenttype%:%ouuid%'
-    not_a_draft: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already finalized'
-    unknown_update_type: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has not been replaced or replaced as the update type "%update_type%" is unknown'
-    data_not_consumed: '{1} A data of this revision was not consumed: %data%|]1,Inf[ Some data (%count%} of this revision were not consumed: %data%'
-    deleted: 'The document ems://object:%contenttype%:%ouuid% has been deleted'
-    already_unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already deleted from %environment%'
-    unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been unpublished from %environment%'
-    default_value_template_error: 'It was not possible to initiate the default value (compile template) for the content type %contenttype%, please check the content type''s configuration'
-    default_value_error: 'It was not possible to initiate the default value (json_decode) for the content type %contenttype%, please check the content type''s configuration'
-    cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is (see previous warnings)'
-    post_finalize_failed: 'Error while finalize the post processing of the document ems://object:%contenttype%:%ouuid% : %error_message%'
-    integrity_failed: 'Issue in %environment% while checking integrity of the document ems://object:%contenttype%:%ouuid%: %error_message%'
-    not_a_data_field: 'Unexpected %field_name% field in the revision form'
-    computed_hash_mismatch: 'Computed hash mismatch in %environment% for document ems://object:%contenttype%:%ouuid%, computed hash: %computed_hash%, DB hash: %db_hash%'
-    hash_missing: 'Hash missing in %environment% for document ems://object:%contenttype%:%ouuid%'
-    revision_not_signed: 'Revision not signed in %environment% for document ems://object:%contenttype%:%ouuid%'
-    check_signature_failed': 'Signature mismatch in %environment% for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
-    hash_mismatch: 'Hash mismatch in %environment% for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%, hash in the index %index_hash%, hash in the DB %db_hash%'
-    not_able_to_sign: 'It was not possible to sign the revisions''s data for the document ems://object:%contenttype%:%ouuid% : %error_message%'
-    error_check_signature: 'Error checking signature in %environment% the revisions''s data for the document ems://object:%contenttype%:%ouuid% : %error_message%'
-    template_parse_error: 'Error to parse the computed field %computed_field_name%: %error_message%'
-    json_parse_post_processing_error: 'Error to JSON parse the result of the post processing script of field %field_name% (|json_encode|raw): %template%'
-    not_able_to_load_the_private_key: 'It''s impossible to load the private key %private_key_filename% : %error_message%'
-
-contenttype:
-  action:
-    update_from_json: 'Update from JSON'
-form:
-  wysiwyg_style_set:
-    table_default_css:
-      title: 'Default Table class attribute'
-  form_field:
-    wysiwyg:
-      format_tags:
-        label: 'Format tags (override styles sets config)'
-      content_css:
-        label: 'Content CSS (override styles sets''s config)'
-  subform:
-    channel:
-      attributes: 'Request extra attributes'
-      entryPath: 'Default entry path'
-      searchConfig: 'Search config'
-    searchquery:
-      query: 'Default query'
-      searchConfig: 'Search config'
-  form:
-    channel:
-      name: 'Name'
-      alias: 'Alias'
-      public: 'Make channel available for non-authenticated users ?'
-      label: 'Label'
-    query_search:
-      name: 'Name'
-      label: 'Label'
-      environments: 'Environments'
-  contenttype:
-    json_update:
-      deleteExitingTemplates: 'Delete existing templates'
-      deleteExitingViews: 'Delete existing views'
-      json: 'Content Type''s JSON file'
-      mimetype: 'Media Type'
-      filename: 'Filename'
-      update: 'Update content type from JSON'
-      title: 'Update the content type "%content_type%"'
-      subtitle: 'from a Content Type''s JSON file'
-  data_field:
-    collection:
-      import_not_an_array: 'Some data were not imported for the collection field %field_name% as is was not an array'
-    file_attachment:
-      file_not_found: 'File not found with the hash "%file_hash%"'
-  view:
-    sorter:
-      too_many_documents: 'This content type have to much document (%total%) to be reorder them all in once'
-      error_with_document: 'It was impossible to update the document ems://object:%contenttype%:%ouuid% : %error_message%'
-      ordered: 'The %contenttype%''s documents have been ordered with the view "%view_name%"'
-    hierarchical:
-      error_with_document: 'It was impossible to update the document ems://object:%contenttype%:%ouuid% : %error_message%'
-      reorganized: 'The %contenttype%''s documents have been reorganized with the view "%view_name%"'
-  data:
-    bool_table_collum:
-      false_value: 'disable'
-      true_value: 'enable'
-wysiwyg:
-  invalid_config_format: 'Format not valid: %msg%'
-search:
-  sort_option_label: 'Sort Option'
-  search_field_option_label: 'Search Field Option'
-  aggregate_option_label: 'Aggregate Option'
-
-log:
-  channel:
-    alias_not_found: 'The channel %channel% can''t be registered as it''s alias %alias% is missing'
-  controller:
-    channel:
-      unknown_action: 'Unknown action'
-    query_search:
-      unknown_action: 'Unknown action'
-  service:
+      actions: Actions
+      loop_count: "#"
+    empty: "Nothing to show here"
+task:
+  assigned_to: "Assigned to "
+  change_owner:
+    change: "New owner"
+    current: "The current ower for document \"%revision%\" is \"%owner%\""
+    missing: "The document \"%revision%\" has no owner"
+    submit: Change
+    success: "Successfully changed ownership!"
+    title: "Change owner for %revision%"
+  create:
+    button: "Add a task"
+    submit: "Create task"
+    success: "Task \"%title%\" successfully created."
+    title: "Add a new task"
+  dashboard:
     action:
-      delete: 'The action %name% has been deleted'
-    channel:
-      delete: 'The channel %name% has been deleted'
-    query_search:
-      delete: 'The QuerySearch %name% has been deleted'
-    content-type:
-      get-unreferenced-content-type:
-        unexpected-error: 'Unexpected error while get unreferenced content type from environment %environment%: %error_message%'
-  warning:
-    asset_extract:
-      file_to_large: 'As this file is larger (%filesize%) than %max_size% its content has not been automatically extracted. You can either force the extraction or specify it manually in the "Info" menu.'
-  revision_error: 'Error "%error_message%" with the document ems://object:%contenttype%:%ouuid%'
-  crud:
-    deleted: 'The document ems://object:%contenttype%:%ouuid% has been deleted'
-    create_error: 'The revision for contenttype %contenttype% can not be created, reason: %error_message%'
-    read_error: 'The revision for contenttype %contenttype% can not be found, reason: %error_message%'
-    finalize_error: 'The revision ems://revision:%revision_id% for content type %contenttype% can not be finalized, reason: %error_message%'
-    discard_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be discarded, reason: %error_message%'
-    delete_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be deleted, reason: %error_message%'
-    replace_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be replaced/updated, reason: %error_message%'
-    merge_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be merged/updated, reason: %error_message%'
-  index:
-    delete_orphan_index: 'Elasticsearch index %index_name% has been deleted'
-    index_not_found: 'Elasticsearch index %index_name% not found'
-  managed_alias:
-    created: 'Managed alias %managed_alias_name% has been created'
-    updated: 'Managed alias %managed_alias_name% has been updated'
-    deleted: 'Managed alias %managed_alias_name% has been deleteddeleted'
-  filter:
-    deleted: 'The filter %filter_name% has been deleted'
-  elasticsearch:
-    search_not_accurate: 'The search result is limited to the first %total% documents'
-    too_many_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
-    too_few_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
-    template_error: 'There is something wrong with the template %template_name%'
-    template_filename_error: 'There is something wrong with the template %template_name%''s filename'
-    paging_limit_exceeded: 'The paging is limited to the first %paging% items'
-    search_deleted: 'A search has been deleted'
-    index_not_found: 'Index %index_name% not found'
-    index_deleted': 'The index %index_name% has been deleted'
-    default_search: 'This search has been defined as default search'
-    default_search_for_content_type: 'This search has been defined as default search form for the content type %contenttype%'
-    cluster_red: 'There is something wrong with the cluster, actions are required now!'
-    cluster_yellow: 'There is something wrong with the cluster, status color: %color_status%'
-    alias_added: 'A new alias "%alias_name%" has been added to the index "%index_name%"'
-    not_able_to_deserialize_filters: 'Error during the deserialization of the filters'
-  notification:
-    notification_not_found: 'Notification #%notification_id% not found'
-  nature:
-    order_field_not_defined: 'The content type %contenttype% does not have any order field defined'
-    order_field_is_missing: 'The order field %order_field_name% is missing for the content type %contenttype%'
-    not_authorized: 'Your user does not have privileges to to reorder the content type %contenttype%'
-    too_many_documents: 'The content type %contenttype% have to much documents (%total%) to be reorder all at once'
-    issue_with_document: 'It was impossible to reorder the document ems://object:%contenttype%:%ouuid%: %error_message%'
-    reordered: 'The content type %contenttype%''s documents have been reordered'
-  environment:
-    rebuild_unknown_option: 'Impossible to rebuild the environment %environment% due to unknown option "%option%"'
-    alia_missing: 'The alias for the environment %environment% is missing, consider to rebuild a brand new alias'
-    updated: 'The environment %environment% has been updated'
-    reordered: 'The environments have been reordered'
-    created: 'The environment %environment% has been created'
-    deleted: 'The environment %environment% has been deleted'
-    is_default: 'The environment %environment% is used as default environment for at least one content type'
-    not_empty: 'The environment %environment% is not empty'
-    alias_not_found: 'Alias %alias% not found'
-    alias_removed: 'The alias %alias% has been removed'
-    alias_attached: 'The alias %alias% has been attached'
-    cant_attach_xti_alias_to_environment: 'Can''t attach %alias% as it''s an alias with multiple indexes'
-    aligned: 'Environment %environment% and %with_environment% are aligned for those content types'
-    wrong_ouuid: 'Malformed OUUID %ouuid%'
-    dont_have_publish_role: 'You don''t have enough privileges to publish "%contenttype%" documents'
-    cant_align_default_environment: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% cant''t be published in %environment% has it''s  the %contenttype% default environment'
-  job:
-    prepared: 'A job ems://job:%job_id% has been prepared (%command%)'
-  user:
-    api_key: 'New API key for the user %user_display_name%: %api_key%'
-    locked: 'The user %user_display_name% has been locked'
-    unlocked: 'The user %user_display_name% has been unlocked'
-    disabled: 'The user %user_display_name% has been disabled'
-    enabled: 'The user %user_display_name% has been enabled'
-    deleted: 'The user %user_display_name% has been deleted'
-    updated: 'The user %user_display_name% has been updated'
-  reindex:
-    revision:
-      error: 'En error occurred while indexing the document ems://object:%contenttype%:%ouuid%'
-      deleted_but_referenced: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is marked as deleted but is still  referenced in %environment%'
-  file:
-    upload_error: 'Error during file upload: %error_message%'
-  contenttype:
-    action_not_found: 'Action not found on the content type %contenttype%'
-    mapping:
-      not_found: 'Content type %contenttype%''s mapping not found'
-    not_found: 'Content type %contenttype% not found'
-    field:
-      reordered: 'The the subfields of the field %field_name% have been reordered'
-      deleted: 'The field %field_name% has been deleted'
-      name_mandatory: 'The field name is mandatory'
-      name_not_valid: 'The field is not valid : (format: %field_format%)'
-      added: 'A field %field_name% has been added'
-    subfield:
-      name_mandatory: 'The subfield name is mandatory'
-      name_not_valid: 'The subfield is not valid : (format: %field_format%)'
-      added: 'A subfield %field_name% has been added'
-    unreferenced_not_found: 'Unreferenced content type not found'
-    referenced: 'The content type %contenttype% has been referenced'
-    reordered: 'Content types have been reordered'
-    created_failed: 'Some required fields are missing'
-    dirty: 'The content type %contenttype% is dirty (its mapping might be out-of date), try to update its mapping'
-    deleted: 'The content type %contenttype% has been deleted'
-    created: 'The content type %contenttype% has been created'
-    updated: 'The content type %contenttype% has been updated'
-  analyzer:
-    deleted: 'The analyzer %analyzer_name% has been deleted'
-    created: 'The analyzer %analyzer_name% has been created'
-    updated: 'The analyzer %analyzer_name% has been updated'
-  view:
-    keywords:
-      warning:
-        bucket_not_found: 'Bucket %bucketPath% not found'
-    calendar:
-      from_date_is_missing: 'From date is missing!'
-      document_not_found: 'The document ems://object:%contenttype%:%ouuid% is missing'
-    created: 'A new view %view_name% has been created'
-    updated: 'A new view %view_name% has been updated'
-    deleted: 'A new view %view_name% has been deleted'
-    criteria:
-      not_found: 'Criteria not found for the field %field_name%'
-      too_many_criteria: 'Too many criteria found (%total%). There is something wrong with this combination of criteria!: %message%'
-      added: 'A criteria has been added for field %field_name% with value %field_data%'
-      already_exists: 'A criteria already exist for field %field_name% with value %field_data%'
-      removed: 'A criteria has been removed for field %field_name% with value %field_data%'
-      already_missing: 'A criteria is already missing for field %field_name% with value %field_data%'
-      new_criteria: 'A new criteria has been created for %target_field_name%:%target_field_data%'
-      locked_revision: 'Impossible to update the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% as the revision is locked by %locked_by%'
-      update_privilege_issue: 'You are not authorized to update the document ems://object:%contenttype%:%ouuid%'
-      document_key_not_found: 'Document reference "%document_reference%" not found for the document ems://object:%contenttype%:%ouuid%'
-      update_not_authorized: 'You don''t have enough privileges to use this view to updates criterion'
-      field_not_found: 'Field path %field_path% not found'
-      draft_in_progress: '{0} A draft is in progress for the document ems://object:%contenttype%:%ouuid%, it''s not possible to update it|{1} There is one drafts in progress. You won’t be able to update it from here.|]1,Inf[ There are %count% drafts in progress. You won’t be able to update them from here.'
-    not_found: 'View %view_id% not found'
+      change_owner: "Change owner"
+      edit_revision: "Edit to revision"
+      go_revision: "Go to revision"
+    column:
+      actions: Actions
+      assignee: Assignee
+      deadline: Deadline
+      label: Document
+      owner: Owner
+      status: Status
+      title: Task
+    tab:
+      manager: "All tasks"
+      owner: "Created tasks"
+      user: "Assigned to me"
+  delete:
+    submit: "Delete task"
+    success: "Task \"%title%\" successfully deleted."
+    title: "Deleted task : %title%"
+  error:
+    ajax: "Error: something went wrong!"
+  field:
+    assignee: Assignee
+    deadline: Deadline
+    description: Description
+    title: Title
+  finished:
+    hide: "Hide finished tasks (%number%)"
+    show: "Show finished tasks (%number%)"
+  for: for
+  history: History
+  in_progress: "This task is "
+  info:
+    change_order: "Change task order"
+    empty: "No tasks for this document"
+    locked: "Revision locked by %user% until %time%"
+  mail:
+    approved: "Approved task \"%title%\" for \"%document%\""
+    assignee_changed: "Assignee changed task \"%title%\" for \"%document%\""
+    completed: "Ready for validation, task \"%title%\" for \"%document%\""
+    created: "New task \"%title%\" for \"%document%\""
+    deleted: "Deleted task \"%title%\" for \"%document%\""
+    rejected: "Rejected task \"%title%\" for \"%document%\""
+    updated: "Update task \"%title%\" for \"%document%\""
+  status:
+    approved: Approved
+    completed: Completed
+    history:
+      approved: "%user% approved the task"
+      completed: "%user% completed the task"
+      created: "%user% created the task"
+      planned: "%user% planned the task"
+      progress: "The task became active for %assignee%"
+      rejected: "%user% rejected the task"
+      updated: "%user% updated the task"
+    planned: Planned
+    progress: "In progress"
+    rejected: Rejected
+  tab_task: Task
+  tab_tasks: Tasks
+  title: Tasks
+  update:
+    submit: "Edit task"
+    success: "Task \"%title%\" successfully updated."
+    tab:
+      history: History
+      info: Information
+    title: "Edit task : %title%"
+  validation:
+    approve: Approve
+    comment: "Comment for validation"
+    done: Finish
+    reject: Reject
+    request: "Send for validation"
+uploaded-file:
   action:
-    added: 'A new action %action_name% has been created'
-    updated: 'The action %action_name% has been updated'
-    deleted: 'The action %action_name% has been deleted'
-    twig:
-      error: 'Error during the Twig generation of ems://template:%template_id% with the error message: %error_message%'
-  error: 'This page/action has encountered an error: %error_message%'
-  data:
-    job:
-      done: 'The job %job_id% is done'
-      initialize_failed: 'A job %template_name% has failed for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
-      initialized: 'A job %template_name% has been initialized for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
-      started: 'A job %template_name% has been started for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
-    document:
-      copy: 'The content of the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been copied into the clipboard'
-      paste: 'Clipboard''s content has been paste in the document ems://object:%contenttype%:%ouuid%'
-      duplicated: 'The document ems://object:%contenttype%:%ouuid% has been used to initiate a new document'
-      cant_duplicate_when_waiting_ouuid: 'It''s impossible to duplicate the document ems://object:%contenttype%:%ouuid% has the content type %contenttype% requests first an OUUID'
-      compare: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id% of the document ems://object:%compare_contenttype%:%compare_ouuid%'
-    revision:
-      add_from_json_error: 'It was not possible to initiate a new %contenttype% document due to an internal error'
-      init_document_from_array: 'It was not possible to initiate a new %contenttype% document due to an internal error'
-      load_from_auto_save: 'Data were loaded from an auto-saved version for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
-      auto_save_off_with_auto_publish: 'The auto-save has been disabled as the auto-publish is enabled for the content type %contenttype%. Press Ctrl+S (Cmd+S) in order to publish in %environment%'
-      can_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is'
-      only_super_can_finalize_an_archive: 'Only a super user can finalize an archived revision'
-      can_finalized_error: 'The document ems://object:%contenttype%:%ouuid% can''t be finalized due to an error: %error_message%'
-      can_finalized_as_invalid: '{1} The document ems://object:%contenttype%:%ouuid% can''t be finalized has there is one error |]1,Inf[ The document ems://object:%contenttype%:%ouuid% can''t be finalized as there is %count% errors'
-      can_finalized_as_pending_auto_save: 'The document ems://object:%contenttype%:%ouuid% can''t be finalized as an auto save is pending'
-      not_completed_request: 'Incomplete request! It''s not possible to save the document ems://object:%contenttype%:%ouuid%. Please check your PHP/Web configuration (i.e.: max_input_vars in php.ini)'
-      ajax_update_on_finalized: 'It''s impossible to save the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has this revision is already finalized'
-      auto_publish_rollback: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been silently published back in %environment%'
-      reindex_failed_in: 'The document ems://object:%contenttype%:%ouuid% has encountered an exception during its reindexing in %environment%'
-      new_draft_from_revision: 'A new draft has been initiated, from the revision ems://revision:%revision_id%, for the document ems://object:%contenttype%:%ouuid%'
-      compare_revision_not_found: 'Impossible to compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision id %compare_revision_id% as this revision does not exists'
-      compare_more_recent: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id%, wich one is more recent'
-      compare: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id%'
-      reindex_failed: 'The document ems://object:%contenttype%:%ouuid% has encountered an exception during its reindexing %error_message%'
-      cant_delete_has_published: 'The document ems://object:%contenttype%:%ouuid% can''t be deleted as the revision ems://revision:%revision_id% is published in %published_in%'
-      compare_beta: 'The comparaison tools between two revisions is a beta functionality'
-      reindex: 'The revision ems://revision:%revision_id% has been reindex in %environment% for the document ems://object:%contenttype%:%ouuid%'
-      finalized: 'The revision ems://revision:%revision_id% has been finalized in %environment% for the document ems://object:%contenttype%:%ouuid%'
-      not_found_in_environment: 'It''s impossible to identify a revision for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
-data:
-  custom-view:
-    pagetitle: 'View %name% of the %contentType% "%label%" as indexed in %environment%'
-field_type:
-  json_menu_editor:
-    item_label_placeholder: 'Define a label for this entry'
-    add_item: 'Add a new item %singular%'
-    add_node: 'Add a new node %singular%'
-    delete_item: 'Delete this entry'
-    collapse_button: 'Expand/Collapse'
-    collapse_all_button: 'Expand/Collapse all'
-    move_item: 'Move'
-    add: 'Add'
-    edit: 'Edit'
-
-form_submissions:
-    title: Form Submissions
-    overview: Overview
-    download: Download
-    process:
-      button: Delete Submission
-      confirm_title: Confirm deletion
-      success: Form submission with id "%id%" has been deleted!
-      error: Form deletion failed!
-      confirm_body: |
-          After confirmation you can NOT download the form data anymore!
-          Are you sure, you want to delete the form submission?
-
+    download_selected: "Download selected"
+    soft-delete: "Delete"
+  index:
+    column:
+      available: Available
+      created: "Uploaded at"
+      head_last: "Last seen"
+      hidden: Hidden
+      modified: "Last modified"
+      name: "File name"
+      sha1: "Hash signature"
+      size: "File size"
+      type: "Mime type"
+      username: By
+    title: "Uploaded Files"
+  menu: Menu
+  soft-delete-confirm: "Are you sure you want to delete this file?"
+  uploaded-file:
+    download_selected: "Download selected"
+    soft_delete_selected: "Delete selected"
+user:
+  action:
+    delete: Delete
+    delete_confirm: "Delete this user?"
+    disable: Disable
+    disable_confirm: "Disable this user?"
+    edit: Edit
+    generate_api: "API key"
+    generate_api_confirm: "Generate API key for this user?"
+    switch: "Switch user"
+  index:
+    column:
+      circles: Circles
+      displayname: "Display name"
+      email: E-mail
+      email_notification: "E-mail notifications"
+      enabled: Enabled
+      id: "User ID"
+      lastLogin: "Last Login"
+      roles: Roles
+      username: Username
 view:
-  form:
-    fields:
-      asset:
-        info-modal-button: Info
-        init-upload: Upload is starting
-        upload-file: Upload file
-        upload-files: Upload files
-        drag-n-drop-files: Drag and drop your files here
-        drag-n-drop-file: Drag and drop your file here
-        view-button: 'View'
-        remove-button: 'Remove'
-        move-button: 'Move'
-        file-hash: 'File''s hash'
-        file-info: 'File''s information'
-        close-modal: 'Close'
-        preview: 'File preview of field %label%'
-        clear-button: 'Clear'
+  action:
+    add:
+      title: "Add a new action to %contentType%"
+    edit:
+      title: "Edit the action %action% for %contentType%"
+    index:
+      add:
+        title: "Add an action"
+      title: "%contentType%'s actions"
+  breadcrumb:
+    wysiwyg-options: "WYSIWYG Options"
+  contenttype:
+    reorder_item:
+      edit_field_button: "Edit %name%"
+      edit_main_container_button: "Edit the main container"
+  data:
+    json-menu-nested-json-preview:
+      field-type-not-found: "The type definition associated to this item is missing (probably deleted)."
   elements:
     side-menu:
       chanel-admin:
-        index-link: 'Channels'
+        index-link: Channels
       query_search:
-        index-link: 'QuerySearch'
-  icon:
-    class:
-      channel: 'fa fa-road'
-      query_search : 'fa fa-list-alt'
-  macros:
-    data-field-type:
-      menu-option-button: 'View'
-      modal-close-button: 'Close'
-  data:
-    json-menu-nested-json-preview:
-      field-type-not-found: 'The type definition associated to this item is missing (probably deleted).'
-  menu:
-    breadcrumb:
-      content-types: 'Content types'
-  action:
+        index-link: QuerySearch
+  environment:
     index:
-      title: '%contentType%''s actions'
-      add:
-        title: 'Add an action'
-    edit:
-      title: 'Edit the action %action% for %contentType%'
-    add:
-      title: 'Add a new action to %contentType%'
+      action_label: Action
+      add_alias_button: "Add alias"
+      add_environment_button: "Add Environment"
+      add_managed_alias_button: "Add managed alias"
+      alias_label: Alias
+      all_indexes_are_referenced: "All aliases are referenced"
+      attach_alias_confirm: "Attache the alias %name%?"
+      attach_button: Atach
+      close_modal_button: Close
+      confirm_delete: "Do you want to delete %name%?"
+      confirm_dettach: "Do you want to detach %name%?"
+      count_label: "#"
+      delete_alias_confirm: "Do you want to delete the alias %name%?"
+      delete_all_button: "Delete all"
+      delete_all_ophan_indexes_confirm: "Do you confirm?"
+      delete_button: Delete
+      delete_index_button: Delete
+      delete_index_confirm: "Are you sure to delete the index %name%?"
+      delete_managed_environemnt_button: Delete
+      dettach_button: Detach
+      edit_button: Edit
+      environment_breadcrumb: Environments
+      environment_index_count: "{0} There are no index|{1} There is one index|]1,Inf[ There are %count% indexes"
+      environment_indexes_modal_title: Indexes
+      external_environments_title: "External environments"
+      index_breadcrumb: List
+      indexes_label: Indexes
+      label: Label
+      local_environment_label: "Local Environments"
+      managed_alias_title: "Managed alias"
+      name_label: Name
+      no_environment_yet: "There is no environment defined yet."
+      no_external_environment_yet: "There is no external environment defined yet."
+      orphan_index_title: "Orphan indexes"
+      pagetitle: "All Environments"
+      rebuild_button: Rebuild
+      reorder_button: Reorder
+      reorder_title: Reorder
+      there_is_no_orphan_index: "There is no orphan indexes"
+      title: "All Environments"
+      total_in_ems: "Total in ems"
+      total_indexed_label: "Total in ES"
+      total_label: Total
+      total_mark_has_deleted: "Total deleted"
+      unreferenced_aliases_title: "Unreferenced aliases"
+      view_button: View
+  form:
+    fields:
+      asset:
+        clear-button: Clear
+        close-modal: Close
+        drag-n-drop-file: "Drag and drop your file here"
+        drag-n-drop-files: "Drag and drop your files here"
+        file-hash: "File's hash"
+        file-info: "File's information"
+        info-modal-button: Info
+        init-upload: "Upload is starting"
+        move-button: Move
+        preview: "File preview of field %label%"
+        remove-button: Remove
+        upload-file: "Upload file"
+        upload-files: "Upload files"
+        view-button: View
   form-submission:
     index:
-      title: 'Form Submissions Overview'
+      title: "Form Submissions Overview"
+  icon:
+    class:
+      channel: "fa fa-road"
+      query_search: "fa fa-list-alt"
+  macros:
+    data-field-type:
+      macros:
+        data-field-type:
+          collection_added_items: "{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added"
+          collection_removed_items: "{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed"
+      menu-option-button: View
+      modal-close-button: Close
+  menu:
+    breadcrumb:
+      content-types: "Content types"
   user:
     index:
-      title: 'User list'
-  breadcrumb:
-    wysiwyg-options: 'WYSIWYG Options'
-
-task:
-  title: 'Tasks'
-  tab_task: 'Task'
-  tab_tasks: 'Tasks'
-  dashboard:
-      tab:
-        user: 'Assigned to me'
-        owner: 'Created tasks'
-        manager: 'All tasks'
-      action:
-        go_revision: 'Go to revision'
-        edit_revision: 'Edit to revision'
-        change_owner: 'Change owner'
-      column:
-        title: 'Task'
-        label: 'Document'
-        status: 'Status'
-        assignee: 'Assignee'
-        owner: 'Owner'
-        deadline: 'Deadline'
-        actions: 'Actions'
-  status:
-    progress: 'In progress'
-    planned: 'Planned'
-    completed: 'Completed'
-    rejected: 'Rejected'
-    approved: 'Approved'
-    history:
-       created: '%user% created the task'
-       updated: '%user% updated the task'
-       progress: 'The task became active for %assignee%'
-       planned: '%user% planned the task'
-       completed: '%user% completed the task'
-       rejected: '%user% rejected the task'
-       approved: '%user% approved the task'
-  info:
-    empty: 'No tasks for this document'
-    change_order: 'Change task order'
-    locked: 'Revision locked by %user% until %time%'
-  assigned_to: 'Assigned to '
-  in_progress: 'This task is '
-  for: 'for'
-  history: 'History'
-  validation:
-     comment: 'Comment for validation'
-     request: 'Send for validation'
-     done: 'Finish'
-     approve: 'Approve'
-     reject: 'Reject'
-  error:
-    ajax: 'Error: something went wrong!'
-  field:
-    title: 'Title'
-    deadline: 'Deadline'
-    assignee: 'Assignee'
-    description: 'Description'
-  create:
-    button: 'Add a task'
-    title: 'Add a new task'
-    submit: 'Create task'
-    success: 'Task "%title%" successfully created.'
-  update:
-    title: 'Edit task : %title%'
-    submit: 'Edit task'
-    success: 'Task "%title%" successfully updated.'
-    tab:
-      info: 'Information'
-      history: 'History'
-  delete:
-    title: 'Deleted task : %title%'
-    submit: 'Delete task'
-    success: 'Task "%title%" successfully deleted.'
-  change_owner:
-    title: 'Change owner for %revision%'
-    change: 'New owner'
-    current: 'The current ower for document "%revision%" is "%owner%"'
-    missing: 'The document "%revision%" has no owner'
-    submit: 'Change'
-    success: 'Successfully changed ownership!'
-  finished:
-    show: 'Show finished tasks (%number%)'
-    hide: 'Hide finished tasks (%number%)'
-  mail:
-    created: 'New task "%title%" for "%document%"'
-    assignee_changed: 'Assignee changed task "%title%" for "%document%"'
-    deleted: 'Deleted task "%title%" for "%document%"'
-    updated: 'Update task "%title%" for "%document%"'
-    completed: 'Ready for validation, task "%title%" for "%document%"'
-    rejected: 'Rejected task "%title%" for "%document%"'
-    approved: 'Approved task "%title%" for "%document%"'
+      title: "User list"
+views:
+  elasticsearch:
+    export-search:
+      title: "Export documents"
+    search:
+      error_title: "Error with the search result"
+      pagetitle: Search
+      subtitle: "%total%"
+      title: "Search engine: %total% results"
+wysiwyg:
+  invalid_config_format: "Format not valid: %msg%"

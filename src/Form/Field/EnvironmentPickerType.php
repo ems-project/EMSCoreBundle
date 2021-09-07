@@ -66,7 +66,7 @@ class EnvironmentPickerType extends ChoiceType
                 $dataFieldType = $this->choices[$index];
 
                 return [
-                        'data-content' => '<span class="text-'.$dataFieldType->getColor().'"><i class="fa fa-square"></i>&nbsp;&nbsp;'.$dataFieldType->getName().'</span>',
+                        'data-content' => '<span class="text-'.$dataFieldType->getColor().'"><i class="fa fa-square"></i>&nbsp;&nbsp;'.$dataFieldType->getLabel().'</span>',
                 ];
             },
             'choice_value' => function ($value) {

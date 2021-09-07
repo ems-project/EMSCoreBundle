@@ -76,7 +76,7 @@
 								<td>{{ contentType.name }}</td>
 								<td>{{ contentType.singularName }}</td>
 								<td>{{ contentType.pluralName }}</td>
-								<td>{{ contentType.environment.name|humanize }}</td>
+								<td>{{ contentType.environment.label }}</td>
 								<td class="text-center">{% if contentType.dirty %}<i class="fa fa-warning"></i>{% endif %}</td>
 								<td class="text-center">{% if contentType.active %}<i class="fa fa-check"></i>{% endif %}</td>
 								<td>

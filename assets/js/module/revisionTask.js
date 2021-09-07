@@ -272,9 +272,9 @@ export default class RevisionTask {
                 this.tasksClear();
                 ajaxJsonPost(btnReorderSave.dataset.url, JSON.stringify({taskIds: taskIds}), (json, request) => {
                     if (400 === request.status) { location.reload(); }
-                    if (200 !== request.status) { return; }
-
-                    finishReorder();
+                    if (202 === request.status) {
+                        finishReorder();
+                    }
                 })
             }
         };

@@ -310,6 +310,25 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
+     * @return iterable|Revision[]
+     */
+    public function findAllDraftsByContentTypeName(string $contentTypeName): iterable
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->join('r.contentType', 'c')
+            ->andWhere($qb->expr()->isNull('r.endTime'))
+            ->andWhere($qb->expr()->eq('r.draft', $qb->expr()->literal(true)))
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
+            ->andWhere($qb->expr()->eq('c.name', ':content_type_name'))
+            ->setParameter('content_type_name', $contentTypeName);
+
+        foreach ($qb->getQuery()->iterate() as $row) {
+            yield $row[0];
+        }
+    }
+
+    /**
      * @param string $source
      * @param string $target
      * @param array  $contentTypes

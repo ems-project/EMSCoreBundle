@@ -55,6 +55,14 @@ class RevisionService
         return $revision instanceof Revision ? $revision : null;
     }
 
+    /**
+     * @return iterable|Revision[]
+     */
+    public function findAllDraftsByContentTypeName(string $contentTypeName): iterable
+    {
+        return $this->revisionRepository->findAllDraftsByContentTypeName($contentTypeName);
+    }
+
     public function get(string $ouuid, string $contentType, ?\DateTimeInterface $dateTime = null): ?Revision
     {
         return $this->revisionRepository->findRevision($ouuid, $contentType, $dateTime);

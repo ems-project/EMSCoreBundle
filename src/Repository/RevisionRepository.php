@@ -319,6 +319,7 @@ class RevisionRepository extends EntityRepository
             ->join('r.contentType', 'c')
             ->andWhere($qb->expr()->isNull('r.endTime'))
             ->andWhere($qb->expr()->eq('r.draft', $qb->expr()->literal(true)))
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->eq('c.name', ':content_type_name'))
             ->setParameter('content_type_name', $contentTypeName);
 

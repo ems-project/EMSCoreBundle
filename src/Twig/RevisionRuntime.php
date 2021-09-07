@@ -12,8 +12,7 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 class RevisionRuntime implements RuntimeExtensionInterface
 {
-    /** @var RevisionService */
-    private $revisionService;
+    private RevisionService $revisionService;
 
     public function __construct(RevisionService $revisionService)
     {
@@ -30,6 +29,14 @@ class RevisionRuntime implements RuntimeExtensionInterface
         $revision = $this->revisionService->getCurrentRevisionByOuuidAndContentType($ouuid, $contentTypeName);
 
         return $revision ? $revision->getId() : null;
+    }
+
+    /**
+     * @return iterable|Revision[]
+     */
+    public function getRevisionsInDraft(string $contentTypeName): iterable
+    {
+        return $this->revisionService->findAllDraftsByContentTypeName($contentTypeName);
     }
 
     /**

@@ -63,11 +63,15 @@ command:
 contenttype:
   action:
     update_from_json: "Update from JSON"
-controller.environment.index.reorder_submit_button: Reorder
+controller:
+  environment:
+    index:
+      reorder_submit_button: Reorder
 data:
   custom-view:
     pagetitle: "View %name% of the %contentType% \"%label%\" as indexed in %environment%"
-data.edit_revision.save_draft: "Save draft"
+  edit_revision:
+    save_draft: "Save draft"
 field_type:
   json_menu_editor:
     add: Add
@@ -81,8 +85,9 @@ field_type:
     move_item: Move
 form:
   analyzer:
-    char_filter: "Char Filter"
-    char_filter.html_strip: "HTML Strip"
+    char_filter:
+      label: "Char Filter"
+      html_strip: "HTML Strip"
     filter: Filter
     filter.built_in: Built-in
     filter.built_in.asciifolding: "ASCII Folding"
@@ -801,8 +806,9 @@ view:
   macros:
     data-field-type:
       macros:
-        data-field-type.collection_added_items: "{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added"
-        data-field-type.collection_removed_items: "{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed"
+        data-field-type:
+          collection_added_items: "{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added"
+          collection_removed_items: "{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed"
       menu-option-button: View
       modal-close-button: Close
   menu:

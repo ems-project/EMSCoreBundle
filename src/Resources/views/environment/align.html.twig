@@ -114,7 +114,7 @@
                     <input class="item-to-align" type="checkbox" name="compare_environment_form[item_to_align][{{ minrev[1] }}]" value="{{ item.content_type_name }}:{{ item.ouuid }}">
                   {% endif %}
               </td>
-              <td class="text-{{ item.color }}"><i class="{% if item.icon %}{{item.icon}}{% else %}fa fa-book{% endif %}"></i> {{ item.content_type_name|humanize }}</td>
+              <td class="text-{{ item.color }}"><i class="{% if item.icon %}{{item.icon}}{% else %}fa fa-book{% endif %}"></i> {{ item.content_type_singular_name }}</td>
               <td><span title='{{ item.ouuid }}'>{{ item.item_labelField }}</span></td>
               <td>
               {% if defaultEnv %}

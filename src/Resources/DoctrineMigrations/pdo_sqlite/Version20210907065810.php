@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Application\Migrations;
 
@@ -10,9 +12,9 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20210907065810 extends AbstractMigration
 {
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP INDEX IDX_97601F831A445520');
         $this->addSql('CREATE TEMPORARY TABLE __temp__template AS SELECT id, content_type_id, created, modified, name, icon, body, header, edit_with_wysiwyg, render_option, orderKey, accumulate_in_one_file, preview, mime_type, filename, extension, active, role, role_to, role_cc, response_template, email_content_type, orientation, size, public, allow_origin, disposition, circles_to FROM template');
@@ -165,9 +167,9 @@ final class Version20210907065810 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_1DF055903E3A94 ON environment_query_search (environment_id)');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP INDEX IDX_8AF9B66CA76ED395');
         $this->addSql('DROP INDEX auth_tokens_value_unique');

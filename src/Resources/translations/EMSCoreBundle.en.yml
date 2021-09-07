@@ -86,31 +86,34 @@ field_type:
 form:
   analyzer:
     char_filter:
-      label: "Char Filter"
       html_strip: "HTML Strip"
-    filter: Filter
-    filter.built_in: Built-in
-    filter.built_in.asciifolding: "ASCII Folding"
-    filter.built_in.edge_n_gram: "Edge NGram"
-    filter.built_in.flatten_graph: "Flatten graph"
-    filter.built_in.lowercase: Lowercase
-    filter.built_in.n_gram: NGram
-    filter.built_in.porter_stem: "Porter Stem"
-    filter.built_in.standard: Standard
-    filter.built_in.stop: Stop
-    filter.built_in.uppercase: Uppercase
-    filter.built_in.word_delimiter: "Word Delimiter"
-    filter.customized: Customized
-    flags: Flags
-    flags.canon_eq: CANON_EQ
-    flags.case_insensitive: CASE_INSENSITIVE
-    flags.comments: COMMENTS
-    flags.dotall: DOTALL
-    flags.literal: LITERAL
-    flags.multiline: MULTILINE
-    flags.unicode_case: UNICODE_CASE
-    flags.unicode_character_class: UNICODE_CHARACTER_CLASS
-    flags.unix_lines: UNIX_LINES
+      label: "Char Filter"
+    filter:
+      built_in:
+        asciifolding: "ASCII Folding"
+        edge_n_gram: "Edge NGram"
+        flatten_graph: "Flatten graph"
+        label: Built-in
+        lowercase: Lowercase
+        n_gram: NGram
+        porter_stem: "Porter Stem"
+        standard: Standard
+        stop: Stop
+        uppercase: Uppercase
+        word_delimiter: "Word Delimiter"
+      customized: Customized
+      label: Filter
+    flags:
+      canon_eq: CANON_EQ
+      case_insensitive: CASE_INSENSITIVE
+      comments: COMMENTS
+      dotall: DOTALL
+      label: Flags
+      literal: LITERAL
+      multiline: MULTILINE
+      unicode_case: UNICODE_CASE
+      unicode_character_class: UNICODE_CHARACTER_CLASS
+      unix_lines: UNIX_LINES
     label: Label
     lowercase: Lowercase
     max_output_size: "Max Output Size"
@@ -120,60 +123,63 @@ form:
     position_increment_gap: "Position Increment Gap"
     save: Save
     separator: Separator
-    stopwords: Stopwords
-    stopwords._arabic_: Arabic
-    stopwords._armenian_: Armenian
-    stopwords._basque_: Basque
-    stopwords._brazilian_: Brazilian
-    stopwords._bulgarian_: Bulgarian
-    stopwords._catalan_: Catalan
-    stopwords._cjk_: CJK
-    stopwords._czech_: Czech
-    stopwords._danish_: Danish
-    stopwords._dutch_: Dutch
-    stopwords._english_: English
-    stopwords._finnish_: Finnish
-    stopwords._french_: French
-    stopwords._galician_: Galician
-    stopwords._german_: German
-    stopwords._greek_: Greek
-    stopwords._hindi_: Hindi
-    stopwords._hungarian_: Hungarian
-    stopwords._indonesian_: Indonesian
-    stopwords._irish_: Irish
-    stopwords._italian_: Italian
-    stopwords._latvian_: Latvian
-    stopwords._lithuanian_: Lithuanian
-    stopwords._none_: None
-    stopwords._norwegian_: Norwegian
-    stopwords._persian_: Persian
-    stopwords._portuguese_: Portuguese
-    stopwords._romanian_: Romanian
-    stopwords._russian_: Russian
-    stopwords._sorani_: Sorani
-    stopwords._spanish_: Spanish
-    stopwords._swedish_: Swedish
-    stopwords._thai_: Thai
-    stopwords._turkish_: Turkish
-    tokenizer: Tokenizer
-    tokenizer.classic: Classic
-    tokenizer.edge_ngram: "Edge N-Gram"
-    tokenizer.keyword: Keyword
-    tokenizer.letter: Letter
-    tokenizer.lowercase: Lowercase
-    tokenizer.ngram: N-Gram
-    tokenizer.path_hierarchy: Path
-    tokenizer.pattern: Pattern
-    tokenizer.standard: Standard
-    tokenizer.thai: Thai
-    tokenizer.uax_url_email: "UAX URL Email"
-    tokenizer.whitespace: Whitespace
-    type: Type
-    type.custom: Custom
-    type.fingerprint: Fingerprint
-    type.pattern: Pattern
-    type.standard: Standard
-    type.stop: Stop
+    stopwords:
+      _arabic_: Arabic
+      _armenian_: Armenian
+      _basque_: Basque
+      _brazilian_: Brazilian
+      _bulgarian_: Bulgarian
+      _catalan_: Catalan
+      _cjk_: CJK
+      _czech_: Czech
+      _danish_: Danish
+      _dutch_: Dutch
+      _english_: English
+      _finnish_: Finnish
+      _french_: French
+      _galician_: Galician
+      _german_: German
+      _greek_: Greek
+      _hindi_: Hindi
+      _hungarian_: Hungarian
+      _indonesian_: Indonesian
+      _irish_: Irish
+      _italian_: Italian
+      _latvian_: Latvian
+      _lithuanian_: Lithuanian
+      _none_: None
+      _norwegian_: Norwegian
+      _persian_: Persian
+      _portuguese_: Portuguese
+      _romanian_: Romanian
+      _russian_: Russian
+      _sorani_: Sorani
+      _spanish_: Spanish
+      _swedish_: Swedish
+      _thai_: Thai
+      _turkish_: Turkish
+      label: Stopwords
+    tokenizer:
+      classic: Classic
+      edge_ngram: "Edge N-Gram"
+      keyword: Keyword
+      label: Tokenizer
+      letter: Letter
+      lowercase: Lowercase
+      ngram: N-Gram
+      path_hierarchy: Path
+      pattern: Pattern
+      standard: Standard
+      thai: Thai
+      uax_url_email: "UAX URL Email"
+      whitespace: Whitespace
+    type:
+      custom: Custom
+      fingerprint: Fingerprint
+      label: Type
+      pattern: Pattern
+      standard: Standard
+      stop: Stop
   contenttype:
     json_update:
       deleteExitingTemplates: "Delete existing templates"

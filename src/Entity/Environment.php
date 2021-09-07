@@ -674,7 +674,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
         return $this->label;
     }
 
-    public function setLabel(string $label): void
+    public function setLabel(?string $label): void
     {
         $this->label = $label;
     }

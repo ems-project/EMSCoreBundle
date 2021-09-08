@@ -12,8 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * DataField.
- *
+ * @implements \IteratorAggregate<DataField>
  * @Assert\Callback({"Vendor\Package\Validator", "validate"})
  */
 class DataField implements \ArrayAccess, \IteratorAggregate
@@ -671,13 +670,17 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this;
     }
 
-    /**
-     * Get fieldType.
-     *
-     * @return \EMS\CoreBundle\Entity\FieldType|null
-     */
-    public function getFieldType()
+    public function getFieldType(): ?FieldType
     {
+        return $this->fieldType;
+    }
+
+    public function giveFieldType(): FieldType
+    {
+        if (null === $this->fieldType) {
+            throw new \RuntimeException('Unexpected null filed type');
+        }
+
         return $this->fieldType;
     }
 

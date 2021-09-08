@@ -64,6 +64,10 @@ contenttype:
   action:
     update_from_json: "Update from JSON"
 controller:
+  revision:
+    edit-controller:
+      warning:
+        edit-draft: 'You are editing an already published revision, It''s safer to <a href="%path%" class="btn btn-primary"><span class="fa fa-pencil"></span> edit a draft</a>'
   environment:
     index:
       reorder_submit_button: Reorder

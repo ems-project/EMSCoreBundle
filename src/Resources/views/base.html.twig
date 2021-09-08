@@ -229,7 +229,7 @@
 	                <h4><i class="icon fa fa-info"></i> Info! </h4>
 	                {% for flash_message in notice %}
 					    <div class="flash-notice">
-					       {{ flash_message|raw }}
+					       {{ flash_message|ems_markdown }}
 					    </div>
 					{% endfor %}
 	            </div>
@@ -242,7 +242,7 @@
 	                <h4><i class="icon fa fa-warning"></i> Warning! </h4>
 	                {% for flash_message in warning %}
 					    <div class="flash-warning">
-					       {{ flash_message|raw }}
+					       {{ flash_message|ems_markdown }}
 					    </div>
 					{% endfor %}
 	            </div>
@@ -255,7 +255,7 @@
 	                <h4><i class="icon fa fa-ban"></i> Error! </h4>
 	                {% for flash_message in error %}
 					    <div class="flash-error">
-					       {{ flash_message|raw }}
+					       {{ flash_message|ems_markdown }}
 					    </div>
 					{% endfor %}
 	            </div>

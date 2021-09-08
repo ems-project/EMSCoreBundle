@@ -1,32 +1,21 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
-
-
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
 
 {% block title %}
 	{%- if revision.labelField -%}
-		Edit the {{ revision.contentType.singularName }}: "{{ revision.labelField }}"
-    {%- elseif revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) is defined -%}
-		Edit the {{ revision.contentType.singularName }}: "{{ attribute(revision.rawData, revision.contentType.labelField) }}"
-    {%- elseif revision.ouuid -%}
-		Edit the {{ revision.contentType.singularName }}: "{{ revision.ouuid }}"
+		{{ 'views.data.edit-revision-html.title'|trans({'%content-type%': revision.contentType.singularName, '%revision%': revision.labelField}) }}
+	{%- elseif revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) is defined -%}
+		{{ 'views.data.edit-revision-html.title'|trans({'%content-type%': revision.contentType.singularName, '%revision%': attribute(revision.rawData, revision.contentType.labelField) }) }}
+	{%- elseif revision.ouuid -%}
+		{{ 'views.data.edit-revision-html.title'|trans({'%content-type%': revision.contentType.singularName, '%revision%': attribute(revision.rawData, revision.ouuid) }) }}
 	{%- else -%}
-		{{ revision.contentType.singularName }}: new draft
+		{{ 'views.data.edit-revision-html.new-draft-title'|trans({'%content-type%': revision.contentType.singularName }) }}
 	{%- endif -%}
 {% endblock %}
 
-{% block pagetitle %}
-    {%- if revision.labelField -%}
-		Edit the {{ revision.contentType.singularName }}: "{{ revision.labelField }}"
-    {%- elseif revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) is defined -%}
-		Edit the {{ revision.contentType.singularName }}: "{{ attribute(revision.rawData, revision.contentType.labelField) }}"
-    {%- elseif revision.ouuid -%}
-		Edit the {{ revision.contentType.singularName }}: "{{ revision.ouuid }}"
-    {%- else -%}
-        {{ revision.contentType.singularName }}: new draft
-    {%- endif -%}
-{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
 
-{% block subtitle %}<small>Working area</small>{% endblock %}
+{% block subtitle %}<small>{{ 'views.data.edit-revision-html.subtitle'|trans }}</small>{% endblock %}
 
 
 {% block body %}
@@ -46,7 +35,6 @@
 
 	{%- set stylesSetsConfig = {} -%}
     {%- if stylesSets is defined %}
-		{#Add custom styles sets (e.g for bootstrap (responsive tables, ...))#}
         {%- for stylesSet in stylesSets -%}
 			{%- set stylesSetsConfig = stylesSetsConfig|merge([{
 				name: stylesSet.name,
@@ -80,16 +68,12 @@
 	<div class="box-header with-border">
 		<h3 class="box-title text-{{ revision.contentType.color }}"><i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %} "></i>&nbsp;&nbsp;&nbsp;{{ revision.contentType.singularName }}</h3>
 	</div>
-	<!-- /.box-header -->
-	<!-- form start -->
 		{{ form_start(form) }}
 		<div class="box-body">
     	    {{- form_errors(form) -}}
     	    {{- form_errors(form.data) -}}
-    	    
 			{{ form_widget(form.data) }}
 		</div>
-		<!-- /.box-body -->
 		<div class="box-footer">
 			<div class="btn-group">
 				{{ form_widget(form.save) }}
@@ -145,10 +129,6 @@
 			</div>
 		</div>
 		{{ form_end(form) }}
-		
-
-		
-		
 </div>
 
 {% if revision.draft %}

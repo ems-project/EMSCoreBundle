@@ -825,15 +825,6 @@ view:
     index:
       title: "User list"
 views:
-  data:
-    edit-revision-html:
-      version-modal:
-        close-label: Close
-      discard-draft-message: Modification made in this draft will be lost
-      publish-label: Publish in %environment%
-      discard-draft-label: Discart draft
-      cancel-message: Cancel non-saved modifications?
-      cancel-label: Cancel
   elements:
     object-views-button:
       corresponding-revision-icon-class: fa fa-archive

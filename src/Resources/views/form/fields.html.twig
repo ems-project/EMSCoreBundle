@@ -137,7 +137,7 @@
     	{%- if icon -%}
 			<span class="{{ icon }}"></span>&nbsp;
 		{% endif %}
-		{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}
+		{{ translation_domain is same as(false) ? label : label|trans(label_translation_parameters|default({}), translation_domain) }}
   	</button>
 {%- endblock submitems_widget -%}
 

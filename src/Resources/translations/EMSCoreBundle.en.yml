@@ -70,8 +70,6 @@ controller:
 data:
   custom-view:
     pagetitle: "View %name% of the %contentType% \"%label%\" as indexed in %environment%"
-  edit_revision:
-    save_draft: "Save draft"
 field_type:
   json_menu_editor:
     add: Add
@@ -210,6 +208,12 @@ form:
       environments: Environments
       label: Label
       name: Name
+    revision-type:
+      copy-label: Copy
+      paste-label: Paste
+      save-draft-label: Save
+      publish-label: Publish in %environment%
+      publish-version-tags-label: Tag & Publish in %environment%
   form_field:
     wysiwyg:
       content_css:
@@ -821,6 +825,15 @@ view:
     index:
       title: "User list"
 views:
+  data:
+    edit-revision-html:
+      version-modal:
+        close-label: Close
+      discard-draft-message: Modification made in this draft will be lost
+      publish-label: Publish in %environment%
+      discard-draft-label: Discart draft
+      cancel-message: Cancel non-saved modifications?
+      cancel-label: Cancel
   elements:
     object-views-button:
       corresponding-revision-icon-class: fa fa-archive

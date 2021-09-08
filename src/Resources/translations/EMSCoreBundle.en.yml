@@ -821,6 +821,17 @@ view:
     index:
       title: "User list"
 views:
+  elements:
+    object-views-button:
+      corresponding-revision-icon-class: fa fa-archive
+      corresponding-revision: Corresponding revision
+      action-dropdown-icon-class: fa fa-eye
+      action-dropdown-sr-only: Toggle dropdown of %environment%'s actions
+      copy-data: Copy data
+      copy-data-icon-class: fa fa-copy
+      raw-view: Raw view
+      raw-view-icon-class: fa fa-th
+      action-dropdown-label: Actions in %environment%
   elasticsearch:
     export-search:
       title: "Export documents"

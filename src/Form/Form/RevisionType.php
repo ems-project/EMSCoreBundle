@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
+use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
@@ -78,11 +79,11 @@ class RevisionType extends AbstractType
                 'raw_data' => $options['raw_data'],
                 'disabled_fields' => $contentType->getDisabledDataFields(),
         ])->add('save', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-save',
-                'label' => 'data.edit_revision.save_draft',
+            'label' => 'form.form.revision-type.save-draft-label',
+            'attr' => [
+                    'class' => 'btn-default btn-sm ',
+            ],
+            'icon' => 'fa fa-save',
         ]);
 
         $builder->get('data')
@@ -91,17 +92,19 @@ class RevisionType extends AbstractType
 
         if ($options['has_clipboard']) {
             $builder->add('paste', SubmitEmsType::class, [
-                    'attr' => [
-                            'class' => 'btn-primary btn-sm ',
-                    ],
-                    'icon' => 'fa fa-paste',
+                'label' => 'form.form.revision-type.paste-label',
+                'attr' => [
+                        'class' => 'btn-default btn-sm ',
+                ],
+                'icon' => 'fa fa-paste',
             ]);
         }
 
         if ($options['has_copy']) {
             $builder->add('copy', SubmitEmsType::class, [
+                    'label' => 'form.form.revision-type.copy-label',
                     'attr' => [
-                            'class' => 'btn-primary btn-sm ',
+                            'class' => 'btn-default btn-sm ',
                     ],
                     'icon' => 'fa fa-copy',
             ]);
@@ -114,23 +117,34 @@ class RevisionType extends AbstractType
             if (null !== $environment && null !== $contentType && $contentType->hasVersionTags()) {
                 $builder
                     ->add('publish_version_tags', ChoiceType::class, [
+                        'label' => 'form.form.revision-type.publish-version-tags-label',
                         'placeholder' => $revision->getOuuid() ? 'Silent' : null,
                         'choices' => \array_combine($contentType->getVersionTags(), $contentType->getVersionTags()),
                         'mapped' => false,
                         'required' => false,
+                        'label_translation_parameters' => [
+                            '%environment%' => $environment->getLabel(),
+                        ],
                     ])
                     ->add('publish_version', SubmitEmsType::class, [
                         'attr' => ['class' => 'btn-primary btn-sm'],
                         'icon' => 'glyphicon glyphicon-open',
-                        'label' => \sprintf('Publish in %s', $environment->getName()),
+                        'label' => 'form.form.revision-type.publish-label',
+                        'label_translation_parameters' => [
+                            '%environment%' => $environment->getLabel(),
+                        ],
                     ]);
-            } else {
+            } elseif (null !== $environment) {
                 $builder->add('publish', SubmitEmsType::class, [
+                    'translation_domain' => EMSCoreExtension::TRANS_DOMAIN,
+                    'label' => 'form.form.revision-type.publish-label',
+                    'label_translation_parameters' => [
+                        '%environment%' => $environment->getLabel(),
+                    ],
                     'attr' => [
                         'class' => 'btn-primary btn-sm ',
                     ],
                     'icon' => 'glyphicon glyphicon-open',
-                    'label' => 'Finalize draft',
                 ]);
             }
         }

@@ -1064,12 +1064,12 @@
 				<input type="file" class="file-uploader-input" {% if form.vars.disabled %}disabled="disabled"{% endif %} data-label="{{ 'view.form.fields.asset.upload-file'|trans|e('html_attr') }}">
 			</div>
 			<div class="btn-group">
-				<button type="button" class="btn btn-small btn-primary asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
+				<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
 				  	<i class="fa fa-info"></i>
 					{{ 'view.form.fields.asset.info-modal-button'|trans }}
 				</button>
-				<a href="{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}{{ ems_asset_path(form.vars.value) }}{% endif %}" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{ 'view.form.fields.asset.view-button'|trans }}"><i class="fa fa-eye">&nbsp;{{ 'view.form.fields.asset.view-button'|trans }}</i></a>
-				<a href="#" class="btn btn-small btn-primary clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{ 'view.form.fields.asset.clear-button'|trans }}"><i class="fa fa-remove"></i>&nbsp;{{ 'view.form.fields.asset.clear-button'|trans }}</a>
+				<a href="{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}{{ ems_asset_path(form.vars.value) }}{% endif %}" class="btn btn-small btn-default view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{ 'view.form.fields.asset.view-button'|trans }}"><i class="fa fa-eye">&nbsp;{{ 'view.form.fields.asset.view-button'|trans }}</i></a>
+				<a href="#" class="btn btn-small btn-default clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{ 'view.form.fields.asset.clear-button'|trans }}"><i class="fa fa-remove"></i>&nbsp;{{ 'view.form.fields.asset.clear-button'|trans }}</a>
 			</div>
 		{% endif %}
 	</div>
@@ -1103,12 +1103,12 @@
               <div class="modal-footer">
 				<div class="btn-group">
 					{% if form.vars.meta_fields %}
-						<button type="button" class="btn btn-small btn-primary extract-file-info" >
+						<button type="button" class="btn btn-small btn-default extract-file-info" >
 							<i class="fa fa-bolt"></i>
 							{{ 'Extract content'|trans }}
 						</button>
 					{% endif %}
-                    <button type="button" class="btn btn-small btn-primary " data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+                    <button type="button" class="btn btn-small btn-default " data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
                 </div>
               </div>
             </div>
@@ -1146,12 +1146,12 @@
 			<input type="file" class="file-uploader-input">
 		</div>
 		<div class="btn-group">
-			<button type="button" class="btn btn-small btn-primary asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
+			<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
               <i class="fa fa-info"></i>
               {{ 'Info'|trans }}
             </button>
-			<a href="#" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
-			<a href="#" class="btn btn-small btn-primary clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{'Clear'|trans}}"><i class="fa fa-remove"></i>&nbsp;{{'Clear'|trans}}</a>
+			<a href="#" class="btn btn-small btn-default view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
+			<a href="#" class="btn btn-small btn-default clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{'Clear'|trans}}"><i class="fa fa-remove"></i>&nbsp;{{'Clear'|trans}}</a>
 		</div>
 	</div>
 </div>

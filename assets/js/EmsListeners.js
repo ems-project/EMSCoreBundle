@@ -437,6 +437,7 @@ export default class EmsListeners {
                 'showRemove': false,
                 'showCancel': false,
                 'showClose': false,
+                'browseClass': 'btn btn-default',
                 'browseIcon': '<i class="fa fa-upload"></i>&nbsp;',
                 'browseLabel': browseLabel
             });

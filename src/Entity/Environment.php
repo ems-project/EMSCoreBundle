@@ -396,12 +396,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Get managed.
-     *
-     * @return bool
-     */
-    public function getManaged()
+    public function getManaged(): bool
     {
         return $this->managed;
     }

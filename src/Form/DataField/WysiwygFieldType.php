@@ -154,7 +154,7 @@ class WysiwygFieldType extends DataFieldType
     {
         $out = parent::viewTransform($data);
 
-        if (empty($out)) {
+        if (!\is_string($out)) {
             return '';
         }
 
@@ -194,12 +194,11 @@ class WysiwygFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific mapping options
-        $optionsForm->get('mappingOptions')
-        ->add('analyzer', AnalyzerPickerType::class)
-        ->add('copy_to', TextType::class, [
-                'required' => false,
-        ]);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')
+                ->add('analyzer', AnalyzerPickerType::class)
+                ->add('copy_to', TextType::class, ['required' => false]);
+        }
         $optionsForm->get('displayOptions')
             ->add('language', ChoiceType::class, [
                 'required' => false,
@@ -218,8 +217,5 @@ class WysiwygFieldType extends DataFieldType
                 'label' => 'form.form_field.wysiwyg.content_css.label',
             ])
         ;
-        $optionsForm->get('migrationOptions')->add('transformer', TextType::class, [
-            'required' => false,
-        ]);
     }
 }

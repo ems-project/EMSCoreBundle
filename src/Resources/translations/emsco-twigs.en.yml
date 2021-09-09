@@ -1,0 +1,14 @@
+
+views:
+  data:
+    edit-revision-html:
+      version-modal:
+        close-label: Close
+      discard-draft-message: Modification made in this draft will be lost
+      publish-label: Publish in %environment%
+      discard-draft-label: Discart draft
+      cancel-message: Cancel non-saved modifications?
+      cancel-label: Cancel
+      subtitle: Working area
+      title: 'Edit the %content-type%: "%revision%"'
+      new-draft-title: '%content-type%: new draft'

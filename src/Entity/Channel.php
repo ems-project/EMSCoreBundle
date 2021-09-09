@@ -195,6 +195,12 @@ class Channel implements EntityInterface
         if (!\is_string($entryPath) || 0 === \strlen($entryPath)) {
             return null;
         }
+        if ('/' !== \substr($entryPath, 0, 1)) {
+            $entryPath = '/'.$entryPath;
+        }
+        if ('/' === $entryPath) {
+            $entryPath = '';
+        }
 
         return \sprintf('/channel/%s%s', $this->getName(), $entryPath);
     }

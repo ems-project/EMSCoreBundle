@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class EMSCoreExtension extends Extension implements PrependExtensionInterface
 {
-    const TRANS_DOMAIN = 'EMSCoreBundle';
+    public const TRANS_DOMAIN = 'EMSCoreBundle';
 
     /**
      * {@inheritdoc}
@@ -31,6 +31,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $xmlLoader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $xmlLoader->load('command.xml');
         $xmlLoader->load('controllers.xml');
+        $xmlLoader->load('form.xml');
         $xmlLoader->load('repositories.xml');
         $xmlLoader->load('view_types.xml');
         $yamlLoader->load('services.yml');

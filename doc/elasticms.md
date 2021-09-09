@@ -34,6 +34,30 @@ php bin/console ems:environment:updatemetafield preview
 php bin/console ems:env:rebuild preview
 ```
 
+### Document Tasks
+For enabling the task feature you have to specify the **owner role** on a content type.
+
+#### Owners
+Users that have the owner role for a content type can become owner for documents of this content type.
+Important you can only become the owner if there are no tasks defined for the document and you create the first one.
+Document owners will see the tasks tab and can create, update, delete, reorder, approve or reject tasks.
+If the tasks is assigned to the owner he can only finish the task.
+
+Document owners have a dashboard of 2 tabs:
+- Assigned to me : document owners can also be assigned users
+- Created tasks: all current tasks for documents they own.
+
+#### Assigned Users
+If a document owner assigns you a task you are a assigned user. You will see your assigned task on your dashboard.
+Assigned users can see they history of the current task and after completing the task request a validation from the owner.
+If the document owner rejects the task, the assigned user will be notified by email.
+
+#### Task Managers
+Elasticms users who have the role **'TASK_MANAGER'** can see all current tasks in their dashboard overview.
+They have the possiblity to change the ownership of the documents.
+
+
+
 
 
  

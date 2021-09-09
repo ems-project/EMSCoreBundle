@@ -190,17 +190,17 @@
 		{% if dataField.rawData and dataField.rawData.sha1 is defined and dataField.rawData.sha1 %}
 			<div class="panel-footer" >
 				{#{% if doCompare and showB %}#}
-				{#<a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-history"></i>&nbsp;{{'View Previous'|trans}}</a>#}
+				{#<a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}" class="btn btn-small btn-default"><i class="fa fa-history"></i>&nbsp;{{'View Previous'|trans}}</a>#}
 				{#{% endif %}#}
 
 				{% set tempId = dataField.fieldType.name~'_'~random() %}
 				<div class="btn-group">
-					<button type="button" class="btn btn-small btn-primary asset-details" data-toggle="modal" data-target="#indexed-details-revision_{{ tempId }}">
+					<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#indexed-details-revision_{{ tempId }}">
 						<i class="fa fa-info"></i>
 						{{ 'Info'|trans }}
 					</button>
-					<a href="{{ ems_asset_path(dataField.rawData, {'_disposition':'attachment'}) }}" class="btn btn-small btn-primary"><i class="fa fa-download"></i>&nbsp;{{'Download'|trans}}</a>
-					{#<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-eye"></i>&nbsp;{{'View'|trans}}</a>#}
+					<a href="{{ ems_asset_path(dataField.rawData, {'_disposition':'attachment'}) }}" class="btn btn-small btn-default"><i class="fa fa-download"></i>&nbsp;{{'Download'|trans}}</a>
+					{#<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-default"><i class="fa fa-eye"></i>&nbsp;{{'View'|trans}}</a>#}
 				</div>
 				<div class="modal" tabindex="-1" role="dialog" id="indexed-details-revision_{{ tempId }}">
 				  <div class="modal-dialog" role="document">
@@ -367,7 +367,7 @@
 	{% endif %}
 
 	<div class="row">
-		{% for child in dataField.children if not child.fieldType.deleted %}
+		{% for child in dataField.children|filter(c => false == c.fieldType.deleted) %}
 		
 			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
 				{{ _self.renderDataFieldBlock(child, source, compare, compareRawData) }}
@@ -423,6 +423,33 @@
 	{{ _self.messages(dataField) }}
 {% endblock %}
 
+{% block EMS_CoreBundle_Form_DataField_MultiplexedTabContainerFieldType %}
+	{% set labels = dataField.fieldType.displayOptions.labels|default('')|replace({"\r":''})|split('\n') %}
+	{% set values = dataField.fieldType.displayOptions.values|default('')|replace({"\r":''})|split('\n') %}
+	<div class="nav-tabs-custom">
+		<ul class="nav nav-tabs">
+			{% for value in values|default([]) %}
+				<li class="{% if loop.index == 1%}active{% endif %}">
+					<a href="#item_{{ dataField.fieldType.id~'_'~loop.index }}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{% else %}false{% endif %}">
+						{{ attribute(labels, loop.index0)|default(values|default) }}
+					</a>
+				</li>
+			{% endfor %}
+		</ul>
+		<div class="tab-content">
+			{% for value in values|default([]) %}
+				<div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~loop.index }}__tab">
+					{% set childData = source[value]|default([]) %}
+					{% set childCompareData = compareRawData[value]|default([]) %}
+					{% for grandchild in dataField.children.get(value).children|default([]) %}
+						{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData) }}
+					{% endfor %}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}
+
 {% block EMS_CoreBundle_Form_DataField_TabsFieldType %}
 	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
@@ -439,17 +466,17 @@
                         {% endif %}
 					</a>
     			</li>
-            	{% endfor %}
-            </ul>
-            <div class="tab-content">
-            	{% for child in dataField.children if not child.fieldType.deleted %}
-	              <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~loop.index }}__tab">
-					{{ _self.renderDataFieldBlock(child, source, compare, compareRawData) }}
-	              </div>
-              {% endfor %}
-            </div>
-            <!-- /.tab-content -->
-         </div>  
+			{% endfor %}
+		</ul>
+		<div class="tab-content">
+			{% for child in dataField.children if not child.fieldType.deleted %}
+			  <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~loop.index }}__tab">
+				{{ _self.renderDataFieldBlock(child, source, compare, compareRawData) }}
+			  </div>
+		  {% endfor %}
+		</div>
+		<!-- /.tab-content -->
+	 </div>
 	{{ _self.messages(dataField) }}
 {% endblock %}
 
@@ -740,8 +767,8 @@
 
 {% block EMS_CoreBundle_Form_DataField_JsonMenuNestedEditorFieldType %}
 	{% set nestedIcons = [] %}
-	{% for node in dataField.fieldType.getJsonMenuNestedNodeChildren() %}
-		{% set nestedIcons = nestedIcons|merge({ (node.name) : node.displayOption('icon') }) %}
+	{% for node in dataField.fieldType.getJsonMenuNestedEditorNodes() %}
+		{% set nestedIcons = nestedIcons|merge({ (node.name) : node.icon }) %}
 	{% endfor %}
 	{% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
 	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}

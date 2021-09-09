@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Common\ArrayHelper\RecursiveMapper;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
@@ -20,6 +21,8 @@ use Ramsey\Uuid\UuidInterface;
  */
 class Revision implements EntityInterface
 {
+    use RevisionTaskTrait;
+
     /**
      * @var int|null
      *
@@ -49,6 +52,11 @@ class Revision implements EntityInterface
      * @ORM\Column(name="auto_save_at", type="datetime", nullable=true)
      */
     private $autoSaveAt;
+
+    /**
+     * @ORM\Column(name="archived", type="boolean", options={"default": false})
+     */
+    private bool $archived;
 
     /**
      * @var bool
@@ -125,6 +133,13 @@ class Revision implements EntityInterface
     /**
      * @var string|null
      *
+     * @ORM\Column(name="archived_by", type="string", length=255, nullable=true)
+     */
+    private $archivedBy;
+
+    /**
+     * @var string|null
+     *
      * @ORM\Column(name="deleted_by", type="string", length=255, nullable=true)
      */
     private $deletedBy;
@@ -151,11 +166,13 @@ class Revision implements EntityInterface
     private $lockUntil;
 
     /**
+     * @var ArrayCollection<int, Environment>|Environment[]
+     *
      * @ORM\ManyToMany(targetEntity="Environment", inversedBy="revisions", cascade={"persist"})
      * @ORM\JoinTable(name="environment_revision")
      * @ORM\OrderBy({"orderKey":"ASC"})
      */
-    private $environments;
+    private Collection $environments;
 
     /**
      * @ORM\OneToMany(targetEntity="Notification", mappedBy="revision", cascade={"persist", "remove"})
@@ -185,11 +202,9 @@ class Revision implements EntityInterface
     private $circles;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="labelField", type="text", nullable=true)
      */
-    private $labelField;
+    private ?string $labelField;
 
     /**
      * @var string
@@ -264,6 +279,7 @@ class Revision implements EntityInterface
 
     public function __construct()
     {
+        $this->archived = false;
         $this->deleted = false;
         $this->allFieldsAreThere = false;
         $this->environments = new ArrayCollection();
@@ -283,6 +299,10 @@ class Revision implements EntityInterface
                 $this->rawData = $ancestor->rawData;
                 $this->circles = $ancestor->circles;
                 $this->dataField = new DataField($ancestor->dataField);
+                $this->owner = $ancestor->owner;
+                $this->taskCurrent = $ancestor->taskCurrent;
+                $this->taskPlannedIds = $ancestor->taskPlannedIds;
+                $this->taskApprovedIds = $ancestor->taskApprovedIds;
 
                 if (null !== $versionUuid = $ancestor->getVersionUuid()) {
                     $this->setVersionId($versionUuid);
@@ -448,26 +468,26 @@ class Revision implements EntityInterface
         return $this->modified;
     }
 
-    /**
-     * Set deleted.
-     *
-     * @param bool $deleted
-     *
-     * @return Revision
-     */
-    public function setDeleted($deleted)
+    public function isArchived(): bool
+    {
+        return $this->archived;
+    }
+
+    public function setArchived(bool $archived): self
+    {
+        $this->archived = $archived;
+
+        return $this;
+    }
+
+    public function setDeleted(bool $deleted): self
     {
         $this->deleted = $deleted;
 
         return $this;
     }
 
-    /**
-     * Get deleted.
-     *
-     * @return bool
-     */
-    public function getDeleted()
+    public function getDeleted(): bool
     {
         return $this->deleted;
     }
@@ -493,6 +513,15 @@ class Revision implements EntityInterface
      */
     public function getOuuid()
     {
+        return $this->ouuid;
+    }
+
+    public function giveOuuid(): string
+    {
+        if (null === $this->ouuid) {
+            throw new \RuntimeException('Revision has no ouuid!');
+        }
+
         return $this->ouuid;
     }
 
@@ -537,6 +566,11 @@ class Revision implements EntityInterface
         $this->endTime = $endTime;
 
         return $this;
+    }
+
+    public function hasEndTime(): bool
+    {
+        return null !== $this->endTime;
     }
 
     /**
@@ -597,6 +631,13 @@ class Revision implements EntityInterface
         return $this->lockBy;
     }
 
+    public function isLockedFor(string $username): bool
+    {
+        $now = new \DateTime();
+
+        return $this->getLockBy() !== $username && $now < $this->getLockUntil();
+    }
+
     /**
      * Set rawDataFinalizedBy.
      *
@@ -638,26 +679,24 @@ class Revision implements EntityInterface
         return $this->finalizedBy;
     }
 
-    /**
-     * Set deletedBy.
-     *
-     * @param string|null $deletedBy
-     *
-     * @return Revision
-     */
-    public function setDeletedBy($deletedBy)
+    public function getArchivedBy(): ?string
+    {
+        return $this->archivedBy;
+    }
+
+    public function setArchivedBy(?string $archivedBy): void
+    {
+        $this->archivedBy = $archivedBy;
+    }
+
+    public function setDeletedBy(?string $deletedBy): self
     {
         $this->deletedBy = $deletedBy;
 
         return $this;
     }
 
-    /**
-     * Get deletedBy.
-     *
-     * @return string|null
-     */
-    public function getDeletedBy()
+    public function getDeletedBy(): ?string
     {
         return $this->deletedBy;
     }
@@ -788,22 +827,30 @@ class Revision implements EntityInterface
         return $this;
     }
 
-    /**
-     * Remove environment.
-     */
-    public function removeEnvironment(Environment $environment)
+    public function removeEnvironment(Environment $environment): self
     {
         $this->environments->removeElement($environment);
+
+        return $this;
     }
 
     /**
-     * Get environments.
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection<int, Environment>
      */
     public function getEnvironments()
     {
         return $this->environments;
+    }
+
+    public function isPublished(string $environmentName): bool
+    {
+        foreach ($this->environments as $environment) {
+            if ($environment->getName() === $environmentName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -827,13 +874,24 @@ class Revision implements EntityInterface
      */
     public function getRawData()
     {
-        $rawData = $this->rawData;
+        $rawData = $this->rawData ?? [];
 
         if (null !== $this->versionUuid) {
             $rawData['_version_uuid'] = $this->versionUuid;
         }
 
         return $rawData;
+    }
+
+    public function getHash(): string
+    {
+        $hash = $this->rawData[Mapping::HASH_FIELD] ?? null;
+
+        if (null === $hash) {
+            throw new \RuntimeException('Hash field not found in raw data!');
+        }
+
+        return $hash;
     }
 
     /**
@@ -931,26 +989,34 @@ class Revision implements EntityInterface
         return $this->autoSave;
     }
 
-    /**
-     * Set localField.
-     *
-     * @param string$labelField
-     *
-     * @return Revision
-     */
-    public function setLabelField($labelField)
+    public function getLabel(): string
+    {
+        if (null !== $labelField = $this->getLabelField()) {
+            return $labelField;
+        }
+
+        $contentType = $this->giveContentType();
+        $contentTypeLabelField = $contentType->getLabelField();
+
+        if (null !== $contentTypeLabelField) {
+            $label = $this->rawData[$contentTypeLabelField] ?? null;
+
+            if (null !== $label) {
+                return $label;
+            }
+        }
+
+        return \sprintf('%s:%s', $contentType->getName(), $this->ouuid);
+    }
+
+    public function setLabelField(?string $labelField): self
     {
         $this->labelField = $labelField;
 
         return $this;
     }
 
-    /**
-     * Get labelField.
-     *
-     * @return string
-     */
-    public function getLabelField()
+    public function getLabelField(): ?string
     {
         return $this->labelField;
     }

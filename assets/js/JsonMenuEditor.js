@@ -11,9 +11,10 @@ export default class JsonMenuEditor {
         this.parent = $(target);
         this.hiddenField = this.parent.find('input').first();
         this.name = this.parent.data('name');
+        this.blockPrefix = this.parent.data('block-prefix');
         this.isNested = this.parent.hasClass('json_menu_nested_editor');
         if(this.isNested) {
-            this.$nestedModal = $('#json-menu-nested-modal-'+this.name);
+            this.$nestedModal = $('#json-menu-nested-modal'+this.blockPrefix);
             this.initNestedModal();
         }
 
@@ -25,6 +26,17 @@ export default class JsonMenuEditor {
             toleranceElement: '> div',
             stop: function () {
                 self.relocate();
+            },
+            isAllowed: function(placeholder, parent, current) {
+                const item = $(current).data();
+                const parentData = parent ?  $(parent).data() : $(current).closest('ol.json_menu_sortable').data();
+
+                if (parentData.hasOwnProperty('node') && parentData.node.hasOwnProperty('deny')) {
+                    const deny = parentData.node.deny;
+                    return deny.indexOf(item.node.name) === -1;
+                }
+
+                return true;
             }
         });
 
@@ -90,7 +102,7 @@ export default class JsonMenuEditor {
             item.data('object', data.object);
         }
         if (data.hasOwnProperty('node')) {
-            item.find('.json-menu-nested-edit').data('node', data.node);
+            item.data('node', data.node);
         }
 
         let list = $target.closest('.nestedSortable').closest('li');
@@ -129,9 +141,24 @@ export default class JsonMenuEditor {
     }
 
     relocate() {
+        const recursiveMapHierarchy = (obj, results = []) => {
+           const r = results;
+           Object.keys(obj).forEach(key => {
+              const value = obj[key];
+              const result = {'id': value.id, 'label': value.label, 'type': value.type, 'object': value.object};
+              if (value.hasOwnProperty('children')) {
+                result.children = recursiveMapHierarchy(value.children);
+              }
+              r.push(result);
+           });
+           return r;
+        };
+
         this.updateCollapseButtons();
-        const hierarchy = this.nestedSortable.nestedSortable('toHierarchy', {startDepthCount: 0});
-        this.hiddenField.val(JSON.stringify(hierarchy)).trigger("input").trigger("change");
+        const toHierarchy = this.nestedSortable.nestedSortable('toHierarchy', {startDepthCount: 0});
+        const hierarchyValue = JSON.stringify(recursiveMapHierarchy(toHierarchy));
+
+        this.hiddenField.val(hierarchyValue).trigger("input").trigger("change");
     }
 
     initNestedModal()
@@ -162,12 +189,12 @@ export default class JsonMenuEditor {
         }
 
         $(document).on('hide.bs.modal', '.json-menu-nested-modal', function (event) {
-            if (event.target.id === `json-menu-nested-modal-${self.name}`) {
+            if (event.target.id === `json-menu-nested-modal${self.blockPrefix}`) {
                 modalStateloading($(this));
             }
         });
         $(document).on('show.bs.modal', '.json-menu-nested-modal', function (event) {
-            if (event.target.id !== `json-menu-nested-modal-${self.name}`) {
+            if (event.target.id !== `json-menu-nested-modal${self.blockPrefix}`) {
                 return;
             }
 
@@ -175,7 +202,8 @@ export default class JsonMenuEditor {
             self.$nestedModal.data('target', $target);
 
             let action = $target.data('action'); //add or edit
-            let node = $target.data('node');
+            let node = action === 'edit' ? $target.closest('li').data('node') : $target.data('node');
+
             let nodeIcon = node.icon ? `<i class="${node.icon}"></i>` : '';
             let prefixTitle = action === 'edit' ? 'Edit: ' : 'Add: ';
             $(this).find('.modal-title').html(`${nodeIcon} <span>${prefixTitle} ${node.label}</span>`);
@@ -193,7 +221,7 @@ export default class JsonMenuEditor {
         this.$nestedModal.on('click', '.btn-json-menu-nested-save', function () {
             let $target = self.$nestedModal.data('target');
             let action = $target.data('action');
-            let node = $target.data('node');
+            let node = action === 'edit' ? $target.closest('li').data('node') : $target.data('node');
 
             for (let i in CKEDITOR.instances) {
                 if(CKEDITOR.instances.hasOwnProperty(i)) { CKEDITOR.instances[i].updateElement(); }
@@ -215,6 +243,7 @@ export default class JsonMenuEditor {
                         'type': node.name,
                         'object': response.object,
                         'node': node,
+                        'buttons': response.buttons,
                     });
                 } else if (action === 'edit') {
                     $target.closest('li').data('label', response.label).data('object', response.object);

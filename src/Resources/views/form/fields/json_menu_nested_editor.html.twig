@@ -1,0 +1,100 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block item %}
+    {%- set level = level + 1 -%}
+    {%- set currentNode = attribute(nodes, child.type|default(''))|default([]) -%}
+    {%- set currentNode = currentNode|merge({
+        'url': path('revision.edit.nested-modal', {'revisionId': revision.id, 'fieldTypeId': currentNode.id, 'parentLevel': level })
+    }) -%}
+    {% if maxDepth == 0 or level <= maxDepth %}
+        <li id="{{ child.id|default('%uuid%') }}" class="collapsible-container nestedSortable mjs-nestedSortable"
+            data-label="{{ child.label|default('%label%') }}"
+            {% if child.object is defined %}data-object="{{ child.object|json_encode }}"{% endif %}
+            data-type="{{ child.type|default('%type%') }}"
+            data-node="{{ currentNode|json_encode }}">
+            <div class="nestedSortable clearfix">
+                <span>
+                    <button style="display:none;" class="btn btn-default btn-sm button-collapse" role="button" aria-expanded="true"></button>
+                </span>
+                <span><i class="{{ currentNode.icon }}"></i></span>
+                <span class="itemLabel">{{ child.label }}</span>
+                <span class="pull-right">
+                    {{ block('itemButtons') }}
+                </span>
+            </div>
+            {% if child is defined and child.children|default([])|length > 0 %}
+                <ol style="display:none;">
+                    {%- for child in child.children -%}
+                        {% set currentNode = attribute(nodes, child.type|default(''))|default([]) %}
+                        {{ block('item') }}
+                    {%- endfor -%}
+                </ol>
+            {% endif %}
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block itemPrototype %}
+    <li id="%uuid%" class="collapsible-container nestedSortable mjs-nestedSortable" data-label="%label%" data-type="%type%">
+        <div class="nestedSortable clearfix">
+            <span>
+                <button style="display:none;" class="btn btn-default btn-sm button-collapse" role="button" aria-expanded="true"></button>
+            </span>
+            <span><i class="%icon%"></i></span>
+            <span class="itemLabel">%label%</span>
+            <span class="pull-right item-buttons">%buttons%</span>
+        </div>
+    </li>
+{% endblock %}
+
+{% block itemButtons %}
+    <div class="btn-group btn-group-sm">
+        {% with { nodes: nodes, currentNode: currentNode, revision: revision, level: level, maxDepth: maxDepth } only %}
+            {{ block('button_add') }}
+        {% endwith %}
+        {%- if currentNode.minimumRole is null or is_granted(currentNode.minimumRole) -%}
+            <button type="button" class="btn btn-primary json-menu-nested-edit" data-action="edit"
+                    title="{{- 'field_type.json_menu_editor.edit'|trans -}}">
+                <i class="fa fa-pencil"></i>&nbsp;<span>{{ 'field_type.json_menu_editor.edit'|trans }}</span>
+            </button>
+            <a type="button" class="btn btn-primary json_menu_sortable_handle_button"
+               title="{{- 'field_type.json_menu_editor.move_item'|trans -}}">
+                <i class="fa fa-arrows"></i>&nbsp;<span class="">{{ 'field_type.json_menu_editor.move_item'|trans }}</span>
+            </a>
+            <button type="button" class="btn btn-danger json_menu_sortable_remove_button"
+                    title="{{- 'field_type.json_menu_editor.delete_item'|trans -}}">
+                <i class="fa fa-trash"></i>&nbsp;<span class="sr-only">{{- 'field_type.json_menu_editor.delete_item'|trans -}}</span>
+            </button>
+        {%- endif -%}
+    </div>
+{% endblock %}
+
+{% block button_add %}
+    {%- if (maxDepth == 0 or level < maxDepth) and currentNode.isLeaf|default(false) == false -%}
+        {%- set deny = currentNode.deny|default([]) -%}
+        {%- set addNodes = nodes|filter(n => n.name not in deny and ( n.minimumRole is null or is_granted(n.minimumRole) ) ) -%}
+
+        {%- if addNodes|length > 0 -%}
+            <button type="button" class="btn btn-primary dropdown-toggle" data-level="{{ level }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="fa fa-plus"></span>
+                {{ 'field_type.json_menu_editor.add'|trans }}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                {%- for addNode in addNodes -%}
+                    {%- set addNode = addNode|merge({
+                        'url': path('revision.edit.nested-modal', {'revisionId': revision.id, 'fieldTypeId': addNode.id, 'parentLevel': level })
+                    }) -%}
+                    <li>
+                        <a type="button" class="json-menu-nested-add" data-action="add" data-node="{{ addNode|json_encode }}">
+                            {%- if addNode.icon|default(false) -%}<i class="{{ addNode.icon }}"></i>{%- endif -%}
+                            {{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': addNode.label}) }}
+                        </a>
+                    </li>
+                {%- endfor -%}
+            </ul>
+        {%- endif -%}
+    {%- endif -%}
+{% endblock %}
+
+

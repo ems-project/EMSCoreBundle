@@ -38,6 +38,11 @@ final class LockCommand extends Command
     private const OPTION_IF_EMPTY = 'if-empty';
     private const OPTION_OUUID = 'ouuid';
 
+    public const RESULT_SUCCESS = 0;
+
+    public const name = 'ems:contenttype:lock';
+    protected static $defaultName = self::name;
+
     public function __construct(ContentTypeRepository $contentTypeRepository, ElasticaService $elasticaService, RevisionRepository $revisionRepository)
     {
         parent::__construct();
@@ -50,7 +55,6 @@ final class LockCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('ems:contenttype:lock')
             ->setDescription('Lock a content type')
             ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'content type to recompute')
             ->addArgument(self::ARGUMENT_TIME, InputArgument::REQUIRED, 'lock until (+1day, +5min, now)')
@@ -151,7 +155,7 @@ final class LockCommand extends Command
             $this->by,
         ]));
 
-        return 0;
+        return self::RESULT_SUCCESS;
     }
 
     /**

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Elasticsearch;
 
 use Elastica\Bulk;
@@ -17,24 +19,17 @@ use Psr\Log\LoggerInterface;
 
 class Bulker
 {
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var DataService */
-    private $dataService;
-    /** @var Mapping */
-    private $mapping;
-    /** @var int */
-    private $counter = 0;
-    /** @var int */
-    private $size = 500;
-    /** @var bool */
-    private $sign = true;
-    /** @var array */
-    private $errors = [];
-    /** @var Bulk */
-    private $bulk;
-    /** @var Client */
-    private $client;
+    private LoggerInterface $logger;
+    private DataService $dataService;
+    private Mapping $mapping;
+    private int $counter = 0;
+    private int $size = 500;
+    private bool $sign = true;
+    private bool $publish = true;
+    /** @var array<mixed> */
+    private array $errors = [];
+    private Bulk $bulk;
+    private Client $client;
 
     public function __construct(Client $client, LoggerInterface $logger, DataService $dataService, Mapping $mapping)
     {
@@ -76,6 +71,13 @@ class Bulker
         return $this;
     }
 
+    public function setPublish(bool $publish): Bulker
+    {
+        $this->publish = $publish;
+
+        return $this;
+    }
+
     public function index(string $contentType, string $ouuid, string $index, array &$body, bool $upsert = false): bool
     {
         if ($this->sign) {
@@ -83,7 +85,10 @@ class Bulker
         }
 
         $body[Mapping::CONTENT_TYPE_FIELD] = $contentType;
-        $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
+
+        if ($this->publish) {
+            $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTimeInterface::ATOM);
+        }
 
         $action = new Action();
         $action->setIndex($index);
@@ -167,7 +172,7 @@ class Bulker
         return true;
     }
 
-    private function logResponse(ResponseSet $response)
+    private function logResponse(ResponseSet $response): void
     {
         foreach ($response as $item) {
             if (!$item instanceof Response) {

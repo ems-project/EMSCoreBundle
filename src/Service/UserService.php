@@ -31,7 +31,7 @@ class UserService implements EntityServiceInterface
     private UserRepository $userRepository;
     private Security $security;
 
-    const DONT_DETACH = false;
+    public const DONT_DETACH = false;
 
     public function __construct(Registry $doctrine, Session $session, TokenStorageInterface $tokenStorage, Security $security, $securityRoles)
     {
@@ -42,6 +42,21 @@ class UserService implements EntityServiceInterface
         $this->securityRoles = $securityRoles;
         $this->security = $security;
         $this->userRepository = $doctrine->getManager()->getRepository(User::class);
+    }
+
+    public function searchUser(string $search): ?UserInterface
+    {
+        /** @var UserInterface[] $cache */
+        static $cache = [];
+
+        if (\array_key_exists($search, $cache)) {
+            return $cache[$search];
+        }
+
+        $user = $this->userRepository->search($search);
+        $cache[$search] = $user;
+
+        return $user;
     }
 
     public function findUsernameByApikey($apiKey)
@@ -260,5 +275,10 @@ class UserService implements EntityServiceInterface
     public function count(string $searchValue = '', $context = null): int
     {
         return $this->userRepository->countUsers($searchValue);
+    }
+
+    public function isGrantedRole(string $role): bool
+    {
+        return $this->security->isGranted($role);
     }
 }

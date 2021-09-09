@@ -122,7 +122,7 @@ class UrlAttachmentFieldType extends DataFieldType
     public function viewTransform(DataField $data)
     {
         $out = parent::viewTransform($data);
-        if (!empty($out)) {
+        if (\is_array($out) && !empty($out)) {
             if (!empty($out['_url'])) {
                 if (\is_string($out['_url'])) {
                     return $out['_url'];
@@ -142,12 +142,13 @@ class UrlAttachmentFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // specific mapping options
-        $optionsForm->get('mappingOptions')
-        ->add('analyzer', AnalyzerPickerType::class)
-        ->add('copy_to', TextType::class, [
-                'required' => false,
-        ]);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')
+            ->add('analyzer', AnalyzerPickerType::class)
+            ->add('copy_to', TextType::class, [
+                    'required' => false,
+            ]);
+        }
 
         $optionsForm->get('displayOptions')
         ->add('icon', IconPickerType::class, [

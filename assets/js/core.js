@@ -34,7 +34,7 @@ require('bootstrap-slider');
 require('bootstrap-select');
 require('admin-lte/plugins/timepicker/bootstrap-timepicker');
 require('chart.js');
-require('ckeditor');
+require('ckeditor4');
 require('datatables.net');
 require('datatables.net-bs');
 require('fastclick');
@@ -65,6 +65,19 @@ window.moment = require('moment');
 require('fullcalendar');
 require('icheck');
 require('jquery-match-height');
+
+//Fix issue CK editor in bootstrap model
+//https://ckeditor.com/old/forums/Support/Issue-with-Twitter-Bootstrap#comment-127719
+$.fn.modal.Constructor.prototype.enforceFocus = function() {
+    const modal_this = this
+    $(document).on('focusin.modal', function (e) {
+        if (modal_this.$element[0] !== e.target && !modal_this.$element.has(e.target).length
+            && !$(e.target.parentNode).hasClass('cke_dialog_ui_input_select')
+            && !$(e.target.parentNode).hasClass('cke_dialog_ui_input_text')) {
+            modal_this.$element.focus()
+        }
+    })
+};
 
 require('./helpers');
 require('./initEms');

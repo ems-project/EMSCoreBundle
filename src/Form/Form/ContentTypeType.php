@@ -246,7 +246,6 @@ class ContentTypeType extends AbstractType
         if ($contentType->getEnvironment()->getManaged()) {
             $builder->add('defaultValue', CodeEditorType::class, [
                 'required' => false,
-                'language' => 'ace/mode/json',
             ])->add('askForOuuid', CheckboxType::class, [
                 'label' => 'Ask for OUUID',
                 'required' => false,
@@ -254,7 +253,9 @@ class ContentTypeType extends AbstractType
             $builder->add('createRole', RolePickerType::class);
             $builder->add('editRole', RolePickerType::class);
             $builder->add('publishRole', RolePickerType::class);
+            $builder->add('deleteRole', RolePickerType::class);
             $builder->add('trashRole', RolePickerType::class);
+            $builder->add('ownerRole', RolePickerType::class);
 
             $builder->add('searchLinkDisplayRole', RolePickerType::class, [
                 'label' => 'Display the search link in main navigation',

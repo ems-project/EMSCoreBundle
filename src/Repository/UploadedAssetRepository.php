@@ -15,7 +15,7 @@ use EMS\CoreBundle\Entity\UploadedAsset;
  */
 class UploadedAssetRepository extends EntityRepository
 {
-    const PAGE_SIZE = 100;
+    public const PAGE_SIZE = 100;
 
     /**
      * @return int
@@ -106,6 +106,28 @@ class UploadedAssetRepository extends EntityRepository
         $qb = $this->createQueryBuilder('ua');
         $qb->setFirstResult($from)
             ->setMaxResults($size);
+
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('ua.%s', $orderField), $orderDirection);
+        }
+
+        $this->addSearchFilters($qb, $searchValue);
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
+     * @return array<UploadedAsset>
+     */
+    public function getAvailable(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->createQueryBuilder('ua');
+        $qb->where($qb->expr()->eq('ua.available', ':true'));
+        $qb->setFirstResult($from)
+        ->setMaxResults($size);
+        $qb->setParameters([
+            ':true' => true,
+        ]);
 
         if (null !== $orderField) {
             $qb->orderBy(\sprintf('ua.%s', $orderField), $orderDirection);

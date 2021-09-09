@@ -156,18 +156,6 @@ class FileService implements EntityServiceInterface
     }
 
     /**
-     * @param array<string> $ids
-     */
-    public function hardRemoveFiles(array $ids): void
-    {
-        $files = $this->uploadedAssetRepository->findByIds($ids);
-        foreach ($files as $file) {
-            $this->uploadedAssetRepository->removeByHash($file->getSha1());
-            $this->storageManager->remove($file->getSha1());
-        }
-    }
-
-    /**
      * @return UploadedAsset[]|iterable
      */
     public function getImages(): iterable
@@ -372,6 +360,10 @@ class FileService implements EntityServiceInterface
 
     public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
+        if (null !== $context && ($context['available'] ?? false)) {
+            return $this->uploadedAssetRepository->getAvailable($from, $size, $orderField, $orderDirection, $searchValue);
+        }
+
         return $this->uploadedAssetRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 

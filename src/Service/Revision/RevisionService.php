@@ -6,28 +6,46 @@ namespace EMS\CoreBundle\Service\Revision;
 
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
+use EMS\CoreBundle\Common\DocumentInfo;
+use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
 
 class RevisionService
 {
-    /** @var DataService */
-    private $dataService;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var RevisionRepository */
-    private $revisionRepository;
+    private DataService $dataService;
+    private LoggerInterface $logger;
+    private RevisionRepository $revisionRepository;
+    private PublishService $publishService;
 
     public function __construct(
         DataService $dataService,
         LoggerInterface $logger,
-        RevisionRepository $revisionRepository
+        RevisionRepository $revisionRepository,
+        PublishService $publishService
     ) {
         $this->dataService = $dataService;
         $this->logger = $logger;
         $this->revisionRepository = $revisionRepository;
+        $this->publishService = $publishService;
+    }
+
+    public function archive(Revision $revision, string $archivedBy, bool $flush = true): bool
+    {
+        $this->publishService->silentUnpublish($revision, $flush);
+
+        $revision
+            ->setArchived(true)
+            ->setArchivedBy($archivedBy);
+
+        if ($flush) {
+            $this->revisionRepository->save($revision);
+        }
+
+        return true;
     }
 
     public function find(int $revisionId): ?Revision
@@ -35,6 +53,14 @@ class RevisionService
         $revision = $this->revisionRepository->find($revisionId);
 
         return $revision instanceof Revision ? $revision : null;
+    }
+
+    /**
+     * @return iterable|Revision[]
+     */
+    public function findAllDraftsByContentTypeName(string $contentTypeName): iterable
+    {
+        return $this->revisionRepository->findAllDraftsByContentTypeName($contentTypeName);
     }
 
     public function get(string $ouuid, string $contentType, ?\DateTimeInterface $dateTime = null): ?Revision
@@ -55,6 +81,14 @@ class RevisionService
     public function getCurrentRevisionByOuuidAndContentType(string $ouuid, string $contentType): ?Revision
     {
         return $this->get($ouuid, $contentType);
+    }
+
+    /**
+     * @param array<mixed> $search
+     */
+    public function search(array $search): Revisions
+    {
+        return new Revisions($this->revisionRepository->search($search));
     }
 
     /**
@@ -107,9 +141,15 @@ class RevisionService
         $this->dataService->discardDraft($revision); //discard draft changes previous revision
 
         $previousVersion = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->getOuuid());
+        $previousVersion->clearTasks();
         $previousVersion->setVersionDate('to', $now);
         $this->dataService->finalizeDraft($previousVersion);
 
         return $newVersion;
+    }
+
+    public function getDocumentInfo(EMSLink $documentLink): DocumentInfo
+    {
+        return new DocumentInfo($documentLink, $this->revisionRepository->findAllPublishedRevision($documentLink));
     }
 }

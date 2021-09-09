@@ -68,7 +68,7 @@ class DateFieldType extends DataFieldType
             $format = \DateTime::ISO8601;
         }
         $out = [];
-        if (!empty($data)) {
+        if (\is_iterable($data) && !empty($data)) {
             foreach ($data as $data) {
                 if ($data) {
                     $out[] = $data->format($format);
@@ -91,7 +91,7 @@ class DateFieldType extends DataFieldType
         $data = parent::viewTransform($dataField);
         $out = [];
         $format = DateFieldType::convertJavascriptDateFormat($dataField->getFieldType()->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
-        if (!empty($data)) {
+        if (\is_iterable($data) && !empty($data)) {
             foreach ($data as $date) {
                 if ($date) {
                     $out[] = $date->format($format);
@@ -288,14 +288,13 @@ class DateFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific display options
-        $optionsForm->get('mappingOptions')->add('format', TextType::class, [
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')->add('format', TextType::class, [
                 'required' => false,
                 'empty_data' => 'yyyy/MM/dd',
-                'attr' => [
-                        'placeholder' => 'i.e. yyyy/MM/dd',
-                ],
-        ]);
+                'attr' => ['placeholder' => 'i.e. yyyy/MM/dd'],
+            ]);
+        }
 
         // String specific display options
         $optionsForm->get('displayOptions')->add('displayFormat', TextType::class, [

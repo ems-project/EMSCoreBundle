@@ -9,6 +9,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
@@ -48,10 +49,79 @@ class RevisionRepository extends EntityRepository
             ], $orderBy, $limit, $offset);
     }
 
+    /**
+     * @param array<mixed> $search
+     */
+    public function search(array $search): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->join('r.contentType', 'c')
+            ->join('c.environment', 'e');
+
+        if (isset($search['ouuid'])) {
+            $qb->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))->setParameter('ouuid', $search['ouuid']);
+        }
+        if (isset($search['contentType'])) {
+            $qb->andWhere($qb->expr()->eq('r.contentType', ':contentType'))->setParameter('contentType', $search['contentType']);
+        }
+        if (isset($search['modifiedBefore'])) {
+            $qb->andWhere($qb->expr()->lt('r.modified', ':modified'))->setParameter('modified', $search['modifiedBefore']);
+        }
+        if (isset($search['lockBy'])) {
+            $qb->andWhere($qb->expr()->eq('r.lockBy', ':lock_by'))->setParameter('lock_by', $search['lockBy']);
+        }
+        if (isset($search['archived'])) {
+            $qb->andWhere($qb->expr()->eq('r.archived', ':archived'))->setParameter('archived', $search['archived']);
+        }
+
+        return $qb;
+    }
+
+    /**
+     * @param string[] $ouuids
+     */
+    public function searchByEnvironmentOuuids(Environment $environment, array $ouuids): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->join('r.contentType', 'c')
+            ->join('c.environment', 'ce')
+            ->join('r.environments', 're')
+            ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
+            ->andWhere($qb->expr()->in('re.id', ':environment_id'))
+            ->setParameters([
+                'environment_id' => $environment->getId(),
+                'ouuids' => $ouuids,
+            ]);
+
+        return $qb;
+    }
+
     public function save(Revision $revision): void
     {
         $this->_em->persist($revision);
         $this->_em->flush();
+    }
+
+    public function addEnvironment(Revision $revision, Environment $environment): int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare('insert into environment_revision (environment_id, revision_id) VALUES(:envId, :revId)');
+        $stmt->bindValue('envId', $environment->getId());
+        $stmt->bindValue('revId', $revision->getId());
+
+        return $stmt->executeStatement();
+    }
+
+    public function removeEnvironment(Revision $revision, Environment $environment): int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare('delete from environment_revision where environment_id = :envId and revision_id = :revId');
+        $stmt->bindValue('envId', $environment->getId());
+        $stmt->bindValue('revId', $revision->getId());
+
+        return $stmt->executeStatement();
     }
 
     /**
@@ -113,7 +183,7 @@ class RevisionRepository extends EntityRepository
 
             return \intval($query->getSingleScalarResult());
         } catch (NonUniqueResultException $e) {
-            return 0;
+            throw new \RuntimeException(\sprintf('Revision with hash "%s" has non unique results!', $hash));
         }
     }
 
@@ -240,6 +310,25 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
+     * @return iterable|Revision[]
+     */
+    public function findAllDraftsByContentTypeName(string $contentTypeName): iterable
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->join('r.contentType', 'c')
+            ->andWhere($qb->expr()->isNull('r.endTime'))
+            ->andWhere($qb->expr()->eq('r.draft', $qb->expr()->literal(true)))
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
+            ->andWhere($qb->expr()->eq('c.name', ':content_type_name'))
+            ->setParameter('content_type_name', $contentTypeName);
+
+        foreach ($qb->getQuery()->iterate() as $row) {
+            yield $row[0];
+        }
+    }
+
+    /**
      * @param string $source
      * @param string $target
      * @param array  $contentTypes
@@ -275,7 +364,7 @@ class RevisionRepository extends EntityRepository
     private function getCompareQueryBuilder($source, $target, $contentTypes)
     {
         $qb = $this->createQueryBuilder('r');
-        $qb->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.icon', 'r.ouuid', 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid', 'max(r.id) lastRevId')
+        $qb->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.singularName content_type_singular_name', 'c.icon', 'r.ouuid', 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid', 'max(r.id) lastRevId')
         ->join('r.contentType', 'c')
         ->join('r.environments', 'e')
         ->where('e.id in (:source, :target)')
@@ -494,7 +583,7 @@ class RevisionRepository extends EntityRepository
      *
      * @return mixed
      */
-    public function lockRevision($revisionId, $username, \DateTime $lockUntil)
+    public function lockRevision($revisionId, $username, \DateTimeInterface $lockUntil)
     {
         $qb = $this->createQueryBuilder('r')->update()
             ->set('r.lockBy', '?1')
@@ -647,6 +736,22 @@ class RevisionRepository extends EntityRepository
         return $qbUpdate->getQuery()->execute();
     }
 
+    /**
+     * @param int[] $ids
+     */
+    public function lockRevisionsById(array $ids, string $by, \DateTime $until): int
+    {
+        $qbUpdate = $this->createQueryBuilder('r');
+        $qbUpdate
+            ->update()
+            ->set('r.lockBy', ':by')
+            ->set('r.lockUntil', ':until')
+            ->andWhere($qbUpdate->expr()->in('r.id', ':ids'))
+            ->setParameters(['ids' => $ids, 'by' => $by, 'until' => $until]);
+
+        return $qbUpdate->getQuery()->execute();
+    }
+
     public function lockAllRevisions(\DateTime $until, string $by): int
     {
         return $this->lockRevisions(null, $until, $by, true);
@@ -681,6 +786,22 @@ class RevisionRepository extends EntityRepository
         return $qbUpdate->getQuery()->execute();
     }
 
+    /**
+     * @param int[] $ids
+     */
+    public function unlockRevisionsById(array $ids): int
+    {
+        $qbUpdate = $this->createQueryBuilder('r');
+        $qbUpdate
+            ->update()
+            ->set('r.lockBy', ':null')
+            ->set('r.lockUntil', ':null')
+            ->andWhere($qbUpdate->expr()->in('r.id', ':ids'))
+            ->setParameters(['ids' => $ids, 'null' => null]);
+
+        return $qbUpdate->getQuery()->execute();
+    }
+
     public function unlockAllRevisions(string $by): int
     {
         return $this->unlockRevisions(null, $by);
@@ -704,6 +825,32 @@ class RevisionRepository extends EntityRepository
         ;
 
         return new Paginator($qb->getQuery());
+    }
+
+    /**
+     * @return Revision[]
+     */
+    public function findAllPublishedRevision(EMSLink $documentLink): array
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb->join('r.contentType', 'c');
+        $qb->join('r.environments', 'e');
+
+        $qb->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'));
+        $qb->andWhere($qb->expr()->eq('c.name', ':contentType'));
+        $qb->andWhere($qb->expr()->eq('c.deleted', ':false'));
+        $qb->andWhere($qb->expr()->eq('c.active', ':true'));
+        $qb->andWhere($qb->expr()->eq('r.deleted', ':false'));
+        $qb->andWhere($qb->expr()->isNotNull('e.id'));
+
+        $qb->setParameters([
+            'ouuid' => $documentLink->getOuuid(),
+            'contentType' => $documentLink->getContentType(),
+            'true' => true,
+            'false' => false,
+        ]);
+
+        return $qb->getQuery()->execute();
     }
 
     public function findDraftsByContentType(ContentType $contentType): array

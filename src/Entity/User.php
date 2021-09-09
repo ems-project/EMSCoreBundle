@@ -81,11 +81,9 @@ class User extends BaseUser implements UserInterface, EntityInterface
     private $layoutBoxed;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="email_notification", type="boolean")
      */
-    private $emailNotification = true;
+    private bool $emailNotification = true;
 
     /**
      * @var bool
@@ -463,12 +461,7 @@ class User extends BaseUser implements UserInterface, EntityInterface
         return $this;
     }
 
-    /**
-     * Get emailNotification.
-     *
-     * @return bool
-     */
-    public function getEmailNotification()
+    public function getEmailNotification(): bool
     {
         return $this->emailNotification;
     }

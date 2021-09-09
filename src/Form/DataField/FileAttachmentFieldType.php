@@ -110,7 +110,7 @@ class FileAttachmentFieldType extends DataFieldType
     {
         $rawData = $dataField->getRawData();
 
-        if (!empty($rawData) && !empty($rawData['sha1'])) {
+        if (\is_array($rawData) && !empty($rawData) && !empty($rawData['sha1'])) {
             unset($rawData['content']);
             unset($rawData['filesize']);
         } else {
@@ -126,12 +126,13 @@ class FileAttachmentFieldType extends DataFieldType
         $optionsForm = $builder->get('options');
         //         $optionsForm->remove ( 'mappingOptions' );
 
-        // specific mapping options
-        $optionsForm->get('mappingOptions')
-        ->add('analyzer', AnalyzerPickerType::class)
-        ->add('copy_to', TextType::class, [
-                'required' => false,
-        ]);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')
+            ->add('analyzer', AnalyzerPickerType::class)
+            ->add('copy_to', TextType::class, [
+                    'required' => false,
+            ]);
+        }
 
         $optionsForm->get('displayOptions')
             ->add('icon', IconPickerType::class, [

@@ -15,11 +15,28 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class TableType extends AbstractType
 {
     public const REORDER_ACTION = 'reorderAction';
+
+    /**
+     * @return string[]
+     */
+    public static function getReorderedKeys(string $formName, Request $request): array
+    {
+        $newOrder = [];
+        foreach ($request->get($formName, [])['reordered'] ?? [] as $id) {
+            if (!\is_string($id)) {
+                throw new \RuntimeException('Unexpected type for id');
+            }
+            $newOrder[] = $id;
+        }
+
+        return $newOrder;
+    }
 
     /**
      * @param FormBuilderInterface<AbstractType> $builder
@@ -60,7 +77,7 @@ final class TableType extends AbstractType
                 'data' => $choices,
             ])->add(self::REORDER_ACTION, SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-danger',
+                    'class' => 'btn-primary',
                 ],
                 'icon' => 'fa fa-reorder',
                 'label' => 'table.index.button.reorder',
@@ -72,7 +89,7 @@ final class TableType extends AbstractType
                 $builder
                     ->add($action->getName(), SubmitEmsType::class, [
                         'attr' => [
-                            'class' => 'btn-danger',
+                            'class' => 'btn-primary',
                         ],
                         'icon' => $action->getIcon(),
                         'label' => $action->getLabelKey(),

@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class AnalyzerOptionsType extends AbstractType
 {
-    const FIELDS_BY_TYPE = [
+    public const FIELDS_BY_TYPE = [
         'standard' => [
             'stopwords',
             'max_token_length',
@@ -64,7 +64,7 @@ class AnalyzerOptionsType extends AbstractType
                 'form.analyzer.type.fingerprint' => 'fingerprint',
                 'form.analyzer.type.custom' => 'custom',
             ],
-            'label' => 'form.analyzer.type',
+            'label' => 'form.analyzer.type.label',
             'attr' => [
                 'class' => 'fields-to-display-by-input-value',
             ],
@@ -85,7 +85,7 @@ class AnalyzerOptionsType extends AbstractType
                 'form.analyzer.tokenizer.pattern' => 'pattern',
                 'form.analyzer.tokenizer.path_hierarchy' => 'path_hierarchy',
             ],
-            'label' => 'form.analyzer.tokenizer',
+            'label' => 'form.analyzer.tokenizer.label',
         ])->add('max_token_length', IntegerType::class, [
             'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-standard'],
             'required' => false,
@@ -109,7 +109,7 @@ class AnalyzerOptionsType extends AbstractType
         ])->add('flags', ChoiceType::class, [
             'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-pattern'],
             'required' => false,
-            'label' => 'form.analyzer.flags',
+            'label' => 'form.analyzer.flags.label',
             'choices' => [
                 'form.analyzer.flags.canon_eq' => 'CANON_EQ',
                 'form.analyzer.flags.case_insensitive' => 'CASE_INSENSITIVE',
@@ -128,15 +128,15 @@ class AnalyzerOptionsType extends AbstractType
             'choices' => [
                 'form.analyzer.char_filter.html_strip' => 'html_strip',
             ],
-            'label' => 'form.analyzer.char_filter',
+            'label' => 'form.analyzer.char_filter.label',
             'multiple' => true,
         ])->add('filter', ChoiceType::class, [
             'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-custom'],
             'required' => false,
-            'label' => 'form.analyzer.filter',
+            'label' => 'form.analyzer.filter.label',
             'choice_loader' => new CallbackChoiceLoader(function () {
                 $out = [
-                    'form.analyzer.filter.built_in' => [
+                    'form.analyzer.filter.built_in.label' => [
                         'form.analyzer.filter.built_in.standard' => 'standard',
                         'form.analyzer.filter.built_in.asciifolding' => 'asciifolding',
                         'form.analyzer.filter.built_in.flatten_graph' => 'flatten_graph',
@@ -163,7 +163,7 @@ class AnalyzerOptionsType extends AbstractType
             }),
             'multiple' => true,
         ])->add('stopwords', ChoiceType::class, [
-            'label' => 'form.analyzer.stopwords',
+            'label' => 'form.analyzer.stopwords.label',
             'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-fingerprint fields-to-display-for-standard fields-to-display-for-pattern fields-to-display-for-fingerprint fields-to-display-for-stop'],
             'required' => false,
             'choices' => [

@@ -251,6 +251,12 @@
 						title : linkLang.selectFileTitle,
 						items : []
 					},{
+                        type: 'button',
+                        id: 'browse',
+                        hidden: 'true',
+                        filebrowser: 'info:fileTxt',
+                        label: commonLang.browseServer
+                    },{
                         type : 'text',
                         label : linkLang.selectFileFilenameLabel,
                         id : 'fileLink',
@@ -465,13 +471,6 @@
 							if ( !this.getDialog().getContentElement( 'info', 'linkType' ) )
 								this.getElement().show();
 						}
-					},
-					{
-						type: 'button',
-						id: 'browse',
-						hidden: 'true',
-						filebrowser: 'info:url',
-						label: commonLang.browseServer
 					} ]
 				},
 				{

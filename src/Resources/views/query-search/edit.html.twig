@@ -1,0 +1,11 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/query-search/form.html.twig' %}
+
+{% block title %}{{ 'query_search.edit.title'|trans }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+
+{% block body %}
+  {% set label = 'query_search.edit.title' %}
+  {% set save_action_key = 'query_search.edit.save' %}
+  {{ parent() }}
+{% endblock %}

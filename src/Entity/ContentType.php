@@ -308,11 +308,21 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $publishRole;
 
     /**
+     * @ORM\Column(name="delete_role", type="string", length=100, nullable=true)
+     */
+    protected ?string $deleteRole = null;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="trash_role", type="string", length=100, nullable=true)
      */
     protected $trashRole;
+
+    /**
+     * @ORM\Column(name="owner_role", type="string", length=100, nullable=true)
+     */
+    protected ?string $ownerRole = null;
 
     /**
      * @var int
@@ -718,7 +728,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
 
     public function hasLabelField(): bool
     {
-        return null !== $this->labelField;
+        return null !== $this->labelField && \strlen($this->labelField) > 0;
     }
 
     public function giveLabelField(): string
@@ -1177,6 +1187,16 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
+    public function hasCategoryField(): bool
+    {
+        return null !== $this->categoryField && \strlen($this->categoryField) > 0;
+    }
+
+    public function giveCategoryField(): string
+    {
+        return $this->categoryField;
+    }
+
     /**
      * Get categoryField.
      *
@@ -1252,6 +1272,25 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function getWebContent()
     {
         return $this->webContent;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getRenderingSourceFields(): array
+    {
+        $sourceFields = [];
+        if ($this->hasLabelField()) {
+            $sourceFields[] = $this->giveLabelField();
+        }
+        if ($this->hasColorField()) {
+            $sourceFields[] = $this->giveColorField();
+        }
+        if ($this->hasCategoryField()) {
+            $sourceFields[] = $this->giveCategoryField();
+        }
+
+        return $sourceFields;
     }
 
     /**
@@ -1361,7 +1400,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
 
     public function hasColorField(): bool
     {
-        return null !== $this->colorField;
+        return null !== $this->colorField && \strlen($this->colorField) > 0;
     }
 
     public function giveColorField(): string
@@ -1486,7 +1525,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
 
     public function hasAssetField(): bool
     {
-        return null !== $this->assetField;
+        return null !== $this->assetField && \strlen($this->assetField) > 0;
     }
 
     /**
@@ -1617,6 +1656,23 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function getPublishRole()
     {
         return $this->publishRole;
+    }
+
+    public function hasDeleteRole(): bool
+    {
+        return null !== $this->deleteRole;
+    }
+
+    public function getDeleteRole(): ?string
+    {
+        return $this->deleteRole;
+    }
+
+    public function setDeleteRole(?string $deleteRole): ContentType
+    {
+        $this->deleteRole = $deleteRole;
+
+        return $this;
     }
 
     /**
@@ -1900,5 +1956,31 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
             $this->getVersionDateFromField(),
             $this->getVersionDateToField(),
         ]);
+    }
+
+    public function hasOwnerRole(): bool
+    {
+        return null !== $this->ownerRole;
+    }
+
+    public function giveOwnerRole(): string
+    {
+        $ownerRole = $this->ownerRole;
+
+        if (null === $ownerRole) {
+            throw new \RuntimeException('No owner role specified');
+        }
+
+        return $ownerRole;
+    }
+
+    public function getOwnerRole(): ?string
+    {
+        return $this->ownerRole;
+    }
+
+    public function setOwnerRole(?string $ownerRole): void
+    {
+        $this->ownerRole = $ownerRole;
     }
 }

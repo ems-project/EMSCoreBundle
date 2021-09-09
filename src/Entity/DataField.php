@@ -12,8 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * DataField.
- *
+ * @implements \IteratorAggregate<DataField>
  * @Assert\Callback({"Vendor\Package\Validator", "validate"})
  */
 class DataField implements \ArrayAccess, \IteratorAggregate
@@ -71,24 +70,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * @deprecated
-     *
-     * @param int $offset
-     *
-     * @throws \Exception
-     */
-    private function initChild(DataField $child, $offset)
-    {
-        throw new \Exception('deprecate');
-    }
-
-    /**
      * @param mixed $offset
      * @param mixed $value
      */
     public function offsetSet($offset, $value): void
     {
-        $this->initChild($value, $offset);
         $this->children->offsetSet($offset, $value);
     }
 
@@ -99,7 +85,6 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     {
         if ((\is_int($offset) || \ctype_digit($offset)) && !$this->children->offsetExists($offset) && null !== $this->fieldType && $this->fieldType->getChildren()->count() > 0) {
             $value = new DataField();
-            $this->initChild($value, $offset);
             $this->children->offsetSet($offset, $value);
 
             return true;
@@ -121,10 +106,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function offsetGet($offset)
     {
-        $value = $this->children->offsetGet($offset);
-        $this->initChild($value, $offset);
-
-        return $value;
+        return ('children' === $offset) ? $this->children : $this->children->offsetGet($offset);
     }
 
     public function getIterator()
@@ -215,8 +197,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
                 $this->parent = $a[1];
             }
 
-            foreach ($ancestor->getChildren() as $child) {
-                $this->addChild(new DataField($child, $this));
+            foreach ($ancestor->getChildren() as $key => $child) {
+                $this->addChild(new DataField($child, $this), $key);
             }
         }
     }
@@ -688,13 +670,17 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this;
     }
 
-    /**
-     * Get fieldType.
-     *
-     * @return \EMS\CoreBundle\Entity\FieldType|null
-     */
-    public function getFieldType()
+    public function getFieldType(): ?FieldType
     {
+        return $this->fieldType;
+    }
+
+    public function giveFieldType(): FieldType
+    {
+        if (null === $this->fieldType) {
+            throw new \RuntimeException('Unexpected null filed type');
+        }
+
         return $this->fieldType;
     }
 
@@ -723,13 +709,15 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Add child.
-     *
-     * @return DataField
+     * @param int|string|null $key
      */
-    public function addChild(DataField $child)
+    public function addChild(DataField $child, $key = null): DataField
     {
-        $this->children[] = $child;
+        if (null === $key) {
+            $this->children[] = $child;
+        } else {
+            $this->children[$key] = $child;
+        }
 
         return $this;
     }

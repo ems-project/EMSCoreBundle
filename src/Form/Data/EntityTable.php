@@ -35,6 +35,14 @@ final class EntityTable extends TableAbstract
         }
     }
 
+    /**
+     * @return mixed
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
     public function resetIterator(DataTableRequest $dataTableRequest): void
     {
         parent::resetIterator($dataTableRequest);
@@ -93,5 +101,10 @@ final class EntityTable extends TableAbstract
         }
 
         return false;
+    }
+
+    public function getRowTemplate(): string
+    {
+        return \sprintf("{%%- use '@EMSCore/datatable/row.json.twig' -%%}{{ block('emsco_datatable_row') }}");
     }
 }

@@ -1,0 +1,41 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'task.title'|trans }}{% endblock %}
+
+{% block pagetitle %}{{ 'task.title'|trans }}{% endblock %}
+
+{% block body %}
+<div id="task-dashboard" class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        {% for tabName in tabs %}
+            {% if currentTab == tabName %}
+                <li class="active">
+                    <a href="#{{ currentTab }}" data-toggle="tab" aria-expanded="true">{{ "task.dashboard.tab.#{tabName}"|trans }}</a>
+                </li>
+            {% else %}
+                <li>
+                    <a href="{{ path('ems_core_task_dashboard', {'tab': tabName}) }}">{{ "task.dashboard.tab.#{tabName}"|trans }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="{{ currentTab }}">
+            {% form_theme formTable '@EMSCore/form/forms.html.twig' %}
+            {{ form(formTable) }}
+            {% if table.count > 0 %}
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Export <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ path('ems_core_task_ajax_datatable_excel', {'tab': currentTab}) }}">Excel</a></li>
+                        <li><a href="{{ path('ems_core_task_ajax_datatable_csv', {'tab': currentTab}) }}">CSV</a></li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

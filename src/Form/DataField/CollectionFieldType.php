@@ -62,7 +62,7 @@ class CollectionFieldType extends DataFieldType
                 $colItem = new DataField();
                 $colItem->setOrderKey($idx);
                 $colItem->setFieldType(null); // it's a collection item
-                foreach ($dataField->getFieldType()->getChildren() as $childFieldType) {
+                foreach ($dataField->getFieldType()->getChildren() as $grandChildKey => $childFieldType) {
                     /** @var FieldType $childFieldType */
                     if (!$childFieldType->getDeleted()) {
                         $grandChild = new DataField();
@@ -79,11 +79,11 @@ class CollectionFieldType extends DataFieldType
                             ]);
                         }
 
-                        $colItem->addChild($grandChild);
+                        $colItem->addChild($grandChild, $grandChildKey);
                     }
                 }
 
-                $dataField->addChild($colItem);
+                $dataField->addChild($colItem, $idx);
                 $colItem->setParent($dataField);
             }
         }
@@ -166,12 +166,14 @@ class CollectionFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        $optionsForm->get('mappingOptions')
-            ->add('renumbering', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Items will be renumbered',
-            ])
-            ->remove('index');
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')
+                ->add('renumbering', CheckboxType::class, [
+                    'required' => false,
+                    'label' => 'Items will be renumbered',
+                ])
+                ->remove('index');
+        }
 
         // an optional icon can't be specified ritgh to the container label
         $optionsForm->get('displayOptions')->add('singularLabel', TextType::class, [
@@ -210,9 +212,12 @@ class CollectionFieldType extends DataFieldType
         return 'collectionfieldtype';
     }
 
-    public static function getJsonName(FieldType $current)
+    /**
+     * @return string[]
+     */
+    public static function getJsonNames(FieldType $current): array
     {
-        return $current->getName();
+        return [$current->getName()];
     }
 
     public function generateMapping(FieldType $current, $withPipeline)

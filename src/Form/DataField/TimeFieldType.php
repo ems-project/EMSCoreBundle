@@ -20,8 +20,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TimeFieldType extends DataFieldType
 {
-    const STOREFORMAT = 'H:i:s';
-    const INDEXFORMAT = 'HH:mm:ss';
+    public const STOREFORMAT = 'H:i:s';
+    public const INDEXFORMAT = 'HH:mm:ss';
 
     /**
      * {@inheritdoc}
@@ -194,14 +194,15 @@ class TimeFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific display options
-        $optionsForm->get('mappingOptions')->add('format', TextType::class, [
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')->add('format', TextType::class, [
                 'required' => false,
                 'empty_data' => 'HH:mm:ss',
                 'attr' => [
                     'placeholder' => 'i.e. HH:mm:ss',
                 ],
-        ]);
+            ]);
+        }
 
         $optionsForm->get('displayOptions')->add('minuteStep', IntegerType::class, [
                 'required' => false,

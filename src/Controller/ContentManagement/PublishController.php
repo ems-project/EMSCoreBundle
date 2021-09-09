@@ -3,7 +3,10 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\NonUniqueResultException;
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Command\Environment\AlignCommand;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
@@ -128,20 +131,22 @@ class PublishController extends AbstractController
         $query = $emsSearch->getQuery();
 
         if ($form->isSubmitted()) {
-            $command = \sprintf(
-                'ems:environment:align %s %s --force --searchQuery=%s',
-                $environment->getName(),
-                $form->get('toEnvironment')->getData(),
-                \json_encode(['query' => null === $query ? [] : $query->toArray()])
-            );
-
             $user = $this->getUser();
 
             if (!$user instanceof UserInterface) {
                 throw new NotFoundHttpException('User not found');
             }
 
-            $job = $jobService->createCommand($user, $command);
+            $query = Json::encode(null === $query ? [] : $query->toArray());
+            $command = [
+                Commands::ENVIRONMENT_ALIGN,
+                $environment->getName(),
+                $form->get('toEnvironment')->getData(),
+                \sprintf('--%s', AlignCommand::OPTION_FORCE),
+                \sprintf('--%s=%s', AlignCommand::OPTION_SEARCH_QUERY, $query),
+            ];
+
+            $job = $jobService->createCommand($user, \implode(' ', $command));
 
             return $this->redirectToRoute('job.status', [
                 'job' => $job->getId(),

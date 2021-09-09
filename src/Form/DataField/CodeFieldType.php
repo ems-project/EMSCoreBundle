@@ -100,8 +100,9 @@ class CodeFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific mapping options
-        $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
+        }
         $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
                 'required' => false,
         ])->add('maxLines', IntegerType::class, [

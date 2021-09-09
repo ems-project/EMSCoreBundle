@@ -135,6 +135,8 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_uuid', [Uuid::class, 'uuid4']),
             new TwigFunction('emsco_datatable', [DatatableRuntime::class, 'generateDatatable'], ['is_safe' => ['html']]),
             new TwigFunction('emsco_datatable_excel_path', [DatatableRuntime::class, 'getExcelPath'], ['is_safe' => ['html']]),
+            new TwigFunction('emsco_datatable_csv_path', [DatatableRuntime::class, 'getCsvPath'], ['is_safe' => ['html']]),
+            new TwigFunction('emsco_revisions_draft', [RevisionRuntime::class, 'getRevisionsInDraft']),
         ];
     }
 
@@ -187,6 +189,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('get_field_by_path', [$this, 'getFieldByPath']),
             new TwigFilter('json_decode', [$this, 'jsonDecode']),
             new TwigFilter('get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
+            new TwigFilter('emsco_document_info', [RevisionRuntime::class, 'getDocumentInfo']),
             //deprecated
             new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
             new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),
@@ -1036,7 +1039,7 @@ class AppExtension extends AbstractExtension
                     'type' => $type,
                     'ouuid' => $ouuid,
                     'revisionId' => $revisionId,
-                ], UrlGeneratorInterface::RELATIVE_PATH).'" '.$addAttribute.' >'.$out.'</a>';
+                ]).'" '.$addAttribute.' >'.$out.'</a>';
         }
 
         return $out;

@@ -40,6 +40,10 @@ abstract class TableAbstract implements TableInterface
     /** @var array<mixed> */
     private array $extraFrontendOption = [];
 
+    private string $exportSheetName = 'table';
+    private string $exportFileName = 'table';
+    private string $exportDisposition = 'attachment';
+
     public function __construct(?string $ajaxUrl, int $from, int $size)
     {
         $this->ajaxUrl = $ajaxUrl;
@@ -287,6 +291,11 @@ abstract class TableAbstract implements TableInterface
         return $this->size;
     }
 
+    public function setSize(int $size): void
+    {
+        $this->size = $size;
+    }
+
     public function getFrom(): int
     {
         return $this->from;
@@ -300,4 +309,40 @@ abstract class TableAbstract implements TableInterface
     abstract public function supportsTableActions(): bool;
 
     abstract public function totalCount(): int;
+
+    public function getExportSheetName(): string
+    {
+        return $this->exportSheetName;
+    }
+
+    public function setExportSheetName(string $exportSheetName): self
+    {
+        $this->exportSheetName = $exportSheetName;
+
+        return $this;
+    }
+
+    public function getExportFileName(): string
+    {
+        return $this->exportFileName;
+    }
+
+    public function setExportFileName(string $exportFileName): self
+    {
+        $this->exportFileName = $exportFileName;
+
+        return $this;
+    }
+
+    public function getExportDisposition(): string
+    {
+        return $this->exportDisposition;
+    }
+
+    public function setExportDisposition(string $exportDisposition): self
+    {
+        $this->exportDisposition = $exportDisposition;
+
+        return $this;
+    }
 }

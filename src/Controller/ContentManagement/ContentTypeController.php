@@ -273,11 +273,7 @@ class ContentTypeController extends AppController
                     $environment = $contentTypeAdded->getEnvironment();
                     /** @var UploadedFile $file */
                     $file = $request->files->get('form')['import'];
-                    $path = $file->getRealPath();
-
-                    if (false === $path) {
-                        throw new NotFoundHttpException('File not found');
-                    }
+                    $path = $file->getRealPath() ?: $file->getPathname();
 
                     $json = \file_get_contents($path);
 
@@ -610,7 +606,9 @@ class ContentTypeController extends AppController
                 if ($this->isValidName($formArray['ems:internal:add:subfield:target_name'])) {
                     $new = clone $fieldType;
                     $new->setName($formArray['ems:internal:add:subfield:target_name']);
-                    $new->getParent()->addChild($new);
+                    if ($parent = $new->getParent()) {
+                        $parent->addChild($new);
+                    }
 
                     $logger->notice('log.contenttype.field.added', [
                         'field_name' => $formArray['ems:internal:add:subfield:target_name'],

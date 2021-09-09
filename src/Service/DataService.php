@@ -12,6 +12,7 @@ use Doctrine\ORM\ORMException;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -67,7 +68,7 @@ use Twig_Error;
  */
 class DataService
 {
-    const ALGO = OPENSSL_ALGO_SHA1;
+    public const ALGO = OPENSSL_ALGO_SHA1;
     protected const SCROLL_TIMEOUT = '1m';
 
     /** @var resource|false|null */
@@ -227,7 +228,7 @@ class DataService
         if (!empty($publishEnv) && \is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !$this->appTwig->inMyCircles($publishEnv->getCircles())) {
             throw new PrivilegeException($revision, 'You don\'t share any circle with this content');
         }
-        if (empty($publishEnv) && !empty($revision->getContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
+        if (null === $username && empty($publishEnv) && !empty($revision->getContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
             if (!$this->appTwig->inMyCircles($revision->getRawData()[$revision->getContentType()->getCirclesField()] ?? [])) {
                 throw new PrivilegeException($revision);
             }
@@ -246,8 +247,8 @@ class DataService
         } else {
             $lockerUsername = $username;
         }
-        $now = new \DateTime();
-        if ($revision->getLockBy() != $lockerUsername && $now < $revision->getLockUntil()) {
+
+        if ($revision->isLockedFor($lockerUsername)) {
             throw new LockedException($revision);
         }
 
@@ -657,7 +658,7 @@ class DataService
 
         foreach ($revision->getEnvironments() as $environment) {
             try {
-                $document = $this->searchService->getDocument($contentType, $revision->getOuuid());
+                $document = $this->searchService->getDocument($contentType, $revision->getOuuid(), $environment);
                 $indexedItem = $document->getSource();
 
                 ArrayTool::normalizeArray($indexedItem);
@@ -1029,15 +1030,15 @@ class DataService
                 $defaultValue = $template->render([
                     'environment' => $contentType->getEnvironment(),
                     'contentType' => $contentType,
+                    'currentUser' => $this->userService->getCurrentUser(),
                 ]);
-                $raw = \json_decode($defaultValue, true);
-                if (null === $raw) {
+                try {
+                    $revision->setRawData(Json::decode($defaultValue));
+                } catch (\Throwable $e) {
                     $this->logger->error('service.data.default_value_error', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                         EmsFields::LOG_OUUID_FIELD => $ouuid,
                     ]);
-                } else {
-                    $revision->setRawData($raw);
                 }
             } catch (Twig_Error $e) {
                 $this->logger->error('service.data.default_value_template_error', [
@@ -1211,6 +1212,7 @@ class DataService
 
             $newDraft->setStartTime($now);
             $revision->setEndTime($now);
+            $revision->clearTasks();
 
             $this->lockRevision($newDraft, null, false, $username);
 
@@ -1445,7 +1447,7 @@ class DataService
 
         if ($isContainer) {
             /** @var FieldType $field */
-            foreach ($meta->getChildren() as $field) {
+            foreach ($meta->getChildren() as $key => $field) {
                 //no need to generate the structure for delete field
                 if (!$field->getDeleted()) {
                     $child = $dataField->__get('ems_'.$field->getName());
@@ -1454,7 +1456,7 @@ class DataService
                         $child->setFieldType($field);
                         $child->setOrderKey($field->getOrderKey());
                         $child->setParent($dataField);
-                        $dataField->addChild($child);
+                        $dataField->addChild($child, $key);
                         if (isset($field->getDisplayOptions()['defaultValue'])) {
                             $child->setEncodedText($field->getDisplayOptions()['defaultValue']);
                         }
@@ -1476,8 +1478,13 @@ class DataService
     {
         $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
         if ($dataFieldType instanceof DataFieldType) {
-            $fieldName = $dataFieldType->getJsonName($dataField->getFieldType());
-            if (null === $fieldName) {//Virtual container
+            $fieldType = $dataField->getFieldType();
+            if (null === $fieldType) {
+                throw new \RuntimeException('Unexpected null fieldType');
+            }
+
+            $fieldNames = $dataFieldType->getJsonNames($fieldType);
+            if (0 === \count($fieldNames)) {//Virtual container
                 /** @var DataField $child */
                 foreach ($dataField->getChildren() as $child) {
                     $this->updateDataValue($child, $elasticIndexDatas, $isMigration);
@@ -1488,10 +1495,14 @@ class DataService
                     foreach ($treatedFields as $fieldName) {
                         unset($elasticIndexDatas[$fieldName]);
                     }
-                } elseif (\array_key_exists($fieldName, $elasticIndexDatas)) {
-                    $treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas[$fieldName], $isMigration);
-                    foreach ($treatedFields as $fieldName) {
-                        unset($elasticIndexDatas[$fieldName]);
+                } else {
+                    foreach ($fieldNames as $fieldName) {
+                        if (\array_key_exists($fieldName, $elasticIndexDatas)) {
+                            $treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas[$fieldName], $isMigration);
+                            foreach ($treatedFields as $fieldName) {
+                                unset($elasticIndexDatas[$fieldName]);
+                            }
+                        }
                     }
                 }
             }
@@ -1802,9 +1813,9 @@ class DataService
     {
         /** @var DataField $out */
         $out = $form->getNormData();
-        foreach ($form as $item) {
+        foreach ($form as $key => $item) {
             if ($item->getNormData() instanceof DataField) {
-                $out->addChild($item->getNormData());
+                $out->addChild($item->getNormData(), $key);
                 $this->getDataFieldsStructure($item);
             }
         }

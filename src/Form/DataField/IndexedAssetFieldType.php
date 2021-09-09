@@ -70,12 +70,13 @@ class IndexedAssetFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // specific mapping options
-        $optionsForm->get('mappingOptions')
-        ->add('analyzer', AnalyzerPickerType::class)
-        ->add('copy_to', TextType::class, [
-                'required' => false,
-        ]);
+        if ($optionsForm->has('mappingOptions')) {
+            $optionsForm->get('mappingOptions')
+            ->add('analyzer', AnalyzerPickerType::class)
+            ->add('copy_to', TextType::class, [
+                    'required' => false,
+            ]);
+        }
 
         $optionsForm->get('displayOptions')
         ->add('icon', IconPickerType::class, [
@@ -135,7 +136,7 @@ class IndexedAssetFieldType extends DataFieldType
     {
         $raw = $dataField->getRawData();
 
-        if ((empty($raw) || empty($raw['sha1']))) {
+        if (!\is_array($raw) || empty($raw) || empty($raw['sha1'])) {
             if (isset($dataField->getFieldType()->getRestrictionOptions()['mandatory']) && $dataField->getFieldType()->getRestrictionOptions()['mandatory']) {
                 $dataField->addMessage('This entry is required');
             }

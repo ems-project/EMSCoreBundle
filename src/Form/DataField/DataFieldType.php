@@ -37,6 +37,19 @@ abstract class DataFieldType extends AbstractType
         $this->elasticsearchService = $elasticsearchService;
     }
 
+    /**
+     * @return string[]
+     */
+    public static function textAreaToArray(?string $textArea): array
+    {
+        if (null === $textArea || 0 === \strlen($textArea)) {
+            return [];
+        }
+        $cleaned = \str_replace("\r", '', $textArea);
+
+        return \explode("\n", $cleaned);
+    }
+
     public function getBlockPrefix()
     {
         return 'data_field_type';
@@ -186,7 +199,7 @@ abstract class DataFieldType extends AbstractType
             return true;
         }
 
-        $enable = ($options['migration'] && !$fieldType->getMigrationgOption('protected', true)) || $this->authorizationChecker->isGranted($fieldType->getMinimumRole());
+        $enable = ($options['migration'] && !$fieldType->getMigrationOption('protected', true)) || $this->authorizationChecker->isGranted($fieldType->getMinimumRole());
 
         return !$enable;
     }
@@ -431,11 +444,7 @@ abstract class DataFieldType extends AbstractType
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
-        /*
-         * preset with the most used options
-         */
-        $builder->add('options', OptionsType::class, [
-        ]);
+        $builder->add('options', OptionsType::class, ['field_type' => $options['data']]);
     }
 
     /**
@@ -461,13 +470,11 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * Return the json path.
-     *
-     * @return string|null
+     * @return string[]
      */
-    public static function getJsonName(FieldType $current)
+    public static function getJsonNames(FieldType $current): array
     {
-        return $current->getName();
+        return [$current->getName()];
     }
 
     /**

@@ -15,6 +15,10 @@ class TableColumn
     private ?\Closure $itemIconCallback = null;
     private string $cellType = 'td';
     private string $cellClass = '';
+    /** @var array <string, \Closure> */
+    private array $htmlAttributes = [];
+    private ?\Closure $pathCallback = null;
+    private string $pathTarget = '';
 
     public function __construct(string $titleKey, string $attribute)
     {
@@ -30,6 +34,11 @@ class TableColumn
     public function getAttribute(): string
     {
         return $this->attribute;
+    }
+
+    public function setAttribute(string $attribute): void
+    {
+        $this->attribute = $attribute;
     }
 
     public function setRoute(string $name, ?\Closure $callback = null, ?string $target = null): void
@@ -122,6 +131,28 @@ class TableColumn
         return $this->iconClass;
     }
 
+    public function addHtmlAttribute(string $key, \Closure $callback): TableColumn
+    {
+        $this->htmlAttributes[$key] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $data
+     *
+     * @return array<string, \Closure>
+     */
+    public function getHtmlAttributes($data): array
+    {
+        $out = [];
+        foreach ($this->htmlAttributes as $htmlAttribute => $callValue) {
+            $out[$htmlAttribute] = $callValue->call($this, $data);
+        }
+
+        return $out;
+    }
+
     public function tableDataBlock(): string
     {
         return 'emsco_form_table_column_data';
@@ -135,5 +166,40 @@ class TableColumn
     public function getOrderable(): bool
     {
         return true;
+    }
+
+    public function setPathCallback(\Closure $pathCallback, string $target = ''): void
+    {
+        $this->pathCallback = $pathCallback;
+        $this->pathTarget = $target;
+    }
+
+    /**
+     * @param mixed $context
+     */
+    public function hasPath($context, string $baseUrl): bool
+    {
+        return null !== $this->pathCallback && \is_string($this->pathCallback->call($this, $context, $baseUrl));
+    }
+
+    /**
+     * @param mixed $context
+     */
+    public function getPath($context, string $baseUrl): string
+    {
+        if (null === $this->pathCallback) {
+            throw new \RuntimeException('Unexpected null pathCallback. use the hasPathCallback first');
+        }
+        $path = $this->pathCallback->call($this, $context, $baseUrl);
+        if (!\is_string($path)) {
+            throw new \RuntimeException('Unexpected null pathCallback. use the hasPathCallback first');
+        }
+
+        return $path;
+    }
+
+    public function getPathTarget(): string
+    {
+        return $this->pathTarget;
     }
 }

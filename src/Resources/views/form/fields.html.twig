@@ -137,7 +137,7 @@
     	{%- if icon -%}
 			<span class="{{ icon }}"></span>&nbsp;
 		{% endif %}
-		{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}
+		{{ translation_domain is same as(false) ? label : label|trans(label_translation_parameters|default({}), translation_domain) }}
   	</button>
 {%- endblock submitems_widget -%}
 
@@ -836,7 +836,7 @@
 
 {% block json_menu_nested_editor_fieldtype_row %}
 	<div class="form-group {% if form.vars.errors|length %} has-error{% endif %} json_menu_editor_fieldtype json_menu_nested_editor"
-		data-name="{{ form.vars.name }}">
+		data-name="{{ form.vars.name }}" data-block-prefix="{{ form.vars.unique_block_prefix }}">
 		{{ form_label(form) }}
 		{{ form_widget(form) }}
 		{{ form_errors(form) }}
@@ -845,86 +845,29 @@
 
 {% block json_menu_nested_editor_fieldtype_widget %}
 	{{  form_widget(form) }}
-	{%- set nodes = form.vars.nodes -%}
-	{% set addMenu %}
-		{% if nodes|length > 0 %}
-			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<span class="fa fa-plus"></span>
-				{{ 'field_type.json_menu_editor.add'|trans }}
-				<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu">
-				{% for node in nodes %}
-					<li>
-						<a type="button" class="json-menu-nested-add" data-action="add" data-node="{{ node|json_encode }}">
-							{%- if node.icon|default(false) -%}<i class="{{ node.icon }}"></i>{%- endif -%}
-							{{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': node.label}) }}
-						</a>
-					</li>
-				{% endfor %}
-			</ul>
-		{% endif %}
-	{% endset %}
+	{%- set level = 0 -%}
+	{%- set maxDepth = data.fieldType.restrictionOption('json_nested_max_depth', 0)  %}
+	{%- set rootDeny = [] %}
+	{%- for d in data.fieldType.restrictionOption('json_nested_deny', []) -%}{%- set rootDeny = rootDeny|merge([d]) -%}{%- endfor -%}
+	{%- set nodes = data.fieldType.getJsonMenuNestedEditorNodes -%}
 	<div class="json_menu_editor_fieldtype_widget collapsible-container"
-		 data-prototype-nested="{{ block('json_menu_editor_nested_node')|e('html_attr') }}">
+		 data-prototype-nested="{{ block('itemPrototype', '@EMSCore/form/fields/json_menu_nested_editor.html.twig')|e('html_attr') }}">
 		<div class="input-group">
 			<span class="input-group-btn">
-				{{ addMenu }}
+				{% with { nodes: nodes, currentNode: {'deny': rootDeny}, revision: revision, level: 0, maxDepth: maxDepth  } only %}
+					{{ block('button_add', '@EMSCore/form/fields/json_menu_nested_editor.html.twig') }}
+				{% endwith %}
 			</span>
 		</div>
-		<ol class="json_menu_sortable vertical not-collapsible">
+		<ol class="json_menu_sortable vertical not-collapsible" data-node="{{ {'name': 'root', 'deny': rootDeny}|json_encode }}">
 			{%- for child in form.vars.data.rawData|default('[]')|json_decode -%}
-				{% set node = attribute(nodes, child.type|default(''))|default([]) %}
-				{{ block('json_menu_editor_nested_node') }}
+				{% with { nodes: nodes, child: child, revision: revision, level: level, maxDepth: maxDepth } only %}
+					{{ block('item', '@EMSCore/form/fields/json_menu_nested_editor.html.twig') }}
+				{% endwith %}
 			{%- endfor -%}
 		</ol>
 	</div>
 {% endblock json_menu_nested_editor_fieldtype_widget %}
-
-{%- block json_menu_editor_nested_node -%}
-	<li id="{{ child.id|default('%uuid%') }}" class="collapsible-container nestedSortable mjs-nestedSortable"
-		data-label="{{ child.label|default('%label%') }}"
-		{% if child.object is defined %}data-object="{{ child.object|json_encode }}"{% endif %}
-		data-type="{{ child.type|default('%type%') }}">
-		<div class="nestedSortable clearfix">
-			<span>
-				<button style="display:none;" class="btn btn-default btn-sm button-collapse" role="button" aria-expanded="true"></button>
-			</span>
-			<span><i class="{{ node.icon|default('%icon%') }}"></i></span>
-			<span class="itemLabel">{{ child.label|default('%label%') }}</span>
-			<span class="pull-right">
-				<div class="btn-group btn-group-sm">
-					{{ addMenu }}
-					<button type="button" class="btn btn-primary json-menu-nested-edit"
-					   data-action="edit"
-					   {% if node is defined %}data-node="{{ node|json_encode }}"{% endif %}
-					   title="{{- 'field_type.json_menu_editor.edit'|trans -}}">
-						<i class="fa fa-pencil"></i>
-						<span class="">{{ 'field_type.json_menu_editor.edit'|trans }}</span>
-					</button>
-					<a type="button" class="btn btn-primary json_menu_sortable_handle_button"
-					   title="{{- 'field_type.json_menu_editor.move_item'|trans -}}">
-						<i class="fa fa-arrows"></i>
-						<span class="">{{ 'field_type.json_menu_editor.move_item'|trans }}</span>
-					</a>
-					<button type="button" class="btn btn-danger json_menu_sortable_remove_button"
-					   title="{{- 'field_type.json_menu_editor.delete_item'|trans -}}">
-						<i class="fa fa-trash"></i>
-						<span class="sr-only">{{- 'field_type.json_menu_editor.delete_item'|trans -}}</span>
-					</button>
-				</div>
-			</span>
-		</div>
-		{% if child is defined and child.children|default([])|length > 0 %}
-			<ol style="display:none;">
-				{%- for child in child.children -%}
-					{% set node = attribute(nodes, child.type|default(''))|default([]) %}
-					{{ block('json_menu_editor_nested_node') }}
-				{%- endfor -%}
-			</ol>
-		{% endif %}
-    </li>
-{%- endblock json_menu_editor_nested_node -%}
 
 {% block datefieldtype_row %}
 <div class="form-group">
@@ -1121,12 +1064,12 @@
 				<input type="file" class="file-uploader-input" {% if form.vars.disabled %}disabled="disabled"{% endif %} data-label="{{ 'view.form.fields.asset.upload-file'|trans|e('html_attr') }}">
 			</div>
 			<div class="btn-group">
-				<button type="button" class="btn btn-small btn-primary asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
+				<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
 				  	<i class="fa fa-info"></i>
 					{{ 'view.form.fields.asset.info-modal-button'|trans }}
 				</button>
-				<a href="{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}{{ ems_asset_path(form.vars.value) }}{% endif %}" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{ 'view.form.fields.asset.view-button'|trans }}"><i class="fa fa-eye">&nbsp;{{ 'view.form.fields.asset.view-button'|trans }}</i></a>
-				<a href="#" class="btn btn-small btn-primary clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{ 'view.form.fields.asset.clear-button'|trans }}"><i class="fa fa-remove"></i>&nbsp;{{ 'view.form.fields.asset.clear-button'|trans }}</a>
+				<a href="{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}{{ ems_asset_path(form.vars.value) }}{% endif %}" class="btn btn-small btn-default view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{ 'view.form.fields.asset.view-button'|trans }}"><i class="fa fa-eye">&nbsp;{{ 'view.form.fields.asset.view-button'|trans }}</i></a>
+				<a href="#" class="btn btn-small btn-default clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{ 'view.form.fields.asset.clear-button'|trans }}"><i class="fa fa-remove"></i>&nbsp;{{ 'view.form.fields.asset.clear-button'|trans }}</a>
 			</div>
 		{% endif %}
 	</div>
@@ -1160,12 +1103,12 @@
               <div class="modal-footer">
 				<div class="btn-group">
 					{% if form.vars.meta_fields %}
-						<button type="button" class="btn btn-small btn-primary extract-file-info" >
+						<button type="button" class="btn btn-small btn-default extract-file-info" >
 							<i class="fa fa-bolt"></i>
 							{{ 'Extract content'|trans }}
 						</button>
 					{% endif %}
-                    <button type="button" class="btn btn-small btn-primary " data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+                    <button type="button" class="btn btn-small btn-default " data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
                 </div>
               </div>
             </div>
@@ -1203,12 +1146,12 @@
 			<input type="file" class="file-uploader-input">
 		</div>
 		<div class="btn-group">
-			<button type="button" class="btn btn-small btn-primary asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
+			<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
               <i class="fa fa-info"></i>
               {{ 'Info'|trans }}
             </button>
-			<a href="#" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
-			<a href="#" class="btn btn-small btn-primary clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{'Clear'|trans}}"><i class="fa fa-remove"></i>&nbsp;{{'Clear'|trans}}</a>
+			<a href="#" class="btn btn-small btn-default view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
+			<a href="#" class="btn btn-small btn-default clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{'Clear'|trans}}"><i class="fa fa-remove"></i>&nbsp;{{'Clear'|trans}}</a>
 		</div>
 	</div>
 </div>
@@ -1444,6 +1387,13 @@
 		{{- form_errors(form) -}}
 	</div>             
 {%- endblock i18n_content_row %}
+
+{%- block data_field_migration_transformer_row -%}
+	<div>
+		{{ form_row(form.class) }}
+		{{ form_row(form.config) }}
+	</div>
+{%- endblock -%}
 
 {%- block form_end -%}
 	{{ parent() }}

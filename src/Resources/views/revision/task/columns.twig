@@ -1,0 +1,62 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{%- block icon -%}
+    <div class="text-center">
+        <i class="{{ data.taskCurrent.statusIcon }}"></i>
+    </div>
+{%- endblock -%}
+
+{%- block title -%}
+    <a href="#" class="task-modal"
+        data-url="{{ path('ems_core_task_ajax_modal_task', { 'revisionId': data.id, 'taskId': data.taskCurrent.id }) }}"
+        data-title="Task: {{ data.taskCurrent.title }}">
+        {{ data.taskCurrent.title }}
+    </a>
+{%- endblock -%}
+
+{%- block owner -%}{{- data.owner|displayname -}}{%- endblock -%}
+{%- block assignee -%}{{- data.taskCurrent.assignee|displayname -}}{%- endblock -%}
+
+{% block status %}
+    {{ "task.status.#{data.taskCurrent.status}"|trans }}
+{% endblock %}
+
+{%- block deadline -%}
+    {%- if data.taskCurrent.hasDeadline -%}
+        {%- set deadline = data.taskCurrent.deadline.format(date_format) -%}
+        {%- if data.taskCurrent.deadline.timestamp < date('now').timestamp -%}
+            <span class="text-danger"><strong>{{ deadline }}</strong></span>
+        {%- else -%}
+            {{ deadline }}
+        {%- endif -%}
+    {%- endif -%}
+{%- endblock -%}
+
+{%- block actions -%}
+    <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            action <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <a href="{{ path('data.revisions', { 'type': data.giveContentType.name, 'ouuid': data.ouuid }) }}">
+                    <i class="fa fa-file" aria-hidden="true"></i> {{ 'task.dashboard.action.go_revision'|trans }}
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('revision.new-draft', { 'type': data.giveContentType.name, 'ouuid': data.ouuid }) }}">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'task.dashboard.action.edit_revision'|trans }}
+                </a>
+            </li>
+            {% if table.context.tab|default('') == 'manager' %}
+                <li>
+                    <a href="#task-change-owner" class="btn-task-change-owner-modal"
+                       data-url="{{ path('ems_core_task_ajax_modal_change_owner', { 'revisionId': data.id }) }}"
+                       data-title="{{ 'task.dashboard.action.change_owner'|trans }}">
+                        <i class="fa fa-user-circle-o" aria-hidden="true"></i> {{ 'task.dashboard.action.change_owner'|trans }}
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{%- endblock -%}

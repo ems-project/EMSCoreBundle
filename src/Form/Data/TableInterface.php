@@ -56,4 +56,16 @@ interface TableInterface extends \Countable, \IteratorAggregate
     public function getAjaxUrl(): ?string;
 
     public function supportsTableActions(): bool;
+
+    public function next(int $pagingSize = 100): bool;
+
+    public function setSize(int $size): void;
+
+    public function getRowTemplate(): string;
+
+    public function getExportSheetName(): string;
+
+    public function getExportFileName(): string;
+
+    public function getExportDisposition(): string;
 }

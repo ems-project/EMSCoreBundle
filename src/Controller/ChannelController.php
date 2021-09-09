@@ -56,8 +56,8 @@ final class ChannelController extends AbstractController
                         $this->channelService->deleteByIds($table->getSelected());
                         break;
                     case TableType::REORDER_ACTION:
-                        $newOrder = $request->get($form->getName(), [])['reordered'] ?? [];
-                        $this->channelService->reorderByIds(\array_flip(\array_values($newOrder)));
+                        $newOrder = TableType::getReorderedKeys($form->getName(), $request);
+                        $this->channelService->reorderByIds($newOrder);
                         break;
                     default:
                         $this->logger->error('log.controller.channel.unknown_action');
@@ -109,7 +109,10 @@ final class ChannelController extends AbstractController
         $table = new EntityTable($this->channelService, $this->generateUrl('ems_core_channel_ajax_data_table'));
         $table->addColumn('table.index.column.loop_count', 'orderKey');
         $table->addColumn('channel.index.column.label', 'label');
-        $table->addColumn('channel.index.column.name', 'name');
+        $column = $table->addColumn('channel.index.column.name', 'name');
+        $column->setPathCallback(function (Channel $channel, string $baseUrl = '') {
+            return $baseUrl.$channel->getEntryPath();
+        }, '_blank');
         $table->addColumn('channel.index.column.alias', 'alias');
         $table->addColumnDefinition(new BoolTableColumn('channel.index.column.public', 'public'));
         $table->addItemGetAction('ems_core_channel_edit', 'channel.actions.edit', 'pencil');

@@ -289,7 +289,7 @@ log.elasticsearch.cluster_red: 'There is something wrong with the cluster, actio
 log.elasticsearch.cluster_yellow: 'There is something wrong with the cluster, status color: %color_status%'
 log.elasticsearch.default_search: 'This search has been defined as default search'
 log.elasticsearch.default_search_for_content_type: 'This search has been defined as default search form for the content type %contenttype%'
-'log.elasticsearch.index_deleted''': 'The index %index_name% has been deleted'
+log.elasticsearch.index_deleted: 'The index %index_name% has been deleted'
 log.elasticsearch.index_not_found: 'Index %index_name% not found'
 log.elasticsearch.not_able_to_deserialize_filters: 'Error during the deserialization of the filters'
 log.elasticsearch.paging_limit_exceeded: 'The paging is limited to the first %paging% items'
@@ -803,3 +803,4 @@ Views: Views
 'New WYSIWYG profile': 'New WYSIWYG profile'
 views.elements.side-menu-html.quick-search-placeholder: Search...
 views.elements.side-menu-html.quick-search-label: 'Quick search'
+views.elements.side-menu-html.anonymous-user: 'Anonymous user'

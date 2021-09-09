@@ -29,6 +29,15 @@ If you want to regenerate a PHPStan baseline run this command:
 vendor/bin/phpstan analyse --generate-baseline
 ```
 
+
+## Update translation files
+
+```
+demo-dev trans:update --force --domain=emsco-twigs --output-format=yml --sort=asc en EMSCoreBundle
+```
+
+
+
 Documentation
 -------------
 * [Installation](../master/doc/install.md)

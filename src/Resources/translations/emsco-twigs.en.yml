@@ -1,14 +1,9 @@
-
-views:
-  data:
-    edit-revision-html:
-      version-modal:
-        close-label: Close
-      discard-draft-message: Modification made in this draft will be lost
-      publish-label: Publish in %environment%
-      discard-draft-label: Discart draft
-      cancel-message: Cancel non-saved modifications?
-      cancel-label: Cancel
-      subtitle: Working area
-      title: 'Edit the %content-type%: "%revision%"'
-      new-draft-title: '%content-type%: new draft'
+views.data.edit-revision-html.version-modal.close-label: Close
+views.data.edit-revision-html.discard-draft-message: 'Modification made in this draft will be lost'
+views.data.edit-revision-html.publish-label: 'Publish in %environment%'
+views.data.edit-revision-html.discard-draft-label: 'Discart draft'
+views.data.edit-revision-html.cancel-message: 'Cancel non-saved modifications?'
+views.data.edit-revision-html.cancel-label: Cancel
+views.data.edit-revision-html.subtitle: 'Working area'
+views.data.edit-revision-html.title: 'Edit the %content-type%: "%revision%"'
+views.data.edit-revision-html.new-draft-title: '%content-type%: new draft'

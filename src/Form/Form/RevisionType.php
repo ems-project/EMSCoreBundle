@@ -81,7 +81,7 @@ class RevisionType extends AbstractType
         ])->add('save', SubmitEmsType::class, [
             'label' => 'form.form.revision-type.save-draft-label',
             'attr' => [
-                    'class' => 'btn-default btn-sm ',
+                    'class' => 'btn btn-default btn-sm ',
             ],
             'icon' => 'fa fa-save',
         ]);
@@ -94,7 +94,7 @@ class RevisionType extends AbstractType
             $builder->add('paste', SubmitEmsType::class, [
                 'label' => 'form.form.revision-type.paste-label',
                 'attr' => [
-                        'class' => 'btn-default btn-sm ',
+                    'class' => '',
                 ],
                 'icon' => 'fa fa-paste',
             ]);
@@ -104,7 +104,7 @@ class RevisionType extends AbstractType
             $builder->add('copy', SubmitEmsType::class, [
                     'label' => 'form.form.revision-type.copy-label',
                     'attr' => [
-                            'class' => 'btn-default btn-sm ',
+                        'class' => '',
                     ],
                     'icon' => 'fa fa-copy',
             ]);
@@ -127,7 +127,7 @@ class RevisionType extends AbstractType
                         ],
                     ])
                     ->add('publish_version', SubmitEmsType::class, [
-                        'attr' => ['class' => 'btn-primary btn-sm'],
+                        'attr' => ['class' => 'btn btn-primary btn-sm'],
                         'icon' => 'glyphicon glyphicon-open',
                         'label' => 'form.form.revision-type.publish-label',
                         'label_translation_parameters' => [
@@ -142,7 +142,7 @@ class RevisionType extends AbstractType
                         '%environment%' => $environment->getLabel(),
                     ],
                     'attr' => [
-                        'class' => 'btn-primary btn-sm ',
+                        'class' => 'btn btn-primary btn-sm ',
                     ],
                     'icon' => 'glyphicon glyphicon-open',
                 ]);

@@ -117,7 +117,7 @@ class PublishController extends AbstractController
             'ignore' => [$environment->getName()],
         ])->add('publish', SubmitEmsType::class, [
             'attr' => [
-                'class' => 'btn-primary btn-md',
+                'class' => 'btn btn-primary btn-md',
             ],
             'icon' => 'glyphicon glyphicon-open',
         ]);

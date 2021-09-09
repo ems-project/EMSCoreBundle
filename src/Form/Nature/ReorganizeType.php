@@ -24,7 +24,7 @@ class ReorganizeType extends AbstractType
         ])
         ->add('reorder', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary reorder-button',
+                        'class' => 'btn btn-primary reorder-button',
                 ],
                 'icon' => 'fa fa-reorder',
         ]);

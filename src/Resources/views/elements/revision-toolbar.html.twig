@@ -1,27 +1,30 @@
-{% trans_default_domain 'EMSCoreBundle' -%}
+{% trans_default_domain 'emsco-twigs' -%}
 <div class="btn-group{% if vertical is defined and vertical %}-vertical{% endif %}">
 	{% if withView is not defined or withView %}
         {% include '@EMSCore/elements/get-button.html.twig' with {
 				'url': path('data.revisions', {
 					'type': instance.contentType.name,
 					'ouuid': instance.ouuid,
-					'revisionId': revisionId
-				}), 
-				'label': 'View', 
+					'revisionId': revisionId,
+					'btnType': 'primary',
+				}),
+				'label': 'views.elements.revision-toolbar-html.view-label'|trans,
 				'icon': 'eye' }%}
 	{% endif %}
 	{% if draft %} 	
 		{% if is_granted(instance.contentType.editRole) %}
 			{% if not  instance.contentType.circlesField or attribute(instance.rawData, instance.contentType.circlesField) is not defined or attribute(instance.rawData, instance.contentType.circlesField)|in_my_circles %}
     {% include '@EMSCore/elements/get-button.html.twig' with {
-					'url': path('revision.edit', {'revisionId': revisionId}), 
-					'label': 'Edit draft', 
+					'url': path('revision.edit', {'revisionId': revisionId}),
+					'label': 'views.elements.revision-toolbar-html.edit-draft-label'|trans,
+					'btnType': 'primary',
 					'icon': 'pencil' }%}
 				{% if autoSave  %}
                     {% include '@EMSCore/elements/post-button.html.twig' with {
 						'url': path('revision.cancel', {'revision': revisionId}),
-						'message': 'Cancel last modifications ?',
-						'label': 'Cancel',
+						'message': 'views.elements.revision-toolbar-html.cancel-message'|trans,
+						'label': 'views.elements.revision-toolbar-html.cancel-label'|trans,
+						'btnType': 'default',
 						'icon': 'remove'
 					}%}
 				{% endif %}
@@ -30,15 +33,17 @@
                     {% if not autoSave  %}
 						{% include '@EMSCore/elements/post-button.html.twig' with {
 							'url': path('revision.finalize', {'revision': revisionId}),
-							'message': 'Finalize this draft ?',
-							'label': 'Finalize',
+							'message': 'views.elements.revision-toolbar-html.finalize-draft-message'|trans,
+							'label': 'views.elements.revision-toolbar-html.finalize-draft-label'|trans({'%environment%': instance.contentType.environment.label|default('')}),
+							'btnType': 'default',
 							'icon': 'check'
 						}%}
                     {% endif %}
                     {% include '@EMSCore/elements/post-button.html.twig' with {
 					'url': path('revision.discard', {'revisionId': revisionId}),
-					'message': 'Discard this draft ?',
-					'label': 'Discard',
+					'label': 'views.elements.revision-toolbar-html.discard-draft-label'|trans,
+					'message': 'views.elements.revision-toolbar-html.discard-draft-message'|trans,
+					'btnType': 'danger',
 					'icon': 'trash'
 				}%}
 			{% endif %}
@@ -68,40 +73,45 @@
 	   		{% if not  instance.contentType.circlesField or attribute(object._source,instance.contentType.circlesField) is not defined or attribute(object._source,instance.contentType.circlesField)|in_my_circles %}
                 {% if draft %}
                     {% include '@EMSCore/elements/get-button.html.twig' with {
-						'url': path('revision.edit', {'revisionId': revisionId}), 
-						'label': 'Edit draft', 
+						'url': path('revision.edit', {'revisionId': revisionId}),
+						'btnType': 'primary',
+						'label': 'views.elements.revision-toolbar-html.edit-draft-label'|trans,
 						'icon': 'pencil' }%}
 					{% if autoSave  %}
                         {% include '@EMSCore/elements/post-button.html.twig' with {
 							'url': path('revision.cancel', {'revision': revisionId}),
-							'message': 'Cancel last modifications ?',
-							'label': 'Cancel',
+							'btnType': 'default',
+							'label': 'views.elements.revision-toolbar-html.cancel-last-updates-label'|trans,
+							'message': 'views.elements.revision-toolbar-html.cancel-last-updates-message'|trans,
 							'icon': 'remove'
 						}%}
 					{% endif %}
                 {% elseif current %}
                     {% include '@EMSCore/elements/post-button.html.twig' with {
-						'url': path('revision.new-draft', {'ouuid': revision.ouuid, 'type':revision.contentType.name }), 
-						'label': 'New draft', 
+						'url': path('revision.new-draft', {'ouuid': revision.ouuid, 'type':revision.contentType.name }),
+						'label': 'views.elements.revision-toolbar-html.new-draft-label'|trans,
 						'icon': 'pencil' }%}
 				{% else %}
 					{% if instance.contentType.fieldType.fieldsRoles|one_granted(true) %}
                         {% include '@EMSCore/elements/get-button.html.twig' with {
-							'url': path('revision.edit', {'revisionId': revisionId}), 
-							'label': 'Edit revision', 
+							'url': path('revision.edit', {'revisionId': revisionId}),
+							'btnType': 'default',
+							'label': 'views.elements.revision-toolbar-html.edit-revision-label'|trans,
 							'icon': 'pencil' }%}
 					{% endif %}
 					{% if autoSave  %}
                         {% include '@EMSCore/elements/post-button.html.twig' with {
 							'url': path('revision.cancel', {'revision': revisionId}),
-							'message': 'Cancel last modifications ?',
-							'label': 'Cancel',
+							'btnType': 'default',
+							'message': 'views.elements.revision-toolbar-html.cancel-last-updates-message'|trans,
+							'label': 'views.elements.revision-toolbar-html.cancel-last-updates-label'|trans,
 							'icon': 'remove'
 						}%}
 					{% endif %}
                     {% include '@EMSCore/elements/post-button.html.twig' with {
-						'url': path('revision.revert', {'id': revisionId}), 
-						'label': 'Revert revision', 
+						'url': path('revision.revert', {'id': revisionId}),
+						'btnType': 'default',
+						'label': 'views.elements.revision-toolbar-html.revert-revision-label'|trans,
 						'icon': 'undo' }%}
 				{% endif %}
 			{% endif %}
@@ -113,14 +123,14 @@
                     {% include '@EMSCore/elements/post-button.html.twig' with {
                         'url': path('revision.reindex', {'revisionId': revisionId}),
 						'btnType': 'default',
-                        'label': 'Re-index',
+						'label': 'views.elements.revision-toolbar-html.re-index-label'|trans,
                         'icon': 'recycle'}%}
                 {% endif %}
 		  {% if instance.contentType.publishRole and is_granted(instance.contentType.publishRole) and hasEnv  %}
 				<div class="btn-group">
 				  <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				    	<span class="fa fa-toggle-on"></span>&nbsp;
-						Publish to
+						{{ 'views.elements.revision-toolbar-html.publish-to-label'|trans }}
 						<span class="caret"></span>
 				  </button>
 				   <ul class="dropdown-menu">
@@ -139,7 +149,7 @@
 		  	<div class="btn-group">
 				  <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				    	<span class="fa fa-toggle-off"></span>&nbsp;
-						Unpublish from
+					  	{{ 'views.elements.revision-toolbar-html.unpublish-from-label'|trans }}
 						<span class="caret"></span>
 				  </button>
 				   <ul class="dropdown-menu">

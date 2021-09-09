@@ -11,15 +11,15 @@ views.elements.revision-toolbar-html.view-label: View
 views.elements.revision-toolbar-html.edit-draft-label: 'Edit draft'
 views.elements.revision-toolbar-html.cancel-label: Cancel
 views.elements.revision-toolbar-html.cancel-message: 'Cancel last modifications ?'
-views.elements.revision-toolbar-html.finalize-draft-message: Finalize draft
-views.elements.revision-toolbar-html.finalize-draft-label: Publish in %environment%
-views.elements.revision-toolbar-html.discard-draft-label: Discard draft
+views.elements.revision-toolbar-html.finalize-draft-message: 'Finalize draft'
+views.elements.revision-toolbar-html.finalize-draft-label: 'Publish in %environment%'
+views.elements.revision-toolbar-html.discard-draft-label: 'Discard draft'
 views.elements.revision-toolbar-html.discard-draft-message: 'Modification made in this draft will be lost'
 views.elements.revision-toolbar-html.cancel-last-updates-label: Cancel
 views.elements.revision-toolbar-html.cancel-last-updates-message: 'Cancel non-saved modifications?'
 views.elements.revision-toolbar-html.new-draft-label: Edit
-views.elements.revision-toolbar-html.edit-revision-label: Edit revision
-views.elements.revision-toolbar-html.revert-revision-label: Revert to this revision
+views.elements.revision-toolbar-html.edit-revision-label: 'Edit revision'
+views.elements.revision-toolbar-html.revert-revision-label: 'Revert to this revision'
 views.elements.revision-toolbar-html.re-index-label: Re-index
-views.elements.revision-toolbar-html.publish-to-label: Publish to
-views.elements.revision-toolbar-html.unpublish-from-label: Unpublish from
+views.elements.revision-toolbar-html.publish-to-label: 'Publish to'
+views.elements.revision-toolbar-html.unpublish-from-label: 'Unpublish from'

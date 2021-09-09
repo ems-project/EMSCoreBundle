@@ -21,7 +21,7 @@ class ImporterType extends AbstractType
            ])
            ->add('import', SubmitEmsType::class, [
                'attr' => [
-                   'class' => 'btn-danger',
+                   'class' => 'btn-primary',
                ],
                'icon' => 'glyphicon glyphicon-import',
            ]);

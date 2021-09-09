@@ -64,6 +64,10 @@ contenttype:
   action:
     update_from_json: "Update from JSON"
 controller:
+  revision:
+    edit-controller:
+      warning:
+        edit-draft: 'You are editing an already published revision, It''s safer to <a href="%path%" class="btn btn-primary"><span class="fa fa-pencil"></span> edit a draft</a>'
   environment:
     index:
       reorder_submit_button: Reorder
@@ -825,15 +829,6 @@ view:
     index:
       title: "User list"
 views:
-  data:
-    edit-revision-html:
-      version-modal:
-        close-label: Close
-      discard-draft-message: Modification made in this draft will be lost
-      publish-label: Publish in %environment%
-      discard-draft-label: Discart draft
-      cancel-message: Cancel non-saved modifications?
-      cancel-label: Cancel
   elements:
     object-views-button:
       corresponding-revision-icon-class: fa fa-archive

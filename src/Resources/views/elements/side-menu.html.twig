@@ -35,7 +35,8 @@
       <!-- search form (Optional) -->
       <form action="{{ path('ems_quick_search') }}" method="get" class="sidebar-form">
         <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="Search...">
+            <label for="q" class="sr-only">{{ 'views.elements.side-menu-html.quick-search-label'|trans }}</label>
+            <input id="q" type="text" name="q" class="form-control" placeholder="{{ 'views.elements.side-menu-html.quick-search-placeholder'|trans }}">
           <span class="input-group-btn">
             <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
             </button>
@@ -177,7 +178,7 @@
           </li>
           <li class="treeview">
               <a href="{{ path('ems_core_uploaded_file_index') }}" id="menu-filter-index">
-                  <i class="fa fa-file"></i> <span>{{ 'Uploaded Files'|trans }}</span>
+                  <i class="fa fa-upload"></i> <span>{{ 'Uploaded Files'|trans }}</span>
               </a>
           </li>
       </ul>	

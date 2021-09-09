@@ -456,7 +456,7 @@ table.index.column.loop_count: '#'
 table.index.empty: 'Nothing to show here'
 task.assigned_to: 'Assigned to '
 task.change_owner.change: 'New owner'
-task.change_owner.current: 'The current ower for document "%revision%" is "%owner%"'
+task.change_owner.current: 'The current owner for document "%revision%" is "%owner%"'
 task.change_owner.missing: 'The document "%revision%" has no owner'
 task.change_owner.submit: Change
 task.change_owner.success: 'Successfully changed ownership!'
@@ -539,7 +539,7 @@ uploaded-file.index.column.size: 'File size'
 uploaded-file.index.column.type: 'Mime type'
 uploaded-file.index.column.username: By
 uploaded-file.index.title: 'Uploaded Files'
-uploaded-file.menu: Menu
+uploaded-file.menu: 'Uploaded files'
 uploaded-file.soft-delete-confirm: 'Are you sure you want to delete this file?'
 uploaded-file.uploaded-file.download_selected: 'Download selected'
 uploaded-file.uploaded-file.soft_delete_selected: 'Delete selected'
@@ -654,150 +654,152 @@ views.elasticsearch.search.pagetitle: Search
 views.elasticsearch.search.subtitle: '%total%'
 views.elasticsearch.search.title: 'Search engine: %total% results'
 wysiwyg.invalid_config_format: 'Format not valid: %msg%'
-'An Error Occurred': '__An Error Occurred'
-'Oops! An Error Occurred': '__Oops! An Error Occurred'
-'The server returned a %status_code%': '__The server returned a %status_code%'
-'With the message "%status_text%".': '__With the message "%status_text%".'
-'Add an Analyzer': '__Add an Analyzer'
-'expert mode': '__expert mode'
-Analyzers: __Analyzers
-'Add an analyzer': '__Add an analyzer'
-'Edit an Analyzer': '__Edit an Analyzer'
-Notice: __Notice
-'All environments have to be re-builded each times that the analyzers configuration is updated.': '__All environments have to be re-builded each times that the analyzers configuration is updated.'
-'List analyzers': '__List analyzers'
-'Add analyzer': '__Add analyzer'
-'#': '__#'
-Name: __Name
-Label: __Label
-Action: __Action
-'All content types': '__All content types'
-'Logged in as': '__Logged in as'
-'User profile': '__User profile'
-Exit: __Exit
-'Sign out': '__Sign out'
-'Core %version%': '__Core %version%'
-'with Symfony %version%': '__with Symfony %version%'
-Reorder: __Reorder
-'Reorder the content type "%content_type%"': '__Reorder the content type "%content_type%"'
-'Reorder %name%''s fields': '__Reorder %name%''s fields'
-'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID': '__This operation will not index the %object_name%, but initiate a draft only with a specific OUUID'
-'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.': '__This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.'
-'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.': '__About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.'
-'Template is missing': '__Template is missing'
-OUUID: __OUUID
-Locked: __Locked
-'Last update': '__Last update'
-By: __By
-Revisions: __Revisions
-'Edit draft': '__Edit draft'
-'Discard this draft ?': '__Discard this draft ?'
-Discard: __Discard
-Revision: __Revision
-'Finalized by': '__Finalized by'
-'Finalized on': '__Finalized on'
-Pending: __Pending
-Nothing: __Nothing
-'Linked documents in': '__Linked documents in'
-'This document does not have any linked document': '__This document does not have any linked document'
-'Trash for content type %name%': '__Trash for content type %name%'
-'Deleted by': '__Deleted by'
-'Put it back ?': '__Put it back ?'
-'Put back': '__Put back'
-'Empty Trash ?': '__Empty Trash ?'
-'Empty Trash': '__Empty Trash'
-Empty: __Empty
-'The trash is empty': '__The trash is empty'
-Documentation: __Documentation
-'Sort options': '__Sort options'
-'Cluster''s UUID': '__Cluster''s UUID'
-Tagline: __Tagline
-'Node''s name': '__Node''s name'
-'Elasticsearch''s version': '__Elasticsearch''s version'
-'Lucene''s version': '__Lucene''s version'
-'Build date': '__Build date'
-'Certificate''s information': '__Certificate''s information'
-Bits: __Bits
-'Public key': '__Public key'
-'Certificate is missing': '__Certificate is missing'
-'Tika server': '__Tika server'
-'Tika server is not configured': '__Tika server is not configured'
-'Compare environments': '__Compare environments'
-'Uploaded Files': '__Uploaded Files'
-WYSIWYG: __WYSIWYG
-Search: __Search
-Filters: __Filters
-'Edit %entity_name%': '__Edit %entity_name%'
-'Search options': '__Search options'
-'New %entity_name%': '__New %entity_name%'
-'Align Environments': '__Align Environments'
-Environments: __Environments
-'time to align environments?': '__time to align environments?'
-'Select Environments to compare': '__Select Environments to compare'
-'Content type': '__Content type'
-'Add managed alias': '__Add managed alias'
-'Edit managed alias': '__Edit managed alias'
-'Add a Filter': '__Add a Filter'
-'Edit a Filter': '__Edit a Filter'
-'All environments have to be re-builded each times that the filters configuration is updated.': '__All environments have to be re-builded each times that the filters configuration is updated.'
-'List filters': '__List filters'
-Add: __Add
-'Asset options': '__Asset options'
-'Hash signature': '__Hash signature'
-'Extract content': '__Extract content'
-Info: __Info
-View: __View
-Clear: __Clear
-'I18N edit': '__I18N edit'
-I18N: __I18N
-Cancel: __Cancel
-Edit: __Edit
-'I18N create': '__I18N create'
-'Not defined': '__Not defined'
-Download: __Download
-'Title :': '__Title :'
-'Size :': '__Size :'
-'MIME Type :': '__MIME Type :'
-'Date :': '__Date :'
-'Author :': '__Author :'
-'Language :': '__Language :'
-'Content :': '__Content :'
-view.macros.data-field-type.collection_removed_items: __view.macros.data-field-type.collection_removed_items
-view.macros.data-field-type.collection_added_items: __view.macros.data-field-type.collection_added_items
-'To be treated': '__To be treated'
-'No result for this filters combinaison': '__No result for this filters combinaison'
-Notification: __Notification
-'Created by': '__Created by'
-Date: __Date
-Environment: __Environment
-Warnings: __Warnings
-Actions: __Actions
-Inbox: __Inbox
-Outbox: __Outbox
-'No result to display': '__No result to display'
-'No pending notifications': '__No pending notifications'
-'Sort Options': '__Sort Options'
-'Add a Sort Option': '__Add a Sort Option'
-'Click on ''Add a Sort Option'' to create a first Sort Option': '__Click on ''Add a Sort Option'' to create a first Sort Option'
-'Aggregate Options': '__Aggregate Options'
-'Add an Aggregate Option': '__Add an Aggregate Option'
-'Click on ''Add an aggregate option'' to create a first Aggregate Option': '__Click on ''Add an aggregate option'' to create a first Aggregate Option'
-'Search Field Options': '__Search Field Options'
-'Add an Search Field Option': '__Add an Search Field Option'
-'Click on ''Add an search field option'' to create a first Search Field Option': '__Click on ''Add an search field option'' to create a first Search Field Option'
-view.icon.class.uploaded-file: __view.icon.class.uploaded-file
-'Add user': '__Add user'
-Views: __Views
-'gallery view plugin': '__gallery view plugin'
-'Reorganise:': '__Reorganise:'
-'Edit WYSIWYG styles set': '__Edit WYSIWYG styles set'
-'New WYSIWYG styles set': '__New WYSIWYG styles set'
-'Edit WYSIWYG profile': '__Edit WYSIWYG profile'
-'WYSIWYG profiles': '__WYSIWYG profiles'
-'WYSIWYG options': '__WYSIWYG options'
-'Add a profile': '__Add a profile'
-'Click on ''Add a profile'' to create a first WYSIWYG profile': '__Click on ''Add a profile'' to create a first WYSIWYG profile'
-'WYSIWYG styles sets': '__WYSIWYG styles sets'
-'Add a style set': '__Add a style set'
-'Click on ''Add a styles set'' to create a first styles set': '__Click on ''Add a styles set'' to create a first styles set'
-'New WYSIWYG profile': '__New WYSIWYG profile'
+'An Error Occurred': 'An Error Occurred'
+'Oops! An Error Occurred': 'Oops! An Error Occurred'
+'The server returned a %status_code%': 'The server returned a %status_code%'
+'With the message "%status_text%".': 'With the message "%status_text%".'
+'Add an Analyzer': 'Add an Analyzer'
+'expert mode': 'expert mode'
+Analyzers: Analyzers
+'Add an analyzer': 'Add an analyzer'
+'Edit an Analyzer': 'Edit an Analyzer'
+Notice: Notice
+'All environments have to be re-builded each times that the analyzers configuration is updated.': 'All environments have to be re-builded each times that the analyzers configuration is updated.'
+'List analyzers': 'List analyzers'
+'Add analyzer': 'Add analyzer'
+'#': '#'
+Name: Name
+Label: Label
+Action: Action
+'All content types': 'All content types'
+'Logged in as': 'Logged in as'
+'User profile': 'User profile'
+Exit: Exit
+'Sign out': 'Sign out'
+'Core %version%': 'Core %version%'
+'with Symfony %version%': 'with Symfony %version%'
+Reorder: Reorder
+'Reorder the content type "%content_type%"': 'Reorder the content type "%content_type%"'
+'Reorder %name%''s fields': 'Reorder %name%''s fields'
+'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID': 'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID'
+'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.': 'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.'
+'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.': 'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.'
+'Template is missing': 'Template is missing'
+OUUID: OUUID
+Locked: Locked
+'Last update': 'Last update'
+By: By
+Revisions: Revisions
+'Edit draft': 'Edit draft'
+'Discard this draft ?': 'Discard this draft ?'
+Discard: Discard
+Revision: Revision
+'Finalized by': 'Finalized by'
+'Finalized on': 'Finalized on'
+Pending: Pending
+Nothing: Nothing
+'Linked documents in': 'Linked documents in'
+'This document does not have any linked document': 'This document does not have any linked document'
+'Trash for content type %name%': 'Trash for content type %name%'
+'Deleted by': 'Deleted by'
+'Put it back ?': 'Put it back ?'
+'Put back': 'Put back'
+'Empty Trash ?': 'Empty Trash ?'
+'Empty Trash': 'Empty Trash'
+Empty: Empty
+'The trash is empty': 'The trash is empty'
+Documentation: Documentation
+'Sort options': 'Sort options'
+'Cluster''s UUID': 'Cluster''s UUID'
+Tagline: Tagline
+'Node''s name': 'Node''s name'
+'Elasticsearch''s version': 'Elasticsearch''s version'
+'Lucene''s version': 'Lucene''s version'
+'Build date': 'Build date'
+'Certificate''s information': 'Certificate''s information'
+Bits: Bits
+'Public key': 'Public key'
+'Certificate is missing': 'Certificate is missing'
+'Tika server': 'Tika server'
+'Tika server is not configured': 'Tika server is not configured'
+'Compare environments': 'Compare environments'
+'Uploaded Files': 'Uploaded Files'
+WYSIWYG: WYSIWYG
+Search: Search
+Filters: Filters
+'Edit %entity_name%': 'Edit %entity_name%'
+'Search options': 'Search options'
+'New %entity_name%': 'New %entity_name%'
+'Align Environments': 'Align Environments'
+Environments: Environments
+'time to align environments?': 'time to align environments?'
+'Select Environments to compare': 'Select Environments to compare'
+'Content type': 'Content type'
+'Add managed alias': 'Add managed alias'
+'Edit managed alias': 'Edit managed alias'
+'Add a Filter': 'Add a Filter'
+'Edit a Filter': 'Edit a Filter'
+'All environments have to be re-builded each times that the filters configuration is updated.': 'All environments have to be re-builded each times that the filters configuration is updated.'
+'List filters': 'List filters'
+Add: Add
+'Asset options': 'Asset options'
+'Hash signature': 'Hash signature'
+'Extract content': 'Extract content'
+Info: Info
+View: View
+Clear: Clear
+'I18N edit': 'I18N edit'
+I18N: I18N
+Cancel: Cancel
+Edit: Edit
+'I18N create': 'I18N create'
+'Not defined': 'Not defined'
+Download: Download
+'Title :': 'Title :'
+'Size :': 'Size :'
+'MIME Type :': 'MIME Type :'
+'Date :': 'Date :'
+'Author :': 'Author :'
+'Language :': 'Language :'
+'Content :': 'Content :'
+view.macros.data-field-type.collection_removed_items: '{0} Nothing has been removed.|{1} One item has been removed.|]1,Inf[ %count% item have been removed.'
+view.macros.data-field-type.collection_added_items: '{0} Nothing has been added.|{1} One item has been added.|]1,Inf[ %count% items have been added.'
+'To be treated': 'To be treated'
+'No result for this filters combinaison': 'No result for this filters combinaison'
+Notification: Notification
+'Created by': 'Created by'
+Date: Date
+Environment: Environment
+Warnings: Warnings
+Actions: Actions
+Inbox: Inbox
+Outbox: Outbox
+'No result to display': 'No result to display'
+'No pending notifications': 'No pending notifications'
+'Sort Options': 'Sort Options'
+'Add a Sort Option': 'Add a Sort Option'
+'Click on ''Add a Sort Option'' to create a first Sort Option': 'Click on ''Add a Sort Option'' to create a first Sort Option'
+'Aggregate Options': 'Aggregate Options'
+'Add an Aggregate Option': 'Add an Aggregate Option'
+'Click on ''Add an aggregate option'' to create a first Aggregate Option': 'Click on ''Add an aggregate option'' to create a first Aggregate Option'
+'Search Field Options': 'Search Field Options'
+'Add an Search Field Option': 'Add an Search Field Option'
+'Click on ''Add an search field option'' to create a first Search Field Option': 'Click on ''Add an search field option'' to create a first Search Field Option'
+view.icon.class.uploaded-file: 'fa fa-upload'
+'Add user': 'Add user'
+Views: Views
+'gallery view plugin': 'gallery view plugin'
+'Reorganise:': 'Reorganise:'
+'Edit WYSIWYG styles set': 'Edit WYSIWYG styles set'
+'New WYSIWYG styles set': 'New WYSIWYG styles set'
+'Edit WYSIWYG profile': 'Edit WYSIWYG profile'
+'WYSIWYG profiles': 'WYSIWYG profiles'
+'WYSIWYG options': 'WYSIWYG options'
+'Add a profile': 'Add a profile'
+'Click on ''Add a profile'' to create a first WYSIWYG profile': 'Click on ''Add a profile'' to create a first WYSIWYG profile'
+'WYSIWYG styles sets': 'WYSIWYG styles sets'
+'Add a style set': 'Add a style set'
+'Click on ''Add a styles set'' to create a first styles set': 'Click on ''Add a styles set'' to create a first styles set'
+'New WYSIWYG profile': 'New WYSIWYG profile'
+views.elements.side-menu-html.quick-search-placeholder: Search...
+views.elements.side-menu-html.quick-search-label: 'Quick search'

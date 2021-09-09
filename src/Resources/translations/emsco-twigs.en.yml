@@ -50,3 +50,8 @@ views.elements.side-menu-html.other: Other
 views.elements.side-menu-html.status: Status
 views.elements.side-menu-html.documentations: Documentations
 views.elements.side-menu-html.wysiwyg: WYSIWYG
+view.action.add.title: 'Add a new action to %contentType%'
+view.action.edit.title: 'Edit the action %action% for %contentType%'
+view.action.index.add.title: 'Add an action'
+view.action.index.title: '%contentType%''s actions'
+view.menu.breadcrumb.content-types: 'Content types'

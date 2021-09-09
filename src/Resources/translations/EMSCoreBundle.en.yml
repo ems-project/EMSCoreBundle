@@ -560,10 +560,6 @@ user.index.column.id: 'User ID'
 user.index.column.lastLogin: 'Last Login'
 user.index.column.roles: Roles
 user.index.column.username: Username
-view.action.add.title: 'Add a new action to %contentType%'
-view.action.edit.title: 'Edit the action %action% for %contentType%'
-view.action.index.add.title: 'Add an action'
-view.action.index.title: '%contentType%''s actions'
 view.breadcrumb.wysiwyg-options: 'WYSIWYG Options'
 view.contenttype.reorder_item.edit_field_button: 'Edit %name%'
 view.contenttype.reorder_item.edit_main_container_button: 'Edit the main container'
@@ -637,7 +633,6 @@ view.macros.data-field-type.macros.data-field-type.collection_added_items: '{1} 
 view.macros.data-field-type.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 view.macros.data-field-type.menu-option-button: View
 view.macros.data-field-type.modal-close-button: Close
-view.menu.breadcrumb.content-types: 'Content types'
 view.user.index.title: 'User list'
 views.elements.object-views-button.corresponding-revision-icon-class: 'fa fa-archive'
 views.elements.object-views-button.corresponding-revision: 'Corresponding revision'

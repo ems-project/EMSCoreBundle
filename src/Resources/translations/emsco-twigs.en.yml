@@ -55,3 +55,22 @@ view.action.edit.title: 'Edit the action %action% for %contentType%'
 view.action.index.add.title: 'Add an action'
 view.action.index.title: '%contentType%''s actions'
 view.menu.breadcrumb.content-types: 'Content types'
+not-applicable: N/A
+views.elasticsearch.export-search.title: 'Export documents'
+views.elasticsearch.search.error_title: 'Error with the search result'
+views.elasticsearch.search.pagetitle: Search
+views.elasticsearch.search.subtitle: '%total%'
+views.elasticsearch.search.title: 'Search engine: %total% results'
+views.elasticsearch.search.sort-options: 'Sort options'
+views.elasticsearch.status.cluster-uuid: 'Cluster''s UUID'
+views.elasticsearch.status.tagline: Tagline
+views.elasticsearch.status.node-name: 'Node''s name'
+views.elasticsearch.status.version: 'Elasticsearch''s version'
+views.elasticsearch.status.lucene-version: 'Lucene''s version'
+views.elasticsearch.status.build-date: 'Build date'
+views.elasticsearch.status.certificate-information: 'Certificate''s information'
+views.elasticsearch.status.bits: Bits
+views.elasticsearch.status.certificate-is-missing: 'Certificate is missing'
+views.elasticsearch.status.tika-server: 'Tika server'
+views.elasticsearch.status.tika-server-not-configured: 'Tika server is not configured'
+views.elasticsearch.status.public-key: 'Public key'

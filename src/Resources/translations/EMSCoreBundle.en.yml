@@ -366,7 +366,6 @@ log.view.keywords.warning.bucket_not_found: 'Bucket %bucketPath% not found'
 log.view.not_found: 'View %view_id% not found'
 log.view.updated: 'A new view %view_name% has been updated'
 log.warning.asset_extract.file_to_large: 'As this file is larger (%filesize%) than %max_size% its content has not been automatically extracted. You can either force the extraction or specify it manually in the "Info" menu.'
-not-applicable: N/A
 query_search.actions.delete: Delete
 query_search.actions.delete_confirm: 'Delete the "%label%" QuerySearch?'
 query_search.actions.delete_selected: 'Delete selected'
@@ -643,11 +642,6 @@ views.elements.object-views-button.copy-data-icon-class: 'fa fa-copy'
 views.elements.object-views-button.raw-view: 'Raw view'
 views.elements.object-views-button.raw-view-icon-class: 'fa fa-th'
 views.elements.object-views-button.action-dropdown-label: 'Actions in %environment%'
-views.elasticsearch.export-search.title: 'Export documents'
-views.elasticsearch.search.error_title: 'Error with the search result'
-views.elasticsearch.search.pagetitle: Search
-views.elasticsearch.search.subtitle: '%total%'
-views.elasticsearch.search.title: 'Search engine: %total% results'
 wysiwyg.invalid_config_format: 'Format not valid: %msg%'
 'An Error Occurred': 'An Error Occurred'
 'Oops! An Error Occurred': 'Oops! An Error Occurred'
@@ -704,19 +698,6 @@ Nothing: Nothing
 Empty: Empty
 'The trash is empty': 'The trash is empty'
 Documentation: Documentation
-'Sort options': 'Sort options'
-'Cluster''s UUID': 'Cluster''s UUID'
-Tagline: Tagline
-'Node''s name': 'Node''s name'
-'Elasticsearch''s version': 'Elasticsearch''s version'
-'Lucene''s version': 'Lucene''s version'
-'Build date': 'Build date'
-'Certificate''s information': 'Certificate''s information'
-Bits: Bits
-'Public key': 'Public key'
-'Certificate is missing': 'Certificate is missing'
-'Tika server': 'Tika server'
-'Tika server is not configured': 'Tika server is not configured'
 'Compare environments': 'Compare environments'
 'Uploaded Files': 'Uploaded Files'
 WYSIWYG: WYSIWYG

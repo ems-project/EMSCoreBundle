@@ -801,6 +801,3 @@ Views: Views
 'Add a style set': 'Add a style set'
 'Click on ''Add a styles set'' to create a first styles set': 'Click on ''Add a styles set'' to create a first styles set'
 'New WYSIWYG profile': 'New WYSIWYG profile'
-views.elements.side-menu-html.quick-search-placeholder: Search...
-views.elements.side-menu-html.quick-search-label: 'Quick search'
-views.elements.side-menu-html.anonymous-user: 'Anonymous user'

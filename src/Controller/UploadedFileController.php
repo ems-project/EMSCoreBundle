@@ -124,7 +124,8 @@ class UploadedFileController extends AbstractController
         $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
 
         if ($this->isGranted('ROLE_ADMIN')) {
-            $table->addDynamicItemPostAction('ems_file_soft_delete', 'uploaded-file.action.soft-delete', 'trash', 'uploaded-file.soft-delete-confirm', ['id' => 'id']);
+            $itemDeleteAction = $table->addDynamicItemPostAction('ems_file_soft_delete', 'uploaded-file.action.soft-delete', 'trash', 'uploaded-file.soft-delete-confirm', ['id' => 'id']);
+            $itemDeleteAction->setButtonType('outline-danger');
             $table->addTableAction(self::SOFT_DELETE_ACTION, 'fa fa-trash', 'uploaded-file.uploaded-file.soft_delete_selected', 'uploaded-file.uploaded-file.soft_delete_selected_confirm');
         }
 

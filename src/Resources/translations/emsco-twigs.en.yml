@@ -106,3 +106,7 @@ views.data.revisions-data-html.revisions.th.autosave: Autosave
 views.data.revisions-data-html.revisions.th.environments: Environments
 views.data.revisions-data-html.revisions.th.pendings: Pendings
 views.data.revisions-data-html.revisions.th.actions: Actions
+views.elements.object-toolbar-html.view-draft-in-progress: 'View draft in progress'
+views.elements.object-toolbar-html.view-current-revision: 'View current revision'
+views.elements.object-toolbar-html.edit-draft: 'Edit draft'
+views.elements.object-toolbar-html.new-draft: Edit

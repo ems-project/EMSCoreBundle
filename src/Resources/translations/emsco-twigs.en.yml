@@ -6,7 +6,7 @@ views.data.edit-revision-html.cancel-label: 'Discard non-saved modifications'
 views.data.edit-revision-html.subtitle: 'Working area'
 views.data.edit-revision-html.title: 'Edit the %content-type%: "%revision%"'
 views.data.edit-revision-html.new-draft-title: '%content-type%: new draft'
-views.elements.revision-toolbar-html.view-label: View
+views.elements.revision-toolbar-html.view-label: 'View this revision'
 views.elements.revision-toolbar-html.edit-draft-label: 'Edit draft'
 views.elements.revision-toolbar-html.cancel-label: Cancel
 views.elements.revision-toolbar-html.cancel-message: 'Cancel last modifications ?'
@@ -14,8 +14,7 @@ views.elements.revision-toolbar-html.finalize-draft-message: 'Confirm save and p
 views.elements.revision-toolbar-html.finalize-draft-label: 'Save and publish in %environment%'
 views.elements.revision-toolbar-html.discard-draft-label: 'Delete this draft'
 views.elements.revision-toolbar-html.discard-draft-message: 'Modification made in this draft will be lost'
-views.elements.revision-toolbar-html.cancel-last-updates-label: Cancel
-views.elements.revision-toolbar-html.cancel-last-updates-message: 'Cancel non-saved modifications?'
+views.elements.revision-toolbar-html.cancel-last-updates-label: 'Cancel non-saved modifications'
 views.elements.revision-toolbar-html.new-draft-label: Edit
 views.elements.revision-toolbar-html.edit-revision-label: 'Edit revision'
 views.elements.revision-toolbar-html.revert-revision-label: 'Revert to this revision'
@@ -73,3 +72,22 @@ views.elasticsearch.status.certificate-is-missing: 'Certificate is missing'
 views.elasticsearch.status.tika-server: 'Tika server'
 views.elasticsearch.status.tika-server-not-configured: 'Tika server is not configured'
 views.elasticsearch.status.public-key: 'Public key'
+views.elements.revision-toolbar-html.other-revision-actions: 'Other actions on this revision'
+views.elements.revision-toolbar-html.cancel-last-updates-message: 'Cancel non-saved modifications'
+views.elements.revision-toolbar-html.compare-label: 'Compare this revision with the current one'
+views.elements.revision-toolbar-html.other-environment-actions: 'Other environment actions'
+views.data.revisions-data-html.status: Status
+views.data.revisions-data-html.draft-in-progress: 'Draft in progress'
+views.data.revisions-data-html.current-revision: 'Current revision'
+views.data.revisions-data-html.previous-revision: 'Previous revision'
+views.data.revisions-data-html.owner: Owner
+views.data.revisions-data-html.finalized-by: 'Finalized by'
+views.data.revisions-data-html.finalized-on: 'Finalized on'
+views.data.revisions-data-html.all-linked-documents: 'All linked documents'
+views.data.revisions-data-html.no-linked-document: 'This document does not have any linked document'
+task.tab_task: Task
+task.tab_tasks: Tasks
+views.data.revisions-data-html.revision: Revision
+views.data.revisions-data-html.pending: Pending
+views.data.revisions-data-html.nothing: Nothing
+views.data.revisions-data-html.linked-documents-in: Linked documents in %environment% (%length%/%total%)

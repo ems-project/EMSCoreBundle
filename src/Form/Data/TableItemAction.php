@@ -19,7 +19,7 @@ final class TableItemAction
     /** @var string|null */
     private $messageKey;
     private bool $dynamic;
-    private string $buttonType = 'primary';
+    private string $buttonType = 'default';
 
     /**
      * @param array<string, mixed> $routeParameters

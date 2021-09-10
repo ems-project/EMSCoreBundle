@@ -52,7 +52,7 @@ class FileController extends AbstractController
         }
         $fileService->removeSingleFileEntity([$id]);
 
-        return $this->redirectToRoute('ems_core_uploaded_file_index');
+        return $this->redirectToRoute('ems_core_uploaded_file_logs');
     }
 
     /**

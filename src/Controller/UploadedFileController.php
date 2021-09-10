@@ -81,6 +81,40 @@ class UploadedFileController extends AbstractController
         ]);
     }
 
+    public function logs(Request $request): Response
+    {
+        $table = $this->initTable();
+
+        $form = $this->createForm(TableType::class, $table);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
+                switch ($action->getName()) {
+                    case TableAbstract::DOWNLOAD_ACTION:
+                        if (!$this->isGranted('ROLE_ADMIN')) {
+                            throw new AccessDeniedException($request->getPathInfo());
+                        }
+
+                        return $this->downloadMultiple($table->getSelected());
+                    case self::SOFT_DELETE_ACTION:
+                        if (!$this->isGranted('ROLE_ADMIN')) {
+                            throw new AccessDeniedException($request->getPathInfo());
+                        }
+                        $this->fileService->removeSingleFileEntity($table->getSelected());
+                        break;
+                }
+            } else {
+                $this->logger->error('log.controller.uploaded-file-logs.unknown_action');
+            }
+
+            return $this->redirectToRoute('ems_core_uploaded_file_logs');
+        }
+
+        return $this->render('@EMSCore/uploaded-file-logs/index.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
     /**
      * @param array<string> $fileIds
      */
@@ -99,7 +133,7 @@ class UploadedFileController extends AbstractController
 
     private function initTable(): EntityTable
     {
-        $table = new EntityTable($this->fileService, $this->generateUrl('ems_core_uploaded_file_ajax'));
+        $table = new EntityTable($this->fileService, $this->generateUrl('ems_core_uploaded_file_logs_ajax'));
         $table->addColumnDefinition(new BoolTableColumn('uploaded-file.index.column.available', 'available'));
         $table->addColumn('uploaded-file.index.column.name', 'name')
             ->setRoute('ems_file_download', function (UploadedAsset $data) {

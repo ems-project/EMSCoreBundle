@@ -34,7 +34,7 @@ class UploadedFileService implements EntityServiceInterface
 
     public function count(string $searchValue = '', $context = null): int
     {
-        return $this->uploadedAssetRepository->searchCount($searchValue);
+        return $this->uploadedAssetRepository->searchCount($searchValue, null !== $context && ($context['available'] ?? false));
     }
 
     /**

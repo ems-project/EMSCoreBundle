@@ -198,11 +198,17 @@ class UploadedAssetRepository extends EntityRepository
         throw new \RuntimeException(\sprintf('Unexpected class object %s', \get_class($uploadedAsset)));
     }
 
-    public function searchCount(string $searchValue = ''): int
+    public function searchCount(string $searchValue = '', bool $availableOnly = false): int
     {
         $qb = $this->createQueryBuilder('ua');
         $qb->select('count(ua.id)');
         $this->addSearchFilters($qb, $searchValue);
+        if ($availableOnly) {
+            $qb->where($qb->expr()->eq('ua.available', ':true'));
+            $qb->setParameters([
+                ':true' => true,
+            ]);
+        }
 
         try {
             return \intval($qb->getQuery()->getSingleScalarResult());

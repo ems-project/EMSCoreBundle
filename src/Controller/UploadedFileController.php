@@ -12,6 +12,7 @@ use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\FileService;
+use EMS\CoreBundle\Service\UploadedFileService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
@@ -30,11 +31,13 @@ class UploadedFileController extends AbstractController
 
     private LoggerInterface $logger;
     private FileService $fileService;
+    private UploadedFileService $uploadedFileService;
 
-    public function __construct(LoggerInterface $logger, FileService $fileService)
+    public function __construct(LoggerInterface $logger, FileService $fileService, UploadedFileService $uploadedFileService)
     {
         $this->logger = $logger;
         $this->fileService = $fileService;
+        $this->uploadedFileService = $uploadedFileService;
     }
 
     public function ajaxDataTable(Request $request): Response
@@ -151,7 +154,7 @@ class UploadedFileController extends AbstractController
 
     private function initTable(): EntityTable
     {
-        $table = new EntityTable($this->fileService, $this->generateUrl('ems_core_uploaded_file_logs_ajax'));
+        $table = new EntityTable($this->uploadedFileService, $this->generateUrl('ems_core_uploaded_file_logs_ajax'));
         $table->addColumnDefinition(new BoolTableColumn('uploaded-file.index.column.available', 'available'));
         $table->addColumn('uploaded-file.index.column.name', 'name')
             ->setRoute('ems_file_download', function (UploadedAsset $data) {

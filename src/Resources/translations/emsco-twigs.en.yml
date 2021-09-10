@@ -95,3 +95,14 @@ views.data.revisions-data-html.title: 'Revisions of %content-type% : %title%'
 views.data.revisions-data-html.revision-draft-in-progress: 'This is a draft in progress'
 views.data.revisions-data-html.revision-current: 'You are viewing the last revision'
 views.data.revisions-data-html.revision-previous: 'This is a revision from the past'
+views.data.revisions-data-html.creation-date: 'Creation date'
+views.data.revisions-data-html.last-update: 'Last update'
+views.data.revisions-data-html.modify-by: 'Modify by'
+views.data.revisions-data-html.revisions.th.id: #
+views.data.revisions-data-html.revisions.th.date: Date
+views.data.revisions-data-html.revisions.th.finalize: Finalize
+views.data.revisions-data-html.revisions.th.locked: Locked
+views.data.revisions-data-html.revisions.th.autosave: Autosave
+views.data.revisions-data-html.revisions.th.environments: Environments
+views.data.revisions-data-html.revisions.th.pendings: Pendings
+views.data.revisions-data-html.revisions.th.actions: Actions

@@ -156,18 +156,18 @@
 	{% endif %}
 
 	<hr>
-	<strong><i class="fa fa-clock-o margin-r-5"></i> Creation date</strong>
+	<strong><i class="fa fa-clock-o margin-r-5"></i> {{ 'views.data.revisions-data-html.creation-date'|trans }}</strong>
 	<p class="text-muted">{{ revision.created|date(date_time_format) }}</p>
 
 	{% if is_super() %}
 		<hr>
-		<strong><i class="fa fa-pencil margin-r-5"></i> Last update</strong>
+		<strong><i class="fa fa-pencil margin-r-5"></i> {{ 'views.data.revisions-data-html.last-update'|trans }}</strong>
 		<p class="text-muted">{{ revision.modified|date(date_time_format) }}</p>
 	{% endif %}
 
 	{% if revision.lockby %}
 		<hr>
-		<strong><i class="fa fa-user margin-r-5"></i> Modified by</strong>
+		<strong><i class="fa fa-user margin-r-5"></i> {{ 'views.data.revisions-data-html.modify-by'|trans }}</strong>
 		<p class="text-muted">{{ revision.lockby|displayname }}</p>
 	{% endif %}
 
@@ -203,13 +203,13 @@
 			<h3 class="box-title">
 				{% if revision.draft %}
 					<i class="fa fa-fire"></i>
-					Draft in progress
+					{{ 'views.data.revisions-data-html.draft-in-progress'|trans }}
 				{% elseif not revision.endTime %}
 					<i class="fa fa-thumbs-up"></i>
-					Current revision
+					{{ 'views.data.revisions-data-html.current-revision'|trans }}
 				{% else %}
 					<i class="fa fa-clock-o"></i>
-					Previous revision ({{ revision.created|date(date_time_format) }})
+					{{ 'views.data.revisions-data-html.previous-revision'|trans({'%timestamp%': revision.created|date(date_time_format)}) }}
 				{% endif %}
 			</h3>
 		</div>
@@ -269,16 +269,16 @@
 								<table class="table table-bordered">
 									<tbody>
 									<tr>
-										<th style="width: 10px">#</th>
-										<th>Date</th>
-										<th>Finalize</th>
+										<th style="width: 10px">{{ 'views.data.revisions-data-html.revisions.th.id'|trans }}</th>
+										<th>{{ 'views.data.revisions-data-html.revisions.th.date'|trans }}</th>
+										<th>{{ 'views.data.revisions-data-html.revisions.th.finalize'|trans }}</th>
 										{% if is_super() %}
-											<th>Locked</th>
-											<th>Autosave</th>
+											<th>{{ 'views.data.revisions-data-html.revisions.th.locked'|trans }}</th>
+											<th>{{ 'views.data.revisions-data-html.revisions.th.autosave'|trans }}</th>
 										{% endif %}
-										<th>Environments</th>
-										<th>Pendings</th>
-										<th>Actions</th>
+										<th>{{ 'views.data.revisions-data-html.revisions.th.environments'|trans }}</th>
+										<th>{{ 'views.data.revisions-data-html.revisions.th.pendings'|trans }}</th>
+										<th>{{ 'views.data.revisions-data-html.revisions.th.actions'|trans }}</th>
 									</tr>
 									{% for rev in revisionsSummary %}
 										<tr class="{% if rev.id == revision.id %}bg-{{ revision.contentType.color }}{% elseif compareId == rev.id or compareId == revision.id %}bg-gray{% endif %}">

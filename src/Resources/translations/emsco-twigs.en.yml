@@ -73,3 +73,7 @@ views.elasticsearch.status.certificate-is-missing: 'Certificate is missing'
 views.elasticsearch.status.tika-server: 'Tika server'
 views.elasticsearch.status.tika-server-not-configured: 'Tika server is not configured'
 views.elasticsearch.status.public-key: 'Public key'
+views.elements.object-toolbar-html.view-draft-in-progress: 'View draft in progress'
+views.elements.object-toolbar-html.view-current-revision: 'View current revision'
+views.elements.object-toolbar-html.edit-draft: 'Edit draft'
+views.elements.object-toolbar-html.new-draft: Edit

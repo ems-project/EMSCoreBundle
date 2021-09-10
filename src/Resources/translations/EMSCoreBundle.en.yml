@@ -525,7 +525,10 @@ task.validation.done: Finish
 task.validation.reject: Reject
 task.validation.request: 'Send for validation'
 uploaded-file.action.download_selected: 'Download selected'
+uploaded-file.action.hide-show: Hide/Show
 uploaded-file.action.soft-delete: Delete
+uploaded-file.hide-show-confirm: 'Toggle file visibility ?'
+uploaded-file.uploaded-file.hide-show: 'Toggle visibility'
 uploaded-file.index.column.available: Available
 uploaded-file.index.column.created: 'Uploaded at'
 uploaded-file.index.column.head_last: 'Last seen'

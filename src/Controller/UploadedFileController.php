@@ -25,6 +25,8 @@ class UploadedFileController extends AbstractController
 {
     /** @var string */
     public const SOFT_DELETE_ACTION = 'soft_delete';
+    /** @var string */
+    public const HIDE_ACTION = 'hide';
 
     private LoggerInterface $logger;
     private FileService $fileService;
@@ -96,6 +98,12 @@ class UploadedFileController extends AbstractController
                         }
 
                         return $this->downloadMultiple($table->getSelected());
+                    case self::HIDE_ACTION:
+                        if (!$this->isGranted('ROLE_PUBLISHER')) {
+                            throw new AccessDeniedException($request->getPathInfo());
+                        }
+                        $this->fileService->toggleFileEntitiesVisibility($table->getSelected());
+                        break;
                     case self::SOFT_DELETE_ACTION:
                         if (!$this->isGranted('ROLE_ADMIN')) {
                             throw new AccessDeniedException($request->getPathInfo());
@@ -113,6 +121,16 @@ class UploadedFileController extends AbstractController
         return $this->render('@EMSCore/uploaded-file-logs/index.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    public function showHide(Request $request, string $assetId): Response
+    {
+        if (!$this->isGranted('ROLE_PUBLISHER')) {
+            throw new AccessDeniedException($request->getPathInfo());
+        }
+        $this->fileService->toggleFileEntitiesVisibility([$assetId]);
+
+        return $this->redirectToRoute('ems_core_uploaded_file_logs');
     }
 
     /**
@@ -157,10 +175,15 @@ class UploadedFileController extends AbstractController
 
         $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
 
+        if ($this->isGranted('ROLE_PUBLISHER')) {
+            $table->addDynamicItemPostAction('ems_core_uploaded_file_show_hide', 'uploaded-file.action.hide-show', 'eye', 'uploaded-file.hide-show-confirm', ['assetId' => 'id']);
+            $table->addTableAction(self::HIDE_ACTION, 'fa fa-eye', 'uploaded-file.uploaded-file.hide-show', 'uploaded-file.uploaded-file.hide-show_confirm');
+        }
         if ($this->isGranted('ROLE_ADMIN')) {
             $itemDeleteAction = $table->addDynamicItemPostAction('ems_file_soft_delete', 'uploaded-file.action.soft-delete', 'trash', 'uploaded-file.soft-delete-confirm', ['id' => 'id']);
             $itemDeleteAction->setButtonType('outline-danger');
-            $table->addTableAction(self::SOFT_DELETE_ACTION, 'fa fa-trash', 'uploaded-file.uploaded-file.soft_delete_selected', 'uploaded-file.uploaded-file.soft_delete_selected_confirm');
+            $deleteAction = $table->addTableAction(self::SOFT_DELETE_ACTION, 'fa fa-trash', 'uploaded-file.uploaded-file.soft_delete_selected', 'uploaded-file.uploaded-file.soft_delete_selected_confirm');
+            $deleteAction->setCssClass('btn btn-outline-danger');
         }
 
         $table->setDefaultOrder('created', 'desc');

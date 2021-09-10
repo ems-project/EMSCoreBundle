@@ -230,4 +230,16 @@ class UploadedAssetRepository extends EntityRepository
         $this->getEntityManager()->persist($UploadedAsset);
         $this->getEntityManager()->flush();
     }
+
+    public function toggleVisibility(string $id): void
+    {
+        $uploadedAsset = $this->findOneBy([
+            'id' => $id,
+        ]);
+        if (!$uploadedAsset instanceof UploadedAsset) {
+            throw new \RuntimeException('Unexpected non UploadedAsset onject');
+        }
+        $uploadedAsset->setHidden(!$uploadedAsset->isHidden());
+        $this->update($uploadedAsset);
+    }
 }

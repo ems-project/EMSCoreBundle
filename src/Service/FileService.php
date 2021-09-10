@@ -130,7 +130,11 @@ class FileService implements EntityServiceInterface
                     $filename = \sprintf('%s-%s.%s', $pathinfo['filename'] ?? $filename, \bin2hex(\random_bytes(3)), $pathinfo['extension'] ?? '');
                 }
                 $filenames[] = $filename;
-                $zip->addFile($filename, \strval($this->getResource($file->getSha1())));
+                try {
+                    $zip->addFile($filename, $this->storageManager->getContents($file->getSha1()));
+                    //TODO: this should works? $zip->addFileFromPsr7Stream($filename, $this->storageManager->getStream()Contents($file->getSha1()));
+                } catch (NotFoundException $e) {
+                }
             }
 
             $zip->finish();
@@ -375,5 +379,15 @@ class FileService implements EntityServiceInterface
     public function count(string $searchValue = '', $context = null): int
     {
         return $this->uploadedAssetRepository->searchCount($searchValue);
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function toggleFileEntitiesVisibility(array $ids): void
+    {
+        foreach ($ids as $id) {
+            $this->uploadedAssetRepository->toggleVisibility($id);
+        }
     }
 }

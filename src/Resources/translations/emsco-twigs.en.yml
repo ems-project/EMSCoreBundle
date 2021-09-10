@@ -90,4 +90,5 @@ task.tab_tasks: Tasks
 views.data.revisions-data-html.revision: Revision
 views.data.revisions-data-html.pending: Pending
 views.data.revisions-data-html.nothing: Nothing
-views.data.revisions-data-html.linked-documents-in: Linked documents in %environment% (%length%/%total%)
+views.data.revisions-data-html.linked-documents-in: 'Linked documents in %environment% (%length%/%total%)'
+views.data.revisions-data-html.title: 'Revisions of %content-type% : %title%'

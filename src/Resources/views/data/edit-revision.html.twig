@@ -120,7 +120,7 @@
 				{% include '@EMSCore/elements/post-button.html.twig' with {
 					'url': path('revision.discard', {'revisionId': revision.id, 'type': revision.contentType.name}),
 					'message': 'views.data.edit-revision-html.discard-draft-message'|trans,
-					'btnType': 'danger',
+					'btnType': 'outline-danger',
 					'label': 'views.data.edit-revision-html.discard-draft-label'|trans,
 					'icon': 'trash',
 					'group_class': 'pull-right',

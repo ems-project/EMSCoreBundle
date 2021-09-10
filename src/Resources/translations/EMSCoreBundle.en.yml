@@ -512,8 +512,6 @@ task.status.history.updated: '%user% updated the task'
 task.status.planned: Planned
 task.status.progress: 'In progress'
 task.status.rejected: Rejected
-task.tab_task: Task
-task.tab_tasks: Tasks
 task.title: Tasks
 task.update.submit: 'Edit task'
 task.update.success: 'Task "%title%" successfully updated.'

@@ -641,6 +641,9 @@ views.elements.object-views-button.raw-view: 'Raw view'
 views.elements.object-views-button.raw-view-icon-class: 'fa fa-th'
 views.elements.object-views-button.action-dropdown-label: 'Actions in %environment%'
 wysiwyg.invalid_config_format: 'Format not valid: %msg%'
+view.macros.data-field-type.collection_removed_items: '{0} Nothing has been removed.|{1} One item has been removed.|]1,Inf[ %count% item have been removed.'
+view.macros.data-field-type.collection_added_items: '{0} Nothing has been added.|{1} One item has been added.|]1,Inf[ %count% items have been added.'
+view.icon.class.uploaded-file: 'fa fa-upload'
 'An Error Occurred': 'An Error Occurred'
 'Oops! An Error Occurred': 'Oops! An Error Occurred'
 'The server returned a %status_code%': 'The server returned a %status_code%'
@@ -681,12 +684,6 @@ Revisions: Revisions
 'Discard this draft ?': 'Discard this draft ?'
 Discard: Discard
 Revision: Revision
-'Finalized by': 'Finalized by'
-'Finalized on': 'Finalized on'
-Pending: Pending
-Nothing: Nothing
-'Linked documents in': 'Linked documents in'
-'This document does not have any linked document': 'This document does not have any linked document'
 'Trash for content type %name%': 'Trash for content type %name%'
 'Deleted by': 'Deleted by'
 'Put it back ?': 'Put it back ?'
@@ -696,10 +693,6 @@ Nothing: Nothing
 Empty: Empty
 'The trash is empty': 'The trash is empty'
 Documentation: Documentation
-'Compare environments': 'Compare environments'
-'Uploaded Files': 'Uploaded Files'
-WYSIWYG: WYSIWYG
-Search: Search
 Filters: Filters
 'Edit %entity_name%': 'Edit %entity_name%'
 'Search options': 'Search options'
@@ -736,8 +729,6 @@ Download: Download
 'Author :': 'Author :'
 'Language :': 'Language :'
 'Content :': 'Content :'
-view.macros.data-field-type.collection_removed_items: '{0} Nothing has been removed.|{1} One item has been removed.|]1,Inf[ %count% item have been removed.'
-view.macros.data-field-type.collection_added_items: '{0} Nothing has been added.|{1} One item has been added.|]1,Inf[ %count% items have been added.'
 'To be treated': 'To be treated'
 'No result for this filters combinaison': 'No result for this filters combinaison'
 Notification: Notification
@@ -759,7 +750,6 @@ Outbox: Outbox
 'Search Field Options': 'Search Field Options'
 'Add an Search Field Option': 'Add an Search Field Option'
 'Click on ''Add an search field option'' to create a first Search Field Option': 'Click on ''Add an search field option'' to create a first Search Field Option'
-view.icon.class.uploaded-file: 'fa fa-upload'
 'Add user': 'Add user'
 Views: Views
 'gallery view plugin': 'gallery view plugin'

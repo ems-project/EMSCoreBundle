@@ -22,4 +22,7 @@
     <route id="ems_core_release_ajax_data_table" path="/datatable.json" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:ajaxDataTable</default>
     </route>
+        <route id="ems_core_release_publish" path="/{release}/publish" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:releasePublish</default>
+    </route>
 </routes>

@@ -891,7 +891,17 @@ class RevisionRepository extends EntityRepository
      */
     public function counterByIds(array $ids): int
     {
-        return parent::count(['draft' => false]);
+        $query = $this->createQueryBuilder('c');
+        $query->select('count(c) as counter')
+        ->where($query->expr()->eq('c.draft', $query->expr()->literal(false)))
+        ->andWhere('c.id IN (:id)')
+        ->setParameters(['id' => $ids]);
+
+        try {
+            return $query->getQuery()->getSingleScalarResult();
+        } catch (\Throwable $e) {
+            return 0;
+        }
     }
 
     /**
@@ -899,7 +909,17 @@ class RevisionRepository extends EntityRepository
      */
     public function counterWithoutIds(array $ids): int
     {
-        return parent::count(['draft' => false]);
+        $query = $this->createQueryBuilder('c');
+        $query->select('count(c) as counter')
+        ->where($query->expr()->eq('c.draft', $query->expr()->literal(false)))
+        ->andWhere('c.id NOT IN (:id)')
+        ->setParameters(['id' => $ids]);
+
+        try {
+            return $query->getQuery()->getSingleScalarResult();
+        } catch (\Throwable $e) {
+            return 0;
+        }
     }
 
     /**

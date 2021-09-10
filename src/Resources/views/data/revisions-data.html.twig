@@ -10,21 +10,23 @@
 {% block title %}
 	{{ 'views.data.revisions-data-html.title'|trans({'%content-type%': revision.contentType.singularName, '%title%': title}) }}
 {% endblock %}
+
 {% block pagetitle %}
 	<i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
 	{{  block('title') }}
-{% endblock %} 
+{% endblock %}
+
 {% block subtitle %}
 	<small>
 		{% if revision.draft %}
 			<i class="fa fa-fire"></i>
-			This is a draft in progress
+			{{ 'views.data.revisions-data-html.revision-draft-in-progress'|trans }}
 		{% elseif not revision.endTime %}
 			<i class="fa fa-thumbs-up"></i>
-			You are viewing the last revision
+			{{ 'views.data.revisions-data-html.revision-current'|trans }}
 		{% else %}
 			<i class="fa fa-clock-o"></i>
-			This is a revision from the past
+			{{ 'views.data.revisions-data-html.revision-previous'|trans }}
 		{% endif %}
 	</small>
 {% endblock %}

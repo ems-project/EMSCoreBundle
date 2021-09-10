@@ -92,3 +92,6 @@ views.data.revisions-data-html.pending: Pending
 views.data.revisions-data-html.nothing: Nothing
 views.data.revisions-data-html.linked-documents-in: 'Linked documents in %environment% (%length%/%total%)'
 views.data.revisions-data-html.title: 'Revisions of %content-type% : %title%'
+views.data.revisions-data-html.revision-draft-in-progress: 'This is a draft in progress'
+views.data.revisions-data-html.revision-current: 'You are viewing the last revision'
+views.data.revisions-data-html.revision-previous: 'This is a revision from the past'

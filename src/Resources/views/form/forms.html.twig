@@ -183,8 +183,10 @@
                         'url': path(action.route, routeParameters),
                         'message': action.messageKey,
                         'label': action.labelKey,
+                        'btnType': action.buttonType,
                         'itemLabel': attribute(line.data, table.labelAttribute),
-                        'icon': action.icon
+                        'icon': action.icon,
+                        'group_class': 'pull-right',
                     }%}
                 {% endif %}
             {% else %}
@@ -192,7 +194,8 @@
                     'url':  path(action.route, routeParameters),
                     'label': action.labelKey,
                     'itemLabel': attribute(line.data, table.labelAttribute),
-                    'icon': action.icon
+                    'btnType': action.buttonType,
+                    'icon': action.icon,
                 }%}
             {% endif %}
         {% endfor %}
@@ -225,7 +228,8 @@
                             <tr role="row">
                                 {% if table.supportsTableActions %}
                                     <th class="fit" data-orderable="false" data-name="_checkbox">
-                                        <input type="checkbox" value="" data-grouped-checkbox-target=".{{ table.attributeName|e('html_attr') }}-to-select">
+                                        <label class="sr-only" for="select-all">{{ 'form.data.bool_table_collum.true_value'|trans }}</label>
+                                        <input type="checkbox" value="" data-grouped-checkbox-target=".{{ table.attributeName|e('html_attr') }}-to-select" id="select-all">
                                     </th>
                                 {% endif %}
                                 {% for column in table.columns %}

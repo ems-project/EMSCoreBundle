@@ -2,7 +2,7 @@ views.data.edit-revision-html.version-modal.close-label: Close
 views.data.edit-revision-html.discard-draft-message: 'Modifications made in this draft will be lost'
 views.data.edit-revision-html.publish-label: 'Save and publish in %environment%'
 views.data.edit-revision-html.discard-draft-label: 'Delete this draft'
-views.data.edit-revision-html.cancel-label: 'Discard non-saved modifications ?'
+views.data.edit-revision-html.cancel-label: 'Discard non-saved modifications'
 views.data.edit-revision-html.subtitle: 'Working area'
 views.data.edit-revision-html.title: 'Edit the %content-type%: "%revision%"'
 views.data.edit-revision-html.new-draft-title: '%content-type%: new draft'

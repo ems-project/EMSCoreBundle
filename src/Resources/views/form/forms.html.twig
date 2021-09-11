@@ -103,7 +103,7 @@
 
 {% block emsco_form_table_column_data_bytes %}
     {%- set value = attribute(line.data, column.attribute)|default(false) -%}
-    <td data-order="{% if value %}{{ value }}{% endif %}" class="text-right">
+    <td data-order="{% if value %}{{ value }}{% endif %}">
         {{- block(column.tableDataValueBlock()) -}}
     </td>
 {% endblock emsco_form_table_column_data_bytes %}

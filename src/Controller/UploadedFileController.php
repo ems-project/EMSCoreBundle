@@ -223,7 +223,7 @@ class UploadedFileController extends AbstractController
                     'name' => $data['name'],
                 ];
             });
-        $table->addColumnDefinition(new BytesTableColumn('uploaded-file.index.column.size', 'size'));
+        $table->addColumnDefinition(new BytesTableColumn('uploaded-file.index.column.size', 'size'))->setCellClass('text-right');
         $table->addColumnDefinition(new TranslationTableColumn('uploaded-file.index.column.kind', 'type', 'emsco-mimetypes'));
         $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.date-added', 'created'));
         $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.date-modified', 'modified'));

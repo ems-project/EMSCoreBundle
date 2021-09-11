@@ -103,10 +103,26 @@
 
 {% block emsco_form_table_column_data_bytes %}
     {%- set value = attribute(line.data, column.attribute)|default(false) -%}
-    <td data-order="{% if value %}{{ value }}{% endif %}">
+    <td data-order="{% if value %}{{ value }}{% endif %}" class="text-right">
         {{- block(column.tableDataValueBlock()) -}}
     </td>
 {% endblock emsco_form_table_column_data_bytes %}
+
+{% block emsco_form_table_column_data_value_translation %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+    {%- if value -%}
+        {{- block('emsco_form_table_column_data_label_prefix') -}}
+        {{- value|trans({}, column.domain) -}}
+        {{- block('emsco_form_table_column_data_label_suffix') -}}
+    {%- endif -%}
+{% endblock emsco_form_table_column_data_value_translation %}
+
+{% block emsco_form_table_column_data_translation %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+    <td data-order="{% if value %}{{ value }}{% endif %}">
+        {{- block(column.tableDataValueBlock()) -}}
+    </td>
+{% endblock emsco_form_table_column_data_translation %}
 
 {% block emsco_form_table_column_data_value_user %}
     {%- set value = attribute(line.data, column.attribute)|default('') -%}

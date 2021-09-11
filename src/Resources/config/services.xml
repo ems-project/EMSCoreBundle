@@ -108,8 +108,5 @@
             <argument type="service" id="EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface"/>
         </service>
         <service id="ems_core.service.uploaded-file" alias="EMS\CoreBundle\Service\DatatableService"/>
-        <service id="EMS\CoreBundle\Service\UploadedFileService">
-            <argument type="service" id="ems.repository.uploaded_asset_repository"/>
-        </service>
     </services>
 </container>

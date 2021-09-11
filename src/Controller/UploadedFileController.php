@@ -7,12 +7,13 @@ use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\BytesTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\QueryTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
+use EMS\CoreBundle\Form\Data\TranslationTableColumn;
 use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\FileService;
-use EMS\CoreBundle\Service\UploadedFileService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
@@ -31,18 +32,28 @@ class UploadedFileController extends AbstractController
 
     private LoggerInterface $logger;
     private FileService $fileService;
-    private UploadedFileService $uploadedFileService;
 
-    public function __construct(LoggerInterface $logger, FileService $fileService, UploadedFileService $uploadedFileService)
+    public function __construct(LoggerInterface $logger, FileService $fileService)
     {
         $this->logger = $logger;
         $this->fileService = $fileService;
-        $this->uploadedFileService = $uploadedFileService;
     }
 
     public function ajaxDataTable(Request $request): Response
     {
-        $table = $this->initTable();
+        $table = $this->initLogsTable();
+        $dataTableRequest = DataTableRequest::fromRequest($request);
+        $table->resetIterator($dataTableRequest);
+
+        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+            'dataTableRequest' => $dataTableRequest,
+            'table' => $table,
+        ], new JsonResponse());
+    }
+
+    public function ajaxDataTableGroupedByHash(Request $request): Response
+    {
+        $table = $this->initFileTable();
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
@@ -54,7 +65,7 @@ class UploadedFileController extends AbstractController
 
     public function index(Request $request): Response
     {
-        $table = $this->initTable();
+        $table = $this->initFileTable();
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -67,12 +78,6 @@ class UploadedFileController extends AbstractController
                         }
 
                         return $this->downloadMultiple($table->getSelected());
-                    case self::SOFT_DELETE_ACTION:
-                        if (!$this->isGranted('ROLE_ADMIN')) {
-                            throw new AccessDeniedException($request->getPathInfo());
-                        }
-                        $this->fileService->removeSingleFileEntity($table->getSelected());
-                        break;
                 }
             } else {
                 $this->logger->error('log.controller.uploaded-file.unknown_action');
@@ -88,7 +93,7 @@ class UploadedFileController extends AbstractController
 
     public function logs(Request $request): Response
     {
-        $table = $this->initTable();
+        $table = $this->initLogsTable();
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -152,9 +157,9 @@ class UploadedFileController extends AbstractController
         return $response;
     }
 
-    private function initTable(): EntityTable
+    private function initLogsTable(): EntityTable
     {
-        $table = new EntityTable($this->uploadedFileService, $this->generateUrl('ems_core_uploaded_file_logs_ajax'));
+        $table = new EntityTable($this->fileService, $this->generateUrl('ems_core_uploaded_file_logs_ajax'));
         $table->addColumnDefinition(new BoolTableColumn('uploaded-file.index.column.available', 'available'));
         $table->addColumn('uploaded-file.index.column.name', 'name')
             ->setRoute('ems_file_download', function (UploadedAsset $data) {
@@ -190,6 +195,30 @@ class UploadedFileController extends AbstractController
         }
 
         $table->setDefaultOrder('created', 'desc');
+
+        return $table;
+    }
+
+    private function initFileTable(): QueryTable
+    {
+        $table = new QueryTable($this->fileService, 'uploaded-files-grouped-by-hash', $this->generateUrl('ems_core_uploaded_file_ajax'));
+        $table->addColumn('uploaded-file.index.column.name', 'name')
+            ->setRoute('ems_file_download', function (array $data) {
+                if (!\is_string($data['id'] ?? null) || !\is_string($data['type'] ?? null) || !\is_string($data['name'] ?? null)) {
+                    return null;
+                }
+
+                return [
+                    'sha1' => $data['id'],
+                    'type' => $data['type'],
+                    'name' => $data['name'],
+                ];
+            });
+        $table->addColumnDefinition(new BytesTableColumn('uploaded-file.index.column.size', 'size'));
+        $table->addColumnDefinition(new TranslationTableColumn('uploaded-file.index.column.kind', 'type', 'emsco-mimetypes'));
+        $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.date-added', 'created'));
+        $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.date-modified', 'modified'));
+        $table->setDefaultOrder('name', 'desc');
 
         return $table;
     }

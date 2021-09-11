@@ -534,9 +534,12 @@ uploaded-file.index.column.created: 'Uploaded at'
 uploaded-file.index.column.head_last: 'Last seen'
 uploaded-file.index.column.hidden: Hidden
 uploaded-file.index.column.modified: 'Last modified'
-uploaded-file.index.column.name: 'File name'
+uploaded-file.index.column.name: Name
 uploaded-file.index.column.sha1: 'Hash signature'
-uploaded-file.index.column.size: 'File size'
+uploaded-file.index.column.size: Size
+uploaded-file.index.column.kind: Kind
+uploaded-file.index.column.date-modified: 'Date modified'
+uploaded-file.index.column.date-added: 'Date added'
 uploaded-file.index.column.type: 'Mime type'
 uploaded-file.index.column.username: By
 uploaded-file.index.title: 'Uploaded Files'

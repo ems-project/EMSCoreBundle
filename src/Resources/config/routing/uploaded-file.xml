@@ -9,7 +9,7 @@
     </route>
 
     <route id="ems_core_uploaded_file_ajax" path="/datatable.json" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\UploadedFileController:ajaxDataTable</default>
+        <default key="_controller">EMS\CoreBundle\Controller\UploadedFileController:ajaxDataTableGroupedByHash</default>
     </route>
 
 </routes>

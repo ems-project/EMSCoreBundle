@@ -221,13 +221,13 @@ class UploadedAssetRepository extends EntityRepository
     {
         if (\strlen($searchValue) > 0) {
             $or = $qb->expr()->orX(
-                $qb->expr()->like('ua.user', ':term'),
-                $qb->expr()->like('ua.sha1', ':term'),
-                $qb->expr()->like('ua.type', ':term'),
-                $qb->expr()->like('ua.name', ':term')
+                $qb->expr()->like('LOWER(ua.user)', ':term'),
+                $qb->expr()->like('LOWER(ua.sha1)', ':term'),
+                $qb->expr()->like('LOWER(ua.type)', ':term'),
+                $qb->expr()->like('LOWER(ua.name)', ':term')
             );
             $qb->andWhere($or)
-                ->setParameter(':term', '%'.$searchValue.'%');
+                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
         }
     }
 
@@ -247,5 +247,45 @@ class UploadedAssetRepository extends EntityRepository
         }
         $uploadedAsset->setHidden(!$uploadedAsset->isHidden());
         $this->update($uploadedAsset);
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->createQueryBuilder('ua');
+        $qb->select('ua.sha1 as id', 'max(ua.name) as name', 'max(ua.size) as size', 'max(ua.type) as type', 'min(ua.created) as created', 'max(ua.modified) as modified');
+        $qb->setFirstResult($from)
+            ->setMaxResults($size);
+        $qb->andWhere($qb->expr()->eq('ua.hidden', ':false'));
+        $qb->andWhere($qb->expr()->eq('ua.available', ':true'));
+        $qb->setParameters([
+            ':false' => false,
+            ':true' => true,
+        ]);
+        $this->addSearchFilters($qb, $searchValue);
+        $qb->groupBy('ua.sha1');
+
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('%s', $orderField), $orderDirection);
+        }
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    public function countGroupByHashQuery(string $searchValue): int
+    {
+        $qb = $this->createQueryBuilder('ua');
+        $qb->select('count(DISTINCT ua.sha1)');
+        $qb->andWhere($qb->expr()->eq('ua.hidden', ':false'));
+        $qb->andWhere($qb->expr()->eq('ua.available', ':true'));
+        $qb->setParameters([
+            ':false' => false,
+            ':true' => true,
+        ]);
+        $this->addSearchFilters($qb, $searchValue);
+
+        return \intval($qb->getQuery()->getSingleScalarResult());
     }
 }

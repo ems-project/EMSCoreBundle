@@ -72,6 +72,10 @@ class UploadedFileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
                 switch ($action->getName()) {
+                    case TableAbstract::DOWNLOAD_ACTION:
+                        $ids = $this->fileService->hashesToIds($table->getSelected());
+
+                        return $this->downloadMultiple($ids);
                     case self::HIDE_ACTION:
                         if (!$this->isGranted('ROLE_PUBLISHER')) {
                             throw new AccessDeniedException($request->getPathInfo());
@@ -225,6 +229,7 @@ class UploadedFileController extends AbstractController
         $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.date-modified', 'modified'));
         $table->setDefaultOrder('name', 'asc');
 
+        $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
         if ($this->isGranted('ROLE_PUBLISHER')) {
             $table->addDynamicItemPostAction('ems_core_uploaded_file_hide_by_hash', 'uploaded-file.action.delete', 'trash', 'uploaded-file.delete-confirm', ['hash' => 'id'])
                 ->setButtonType('outline-danger');

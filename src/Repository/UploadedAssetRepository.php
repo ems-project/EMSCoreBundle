@@ -304,4 +304,27 @@ class UploadedAssetRepository extends EntityRepository
 
         return \intval($qb->getQuery()->execute());
     }
+
+    /**
+     * @param string[] $hashes
+     *
+     * @return string[]
+     */
+    public function hashesToIds(array $hashes): array
+    {
+        $qb = $this->createQueryBuilder('ua');
+        $qb->select('max(ua.id) as id');
+        $qb->where('ua.sha1 IN (:hashes)');
+        $qb->andWhere($qb->expr()->eq('ua.hidden', ':false'));
+        $qb->andWhere($qb->expr()->eq('ua.available', ':true'));
+        $qb->setParameters([
+            ':false' => false,
+            ':true' => true,
+            ':hashes' => $hashes,
+        ]);
+
+        $qb->groupBy('ua.sha1');
+
+        return \array_map(fn ($value): string => \strval($value['id'] ?? null), $qb->getQuery()->getScalarResult());
+    }
 }

@@ -413,4 +413,14 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
     {
         return $this->uploadedAssetRepository->hideByHashes($hashes);
     }
+
+    /**
+     * @param string[] $hashes
+     *
+     * @return string[]
+     */
+    public function hashesToIds(array $hashes): array
+    {
+        return $this->uploadedAssetRepository->hashesToIds($hashes);
+    }
 }

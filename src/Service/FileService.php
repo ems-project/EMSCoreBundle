@@ -405,4 +405,12 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
     {
         return $this->uploadedAssetRepository->countGroupByHashQuery($searchValue);
     }
+
+    /**
+     * @param string[] $hashes
+     */
+    public function hideByHashes(array $hashes): int
+    {
+        return $this->uploadedAssetRepository->hideByHashes($hashes);
+    }
 }

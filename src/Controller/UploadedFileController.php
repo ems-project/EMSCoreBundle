@@ -72,12 +72,11 @@ class UploadedFileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
                 switch ($action->getName()) {
-                    case TableAbstract::DOWNLOAD_ACTION:
-                        if (!$this->isGranted('ROLE_ADMIN')) {
+                    case self::HIDE_ACTION:
+                        if (!$this->isGranted('ROLE_PUBLISHER')) {
                             throw new AccessDeniedException($request->getPathInfo());
                         }
-
-                        return $this->downloadMultiple($table->getSelected());
+                        $this->fileService->hideByHashes($table->getSelected());
                 }
             } else {
                 $this->logger->error('log.controller.uploaded-file.unknown_action');
@@ -101,10 +100,6 @@ class UploadedFileController extends AbstractController
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
                 switch ($action->getName()) {
                     case TableAbstract::DOWNLOAD_ACTION:
-                        if (!$this->isGranted('ROLE_ADMIN')) {
-                            throw new AccessDeniedException($request->getPathInfo());
-                        }
-
                         return $this->downloadMultiple($table->getSelected());
                     case self::HIDE_ACTION:
                         if (!$this->isGranted('ROLE_PUBLISHER')) {
@@ -129,6 +124,16 @@ class UploadedFileController extends AbstractController
         return $this->render('@EMSCore/uploaded-file-logs/index.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    public function hideByHash(Request $request, string $hash): Response
+    {
+        if (!$this->isGranted('ROLE_PUBLISHER')) {
+            throw new AccessDeniedException($request->getPathInfo());
+        }
+        $this->fileService->hideByHashes([$hash]);
+
+        return $this->redirectToRoute('ems_core_uploaded_file_index');
     }
 
     public function showHide(Request $request, string $assetId): Response
@@ -218,7 +223,14 @@ class UploadedFileController extends AbstractController
         $table->addColumnDefinition(new TranslationTableColumn('uploaded-file.index.column.kind', 'type', 'emsco-mimetypes'));
         $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.date-added', 'created'));
         $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.date-modified', 'modified'));
-        $table->setDefaultOrder('name', 'desc');
+        $table->setDefaultOrder('name', 'asc');
+
+        if ($this->isGranted('ROLE_PUBLISHER')) {
+            $table->addDynamicItemPostAction('ems_core_uploaded_file_hide_by_hash', 'uploaded-file.action.delete', 'trash', 'uploaded-file.delete-confirm', ['hash' => 'id'])
+                ->setButtonType('outline-danger');
+            $table->addTableAction(self::HIDE_ACTION, 'fa fa-trash', 'uploaded-file.delete-all', 'uploaded-file.uploaded-file.delete-all_confirm')
+                ->setCssClass('btn btn-outline-danger');
+        }
 
         return $table;
     }

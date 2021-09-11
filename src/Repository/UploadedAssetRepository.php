@@ -288,4 +288,20 @@ class UploadedAssetRepository extends EntityRepository
 
         return \intval($qb->getQuery()->getSingleScalarResult());
     }
+
+    /**
+     * @param string[] $hashes
+     */
+    public function hideByHashes(array $hashes): int
+    {
+        $qb = $this->createQueryBuilder('ua')->update()
+            ->set('ua.hidden', ':true')
+            ->where('ua.sha1 IN (:hashes)')
+            ->setParameters([
+                ':hashes' => $hashes,
+                ':true' => true,
+            ]);
+
+        return \intval($qb->getQuery()->execute());
+    }
 }

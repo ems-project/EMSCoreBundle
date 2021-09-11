@@ -19,7 +19,7 @@ class QueryTable extends TableAbstract
     /**
      * @param mixed $context
      */
-    public function __construct(QueryServiceInterface $service, string $queryName, string $ajaxUrl, $context = null, int $loadAllMaxRow = 50)
+    public function __construct(QueryServiceInterface $service, string $queryName, string $ajaxUrl, $context = null, int $loadAllMaxRow = 400)
     {
         $this->context = $context;
         $this->service = $service;
@@ -63,8 +63,6 @@ class QueryTable extends TableAbstract
 
     public function totalCount(): int
     {
-        \dump('totalCount');
-
         return $this->service->countQuery('', $this->context);
     }
 

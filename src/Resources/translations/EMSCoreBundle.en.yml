@@ -547,6 +547,10 @@ uploaded-file.menu: 'Uploaded files'
 uploaded-file.soft-delete-confirm: 'Are you sure you want to delete this file?'
 uploaded-file.uploaded-file.download_selected: 'Download selected'
 uploaded-file.uploaded-file.soft_delete_selected: 'Delete selected'
+uploaded-file.uploaded-file.delete-all_confirm: 'Selected files will be removed'
+uploaded-file.delete-all: 'Delete selected'
+uploaded-file.delete-confirm: 'This will be removed'
+uploaded-file.action.delete: Delete
 user.action.delete: Delete
 user.action.delete_confirm: 'Delete this user?'
 user.action.disable: Disable

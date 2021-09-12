@@ -279,7 +279,7 @@
 										<th>Actions</th>
 									</tr>
 									{% for rev in revisionsSummary %}
-										<tr {% if rev.id == revision.id %}class="bg-{{ revision.contentType.color }}"{% elseif compareId == rev.id or compareId == revision.id %}class="bg-gray"{% endif %}>
+										<tr class="{% if rev.id == revision.id %}bg-{{ revision.contentType.color }}{% elseif compareId == rev.id or compareId == revision.id %}bg-gray{% endif %}">
 											<td>{{ loop.index+firstElemOfPage }}.</td>
 											<td>{{ rev.created|date|date(date_time_format) }}</td>
 											<td>
@@ -306,7 +306,7 @@
 											{% endif %}
 											<td>
 												{% for env in rev.environments %}
-													<span class="badge bg-{{ env.color|raw }}">{{ env.name|humanize }}</span>
+													<span class="badge bg-{{ env.color|raw }}">{{ env.label }}</span>
 												{% endfor %}
 												{% if rev.draft %}
 													<span class="badge bg-red">Draft in progress</span>

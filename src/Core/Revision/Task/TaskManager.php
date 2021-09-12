@@ -205,7 +205,8 @@ final class TaskManager
     public function taskDelete(Task $task, int $revisionId, ?string $description = null): void
     {
         $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $description) {
-            if ($description !== $task->getDescription()) {
+            $currentDescription = $task->hasDescription() ? $task->getDescription() : null;
+            if ($description !== $currentDescription) {
                 $task->setDescription($description);
                 $this->taskRepository->save($task);
             }

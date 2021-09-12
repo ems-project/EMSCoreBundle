@@ -84,7 +84,7 @@ class AggregateOption
 		{% set filters = currentFilters.all.search_form.filters|merge({ (1000+id) : {\'operator\': \'term\', \'booleanClause\': \'must\', \'field\': fieldName, \'pattern\': index.key, \'boost\': \'\'}}) %}
 		{% set search_form = currentFilters.all.search_form|merge({\'filters\':filters}) %}
 		{% set facettedSearch = currentFilters.all|merge({\'search_form\': search_form}) %}
-		<a href="{{ path(paginationPath, facettedSearch) }}" class="btn btn-block btn-social btn-primary">
+		<a href="{{ path(paginationPath, facettedSearch) }}" class="btn btn-block btn-social btn-default">
 			<i class="fa fa-user"></i>
 			{{ index.key|displayname }}
 			<span class=" badge pull-right">{{ index.doc_count }}</span>
@@ -103,7 +103,7 @@ class AggregateOption
 	{% if filterFound %}
 	   	{% set search_form = currentFilters.all.search_form|merge({\'filters\':filters}) %}
 		{% set facettedSearch = currentFilters.all|merge({\'search_form\': search_form}) %}
-		<a href="{{ path(paginationPath, facettedSearch) }}" class="btn btn-block btn-social btn-primary">
+		<a href="{{ path(paginationPath, facettedSearch) }}" class="btn btn-block btn-social btn-default">
 			<i class="fa fa-remove"></i>
 			Remove facet "{{ aggregation.buckets[0].key|displayname }}"
 		</a>
@@ -111,7 +111,7 @@ class AggregateOption
 		{% set filters = currentFilters.all.search_form.filters|merge({ (1000+id) : {\'operator\': \'term\', \'booleanClause\': \'must\', \'field\': fieldName, \'pattern\': aggregation.buckets[0].key, \'boost\': \'\'}}) %}
 		{% set search_form = currentFilters.all.search_form|merge({\'filters\':filters}) %}
 		{% set facettedSearch = currentFilters.all|merge({\'search_form\': search_form}) %}
-		<a href="{{ path(paginationPath, facettedSearch) }}" class="btn btn-block btn-social btn-primary">
+		<a href="{{ path(paginationPath, facettedSearch) }}" class="btn btn-block btn-social btn-default">
 			<i class="fa fa-user"></i>
 			{{ aggregation.buckets[0].key|displayname }}
 			<span class=" badge pull-right">{{ aggregation.buckets[0].doc_count }}</span>

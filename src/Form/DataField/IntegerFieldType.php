@@ -9,26 +9,20 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class IntegerFieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Integer field';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'glyphicon glyphicon-sort-by-order';
     }
 
     /**
-     * {@inheritdoc}
+     * @param array<mixed>|null $masterRawData
      */
-    public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null)
+    public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
             return true;
@@ -46,9 +40,9 @@ class IntegerFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @param array<mixed> $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
@@ -64,23 +58,21 @@ class IntegerFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @param array<mixed> $out
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            /*
-             * by default it serialize the text value.
-             * It must be overrided.
-             */
-            $out[$data->getFieldType()->getName()] = $data->getIntegerValue();
+        if (!$data->giveFieldType()->getDeleted()) {
+            $out[$data->giveFieldType()->getName()] = $data->getIntegerValue();
         }
     }
 
     /**
-     * {@inheritdoc}
+     * @param bool $withPipeline
+     *
+     * @return array<mixed>
      */
-    public function generateMapping(FieldType $current, $withPipeline)
+    public function generateMapping(FieldType $current, $withPipeline): array
     {
         return [
                 $current->getName() => $this->elasticsearchService->updateMapping(\array_merge(['type' => 'integer'], \array_filter($current->getMappingOptions()))),
@@ -88,9 +80,9 @@ class IntegerFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @param array<mixed> $options
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -100,43 +92,29 @@ class IntegerFieldType extends DataFieldType
                 'required' => false,
             ]);
         }
-
-//         // String specific display options
-//         $optionsForm->get ( 'displayOptions' )->add ( 'choices', TextareaType::class, [
-//                 'required' => false,
-//         ] )->add ( 'labels', TextareaType::class, [
-//                 'required' => false,
-//         ] );
-
-//         // String specific mapping options
-//         $optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * @return array<mixed>
      */
-    public function viewTransform(DataField $dataField)
+    public function viewTransform(DataField $dataField): array
     {
         $out = parent::viewTransform($dataField);
 
         return ['value' => $out];
     }
 
-    public function reverseViewTransform($data, FieldType $fieldType)
+    /**
+     * @param array<mixed> $data
+     */
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
-        $temp = $data['value'];
+        $temp = $data['value'] ?? null;
 
         $message = false;
         if (null !== $temp) {

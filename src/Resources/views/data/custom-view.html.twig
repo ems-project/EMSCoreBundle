@@ -5,7 +5,7 @@
 	{% set label = attribute(object.source, contentType.labelField) %}
 {% endif %}
 
-{% block title %}{{ 'data.custom-view.pagetitle'|trans({ '%name%':template.name, '%contentType%': contentType.singularName, '%label%': label, '%environment%': environment.name|humanize  }) }}{% endblock %}
+{% block title %}{{ 'data.custom-view.pagetitle'|trans({ '%name%':template.name, '%contentType%': contentType.singularName, '%label%': label, '%environment%': environment.label  }) }}{% endblock %}
 {% block pagetitle %}
 	<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
 	{{ block('title') }}

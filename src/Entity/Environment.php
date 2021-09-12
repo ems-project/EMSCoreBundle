@@ -46,6 +46,11 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     protected $name;
 
     /**
+     * @ORM\Column(name="label", type="string", length=255, nullable=true)
+     */
+    protected ?string $label;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="alias", type="string", length=255)
@@ -391,12 +396,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Get managed.
-     *
-     * @return bool
-     */
-    public function getManaged()
+    public function getManaged(): bool
     {
         return $this->managed;
     }
@@ -653,5 +653,24 @@ class Environment extends JsonDeserializer implements \JsonSerializable
         $json->removeProperty('id');
 
         return $json;
+    }
+
+    public function getLabel(): string
+    {
+        if (null === $this->label) {
+            $replaced = \preg_replace(['/([A-Z])/', '/[_\s]+/'], ['_$1', ' '], $this->name);
+            if (!\is_string($replaced)) {
+                $replaced = $this->name;
+            }
+
+            return \ucfirst(\strtolower(\trim($replaced)));
+        }
+
+        return $this->label;
+    }
+
+    public function setLabel(?string $label): void
+    {
+        $this->label = $label;
     }
 }

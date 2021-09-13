@@ -1013,7 +1013,6 @@ class Revision implements EntityInterface
         }
 
         return '';
-
     }
 
     public function setLabelField(?string $labelField): self
@@ -1067,13 +1066,11 @@ class Revision implements EntityInterface
     }
 
     /**
-     * Get circles.
-     *
-     * @return array
+     * @return string[]
      */
-    public function getCircles()
+    public function getCircles(): array
     {
-        return $this->circles;
+        return $this->circles ?? [];
     }
 
     /**

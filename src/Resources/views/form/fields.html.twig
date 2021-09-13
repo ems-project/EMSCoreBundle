@@ -122,7 +122,6 @@
 {%- endblock selectpicker_widget %}
 
 {%- block submitems_widget -%}
-	{% set attr = attr|merge({class: (attr.class|default('') ~ ' btn')|trim}) %}
     {%- if label is empty -%}
         {%- if label_format is not empty -%}
             {% set label = label_format|replace({

@@ -49,7 +49,7 @@ class WysiwygStylesSetType extends AbstractType
             ])
             ->add('save', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm ',
+                    'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
             ]);
@@ -57,7 +57,7 @@ class WysiwygStylesSetType extends AbstractType
         if (!$options['createform']) {
             $builder->add('remove', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm ',
+                    'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-trash',
             ]);

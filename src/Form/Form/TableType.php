@@ -77,7 +77,7 @@ final class TableType extends AbstractType
                 'data' => $choices,
             ])->add(self::REORDER_ACTION, SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary',
+                    'class' => 'btn btn-default',
                 ],
                 'icon' => 'fa fa-reorder',
                 'label' => 'table.index.button.reorder',
@@ -89,7 +89,7 @@ final class TableType extends AbstractType
                 $builder
                     ->add($action->getName(), SubmitEmsType::class, [
                         'attr' => [
-                            'class' => 'btn-primary',
+                            'class' => $action->getCssClass(),
                         ],
                         'icon' => $action->getIcon(),
                         'label' => $action->getLabelKey(),

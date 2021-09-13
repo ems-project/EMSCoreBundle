@@ -86,7 +86,7 @@ class CollectionItemFieldType extends DataFieldType
 
         $builder->add('remove_collection_item', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-danger btn-sm remove-content-button',
+                        'class' => 'btn btn-danger btn-sm remove-content-button',
                 ],
                 'label' => 'Remove',
                 'icon' => 'fa fa-trash',

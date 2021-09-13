@@ -50,7 +50,7 @@ final class ChannelType extends AbstractType
             ->add('options', ChannelOptionsType::class)
             ->add('save', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm ',
+                    'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
             ]);

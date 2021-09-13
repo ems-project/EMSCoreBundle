@@ -32,7 +32,7 @@ class ContentTypeUpdateType extends AbstractType
         $builder->add('update', SubmitEmsType::class, [
             'label_format' => 'form.contenttype.json_update.%name%',
             'attr' => [
-                'class' => 'btn-primary',
+                'class' => 'btn btn-primary',
             ],
             'icon' => 'fa fa-save',
         ]);

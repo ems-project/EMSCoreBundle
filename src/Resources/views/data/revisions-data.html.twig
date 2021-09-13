@@ -1,4 +1,4 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-twigs' %}
 
 {% import "@EMSCore/macros/data-field-type.html.twig" as macros %}
 
@@ -8,23 +8,25 @@
 {% endif %}
 	
 {% block title %}
-	Revisions of {{ revision.contentType.singularName }} : {{ title }}
+	{{ 'views.data.revisions-data-html.title'|trans({'%content-type%': revision.contentType.singularName, '%title%': title}) }}
 {% endblock %}
+
 {% block pagetitle %}
 	<i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
-	Revisions of {{ revision.contentType.singularName }} :  {{ title }}
-{% endblock %} 
+	{{  block('title') }}
+{% endblock %}
+
 {% block subtitle %}
 	<small>
 		{% if revision.draft %}
 			<i class="fa fa-fire"></i>
-			This is a draft in progress
+			{{ 'views.data.revisions-data-html.revision-draft-in-progress'|trans }}
 		{% elseif not revision.endTime %}
 			<i class="fa fa-thumbs-up"></i>
-			You are viewing the last revision
+			{{ 'views.data.revisions-data-html.revision-current'|trans }}
 		{% else %}
 			<i class="fa fa-clock-o"></i>
-			This is a revision from the past
+			{{ 'views.data.revisions-data-html.revision-previous'|trans }}
 		{% endif %}
 	</small>
 {% endblock %}
@@ -71,6 +73,7 @@
 						'url':  path('object.delete', {'type': revision.contentType.name, 'ouuid': revision.ouuid} ),
 						'label': 'Delete all revisions',
 						'icon': 'trash',
+						'btnType': 'outline-danger',
 						'message': 'Do you confirm?',
 						'group_class': 'pull-right'
 					}%}
@@ -81,7 +84,7 @@
 {% endblock %}
 
 {% block revisionSidebar %}
-	{% set tabs = [{name: 'tab_about_revision', label: 'Revision'|trans}] %}
+	{% set tabs = [{name: 'tab_about_revision', label: 'views.data.revisions-data-html.revision'|trans}] %}
 	{% if revision.isTaskEnabled %}
 		{% if (revision.hasOwner and revision.owner == app.user.username) or (revision.hasTasks == false and is_granted(revision.giveContentType.ownerRole) and revision.hasOwner == false) %}
 			{% set tabs = tabs|merge([{ name: 'tab_tasks', label: 'task.tab_tasks'|trans }]) %}
@@ -120,57 +123,57 @@
 		<p class="text-muted">{{ revision.versionTag|default('') }}</p>
 		<hr/>
 	{% endif %}
-	<strong><i class="fa fa-map-signs margin-r-5"></i> Status</strong>
+	<strong><i class="fa fa-map-signs margin-r-5"></i> {{ 'views.data.revisions-data-html.status'|trans }}</strong>
 
 	<p class="text-muted">
 		{% if revision.draft %}
 			<i class="fa fa-fire"></i>
-			Draft in progress
+			{{ 'views.data.revisions-data-html.draft-in-progress'|trans }}
 		{% elseif not revision.endTime %}
 			<i class="fa fa-thumbs-up"></i>
-			Current revision
+			{{ 'views.data.revisions-data-html.current-revision'|trans }}
 		{% else %}
 			<i class="fa fa-clock-o"></i>
-			Previous revision ({{ revision.created|date(date_time_format) }})
+			{{ 'views.data.revisions-data-html.previous-revision'|trans({'%timestamp%': revision.created|date(date_time_format)}) }}
 		{% endif %}
 	</p>
 
 	{% if revision.hasOwner %}
 		<hr/>
-		<strong><i class="fa fa-user-circle-o margin-r-5"></i> Owner</strong>
+		<strong><i class="fa fa-user-circle-o margin-r-5"></i> {{ 'views.data.revisions-data-html.owner'|trans }}</strong>
 		<p class="text-muted">{{ revision.owner|displayname }}</p>
 	{% endif %}
 
 	{% if revision.finalizedBy %}
 		<hr>
-		<strong><i class="fa fa-user margin-r-5"></i> {{ 'Finalized by'|trans }}</strong>
+		<strong><i class="fa fa-user margin-r-5"></i> {{ 'views.data.revisions-data-html.finalized-by'|trans }}</strong>
 		<p class="text-muted">{{ revision.finalizedBy|displayname }}</p>
 	{% endif %}
 	{% if revision.finalizedDate %}
 		<hr>
-		<strong><i class="glyphicon glyphicon-open margin-r-5"></i> {{ 'Finalized on'|trans }}</strong>
+		<strong><i class="glyphicon glyphicon-open margin-r-5"></i> {{ 'views.data.revisions-data-html.finalized-on'|trans }}</strong>
 		<p class="text-muted">{{ revision.finalizedDate|date(date_time_format) }}</p>
 	{% endif %}
 
 	<hr>
-	<strong><i class="fa fa-clock-o margin-r-5"></i> Creation date</strong>
+	<strong><i class="fa fa-clock-o margin-r-5"></i> {{ 'views.data.revisions-data-html.creation-date'|trans }}</strong>
 	<p class="text-muted">{{ revision.created|date(date_time_format) }}</p>
 
 	{% if is_super() %}
 		<hr>
-		<strong><i class="fa fa-pencil margin-r-5"></i> Last update</strong>
+		<strong><i class="fa fa-pencil margin-r-5"></i> {{ 'views.data.revisions-data-html.last-update'|trans }}</strong>
 		<p class="text-muted">{{ revision.modified|date(date_time_format) }}</p>
 	{% endif %}
 
 	{% if revision.lockby %}
 		<hr>
-		<strong><i class="fa fa-user margin-r-5"></i> Modified by</strong>
+		<strong><i class="fa fa-user margin-r-5"></i> {{ 'views.data.revisions-data-html.modify-by'|trans }}</strong>
 		<p class="text-muted">{{ revision.lockby|displayname }}</p>
 	{% endif %}
 
 	{% if revision.notifications|length > 0 %}
 		<hr>
-		<strong><i class="fa fa-hourglass-end margin-r-5"></i> {{ 'Pending'|trans }}</strong>
+		<strong><i class="fa fa-hourglass-end margin-r-5"></i> {{ 'views.data.revisions-data-html.pending'|trans }}</strong>
 		<p class="text-muted">
 			{% set notificationFound = false %}
 			{% for notification in revision.notifications %}
@@ -179,7 +182,7 @@
 					{% set notificationFound = true %}
 				{% endif %}
 			{% endfor %}
-			{% if not notificationFound %}{{ 'Nothing'|trans }}{% endif %}
+			{% if not notificationFound %}{{ 'views.data.revisions-data-html.nothing'|trans }}{% endif %}
 		</p>
 	{% endif %}
 	{% if circles_object and revision.circles|length > 0 %}
@@ -200,13 +203,13 @@
 			<h3 class="box-title">
 				{% if revision.draft %}
 					<i class="fa fa-fire"></i>
-					Draft in progress
+					{{ 'views.data.revisions-data-html.draft-in-progress'|trans }}
 				{% elseif not revision.endTime %}
 					<i class="fa fa-thumbs-up"></i>
-					Current revision
+					{{ 'views.data.revisions-data-html.current-revision'|trans }}
 				{% else %}
 					<i class="fa fa-clock-o"></i>
-					Previous revision ({{ revision.created|date(date_time_format) }})
+					{{ 'views.data.revisions-data-html.previous-revision'|trans({'%timestamp%': revision.created|date(date_time_format)}) }}
 				{% endif %}
 			</h3>
 		</div>
@@ -232,7 +235,7 @@
 {% block revisionFooterTabs %}
 	<div class="nav-tabs-custom">
 			<ul class="nav nav-tabs">
-				<li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true">{{ 'Linked documents in'|trans }} {{ revision.contentType.environment.name|capitalize }} <small>{{ referrerResponse.documents|length }}/{{ referrerResponse.formattedTotal }}</small></a></li>
+				<li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true">{{ 'views.data.revisions-data-html.linked-documents-in'|trans({'%environment%': revision.contentType.environment.label, '%length%': referrerResponse.documents|length, '%total%': referrerResponse.formattedTotal }) }}</a></li>
 				<li class=""><a href="#tab_revisions" data-toggle="tab" aria-expanded="false">Revisions <small>{{ revisionsSummary|length }}/{{ counter }}</small></a></li>
 			</ul>
 			<div class="tab-content">
@@ -240,9 +243,8 @@
 					<div class="box">
 						<div class="box-body">
 							{% if referrerResponse.total == 0 %}
-								{{ 'This document does not have any linked document'|trans }}
+								{{ 'views.data.revisions-data-html.no-linked-document'|trans }}
 							{% else %}
-
 								<div class="btn-group">
 									{% for obj in referrerResponse.getDocuments %}
 										{{ obj.emsId|data_link|raw }}
@@ -252,9 +254,9 @@
 						</div>
 						<div class="box-footer">
 							<div class="btn-group">
-								<a href="{{ path('ems_search', {'search_form': referrersForm} ) }}" class="btn btn-primary">
+								<a href="{{ path('ems_search', {'search_form': referrersForm} ) }}" class="btn btn-default">
 									<i class="fa fa-search"></i>
-									{{ 'All linked documents' }}
+									{{ 'views.data.revisions-data-html.all-linked-documents'|trans }}
 								</a>
 							</div>
 						</div>
@@ -267,16 +269,16 @@
 								<table class="table table-bordered">
 									<tbody>
 									<tr>
-										<th style="width: 10px">#</th>
-										<th>Date</th>
-										<th>Finalize</th>
+										<th style="width: 10px">{{ 'views.data.revisions-data-html.revisions.th.id'|trans }}</th>
+										<th>{{ 'views.data.revisions-data-html.revisions.th.date'|trans }}</th>
+										<th>{{ 'views.data.revisions-data-html.revisions.th.finalize'|trans }}</th>
 										{% if is_super() %}
-											<th>Locked</th>
-											<th>Autosave</th>
+											<th>{{ 'views.data.revisions-data-html.revisions.th.locked'|trans }}</th>
+											<th>{{ 'views.data.revisions-data-html.revisions.th.autosave'|trans }}</th>
 										{% endif %}
-										<th>Environments</th>
-										<th>Pendings</th>
-										<th>Actions</th>
+										<th>{{ 'views.data.revisions-data-html.revisions.th.environments'|trans }}</th>
+										<th>{{ 'views.data.revisions-data-html.revisions.th.pendings'|trans }}</th>
+										<th>{{ 'views.data.revisions-data-html.revisions.th.actions'|trans }}</th>
 									</tr>
 									{% for rev in revisionsSummary %}
 										<tr class="{% if rev.id == revision.id %}bg-{{ revision.contentType.color }}{% elseif compareId == rev.id or compareId == revision.id %}bg-gray{% endif %}">
@@ -329,18 +331,6 @@
 													'autoSave': rev.autoSave,
 													'instance': revision
 												}%}
-												{% if rev.id != revision.id and compareId != rev.id and compareId != revision.id %}
-													{% include '@EMSCore/elements/get-button.html.twig' with {
-														'url': path('ems_content_revisions_view', {
-															'type': revision.contentType.name,
-															'ouuid': revision.ouuid,
-															'revisionId': rev.id > revision.id ? rev.id :revision.id,
-															'compareId': rev.id < revision.id ? rev.id :revision.id,
-															'page': page
-														}),
-														'label': 'Compare',
-														'icon': 'compress' }%}
-												{% endif %}
 											</td>
 										</tr>
 									{% endfor %}

@@ -27,3 +27,43 @@ ul.navbar-nav>.user-menu>.dropdown-menu>li.user-header {
   white-space: nowrap;
   width: 1%;
 }
+
+ul.dropdown-menu li button {
+  border:0;
+  padding: 3px 20px;
+  width:100%;
+  text-align:left;
+  display: block;
+  clear: both;
+  font-weight: 400;
+  line-height: $line-height-base;
+  color: $navbar-default-link-color;
+  white-space: nowrap;
+  background-color: transparent;
+
+  & > .glyphicon,
+  & > .fa,
+  & > .ion {
+    margin-right: 10px;
+  }
+
+  &:hover,
+  &:focus {
+    color: $navbar-default-link-hover-color;
+    text-decoration: none;
+    background-color: #e1e3e9;
+  }
+}
+
+
+/** Bootstrap 4 classses */
+
+.btn.btn-outline-primary {
+  border-color: $brand-primary;
+  color: $brand-primary;
+}
+
+.btn.btn-outline-danger {
+  border-color: $brand-danger;
+  color: $brand-danger;
+}

@@ -151,7 +151,7 @@ class UserController extends AppController
             'mapped' => true, ])
             ->add('create', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm ',
+                    'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-plus',
             ])
@@ -258,7 +258,7 @@ class UserController extends AppController
             ])
             ->add('update', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm ',
+                    'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,

@@ -44,13 +44,13 @@ class TreatNotificationsType extends AbstractType
             ])
             ->add('accept', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-success btn-md',
+                            'class' => 'btn btn-success btn-md',
                     ],
                     'icon' => 'fa fa-check',
             ])
             ->add('reject', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-danger btn-md',
+                            'class' => 'btn btn-danger btn-md',
                     ],
                     'icon' => 'fa fa-ban',
             ]);

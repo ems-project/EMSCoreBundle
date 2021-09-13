@@ -53,7 +53,7 @@ class EditEnvironmentType extends AbstractType
         ])
         ->add('save', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm ',
+                        'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
         ]);

@@ -198,11 +198,17 @@ class UploadedAssetRepository extends EntityRepository
         throw new \RuntimeException(\sprintf('Unexpected class object %s', \get_class($uploadedAsset)));
     }
 
-    public function searchCount(string $searchValue = ''): int
+    public function searchCount(string $searchValue = '', bool $availableOnly = false): int
     {
         $qb = $this->createQueryBuilder('ua');
         $qb->select('count(ua.id)');
         $this->addSearchFilters($qb, $searchValue);
+        if ($availableOnly) {
+            $qb->where($qb->expr()->eq('ua.available', ':true'));
+            $qb->setParameters([
+                ':true' => true,
+            ]);
+        }
 
         try {
             return \intval($qb->getQuery()->getSingleScalarResult());
@@ -215,13 +221,13 @@ class UploadedAssetRepository extends EntityRepository
     {
         if (\strlen($searchValue) > 0) {
             $or = $qb->expr()->orX(
-                $qb->expr()->like('ua.user', ':term'),
-                $qb->expr()->like('ua.sha1', ':term'),
-                $qb->expr()->like('ua.type', ':term'),
-                $qb->expr()->like('ua.name', ':term')
+                $qb->expr()->like('LOWER(ua.user)', ':term'),
+                $qb->expr()->like('LOWER(ua.sha1)', ':term'),
+                $qb->expr()->like('LOWER(ua.type)', ':term'),
+                $qb->expr()->like('LOWER(ua.name)', ':term')
             );
             $qb->andWhere($or)
-                ->setParameter(':term', '%'.$searchValue.'%');
+                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
         }
     }
 
@@ -229,5 +235,96 @@ class UploadedAssetRepository extends EntityRepository
     {
         $this->getEntityManager()->persist($UploadedAsset);
         $this->getEntityManager()->flush();
+    }
+
+    public function toggleVisibility(string $id): void
+    {
+        $uploadedAsset = $this->findOneBy([
+            'id' => $id,
+        ]);
+        if (!$uploadedAsset instanceof UploadedAsset) {
+            throw new \RuntimeException('Unexpected non UploadedAsset onject');
+        }
+        $uploadedAsset->setHidden(!$uploadedAsset->isHidden());
+        $this->update($uploadedAsset);
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->createQueryBuilder('ua');
+        $qb->select('ua.sha1 as id', 'max(ua.name) as name', 'max(ua.size) as size', 'max(ua.type) as type', 'min(ua.created) as created', 'max(ua.modified) as modified');
+        $qb->setFirstResult($from)
+            ->setMaxResults($size);
+        $qb->andWhere($qb->expr()->eq('ua.hidden', ':false'));
+        $qb->andWhere($qb->expr()->eq('ua.available', ':true'));
+        $qb->setParameters([
+            ':false' => false,
+            ':true' => true,
+        ]);
+        $this->addSearchFilters($qb, $searchValue);
+        $qb->groupBy('ua.sha1');
+
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('%s', $orderField), $orderDirection);
+        }
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    public function countGroupByHashQuery(string $searchValue): int
+    {
+        $qb = $this->createQueryBuilder('ua');
+        $qb->select('count(DISTINCT ua.sha1)');
+        $qb->andWhere($qb->expr()->eq('ua.hidden', ':false'));
+        $qb->andWhere($qb->expr()->eq('ua.available', ':true'));
+        $qb->setParameters([
+            ':false' => false,
+            ':true' => true,
+        ]);
+        $this->addSearchFilters($qb, $searchValue);
+
+        return \intval($qb->getQuery()->getSingleScalarResult());
+    }
+
+    /**
+     * @param string[] $hashes
+     */
+    public function hideByHashes(array $hashes): int
+    {
+        $qb = $this->createQueryBuilder('ua')->update()
+            ->set('ua.hidden', ':true')
+            ->where('ua.sha1 IN (:hashes)')
+            ->setParameters([
+                ':hashes' => $hashes,
+                ':true' => true,
+            ]);
+
+        return \intval($qb->getQuery()->execute());
+    }
+
+    /**
+     * @param string[] $hashes
+     *
+     * @return string[]
+     */
+    public function hashesToIds(array $hashes): array
+    {
+        $qb = $this->createQueryBuilder('ua');
+        $qb->select('max(ua.id) as id');
+        $qb->where('ua.sha1 IN (:hashes)');
+        $qb->andWhere($qb->expr()->eq('ua.hidden', ':false'));
+        $qb->andWhere($qb->expr()->eq('ua.available', ':true'));
+        $qb->setParameters([
+            ':false' => false,
+            ':true' => true,
+            ':hashes' => $hashes,
+        ]);
+
+        $qb->groupBy('ua.sha1');
+
+        return \array_map(fn ($value): string => \strval($value['id'] ?? null), $qb->getQuery()->getScalarResult());
     }
 }

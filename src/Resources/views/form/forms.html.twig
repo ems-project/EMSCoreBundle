@@ -108,6 +108,22 @@
     </td>
 {% endblock emsco_form_table_column_data_bytes %}
 
+{% block emsco_form_table_column_data_value_translation %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+    {%- if value -%}
+        {{- block('emsco_form_table_column_data_label_prefix') -}}
+        {{- value|trans({}, column.domain) -}}
+        {{- block('emsco_form_table_column_data_label_suffix') -}}
+    {%- endif -%}
+{% endblock emsco_form_table_column_data_value_translation %}
+
+{% block emsco_form_table_column_data_translation %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+    <td data-order="{% if value %}{{ value }}{% endif %}">
+        {{- block(column.tableDataValueBlock()) -}}
+    </td>
+{% endblock emsco_form_table_column_data_translation %}
+
 {% block emsco_form_table_column_data_value_user %}
     {%- set value = attribute(line.data, column.attribute)|default('') -%}
     {%- set displayname = value|displayname  -%}
@@ -183,8 +199,10 @@
                         'url': path(action.route, routeParameters),
                         'message': action.messageKey,
                         'label': action.labelKey,
+                        'btnType': action.buttonType,
                         'itemLabel': attribute(line.data, table.labelAttribute),
-                        'icon': action.icon
+                        'icon': action.icon,
+                        'group_class': 'pull-right',
                     }%}
                 {% endif %}
             {% else %}
@@ -192,7 +210,8 @@
                     'url':  path(action.route, routeParameters),
                     'label': action.labelKey,
                     'itemLabel': attribute(line.data, table.labelAttribute),
-                    'icon': action.icon
+                    'btnType': action.buttonType,
+                    'icon': action.icon,
                 }%}
             {% endif %}
         {% endfor %}
@@ -225,7 +244,8 @@
                             <tr role="row">
                                 {% if table.supportsTableActions %}
                                     <th class="fit" data-orderable="false" data-name="_checkbox">
-                                        <input type="checkbox" value="" data-grouped-checkbox-target=".{{ table.attributeName|e('html_attr') }}-to-select">
+                                        <label class="sr-only" for="select-all">{{ 'form.header.checkbo.select-all'|trans }}</label>
+                                        <input type="checkbox" value="" data-grouped-checkbox-target=".{{ table.attributeName|e('html_attr') }}-to-select" id="select-all">
                                     </th>
                                 {% endif %}
                                 {% for column in table.columns %}

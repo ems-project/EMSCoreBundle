@@ -1,26 +1,38 @@
-{% trans_default_domain 'EMSCoreBundle' %}<div class="btn-group{% if vertical is defined and vertical %}-vertical{% endif %}">
+{% trans_default_domain 'emsco-twigs' -%}
+<div class="btn-group{% if vertical is defined and vertical %}-vertical{% endif %}">
 	{% if withView is not defined or withView %}
         {% include '@EMSCore/elements/get-button.html.twig' with {
-				'url': path('data.revisions', {
-					'type': instance.contentType.name,
-					'ouuid': instance.ouuid,
-					'revisionId': revisionId
-				}), 
-				'label': 'View', 
-				'icon': 'eye' }%}
+			'url': path('data.revisions', {
+				'type': instance.contentType.name,
+				'ouuid': instance.ouuid,
+				'revisionId': revisionId,
+			}),
+			'btnType': 'primary',
+			'label': 'views.elements.revision-toolbar-html.view-label'|trans,
+			'icon': 'eye' }%}
+
+	{% endif %}
+	{% if current and not draft %}
+		{% include '@EMSCore/elements/post-button.html.twig' with {
+			'url': path('revision.new-draft', {'ouuid': revision.ouuid, 'type':revision.contentType.name }),
+			'label': 'views.elements.revision-toolbar-html.new-draft-label'|trans,
+			'btnType': 'primary',
+			'icon': 'pencil' }%}
 	{% endif %}
 	{% if draft %} 	
 		{% if is_granted(instance.contentType.editRole) %}
 			{% if not  instance.contentType.circlesField or attribute(instance.rawData, instance.contentType.circlesField) is not defined or attribute(instance.rawData, instance.contentType.circlesField)|in_my_circles %}
-    {% include '@EMSCore/elements/get-button.html.twig' with {
-					'url': path('revision.edit', {'revisionId': revisionId}), 
-					'label': 'Edit draft', 
+    			{% include '@EMSCore/elements/get-button.html.twig' with {
+					'url': path('revision.edit', {'revisionId': revisionId}),
+					'label': 'views.elements.revision-toolbar-html.edit-draft-label'|trans,
+					'btnType': 'primary',
 					'icon': 'pencil' }%}
 				{% if autoSave  %}
                     {% include '@EMSCore/elements/post-button.html.twig' with {
 						'url': path('revision.cancel', {'revision': revisionId}),
-						'message': 'Cancel last modifications ?',
-						'label': 'Cancel',
+						'message': 'views.elements.revision-toolbar-html.cancel-message'|trans,
+						'label': 'views.elements.revision-toolbar-html.cancel-label'|trans,
+						'btnType': 'default',
 						'icon': 'remove'
 					}%}
 				{% endif %}
@@ -29,15 +41,17 @@
                     {% if not autoSave  %}
 						{% include '@EMSCore/elements/post-button.html.twig' with {
 							'url': path('revision.finalize', {'revision': revisionId}),
-							'message': 'Finalize this draft ?',
-							'label': 'Finalize',
+							'message': 'views.elements.revision-toolbar-html.finalize-draft-message'|trans,
+							'label': 'views.elements.revision-toolbar-html.finalize-draft-label'|trans({'%environment%': instance.contentType.environment.label|default('')}),
+							'btnType': 'default',
 							'icon': 'check'
 						}%}
                     {% endif %}
                     {% include '@EMSCore/elements/post-button.html.twig' with {
 					'url': path('revision.discard', {'revisionId': revisionId}),
-					'message': 'Discard this draft ?',
-					'label': 'Discard',
+					'label': 'views.elements.revision-toolbar-html.discard-draft-label'|trans,
+					'message': 'views.elements.revision-toolbar-html.discard-draft-message'|trans,
+					'btnType': 'outline-danger',
 					'icon': 'trash'
 				}%}
 			{% endif %}
@@ -65,90 +79,121 @@
 
 	   	{% if is_granted(instance.contentType.editRole) %}
 	   		{% if not  instance.contentType.circlesField or attribute(object._source,instance.contentType.circlesField) is not defined or attribute(object._source,instance.contentType.circlesField)|in_my_circles %}
-                {% if draft %}
-                    {% include '@EMSCore/elements/get-button.html.twig' with {
-						'url': path('revision.edit', {'revisionId': revisionId}), 
-						'label': 'Edit draft', 
-						'icon': 'pencil' }%}
-					{% if autoSave  %}
-                        {% include '@EMSCore/elements/post-button.html.twig' with {
-							'url': path('revision.cancel', {'revision': revisionId}),
-							'message': 'Cancel last modifications ?',
-							'label': 'Cancel',
-							'icon': 'remove'
-						}%}
-					{% endif %}
-                {% elseif current %}
-                    {% include '@EMSCore/elements/post-button.html.twig' with {
-						'url': path('revision.new-draft', {'ouuid': revision.ouuid, 'type':revision.contentType.name }), 
-						'label': 'New draft', 
-						'icon': 'pencil' }%}
-				{% else %}
-					{% if instance.contentType.fieldType.fieldsRoles|one_granted(true) %}
-                        {% include '@EMSCore/elements/get-button.html.twig' with {
-							'url': path('revision.edit', {'revisionId': revisionId}), 
-							'label': 'Edit revision', 
-							'icon': 'pencil' }%}
-					{% endif %}
-					{% if autoSave  %}
-                        {% include '@EMSCore/elements/post-button.html.twig' with {
-							'url': path('revision.cancel', {'revision': revisionId}),
-							'message': 'Cancel last modifications ?',
-							'label': 'Cancel',
-							'icon': 'remove'
-						}%}
-					{% endif %}
-                    {% include '@EMSCore/elements/post-button.html.twig' with {
-						'url': path('revision.revert', {'id': revisionId}), 
-						'label': 'Revert revision', 
-						'icon': 'undo' }%}
-				{% endif %}
+
+
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+						<span class="sr-only">{{ 'views.elements.revision-toolbar-html.other-revision-actions'|trans }}</span>
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+						{% if draft %}
+							<li>{% include '@EMSCore/elements/get-button.html.twig' with {
+								'url': path('revision.edit', {'revisionId': revisionId}),
+								'btnClass': '',
+								'label': 'views.elements.revision-toolbar-html.edit-draft-label'|trans,
+								'icon': 'pencil' }%}</li>
+							{% if autoSave  %}
+								<li>{% include '@EMSCore/elements/post-button.html.twig' with {
+									'url': path('revision.cancel', {'revision': revisionId}),
+									'btnClass': '',
+									'label': 'views.elements.revision-toolbar-html.cancel-last-updates-label'|trans,
+									'icon': 'remove'
+								}%}</li>
+							{% endif %}
+						{% else %}
+							{% if instance.contentType.fieldType.fieldsRoles|one_granted(true) %}
+								<li>{% include '@EMSCore/elements/get-button.html.twig' with {
+									'url': path('revision.edit', {'revisionId': revisionId}),
+									'btnClass': ' ',
+									'label': 'views.elements.revision-toolbar-html.edit-revision-label'|trans,
+									'icon': 'pencil' }%}</li>
+							{% endif %}
+							{% if autoSave  %}
+								<li>{% include '@EMSCore/elements/post-button.html.twig' with {
+									'url': path('revision.cancel', {'revision': revisionId}),
+									'btnClass': '',
+									'message': 'views.elements.revision-toolbar-html.cancel-last-updates-message'|trans,
+									'label': 'views.elements.revision-toolbar-html.cancel-last-updates-label'|trans,
+									'icon': 'remove'
+								}%}</li>
+							{% endif %}
+								<li>{% include '@EMSCore/elements/post-button.html.twig' with {
+									'url': path('revision.revert', {'id': revisionId}),
+									'btnClass': '',
+									'label': 'views.elements.revision-toolbar-html.revert-revision-label'|trans,
+									'icon': 'undo' }%}</li>
+						{% endif %}
+						{% if rev is defined and revision is defined and compareId is defined and rev.id != revision.id and compareId != rev.id and compareId != revision.id %}
+							<li>{% include '@EMSCore/elements/get-button.html.twig' with {
+								'url': path('ems_content_revisions_view', {
+									'type': revision.contentType.name,
+									'ouuid': revision.ouuid,
+									'revisionId': rev.id > revision.id ? rev.id :revision.id,
+									'compareId': rev.id < revision.id ? rev.id :revision.id,
+									'page': page
+								}),
+								'btnClass': '',
+								'label': 'views.elements.revision-toolbar-html.compare-label'|trans,
+								'icon': 'compress' }%}</li>
+						{% endif %}
+					</ul>
+				</div>
 			{% endif %}
 		{% endif %}
 			
 			</div>
 			<div class="btn-group{% if vertical is defined and vertical %}-vertical{% endif %}">
-                {% if is_super() %}
-                    {% include '@EMSCore/elements/post-button.html.twig' with {
-                        'url': path('revision.reindex', {'revisionId': revisionId}),
-						'btnType': 'default',
-                        'label': 'Re-index',
-                        'icon': 'recycle'}%}
-                {% endif %}
-		  {% if instance.contentType.publishRole and is_granted(instance.contentType.publishRole) and hasEnv  %}
+			  {% if instance.contentType.publishRole and is_granted(instance.contentType.publishRole) and hasEnv  %}
+					<div class="btn-group">
+					  <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<span class="fa fa-toggle-on"></span>&nbsp;
+							{{ 'views.elements.revision-toolbar-html.publish-to-label'|trans }}
+							<span class="caret"></span>
+					  </button>
+					   <ul class="dropdown-menu">
+							{% for env in availableEnv %}
+								<li>
+								{% if env not in environments and env.circles|in_my_circles %}
+										<a href="{{ path('revision.publish_to', {'revisionId': revisionId, 'envId': env.id}) }}">{{ env.label }}</a>
+								{% endif %}
+								</li>
+							{% endfor %}
+					   </ul>
+					  </div>
+			  {% endif %}
+
+			  {% if instance.contentType.publishRole and is_granted(instance.contentType.publishRole) and ((environments|length > 0 and not current) or (environments|length > 1 and current)) %}
 				<div class="btn-group">
-				  <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				    	<span class="fa fa-toggle-on"></span>&nbsp;
-						Publish to
+					  <button type="button" class="btn btn-sm btn-outline-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<span class="fa fa-toggle-off"></span>&nbsp;
+							{{ 'views.elements.revision-toolbar-html.unpublish-from-label'|trans }}
+							<span class="caret"></span>
+					  </button>
+					   <ul class="dropdown-menu">
+							{% for env in availableEnv if env in environments and env.circles|in_my_circles %}
+								<li>
+									<a href="{{ path('revision.unpublish', {'revisionId': revisionId, 'envId': env.id}) }}">{{ env.label }}</a>
+								</li>
+							{% endfor %}
+					   </ul>
+				</div>
+			  {% endif %}
+
+			{% if is_super() and environments|length > 0 %}
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+						<span class="sr-only">{{ 'views.elements.revision-toolbar-html.other-environment-actions'|trans }}</span>
 						<span class="caret"></span>
-				  </button>
-				   <ul class="dropdown-menu">
-				   		{% for env in availableEnv %}
-				   			<li>
-							{% if env not in environments and env.circles|in_my_circles %}
-					   				<a href="{{ path('revision.publish_to', {'revisionId': revisionId, 'envId': env.id}) }}">{{ env.label }}</a>
-					   		{% endif %}
-					   		</li>
-				   		{% endfor %}
-				   </ul>
-				  </div>
-		  {% endif %}
-		
-		  {% if instance.contentType.publishRole and is_granted(instance.contentType.publishRole) and ((environments|length > 0 and not current) or (environments|length > 1 and current)) %}
-		  	<div class="btn-group">
-				  <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				    	<span class="fa fa-toggle-off"></span>&nbsp;
-						Unpublish from
-						<span class="caret"></span>
-				  </button>
-				   <ul class="dropdown-menu">
-				   		{% for env in availableEnv if env in environments and env.circles|in_my_circles %}
-				   			<li>
-				   				<a href="{{ path('revision.unpublish', {'revisionId': revisionId, 'envId': env.id}) }}">{{ env.label }}</a>
-				   			</li>
-				   		{% endfor %}
-				   </ul>
-			</div>
-		  {% endif %}
+					</button>
+					<ul class="dropdown-menu">
+						<li>{% include '@EMSCore/elements/post-button.html.twig' with {
+							'url': path('revision.reindex', {'revisionId': revisionId}),
+							'btnClass': '',
+							'label': 'views.elements.revision-toolbar-html.re-index-label'|trans,
+							'icon': 'recycle'}%}</li>
+					</ul>
+				</div>
+			{% endif %}
 	{% endif %}
 </div>

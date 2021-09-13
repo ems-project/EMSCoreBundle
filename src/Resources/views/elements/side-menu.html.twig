@@ -1,57 +1,41 @@
-{% trans_default_domain 'EMSCoreBundle' %}
-  <!-- Left side column. contains the logo and sidebar -->
+{% trans_default_domain 'emsco-twigs' %}
   <aside class="main-sidebar">
-
-    <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-
-      <!-- Sidebar user panel (optional) -->
       <div class="user-panel">
         <div class="pull-left image">
             {% include '@EMSCore/elements/user-image.html.twig' with {
-					'class': 'img-circle'
-				} %}
-{#         	{% if app.user %}#}
-{# 	          <img src="{{ asset('bundles/emscore/images/anonymous.gif') }}" data-original="https://www.gravatar.com/avatar/df5cb42a86d5ded57a694955887c476d?d={{ "https://www.gravatar.com/avatar"|url_encode }}" class="lazy img-circle" alt="{{ app.user.username }}">#}
-{# 	        {% else %}#}
-{# 	          <img src="{{ asset('bundles/emscore/images/anonymous.gif') }}" class="img-circle" alt="Anonymous">#}
-{#         	{% endif %}#}
+                'class': 'img-circle'
+            } %}
         </div>
         <div class="pull-left info">
           
           	{% if app.user %}
-	          	<p><a href="{{ path(user_profile_route) }}" class="">{{ app.user.displayName }}</a></p> 
-		        <!-- Status -->
+	          	<p><a href="{{ path(user_profile_route) }}" class="">{{ app.user.displayName }}</a></p>
 		        <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-{{ status }}"></i> {{ status }}</a>
 	         {% else %} 
-	         	<p><a href="{{ path(user_profile_route) }}" class=""> Anonymous user</a></p>
-		        <!-- Status -->
+	         	<p><a href="{{ path(user_profile_route) }}" class=""> {{ 'views.elements.side-menu-html.anonymous-user'|trans }}</a></p>
 		        <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-"></i> </a>
 	      	{% endif %}
           
         </div>
       </div>
 {% if app.user %}
-      <!-- search form (Optional) -->
       <form action="{{ path('ems_quick_search') }}" method="get" class="sidebar-form">
         <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="Search...">
+            <label for="q" class="sr-only">{{ 'views.elements.side-menu-html.quick-search-label'|trans }}</label>
+            <input id="q" type="text" name="q" class="form-control" placeholder="{{ 'views.elements.side-menu-html.quick-search-placeholder'|trans }}">
           <span class="input-group-btn">
             <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
             </button>
           </span>
         </div>
       </form>
-      <!-- /.search form -->
 
-          		
-      <!-- Sidebar Menu -->
       {% if app.user %}
 	      {% set searches = app.user.username|searches %}
 	      {% if searches|length > 0 %}
 	      <ul class="sidebar-menu" data-widget="tree">
 	        <li class="header">{{ app.user.displayName }}</li>
-	        <!-- Optionally, you can add icons to the links -->
 	          <li class="treeview">
 	          	<a href="#" class="">
 	          		<i class="fa fa-search"></i> <span>Searches</span>
@@ -68,16 +52,13 @@
 			{% endif %}
 	{% endif %}
 
-      <!-- Application Menu -->
-		{% if application_menu_controller %}
-		  	{{ render(controller(application_menu_controller)) }}
-		{% endif %}
-      <!-- /Application Menu -->
+    {% if application_menu_controller %}
+        {{ render(controller(application_menu_controller)) }}
+    {% endif %}
 
 	{% if get_content_types()|length > 0 %}
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">Content Management</li>
-        <!-- Optionally, you can add icons to the links -->
         {% for contentType in get_content_types() %}
         	{% if contentType.active and (not contentType.viewRole or is_granted(contentType.viewRole) or contentType.rootContentType ) %}
 	          <li class="treeview">
@@ -152,13 +133,11 @@
 						<li class="">
 							<a id="menu-data-trash-{{ contentType.id }}" href="{{ path('ems_data_trash', { contentType: contentType.id }) }}">
     							<i class="fa fa-trash"></i>
-    	          				Trash
+                                {{ 'views.elements.side-menu-html.trash'|trans }}
 							</a>
 						</li>
                     {% endif %}
-
-
-	            	{% endif %}
+                {% endif %}
 	          	</ul>
 	          </li>
 	        {% endif %}
@@ -167,24 +146,22 @@
 	{% endif %}
 	
 	{% if is_granted('ROLE_PUBLISHER') %}
-      <!-- Sidebar Menu -->
       <ul class="sidebar-menu">
-        <li class="header">Publisher</li>        
+        <li class="header">{{ 'views.elements.side-menu-html.publishers'|trans }}</li>
           <li class="treeview">
             <a href="{{ path('environment.align') }}" id="menu-environment-align">
-            	<i class="fa fa-align-center"></i> <span>{{ 'Compare environments'|trans }}</span> 
+            	<i class="fa fa-align-center"></i> <span>{{ 'views.elements.side-menu-html.compare-environments'|trans }}</span>
             </a>
           </li>
           <li class="treeview">
-              <a href="{{ path('ems_core_uploaded_file_index') }}" id="menu-filter-index">
-                  <i class="fa fa-file"></i> <span>{{ 'Uploaded Files'|trans }}</span>
+              <a href="{{ path('ems_core_uploaded_file_index') }}">
+                  <i class="fa fa-upload"></i> <span>{{ 'views.elements.side-menu-html.uploaded-files'|trans }}</span>
               </a>
           </li>
       </ul>	
     {% endif %}
 
     {% if is_granted('ROLE_FORM_CRM') %}
-        <!-- Sidebar Menu -->
         <ul class="sidebar-menu">
             <li class="header">{{ 'form_submissions.title'|trans }}</li>
             <li class="treeview">
@@ -196,29 +173,27 @@
     {% endif %}
     
     {% if is_granted('ROLE_USER_MANAGEMENT') %}
-        <!-- Sidebar Menu -->
         <ul class="sidebar-menu">
-            <li class="header">User management</li>
+            <li class="header">{{ 'views.elements.side-menu-html.user-management'|trans }}</li>
             <li class="treeview">
                 <a href="{{ path('ems.user.index') }}" id="menu-user-index">
-                    <i class="fa fa-users"></i> <span>Users</span> 
+                    <i class="fa fa-users"></i> <span>{{ 'views.elements.side-menu-html.users'|trans }}</span>
                 </a>
             </li>
         </ul>
     {% endif %}
 	  
 	{% if is_granted('ROLE_ADMIN') %}
-      <!-- Sidebar Menu -->
       <ul class="sidebar-menu">
-        <li class="header">Admin</li>        
+        <li class="header">{{ 'views.elements.side-menu-html.admin'|trans }}</li>
           <li class="treeview">
             <a href="{{ path('contenttype.index') }}" id="menu-contenttype-list">
-            	<i class="fa fa-sitemap"></i> <span>Content Types</span> 
+            	<i class="fa fa-sitemap"></i> <span>{{ 'views.elements.side-menu-html.content-types'|trans }}</span>
             </a>
         </li>
         <li class="treeview">
           <a href="{{ path('environment.index') }}" id="menu-environment-list">
-          	<i class="fa fa-database"></i> <span>Environments</span> 
+          	<i class="fa fa-database"></i> <span>{{ 'views.elements.side-menu-html.environments'|trans }}</span>
           </a>
         </li>
         <li class="treeview">
@@ -233,53 +208,55 @@
         </li>
         <li class="treeview">
           <a href="{{ path('ems_wysiwyg_index') }}" id="menu-wysiwyg-index">
-          	<i class="fa fa-edit"></i> <span>{{ 'WYSIWYG'|trans }}</span> 
+          	<i class="fa fa-edit"></i> <span>{{ 'views.elements.side-menu-html.wysiwyg'|trans }}</span>
           </a>
         </li>
         <li class="treeview">
           <a href="{{ path('ems_search_options_index') }}" id="menu-wysiwyg-index">
-          	<i class="fa fa-search"></i> <span>{{ 'Search'|trans }}</span> 
+          	<i class="fa fa-search"></i> <span>{{ 'views.elements.side-menu-html.search'|trans }}</span>
           </a>
         </li>
         <li class="treeview">
           <a href="{{ path('i18n_index') }}" id="menu-i18n-index">
-          	<i class="fa fa-language"></i> <span>I18N</span> 
+          	<i class="fa fa-language"></i> <span>{{ 'views.elements.side-menu-html.i18n'|trans }}</span>
           </a>
         </li>
         <li class="treeview">
           <a href="{{ path('job.index') }}" id="menu-job-index">
-          	<i class="fa fa-terminal"></i> <span>Jobs</span> 
+          	<i class="fa fa-terminal"></i> <span>{{ 'views.elements.side-menu-html.jobs'|trans }}</span>
           </a>
         </li>
         <li class="treeview">
           <a href="{{ path('ems_analyzer_index') }}" id="menu-analyzer-index">
-          	<i class="fa fa-signal"></i> <span>{{ 'Analyzers'|trans }}</span> 
+          	<i class="fa fa-signal"></i> <span>{{ 'views.elements.side-menu-html.analyzers'|trans }}</span>
           </a>
         </li>
         <li class="treeview">
           <a href="{{ path('ems_filter_index') }}" id="menu-filter-index">
-          	<i class="fa fa-filter"></i> <span>{{ 'Filters'|trans }}</span> 
+          	<i class="fa fa-filter"></i> <span>{{ 'views.elements.side-menu-html.filters'|trans }}</span>
           </a>
         </li>
+        <li class="treeview">
+            <a href="{{ path('ems_core_uploaded_file_logs') }}">
+                <i class="fa fa-upload"></i> <span>{{ 'views.elements.side-menu-html.uploaded-files-logs'|trans }}</span>
+            </a>
+        </li>
 	  </ul>
-	 {% endif %}{# end role admin #}
+	 {% endif %}
 	 
-	  {% endif %}{# not logged #}
-      <!-- Sidebar Menu -->
+	  {% endif %}
       <ul class="sidebar-menu">
-        <li class="header">OTHER</li>
+        <li class="header">{{ 'views.elements.side-menu-html.other'|trans }}</li>
         <li class="treeview">
           <a href="{{ path('elasticsearch.status') }}" id="menu-elasticsearch-status">
-          	<i class="fa fa-cubes"></i> <span>Status</span> 
+          	<i class="fa fa-cubes"></i> <span>{{ 'views.elements.side-menu-html.status'|trans }}</span>
           </a>
         </li>
         <li>
         	<a id="menu-documentation" href="{{ path('documentation') }}">
-        		<i class="fa fa-book"></i> <span>Documentation</span>
+        		<i class="fa fa-book"></i> <span>{{ 'views.elements.side-menu-html.documentations'|trans }}</span>
         	</a>
         </li>
       </ul>
-      <!-- /.sidebar-menu -->
     </section>
-    <!-- /.sidebar -->
   </aside>

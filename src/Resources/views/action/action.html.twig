@@ -1,5 +1,5 @@
 {% extends '@EMSCore/base.html.twig' %}
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain 'emsco-twigs' %}
 
 {% block folderTitle %}{{ 'view.action.index.title'|trans({'%contentType%': contentType.singularName}) }}{% endblock %}
 {% block title %}{{ block('folderTitle') }}{% endblock %}

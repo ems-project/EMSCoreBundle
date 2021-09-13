@@ -1,6 +1,6 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
-<a  class="btn btn-sm btn-{{ btnType|default('default') }} {%  if disabled is defined and disabled %}disabled{% endif %}" href="{{ url }}"
+<a  class="{% if btnClass is defined %}{{ btnClass }}{% else %}btn btn-sm btn-{{ btnType|default('default') }}{% endif %} {%  if disabled is defined and disabled %}disabled{% endif %}" href="{{ url }}"
 	{% if target is defined %}
 		target="{{ target }}"
 	{% endif %}

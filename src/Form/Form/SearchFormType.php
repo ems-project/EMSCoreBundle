@@ -64,7 +64,7 @@ class SearchFormType extends AbstractType
         if ($options['light']) {
             $builder->add('applyFilters', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-md',
+                        'class' => 'btn btn-primary btn-md',
                 ],
                 'icon' => 'fa fa-check',
             ]);
@@ -123,12 +123,12 @@ class SearchFormType extends AbstractType
 
             $builder->add('search', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary btn-md',
+                            'class' => 'btn btn-primary btn-md',
                     ],
                     'icon' => 'fa fa-search',
             ])->add('exportResults', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary btn-sm',
+                            'class' => 'btn btn-primary btn-sm',
                     ],
                     'icon' => 'glyphicon glyphicon-export',
             ])->add('environments', EnvironmentPickerType::class, [
@@ -142,7 +142,7 @@ class SearchFormType extends AbstractType
             if (!$options['savedSearch']) {
                 $builder->add('save', SubmitEmsType::class, [
                         'attr' => [
-                                'class' => 'btn-primary btn-md',
+                                'class' => 'btn btn-primary btn-md',
                         ],
                         'icon' => 'fa fa-save',
                 ]);

@@ -340,7 +340,7 @@ class ContentTypeController extends AppController
         $builder = $this->createFormBuilder([])
             ->add('reorder', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary ',
+                    'class' => 'btn btn-primary ',
                 ],
                 'icon' => 'fa fa-reorder',
             ]);

@@ -24,7 +24,7 @@ class JobType extends AbstractType
             ])
             ->add('launch', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm ',
+                    'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
             ]);

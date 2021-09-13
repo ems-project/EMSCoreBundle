@@ -19,7 +19,7 @@ class I18nFormType extends AbstractType
             ->add('identifier', null, ['required' => false, 'label' => 'Key'])
             ->add('filter', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary btn-sm',
+                            'class' => 'btn btn-primary btn-sm',
                     ],
                     'icon' => 'fa fa-columns',
             ]);

@@ -158,7 +158,7 @@ class TemplateType extends AbstractType
         ])
         ->add('saveAndClose', SubmitEmsType::class, [
             'attr' => [
-                'class' => 'btn-primary btn-sm ',
+                'class' => 'btn btn-primary btn-sm ',
             ],
             'icon' => 'fa fa-save',
         ]);
@@ -166,7 +166,7 @@ class TemplateType extends AbstractType
         if ($options['ajax-save-url']) {
             $builder->add('save', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm ',
+                    'class' => 'btn btn-primary btn-sm ',
                     'data-ajax-save-url' => $options['ajax-save-url'],
                 ],
                 'icon' => 'fa fa-save',

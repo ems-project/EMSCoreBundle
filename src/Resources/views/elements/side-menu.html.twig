@@ -154,7 +154,7 @@
             </a>
           </li>
           <li class="treeview">
-              <a href="{{ path('ems_core_uploaded_file_index') }}" id="menu-filter-index">
+              <a href="{{ path('ems_core_uploaded_file_index') }}">
                   <i class="fa fa-upload"></i> <span>{{ 'views.elements.side-menu-html.uploaded-files'|trans }}</span>
               </a>
           </li>
@@ -235,6 +235,11 @@
           <a href="{{ path('ems_filter_index') }}" id="menu-filter-index">
           	<i class="fa fa-filter"></i> <span>{{ 'views.elements.side-menu-html.filters'|trans }}</span>
           </a>
+        </li>
+        <li class="treeview">
+            <a href="{{ path('ems_core_uploaded_file_logs') }}">
+                <i class="fa fa-upload"></i> <span>{{ 'views.elements.side-menu-html.uploaded-files-logs'|trans }}</span>
+            </a>
         </li>
 	  </ul>
 	 {% endif %}

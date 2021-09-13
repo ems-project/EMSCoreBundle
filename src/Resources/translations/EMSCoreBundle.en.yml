@@ -244,6 +244,7 @@ log.contenttype.unreferenced_not_found: 'Unreferenced content type not found'
 log.contenttype.updated: 'The content type %contenttype% has been updated'
 log.controller.channel.unknown_action: 'Unknown action'
 log.controller.query_search.unknown_action: 'Unknown action'
+log.controller.uploaded-file-logs.unknown_action: 'Unknown action'
 log.crud.create_error: 'The revision for contenttype %contenttype% can not be created, reason: %error_message%'
 log.crud.delete_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be deleted, reason: %error_message%'
 log.crud.deleted: 'The document ems://object:%contenttype%:%ouuid% has been deleted'
@@ -512,8 +513,6 @@ task.status.history.updated: '%user% updated the task'
 task.status.planned: Planned
 task.status.progress: 'In progress'
 task.status.rejected: Rejected
-task.tab_task: Task
-task.tab_tasks: Tasks
 task.title: Tasks
 task.update.submit: 'Edit task'
 task.update.success: 'Task "%title%" successfully updated.'
@@ -526,15 +525,21 @@ task.validation.done: Finish
 task.validation.reject: Reject
 task.validation.request: 'Send for validation'
 uploaded-file.action.download_selected: 'Download selected'
+uploaded-file.action.hide-show: Hide/Show
 uploaded-file.action.soft-delete: Delete
+uploaded-file.hide-show-confirm: 'Toggle file visibility ?'
+uploaded-file.uploaded-file.hide-show: 'Toggle visibility'
 uploaded-file.index.column.available: Available
 uploaded-file.index.column.created: 'Uploaded at'
 uploaded-file.index.column.head_last: 'Last seen'
 uploaded-file.index.column.hidden: Hidden
 uploaded-file.index.column.modified: 'Last modified'
-uploaded-file.index.column.name: 'File name'
+uploaded-file.index.column.name: Name
 uploaded-file.index.column.sha1: 'Hash signature'
-uploaded-file.index.column.size: 'File size'
+uploaded-file.index.column.size: Size
+uploaded-file.index.column.kind: Kind
+uploaded-file.index.column.date-modified: 'Date modified'
+uploaded-file.index.column.date-added: 'Date added'
 uploaded-file.index.column.type: 'Mime type'
 uploaded-file.index.column.username: By
 uploaded-file.index.title: 'Uploaded Files'
@@ -542,6 +547,10 @@ uploaded-file.menu: 'Uploaded files'
 uploaded-file.soft-delete-confirm: 'Are you sure you want to delete this file?'
 uploaded-file.uploaded-file.download_selected: 'Download selected'
 uploaded-file.uploaded-file.soft_delete_selected: 'Delete selected'
+uploaded-file.uploaded-file.delete-all_confirm: 'Selected files will be removed'
+uploaded-file.delete-all: 'Delete selected'
+uploaded-file.delete-confirm: 'This will be removed'
+uploaded-file.action.delete: Delete
 user.action.delete: Delete
 user.action.delete_confirm: 'Delete this user?'
 user.action.disable: Disable
@@ -643,6 +652,9 @@ views.elements.object-views-button.raw-view: 'Raw view'
 views.elements.object-views-button.raw-view-icon-class: 'fa fa-th'
 views.elements.object-views-button.action-dropdown-label: 'Actions in %environment%'
 wysiwyg.invalid_config_format: 'Format not valid: %msg%'
+view.macros.data-field-type.collection_removed_items: '{0} Nothing has been removed.|{1} One item has been removed.|]1,Inf[ %count% item have been removed.'
+view.macros.data-field-type.collection_added_items: '{0} Nothing has been added.|{1} One item has been added.|]1,Inf[ %count% items have been added.'
+view.icon.class.uploaded-file: 'fa fa-upload'
 'An Error Occurred': 'An Error Occurred'
 'Oops! An Error Occurred': 'Oops! An Error Occurred'
 'The server returned a %status_code%': 'The server returned a %status_code%'
@@ -683,12 +695,6 @@ Revisions: Revisions
 'Discard this draft ?': 'Discard this draft ?'
 Discard: Discard
 Revision: Revision
-'Finalized by': 'Finalized by'
-'Finalized on': 'Finalized on'
-Pending: Pending
-Nothing: Nothing
-'Linked documents in': 'Linked documents in'
-'This document does not have any linked document': 'This document does not have any linked document'
 'Trash for content type %name%': 'Trash for content type %name%'
 'Deleted by': 'Deleted by'
 'Put it back ?': 'Put it back ?'
@@ -698,10 +704,6 @@ Nothing: Nothing
 Empty: Empty
 'The trash is empty': 'The trash is empty'
 Documentation: Documentation
-'Compare environments': 'Compare environments'
-'Uploaded Files': 'Uploaded Files'
-WYSIWYG: WYSIWYG
-Search: Search
 Filters: Filters
 'Edit %entity_name%': 'Edit %entity_name%'
 'Search options': 'Search options'
@@ -738,8 +740,6 @@ Download: Download
 'Author :': 'Author :'
 'Language :': 'Language :'
 'Content :': 'Content :'
-view.macros.data-field-type.collection_removed_items: '{0} Nothing has been removed.|{1} One item has been removed.|]1,Inf[ %count% item have been removed.'
-view.macros.data-field-type.collection_added_items: '{0} Nothing has been added.|{1} One item has been added.|]1,Inf[ %count% items have been added.'
 'To be treated': 'To be treated'
 'No result for this filters combinaison': 'No result for this filters combinaison'
 Notification: Notification
@@ -761,7 +761,6 @@ Outbox: Outbox
 'Search Field Options': 'Search Field Options'
 'Add an Search Field Option': 'Add an Search Field Option'
 'Click on ''Add an search field option'' to create a first Search Field Option': 'Click on ''Add an search field option'' to create a first Search Field Option'
-view.icon.class.uploaded-file: 'fa fa-upload'
 'Add user': 'Add user'
 Views: Views
 'gallery view plugin': 'gallery view plugin'
@@ -777,3 +776,4 @@ Views: Views
 'Add a style set': 'Add a style set'
 'Click on ''Add a styles set'' to create a first styles set': 'Click on ''Add a styles set'' to create a first styles set'
 'New WYSIWYG profile': 'New WYSIWYG profile'
+form.header.checkbo.select-all: 'Select all'

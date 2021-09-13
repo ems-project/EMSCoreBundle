@@ -37,6 +37,8 @@ abstract class TableAbstract implements TableInterface
     private string $exportSheetName = 'table';
     private string $exportFileName = 'table';
     private string $exportDisposition = 'attachment';
+    private string $labelAttribute = 'name';
+    private string $rowActionsClass = '';
 
     public function __construct(?string $ajaxUrl, int $from, int $size)
     {
@@ -54,7 +56,7 @@ abstract class TableAbstract implements TableInterface
     {
         $this->from = $dataTableRequest->getFrom();
         $this->size = $dataTableRequest->getSize();
-        $this->orderField = $dataTableRequest->getOrderField();
+
         $this->orderDirection = $dataTableRequest->getOrderDirection();
         $this->searchValue = $dataTableRequest->getSearchValue();
     }
@@ -72,7 +74,12 @@ abstract class TableAbstract implements TableInterface
 
     public function getLabelAttribute(): string
     {
-        return 'name';
+        return $this->labelAttribute;
+    }
+
+    public function setLabelAttribute(string $labelAttribute): void
+    {
+        $this->labelAttribute = $labelAttribute;
     }
 
     /**
@@ -198,7 +205,7 @@ abstract class TableAbstract implements TableInterface
         return $this->tableActions;
     }
 
-    public function setDefaultOrder(string $orderField, string $direction = 'asc'): void
+    public function setDefaultOrder(string $orderField, string $direction = 'desc'): void
     {
         $this->orderField = $orderField;
         $this->orderDirection = $direction;
@@ -219,7 +226,7 @@ abstract class TableAbstract implements TableInterface
      */
     public function getFrontendOptions(): array
     {
-        $columnIndex = null;
+        $columnIndex = 0;
         if ($this->supportsTableActions()) {
             $columnIndex = 1;
         }
@@ -272,6 +279,12 @@ abstract class TableAbstract implements TableInterface
 
     public function getOrderField(): ?string
     {
+        foreach ($this->getColumns() as $column) {
+            if ($column->getAttribute() === $this->orderField) {
+                return $column->getOrderField();
+            }
+        }
+
         return $this->orderField;
     }
 
@@ -338,5 +351,15 @@ abstract class TableAbstract implements TableInterface
         $this->exportDisposition = $exportDisposition;
 
         return $this;
+    }
+
+    public function getRowActionsClass(): string
+    {
+        return $this->rowActionsClass;
+    }
+
+    public function setRowActionsClass(string $rowActionsClass): void
+    {
+        $this->rowActionsClass = $rowActionsClass;
     }
 }

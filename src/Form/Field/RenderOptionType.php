@@ -10,7 +10,7 @@ class RenderOptionType extends ChoiceType
     public const EMBED = 'embed';
     public const EXPORT = 'export';
     public const EXTERNALLINK = 'externalLink';
-    public const HTML = 'html';
+    public const RAW_HTML = 'rawHTML';
     public const NOTIFICATION = 'notification';
     public const JOB = 'job';
     public const PDF = 'pdf';
@@ -19,7 +19,7 @@ class RenderOptionType extends ChoiceType
         'Embed' => self::EMBED,
         'Export' => self::EXPORT,
         'External link' => self::EXTERNALLINK,
-        'HTML' => self::HTML,
+        'Raw HTML' => self::RAW_HTML,
         'Notification' => self::NOTIFICATION,
         'Job' => self::JOB,
         'PDF' => self::PDF,

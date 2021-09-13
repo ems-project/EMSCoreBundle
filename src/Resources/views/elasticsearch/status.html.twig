@@ -1,4 +1,4 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-twigs' %}
 
 
 {% block title %}Elasticsearch cluster's status{% endblock %}
@@ -27,17 +27,17 @@
 			<div class="box-body ">
 				<ul class="list-group">
 					{% if info is defined and info %}
-						<li class="list-group-item">{{ 'Cluster\'s UUID'|trans }}<span
+						<li class="list-group-item">{{ 'views.elasticsearch.status.cluster-uuid'|trans }}<span
 							class=" badge bg-{{ status.status }}">{{ info.cluster_uuid }}</span></li>
-						<li class="list-group-item">{{ 'Tagline'|trans }}<span
+						<li class="list-group-item">{{ 'views.elasticsearch.status.tagline'|trans }}<span
 							class=" badge bg-{{ status.status }}">{{ info.tagline }}</span></li>
-						<li class="list-group-item">{{ 'Node\'s name'|trans }}<span
+						<li class="list-group-item">{{ 'views.elasticsearch.status.node-name'|trans }}<span
 							class=" badge bg-{{ status.status }}">{{ info.name }}</span></li>
-						<li class="list-group-item">{{ 'Elasticsearch\'s version'|trans }}<span
+						<li class="list-group-item">{{ 'views.elasticsearch.status.version'|trans }}<span
 							class=" badge bg-{{ status.status }}">{{ info.version.number }}</span></li>
-						<li class="list-group-item">{{ 'Lucene\'s version'|trans }}<span
+						<li class="list-group-item">{{ 'views.elasticsearch.status.lucene-version'|trans }}<span
 							class=" badge bg-{{ status.status }}">{{ info.version.lucene_version }}</span></li>
-						<li class="list-group-item">{{ 'Build date'|trans }}<span
+						<li class="list-group-item">{{ 'views.elasticsearch.status.build-date'|trans }}<span
 							class=" badge bg-{{ status.status }}">{{ info.version.build_date|date(date_time_format) }}</span></li>
 					{% endif %}
 					<li class="list-group-item">Number of nodes <span
@@ -86,49 +86,23 @@
 			<div class="box-header with-border bg-{% if certificate %}green{% else %}red{% endif %}">
 				<h4 class="box-title">
 						<i class="icon fa fa-key fa-2x"></i>
-						{{ 'Certificate\'s information'|trans }}</strong>
+						{{ 'views.elasticsearch.status.certificate-information'|trans }}
 				</h4>
 			</div>
 			<div class="box-body ">
 				<ul class="list-group">
                     {% if certificate %}
-    					<li class="list-group-item">{{ 'Bits'|trans }} <span
-    						class=" badge bg-green">{{ certificate.bits }}</span></li>
-    					<li class="list-group-item"><a href="{{ path('ems_get_public_key') }}">{{ 'Public key'|trans }}</a>
+    					<li class="list-group-item">
+							{{ 'views.elasticsearch.status.bits'|trans }}
+							<span class=" badge bg-green">{{ certificate.bits }}</span>
+						</li>
+    					<li class="list-group-item">
+							<a href="{{ path('ems_get_public_key') }}">{{ 'views.elasticsearch.status.public-key'|trans }}</a>
     						<pre>{{ certificate.key }}</pre>
     					</li>
                     {% else %}
-    					<li class="list-group-item">{{ 'Certificate is missing'|trans }}</li>
+    					<li class="list-group-item">{{ 'views.elasticsearch.status.certificate-is-missing'|trans }}</li>
                     {% endif %}
-{# 					<li class="list-group-item">Active primary shards <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.active_primary_shards }}</span></li>#}
-{# 					<li class="list-group-item">Active shards <span#}
-{# 						class=" badge bg-{{ status.status }}">{{ status.active_shards }}</span></li>#}
-{# 					<li class="list-group-item">Relocating shards <span#}
-{# 						class=" badge bg-{{ status.status }}">{{ status.relocating_shards#}
-{# 							}}</span></li>#}
-{# 					<li class="list-group-item">Initializing shards <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.initializing_shards }}</span></li>#}
-{# 					<li class="list-group-item">Unassigned shards <span#}
-{# 						class=" badge bg-{{ status.status }}">{{ status.unassigned_shards#}
-{# 							}}</span></li>#}
-{# 					<li class="list-group-item">Delayed unassigned shards <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.delayed_unassigned_shards }}</span></li>#}
-{# 					<li class="list-group-item">Number of pending tasks <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.number_of_pending_tasks }}</span></li>#}
-{# 					<li class="list-group-item">Number of in flight fetch <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.number_of_in_flight_fetch }}</span></li>#}
-{# 					<li class="list-group-item">Task max waiting in queue <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.task_max_waiting_in_queue_millis }} ms</span></li>#}
-{# 					<li class="list-group-item">Active shards percent as number <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.active_shards_percent_as_number }}</span></li>#}
 
 				</ul>
 			</div>
@@ -142,13 +116,13 @@
 				<div class="box-header with-border bg-{% if tika %}{% if tika.code == 200 %}green{% else %}red{% endif %}{% else %}yellow{% endif %}">
 					<h4 class="box-title">
 						<i class="icon fa fa-external-link fa-2x"></i>
-                        {{ 'Tika server'|trans }} {% if tika and tika.code != 200 %}({{tika.code}}){% endif %}</strong>
+						{{ 'views.elasticsearch.status.tika-server'|trans }} {% if tika and tika.code != 200 %}({{tika.code}}){% endif %}
 					</h4>
 				</div>
 				<div class="box-body ">
 					<ul class="list-group">
 						<li class="list-group-item">
-                            {% if tika %}{{ tika.content }}{% else %}{{ 'Tika server is not configured'|trans }}{% endif %}
+                            {% if tika %}{{ tika.content }}{% else %}{{ 'views.elasticsearch.status.tika-server-not-configured'|trans }}{% endif %}
 						</li>
 					</ul>
 				</div>

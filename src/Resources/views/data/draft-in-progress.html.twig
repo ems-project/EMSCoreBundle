@@ -33,9 +33,7 @@
 								<td class="text-center">{{ loop.index }}.</td>
                                 {% if is_super() %}<td>{{ revision.ouuid }}</td>{% endif %}
 								<td>
-								{% if revision.contentType.labelField is defined and revision.rawData and attribute(revision.rawData, revision.contentType.labelField) is defined %}
-									{{ attribute(revision.rawData, revision.contentType.labelField) }}
-								{% endif %}
+									{{ revision.label }}
 								</td>
 								<td>
 									{% if revision.lockUntil and revision.lockUntil > date('now') %}
@@ -74,7 +72,7 @@
 										{% endif %}
 										{% if not revision.contentType.circlesField or attribute(revision.rawData, revision.contentType.circlesField) is not defined or attribute(revision.rawData, revision.contentType.circlesField)|in_my_circles %}
                                             {% include '@EMSCore/elements/get-button.html.twig' with {
-												'url':  path('revision.edit', {'revisionId': revision.id}),
+												'url':  path('emsco_edit_revision', {'revisionId': revision.id}),
 												'label': 'Edit draft'|trans,
 												'icon': 'pencil'
 											}%}

@@ -9,6 +9,7 @@ use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\Form\RevisionType;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\Revision\LoggingContext;
@@ -19,7 +20,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -54,10 +54,6 @@ class EditController extends AbstractController
         $this->wysiwygStylesSetService = $wysiwygStylesSetService;
     }
 
-    /**
-     * @Route("/data/draft/edit/{revisionId}", name="ems_revision_edit")
-     * @Route("/data/draft/edit/{revisionId}", name="revision.edit")
-     */
     public function editRevision(int $revisionId, Request $request): Response
     {
         if (null === $revision = $this->revisionService->find($revisionId)) {
@@ -148,7 +144,7 @@ class EditController extends AbstractController
                             'type' => $contentType->getName(),
                         ]);
                     } else {
-                        return $this->redirectToRoute('revision.edit', [
+                        return $this->redirectToRoute(Routes::EditRevision, [
                             'revisionId' => $revision->getId(),
                         ]);
                     }
@@ -156,7 +152,7 @@ class EditController extends AbstractController
             }
 
             if (isset($requestRevision['paste']) || isset($requestRevision['copy'])) {
-                return $this->redirectToRoute('revision.edit', ['revisionId' => $revisionId]);
+                return $this->redirectToRoute(Routes::EditRevision, ['revisionId' => $revisionId]);
             }
 
             //if Save or Discard

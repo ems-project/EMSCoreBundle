@@ -35,6 +35,7 @@ use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
@@ -199,7 +200,7 @@ class DataController extends AppController
     {
         $revId = $dataService->putBack($contentType, $ouuid);
 
-        return $this->redirectToRoute('ems_revision_edit', [
+        return $this->redirectToRoute(Routes::EditRevision, [
             'revisionId' => $revId,
         ]);
     }
@@ -538,7 +539,7 @@ class DataController extends AppController
             EmsFields::LOG_CONTENTTYPE_FIELD => $type,
         ]);
 
-        return $this->redirectToRoute('ems_revision_edit', [
+        return $this->redirectToRoute(Routes::EditRevision, [
             'revisionId' => $revision->getId(),
         ]);
     }
@@ -582,7 +583,7 @@ class DataController extends AppController
      */
     public function newDraftAction(string $type, string $ouuid, DataService $dataService): RedirectResponse
     {
-        return $this->redirectToRoute('revision.edit', [
+        return $this->redirectToRoute(Routes::EditRevision, [
             'revisionId' => $dataService->initNewDraft($type, $ouuid)->getId(),
         ]);
     }
@@ -1145,7 +1146,7 @@ class DataController extends AppController
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 ]);
 
-                return $this->redirectToRoute('revision.edit', [
+                return $this->redirectToRoute(Routes::EditRevision, [
                     'revisionId' => $revision->getId(),
                 ]);
             }
@@ -1160,7 +1161,7 @@ class DataController extends AppController
                     'count' => $form->getErrors(true)->count(),
                 ]);
 
-                return $this->redirectToRoute('revision.edit', [
+                return $this->redirectToRoute(Routes::EditRevision, [
                     'revisionId' => $revision->getId(),
                 ]);
             }
@@ -1174,7 +1175,7 @@ class DataController extends AppController
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
 
-            return $this->redirectToRoute('revision.edit', [
+            return $this->redirectToRoute(Routes::EditRevision, [
                 'revisionId' => $revision->getId(),
             ]);
         }
@@ -1226,7 +1227,7 @@ class DataController extends AppController
         try {
             $revision = $dataService->newDocument($contentType, null, $rawData);
 
-            return $this->redirectToRoute('revision.edit', [
+            return $this->redirectToRoute(Routes::EditRevision, [
                 'revisionId' => $revision->getId(),
             ]);
         } catch (\Throwable $e) {
@@ -1284,7 +1285,7 @@ class DataController extends AppController
             try {
                 $revision = $dataService->newDocument($contentType, $revision->getOuuid());
 
-                return $this->redirectToRoute('revision.edit', [
+                return $this->redirectToRoute(Routes::EditRevision, [
                     'revisionId' => $revision->getId(),
                 ]);
             } catch (DuplicateOuuidException $e) {
@@ -1323,7 +1324,7 @@ class DataController extends AppController
             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
         ]);
 
-        return $this->redirectToRoute('revision.edit', [
+        return $this->redirectToRoute(Routes::EditRevision, [
             'revisionId' => $revertedRevision->getId(),
         ]);
     }

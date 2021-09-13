@@ -19,6 +19,7 @@ final class TableItemAction
     /** @var string|null */
     private $messageKey;
     private bool $dynamic;
+    private string $buttonType = 'default';
 
     /**
      * @param array<string, mixed> $routeParameters
@@ -107,5 +108,15 @@ final class TableItemAction
     public function setDynamic(bool $dynamic): void
     {
         $this->dynamic = $dynamic;
+    }
+
+    public function setButtonType(string $buttonType): void
+    {
+        $this->buttonType = $buttonType;
+    }
+
+    public function getButtonType(): string
+    {
+        return $this->buttonType;
     }
 }

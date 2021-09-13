@@ -244,6 +244,7 @@ log.contenttype.unreferenced_not_found: 'Unreferenced content type not found'
 log.contenttype.updated: 'The content type %contenttype% has been updated'
 log.controller.channel.unknown_action: 'Unknown action'
 log.controller.query_search.unknown_action: 'Unknown action'
+log.controller.uploaded-file-logs.unknown_action: 'Unknown action'
 log.crud.create_error: 'The revision for contenttype %contenttype% can not be created, reason: %error_message%'
 log.crud.delete_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be deleted, reason: %error_message%'
 log.crud.deleted: 'The document ems://object:%contenttype%:%ouuid% has been deleted'
@@ -524,15 +525,21 @@ task.validation.done: Finish
 task.validation.reject: Reject
 task.validation.request: 'Send for validation'
 uploaded-file.action.download_selected: 'Download selected'
+uploaded-file.action.hide-show: Hide/Show
 uploaded-file.action.soft-delete: Delete
+uploaded-file.hide-show-confirm: 'Toggle file visibility ?'
+uploaded-file.uploaded-file.hide-show: 'Toggle visibility'
 uploaded-file.index.column.available: Available
 uploaded-file.index.column.created: 'Uploaded at'
 uploaded-file.index.column.head_last: 'Last seen'
 uploaded-file.index.column.hidden: Hidden
 uploaded-file.index.column.modified: 'Last modified'
-uploaded-file.index.column.name: 'File name'
+uploaded-file.index.column.name: Name
 uploaded-file.index.column.sha1: 'Hash signature'
-uploaded-file.index.column.size: 'File size'
+uploaded-file.index.column.size: Size
+uploaded-file.index.column.kind: Kind
+uploaded-file.index.column.date-modified: 'Date modified'
+uploaded-file.index.column.date-added: 'Date added'
 uploaded-file.index.column.type: 'Mime type'
 uploaded-file.index.column.username: By
 uploaded-file.index.title: 'Uploaded Files'
@@ -540,6 +547,10 @@ uploaded-file.menu: 'Uploaded files'
 uploaded-file.soft-delete-confirm: 'Are you sure you want to delete this file?'
 uploaded-file.uploaded-file.download_selected: 'Download selected'
 uploaded-file.uploaded-file.soft_delete_selected: 'Delete selected'
+uploaded-file.uploaded-file.delete-all_confirm: 'Selected files will be removed'
+uploaded-file.delete-all: 'Delete selected'
+uploaded-file.delete-confirm: 'This will be removed'
+uploaded-file.action.delete: Delete
 user.action.delete: Delete
 user.action.delete_confirm: 'Delete this user?'
 user.action.disable: Disable
@@ -765,3 +776,4 @@ Views: Views
 'Add a style set': 'Add a style set'
 'Click on ''Add a styles set'' to create a first styles set': 'Click on ''Add a styles set'' to create a first styles set'
 'New WYSIWYG profile': 'New WYSIWYG profile'
+form.header.checkbo.select-all: 'Select all'

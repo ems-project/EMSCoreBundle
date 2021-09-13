@@ -110,3 +110,7 @@ views.elements.object-toolbar-html.view-draft-in-progress: 'View draft in progre
 views.elements.object-toolbar-html.view-current-revision: 'View current revision'
 views.elements.object-toolbar-html.edit-draft: 'Edit draft'
 views.elements.object-toolbar-html.new-draft: Edit
+views.elements.side-menu-html.uploaded-files-logs: 'Uploaded file logs'
+uploaded-file-logs.index.title: 'Uploaded file logs'
+view.icon.class.uploaded-file: 'fa fa-upload'
+uploaded-file-logs.menu: 'Uploaded file logs'

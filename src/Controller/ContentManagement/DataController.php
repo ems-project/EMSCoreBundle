@@ -158,11 +158,16 @@ class DataController extends AppController
             $searchForm->setSortOrder($contentType->getSortOrder());
         }
 
+        $circleField = $contentType->getCirclesField();
+        if (null === $circleField || '' === $circleField) {
+            throw new \RuntimeException('Unexpected empty circle field');
+        }
+
         $searchForm->filters = [];
         foreach ($this->getUser()->getCircles() as $cicle) {
             $filter = new SearchFilter();
             $filter->setBooleanClause('should')
-                ->setField($contentType->getCirclesField())
+                ->setField($circleField)
                 ->setOperator('term')
                 ->setPattern($cicle);
             $searchForm->addFilter($filter);

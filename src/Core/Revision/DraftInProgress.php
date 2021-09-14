@@ -87,7 +87,6 @@ class DraftInProgress implements EntityServiceInterface
            'revisionId' => 'id',
         ])->addCondition($inMyCircles)->setButtonType('outline-danger');
 
-
         if (null !== $contentType && (null === $contentType->getCirclesField() || '' === $contentType->getCirclesField())) {
             $table->addTableAction(self::DRAFT_DRAFT_ACTION, 'fa fa-trash', 'revision.draft-in-progress.action.discard-selected-draft', 'revision.draft-in-progress.action.discard-selected-confirm')
                 ->setCssClass('btn btn-outline-danger');

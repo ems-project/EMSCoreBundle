@@ -36,7 +36,7 @@ final class ReleaseController extends AbstractController
     private $releaseService;
     /** @var ReleaseRevisionService */
     private $releaseRevisionService;
-    /** @var */
+    /** @var PublishService */
     private $publishService;
 
     public function __construct(LoggerInterface $logger, ReleaseService $releaseService, ReleaseRevisionService $releaseRevisionService, PublishService $publishService)
@@ -96,12 +96,14 @@ final class ReleaseController extends AbstractController
 
     public function edit(Request $request, Release $release, string $view = '@EMSCore/release/edit.html.twig'): Response
     {
-        $table = new EntityTable($this->releaseRevisionService, $this->generateUrl('ems_core_release_ajax_data_table'), ['option' => TableAbstract::REMOVE_ACTION, 'selected' => $release->getRevisionsIds()]);
+        $table = new EntityTable($this->releaseRevisionService, $this->generateUrl('ems_core_release_ajax_data_table'), [
+            'option' => TableAbstract::REMOVE_ACTION,
+            'selected' => $release->getRevisionsIds(),
+        ]);
         $table->addColumn('release.revision.index.column.label', 'labelField');
         $table->addColumn('release.revision.index.column.CT', 'contentTypeName');
         $table->addColumn('release.revision.index.column.finalizedBy', 'finalizedBy');
         $table->addColumnDefinition(new DatetimeTableColumn('release.revision.index.column.finalizeDate', 'finalizedDate'));
-
         $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
 
         $form = $this->createForm(TableType::class, $table);
@@ -149,10 +151,13 @@ final class ReleaseController extends AbstractController
 
     public function addRevisions(Request $request, Release $release): Response
     {
-        $table = new EntityTable($this->releaseRevisionService, $this->generateUrl('ems_core_release_ajax_data_table'), ['option' => TableAbstract::ADD_ACTION, 'selected' => $release->getRevisionsIds()]);
+        $table = new EntityTable($this->releaseRevisionService, $this->generateUrl('ems_core_release_ajax_data_table'), [
+            'option' => TableAbstract::ADD_ACTION,
+            'selected' => $release->getRevisionsIds(),
+            'source' => $release->getEnvironmentSource()->getId(),
+            'target' => $release->getEnvironmentTarget()->getId(),
+        ]);
         $labelColumn = $table->addColumn('release.revision.index.column.label', 'labelField');
-//         $labelColumn->setRouteProperty('defaultRoute');
-//         $labelColumn->setRouteTarget('revision_%value%');
         $table->addColumn('release.revision.index.column.CT', 'contentTypeName');
         $table->addColumn('release.revision.index.column.finalizedBy', 'finalizedBy');
         $table->addColumnDefinition(new DatetimeTableColumn('release.revision.index.column.finalizeDate', 'finalizedDate'));
@@ -188,32 +193,32 @@ final class ReleaseController extends AbstractController
         foreach ($release->getRevisions() as $revision) {
             //dump('revision ' . $revision->getLabel());
             /** @var Environment $env */
-            foreach ($release->getEnvironments() as $env) {
-                // dump('env ' . $env->getName());
-                // if already env in revision => nothing happend
-                //dump($revision->getEnvironments()->count());
-                if ($revision->getEnvironments()->count() > 0) {
-                    if ($revision->getEnvironments()->contains($env)) {
-                        //      dump('already env in revision nothing happend');
-                        continue;
-                    }
-                }
+            $env = $release->getEnvironmentTarget();
 
-                //dump('need to publish on env ' . $env->getName());
+            // dump('env ' . $env->getName());
+            // if already env in revision => nothing happend
+            //dump($revision->getEnvironments()->count());
+            if ($revision->getEnvironments()->count() > 0) {
+                if ($revision->getEnvironments()->contains($env)) {
+                    //      dump('already env in revision nothing happend');
+                    continue;
+                }
+            }
 
-                $contentType = $revision->getContentType();
-                if (null === $contentType) {
-                    throw new RuntimeException('Content type not found');
-                }
-                if ($contentType->getDeleted()) {
-                    throw new RuntimeException('Content type deleted');
-                }
+            //dump('need to publish on env ' . $env->getName());
 
-                try {
-                    $this->publishService->publish($revision, $env);
-                } catch (NonUniqueResultException $e) {
-                    throw new NotFoundHttpException('Revision not found');
-                }
+            $contentType = $revision->getContentType();
+            if (null === $contentType) {
+                throw new RuntimeException('Content type not found');
+            }
+            if ($contentType->getDeleted()) {
+                throw new RuntimeException('Content type deleted');
+            }
+
+            try {
+                $this->publishService->publish($revision, $env);
+            } catch (NonUniqueResultException $e) {
+                throw new NotFoundHttpException('Revision not found');
             }
         }
 
@@ -226,6 +231,8 @@ final class ReleaseController extends AbstractController
         $table->addColumn('release.index.column.name', 'name');
         $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.executionDate', 'executionDate'));
         $table->addColumn('release.index.column.status', 'status');
+        $table->addColumn('release.index.column.env.source', 'environmentSource');
+        $table->addColumn('release.index.column.env.target', 'environmentTarget');
         $table->addItemGetAction('ems_core_release_edit', 'release.actions.edit', 'pencil');
         $table->addItemGetAction('ems_core_release_add_revisions', 'release.actions.add.revisions', 'plus');
         $table->addItemPostAction('ems_core_release_delete', 'release.actions.delete', 'trash', 'release.actions.delete_confirm');

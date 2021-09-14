@@ -31,7 +31,7 @@ class Release implements EntityInterface
 
     /**
      * @var string
-     * @ORM\Column(type="releasestatusenum")
+     * @ORM\Column(type="release_status_enum")
      */
     private $status;
 
@@ -43,13 +43,18 @@ class Release implements EntityInterface
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
-     * @ORM\JoinTable(name="environment_release",
-     *      joinColumns={@ORM\JoinColumn(name="release_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="environment_id", referencedColumnName="id")}
-     *      )
+     * @var Environment
+     * @ORM\ManyToOne(targetEntity="Environment")
+     * @ORM\JoinColumn(name="environment_source_id", referencedColumnName="id")
      */
-    private $environments;
+    private $environmentSource;
+
+    /**
+     * @var Environment
+     * @ORM\ManyToOne(targetEntity="Environment")
+     * @ORM\JoinColumn(name="environment_target_id", referencedColumnName="id")
+     */
+    private $environmentTarget;
 
     /**
      * @ORM\ManyToMany(targetEntity="Revision", cascade={"persist"})
@@ -62,7 +67,6 @@ class Release implements EntityInterface
 
     public function __construct()
     {
-        $this->environments = new \Doctrine\Common\Collections\ArrayCollection();
         $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -104,32 +108,28 @@ class Release implements EntityInterface
         $this->executionDate = $executionDate;
     }
 
-    /**
-     * Add environment.
-     */
-    public function addEnvironment(Environment $environment): Release
+    public function setEnvironmentSource(Environment $environmentSource): Release
     {
-        $this->environments[] = $environment;
+        $this->environmentSource = $environmentSource;
 
         return $this;
     }
 
-    /**
-     * Remove environment.
-     */
-    public function removeEnvironment(Environment $environment): void
+    public function getEnvironmentSource(): Environment
     {
-        $this->environments->removeElement($environment);
+        return $this->environmentSource;
     }
 
-    /**
-     * Get environments.
-     *
-     * @return array<Environment>
-     */
-    public function getEnvironments(): array
+    public function setEnvironmentTarget(Environment $environmentTarget): Release
     {
-        return $this->environments->toArray();
+        $this->environmentTarget = $environmentTarget;
+
+        return $this;
+    }
+
+    public function getEnvironmentTarget(): Environment
+    {
+        return $this->environmentTarget;
     }
 
     /**

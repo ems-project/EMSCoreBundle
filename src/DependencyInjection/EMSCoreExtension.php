@@ -149,9 +149,12 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         if (isset($bundles['DoctrineBundle'])) {
             $container->prependExtensionConfig('doctrine', [
                 'dbal' => [
+                    'mapping_types' => [
+                        'release_status_enum' => 'string',
+                    ],
                     'types' => [
                         'uuid' => UuidType::class,
-                        'releasestatusenum' => ReleaseStatusEnumType::class,
+                        'release_status_enum' => ReleaseStatusEnumType::class,
                     ],
                 ],
             ]);

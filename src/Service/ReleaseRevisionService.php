@@ -39,10 +39,10 @@ final class ReleaseRevisionService implements EntityServiceInterface
         }
 
         if (isset($context['option']) && TableAbstract::ADD_ACTION === $context['option'] && \count($context['selected']) > 0) {
-            return $this->revisionRepository->getWithoutIds($from, $size, $context['selected']);
+            return $this->revisionRepository->getWithoutIds($from, $size, $context);
         }
 
-        return $this->revisionRepository->get($from, $size);
+        return $this->revisionRepository->get($from, $size, $context);
     }
 
     public function getEntityName(): string
@@ -60,9 +60,9 @@ final class ReleaseRevisionService implements EntityServiceInterface
         }
 
         if (isset($context['option']) && TableAbstract::ADD_ACTION === $context['option'] && \count($context['selected']) > 0) {
-            return $this->revisionRepository->counterWithoutIds($context['selected']);
+            return $this->revisionRepository->counterWithoutIds($context);
         }
 
-        return $this->revisionRepository->counter();
+        return $this->revisionRepository->counter($context);
     }
 }

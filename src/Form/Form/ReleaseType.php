@@ -49,6 +49,9 @@ final class ReleaseType extends AbstractType
                     'data-date-days-of-week-disabled' => '',
                     'data-date-disabled-hours' => '',
                 ],
+                'row_attr' => [
+                    'class' => 'col-md-6',
+                ],
             ])
             ->add('status', ChoiceType::class, [
                 'required' => true,
@@ -60,23 +63,31 @@ final class ReleaseType extends AbstractType
                     'class' => 'col-md-3',
                 ],
             ])
-            ->add('environments', ChoiceType::class, [
+            ->add('environmentSource', ChoiceType::class, [
                 'attr' => [
                     'class' => 'select2',
                 ],
-                'multiple' => true,
                 'choices' => $this->environmentService->getAll(),
                 'required' => true,
                 'choice_label' => function (Environment $value) {
                     return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
                 },
-                'choice_value' => function (Environment $value) {
-                    if (null != $value) {
-                        return $value->getId();
-                    }
-
-                    return $value;
+                'row_attr' => [
+                    'class' => 'col-md-3',
+                ],
+            ])
+            ->add('environmentTarget', ChoiceType::class, [
+                'attr' => [
+                    'class' => 'select2',
+                ],
+                'choices' => $this->environmentService->getAll(),
+                'required' => true,
+                'choice_label' => function (Environment $value) {
+                    return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
                 },
+                'row_attr' => [
+                    'class' => 'col-md-3',
+                ],
             ])
             ->add('save', SubmitEmsType::class, [
                 'attr' => [

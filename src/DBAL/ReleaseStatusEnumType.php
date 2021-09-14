@@ -7,7 +7,7 @@ class ReleaseStatusEnumType extends EnumType
     /**
      * @var string
      */
-    protected $name = 'releasestatusenum';
+    protected $name = 'release_status_enum';
     /**
      * @var array<string>
      */

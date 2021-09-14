@@ -11,11 +11,12 @@
 			<div class="box-body">
 				<div class="row">
 					{{ form_row(form_release.name) }}
+					{{ form_row(form_release.status) }}
 					<div class="clearfix"></div>
 					{{ form_row(form_release.execution_date) }}
 					<div class="clearfix"></div>
-					{{ form_row(form_release.status) }}
-                    {{ form_row(form_release.environments) }}
+                    {{ form_row(form_release.environmentSource) }}
+                    {{ form_row(form_release.environmentTarget) }}
 				</div>
 			</div>
 			<div class="box-footer">

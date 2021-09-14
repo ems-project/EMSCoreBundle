@@ -44,10 +44,19 @@ class RevisionRuntime implements RuntimeExtensionInterface
     /**
      * @param array<mixed> $rawData
      */
-    public function updateRevision(string $emsLink, array $rawData, bool $partial = true): Revision
+    public function updateRevision(string $emsLink, array $rawData): Revision
     {
-        return $this->revisionService->updatePartial(EMSLink::fromText($emsLink), $rawData, $partial);
+        return $this->revisionService->update(EMSLink::fromText($emsLink), $rawData, false);
     }
+
+    /**
+     * @param array<mixed> $rawData
+     */
+    public function mergeRevision(string $emsLink, array $rawData): Revision
+    {
+        return $this->revisionService->update(EMSLink::fromText($emsLink), $rawData);
+    }
+
 
     /**
      * @return iterable|Revision[]

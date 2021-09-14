@@ -166,11 +166,11 @@ class RevisionService
     /**
      * @param array<mixed> $rawData
      */
-    public function updatePartial(EMSLink $emsLink, array $rawData, bool $partial = true): Revision
+    public function update(EMSLink $emsLink, array $rawData, bool $merge = true): Revision
     {
         $draft = $this->dataService->initNewDraft($emsLink->getContentType(), $emsLink->getOuuid());
 
-        if ($partial) {
+        if ($merge) {
             $draft->setRawData(\array_merge($draft->getRawData(), $rawData));
         } else {
             $draft->setRawData($rawData);

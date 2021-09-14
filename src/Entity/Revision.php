@@ -998,15 +998,21 @@ class Revision implements EntityInterface
         $contentType = $this->giveContentType();
         $contentTypeLabelField = $contentType->getLabelField();
 
-        if (null !== $contentTypeLabelField) {
-            $label = $this->rawData[$contentTypeLabelField] ?? null;
-
-            if (null !== $label) {
-                return $label;
-            }
+        if (null === $contentTypeLabelField) {
+            return '';
         }
 
-        return \sprintf('%s:%s', $contentType->getName(), $this->ouuid);
+        $label = $this->rawData[$contentTypeLabelField] ?? null;
+        if (null !== $label) {
+            return $label;
+        }
+
+        $label = $this->autoSave[$contentTypeLabelField] ?? null;
+        if ($this->draft && null !== $label) {
+            return $label;
+        }
+
+        return '';
     }
 
     public function setLabelField(?string $labelField): self
@@ -1060,13 +1066,11 @@ class Revision implements EntityInterface
     }
 
     /**
-     * Get circles.
-     *
-     * @return array
+     * @return string[]
      */
-    public function getCircles()
+    public function getCircles(): array
     {
-        return $this->circles;
+        return $this->circles ?? [];
     }
 
     /**

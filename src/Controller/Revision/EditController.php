@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EditController extends AbstractController
@@ -195,6 +196,15 @@ class EditController extends AbstractController
             $this->logger->info('log.data.revision.start_edit', LoggingContext::read($revision));
         } else {
             $this->logger->info('log.data.revision.start_edit_new_document', LoggingContext::read($revision));
+        }
+
+        if (!$revision->getDraft()) {
+            $this->logger->warning('controller.revision.edit-controller.warning.edit-draft', [
+                'path' => $this->generateUrl('revision.new-draft', [
+                    'type' => $revision->giveContentType(),
+                    'ouuid' => $revision->giveOuuid(),
+                ], UrlGeneratorInterface::ABSOLUTE_PATH),
+            ]);
         }
 
         return $this->render('@EMSCore/data/edit-revision.html.twig', [

@@ -1,14 +1,116 @@
-
-views:
-  data:
-    edit-revision-html:
-      version-modal:
-        close-label: Close
-      discard-draft-message: Modification made in this draft will be lost
-      publish-label: Publish in %environment%
-      discard-draft-label: Discart draft
-      cancel-message: Cancel non-saved modifications?
-      cancel-label: Cancel
-      subtitle: Working area
-      title: 'Edit the %content-type%: "%revision%"'
-      new-draft-title: '%content-type%: new draft'
+views.data.edit-revision-html.version-modal.close-label: Close
+views.data.edit-revision-html.discard-draft-message: 'Modifications made in this draft will be lost'
+views.data.edit-revision-html.publish-label: 'Save and publish in %environment%'
+views.data.edit-revision-html.discard-draft-label: 'Delete this draft'
+views.data.edit-revision-html.cancel-label: 'Discard non-saved modifications'
+views.data.edit-revision-html.subtitle: 'Working area'
+views.data.edit-revision-html.title: 'Edit the %content-type%: "%revision%"'
+views.data.edit-revision-html.new-draft-title: '%content-type%: new draft'
+views.elements.revision-toolbar-html.view-label: 'View this revision'
+views.elements.revision-toolbar-html.edit-draft-label: 'Edit draft'
+views.elements.revision-toolbar-html.cancel-label: Cancel
+views.elements.revision-toolbar-html.cancel-message: 'Cancel last modifications ?'
+views.elements.revision-toolbar-html.finalize-draft-message: 'Confirm save and publish ?'
+views.elements.revision-toolbar-html.finalize-draft-label: 'Save and publish in %environment%'
+views.elements.revision-toolbar-html.discard-draft-label: 'Delete this draft'
+views.elements.revision-toolbar-html.discard-draft-message: 'Modification made in this draft will be lost'
+views.elements.revision-toolbar-html.cancel-last-updates-label: 'Cancel non-saved modifications'
+views.elements.revision-toolbar-html.new-draft-label: Edit
+views.elements.revision-toolbar-html.edit-revision-label: 'Edit revision'
+views.elements.revision-toolbar-html.revert-revision-label: 'Revert to this revision'
+views.elements.revision-toolbar-html.re-index-label: Re-index
+views.elements.revision-toolbar-html.publish-to-label: 'Publish to'
+views.elements.revision-toolbar-html.unpublish-from-label: 'Unpublish from'
+form_submissions.overview: Overview
+form_submissions.title: 'Form Submissions'
+view.elements.side-menu.chanel-admin.index-link: Channels
+view.elements.side-menu.query_search.index-link: QuerySearch
+view.icon.class.channel: 'fa fa-road'
+view.icon.class.query_search: 'fa fa-list-alt'
+views.elements.side-menu-html.anonymous-user: 'Anonymous user'
+views.elements.side-menu-html.quick-search-placeholder: Search...
+views.elements.side-menu-html.quick-search-label: 'Quick search'
+views.elements.side-menu-html.trash: Trash
+views.elements.side-menu-html.publishers: Publishers
+views.elements.side-menu-html.compare-environments: 'Compare environments'
+views.elements.side-menu-html.uploaded-files: 'Uploaded files'
+views.elements.side-menu-html.user-management: 'User management'
+views.elements.side-menu-html.users: Users
+views.elements.side-menu-html.admin: Admin
+views.elements.side-menu-html.content-types: 'Content types'
+views.elements.side-menu-html.environments: Environments
+views.elements.side-menu-html.search: Search
+views.elements.side-menu-html.i18n: I18N
+views.elements.side-menu-html.jobs: Jobs
+views.elements.side-menu-html.analyzers: Analyzers
+views.elements.side-menu-html.filters: Filters
+views.elements.side-menu-html.other: Other
+views.elements.side-menu-html.status: Status
+views.elements.side-menu-html.documentations: Documentations
+views.elements.side-menu-html.wysiwyg: WYSIWYG
+view.action.add.title: 'Add a new action to %contentType%'
+view.action.edit.title: 'Edit the action %action% for %contentType%'
+view.action.index.add.title: 'Add an action'
+view.action.index.title: '%contentType%''s actions'
+view.menu.breadcrumb.content-types: 'Content types'
+not-applicable: N/A
+views.elasticsearch.export-search.title: 'Export documents'
+views.elasticsearch.search.error_title: 'Error with the search result'
+views.elasticsearch.search.pagetitle: Search
+views.elasticsearch.search.subtitle: '%total%'
+views.elasticsearch.search.title: 'Search engine: %total% results'
+views.elasticsearch.search.sort-options: 'Sort options'
+views.elasticsearch.status.cluster-uuid: 'Cluster''s UUID'
+views.elasticsearch.status.tagline: Tagline
+views.elasticsearch.status.node-name: 'Node''s name'
+views.elasticsearch.status.version: 'Elasticsearch''s version'
+views.elasticsearch.status.lucene-version: 'Lucene''s version'
+views.elasticsearch.status.build-date: 'Build date'
+views.elasticsearch.status.certificate-information: 'Certificate''s information'
+views.elasticsearch.status.bits: Bits
+views.elasticsearch.status.certificate-is-missing: 'Certificate is missing'
+views.elasticsearch.status.tika-server: 'Tika server'
+views.elasticsearch.status.tika-server-not-configured: 'Tika server is not configured'
+views.elasticsearch.status.public-key: 'Public key'
+views.elements.revision-toolbar-html.other-revision-actions: 'Other actions on this revision'
+views.elements.revision-toolbar-html.cancel-last-updates-message: 'Cancel non-saved modifications'
+views.elements.revision-toolbar-html.compare-label: 'Compare this revision with the current one'
+views.elements.revision-toolbar-html.other-environment-actions: 'Other environment actions'
+views.data.revisions-data-html.status: Status
+views.data.revisions-data-html.draft-in-progress: 'Draft in progress'
+views.data.revisions-data-html.current-revision: 'Current revision'
+views.data.revisions-data-html.previous-revision: 'Previous revision'
+views.data.revisions-data-html.owner: Owner
+views.data.revisions-data-html.finalized-by: 'Finalized by'
+views.data.revisions-data-html.finalized-on: 'Finalized on'
+views.data.revisions-data-html.all-linked-documents: 'All linked documents'
+views.data.revisions-data-html.no-linked-document: 'This document does not have any linked document'
+task.tab_task: Task
+task.tab_tasks: Tasks
+views.data.revisions-data-html.revision: Revision
+views.data.revisions-data-html.pending: Pending
+views.data.revisions-data-html.nothing: Nothing
+views.data.revisions-data-html.linked-documents-in: 'Linked documents in %environment% (%length%/%total%)'
+views.data.revisions-data-html.title: 'Revisions of %content-type% : %title%'
+views.data.revisions-data-html.revision-draft-in-progress: 'This is a draft in progress'
+views.data.revisions-data-html.revision-current: 'You are viewing the last revision'
+views.data.revisions-data-html.revision-previous: 'This is a revision from the past'
+views.data.revisions-data-html.creation-date: 'Creation date'
+views.data.revisions-data-html.last-update: 'Last update'
+views.data.revisions-data-html.modify-by: 'Modify by'
+views.data.revisions-data-html.revisions.th.id: '#'
+views.data.revisions-data-html.revisions.th.date: Date
+views.data.revisions-data-html.revisions.th.finalize: Finalize
+views.data.revisions-data-html.revisions.th.locked: Locked
+views.data.revisions-data-html.revisions.th.autosave: Autosave
+views.data.revisions-data-html.revisions.th.environments: Environments
+views.data.revisions-data-html.revisions.th.pendings: Pendings
+views.data.revisions-data-html.revisions.th.actions: Actions
+views.elements.object-toolbar-html.view-draft-in-progress: 'View draft in progress'
+views.elements.object-toolbar-html.view-current-revision: 'View current revision'
+views.elements.object-toolbar-html.edit-draft: 'Edit draft'
+views.elements.object-toolbar-html.new-draft: Edit
+views.elements.side-menu-html.uploaded-files-logs: 'Uploaded file logs'
+uploaded-file-logs.index.title: 'Uploaded file logs'
+view.icon.class.uploaded-file: 'fa fa-upload'
+uploaded-file-logs.menu: 'Uploaded file logs'

@@ -200,8 +200,14 @@ class SearchService
         $search = null;
         if (1 === \sizeof($contentTypes)) {
             $contentTypeName = \array_values($contentTypes)[0];
-            if (null !== $contentType = $this->contentTypeService->getByName($contentTypeName)) {
-                $search = $searchRepository->findOneBy(['contentType' => $contentType]);
+            $contentType = $this->contentTypeService->giveByName($contentTypeName);
+            $search = $searchRepository->findOneBy(['contentType' => $contentType]);
+
+            if (null === $search && false === $contentType->giveEnvironment()->getManaged()) {
+                $search = new Search();
+                $search
+                    ->setEnvironments([$contentType->giveEnvironment()->getName()])
+                    ->setContentTypes([$contentType->getName()]);
             }
         }
 

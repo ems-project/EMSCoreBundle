@@ -692,7 +692,7 @@ class EnvironmentController extends AppController
             $builder = $this->createFormBuilder([])
             ->add('reorder', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary ',
+                    'class' => 'btn btn-primary ',
                 ],
                 'label' => 'controller.environment.index.reorder_submit_button',
                 'icon' => 'fa fa-reorder',

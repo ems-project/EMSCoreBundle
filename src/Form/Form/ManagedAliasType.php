@@ -60,7 +60,7 @@ class ManagedAliasType extends AbstractType
             ])
             ->add('align_indexes', AlignIndexesType::class)
             ->add('save', SubmitEmsType::class, [
-                'attr' => ['class' => 'btn-primary btn-sm '],
+                'attr' => ['class' => 'btn btn-primary btn-sm '],
                 'icon' => 'fa fa-save',
             ]);
     }

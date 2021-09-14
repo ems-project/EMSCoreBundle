@@ -7,7 +7,7 @@
 	{%- elseif revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) is defined -%}
 		{{ 'views.data.edit-revision-html.title'|trans({'%content-type%': revision.contentType.singularName, '%revision%': attribute(revision.rawData, revision.contentType.labelField) }) }}
 	{%- elseif revision.ouuid -%}
-		{{ 'views.data.edit-revision-html.title'|trans({'%content-type%': revision.contentType.singularName, '%revision%': attribute(revision.rawData, revision.ouuid) }) }}
+		{{ 'views.data.edit-revision-html.title'|trans({'%content-type%': revision.contentType.singularName, '%revision%': revision.ouuid }) }}
 	{%- else -%}
 		{{ 'views.data.edit-revision-html.new-draft-title'|trans({'%content-type%': revision.contentType.singularName }) }}
 	{%- endif -%}
@@ -19,20 +19,6 @@
 
 
 {% block body %}
-	{% if not revision.draft %}
-		<div class="alert alert-warning">
-        	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-                You are editing an already publish revision. Are you sure that is a good idea?
-			Is not a better idea to create a draft:
-            {% include '@EMSCore/elements/post-button.html.twig' with {
-							'url': path('revision.new-draft', {'ouuid': revision.ouuid, 'type': revision.contentType.name }),
-							'label': 'Edit draft', 
-							'icon': 'pencil' }%} .
-        </div>
-	{% endif %}
-
-
 	{%- set stylesSetsConfig = {} -%}
     {%- if stylesSets is defined %}
         {%- for stylesSet in stylesSets -%}
@@ -75,24 +61,8 @@
 			{{ form_widget(form.data) }}
 		</div>
 		<div class="box-footer">
-			<div class="btn-group">
-				{{ form_widget(form.save) }}
-				{% if form.copy is defined %}
-				    {{ form_widget(form.copy) }}
-				{% endif %}
-				{% if form.paste is defined %}
-				    {{ form_widget(form.paste) }}
-				{% endif %}
-                {% include '@EMSCore/elements/post-button.html.twig' with {
-					'url': path('revision.cancel', {'revision': revision.id}),
-					'btnType': 'default',
-					'message': 'views.data.edit-revision-html.cancel-message'|trans,
-					'label': 'views.data.edit-revision-html.cancel-label'|trans,
-					'icon': 'remove'
-				}%}
-			</div>
-			<div class="btn-group">
-				{% if revision.draft %}
+			{% if revision.draft %}
+				<div class="btn-group">
 					{% if form.publish is defined %}
 						{{ form_widget(form.publish) }}
 					{% endif %}
@@ -118,15 +88,44 @@
 							</div>
 						</div>
 					{% endif %}
-                    {% include '@EMSCore/elements/post-button.html.twig' with {
-						'url': path('revision.discard', {'revisionId': revision.id, 'type': revision.contentType.name}),
-						'message': 'views.data.edit-revision-html.discard-draft-message'|trans,
-						'btnType': 'default',
-						'label': 'views.data.edit-revision-html.discard-draft-label'|trans,
-						'icon': 'trash'
-					}%}
-				{% endif %}
+				</div>
+			{% endif %}
+
+			<div class="btn-group">
+				{{ form_widget(form.save) }}
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+						{% if form.copy is defined %}
+							<li>{{ form_widget(form.copy) }}</li>
+						{% endif %}
+						{% if form.paste is defined %}
+							<li>{{ form_widget(form.paste) }}</li>
+						{% endif %}
+						<li>
+							{% include '@EMSCore/elements/post-button.html.twig' with {
+								'url': path('revision.cancel', {'revision': revision.id}),
+								'btnClass': '',
+								'label': 'views.data.edit-revision-html.cancel-label'|trans,
+								'icon': 'remove'
+							}%}
+						</li>
+					</ul>
+				</div>
 			</div>
+
+			{% if revision.draft %}
+				{% include '@EMSCore/elements/post-button.html.twig' with {
+					'url': path('revision.discard', {'revisionId': revision.id, 'type': revision.contentType.name}),
+					'message': 'views.data.edit-revision-html.discard-draft-message'|trans,
+					'btnType': 'outline-danger',
+					'label': 'views.data.edit-revision-html.discard-draft-label'|trans,
+					'icon': 'trash',
+					'group_class': 'pull-right',
+				}%}
+			{% endif %}
 		</div>
 		{{ form_end(form) }}
 </div>

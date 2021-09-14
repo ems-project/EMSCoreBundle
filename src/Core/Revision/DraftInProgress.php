@@ -63,9 +63,9 @@ class DraftInProgress implements EntityServiceInterface
         $table = new EntityTable($this, $ajaxUrl, $contentType);
         $table->setRowActionsClass('pull-right');
         $table->setLabelAttribute('label');
-        $table->setDefaultOrder('created', 'desc');
-        $table->addColumnDefinition(new DatetimeTableColumn('revision.draft-in-progress.column.created', 'created'));
+        $table->setDefaultOrder('modified', 'desc');
         $table->addColumnDefinition(new DatetimeTableColumn('revision.draft-in-progress.column.modified', 'modified'));
+        $table->addColumnDefinition(new UserTableColumn('revision.draft-in-progress.column.auto-save-by', 'autoSaveBy'));
         $table->addColumn('revision.draft-in-progress.column.label', 'label')->setOrderField('labelField');
         $lockUntil = new DatetimeTableColumn('revision.draft-in-progress.column.locked', 'lockUntil');
         $condition = new DateInFuture('lockUntil');

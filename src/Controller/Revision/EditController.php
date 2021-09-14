@@ -9,8 +9,8 @@ use EMS\CoreBundle\Core\Revision\DraftInProgress;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\ElasticmsException;
-use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
@@ -22,9 +22,6 @@ use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\SubmitButton;
-use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -131,6 +128,11 @@ class EditController extends AbstractController
                     $this->logger->notice('log.data.document.copy', LoggingContext::update($revision));
                 }
 
+                $user = $this->getUser();
+                if (!$user instanceof UserInterface) {
+                    throw new \RuntimeException('Unexpect user object');
+                }
+                $revision->setAutoSaveBy($user->getUsername());
                 if (isset($requestRevision['publish_version'])) {
                     $versionTag = $form->get('publish_version_tags')->getData();
                     $revision = $this->revisionService->saveVersion($revision, $objectArray, $versionTag);

@@ -658,6 +658,7 @@ view.icon.class.uploaded-file: 'fa fa-upload'
 revision.draft-in-progress.column.label: Label
 revision.draft-in-progress.column.created: Created
 revision.draft-in-progress.column.modified: 'Last update'
+revision.draft-in-progress.column.auto-save-by: 'By'
 revision.draft-in-progress.column.locked: 'Locked until'
 revision.draft-in-progress.column.locked-by: 'Locked by'
 revision.draft-in-progress.column.view-revision: 'View draft in progress'

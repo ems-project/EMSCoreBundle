@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Revision;
 
 use EMS\CommonBundle\Storage\NotFoundException;
+use EMS\CoreBundle\Core\Revision\DraftInProgress;
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\ElasticmsException;
+use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\RevisionType;
+use EMS\CoreBundle\Form\Form\TableType;
+use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
@@ -17,6 +22,10 @@ use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\SubmitButton;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -25,21 +34,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EditController extends AbstractController
 {
-    /** @var DataService */
-    private $dataService;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var PublishService */
-    private $publishService;
-    /** @var RevisionService */
-    private $revisionService;
-    /** @var TranslatorInterface */
-    private $translator;
-    /** @var WysiwygStylesSetService */
-    private $wysiwygStylesSetService;
+    private DataService $dataService;
+    private LoggerInterface $logger;
+    private PublishService $publishService;
+    private RevisionService $revisionService;
+    private TranslatorInterface $translator;
+    private WysiwygStylesSetService $wysiwygStylesSetService;
+    private DraftInProgress $draftInProgress;
 
     public function __construct(
         DataService $dataService,
+        DraftInProgress $draftInProgress,
         LoggerInterface $logger,
         PublishService $publishService,
         RevisionService $revisionService,
@@ -52,6 +57,7 @@ class EditController extends AbstractController
         $this->revisionService = $revisionService;
         $this->translator = $translator;
         $this->wysiwygStylesSetService = $wysiwygStylesSetService;
+        $this->draftInProgress = $draftInProgress;
     }
 
     public function editRevision(int $revisionId, Request $request): Response
@@ -98,7 +104,7 @@ class EditController extends AbstractController
             if (empty($requestRevision) || !$allFieldsAreThere) {
                 $this->logger->error('log.data.revision.not_completed_request', LoggingContext::read($revision));
 
-                return $this->redirectToRoute('data.revisions', [
+                return $this->redirectToRoute(Routes::ViewRevision, [
                     'ouuid' => $revision->getOuuid(),
                     'type' => $contentType->getName(),
                     'revisionId' => $revision->getId(),
@@ -139,7 +145,7 @@ class EditController extends AbstractController
                 if ((isset($requestRevision['publish']) || isset($requestRevision['publish_version']))
                     && 0 === \count($form->getErrors())) {
                     if ($revision->getOuuid()) {
-                        return $this->redirectToRoute('data.revisions', [
+                        return $this->redirectToRoute(Routes::ViewRevision, [
                             'ouuid' => $revision->getOuuid(),
                             'type' => $contentType->getName(),
                         ]);
@@ -162,7 +168,7 @@ class EditController extends AbstractController
                         $this->publishService->silentPublish($revision);
                     }
 
-                    return $this->redirectToRoute('data.revisions', [
+                    return $this->redirectToRoute(Routes::ViewRevision, [
                         'ouuid' => $revision->getOuuid(),
                         'type' => $contentType->getName(),
                         'revisionId' => $revision->getId(),
@@ -207,6 +213,31 @@ class EditController extends AbstractController
             'revision' => $revision,
             'form' => $form->createView(),
             'stylesSets' => $this->wysiwygStylesSetService->getStylesSets(),
+        ]);
+    }
+
+    public function ajaxDraftInProgress(Request $request, ContentType $contentType): Response
+    {
+        $table = $this->draftInProgress->getDataTable($this->generateUrl(Routes::DraftInProgressAjax, ['contentType' => $contentType->getId()]), $contentType);
+        $dataTableRequest = DataTableRequest::fromRequest($request);
+        $table->resetIterator($dataTableRequest);
+
+        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+            'dataTableRequest' => $dataTableRequest,
+            'table' => $table,
+        ], new JsonResponse());
+    }
+
+    public function draftInProgress(Request $request, ContentType $contentTypeId): Response
+    {
+        $table = $this->draftInProgress->getDataTable($this->generateUrl(Routes::DraftInProgressAjax, ['contentType' => $contentTypeId->getId()]), $contentTypeId);
+
+        $form = $this->createForm(TableType::class, $table);
+        $form->handleRequest($request);
+
+        return $this->render('@EMSCore/data/draft-in-progress.html.twig', [
+            'form' => $form->createView(),
+            'contentType' => $contentTypeId,
         ]);
     }
 

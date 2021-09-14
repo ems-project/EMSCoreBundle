@@ -222,37 +222,6 @@ class DataController extends AppController
     }
 
     /**
-     * @param int $contentTypeId
-     *
-     * @return Response
-     * @Route("/data/draft/{contentTypeId}", name="data.draft_in_progress")
-     */
-    public function draftInProgressAction($contentTypeId, UserService $userService, AuthorizationCheckerInterface $authorizationChecker)
-    {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:ContentType');
-
-        $contentType = $repository->find($contentTypeId);
-
-        if (!$contentType) {
-            throw new NotFoundHttpException('Content type not found');
-        }
-
-        /** @var RevisionRepository $revisionRep */
-        $revisionRep = $em->getRepository('EMSCoreBundle:Revision');
-
-        $revisions = $revisionRep->findInProgresByContentType($contentType, $userService->getCurrentUser()->getCircles(), $authorizationChecker->isGranted('ROLE_USER_MANAGEMENT'));
-
-        return $this->render('@EMSCore/data/draft-in-progress.html.twig', [
-            'contentType' => $contentType,
-            'revisions' => $revisions,
-        ]);
-    }
-
-    /**
      * @Route("/data/view/{environmentName}/{type}/{ouuid}", name="data.view")
      */
     public function viewDataAction(string $environmentName, string $type, string $ouuid, SearchService $searchService, ContentTypeService $contentTypeService, EnvironmentService $environmentService): Response
@@ -293,7 +262,7 @@ class DataController extends AppController
         try {
             $revision = $dataService->getRevisionByEnvironment($ouuid, $contentType, $environment);
 
-            return $this->redirectToRoute('data.revisions', [
+            return $this->redirectToRoute(Routes::ViewRevision, [
                 'type' => $contentType->getName(),
                 'ouuid' => $ouuid,
                 'revisionId' => $revision->getId(),
@@ -333,8 +302,9 @@ class DataController extends AppController
      * @throws NonUniqueResultException
      * @throws NoResultException
      *
-     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="data.revisions")
+     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="emsco_view_revisions")
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="ems_content_revisions_view")
+     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="data.revisions")
      */
     public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService)
     {
@@ -623,7 +593,7 @@ class DataController extends AppController
         }
 
         if ($found) {
-            return $this->redirectToRoute('data.revisions', [
+            return $this->redirectToRoute(Routes::ViewRevision, [
                 'type' => $type,
                 'ouuid' => $ouuid,
             ]);
@@ -648,6 +618,7 @@ class DataController extends AppController
      *
      * @throws LockedException
      * @throws PrivilegeException
+     * @Route("/data/draft/discard/{revisionId}", name="emsco_discard_draft", methods={"POST"})
      * @Route("/data/draft/discard/{revisionId}", name="revision.discard", methods={"POST"})
      */
     public function discardRevisionAction($revisionId, LoggerInterface $logger, DataService $dataService, IndexService $indexService)
@@ -679,7 +650,7 @@ class DataController extends AppController
                 return $this->reindexRevisionAction($logger, $dataService, $indexService, $previousRevisionId, true);
             }
 
-            return $this->redirectToRoute('data.revisions', [
+            return $this->redirectToRoute(Routes::ViewRevision, [
                 'type' => $type,
                 'ouuid' => $ouuid,
             ]);
@@ -720,13 +691,13 @@ class DataController extends AppController
                 ]);
             }
 
-            return $this->redirectToRoute('data.revisions', [
+            return $this->redirectToRoute(Routes::ViewRevision, [
                 'type' => $type,
                 'ouuid' => $ouuid,
             ]);
         }
 
-        return $this->redirectToRoute('data.draft_in_progress', [
+        return $this->redirectToRoute(Routes::DraftInProgress, [
             'contentTypeId' => $contentTypeId,
         ]);
     }
@@ -789,7 +760,7 @@ class DataController extends AppController
             ]);
         }
 
-        return $this->redirectToRoute('data.revisions', [
+        return $this->redirectToRoute(Routes::ViewRevision, [
             'ouuid' => $revision->getOuuid(),
             'type' => $revision->getContentType()->getName(),
             'revisionId' => $revision->getId(),
@@ -1180,7 +1151,7 @@ class DataController extends AppController
             ]);
         }
 
-        return $this->redirectToRoute('data.revisions', [
+        return $this->redirectToRoute(Routes::ViewRevision, [
             'ouuid' => $revision->getOuuid(),
             'type' => $revision->getContentType()->getName(),
             'revisionId' => $revision->getId(),
@@ -1366,7 +1337,7 @@ class DataController extends AppController
 
             // For each type, we must perform a different redirect.
             if ('object' == $category) {
-                return $this->redirectToRoute('data.revisions', [
+                return $this->redirectToRoute(Routes::ViewRevision, [
                     'type' => $type,
                     'ouuid' => $ouuid,
                 ]);

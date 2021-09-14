@@ -6,6 +6,7 @@ use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Twig\RequestRuntime;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -41,6 +42,8 @@ class ExportDocumentsCommand extends EmsCommand
     /** @var ElasticaService */
     private $elasticaService;
 
+    protected static $defaultName = Commands::EMS_CONTENTTYPE_EXPORT;
+
     public function __construct(LoggerInterface $logger, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, RequestRuntime $runtime, ElasticaService $elasticaService, string $instanceId)
     {
         $this->logger = $logger;
@@ -57,7 +60,6 @@ class ExportDocumentsCommand extends EmsCommand
     protected function configure(): void
     {
         $this
-            ->setName('ems:contenttype:export')
             ->setDescription('Export a search result of a content type to a specific format')
             ->addArgument(
                 'contentTypeName',

@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Command;
 use Elastica\Scroll;
 use EMS\CommonBundle\Command\CommandInterface;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\Revision\Copy\CopyContext;
@@ -34,7 +35,7 @@ final class RevisionCopyCommand extends Command implements CommandInterface
     /** @var Revision[] */
     private $copies = [];
 
-    protected static $defaultName = 'ems:revision:copy';
+    protected static $defaultName = Commands::EMS_REVISION_COPY;
 
     private const ARG_ENVIRONMENT_NAME = 'environment';
     private const ARG_JSON_SEARCH_QUERY = 'json_search_query';

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -32,8 +33,7 @@ final class UnlockRevisionsCommand extends Command
     /** @var bool */
     private $all;
 
-    public const name = 'ems:revisions:unlock';
-    protected static $defaultName = self::name;
+    protected static $defaultName = Commands::EMS_REVISIONS_UNLOCK;
 
     private const ARGUMENT_USER = 'user';
     private const ARGUMENT_CONTENT_TYPE = 'contentType';

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\AliasService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -16,6 +17,8 @@ class AlignManagedAliases extends Command
     /** @var AliasService */
     protected $aliasService;
 
+    protected static $defaultName = Commands::EMS_MANAGEDALIAS_ALIGN;
+
     public function __construct(LoggerInterface $logger, AliasService $aliasService)
     {
         $this->logger = $logger;
@@ -26,7 +29,6 @@ class AlignManagedAliases extends Command
     protected function configure(): void
     {
         $this
-            ->setName('ems:managedalias:align')
             ->setDescription('Align a managed alias to another')
             ->addArgument(
                 'source',

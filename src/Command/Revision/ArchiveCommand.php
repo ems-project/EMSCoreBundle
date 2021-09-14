@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Command\Revision;
 use EMS\CommonBundle\Command\CommandInterface;
 use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CoreBundle\Command\LockCommand;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -30,7 +31,7 @@ final class ArchiveCommand extends Command implements CommandInterface
     private array $search = [];
     private int $batchSize;
 
-    protected static $defaultName = 'ems:revision:archive';
+    protected static $defaultName = Commands::EMS_REVISION_ARCHIVE;
     private const USER = 'SYSTEM_ARCHIVE';
 
     public function __construct(ContentTypeService $contentTypeService, RevisionService $revisionService, int $defaultBulkSize)

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Symfony\Component\Console\Command\Command;
@@ -14,6 +15,8 @@ class EnvironmentCommand extends Command
     /** @var EnvironmentService */
     private $environmentService;
 
+    protected static $defaultName = Commands::EMS_ENVIRONMENT_LIST;
+
     public function __construct(EnvironmentService $environmentService)
     {
         $this->environmentService = $environmentService;
@@ -23,7 +26,6 @@ class EnvironmentCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('ems:environment:list')
             ->setDescription('List the environments defined')
             ->addOption(
                 'all',

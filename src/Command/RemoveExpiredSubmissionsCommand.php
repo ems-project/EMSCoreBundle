@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Command\CommandInterface;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -17,7 +18,7 @@ class RemoveExpiredSubmissionsCommand extends Command implements CommandInterfac
     /** @var LoggerInterface */
     protected $logger;
 
-    protected static $defaultName = 'ems:submissions:remove-expired';
+    protected static $defaultName = Commands::EMS_SUBMISSIONS_REMOVE_EXPIRED;
 
     public function __construct(FormSubmissionService $formSubmissionService, LoggerInterface $logger)
     {

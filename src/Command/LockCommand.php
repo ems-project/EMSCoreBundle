@@ -8,6 +8,7 @@ use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -41,7 +42,7 @@ final class LockCommand extends Command
     public const RESULT_SUCCESS = 0;
 
     public const name = 'ems:contenttype:lock';
-    protected static $defaultName = self::name;
+    protected static $defaultName = Commands::EMS_CONTENTTYPE_LOCK;
 
     public function __construct(ContentTypeRepository $contentTypeRepository, ElasticaService $elasticaService, RevisionRepository $revisionRepository)
     {

@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -29,6 +30,8 @@ class CleanDeletedContentTypeCommand extends Command
     /** @var ContainerInterface */
     protected $container;
 
+    protected static $defaultName = Commands::EMS_CONTENTTYPE_CLEAN;
+
     public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container)
     {
         $this->doctrine = $doctrine;
@@ -41,7 +44,6 @@ class CleanDeletedContentTypeCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('ems:contenttype:clean')
             ->setDescription('Clean all deleted content types');
     }
 

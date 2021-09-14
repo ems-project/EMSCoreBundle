@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Service\AliasService;
 use Psr\Log\LoggerInterface;
@@ -17,6 +18,8 @@ class ManagedAliases extends Command
     /** @var AliasService */
     protected $aliasService;
 
+    protected static $defaultName = Commands::EMS_MANAGEDALIAS_LIST;
+
     public function __construct(LoggerInterface $logger, AliasService $aliasService)
     {
         $this->logger = $logger;
@@ -27,7 +30,6 @@ class ManagedAliases extends Command
     protected function configure(): void
     {
         $this
-            ->setName('ems:managedalias:list')
             ->setDescription('List managed aliases')
             ->addOption('detailed', null, InputOption::VALUE_NONE, 'List all indexes in each managed alias');
     }

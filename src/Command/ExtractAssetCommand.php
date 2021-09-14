@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Storage\StorageManager;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -21,6 +22,8 @@ class ExtractAssetCommand extends EmsCommand
     /** @var LoggerInterface */
     protected $logger;
 
+    protected static $defaultName = Commands::EMS_ASSET_EXTRACT;
+
     public function __construct(LoggerInterface $logger, AssetExtractorService $extractorService, StorageManager $storageManager)
     {
         $this->extractorService = $extractorService;
@@ -32,7 +35,6 @@ class ExtractAssetCommand extends EmsCommand
     protected function configure(): void
     {
         $this
-            ->setName('ems:asset:extract')
             ->setDescription('Will extract data from all files found and load it in cache of the asset extractor service')
             ->addArgument(
                 'path',

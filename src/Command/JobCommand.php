@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\JobService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,6 +21,8 @@ class JobCommand extends Command
      */
     private $dateFormat;
 
+    protected static $defaultName = Commands::EMS_JOB_RUN;
+
     public function __construct(JobService $jobService, string $dateFormat)
     {
         parent::__construct();
@@ -30,7 +33,6 @@ class JobCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('ems:job:run')
             ->setDescription('Execute the next pending job if exist')
             ->addOption(
                 'dump',

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Psr\Log\LoggerInterface;
@@ -14,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CreateEnvironmentCommand extends Command
 {
-    protected static $defaultName = 'ems:environment:create';
+    protected static $defaultName = Commands::EMS_ENVIRONMENT_CREATE;
 
     /** @var LoggerInterface */
     private $logger;

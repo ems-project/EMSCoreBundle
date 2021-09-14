@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\NotLockedException;
@@ -25,6 +26,8 @@ class UpdateMetaFieldCommand extends EmsCommand
     /** @var LoggerInterface */
     protected $logger;
 
+    protected static $defaultName = Commands::EMS_ENVIRONMENT_UPDATEMETAFIELD;
+
     public function __construct(Registry $doctrine, LoggerInterface $logger, DataService $dataService)
     {
         $this->doctrine = $doctrine;
@@ -36,7 +39,6 @@ class UpdateMetaFieldCommand extends EmsCommand
     protected function configure(): void
     {
         $this
-            ->setName('ems:environment:updatemetafield')
             ->setDescription('Update meta fields for all revisions of an environment')
             ->addArgument(
                 'name',

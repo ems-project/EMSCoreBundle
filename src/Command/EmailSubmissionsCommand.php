@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Command\CommandInterface;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use Psr\Log\LoggerInterface;
@@ -18,7 +19,7 @@ class EmailSubmissionsCommand extends Command implements CommandInterface
     protected LoggerInterface $logger;
     protected MailerService $mailerService;
 
-    protected static $defaultName = 'ems:submissions:email';
+    protected static $defaultName = Commands::EMS_SUBMISSIONS_EMAIL;
 
     private const TITLE = 'Form submissions';
 

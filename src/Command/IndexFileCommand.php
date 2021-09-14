@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\AssetExtractorService;
@@ -38,6 +39,8 @@ class IndexFileCommand extends EmsCommand
     /** @var LoggerInterface */
     protected $logger;
 
+    protected static $defaultName = Commands::EMS_REVISIONS_INDEX_FILE_FIELDS;
+
     public function __construct(LoggerInterface $logger, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
     {
         $this->doctrine = $doctrine;
@@ -51,7 +54,6 @@ class IndexFileCommand extends EmsCommand
     protected function configure(): void
     {
         $this
-            ->setName('ems:revisions:index-file-fields')
             ->setDescription('Migrate an ingested file field from an elasticsearch index')
             ->addArgument(
                 'contentType',

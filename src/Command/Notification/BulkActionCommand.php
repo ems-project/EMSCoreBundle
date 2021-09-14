@@ -8,6 +8,7 @@ use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
@@ -20,6 +21,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class BulkActionCommand extends Command
 {
+    protected static $defaultName = Commands::EMS_NOTIFICATION_BULK_ACTION;
+
     private NotificationService $notificationService;
     private EnvironmentService $environmentService;
     private ElasticaService $elasticaService;
@@ -42,7 +45,6 @@ final class BulkActionCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('ems:notification:bulk-action')
             ->setDescription('Bulk all notifications actions for the passed query')
             ->addArgument('actionId', InputArgument::REQUIRED, 'Notification action id')
             ->addArgument('query', InputArgument::REQUIRED, 'ES query')

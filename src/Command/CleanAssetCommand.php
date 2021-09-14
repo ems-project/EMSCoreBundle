@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\FileService;
@@ -21,6 +22,8 @@ class CleanAssetCommand extends EmsCommand
     /** @var LoggerInterface */
     protected $logger;
 
+    protected static $defaultName = Commands::EMS_ASSET_CLEAN;
+
     public function __construct(LoggerInterface $logger, Registry $doctrine, FileService $fileService)
     {
         $this->doctrine = $doctrine;
@@ -32,7 +35,6 @@ class CleanAssetCommand extends EmsCommand
     protected function configure(): void
     {
         $this
-            ->setName('ems:asset:clean')
             ->setDescription('Unreference useless assets (no files are deleted from storages)');
     }
 

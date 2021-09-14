@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Command;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Storage\NotFoundException;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -31,6 +32,8 @@ class SynchronizeAssetCommand extends EmsCommand
     /** @var LoggerInterface */
     protected $logger;
 
+    protected static $defaultName = Commands::EMS_ASSET_SYNCHRONIZE;
+
     public function __construct(LoggerInterface $logger, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
     {
         $this->doctrine = $doctrine;
@@ -44,7 +47,6 @@ class SynchronizeAssetCommand extends EmsCommand
     protected function configure(): void
     {
         $this
-            ->setName('ems:asset:synchronize')
             ->setDescription('Synchronize registered assets on storage services');
     }
 

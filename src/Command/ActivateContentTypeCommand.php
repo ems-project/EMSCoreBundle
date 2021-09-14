@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\ContentTypeService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -17,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ActivateContentTypeCommand extends Command
 {
-    protected static $defaultName = 'ems:contenttype:activate';
+    protected static $defaultName = Commands::EMS_CONTENTTYPE_ACTIVATE;
 
     /** @var ContentTypeService */
     protected $contentTypeService;

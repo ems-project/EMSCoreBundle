@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\IndexService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,7 +12,7 @@ class DeleteOrphanIndexesCommand extends EmsCommand
     /** @var IndexService */
     protected $indexService;
 
-    protected static $defaultName = 'ems:delete:orphans';
+    protected static $defaultName = Commands::EMS_DELETE_ORPHANS;
 
     public function __construct(IndexService $indexService)
     {

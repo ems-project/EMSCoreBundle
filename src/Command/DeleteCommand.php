@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -38,6 +39,8 @@ class DeleteCommand extends Command
     /** @var EnvironmentService */
     private $environmentService;
 
+    protected static $defaultName = Commands::EMS_CONTENTTYPE_DELETE;
+
     public function __construct(Registry $doctrine, LoggerInterface $logger, IndexService $indexService, Mapping $mapping, ContainerInterface $container, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
     {
         $this->doctrine = $doctrine;
@@ -53,7 +56,6 @@ class DeleteCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('ems:contenttype:delete')
             ->setDescription('Delete all instances of a content type ')
             ->addArgument(
                 'name',

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
@@ -19,8 +20,6 @@ use Symfony\Component\Finder\Finder;
 
 class DocumentCommand extends Command
 {
-    public const COMMAND = 'ems:contenttype:import';
-
     private const ARGUMENT_CONTENT_TYPE = 'content-type-name';
     private const ARGUMENT_ARCHIVE = 'archive';
     private const OPTION_BULK_SIZE = 'bulk-size';
@@ -31,7 +30,7 @@ class DocumentCommand extends Command
     private const OPTION_BUSINESS_KEY = 'business-key';
 
     /** @var string */
-    protected static $defaultName = self::COMMAND;
+    protected static $defaultName = Commands::EMS_CONTENTTYPE_IMPORT;
     /** @var DocumentService */
     private $documentService;
     /** @var ContentTypeService */

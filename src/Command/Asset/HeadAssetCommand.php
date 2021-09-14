@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Asset;
 
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Service\FileService;
 use Psr\Log\LoggerInterface;
@@ -14,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class HeadAssetCommand extends Command
 {
-    protected static $defaultName = 'ems:asset:head';
+    protected static $defaultName = Commands::EMS_ASSET_HEAD;
     protected FileService $fileService;
     protected LoggerInterface $logger;
     private SymfonyStyle $io;

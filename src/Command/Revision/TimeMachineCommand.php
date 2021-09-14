@@ -8,6 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ObjectManager;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Common\Standard\DateTime;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
@@ -25,7 +26,7 @@ final class TimeMachineCommand extends Command
     private ObjectManager $em;
     private IndexService $indexService;
 
-    protected static $defaultName = 'ems:revision:time-machine';
+    protected static $defaultName = Commands::EMS_REVISION_TIME_MACHINE;
 
     private const SYSTEM_TIME_MACHINE = 'SYSTEM_TIME_MACHINE';
     public const RESULT_NOT_FOUND = 1;

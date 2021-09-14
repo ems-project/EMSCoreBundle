@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Check;
 
-use EMS\CoreBundle\Command\RebuildCommand;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\EnvironmentService;
@@ -17,7 +17,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class AliasesCheckCommand extends Command
 {
-    public const COMMAND = 'ems:check:aliases';
+    protected static $defaultName = Commands::EMS_CHECK_ALIASES;
+
     private const OPTION_REPAIR = 'repair';
     private EnvironmentService $environmentService;
     private AliasService $aliasService;
@@ -36,7 +37,6 @@ final class AliasesCheckCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName(self::COMMAND)
             ->setDescription('Checks that all managed environments have their corresponding alias and index present in the cluster.')
             ->addOption(self::OPTION_REPAIR, null, InputOption::VALUE_NONE, 'If an environment does not have its alias present and if they are no pending job a rebuild job is queued.');
     }
@@ -70,9 +70,9 @@ final class AliasesCheckCommand extends Command
             }
 
             $fakeUser = new User();
-            $fakeUser->setUsername(self::COMMAND);
+            $fakeUser->setUsername('SYSTEM_ALIAS_CHECKER');
             $command = \join(' ', [
-                RebuildCommand::COMMAND,
+                Commands::EMS_ENVIRONMENT_REBUILD,
                 $environment->getName(),
             ]);
             $this->jobService->createCommand($fakeUser, $command);

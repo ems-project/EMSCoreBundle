@@ -56,7 +56,7 @@ abstract class TableAbstract implements TableInterface
     {
         $this->from = $dataTableRequest->getFrom();
         $this->size = $dataTableRequest->getSize();
-
+        $this->orderField = $dataTableRequest->getOrderField();
         $this->orderDirection = $dataTableRequest->getOrderDirection();
         $this->searchValue = $dataTableRequest->getSearchValue();
     }

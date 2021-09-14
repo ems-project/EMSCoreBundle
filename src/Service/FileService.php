@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use ZipStream\ZipStream;
 
-class FileService implements EntityServiceInterface
+class FileService implements EntityServiceInterface, QueryServiceInterface
 {
     private Registry $doctrine;
     private StorageManager $storageManager;
@@ -130,7 +130,11 @@ class FileService implements EntityServiceInterface
                     $filename = \sprintf('%s-%s.%s', $pathinfo['filename'] ?? $filename, \bin2hex(\random_bytes(3)), $pathinfo['extension'] ?? '');
                 }
                 $filenames[] = $filename;
-                $zip->addFile($filename, \strval($this->getResource($file->getSha1())));
+                try {
+                    $zip->addFile($filename, $this->storageManager->getContents($file->getSha1()));
+                    //TODO: this should works? $zip->addFileFromPsr7Stream($filename, $this->storageManager->getStream()Contents($file->getSha1()));
+                } catch (NotFoundException $e) {
+                }
             }
 
             $zip->finish();
@@ -152,18 +156,6 @@ class FileService implements EntityServiceInterface
     {
         foreach ($ids as $id) {
             $this->uploadedAssetRepository->removeById($id);
-        }
-    }
-
-    /**
-     * @param array<string> $ids
-     */
-    public function hardRemoveFiles(array $ids): void
-    {
-        $files = $this->uploadedAssetRepository->findByIds($ids);
-        foreach ($files as $file) {
-            $this->uploadedAssetRepository->removeByHash($file->getSha1());
-            $this->storageManager->remove($file->getSha1());
         }
     }
 
@@ -386,6 +378,49 @@ class FileService implements EntityServiceInterface
 
     public function count(string $searchValue = '', $context = null): int
     {
-        return $this->uploadedAssetRepository->searchCount($searchValue);
+        return $this->uploadedAssetRepository->searchCount($searchValue, null !== $context && ($context['available'] ?? false));
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function toggleFileEntitiesVisibility(array $ids): void
+    {
+        foreach ($ids as $id) {
+            $this->uploadedAssetRepository->toggleVisibility($id);
+        }
+    }
+
+    public function isQuerySortable(): bool
+    {
+        return false;
+    }
+
+    public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    {
+        return $this->uploadedAssetRepository->query($from, $size, $orderField, $orderDirection, $searchValue);
+    }
+
+    public function countQuery(string $searchValue = '', $context = null): int
+    {
+        return $this->uploadedAssetRepository->countGroupByHashQuery($searchValue);
+    }
+
+    /**
+     * @param string[] $hashes
+     */
+    public function hideByHashes(array $hashes): int
+    {
+        return $this->uploadedAssetRepository->hideByHashes($hashes);
+    }
+
+    /**
+     * @param string[] $hashes
+     *
+     * @return string[]
+     */
+    public function hashesToIds(array $hashes): array
+    {
+        return $this->uploadedAssetRepository->hashesToIds($hashes);
     }
 }

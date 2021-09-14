@@ -114,7 +114,7 @@
                     <input class="item-to-align" type="checkbox" name="compare_environment_form[item_to_align][{{ minrev[1] }}]" value="{{ item.content_type_name }}:{{ item.ouuid }}">
                   {% endif %}
               </td>
-              <td class="text-{{ item.color }}"><i class="{% if item.icon %}{{item.icon}}{% else %}fa fa-book{% endif %}"></i> {{ item.content_type_name|humanize }}</td>
+              <td class="text-{{ item.color }}"><i class="{% if item.icon %}{{item.icon}}{% else %}fa fa-book{% endif %}"></i> {{ item.content_type_singular_name }}</td>
               <td><span title='{{ item.ouuid }}'>{{ item.item_labelField }}</span></td>
               <td>
               {% if defaultEnv %}
@@ -188,9 +188,9 @@
 
                             {%  if defaultEnv and withEnv.id != defaultEnv.id  and toInMyCircles %}
                                 {% if minrev[0] == fromEnv.id %}
-                                    <button type="submit" id="{{ minrev[1] }}" name="compare_environment_form[alignWith]" value="{{ minrev[1] }}" class="btn-danger btn-sm btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>
+                                    <button type="submit" id="{{ minrev[1] }}" name="compare_environment_form[alignWith]" value="{{ minrev[1] }}" class="btn-primary btn-sm btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>
                                 {% elseif maxrev[0] == fromEnv.id %}
-                                    <button type="submit" id="{{ maxrev[1] }}" name="compare_environment_form[alignWith]" value="{{ maxrev[1] }}" class="btn-danger btn-sm btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>
+                                    <button type="submit" id="{{ maxrev[1] }}" name="compare_environment_form[alignWith]" value="{{ maxrev[1] }}" class="btn-primary btn-sm btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>
                                 {% endif %}
                             {% endif %}
 
@@ -206,7 +206,7 @@
 
                   {% if minrev[1] != maxrev[1] %}
                       {% include '@EMSCore/elements/get-button.html.twig' with {
-                          'url': path('ems_content_revisions_view', {
+                          'url': path('emsco_view_revisions', {
                               'type': item.content_type_name,
                               'ouuid': item.ouuid,
                               'revisionId': minrev[1]  > maxrev[1] ? minrev[1]  : maxrev[1],
@@ -226,7 +226,7 @@
             {% if is_granted('ROLE_ALLOW_ALIGN')  %}
               	<div class="btn-group">
               		{%  if toInMyCircles %}
-                		<button type="submit" name="compare_environment_form[alignRight]" class="btn-danger btn-md btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>
+                		<button type="submit" name="compare_environment_form[alignRight]" class="btn-primary btn-md btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>
                 	{% endif %}
               		{%  if fromInMyCircles %}
                 		<button type="submit" name="compare_environment_form[alignLeft]" class="btn-danger btn-md btn"><span class="fa fa-chevron-left"></span>&nbsp;Align {{ environment }} with {{ withEnvironment }}</button>

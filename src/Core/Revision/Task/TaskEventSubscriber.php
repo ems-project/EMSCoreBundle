@@ -68,7 +68,7 @@ final class TaskEventSubscriber implements EventSubscriberInterface
                 $this->sendMail($event, 'assignee_changed', $changeSet['assignee'][0]);
                 $this->sendMail($event, 'created', $changeSet['assignee'][1]);
 
-                $task->addLog(TaskLog::logStatusUpdate($event->task, $event->username, $event->comment));
+                $task->addLog(TaskLog::logNewAssignee($task, $event->username));
                 $this->taskRepository->save($task);
             } else {
                 $this->sendMail($event, 'updated');

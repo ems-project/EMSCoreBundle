@@ -36,6 +36,7 @@ class ManagedAliasType extends AbstractType
 
         $builder
             ->add('name', IconTextType::class, ['icon' => 'fa fa-tag'])
+            ->add('label', IconTextType::class, ['icon' => 'fa fa-header'])
             ->add('color', ColorPickerType::class, ['required' => false])
             ->add('extra', TextareaType::class, [
                 'required' => false,
@@ -59,7 +60,7 @@ class ManagedAliasType extends AbstractType
             ])
             ->add('align_indexes', AlignIndexesType::class)
             ->add('save', SubmitEmsType::class, [
-                'attr' => ['class' => 'btn-primary btn-sm '],
+                'attr' => ['class' => 'btn btn-primary btn-sm '],
                 'icon' => 'fa fa-save',
             ]);
     }

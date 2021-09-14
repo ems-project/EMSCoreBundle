@@ -69,7 +69,7 @@ class Task implements EntityInterface
         self::STATUS_PROGRESS => ['icon' => 'fa fa-ticket', 'bg' => 'blue', 'text' => 'primary', 'label' => 'primary'],
         self::STATUS_COMPLETED => ['icon' => 'fa fa-paper-plane', 'bg' => 'green', 'text' => 'success', 'label' => 'success'],
         self::STATUS_REJECTED => ['icon' => 'fa fa-close', 'bg' => 'red', 'text' => 'danger', 'label' => 'danger'],
-        self::STATUS_APPROVED => ['icon' => 'fa fa-flag-checkered', 'bg' => 'green', 'text' => 'success', 'label' => 'success'],
+        self::STATUS_APPROVED => ['icon' => 'fa fa-check', 'bg' => 'green', 'text' => 'success', 'label' => 'success'],
     ];
 
     public function __construct()

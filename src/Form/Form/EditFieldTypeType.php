@@ -23,13 +23,13 @@ class EditFieldTypeType extends AbstractType
 
         $builder->add('save', SubmitEmsType::class, [
             'attr' => [
-                'class' => 'btn-primary btn-sm ',
+                'class' => 'btn btn-primary btn-sm ',
             ],
             'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndClose', SubmitEmsType::class, [
             'attr' => [
-                'class' => 'btn-primary btn-sm ',
+                'class' => 'btn btn-primary btn-sm ',
             ],
             'icon' => 'fa fa-save',
         ]);

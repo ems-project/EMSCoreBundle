@@ -9,7 +9,11 @@
     </route>
 
     <route id="ems_core_uploaded_file_ajax" path="/datatable.json" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\UploadedFileController:ajaxDataTable</default>
+        <default key="_controller">EMS\CoreBundle\Controller\UploadedFileController:ajaxDataTableGroupedByHash</default>
+    </route>
+
+    <route id="ems_core_uploaded_file_hide_by_hash" path="/delete/{hash}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\UploadedFileController:hideByHash</default>
     </route>
 
 </routes>

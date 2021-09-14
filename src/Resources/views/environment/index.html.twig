@@ -80,6 +80,7 @@
                                     <th class="text-center" style="width: 10px">
                                         {{ 'view.environment.index.count_label'|trans }}
                                     </th>
+                                    <th>{{ 'view.environment.index.label'|trans }}</th>
                                     <th>{{ 'view.environment.index.name_label'|trans }}</th>
                                     <th>{{ 'view.environment.index.alias_label'|trans }}</th>
                                     <th>{{ 'view.environment.index.indexes_label'|trans }}</th>
@@ -105,9 +106,10 @@
                                                      {% endif %}
                                                       {{ circle|trans }}
                                                     {% endfor %}">
-                                                    {{ environment.name|humanize }}
+                                                    {{ environment.label }}
                                                 </span>
                                             </td>
+                                            <td>{{ environment.name }}</td>
                                             <td>{{ environment.alias }}</td>
                                             <td>
                                                 <button type="button" class="btn btn-default btn-sm" data-toggle="modal"
@@ -137,7 +139,7 @@
                                                     } %}
                                                     {% include '@EMSCore/elements/post-button.html.twig' with {
                                                         'url': path('environment.remove', {'id': environment.id}),
-                                                        'message': 'view.environment.index.confirm_delete'|trans({'%name%': environment.name|humanize}),
+                                                        'message': 'view.environment.index.confirm_delete'|trans({'%name%': environment.label}),
                                                         'label': 'view.environment.index.delete_button'|trans,
                                                         'icon': 'trash'
                                                     } %}
@@ -179,6 +181,7 @@
                                     <th class="text-center" style="width: 10px">
                                         {{ 'view.environment.index.count_label'|trans }}#
                                     </th>
+                                    <th>{{ 'view.environment.index.label'|trans }}</th>
                                     <th>{{ 'view.environment.index.name_label'|trans }}</th>
                                     <th>{{ 'view.environment.index.alias_label'|trans }}</th>
                                     <th>{{ 'view.environment.index.indexes_label'|trans }}</th>
@@ -190,8 +193,9 @@
                                         <tr>
                                             <td class="text-center">{{ loop.index }}.</td>
                                             <td>
-                                                <span class="badge bg-{{ environment.color|raw }}">{{ environment.name|humanize }}</span>
+                                                <span class="badge bg-{{ environment.color|raw }}">{{ environment.label }}</span>
                                             </td>
+                                            <td>{{ environment.name }}</td>
                                             <td>{{ environment.alias }}</td>
                                             <td>
                                                 <button type="button" class="btn btn-default btn-sm" data-toggle="modal"
@@ -215,7 +219,7 @@
                                                     } %}
                                                     {% include '@EMSCore/elements/post-button.html.twig' with {
                                                         'url': path('environment.remove', {'id': environment.id}),
-                                                        'message': 'view.environment.index.confirm_dettach'|trans({'%name%': environment.name|humanize }),
+                                                        'message': 'view.environment.index.confirm_dettach'|trans({'%name%': environment.label }),
                                                         'label': 'view.environment.index.dettach_button'|trans,
                                                         'icon': 'trash'
                                                     } %}
@@ -240,18 +244,18 @@
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
-                                <h4 class="modal-title">{{ 'view.environment.index.environment_indexes_modal_title'|trans({'%name%': environment.name|humanize}) }}</h4>
+                                <h4 class="modal-title">{{ 'view.environment.index.environment_indexes_modal_title'|trans({'%name%': environment.label}) }}</h4>
                             </div>
                             <div class="modal-body">
                                 <p>
-                                <ul class="list-group">
-                                    {% for index in environment.indexes %}
-                                        <li class="list-group-item">
-                                            <span class="badge">{{ index.count }}</span>
-                                            {{ index.name }}
-                                        </li>
-                                    {% endfor %}
-                                </ul>
+                                    <ul class="list-group">
+                                        {% for index in environment.indexes %}
+                                            <li class="list-group-item">
+                                                <span class="badge">{{ index.count }}</span>
+                                                {{ index.name }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
                                 </p>
                             </div>
                             <div class="modal-footer">
@@ -290,13 +294,15 @@
                                     <th>{{ 'view.environment.index.indexes_label'|trans }}</th>
                                     <th>{{ 'view.environment.index.total_label'|trans }}</th>
                                     <th>{{ 'view.environment.index.total_label'|trans }}</th>
+                                    <th>{{ 'view.environment.index.action_label'|trans }}</th>
                                 </tr>
                                 {% for managedAlias in managedAliases %}
                                     <tr>
                                         <td class="text-center">{{ loop.index }}.</td>
                                         <td>
-                                            <span class="badge bg-{{ managedAlias.color|raw }}">{{ managedAlias.name|humanize }}</span>
+                                            <span class="badge bg-{{ managedAlias.color|raw }}">{{ managedAlias.label }}</span>
                                         </td>
+                                        <td>{{ managedAlias.name }}</td>
                                         <td>{{ managedAlias.alias }}</td>
                                         <td>{{ managedAlias.indexes|length }}</td>
                                         <td>{{ managedAlias.total }}</td>
@@ -316,7 +322,7 @@
                                                 } %}
                                                 {% include '@EMSCore/elements/post-button.html.twig' with {
                                                     'url': path('environment_remove_managed_alias', {'id': managedAlias.id}),
-                                                    'message': 'view.environment.index.delete_managed_environemnt_button'|trans({'%name%': managedAlias.name|humanize}),
+                                                    'message': 'view.environment.index.delete_managed_environemnt_button'|trans({'%name%': managedAlias.label}),
                                                     'label': 'view.environment.index.delete_button'|trans,
                                                     'icon': 'trash'
                                                 } %}
@@ -370,14 +376,14 @@
                                             <div class="btn-group">
                                                 {% include '@EMSCore/elements/post-button.html.twig' with {
                                                     'url': path('environment.attach', {'name': name }),
-                                                    'message': 'view.environment.index.attach_alias_confirm'|trans({'%name%': name|humanize}),
+                                                    'message': 'view.environment.index.attach_alias_confirm'|trans({'%name%': name}),
                                                     'label': 'view.environment.index.attach_button'|trans,
                                                     'icon': 'plus',
                                                     'class': 'btn-sm btn-primary',
                                                 } %}
                                                 {% include '@EMSCore/elements/post-button.html.twig' with {
                                                     'url': path('environment.remove.alias', {'name': name }),
-                                                    'message': 'view.environment.index.delete_alias_confirm'|trans({'%name%': name|humanize}),
+                                                    'message': 'view.environment.index.delete_alias_confirm'|trans({'%name%': name}),
                                                     'label': 'view.environment.index.delete_button'|trans,
                                                     'icon': 'trash',
                                                 } %}
@@ -443,7 +449,7 @@
                                                 } %}
                                                 {% include '@EMSCore/elements/post-button.html.twig' with {
                                                     'url': path('elasticsearch.index.delete', {'name': index.name}),
-                                                    'message': 'view.environment.index.delete_index_confirm'|trans({'%name%': index.name|humanize}),
+                                                    'message': 'view.environment.index.delete_index_confirm'|trans({'%name%': index.name}),
                                                     'label': 'view.environment.index.delete_index_button'|trans,
                                                     'icon': 'trash'
                                                 } %}

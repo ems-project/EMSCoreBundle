@@ -223,19 +223,19 @@ class ContentTypeType extends AbstractType
 
         $builder->add('save', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm ',
+                        'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndUpdateMapping', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm ',
+                        'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndClose', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm ',
+                        'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
         ]);
@@ -267,13 +267,13 @@ class ContentTypeType extends AbstractType
             $builder->add('orderField');
             $builder->add('saveAndEditStructure', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary btn-sm ',
+                            'class' => 'btn btn-primary btn-sm ',
                     ],
                     'icon' => 'fa fa-save',
             ]);
             $builder->add('saveAndReorder', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary btn-sm ',
+                            'class' => 'btn btn-primary btn-sm ',
                     ],
                     'icon' => 'fa fa-reorder',
             ]);

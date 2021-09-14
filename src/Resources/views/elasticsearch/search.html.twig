@@ -1,4 +1,4 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-twigs' %}
 
 {% block title %}{% if response %}{{ 'views.elasticsearch.search.title'|trans({'%total%': response.formattedTotal|default('not-applicable'|trans) }) }}{% else %}{{ 'views.elasticsearch.search.error_title'|trans }}{%  endif %}{% endblock %}
 {% block pagetitle %}{{ 'views.elasticsearch.search.pagetitle'|trans }}{% endblock %}
@@ -39,7 +39,7 @@
 			  		<span class="text-{{ attribute(types, result.contentType).color }}">
 					  	<i class="{{ attribute(types, result.contentType).icon }}"></i>
 						{% if form.vars.data.environments|length != 1 %}
-						  	{{ attribute(types, result.contentType).singularName|humanize }} |
+						  	{{ attribute(types, result.contentType).singularName }} |
 						{% endif %}
 
 					  	{% set contentType=attribute(types, result.contentType) %}
@@ -106,7 +106,7 @@
 		{% if sortOptions|length %}
     		<div class="box">
     			<div class="box-header">
-    				<h3 class="box-title"><i class="fa fa-sort-alpha-asc"></i> {{ 'Sort options'|trans }}</h3>
+    				<h3 class="box-title"><i class="fa fa-sort-alpha-asc"></i> {{ 'views.elasticsearch.search.sort-options'|trans }}</h3>
     			</div>
     			<div class="box-body">
     					{% for option in sortOptions %}
@@ -234,7 +234,7 @@
 					{% for index in response.getAggregation('indexes').buckets %}
 							<a href="{{ path(paginationPath, cleanedFilters|merge({'search_form[environments][0]': attribute(indexes, index.key).name})) }}" class="btn btn-block btn-social {% if attribute(indexes, index.key).color %}bg-{{ attribute(indexes, index.key).color }}{% else %}bg-gray{% endif %}">
 								<i class="fa fa-eye"></i>
-					            {{ attribute(indexes, index.key).name|humanize }}
+					            {{ attribute(indexes, index.key).label }}
 								<span class=" badge pull-right">
 									{{ index.count }}
 								</span>

@@ -3,25 +3,24 @@
 {%- set source = object.source|default(object._source is defined ? object._source : []) -%}
 {%- if contentType -%}
 	<div class="btn-group">
-		<button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-			<i class="fa fa-eye"></i>
-			Actions in {{ environment.name }}
+		<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+			<i class="{{ 'views.elements.object-views-button.action-dropdown-icon-class'|trans }}"></i>
+			{{ 'views.elements.object-views-button.action-dropdown-label'|trans({'%environment%': environment.label}) }}
 			<span class="caret"></span>
-			<span class="sr-only">Toggle dropdown of {{ contentType.name }}'s custom views</span>
+			<span class="sr-only">{{ 'views.elements.object-views-button.action-dropdown-sr-only'|trans({'%environment%': environment.label}) }}</span>
 		</button>
 		<ul class="dropdown-menu" role="menu">
-	{# 		{% if recursiveView is not defined or not recursiveView  %}#}
 				{% for template in contentType.templates %}
 					{%  if currentTemplate is not defined or template != currentTemplate %}
 					{%if template.role == "not-defined" or is_granted(template.role) and (template.environments is empty or environment in template.environments or template.isEnvironmentExist(environment.name)) %}
 					
 						{% if template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXTERNALLINK') %}
 							{% set link = template.body|generate_from_template({
-										environment: environment,
-										contentType: contentType,
-										object: object,
-										source: source
-									}) %}
+									environment: environment,
+									contentType: contentType,
+									object: object,
+									source: source
+								}) %}
 
     							<li class="{% if not link %}disabled{% endif %}"><a href="{{ link }}" target="_blank">
     								<i class="{{ template.icon|raw }}"></i>
@@ -29,6 +28,16 @@
     								<i class="fa fa-external-link pull-right"></i>
     							</a></li>
 
+						{% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::RAW_HTML') %}
+							{%- if (is_granted(template.role)) or template.role == "not-defined" -%}
+								{%- set rawHTML = template.body|generate_from_template({
+									environment: environment,
+									contentType: contentType,
+									object: object,
+									source: source
+								}) -%}
+								{%- if rawHTML != '' -%}<li>{{ rawHTML|raw  }}</li>{%- endif -%}
+							{%- endif -%}
 						{% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::NOTIFICATION') %}
 							{% if ( is_granted(template.role) and ((attribute(source, contentType.circlesField) is not defined) or (source and attribute(source, contentType.circlesField)|in_my_circles) or (environment.circles|in_my_circles and is_granted('ROLE_PUBLISHER')) ) ) %}
 								<li><a href='#' class="request_notification" onclick="requestNotification(this, {{template.id}}, '{{environment.name}}', '{{contentType.id}}' , '{{ouuid}}'); return false;" href="#" data-url="{{ path('notification.ajaxnotification', {'objectId' : ouuid}) }}">
@@ -43,7 +52,7 @@
 									{{ template.name }}
 								</a></li>
 							{% endif %}
-						{% else %}{#  #}
+						{% else %}
 							<li><a href="{{ path(template.public?'ems_data_custom_template_public':'ems_data_custom_template_protected', {
 										environmentName: environment.name,
 										ouuid: ouuid,
@@ -61,16 +70,16 @@
 				{% if environment.managed %}
 					<li>
 						<a href="{{ path('data.revision_in_environment', {'type': contentType.name, 'ouuid': ouuid, 'environment':environment.name } ) }}" >
-							<i class="fa fa-archive"></i>
-							Corresponding revision
+							<i class="{{ 'views.elements.object-views-button.corresponding-revision-icon-class'|trans }}"></i>
+							{{ 'views.elements.object-views-button.corresponding-revision'|trans }}
 						</a>
 					</li>
 				{% endif %}
 				{% if is_granted('ROLE_COPY_PASTE') %}
 					<li>
 						<a href="{{ path('revision.copy', {'environment': environment.name, 'type': contentType.name, 'ouuid': ouuid} ) }}">
-							<i class="fa fa-copy"></i>
-							{{ 'Copy data'|trans }}
+							<i class="{{ 'views.elements.object-views-button.copy-data-icon-class'|trans }}"></i>
+							{{ 'views.elements.object-views-button.copy-data'|trans }}
 						</a>
 					</li>
 					{% if not contentType.askForOuuid  %}
@@ -85,20 +94,19 @@
 					{% endif %}
 					<li>
 						<a href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': ouuid} ) }}">
-							<i class="fa fa-th"></i>
-							{{ 'Raw view'|trans }}
+							<i class="{{ 'views.elements.object-views-button.raw-view-icon-class'|trans }}"></i>
+							{{ 'views.elements.object-views-button.raw-view'|trans }}
 						</a>
 					</li>
 
 				{% endif %}
-			
-	{# 		{% endif %}#}
 		</ul>
 	</div>
 {% else %}
 
-		<a class="btn btn-sm btn-primary " href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': object.ouuid} ) }}">
-			<span class="entity">&infin;</span>Raw view
+		<a class="btn btn-sm btn-default " href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': object.ouuid} ) }}">
+			<i class="{{ 'views.elements.object-views-button.raw-view-icon-class'|trans }}"></i>
+			{{ 'views.elements.object-views-button.raw-view'|trans }}
 		</a>
 {% endif %}	
 	

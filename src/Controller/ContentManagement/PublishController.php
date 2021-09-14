@@ -15,6 +15,7 @@ use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\SearchFormType;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
@@ -49,7 +50,7 @@ class PublishController extends AbstractController
             throw new NotFoundHttpException('Revision not found');
         }
 
-        return $this->redirectToRoute('data.revisions', [
+        return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
             'ouuid' => $revisionId->getOuuid(),
             'type' => $contentType->getName(),
             'revisionId' => $revisionId->getId(),
@@ -71,7 +72,7 @@ class PublishController extends AbstractController
 
         $publishService->unpublish($revisionId, $envId);
 
-        return $this->redirectToRoute('data.revisions', [
+        return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
             'ouuid' => $revisionId->getOuuid(),
             'type' => $contentType->getName(),
             'revisionId' => $revisionId->getId(),
@@ -117,7 +118,7 @@ class PublishController extends AbstractController
             'ignore' => [$environment->getName()],
         ])->add('publish', SubmitEmsType::class, [
             'attr' => [
-                'class' => 'btn-primary btn-md',
+                'class' => 'btn btn-primary btn-md',
             ],
             'icon' => 'glyphicon glyphicon-open',
         ]);

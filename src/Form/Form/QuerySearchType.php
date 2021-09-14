@@ -69,7 +69,7 @@ final class QuerySearchType extends AbstractType
             ->add('options', QuerySearchOptionsType::class)
             ->add('save', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm ',
+                    'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
             ]);

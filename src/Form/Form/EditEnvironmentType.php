@@ -25,6 +25,10 @@ class EditEnvironmentType extends AbstractType
         ->add('name', IconTextType::class, [
             'icon' => 'fa fa-tag',
         ])
+        ->add('label', IconTextType::class, [
+            'required' => false,
+            'icon' => 'fa fa-header',
+        ])
         ->add('color', ColorPickerType::class, [
                 'required' => false,
         ]);
@@ -49,7 +53,7 @@ class EditEnvironmentType extends AbstractType
         ])
         ->add('save', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm ',
+                        'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
         ]);

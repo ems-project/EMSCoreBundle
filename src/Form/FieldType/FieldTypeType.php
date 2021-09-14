@@ -62,7 +62,7 @@ class FieldTypeType extends AbstractType
 
             $builder->add('add', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary ',
+                            'class' => 'btn btn-primary ',
                     ],
                     'icon' => 'fa fa-plus',
             ]);
@@ -76,7 +76,7 @@ class FieldTypeType extends AbstractType
             $builder->add('subfield', SubmitEmsType::class, [
                     'label' => 'Add',
                     'attr' => [
-                            'class' => 'btn-primary ',
+                            'class' => 'btn btn-primary ',
                     ],
                     'icon' => 'fa fa-plus',
             ]);
@@ -90,7 +90,7 @@ class FieldTypeType extends AbstractType
             $builder->add('duplicate', SubmitEmsType::class, [
                     'label' => 'Duplicate',
                     'attr' => [
-                            'class' => 'btn-primary ',
+                            'class' => 'btn btn-primary ',
                     ],
                     'icon' => 'fa fa-paste',
             ]);
@@ -105,7 +105,7 @@ class FieldTypeType extends AbstractType
         if (null != $fieldType->getParent() && $options['editSubfields']) {
             $builder->add('remove', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-danger btn-xs',
+                            'class' => 'btn btn-danger btn-xs',
                     ],
                     'icon' => 'fa fa-trash',
             ]);
@@ -127,7 +127,7 @@ class FieldTypeType extends AbstractType
             if ($childFound && $options['editSubfields']) {
                 $builder->add('reorder', SubmitEmsType::class, [
                         'attr' => [
-                                'class' => 'btn-primary ',
+                                'class' => 'btn btn-primary ',
                         ],
                         'icon' => 'fa fa-reorder',
                 ]);

@@ -310,6 +310,25 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
+     * @return iterable|Revision[]
+     */
+    public function findAllDraftsByContentTypeName(string $contentTypeName): iterable
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->join('r.contentType', 'c')
+            ->andWhere($qb->expr()->isNull('r.endTime'))
+            ->andWhere($qb->expr()->eq('r.draft', $qb->expr()->literal(true)))
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
+            ->andWhere($qb->expr()->eq('c.name', ':content_type_name'))
+            ->setParameter('content_type_name', $contentTypeName);
+
+        foreach ($qb->getQuery()->iterate() as $row) {
+            yield $row[0];
+        }
+    }
+
+    /**
      * @param string $source
      * @param string $target
      * @param array  $contentTypes
@@ -345,7 +364,7 @@ class RevisionRepository extends EntityRepository
     private function getCompareQueryBuilder($source, $target, $contentTypes)
     {
         $qb = $this->createQueryBuilder('r');
-        $qb->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.icon', 'r.ouuid', 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid', 'max(r.id) lastRevId')
+        $qb->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.singularName content_type_singular_name', 'c.icon', 'r.ouuid', 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid', 'max(r.id) lastRevId')
         ->join('r.contentType', 'c')
         ->join('r.environments', 'e')
         ->where('e.id in (:source, :target)')
@@ -860,5 +879,66 @@ class RevisionRepository extends EntityRepository
         ;
 
         return $qbSelect->getQuery()->execute();
+    }
+
+    public function countDraftInProgress(string $searchValue, ?ContentType $context): int
+    {
+        $qb = $this->createQueryBuilder('rev');
+        $qb->select('count(rev.id)');
+        $qb->andWhere($qb->expr()->eq('rev.draft', ':true'));
+        $qb->andWhere($qb->expr()->eq('rev.deleted', ':false'));
+        $qb->setParameters([
+            ':true' => true,
+            ':false' => false,
+        ]);
+
+        if (null !== $context) {
+            $qb->andWhere($qb->expr()->eq('rev.contentType', ':contentType'));
+            $qb->setParameter('contentType', $context);
+        }
+        $this->addSearchValueFilter($qb, $searchValue);
+
+        return \intval($qb->getQuery()->getSingleScalarResult());
+    }
+
+    /**
+     * @return Revision[]
+     */
+    public function getDraftInProgress(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, ?ContentType $context): array
+    {
+        $qb = $this->createQueryBuilder('rev');
+        $qb->andWhere($qb->expr()->eq('rev.draft', ':true'));
+        $qb->andWhere($qb->expr()->eq('rev.deleted', ':false'));
+        $qb->setParameters([
+            ':true' => true,
+            ':false' => false,
+        ]);
+
+        if (null !== $context) {
+            $qb->andWhere($qb->expr()->eq('rev.contentType', ':contentType'));
+            $qb->setParameter('contentType', $context);
+        }
+        $qb->setFirstResult($from)
+            ->setMaxResults($size);
+
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('rev.%s', $orderField), $orderDirection);
+        }
+        $this->addSearchValueFilter($qb, $searchValue);
+
+        return $qb->getQuery()->execute();
+    }
+
+    private function addSearchValueFilter(QueryBuilder $qb, string $searchValue): void
+    {
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('LOWER(rev.lockBy)', ':term'),
+                $qb->expr()->like('LOWER(rev.autoSaveBy)', ':term'),
+                $qb->expr()->like('LOWER(rev.labelField)', ':term'),
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
+        }
     }
 }

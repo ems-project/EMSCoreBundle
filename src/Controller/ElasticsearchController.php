@@ -301,8 +301,8 @@ class ElasticsearchController extends AppController
     {
         @\trigger_error('QuerySearch not defined, you should refer to one', E_USER_DEPRECATED);
         $environments = $request->query->get('environment', null);
-        $requestSearchId = $request->query->get('searchId', null);
-        $searchId = null !== $requestSearchId ? \intval($requestSearchId) : null;
+        $requestSearchId = $request->query->get('searchId', '');
+        $searchId = '' !== $requestSearchId ? \intval($requestSearchId) : null;
         $category = $request->query->get('category', null);
         $assetName = $request->query->get('asset_name', false);
         $circleOnly = $request->query->get('circle', false);

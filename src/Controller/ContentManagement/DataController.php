@@ -203,7 +203,7 @@ class DataController extends AppController
     {
         $revId = $dataService->putBack($contentType, $ouuid);
 
-        return $this->redirectToRoute(Routes::EditRevision, [
+        return $this->redirectToRoute(Routes::EDIT_REVISION, [
             'revisionId' => $revId,
         ]);
     }
@@ -265,7 +265,7 @@ class DataController extends AppController
         try {
             $revision = $dataService->getRevisionByEnvironment($ouuid, $contentType, $environment);
 
-            return $this->redirectToRoute(Routes::ViewRevision, [
+            return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
                 'type' => $contentType->getName(),
                 'ouuid' => $ouuid,
                 'revisionId' => $revision->getId(),
@@ -512,7 +512,7 @@ class DataController extends AppController
             EmsFields::LOG_CONTENTTYPE_FIELD => $type,
         ]);
 
-        return $this->redirectToRoute(Routes::EditRevision, [
+        return $this->redirectToRoute(Routes::EDIT_REVISION, [
             'revisionId' => $revision->getId(),
         ]);
     }
@@ -556,7 +556,7 @@ class DataController extends AppController
      */
     public function newDraftAction(string $type, string $ouuid, DataService $dataService): RedirectResponse
     {
-        return $this->redirectToRoute(Routes::EditRevision, [
+        return $this->redirectToRoute(Routes::EDIT_REVISION, [
             'revisionId' => $dataService->initNewDraft($type, $ouuid)->getId(),
         ]);
     }
@@ -596,7 +596,7 @@ class DataController extends AppController
         }
 
         if ($found) {
-            return $this->redirectToRoute(Routes::ViewRevision, [
+            return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
                 'type' => $type,
                 'ouuid' => $ouuid,
             ]);
@@ -653,7 +653,7 @@ class DataController extends AppController
                 return $this->reindexRevisionAction($logger, $dataService, $indexService, $previousRevisionId, true);
             }
 
-            return $this->redirectToRoute(Routes::ViewRevision, [
+            return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
                 'type' => $type,
                 'ouuid' => $ouuid,
             ]);
@@ -694,13 +694,13 @@ class DataController extends AppController
                 ]);
             }
 
-            return $this->redirectToRoute(Routes::ViewRevision, [
+            return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
                 'type' => $type,
                 'ouuid' => $ouuid,
             ]);
         }
 
-        return $this->redirectToRoute(Routes::DraftInProgress, [
+        return $this->redirectToRoute(Routes::DRAFT_IN_PROGRESS, [
             'contentTypeId' => $contentTypeId,
         ]);
     }
@@ -763,7 +763,7 @@ class DataController extends AppController
             ]);
         }
 
-        return $this->redirectToRoute(Routes::ViewRevision, [
+        return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
             'ouuid' => $revision->getOuuid(),
             'type' => $revision->getContentType()->getName(),
             'revisionId' => $revision->getId(),
@@ -1120,7 +1120,7 @@ class DataController extends AppController
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 ]);
 
-                return $this->redirectToRoute(Routes::EditRevision, [
+                return $this->redirectToRoute(Routes::EDIT_REVISION, [
                     'revisionId' => $revision->getId(),
                 ]);
             }
@@ -1135,7 +1135,7 @@ class DataController extends AppController
                     'count' => $form->getErrors(true)->count(),
                 ]);
 
-                return $this->redirectToRoute(Routes::EditRevision, [
+                return $this->redirectToRoute(Routes::EDIT_REVISION, [
                     'revisionId' => $revision->getId(),
                 ]);
             }
@@ -1149,12 +1149,12 @@ class DataController extends AppController
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
 
-            return $this->redirectToRoute(Routes::EditRevision, [
+            return $this->redirectToRoute(Routes::EDIT_REVISION, [
                 'revisionId' => $revision->getId(),
             ]);
         }
 
-        return $this->redirectToRoute(Routes::ViewRevision, [
+        return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
             'ouuid' => $revision->getOuuid(),
             'type' => $revision->getContentType()->getName(),
             'revisionId' => $revision->getId(),
@@ -1201,7 +1201,7 @@ class DataController extends AppController
         try {
             $revision = $dataService->newDocument($contentType, null, $rawData);
 
-            return $this->redirectToRoute(Routes::EditRevision, [
+            return $this->redirectToRoute(Routes::EDIT_REVISION, [
                 'revisionId' => $revision->getId(),
             ]);
         } catch (\Throwable $e) {
@@ -1259,7 +1259,7 @@ class DataController extends AppController
             try {
                 $revision = $dataService->newDocument($contentType, $revision->getOuuid());
 
-                return $this->redirectToRoute(Routes::EditRevision, [
+                return $this->redirectToRoute(Routes::EDIT_REVISION, [
                     'revisionId' => $revision->getId(),
                 ]);
             } catch (DuplicateOuuidException $e) {
@@ -1298,7 +1298,7 @@ class DataController extends AppController
             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
         ]);
 
-        return $this->redirectToRoute(Routes::EditRevision, [
+        return $this->redirectToRoute(Routes::EDIT_REVISION, [
             'revisionId' => $revertedRevision->getId(),
         ]);
     }
@@ -1340,7 +1340,7 @@ class DataController extends AppController
 
             // For each type, we must perform a different redirect.
             if ('object' == $category) {
-                return $this->redirectToRoute(Routes::ViewRevision, [
+                return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
                     'type' => $type,
                     'ouuid' => $ouuid,
                 ]);

@@ -263,7 +263,7 @@ class EditController extends AbstractController
                 $this->logger->error('log.controller.draft-in-progress.unknown_action');
             }
 
-            return $this->redirectToRoute(Routes::DraftInProgress, ['contentTypeId' => $contentTypeId->getId()]);
+            return $this->redirectToRoute(Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentTypeId->getId()]);
         }
 
         return $this->render('@EMSCore/data/draft-in-progress.html.twig', [

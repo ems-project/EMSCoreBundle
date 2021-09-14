@@ -50,7 +50,7 @@ class PublishController extends AbstractController
             throw new NotFoundHttpException('Revision not found');
         }
 
-        return $this->redirectToRoute(Routes::ViewRevision, [
+        return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
             'ouuid' => $revisionId->getOuuid(),
             'type' => $contentType->getName(),
             'revisionId' => $revisionId->getId(),
@@ -72,7 +72,7 @@ class PublishController extends AbstractController
 
         $publishService->unpublish($revisionId, $envId);
 
-        return $this->redirectToRoute(Routes::ViewRevision, [
+        return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
             'ouuid' => $revisionId->getOuuid(),
             'type' => $contentType->getName(),
             'revisionId' => $revisionId->getId(),

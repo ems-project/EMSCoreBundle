@@ -101,7 +101,7 @@ class EditController extends AbstractController
             if (empty($requestRevision) || !$allFieldsAreThere) {
                 $this->logger->error('log.data.revision.not_completed_request', LoggingContext::read($revision));
 
-                return $this->redirectToRoute(Routes::ViewRevision, [
+                return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
                     'ouuid' => $revision->getOuuid(),
                     'type' => $contentType->getName(),
                     'revisionId' => $revision->getId(),
@@ -147,12 +147,12 @@ class EditController extends AbstractController
                 if ((isset($requestRevision['publish']) || isset($requestRevision['publish_version']))
                     && 0 === \count($form->getErrors())) {
                     if ($revision->getOuuid()) {
-                        return $this->redirectToRoute(Routes::ViewRevision, [
+                        return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
                             'ouuid' => $revision->getOuuid(),
                             'type' => $contentType->getName(),
                         ]);
                     } else {
-                        return $this->redirectToRoute(Routes::EditRevision, [
+                        return $this->redirectToRoute(Routes::EDIT_REVISION, [
                             'revisionId' => $revision->getId(),
                         ]);
                     }
@@ -160,7 +160,7 @@ class EditController extends AbstractController
             }
 
             if (isset($requestRevision['paste']) || isset($requestRevision['copy'])) {
-                return $this->redirectToRoute(Routes::EditRevision, ['revisionId' => $revisionId]);
+                return $this->redirectToRoute(Routes::EDIT_REVISION, ['revisionId' => $revisionId]);
             }
 
             //if Save or Discard
@@ -170,7 +170,7 @@ class EditController extends AbstractController
                         $this->publishService->silentPublish($revision);
                     }
 
-                    return $this->redirectToRoute(Routes::ViewRevision, [
+                    return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
                         'ouuid' => $revision->getOuuid(),
                         'type' => $contentType->getName(),
                         'revisionId' => $revision->getId(),
@@ -220,7 +220,7 @@ class EditController extends AbstractController
 
     public function ajaxDraftInProgress(Request $request, ContentType $contentType): Response
     {
-        $table = $this->draftInProgress->getDataTable($this->generateUrl(Routes::DraftInProgressAjax, ['contentType' => $contentType->getId()]), $contentType);
+        $table = $this->draftInProgress->getDataTable($this->generateUrl(Routes::DRAFT_IN_PROGRESS_AJAX, ['contentType' => $contentType->getId()]), $contentType);
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
@@ -232,7 +232,7 @@ class EditController extends AbstractController
 
     public function draftInProgress(Request $request, ContentType $contentTypeId): Response
     {
-        $table = $this->draftInProgress->getDataTable($this->generateUrl(Routes::DraftInProgressAjax, ['contentType' => $contentTypeId->getId()]), $contentTypeId);
+        $table = $this->draftInProgress->getDataTable($this->generateUrl(Routes::DRAFT_IN_PROGRESS_AJAX, ['contentType' => $contentTypeId->getId()]), $contentTypeId);
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);

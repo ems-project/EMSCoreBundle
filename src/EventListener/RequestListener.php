@@ -85,7 +85,7 @@ class RequestListener
                             'contentTypeId' => $exception->getRevision()->getContentType()->getId(),
                     ], UrlGeneratorInterface::RELATIVE_PATH));
                 } else {
-                    $response = new RedirectResponse($this->router->generate(Routes::ViewRevision, [
+                    $response = new RedirectResponse($this->router->generate(Routes::VIEW_REVISIONS, [
                             'type' => $exception->getRevision()->getContentType()->getName(),
                             'ouuid' => $exception->getRevision()->getOuuid(),
                     ], UrlGeneratorInterface::RELATIVE_PATH));

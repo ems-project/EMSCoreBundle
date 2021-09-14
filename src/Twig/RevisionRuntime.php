@@ -57,7 +57,6 @@ class RevisionRuntime implements RuntimeExtensionInterface
         return $this->revisionService->update(EMSLink::fromText($emsLink), $rawData);
     }
 
-
     /**
      * @return iterable|Revision[]
      */

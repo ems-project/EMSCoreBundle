@@ -241,7 +241,7 @@ class EditController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
                 switch ($action->getName()) {
-                    case DraftInProgress::DRAFT_DRAFT_ACTION:
+                    case DraftInProgress::DISCARD_SELECTED_DRAFT:
                         foreach ($table->getSelected() as $revisionId) {
                             try {
                                 $revision = $this->dataService->getRevisionById(\intval($revisionId), $contentTypeId);

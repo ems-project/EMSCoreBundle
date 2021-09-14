@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class DraftInProgress implements EntityServiceInterface
 {
-    public const DRAFT_DRAFT_ACTION = 'DISCARD_SELECTED_DRAFT';
+    public const DISCARD_SELECTED_DRAFT = 'DISCARD_SELECTED_DRAFT';
     private RevisionRepository $revisionRepository;
     private UserService $userService;
     private AuthorizationCheckerInterface $authorizationChecker;
@@ -88,7 +88,7 @@ class DraftInProgress implements EntityServiceInterface
         ])->addCondition($inMyCircles)->setButtonType('outline-danger');
 
         if (null !== $contentType && (null === $contentType->getCirclesField() || '' === $contentType->getCirclesField())) {
-            $table->addTableAction(self::DRAFT_DRAFT_ACTION, 'fa fa-trash', 'revision.draft-in-progress.action.discard-selected-draft', 'revision.draft-in-progress.action.discard-selected-confirm')
+            $table->addTableAction(self::DISCARD_SELECTED_DRAFT, 'fa fa-trash', 'revision.draft-in-progress.action.discard-selected-draft', 'revision.draft-in-progress.action.discard-selected-confirm')
                 ->setCssClass('btn btn-outline-danger');
         }
 

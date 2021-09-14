@@ -8,11 +8,13 @@ use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Core\Revision\Revisions;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\UuidInterface;
 
 class RevisionService
 {
@@ -151,5 +153,29 @@ class RevisionService
     public function getDocumentInfo(EMSLink $documentLink): DocumentInfo
     {
         return new DocumentInfo($documentLink, $this->revisionRepository->findAllPublishedRevision($documentLink));
+    }
+
+    /**
+     * @param array<mixed> $rawData
+     */
+    public function create(ContentType $contentType, UuidInterface $uuid, array $rawData = []): Revision
+    {
+        return $this->dataService->newDocument($contentType, $uuid->toString(), $rawData);
+    }
+
+    /**
+     * @param array<mixed> $rawData
+     */
+    public function update(EMSLink $emsLink, array $rawData, bool $merge = true): Revision
+    {
+        $draft = $this->dataService->initNewDraft($emsLink->getContentType(), $emsLink->getOuuid());
+
+        if ($merge) {
+            $draft->setRawData(\array_merge($draft->getRawData(), $rawData));
+        } else {
+            $draft->setRawData($rawData);
+        }
+
+        return $this->dataService->finalizeDraft($draft);
     }
 }

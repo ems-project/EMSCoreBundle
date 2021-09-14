@@ -138,6 +138,9 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_datatable_excel_path', [DatatableRuntime::class, 'getExcelPath'], ['is_safe' => ['html']]),
             new TwigFunction('emsco_datatable_csv_path', [DatatableRuntime::class, 'getCsvPath'], ['is_safe' => ['html']]),
             new TwigFunction('emsco_revisions_draft', [RevisionRuntime::class, 'getRevisionsInDraft']),
+            new TwigFunction('emsco_revision_create', [RevisionRuntime::class, 'createRevision']),
+            new TwigFunction('emsco_revision_update', [RevisionRuntime::class, 'updateRevision']),
+            new TwigFunction('emsco_revision_merge', [RevisionRuntime::class, 'mergeRevision']),
         ];
     }
 

@@ -1,0 +1,34 @@
+@mixin size($px) { width: ($px) + px; height: ($px  * 0.75) + px; display: inline-block; }
+
+%ems-flag-nl {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGlkPSJmbGFnLWljb24tY3NzLW5sIiB2aWV3Qm94PSIwIDAgNjQwIDQ4MCI+CiAgPHBhdGggZmlsbD0iIzIxNDY4YiIgZD0iTTAgMGg2NDB2NDgwSDB6Ii8+CiAgPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMGg2NDB2MzIwSDB6Ii8+CiAgPHBhdGggZmlsbD0iI2FlMWMyOCIgZD0iTTAgMGg2NDB2MTYwSDB6Ii8+Cjwvc3ZnPgo=");
+}
+%ems-flag-fr {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGlkPSJmbGFnLWljb24tY3NzLWZyIiB2aWV3Qm94PSIwIDAgNjQwIDQ4MCI+CiAgPGcgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2Utd2lkdGg9IjFwdCI+CiAgICA8cGF0aCBmaWxsPSIjZmZmIiBkPSJNMCAwaDY0MHY0ODBIMHoiLz4KICAgIDxwYXRoIGZpbGw9IiMwMDI2N2YiIGQ9Ik0wIDBoMjEzLjN2NDgwSDB6Ii8+CiAgICA8cGF0aCBmaWxsPSIjZjMxODMwIiBkPSJNNDI2LjcgMEg2NDB2NDgwSDQyNi43eiIvPgogIDwvZz4KPC9zdmc+Cg==");
+}
+%ems-flag-de {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGlkPSJmbGFnLWljb24tY3NzLWRlIiB2aWV3Qm94PSIwIDAgNjQwIDQ4MCI+CiAgPHBhdGggZmlsbD0iI2ZmY2UwMCIgZD0iTTAgMzIwaDY0MHYxNjBIMHoiLz4KICA8cGF0aCBkPSJNMCAwaDY0MHYxNjBIMHoiLz4KICA8cGF0aCBmaWxsPSIjZDAwIiBkPSJNMCAxNjBoNjQwdjE2MEgweiIvPgo8L3N2Zz4K");
+}
+%ems-flag-en {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGlkPSJmbGFnLWljb24tY3NzLWdiIiB2aWV3Qm94PSIwIDAgNjQwIDQ4MCI+CiAgPHBhdGggZmlsbD0iIzAxMjE2OSIgZD0iTTAgMGg2NDB2NDgwSDB6Ii8+CiAgPHBhdGggZmlsbD0iI0ZGRiIgZD0iTTc1IDBsMjQ0IDE4MUw1NjIgMGg3OHY2Mkw0MDAgMjQxbDI0MCAxNzh2NjFoLTgwTDMyMCAzMDEgODEgNDgwSDB2LTYwbDIzOS0xNzhMMCA2NFYwaDc1eiIvPgogIDxwYXRoIGZpbGw9IiNDODEwMkUiIGQ9Ik00MjQgMjgxbDIxNiAxNTl2NDBMMzY5IDI4MWg1NXptLTE4NCAyMGw2IDM1TDU0IDQ4MEgwbDI0MC0xNzl6TTY0MCAwdjNMMzkxIDE5MWwyLTQ0TDU5MCAwaDUwek0wIDBsMjM5IDE3NmgtNjBMMCA0MlYweiIvPgogIDxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik0yNDEgMHY0ODBoMTYwVjBIMjQxek0wIDE2MHYxNjBoNjQwVjE2MEgweiIvPgogIDxwYXRoIGZpbGw9IiNDODEwMkUiIGQ9Ik0wIDE5M3Y5Nmg2NDB2LTk2SDB6TTI3MyAwdjQ4MGg5NlYwaC05NnoiLz4KPC9zdmc+Cg==");
+}
+
+.ems-flag-xs-nl { @extend %ems-flag-nl; @include size(15); }
+.ems-flag-xs-fr { @extend %ems-flag-fr; @include size(15); }
+.ems-flag-xs-de { @extend %ems-flag-de; @include size(15); }
+.ems-flag-xs-en { @extend %ems-flag-en; @include size(15); }
+
+.ems-flag-sm-nl { @extend %ems-flag-nl; @include size(25); }
+.ems-flag-sm-fr { @extend %ems-flag-fr; @include size(25); }
+.ems-flag-sm-de { @extend %ems-flag-de; @include size(25); }
+.ems-flag-sm-en { @extend %ems-flag-en; @include size(25); }
+
+.ems-flag-md-nl { @extend %ems-flag-nl; @include size(50); }
+.ems-flag-md-fr { @extend %ems-flag-fr; @include size(50); }
+.ems-flag-md-de { @extend %ems-flag-de; @include size(50); }
+.ems-flag-md-en { @extend %ems-flag-en; @include size(50); }
+
+.ems-flag-lg-nl { @extend %ems-flag-nl; @include size(100); }
+.ems-flag-lg-fr { @extend %ems-flag-fr; @include size(100); }
+.ems-flag-lg-de { @extend %ems-flag-de; @include size(100); }
+.ems-flag-lg-en { @extend %ems-flag-en; @include size(100); }

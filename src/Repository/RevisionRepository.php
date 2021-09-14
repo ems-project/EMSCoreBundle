@@ -886,8 +886,10 @@ class RevisionRepository extends EntityRepository
         $qb = $this->createQueryBuilder('rev');
         $qb->select('count(rev.id)');
         $qb->andWhere($qb->expr()->eq('rev.draft', ':true'));
+        $qb->andWhere($qb->expr()->eq('rev.deleted', ':false'));
         $qb->setParameters([
             ':true' => true,
+            ':false' => false,
         ]);
 
         if (null !== $context) {
@@ -906,8 +908,10 @@ class RevisionRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('rev');
         $qb->andWhere($qb->expr()->eq('rev.draft', ':true'));
+        $qb->andWhere($qb->expr()->eq('rev.deleted', ':false'));
         $qb->setParameters([
             ':true' => true,
+            ':false' => false,
         ]);
 
         if (null !== $context) {

@@ -75,14 +75,14 @@ class DraftInProgress implements EntityServiceInterface
         $lockBy = new UserTableColumn('revision.draft-in-progress.column.locked-by', 'lockBy');
         $lockBy->addCondition($condition);
         $table->addColumnDefinition($lockBy);
-        $table->addDynamicItemGetAction(Routes::VIEW_REVISIONS, 'revision.draft-in-progress.column.view-revision', 'archive', [
-            'type' => 'contentType.name',
-            'ouuid' => 'ouuid',
-        ])->addCondition(new NotEmpty('ouuid'));
         $inMyCircles = new InMyCircles($this->userService, $this->authorizationChecker);
         $table->addDynamicItemGetAction(Routes::EDIT_REVISION, 'revision.draft-in-progress.column.edit-draft', 'pencil', [
             'revisionId' => 'id',
         ])->addCondition($inMyCircles)->setButtonType('primary');
+        $table->addDynamicItemGetAction(Routes::VIEW_REVISIONS, 'revision.draft-in-progress.column.view-revision', '', [
+            'type' => 'contentType.name',
+            'ouuid' => 'ouuid',
+        ])->addCondition(new NotEmpty('ouuid'));
         $table->addDynamicItemPostAction(Routes::DISCARD_DRAFT, 'revision.draft-in-progress.column.discard-draft', 'trash', 'revision.draft-in-progress.column.confirm-discard-draft', [
            'revisionId' => 'id',
         ])->addCondition($inMyCircles)->setButtonType('outline-danger');

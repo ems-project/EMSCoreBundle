@@ -22,6 +22,8 @@ use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -236,6 +238,33 @@ class EditController extends AbstractController
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
+                switch ($action->getName()) {
+                    case DraftInProgress::DRAFT_DRAFT_ACTION:
+                        foreach ($table->getSelected() as $revisionId) {
+                            try {
+                                $revision = $this->dataService->getRevisionById(\intval($revisionId), $contentTypeId);
+                                if (!$revision->getDraft()) {
+                                    continue;
+                                }
+                                $label = $revision->getLabel();
+                                $this->dataService->discardDraft($revision);
+                                $this->logger->notice('log.controller.draft-in-progress.discard_draft', ['revision' => $label]);
+                            } catch (NotFoundHttpException $e) {
+                                $this->logger->warning('log.controller.draft-in-progress.draft-not-found', ['revisionId' => $revisionId]);
+                            }
+                        }
+                        break;
+                    default:
+                        $this->logger->error('log.controller.draft-in-progress.unknown_action');
+                }
+            } else {
+                $this->logger->error('log.controller.draft-in-progress.unknown_action');
+            }
+
+            return $this->redirectToRoute(Routes::DraftInProgress, ['contentTypeId' => $contentTypeId->getId()]);
+        }
 
         return $this->render('@EMSCore/data/draft-in-progress.html.twig', [
             'form' => $form->createView(),

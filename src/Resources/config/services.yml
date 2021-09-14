@@ -17,7 +17,6 @@ services:
     EMS\CoreBundle\Twig\RevisionRuntime:
         arguments:
             - '@ems.service.revision'
-            - '@ems.service.data'
         tags:
             - { name: twig.runtime, priority: -2000 }
     app.twig_extension_user: '@EMS\CoreBundle\Twig\UserRuntime'

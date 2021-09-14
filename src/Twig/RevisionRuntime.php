@@ -8,7 +8,6 @@ use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use Ramsey\Uuid\UuidInterface;
 use Twig\Extension\RuntimeExtensionInterface;
@@ -16,14 +15,10 @@ use Twig\Extension\RuntimeExtensionInterface;
 class RevisionRuntime implements RuntimeExtensionInterface
 {
     private RevisionService $revisionService;
-    private DataService $dataService;
 
-    public function __construct(
-        RevisionService $revisionService,
-        DataService $dataService
-    ) {
+    public function __construct(RevisionService $revisionService)
+    {
         $this->revisionService = $revisionService;
-        $this->dataService = $dataService;
     }
 
     public function getRevision(string $ouuid, string $contentTypeName): ?Revision
@@ -43,7 +38,15 @@ class RevisionRuntime implements RuntimeExtensionInterface
      */
     public function createRevision(ContentType $contentType, UuidInterface $uuid, array $rawData = []): Revision
     {
-        return $this->dataService->newDocument($contentType, $uuid->toString(), $rawData);
+        return $this->revisionService->create($contentType, $uuid, $rawData);
+    }
+
+    /**
+     * @param array<mixed> $rawData
+     */
+    public function updateRevision(string $emsLink, array $rawData, bool $partial = true): Revision
+    {
+        return $this->revisionService->updatePartial(EMSLink::fromText($emsLink), $rawData, $partial);
     }
 
     /**

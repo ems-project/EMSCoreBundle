@@ -205,7 +205,7 @@ abstract class TableAbstract implements TableInterface
         return $this->tableActions;
     }
 
-    public function setDefaultOrder(string $orderField, string $direction = 'desc'): void
+    public function setDefaultOrder(string $orderField, string $direction = 'asc'): void
     {
         $this->orderField = $orderField;
         $this->orderDirection = $direction;

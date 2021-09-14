@@ -21,6 +21,7 @@ use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
+use EMS\CoreBundle\Form\Data\Condition\InMyCircles;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
@@ -861,23 +862,9 @@ class AppExtension extends AbstractExtension
      */
     public function inMyCircles($circles): bool
     {
-        if (\is_array($circles) && 0 === \count($circles)) {
-            return true;
-        }
+        $condition = new InMyCircles($this->userService, $this->authorizationChecker);
 
-        if ($this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
-            return true;
-        }
-
-        if (\is_array($circles)) {
-            $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
-
-            return \count(\array_intersect($circles, $user->getCircles())) > 0;
-        }
-
-        $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
-
-        return \in_array($circles, $user->getCircles());
+        return $condition->inMyCircles($circles);
     }
 
     /**

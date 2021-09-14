@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
+use EMS\CoreBundle\Form\Data\Condition\ConditionInterface;
+
 final class TableItemAction
 {
     /** @var bool */
@@ -20,6 +22,8 @@ final class TableItemAction
     private $messageKey;
     private bool $dynamic;
     private string $buttonType = 'default';
+    /** @var ConditionInterface[] */
+    private array $conditions = [];
 
     /**
      * @param array<string, mixed> $routeParameters
@@ -118,5 +122,26 @@ final class TableItemAction
     public function getButtonType(): string
     {
         return $this->buttonType;
+    }
+
+    public function addCondition(ConditionInterface $condition): TableItemAction
+    {
+        $this->conditions[] = $condition;
+
+        return $this;
+    }
+
+    /**
+     * @param object|array<mixed> $objectOrArray
+     */
+    public function valid($objectOrArray): bool
+    {
+        foreach ($this->conditions as $condition) {
+            if (!$condition->valid($objectOrArray)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

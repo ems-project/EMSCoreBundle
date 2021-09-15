@@ -58,10 +58,11 @@
 		"symfony/yaml": "^4.4"
 	},
 	"require-dev" : {
-		"friendsofphp/php-cs-fixer" : "^3.0",
+		"friendsofphp/php-cs-fixer": "^3.0",
 		"phpstan/phpstan": "^0.12",
-		"phpunit/phpunit" : "^9.5",
-		"symfony/test-pack": "^1.0"
+		"phpunit/phpunit": "^9.5",
+		"symfony/test-pack": "^1.0",
+		"symplify/config-transformer": "^9.4"
 	},
 	"autoload" : {
 		"psr-4" : {

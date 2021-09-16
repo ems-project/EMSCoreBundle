@@ -293,6 +293,9 @@ class DateFieldType extends DataFieldType
                 'required' => false,
                 'empty_data' => 'yyyy/MM/dd',
                 'attr' => ['placeholder' => 'i.e. yyyy/MM/dd'],
+            ])
+            ->add('copy_to', TextType::class, [
+                'required' => false,
             ]);
         }
 

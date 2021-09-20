@@ -194,6 +194,9 @@ class AppExtension extends AbstractExtension
             new TwigFilter('json_decode', [$this, 'jsonDecode']),
             new TwigFilter('get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
             new TwigFilter('emsco_document_info', [RevisionRuntime::class, 'getDocumentInfo']),
+            new TwigFilter('emsco_log_notice', [CoreRuntime::class, 'logNotice']),
+            new TwigFilter('emsco_log_warning', [CoreRuntime::class, 'logWarning']),
+            new TwigFilter('emsco_log_error', [CoreRuntime::class, 'logError']),
             //deprecated
             new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
             new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),

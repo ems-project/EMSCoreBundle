@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
@@ -64,6 +65,8 @@ final class ReleaseService implements EntityServiceInterface
 
     /**
      * @param array<string> $emsLinks
+     * 
+     * @throws NoResultException
      */
     public function addRevisions(Release $release, array $emsLinks): void
     {

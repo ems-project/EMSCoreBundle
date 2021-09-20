@@ -72,8 +72,6 @@ final class ReleaseRevisionService implements QueryServiceInterface
 
     public function findToRemove(Release $release, string $ouuid, ContentType $contentType): ReleaseRevision
     {
-        \dump($this->releaseRevisionRepository->findByReleasebyRevisionOuuidAndContentType($release, $ouuid, $contentType));
-
         return $this->releaseRevisionRepository->findByReleaseByRevisionOuuidAndContentType($release, $ouuid, $contentType);
     }
 }

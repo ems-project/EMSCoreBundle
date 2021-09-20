@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use Doctrine\ORM\NonUniqueResultException;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Release;
-use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\QueryTable;
@@ -28,7 +28,6 @@ use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class ReleaseController extends AbstractController
 {
@@ -118,8 +117,8 @@ final class ReleaseController extends AbstractController
             $table->setIdField('emsLink');
             $labelColumn = $table->addColumn('release.revision.index.column.label', 'item_labelField');
             $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
-            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
-            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
+            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
+            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
             $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
             $table->setSelected($release->getRevisionsIds());
 
@@ -208,37 +207,18 @@ final class ReleaseController extends AbstractController
 
     public function releasePublish(Request $request, Release $release): Response
     {
-        /** @var Revision $revision */
-        foreach ($release->getRevisions() as $revision) {
-            //dump('revision ' . $revision->getLabel());
-            /** @var Environment $env */
-            $env = $release->getEnvironmentTarget();
-
-            // dump('env ' . $env->getName());
-            // if already env in revision => nothing happend
-            //dump($revision->getEnvironments()->count());
-            if ($revision->getEnvironments()->count() > 0) {
-                if ($revision->getEnvironments()->contains($env)) {
-                    //      dump('already env in revision nothing happend');
-                    continue;
-                }
-            }
-
-            //dump('need to publish on env ' . $env->getName());
-
-            $contentType = $revision->getContentType();
-            if (null === $contentType) {
-                throw new RuntimeException('Content type not found');
-            }
-            if ($contentType->getDeleted()) {
-                throw new RuntimeException('Content type deleted');
-            }
-
-            try {
-                $this->publishService->publish($revision, $env);
-            } catch (NonUniqueResultException $e) {
-                throw new NotFoundHttpException('Revision not found');
-            }
+        $envSource = $release->getEnvironmentSource()->getName();
+        $envTarget = $release->getEnvironmentTarget()->getName();
+        
+        /** @var ReleaseRevision $releaseRevision */
+        foreach ($release->getRevisions() as $releaseRevision) {
+           
+            $this->publishService->alignRevision(
+                $releaseRevision->getContentType()->getName(), 
+                $releaseRevision->getRevisionOuuid(), 
+                $envSource, 
+                $envTarget
+            );
         }
 
         return $this->redirectToRoute('ems_core_release_index');

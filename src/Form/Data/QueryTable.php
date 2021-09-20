@@ -88,7 +88,6 @@ class QueryTable extends TableAbstract
         if (!$this->loadAll) {
             return false;
         }
-        \dump($this->totalCount());
         $min = $this->massAction ? 1 : 0;
         if ($this->totalCount() <= $min) {
             return false;

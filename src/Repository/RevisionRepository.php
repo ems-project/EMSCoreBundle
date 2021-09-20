@@ -914,6 +914,10 @@ class RevisionRepository extends EntityRepository
             'source' => $source,
             'target' => $target,
         ]);
+        
+        if (!empty($ids)) {
+            $qb->setParameter('ids', $ids);
+        }
 
         try {
             return $qb->getQuery()->getSingleScalarResult();

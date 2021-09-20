@@ -2,14 +2,13 @@
 
        
 {% block minrevid %}
-    {% dump(data) %}
     {% set release = app.request.get('release') %}
     {% set minrev = data.minrevid|split('/') %}
 
     {% if minrev[0] == release.environmentSource.id %}
         {{ '%date% Finalized by %user%'|trans({ '%date%' : minrev[2]|date(date_time_format) ,'%user%' : minrev[3] }) }}     
     {% else %}
-        {{ 'no revison in %env%'|trans({ '%env%' : release.environmentSource.name }) }}
+        {{ 'no revision in %env%'|trans({ '%env%' : release.environmentSource.name }) }}
     {% endif %}
 {% endblock minrevid %}
 
@@ -21,6 +20,33 @@
     {% if maxrev[0] == release.environmentTarget.id %}
       {{ '%date% Finalized by %user%'|trans({ '%date%' : maxrev[2]|date(date_time_format) ,'%user%' : maxrev[3] }) }}  
     {% else %}
-         {{ 'no revison in %env%'|trans({ '%env%' : release.environmentTarget.name }) }}
+         {{ 'no revision in %env%'|trans({ '%env%' : release.environmentTarget.name }) }}
     {% endif %}
 {% endblock maxrevid %}
+
+{% block minrevidstatus%}
+    {% set release = app.request.get('release') %}
+    {% set minrev = data.minrevid|split('/') %}
+
+    {% if minrev[0] == release.environmentSource.id %}
+        {{ '%date% Finalized by %user%'|trans({ '%date%' : minrev[2]|date(date_time_format) ,'%user%' : minrev[3] }) }}     
+    {% else %}
+        {{ 'Unpublish in %env%'|trans({ '%env%' : release.environmentTarget.name }) }}
+    {% endif %}
+{% endblock minrevidstatus %}
+
+
+{% block maxrevidstatus  %}
+    {% set release = app.request.get('release') %}
+    {% set maxrev = data.maxrevid|split('/') %}
+    {% set minrev = data.minrevid|split('/') %}
+           
+    {% if maxrev[0] == release.environmentTarget.id %}
+      {{ '%date% Finalized by %user%'|trans({ '%date%' : maxrev[2]|date(date_time_format) ,'%user%' : maxrev[3] }) }}  
+    {% else %}
+         {{ 'no revision in %env%'|trans({ '%env%' : release.environmentTarget.name }) }}
+    {% endif %}
+    {% if minrev[0] == release.environmentSource.id %}
+        {{ 'replace by revision %date%'|trans({ '%date%' : minrev[2]|date(date_time_format) }) }}
+    {% endif %}
+{% endblock maxrevidstatus  %}

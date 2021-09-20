@@ -74,18 +74,20 @@ class JsonMenuNestedController extends AbstractController
             ]));
         }
 
+        $rawObject = $rawData['object'] ?? [];
+
         $contentType = new ContentType();
         $contentType->setFieldType($subField);
         $revision = new Revision();
-        $revision->setRawData($rawData['object']);
+        $revision->setRawData($rawObject);
         $revision->setContentType($contentType);
-        $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $rawData['object']]);
+        $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $rawObject]);
         $dataFields = $this->dataService->getDataFieldsStructure($form->get('data'));
 
         return new JsonResponse(\array_filter([
             'html' => $this->renderView('@EMSCore/data/json-menu-nested-preview.html.twig', [
                 'dataFields' => $dataFields,
-                'rawData' => $rawData['object'] ?? [],
+                'rawData' => $rawObject,
             ]),
         ]));
     }

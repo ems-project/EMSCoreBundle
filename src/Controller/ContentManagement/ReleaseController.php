@@ -10,7 +10,9 @@ use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\QueryTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
+use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
 use EMS\CoreBundle\Form\Form\ReleaseType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
@@ -87,46 +89,61 @@ final class ReleaseController extends AbstractController
 
     public function add(Request $request): Response
     {
-        $release = new Release();
-        $release->setName('');
-        $release->setStatus('WIP');
+        $form2 = $this->createForm(ReleaseType::class);
+        $form2->handleRequest($request);
+        if ($form2->isSubmitted() && $form2->isValid()) {
+            $release = $this->releaseService->add($form2->getViewData());
+            /** @var ClickableInterface $button */
+            $button = $form2->get('saveAndClose');
+            $nextAction = $button->isClicked() ? 'ems_core_release_index' : 'ems_core_release_edit';
 
-        return $this->edit($request, $release, '@EMSCore/release/add.html.twig');
+            return $this->redirectToRoute($nextAction, ['release' => $release->getId()]);
+        }
+
+        return $this->render('@EMSCore/release/add.html.twig', [
+            'form_release' => $form2->createView(),
+        ]);
     }
 
     public function edit(Request $request, Release $release, string $view = '@EMSCore/release/edit.html.twig'): Response
     {
-        $table = new EntityTable($this->releaseRevisionService, $this->generateUrl('ems_core_release_ajax_data_table'), [
-            'option' => TableAbstract::REMOVE_ACTION,
-            'selected' => $release->getRevisionsIds(),
-        ]);
-        $table->addColumn('release.revision.index.column.label', 'labelField');
-        $table->addColumn('release.revision.index.column.CT', 'contentTypeName');
-        $table->addColumn('release.revision.index.column.finalizedBy', 'finalizedBy');
-        $table->addColumnDefinition(new DatetimeTableColumn('release.revision.index.column.finalizeDate', 'finalizedDate'));
-        $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
+        if (!empty($release->getRevisionsIds())) {
+            $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish-to-remove', $this->generateUrl('ems_core_release_ajax_data_table'), [
+                'option' => TableAbstract::REMOVE_ACTION,
+                'selected' => null != $release ? $release->getRevisionsIds() : [],
+                'source' => (null != $release->getEnvironmentSource()) ? $release->getEnvironmentSource()->getId() : null,
+                'target' => (null != $release->getEnvironmentTarget()) ? $release->getEnvironmentTarget()->getId() : null,
+            ]);
+            $table->setMassAction(false);
+            $table->setIdField('emsLink');
+            $labelColumn = $table->addColumn('release.revision.index.column.label', 'item_labelField');
+            $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
+            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
+            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
+            $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
+            $table->setSelected($release->getRevisionsIds());
 
-        $form = $this->createForm(TableType::class, $table);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
-                switch ($action->getName()) {
-                    case EntityTable::REMOVE_ACTION:
-                        $this->releaseService->removeRevisions($release, $table->getSelected());
-                        break;
-                    default:
-                        $this->logger->error('log.controller.release.unknown_action');
+            $form = $this->createForm(TableType::class, $table);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
+                    switch ($action->getName()) {
+                        case EntityTable::REMOVE_ACTION:
+                            $this->releaseService->removeRevisions($release, $table->getSelected());
+                            break;
+                        default:
+                            $this->logger->error('log.controller.release.unknown_action');
+                    }
+                } else {
+                    $this->logger->error('log.controller.release.unknown_action');
                 }
-            } else {
-                $this->logger->error('log.controller.release.unknown_action');
-            }
 
-            return $this->redirectToRoute('ems_core_release_edit', ['release' => $release->getId()]);
+                return $this->redirectToRoute('ems_core_release_edit', ['release' => $release->getId()]);
+            }
         }
 
         $form2 = $this->createForm(ReleaseType::class, $release);
         $form2->handleRequest($request);
-
         if ($form2->isSubmitted() && $form2->isValid()) {
             $this->releaseService->update($release);
             /** @var ClickableInterface $button */
@@ -137,7 +154,7 @@ final class ReleaseController extends AbstractController
         }
 
         return $this->render($view, [
-            'form' => $form->createView(),
+            'form' => isset($form) ? $form->createView() : null,
             'form_release' => $form2->createView(),
         ]);
     }
@@ -151,16 +168,18 @@ final class ReleaseController extends AbstractController
 
     public function addRevisions(Request $request, Release $release): Response
     {
-        $table = new EntityTable($this->releaseRevisionService, $this->generateUrl('ems_core_release_ajax_data_table'), [
+        $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish', $this->generateUrl('ems_core_release_ajax_data_table'), [
             'option' => TableAbstract::ADD_ACTION,
             'selected' => $release->getRevisionsIds(),
-            'source' => $release->getEnvironmentSource()->getId(),
-            'target' => $release->getEnvironmentTarget()->getId(),
+            'source' => (null != $release->getEnvironmentSource()) ? $release->getEnvironmentSource()->getId() : null,
+            'target' => (null != $release->getEnvironmentTarget()) ? $release->getEnvironmentTarget()->getId() : null,
         ]);
-        $labelColumn = $table->addColumn('release.revision.index.column.label', 'labelField');
-        $table->addColumn('release.revision.index.column.CT', 'contentTypeName');
-        $table->addColumn('release.revision.index.column.finalizedBy', 'finalizedBy');
-        $table->addColumnDefinition(new DatetimeTableColumn('release.revision.index.column.finalizeDate', 'finalizedDate'));
+        $table->setMassAction(false);
+        $table->setIdField('emsLink');
+        $labelColumn = $table->addColumn('release.revision.index.column.label', 'item_labelField');
+        $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addTableAction(TableAbstract::ADD_ACTION, 'fa fa-plus', 'release.revision.actions.add', 'release.revision.actions.add_confirm');
         $table->setSelected($release->getRevisionsIds());
 

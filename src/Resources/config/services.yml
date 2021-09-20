@@ -502,11 +502,11 @@ services:
     EMS\CoreBundle\Service\ReleaseService: '@ems.service.release'
     ems.service.release:
         class: EMS\CoreBundle\Service\ReleaseService
-        arguments: ['@ems.repository.release', '@EMS\CoreBundle\Repository\RevisionRepository', '@logger']
-    EMS\CoreBundle\Service\ReleaseRevisionService: '@ems.service.release.revision'
-    ems.service.release.revision:
+        arguments: ['@ems.repository.release', '@ems.service.contenttype' ,'@ems.service.data', '@ems.service.release_revision', '@logger']
+    EMS\CoreBundle\Service\ReleaseRevisionService: '@ems.service.release_revision'
+    ems.service.release_revision:
         class: EMS\CoreBundle\Service\ReleaseRevisionService
-        arguments: ['@EMS\CoreBundle\Repository\RevisionRepository', '@logger']
+        arguments: ['@ems.repository.release_revision', '@EMS\CoreBundle\Repository\RevisionRepository', '@logger']
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']

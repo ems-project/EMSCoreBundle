@@ -6,23 +6,29 @@ namespace EMS\CoreBundle\Service;
 
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Release;
+use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Repository\ReleaseRepository;
-use EMS\CoreBundle\Repository\RevisionRepository;
 use Psr\Log\LoggerInterface;
 
 final class ReleaseService implements EntityServiceInterface
 {
     /** @var ReleaseRepository */
     private $releaseRepository;
-    /** @var RevisionRepository */
-    private $revisionRepository;
+    /** @var ContentTypeService */
+    private $contentTypeService;
+    /** @var DataService */
+    private $dataService;
+    /** @var ReleaseRevisionService */
+    private $releaseRevisionService;
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(ReleaseRepository $releaseRepository, RevisionRepository $revisionRepository, LoggerInterface $logger)
+    public function __construct(ReleaseRepository $releaseRepository, ContentTypeService $contentTypeService, DataService $dataService, ReleaseRevisionService $releaseRevisionService, LoggerInterface $logger)
     {
         $this->releaseRepository = $releaseRepository;
-        $this->revisionRepository = $revisionRepository;
+        $this->contentTypeService = $contentTypeService;
+        $this->dataService = $dataService;
+        $this->releaseRevisionService = $releaseRevisionService;
         $this->logger = $logger;
     }
 
@@ -32,6 +38,13 @@ final class ReleaseService implements EntityServiceInterface
     public function getAll(): array
     {
         return $this->releaseRepository->getAll();
+    }
+
+    public function add(Release $release): Release
+    {
+        $this->update($release);
+
+        return $release;
     }
 
     public function update(Release $release): void
@@ -50,27 +63,43 @@ final class ReleaseService implements EntityServiceInterface
     }
 
     /**
-     * @param array<string> $ids
+     * @param array<string> $emsLinks
      */
-    public function addRevisions(Release $release, array $ids): void
+    public function addRevisions(Release $release, array $emsLinks): void
     {
-        foreach ($ids as $id) {
-            $revision = $this->revisionRepository->findOneById(\intval($id));
-            $release->addRevision($revision);
+        foreach ($emsLinks as $emsLink) {
+            $eL = \explode(':', $emsLink);
+            $releaseRevision = new ReleaseRevision();
+            $releaseRevision->setRelease($release);
+            $releaseRevision->setRevisionOuuid($eL[1]);
+
+            $contentType = $this->contentTypeService->giveByName($eL[0]);
+            $releaseRevision->setContentType($contentType);
+
+            try {
+                $revision = $this->dataService->getRevisionByEnvironment($eL[1], $contentType, $release->getEnvironmentSource());
+            } catch (\NoResultException $e) {
+                $revision = null;
+            }
+
+            $releaseRevision->setRevision($revision);
+            $release->addRevision($releaseRevision);
         }
         $this->releaseRepository->create($release);
     }
 
     /**
-     * @param array<string> $ids
+     * @param array<string> $emsLinks
      */
-    public function removeRevisions(Release $release, array $ids): void
+    public function removeRevisions(Release $release, array $emsLinks): void
     {
-        foreach ($ids as $id) {
-            $revision = $this->revisionRepository->findOneById(\intval($id));
-            $release->removeRevision($revision);
+        foreach ($emsLinks as $emsLink) {
+            $eL = \explode(':', $emsLink);
+            $contentType = $this->contentTypeService->giveByName($eL[0]);
+            $ouuid = $eL[1];
+            $releaseRevision = $this->releaseRevisionService->findToRemove($release, $ouuid, $contentType);
+            $this->releaseRevisionService->remove($releaseRevision);
         }
-        $this->releaseRepository->create($release);
     }
 
     public function delete(Release $release): void

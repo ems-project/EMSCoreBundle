@@ -55,7 +55,7 @@ class PublishService
         EventDispatcherInterface $dispatcher,
         LoggerInterface $logger,
         Bulker $bulker
-    ) {
+        ) {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
         $this->tokenStorage = $tokenStorage;
@@ -109,7 +109,7 @@ class PublishService
             $contentType,
             $ouuid,
             $this->environmentService->getByName($environmentSource)
-        );
+            );
 
         if (!$revision) {
             $this->logger->warning('service.publish.revision_not_found_in_source', [
@@ -124,7 +124,7 @@ class PublishService
                 $contentType,
                 $ouuid,
                 $target
-            );
+                );
 
             if ($toClean !== $revision) {
                 if ($toClean) {

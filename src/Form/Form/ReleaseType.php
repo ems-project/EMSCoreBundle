@@ -13,6 +13,7 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -33,8 +34,9 @@ final class ReleaseType extends AbstractType
     {
         $status = new ReleaseStatusEnumType();
         $builder
-            ->add('name', null, [
-                'required' => false,
+            ->add('name', TextType::class, [
+                'required' => true,
+                'empty_data' => '',
                 'row_attr' => [
                     'class' => 'col-md-3',
                 ],
@@ -75,6 +77,13 @@ final class ReleaseType extends AbstractType
                 'row_attr' => [
                     'class' => 'col-md-3',
                 ],
+                'choice_value' => function (?Environment $value) {
+                    if (null != $value) {
+                        return $value->getId();
+                    }
+
+                    return $value;
+                },
             ])
             ->add('environmentTarget', ChoiceType::class, [
                 'attr' => [
@@ -88,6 +97,13 @@ final class ReleaseType extends AbstractType
                 'row_attr' => [
                     'class' => 'col-md-3',
                 ],
+                'choice_value' => function (?Environment $value) {
+                    if (null != $value) {
+                        return $value->getId();
+                    }
+
+                    return $value;
+                },
             ])
             ->add('save', SubmitEmsType::class, [
                 'attr' => [

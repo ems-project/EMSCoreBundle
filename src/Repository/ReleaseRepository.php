@@ -47,8 +47,8 @@ final class ReleaseRepository extends ServiceEntityRepository
      */
     public function getByIds(array $ids): array
     {
-        $queryBuilder = $this->createQueryBuilder('release');
-        $queryBuilder->where('release.id IN (:ids)')
+        $queryBuilder = $this->createQueryBuilder('r');
+        $queryBuilder->where('r.id IN (:ids)')
             ->setParameter('ids', $ids);
 
         return $queryBuilder->getQuery()->getResult();
@@ -59,7 +59,7 @@ final class ReleaseRepository extends ServiceEntityRepository
      */
     public function get(int $from, int $size): array
     {
-        $query = $this->createQueryBuilder('c')
+        $query = $this->createQueryBuilder('r')
             ->setFirstResult($from)
             ->setMaxResults($size)
             ->getQuery();

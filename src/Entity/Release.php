@@ -57,11 +57,7 @@ class Release implements EntityInterface
     private $environmentTarget;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Revision", cascade={"persist"})
-     * @ORM\JoinTable(name="revision_release",
-     *      joinColumns={@ORM\JoinColumn(name="release_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="revision_id", referencedColumnName="id")}
-     *      )
+     * @ORM\OneToMany(targetEntity="ReleaseRevision", mappedBy="release", cascade={"persist", "remove"})
      */
     private $revisions;
 
@@ -75,24 +71,28 @@ class Release implements EntityInterface
         return $this->id;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name): void
+    public function setName(string $name): Release
     {
         $this->name = $name;
+
+        return $this;
     }
 
-    public function getStatus(): string
+    public function getStatus(): ?string
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): void
+    public function setStatus(string $status): Release
     {
         $this->status = $status;
+
+        return $this;
     }
 
     /**
@@ -103,9 +103,11 @@ class Release implements EntityInterface
         return $this->executionDate;
     }
 
-    public function setExecutionDate(?\Datetime $executionDate): void
+    public function setExecutionDate(?\Datetime $executionDate): Release
     {
         $this->executionDate = $executionDate;
+
+        return $this;
     }
 
     public function setEnvironmentSource(Environment $environmentSource): Release
@@ -115,7 +117,7 @@ class Release implements EntityInterface
         return $this;
     }
 
-    public function getEnvironmentSource(): Environment
+    public function getEnvironmentSource(): ?Environment
     {
         return $this->environmentSource;
     }
@@ -127,7 +129,7 @@ class Release implements EntityInterface
         return $this;
     }
 
-    public function getEnvironmentTarget(): Environment
+    public function getEnvironmentTarget(): ?Environment
     {
         return $this->environmentTarget;
     }
@@ -135,7 +137,7 @@ class Release implements EntityInterface
     /**
      * Add revision.
      */
-    public function addRevision(Revision $revision): Release
+    public function addRevision(ReleaseRevision $revision): Release
     {
         $this->revisions[] = $revision;
 
@@ -145,7 +147,7 @@ class Release implements EntityInterface
     /**
      * Remove revision.
      */
-    public function removeRevision(Revision $revision): void
+    public function removeRevision(ReleaseRevision $revision): void
     {
         $this->revisions->removeElement($revision);
     }
@@ -153,7 +155,7 @@ class Release implements EntityInterface
     /**
      * Get revisions.
      *
-     * @return array<Revision>
+     * @return array<ReleaseRevision>
      */
     public function getRevisions(): array
     {
@@ -167,7 +169,7 @@ class Release implements EntityInterface
     {
         $ids = [];
         foreach ($this->getRevisions() as $revision) {
-            $ids[] = \strval($revision->getId());
+            $ids[] = \strval($revision->getRevisionOuuid());
         }
 
         return $ids;

@@ -1,0 +1,26 @@
+{% use "bootstrap_3_layout.html.twig" %}{% trans_default_domain 'EMSCoreBundle' %}
+
+       
+{% block minrevid %}
+    {% dump(data) %}
+    {% set release = app.request.get('release') %}
+    {% set minrev = data.minrevid|split('/') %}
+
+    {% if minrev[0] == release.environmentSource.id %}
+        {{ '%date% Finalized by %user%'|trans({ '%date%' : minrev[2]|date(date_time_format) ,'%user%' : minrev[3] }) }}     
+    {% else %}
+        {{ 'no revison in %env%'|trans({ '%env%' : release.environmentSource.name }) }}
+    {% endif %}
+{% endblock minrevid %}
+
+
+{% block maxrevid %}
+    {% set release = app.request.get('release') %}
+    {% set maxrev = data.maxrevid|split('/') %}
+       
+    {% if maxrev[0] == release.environmentTarget.id %}
+      {{ '%date% Finalized by %user%'|trans({ '%date%' : maxrev[2]|date(date_time_format) ,'%user%' : maxrev[3] }) }}  
+    {% else %}
+         {{ 'no revison in %env%'|trans({ '%env%' : release.environmentTarget.name }) }}
+    {% endif %}
+{% endblock maxrevid %}

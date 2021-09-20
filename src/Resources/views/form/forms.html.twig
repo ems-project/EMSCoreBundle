@@ -177,7 +177,8 @@
 {% endblock emsco_form_table_column_data %}
 
 {% block emsco_form_table_column_action_checkbox %}
-    {% for chekbox in form.selected|filter(f => f.vars.value == line.data.id) %}
+    {% set id = table.idField is defined ? attribute(line.data, table.idField) : line.data.id %}
+    {% for chekbox in form.selected|filter(f => f.vars.value == id) %}
         {{ form_widget(chekbox) }}
     {%  endfor %}
 {% endblock emsco_form_table_column_action_checkbox %}

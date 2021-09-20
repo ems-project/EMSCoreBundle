@@ -355,16 +355,17 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param string $source
-     * @param string $target
-     * @param array  $contentTypes
+     * @param string   $source
+     * @param string   $target
+     * @param array    $contentTypes
+     * @param string[] $ids
      *
      * @return QueryBuilder
      */
-    private function getCompareQueryBuilder($source, $target, $contentTypes)
+    private function getCompareQueryBuilder($source, $target, $contentTypes = [], array $ids = [], bool $selectedOnly = false)
     {
         $qb = $this->createQueryBuilder('r');
-        $qb->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.singularName content_type_singular_name', 'c.icon', 'r.ouuid', 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid', 'max(r.id) lastRevId')
+        $qb->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.singularName content_type_singular_name', 'c.icon', 'r.ouuid', "CONCAT(c.name, ':', r.ouuid) AS emsLink", 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created, \'/\', r.finalizedBy)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created, \'/\', r.finalizedBy)) maxrevid', 'max(r.id) lastRevId')
         ->join('r.contentType', 'c')
         ->join('r.environments', 'e')
         ->where('e.id in (:source, :target)')
@@ -372,12 +373,24 @@ class RevisionRepository extends EntityRepository
         ->andWhere($qb->expr()->eq('c.deleted', ':false'))
         ->groupBy('c.id', 'c.name', 'c.icon', 'r.ouuid', 'c.orderKey')
         ->orHaving('count(r.id) = 1')
-        ->orHaving('max(r.id) <> min(r.id)')
-        ->setParameters([
-                'source' => $source,
-                'target' => $target,
-                'false' => false,
+        ->orHaving('max(r.id) <> min(r.id)');
+
+        $qb->setParameters([
+            'source' => $source,
+            'target' => $target,
+            'false' => false,
         ]);
+
+        if (!empty($ids)) {
+            if ($selectedOnly) {
+                $qb->andWhere('r.ouuid IN (:id)')
+                ->setParameter('id', $ids);
+            } else {
+                $qb->andWhere('r.ouuid NOT IN (:id)')
+                ->setParameter('id', $ids);
+            }
+        }
+
         if (!empty($contentTypes)) {
             $qb->andWhere('c.name in (\''.\implode("','", $contentTypes).'\')');
         }
@@ -886,68 +899,52 @@ class RevisionRepository extends EntityRepository
      */
     public function counter(array $context): int
     {
+        $ids = $context['selected'] ?? [];
         $source = $context['source'];
         $target = $context['target'];
-        $notIn = $this->findAllByEnv($target);
 
-        $query = $this->createQueryBuilder('r');
-        $query->select('count(r) as counter')
-        ->join('r.environments', 'e')
-        ->andWhere('e.id IN (:source)')
-        ->andWhere('r.id NOT IN (:notIn)')
-        ->setParameters([
+        $sqb = $this->getCompareQueryBuilder($source, $target, [], $ids);
+        $sqb->select('max(r.id)');
+        //         $subQuery()
+        $qb = $this->createQueryBuilder('rev');
+        $qb->select('count(rev)');
+        $qb->where($qb->expr()->in('rev.id', $sqb->getDQL()));
+        $qb->setParameters([
+            'false' => false,
             'source' => $source,
-            'notIn' => $notIn,
+            'target' => $target,
         ]);
 
         try {
-            return $query->getQuery()->getSingleScalarResult();
+            return $qb->getQuery()->getSingleScalarResult();
         } catch (\Throwable $e) {
             return 0;
         }
     }
 
     /**
-     * @param string[] $ids
+     * @param string[] $context
      */
-    public function counterByIds(array $ids): int
+    public function counterByIds(array $context): int
     {
-        $query = $this->createQueryBuilder('r');
-        $query->select('count(r) as counter')
-        ->andWhere('r.id IN (:id)')
-        ->setParameters(['id' => $ids]);
-
-        try {
-            return $query->getQuery()->getSingleScalarResult();
-        } catch (\Throwable $e) {
-            return 0;
-        }
-    }
-
-    /**
-     *  @param string[] $context
-     */
-    public function counterWithoutIds(array $context): int
-    {
-        $ids = $context['selected'];
+        $ids = $context['selected'] ?? [];
         $source = $context['source'];
         $target = $context['target'];
-        $notIn = $this->findAllByEnv($target, $ids);
 
-        $query = $this->createQueryBuilder('r');
-        $query->select('count(r) as counter')
-        ->join('r.environments', 'e')
-        ->andWhere('e.id IN (:source)')
-        ->andWhere('r.id NOT IN (:notIn)')
-        ->andWhere('r.id NOT IN (:id)')
-        ->setParameters([
+        $sqb = $this->getCompareQueryBuilder($source, $target, [], $ids, true);
+        $sqb->select('max(r.id)');
+        //         $subQuery()
+        $qb = $this->createQueryBuilder('rev');
+        $qb->select('count(rev)');
+        $qb->where($qb->expr()->in('rev.id', $sqb->getDQL()));
+        $qb->setParameters([
+            'false' => false,
+            'source' => $source,
+            'target' => $target,
             'id' => $ids,
-            'source' => $source,
-            'notIn' => $notIn,
         ]);
-
         try {
-            return $query->getQuery()->getSingleScalarResult();
+            return $qb->getQuery()->getSingleScalarResult();
         } catch (\Throwable $e) {
             return 0;
         }
@@ -960,40 +957,15 @@ class RevisionRepository extends EntityRepository
      */
     public function get(int $from, int $size, array $context): array
     {
+        $ids = $context['selected'] ?? [];
         $source = $context['source'];
         $target = $context['target'];
-        $notIn = $this->findAllByEnv($target);
-
-        $query = $this->createQueryBuilder('r');
-        $query->join('r.environments', 'e')
-        ->andWhere('e.id IN (:source)')
-        ->andWhere('r.id NOT IN (:notIn)')
-        ->orderBy('r.finalizedDate', 'desc')
-        ->setParameters([
-            'source' => $source,
-            'notIn' => $notIn,
-        ])
+        $qb = $this->getCompareQueryBuilder($source, $target, [], $ids);
+        $qb->orderBy('r.ouuid')
         ->setFirstResult($from)
         ->setMaxResults($size);
 
-        return $query->getQuery()->execute();
-    }
-
-    /**
-     * @param string[] $ids
-     *
-     * @return Revision[]
-     */
-    public function getByIds(int $from, int $size, array $ids): array
-    {
-        $query = $this->createQueryBuilder('r');
-        $query->andWhere('r.id IN (:id)')
-        ->orderBy('r.finalizedDate', 'desc')
-        ->setParameters(['id' => $ids])
-        ->setFirstResult($from)
-        ->setMaxResults($size);
-
-        return $query->getQuery()->execute();
+        return $qb->getQuery()->execute();
     }
 
     /**
@@ -1001,51 +973,15 @@ class RevisionRepository extends EntityRepository
      *
      * @return Revision[]
      */
-    public function getWithoutIds(int $from, int $size, array $context): array
+    public function getByIds(int $from, int $size, array $context): array
     {
-        $ids = $context['selected'];
+        $ids = $context['selected'] ?? [];
         $source = $context['source'];
         $target = $context['target'];
-        $notIn = $this->findAllByEnv($target, $ids);
-
-        $query = $this->createQueryBuilder('r');
-        $query->join('r.environments', 'e')
-        ->andWhere('e.id IN (:source)')
-        ->andWhere('r.id NOT IN (:notIn)')
-        ->andWhere('r.id NOT IN (:id)')
-        ->orderBy('r.finalizedDate', 'desc')
-        ->setParameters([
-            'id' => $ids,
-            'source' => $source,
-            'notIn' => $notIn,
-        ])
+        $qb = $this->getCompareQueryBuilder($source, $target, [], $ids, true);
+        $qb->orderBy('r.ouuid')
         ->setFirstResult($from)
         ->setMaxResults($size);
-
-        return $query->getQuery()->execute();
-    }
-
-    /**
-     * @return int[]
-     */
-    private function findAllByEnv(string $env, string $ids = null): array
-    {
-        $qb = $this->createQueryBuilder('r');
-        $notIn = $qb->select('r.id')
-        ->join('r.environments', 'e')
-        ->andWhere('e.id IN (:env)');
-
-        if (null != $ids) {
-            $qb->andWhere('r.id NOT IN (:id)')
-            ->setParameters([
-                'id' => $ids,
-                'env' => $env,
-            ]);
-        } else {
-            $qb->setParameters([
-                'env' => $env,
-            ]);
-        }
 
         return $qb->getQuery()->execute();
     }

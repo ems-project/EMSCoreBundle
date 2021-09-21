@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Doctrine\ORM\NonUniqueResultException;
-use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
@@ -21,7 +19,6 @@ use EMS\CoreBundle\Service\ReleaseRevisionService;
 use EMS\CoreBundle\Service\ReleaseService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
@@ -209,14 +206,13 @@ final class ReleaseController extends AbstractController
     {
         $envSource = $release->getEnvironmentSource()->getName();
         $envTarget = $release->getEnvironmentTarget()->getName();
-        
+
         /** @var ReleaseRevision $releaseRevision */
         foreach ($release->getRevisions() as $releaseRevision) {
-           
             $this->publishService->alignRevision(
-                $releaseRevision->getContentType()->getName(), 
-                $releaseRevision->getRevisionOuuid(), 
-                $envSource, 
+                $releaseRevision->getContentType()->getName(),
+                $releaseRevision->getRevisionOuuid(),
+                $envSource,
                 $envTarget
             );
         }

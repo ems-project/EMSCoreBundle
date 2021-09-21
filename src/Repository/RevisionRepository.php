@@ -902,7 +902,6 @@ class RevisionRepository extends EntityRepository
         $ids = $context['selected'] ?? [];
         $source = $context['source'];
         $target = $context['target'];
-
         $sqb = $this->getCompareQueryBuilder($source, $target, [], $ids);
         $sqb->select('max(r.id)');
         //         $subQuery()
@@ -914,9 +913,9 @@ class RevisionRepository extends EntityRepository
             'source' => $source,
             'target' => $target,
         ]);
-        
+
         if (!empty($ids)) {
-            $qb->setParameter('ids', $ids);
+            $qb->setParameter('id', $ids);
         }
 
         try {
@@ -934,7 +933,6 @@ class RevisionRepository extends EntityRepository
         $ids = $context['selected'] ?? [];
         $source = $context['source'];
         $target = $context['target'];
-
         $sqb = $this->getCompareQueryBuilder($source, $target, [], $ids, true);
         $sqb->select('max(r.id)');
         //         $subQuery()
@@ -947,6 +945,7 @@ class RevisionRepository extends EntityRepository
             'target' => $target,
             'id' => $ids,
         ]);
+
         try {
             return $qb->getQuery()->getSingleScalarResult();
         } catch (\Throwable $e) {

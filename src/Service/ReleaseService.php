@@ -65,7 +65,7 @@ final class ReleaseService implements EntityServiceInterface
 
     /**
      * @param array<string> $emsLinks
-     * 
+     *
      * @throws NoResultException
      */
     public function addRevisions(Release $release, array $emsLinks): void
@@ -81,7 +81,7 @@ final class ReleaseService implements EntityServiceInterface
 
             try {
                 $revision = $this->dataService->getRevisionByEnvironment($eL[1], $contentType, $release->getEnvironmentSource());
-            } catch (\NoResultException $e) {
+            } catch (NoResultException $e) {
                 $revision = null;
             }
 

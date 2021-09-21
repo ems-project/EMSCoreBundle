@@ -894,6 +894,67 @@ class RevisionRepository extends EntityRepository
         return $qbSelect->getQuery()->execute();
     }
 
+    public function countDraftInProgress(string $searchValue, ?ContentType $context): int
+    {
+        $qb = $this->createQueryBuilder('rev');
+        $qb->select('count(rev.id)');
+        $qb->andWhere($qb->expr()->eq('rev.draft', ':true'));
+        $qb->andWhere($qb->expr()->eq('rev.deleted', ':false'));
+        $qb->setParameters([
+            ':true' => true,
+            ':false' => false,
+        ]);
+        
+        if (null !== $context) {
+            $qb->andWhere($qb->expr()->eq('rev.contentType', ':contentType'));
+            $qb->setParameter('contentType', $context);
+        }
+        $this->addSearchValueFilter($qb, $searchValue);
+        
+        return \intval($qb->getQuery()->getSingleScalarResult());
+    }
+    
+    /**
+     * @return Revision[]
+     */
+    public function getDraftInProgress(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, ?ContentType $context): array
+    {
+        $qb = $this->createQueryBuilder('rev');
+        $qb->andWhere($qb->expr()->eq('rev.draft', ':true'));
+        $qb->andWhere($qb->expr()->eq('rev.deleted', ':false'));
+        $qb->setParameters([
+            ':true' => true,
+            ':false' => false,
+        ]);
+        
+        if (null !== $context) {
+            $qb->andWhere($qb->expr()->eq('rev.contentType', ':contentType'));
+            $qb->setParameter('contentType', $context);
+        }
+        $qb->setFirstResult($from)
+        ->setMaxResults($size);
+        
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('rev.%s', $orderField), $orderDirection);
+        }
+        $this->addSearchValueFilter($qb, $searchValue);
+        
+        return $qb->getQuery()->execute();
+    }
+    
+    private function addSearchValueFilter(QueryBuilder $qb, string $searchValue): void
+    {
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('LOWER(rev.lockBy)', ':term'),
+                $qb->expr()->like('LOWER(rev.autoSaveBy)', ':term'),
+                $qb->expr()->like('LOWER(rev.labelField)', ':term'),
+                );
+            $qb->andWhere($or)
+            ->setParameter(':term', '%'.\strtolower($searchValue).'%');
+        }
+    }
+    
     /**
      * @param string[] $context
      */
@@ -913,18 +974,18 @@ class RevisionRepository extends EntityRepository
             'source' => $source,
             'target' => $target,
         ]);
-
+        
         if (!empty($ids)) {
             $qb->setParameter('id', $ids);
         }
-
+        
         try {
             return $qb->getQuery()->getSingleScalarResult();
         } catch (\Throwable $e) {
             return 0;
         }
     }
-
+        
     /**
      * @param string[] $context
      */
@@ -945,14 +1006,14 @@ class RevisionRepository extends EntityRepository
             'target' => $target,
             'id' => $ids,
         ]);
-
+        
         try {
             return $qb->getQuery()->getSingleScalarResult();
         } catch (\Throwable $e) {
             return 0;
         }
     }
-
+    
     /**
      * @param string[] $context
      *
@@ -967,7 +1028,8 @@ class RevisionRepository extends EntityRepository
         $qb->orderBy('r.ouuid')
         ->setFirstResult($from)
         ->setMaxResults($size);
-
+        
+        
         return $qb->getQuery()->execute();
     }
 
@@ -985,7 +1047,8 @@ class RevisionRepository extends EntityRepository
         $qb->orderBy('r.ouuid')
         ->setFirstResult($from)
         ->setMaxResults($size);
-
+            
         return $qb->getQuery()->execute();
+
     }
 }

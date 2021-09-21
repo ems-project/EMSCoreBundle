@@ -21,6 +21,7 @@ use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
+use EMS\CoreBundle\Form\Data\Condition\InMyCircles;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
@@ -137,6 +138,9 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_datatable_excel_path', [DatatableRuntime::class, 'getExcelPath'], ['is_safe' => ['html']]),
             new TwigFunction('emsco_datatable_csv_path', [DatatableRuntime::class, 'getCsvPath'], ['is_safe' => ['html']]),
             new TwigFunction('emsco_revisions_draft', [RevisionRuntime::class, 'getRevisionsInDraft']),
+            new TwigFunction('emsco_revision_create', [RevisionRuntime::class, 'createRevision']),
+            new TwigFunction('emsco_revision_update', [RevisionRuntime::class, 'updateRevision']),
+            new TwigFunction('emsco_revision_merge', [RevisionRuntime::class, 'mergeRevision']),
         ];
     }
 
@@ -190,6 +194,9 @@ class AppExtension extends AbstractExtension
             new TwigFilter('json_decode', [$this, 'jsonDecode']),
             new TwigFilter('get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
             new TwigFilter('emsco_document_info', [RevisionRuntime::class, 'getDocumentInfo']),
+            new TwigFilter('emsco_log_notice', [CoreRuntime::class, 'logNotice']),
+            new TwigFilter('emsco_log_warning', [CoreRuntime::class, 'logWarning']),
+            new TwigFilter('emsco_log_error', [CoreRuntime::class, 'logError']),
             //deprecated
             new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
             new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),
@@ -858,23 +865,9 @@ class AppExtension extends AbstractExtension
      */
     public function inMyCircles($circles): bool
     {
-        if (\is_array($circles) && 0 === \count($circles)) {
-            return true;
-        }
+        $condition = new InMyCircles($this->userService, $this->authorizationChecker);
 
-        if ($this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
-            return true;
-        }
-
-        if (\is_array($circles)) {
-            $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
-
-            return \count(\array_intersect($circles, $user->getCircles())) > 0;
-        }
-
-        $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
-
-        return \in_array($circles, $user->getCircles());
+        return $condition->inMyCircles($circles);
     }
 
     /**

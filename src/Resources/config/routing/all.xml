@@ -23,6 +23,8 @@
             prefix="/query-search" />
     <import resource="@EMSCoreBundle/Resources/config/routing/datatable.xml"
             prefix="/datatable" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/edit.xml"
+            prefix="/data" />
     <import resource="@EMSCoreBundle/Resources/config/routing/search.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/task.xml"/>
 </routes>

@@ -58,10 +58,13 @@ class DateFieldType extends DataFieldType
         return $out;
     }
 
+    /**
+     * @return string[]|string|null
+     */
     public function reverseModelTransform(DataField $dataField)
     {
         $data = parent::reverseModelTransform($dataField);
-        $format = $dataField->getFieldType()->getMappingOption('format', false);
+        $format = $dataField->giveFieldType()->getMappingOption('format', false);
         if (false !== $format) {
             $format = $this->convertJavaDateFormat($format);
         } else {
@@ -69,13 +72,13 @@ class DateFieldType extends DataFieldType
         }
         $out = [];
         if (\is_iterable($data) && !empty($data)) {
-            foreach ($data as $data) {
-                if ($data) {
-                    $out[] = $data->format($format);
+            foreach ($data as $item) {
+                if ($item instanceof \DateTime) {
+                    $out[] = $item->format($format);
                 }
             }
         }
-        if (!$dataField->getFieldType()->getDisplayOptions()['multidate']) {
+        if (!($dataField->giveFieldType()->getDisplayBoolOption('multidate', false))) {
             if (empty($out)) {
                 return null;
             } else {
@@ -293,6 +296,9 @@ class DateFieldType extends DataFieldType
                 'required' => false,
                 'empty_data' => 'yyyy/MM/dd',
                 'attr' => ['placeholder' => 'i.e. yyyy/MM/dd'],
+            ])
+            ->add('copy_to', TextType::class, [
+                'required' => false,
             ]);
         }
 

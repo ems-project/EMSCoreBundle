@@ -904,16 +904,16 @@ class RevisionRepository extends EntityRepository
             ':true' => true,
             ':false' => false,
         ]);
-        
+
         if (null !== $context) {
             $qb->andWhere($qb->expr()->eq('rev.contentType', ':contentType'));
             $qb->setParameter('contentType', $context);
         }
         $this->addSearchValueFilter($qb, $searchValue);
-        
+
         return \intval($qb->getQuery()->getSingleScalarResult());
     }
-    
+
     /**
      * @return Revision[]
      */
@@ -926,22 +926,22 @@ class RevisionRepository extends EntityRepository
             ':true' => true,
             ':false' => false,
         ]);
-        
+
         if (null !== $context) {
             $qb->andWhere($qb->expr()->eq('rev.contentType', ':contentType'));
             $qb->setParameter('contentType', $context);
         }
         $qb->setFirstResult($from)
         ->setMaxResults($size);
-        
+
         if (null !== $orderField) {
             $qb->orderBy(\sprintf('rev.%s', $orderField), $orderDirection);
         }
         $this->addSearchValueFilter($qb, $searchValue);
-        
+
         return $qb->getQuery()->execute();
     }
-    
+
     private function addSearchValueFilter(QueryBuilder $qb, string $searchValue): void
     {
         if (\strlen($searchValue) > 0) {
@@ -954,12 +954,13 @@ class RevisionRepository extends EntityRepository
             ->setParameter(':term', '%'.\strtolower($searchValue).'%');
         }
     }
-    
+
     /**
      * @param string[] $context
      */
-    public function counter(array $context): int
+    public function counterRevisionsForRelease(array $context): int
     {
+        /** @var string[] $ids */
         $ids = $context['selected'] ?? [];
         $source = $context['source'];
         $target = $context['target'];
@@ -974,23 +975,24 @@ class RevisionRepository extends EntityRepository
             'source' => $source,
             'target' => $target,
         ]);
-        
+
         if (!empty($ids)) {
             $qb->setParameter('id', $ids);
         }
-        
+
         try {
             return $qb->getQuery()->getSingleScalarResult();
         } catch (\Throwable $e) {
             return 0;
         }
     }
-        
+
     /**
      * @param string[] $context
      */
-    public function counterByIds(array $context): int
+    public function counterRevisionsInRelease(array $context): int
     {
+        /** @var string[] $ids */
         $ids = $context['selected'] ?? [];
         $source = $context['source'];
         $target = $context['target'];
@@ -1006,21 +1008,22 @@ class RevisionRepository extends EntityRepository
             'target' => $target,
             'id' => $ids,
         ]);
-        
+
         try {
             return $qb->getQuery()->getSingleScalarResult();
         } catch (\Throwable $e) {
             return 0;
         }
     }
-    
+
     /**
      * @param string[] $context
      *
      * @return Revision[]
      */
-    public function get(int $from, int $size, array $context): array
+    public function getRevisionsForRelease(int $from, int $size, array $context): array
     {
+        /** @var string[] $ids */
         $ids = $context['selected'] ?? [];
         $source = $context['source'];
         $target = $context['target'];
@@ -1028,8 +1031,7 @@ class RevisionRepository extends EntityRepository
         $qb->orderBy('r.ouuid')
         ->setFirstResult($from)
         ->setMaxResults($size);
-        
-        
+
         return $qb->getQuery()->execute();
     }
 
@@ -1038,8 +1040,9 @@ class RevisionRepository extends EntityRepository
      *
      * @return Revision[]
      */
-    public function getByIds(int $from, int $size, array $context): array
+    public function getRevisionsInRelease(int $from, int $size, array $context): array
     {
+        /** @var string[] $ids */
         $ids = $context['selected'] ?? [];
         $source = $context['source'];
         $target = $context['target'];
@@ -1047,8 +1050,7 @@ class RevisionRepository extends EntityRepository
         $qb->orderBy('r.ouuid')
         ->setFirstResult($from)
         ->setMaxResults($size);
-            
-        return $qb->getQuery()->execute();
 
+        return $qb->getQuery()->execute();
     }
 }

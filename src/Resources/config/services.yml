@@ -502,7 +502,7 @@ services:
     EMS\CoreBundle\Service\ReleaseService: '@ems.service.release'
     ems.service.release:
         class: EMS\CoreBundle\Service\ReleaseService
-        arguments: ['@ems.repository.release', '@ems.service.contenttype' ,'@ems.service.data', '@ems.service.release_revision', '@logger']
+        arguments: ['@ems.repository.release', '@ems.service.contenttype' ,'@ems.service.data', '@ems.service.release_revision', '@ems.service.publish','@logger']
     EMS\CoreBundle\Service\ReleaseRevisionService: '@ems.service.release_revision'
     ems.service.release_revision:
         class: EMS\CoreBundle\Service\ReleaseRevisionService
@@ -646,7 +646,11 @@ services:
         arguments: ['@ems.service.job', '%ems_core.date_time_format%']
         tags:
             - { name: console.command }
-
+    ems.release.scheduling:
+        class: EMS\CoreBundle\Command\Release\ReleaseSchedulingCommand
+        arguments: ['@ems.service.release']
+        tags:
+            -  { name: console.command }
 #### security services
     api_key_user_provider:
         class: EMS\CoreBundle\Security\ApiKeyUserProvider

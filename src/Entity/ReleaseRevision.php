@@ -55,7 +55,7 @@ class ReleaseRevision implements EntityInterface
         return $this->id;
     }
 
-    public function getRevisionOuuid(): ?string
+    public function getRevisionOuuid(): string
     {
         return $this->revisionOuuid;
     }
@@ -86,7 +86,7 @@ class ReleaseRevision implements EntityInterface
         return $this;
     }
 
-    public function getRelease(): ?Release
+    public function getRelease(): Release
     {
         return $this->release;
     }
@@ -98,7 +98,7 @@ class ReleaseRevision implements EntityInterface
         return $this;
     }
 
-    public function getContentType(): ?ContentType
+    public function getContentType(): ContentType
     {
         return $this->contentType;
     }

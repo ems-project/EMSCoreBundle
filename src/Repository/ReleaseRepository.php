@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\Entity\Release;
 
 final class ReleaseRepository extends ServiceEntityRepository
@@ -59,11 +60,29 @@ final class ReleaseRepository extends ServiceEntityRepository
      */
     public function get(int $from, int $size): array
     {
-        $query = $this->createQueryBuilder('r')
+        $qb = $this->createQueryBuilder('r')
             ->setFirstResult($from)
             ->setMaxResults($size)
             ->getQuery();
 
-        return $query->execute();
+        return $qb->execute();
+    }
+
+    /**
+     * @return Release[]
+     */
+    public function findSchedulingForDate(\DateTime $now): array
+    {
+        //$format = $this->getEntityManager()->getConnection()->getDatabasePlatform()->getDateTimeFormatString();
+        $format = 'Y-m-d H:i';
+        $qb = $this->createQueryBuilder('r');
+        $qb->where('r.status = :status')
+        ->andWhere($qb->expr()->eq('r.executionDate ', ':dateTime'))
+        ->setParameters([
+            'status' => ReleaseStatusEnumType::READY_STATUS,
+            'dateTime' => $now->format($format),
+        ]);
+
+        return $qb->getQuery()->execute();
     }
 }

@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Repository\ReleaseRepository;
@@ -21,15 +22,18 @@ final class ReleaseService implements EntityServiceInterface
     private $dataService;
     /** @var ReleaseRevisionService */
     private $releaseRevisionService;
+    /** @var PublishService */
+    private $publishService;
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(ReleaseRepository $releaseRepository, ContentTypeService $contentTypeService, DataService $dataService, ReleaseRevisionService $releaseRevisionService, LoggerInterface $logger)
+    public function __construct(ReleaseRepository $releaseRepository, ContentTypeService $contentTypeService, DataService $dataService, ReleaseRevisionService $releaseRevisionService, PublishService $publishService, LoggerInterface $logger)
     {
         $this->releaseRepository = $releaseRepository;
         $this->contentTypeService = $contentTypeService;
         $this->dataService = $dataService;
         $this->releaseRevisionService = $releaseRevisionService;
+        $this->publishService = $publishService;
         $this->logger = $logger;
     }
 
@@ -78,11 +82,14 @@ final class ReleaseService implements EntityServiceInterface
 
             $contentType = $this->contentTypeService->giveByName($eL[0]);
             $releaseRevision->setContentType($contentType);
+            $revision = null;
 
-            try {
-                $revision = $this->dataService->getRevisionByEnvironment($eL[1], $contentType, $release->getEnvironmentSource());
-            } catch (NoResultException $e) {
-                $revision = null;
+            if (!empty($release->getEnvironmentSource())) {
+                try {
+                    $revision = $this->dataService->getRevisionByEnvironment($eL[1], $contentType, $release->getEnvironmentSource());
+                } catch (NoResultException $e) {
+                    $revision = null;
+                }
             }
 
             $releaseRevision->setRevision($revision);
@@ -158,5 +165,40 @@ final class ReleaseService implements EntityServiceInterface
         }
 
         return $this->releaseRepository->counter();
+    }
+
+    /**
+     * @return Release[]
+     */
+    public function findScheduling(\DateTime $now): array
+    {
+        return $this->releaseRepository->findSchedulingForDate($now);
+    }
+
+    public function publishRelease(Release $release): void
+    {
+        if (ReleaseStatusEnumType::READY_STATUS === $release->getStatus() && !empty($release->getEnvironmentSource()) && !empty($release->getEnvironmentTarget()) && !empty($release->getEnvironmentTarget())) {
+            $envSource = $release->getEnvironmentSource()->getName();
+            $envTarget = $release->getEnvironmentTarget()->getName();
+
+            /** @var ReleaseRevision $releaseRevision */
+            foreach ($release->getRevisions() as $releaseRevision) {
+                $this->publishService->alignRevision(
+                        $releaseRevision->getContentType()->getName(),
+                        $releaseRevision->getRevisionOuuid(),
+                        $envSource,
+                        $envTarget
+                        );
+            }
+
+            $release->setStatus(ReleaseStatusEnumType::APPLIED_STATUS);
+        } else {
+            if (ReleaseStatusEnumType::READY_STATUS != $release->getStatus()) {
+                $this->logger->warning('log.controller.release.not.ready');
+            }
+            if (!empty($release->getEnvironmentSource()) || !empty($release->getEnvironmentTarget())) {
+                $this->logger->warning('log.controller.release.not.environments.defined');
+            }
+        }
     }
 }

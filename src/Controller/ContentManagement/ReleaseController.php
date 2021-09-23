@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CoreBundle\Entity\Release;
-use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\QueryTable;
@@ -14,7 +13,6 @@ use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
 use EMS\CoreBundle\Form\Form\ReleaseType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
-use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\ReleaseRevisionService;
 use EMS\CoreBundle\Service\ReleaseService;
 use Psr\Log\LoggerInterface;
@@ -34,15 +32,12 @@ final class ReleaseController extends AbstractController
     private $releaseService;
     /** @var ReleaseRevisionService */
     private $releaseRevisionService;
-    /** @var PublishService */
-    private $publishService;
 
-    public function __construct(LoggerInterface $logger, ReleaseService $releaseService, ReleaseRevisionService $releaseRevisionService, PublishService $publishService)
+    public function __construct(LoggerInterface $logger, ReleaseService $releaseService, ReleaseRevisionService $releaseRevisionService)
     {
         $this->logger = $logger;
         $this->releaseService = $releaseService;
         $this->releaseRevisionService = $releaseRevisionService;
-        $this->publishService = $publishService;
     }
 
     public function ajaxDataTable(Request $request): Response
@@ -86,6 +81,8 @@ final class ReleaseController extends AbstractController
     public function add(Request $request): Response
     {
         $form2 = $this->createForm(ReleaseType::class);
+        \dump($form2->getViewData());
+        //$form2->setData();
         $form2->handleRequest($request);
         if ($form2->isSubmitted() && $form2->isValid()) {
             $release = $this->releaseService->add($form2->getViewData());
@@ -106,9 +103,9 @@ final class ReleaseController extends AbstractController
         if (!empty($release->getRevisionsIds())) {
             $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish-to-remove', $this->generateUrl('ems_core_release_ajax_data_table'), [
                 'option' => TableAbstract::REMOVE_ACTION,
-                'selected' => null != $release ? $release->getRevisionsIds() : [],
-                'source' => (null != $release->getEnvironmentSource()) ? $release->getEnvironmentSource()->getId() : null,
-                'target' => (null != $release->getEnvironmentTarget()) ? $release->getEnvironmentTarget()->getId() : null,
+                'selected' => !empty($release) ? $release->getRevisionsIds() : [],
+                'source' => (!empty($release->getEnvironmentSource())) ? $release->getEnvironmentSource()->getId() : null,
+                'target' => (!empty($release->getEnvironmentTarget())) ? $release->getEnvironmentTarget()->getId() : null,
             ]);
             $table->setMassAction(false);
             $table->setIdField('emsLink');
@@ -167,8 +164,8 @@ final class ReleaseController extends AbstractController
         $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish', $this->generateUrl('ems_core_release_ajax_data_table'), [
             'option' => TableAbstract::ADD_ACTION,
             'selected' => $release->getRevisionsIds(),
-            'source' => (null != $release->getEnvironmentSource()) ? $release->getEnvironmentSource()->getId() : null,
-            'target' => (null != $release->getEnvironmentTarget()) ? $release->getEnvironmentTarget()->getId() : null,
+            'source' => (!empty($release->getEnvironmentSource())) ? $release->getEnvironmentSource()->getId() : null,
+            'target' => (!empty($release->getEnvironmentTarget())) ? $release->getEnvironmentTarget()->getId() : null,
         ]);
         $table->setMassAction(false);
         $table->setIdField('emsLink');
@@ -204,18 +201,7 @@ final class ReleaseController extends AbstractController
 
     public function releasePublish(Request $request, Release $release): Response
     {
-        $envSource = $release->getEnvironmentSource()->getName();
-        $envTarget = $release->getEnvironmentTarget()->getName();
-
-        /** @var ReleaseRevision $releaseRevision */
-        foreach ($release->getRevisions() as $releaseRevision) {
-            $this->publishService->alignRevision(
-                $releaseRevision->getContentType()->getName(),
-                $releaseRevision->getRevisionOuuid(),
-                $envSource,
-                $envTarget
-            );
-        }
+        $this->releaseService->publishRelease($release);
 
         return $this->redirectToRoute('ems_core_release_index');
     }

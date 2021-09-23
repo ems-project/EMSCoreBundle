@@ -47,10 +47,10 @@ final class ReleaseRevisionService implements QueryServiceInterface
     public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
         if (isset($context['option']) && TableAbstract::REMOVE_ACTION === $context['option']) {
-            return $this->revisionRepository->getByIds($from, $size, $context);
+            return $this->revisionRepository->getRevisionsInRelease($from, $size, $context);
         }
 
-        return $this->revisionRepository->get($from, $size, $context);
+        return $this->revisionRepository->getRevisionsForRelease($from, $size, $context);
     }
 
     public function getEntityName(): string
@@ -64,10 +64,10 @@ final class ReleaseRevisionService implements QueryServiceInterface
     public function countQuery(string $searchValue = '', $context = null): int
     {
         if (isset($context['option']) && TableAbstract::REMOVE_ACTION === $context['option']) {
-            return $this->revisionRepository->counterByIds($context);
+            return $this->revisionRepository->counterRevisionsInRelease($context);
         }
 
-        return $this->revisionRepository->counter($context);
+        return $this->revisionRepository->counterRevisionsForRelease($context);
     }
 
     public function findToRemove(Release $release, string $ouuid, ContentType $contentType): ReleaseRevision

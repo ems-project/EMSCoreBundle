@@ -82,7 +82,7 @@ class PublishService
      * @throws DBALException
      * @throws NonUniqueResultException
      */
-    public function alignRevision($type, $ouuid, $environmentSource, $environmentTarget)
+    public function alignRevision($type, $ouuid, $environmentSource, $environmentTarget, bool $checkGrants = true)
     {
         if ($this->contentTypeService->getByName($type)->getEnvironment()->getName() === $environmentTarget) {
             $this->logger->warning('service.publish.not_in_default_environment', [
@@ -95,14 +95,16 @@ class PublishService
         }
         $contentType = $this->contentTypeService->getByName($type);
 
-        if (!$this->authorizationChecker->isGranted($contentType->getPublishRole())) {
-            $this->logger->warning('service.publish.not_authorized', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $type,
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget,
-            ]);
+        if ($checkGrants) {
+            if (!$this->authorizationChecker->isGranted($contentType->getPublishRole())) {
+                $this->logger->warning('service.publish.not_authorized', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $type,
+                    EmsFields::LOG_OUUID_FIELD => $ouuid,
+                    EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget,
+                ]);
 
-            return;
+                return;
+            }
         }
 
         $revision = $this->revRepository->findByOuuidAndContentTypeAndEnvironment(
@@ -128,9 +130,9 @@ class PublishService
 
             if ($toClean !== $revision) {
                 if ($toClean) {
-                    $this->unpublish($toClean, $target);
+                    $this->unpublish($toClean, $target, !$checkGrants);
                 }
-                $this->publish($revision, $target);
+                $this->publish($revision, $target, !$checkGrants);
             }
         }
     }

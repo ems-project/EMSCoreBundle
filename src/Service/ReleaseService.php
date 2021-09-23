@@ -175,7 +175,7 @@ final class ReleaseService implements EntityServiceInterface
         return $this->releaseRepository->findSchedulingForDate($now);
     }
 
-    public function publishRelease(Release $release): void
+    public function publishRelease(Release $release, bool $checkGrants = true): void
     {
         if (ReleaseStatusEnumType::READY_STATUS === $release->getStatus() && !empty($release->getEnvironmentSource()) && !empty($release->getEnvironmentTarget()) && !empty($release->getEnvironmentTarget())) {
             $envSource = $release->getEnvironmentSource()->getName();
@@ -187,11 +187,13 @@ final class ReleaseService implements EntityServiceInterface
                         $releaseRevision->getContentType()->getName(),
                         $releaseRevision->getRevisionOuuid(),
                         $envSource,
-                        $envTarget
-                        );
+                        $envTarget,
+                        $checkGrants
+                );
             }
 
             $release->setStatus(ReleaseStatusEnumType::APPLIED_STATUS);
+            $this->update($release);
         } else {
             if (ReleaseStatusEnumType::READY_STATUS != $release->getStatus()) {
                 $this->logger->warning('log.controller.release.not.ready');

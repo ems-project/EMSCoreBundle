@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\Entity\Release;
+use EMS\CoreBundle\Form\Data\Condition\NotEmpty;
+use EMS\CoreBundle\Form\Data\Condition\Terms;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\QueryTable;
@@ -80,9 +83,7 @@ final class ReleaseController extends AbstractController
 
     public function add(Request $request): Response
     {
-        $form2 = $this->createForm(ReleaseType::class);
-        \dump($form2->getViewData());
-        //$form2->setData();
+        $form2 = $this->createForm(ReleaseType::class, new Release());
         $form2->handleRequest($request);
         if ($form2->isSubmitted() && $form2->isValid()) {
             $release = $this->releaseService->add($form2->getViewData());
@@ -159,6 +160,14 @@ final class ReleaseController extends AbstractController
         return $this->redirectToRoute('ems_core_release_index');
     }
 
+    public function changeStatus(Release $release, string $status): Response
+    {
+        $release->setStatus($status);
+        $this->releaseService->update($release);
+
+        return $this->redirectToRoute('ems_core_release_index');
+    }
+
     public function addRevisions(Request $request, Release $release): Response
     {
         $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish', $this->generateUrl('ems_core_release_ajax_data_table'), [
@@ -210,14 +219,23 @@ final class ReleaseController extends AbstractController
     {
         $table = new EntityTable($this->releaseService, $this->generateUrl('ems_core_release_ajax_data_table'));
         $table->addColumn('release.index.column.name', 'name');
-        $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.executionDate', 'executionDate'));
+        $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.execution_date', 'executionDate'));
         $table->addColumn('release.index.column.status', 'status');
-        $table->addColumn('release.index.column.env.source', 'environmentSource');
-        $table->addColumn('release.index.column.env.target', 'environmentTarget');
+        $table->addColumn('release.index.column.env_source', 'environmentSource');
+        $table->addColumn('release.index.column.env_target', 'environmentTarget');
         $table->addItemGetAction('ems_core_release_edit', 'release.actions.edit', 'pencil');
-        $table->addItemGetAction('ems_core_release_add_revisions', 'release.actions.add.revisions', 'plus');
+        $table->addItemGetAction('ems_core_release_add_revisions', 'release.actions.add_revisions', 'plus')
+            ->addCondition(new Terms('status', [ReleaseStatusEnumType::WIP_STATUS]));
+        $table->addItemGetAction('ems_core_release_set_status', 'release.actions.set_status_ready', 'play', ['status' => ReleaseStatusEnumType::READY_STATUS])
+            ->addCondition(new Terms('status', [ReleaseStatusEnumType::WIP_STATUS]))
+            ->addCondition(new NotEmpty('revisionsIds'));
+        $table->addItemGetAction('ems_core_release_set_status', 'release.actions.set_status_wip', 'rotate-left', ['status' => ReleaseStatusEnumType::WIP_STATUS])
+            ->addCondition(new Terms('status', [ReleaseStatusEnumType::CANCELED_STATUS]));
+        $table->addItemPostAction('ems_core_release_publish', 'release.actions.publish_release', 'toggle-on', 'release.actions.publish_confirm')
+            ->addCondition(new Terms('status', [ReleaseStatusEnumType::READY_STATUS]));
+        $table->addItemGetAction('ems_core_release_set_status', 'release.actions.set_status_canceled', 'ban', ['status' => ReleaseStatusEnumType::CANCELED_STATUS])
+            ->addCondition(new Terms('status', [ReleaseStatusEnumType::READY_STATUS]));
         $table->addItemPostAction('ems_core_release_delete', 'release.actions.delete', 'trash', 'release.actions.delete_confirm');
-        $table->addItemPostAction('ems_core_release_publish', 'release.actions.publish', 'toggle-on', 'release.actions.publish_confirm');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'release.actions.delete_selected', 'release.actions.delete_selected_confirm');
 
         return $table;

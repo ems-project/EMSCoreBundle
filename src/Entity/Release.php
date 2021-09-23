@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 
 /**
  * @ORM\Table(name="release")
@@ -64,6 +65,7 @@ class Release implements EntityInterface
     public function __construct()
     {
         $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->status = ReleaseStatusEnumType::WIP_STATUS;
     }
 
     public function getId(): int

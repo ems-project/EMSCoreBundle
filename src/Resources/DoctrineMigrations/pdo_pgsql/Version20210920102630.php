@@ -19,7 +19,7 @@ final class Version20210920102630 extends AbstractMigration
 
         $this->addSql('CREATE SEQUENCE release_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE release_revision_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE TYPE release_status_enum AS ENUM (\'wip\', \'ready\', \'apply\', \'scheduled\', \'canceled\', \'rollback\')');
+        $this->addSql('CREATE TYPE release_status_enum AS ENUM (\'wip\', \'ready\', \'applied\', \'scheduled\', \'canceled\', \'rollbacked\')');
         $this->addSql('CREATE TABLE release (id INT NOT NULL, environment_source_id INT DEFAULT NULL, environment_target_id INT DEFAULT NULL, execution_date TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, status release_status_enum NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_9E47031D570FDFA8 ON release (environment_source_id)');
         $this->addSql('CREATE INDEX IDX_9E47031DD7BDC8AF ON release (environment_target_id)');
@@ -43,6 +43,7 @@ final class Version20210920102630 extends AbstractMigration
         $this->addSql('ALTER TABLE release_revision DROP CONSTRAINT FK_3663CEADB12A727D');
         $this->addSql('DROP SEQUENCE release_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE release_revision_id_seq CASCADE');
+        $this->addSql('DROP TYPE release_status_enum');
         $this->addSql('DROP TABLE release');
         $this->addSql('DROP TABLE release_revision');
     }

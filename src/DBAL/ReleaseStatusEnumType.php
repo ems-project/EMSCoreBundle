@@ -5,17 +5,17 @@ namespace EMS\CoreBundle\DBAL;
 class ReleaseStatusEnumType extends EnumType
 {
     /** @var string */
-    public const WIP_STATUS = 'delete';
+    public const WIP_STATUS = 'wip';
     /** @var string */
     public const READY_STATUS = 'ready';
     /** @var string */
-    public const APPLIED_STATUS = 'apply';
+    public const APPLIED_STATUS = 'applied';
     /** @var string */
     public const CANCELED_STATUS = 'canceled';
     /** @var string */
     public const SCHEDULED_STATUS = 'scheduled';
     /** @var string */
-    public const ROLLBACKED_STATUS = 'rollback';
+    public const ROLLBACKED_STATUS = 'rollbacked';
 
     /**
      * @var string
@@ -24,7 +24,7 @@ class ReleaseStatusEnumType extends EnumType
     /**
      * @var array<string>
      */
-    protected $values = ['wip', 'ready', 'apply', 'scheduled', 'canceled', 'rollback'];
+    protected $values = ['wip', 'ready', 'applied', 'scheduled', 'canceled', 'rollbacked'];
 
     /**
      * @return array<string>

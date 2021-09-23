@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Release;
@@ -32,7 +31,6 @@ final class ReleaseType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $status = new ReleaseStatusEnumType();
         $builder
             ->add('name', TextType::class, [
                 'required' => true,
@@ -53,16 +51,6 @@ final class ReleaseType extends AbstractType
                 ],
                 'row_attr' => [
                     'class' => 'col-md-6',
-                ],
-            ])
-            ->add('status', ChoiceType::class, [
-                'required' => true,
-                'choices' => $status->getValues(),
-                'choice_label' => function (string $value) {
-                    return $value;
-                },
-                'row_attr' => [
-                    'class' => 'col-md-3',
                 ],
             ])
             ->add('environmentSource', ChoiceType::class, [
@@ -123,7 +111,6 @@ final class ReleaseType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Release::class,
-            'label_format' => 'form.form.release.%name%',
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }

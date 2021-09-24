@@ -248,6 +248,7 @@ log.contenttype.unreferenced_not_found: 'Unreferenced content type not found'
 log.contenttype.updated: 'The content type %contenttype% has been updated'
 log.controller.channel.unknown_action: 'Unknown action'
 log.controller.query_search.unknown_action: 'Unknown action'
+log.controller.release.unknown_action: 'Unknown action'
 log.controller.uploaded-file-logs.unknown_action: 'Unknown action'
 log.crud.create_error: 'The revision for contenttype %contenttype% can not be created, reason: %error_message%'
 log.crud.delete_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be deleted, reason: %error_message%'
@@ -342,7 +343,9 @@ log.revision_error: 'Error "%error_message%" with the document ems://object:%con
 log.service.action.delete: 'The action %name% has been deleted'
 log.service.channel.delete: 'The channel %name% has been deleted'
 log.service.content-type.get-unreferenced-content-type.unexpected-error: 'Unexpected error while get unreferenced content type from environment %environment%: %error_message%'
-log.service.release.delete: 'The release %name% has been deleted'
+log.service.release.delete: 'The Release %name% has been deleted'
+log.service.release.not.environments.defined : 'Environments source or/and target not defined for Release %name%'
+log.service.release.not.ready : 'Status of Release %name% is not ready'
 log.service.query_search.delete: 'The QuerySearch %name% has been deleted'
 log.user.api_key: 'New API key for the user %user_display_name%: %api_key%'
 log.user.deleted: 'The user %user_display_name% has been deleted'
@@ -395,9 +398,11 @@ release.actions.delete_selected: 'Delete selected'
 release.actions.delete_selected_confirm: 'Delete all selected Releases?'
 release.actions.edit: Edit
 release.actions.publish_release: Publish Release
+release.actions.publish_confirm : 'Publish the Releases?'
 release.actions.set_status_canceled: Cancel Release
 release.actions.set_status_ready: Ready Release
 release.actions.set_status_wip: Wip Release
+release.actions.show: View
 release.add.save: Create
 release.add.title: 'Add a Release'
 release.edit.save: Save
@@ -418,6 +423,7 @@ release.revision.index.column.minRevId: Environment source
 release.revision.index.column.maxRevId: Environment target
 release.revision.index.title: 'List of Revisons available for Release'
 release.revision.menu: Add revisions
+release.revision.view.title : Revisions of Release
 search.aggregate_option_label: 'Aggregate Option'
 search.search_field_option_label: 'Search Field Option'
 search.sort_option_label: 'Sort Option'

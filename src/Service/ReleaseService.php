@@ -59,11 +59,7 @@ final class ReleaseService implements EntityServiceInterface
         if (null == $name) {
             throw new \RuntimeException('Unexpected null name');
         }
-        $webalized = $encoder->webalize($name);
-        if (null == $webalized) {
-            throw new \RuntimeException('Unexpected null webalized name');
-        }
-        $release->setName($webalized);
+        $release->setName($name);
         $this->releaseRepository->create($release);
     }
 
@@ -196,10 +192,14 @@ final class ReleaseService implements EntityServiceInterface
             $this->update($release);
         } else {
             if (ReleaseStatusEnumType::READY_STATUS != $release->getStatus()) {
-                $this->logger->warning('log.controller.release.not.ready');
+                $this->logger->warning('log.service.release.not.ready', [
+                    'name' => $release->getName(),
+                ]);
             }
             if (!empty($release->getEnvironmentSource()) || !empty($release->getEnvironmentTarget())) {
-                $this->logger->warning('log.controller.release.not.environments.defined');
+                $this->logger->warning('log.service.release.not.environments.defined', [
+                    'name' => $release->getName(),
+                ]);
             }
         }
     }

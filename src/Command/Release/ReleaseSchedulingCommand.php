@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Command\Release;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\Service\ReleaseService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -46,6 +47,8 @@ class ReleaseSchedulingCommand extends AbstractCommand
         foreach ($releases as $release) {
             $this->releaseService->publishRelease($release, false);
             $output->writeln('scheduling release '.$release->getName().' applied');
+            $release->setStatus(ReleaseStatusEnumType::SCHEDULED_STATUS);
+            $this->releaseService->update($release);
         }
 
         return 0;

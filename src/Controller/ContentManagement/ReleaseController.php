@@ -114,8 +114,8 @@ final class ReleaseController extends AbstractController
             $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
             $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
             $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
-            $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
             $table->setSelected($release->getRevisionsIds());
+            $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
 
             $form = $this->createForm(TableType::class, $table);
             $form->handleRequest($request);
@@ -150,6 +150,29 @@ final class ReleaseController extends AbstractController
         return $this->render($view, [
             'form' => isset($form) ? $form->createView() : null,
             'form_release' => $form2->createView(),
+        ]);
+    }
+
+    public function viewRevisions(Request $request, Release $release, string $view = '@EMSCore/release/revisions/view.html.twig'): Response
+    {
+        if (!empty($release->getRevisionsIds())) {
+            $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish-to-remove', $this->generateUrl('ems_core_release_ajax_data_table'), [
+                'option' => TableAbstract::EXPORT_ACTION,
+                'selected' => !empty($release) ? $release->getRevisionsIds() : [],
+                'source' => (!empty($release->getEnvironmentSource())) ? $release->getEnvironmentSource()->getId() : null,
+                'target' => (!empty($release->getEnvironmentTarget())) ? $release->getEnvironmentTarget()->getId() : null,
+            ]);
+            $table->setMassAction(false);
+            $table->setIdField('emsLink');
+            $labelColumn = $table->addColumn('release.revision.index.column.label', 'item_labelField');
+            $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
+            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
+            $table->setSelected($release->getRevisionsIds());
+            $form = $this->createForm(TableType::class, $table);
+        }
+
+        return $this->render($view, [
+            'form' => isset($form) ? $form->createView() : null,
         ]);
     }
 
@@ -223,18 +246,21 @@ final class ReleaseController extends AbstractController
         $table->addColumn('release.index.column.status', 'status');
         $table->addColumn('release.index.column.env_source', 'environmentSource');
         $table->addColumn('release.index.column.env_target', 'environmentTarget');
-        $table->addItemGetAction('ems_core_release_edit', 'release.actions.edit', 'pencil');
+        $table->addItemGetAction('ems_core_release_view', 'release.actions.show', 'eye')
+        ->addCondition(new Terms('status', [ReleaseStatusEnumType::APPLIED_STATUS, ReleaseStatusEnumType::SCHEDULED_STATUS]));
+        $table->addItemGetAction('ems_core_release_edit', 'release.actions.edit', 'pencil')
+        ->addCondition(new Terms('status', [ReleaseStatusEnumType::WIP_STATUS]));
         $table->addItemGetAction('ems_core_release_add_revisions', 'release.actions.add_revisions', 'plus')
-            ->addCondition(new Terms('status', [ReleaseStatusEnumType::WIP_STATUS]));
+        ->addCondition(new Terms('status', [ReleaseStatusEnumType::WIP_STATUS]));
         $table->addItemGetAction('ems_core_release_set_status', 'release.actions.set_status_ready', 'play', ['status' => ReleaseStatusEnumType::READY_STATUS])
-            ->addCondition(new Terms('status', [ReleaseStatusEnumType::WIP_STATUS]))
-            ->addCondition(new NotEmpty('revisionsIds'));
+        ->addCondition(new Terms('status', [ReleaseStatusEnumType::WIP_STATUS]))
+        ->addCondition(new NotEmpty('revisionsIds'));
         $table->addItemGetAction('ems_core_release_set_status', 'release.actions.set_status_wip', 'rotate-left', ['status' => ReleaseStatusEnumType::WIP_STATUS])
-            ->addCondition(new Terms('status', [ReleaseStatusEnumType::CANCELED_STATUS]));
+        ->addCondition(new Terms('status', [ReleaseStatusEnumType::CANCELED_STATUS]));
         $table->addItemPostAction('ems_core_release_publish', 'release.actions.publish_release', 'toggle-on', 'release.actions.publish_confirm')
-            ->addCondition(new Terms('status', [ReleaseStatusEnumType::READY_STATUS]));
+        ->addCondition(new Terms('status', [ReleaseStatusEnumType::READY_STATUS]));
         $table->addItemGetAction('ems_core_release_set_status', 'release.actions.set_status_canceled', 'ban', ['status' => ReleaseStatusEnumType::CANCELED_STATUS])
-            ->addCondition(new Terms('status', [ReleaseStatusEnumType::READY_STATUS]));
+        ->addCondition(new Terms('status', [ReleaseStatusEnumType::READY_STATUS]));
         $table->addItemPostAction('ems_core_release_delete', 'release.actions.delete', 'trash', 'release.actions.delete_confirm');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'release.actions.delete_selected', 'release.actions.delete_selected_confirm');
 

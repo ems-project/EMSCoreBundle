@@ -1018,6 +1018,34 @@ class RevisionRepository extends EntityRepository
 
     /**
      * @param string[] $context
+     */
+    public function counterRevisionsInAppliedRelease(array $context): int
+    {
+        /** @var string[] $ids */
+        $ids = $context['selected'] ?? [];
+        $target = $context['target'];
+        $sqb = $this->getCompareQueryBuilder($target, $target, [], $ids, true);
+        $sqb->select('max(r.id)');
+        //         $subQuery()
+        $qb = $this->createQueryBuilder('rev');
+        $qb->select('count(rev)');
+        $qb->where($qb->expr()->in('rev.id', $sqb->getDQL()));
+        $qb->setParameters([
+            'false' => false,
+            'source' => $target,
+            'target' => $target,
+            'id' => $ids,
+        ]);
+
+        try {
+            return $qb->getQuery()->getSingleScalarResult();
+        } catch (\Throwable $e) {
+            return 0;
+        }
+    }
+
+    /**
+     * @param string[] $context
      *
      * @return Revision[]
      */
@@ -1047,6 +1075,24 @@ class RevisionRepository extends EntityRepository
         $source = $context['source'];
         $target = $context['target'];
         $qb = $this->getCompareQueryBuilder($source, $target, [], $ids, true);
+        $qb->orderBy('r.ouuid')
+        ->setFirstResult($from)
+        ->setMaxResults($size);
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
+     * @param string[] $context
+     *
+     * @return Revision[]
+     */
+    public function getRevisionsInAppliedRelease(int $from, int $size, array $context): array
+    {
+        /** @var string[] $ids */
+        $ids = $context['selected'] ?? [];
+        $target = $context['target'];
+        $qb = $this->getCompareQueryBuilder($target, $target, [], $ids, true);
         $qb->orderBy('r.ouuid')
         ->setFirstResult($from)
         ->setMaxResults($size);

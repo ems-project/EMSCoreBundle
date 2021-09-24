@@ -22,11 +22,10 @@ final class ReleaseRevisionService implements QueryServiceInterface
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(ReleaseRevisionRepository $releaseRevisionRepository, RevisionRepository $revisionRepository, LoggerInterface $logger)
+    public function __construct(ReleaseRevisionRepository $releaseRevisionRepository, RevisionRepository $revisionRepository)
     {
         $this->releaseRevisionRepository = $releaseRevisionRepository;
         $this->revisionRepository = $revisionRepository;
-        $this->logger = $logger;
     }
 
     public function isQuerySortable(): bool
@@ -46,6 +45,10 @@ final class ReleaseRevisionService implements QueryServiceInterface
      */
     public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
+        if (isset($context['option']) && TableAbstract::EXPORT_ACTION === $context['option']) {
+            return $this->revisionRepository->getRevisionsInAppliedRelease($from, $size, $context);
+        }
+
         if (isset($context['option']) && TableAbstract::REMOVE_ACTION === $context['option']) {
             return $this->revisionRepository->getRevisionsInRelease($from, $size, $context);
         }
@@ -63,6 +66,10 @@ final class ReleaseRevisionService implements QueryServiceInterface
      */
     public function countQuery(string $searchValue = '', $context = null): int
     {
+        if (isset($context['option']) && TableAbstract::EXPORT_ACTION === $context['option']) {
+            return $this->revisionRepository->counterRevisionsInAppliedRelease($context);
+        }
+
         if (isset($context['option']) && TableAbstract::REMOVE_ACTION === $context['option']) {
             return $this->revisionRepository->counterRevisionsInRelease($context);
         }

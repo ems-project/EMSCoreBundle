@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
@@ -55,5 +56,24 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
         ]);
 
         return $qb->getQuery()->getSingleResult();
+    }
+
+    /**
+     * @return ReleaseRevision[]
+     */
+    public function getRevisionsLinkedToReleasesByOuuid(string $ouuid, ContentType $contentType): array
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb->join('r.release', 'rel')
+        ->where($qb->expr()->eq('r.revisionOuuid', ':ouuid'))
+        ->andWhere($qb->expr()->eq('r.contentType', ':contentType'))
+        ->andWhere('rel.status in (:status)')
+        ->setParameters([
+            'ouuid' => $ouuid,
+            'contentType' => $contentType,
+            'status' => [ReleaseStatusEnumType::WIP_STATUS, ReleaseStatusEnumType::READY_STATUS],
+        ]);
+
+        return $qb->getQuery()->execute();
     }
 }

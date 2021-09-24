@@ -170,6 +170,7 @@ class Release implements EntityInterface
     public function getRevisionsIds(): array
     {
         $ids = [];
+        /** @var ReleaseRevision $revision */
         foreach ($this->getRevisions() as $revision) {
             $ids[] = \strval($revision->getRevisionOuuid());
         }

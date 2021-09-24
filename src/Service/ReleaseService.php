@@ -184,7 +184,8 @@ final class ReleaseService implements EntityServiceInterface
                         $releaseRevision->getRevisionOuuid(),
                         $envSource,
                         $envTarget,
-                        $checkGrants
+                        $checkGrants,
+                        $releaseRevision->getRevision()
                 );
             }
 

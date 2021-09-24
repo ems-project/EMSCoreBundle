@@ -346,6 +346,7 @@ log.service.content-type.get-unreferenced-content-type.unexpected-error: 'Unexpe
 log.service.release.delete: 'The Release %name% has been deleted'
 log.service.release.not.environments.defined : 'Environments source or/and target not defined for Release %name%'
 log.service.release.not.ready : 'Status of Release %name% is not ready'
+log.service.release_revision.preceding.revision.in.release: 'Has a previous revision related to Release %name%'
 log.service.query_search.delete: 'The QuerySearch %name% has been deleted'
 log.user.api_key: 'New API key for the user %user_display_name%: %api_key%'
 log.user.deleted: 'The user %user_display_name% has been deleted'

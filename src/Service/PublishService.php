@@ -82,37 +82,37 @@ class PublishService
      * @throws DBALException
      * @throws NonUniqueResultException
      */
-    public function alignRevision($type, $ouuid, $environmentSource, $environmentTarget, bool $checkGrants = true)
+    public function alignRevision($type, $ouuid, $environmentSource, $environmentTarget, bool $checkGrants = true, ?Revision $revision = null)
     {
         if ($this->contentTypeService->getByName($type)->getEnvironment()->getName() === $environmentTarget) {
             $this->logger->warning('service.publish.not_in_default_environment', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $type,
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget,
-            ]);
-
-            return;
-        }
-        $contentType = $this->contentTypeService->getByName($type);
-
-        if ($checkGrants) {
-            if (!$this->authorizationChecker->isGranted($contentType->getPublishRole())) {
-                $this->logger->warning('service.publish.not_authorized', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $type,
                     EmsFields::LOG_OUUID_FIELD => $ouuid,
                     EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget,
                 ]);
 
-                return;
-            }
+            return;
         }
+        $contentType = $this->contentTypeService->getByName($type);
+        if (empty($revision)) {
+            if ($checkGrants) {
+                if (!$this->authorizationChecker->isGranted($contentType->getPublishRole())) {
+                    $this->logger->warning('service.publish.not_authorized', [
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $type,
+                            EmsFields::LOG_OUUID_FIELD => $ouuid,
+                            EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget,
+                        ]);
 
-        $revision = $this->revRepository->findByOuuidAndContentTypeAndEnvironment(
-            $contentType,
-            $ouuid,
-            $this->environmentService->getByName($environmentSource)
-            );
+                    return;
+                }
+            }
 
+            $revision = $this->revRepository->findByOuuidAndContentTypeAndEnvironment(
+                    $contentType,
+                    $ouuid,
+                    $this->environmentService->getByName($environmentSource)
+                    );
+        }
         if (!$revision) {
             $this->logger->warning('service.publish.revision_not_found_in_source', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $type,
@@ -327,7 +327,7 @@ class PublishService
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $environment->getId(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 ]);
 
                 return;
@@ -339,7 +339,7 @@ class PublishService
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                EmsFields::LOG_REVISION_ID_FIELD => $environment->getId(),
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
             ]);
 
             return;
@@ -358,7 +358,7 @@ class PublishService
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                EmsFields::LOG_REVISION_ID_FIELD => $environment->getId(),
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
             ]);
 
             $this->dispatcher->dispatch(RevisionUnpublishEvent::NAME, new RevisionUnpublishEvent($revision, $environment));
@@ -368,7 +368,7 @@ class PublishService
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $environment->getId(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 ]);
             }
         }

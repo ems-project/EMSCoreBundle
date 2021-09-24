@@ -506,7 +506,9 @@ services:
     EMS\CoreBundle\Service\ReleaseRevisionService: '@ems.service.release_revision'
     ems.service.release_revision:
         class: EMS\CoreBundle\Service\ReleaseRevisionService
-        arguments: ['@ems.repository.release_revision', '@EMS\CoreBundle\Repository\RevisionRepository']
+        arguments: ['@ems.repository.release_revision', '@EMS\CoreBundle\Repository\RevisionRepository', '@logger']
+        tags:
+          - { name: kernel.event_listener, event: revision.finalize_draft, method: finalizeDraftEvent, priority: 0 }
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']

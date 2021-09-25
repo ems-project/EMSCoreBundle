@@ -104,8 +104,8 @@ final class ReleaseController extends AbstractController
             $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish-to-remove', $this->generateUrl('ems_core_release_ajax_data_table'), [
                 'option' => TableAbstract::REMOVE_ACTION,
                 'selected' => !empty($release) ? $release->getRevisionsIds() : [],
-                'source' => (!empty($release->getEnvironmentSource())) ? $release->getEnvironmentSource()->getId() : null,
-                'target' => (!empty($release->getEnvironmentTarget())) ? $release->getEnvironmentTarget()->getId() : null,
+                'source' => $release->getEnvironmentSource(),
+                'target' => $release->getEnvironmentTarget(),
             ]);
             $table->setMassAction(false);
             $table->setIdField('emsLink');
@@ -157,8 +157,8 @@ final class ReleaseController extends AbstractController
         $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish-to-remove', $this->generateUrl('ems_core_release_ajax_data_table'), [
             'option' => TableAbstract::EXPORT_ACTION,
             'selected' => $release->getRevisionsIds(),
-            'source' => (!empty($release->getEnvironmentSource())) ? $release->getEnvironmentSource()->getId() : null,
-            'target' => (!empty($release->getEnvironmentTarget())) ? $release->getEnvironmentTarget()->getId() : null,
+            'source' => $release->getEnvironmentSource(),
+            'target' => $release->getEnvironmentTarget(),
         ]);
         $table->setMassAction(false);
         $table->setIdField('emsLink');
@@ -193,12 +193,12 @@ final class ReleaseController extends AbstractController
         $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish', $this->generateUrl('ems_core_release_ajax_data_table'), [
             'option' => TableAbstract::ADD_ACTION,
             'selected' => $release->getRevisionsIds(),
-            'source' => (!empty($release->getEnvironmentSource())) ? $release->getEnvironmentSource()->getId() : null,
-            'target' => (!empty($release->getEnvironmentTarget())) ? $release->getEnvironmentTarget()->getId() : null,
+            'source' => $release->getEnvironmentSource(),
+            'target' => $release->getEnvironmentTarget(),
         ]);
         $table->setMassAction(false);
         $table->setIdField('emsLink');
-        $labelColumn = $table->addColumn('release.revision.index.column.label', 'item_labelField');
+        $table->addColumn('release.revision.index.column.label', 'item_labelField');
         $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
@@ -210,7 +210,7 @@ final class ReleaseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
                 switch ($action->getName()) {
-                    case EntityTable::ADD_ACTION:
+                    case TableAbstract::ADD_ACTION:
                         $this->releaseService->addRevisions($release, $table->getSelected());
                         break;
                     default:

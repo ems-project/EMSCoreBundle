@@ -166,9 +166,9 @@ final class ReleaseService implements EntityServiceInterface
     /**
      * @return Release[]
      */
-    public function findReady(): array
+    public function findReadyAndDue(): array
     {
-        return $this->releaseRepository->findReady();
+        return $this->releaseRepository->findReadyAndDue();
     }
 
     public function publishRelease(Release $release, bool $checkGrants = true): void

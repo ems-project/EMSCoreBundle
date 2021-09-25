@@ -71,7 +71,7 @@ final class ReleaseRepository extends ServiceEntityRepository
     /**
      * @return Release[]
      */
-    public function findReady(): array
+    public function findReadyAndDue(): array
     {
         $format = 'Y-m-d H:i';
         $qb = $this->createQueryBuilder('r');

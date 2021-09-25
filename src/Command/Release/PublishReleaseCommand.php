@@ -36,7 +36,7 @@ class PublishReleaseCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $releases = $this->releaseService->findReady();
+        $releases = $this->releaseService->findReadyAndDue();
 
         if (empty($releases)) {
             $output->writeln('No scheduled release found');

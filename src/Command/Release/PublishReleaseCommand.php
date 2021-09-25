@@ -15,7 +15,6 @@ class PublishReleaseCommand extends AbstractCommand
 {
     protected static $defaultName = Commands::RELEASE_PUBLISH;
     private ReleaseService $releaseService;
-    private \DateTime $now;
 
     public function __construct(ReleaseService $releaseService)
     {
@@ -33,12 +32,11 @@ class PublishReleaseCommand extends AbstractCommand
         parent::initialize($input, $output);
 
         $this->io->title('EMS - Release - Publish');
-        $this->now = new \DateTime();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $releases = $this->releaseService->findScheduling($this->now);
+        $releases = $this->releaseService->findReady();
 
         if (empty($releases)) {
             $output->writeln('No scheduled release found');

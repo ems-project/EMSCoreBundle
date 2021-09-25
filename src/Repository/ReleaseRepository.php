@@ -71,16 +71,15 @@ final class ReleaseRepository extends ServiceEntityRepository
     /**
      * @return Release[]
      */
-    public function findSchedulingForDate(\DateTime $now): array
+    public function findReady(): array
     {
-        //$format = $this->getEntityManager()->getConnection()->getDatabasePlatform()->getDateTimeFormatString();
         $format = 'Y-m-d H:i';
         $qb = $this->createQueryBuilder('r');
         $qb->where('r.status = :status')
         ->andWhere('r.executionDate <= :dateTime')
         ->setParameters([
             'status' => ReleaseStatusEnumType::READY_STATUS,
-            'dateTime' => $now->format($format),
+            'dateTime' => new \DateTime(),
         ]);
 
         return $qb->getQuery()->execute();

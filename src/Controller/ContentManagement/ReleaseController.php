@@ -29,12 +29,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class ReleaseController extends AbstractController
 {
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var ReleaseService */
-    private $releaseService;
-    /** @var ReleaseRevisionService */
-    private $releaseRevisionService;
+    private LoggerInterface $logger;
+    private ReleaseService $releaseService;
+    private ReleaseRevisionService $releaseRevisionService;
 
     public function __construct(LoggerInterface $logger, ReleaseService $releaseService, ReleaseRevisionService $releaseRevisionService)
     {

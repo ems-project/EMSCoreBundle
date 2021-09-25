@@ -77,7 +77,7 @@ final class ReleaseRepository extends ServiceEntityRepository
         $format = 'Y-m-d H:i';
         $qb = $this->createQueryBuilder('r');
         $qb->where('r.status = :status')
-        ->andWhere($qb->expr()->eq('r.executionDate ', ':dateTime'))
+        ->andWhere('r.executionDate <= :dateTime')
         ->setParameters([
             'status' => ReleaseStatusEnumType::READY_STATUS,
             'dateTime' => $now->format($format),

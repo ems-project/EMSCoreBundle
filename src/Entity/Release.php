@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 
@@ -15,47 +16,38 @@ use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 class Release implements EntityInterface
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var \Datetime|null
-     *
      * @ORM\Column(name="execution_date", type="datetime", nullable=true)
      */
-    private $executionDate;
+    private ?\Datetime $executionDate;
 
     /**
-     * @var string
      * @ORM\Column(type="release_status_enum")
      */
-    private $status;
+    private string $status;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
-     * @var Environment
      * @ORM\ManyToOne(targetEntity="Environment")
      * @ORM\JoinColumn(name="environment_source_id", referencedColumnName="id")
      */
-    private $environmentSource;
+    private Environment $environmentSource;
 
     /**
-     * @var Environment
      * @ORM\ManyToOne(targetEntity="Environment")
      * @ORM\JoinColumn(name="environment_target_id", referencedColumnName="id")
      */
-    private $environmentTarget;
+    private Environment $environmentTarget;
 
     /**
      * @ORM\OneToMany(targetEntity="ReleaseRevision", mappedBy="release", cascade={"persist", "remove"})
@@ -64,7 +56,7 @@ class Release implements EntityInterface
 
     public function __construct()
     {
-        $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->revisions = new ArrayCollection();
         $this->status = ReleaseStatusEnumType::WIP_STATUS;
     }
 
@@ -97,9 +89,6 @@ class Release implements EntityInterface
         return $this;
     }
 
-    /**
-     * @return \Datetime
-     */
     public function getExecutionDate(): ?\Datetime
     {
         return $this->executionDate;
@@ -119,7 +108,7 @@ class Release implements EntityInterface
         return $this;
     }
 
-    public function getEnvironmentSource(): ?Environment
+    public function getEnvironmentSource(): Environment
     {
         return $this->environmentSource;
     }
@@ -131,14 +120,11 @@ class Release implements EntityInterface
         return $this;
     }
 
-    public function getEnvironmentTarget(): ?Environment
+    public function getEnvironmentTarget(): Environment
     {
         return $this->environmentTarget;
     }
 
-    /**
-     * Add revision.
-     */
     public function addRevision(ReleaseRevision $revision): Release
     {
         $this->revisions[] = $revision;
@@ -146,18 +132,13 @@ class Release implements EntityInterface
         return $this;
     }
 
-    /**
-     * Remove revision.
-     */
     public function removeRevision(ReleaseRevision $revision): void
     {
         $this->revisions->removeElement($revision);
     }
 
     /**
-     * Get revisions.
-     *
-     * @return array<ReleaseRevision>
+     * @return ReleaseRevision[]
      */
     public function getRevisions(): array
     {
@@ -165,14 +146,13 @@ class Release implements EntityInterface
     }
 
     /**
-     * @return array<string>
+     * @return string[]
      */
     public function getRevisionsIds(): array
     {
         $ids = [];
-        /** @var ReleaseRevision $revision */
         foreach ($this->getRevisions() as $revision) {
-            $ids[] = \strval($revision->getRevisionOuuid());
+            $ids[] = $revision->getRevisionOuuid();
         }
 
         return $ids;

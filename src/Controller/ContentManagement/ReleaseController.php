@@ -40,7 +40,7 @@ final class ReleaseController extends AbstractController
         $this->releaseRevisionService = $releaseRevisionService;
     }
 
-    public function ajaxDataTable(Request $request): Response
+    public function ajaxReleaseTable(Request $request): Response
     {
         $table = $this->initReleaseTable();
         $dataTableRequest = DataTableRequest::fromRequest($request);

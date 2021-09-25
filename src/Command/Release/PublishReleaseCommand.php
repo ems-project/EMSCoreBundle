@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Release;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\Service\ReleaseService;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PublishReleaseCommand extends AbstractCommand
 {
-    protected static $defaultName = 'ems:release:scheduling';
+    protected static $defaultName = Commands::RELEASE_PUBLISH;
     private ReleaseService $releaseService;
     private \DateTime $now;
 
@@ -45,7 +48,7 @@ class PublishReleaseCommand extends AbstractCommand
 
         foreach ($releases as $release) {
             $this->releaseService->publishRelease($release, false);
-            $output->writeln('Release '.$release->getName().' has been published');
+            $output->writeln(\sprintf('Release %s has been published', $release->getName()));
             $release->setStatus(ReleaseStatusEnumType::SCHEDULED_STATUS);
             $this->releaseService->update($release);
         }

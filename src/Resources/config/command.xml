@@ -49,6 +49,11 @@
             <argument type="service" id="ems_core.core_revision_task.task_manager"/>
             <tag name="console.command"/>
         </service>
+        <!-- EMSCO release -->
+        <service id="emsco.release.publish" class="EMS\CoreBundle\Command\Release\PublishReleaseCommand">
+            <argument type="service" id="ems.service.release"/>
+            <tag name="console.command"/>
+        </service>
         <!-- EMS notification -->
         <service id="ems.command.notification.bulk_action" class="EMS\CoreBundle\Command\Notification\BulkActionCommand">
             <argument type="service" id="ems.service.notification"/>

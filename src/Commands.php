@@ -11,4 +11,6 @@ final class Commands
     public const ENVIRONMENT_ALIGN = 'emsco:environment:align';
 
     public const REVISION_TASK_CREATE = 'emsco:revision:task:create';
+
+    public const RELEASE_PUBLISH = 'emsco:release:publish';
 }

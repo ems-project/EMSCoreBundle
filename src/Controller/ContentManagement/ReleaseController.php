@@ -84,8 +84,10 @@ final class ReleaseController extends AbstractController
         $form2->handleRequest($request);
         if ($form2->isSubmitted() && $form2->isValid()) {
             $release = $this->releaseService->add($form2->getViewData());
-            /** @var ClickableInterface $button */
             $button = $form2->get('saveAndClose');
+            if (!$button instanceof ClickableInterface) {
+                throw new \RuntimeException('Unexpected non clickable object');
+            }
             $nextAction = $button->isClicked() ? 'ems_core_release_index' : 'ems_core_release_edit';
 
             return $this->redirectToRoute($nextAction, ['release' => $release->getId()]);

@@ -16,6 +16,8 @@ use Psr\Log\LoggerInterface;
 
 final class ReleaseRevisionService implements QueryServiceInterface
 {
+    public const QUERY_REVISIONS_IN_PUBLISHED_RELEASE = 'QUERY_REVISIONS_IN_PUBLISHED_RELEASE';
+    public const QUERY_REVISIONS_IN_RELEASE = 'QUERY_REVISIONS_IN_RELEASE';
     private ReleaseRevisionRepository $releaseRevisionRepository;
     private RevisionRepository $revisionRepository;
     private LoggerInterface $logger;
@@ -44,11 +46,11 @@ final class ReleaseRevisionService implements QueryServiceInterface
      */
     public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
-        if (isset($context['option']) && TableAbstract::EXPORT_ACTION === $context['option']) {
+        if (self::QUERY_REVISIONS_IN_PUBLISHED_RELEASE === ($context['option'] ?? null)) {
             return $this->revisionRepository->getRevisionsInAppliedRelease($from, $size, $context);
         }
 
-        if (isset($context['option']) && TableAbstract::REMOVE_ACTION === $context['option']) {
+        if (self::QUERY_REVISIONS_IN_RELEASE === ($context['option'] ?? null)) {
             return $this->revisionRepository->getRevisionsInRelease($from, $size, $context);
         }
 
@@ -85,7 +87,6 @@ final class ReleaseRevisionService implements QueryServiceInterface
     {
         $revision = $event->getRevision();
         $releaseRevisions = $this->releaseRevisionRepository->getRevisionsLinkedToReleasesByOuuid($revision->getOuuid(), $revision->getContentType());
-        /** @var ReleaseRevision $releaseRevision */
         foreach ($releaseRevisions as $releaseRevision) {
             $this->logger->warning('log.service.release_revision.preceding.revision.in.release', [
                 'name' => $releaseRevision->getRelease()->getName(),

@@ -42,7 +42,7 @@ final class ReleaseController extends AbstractController
 
     public function ajaxDataTable(Request $request): Response
     {
-        $table = $this->initTable();
+        $table = $this->initReleaseTable();
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
@@ -54,7 +54,7 @@ final class ReleaseController extends AbstractController
 
     public function index(Request $request): Response
     {
-        $table = $this->initTable();
+        $table = $this->initReleaseTable();
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -102,7 +102,7 @@ final class ReleaseController extends AbstractController
     {
         if (!empty($release->getRevisionsIds())) {
             $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish-to-remove', $this->generateUrl('ems_core_release_ajax_data_table'), [
-                'option' => TableAbstract::REMOVE_ACTION,
+                'option' => ReleaseRevisionService::QUERY_REVISIONS_IN_RELEASE,
                 'selected' => !empty($release) ? $release->getRevisionsIds() : [],
                 'source' => $release->getEnvironmentSource(),
                 'target' => $release->getEnvironmentTarget(),
@@ -121,7 +121,7 @@ final class ReleaseController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
                     switch ($action->getName()) {
-                        case EntityTable::REMOVE_ACTION:
+                        case TableAbstract::REMOVE_ACTION:
                             $this->releaseService->removeRevisions($release, $table->getSelected());
                             break;
                         default:
@@ -155,7 +155,7 @@ final class ReleaseController extends AbstractController
     public function viewRevisions(Release $release): Response
     {
         $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish-to-remove', $this->generateUrl('ems_core_release_ajax_data_table'), [
-            'option' => TableAbstract::EXPORT_ACTION,
+            'option' => ReleaseRevisionService::QUERY_REVISIONS_IN_PUBLISHED_RELEASE,
             'selected' => $release->getRevisionsIds(),
             'source' => $release->getEnvironmentSource(),
             'target' => $release->getEnvironmentTarget(),
@@ -235,7 +235,7 @@ final class ReleaseController extends AbstractController
         return $this->redirectToRoute('ems_core_release_index');
     }
 
-    private function initTable(): EntityTable
+    private function initReleaseTable(): EntityTable
     {
         $table = new EntityTable($this->releaseService, $this->generateUrl('ems_core_release_ajax_data_table'));
         $table->addColumn('release.index.column.name', 'name');

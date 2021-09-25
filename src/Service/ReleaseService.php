@@ -173,6 +173,14 @@ final class ReleaseService implements EntityServiceInterface
 
     public function publishRelease(Release $release, bool $checkGrants = true): void
     {
+        if (ReleaseStatusEnumType::READY_STATUS !== $release->getStatus()) {
+            $this->logger->warning('log.service.release.not.ready', [
+                'name' => $release->getName(),
+            ]);
+
+            return;
+        }
+
         if (ReleaseStatusEnumType::READY_STATUS === $release->getStatus() && !empty($release->getEnvironmentSource()) && !empty($release->getEnvironmentTarget()) && !empty($release->getEnvironmentTarget())) {
             $envSource = $release->getEnvironmentSource()->getName();
             $envTarget = $release->getEnvironmentTarget()->getName();
@@ -191,17 +199,10 @@ final class ReleaseService implements EntityServiceInterface
 
             $release->setStatus(ReleaseStatusEnumType::APPLIED_STATUS);
             $this->update($release);
-        } else {
-            if (ReleaseStatusEnumType::READY_STATUS != $release->getStatus()) {
-                $this->logger->warning('log.service.release.not.ready', [
-                    'name' => $release->getName(),
-                ]);
-            }
-            if (!empty($release->getEnvironmentSource()) || !empty($release->getEnvironmentTarget())) {
-                $this->logger->warning('log.service.release.not.environments.defined', [
-                    'name' => $release->getName(),
-                ]);
-            }
+        } elseif (!empty($release->getEnvironmentSource()) || !empty($release->getEnvironmentTarget())) {
+            $this->logger->warning('log.service.release.not.environments.defined', [
+                'name' => $release->getName(),
+            ]);
         }
     }
 }

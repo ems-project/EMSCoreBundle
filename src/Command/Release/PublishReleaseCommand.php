@@ -8,12 +8,11 @@ use EMS\CoreBundle\Service\ReleaseService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ReleaseSchedulingCommand extends AbstractCommand
+class PublishReleaseCommand extends AbstractCommand
 {
     protected static $defaultName = 'ems:release:scheduling';
     private ReleaseService $releaseService;
     private \DateTime $now;
-    private string $user = 'SYSTEM_RELEASE_SCHEDULING';
 
     public function __construct(ReleaseService $releaseService)
     {
@@ -23,14 +22,14 @@ class ReleaseSchedulingCommand extends AbstractCommand
 
     protected function configure(): void
     {
-        $this->setDescription('Launch of scheduling releases');
+        $this->setDescription('Publish scheduled releases');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
 
-        $this->io->title('EMS - Release - Scheduling');
+        $this->io->title('EMS - Release - Publish');
         $this->now = new \DateTime();
     }
 
@@ -39,18 +38,18 @@ class ReleaseSchedulingCommand extends AbstractCommand
         $releases = $this->releaseService->findScheduling($this->now);
 
         if (empty($releases)) {
-            $output->writeln('No scheduling release found');
+            $output->writeln('No scheduled release found');
 
-            return -1;
+            return parent::EXECUTE_SUCCESS;
         }
 
         foreach ($releases as $release) {
             $this->releaseService->publishRelease($release, false);
-            $output->writeln('scheduling release '.$release->getName().' applied');
+            $output->writeln('Release '.$release->getName().' has been published');
             $release->setStatus(ReleaseStatusEnumType::SCHEDULED_STATUS);
             $this->releaseService->update($release);
         }
 
-        return 0;
+        return parent::EXECUTE_SUCCESS;
     }
 }

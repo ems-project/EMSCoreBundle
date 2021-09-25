@@ -648,8 +648,8 @@ services:
         arguments: ['@ems.service.job', '%ems_core.date_time_format%']
         tags:
             - { name: console.command }
-    ems.release.scheduling:
-        class: EMS\CoreBundle\Command\Release\ReleaseSchedulingCommand
+    ems.release.publish:
+        class: EMS\CoreBundle\Command\Release\PublishReleaseCommand
         arguments: ['@ems.service.release']
         tags:
             -  { name: console.command }

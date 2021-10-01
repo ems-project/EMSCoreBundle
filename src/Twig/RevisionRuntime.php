@@ -46,7 +46,7 @@ class RevisionRuntime implements RuntimeExtensionInterface
      */
     public function updateRevision(string $emsLink, array $rawData): Revision
     {
-        return $this->revisionService->update(EMSLink::fromText($emsLink), $rawData, false);
+        return $this->revisionService->updateRawDataByEmsLink(EMSLink::fromText($emsLink), $rawData, false);
     }
 
     /**
@@ -54,7 +54,7 @@ class RevisionRuntime implements RuntimeExtensionInterface
      */
     public function mergeRevision(string $emsLink, array $rawData): Revision
     {
-        return $this->revisionService->update(EMSLink::fromText($emsLink), $rawData);
+        return $this->revisionService->updateRawDataByEmsLink(EMSLink::fromText($emsLink), $rawData);
     }
 
     /**

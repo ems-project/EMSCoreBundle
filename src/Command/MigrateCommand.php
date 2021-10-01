@@ -3,8 +3,11 @@
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Command\Revision\ArchiveCommand;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
@@ -12,15 +15,12 @@ use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Service\DocumentService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-class MigrateCommand extends Command
+class MigrateCommand extends AbstractCommand
 {
     protected static $defaultName = 'ems:contenttype:migrate';
 
@@ -47,7 +47,6 @@ class MigrateCommand extends Command
     private string $searchQuery;
     private bool $dontFinalize;
     private ContentTypeRepository $contentTypeRepository;
-    private SymfonyStyle  $io;
 
     private const ARGUMENT_CONTENTTYPE_NAME_FROM = 'contentTypeNameFrom';
     private const ARGUMENT_CONTENTTYPE_NAME_TO = 'contentTypeNameTo';
@@ -158,11 +157,6 @@ class MigrateCommand extends Command
                 'Will archive revisions that were not modified (see changed option)'
             )
         ;
-    }
-
-    protected function initialize(InputInterface $input, OutputInterface $output): void
-    {
-        $this->io = new SymfonyStyle($input, $output);
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): int
@@ -276,7 +270,7 @@ class MigrateCommand extends Command
         $progress->finish();
 
         if (null !== $archiveModifiedBefore = $this->archiveModifiedBefore) {
-            $this->archive($output, $archiveModifiedBefore->format(\DateTimeInterface::ATOM));
+            $this->archive($archiveModifiedBefore);
         }
 
         $this->io->writeln('');
@@ -285,25 +279,14 @@ class MigrateCommand extends Command
         return 0;
     }
 
-    private function archive(OutputInterface $output, string $archiveModifiedBefore): int
+    private function archive(\DateTimeInterface $archiveModifiedBefore): void
     {
-        try {
-            if (null === $application = $this->getApplication()) {
-                throw new \RuntimeException('could not find application');
-            }
+        $arguments = [ArchiveCommand::ARGUMENT_CONTENT_TYPE => $this->contentTypeTo->getName()];
+        $options = [
+            ArchiveCommand::OPTION_FORCE => true,
+            ArchiveCommand::OPTION_MODIFIED_BEFORE => $archiveModifiedBefore->format(\DateTimeInterface::ATOM),
+        ];
 
-            return $application->find('ems:revision:archive')->run(
-                new ArrayInput([
-                    'content-type' => $this->contentTypeTo->getName(),
-                    '--force' => true,
-                    '--modified-before' => $archiveModifiedBefore,
-                ]),
-                $output
-            );
-        } catch (\Throwable $e) {
-            $this->io->error(\sprintf('Archived failed! (%s)', $e->getMessage()));
-
-            return 0;
-        }
+        $this->runCommand(Commands::REVISION_ARCHIVE, $arguments, $options);
     }
 }

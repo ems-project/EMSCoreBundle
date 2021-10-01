@@ -1221,11 +1221,7 @@ class AppExtension extends AbstractExtension
         }
 
         $data = [];
-        if ($contentType->getIcon()) {
-            $out = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
-        } else {
-            $out = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
-        }
+        $out = \sprintf('<i class="%s"></i>&nbsp;&nbsp;', $contentType->getIcon() ?? 'fa fa-book');
 
         try {
             $document = $this->searchService->getDocument($contentType, $emsLink->getOuuid());

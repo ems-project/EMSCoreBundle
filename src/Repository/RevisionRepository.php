@@ -56,6 +56,7 @@ class RevisionRepository extends EntityRepository
             if (!$result instanceof Revision) {
                 throw new \RuntimeException('Unexpected revision object');
             }
+
             return $result;
         } catch (NoResultException $e) {
             return null;

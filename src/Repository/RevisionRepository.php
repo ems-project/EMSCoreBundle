@@ -42,6 +42,27 @@ class RevisionRepository extends EntityRepository
         return isset($result[0]) && $result[0] instanceof Revision ? $result[0] : null;
     }
 
+    public function findLatestByOuuid(string $ouuid): ?Revision
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))
+            ->setMaxResults(1)
+            ->setParameters(['ouuid' => $ouuid])
+            ->orderBy('r.startTime', 'DESC');
+
+        try {
+            $result = $qb->getQuery()->getSingleResult();
+            if (!$result instanceof Revision) {
+                throw new \RuntimeException('Unexpected revision object');
+            }
+
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
     public function findByContentType(ContentType $contentType, $orderBy = null, $limit = null, $offset = null)
     {
         return $this->findBy([

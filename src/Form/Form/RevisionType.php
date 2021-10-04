@@ -121,7 +121,7 @@ class RevisionType extends AbstractType
                         'placeholder' => $revision->getOuuid() ? 'Silent' : null,
                         'choices' => \array_combine($contentType->getVersionTags(), $contentType->getVersionTags()),
                         'mapped' => false,
-                        'required' => false
+                        'required' => false,
                     ])
                     ->add('publish_version', SubmitEmsType::class, [
                         'translation_domain' => EMSCoreExtension::TRANS_DOMAIN,

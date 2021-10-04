@@ -6,8 +6,8 @@ use Caxy\HtmlDiff\HtmlDiff;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elastica\ResultSet;
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
-use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CommonBundle\Search\Search as CommonSearch;
@@ -19,6 +19,7 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\I18n;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Form\Data\Condition\InMyCircles;
@@ -27,6 +28,7 @@ use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Repository\I18nRepository;
+use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\SequenceRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
@@ -47,44 +49,45 @@ use Twig\TwigFunction;
 
 class AppExtension extends AbstractExtension
 {
-    /** @var FormFactory */
-    protected $formFactory;
-    /** @var FileService */
-    protected $fileService;
-    /** @var RequestRuntime */
-    protected $commonRequestRuntime;
+    protected FormFactory $formFactory;
+    protected FileService $fileService;
+    protected RequestRuntime $commonRequestRuntime;
     /** @var array<mixed> */
     protected $assetConfig;
-    /** @var Registry */
-    private $doctrine;
-    /** @var UserService */
-    private $userService;
-    /** @var AuthorizationCheckerInterface */
-    private $authorizationChecker;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var RouterInterface */
-    private $router;
-    /** @var TwigEnvironment */
-    private $twig;
-    /** @var ObjectChoiceListFactory */
-    private $objectChoiceListFactory;
-    /** @var EnvironmentService */
-    private $environmentService;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var \Swift_Mailer */
-    private $mailer;
-    /** @var ElasticaService */
-    private $elasticaService;
-    /** @var SearchService */
-    private $searchService;
+    private Registry $doctrine;
+    private UserService $userService;
+    private AuthorizationCheckerInterface $authorizationChecker;
+    private ContentTypeService $contentTypeService;
+    private RouterInterface $router;
+    private TwigEnvironment $twig;
+    private ObjectChoiceListFactory $objectChoiceListFactory;
+    private EnvironmentService $environmentService;
+    private LoggerInterface $logger;
+    private \Swift_Mailer $mailer;
+    private ElasticaService $elasticaService;
+    private SearchService $searchService;
 
     /**
      * @param array<mixed> $assetConfig
      */
-    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, RouterInterface $router, TwigEnvironment $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, ElasticaService $elasticaService, SearchService $searchService, array $assetConfig)
-    {
+    public function __construct(
+        Registry $doctrine,
+        AuthorizationCheckerInterface $authorizationChecker,
+        UserService $userService,
+        ContentTypeService $contentTypeService,
+        RouterInterface $router,
+        TwigEnvironment $twig,
+        ObjectChoiceListFactory $objectChoiceListFactory,
+        EnvironmentService $environmentService,
+        LoggerInterface $logger,
+        FormFactory $formFactory,
+        FileService $fileService,
+        RequestRuntime $commonRequestRuntime,
+        \Swift_Mailer $mailer,
+        ElasticaService $elasticaService,
+        SearchService $searchService,
+        array $assetConfig
+    ) {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
         $this->userService = $userService;
@@ -194,6 +197,9 @@ class AppExtension extends AbstractExtension
             new TwigFilter('json_decode', [$this, 'jsonDecode']),
             new TwigFilter('get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
             new TwigFilter('emsco_document_info', [RevisionRuntime::class, 'getDocumentInfo']),
+            new TwigFilter('emsco_log_notice', [CoreRuntime::class, 'logNotice']),
+            new TwigFilter('emsco_log_warning', [CoreRuntime::class, 'logWarning']),
+            new TwigFilter('emsco_log_error', [CoreRuntime::class, 'logError']),
             //deprecated
             new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
             new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),
@@ -911,128 +917,34 @@ class AppExtension extends AbstractExtension
 
     public function dataLabel(string $key): string
     {
-        $out = $key;
-        $exploded = \explode(':', $key);
-        if (2 == \count($exploded) && \strlen($exploded[0]) > 0 && \strlen($exploded[1]) > 0) {
-            $type = $exploded[0];
-            $ouuid = $exploded[1];
-
-            /** @var \EMS\CoreBundle\Entity\ContentType $contentType */
-            $contentType = $this->contentTypeService->getByName($type);
-            if ($contentType) {
-                if ($contentType->getIcon()) {
-                    $icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
-                } else {
-                    $icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
-                }
-
-                try {
-                    $fields = [];
-                    if ($contentType->getLabelField()) {
-                        $fields[] = $contentType->getLabelField();
-                    }
-                    if ($contentType->getColorField()) {
-                        $fields[] = $contentType->getColorField();
-                    }
-
-                    $index = $this->contentTypeService->getIndex($contentType);
-                    $search = $this->elasticaService->generateTermsSearch([$index], '_id', [$ouuid]);
-
-                    try {
-                        $document = $this->elasticaService->singleSearch($search);
-                    } catch (NotSingleResultException $e) {
-                        $document = null;
-                    }
-
-                    if (null !== $document && $contentType->getLabelField()) {
-                        $label = $document->getSource()[$contentType->getLabelField()];
-                        if ($label && \strlen($label) > 0) {
-                            $out = $label;
-                        }
-                    }
-                    $out = $icon.$out;
-
-                    if (null !== $document && $contentType->getColorField() && $document->getSource()[$contentType->getColorField()]) {
-                        $color = $document->getSource()[$contentType->getColorField()];
-                        $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
-
-                        $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
-                    }
-                } catch (\Exception $e) {
-                }
-            }
-        }
-
-        return $out;
+        return $this->makeDataLabel($key)['text'];
     }
 
     public function dataLink(string $key, string $revisionId = null, string $diffMod = null): string
     {
-        $out = $key;
-        $exploded = \explode(':', $key);
-        if (2 == \count($exploded) && \strlen($exploded[0]) > 0 && \strlen($exploded[1]) > 0) {
-            $type = $exploded[0];
-            $ouuid = $exploded[1];
-
-            $addAttribute = '';
-
-            /** @var \EMS\CoreBundle\Entity\ContentType $contentType */
-            $contentType = $this->contentTypeService->getByName($type);
-            if ($contentType) {
-                if ($contentType->getIcon()) {
-                    $icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
-                } else {
-                    $icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
-                }
-
-                try {
-                    $fields = [];
-                    if ($contentType->getLabelField()) {
-                        $fields[] = $contentType->getLabelField();
-                    }
-                    if ($contentType->getColorField()) {
-                        $fields[] = $contentType->getColorField();
-                    }
-
-                    $index = $this->contentTypeService->getIndex($contentType);
-
-                    $search = $this->elasticaService->generateTermsSearch([$index], '_id', [$ouuid]);
-                    try {
-                        $document = $this->elasticaService->singleSearch($search);
-                    } catch (NotSingleResultException $e) {
-                        $document = null;
-                    }
-
-                    if (null !== $document && $contentType->getLabelField()) {
-                        $label = $document->getSource()[$contentType->getLabelField()];
-                        if ($label && \strlen($label) > 0) {
-                            $out = $label;
-                        }
-                    }
-                    $out = $icon.$out;
-
-                    if (null !== $document && $contentType->hasColorField() && \is_string($document->getSource()[$contentType->giveColorField()] ?? null)) {
-                        $color = $document->getSource()[$contentType->giveColorField()];
-                        $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
-
-                        $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
-                        $addAttribute = ' style="background-color: '.$color.';border-color: '.$color.';"';
-                    }
-
-                    if (null !== $diffMod) {
-                        $out = '<'.$diffMod.' class="diffmod">'.$out.'<'.$diffMod.'>';
-                    }
-                } catch (\Exception $e) {
-                }
-            }
-            $out = '<a class="btn btn-primary btn-sm" href="'.$this->router->generate('data.revisions', [
-                    'type' => $type,
-                    'ouuid' => $ouuid,
-                    'revisionId' => $revisionId,
-                ]).'" '.$addAttribute.' >'.$out.'</a>';
+        $emsLink = EMSLink::fromText($key);
+        if (!$emsLink->isValid()) {
+            return $key;
         }
 
-        return $out;
+        $label = $this->makeDataLabel($key);
+
+        $addAttribute = '';
+        $out = $label['text'];
+
+        if (isset($label['color'])) {
+            $addAttribute = ' style="background-color: '.$label['color'].';border-color: '.$label['color'].';"';
+        }
+
+        if (null !== $diffMod) {
+            $out = '<'.$diffMod.' class="diffmod">'.$out.'<'.$diffMod.'>';
+        }
+
+        return '<a class="btn btn-primary btn-sm" href="'.$this->router->generate('data.revisions', [
+            'type' => $emsLink->getContentType(),
+            'ouuid' => $emsLink->getOuuid(),
+            'revisionId' => $revisionId,
+        ]).'" '.$addAttribute.' >'.$out.'</a>';
     }
 
     public function propertyPath(FormError $error): string
@@ -1292,5 +1204,55 @@ class AppExtension extends AbstractExtension
     public function getName(): string
     {
         return 'app_extension';
+    }
+
+    /**
+     * @return array{"text": string, "color"?: string}
+     */
+    private function makeDataLabel(string $key): array
+    {
+        $emsLink = EMSLink::fromText($key);
+        if (!$emsLink->isValid()) {
+            return ['text' => $key];
+        }
+
+        if (false === $contentType = $this->contentTypeService->getByName($emsLink->getContentType())) {
+            return ['text' => $key];
+        }
+
+        $data = [];
+        $out = \sprintf('<i class="%s"></i>&nbsp;&nbsp;', $contentType->getIcon() ?? 'fa fa-book');
+
+        try {
+            $document = $this->searchService->getDocument($contentType, $emsLink->getOuuid());
+            $emsSource = $document->getEMSSource();
+
+            if ($contentType->hasLabelField()) {
+                $label = $emsSource->get($contentType->giveLabelField(), $key);
+                $out .= (\strlen($label) > 0 ? $label : $key);
+            } else {
+                $out .= $key;
+            }
+
+            $color = $contentType->hasColorField() ? $emsSource->get($contentType->giveColorField()) : null;
+            if ($color) {
+                $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
+                $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
+                $data['color'] = $color;
+            }
+        } catch (\Elastica\Exception\NotFoundException $e) {
+            /** @var RevisionRepository $revisionRepository */
+            $revisionRepository = $this->doctrine->getManager()->getRepository(Revision::class);
+            $revision = $revisionRepository->findLatestByOuuid($emsLink->getOuuid());
+            $revisionLabel = $revision ? ($revision->getLabelField() ?? $key) : $key;
+
+            $out .= (\strlen($revisionLabel) > 0 ? $revisionLabel : $key);
+        } catch (\Throwable $e) {
+            $this->logger->debug(\sprintf('dataLink failed for : %s', $key), ['e' => $e]);
+        }
+
+        $data['text'] = $out;
+
+        return $data;
     }
 }

@@ -210,7 +210,10 @@ export default class JsonMenuEditor {
 
             let data = {};
             if ('edit' === action) {
-                data = $target.closest('li').data('object');
+                let closestLi = $target.closest('li');
+                if (closestLi.attr('data-object')) {
+                    data = closestLi.data('object');
+                }
                 data.label = $target.closest('li').data('label');
             }
             self.ajaxNestedModal(node.url, JSON.stringify(data), 'application/json', function () {

@@ -31,8 +31,13 @@ final class ArchiveCommand extends Command implements CommandInterface
     private array $search = [];
     private int $batchSize;
 
-    protected static $defaultName = Commands::EMS_REVISION_ARCHIVE;
+    protected static $defaultName = Commands::REVISION_ARCHIVE;
     private const USER = 'SYSTEM_ARCHIVE';
+
+    public const ARGUMENT_CONTENT_TYPE = 'content-type';
+    public const OPTION_FORCE = 'force';
+    public const OPTION_MODIFIED_BEFORE = 'modified-before';
+    public const OPTION_BATCH_SIZE = 'batch-size';
 
     public function __construct(ContentTypeService $contentTypeService, RevisionService $revisionService, int $defaultBulkSize)
     {
@@ -45,10 +50,10 @@ final class ArchiveCommand extends Command implements CommandInterface
     protected function configure(): void
     {
         $this
-            ->addArgument('content-type', InputArgument::REQUIRED, 'ContentType name')
-            ->addOption('force', null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
-            ->addOption('modified-before', '', InputOption::VALUE_REQUIRED, 'Y-m-dTH:i:s (2019-07-15T11:38:16)')
-            ->addOption('batch-size', '', InputOption::VALUE_REQUIRED, 'db records batch size', 'default_bulk_size')
+            ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'ContentType name')
+            ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
+            ->addOption(self::OPTION_MODIFIED_BEFORE, '', InputOption::VALUE_REQUIRED, 'Y-m-dTH:i:s (2019-07-15T11:38:16)')
+            ->addOption(self::OPTION_BATCH_SIZE, '', InputOption::VALUE_REQUIRED, 'db records batch size', 'default_bulk_size')
         ;
     }
 

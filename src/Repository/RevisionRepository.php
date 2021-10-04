@@ -42,6 +42,27 @@ class RevisionRepository extends EntityRepository
         return isset($result[0]) && $result[0] instanceof Revision ? $result[0] : null;
     }
 
+    public function findLatestByOuuid(string $ouuid): ?Revision
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))
+            ->setMaxResults(1)
+            ->setParameters(['ouuid' => $ouuid])
+            ->orderBy('r.startTime', 'DESC');
+
+        try {
+            $result = $qb->getQuery()->getSingleResult();
+            if (!$result instanceof Revision) {
+                throw new \RuntimeException('Unexpected revision object');
+            }
+
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
     public function findByContentType(ContentType $contentType, $orderBy = null, $limit = null, $offset = null)
     {
         return $this->findBy([
@@ -65,6 +86,9 @@ class RevisionRepository extends EntityRepository
         if (isset($search['contentType'])) {
             $qb->andWhere($qb->expr()->eq('r.contentType', ':contentType'))->setParameter('contentType', $search['contentType']);
         }
+        if (isset($search['contentTypeName'])) {
+            $qb->andWhere($qb->expr()->eq('c.name', ':contentTypeName'))->setParameter('contentTypeName', $search['contentTypeName']);
+        }
         if (isset($search['modifiedBefore'])) {
             $qb->andWhere($qb->expr()->lt('r.modified', ':modified'))->setParameter('modified', $search['modifiedBefore']);
         }
@@ -73,6 +97,13 @@ class RevisionRepository extends EntityRepository
         }
         if (isset($search['archived'])) {
             $qb->andWhere($qb->expr()->eq('r.archived', ':archived'))->setParameter('archived', $search['archived']);
+        }
+        if (\array_key_exists('endTime', $search)) {
+            if (null === $search['endTime']) {
+                $qb->andWhere($qb->expr()->isNull('r.endTime'));
+            } else {
+                $qb->andWhere($qb->expr()->lt('r.endTime', ':endTime'))->setParameter('endTime', $search['endTime']);
+            }
         }
 
         return $qb;

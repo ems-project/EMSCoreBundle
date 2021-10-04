@@ -12,11 +12,11 @@ final class Commands
 
     public const REVISION_TASK_CREATE = 'emsco:revision:task:create';
 
+
     public const EMS_ASSET_HEAD = 'ems:asset:head';
     public const EMS_CHECK_ALIASES = 'ems:check:aliases';
     public const EMS_NOTIFICATION_BULK_ACTION = 'ems:notification:bulk-action';
     public const EMS_NOTIFICATION_SEND = 'ems:notification:send';
-    public const EMS_REVISION_ARCHIVE = 'ems:revision:archive';
     public const EMS_REVISION_TIME_MACHINE = 'ems:revision:time-machine';
     public const EMS_CONTENTTYPE_ACTIVATE = 'ems:contenttype:activate';
     public const EMS_MANAGEDALIAS_ALIGN = 'ems:managedalias:align';
@@ -43,4 +43,5 @@ final class Commands
     public const EMS_ASSET_SYNCHRONIZE = 'ems:asset:synchronize';
     public const EMS_REVISIONS_UNLOCK = 'ems:revisions:unlock';
     public const EMS_ENVIRONMENT_UPDATEMETAFIELD = 'ems:environment:updatemetafield';
+    public const REVISION_ARCHIVE = 'emsco:revision:archive';
 }

@@ -678,7 +678,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     public function giveFieldType(): FieldType
     {
         if (null === $this->fieldType) {
-            throw new \RuntimeException('Unexpected null filed type');
+            throw new \RuntimeException('Unexpected null fieldType');
         }
 
         return $this->fieldType;

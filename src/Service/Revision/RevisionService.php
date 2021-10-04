@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Service\Revision;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CoreBundle\Common\DocumentInfo;
+use EMS\CoreBundle\Contracts\Revision\RevisionServiceInterface;
 use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
@@ -16,7 +17,7 @@ use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidInterface;
 
-class RevisionService
+class RevisionService implements RevisionServiceInterface
 {
     private DataService $dataService;
     private LoggerInterface $logger;
@@ -166,16 +167,38 @@ class RevisionService
     /**
      * @param array<mixed> $rawData
      */
-    public function update(EMSLink $emsLink, array $rawData, bool $merge = true): Revision
+    public function updateRawData(Revision $revision, array $rawData, ?string $username = null, bool $merge = true): Revision
+    {
+        $contentTypeName = $revision->giveContentType()->getName();
+        $draft = $this->dataService->initNewDraft($contentTypeName, $revision->giveOuuid(), null, $username);
+
+        $this->setRawData($draft, $rawData, $merge);
+        $form = null;
+
+        return $this->dataService->finalizeDraft($draft, $form, $username);
+    }
+
+    /**
+     * @param array<mixed> $rawData
+     */
+    public function updateRawDataByEmsLink(EMSLink $emsLink, array $rawData, bool $merge = true): Revision
     {
         $draft = $this->dataService->initNewDraft($emsLink->getContentType(), $emsLink->getOuuid());
 
+        $this->setRawData($draft, $rawData, $merge);
+
+        return $this->dataService->finalizeDraft($draft);
+    }
+
+    /**
+     * @param array<mixed> $rawData
+     */
+    private function setRawData(Revision $draft, array $rawData, bool $merge = true): void
+    {
         if ($merge) {
             $draft->setRawData(\array_merge($draft->getRawData(), $rawData));
         } else {
             $draft->setRawData($rawData);
         }
-
-        return $this->dataService->finalizeDraft($draft);
     }
 }

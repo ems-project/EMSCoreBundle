@@ -86,6 +86,9 @@ class RevisionRepository extends EntityRepository
         if (isset($search['contentType'])) {
             $qb->andWhere($qb->expr()->eq('r.contentType', ':contentType'))->setParameter('contentType', $search['contentType']);
         }
+        if (isset($search['contentTypeName'])) {
+            $qb->andWhere($qb->expr()->eq('c.name', ':contentTypeName'))->setParameter('contentTypeName', $search['contentTypeName']);
+        }
         if (isset($search['modifiedBefore'])) {
             $qb->andWhere($qb->expr()->lt('r.modified', ':modified'))->setParameter('modified', $search['modifiedBefore']);
         }
@@ -94,6 +97,13 @@ class RevisionRepository extends EntityRepository
         }
         if (isset($search['archived'])) {
             $qb->andWhere($qb->expr()->eq('r.archived', ':archived'))->setParameter('archived', $search['archived']);
+        }
+        if (\array_key_exists('endTime', $search)) {
+            if (null === $search['endTime']) {
+                $qb->andWhere($qb->expr()->isNull('r.endTime'));
+            } else {
+                $qb->andWhere($qb->expr()->lt('r.endTime', ':endTime'))->setParameter('endTime', $search['endTime']);
+            }
         }
 
         return $qb;

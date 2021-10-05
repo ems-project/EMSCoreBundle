@@ -30,12 +30,12 @@ final class Commands
     public const ENVIRONMENT_LIST = 'emsco:environment:list';
     public const ENVIRONMENT_REBUILD = 'emsco:environment:rebuild';
     public const ENVIRONMENT_REINDEX = 'emsco:environment:reindex';
-    public const ENVIRONMENT_UPDATEMETAFIELD = 'emsco:environment:updatemetafield';
+    public const ENVIRONMENT_UPDATE_META_FIELD = 'emsco:environment:updatemetafield';
 
     public const JOB_RUN = 'emsco:job:run';
 
-    public const MANAGEDALIAS_ALIGN = 'emsco:managedalias:align';
-    public const MANAGEDALIAS_LIST = 'emsco:managedalias:list';
+    public const MANAGED_ALIAS_ALIGN = 'emsco:managedalias:align';
+    public const MANAGED_ALIAS_LIST = 'emsco:managedalias:list';
 
     public const NOTIFICATION_BULK_ACTION = 'emsco:notification:bulk-action';
     public const NOTIFICATION_SEND = 'emsco:notification:send';

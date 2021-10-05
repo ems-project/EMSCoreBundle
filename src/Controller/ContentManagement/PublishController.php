@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use Doctrine\ORM\NonUniqueResultException;
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle\Command\Environment\AlignCommand;
+use EMS\CoreBundle\Command\Environment\EnvironmentAlignCommand;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
@@ -139,11 +139,11 @@ class PublishController extends AbstractController
 
             $query = Json::encode(null === $query ? [] : $query->toArray());
             $command = [
-                AlignCommand::getDefaultName(),
+                EnvironmentAlignCommand::getDefaultName(),
                 $environment->getName(),
                 $form->get('toEnvironment')->getData(),
-                \sprintf('--%s', AlignCommand::OPTION_FORCE),
-                \sprintf('--%s=%s', AlignCommand::OPTION_SEARCH_QUERY, $query),
+                \sprintf('--%s', EnvironmentAlignCommand::OPTION_FORCE),
+                \sprintf('--%s=%s', EnvironmentAlignCommand::OPTION_SEARCH_QUERY, $query),
             ];
 
             $job = $jobService->createCommand($user, \implode(' ', $command));

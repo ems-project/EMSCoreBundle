@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\View;
 
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle\Command\DocumentCommand;
+use EMS\CoreBundle\Command\ContentType\ContentTypeImportCommand;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Nature\ImporterType;
@@ -94,7 +94,7 @@ class ImporterViewType extends ViewType
 
             $command = \sprintf(
                 '%s %s %s%s%s%s%s%s',
-                DocumentCommand::getDefaultName(),
+                ContentTypeImportCommand::getDefaultName(),
                 $view->getContentType()->getName(),
                 $filename,
                 $view->getOptions()['rawImport'] ?? false ? ' --raw' : '',

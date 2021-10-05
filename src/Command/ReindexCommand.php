@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Elasticsearch\Bulker;
@@ -23,7 +24,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ReindexCommand extends EmsCommand
+class ReindexCommand extends AbstractCommand
 {
     /** @var Mapping */
     protected $mapping;
@@ -104,7 +105,6 @@ class ReindexCommand extends EmsCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->formatStyles($output);
         $name = $input->getArgument('name');
         $index = $input->getArgument('index');
         $signData = true === $input->getOption('sign-data');

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -22,7 +23,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Error\Error;
 use ZipArchive;
 
-class ExportDocumentsCommand extends EmsCommand
+class ExportDocumentsCommand extends AbstractCommand
 {
     public const OUTPUT_FILE_ARGUMENT = 'outputFile';
     /** @var LoggerInterface */

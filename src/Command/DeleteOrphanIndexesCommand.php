@@ -2,12 +2,13 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\IndexService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DeleteOrphanIndexesCommand extends EmsCommand
+class DeleteOrphanIndexesCommand extends AbstractCommand
 {
     /** @var IndexService */
     protected $indexService;

@@ -12,7 +12,6 @@ final class Commands
 
     public const REVISION_TASK_CREATE = 'emsco:revision:task:create';
 
-
     public const EMS_ASSET_HEAD = 'ems:asset:head';
     public const EMS_CHECK_ALIASES = 'ems:check:aliases';
     public const EMS_NOTIFICATION_BULK_ACTION = 'ems:notification:bulk-action';

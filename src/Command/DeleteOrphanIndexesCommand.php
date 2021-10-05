@@ -13,7 +13,7 @@ class DeleteOrphanIndexesCommand extends AbstractCommand
     /** @var IndexService */
     protected $indexService;
 
-    protected static $defaultName = Commands::EMS_DELETE_ORPHANS;
+    protected static $defaultName = Commands::DELETE_ORPHANS;
 
     public function __construct(IndexService $indexService)
     {

@@ -21,7 +21,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class BulkActionCommand extends Command
 {
-    protected static $defaultName = Commands::EMS_NOTIFICATION_BULK_ACTION;
+    protected static $defaultName = Commands::NOTIFICATION_BULK_ACTION;
 
     private NotificationService $notificationService;
     private EnvironmentService $environmentService;

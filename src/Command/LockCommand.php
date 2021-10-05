@@ -41,8 +41,7 @@ final class LockCommand extends Command
 
     public const RESULT_SUCCESS = 0;
 
-    public const name = 'ems:contenttype:lock';
-    protected static $defaultName = Commands::EMS_CONTENTTYPE_LOCK;
+    protected static $defaultName = Commands::CONTENTTYPE_LOCK;
 
     public function __construct(ContentTypeRepository $contentTypeRepository, ElasticaService $elasticaService, RevisionRepository $revisionRepository)
     {

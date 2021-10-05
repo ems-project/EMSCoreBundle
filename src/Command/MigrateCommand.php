@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrateCommand extends AbstractCommand
 {
-    protected static $defaultName = Commands::EMS_CONTENTTYPE_MIGRATE;
+    protected static $defaultName = Commands::CONTENTTYPE_MIGRATE;
 
     private RevisionService $revisionService;
     private ElasticaService $elasticaService;

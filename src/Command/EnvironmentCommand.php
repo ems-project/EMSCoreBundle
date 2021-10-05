@@ -15,7 +15,7 @@ class EnvironmentCommand extends Command
     /** @var EnvironmentService */
     private $environmentService;
 
-    protected static $defaultName = Commands::EMS_ENVIRONMENT_LIST;
+    protected static $defaultName = Commands::ENVIRONMENT_LIST;
 
     public function __construct(EnvironmentService $environmentService)
     {

@@ -40,7 +40,7 @@ class IndexFileCommand extends AbstractCommand
     /** @var LoggerInterface */
     protected $logger;
 
-    protected static $defaultName = Commands::EMS_REVISIONS_INDEX_FILE_FIELDS;
+    protected static $defaultName = Commands::REVISION_INDEX_FILE_FIELDS;
 
     public function __construct(LoggerInterface $logger, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
     {

@@ -49,7 +49,7 @@ class ReindexCommand extends AbstractCommand
     /** @var string */
     private $defaultBulkSize;
 
-    protected static $defaultName = Commands::EMS_ENVIRONMENT_REINDEX;
+    protected static $defaultName = Commands::ENVIRONMENT_REINDEX;
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container, string $instanceId, DataService $dataService, Bulker $bulker, string $defaultBulkSize)
     {

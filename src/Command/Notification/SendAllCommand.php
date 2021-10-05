@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class SendAllCommand extends Command
 {
-    protected static $defaultName = Commands::EMS_NOTIFICATION_SEND;
+    protected static $defaultName = Commands::NOTIFICATION_SEND;
 
     private Registry $doctrine;
     private NotificationService $notificationService;

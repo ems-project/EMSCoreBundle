@@ -23,7 +23,7 @@ class ExtractAssetCommand extends AbstractCommand
     /** @var LoggerInterface */
     protected $logger;
 
-    protected static $defaultName = Commands::EMS_ASSET_EXTRACT;
+    protected static $defaultName = Commands::ASSET_EXTRACT;
 
     public function __construct(LoggerInterface $logger, AssetExtractorService $extractorService, StorageManager $storageManager)
     {

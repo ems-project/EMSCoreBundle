@@ -27,7 +27,7 @@ class UpdateMetaFieldCommand extends AbstractCommand
     /** @var LoggerInterface */
     protected $logger;
 
-    protected static $defaultName = Commands::EMS_ENVIRONMENT_UPDATEMETAFIELD;
+    protected static $defaultName = Commands::ENVIRONMENT_UPDATEMETAFIELD;
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, DataService $dataService)
     {

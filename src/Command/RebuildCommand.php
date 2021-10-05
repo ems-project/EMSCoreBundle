@@ -43,7 +43,7 @@ class RebuildCommand extends AbstractCommand
     /** @var string */
     private $defaultBulkSize;
 
-    protected static $defaultName = Commands::EMS_ENVIRONMENT_REBUILD;
+    protected static $defaultName = Commands::ENVIRONMENT_REBUILD;
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId, string $defaultBulkSize)
     {

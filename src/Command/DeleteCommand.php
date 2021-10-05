@@ -39,7 +39,7 @@ class DeleteCommand extends Command
     /** @var EnvironmentService */
     private $environmentService;
 
-    protected static $defaultName = Commands::EMS_CONTENTTYPE_DELETE;
+    protected static $defaultName = Commands::CONTENTTYPE_DELETE;
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, IndexService $indexService, Mapping $mapping, ContainerInterface $container, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
     {

@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class AliasesCheckCommand extends Command
 {
-    protected static $defaultName = Commands::EMS_CHECK_ALIASES;
+    protected static $defaultName = Commands::CHECK_ALIASES;
 
     private const OPTION_REPAIR = 'repair';
     private EnvironmentService $environmentService;
@@ -72,7 +72,7 @@ final class AliasesCheckCommand extends Command
             $fakeUser = new User();
             $fakeUser->setUsername('SYSTEM_ALIAS_CHECKER');
             $command = \join(' ', [
-                Commands::EMS_ENVIRONMENT_REBUILD,
+                Commands::ENVIRONMENT_REBUILD,
                 $environment->getName(),
             ]);
             $this->jobService->createCommand($fakeUser, $command);

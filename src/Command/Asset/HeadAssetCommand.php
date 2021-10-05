@@ -15,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class HeadAssetCommand extends Command
 {
-    protected static $defaultName = Commands::EMS_ASSET_HEAD;
+    protected static $defaultName = Commands::ASSET_HEAD;
     protected FileService $fileService;
     protected LoggerInterface $logger;
     private SymfonyStyle $io;

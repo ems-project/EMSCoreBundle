@@ -60,7 +60,7 @@ final class RecomputeCommand extends Command
     private const OPTION_QUERY = 'query';
     private const LOCK_BY = 'SYSTEM_RECOMPUTE';
 
-    protected static $defaultName = Commands::EMS_CONTENTTYPE_RECOMPUTE;
+    protected static $defaultName = Commands::CONTENTTYPE_RECOMPUTE;
 
     public function __construct(
         DataService $dataService,

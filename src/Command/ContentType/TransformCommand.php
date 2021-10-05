@@ -33,7 +33,7 @@ final class TransformCommand extends AbstractCommand
     public const OPTION_DRY_RUN = 'dry-run';
     public const OPTION_USER = 'user';
 
-    protected static $defaultName = Commands::CONTENT_TYPE_TRANSFORM;
+    protected static $defaultName = Commands::CONTENTTYPE_TRANSFORM;
 
     public function __construct(
         RevisionSearcher $revisionSearcher,

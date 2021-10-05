@@ -33,7 +33,7 @@ final class UnlockRevisionsCommand extends Command
     /** @var bool */
     private $all;
 
-    protected static $defaultName = Commands::EMS_REVISIONS_UNLOCK;
+    protected static $defaultName = Commands::REVISION_UNLOCK;
 
     private const ARGUMENT_USER = 'user';
     private const ARGUMENT_CONTENT_TYPE = 'contentType';

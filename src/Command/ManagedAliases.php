@@ -18,7 +18,7 @@ class ManagedAliases extends Command
     /** @var AliasService */
     protected $aliasService;
 
-    protected static $defaultName = Commands::EMS_MANAGEDALIAS_LIST;
+    protected static $defaultName = Commands::MANAGEDALIAS_LIST;
 
     public function __construct(LoggerInterface $logger, AliasService $aliasService)
     {

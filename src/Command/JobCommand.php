@@ -21,7 +21,7 @@ class JobCommand extends Command
      */
     private $dateFormat;
 
-    protected static $defaultName = Commands::EMS_JOB_RUN;
+    protected static $defaultName = Commands::JOB_RUN;
 
     public function __construct(JobService $jobService, string $dateFormat)
     {

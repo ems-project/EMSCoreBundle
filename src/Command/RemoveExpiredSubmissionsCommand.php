@@ -18,7 +18,7 @@ class RemoveExpiredSubmissionsCommand extends Command implements CommandInterfac
     /** @var LoggerInterface */
     protected $logger;
 
-    protected static $defaultName = Commands::EMS_SUBMISSIONS_REMOVE_EXPIRED;
+    protected static $defaultName = Commands::SUBMISSION_REMOVE_EXPIRED;
 
     public function __construct(FormSubmissionService $formSubmissionService, LoggerInterface $logger)
     {

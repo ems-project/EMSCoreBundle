@@ -19,7 +19,7 @@ class EmailSubmissionsCommand extends Command implements CommandInterface
     protected LoggerInterface $logger;
     protected MailerService $mailerService;
 
-    protected static $defaultName = Commands::EMS_SUBMISSIONS_EMAIL;
+    protected static $defaultName = Commands::SUBMISSION_EMAIL;
 
     private const TITLE = 'Form submissions';
 

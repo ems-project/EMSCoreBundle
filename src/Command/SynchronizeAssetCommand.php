@@ -33,7 +33,7 @@ class SynchronizeAssetCommand extends AbstractCommand
     /** @var LoggerInterface */
     protected $logger;
 
-    protected static $defaultName = Commands::EMS_ASSET_SYNCHRONIZE;
+    protected static $defaultName = Commands::ASSET_SYNCHRONIZE;
 
     public function __construct(LoggerInterface $logger, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
     {

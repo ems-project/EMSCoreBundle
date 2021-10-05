@@ -35,7 +35,7 @@ final class RevisionCopyCommand extends Command implements CommandInterface
     /** @var Revision[] */
     private $copies = [];
 
-    protected static $defaultName = Commands::EMS_REVISION_COPY;
+    protected static $defaultName = Commands::REVISION_COPY;
 
     private const ARG_ENVIRONMENT_NAME = 'environment';
     private const ARG_JSON_SEARCH_QUERY = 'json_search_query';

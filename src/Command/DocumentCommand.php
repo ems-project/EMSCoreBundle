@@ -30,7 +30,7 @@ class DocumentCommand extends Command
     private const OPTION_BUSINESS_KEY = 'business-key';
 
     /** @var string */
-    protected static $defaultName = Commands::EMS_CONTENTTYPE_IMPORT;
+    protected static $defaultName = Commands::CONTENTTYPE_IMPORT;
     /** @var DocumentService */
     private $documentService;
     /** @var ContentTypeService */

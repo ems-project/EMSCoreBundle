@@ -43,7 +43,7 @@ class ExportDocumentsCommand extends AbstractCommand
     /** @var ElasticaService */
     private $elasticaService;
 
-    protected static $defaultName = Commands::EMS_CONTENTTYPE_EXPORT;
+    protected static $defaultName = Commands::CONTENTTYPE_EXPORT;
 
     public function __construct(LoggerInterface $logger, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, RequestRuntime $runtime, ElasticaService $elasticaService, string $instanceId)
     {

@@ -17,7 +17,7 @@ class AlignManagedAliases extends Command
     /** @var AliasService */
     protected $aliasService;
 
-    protected static $defaultName = Commands::EMS_MANAGEDALIAS_ALIGN;
+    protected static $defaultName = Commands::MANAGEDALIAS_ALIGN;
 
     public function __construct(LoggerInterface $logger, AliasService $aliasService)
     {

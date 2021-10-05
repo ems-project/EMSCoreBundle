@@ -15,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CreateEnvironmentCommand extends Command
 {
-    protected static $defaultName = Commands::EMS_ENVIRONMENT_CREATE;
+    protected static $defaultName = Commands::ENVIRONMENT_CREATE;
 
     /** @var LoggerInterface */
     private $logger;

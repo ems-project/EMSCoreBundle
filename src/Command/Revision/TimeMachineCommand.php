@@ -26,7 +26,7 @@ final class TimeMachineCommand extends Command
     private ObjectManager $em;
     private IndexService $indexService;
 
-    protected static $defaultName = Commands::EMS_REVISION_TIME_MACHINE;
+    protected static $defaultName = Commands::REVISION_TIME_MACHINE;
 
     private const SYSTEM_TIME_MACHINE = 'SYSTEM_TIME_MACHINE';
     public const RESULT_NOT_FOUND = 1;

@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ActivateContentTypeCommand extends Command
 {
-    protected static $defaultName = Commands::EMS_CONTENTTYPE_ACTIVATE;
+    protected static $defaultName = Commands::CONTENTTYPE_ACTIVATE;
 
     /** @var ContentTypeService */
     protected $contentTypeService;

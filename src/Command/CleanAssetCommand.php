@@ -23,7 +23,7 @@ class CleanAssetCommand extends AbstractCommand
     /** @var LoggerInterface */
     protected $logger;
 
-    protected static $defaultName = Commands::EMS_ASSET_CLEAN;
+    protected static $defaultName = Commands::ASSET_CLEAN;
 
     public function __construct(LoggerInterface $logger, Registry $doctrine, FileService $fileService)
     {

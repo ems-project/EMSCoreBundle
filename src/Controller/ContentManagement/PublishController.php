@@ -6,7 +6,6 @@ use Doctrine\ORM\NonUniqueResultException;
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Command\Environment\AlignCommand;
-use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
@@ -140,7 +139,7 @@ class PublishController extends AbstractController
 
             $query = Json::encode(null === $query ? [] : $query->toArray());
             $command = [
-                Commands::ENVIRONMENT_ALIGN,
+                AlignCommand::getDefaultName(),
                 $environment->getName(),
                 $form->get('toEnvironment')->getData(),
                 \sprintf('--%s', AlignCommand::OPTION_FORCE),

@@ -30,7 +30,7 @@ class CleanDeletedContentTypeCommand extends Command
     /** @var ContainerInterface */
     protected $container;
 
-    protected static $defaultName = Commands::EMS_CONTENTTYPE_CLEAN;
+    protected static $defaultName = Commands::CONTENTTYPE_CLEAN;
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container)
     {

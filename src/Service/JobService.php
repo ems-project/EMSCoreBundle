@@ -4,7 +4,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
-use EMS\CoreBundle\Command\JobOutput;
+use EMS\CoreBundle\Core\Job\JobOutput;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\JobRepository;

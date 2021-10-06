@@ -1,6 +1,6 @@
 <?php
 
-namespace EMS\CoreBundle\Command;
+namespace EMS\CoreBundle\Core\Job;
 
 use EMS\CoreBundle\Repository\JobRepository;
 use Symfony\Component\Console\Output\Output;
@@ -21,7 +21,7 @@ class JobOutput extends Output
     {
         $job = $this->jobRepository->findById($this->jobId);
         $job->setStatus($message);
-        $job->setOutput($job->getOutput().$this->getFormatter()->format($message).($newline ? PHP_EOL : ''));
+        $job->setOutput($job->getOutput().$this->getFormatter()->format($message).($newline ? \PHP_EOL : ''));
 
         $this->jobRepository->save($job);
     }

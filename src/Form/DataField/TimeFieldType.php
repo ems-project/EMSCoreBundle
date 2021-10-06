@@ -183,7 +183,7 @@ class TimeFieldType extends DataFieldType
      */
     public function getParent()
     {
-        return IconTextType    ::class;
+        return IconTextType::class;
     }
 
     /**

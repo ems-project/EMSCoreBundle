@@ -68,7 +68,7 @@
 					{% endif %}
 					{% if form.publish_version is defined %}
 						<button type="button" id="btn-publish-version" class="btn-primary btn-sm btn"><span class="glyphicon glyphicon-open"></span>&nbsp;
-							{{ form.publish_version.vars.label|trans(form.publish_version.vars.label_translation_parameters|default([])) }}
+							{{ form.publish_version.vars.label|trans(form.publish_version.vars.label_translation_parameters|default([]), form.publish_version.vars.translation_domain) }}
 						</button>
 						<div id="publish-version-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="publish-version-modal">
 							<div class="modal-dialog modal-sm" role="document">

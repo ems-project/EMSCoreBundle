@@ -117,16 +117,14 @@ class RevisionType extends AbstractType
             if (null !== $environment && null !== $contentType && $contentType->hasVersionTags()) {
                 $builder
                     ->add('publish_version_tags', ChoiceType::class, [
-                        'label' => 'form.form.revision-type.publish-version-tags-label',
+                        'translation_domain' => false,
                         'placeholder' => $revision->getOuuid() ? 'Silent' : null,
                         'choices' => \array_combine($contentType->getVersionTags(), $contentType->getVersionTags()),
                         'mapped' => false,
                         'required' => false,
-                        'label_translation_parameters' => [
-                            '%environment%' => $environment->getLabel(),
-                        ],
                     ])
                     ->add('publish_version', SubmitEmsType::class, [
+                        'translation_domain' => EMSCoreExtension::TRANS_DOMAIN,
                         'attr' => ['class' => 'btn btn-primary btn-sm'],
                         'icon' => 'glyphicon glyphicon-open',
                         'label' => 'form.form.revision-type.publish-label',

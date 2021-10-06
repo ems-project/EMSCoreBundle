@@ -1,11 +1,5 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
-{%- block icon -%}
-    <div class="text-center">
-        <i class="{{ data.taskCurrent.statusIcon }}"></i>
-    </div>
-{%- endblock -%}
-
 {%- block title -%}
     <a href="#" class="task-modal"
         data-url="{{ path('ems_core_task_ajax_modal_task', { 'revisionId': data.id, 'taskId': data.taskCurrent.id }) }}"
@@ -18,7 +12,8 @@
 {%- block assignee -%}{{- data.taskCurrent.assignee|displayname -}}{%- endblock -%}
 
 {% block status %}
-    {{ "task.status.#{data.taskCurrent.status}"|trans }}
+    <i class="{{ data.taskCurrent.statusIcon }}"></i>
+    <span class="text-{{- data.taskCurrent.statusText -}}">{{ "task.status.#{data.taskCurrent.status}"|trans }}</span>
 {% endblock %}
 
 {%- block deadline -%}

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Environment;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
@@ -14,63 +16,37 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Service\DataService;
-use EMS\CoreBundle\Service\Mapping;
-use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EnvironmentReindexCommand extends AbstractCommand
+final class EnvironmentReindexCommand extends AbstractCommand
 {
-    /** @var Mapping */
-    protected $mapping;
-    /** @var Registry */
-    protected $doctrine;
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var ContainerInterface */
-    protected $container;
-    /** @var DataService */
-    protected $dataService;
-    /** @var string */
-    private $instanceId;
-    /** @var int */
-    private $count;
-    /** @var int */
-    private $deleted;
-    /** @var int */
-    private $error;
-    /** @var Bulker */
-    private $bulker;
-    /** @var string */
-    private $defaultBulkSize;
+    private Registry $doctrine;
+    private Bulker $bulker;
+    private string $defaultBulkSize;
+
+    private int $count = 0;
+    private int $deleted = 0;
+    private int $error = 0;
 
     protected static $defaultName = Commands::ENVIRONMENT_REINDEX;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container, string $instanceId, DataService $dataService, Bulker $bulker, string $defaultBulkSize)
-    {
+    public function __construct(
+        Registry $doctrine,
+        Bulker $bulker,
+        string $defaultBulkSize
+    ) {
+        parent::__construct();
         $this->doctrine = $doctrine;
-        $this->logger = $logger;
-        $this->mapping = $mapping;
-        $this->container = $container;
-        $this->instanceId = $instanceId;
-        $this->dataService = $dataService;
         $this->bulker = $bulker;
         $this->defaultBulkSize = $defaultBulkSize;
-        parent::__construct();
-
-        $this->count = 0;
-        $this->deleted = 0;
-        $this->error = 0;
     }
 
     protected function configure(): void
     {
-        $this->logger->info('Configure the ReindexCommand');
         $this
             ->setDescription('Reindex an environment in it\'s existing index')
             ->addArgument(
@@ -98,8 +74,7 @@ class EnvironmentReindexCommand extends AbstractCommand
                 'bulk-size',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Number of item that will be indexed together during the same elasticsearch operation',
-                $this->defaultBulkSize
+                'Number of item that will be indexed together during the same elasticsearch operation'
             );
     }
 
@@ -153,7 +128,7 @@ class EnvironmentReindexCommand extends AbstractCommand
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
 
-        $em->getConnection()->getConfiguration()->setSQLLogger(null);
+        $em->getConnection()->getConfiguration()->setSQLLogger();
 
         /** @var EnvironmentRepository $envRepo */
         $envRepo = $em->getRepository('EMSCoreBundle:Environment');

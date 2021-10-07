@@ -8,27 +8,26 @@ use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class ContentTypeLockCommand extends Command
+final class ContentTypeLockCommand extends AbstractCommand
 {
-    private string $by;
-    private ContentType $contentType;
     private ContentTypeRepository $contentTypeRepository;
     private ElasticaService $elasticaService;
-    private bool $force;
-    private SymfonyStyle $io;
-    private string $query;
     private RevisionRepository $revisionRepository;
+
+    private string $by;
+    private ContentType $contentType;
+    private bool $force;
+    private string $query;
     private \DateTime $until;
 
     private const ARGUMENT_CONTENT_TYPE = 'contentType';
@@ -43,10 +42,12 @@ final class ContentTypeLockCommand extends Command
 
     protected static $defaultName = Commands::CONTENTTYPE_LOCK;
 
-    public function __construct(ContentTypeRepository $contentTypeRepository, ElasticaService $elasticaService, RevisionRepository $revisionRepository)
+    public function __construct(
+        ContentTypeRepository $contentTypeRepository,
+        ElasticaService $elasticaService,
+        RevisionRepository $revisionRepository)
     {
         parent::__construct();
-
         $this->contentTypeRepository = $contentTypeRepository;
         $this->elasticaService = $elasticaService;
         $this->revisionRepository = $revisionRepository;
@@ -68,7 +69,7 @@ final class ContentTypeLockCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->io = new SymfonyStyle($input, $output);
+        parent::initialize($input, $output);
         $this->io->title('Content-type lock command');
 
         $timeArgument = $input->getArgument(self::ARGUMENT_TIME);

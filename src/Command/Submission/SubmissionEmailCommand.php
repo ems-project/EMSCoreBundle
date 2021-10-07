@@ -1,34 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Submission;
 
-use EMS\CommonBundle\Command\CommandInterface;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SubmissionEmailCommand extends Command implements CommandInterface
+final class SubmissionEmailCommand extends AbstractCommand
 {
-    protected FormSubmissionService $formSubmissionService;
-    protected LoggerInterface $logger;
-    protected MailerService $mailerService;
+    private FormSubmissionService $formSubmissionService;
+    private MailerService $mailerService;
 
     protected static $defaultName = Commands::SUBMISSION_EMAIL;
 
     private const TITLE = 'Form submissions';
 
-    public function __construct(FormSubmissionService $formSubmissionService, LoggerInterface $logger, MailerService $mailerService)
+    public function __construct(FormSubmissionService $formSubmissionService, MailerService $mailerService)
     {
-        $this->formSubmissionService = $formSubmissionService;
-        $this->logger = $logger;
-        $this->mailerService = $mailerService;
         parent::__construct();
+        $this->formSubmissionService = $formSubmissionService;
+        $this->mailerService = $mailerService;
     }
 
     protected function configure(): void

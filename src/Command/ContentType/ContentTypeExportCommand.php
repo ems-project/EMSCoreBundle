@@ -1,19 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\ContentType;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Twig\RequestRuntime;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\TemplateService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,39 +24,34 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Error\Error;
 use ZipArchive;
 
-class ContentTypeExportCommand extends AbstractCommand
+final class ContentTypeExportCommand extends AbstractCommand
 {
+    private DataService $dataService;
+    private EnvironmentService $environmentService;
+    private ContentTypeService $contentTypeService;
+    private TemplateService $templateService;
+    private RequestRuntime $runtime;
+    private ElasticaService $elasticaService;
+
     public const OUTPUT_FILE_ARGUMENT = 'outputFile';
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var DataService */
-    protected $dataService;
-    /** @var EnvironmentService */
-    protected $environmentService;
-    /** @var ContentTypeService */
-    protected $contentTypeService;
-    /** @var TemplateService */
-    protected $templateService;
-    /** @var RequestRuntime */
-    protected $runtime;
-    /** @var string */
-    protected $instanceId;
-    /** @var ElasticaService */
-    private $elasticaService;
 
     protected static $defaultName = Commands::CONTENTTYPE_EXPORT;
 
-    public function __construct(LoggerInterface $logger, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, RequestRuntime $runtime, ElasticaService $elasticaService, string $instanceId)
-    {
-        $this->logger = $logger;
+    public function __construct(
+        TemplateService $templateService,
+        DataService $dataService,
+        ContentTypeService $contentTypeService,
+        EnvironmentService $environmentService,
+        RequestRuntime $runtime,
+        ElasticaService $elasticaService
+    ) {
+        parent::__construct();
         $this->templateService = $templateService;
         $this->dataService = $dataService;
         $this->environmentService = $environmentService;
-        $this->instanceId = $instanceId;
         $this->contentTypeService = $contentTypeService;
         $this->runtime = $runtime;
         $this->elasticaService = $elasticaService;
-        parent::__construct();
     }
 
     protected function configure(): void

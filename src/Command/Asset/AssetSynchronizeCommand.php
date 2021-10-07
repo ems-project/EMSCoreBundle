@@ -1,54 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Asset;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Storage\NotFoundException;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
-use EMS\CoreBundle\Service\AssetExtractorService;
-use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class AssetSynchronizeCommand extends AbstractCommand
+final class AssetSynchronizeCommand extends AbstractCommand
 {
-    /** @var Registry */
-    protected $doctrine;
-    /** @var ContentTypeService */
-    protected $contentTypeService;
-    /** @var AssetExtractorService */
-    protected $extractorService;
-    /** @var string */
-    protected $databaseName;
-    /** @var string */
-    protected $databaseDriver;
-    /** @var FileService */
-    protected $fileService;
-    /** @var LoggerInterface */
-    protected $logger;
+    private Registry $doctrine;
+    private FileService $fileService;
 
     protected static $defaultName = Commands::ASSET_SYNCHRONIZE;
 
-    public function __construct(LoggerInterface $logger, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
+    public function __construct(Registry $doctrine, FileService $fileService)
     {
-        $this->doctrine = $doctrine;
-        $this->contentTypeService = $contentTypeService;
-        $this->extractorService = $extractorService;
-        $this->fileService = $fileService;
-        $this->logger = $logger;
         parent::__construct();
+        $this->doctrine = $doctrine;
+        $this->fileService = $fileService;
     }
 
     protected function configure(): void
     {
-        $this
-            ->setDescription('Synchronize registered assets on storage services');
+        $this->setDescription('Synchronize registered assets on storage services');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

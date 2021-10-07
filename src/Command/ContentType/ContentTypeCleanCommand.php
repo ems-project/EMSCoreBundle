@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\ContentType;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
@@ -12,33 +15,19 @@ use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
-use EMS\CoreBundle\Service\Mapping;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class ContentTypeCleanCommand extends Command
+final class ContentTypeCleanCommand extends AbstractCommand
 {
-    /** @var Mapping */
-    protected $mapping;
-    /** @var Registry */
-    protected $doctrine;
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var ContainerInterface */
-    protected $container;
+    private Registry $doctrine;
 
     protected static $defaultName = Commands::CONTENTTYPE_CLEAN;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container)
+    public function __construct(Registry $doctrine)
     {
-        $this->doctrine = $doctrine;
-        $this->logger = $logger;
-        $this->mapping = $mapping;
-        $this->container = $container;
         parent::__construct();
+        $this->doctrine = $doctrine;
     }
 
     protected function configure(): void

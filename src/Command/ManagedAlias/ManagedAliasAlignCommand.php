@@ -1,29 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\ManagedAlias;
 
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\AliasService;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ManagedAliasAlignCommand extends Command
+final class ManagedAliasAlignCommand extends AbstractCommand
 {
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var AliasService */
-    protected $aliasService;
+    private AliasService $aliasService;
 
     protected static $defaultName = Commands::MANAGED_ALIAS_ALIGN;
 
-    public function __construct(LoggerInterface $logger, AliasService $aliasService)
+    public function __construct(AliasService $aliasService)
     {
-        $this->logger = $logger;
-        $this->aliasService = $aliasService;
         parent::__construct();
+        $this->aliasService = $aliasService;
     }
 
     protected function configure(): void

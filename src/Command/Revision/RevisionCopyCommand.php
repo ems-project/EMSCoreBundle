@@ -5,33 +5,24 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Revision;
 
 use Elastica\Scroll;
-use EMS\CommonBundle\Command\CommandInterface;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\Revision\Copy\CopyContext;
 use EMS\CoreBundle\Service\Revision\Copy\CopyContextFactory;
 use EMS\CoreBundle\Service\Revision\Copy\CopyService;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class RevisionCopyCommand extends Command implements CommandInterface
+final class RevisionCopyCommand extends AbstractCommand
 {
-    /** @var CopyContextFactory */
-    private $copyContextFactory;
-    /** @var CopyService */
-    private $copyService;
-    /** @var ElasticsearchService */
-    private $elasticsearchService;
-    /** @var ElasticaService */
-    private $elasticaService;
-    /** @var SymfonyStyle */
-    private $io;
+    private CopyContextFactory $copyContextFactory;
+    private CopyService $copyService;
+    private ElasticaService $elasticaService;
+
     /** @var Revision[] */
     private $copies = [];
 
@@ -45,13 +36,11 @@ final class RevisionCopyCommand extends Command implements CommandInterface
     public function __construct(
         CopyContextFactory $copyRequestFactory,
         CopyService $copyService,
-        ElasticsearchService $elasticsearchService,
         ElasticaService $elasticaService
     ) {
         parent::__construct();
         $this->copyContextFactory = $copyRequestFactory;
         $this->copyService = $copyService;
-        $this->elasticsearchService = $elasticsearchService;
         $this->elasticaService = $elasticaService;
     }
 
@@ -85,7 +74,7 @@ final class RevisionCopyCommand extends Command implements CommandInterface
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->io = new SymfonyStyle($input, $output);
+        parent::initialize($input, $output);
         $this->io->title('Copy revisions');
     }
 

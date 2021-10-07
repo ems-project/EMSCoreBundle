@@ -4,49 +4,37 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Revision;
 
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class RevisionUnlockCommand extends Command
+final class RevisionUnlockCommand extends AbstractCommand
 {
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var DataService */
-    private $dataService;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var SymfonyStyle */
-    private $io;
-    /** @var string */
-    private $user;
-    /** @var ContentType */
-    private $contentType;
-    /** @var bool */
-    private $all;
+    private DataService $dataService;
+    private ContentTypeService $contentTypeService;
 
-    protected static $defaultName = Commands::REVISION_UNLOCK;
+    private string $user;
+    private ContentType $contentType;
+    private bool $all;
 
     private const ARGUMENT_USER = 'user';
     private const ARGUMENT_CONTENT_TYPE = 'contentType';
     private const OPTION_ALL = 'all';
     private const OPTION_STRICT = 'strict';
 
-    public function __construct(LoggerInterface $logger, DataService $dataService, ContentTypeService $contentTypeService)
+    protected static $defaultName = Commands::REVISION_UNLOCK;
+
+    public function __construct(DataService $dataService, ContentTypeService $contentTypeService)
     {
-        $this->logger = $logger;
+        parent::__construct();
         $this->dataService = $dataService;
         $this->contentTypeService = $contentTypeService;
-
-        parent::__construct();
     }
 
     protected function configure(): void
@@ -80,9 +68,10 @@ final class RevisionUnlockCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->io = new SymfonyStyle($input, $output);
+        parent::initialize($input, $output);
+
         $this->io->title('Unlock revisions');
-        $this->all = (true === $input->getOption(self::OPTION_ALL)) ?? false;
+        $this->all = $this->getOptionBool(self::OPTION_ALL);
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void

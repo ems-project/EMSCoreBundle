@@ -4,25 +4,22 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Revision;
 
-use EMS\CommonBundle\Command\CommandInterface;
 use EMS\CommonBundle\Common\Standard\DateTime;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Command\ContentType\ContentTypeLockCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class RevisionArchiveCommand extends Command implements CommandInterface
+final class RevisionArchiveCommand extends AbstractCommand
 {
-    private SymfonyStyle $style;
     private ContentTypeService $contentTypeService;
     private RevisionService $revisionService;
 
@@ -39,8 +36,11 @@ final class RevisionArchiveCommand extends Command implements CommandInterface
     public const OPTION_MODIFIED_BEFORE = 'modified-before';
     public const OPTION_BATCH_SIZE = 'batch-size';
 
-    public function __construct(ContentTypeService $contentTypeService, RevisionService $revisionService, int $defaultBulkSize)
-    {
+    public function __construct(
+        ContentTypeService $contentTypeService,
+        RevisionService $revisionService,
+        int $defaultBulkSize
+    ) {
         parent::__construct();
         $this->contentTypeService = $contentTypeService;
         $this->revisionService = $revisionService;
@@ -59,8 +59,8 @@ final class RevisionArchiveCommand extends Command implements CommandInterface
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->style = new SymfonyStyle($input, $output);
-        $this->style->title('EMS - Revision - Archive');
+        parent::initialize($input, $output);
+        $this->io->title('EMS - Revision - Archive');
 
         $batchSize = \intval($input->getOption('batch-size'));
         if ($batchSize > 0) {
@@ -82,7 +82,7 @@ final class RevisionArchiveCommand extends Command implements CommandInterface
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $progress = $this->style->createProgressBar();
+        $progress = $this->io->createProgressBar();
 
         $lock = $this->lock($output, $this->contentType, \boolval($input->getOption('force')));
         if (ContentTypeLockCommand::RESULT_SUCCESS !== $lock) {
@@ -101,7 +101,7 @@ final class RevisionArchiveCommand extends Command implements CommandInterface
 
         $progress->finish();
 
-        $this->style->success(\sprintf('Archived %d revisions', $countArchived));
+        $this->io->success(\sprintf('Archived %d revisions', $countArchived));
 
         return 1;
     }
@@ -123,7 +123,7 @@ final class RevisionArchiveCommand extends Command implements CommandInterface
                 $output
             );
         } catch (\Throwable $e) {
-            $this->style->error(\sprintf('Lock failed! (%s)', $e->getMessage()));
+            $this->io->error(\sprintf('Lock failed! (%s)', $e->getMessage()));
 
             return 0;
         }

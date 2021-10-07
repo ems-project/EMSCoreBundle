@@ -8,26 +8,24 @@ use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class NotificationBulkActionCommand extends Command
+final class NotificationBulkActionCommand extends AbstractCommand
 {
-    protected static $defaultName = Commands::NOTIFICATION_BULK_ACTION;
-
     private NotificationService $notificationService;
     private EnvironmentService $environmentService;
     private ElasticaService $elasticaService;
     private RevisionService $revisionService;
-    private SymfonyStyle $io;
+
+    protected static $defaultName = Commands::NOTIFICATION_BULK_ACTION;
 
     public function __construct(
         NotificationService $notificationService,
@@ -55,7 +53,7 @@ final class NotificationBulkActionCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->io = new SymfonyStyle($input, $output);
+        parent::initialize($input, $output);
         $this->io->title('Bulk action notifications');
     }
 

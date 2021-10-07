@@ -4,22 +4,20 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Environment;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\PublishService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EnvironmentAlignCommand extends AbstractCommand
+final class EnvironmentAlignCommand extends AbstractCommand
 {
     private RevisionSearcher $revisionSearcher;
-    private LoggerInterface $logger;
     private EnvironmentService $environmentService;
     private PublishService $publishService;
 
@@ -42,13 +40,11 @@ class EnvironmentAlignCommand extends AbstractCommand
 
     public function __construct(
         RevisionSearcher $revisionSearcher,
-        LoggerInterface $logger,
         EnvironmentService $environmentService,
         PublishService $publishService
     ) {
         parent::__construct();
         $this->revisionSearcher = $revisionSearcher;
-        $this->logger = $logger;
         $this->environmentService = $environmentService;
         $this->publishService = $publishService;
     }

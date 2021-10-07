@@ -1,25 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Job;
 
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\JobService;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-class JobRunCommand extends Command
+final class JobRunCommand extends AbstractCommand
 {
-    /** @var JobService */
-    private $jobService;
-    /** @var SymfonyStyle */
-    private $io;
-    /**
-     * @var string
-     */
-    private $dateFormat;
+    private JobService $jobService;
+
+    private string $dateFormat;
 
     protected static $defaultName = Commands::JOB_RUN;
 
@@ -40,11 +36,6 @@ class JobRunCommand extends Command
                 InputOption::VALUE_NONE,
                 'Shows the job\'s output at the end of the execution'
             );
-    }
-
-    protected function initialize(InputInterface $input, OutputInterface $output): void
-    {
-        $this->io = new SymfonyStyle($input, $output);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

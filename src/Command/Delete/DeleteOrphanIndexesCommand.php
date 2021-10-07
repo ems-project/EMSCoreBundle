@@ -1,24 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Delete;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\IndexService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DeleteOrphanIndexesCommand extends AbstractCommand
+final class DeleteOrphanIndexesCommand extends AbstractCommand
 {
-    /** @var IndexService */
-    protected $indexService;
+    private IndexService $indexService;
 
     protected static $defaultName = Commands::DELETE_ORPHANS;
 
     public function __construct(IndexService $indexService)
     {
-        $this->indexService = $indexService;
         parent::__construct();
+        $this->indexService = $indexService;
     }
 
     protected function configure(): void

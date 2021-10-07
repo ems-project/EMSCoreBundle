@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\ContentType;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformer;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformerInterface;

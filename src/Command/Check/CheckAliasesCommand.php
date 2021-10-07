@@ -4,34 +4,33 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Check;
 
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class CheckAliasesCommand extends Command
+final class CheckAliasesCommand extends AbstractCommand
 {
-    protected static $defaultName = Commands::CHECK_ALIASES;
-
-    private const OPTION_REPAIR = 'repair';
     private EnvironmentService $environmentService;
     private AliasService $aliasService;
     private JobService $jobService;
-    private SymfonyStyle $io;
     private bool $repair = false;
+
+    private const OPTION_REPAIR = 'repair';
+
+    protected static $defaultName = Commands::CHECK_ALIASES;
 
     public function __construct(EnvironmentService $environmentService, AliasService $aliasService, JobService $jobService)
     {
+        parent::__construct();
         $this->environmentService = $environmentService;
         $this->aliasService = $aliasService;
         $this->jobService = $jobService;
-        parent::__construct();
     }
 
     protected function configure(): void
@@ -43,8 +42,8 @@ final class CheckAliasesCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->io = new SymfonyStyle($input, $output);
-        $this->repair = true === $input->getOption(self::OPTION_REPAIR);
+        parent::initialize($input, $output);
+        $this->repair = $this->getOptionBool(self::OPTION_REPAIR);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

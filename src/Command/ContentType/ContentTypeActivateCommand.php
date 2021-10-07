@@ -5,69 +5,59 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\ContentType;
 
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\ContentTypeService;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-class ContentTypeActivateCommand extends Command
+final class ContentTypeActivateCommand extends AbstractCommand
 {
-    protected static $defaultName = Commands::CONTENTTYPE_ACTIVATE;
-
-    /** @var ContentTypeService */
-    protected $contentTypeService;
-    /** @var SymfonyStyle */
-    private $io;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var bool */
-    private $deactivate;
+    private ContentTypeService $contentTypeService;
+    private bool $deactivate;
 
     public const ARGUMENT_CONTENTTYPES = 'contenttypes';
     public const OPTION_ALL = 'all';
     public const DEACTIVATE = 'deactivate';
     public const FORCE = 'force';
 
-    public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService)
+    protected static $defaultName = Commands::CONTENTTYPE_ACTIVATE;
+
+    public function __construct(ContentTypeService $contentTypeService)
     {
-        $this->contentTypeService = $contentTypeService;
-        $this->logger = $logger;
         parent::__construct();
+        $this->contentTypeService = $contentTypeService;
     }
 
     protected function configure(): void
     {
         parent::configure();
-        $fileNames = \implode(', ', $this->contentTypeService->getAllNames());
         $this
             ->addArgument(
                 self::ARGUMENT_CONTENTTYPES,
                 InputArgument::IS_ARRAY,
-                \sprintf('Optional array of contenttypes to create. Allowed values: [%s]', $fileNames)
+                'Optional array of contenttypes to create.'
             )
             ->addOption(
                 self::OPTION_ALL,
                 null,
                 InputOption::VALUE_NONE,
-                \sprintf('Make all contenttypes: [%s]', $fileNames)
+                'Make all contenttypes: [%s]'
             )
             ->addOption(
                 self::DEACTIVATE,
                 null,
                 InputOption::VALUE_NONE,
-                \sprintf('Deactivate contenttypes')
+                'Deactivate contenttypes'
             )
             ->addOption(
                 self::FORCE,
                 null,
                 InputOption::VALUE_NONE,
-                \sprintf('Activate the contenttypes even if the mapping is not up to date (flagged as draft)')
+                'Activate the contenttypes even if the mapping is not up to date (flagged as draft)'
             );
     }
 
@@ -99,11 +89,6 @@ class ContentTypeActivateCommand extends Command
         }
 
         return 0;
-    }
-
-    protected function initialize(InputInterface $input, OutputInterface $output): void
-    {
-        $this->io = new SymfonyStyle($input, $output);
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void

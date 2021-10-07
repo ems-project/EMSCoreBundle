@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Environment;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -14,50 +16,46 @@ use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Mapping;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EnvironmentRebuildCommand extends AbstractCommand
+final class EnvironmentRebuildCommand extends AbstractCommand
 {
-    /** @var Registry */
-    private $doctrine;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var EnvironmentService */
-    private $environmentService;
-    /** @var EnvironmentReindexCommand */
-    private $reindexCommand;
-    /** @var string */
-    private $instanceId;
-    /** @var ElasticaService */
-    private $elasticaService;
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var Mapping */
-    private $mapping;
-    /** @var AliasService */
-    private $aliasService;
-    /** @var string */
-    private $defaultBulkSize;
+    private Registry $doctrine;
+    private ContentTypeService $contentTypeService;
+    private EnvironmentService $environmentService;
+    private EnvironmentReindexCommand $reindexCommand;
+    private string $instanceId;
+    private ElasticaService $elasticaService;
+    private Mapping $mapping;
+    private AliasService $aliasService;
+    private string $defaultBulkSize;
 
     protected static $defaultName = Commands::ENVIRONMENT_REBUILD;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, EnvironmentReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId, string $defaultBulkSize)
-    {
+    public function __construct(
+        Registry $doctrine,
+        ContentTypeService $contentTypeService,
+        EnvironmentService $environmentService,
+        EnvironmentReindexCommand $reindexCommand,
+        ElasticaService $elasticaService,
+        Mapping $mapping,
+        AliasService $aliasService,
+        string $instanceId,
+        string $defaultBulkSize
+    ) {
+        parent::__construct();
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->reindexCommand = $reindexCommand;
         $this->instanceId = $instanceId;
         $this->elasticaService = $elasticaService;
-        $this->logger = $logger;
         $this->mapping = $mapping;
         $this->aliasService = $aliasService;
         $this->defaultBulkSize = $defaultBulkSize;
-        parent::__construct();
     }
 
     protected function configure(): void
@@ -91,8 +89,7 @@ class EnvironmentRebuildCommand extends AbstractCommand
                 'bulk-size',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Number of item that will be indexed together during the same elasticsearch operation',
-                $this->defaultBulkSize
+                'Number of item that will be indexed together during the same elasticsearch operation'
             )
         ;
     }

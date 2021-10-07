@@ -1,56 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\ContentType;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
-use EMS\CoreBundle\Service\Mapping;
-use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ContentTypeDeleteCommand extends Command
+final class ContentTypeDeleteCommand extends AbstractCommand
 {
-    /** @var IndexService */
-    private $indexService;
-    /** @var Mapping */
-    protected $mapping;
-    /** @var Registry */
-    protected $doctrine;
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var ContainerInterface */
-    protected $container;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var EnvironmentService */
-    private $environmentService;
+    private IndexService $indexService;
+    private Registry $doctrine;
 
     protected static $defaultName = Commands::CONTENTTYPE_DELETE;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, IndexService $indexService, Mapping $mapping, ContainerInterface $container, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
+    public function __construct(Registry $doctrine, IndexService $indexService)
     {
-        $this->doctrine = $doctrine;
-        $this->logger = $logger;
-        $this->indexService = $indexService;
-        $this->mapping = $mapping;
-        $this->container = $container;
-        $this->contentTypeService = $contentTypeService;
-        $this->environmentService = $environmentService;
         parent::__construct();
+        $this->doctrine = $doctrine;
+        $this->indexService = $indexService;
     }
 
     protected function configure(): void

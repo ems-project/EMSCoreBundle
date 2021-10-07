@@ -1,36 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Asset;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\FileService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class AssetCleanCommand extends AbstractCommand
+final class AssetCleanCommand extends AbstractCommand
 {
-    /** @var Registry */
-    protected $doctrine;
-    /** @var FileService */
-    protected $fileService;
-    /** @var LoggerInterface */
-    protected $logger;
+    private Registry $doctrine;
+    private FileService $fileService;
 
     protected static $defaultName = Commands::ASSET_CLEAN;
 
-    public function __construct(LoggerInterface $logger, Registry $doctrine, FileService $fileService)
+    public function __construct(Registry $doctrine, FileService $fileService)
     {
+        parent::__construct();
         $this->doctrine = $doctrine;
         $this->fileService = $fileService;
-        $this->logger = $logger;
-        parent::__construct();
     }
 
     protected function configure(): void

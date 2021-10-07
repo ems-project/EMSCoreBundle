@@ -1,30 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Submission;
 
-use EMS\CommonBundle\Command\CommandInterface;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SubmissionRemoveExpiredCommand extends Command implements CommandInterface
+final class SubmissionRemoveExpiredCommand extends AbstractCommand
 {
-    /** @var FormSubmissionService */
-    protected $formSubmissionService;
-
-    /** @var LoggerInterface */
-    protected $logger;
+    private FormSubmissionService $formSubmissionService;
 
     protected static $defaultName = Commands::SUBMISSION_REMOVE_EXPIRED;
 
-    public function __construct(FormSubmissionService $formSubmissionService, LoggerInterface $logger)
+    public function __construct(FormSubmissionService $formSubmissionService)
     {
-        $this->formSubmissionService = $formSubmissionService;
-        $this->logger = $logger;
         parent::__construct();
+        $this->formSubmissionService = $formSubmissionService;
     }
 
     protected function configure(): void

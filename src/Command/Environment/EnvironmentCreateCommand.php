@@ -1,44 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Environment;
 
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-class EnvironmentCreateCommand extends Command
+final class EnvironmentCreateCommand extends AbstractCommand
 {
-    protected static $defaultName = Commands::ENVIRONMENT_CREATE;
-
-    /** @var LoggerInterface */
-    private $logger;
-
-    /** @var EnvironmentService */
-    protected $environmentService;
-
-    /** @var DataService */
-    protected $dataService;
-
-    /** @var SymfonyStyle */
-    private $io;
+    private EnvironmentService $environmentService;
+    private DataService $dataService;
 
     public const ARGUMENT_ENV_NAME = 'name';
     public const OPTION_STRICT = 'strict';
     public const OPTION_UPDATE_REFERRERS = 'update-referrers';
 
-    public function __construct(LoggerInterface $logger, EnvironmentService $environmentService, DataService $dataService)
+    protected static $defaultName = Commands::ENVIRONMENT_CREATE;
+
+    public function __construct(EnvironmentService $environmentService, DataService $dataService)
     {
-        $this->logger = $logger;
+        parent::__construct();
         $this->environmentService = $environmentService;
         $this->dataService = $dataService;
-        parent::__construct();
     }
 
     protected function configure(): void
@@ -67,7 +57,7 @@ class EnvironmentCreateCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->io = new SymfonyStyle($input, $output);
+        parent::initialize($input, $output);
         $this->io->title('Create a environment');
     }
 
@@ -139,8 +129,6 @@ class EnvironmentCreateCommand extends Command
             $message = \sprintf('The environment "%s" already exist', $environmentName);
             $this->setEnvironmentNameArgument($input, $message);
             $this->checkEnvironmentNameArgument($input);
-
-            return;
         }
     }
 

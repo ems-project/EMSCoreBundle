@@ -5,30 +5,33 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Notification;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Service\NotificationService;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class NotificationSendCommand extends Command
+final class NotificationSendCommand extends AbstractCommand
 {
-    protected static $defaultName = Commands::NOTIFICATION_SEND;
-
     private Registry $doctrine;
     private NotificationService $notificationService;
     private string $notificationPendingTimeout;
 
-    public function __construct(Registry $doctrine, NotificationService $notificationService, string $notificationPendingTimeout)
-    {
+    protected static $defaultName = Commands::NOTIFICATION_SEND;
+
+    public function __construct(
+        Registry $doctrine,
+        NotificationService $notificationService,
+        string $notificationPendingTimeout
+    ) {
+        parent::__construct();
         $this->doctrine = $doctrine;
         $this->notificationService = $notificationService;
         $this->notificationPendingTimeout = $notificationPendingTimeout;
-        parent::__construct();
     }
 
     protected function configure(): void

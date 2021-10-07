@@ -1,19 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Revision;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,35 +22,28 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class RevisionIndexFileCommand extends AbstractCommand
+final class RevisionIndexFileCommand extends AbstractCommand
 {
-    /** @var string */
+    private Registry $doctrine;
+    private ContentTypeService $contentTypeService;
+    private AssetExtractorService $extractorService;
+    private FileService $fileService;
+
     private const SYSTEM_USERNAME = 'SYSTEM_FILE_INDEXER';
-    /** @var Registry */
-    protected $doctrine;
-    /** @var ContentTypeService */
-    protected $contentTypeService;
-    /** @var AssetExtractorService */
-    protected $extractorService;
-    /** @var string */
-    protected $databaseName;
-    /** @var string */
-    protected $databaseDriver;
-    /** @var FileService */
-    protected $fileService;
-    /** @var LoggerInterface */
-    protected $logger;
 
     protected static $defaultName = Commands::REVISION_INDEX_FILE_FIELDS;
 
-    public function __construct(LoggerInterface $logger, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
-    {
+    public function __construct(
+        Registry $doctrine,
+        ContentTypeService $contentTypeService,
+        AssetExtractorService $extractorService,
+        FileService $fileService
+    ) {
+        parent::__construct();
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
         $this->extractorService = $extractorService;
         $this->fileService = $fileService;
-        $this->logger = $logger;
-        parent::__construct();
     }
 
     protected function configure(): void

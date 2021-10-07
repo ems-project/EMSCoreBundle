@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Revision;
 
 use Elastica\Document;
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CommonBundle\Common\Standard\Json;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
 use EMS\CoreBundle\Core\Revision\Task\TaskDTO;

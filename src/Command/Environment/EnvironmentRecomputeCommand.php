@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Environment;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ObjectManager;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
@@ -19,17 +20,14 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Form\FormFactoryInterface;
 
-final class EnvironmentRecomputeCommand extends Command
+final class EnvironmentRecomputeCommand extends AbstractCommand
 {
     private ContentType $contentType;
     private bool $optionDeep;
@@ -45,9 +43,8 @@ final class EnvironmentRecomputeCommand extends Command
     private ContentTypeService $contentTypeService;
     private IndexService $indexService;
     private SearchService $searchService;
-    private SymfonyStyle $io;
+
     private string $query;
-    protected LoggerInterface $logger;
 
     private const ARGUMENT_CONTENT_TYPE = 'contentType';
     private const OPTION_FORCE = 'force';
@@ -67,14 +64,12 @@ final class EnvironmentRecomputeCommand extends Command
         Registry $doctrine,
         FormFactoryInterface $formFactory,
         PublishService $publishService,
-        LoggerInterface $logger,
         ContentTypeService $contentTypeService,
         ContentTypeRepository $contentTypeRepository,
         RevisionRepository $revisionRepository,
         IndexService $indexService,
         SearchService $searchService
     ) {
-        $this->logger = $logger;
         parent::__construct();
 
         $this->dataService = $dataService;
@@ -107,7 +102,7 @@ final class EnvironmentRecomputeCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->io = new SymfonyStyle($input, $output);
+        parent::initialize($input, $output);
         $this->io->title('content-type recompute command');
 
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);

@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Environment;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
@@ -12,29 +14,23 @@ use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EnvironmentUpdateMetaFieldCommand extends AbstractCommand
+final class EnvironmentUpdateMetaFieldCommand extends AbstractCommand
 {
-    /** @var Registry */
-    protected $doctrine;
-    /** @var DataService */
-    protected $dataService;
-    /** @var LoggerInterface */
-    protected $logger;
+    private Registry $doctrine;
+    private DataService $dataService;
 
     protected static $defaultName = Commands::ENVIRONMENT_UPDATE_META_FIELD;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, DataService $dataService)
+    public function __construct(Registry $doctrine, DataService $dataService)
     {
+        parent::__construct();
         $this->doctrine = $doctrine;
         $this->dataService = $dataService;
-        $this->logger = $logger;
-        parent::__construct();
     }
 
     protected function configure(): void

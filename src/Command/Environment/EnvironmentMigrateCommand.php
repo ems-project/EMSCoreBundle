@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Environment;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Command\Revision\RevisionArchiveCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
@@ -14,19 +16,15 @@ use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Service\DocumentService;
-use EMS\CoreBundle\Service\Revision\RevisionService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EnvironmentMigrateCommand extends AbstractCommand
+final class EnvironmentMigrateCommand extends AbstractCommand
 {
-    protected static $defaultName = Commands::CONTENTTYPE_MIGRATE;
-
-    private RevisionService $revisionService;
     private ElasticaService $elasticaService;
-    protected Registry $doctrine;
+    private Registry $doctrine;
     private DocumentService $documentService;
 
     private string $elasticsearchIndex;
@@ -54,13 +52,13 @@ class EnvironmentMigrateCommand extends AbstractCommand
     private const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
     private const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
 
+    protected static $defaultName = Commands::CONTENTTYPE_MIGRATE;
+
     public function __construct(
-        RevisionService $revisionService,
         Registry $doctrine,
         ElasticaService $elasticaService,
         DocumentService $documentService)
     {
-        $this->revisionService = $revisionService;
         $this->doctrine = $doctrine;
         $this->elasticaService = $elasticaService;
         $this->documentService = $documentService;
@@ -258,10 +256,8 @@ class EnvironmentMigrateCommand extends AbstractCommand
                 }
                 try {
                     $this->documentService->importDocument($importerContext, $result->getId(), $result->getSource());
-                } catch (NotLockedException $e) {
-                    $this->io->error($e);
-                } catch (CantBeFinalizedException $e) {
-                    $this->io->error($e);
+                } catch (NotLockedException|CantBeFinalizedException $e) {
+                    $this->io->error($e->getMessage());
                 }
                 $progress->advance();
             }

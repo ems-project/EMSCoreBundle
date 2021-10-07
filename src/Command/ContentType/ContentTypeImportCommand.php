@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\ContentType;
 
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
@@ -10,16 +13,22 @@ use EMS\CoreBundle\Helper\Archive;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\DocumentService;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 
-class ContentTypeImportCommand extends Command
+final class ContentTypeImportCommand extends AbstractCommand
 {
+    private DocumentService $documentService;
+    private ContentTypeService $contentTypeService;
+    private DataService $dataService;
+    private string $defaultBulkSize;
+
+    private ContentType $contentType;
+    private string $archiveFilename;
+
     private const ARGUMENT_CONTENT_TYPE = 'content-type-name';
     private const ARGUMENT_ARCHIVE = 'archive';
     private const OPTION_BULK_SIZE = 'bulk-size';
@@ -29,29 +38,19 @@ class ContentTypeImportCommand extends Command
     private const OPTION_DONT_FINALIZE = 'dont-finalize';
     private const OPTION_BUSINESS_KEY = 'business-key';
 
-    /** @var string */
     protected static $defaultName = Commands::CONTENTTYPE_IMPORT;
-    /** @var DocumentService */
-    private $documentService;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var DataService */
-    private $dataService;
-    /** @var SymfonyStyle */
-    private $io;
-    /** @var ContentType */
-    private $contentType;
-    /** @var string */
-    private $archiveFilename;
-    private string $defaultBulkSize;
 
-    public function __construct(ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService, string $defaultBulkSize)
-    {
+    public function __construct(
+        ContentTypeService $contentTypeService,
+        DocumentService $documentService,
+        DataService $dataService,
+        string $defaultBulkSize
+    ) {
+        parent::__construct();
         $this->contentTypeService = $contentTypeService;
         $this->documentService = $documentService;
         $this->dataService = $dataService;
         $this->defaultBulkSize = $defaultBulkSize;
-        parent::__construct();
     }
 
     protected function configure(): void
@@ -73,7 +72,6 @@ class ContentTypeImportCommand extends Command
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Size of the elasticsearch bulk request',
-                $this->defaultBulkSize
             )
             ->addOption(
                 self::OPTION_RAW,
@@ -105,11 +103,6 @@ class ContentTypeImportCommand extends Command
                 InputOption::VALUE_NONE,
                 'Try to identify documents by their business keys'
             );
-    }
-
-    protected function initialize(InputInterface $input, OutputInterface $output): void
-    {
-        $this->io = new SymfonyStyle($input, $output);
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void
@@ -185,8 +178,10 @@ class ContentTypeImportCommand extends Command
 
         $loopIndex = 0;
         foreach ($finder as $file) {
-            $content = \file_get_contents($file);
-            if (false === $content) {
+            try {
+                $content = $file->getContents();
+            } catch (\Throwable $e) {
+                $this->io->warning($e->getMessage());
                 $progress->advance();
                 continue;
             }
@@ -209,10 +204,8 @@ class ContentTypeImportCommand extends Command
 
             try {
                 $this->documentService->importDocument($importerContext, $document->getOuuid(), $document->getSource());
-            } catch (NotLockedException $e) {
-                $this->io->error($e);
-            } catch (CantBeFinalizedException $e) {
-                $this->io->error($e);
+            } catch (NotLockedException|CantBeFinalizedException $e) {
+                $this->io->error($e->getMessage());
             }
 
             ++$loopIndex;

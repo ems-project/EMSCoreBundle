@@ -1,26 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Environment;
 
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
-use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\EnvironmentService;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EnvironmentListCommand extends Command
+final class EnvironmentListCommand extends AbstractCommand
 {
-    /** @var EnvironmentService */
-    private $environmentService;
+    private EnvironmentService $environmentService;
 
     protected static $defaultName = Commands::ENVIRONMENT_LIST;
 
     public function __construct(EnvironmentService $environmentService)
     {
-        $this->environmentService = $environmentService;
         parent::__construct();
+        $this->environmentService = $environmentService;
     }
 
     protected function configure(): void
@@ -44,7 +44,6 @@ class EnvironmentListCommand extends Command
             $environments = $this->environmentService->getManagedEnvironement();
         }
 
-        /** @var Environment $environment */
         foreach ($environments as $environment) {
             $output->writeln($environment->getName());
         }

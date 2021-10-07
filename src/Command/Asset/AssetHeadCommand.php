@@ -4,27 +4,24 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Asset;
 
+use EMS\CoreBundle\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Service\FileService;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class AssetHeadCommand extends Command
+final class AssetHeadCommand extends AbstractCommand
 {
-    protected static $defaultName = Commands::ASSET_HEAD;
-    protected FileService $fileService;
-    protected LoggerInterface $logger;
-    private SymfonyStyle $io;
+    private FileService $fileService;
 
-    public function __construct(LoggerInterface $logger, FileService $fileService)
+    protected static $defaultName = Commands::ASSET_HEAD;
+
+    public function __construct(FileService $fileService)
     {
-        $this->fileService = $fileService;
-        $this->logger = $logger;
         parent::__construct();
+        $this->fileService = $fileService;
     }
 
     protected function configure(): void

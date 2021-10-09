@@ -395,7 +395,7 @@ service.contenttype.mappings_updated: 'Mappings successfully updated/created for
 service.contenttype.pipelines: 'Pipelines have been updated/created for %contenttype%'
 service.contenttype.pipelines_error: 'elasticms was not able to generate pipelines for the content type %contenttype%, they are disabled. Please consider to update your elasticsearch cluster (>=5.0). %elasticsearch_error_type% : %elasticsearch_error_reason%'
 service.contenttype.reordered: 'Content type "%contenttype% has been reordered'
-service.contenttype.should_reindex: 'You should try to rebuild the indexes for  %contenttype%. Message from Elasticsearch; %elasticsearch_error_type% : %elasticsearch_error_reason%'
+service.contenttype.update_mapping_exception: 'Error on updating %environments%''s mapping : %elasticsearch_error%'
 service.data.already_unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already deleted from %environment%'
 service.data.cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is (see previous warnings)'
 service.data.cant_finalize_field: '%error_message%'

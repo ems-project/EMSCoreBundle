@@ -83,12 +83,10 @@ class ComputedFieldType extends DataFieldType
 
         if ($optionsForm->has('mappingOptions')) {
             $optionsForm
-                ->get('mappingOptions')->remove('index')->remove('analyzer')->add('mappingOptions', TextareaType::class, [
+                ->get('mappingOptions')->remove('index')->remove('analyzer')->add('mappingOptions', CodeEditorType::class, [
                     'required' => false,
-                    'attr' => [
-                        'rows' => 8,
-                    ],
-            ])
+                    'language' => 'ace/mode/json',
+                ])
             ->add('copy_to', TextType::class, [
                     'required' => false,
             ]);

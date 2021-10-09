@@ -95,7 +95,11 @@ final class PostProcessingService
                     $json = \json_decode($out, true);
                     $meg = \json_last_error_msg();
                     if (0 == \strcasecmp($meg, 'No error')) {
-                        $objectArray[$fieldType->getName()] = $json;
+                        if (null === $fieldType->getParent()) {
+                            $objectArray = $json;
+                        } else {
+                            $objectArray[$fieldType->getName()] = $json;
+                        }
                         $found = true;
                     } else {
                         $this->logger->warning('service.data.json_parse_post_processing_error', [

@@ -3,7 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Elasticsearch\Common\Exceptions\BadRequest400Exception;
+use Elastica\Exception\ResponseException;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
@@ -211,18 +211,17 @@ class ContentTypeService
             $em = $this->doctrine->getManager();
             $em->persist($contentType);
             $em->flush();
-        } catch (BadRequest400Exception $e) {
+        } catch (ResponseException $e) {
             $contentType->setDirty(true);
-            $message = \json_decode($e->getMessage(), true);
+            $message = $e->getMessage();
             if (!empty($e->getPrevious())) {
-                $message = \json_decode($e->getPrevious()->getMessage(), true);
+                $message = $e->getPrevious()->getMessage();
             }
 
-            $this->logger->error('service.contenttype.should_reindex', [
+            $this->logger->error('service.contenttype.update_mapping_exception', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 'environments' => $envs,
-                'elasticsearch_error_type' => $message['error']['type'],
-                'elasticsearch_error_reason' => $message['error']['reason'],
+                'elasticsearch_error' => $message,
             ]);
         }
     }

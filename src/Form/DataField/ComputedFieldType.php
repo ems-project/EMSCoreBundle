@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\Field\CodeEditorType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -69,20 +70,15 @@ class ComputedFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific display options
-        $optionsForm->get('displayOptions')->add('valueTemplate', TextareaType::class, [
-                'required' => false,
-                'attr' => [
-                    'rows' => 8,
-                ],
+        $optionsForm->get('displayOptions')->add('valueTemplate', CodeEditorType::class, [
+            'required' => false,
+            'language' => 'ace/mode/twig',
         ])->add('json', CheckboxType::class, [
                 'required' => false,
                 'label' => 'Try to JSON decode',
-        ])->add('displayTemplate', TextareaType::class, [
-                'required' => false,
-                'attr' => [
-                    'rows' => 8,
-                ],
+        ])->add('displayTemplate', CodeEditorType::class, [
+            'required' => false,
+            'language' => 'ace/mode/twig',
         ]);
 
         if ($optionsForm->has('mappingOptions')) {

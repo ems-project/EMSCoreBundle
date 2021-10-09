@@ -59,6 +59,7 @@ final class PostProcessingService
             'index' => $contentType->getEnvironment()->getAlias(),
             'parent' => $parent,
             'path' => $path,
+            'form' => $form,
         ]);
 
         $found = false;
@@ -163,7 +164,6 @@ final class PostProcessingService
 
                 if ($childType instanceof CollectionFieldType) {
                     $fieldName = $child->getNormData()->getFieldType()->getName();
-
                     foreach ($child->all() as $collectionChild) {
                         if (isset($objectArray[$fieldName])) {
                             foreach ($objectArray[$fieldName] as &$elementsArray) {

@@ -433,6 +433,7 @@ service.notification.treated: '%notification_name% for document ems://object:%co
 service.notification.update: 'A "%notification_name%" notification has been %notification_status% for a "%contenttype%" document (%ouuid%)'
 service.object_choice_cache.alias_not_found: 'Alias not found for content type %contenttype%'
 service.object_choice_cache.contenttype_not_found: 'Content type %contenttype% not found'
+service.object_choice_cache.limited_result_set: 'The data link picker is limited to the first %limit% of %count% documents'
 service.object_choice_cache.object_key_not_found: 'Object key %object_key% not found'
 service.publish.already_published: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already published in %environment%'
 service.publish.already_unpublished: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already unpublished from %environment%'

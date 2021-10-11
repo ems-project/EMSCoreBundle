@@ -14,7 +14,6 @@ final class TaskTableService implements EntityServiceInterface
 {
     private TaskRepository $taskRepository;
 
-    private const COL_ICON = 'icon';
     private const COL_TITLE = 'title';
     private const COL_DOCUMENT = 'label';
     private const COL_OWNER = 'owner';
@@ -26,7 +25,6 @@ final class TaskTableService implements EntityServiceInterface
     private const TEMPLATE = '@EMSCore/revision/task/columns.twig';
 
     public const COLUMNS = [
-        self::COL_ICON => ['type' => 'block', 'mapping' => 't.status'],
         self::COL_TITLE => ['type' => 'block', 'column' => 'taskTitle', 'mapping' => 't.title'],
         self::COL_DOCUMENT => ['column' => 'label', 'mapping' => 'r.labelField'],
         self::COL_OWNER => ['type' => 'block', 'column' => 'owner', 'mapping' => 'r.owner'],
@@ -67,7 +65,6 @@ final class TaskTableService implements EntityServiceInterface
     public function buildTableExport(EntityTable $table, TaskTableContext $context): void
     {
         $columns = $this->getColumns($context->tab);
-        unset($columns[self::COL_ICON]);
         unset($columns[self::COL_ACTIONS]);
 
         foreach ($columns as $name => $options) {
@@ -121,11 +118,7 @@ final class TaskTableService implements EntityServiceInterface
         }
 
         foreach ($columns as $name => &$column) {
-            if (self::COL_ICON === $name) {
-                $column['label'] = '';
-            } else {
-                $column['label'] = \sprintf('task.dashboard.column.%s', $name);
-            }
+            $column['label'] = \sprintf('task.dashboard.column.%s', $name);
         }
 
         return $columns;

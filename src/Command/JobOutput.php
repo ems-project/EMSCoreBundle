@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use EMS\CoreBundle\Repository\JobRepository;
@@ -10,11 +12,21 @@ class JobOutput extends Output
     private int $jobId;
     private JobRepository $jobRepository;
 
+    private const JOB_VERBOSITY = self::VERBOSITY_NORMAL;
+
     public function __construct(JobRepository $jobRepository, int $jobId)
     {
-        parent::__construct();
+        parent::__construct(self::JOB_VERBOSITY);
         $this->jobRepository = $jobRepository;
         $this->jobId = $jobId;
+    }
+
+    /**
+     * Do not allow symfony to overwrite the verbosity level.
+     */
+    public function setVerbosity($level): void
+    {
+        parent::setVerbosity(self::JOB_VERBOSITY);
     }
 
     public function doWrite($message, $newline): void

@@ -77,7 +77,14 @@ class ObjectChoiceCacheService
 
                     $search->setContentTypes([$type]);
 
-                    if ($currentType->getOrderField()) {
+                    if (\is_string($currentType->getSortBy()) && \strlen($currentType->getSortBy()) > 0) {
+                        $search->setSort([
+                            $currentType->getSortBy() => [
+                                'order' => $currentType->getSortOrder() ?? 'asc',
+                                'missing' => '_last',
+                            ],
+                        ]);
+                    } elseif ($currentType->getOrderField()) {
                         $search->setSort([
                             $currentType->getOrderField() => [
                                 'order' => 'asc',

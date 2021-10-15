@@ -180,7 +180,7 @@ class JsonMenuNestedController extends AbstractController
                 'fieldType' => $fieldType,
                 'revision' => $revision,
                 'data' => $requestData['paste'],
-            ])
+            ]),
         ]);
     }
 

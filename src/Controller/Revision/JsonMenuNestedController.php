@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller\Revision;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ObjectRepository;
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\FieldType;
@@ -19,6 +20,7 @@ use EMS\CoreBundle\Service\Revision\RevisionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
@@ -157,6 +159,29 @@ class JsonMenuNestedController extends AbstractController
                 'fieldType' => $fieldType,
             ]),
         ]));
+    }
+
+    /**
+     * @Route("/data/revisions/{revision}/{fieldType}/json-menu-nested-paste", name="emsco.json_menu_nested.paste", methods={"POST"})
+     */
+    public function paste(Request $request, Revision $revision, FieldType $fieldType): Response
+    {
+        $requestContent = $request->getContent();
+        $requestData = \is_string($requestContent) ? Json::decode($requestContent) : [];
+
+        if (!isset($requestData['paste'])) {
+            throw new \RuntimeException('Missing data');
+        }
+
+        $template = $this->templating->resolveTemplate('@EMSCore/form/fields/json_menu_nested_editor.html.twig');
+
+        return new JsonResponse([
+            'html' => $template->renderBlock('renderPaste', [
+                'fieldType' => $fieldType,
+                'revision' => $revision,
+                'data' => $requestData['paste'],
+            ])
+        ]);
     }
 
     private function renderButtons(Revision $revision, FieldType $fieldType, int $level, int $maxDepth): string

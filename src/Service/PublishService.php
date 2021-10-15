@@ -270,7 +270,9 @@ class PublishService
             $this->revRepository->removeEnvironment($item, $environment);
         }
 
-        $this->dataService->lockRevision($revision, $environment);
+        if (!$command) {
+            $this->dataService->lockRevision($revision, $environment);
+        }
 
         $this->dataService->sign($revision, true);
         if ($this->indexService->indexRevision($revision, $environment)) {
@@ -281,7 +283,9 @@ class PublishService
             ], $logContext));
         }
 
-        $this->dataService->unlockRevision($revision);
+        if (!$command) {
+            $this->dataService->unlockRevision($revision);
+        }
 
         if (!$already) {
             $this->revRepository->addEnvironment($revision, $environment);

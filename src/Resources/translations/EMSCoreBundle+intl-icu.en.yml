@@ -270,7 +270,7 @@ log.data.revision.ajax_update_on_finalized: 'It''s impossible to save the revisi
 log.data.revision.auto_publish_rollback: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been silently published back in %environment%'
 log.data.revision.auto_save_off_with_auto_publish: 'The auto-save has been disabled as the auto-publish is enabled for the content type %contenttype%. Press Ctrl+S (Cmd+S) in order to save and publish in %environment%'
 log.data.revision.can_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is'
-log.data.revision.can_finalized_as_invalid: '{1} The document ems://object:%contenttype%:%ouuid% can''t be finalized has there is one error |]1,Inf[ The document ems://object:%contenttype%:%ouuid% can''t be finalized as there is %count% errors'
+log.data.revision.can_finalized_as_invalid: '{count, plural, one {The document ems://object:%contenttype%:%ouuid% can''t be finalized has there is one error.} other {The document ems://object:%contenttype%:%ouuid% can''t be finalized as there is # errors}}'
 log.data.revision.can_finalized_as_pending_auto_save: 'The document ems://object:%contenttype%:%ouuid% can''t be finalized as an auto save is pending'
 log.data.revision.can_finalized_error: 'The document ems://object:%contenttype%:%ouuid% can''t be finalized due to an error: %error_message%'
 log.data.revision.cant_delete_has_published: 'The document ems://object:%contenttype%:%ouuid% can''t be deleted as the revision ems://revision:%revision_id% is published in %published_in%'
@@ -356,7 +356,7 @@ log.view.criteria.added: 'A criteria has been added for field %field_name% with 
 log.view.criteria.already_exists: 'A criteria already exist for field %field_name% with value %field_data%'
 log.view.criteria.already_missing: 'A criteria is already missing for field %field_name% with value %field_data%'
 log.view.criteria.document_key_not_found: 'Document reference "%document_reference%" not found for the document ems://object:%contenttype%:%ouuid%'
-log.view.criteria.draft_in_progress: '{0} A draft is in progress for the document ems://object:%contenttype%:%ouuid%, it''s not possible to update it|{1} There is one drafts in progress. You won’t be able to update it from here.|]1,Inf[ There are %count% drafts in progress. You won’t be able to update them from here.'
+log.view.criteria.draft_in_progress: '{count, plural, =0 {A draft is in progress for the document ems://object:%contenttype%:%ouuid%, it''s not possible to update it} one {There is one drafts in progress. You won’t be able to update it from here.} other {There are # drafts in progress. You won’t be able to update them from here.}}'
 log.view.criteria.field_not_found: 'Field path %field_path% not found'
 log.view.criteria.locked_revision: 'Impossible to update the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% as the revision is locked by %locked_by%'
 log.view.criteria.new_criteria: 'A new criteria has been created for %target_field_name%:%target_field_data%'
@@ -404,7 +404,7 @@ service.data.cant_be_finalized: 'The revision ems://revision:%revision_id% of th
 service.data.cant_finalize_field: '%error_message%'
 'service.data.check_signature_failed''': 'Signature mismatch in %environment% for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
 service.data.computed_hash_mismatch: 'Computed hash mismatch in %environment% for document ems://object:%contenttype%:%ouuid%, computed hash: %computed_hash%, DB hash: %db_hash%'
-service.data.data_not_consumed: '{1} A data of this revision was not consumed: %data%|]1,Inf[ Some data (%count%} of this revision were not consumed: %data%'
+service.data.data_not_consumed: '{count, plural, one { A data of this revision was not consumed: %data%} other {Some data (#) of this revision were not consumed: %data%}}'
 service.data.default_value_error: 'It was not possible to initiate the default value (json_decode) for the content type %contenttype%, please check the content type''s configuration'
 service.data.default_value_template_error: 'It was not possible to initiate the default value (compile template) for the content type %contenttype%, please check the content type''s configuration'
 service.data.deleted: 'The document ems://object:%contenttype%:%ouuid% has been deleted'
@@ -601,7 +601,7 @@ view.environment.index.delete_managed_environemnt_button: Delete
 view.environment.index.dettach_button: Detach
 view.environment.index.edit_button: Edit
 view.environment.index.environment_breadcrumb: Environments
-view.environment.index.environment_index_count: '{0} There are no index|{1} There is one index|]1,Inf[ There are %count% indexes'
+view.environment.index.environment_index_count: '{count, plural, =0 {There is no index} one {There is one index} other {There are # indexes}}'
 view.environment.index.environment_indexes_modal_title: Indexes
 view.environment.index.external_environments_title: 'External environments'
 view.environment.index.index_breadcrumb: List
@@ -642,8 +642,6 @@ view.form.fields.asset.view-button: View
 view.form-submission.index.title: 'Form Submissions Overview'
 view.icon.class.channel: 'fa fa-road'
 view.icon.class.query_search: 'fa fa-list-alt'
-view.macros.data-field-type.macros.data-field-type.collection_added_items: '{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added'
-view.macros.data-field-type.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 view.macros.data-field-type.menu-option-button: View
 view.macros.data-field-type.modal-close-button: Close
 view.user.index.title: 'User list'
@@ -657,8 +655,8 @@ views.elements.object-views-button.raw-view: 'Raw view'
 views.elements.object-views-button.raw-view-icon-class: 'fa fa-th'
 views.elements.object-views-button.action-dropdown-label: 'Actions in %environment%'
 wysiwyg.invalid_config_format: 'Format not valid: %msg%'
-view.macros.data-field-type.collection_removed_items: '{0} Nothing has been removed.|{1} One item has been removed.|]1,Inf[ %count% item have been removed.'
-view.macros.data-field-type.collection_added_items: '{0} Nothing has been added.|{1} One item has been added.|]1,Inf[ %count% items have been added.'
+view.macros.data-field-type.collection_removed_items: '{count, plural, =0 {Nothing has been removed.} one {One item has been removed.} other {# item have been removed.}}'
+view.macros.data-field-type.collection_added_items: '{count, plural, =0 {Nothing has been added.} one {One item has been added.} other {# item have been added.}}'
 view.icon.class.uploaded-file: 'fa fa-upload'
 revision.draft-in-progress.column.label: Label
 revision.draft-in-progress.column.created: Created

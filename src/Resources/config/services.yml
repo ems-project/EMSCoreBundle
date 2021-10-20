@@ -677,18 +677,6 @@ services:
         alias: 'EMS\CoreBundle\Service\DataService'
         public: true
 
-### Loggers ####
-    ems_common.monolog.ems_handler:
-        class: EMS\CommonBundle\Logger\ElasticsearchLogger
-        arguments: ['%ems_core.log_level%', '%ems_core.instance_id%', '', 'ems_core', '@ems_common.elastica.client', '@security.helper', '@ems_common.service.mapping', '%ems_core.log_by_pass%']
-        tags:
-            - { name: kernel.cache_warmer }
-            - { name: kernel.event_listener, event: kernel.terminate }
-            - { name: kernel.event_listener, event: console.terminate }
-    ems_common.monolog.flash_handler:
-        class: EMS\CommonBundle\Logger\FlashMessageLogger
-        arguments: ['@session', '@translator', 'EMSCoreBundle']
-
 ### Repositories ###
     EMS\CoreBundle\Repository\ContentTypeRepository:
         class: Doctrine\ORM\EntityRepository

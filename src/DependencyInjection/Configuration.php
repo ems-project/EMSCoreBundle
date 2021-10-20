@@ -42,7 +42,6 @@ class Configuration implements ConfigurationInterface
     public const ASSET_CONFIG = [];
     public const TIKA_SERVER = null;
     public const SAVE_ASSETS_IN_DB = false;
-    public const LOG_LEVEL = 'info';
     public const DEFAULT_BULK_SIZE = 500;
 
     /**
@@ -89,8 +88,6 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('tika_server')->defaultValue(self::TIKA_SERVER)->end()
             ->scalarNode('elasticsearch_version')->defaultValue('depreacted')->end()
             ->booleanNode('pre_generated_ouuids')->defaultValue(false)->end()
-            ->booleanNode('log_by_pass')->defaultValue(false)->end()
-            ->scalarNode('log_level')->defaultValue(self::LOG_LEVEL)->end()
             ->arrayNode('template_options')->defaultValue([])->prototype('variable')->end()->end()
             ->scalarNode('health_check_allow_origin')->defaultValue(null)->end()
             ->scalarNode('tika_download_url')->defaultValue(null)->end()

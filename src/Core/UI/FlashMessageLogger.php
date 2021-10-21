@@ -33,8 +33,7 @@ final class FlashMessageLogger extends AbstractProcessingHandler
 
         $parameters = [];
         foreach ($record['context'] as $key => &$value) {
-            $parameterKey = 'count' === $key ? $key : '%'.$key.'%';
-            $parameters[$parameterKey] = $value;
+            $parameters[$key] = $value;
         }
 
         $message = $this->translator->trans($record['message'], $parameters, EMSCoreBundle::TRANS_DOMAIN);

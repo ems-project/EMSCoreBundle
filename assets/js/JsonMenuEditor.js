@@ -350,7 +350,7 @@ export default class JsonMenuEditor {
             let data = {};
             if ('edit' === action) {
                 let closestLi = $target.closest('li');
-                if (closestLi.attr('data-object')) {
+                if (closestLi.data('object')) {
                     data = closestLi.data('object');
                 }
                 data.label = $target.closest('li').data('label');

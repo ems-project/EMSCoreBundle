@@ -850,6 +850,7 @@
 	{%- for d in data.fieldType.restrictionOption('json_nested_deny', []) -%}{%- set rootDeny = rootDeny|merge([d]) -%}{%- endfor -%}
 	{%- set nodes = data.fieldType.getJsonMenuNestedEditorNodes -%}
 	<div class="json_menu_editor_fieldtype_widget collapsible-container"
+		 data-select-node-id="{{ app.request.get('node', false) }}"
 		 data-prototype-nested="{{ block('itemPrototype', '@EMSCore/form/fields/json_menu_nested_editor.html.twig')|e('html_attr') }}"
 		 data-paste-url="{{ path('emsco.json_menu_nested.paste', {'revision': revision.id, 'fieldType': data.fieldType.id }) }}"
 	>

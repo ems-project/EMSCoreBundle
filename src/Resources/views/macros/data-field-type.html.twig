@@ -788,7 +788,7 @@
 						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
 					{% else %}
 						{% set jsonMenuItems = dataField.rawData|default('{}')|ems_json_menu_decode.structure %}
-						<div class="json_menu_editor_fieldtype_widget collapsible-container">
+						<div class="json_menu_editor_fieldtype_widget collapsible-container" data-select-node-id="{{ app.request.get('node', false) }}">
 							{% if not dataField.rawData|default(false) %}
 								<span class="text-gray">[not defined]</span>
 							{% elseif jsonMenuItems|length > 0 %}

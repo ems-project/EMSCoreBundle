@@ -575,10 +575,11 @@ class DataController extends AppController
     /**
      * @Route("/data/new-draft/{type}/{ouuid}", name="revision.new-draft")
      */
-    public function newDraftAction(string $type, string $ouuid, DataService $dataService): RedirectResponse
+    public function newDraftAction(Request $request, string $type, string $ouuid, DataService $dataService): RedirectResponse
     {
         return $this->redirectToRoute(Routes::EDIT_REVISION, [
             'revisionId' => $dataService->initNewDraft($type, $ouuid)->getId(),
+            'node' => $request->get('node'),
         ]);
     }
 

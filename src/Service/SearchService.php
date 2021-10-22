@@ -3,6 +3,9 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Elastica\Query\BoolQuery;
+use Elastica\Query\Exists;
+use Elastica\Query\Terms;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Elasticsearch\Document\Document as ElasticsearchDocument;
 use EMS\CommonBundle\Search\Search as CommonSearch;
@@ -119,8 +122,20 @@ class SearchService
     {
         $environment = $environment ?? $contentType->giveEnvironment();
         $index = $this->contentTypeService->getIndex($contentType, $environment);
+        $searchQuery = null;
 
-        return $this->elasticaService->getDocument($index, $contentType->getName(), $ouuid);
+        if ($contentType->hasVersionTags() && null !== $dateToField = $contentType->getVersionDateToField()) {
+            $shouldVersion = new BoolQuery();
+            $shouldVersion->addMust($this->elasticaService->getTermsQuery(Mapping::VERSION_UUID, [$ouuid]));
+            $shouldVersion->addMustNot(new Exists($dateToField));
+
+            $searchQuery = new BoolQuery();
+            $searchQuery->setMinimumShouldMatch(1);
+            $searchQuery->addShould($shouldVersion);
+            $searchQuery->addShould(new Terms('_id', [$ouuid]));
+        }
+
+        return $this->elasticaService->getDocument($index, $contentType->getName(), $ouuid, [], [], $searchQuery);
     }
 
     public function get(Environment $environment, ContentType $contentType, string $ouuid): Document

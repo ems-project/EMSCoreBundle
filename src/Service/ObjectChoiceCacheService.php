@@ -2,6 +2,8 @@
 
 namespace EMS\CoreBundle\Service;
 
+use Elastica\Query\BoolQuery;
+use Elastica\Query\Exists;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
@@ -77,7 +79,14 @@ class ObjectChoiceCacheService
 
                     $search->setContentTypes([$type]);
 
-                    if ($currentType->getOrderField()) {
+                    if (\is_string($currentType->getSortBy()) && \strlen($currentType->getSortBy()) > 0) {
+                        $search->setSort([
+                            $currentType->getSortBy() => [
+                                'order' => $currentType->getSortOrder() ?? 'asc',
+                                'missing' => '_last',
+                            ],
+                        ]);
+                    } elseif ($currentType->getOrderField()) {
                         $search->setSort([
                             $currentType->getOrderField() => [
                                 'order' => 'asc',
@@ -86,21 +95,25 @@ class ObjectChoiceCacheService
                         ]);
                     }
                     $search->setSources($currentType->getRenderingSourceFields());
+                    $search->setSize(1000);
+                    $resultSet = $this->elasticaService->search($search);
+                    if ($resultSet->count() > 1000) {
+                        $this->logger->warning('service.object_choice_cache.limited_result_set', [
+                            'count' => $resultSet->count(),
+                            'limit' => 1000,
+                        ]);
+                    }
 
-                    $scroll = $this->elasticaService->scroll($search);
-
-                    foreach ($scroll as $resultSet) {
-                        foreach ($resultSet as $result) {
-                            if (false === $result) {
-                                continue;
-                            }
-                            $hitDocument = Document::fromResult($result);
-                            if (!isset($choices[$hitDocument->getEmsId()])) {
-                                $itemContentType = $this->contentTypeService->getByName($hitDocument->getContentType());
-                                $listItem = new ObjectChoiceListItem($hitDocument, $itemContentType ? $itemContentType : null);
-                                $choices[$listItem->getValue()] = $listItem;
-                                $this->cache[$hitDocument->getContentType()][$hitDocument->getId()] = $listItem;
-                            }
+                    foreach ($resultSet as $result) {
+                        if (false === $result) {
+                            continue;
+                        }
+                        $hitDocument = Document::fromResult($result);
+                        if (!isset($choices[$hitDocument->getEmsId()])) {
+                            $itemContentType = $this->contentTypeService->getByName($hitDocument->getContentType());
+                            $listItem = new ObjectChoiceListItem($hitDocument, $itemContentType ? $itemContentType : null);
+                            $choices[$listItem->getValue()] = $listItem;
+                            $this->cache[$hitDocument->getContentType()][$hitDocument->getId()] = $listItem;
                         }
                     }
                 } elseif ($withWarning) {
@@ -169,15 +182,24 @@ class ObjectChoiceCacheService
             $boolQuery = $this->elasticaService->getBoolQuery();
             $sourceField = [];
             foreach ($missingOuuidsPerType as $type => $ouuids) {
-                $ouuidsQuery = $this->elasticaService->filterByContentTypes($this->elasticaService->getTermsQuery('_id', $ouuids), [$type]);
-                if (null !== $ouuidsQuery) {
-                    $boolQuery->addShould($ouuidsQuery);
-                }
-
                 $contentType = $this->contentTypeService->getByName($type);
                 if (false === $contentType) {
                     continue;
                 }
+
+                if ($contentType->hasVersionTags() && null !== $dateToField = $contentType->getVersionDateToField()) {
+                    $contentTypeQuery = new BoolQuery();
+                    $contentTypeQuery->addMust($this->elasticaService->getTermsQuery(Mapping::VERSION_UUID, $ouuids));
+                    $contentTypeQuery->addMustNot(new Exists($dateToField));
+                } else {
+                    $contentTypeQuery = $this->elasticaService->getTermsQuery('_id', $ouuids);
+                }
+
+                $ouuidsQuery = $this->elasticaService->filterByContentTypes($contentTypeQuery, [$type]);
+                if (null !== $ouuidsQuery) {
+                    $boolQuery->addShould($ouuidsQuery);
+                }
+
                 $sourceField = \array_unique(\array_merge($sourceField, $contentType->getRenderingSourceFields()), SORT_STRING);
             }
             $boolQuery->setMinimumShouldMatch(1);

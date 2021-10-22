@@ -2,6 +2,8 @@
 
 namespace EMS\CoreBundle\Service;
 
+use Elastica\Query\BoolQuery;
+use Elastica\Query\Exists;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
@@ -77,7 +79,14 @@ class ObjectChoiceCacheService
 
                     $search->setContentTypes([$type]);
 
-                    if ($currentType->getOrderField()) {
+                    if (\is_string($currentType->getSortBy()) && \strlen($currentType->getSortBy()) > 0) {
+                        $search->setSort([
+                            $currentType->getSortBy() => [
+                                'order' => $currentType->getSortOrder() ?? 'asc',
+                                'missing' => '_last',
+                            ],
+                        ]);
+                    } elseif ($currentType->getOrderField()) {
                         $search->setSort([
                             $currentType->getOrderField() => [
                                 'order' => 'asc',
@@ -173,15 +182,24 @@ class ObjectChoiceCacheService
             $boolQuery = $this->elasticaService->getBoolQuery();
             $sourceField = [];
             foreach ($missingOuuidsPerType as $type => $ouuids) {
-                $ouuidsQuery = $this->elasticaService->filterByContentTypes($this->elasticaService->getTermsQuery('_id', $ouuids), [$type]);
-                if (null !== $ouuidsQuery) {
-                    $boolQuery->addShould($ouuidsQuery);
-                }
-
                 $contentType = $this->contentTypeService->getByName($type);
                 if (false === $contentType) {
                     continue;
                 }
+
+                if ($contentType->hasVersionTags() && null !== $dateToField = $contentType->getVersionDateToField()) {
+                    $contentTypeQuery = new BoolQuery();
+                    $contentTypeQuery->addMust($this->elasticaService->getTermsQuery(Mapping::VERSION_UUID, $ouuids));
+                    $contentTypeQuery->addMustNot(new Exists($dateToField));
+                } else {
+                    $contentTypeQuery = $this->elasticaService->getTermsQuery('_id', $ouuids);
+                }
+
+                $ouuidsQuery = $this->elasticaService->filterByContentTypes($contentTypeQuery, [$type]);
+                if (null !== $ouuidsQuery) {
+                    $boolQuery->addShould($ouuidsQuery);
+                }
+
                 $sourceField = \array_unique(\array_merge($sourceField, $contentType->getRenderingSourceFields()), SORT_STRING);
             }
             $boolQuery->setMinimumShouldMatch(1);

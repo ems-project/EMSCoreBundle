@@ -147,7 +147,7 @@ class EditController extends AbstractController
                 }
 
                 if ((isset($requestRevision['publish']) || isset($requestRevision['publish_version']))
-                    && 0 === \count($form->getErrors())) {
+                    && 0 === \count($form->getErrors(true))) {
                     if ($revision->getOuuid()) {
                         return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
                             'ouuid' => $revision->getOuuid(),

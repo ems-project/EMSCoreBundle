@@ -100,7 +100,7 @@ final class ReleaseController extends AbstractController
 
     public function edit(Request $request, Release $release): Response
     {
-        $revisionsTable = $this->getRevisionsTable($release);
+        $revisionsTable = $this->getMemberRevisionsTable($release);
 
         $revisionsForm = $this->createForm(TableType::class, $revisionsTable);
         $revisionsForm->handleRequest($request);
@@ -120,20 +120,22 @@ final class ReleaseController extends AbstractController
             return $this->redirectToRoute('ems_core_release_edit', ['release' => $release->getId()]);
         }
 
-        $form2 = $this->createForm(ReleaseType::class, $release);
-        $form2->handleRequest($request);
-        if ($form2->isSubmitted() && $form2->isValid()) {
+        $releaseForm = $this->createForm(ReleaseType::class, $release);
+        $releaseForm->handleRequest($request);
+        if ($releaseForm->isSubmitted() && $releaseForm->isValid()) {
             $this->releaseService->update($release);
-            /** @var ClickableInterface $button */
-            $button = $form2->get('saveAndClose');
-            $nextAction = $button->isClicked() ? 'ems_core_release_index' : 'ems_core_release_edit';
+            $saveAnbClose = $releaseForm->get('saveAndClose');
+            if (!$saveAnbClose instanceof ClickableInterface) {
+                throw new \RuntimeException('Unexpected non clickable object');
+            }
+            $nextAction = $saveAnbClose->isClicked() ? 'ems_core_release_index' : 'ems_core_release_edit';
 
             return $this->redirectToRoute($nextAction, ['release' => $release->getId()]);
         }
 
         return $this->render('@EMSCore/release/edit.html.twig', [
             'form' => $revisionsForm->createView(),
-            'form_release' => $form2->createView(),
+            'form_release' => $releaseForm->createView(),
         ]);
     }
 
@@ -175,21 +177,7 @@ final class ReleaseController extends AbstractController
 
     public function addRevisions(Request $request, Release $release): Response
     {
-        $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish', $this->generateUrl('ems_core_release_ajax_data_table'), [
-            'option' => TableAbstract::ADD_ACTION,
-            'selected' => $release->getRevisionsIds(),
-            'source' => $release->getEnvironmentSource(),
-            'target' => $release->getEnvironmentTarget(),
-        ]);
-        $table->setMassAction(false);
-        $table->setIdField('emsLink');
-        $table->addColumn('release.revision.index.column.label', 'item_labelField');
-        $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
-        $table->addTableAction(TableAbstract::ADD_ACTION, 'fa fa-plus', 'release.revision.actions.add', 'release.revision.actions.add_confirm');
-        $table->setSelected($release->getRevisionsIds());
-
+        $table = $this->getNonMemberRevisionsTable($release);
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -249,11 +237,27 @@ final class ReleaseController extends AbstractController
         return $table;
     }
 
-    public function getRevisionsTable(Release $release): QueryTable
+    private function getMemberRevisionsTable(Release $release): QueryTable
     {
-        $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish-to-remove', $this->generateUrl('ems_core_release_ajax_data_table'), [
-            'option' => ReleaseRevisionService::QUERY_REVISIONS_IN_RELEASE,
-            'selected' => !empty($release) ? $release->getRevisionsIds() : [],
+        $table = $this->getRevisionsTable($release, 'revisions-to-publish-to-remove', ReleaseRevisionService::QUERY_REVISIONS_IN_RELEASE);
+        $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
+
+        return $table;
+    }
+
+    private function getNonMemberRevisionsTable(Release $release): QueryTable
+    {
+        $table = $this->getRevisionsTable($release, 'revisions-to-publish', TableAbstract::ADD_ACTION);
+        $table->addTableAction(TableAbstract::ADD_ACTION, 'fa fa-plus', 'release.revision.actions.add', 'release.revision.actions.add_confirm');
+
+        return $table;
+    }
+
+    private function getRevisionsTable(Release $release, string $queryName, string $option): QueryTable
+    {
+        $table = new QueryTable($this->releaseRevisionService, $queryName, $this->generateUrl('ems_core_release_ajax_data_table'), [
+            'option' => $option,
+            'selected' => $release->getRevisionsIds(),
             'source' => $release->getEnvironmentSource(),
             'target' => $release->getEnvironmentTarget(),
         ]);
@@ -261,10 +265,10 @@ final class ReleaseController extends AbstractController
         $table->setIdField('emsLink');
         $table->addColumn('release.revision.index.column.label', 'item_labelField');
         $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
+        $table->addTableAction(TableAbstract::ADD_ACTION, 'fa fa-plus', 'release.revision.actions.add', 'release.revision.actions.add_confirm');
         $table->setSelected($release->getRevisionsIds());
-        $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
 
         return $table;
     }

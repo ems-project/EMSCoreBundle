@@ -412,14 +412,12 @@ class RevisionRepository extends EntityRepository
             'false' => false,
         ]);
 
-        if (!empty($ids)) {
-            if ($selectedOnly) {
-                $qb->andWhere('r.ouuid IN (:id)')
-                ->setParameter('id', $ids);
-            } else {
-                $qb->andWhere('r.ouuid NOT IN (:id)')
-                ->setParameter('id', $ids);
-            }
+        if ($selectedOnly) {
+            $qb->andWhere('r.ouuid IN (:id)')
+            ->setParameter('id', $ids);
+        } elseif (!empty($ids)) {
+            $qb->andWhere('r.ouuid NOT IN (:id)')
+            ->setParameter('id', $ids);
         }
 
         if (!empty($contentTypes)) {
@@ -1132,6 +1130,7 @@ class RevisionRepository extends EntityRepository
         $qb->orderBy('r.ouuid')
         ->setFirstResult($from)
         ->setMaxResults($size);
+        \dump('ici');
 
         return $qb->getQuery()->execute();
     }

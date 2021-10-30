@@ -46,9 +46,9 @@ class PublishReleaseCommand extends AbstractCommand
 
         foreach ($releases as $release) {
             $this->releaseService->publishRelease($release, false);
-            $output->writeln(\sprintf('Release %s has been published', $release->getName()));
             $release->setStatus(ReleaseStatusEnumType::SCHEDULED_STATUS);
             $this->releaseService->update($release);
+            $output->writeln(\sprintf('Release %s has been published', $release->getName()));
         }
 
         return parent::EXECUTE_SUCCESS;

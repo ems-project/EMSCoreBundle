@@ -80,59 +80,44 @@ final class ReleaseController extends AbstractController
 
     public function add(Request $request): Response
     {
-        $form2 = $this->createForm(ReleaseType::class, new Release());
-        $form2->handleRequest($request);
-        if ($form2->isSubmitted() && $form2->isValid()) {
-            $release = $this->releaseService->add($form2->getViewData());
-            $button = $form2->get('saveAndClose');
-            if (!$button instanceof ClickableInterface) {
+        $form = $this->createForm(ReleaseType::class, new Release());
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $release = $this->releaseService->add($form->getViewData());
+            $saveAnbClose = $form->get('saveAndClose');
+            if (!$saveAnbClose instanceof ClickableInterface) {
                 throw new \RuntimeException('Unexpected non clickable object');
             }
-            $nextAction = $button->isClicked() ? 'ems_core_release_index' : 'ems_core_release_edit';
+            $nextAction = $saveAnbClose->isClicked() ? 'ems_core_release_index' : 'ems_core_release_edit';
 
             return $this->redirectToRoute($nextAction, ['release' => $release->getId()]);
         }
 
         return $this->render('@EMSCore/release/add.html.twig', [
-            'form_release' => $form2->createView(),
+            'form_release' => $form->createView(),
         ]);
     }
 
     public function edit(Request $request, Release $release): Response
     {
-        if (!empty($release->getRevisionsIds())) {
-            $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish-to-remove', $this->generateUrl('ems_core_release_ajax_data_table'), [
-                'option' => ReleaseRevisionService::QUERY_REVISIONS_IN_RELEASE,
-                'selected' => !empty($release) ? $release->getRevisionsIds() : [],
-                'source' => $release->getEnvironmentSource(),
-                'target' => $release->getEnvironmentTarget(),
-            ]);
-            $table->setMassAction(false);
-            $table->setIdField('emsLink');
-            $table->addColumn('release.revision.index.column.label', 'item_labelField');
-            $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
-            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
-            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
-            $table->setSelected($release->getRevisionsIds());
-            $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
+        $revisionsTable = $this->getRevisionsTable($release);
 
-            $form = $this->createForm(TableType::class, $table);
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
-                    switch ($action->getName()) {
-                        case TableAbstract::REMOVE_ACTION:
-                            $this->releaseService->removeRevisions($release, $table->getSelected());
-                            break;
-                        default:
-                            $this->logger->error('log.controller.release.unknown_action');
-                    }
-                } else {
-                    $this->logger->error('log.controller.release.unknown_action');
+        $revisionsForm = $this->createForm(TableType::class, $revisionsTable);
+        $revisionsForm->handleRequest($request);
+        if ($revisionsForm->isSubmitted() && $revisionsForm->isValid()) {
+            if ($revisionsForm instanceof Form && ($action = $revisionsForm->getClickedButton()) instanceof SubmitButton) {
+                switch ($action->getName()) {
+                    case TableAbstract::REMOVE_ACTION:
+                        $this->releaseService->removeRevisions($release, $revisionsTable->getSelected());
+                        break;
+                    default:
+                        $this->logger->error('log.controller.release.unknown_action');
                 }
-
-                return $this->redirectToRoute('ems_core_release_edit', ['release' => $release->getId()]);
+            } else {
+                $this->logger->error('log.controller.release.unknown_action');
             }
+
+            return $this->redirectToRoute('ems_core_release_edit', ['release' => $release->getId()]);
         }
 
         $form2 = $this->createForm(ReleaseType::class, $release);
@@ -147,7 +132,7 @@ final class ReleaseController extends AbstractController
         }
 
         return $this->render('@EMSCore/release/edit.html.twig', [
-            'form' => isset($form) ? $form->createView() : null,
+            'form' => $revisionsForm->createView(),
             'form_release' => $form2->createView(),
         ]);
     }
@@ -260,6 +245,26 @@ final class ReleaseController extends AbstractController
         ->addCondition(new Terms('status', [ReleaseStatusEnumType::READY_STATUS]));
         $table->addItemPostAction('ems_core_release_delete', 'release.actions.delete', 'trash', 'release.actions.delete_confirm');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'release.actions.delete_selected', 'release.actions.delete_selected_confirm');
+
+        return $table;
+    }
+
+    public function getRevisionsTable(Release $release): QueryTable
+    {
+        $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish-to-remove', $this->generateUrl('ems_core_release_ajax_data_table'), [
+            'option' => ReleaseRevisionService::QUERY_REVISIONS_IN_RELEASE,
+            'selected' => !empty($release) ? $release->getRevisionsIds() : [],
+            'source' => $release->getEnvironmentSource(),
+            'target' => $release->getEnvironmentTarget(),
+        ]);
+        $table->setMassAction(false);
+        $table->setIdField('emsLink');
+        $table->addColumn('release.revision.index.column.label', 'item_labelField');
+        $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
+        $table->setSelected($release->getRevisionsIds());
+        $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
 
         return $table;
     }

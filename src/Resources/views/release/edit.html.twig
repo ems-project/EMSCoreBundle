@@ -17,13 +17,7 @@
 		save_action_key: 'release.edit.save',
 		saveAndClose_action_key: 'release.edit.saveAndClose',
     } %}
-    {%  set toolbar %}
-    {%  endset %}
-    
-    {% if form is not null %}
-        {% form_theme form '@EMSCore/form/forms.html.twig' %}
-        {{ form(form, {
-            toolbar: toolbar
-        }) }}
-    {% endif %}
+
+    {% form_theme form '@EMSCore/form/forms.html.twig' %}
+    {{ form(form) }}
 {% endblock %}

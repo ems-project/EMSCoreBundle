@@ -131,6 +131,11 @@ class Task implements EntityInterface
         return self::STYLES[$this->status]['label'] ?? 'default';
     }
 
+    public function getStatusText(): string
+    {
+        return self::STYLES[$this->status]['text'] ?? '';
+    }
+
     public function getTitle(): string
     {
         return $this->title;

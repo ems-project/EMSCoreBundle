@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
@@ -142,5 +143,21 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     public static function isVirtual(array $option = []): bool
     {
         return true;
+    }
+
+    /**
+     * @param array<mixed>|float|int|string|null $data
+     */
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
+    {
+        if (\is_array($data)) {
+            foreach ($data as $key => $value) {
+                if (null === $value) {
+                    unset($data[$key]);
+                }
+            }
+        }
+
+        return parent::reverseViewTransform($data, $fieldType);
     }
 }

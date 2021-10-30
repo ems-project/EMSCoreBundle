@@ -1,0 +1,32 @@
+div.json_menu_nested_editor {
+    div.json_menu_nested_editor_loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color:rgba(9,9,9,0.1);
+        z-index: 1000;
+        font-size: 1em;
+    }
+
+    div.nested-row {
+        padding: 2px;
+        display: flex;
+
+        flex-direction: row;
+
+        i.nested-icon { margin-left: 5px; align-self: center; }
+        div.itemLabel { padding: 5px; align-self: center; }
+
+        div.item-buttons {
+            margin-left: auto;
+            min-width: 255px;
+            justify-self: flex-start;
+            .btn-group { margin-left: 0; }
+        }
+    }
+}

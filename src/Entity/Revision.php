@@ -877,7 +877,7 @@ class Revision implements EntityInterface
         $rawData = $this->rawData ?? [];
 
         if (null !== $this->versionUuid) {
-            $rawData['_version_uuid'] = $this->versionUuid;
+            $rawData[Mapping::VERSION_UUID] = $this->versionUuid;
         }
 
         return $rawData;

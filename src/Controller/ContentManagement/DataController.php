@@ -352,7 +352,18 @@ class DataController extends AppController
                 'contentType' => $contentType,
             ]);
         } else {
+            /* @var Revision $revision */
             $revision = $repository->findOneById($revisionId);
+        }
+
+        if (!$revision && $contentType->hasVersionTags()) {
+            $latestVersionRevision = $repository->findLatestVersion($contentType, $ouuid);
+            if ($latestVersionRevision && $latestVersionRevision->getOuuid() !== $ouuid) {
+                return $this->redirectToRoute('emsco_view_revisions', [
+                   'type' => $contentType->getName(),
+                   'ouuid' => $latestVersionRevision->getOuuid(),
+                ]);
+            }
         }
 
         $compareData = false;
@@ -443,6 +454,16 @@ class DataController extends AppController
         $filter->setPattern(\sprintf('"%s:%s"', $type, $ouuid));
         $filter->setOperator('match_and');
         $searchForm->addFilter($filter);
+
+        /** @var Revision $revision */
+        if (null !== $versionOuuid = $revision->getVersionUuid()) {
+            $filterVersion = new SearchFilter();
+            $filterVersion->setBooleanClause('should');
+            $filterVersion->setField($contentType->getRefererFieldName());
+            $filterVersion->setPattern(\sprintf('"%s:%s"', $type, $versionOuuid));
+            $filterVersion->setOperator('match_and');
+            $searchForm->addFilter($filterVersion);
+        }
 
         $searchForm->setMinimumShouldMatch(1);
         $esSearch = $searchService->generateSearch($searchForm);
@@ -554,10 +575,11 @@ class DataController extends AppController
     /**
      * @Route("/data/new-draft/{type}/{ouuid}", name="revision.new-draft")
      */
-    public function newDraftAction(string $type, string $ouuid, DataService $dataService): RedirectResponse
+    public function newDraftAction(Request $request, string $type, string $ouuid, DataService $dataService): RedirectResponse
     {
         return $this->redirectToRoute(Routes::EDIT_REVISION, [
             'revisionId' => $dataService->initNewDraft($type, $ouuid)->getId(),
+            'node' => $request->get('node'),
         ]);
     }
 
@@ -1331,13 +1353,6 @@ class DataController extends AppController
                 throw new NotFoundHttpException('Content type '.$type.'not found');
             }
 
-            /** @var Revision $revision */
-            $revision = $repository->findByOuuidAndContentTypeAndEnvironment($contentType, $ouuid, $contentType->getEnvironment());
-
-            if (!$revision) {
-                throw new NotFoundHttpException('Impossible to find this item : '.$ouuid);
-            }
-
             // For each type, we must perform a different redirect.
             if ('object' == $category) {
                 return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
@@ -1345,6 +1360,14 @@ class DataController extends AppController
                     'ouuid' => $ouuid,
                 ]);
             }
+
+            /** @var Revision $revision */
+            $revision = $repository->findByOuuidAndContentTypeAndEnvironment($contentType, $ouuid, $contentType->getEnvironment());
+
+            if (!$revision) {
+                throw new NotFoundHttpException('Impossible to find this item : '.$ouuid);
+            }
+
             if ('asset' == $category) {
                 if (empty($contentType->getAssetField()) && empty($revision->getRawData()[$contentType->getAssetField()])) {
                     throw new NotFoundHttpException('Asset field not found for '.$revision);

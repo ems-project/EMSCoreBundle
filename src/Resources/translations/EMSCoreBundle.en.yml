@@ -60,6 +60,9 @@ field_type.json_menu_editor.delete_item: 'Delete this entry'
 field_type.json_menu_editor.edit: Edit
 field_type.json_menu_editor.item_label_placeholder: 'Define a label for this entry'
 field_type.json_menu_editor.move_item: Move
+field_type.json_menu_editor.copy: Copy
+field_type.json_menu_editor.copy_all: Copy all
+field_type.json_menu_editor.paste: Paste
 form.analyzer.char_filter.html_strip: 'HTML Strip'
 form.analyzer.char_filter.label: 'Char Filter'
 form.analyzer.filter.built_in.asciifolding: 'ASCII Folding'
@@ -437,7 +440,7 @@ service.contenttype.mappings_updated: 'Mappings successfully updated/created for
 service.contenttype.pipelines: 'Pipelines have been updated/created for %contenttype%'
 service.contenttype.pipelines_error: 'elasticms was not able to generate pipelines for the content type %contenttype%, they are disabled. Please consider to update your elasticsearch cluster (>=5.0). %elasticsearch_error_type% : %elasticsearch_error_reason%'
 service.contenttype.reordered: 'Content type "%contenttype% has been reordered'
-service.contenttype.should_reindex: 'You should try to rebuild the indexes for  %contenttype%. Message from Elasticsearch; %elasticsearch_error_type% : %elasticsearch_error_reason%'
+service.contenttype.update_mapping_exception: 'Error on updating %environments%''s mapping : %elasticsearch_error%'
 service.data.already_unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already deleted from %environment%'
 service.data.cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is (see previous warnings)'
 service.data.cant_finalize_field: '%error_message%'
@@ -475,6 +478,7 @@ service.notification.treated: '%notification_name% for document ems://object:%co
 service.notification.update: 'A "%notification_name%" notification has been %notification_status% for a "%contenttype%" document (%ouuid%)'
 service.object_choice_cache.alias_not_found: 'Alias not found for content type %contenttype%'
 service.object_choice_cache.contenttype_not_found: 'Content type %contenttype% not found'
+service.object_choice_cache.limited_result_set: 'The data link picker is limited to the first %limit% of %count% documents'
 service.object_choice_cache.object_key_not_found: 'Object key %object_key% not found'
 service.publish.already_published: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already published in %environment%'
 service.publish.already_unpublished: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already unpublished from %environment%'
@@ -482,6 +486,7 @@ service.publish.draft_published: 'A draft of the document ems://object:%contentt
 service.publish.not_authorized: 'You can not (un)publish the content type %contenttype%'
 service.publish.not_in_circles: 'You can not (un)publish the content type %contenttype% as you don''t share any circle'
 service.publish.not_in_default_environment: 'You can not (un)publish in the default environment %environment% of the document ems://object:%contenttype%:%ouuid%'
+service.publish.publish_failed: 'The publication of the revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% failed!'
 service.publish.publish_draft_error: 'A draft of the document ems://object:%contenttype%:%ouuid% can''t be published in %environment% : %error_message%'
 service.publish.published: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been published in %environment%'
 service.publish.revision_not_found_in_source: 'Missing revision in the environment %environment% for the document ems://object:%contenttype%:%ouuid%'

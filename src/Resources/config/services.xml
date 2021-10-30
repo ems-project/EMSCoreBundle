@@ -113,5 +113,10 @@
             <argument type="service" id="security.authorization_checker"/>
             <argument type="service" id="ems.service.user"/>
         </service>
+
+        <service id="ems_core.core_ui.flash_message_logger" class="EMS\CoreBundle\Core\UI\FlashMessageLogger">
+            <argument type="service" id="session.flash_bag" />
+            <argument type="service" id="translator" />
+        </service>
     </services>
 </container>

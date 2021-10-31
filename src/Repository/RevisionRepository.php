@@ -12,6 +12,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\Revision;
 
 class RevisionRepository extends EntityRepository
@@ -393,7 +394,7 @@ class RevisionRepository extends EntityRepository
      *
      * @return QueryBuilder
      */
-    private function getCompareQueryBuilder($source, $target, $contentTypes = [], array $ids = [], bool $selectedOnly = false)
+    private function getCompareQueryBuilder($source, $target, $contentTypes = [])
     {
         $qb = $this->createQueryBuilder('r');
         $qb->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.singularName content_type_singular_name', 'c.icon', 'r.ouuid', "CONCAT(c.name, ':', r.ouuid) AS emsLink", 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created, \'/\', r.finalizedBy)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created, \'/\', r.finalizedBy)) maxrevid', 'max(r.id) lastRevId')
@@ -411,14 +412,6 @@ class RevisionRepository extends EntityRepository
             'target' => $target,
             'false' => false,
         ]);
-
-        if ($selectedOnly) {
-            $qb->andWhere('r.ouuid IN (:id)')
-            ->setParameter('id', $ids);
-        } elseif (!empty($ids)) {
-            $qb->andWhere('r.ouuid NOT IN (:id)')
-            ->setParameter('id', $ids);
-        }
 
         if (!empty($contentTypes)) {
             $qb->andWhere('c.name in (\''.\implode("','", $contentTypes).'\')');
@@ -1008,146 +1001,14 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param string[] $context
-     */
-    public function counterRevisionsForRelease(array $context): int
-    {
-        /** @var string[] $ids */
-        $ids = $context['selected'] ?? [];
-        $source = $context['source'];
-        $target = $context['target'];
-        $sqb = $this->getCompareQueryBuilder($source, $target, [], $ids);
-        $sqb->select('max(r.id)');
-        //         $subQuery()
-        $qb = $this->createQueryBuilder('rev');
-        $qb->select('count(rev)');
-        $qb->where($qb->expr()->in('rev.id', $sqb->getDQL()));
-        $qb->setParameters([
-            'false' => false,
-            'source' => $source,
-            'target' => $target,
-        ]);
-
-        if (!empty($ids)) {
-            $qb->setParameter('id', $ids);
-        }
-
-        try {
-            return $qb->getQuery()->getSingleScalarResult();
-        } catch (\Throwable $e) {
-            return 0;
-        }
-    }
-
-    /**
-     * @param string[] $context
-     */
-    public function counterRevisionsInRelease(array $context): int
-    {
-        /** @var string[] $ids */
-        $ids = $context['selected'] ?? [];
-        $source = $context['source'];
-        $target = $context['target'];
-        $sqb = $this->getCompareQueryBuilder($source, $target, [], $ids, true);
-        $sqb->select('max(r.id)');
-        //         $subQuery()
-        $qb = $this->createQueryBuilder('rev');
-        $qb->select('count(rev)');
-        $qb->where($qb->expr()->in('rev.id', $sqb->getDQL()));
-        $qb->setParameters([
-            'false' => false,
-            'source' => $source,
-            'target' => $target,
-            'id' => $ids,
-        ]);
-
-        try {
-            return $qb->getQuery()->getSingleScalarResult();
-        } catch (\Throwable $e) {
-            return 0;
-        }
-    }
-
-    /**
-     * @param string[] $context
-     */
-    public function counterRevisionsInAppliedRelease(array $context): int
-    {
-        /** @var string[] $ids */
-        $ids = $context['selected'] ?? [];
-        $target = $context['target'];
-        $sqb = $this->getCompareQueryBuilder($target, $target, [], $ids, true);
-        $sqb->select('max(r.id)');
-        //         $subQuery()
-        $qb = $this->createQueryBuilder('rev');
-        $qb->select('count(rev)');
-        $qb->where($qb->expr()->in('rev.id', $sqb->getDQL()));
-        $qb->setParameters([
-            'false' => false,
-            'source' => $target,
-            'target' => $target,
-            'id' => $ids,
-        ]);
-
-        try {
-            return $qb->getQuery()->getSingleScalarResult();
-        } catch (\Throwable $e) {
-            return 0;
-        }
-    }
-
-    /**
-     * @param string[] $context
-     *
      * @return Revision[]
      */
-    public function getRevisionsForRelease(int $from, int $size, array $context): array
+    public function getRevisionsForRelease(int $from, int $size, Release $release): array
     {
-        /** @var string[] $ids */
-        $ids = $context['selected'] ?? [];
-        $source = $context['source'];
-        $target = $context['target'];
-        $qb = $this->getCompareQueryBuilder($source, $target, [], $ids);
+        $qb = $this->getCompareQueryBuilder($release->getEnvironmentSource(), $release->getEnvironmentTarget());
         $qb->orderBy('r.ouuid')
-        ->setFirstResult($from)
-        ->setMaxResults($size);
-
-        return $qb->getQuery()->execute();
-    }
-
-    /**
-     * @param string[] $context
-     *
-     * @return Revision[]
-     */
-    public function getRevisionsInRelease(int $from, int $size, array $context): array
-    {
-        /** @var string[] $ids */
-        $ids = $context['selected'] ?? [];
-        $source = $context['source'];
-        $target = $context['target'];
-        $qb = $this->getCompareQueryBuilder($source, $target, [], $ids, true);
-        $qb->orderBy('r.ouuid')
-        ->setFirstResult($from)
-        ->setMaxResults($size);
-
-        return $qb->getQuery()->execute();
-    }
-
-    /**
-     * @param string[] $context
-     *
-     * @return Revision[]
-     */
-    public function getRevisionsInAppliedRelease(int $from, int $size, array $context): array
-    {
-        /** @var string[] $ids */
-        $ids = $context['selected'] ?? [];
-        $target = $context['target'];
-        $qb = $this->getCompareQueryBuilder($target, $target, [], $ids, true);
-        $qb->orderBy('r.ouuid')
-        ->setFirstResult($from)
-        ->setMaxResults($size);
+            ->setFirstResult($from)
+            ->setMaxResults($size);
 
         return $qb->getQuery()->execute();
     }

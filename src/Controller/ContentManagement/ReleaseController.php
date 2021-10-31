@@ -263,15 +263,21 @@ final class ReleaseController extends AbstractController
         return $table;
     }
 
-    private function getMemberRevisionsTable(Release $release): QueryTable
+    private function getMemberRevisionsTable(Release $release): EntityTable
     {
-        $table = $this->getRevisionsTable($release, 'revisions-to-publish-to-remove', ReleaseRevisionService::QUERY_REVISIONS_IN_RELEASE, Routes::RELEASE_MEMBER_REVISION_AJAX);
-        if (\in_array($release->getStatus(), [ReleaseStatusEnumType::WIP_STATUS])) {
-            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
-            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
-            $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
-        } else {
-            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
+        $table = new EntityTable($this->releaseRevisionService, $this->generateUrl(Routes::RELEASE_MEMBER_REVISION_AJAX, ['release' => $release->getId()]), $release);
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.CT', 'contentType', '@EMSCore/release/columns/release-revisions.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.document', 'label', '@EMSCore/release/columns/release-revisions.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.revision', 'revision', '@EMSCore/release/columns/release-revisions.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.action', 'action', '@EMSCore/release/columns/release-revisions.html.twig'));
+
+        switch ($release->getStatus()) {
+            case ReleaseStatusEnumType::WIP_STATUS:
+                $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
+                break;
+            case ReleaseStatusEnumType::APPLIED_STATUS:
+                $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.previous', 'previous', '@EMSCore/release/columns/release-revisions.html.twig'));
+                break;
         }
 
         return $table;
@@ -279,29 +285,17 @@ final class ReleaseController extends AbstractController
 
     private function getNonMemberRevisionsTable(Release $release): QueryTable
     {
-        $table = $this->getRevisionsTable($release, 'revisions-to-publish', TableAbstract::ADD_ACTION, Routes::RELEASE_NON_MEMBER_REVISION_AJAX);
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
-        $table->addTableAction(TableAbstract::ADD_ACTION, 'fa fa-plus', 'release.revision.actions.add', 'release.revision.actions.add_confirm');
-        $table->addDynamicItemPostAction(Routes::RELEASE_ADD_REVISION, 'release.revision.action.add', 'plus', 'release.revision.actions.add_confirm', ['release' => \sprintf('%d', $release->getId()), 'emsLinkToAdd' => 'emsLink']);
-
-        return $table;
-    }
-
-    private function getRevisionsTable(Release $release, string $queryName, string $option, string $route): QueryTable
-    {
-        $table = new QueryTable($this->releaseRevisionService, $queryName, $this->generateUrl($route, ['release' => $release->getId()]), [
-            'option' => $option,
-            'selected' => $release->getRevisionsIds(),
-            'source' => $release->getEnvironmentSource(),
-            'target' => $release->getEnvironmentTarget(),
-        ]);
+        $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish', $this->generateUrl(Routes::RELEASE_NON_MEMBER_REVISION_AJAX, ['release' => $release->getId()]), $release);
         $table->setMassAction(false);
         $table->setLabelAttribute('item_labelField');
         $table->setIdField('emsLink');
         $table->addColumn('release.revision.index.column.label', 'item_labelField');
         $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
         $table->setSelected($release->getRevisionsIds());
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
+        $table->addTableAction(TableAbstract::ADD_ACTION, 'fa fa-plus', 'release.revision.actions.add', 'release.revision.actions.add_confirm');
+        $table->addDynamicItemPostAction(Routes::RELEASE_ADD_REVISION, 'release.revision.action.add', 'plus', 'release.revision.actions.add_confirm', ['release' => \sprintf('%d', $release->getId()), 'emsLinkToAdd' => 'emsLink']);
 
         return $table;
     }

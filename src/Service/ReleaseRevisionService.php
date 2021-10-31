@@ -9,12 +9,11 @@ use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
-use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Repository\ReleaseRevisionRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use Psr\Log\LoggerInterface;
 
-final class ReleaseRevisionService implements QueryServiceInterface
+final class ReleaseRevisionService implements QueryServiceInterface, EntityServiceInterface
 {
     public const QUERY_REVISIONS_IN_PUBLISHED_RELEASE = 'QUERY_REVISIONS_IN_PUBLISHED_RELEASE';
     public const QUERY_REVISIONS_IN_RELEASE = 'QUERY_REVISIONS_IN_RELEASE';
@@ -46,12 +45,8 @@ final class ReleaseRevisionService implements QueryServiceInterface
      */
     public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
-        if (self::QUERY_REVISIONS_IN_PUBLISHED_RELEASE === ($context['option'] ?? null)) {
-            return $this->revisionRepository->getRevisionsInAppliedRelease($from, $size, $context);
-        }
-
-        if (self::QUERY_REVISIONS_IN_RELEASE === ($context['option'] ?? null)) {
-            return $this->revisionRepository->getRevisionsInRelease($from, $size, $context);
+        if (!$context instanceof Release) {
+            throw new \RuntimeException('Unexpected release object');
         }
 
         return $this->revisionRepository->getRevisionsForRelease($from, $size, $context);
@@ -59,7 +54,7 @@ final class ReleaseRevisionService implements QueryServiceInterface
 
     public function getEntityName(): string
     {
-        return 'revision';
+        return 'release_revision';
     }
 
     /**
@@ -67,15 +62,11 @@ final class ReleaseRevisionService implements QueryServiceInterface
      */
     public function countQuery(string $searchValue = '', $context = null): int
     {
-        if (isset($context['option']) && TableAbstract::EXPORT_ACTION === $context['option']) {
-            return $this->revisionRepository->counterRevisionsInAppliedRelease($context);
+        if (!$context instanceof Release) {
+            throw new \RuntimeException('Unexpected release object');
         }
 
-        if (isset($context['option']) && TableAbstract::REMOVE_ACTION === $context['option']) {
-            return $this->revisionRepository->counterRevisionsInRelease($context);
-        }
-
-        return $this->revisionRepository->counterRevisionsForRelease($context);
+        return $this->revisionRepository->countDifferencesBetweenEnvironment($context->getEnvironmentSource()->getId(), $context->getEnvironmentTarget()->getId());
     }
 
     public function findToRemove(Release $release, string $ouuid, ContentType $contentType): ReleaseRevision
@@ -92,5 +83,28 @@ final class ReleaseRevisionService implements QueryServiceInterface
                 'name' => $releaseRevision->getRelease()->getName(),
             ]);
         }
+    }
+
+    public function isSortable(): bool
+    {
+        return false;
+    }
+
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    {
+        if (!$context instanceof Release) {
+            throw new \RuntimeException('Unexpected non Release context');
+        }
+
+        return $this->releaseRevisionRepository->findAll();
+    }
+
+    public function count(string $searchValue = '', $context = null): int
+    {
+        if (!$context instanceof Release) {
+            throw new \RuntimeException('Unexpected non Release context');
+        }
+
+        return $this->releaseRevisionRepository->count([]);
     }
 }

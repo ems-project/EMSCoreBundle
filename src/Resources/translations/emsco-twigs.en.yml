@@ -116,3 +116,8 @@ views.elements.side-menu-html.uploaded-files-logs: 'Uploaded file logs'
 uploaded-file-logs.index.title: 'Uploaded file logs'
 view.icon.class.uploaded-file: 'fa fa-upload'
 uploaded-file-logs.menu: 'Uploaded file logs'
+release.release-revisison.publish: Publish
+release.release-revisison.unpublish: Unpublish
+release.release-revisison.revision: '%date% finalized by %user%'
+release.release-revisison.missing-revision: 'The document %ouuid% is no more available in %environment%'
+release.release-revisison.not-applicable: 'not applicable'

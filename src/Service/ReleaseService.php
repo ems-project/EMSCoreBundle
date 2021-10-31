@@ -81,15 +81,14 @@ final class ReleaseService implements EntityServiceInterface
     }
 
     /**
-     * @param array<string> $emsLinks
+     * @param array<string> $ids
      */
-    public function removeRevisions(Release $release, array $emsLinks): void
+    public function removeRevisions(Release $release, array $ids): void
     {
-        foreach ($emsLinks as $emsLink) {
-            $emsLinkObject = EMSLink::fromText($emsLink);
-            $contentType = $this->contentTypeService->giveByName($emsLinkObject->getContentType());
-            $releaseRevision = $this->releaseRevisionService->findToRemove($release, $emsLinkObject->getOuuid(), $contentType);
-            $this->releaseRevisionService->remove($releaseRevision);
+        foreach ($release->getRevisions() as $releaseRevision) {
+            if (\in_array($releaseRevision->getId(), $ids)) {
+                $this->releaseRevisionService->remove($releaseRevision);
+            }
         }
     }
 

@@ -61,7 +61,7 @@ field_type.json_menu_editor.edit: Edit
 field_type.json_menu_editor.item_label_placeholder: 'Define a label for this entry'
 field_type.json_menu_editor.move_item: Move
 field_type.json_menu_editor.copy: Copy
-field_type.json_menu_editor.copy_all: Copy all
+field_type.json_menu_editor.copy_all: 'Copy all'
 field_type.json_menu_editor.paste: Paste
 form.analyzer.char_filter.html_strip: 'HTML Strip'
 form.analyzer.char_filter.label: 'Char Filter'
@@ -171,9 +171,9 @@ form.form.channel.public: 'Make channel available for non-authenticated users ?'
 form.form.query_search.environments: Environments
 form.form.query_search.label: Label
 form.form.query_search.name: Name
-form.form.release.environmentSource: Environment source
-form.form.release.environmentTarget: Environment target
-form.form.release.execution_date: Execution date
+form.form.release.environmentSource: 'Environment source'
+form.form.release.environmentTarget: 'Environment target'
+form.form.release.execution_date: 'Execution date'
 form.form.release.name: Name
 form.form.revision-type.copy-label: Copy
 form.form.revision-type.paste-label: Paste
@@ -347,8 +347,8 @@ log.service.action.delete: 'The action %name% has been deleted'
 log.service.channel.delete: 'The channel %name% has been deleted'
 log.service.content-type.get-unreferenced-content-type.unexpected-error: 'Unexpected error while get unreferenced content type from environment %environment%: %error_message%'
 log.service.release.delete: 'The Release %name% has been deleted'
-log.service.release.not.environments.defined : 'Environments source or/and target not defined for Release %name%'
-log.service.release.not.ready : 'Status of Release %name% is not ready'
+log.service.release.not.environments.defined: 'Environments source or/and target not defined for Release %name%'
+log.service.release.not.ready: 'Status of Release %name% is not ready'
 log.service.release_revision.preceding.revision.in.release: 'Has a previous revision related to Release %name%'
 log.service.query_search.delete: 'The QuerySearch %name% has been deleted'
 log.user.api_key: 'New API key for the user %user_display_name%: %api_key%'
@@ -395,48 +395,53 @@ query_search.index.column.public: 'Public access'
 query_search.index.reorder: 'Reorder QuerySearch'
 query_search.index.title: 'List of QuerySearch'
 query_search.menu: QuerySearch
-release.actions.add_revisions: Add documents
+release.actions.add_revisions: 'Add documents'
 release.actions.delete: Delete
 release.actions.delete_confirm: 'Delete the Release?'
 release.actions.delete_selected: 'Delete selected'
 release.actions.delete_selected_confirm: 'Delete all selected Releases?'
 release.actions.edit: Edit
-release.actions.publish_release: Publish Release
-release.actions.publish_confirm : 'Publish the Releases?'
-release.actions.set_status_canceled: Cancel Release
-release.actions.set_status_ready: Ready Release
-release.actions.set_status_wip: Wip Release
+release.actions.publish_release: 'Publish Release'
+release.actions.publish_confirm: 'Publish the Releases?'
+release.actions.set_status_canceled: 'Cancel Release'
+release.actions.set_status_ready: 'Ready Release'
+release.actions.set_status_wip: 'Wip Release'
 release.actions.show: View
 release.add.save: Create
 release.add.title: 'Add a Release'
 release.edit.save: Save
-release.edit.saveAndClose: Save and Close
+release.edit.saveAndClose: 'Save and Close'
 release.edit.title: 'Edit a Release'
-release.index.column.env_source: Environment source
-release.index.column.env_target: Environment target
-release.index.column.execution_date: Execution date
+release.index.column.env_source: 'Environment source'
+release.index.column.env_target: 'Environment target'
+release.index.column.execution_date: 'Execution date'
 release.index.column.name: Name
 release.index.column.status: Status
 release.index.column.docs_count: '# Documents'
 release.index.title: 'List of Releases'
 release.menu: Releases
-release.revision.actions.add: Add document
-release.revision.action.add: Add document to release
+release.revision.actions.add: 'Add document'
+release.revision.action.add: 'Add document to release'
 release.revision.actions.add_confirm: 'Do you confirm ?'
-release.revision.actions.remove: Remove documents
-release.revision.index.column.CT: Content Type
+release.revision.actions.remove: 'Remove documents'
+release.revision.index.column.CT: 'Content Type'
 release.revision.index.column.label: Label
-release.revision.index.column.minRevId: Environment source
-release.revision.index.column.maxRevId: Environment target
+release.revision.index.column.minRevId: 'Environment source'
+release.revision.index.column.maxRevId: 'Environment target'
 release.revision.index.title: 'List of documents available for release'
-release.revision.menu: Add documents
-release.revision.view.title : 'Release''s documents'
+release.revision.menu: 'Add documents'
+release.revision.index.column.revision: Revision
+release.revision.index.column.document: Document
+release.revision.index.column.action: Action
+release.revision.index.column.previous: 'Previous revision'
+release.revision.index.column.not-applicable: 'not applicable'
+release.revision.view.title: 'Release''s documents'
 release.status.wip: WIP
 release.status.ready: Ready
 release.status.applied: Applied
 release.status.canceled: Canceled
 release.status.scheduled: Scheduled
-release.status.rollbacked: Rolled back
+release.status.rollbacked: 'Rolled back'
 search.aggregate_option_label: 'Aggregate Option'
 search.search_field_option_label: 'Search Field Option'
 search.sort_option_label: 'Sort Option'
@@ -716,7 +721,7 @@ view.icon.class.uploaded-file: 'fa fa-upload'
 revision.draft-in-progress.column.label: Label
 revision.draft-in-progress.column.created: Created
 revision.draft-in-progress.column.modified: 'Last update'
-revision.draft-in-progress.column.auto-save-by: 'By'
+revision.draft-in-progress.column.auto-save-by: By
 revision.draft-in-progress.column.locked: 'Locked until'
 revision.draft-in-progress.column.locked-by: 'Locked by'
 revision.draft-in-progress.column.view-revision: 'View draft in progress'
@@ -852,3 +857,7 @@ Views: Views
 'Add a style set': 'Add a style set'
 'Click on ''Add a styles set'' to create a first styles set': 'Click on ''Add a styles set'' to create a first styles set'
 'New WYSIWYG profile': 'New WYSIWYG profile'
+'%date% Finalized by %user%': '__%date% Finalized by %user%'
+'no revision in %env%': '__no revision in %env%'
+'Unpublish in %env%': '__Unpublish in %env%'
+'replace by revision %date%': '__replace by revision %date%'

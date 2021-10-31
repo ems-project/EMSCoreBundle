@@ -1,0 +1,49 @@
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block label %}
+    {% if data.revision %}
+        {{ data.revision.label }}
+    {% else %}
+        {% set info = data.emsLink|emsco_document_info %}
+        {% set release = info.getRevision(data.release.environmentSource.name) %}
+        {% if release %}
+            {{ release.label }}
+        {% else %}
+            {{ 'release.release-revisison.missing-revision'|trans({'%ouuid%': data.revisionOuuid, '%environment%': data.release.environmentSource.label}) }}
+        {% endif %}
+    {% endif %}
+{% endblock label %}
+
+{% block contentType %}
+    {{ data.contentType.singularName }}
+{% endblock contentType %}
+
+{% block revision %}
+    {% if data.revision %}
+        {{ 'release.release-revisison.revision'|trans({ '%date%' : data.revision.created|date(date_time_format) ,'%user%' : data.revision.finalizedBy|default('')|displayname }) }}
+    {% else %}
+        {% set info = data.emsLink|emsco_document_info %}
+        {% set revision = info.getRevision(data.release.environmentSource.name) %}
+        {% if revision %}
+            {{ 'release.release-revisison.revision'|trans({ '%date%' : revision.created|date(date_time_format) ,'%user%' : revision.finalizedBy|default('')|displayname }) }}
+        {% endif %}
+    {% endif %}
+{% endblock revision %}
+
+{% block action %}
+    {% if data.revision %}
+        {{ 'release.release-revisison.publish'|trans }}
+    {% else %}
+        {{ 'release.release-revisison.unpublish'|trans }}
+    {% endif %}
+{% endblock action %}
+
+{% block previous %}
+    {% if data.revisionBeforePublish %}
+        {{ 'release.release-revisison.revision'|trans({ '%date%' : data.revisionBeforePublish.created|date(date_time_format) ,'%user%' : data.revisionBeforePublish.finalizedBy|default('')|displayname }) }}
+    {% else %}
+        <span class="text-muted">
+            {{ 'release.release-revisison.not-applicable'|trans }}
+        </span>
+    {% endif %}
+{% endblock previous %}

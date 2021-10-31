@@ -1,1 +1,1 @@
-entity.release.violation.same_source_and_target: The target environment must be different from the source environment
+entity.release.violation.same_source_and_target: 'The target environment must be different from the source environment'

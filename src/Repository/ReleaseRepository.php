@@ -80,7 +80,6 @@ final class ReleaseRepository extends ServiceEntityRepository
      */
     public function findReadyAndDue(): array
     {
-        $format = 'Y-m-d H:i';
         $qb = $this->createQueryBuilder('r');
         $qb->where('r.status = :status')
         ->andWhere('r.executionDate <= :dateTime')

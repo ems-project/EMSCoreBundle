@@ -196,7 +196,7 @@
                     {% for name, property in action.routeParameters %}
                         {% set data = line.data %}
                         {% for token in property|split('.') %}
-                            {% set data = attribute(data, token)|default(null) %}
+                            {% set data = attribute(data, token)|default(property) %}
                         {% endfor %}
                         {% set routeParameters = routeParameters|merge({ (name): data }) %}
                     {%  endfor %}

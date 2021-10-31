@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\DBAL;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
@@ -7,14 +9,9 @@ use Doctrine\DBAL\Types\Type;
 
 abstract class EnumType extends Type
 {
-    /**
-     * @var string
-     */
-    protected $name;
-    /**
-     * @var array<string>
-     */
-    protected $values = [];
+    protected string $name;
+    /** @var string[] */
+    protected array $values = [];
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {

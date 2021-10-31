@@ -22,6 +22,13 @@
 						{% if form_release.save is defined %}
 							{{ form_widget(form_release.save) }}
 							{{ form_widget(form_release.saveAndClose) }}
+							{% if release.status == 'wip' %}
+								{% include '@EMSCore/elements/post-button.html.twig' with {
+									'url': path('ems_core_release_set_status', {'release': release.id, 'status': 'ready'}),
+									'label': 'release.actions.set_status_ready'|trans,
+									'btnType': 'default',
+									'icon': 'play' }%}
+							{% endif %}
 							{% include '@EMSCore/elements/get-button.html.twig' with {
 								'url':  path('ems_core_release_add_revisions', {'release': release.id} ),
 								'label': 'release.actions.add_revisions'|trans,

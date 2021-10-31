@@ -153,7 +153,7 @@ class Release implements EntityInterface
     /**
      * @return string[]
      */
-    public function getRevisionsIds(): array
+    public function getRevisionsOuuids(): array
     {
         $ids = [];
         foreach ($this->getRevisions() as $revision) {

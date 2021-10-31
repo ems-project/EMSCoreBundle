@@ -49,7 +49,7 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
             throw new \RuntimeException('Unexpected release object');
         }
 
-        return $this->revisionRepository->getRevisionsForRelease($from, $size, $context);
+        return $this->revisionRepository->getAvailableRevisionsForRelease($from, $size, $context, $orderField, $orderDirection, $searchValue);
     }
 
     public function getEntityName(): string
@@ -66,7 +66,7 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
             throw new \RuntimeException('Unexpected release object');
         }
 
-        return $this->revisionRepository->countDifferencesBetweenEnvironment($context->getEnvironmentSource()->getId(), $context->getEnvironmentTarget()->getId());
+        return $this->revisionRepository->countAvailableRevisionsForRelease($context, $searchValue);
     }
 
     public function findToRemove(Release $release, string $ouuid, ContentType $contentType): ReleaseRevision

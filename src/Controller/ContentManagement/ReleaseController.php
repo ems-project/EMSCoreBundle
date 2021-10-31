@@ -291,7 +291,7 @@ final class ReleaseController extends AbstractController
         $table->setIdField('emsLink');
         $table->addColumn('release.revision.index.column.label', 'item_labelField');
         $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
-        $table->setSelected($release->getRevisionsIds());
+        $table->setSelected($release->getRevisionsOuuids());
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addTableAction(TableAbstract::ADD_ACTION, 'fa fa-plus', 'release.revision.actions.add', 'release.revision.actions.add_confirm');

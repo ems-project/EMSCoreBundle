@@ -7,6 +7,9 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
+use EMS\CoreBundle\EMSCoreBundle;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Table(name="release")
@@ -156,5 +159,18 @@ class Release implements EntityInterface
         }
 
         return $ids;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context): void
+    {
+        if ($this->getEnvironmentTarget() === $this->getEnvironmentSource()) {
+            $context->buildViolation('entity.release.violation.same_source_and_target')
+                ->setTranslationDomain(EMSCoreBundle::TRANS_DOMAIN_VALIDATORS)
+                ->atPath('environmentTarget')
+                ->addViolation();
+        }
     }
 }

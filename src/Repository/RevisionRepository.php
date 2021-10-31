@@ -369,7 +369,7 @@ class RevisionRepository extends EntityRepository
      *
      * @throws NonUniqueResultException
      */
-    public function countDifferencesBetweenEnvironment($source, $target, $contentTypes)
+    public function countDifferencesBetweenEnvironment($source, $target, $contentTypes = [])
     {
         $sqb = $this->getCompareQueryBuilder($source, $target, $contentTypes);
         $sqb->select('max(r.id)');
@@ -386,9 +386,9 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param int   $source
-     * @param int   $target
-     * @param array $contentTypes
+     * @param int      $source
+     * @param int      $target
+     * @param array    $contentTypes
      * @param string[] $ouuids
      *
      * @return QueryBuilder
@@ -405,9 +405,11 @@ class RevisionRepository extends EntityRepository
         ->groupBy('c.id', 'c.name', 'c.icon', 'r.ouuid', 'c.orderKey')
         ->orHaving('count(r.id) = 1')
         ->orHaving('max(r.id) <> min(r.id)')
-        ->setParameter('source', $source)
-        ->setParameter('target', $target)
-        ->setParameter('false', false);
+        ->setParameters([
+            'source' => $source,
+            'target' => $target,
+            'false' => false,
+        ]);
 
         if (\count($ouuids) > 0) {
             $qb->andWhere($qb->expr()->notin('r.ouuid', $ouuids));

@@ -14,7 +14,7 @@
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:edit</default>
     </route>
     <route id="ems_core_release_view" path="/view/{release}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:viewRevisions</default>
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:view</default>
     </route>
     <route id="ems_core_release_delete" path="/delete/{release}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:delete</default>

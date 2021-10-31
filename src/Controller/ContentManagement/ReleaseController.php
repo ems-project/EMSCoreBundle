@@ -164,14 +164,14 @@ final class ReleaseController extends AbstractController
         ]);
     }
 
-    public function viewRevisions(Release $release): Response
+    public function view(Release $release): Response
     {
         $table = $this->getMemberRevisionsTable($release);
         $form = $this->createForm(TableType::class, $table, [
             'title_label' => 'release.revision.view.title',
         ]);
 
-        return $this->render('@EMSCore/release/revisions/view.html.twig', [
+        return $this->render('@EMSCore/release/view.html.twig', [
             'form' => $form->createView(),
             'release' => $release,
         ]);

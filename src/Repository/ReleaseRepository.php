@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\Entity\Release;
 
@@ -58,14 +59,20 @@ final class ReleaseRepository extends ServiceEntityRepository
     /**
      * @return Release[]
      */
-    public function get(int $from, int $size): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
     {
         $qb = $this->createQueryBuilder('r')
             ->setFirstResult($from)
-            ->setMaxResults($size)
-            ->getQuery();
+            ->setMaxResults($size);
+        $this->addSearchFilters($qb, $searchValue);
 
-        return $qb->execute();
+        if (\in_array($orderField, ['name', 'executionDate', 'created'])) {
+            $qb->orderBy(\sprintf('r.%s', $orderField), $orderDirection);
+        } else {
+            $qb->orderBy('r.name', $orderDirection);
+        }
+
+        return $qb->getQuery()->execute();
     }
 
     /**
@@ -83,5 +90,16 @@ final class ReleaseRepository extends ServiceEntityRepository
         ]);
 
         return $qb->getQuery()->execute();
+    }
+
+    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    {
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('r.name', ':term'),
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.$searchValue.'%');
+        }
     }
 }

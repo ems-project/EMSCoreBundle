@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\ORM\NoResultException;
-use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
@@ -14,18 +14,12 @@ use Psr\Log\LoggerInterface;
 
 final class ReleaseService implements EntityServiceInterface
 {
-    /** @var ReleaseRepository */
-    private $releaseRepository;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var DataService */
-    private $dataService;
-    /** @var ReleaseRevisionService */
-    private $releaseRevisionService;
-    /** @var PublishService */
-    private $publishService;
-    /** @var LoggerInterface */
-    private $logger;
+    private ReleaseRepository $releaseRepository;
+    private ContentTypeService $contentTypeService;
+    private DataService $dataService;
+    private ReleaseRevisionService $releaseRevisionService;
+    private PublishService $publishService;
+    private LoggerInterface $logger;
 
     public function __construct(ReleaseRepository $releaseRepository, ContentTypeService $contentTypeService, DataService $dataService, ReleaseRevisionService $releaseRevisionService, PublishService $publishService, LoggerInterface $logger)
     {
@@ -54,35 +48,27 @@ final class ReleaseService implements EntityServiceInterface
 
     public function update(Release $release): void
     {
-        $encoder = new Encoder();
-        $name = $release->getName();
-        if (null == $name) {
-            throw new \RuntimeException('Unexpected null name');
-        }
-        $release->setName($name);
         $this->releaseRepository->create($release);
     }
 
     /**
      * @param array<string> $emsLinks
-     *
-     * @throws NoResultException
      */
     public function addRevisions(Release $release, array $emsLinks): void
     {
         foreach ($emsLinks as $emsLink) {
-            $eL = \explode(':', $emsLink);
+            $emsLinkObject = EMSLink::fromText($emsLink);
             $releaseRevision = new ReleaseRevision();
             $releaseRevision->setRelease($release);
-            $releaseRevision->setRevisionOuuid($eL[1]);
+            $releaseRevision->setRevisionOuuid($emsLinkObject->getOuuid());
 
-            $contentType = $this->contentTypeService->giveByName($eL[0]);
+            $contentType = $this->contentTypeService->giveByName($emsLinkObject->getContentType());
             $releaseRevision->setContentType($contentType);
             $revision = null;
 
             if (!empty($release->getEnvironmentSource())) {
                 try {
-                    $revision = $this->dataService->getRevisionByEnvironment($eL[1], $contentType, $release->getEnvironmentSource());
+                    $revision = $this->dataService->getRevisionByEnvironment($emsLinkObject->getOuuid(), $contentType, $release->getEnvironmentSource());
                 } catch (NoResultException $e) {
                     $revision = null;
                 }
@@ -100,10 +86,9 @@ final class ReleaseService implements EntityServiceInterface
     public function removeRevisions(Release $release, array $emsLinks): void
     {
         foreach ($emsLinks as $emsLink) {
-            $eL = \explode(':', $emsLink);
-            $contentType = $this->contentTypeService->giveByName($eL[0]);
-            $ouuid = $eL[1];
-            $releaseRevision = $this->releaseRevisionService->findToRemove($release, $ouuid, $contentType);
+            $emsLinkObject = EMSLink::fromText($emsLink);
+            $contentType = $this->contentTypeService->giveByName($emsLinkObject->getContentType());
+            $releaseRevision = $this->releaseRevisionService->findToRemove($release, $emsLinkObject->getOuuid(), $contentType);
             $this->releaseRevisionService->remove($releaseRevision);
         }
     }
@@ -143,7 +128,7 @@ final class ReleaseService implements EntityServiceInterface
             throw new \RuntimeException('Unexpected context');
         }
 
-        return $this->releaseRepository->get($from, $size);
+        return $this->releaseRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
     public function getEntityName(): string
@@ -171,38 +156,33 @@ final class ReleaseService implements EntityServiceInterface
         return $this->releaseRepository->findReadyAndDue();
     }
 
-    public function publishRelease(Release $release, bool $checkGrants = true): void
+    public function publishRelease(Release $release, bool $command = false): void
     {
         if (ReleaseStatusEnumType::READY_STATUS !== $release->getStatus()) {
-            $this->logger->warning('log.service.release.not.ready', [
+            $this->logger->error('log.service.release.not.ready', [
                 'name' => $release->getName(),
             ]);
 
             return;
         }
 
-        if (ReleaseStatusEnumType::READY_STATUS === $release->getStatus() && !empty($release->getEnvironmentSource()) && !empty($release->getEnvironmentTarget()) && !empty($release->getEnvironmentTarget())) {
-            $envSource = $release->getEnvironmentSource()->getName();
-            $envTarget = $release->getEnvironmentTarget()->getName();
-
-            /** @var ReleaseRevision $releaseRevision */
-            foreach ($release->getRevisions() as $releaseRevision) {
-                $this->publishService->alignRevision(
-                        $releaseRevision->getContentType()->getName(),
-                        $releaseRevision->getRevisionOuuid(),
-                        $envSource,
-                        $envTarget,
-                        $checkGrants,
-                        $releaseRevision->getRevision()
-                );
+        foreach ($release->getRevisions() as $releaseRevision) {
+            try {
+                $revisionToRemove = $this->dataService->getRevisionByEnvironment($releaseRevision->getRevisionOuuid(), $releaseRevision->getContentType(), $release->getEnvironmentTarget());
+            } catch (NoResultException $e) {
+                $revisionToRemove = null;
             }
+            $releaseRevision->setRevisionBeforePublish($revisionToRemove);
 
-            $release->setStatus(ReleaseStatusEnumType::APPLIED_STATUS);
-            $this->update($release);
-        } elseif (!empty($release->getEnvironmentSource()) || !empty($release->getEnvironmentTarget())) {
-            $this->logger->warning('log.service.release.not.environments.defined', [
-                'name' => $release->getName(),
-            ]);
+            $revision = $releaseRevision->getRevision();
+            if (null === $revision && null !== $revisionToRemove) {
+                $this->publishService->unpublish($revisionToRemove, $release->getEnvironmentTarget(), $command);
+            } elseif (null !== $revision) {
+                $this->publishService->publish($revision, $release->getEnvironmentTarget(), $command);
+            }
         }
+
+        $release->setStatus(ReleaseStatusEnumType::APPLIED_STATUS);
+        $this->update($release);
     }
 }

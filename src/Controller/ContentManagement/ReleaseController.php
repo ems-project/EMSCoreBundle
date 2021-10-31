@@ -16,6 +16,7 @@ use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
 use EMS\CoreBundle\Form\Form\ReleaseType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ReleaseRevisionService;
 use EMS\CoreBundle\Service\ReleaseService;
 use Psr\Log\LoggerInterface;
@@ -43,6 +44,30 @@ final class ReleaseController extends AbstractController
     public function ajaxReleaseTable(Request $request): Response
     {
         $table = $this->initReleaseTable();
+        $dataTableRequest = DataTableRequest::fromRequest($request);
+        $table->resetIterator($dataTableRequest);
+
+        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+            'dataTableRequest' => $dataTableRequest,
+            'table' => $table,
+        ], new JsonResponse());
+    }
+
+    public function ajaxReleaseTableMemberRevisions(Request $request, Release $release): Response
+    {
+        $table = $this->getMemberRevisionsTable($release);
+        $dataTableRequest = DataTableRequest::fromRequest($request);
+        $table->resetIterator($dataTableRequest);
+
+        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+            'dataTableRequest' => $dataTableRequest,
+            'table' => $table,
+        ], new JsonResponse());
+    }
+
+    public function ajaxReleaseTableNonMemberRevisions(Request $request, Release $release): Response
+    {
+        $table = $this->getNonMemberRevisionsTable($release);
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
@@ -239,7 +264,7 @@ final class ReleaseController extends AbstractController
 
     private function getMemberRevisionsTable(Release $release): QueryTable
     {
-        $table = $this->getRevisionsTable($release, 'revisions-to-publish-to-remove', ReleaseRevisionService::QUERY_REVISIONS_IN_RELEASE);
+        $table = $this->getRevisionsTable($release, 'revisions-to-publish-to-remove', ReleaseRevisionService::QUERY_REVISIONS_IN_RELEASE, Routes::RELEASE_MEMBER_REVISION_AJAX);
         $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
 
         return $table;
@@ -247,15 +272,15 @@ final class ReleaseController extends AbstractController
 
     private function getNonMemberRevisionsTable(Release $release): QueryTable
     {
-        $table = $this->getRevisionsTable($release, 'revisions-to-publish', TableAbstract::ADD_ACTION);
+        $table = $this->getRevisionsTable($release, 'revisions-to-publish', TableAbstract::ADD_ACTION, Routes::RELEASE_NON_MEMBER_REVISION_AJAX);
         $table->addTableAction(TableAbstract::ADD_ACTION, 'fa fa-plus', 'release.revision.actions.add', 'release.revision.actions.add_confirm');
 
         return $table;
     }
 
-    private function getRevisionsTable(Release $release, string $queryName, string $option): QueryTable
+    private function getRevisionsTable(Release $release, string $queryName, string $option, string $route): QueryTable
     {
-        $table = new QueryTable($this->releaseRevisionService, $queryName, $this->generateUrl('ems_core_release_ajax_data_table'), [
+        $table = new QueryTable($this->releaseRevisionService, $queryName, $this->generateUrl($route, ['release' => $release->getId()]), [
             'option' => $option,
             'selected' => $release->getRevisionsIds(),
             'source' => $release->getEnvironmentSource(),

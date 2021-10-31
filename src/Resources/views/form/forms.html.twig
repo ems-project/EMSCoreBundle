@@ -212,7 +212,7 @@
                             'btnType': action.buttonType,
                             'itemLabel': attribute(line.data, table.labelAttribute),
                             'icon': action.icon,
-                            'group_class': 'pull-right',
+                            'group_class': loop.last ? 'pull-right' : '',
                         }%}
                     {% endif %}
                 {% else %}

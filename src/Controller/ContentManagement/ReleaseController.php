@@ -79,7 +79,7 @@ final class ReleaseController extends AbstractController
 
     public function ajaxReleaseTablePublishedRevisions(Request $request, Release $release): Response
     {
-        $table = $this->getPublishedRevisionsTable($release);
+        $table = $this->getMemberRevisionsTable($release);
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
@@ -178,11 +178,14 @@ final class ReleaseController extends AbstractController
 
     public function viewRevisions(Release $release): Response
     {
-        $table = $this->getPublishedRevisionsTable($release);
-        $form = $this->createForm(TableType::class, $table);
+        $table = $this->getMemberRevisionsTable($release);
+        $form = $this->createForm(TableType::class, $table, [
+            'title_label' => 'release.revision.view.title',
+        ]);
 
         return $this->render('@EMSCore/release/revisions/view.html.twig', [
             'form' => $form->createView(),
+            'release' => $release,
         ]);
     }
 
@@ -247,10 +250,11 @@ final class ReleaseController extends AbstractController
         $table->addColumn('release.index.column.name', 'name');
         $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.execution_date', 'executionDate'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.status', 'status', '@EMSCore/release/columns/revisions.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', '@EMSCore/release/columns/revisions.html.twig'))->setCellClass('text-right');
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.env_source', 'environmentSource', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.env_target', 'environmentTarget', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addItemGetAction(Routes::RELEASE_VIEW, 'release.actions.show', 'eye')
-        ->addCondition(new Terms('status', [ReleaseStatusEnumType::APPLIED_STATUS, ReleaseStatusEnumType::SCHEDULED_STATUS]));
+        ->addCondition(new Terms('status', [ReleaseStatusEnumType::APPLIED_STATUS, ReleaseStatusEnumType::SCHEDULED_STATUS, ReleaseStatusEnumType::READY_STATUS]));
         $table->addItemGetAction(Routes::RELEASE_EDIT, 'release.actions.edit', 'pencil')
         ->addCondition(new Terms('status', [ReleaseStatusEnumType::WIP_STATUS]));
         $table->addItemGetAction(Routes::RELEASE_ADD_REVISIONS, 'release.actions.add_revisions', 'plus')
@@ -265,7 +269,7 @@ final class ReleaseController extends AbstractController
         $table->addItemGetAction(Routes::RELEASE_SET_STATUS, 'release.actions.set_status_canceled', 'ban', ['status' => ReleaseStatusEnumType::CANCELED_STATUS])
         ->addCondition(new Terms('status', [ReleaseStatusEnumType::READY_STATUS]));
         $table->addItemPostAction(Routes::RELEASE_DELETE, 'release.actions.delete', 'trash', 'release.actions.delete_confirm')
-            ->setButtonType('outline-danger');
+        ->setButtonType('outline-danger');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'release.actions.delete_selected', 'release.actions.delete_selected_confirm')->setCssClass('btn btn-outline-danger');
 
         return $table;
@@ -274,9 +278,13 @@ final class ReleaseController extends AbstractController
     private function getMemberRevisionsTable(Release $release): QueryTable
     {
         $table = $this->getRevisionsTable($release, 'revisions-to-publish-to-remove', ReleaseRevisionService::QUERY_REVISIONS_IN_RELEASE, Routes::RELEASE_MEMBER_REVISION_AJAX);
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
-        $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
+        if (\in_array($release->getStatus(), [ReleaseStatusEnumType::WIP_STATUS])) {
+            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
+            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
+            $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
+        } else {
+            $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
+        }
 
         return $table;
     }
@@ -288,14 +296,6 @@ final class ReleaseController extends AbstractController
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addTableAction(TableAbstract::ADD_ACTION, 'fa fa-plus', 'release.revision.actions.add', 'release.revision.actions.add_confirm');
         $table->addDynamicItemPostAction(Routes::RELEASE_ADD_REVISION, 'release.revision.action.add', 'plus', 'release.revision.actions.add_confirm', ['release' => \sprintf('%d', $release->getId()), 'emsLinkToAdd' => 'emsLink']);
-
-        return $table;
-    }
-
-    public function getPublishedRevisionsTable(Release $release): QueryTable
-    {
-        $table = $this->getRevisionsTable($release, 'revisions-to-publish-to-remove', ReleaseRevisionService::QUERY_REVISIONS_IN_PUBLISHED_RELEASE, Routes::RELEASE_PUBLISHED_REVISION_AJAX);
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevidstatus', '@EMSCore/release/columns/revisions.html.twig'));
 
         return $table;
     }

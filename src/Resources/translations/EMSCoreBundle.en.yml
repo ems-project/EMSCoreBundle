@@ -417,6 +417,7 @@ release.index.column.env_target: Environment target
 release.index.column.execution_date: Execution date
 release.index.column.name: Name
 release.index.column.status: Status
+release.index.column.docs_count: '# Documents'
 release.index.title: 'List of Releases'
 release.menu: Releases
 release.revision.actions.add: Add document

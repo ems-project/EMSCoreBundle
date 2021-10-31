@@ -13,6 +13,11 @@
 
 {% block body %}
     {%  set toolbar %}
+        {% include '@EMSCore/elements/get-button.html.twig' with {
+            'url':  path('ems_core_release_index'),
+            'label': 'All Releases',
+            'icon': 'cube'
+        }%}
     {%  endset %}
     
     {% if form is not null %}
@@ -21,10 +26,4 @@
             toolbar: toolbar
         }) }}
     {% endif %}
-    
-    {% include '@EMSCore/elements/get-button.html.twig' with {
-        'url':  path('ems_core_release_index'),
-        'label': 'All Releases',
-        'icon': 'cube'
-    }%}
 {% endblock %}

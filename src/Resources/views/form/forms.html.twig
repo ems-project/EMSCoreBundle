@@ -236,6 +236,11 @@
         <div class="col-md-12">
             {{ form_start(form) }}
             <div class="box ">
+                {% if form.vars.title_label|default(false) %}
+                    <div class="box-header with-border">
+                        <h2 class="box-title">{{ form.vars.title_label|trans }}</h2>
+                    </div>
+                {% endif %}
                 <div class="box-header with-border">
                     <div class="btn-group  pull-right">
                         {% if toolbar is defined %}

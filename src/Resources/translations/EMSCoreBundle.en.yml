@@ -395,7 +395,7 @@ query_search.index.column.public: 'Public access'
 query_search.index.reorder: 'Reorder QuerySearch'
 query_search.index.title: 'List of QuerySearch'
 query_search.menu: QuerySearch
-release.actions.add_revisions: Add Revisions
+release.actions.add_revisions: Add documents
 release.actions.delete: Delete
 release.actions.delete_confirm: 'Delete the Release?'
 release.actions.delete_selected: 'Delete selected'
@@ -419,17 +419,17 @@ release.index.column.name: Name
 release.index.column.status: Status
 release.index.title: 'List of Releases'
 release.menu: Releases
-release.revision.actions.add: Add Revisions
-release.revision.action.add: Add Revision to release
+release.revision.actions.add: Add document
+release.revision.action.add: Add document to release
 release.revision.actions.add_confirm: 'Do you confirm ?'
-release.revision.actions.remove: Remove Revisions
+release.revision.actions.remove: Remove documents
 release.revision.index.column.CT: Content Type
 release.revision.index.column.label: Label
 release.revision.index.column.minRevId: Environment source
 release.revision.index.column.maxRevId: Environment target
-release.revision.index.title: 'List of Revisons available for Release'
-release.revision.menu: Add revisions
-release.revision.view.title : Revisions of Release
+release.revision.index.title: 'List of documents available for release'
+release.revision.menu: Add documents
+release.revision.view.title : 'Release''s documents'
 search.aggregate_option_label: 'Aggregate Option'
 search.search_field_option_label: 'Search Field Option'
 search.sort_option_label: 'Sort Option'

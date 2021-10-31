@@ -136,7 +136,9 @@ final class ReleaseController extends AbstractController
     {
         $revisionsTable = $this->getMemberRevisionsTable($release);
 
-        $revisionsForm = $this->createForm(TableType::class, $revisionsTable);
+        $revisionsForm = $this->createForm(TableType::class, $revisionsTable, [
+            'title_label' => 'release.revision.view.title',
+        ]);
         $revisionsForm->handleRequest($request);
         if ($revisionsForm->isSubmitted() && $revisionsForm->isValid()) {
             if ($revisionsForm instanceof Form && ($action = $revisionsForm->getClickedButton()) instanceof SubmitButton) {

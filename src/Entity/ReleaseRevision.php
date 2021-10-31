@@ -33,6 +33,12 @@ class ReleaseRevision implements EntityInterface
     private ?Revision $revision;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Revision")
+     * @ORM\JoinColumn(name="revision_before_publish_id", referencedColumnName="id", nullable=true)
+     */
+    private ?Revision $revisionBeforePublish;
+
+    /**
      * @ORM\Column(name="revision_ouuid", type="string", length=255)
      */
     private string $revisionOuuid;
@@ -94,5 +100,15 @@ class ReleaseRevision implements EntityInterface
     public function getContentType(): ContentType
     {
         return $this->contentType;
+    }
+
+    public function setRevisionBeforePublish(?Revision $revisionBeforePublish): void
+    {
+        $this->revisionBeforePublish = $revisionBeforePublish;
+    }
+
+    public function getRevisionBeforePublish(): ?Revision
+    {
+        return $this->revisionBeforePublish;
     }
 }

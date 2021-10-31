@@ -7,24 +7,21 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
-final class Version20211031133046 extends AbstractMigration
+final class Version20211031154935 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
         $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
-        $this->addSql('CREATE TABLE "release" (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, environment_source_id INTEGER DEFAULT NULL, environment_target_id INTEGER DEFAULT NULL, execution_date DATETIME DEFAULT NULL, status ENUM(\'wip\', \'ready\', \'applied\', \'scheduled\', \'canceled\', \'rollbacked\') NOT NULL --(DC2Type:release_status_enum)
+        $this->addSql('CREATE TABLE "release" (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, environment_source_id INTEGER DEFAULT NULL, environment_target_id INTEGER DEFAULT NULL, execution_date DATETIME DEFAULT NULL, status TEXT CHECK( status IN (\'wip\', \'ready\', \'applied\', \'scheduled\', \'canceled\', \'rollbacked\')) NOT NULL --(DC2Type:release_status_enum)
         , name VARCHAR(255) NOT NULL)');
         $this->addSql('CREATE INDEX IDX_9E47031D570FDFA8 ON "release" (environment_source_id)');
         $this->addSql('CREATE INDEX IDX_9E47031DD7BDC8AF ON "release" (environment_target_id)');
-        $this->addSql('CREATE TABLE release_revision (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, release_id INTEGER DEFAULT NULL, revision_id INTEGER DEFAULT NULL, content_type_id BIGINT DEFAULT NULL, revision_ouuid VARCHAR(255) NOT NULL)');
+        $this->addSql('CREATE TABLE release_revision (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, release_id INTEGER DEFAULT NULL, revision_id INTEGER DEFAULT NULL, revision_before_publish_id INTEGER DEFAULT NULL, content_type_id BIGINT DEFAULT NULL, revision_ouuid VARCHAR(255) NOT NULL)');
         $this->addSql('CREATE INDEX IDX_3663CEADB12A727D ON release_revision (release_id)');
         $this->addSql('CREATE INDEX IDX_3663CEAD1DFA7C8F ON release_revision (revision_id)');
+        $this->addSql('CREATE INDEX IDX_3663CEADFBFE9068 ON release_revision (revision_before_publish_id)');
         $this->addSql('CREATE INDEX IDX_3663CEAD1A445520 ON release_revision (content_type_id)');
-        $this->addSql('CREATE TABLE session (id VARCHAR(128) NOT NULL, data BLOB NOT NULL, time INTEGER UNSIGNED NOT NULL, lifetime INTEGER NOT NULL, PRIMARY KEY(id))');
         $this->addSql('DROP INDEX IDX_97601F831A445520');
         $this->addSql('CREATE TEMPORARY TABLE __temp__template AS SELECT id, content_type_id, created, modified, name, icon, body, header, edit_with_wysiwyg, render_option, orderKey, accumulate_in_one_file, preview, mime_type, filename, extension, active, role, role_to, role_cc, circles_to, response_template, email_content_type, allow_origin, disposition, orientation, size, public FROM template');
         $this->addSql('DROP TABLE template');
@@ -33,29 +30,29 @@ final class Version20211031133046 extends AbstractMigration
         $this->addSql('INSERT INTO template (id, content_type_id, created, modified, name, icon, body, header, edit_with_wysiwyg, render_option, orderKey, accumulate_in_one_file, preview, mime_type, filename, extension, active, role, role_to, role_cc, circles_to, response_template, email_content_type, allow_origin, disposition, orientation, size, public) SELECT id, content_type_id, created, modified, name, icon, body, header, edit_with_wysiwyg, render_option, orderKey, accumulate_in_one_file, preview, mime_type, filename, extension, active, role, role_to, role_cc, circles_to, response_template, email_content_type, allow_origin, disposition, orientation, size, public FROM __temp__template');
         $this->addSql('DROP TABLE __temp__template');
         $this->addSql('CREATE INDEX IDX_97601F831A445520 ON template (content_type_id)');
-        $this->addSql('DROP INDEX IDX_735C713F5DA0FB8');
         $this->addSql('DROP INDEX IDX_735C713F903E3A94');
+        $this->addSql('DROP INDEX IDX_735C713F5DA0FB8');
         $this->addSql('CREATE TEMPORARY TABLE __temp__environment_template AS SELECT template_id, environment_id FROM environment_template');
         $this->addSql('DROP TABLE environment_template');
         $this->addSql('CREATE TABLE environment_template (template_id INTEGER NOT NULL, environment_id INTEGER NOT NULL, PRIMARY KEY(template_id, environment_id), CONSTRAINT FK_735C713F5DA0FB8 FOREIGN KEY (template_id) REFERENCES template (id) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_735C713F903E3A94 FOREIGN KEY (environment_id) REFERENCES environment (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO environment_template (template_id, environment_id) SELECT template_id, environment_id FROM __temp__environment_template');
         $this->addSql('DROP TABLE __temp__environment_template');
-        $this->addSql('CREATE INDEX IDX_735C713F5DA0FB8 ON environment_template (template_id)');
         $this->addSql('CREATE INDEX IDX_735C713F903E3A94 ON environment_template (environment_id)');
-        $this->addSql('DROP INDEX UNIQ_41BCBAEC588AB49A');
+        $this->addSql('CREATE INDEX IDX_735C713F5DA0FB8 ON environment_template (template_id)');
         $this->addSql('DROP INDEX IDX_41BCBAEC903E3A94');
+        $this->addSql('DROP INDEX UNIQ_41BCBAEC588AB49A');
         $this->addSql('CREATE TEMPORARY TABLE __temp__content_type AS SELECT id, field_types_id, environment_id, created, modified, name, pluralName, singularName, icon, description, indexTwig, extra, lockBy, lockUntil, circles_field, business_id_field, deleted, have_pipelines, ask_for_ouuid, dirty, color, labelField, color_field, userField, dateField, startDateField, endDateField, locationField, referer_field_name, category_field, ouuidField, imageField, videoField, email_field, asset_field, order_field, sort_by, sort_order, create_role, edit_role, view_role, publish_role, delete_role, trash_role, owner_role, orderKey, rootContentType, edit_twig_with_wysiwyg, web_content, auto_publish, active, default_value, translationField, localeField, searchLinkDisplayRole, createLinkDisplayRole, version_tags, version_date_from_field, version_date_to_field FROM content_type');
         $this->addSql('DROP TABLE content_type');
         $this->addSql('CREATE TABLE content_type (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, field_types_id INTEGER DEFAULT NULL, environment_id INTEGER DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(100) NOT NULL COLLATE BINARY, pluralName VARCHAR(100) NOT NULL COLLATE BINARY, singularName VARCHAR(100) NOT NULL COLLATE BINARY, icon VARCHAR(100) DEFAULT NULL COLLATE BINARY, description CLOB DEFAULT NULL COLLATE BINARY, indexTwig CLOB DEFAULT NULL COLLATE BINARY, extra CLOB DEFAULT NULL COLLATE BINARY, lockBy VARCHAR(100) DEFAULT NULL COLLATE BINARY, lockUntil DATETIME DEFAULT NULL, circles_field VARCHAR(100) DEFAULT NULL COLLATE BINARY, business_id_field VARCHAR(100) DEFAULT NULL COLLATE BINARY, deleted BOOLEAN NOT NULL, have_pipelines BOOLEAN DEFAULT NULL, ask_for_ouuid BOOLEAN NOT NULL, dirty BOOLEAN NOT NULL, color VARCHAR(50) DEFAULT NULL COLLATE BINARY, labelField VARCHAR(100) DEFAULT NULL COLLATE BINARY, color_field VARCHAR(100) DEFAULT NULL COLLATE BINARY, userField VARCHAR(100) DEFAULT NULL COLLATE BINARY, dateField VARCHAR(100) DEFAULT NULL COLLATE BINARY, startDateField VARCHAR(100) DEFAULT NULL COLLATE BINARY, endDateField VARCHAR(100) DEFAULT NULL COLLATE BINARY, locationField VARCHAR(100) DEFAULT NULL COLLATE BINARY, referer_field_name VARCHAR(100) DEFAULT NULL COLLATE BINARY, category_field VARCHAR(100) DEFAULT NULL COLLATE BINARY, ouuidField VARCHAR(100) DEFAULT NULL COLLATE BINARY, imageField VARCHAR(100) DEFAULT NULL COLLATE BINARY, videoField VARCHAR(100) DEFAULT NULL COLLATE BINARY, email_field VARCHAR(100) DEFAULT NULL COLLATE BINARY, asset_field VARCHAR(100) DEFAULT NULL COLLATE BINARY, order_field VARCHAR(100) DEFAULT NULL COLLATE BINARY, sort_by VARCHAR(100) DEFAULT NULL COLLATE BINARY, sort_order VARCHAR(4) DEFAULT \'asc\' COLLATE BINARY, create_role VARCHAR(100) DEFAULT NULL COLLATE BINARY, edit_role VARCHAR(100) DEFAULT NULL COLLATE BINARY, view_role VARCHAR(100) DEFAULT NULL COLLATE BINARY, publish_role VARCHAR(100) DEFAULT NULL COLLATE BINARY, delete_role VARCHAR(100) DEFAULT NULL COLLATE BINARY, trash_role VARCHAR(100) DEFAULT NULL COLLATE BINARY, owner_role VARCHAR(100) DEFAULT NULL COLLATE BINARY, orderKey INTEGER NOT NULL, rootContentType BOOLEAN NOT NULL, edit_twig_with_wysiwyg BOOLEAN NOT NULL, web_content BOOLEAN DEFAULT \'1\' NOT NULL, auto_publish BOOLEAN DEFAULT \'0\' NOT NULL, active BOOLEAN NOT NULL, default_value CLOB DEFAULT NULL COLLATE BINARY, translationField VARCHAR(100) DEFAULT NULL COLLATE BINARY, localeField VARCHAR(100) DEFAULT NULL COLLATE BINARY, searchLinkDisplayRole VARCHAR(255) DEFAULT \'ROLE_USER\' NOT NULL COLLATE BINARY, createLinkDisplayRole VARCHAR(255) DEFAULT \'ROLE_USER\' NOT NULL COLLATE BINARY, version_tags CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:json_array)
         , version_date_from_field VARCHAR(100) DEFAULT NULL COLLATE BINARY, version_date_to_field VARCHAR(100) DEFAULT NULL COLLATE BINARY, CONSTRAINT FK_41BCBAEC588AB49A FOREIGN KEY (field_types_id) REFERENCES field_type (id) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_41BCBAEC903E3A94 FOREIGN KEY (environment_id) REFERENCES environment (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO content_type (id, field_types_id, environment_id, created, modified, name, pluralName, singularName, icon, description, indexTwig, extra, lockBy, lockUntil, circles_field, business_id_field, deleted, have_pipelines, ask_for_ouuid, dirty, color, labelField, color_field, userField, dateField, startDateField, endDateField, locationField, referer_field_name, category_field, ouuidField, imageField, videoField, email_field, asset_field, order_field, sort_by, sort_order, create_role, edit_role, view_role, publish_role, delete_role, trash_role, owner_role, orderKey, rootContentType, edit_twig_with_wysiwyg, web_content, auto_publish, active, default_value, translationField, localeField, searchLinkDisplayRole, createLinkDisplayRole, version_tags, version_date_from_field, version_date_to_field) SELECT id, field_types_id, environment_id, created, modified, name, pluralName, singularName, icon, description, indexTwig, extra, lockBy, lockUntil, circles_field, business_id_field, deleted, have_pipelines, ask_for_ouuid, dirty, color, labelField, color_field, userField, dateField, startDateField, endDateField, locationField, referer_field_name, category_field, ouuidField, imageField, videoField, email_field, asset_field, order_field, sort_by, sort_order, create_role, edit_role, view_role, publish_role, delete_role, trash_role, owner_role, orderKey, rootContentType, edit_twig_with_wysiwyg, web_content, auto_publish, active, default_value, translationField, localeField, searchLinkDisplayRole, createLinkDisplayRole, version_tags, version_date_from_field, version_date_to_field FROM __temp__content_type');
         $this->addSql('DROP TABLE __temp__content_type');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_41BCBAEC588AB49A ON content_type (field_types_id)');
         $this->addSql('CREATE INDEX IDX_41BCBAEC903E3A94 ON content_type (environment_id)');
-        $this->addSql('DROP INDEX UNIQ_8D93D64992FC23A8');
-        $this->addSql('DROP INDEX UNIQ_8D93D649A0D96FBF');
-        $this->addSql('DROP INDEX UNIQ_8D93D649C05FB297');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_41BCBAEC588AB49A ON content_type (field_types_id)');
         $this->addSql('DROP INDEX IDX_8D93D649A282F7EA');
+        $this->addSql('DROP INDEX UNIQ_8D93D649C05FB297');
+        $this->addSql('DROP INDEX UNIQ_8D93D649A0D96FBF');
+        $this->addSql('DROP INDEX UNIQ_8D93D64992FC23A8');
         $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, wysiwyg_profile_id, username, username_canonical, email, email_canonical, enabled, salt, password, last_login, confirmation_token, password_requested_at, roles, created, modified, circles, display_name, allowed_to_configure_wysiwyg, wysiwyg_options, layout_boxed, email_notification, sidebar_mini, sidebar_collapse FROM user');
         $this->addSql('DROP TABLE user');
         $this->addSql('CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, wysiwyg_profile_id INTEGER DEFAULT NULL, username VARCHAR(180) NOT NULL COLLATE BINARY, username_canonical VARCHAR(180) NOT NULL COLLATE BINARY, email VARCHAR(180) NOT NULL COLLATE BINARY, email_canonical VARCHAR(180) NOT NULL COLLATE BINARY, enabled BOOLEAN NOT NULL, salt VARCHAR(255) DEFAULT NULL COLLATE BINARY, password VARCHAR(255) NOT NULL COLLATE BINARY, last_login DATETIME DEFAULT NULL, confirmation_token VARCHAR(180) DEFAULT NULL COLLATE BINARY, password_requested_at DATETIME DEFAULT NULL, roles CLOB NOT NULL COLLATE BINARY --(DC2Type:array)
@@ -63,22 +60,22 @@ final class Version20211031133046 extends AbstractMigration
         , display_name VARCHAR(255) DEFAULT NULL COLLATE BINARY, allowed_to_configure_wysiwyg BOOLEAN DEFAULT NULL, wysiwyg_options CLOB DEFAULT NULL COLLATE BINARY, layout_boxed BOOLEAN NOT NULL, email_notification BOOLEAN NOT NULL, sidebar_mini BOOLEAN NOT NULL, sidebar_collapse BOOLEAN NOT NULL, CONSTRAINT FK_8D93D649A282F7EA FOREIGN KEY (wysiwyg_profile_id) REFERENCES wysiwyg_profile (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO user (id, wysiwyg_profile_id, username, username_canonical, email, email_canonical, enabled, salt, password, last_login, confirmation_token, password_requested_at, roles, created, modified, circles, display_name, allowed_to_configure_wysiwyg, wysiwyg_options, layout_boxed, email_notification, sidebar_mini, sidebar_collapse) SELECT id, wysiwyg_profile_id, username, username_canonical, email, email_canonical, enabled, salt, password, last_login, confirmation_token, password_requested_at, roles, created, modified, circles, display_name, allowed_to_configure_wysiwyg, wysiwyg_options, layout_boxed, email_notification, sidebar_mini, sidebar_collapse FROM __temp__user');
         $this->addSql('DROP TABLE __temp__user');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D64992FC23A8 ON user (username_canonical)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649A0D96FBF ON user (email_canonical)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649C05FB297 ON user (confirmation_token)');
         $this->addSql('CREATE INDEX IDX_8D93D649A282F7EA ON user (wysiwyg_profile_id)');
-        $this->addSql('DROP INDEX IDX_8AF9B66CA76ED395');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649C05FB297 ON user (confirmation_token)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649A0D96FBF ON user (email_canonical)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D64992FC23A8 ON user (username_canonical)');
         $this->addSql('DROP INDEX auth_tokens_value_unique');
+        $this->addSql('DROP INDEX IDX_8AF9B66CA76ED395');
         $this->addSql('CREATE TEMPORARY TABLE __temp__auth_tokens AS SELECT id, user_id, value, created, modified FROM auth_tokens');
         $this->addSql('DROP TABLE auth_tokens');
         $this->addSql('CREATE TABLE auth_tokens (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, user_id INTEGER DEFAULT NULL, value VARCHAR(255) NOT NULL COLLATE BINARY, created DATETIME NOT NULL, modified DATETIME NOT NULL, CONSTRAINT FK_8AF9B66CA76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO auth_tokens (id, user_id, value, created, modified) SELECT id, user_id, value, created, modified FROM __temp__auth_tokens');
         $this->addSql('DROP TABLE __temp__auth_tokens');
-        $this->addSql('CREATE INDEX IDX_8AF9B66CA76ED395 ON auth_tokens (user_id)');
         $this->addSql('CREATE UNIQUE INDEX auth_tokens_value_unique ON auth_tokens (value)');
-        $this->addSql('DROP INDEX IDX_6D6315CC1A445520');
-        $this->addSql('DROP INDEX IDX_6D6315CCE99931F3');
+        $this->addSql('CREATE INDEX IDX_8AF9B66CA76ED395 ON auth_tokens (user_id)');
         $this->addSql('DROP INDEX tuple_index');
+        $this->addSql('DROP INDEX IDX_6D6315CCE99931F3');
+        $this->addSql('DROP INDEX IDX_6D6315CC1A445520');
         $this->addSql('CREATE TEMPORARY TABLE __temp__revision AS SELECT id, content_type_id, task_current_id, created, modified, auto_save_at, archived, deleted, version, start_time, end_time, draft, finalized_by, finalized_date, archived_by, deleted_by, lock_by, auto_save_by, lock_until, raw_data, auto_save, circles, labelField, sha1, version_uuid, version_tag, task_planned_ids, task_approved_ids, owner, ouuid FROM revision');
         $this->addSql('DROP TABLE revision');
         $this->addSql('CREATE TABLE revision (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, content_type_id BIGINT DEFAULT NULL, task_current_id CHAR(36) DEFAULT NULL COLLATE BINARY --(DC2Type:uuid)
@@ -91,39 +88,45 @@ final class Version20211031133046 extends AbstractMigration
         , owner CLOB DEFAULT NULL COLLATE BINARY, ouuid VARCHAR(255) DEFAULT NULL COLLATE BINARY, CONSTRAINT FK_6D6315CC1A445520 FOREIGN KEY (content_type_id) REFERENCES content_type (id) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_6D6315CCE99931F3 FOREIGN KEY (task_current_id) REFERENCES task (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO revision (id, content_type_id, task_current_id, created, modified, auto_save_at, archived, deleted, version, start_time, end_time, draft, finalized_by, finalized_date, archived_by, deleted_by, lock_by, auto_save_by, lock_until, raw_data, auto_save, circles, labelField, sha1, version_uuid, version_tag, task_planned_ids, task_approved_ids, owner, ouuid) SELECT id, content_type_id, task_current_id, created, modified, auto_save_at, archived, deleted, version, start_time, end_time, draft, finalized_by, finalized_date, archived_by, deleted_by, lock_by, auto_save_by, lock_until, raw_data, auto_save, circles, labelField, sha1, version_uuid, version_tag, task_planned_ids, task_approved_ids, owner, ouuid FROM __temp__revision');
         $this->addSql('DROP TABLE __temp__revision');
-        $this->addSql('CREATE INDEX IDX_6D6315CC1A445520 ON revision (content_type_id)');
-        $this->addSql('CREATE INDEX IDX_6D6315CCE99931F3 ON revision (task_current_id)');
         $this->addSql('CREATE UNIQUE INDEX tuple_index ON revision (end_time, ouuid)');
-        $this->addSql('DROP INDEX IDX_895F7B701DFA7C8F');
+        $this->addSql('CREATE INDEX IDX_6D6315CCE99931F3 ON revision (task_current_id)');
+        $this->addSql('CREATE INDEX IDX_6D6315CC1A445520 ON revision (content_type_id)');
         $this->addSql('DROP INDEX IDX_895F7B70903E3A94');
+        $this->addSql('DROP INDEX IDX_895F7B701DFA7C8F');
         $this->addSql('CREATE TEMPORARY TABLE __temp__environment_revision AS SELECT revision_id, environment_id FROM environment_revision');
         $this->addSql('DROP TABLE environment_revision');
         $this->addSql('CREATE TABLE environment_revision (revision_id INTEGER NOT NULL, environment_id INTEGER NOT NULL, PRIMARY KEY(revision_id, environment_id), CONSTRAINT FK_895F7B701DFA7C8F FOREIGN KEY (revision_id) REFERENCES revision (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_895F7B70903E3A94 FOREIGN KEY (environment_id) REFERENCES environment (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO environment_revision (revision_id, environment_id) SELECT revision_id, environment_id FROM __temp__environment_revision');
         $this->addSql('DROP TABLE __temp__environment_revision');
-        $this->addSql('CREATE INDEX IDX_895F7B701DFA7C8F ON environment_revision (revision_id)');
         $this->addSql('CREATE INDEX IDX_895F7B70903E3A94 ON environment_revision (environment_id)');
-        $this->addSql('DROP INDEX IDX_BF5476CA5DA0FB8');
-        $this->addSql('DROP INDEX IDX_BF5476CA1DFA7C8F');
+        $this->addSql('CREATE INDEX IDX_895F7B701DFA7C8F ON environment_revision (revision_id)');
+        $this->addSql('CREATE TEMPORARY TABLE __temp__uploaded_asset AS SELECT id, created, modified, status, sha1, name, type, username, available, size, uploaded, hash_algo, hidden, head_last, head_in FROM uploaded_asset');
+        $this->addSql('DROP TABLE uploaded_asset');
+        $this->addSql('CREATE TABLE uploaded_asset (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, status VARCHAR(64) DEFAULT NULL COLLATE BINARY, sha1 VARCHAR(128) NOT NULL COLLATE BINARY, name VARCHAR(1024) NOT NULL COLLATE BINARY, type VARCHAR(1024) NOT NULL COLLATE BINARY, username VARCHAR(255) NOT NULL COLLATE BINARY, available BOOLEAN NOT NULL, size BIGINT NOT NULL, uploaded BIGINT NOT NULL, hash_algo VARCHAR(32) DEFAULT \'sha1\' NOT NULL COLLATE BINARY, hidden BOOLEAN DEFAULT \'0\' NOT NULL, head_last DATETIME DEFAULT NULL, head_in CLOB DEFAULT NULL --(DC2Type:array)
+        )');
+        $this->addSql('INSERT INTO uploaded_asset (id, created, modified, status, sha1, name, type, username, available, size, uploaded, hash_algo, hidden, head_last, head_in) SELECT id, created, modified, status, sha1, name, type, username, available, size, uploaded, hash_algo, hidden, head_last, head_in FROM __temp__uploaded_asset');
+        $this->addSql('DROP TABLE __temp__uploaded_asset');
         $this->addSql('DROP INDEX IDX_BF5476CA903E3A94');
+        $this->addSql('DROP INDEX IDX_BF5476CA1DFA7C8F');
+        $this->addSql('DROP INDEX IDX_BF5476CA5DA0FB8');
         $this->addSql('CREATE TEMPORARY TABLE __temp__notification AS SELECT id, template_id, revision_id, environment_id, created, modified, username, status, sent_timestamp, response_text, response_timestamp, response_by, emailed, response_emailed FROM notification');
         $this->addSql('DROP TABLE notification');
         $this->addSql('CREATE TABLE notification (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, template_id INTEGER DEFAULT NULL, revision_id INTEGER DEFAULT NULL, environment_id INTEGER DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, username VARCHAR(100) NOT NULL COLLATE BINARY, status VARCHAR(20) NOT NULL COLLATE BINARY, sent_timestamp DATETIME NOT NULL, response_text CLOB DEFAULT NULL COLLATE BINARY, response_timestamp DATETIME DEFAULT NULL, response_by VARCHAR(100) DEFAULT NULL COLLATE BINARY, emailed DATETIME DEFAULT NULL, response_emailed DATETIME DEFAULT NULL, CONSTRAINT FK_BF5476CA5DA0FB8 FOREIGN KEY (template_id) REFERENCES template (id) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_BF5476CA1DFA7C8F FOREIGN KEY (revision_id) REFERENCES revision (id) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_BF5476CA903E3A94 FOREIGN KEY (environment_id) REFERENCES environment (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO notification (id, template_id, revision_id, environment_id, created, modified, username, status, sent_timestamp, response_text, response_timestamp, response_by, emailed, response_emailed) SELECT id, template_id, revision_id, environment_id, created, modified, username, status, sent_timestamp, response_text, response_timestamp, response_by, emailed, response_emailed FROM __temp__notification');
         $this->addSql('DROP TABLE __temp__notification');
-        $this->addSql('CREATE INDEX IDX_BF5476CA5DA0FB8 ON notification (template_id)');
-        $this->addSql('CREATE INDEX IDX_BF5476CA1DFA7C8F ON notification (revision_id)');
         $this->addSql('CREATE INDEX IDX_BF5476CA903E3A94 ON notification (environment_id)');
-        $this->addSql('DROP INDEX UNIQ_9F123E931A445520');
+        $this->addSql('CREATE INDEX IDX_BF5476CA1DFA7C8F ON notification (revision_id)');
+        $this->addSql('CREATE INDEX IDX_BF5476CA5DA0FB8 ON notification (template_id)');
         $this->addSql('DROP INDEX IDX_9F123E93727ACA70');
+        $this->addSql('DROP INDEX UNIQ_9F123E931A445520');
         $this->addSql('CREATE TEMPORARY TABLE __temp__field_type AS SELECT id, content_type_id, parent_id, created, modified, type, name, deleted, description, options, orderKey FROM field_type');
         $this->addSql('DROP TABLE field_type');
         $this->addSql('CREATE TABLE field_type (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, content_type_id BIGINT DEFAULT NULL, parent_id INTEGER DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, type VARCHAR(255) NOT NULL COLLATE BINARY, name VARCHAR(255) NOT NULL COLLATE BINARY, deleted BOOLEAN NOT NULL, description CLOB DEFAULT NULL COLLATE BINARY, options CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:json_array)
         , orderKey INTEGER NOT NULL, CONSTRAINT FK_9F123E931A445520 FOREIGN KEY (content_type_id) REFERENCES content_type (id) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_9F123E93727ACA70 FOREIGN KEY (parent_id) REFERENCES field_type (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO field_type (id, content_type_id, parent_id, created, modified, type, name, deleted, description, options, orderKey) SELECT id, content_type_id, parent_id, created, modified, type, name, deleted, description, options, orderKey FROM __temp__field_type');
         $this->addSql('DROP TABLE __temp__field_type');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_9F123E931A445520 ON field_type (content_type_id)');
         $this->addSql('CREATE INDEX IDX_9F123E93727ACA70 ON field_type (parent_id)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_9F123E931A445520 ON field_type (content_type_id)');
         $this->addSql('DROP INDEX IDX_FEFDAB8E1A445520');
         $this->addSql('CREATE TEMPORARY TABLE __temp__view AS SELECT id, content_type_id, created, modified, name, type, icon, options, orderKey, public FROM "view"');
         $this->addSql('DROP TABLE "view"');
@@ -157,16 +160,16 @@ final class Version20211031133046 extends AbstractMigration
         $this->addSql('INSERT INTO form_submission_file (id, form_submission_id, created, modified, file, filename, form_field, mime_type, size) SELECT id, form_submission_id, created, modified, file, filename, form_field, mime_type, size FROM __temp__form_submission_file');
         $this->addSql('DROP TABLE __temp__form_submission_file');
         $this->addSql('CREATE INDEX IDX_AEFF00A6422B0E0C ON form_submission_file (form_submission_id)');
-        $this->addSql('DROP INDEX IDX_1DF055936B6C19');
         $this->addSql('DROP INDEX IDX_1DF055903E3A94');
+        $this->addSql('DROP INDEX IDX_1DF055936B6C19');
         $this->addSql('CREATE TEMPORARY TABLE __temp__environment_query_search AS SELECT query_search_id, environment_id FROM environment_query_search');
         $this->addSql('DROP TABLE environment_query_search');
         $this->addSql('CREATE TABLE environment_query_search (query_search_id CHAR(36) NOT NULL COLLATE BINARY --(DC2Type:uuid)
         , environment_id INTEGER NOT NULL, PRIMARY KEY(query_search_id, environment_id), CONSTRAINT FK_1DF055936B6C19 FOREIGN KEY (query_search_id) REFERENCES query_search (id) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_1DF055903E3A94 FOREIGN KEY (environment_id) REFERENCES environment (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO environment_query_search (query_search_id, environment_id) SELECT query_search_id, environment_id FROM __temp__environment_query_search');
         $this->addSql('DROP TABLE __temp__environment_query_search');
-        $this->addSql('CREATE INDEX IDX_1DF055936B6C19 ON environment_query_search (query_search_id)');
         $this->addSql('CREATE INDEX IDX_1DF055903E3A94 ON environment_query_search (environment_id)');
+        $this->addSql('CREATE INDEX IDX_1DF055936B6C19 ON environment_query_search (query_search_id)');
     }
 
     public function down(Schema $schema): void
@@ -195,6 +198,14 @@ final class Version20211031133046 extends AbstractMigration
         $this->addSql('DROP TABLE __temp__content_type');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_41BCBAEC588AB49A ON content_type (field_types_id)');
         $this->addSql('CREATE INDEX IDX_41BCBAEC903E3A94 ON content_type (environment_id)');
+        $this->addSql('DROP INDEX UNIQ_4626DE225E237E06');
+        $this->addSql('CREATE TEMPORARY TABLE __temp__environment AS SELECT id, created, modified, name, alias, color, baseUrl, managed, snapshot, circles, in_default_search, extra, order_key, update_referrers FROM environment');
+        $this->addSql('DROP TABLE environment');
+        $this->addSql('CREATE TABLE environment (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, alias VARCHAR(255) NOT NULL, color VARCHAR(50) DEFAULT NULL, baseUrl VARCHAR(1024) DEFAULT NULL, managed BOOLEAN NOT NULL, snapshot BOOLEAN DEFAULT \'0\' NOT NULL, circles CLOB DEFAULT NULL --(DC2Type:json_array)
+        , in_default_search BOOLEAN DEFAULT NULL, extra CLOB DEFAULT NULL, order_key INTEGER DEFAULT NULL, update_referrers BOOLEAN DEFAULT \'0\' NOT NULL)');
+        $this->addSql('INSERT INTO environment (id, created, modified, name, alias, color, baseUrl, managed, snapshot, circles, in_default_search, extra, order_key, update_referrers) SELECT id, created, modified, name, alias, color, baseUrl, managed, snapshot, circles, in_default_search, extra, order_key, update_referrers FROM __temp__environment');
+        $this->addSql('DROP TABLE __temp__environment');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_4626DE225E237E06 ON environment (name)');
         $this->addSql('DROP INDEX IDX_1DF055936B6C19');
         $this->addSql('DROP INDEX IDX_1DF055903E3A94');
         $this->addSql('CREATE TEMPORARY TABLE __temp__environment_query_search AS SELECT query_search_id, environment_id FROM environment_query_search');
@@ -242,6 +253,15 @@ final class Version20211031133046 extends AbstractMigration
         $this->addSql('INSERT INTO form_submission_file (id, form_submission_id, created, modified, file, filename, form_field, mime_type, size) SELECT id, form_submission_id, created, modified, file, filename, form_field, mime_type, size FROM __temp__form_submission_file');
         $this->addSql('DROP TABLE __temp__form_submission_file');
         $this->addSql('CREATE INDEX IDX_AEFF00A6422B0E0C ON form_submission_file (form_submission_id)');
+        $this->addSql('DROP INDEX UNIQ_CCBD025A5E237E06');
+        $this->addSql('DROP INDEX UNIQ_CCBD025AE16C6B94');
+        $this->addSql('CREATE TEMPORARY TABLE __temp__managed_alias AS SELECT id, name, alias, created, modified, color, extra FROM managed_alias');
+        $this->addSql('DROP TABLE managed_alias');
+        $this->addSql('CREATE TABLE managed_alias (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(255) NOT NULL, alias VARCHAR(255) NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, color VARCHAR(50) DEFAULT NULL, extra CLOB DEFAULT NULL)');
+        $this->addSql('INSERT INTO managed_alias (id, name, alias, created, modified, color, extra) SELECT id, name, alias, created, modified, color, extra FROM __temp__managed_alias');
+        $this->addSql('DROP TABLE __temp__managed_alias');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_CCBD025A5E237E06 ON managed_alias (name)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_CCBD025AE16C6B94 ON managed_alias (alias)');
         $this->addSql('DROP INDEX IDX_BF5476CA5DA0FB8');
         $this->addSql('DROP INDEX IDX_BF5476CA1DFA7C8F');
         $this->addSql('DROP INDEX IDX_BF5476CA903E3A94');
@@ -295,6 +315,11 @@ final class Version20211031133046 extends AbstractMigration
         $this->addSql('INSERT INTO template (id, content_type_id, created, modified, name, icon, body, header, edit_with_wysiwyg, render_option, orderKey, accumulate_in_one_file, preview, mime_type, filename, extension, active, role, role_to, role_cc, circles_to, response_template, email_content_type, allow_origin, disposition, orientation, size, public) SELECT id, content_type_id, created, modified, name, icon, body, header, edit_with_wysiwyg, render_option, orderKey, accumulate_in_one_file, preview, mime_type, filename, extension, active, role, role_to, role_cc, circles_to, response_template, email_content_type, allow_origin, disposition, orientation, size, public FROM __temp__template');
         $this->addSql('DROP TABLE __temp__template');
         $this->addSql('CREATE INDEX IDX_97601F831A445520 ON template (content_type_id)');
+        $this->addSql('CREATE TEMPORARY TABLE __temp__uploaded_asset AS SELECT id, created, modified, status, sha1, name, type, username, available, size, uploaded, hash_algo, hidden, head_last, head_in FROM uploaded_asset');
+        $this->addSql('DROP TABLE uploaded_asset');
+        $this->addSql('CREATE TABLE uploaded_asset (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, status VARCHAR(64) DEFAULT NULL, sha1 VARCHAR(128) NOT NULL, name VARCHAR(1024) NOT NULL, type VARCHAR(1024) NOT NULL, username VARCHAR(255) NOT NULL, available BOOLEAN NOT NULL, size BIGINT NOT NULL, uploaded BIGINT NOT NULL, hash_algo VARCHAR(32) DEFAULT \'sha1\' NOT NULL, hidden BOOLEAN DEFAULT \'0\' NOT NULL, head_last DATETIME DEFAULT NULL, head_in CLOB DEFAULT NULL COLLATE BINARY)');
+        $this->addSql('INSERT INTO uploaded_asset (id, created, modified, status, sha1, name, type, username, available, size, uploaded, hash_algo, hidden, head_last, head_in) SELECT id, created, modified, status, sha1, name, type, username, available, size, uploaded, hash_algo, hidden, head_last, head_in FROM __temp__uploaded_asset');
+        $this->addSql('DROP TABLE __temp__uploaded_asset');
         $this->addSql('DROP INDEX UNIQ_8D93D64992FC23A8');
         $this->addSql('DROP INDEX UNIQ_8D93D649A0D96FBF');
         $this->addSql('DROP INDEX UNIQ_8D93D649C05FB297');

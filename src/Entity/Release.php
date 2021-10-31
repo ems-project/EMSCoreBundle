@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -53,9 +54,10 @@ class Release implements EntityInterface
     private Environment $environmentTarget;
 
     /**
+     * @var Collection<int, ReleaseRevision>
      * @ORM\OneToMany(targetEntity="ReleaseRevision", mappedBy="release", cascade={"persist", "remove"})
      */
-    private $revisions;
+    private Collection $revisions;
 
     public function __construct()
     {
@@ -68,7 +70,7 @@ class Release implements EntityInterface
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }

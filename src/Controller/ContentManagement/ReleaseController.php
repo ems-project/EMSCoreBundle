@@ -246,7 +246,7 @@ final class ReleaseController extends AbstractController
         $table = new EntityTable($this->releaseService, $this->generateUrl(Routes::RELEASE_AJAX_DATA_TABLE));
         $table->addColumn('release.index.column.name', 'name');
         $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.execution_date', 'executionDate'));
-        $table->addColumn('release.index.column.status', 'status');
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.status', 'status', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.env_source', 'environmentSource', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.env_target', 'environmentTarget', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addItemGetAction(Routes::RELEASE_VIEW, 'release.actions.show', 'eye')

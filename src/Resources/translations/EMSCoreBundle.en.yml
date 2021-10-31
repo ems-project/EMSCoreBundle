@@ -430,6 +430,12 @@ release.revision.index.column.maxRevId: Environment target
 release.revision.index.title: 'List of documents available for release'
 release.revision.menu: Add documents
 release.revision.view.title : 'Release''s documents'
+release.status.wip: WIP
+release.status.ready: Ready
+release.status.applied: Applied
+release.status.canceled: Canceled
+release.status.scheduled: Scheduled
+release.status.rollbacked: Rolled back
 search.aggregate_option_label: 'Aggregate Option'
 search.search_field_option_label: 'Search Field Option'
 search.sort_option_label: 'Sort Option'

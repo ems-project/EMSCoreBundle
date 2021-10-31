@@ -21,6 +21,11 @@
 {% endblock environmentSource %}
 
 
+{% block status %}
+    {{ ('release.status.'~data.status)|trans }}
+{% endblock status %}
+
+
 {% block environmentTarget %}
     {{ data.environmentTarget.label }}
 {% endblock environmentTarget %}

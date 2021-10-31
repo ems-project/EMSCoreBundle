@@ -14,41 +14,34 @@ use Doctrine\ORM\Mapping as ORM;
 class ReleaseRevision implements EntityInterface
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var Release
      * @ORM\ManyToOne(targetEntity="Release", inversedBy="revisions")
      * @ORM\JoinColumn(name="release_id", referencedColumnName="id")
      */
-    private $release;
+    private Release $release;
 
     /**
-     * @var Revision|null
      * @ORM\ManyToOne(targetEntity="Revision")
      * @ORM\JoinColumn(name="revision_id", referencedColumnName="id", nullable=true)
      */
-    private $revision;
+    private ?Revision $revision;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="revision_ouuid", type="string", length=255)
      */
-    private $revisionOuuid;
+    private string $revisionOuuid;
 
     /**
-     * @var ContentType
      * @ORM\ManyToOne(targetEntity="ContentType")
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
-    private $contentType;
+    private ContentType $contentType;
 
     public function getId(): int
     {

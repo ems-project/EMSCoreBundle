@@ -117,17 +117,14 @@ final class ReleaseController extends AbstractController
 
     public function add(Request $request): Response
     {
-        $form = $this->createForm(ReleaseType::class, new Release());
+        $form = $this->createForm(ReleaseType::class, new Release(), [
+            'add' => true,
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $release = $this->releaseService->add($form->getViewData());
-            $saveAnbClose = $form->get('saveAndClose');
-            if (!$saveAnbClose instanceof ClickableInterface) {
-                throw new \RuntimeException('Unexpected non clickable object');
-            }
-            $nextAction = $saveAnbClose->isClicked() ? Routes::RELEASE_INDEX : Routes::RELEASE_EDIT;
 
-            return $this->redirectToRoute($nextAction, ['release' => $release->getId()]);
+            return $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $release->getId()]);
         }
 
         return $this->render('@EMSCore/release/add.html.twig', [

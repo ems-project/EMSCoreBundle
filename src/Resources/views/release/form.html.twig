@@ -3,29 +3,30 @@
 <div class="row">
 	<div class="col-md-12">
 		<div class="box box-primary">
-			{{ form_start(form_release) }}
 			<div class="box-header with-border">
 				<h3 class="box-title">{{ label|trans }}</h3>
 			</div>
-
-			<div class="box-body">
-				<div class="row">
-					{{ form_row(form_release.name) }}
-					<div class="clearfix"></div>
-					{{ form_row(form_release.execution_date) }}
-					<div class="clearfix"></div>
-                    {{ form_row(form_release.environmentSource) }}
-                    {{ form_row(form_release.environmentTarget) }}
+			{{ form_start(form_release) }}
+				<div class="box-body">
+					<div class="row">
+						{{ form_row(form_release.name) }}
+						<div class="clearfix"></div>
+						{{ form_row(form_release.execution_date) }}
+						<div class="clearfix"></div>
+						{{ form_row(form_release.environmentSource) }}
+						{{ form_row(form_release.environmentTarget) }}
+					</div>
 				</div>
-			</div>
-			<div class="box-footer">
-				{{ form_widget(form_release.save, {
-					'label': save_action_key
-				}) }}
-				{{ form_widget(form_release.saveAndClose, {
-                    'label': saveAndClose_action_key
-                }) }}
-			</div>
+				<div class="box-footer">
+					<div class="btn-group">
+						{% if form_release.save is defined %}
+							{{ form_widget(form_release.save) }}
+							{{ form_widget(form_release.saveAndClose) }}
+						{% else %}
+							{{ form_widget(form_release.create) }}
+						{% endif %}
+					</div>
+				</div>
             {{ form_end(form_release) }}
 		</div>
 	</div>

@@ -92,19 +92,32 @@ final class ReleaseType extends AbstractType
 
                     return $value;
                 },
-            ])
-            ->add('save', SubmitEmsType::class, [
+            ]);
+
+        if ($options['add'] ?? false) {
+            $builder->add('create', SubmitEmsType::class, [
+                    'attr' => [
+                        'class' => 'btn btn-primary btn-sm',
+                    ],
+                    'icon' => 'fa fa-plus',
+                    'label' => 'release.add.save',
+                ]);
+        } else {
+            $builder->add('save', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm ',
+                    'class' => 'btn btn-default btn-sm',
                 ],
                 'icon' => 'fa fa-save',
+                'label' => 'release.edit.save',
             ])
             ->add('saveAndClose', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm ',
+                    'class' => 'btn btn-default btn-sm',
                 ],
                 'icon' => 'fa fa-save',
+                'label' => 'release.edit.saveAndClose',
             ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -112,6 +125,7 @@ final class ReleaseType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Release::class,
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+            'add' => false,
         ]);
     }
 }

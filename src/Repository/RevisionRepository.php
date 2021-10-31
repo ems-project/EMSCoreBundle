@@ -1130,7 +1130,6 @@ class RevisionRepository extends EntityRepository
         $qb->orderBy('r.ouuid')
         ->setFirstResult($from)
         ->setMaxResults($size);
-        \dump('ici');
 
         return $qb->getQuery()->execute();
     }

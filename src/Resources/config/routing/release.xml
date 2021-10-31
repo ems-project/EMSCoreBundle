@@ -34,7 +34,10 @@
     <route id="ems_core_release_ajax_data_table_non_member_revision" path="/{release}/non-member-datatable.json" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:ajaxReleaseTableNonMemberRevisions</default>
     </route>
-        <route id="ems_core_release_publish" path="/{release}/publish" methods="POST">
+    <route id="ems_core_release_ajax_data_table_published_revision" path="/{release}/published-datatable.json" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:ajaxReleaseTablePublishedRevisions</default>
+    </route>
+    <route id="ems_core_release_publish" path="/{release}/publish" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:releasePublish</default>
     </route>
 </routes>

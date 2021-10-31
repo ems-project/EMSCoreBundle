@@ -249,7 +249,7 @@ final class ReleaseController extends AbstractController
         ->addCondition(new Terms('status', [ReleaseStatusEnumType::WIP_STATUS]));
         $table->addItemGetAction(Routes::RELEASE_SET_STATUS, 'release.actions.set_status_ready', 'play', ['status' => ReleaseStatusEnumType::READY_STATUS])
         ->addCondition(new Terms('status', [ReleaseStatusEnumType::WIP_STATUS]))
-        ->addCondition(new NotEmpty('revisionsIds'));
+        ->addCondition(new NotEmpty('revisionsOuuids'));
         $table->addItemGetAction(Routes::RELEASE_SET_STATUS, 'release.actions.set_status_wip', 'rotate-left', ['status' => ReleaseStatusEnumType::WIP_STATUS])
         ->addCondition(new Terms('status', [ReleaseStatusEnumType::CANCELED_STATUS]));
         $table->addItemPostAction(Routes::RELEASE_PUBLISH, 'release.actions.publish_release', 'toggle-on', 'release.actions.publish_confirm')

@@ -201,6 +201,13 @@ final class ReleaseController extends AbstractController
         return $this->redirectToRoute(Routes::RELEASE_INDEX);
     }
 
+    public function addRevision(Release $release, string $emsLinkToAdd): Response
+    {
+        $this->releaseService->addRevisions($release, [$emsLinkToAdd]);
+
+        return $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $release->getId()]);
+    }
+
     public function addRevisions(Request $request, Release $release): Response
     {
         $table = $this->getNonMemberRevisionsTable($release);
@@ -219,7 +226,7 @@ final class ReleaseController extends AbstractController
                 $this->logger->error('log.controller.release.unknown_action');
             }
 
-            return $this->redirectToRoute(Routes::RELEASE_INDEX);
+            return $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $release->getId()]);
         }
 
         return $this->render('@EMSCore/release/revisions.html.twig', [
@@ -257,8 +264,9 @@ final class ReleaseController extends AbstractController
         ->addCondition(new Terms('status', [ReleaseStatusEnumType::READY_STATUS]));
         $table->addItemGetAction(Routes::RELEASE_SET_STATUS, 'release.actions.set_status_canceled', 'ban', ['status' => ReleaseStatusEnumType::CANCELED_STATUS])
         ->addCondition(new Terms('status', [ReleaseStatusEnumType::READY_STATUS]));
-        $table->addItemPostAction(Routes::RELEASE_DELETE, 'release.actions.delete', 'trash', 'release.actions.delete_confirm');
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'release.actions.delete_selected', 'release.actions.delete_selected_confirm');
+        $table->addItemPostAction(Routes::RELEASE_DELETE, 'release.actions.delete', 'trash', 'release.actions.delete_confirm')
+            ->setButtonType('outline-danger');
+        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'release.actions.delete_selected', 'release.actions.delete_selected_confirm')->setCssClass('btn btn-outline-danger');
 
         return $table;
     }
@@ -279,6 +287,7 @@ final class ReleaseController extends AbstractController
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addTableAction(TableAbstract::ADD_ACTION, 'fa fa-plus', 'release.revision.actions.add', 'release.revision.actions.add_confirm');
+        $table->addDynamicItemPostAction(Routes::RELEASE_ADD_REVISION, 'release.revision.action.add', 'plus', 'release.revision.actions.add_confirm', ['release' => \sprintf('%d', $release->getId()), 'emsLinkToAdd' => 'emsLink']);
 
         return $table;
     }
@@ -300,6 +309,7 @@ final class ReleaseController extends AbstractController
             'target' => $release->getEnvironmentTarget(),
         ]);
         $table->setMassAction(false);
+        $table->setLabelAttribute('item_labelField');
         $table->setIdField('emsLink');
         $table->addColumn('release.revision.index.column.label', 'item_labelField');
         $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');

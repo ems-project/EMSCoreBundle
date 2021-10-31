@@ -16,6 +16,7 @@ class Routes
     public const RELEASE_PUBLISH = 'ems_core_release_publish';
     public const RELEASE_DELETE = 'ems_core_release_delete';
     public const RELEASE_SET_STATUS = 'ems_core_release_set_status';
+    public const RELEASE_ADD_REVISION = 'ems_core_release_add_revision';
     public const RELEASE_ADD_REVISIONS = 'ems_core_release_add_revisions';
     public const RELEASE_AJAX_DATA_TABLE = 'ems_core_release_ajax_data_table';
     public const RELEASE_MEMBER_REVISION_AJAX = 'ems_core_release_ajax_data_table_member_revision';

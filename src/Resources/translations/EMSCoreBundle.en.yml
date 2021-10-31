@@ -420,6 +420,8 @@ release.index.column.status: Status
 release.index.title: 'List of Releases'
 release.menu: Releases
 release.revision.actions.add: Add Revisions
+release.revision.action.add: Add Revision to release
+release.revision.actions.add_confirm: 'Do you confirm ?'
 release.revision.actions.remove: Remove Revisions
 release.revision.index.column.CT: Content Type
 release.revision.index.column.label: Label

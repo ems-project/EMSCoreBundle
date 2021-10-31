@@ -22,6 +22,9 @@
     <route id="ems_core_release_set_status" path="/{release}/set-status/{status}" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:changeStatus</default>
     </route>
+    <route id="ems_core_release_add_revision" path="/{release}/add-revision/{emsLinkToAdd}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:addRevision</default>
+    </route>
     <route id="ems_core_release_add_revisions" path="/{release}/add-revisions" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:addRevisions</default>
     </route>

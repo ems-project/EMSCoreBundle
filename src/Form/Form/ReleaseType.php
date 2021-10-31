@@ -60,7 +60,7 @@ final class ReleaseType extends AbstractType
                 'choices' => $this->environmentService->getAll(),
                 'required' => true,
                 'choice_label' => function (Environment $value) {
-                    return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
+                    return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getLabel();
                 },
                 'row_attr' => [
                     'class' => 'col-md-3',
@@ -80,7 +80,7 @@ final class ReleaseType extends AbstractType
                 'choices' => $this->environmentService->getAll(),
                 'required' => true,
                 'choice_label' => function (Environment $value) {
-                    return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
+                    return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getLabel();
                 },
                 'row_attr' => [
                     'class' => 'col-md-3',

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Application\Migrations;
 
@@ -10,9 +12,9 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20211031133046 extends AbstractMigration
 {
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TABLE "release" (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, environment_source_id INTEGER DEFAULT NULL, environment_target_id INTEGER DEFAULT NULL, execution_date DATETIME DEFAULT NULL, status ENUM(\'wip\', \'ready\', \'applied\', \'scheduled\', \'canceled\', \'rollbacked\') NOT NULL --(DC2Type:release_status_enum)
         , name VARCHAR(255) NOT NULL)');
@@ -167,9 +169,9 @@ final class Version20211031133046 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_1DF055903E3A94 ON environment_query_search (environment_id)');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP TABLE "release"');
         $this->addSql('DROP TABLE release_revision');

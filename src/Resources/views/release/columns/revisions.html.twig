@@ -16,6 +16,16 @@
 {% endblock minrevid %}
 
 
+{% block environmentSource %}
+    {{ data.environmentSource.label }}
+{% endblock environmentSource %}
+
+
+{% block environmentTarget %}
+    {{ data.environmentTarget.label }}
+{% endblock environmentTarget %}
+
+
 {% block maxrevid %}
     {% set release = app.request.get('release') %}
     {% set minrev = data.minrevid|split('/') %}

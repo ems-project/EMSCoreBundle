@@ -247,8 +247,8 @@ final class ReleaseController extends AbstractController
         $table->addColumn('release.index.column.name', 'name');
         $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.execution_date', 'executionDate'));
         $table->addColumn('release.index.column.status', 'status');
-        $table->addColumn('release.index.column.env_source', 'environmentSource');
-        $table->addColumn('release.index.column.env_target', 'environmentTarget');
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.env_source', 'environmentSource', '@EMSCore/release/columns/revisions.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.env_target', 'environmentTarget', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addItemGetAction(Routes::RELEASE_VIEW, 'release.actions.show', 'eye')
         ->addCondition(new Terms('status', [ReleaseStatusEnumType::APPLIED_STATUS, ReleaseStatusEnumType::SCHEDULED_STATUS]));
         $table->addItemGetAction(Routes::RELEASE_EDIT, 'release.actions.edit', 'pencil')

@@ -21,5 +21,4 @@ class Routes
     public const RELEASE_AJAX_DATA_TABLE = 'ems_core_release_ajax_data_table';
     public const RELEASE_MEMBER_REVISION_AJAX = 'ems_core_release_ajax_data_table_member_revision';
     public const RELEASE_NON_MEMBER_REVISION_AJAX = 'ems_core_release_ajax_data_table_non_member_revision';
-    public const RELEASE_PUBLISHED_REVISION_AJAX = 'ems_core_release_ajax_data_table_published_revision';
 }

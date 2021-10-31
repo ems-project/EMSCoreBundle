@@ -77,18 +77,6 @@ final class ReleaseController extends AbstractController
         ], new JsonResponse());
     }
 
-    public function ajaxReleaseTablePublishedRevisions(Request $request, Release $release): Response
-    {
-        $table = $this->getMemberRevisionsTable($release);
-        $dataTableRequest = DataTableRequest::fromRequest($request);
-        $table->resetIterator($dataTableRequest);
-
-        return $this->render('@EMSCore/datatable/ajax.html.twig', [
-            'dataTableRequest' => $dataTableRequest,
-            'table' => $table,
-        ], new JsonResponse());
-    }
-
     public function index(Request $request): Response
     {
         $table = $this->initReleaseTable();

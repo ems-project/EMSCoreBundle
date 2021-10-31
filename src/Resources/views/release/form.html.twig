@@ -22,6 +22,12 @@
 						{% if form_release.save is defined %}
 							{{ form_widget(form_release.save) }}
 							{{ form_widget(form_release.saveAndClose) }}
+							{% include '@EMSCore/elements/get-button.html.twig' with {
+								'url':  path('ems_core_release_add_revisions', {'release': release.id} ),
+								'label': 'release.actions.add_revisions'|trans,
+								'icon': 'plus',
+								'btnType': 'primary',
+							}%}
 						{% else %}
 							{{ form_widget(form_release.create) }}
 						{% endif %}

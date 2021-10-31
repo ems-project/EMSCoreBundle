@@ -170,6 +170,7 @@ final class ReleaseController extends AbstractController
         return $this->render('@EMSCore/release/edit.html.twig', [
             'form' => $revisionsForm->createView(),
             'form_release' => $releaseForm->createView(),
+            'release' => $release,
         ]);
     }
 

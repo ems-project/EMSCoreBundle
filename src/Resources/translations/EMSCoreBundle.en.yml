@@ -800,3 +800,7 @@ Views: Views
 'Add a style set': 'Add a style set'
 'Click on ''Add a styles set'' to create a first styles set': 'Click on ''Add a styles set'' to create a first styles set'
 'New WYSIWYG profile': 'New WYSIWYG profile'
+dashboard.actions.delete_selected: 'Deleted selected'
+dashboard.actions.edit: Edit
+dashboard.index.column.name: Name
+dashboard.index.column.label: Label

@@ -66,7 +66,7 @@ class DashboardController extends AbstractController
                 $this->logger->error('log.controller.channel.unknown_action');
             }
 
-            return $this->redirectToRoute('ems_core_channel_index');
+            return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
         }
 
         return $this->render('@EMSCore/dashboard/index.html.twig', [
@@ -78,12 +78,14 @@ class DashboardController extends AbstractController
     {
         $dashboard = new Dashboard();
 
-        return $this->edit($request, $dashboard, '@EMSCore/dashboard/add.html.twig');
+        return $this->edit($request, $dashboard, true);
     }
 
-    public function edit(Request $request, Dashboard $dashboard, string $view = '@EMSCore/dashboard/edit.html.twig'): Response
+    public function edit(Request $request, Dashboard $dashboard, bool $create = false): Response
     {
-        $form = $this->createForm(DashboardType::class, $dashboard);
+        $form = $this->createForm(DashboardType::class, $dashboard, [
+            'create' => $create,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -92,8 +94,9 @@ class DashboardController extends AbstractController
             return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
         }
 
-        return $this->render($view, [
+        return $this->render($create ? '@EMSCore/dashboard/add.html.twig' : '@EMSCore/dashboard/edit.html.twig', [
             'form' => $form->createView(),
+            'dashboard' => $dashboard,
         ]);
     }
 
@@ -101,9 +104,13 @@ class DashboardController extends AbstractController
     {
         $table = new EntityTable($this->dashboardManager, $this->generateUrl('emsco_dashboard_admin_index_ajax'));
         $table->addColumn('table.index.column.loop_count', 'orderKey');
-        $table->addColumn('channel.index.column.label', 'label');
-        $table->addColumn('channel.index.column.name', 'name');
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'channel.actions.delete_selected', 'channel.actions.delete_selected_confirm');
+        $table->addColumn('dashboard.index.column.name', 'name');
+        $table->addColumn('dashboard.index.column.label', 'label')->setItemIconCallback(function (Dashboard $dashboard) {
+            return $dashboard->getIcon();
+        });
+        $table->addItemGetAction(Routes::DASHBOARD_ADMIN_EDIT, 'dashboard.actions.edit', 'pencil');
+        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'dashboard.actions.delete_selected', 'dashboard.actions.delete_selected_confirm')
+            ->setCssClass('btn btn-outline-danger');
         $table->setDefaultOrder('orderKey');
 
         return $table;

@@ -121,3 +121,4 @@ dashboard.tagline: 'Customize the lobby'
 dashboard.index.title: 'List of dashboards'
 table.index.button.add: Add
 dashboard.add.title: 'Add a dashboard'
+dashboard.edit.title: 'Edit the dashboard "%label%"'

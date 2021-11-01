@@ -18,12 +18,19 @@
                         <div class="clearfix"></div>
                         {{ form_row(form.name) }}
                         <div class="clearfix"></div>
-                        {{ form_row(form.type) }}
-                        <div class="clearfix"></div>
+                        {%  if form.type is defined %}
+                            {{ form_row(form.type) }}
+                            <div class="clearfix"></div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="box-footer">
-                    {{ form_widget(form.save) }}
+                    {%  if form.create is defined %}
+                        {{ form_widget(form.create) }}
+                    {% endif %}
+                    {%  if form.save is defined %}
+                        {{ form_widget(form.save) }}
+                    {% endif %}
                 </div>
                 {{ form_end(form) }}
             </div>

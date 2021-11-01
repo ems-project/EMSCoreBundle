@@ -1013,11 +1013,13 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
+     * @param string[] $contentTypes
+     *
      * @return Revision[]
      */
-    public function getAvailableRevisionsForRelease(int $from, int $size, Release $release, ?string $orderField, string $orderDirection, string $searchValue): array
+    public function getAvailableRevisionsForRelease(int $from, int $size, Release $release, array $contentTypes, ?string $orderField, string $orderDirection, string $searchValue): array
     {
-        $qb = $this->getCompareQueryBuilder($release->getEnvironmentSource()->getId(), $release->getEnvironmentTarget()->getId(), [], $release->getRevisionsOuuids(), $searchValue);
+        $qb = $this->getCompareQueryBuilder($release->getEnvironmentSource()->getId(), $release->getEnvironmentTarget()->getId(), $contentTypes, $release->getRevisionsOuuids(), $searchValue);
         if (null === $orderField) {
             $qb->orderBy('r.ouuid', $orderDirection);
         } else {
@@ -1029,9 +1031,12 @@ class RevisionRepository extends EntityRepository
         return $qb->getQuery()->execute();
     }
 
-    public function countAvailableRevisionsForRelease(Release $release, string $searchValue): int
+    /**
+     * @param string[] $contentTypes
+     */
+    public function countAvailableRevisionsForRelease(Release $release, array $contentTypes, string $searchValue): int
     {
-        $sqb = $this->getCompareQueryBuilder($release->getEnvironmentSource()->getId(), $release->getEnvironmentTarget()->getId(), [], $release->getRevisionsOuuids(), $searchValue);
+        $sqb = $this->getCompareQueryBuilder($release->getEnvironmentSource()->getId(), $release->getEnvironmentTarget()->getId(), $contentTypes, $release->getRevisionsOuuids(), $searchValue);
         $sqb->select('max(r.id)');
 
         $qb = $this->createQueryBuilder('rev');

@@ -76,4 +76,34 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->execute();
     }
+
+    /**
+     * @return ReleaseRevision[]
+     */
+    public function findByRelease(Release $release, int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->createQueryBuilder('rr');
+        $qb->where($qb->expr()->eq('rr.release', ':release'))
+            ->setParameters([
+                'release' => $release,
+            ]);
+        $qb->orderBy(\sprintf('rr.%s', $orderField ?? 'id'), $orderDirection);
+        $qb->setFirstResult($from);
+        $qb->setMaxResults($size);
+
+        return $qb->getQuery()->execute();
+    }
+
+    public function countByRelease(Release $release, string $searchValue): int
+    {
+        $qb = $this->createQueryBuilder('rr');
+        $qb->where($qb->expr()->eq('rr.release', ':release'))
+            ->setParameters([
+                'release' => $release,
+            ]);
+        $qb->select('count(rr)');
+        $query = $qb->getQuery();
+
+        return \intval($query->getSingleScalarResult());
+    }
 }

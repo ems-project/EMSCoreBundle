@@ -13,6 +13,6 @@ class Export implements DashboardInterface
 
     public static function getIcon(): string
     {
-        return 'fa fa-export';
+        return 'glyphicon glyphicon-export';
     }
 }

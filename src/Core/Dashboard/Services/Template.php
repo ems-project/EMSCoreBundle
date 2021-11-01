@@ -13,6 +13,6 @@ class Template implements DashboardInterface
 
     public static function getIcon(): string
     {
-        return 'fa fa-html-5';
+        return 'fa fa-html5';
     }
 }

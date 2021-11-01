@@ -28,7 +28,7 @@ class DashboardPickerType extends SelectPickerType
                 $dashboard = $this->dashboardService->get($id);
 
                 return [
-                    'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$dashboard->getLabel().'</div>',
+                    'data-content' => \sprintf('<div class="text"><i class="%s"></i>&nbsp;&nbsp;%s</div>', $dashboard->getIcon(), \htmlentities($dashboard->getLabel())),
                 ];
             },
             'choice_value' => function ($value) {

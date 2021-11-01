@@ -40,8 +40,8 @@ final class Version20211031154520 extends AbstractMigration
         $this->addSql('ALTER TABLE release_revision DROP CONSTRAINT FK_3663CEADB12A727D');
         $this->addSql('DROP SEQUENCE release_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE release_revision_id_seq CASCADE');
-        $this->addSql('DROP TYPE release_status_enum');
         $this->addSql('DROP TABLE release');
         $this->addSql('DROP TABLE release_revision');
+        $this->addSql('DROP TYPE release_status_enum');
     }
 }

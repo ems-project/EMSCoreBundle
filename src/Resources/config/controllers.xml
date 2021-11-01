@@ -112,5 +112,13 @@
             <argument type="service" id="ems.dashboard.manager" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\TwigElementsController" public="true">
+            <argument type="service" id="ems.service.asset_extractor"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.user"/>
+            <argument type="service" id="ems.service.job"/>
+            <argument type="service" id="ems.dashboard.manager"/>
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

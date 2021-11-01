@@ -110,7 +110,7 @@ class Dashboard implements EntityInterface
         $this->name = $name;
     }
 
-    public function getLabel(): ?string
+    public function getLabel(): string
     {
         return $this->label;
     }

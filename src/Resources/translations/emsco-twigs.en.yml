@@ -126,3 +126,4 @@ ems_core.dashboard.template.icon: 'fa fa-html5'
 ems_core.dashboard.template.label: Template
 ems_core.dashboard.export.icon: 'glyphicon glyphicon-export'
 ems_core.dashboard.export.label: Export
+views.elements.side-menu-html.dashboards: Dashboards

@@ -56,6 +56,19 @@
         {{ render(controller(application_menu_controller)) }}
     {% endif %}
 
+    {% if dashboardMenu.children|length > 0 %}
+        <ul class="sidebar-menu" data-widget="tree">
+            <li class="header">{{ 'views.elements.side-menu-html.dashboards'|trans }}</li>
+            {% for dashboard in dashboardMenu.children %}
+                <li class="treeview">
+                    <a href="#">
+                        <i class="{{ dashboard.icon }}"></i>&nbsp;<span>{{ dashboard.label }}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
 	{% if get_content_types()|length > 0 %}
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">Content Management</li>

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Dashboard;
 
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Repository\DashboardRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
@@ -97,5 +98,15 @@ class DashboardManager implements EntityServiceInterface
         $this->logger->warning('log.service.dashboard.delete', [
             'name' => $name,
         ]);
+    }
+
+    public function getSideMenu(): Menu
+    {
+        $menu = new Menu();
+        foreach ($this->dashboardRepository->getSideMenu() as $dashboard) {
+            $menu->addChild($dashboard->getLabel(), $dashboard->getIcon());
+        }
+
+        return $menu;
     }
 }

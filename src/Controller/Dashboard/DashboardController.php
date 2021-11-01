@@ -91,6 +91,10 @@ class DashboardController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->dashboardManager->update($dashboard);
 
+            if ($create) {
+                return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_EDIT, ['dashboard' => $dashboard->getId()]);
+            }
+
             return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
         }
 

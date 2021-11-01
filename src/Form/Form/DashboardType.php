@@ -10,6 +10,7 @@ use EMS\CoreBundle\Form\Field\DashboardPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -38,6 +39,18 @@ final class DashboardType extends AbstractType
                 'required' => true,
                 'row_attr' => [
                     'class' => 'col-md-4',
+                ],
+            ])
+            ->add('sideMenu', CheckboxType::class, [
+                'required' => false,
+                'row_attr' => [
+                    'class' => 'col-md-12',
+                ],
+            ])
+            ->add('notificationMenu', CheckboxType::class, [
+                'required' => false,
+                'row_attr' => [
+                    'class' => 'col-md-12',
                 ],
             ]);
 

@@ -803,7 +803,7 @@ Views: Views
 dashboard.actions.delete_selected: 'Deleted selected'
 dashboard.actions.edit: Edit
 dashboard.actions.delete: Delete
-dashboard.actions.delete_confirm: Do you confirm
+dashboard.actions.delete_confirm: 'Do you confirm'
 dashboard.index.column.name: Name
 dashboard.index.column.label: Label
 log.service.dashboard.delete: 'Dashboard %name% has been deleted'

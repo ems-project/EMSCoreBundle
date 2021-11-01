@@ -12,11 +12,15 @@
                 {{ form_start(form) }}
                 <div class="box-body">
                     <div class="row">
-                        {{ form_row(form.label) }}
+                        {{ form_row(form.name) }}
                         <div class="clearfix"></div>
                         {{ form_row(form.icon) }}
                         <div class="clearfix"></div>
-                        {{ form_row(form.name) }}
+                        {{ form_row(form.label) }}
+                        <div class="clearfix"></div>
+                        {{ form_row(form.sideMenu) }}
+                        <div class="clearfix"></div>
+                        {{ form_row(form.notificationMenu) }}
                         <div class="clearfix"></div>
                         {%  if form.type is defined %}
                             {{ form_row(form.type) }}

@@ -20,7 +20,9 @@
 
 {% block revision %}
     {% if data.revision %}
-        {{ 'release.release-revisison.revision'|trans({ '%date%' : data.revision.created|date(date_time_format) ,'%user%' : data.revision.finalizedBy|default('')|displayname }) }}
+        <a href="{{ path('emsco_view_revisions', {ouuid: data.revisionOuuid, type: data.contentType.name, revisionId: data.revision.id}) }}">
+            {{ 'release.release-revisison.revision'|trans({ '%date%' : data.revision.created|date(date_time_format) ,'%user%' : data.revision.finalizedBy|default('')|displayname }) }}
+        </a>
     {% else %}
         {% set info = data.emsLink|emsco_document_info %}
         {% set revision = info.getRevision(data.release.environmentSource.name) %}
@@ -40,10 +42,28 @@
 
 {% block previous %}
     {% if data.revisionBeforePublish %}
-        {{ 'release.release-revisison.revision'|trans({ '%date%' : data.revisionBeforePublish.created|date(date_time_format) ,'%user%' : data.revisionBeforePublish.finalizedBy|default('')|displayname }) }}
+        <a href="{{ path('emsco_view_revisions', {ouuid: data.revisionBeforePublish.ouuid, type: data.revisionBeforePublish.contentType.name, revisionId: data.revisionBeforePublish.id}) }}">
+            {{ 'release.release-revisison.revision'|trans({ '%date%' : data.revisionBeforePublish.created|date(date_time_format) ,'%user%' : data.revisionBeforePublish.finalizedBy|default('')|displayname }) }}
+        </a>
     {% else %}
         <span class="text-muted">
             {{ 'release.release-revisison.not-applicable'|trans }}
         </span>
     {% endif %}
 {% endblock previous %}
+
+{% block rollbackable %}
+    {% set rollbackable = false %}
+    {% if data.revision %}
+        {% set info = data.revision.emsLink|emsco_document_info %}
+        {% set revision = info.getRevision(data.release.environmentTarget) %}
+        {% set rollbackable = (data.revision.id is same as (revision.id)) %}
+    {% else %}
+        {% set rollbackable = true %}
+    {% endif %}
+    {%  if rollbackable %}
+        <i class="fa fa-check-square"><span class="sr-only"</span>{{ 'release.release-revisison.rollbackable'|trans }}</i>
+    {% else %}
+        <i class="fa fa-square-o"><span class="sr-only"</span>{{ 'release.release-revisison.rollbackable'|trans }}</i>
+    {% endif %}
+{% endblock rollbackable %}

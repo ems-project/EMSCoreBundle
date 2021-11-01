@@ -276,6 +276,7 @@ final class ReleaseController extends AbstractController
                 $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
                 break;
             case ReleaseStatusEnumType::APPLIED_STATUS:
+                $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.rollbackable', 'rollbackable', '@EMSCore/release/columns/release-revisions.html.twig'));
                 $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.previous', 'previous', '@EMSCore/release/columns/release-revisions.html.twig'));
                 break;
         }

@@ -107,5 +107,8 @@
             <argument type="service" id="EMS\CoreBundle\Controller\ElasticsearchController" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Dashboard\DashboardController" public="true">
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

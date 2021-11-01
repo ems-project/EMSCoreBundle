@@ -7,4 +7,7 @@
     <route id="ems_core_dashboard" path="/dashboard" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\DashboardController::dashboard</default>
     </route>
+    <route id="ems_core_dashboard" path="/admin/dashboard" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::index</default>
+    </route>
 </routes>

@@ -6,3 +6,12 @@ dashboard.create: Create
 dashboard.type: 'Type of dashboard'
 dashboard.sideMenu: 'Visible in the side menu'
 dashboard.notificationMenu: 'Visible in the notification menu'
+dashboard.export.none: None
+dashboard.export.attachment: Attachment
+dashboard.export.inline: Inline
+dashboard.export.body: Body
+dashboard.export.filename: Filename
+dashboard.export.fileDisposition: Disposition
+dashboard.template.body: Body
+dashboard.template.header: Header
+dashboard.template.footer: Footer

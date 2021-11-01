@@ -25,6 +25,20 @@ class Template extends AbstractType implements DashboardInterface
                 'row_attr' => [
                     'class' => 'col-md-12',
                 ],
+            ])
+            ->add('header', CodeEditorType::class, [
+                'required' => true,
+                'language' => 'ace/mode/twig',
+                'row_attr' => [
+                    'class' => 'col-md-12',
+                ],
+            ])
+            ->add('footer', CodeEditorType::class, [
+                'required' => true,
+                'language' => 'ace/mode/twig',
+                'row_attr' => [
+                    'class' => 'col-md-12',
+                ],
             ]);
     }
 

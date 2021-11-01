@@ -26,4 +26,6 @@ Here a list of dashboard types that we may  develop in the future:
 - notification
 - tasks
 - jobs
+- link/shortcut
+- shopping basket
 - ...

@@ -9,4 +9,5 @@ class Routes
     public const DISCARD_DRAFT = 'emsco_discard_draft';
     public const DRAFT_IN_PROGRESS = 'emsco_draft_in_progress';
     public const DRAFT_IN_PROGRESS_AJAX = 'emsco_draft_in_progress_ajax';
+    public const DASHBOARD_ADMIN_INDEX = 'emsco_dashboard_admin_index';
 }

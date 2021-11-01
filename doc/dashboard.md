@@ -9,8 +9,33 @@ A dashboard id defined by
  - A type of dashboard
  - Type specific options
 
+A dashboard can be used 
+ - as quick search
+ - as landing page
+
 
 ## Dashboard types
+
+### Template
+
+Generate a DOM inside the elasticms interface. You can use all twig filters and functions.
+
+Options:
+- Body: DOM (Twig format) that will be injected in the content block of the elasticms interface
+- Header: DOM (Twig format) that will be injected at the end of the header tag. Useful to define or override some CSS.
+- Footer: DOM (Twig format) that will be injected at the end of the body tag. Useful to inject javascript codes.
+
+
+### Export
+Generate a DOM outside the elasticms interface. You can use all twig filters and functions.
+
+Options:
+- Body: DOM (Twig format) that will be injected in the content block of the elasticms interface
+- Filename: Text (Twig format) that will use to generate the file name.
+- Disposition: File disposition: Attachment or Inline.
+
+
+### Upcoming dashboards
 
 Here a list of dashboard types that we may  develop in the future:
 

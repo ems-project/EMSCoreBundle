@@ -13,4 +13,5 @@ class Routes
     public const DASHBOARD_ADMIN_INDEX_AJAX = 'emsco_dashboard_admin_index_ajax';
     public const DASHBOARD_ADMIN_ADD = 'emsco_dashboard_admin_add';
     public const DASHBOARD_ADMIN_EDIT = 'emsco_dashboard_admin_edit';
+    public const DASHBOARD_ADMIN_DELETE = 'emsco_dashboard_admin_delete';
 }

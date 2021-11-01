@@ -79,4 +79,23 @@ class DashboardManager implements EntityServiceInterface
             $this->dashboardRepository->create($channel);
         }
     }
+
+    /**
+     * @param string[] $ids
+     */
+    public function deleteByIds(array $ids): void
+    {
+        foreach ($this->dashboardRepository->getByIds($ids) as $dashboard) {
+            $this->delete($dashboard);
+        }
+    }
+
+    public function delete(Dashboard $dashboard): void
+    {
+        $name = $dashboard->getName();
+        $this->dashboardRepository->delete($dashboard);
+        $this->logger->warning('log.service.dashboard.delete', [
+            'name' => $name,
+        ]);
+    }
 }

@@ -53,7 +53,7 @@ class DashboardController extends AbstractController
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
                 switch ($action->getName()) {
                     case EntityTable::DELETE_ACTION:
-//                        $this->dashboardManager->deleteByIds($table->getSelected());
+                        $this->dashboardManager->deleteByIds($table->getSelected());
                         break;
                     case TableType::REORDER_ACTION:
                         $newOrder = TableType::getReorderedKeys($form->getName(), $request);
@@ -100,6 +100,13 @@ class DashboardController extends AbstractController
         ]);
     }
 
+    public function delete(Dashboard $dashboard): Response
+    {
+        $this->dashboardManager->delete($dashboard);
+
+        return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
+    }
+
     private function initTable(): EntityTable
     {
         $table = new EntityTable($this->dashboardManager, $this->generateUrl('emsco_dashboard_admin_index_ajax'));
@@ -109,6 +116,7 @@ class DashboardController extends AbstractController
             return $dashboard->getIcon();
         });
         $table->addItemGetAction(Routes::DASHBOARD_ADMIN_EDIT, 'dashboard.actions.edit', 'pencil');
+        $table->addItemPostAction(Routes::DASHBOARD_ADMIN_DELETE, 'dashboard.actions.delete', 'trash', 'dashboard.actions.delete_confirm')->setButtonType('outline-danger');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'dashboard.actions.delete_selected', 'dashboard.actions.delete_selected_confirm')
             ->setCssClass('btn btn-outline-danger');
         $table->setDefaultOrder('orderKey');

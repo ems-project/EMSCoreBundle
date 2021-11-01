@@ -19,4 +19,7 @@
     <route id="emsco_dashboard_admin_edit" path="/admin/dashboard/edit/{dashboard}" methods="GET,POST">
         <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::edit</default>
     </route>
+    <route id="emsco_dashboard_admin_delete" path="/admin/dashboard/delete/{dashboard}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::delete</default>
+    </route>
 </routes>

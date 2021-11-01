@@ -115,6 +115,7 @@ uploaded-file-logs.index.title: 'Uploaded file logs'
 view.icon.class.uploaded-file: 'fa fa-upload'
 uploaded-file-logs.menu: 'Uploaded file logs'
 view.icon.class.dashboard: 'fa fa-dashboard'
-view.elements.side-menu.dashboard-admin.index-link: 'Dashboards'
-dashboard.menu: 'Dashboards'
+view.elements.side-menu.dashboard-admin.index-link: Dashboards
+dashboard.menu: Dashboards
 dashboard.tagline: 'Customize the lobby'
+dashboard.index.title: 'List of dashboards'

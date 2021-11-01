@@ -108,6 +108,8 @@
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Dashboard\DashboardController" public="true">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.dashboard.manager" />
             <tag name="controller.service_arguments"/>
         </service>
     </services>

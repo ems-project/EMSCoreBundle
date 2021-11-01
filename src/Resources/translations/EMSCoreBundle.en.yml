@@ -61,7 +61,7 @@ field_type.json_menu_editor.edit: Edit
 field_type.json_menu_editor.item_label_placeholder: 'Define a label for this entry'
 field_type.json_menu_editor.move_item: Move
 field_type.json_menu_editor.copy: Copy
-field_type.json_menu_editor.copy_all: Copy all
+field_type.json_menu_editor.copy_all: 'Copy all'
 field_type.json_menu_editor.paste: Paste
 form.analyzer.char_filter.html_strip: 'HTML Strip'
 form.analyzer.char_filter.label: 'Char Filter'
@@ -663,7 +663,7 @@ view.icon.class.uploaded-file: 'fa fa-upload'
 revision.draft-in-progress.column.label: Label
 revision.draft-in-progress.column.created: Created
 revision.draft-in-progress.column.modified: 'Last update'
-revision.draft-in-progress.column.auto-save-by: 'By'
+revision.draft-in-progress.column.auto-save-by: By
 revision.draft-in-progress.column.locked: 'Locked until'
 revision.draft-in-progress.column.locked-by: 'Locked by'
 revision.draft-in-progress.column.view-revision: 'View draft in progress'

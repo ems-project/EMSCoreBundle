@@ -122,3 +122,7 @@ dashboard.index.title: 'List of dashboards'
 table.index.button.add: Add
 dashboard.add.title: 'Add a dashboard'
 dashboard.edit.title: 'Edit the dashboard "%label%"'
+ems_core.dashboard.template.icon: 'fa fa-html5'
+ems_core.dashboard.template.label: Template
+ems_core.dashboard.export.icon: 'glyphicon glyphicon-export'
+ems_core.dashboard.export.label: Export

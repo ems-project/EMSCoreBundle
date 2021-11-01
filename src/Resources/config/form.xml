@@ -10,6 +10,7 @@
             <tag name="form.type"/>
         </service>
         <service id="ems_core.form.dashboard_type" class="EMS\CoreBundle\Form\Form\DashboardType">
+            <argument type="service" id="ems_core.dashboard.dashboards"/>
             <tag name="form.type"/>
         </service>
     </services>

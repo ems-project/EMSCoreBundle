@@ -26,6 +26,9 @@
                             {{ form_row(form.type) }}
                             <div class="clearfix"></div>
                         {% endif %}
+                        {%  if form.options is defined %}
+                            {{ form_row(form.options) }}
+                        {% endif %}
                     </div>
                 </div>
                 <div class="box-footer">

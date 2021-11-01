@@ -1,0 +1,6 @@
+{% extends '@EMSCore/dashboard/form.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block type %}
+    <i class="{{ [line.data.type, 'icon']|join('.')|trans }}"></i>&nbsp;&nbsp;{{ [line.data.type, 'label']|join('.')|trans }}
+{% endblock type %}

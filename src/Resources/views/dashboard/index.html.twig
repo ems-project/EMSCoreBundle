@@ -6,7 +6,7 @@
 
 {% block body %}
     {%  set toolbar %}
-{#        <a class="btn btn-primary" href="{{ path('ems_core_channel_add') }}"><i class="fa fa-plus"></i> {{ add_label|default(form.vars.add_label)|trans }}</a>#}
+        <a class="btn btn-primary" href="{{ path('emsco_dashboard_admin_add') }}"><i class="fa fa-plus"></i> {{ add_label|default(form.vars.add_label)|trans }}</a>
     {%  endset %}
 
     {% form_theme form '@EMSCore/form/forms.html.twig' %}

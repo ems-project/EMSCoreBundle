@@ -119,3 +119,5 @@ view.elements.side-menu.dashboard-admin.index-link: Dashboards
 dashboard.menu: Dashboards
 dashboard.tagline: 'Customize the lobby'
 dashboard.index.title: 'List of dashboards'
+table.index.button.add: Add
+dashboard.add.title: Add a dashboard

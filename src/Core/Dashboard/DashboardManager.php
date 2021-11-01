@@ -2,6 +2,8 @@
 
 namespace EMS\CoreBundle\Core\Dashboard;
 
+use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Repository\DashboardRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 use Psr\Log\LoggerInterface;
@@ -43,5 +45,23 @@ class DashboardManager implements EntityServiceInterface
         }
 
         return $this->dashboardRepository->counter($searchValue);
+    }
+
+    public function update(Dashboard $dashboard): void
+    {
+        if (0 === $dashboard->getOrderKey()) {
+            $dashboard->setOrderKey($this->dashboardRepository->counter() + 1);
+        }
+        $encoder = new Encoder();
+        $name = $dashboard->getName();
+        if (null === $name) {
+            throw new \RuntimeException('Unexpected null name');
+        }
+        $webalized = $encoder->webalize($name);
+        if (null === $webalized) {
+            throw new \RuntimeException('Unexpected null webalized name');
+        }
+        $dashboard->setName($webalized);
+        $this->dashboardRepository->create($dashboard);
     }
 }

@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Dashboard;
 
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
+use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
+use EMS\CoreBundle\Form\Form\DashboardType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
+use EMS\CoreBundle\Routes;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
@@ -67,6 +70,29 @@ class DashboardController extends AbstractController
         }
 
         return $this->render('@EMSCore/dashboard/index.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    public function add(Request $request): Response
+    {
+        $dashboard = new Dashboard();
+
+        return $this->edit($request, $dashboard, '@EMSCore/dashboard/add.html.twig');
+    }
+
+    public function edit(Request $request, Dashboard $dashboard, string $view = '@EMSCore/dashboard/edit.html.twig'): Response
+    {
+        $form = $this->createForm(DashboardType::class, $dashboard);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->dashboardManager->update($dashboard);
+
+            return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
+        }
+
+        return $this->render($view, [
             'form' => $form->createView(),
         ]);
     }

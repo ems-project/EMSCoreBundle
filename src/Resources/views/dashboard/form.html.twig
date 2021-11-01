@@ -1,0 +1,30 @@
+{% extends '@EMSCore/dashboard/abstract.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+
+{% block breadcrumb_items %}<li>{{ block('title') }}</li>{% endblock breadcrumb_items %}
+
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                {{ form_start(form) }}
+                <div class="box-body">
+                    <div class="row">
+                        {{ form_row(form.label) }}
+                        <div class="clearfix"></div>
+                        {{ form_row(form.icon) }}
+                        <div class="clearfix"></div>
+                        {{ form_row(form.name) }}
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    {{ form_widget(form.save) }}
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

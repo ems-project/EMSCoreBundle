@@ -66,4 +66,17 @@ class DashboardManager implements EntityServiceInterface
         $dashboard->setName($webalized);
         $this->dashboardRepository->create($dashboard);
     }
+
+    /**
+     * @param string[] $ids
+     */
+    public function reorderByIds(array $ids): void
+    {
+        $counter = 1;
+        foreach ($ids as $id) {
+            $channel = $this->dashboardRepository->getById($id);
+            $channel->setOrderKey($counter++);
+            $this->dashboardRepository->create($channel);
+        }
+    }
 }

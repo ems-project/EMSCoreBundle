@@ -57,7 +57,7 @@ class DashboardController extends AbstractController
                         break;
                     case TableType::REORDER_ACTION:
                         $newOrder = TableType::getReorderedKeys($form->getName(), $request);
-//                        $this->dashboardManager->reorderByIds($newOrder);
+                        $this->dashboardManager->reorderByIds($newOrder);
                         break;
                     default:
                         $this->logger->error('log.controller.channel.unknown_action');

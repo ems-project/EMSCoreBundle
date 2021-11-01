@@ -30,12 +30,12 @@ class PublishReleaseCommand extends AbstractCommand
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
-
-        $this->io->title('EMS - Release - Publish');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->io->title('EMSCO - Release - Publish');
+
         $releases = $this->releaseService->findReadyAndDue();
 
         if (empty($releases)) {

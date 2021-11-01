@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Dashboard;
+use EMS\CoreBundle\Form\Field\DashboardPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
@@ -22,12 +23,6 @@ final class DashboardType extends AbstractType
     {
         \dump($options);
         $builder
-            ->add('label', null, [
-                'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-4',
-                ],
-            ])
             ->add('name', null, [
                 'required' => true,
                 'row_attr' => [
@@ -35,6 +30,18 @@ final class DashboardType extends AbstractType
                 ],
             ])
             ->add('icon', IconPickerType::class, [
+                'required' => true,
+                'row_attr' => [
+                    'class' => 'col-md-4',
+                ],
+            ])
+            ->add('label', null, [
+                'required' => true,
+                'row_attr' => [
+                    'class' => 'col-md-4',
+                ],
+            ])
+            ->add('type', DashboardPickerType::class, [
                 'required' => true,
                 'row_attr' => [
                     'class' => 'col-md-4',

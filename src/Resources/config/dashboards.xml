@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <defaults public="false" />
+        <service id="ems_core.dashboard.dashboards" class="EMS\CoreBundle\Core\Dashboard\DashboardService">
+            <argument type="tagged_iterator" tag="ems.dashboard" index-by="id"/>
+        </service>
+        <service id="ems_core.dashboard.pickertype" class="EMS\CoreBundle\Form\Field\DashboardPickerType">
+            <argument type="service" id="ems_core.dashboard.dashboards"/>
+            <tag name="form.type" />
+        </service>
+        <service id="ems_core.dashboard.template" class="EMS\CoreBundle\Core\Dashboard\Services\Template">
+            <tag name="ems.dashboard" alias="template" />
+        </service>
+        <service id="ems_core.dashboard.export" class="EMS\CoreBundle\Core\Dashboard\Services\Export">
+            <tag name="ems.dashboard" alias="export" />
+        </service>
+    </services>
+</container>

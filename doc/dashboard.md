@@ -2,18 +2,18 @@
 
 Dashboards are customizable views that can apply to many content types at the same times:
 
-A dashboard id defined by
+A dashboard is defined by
  - A name (webalized for generating the url)
  - A role to allow access
  - An icon
  - A label for displaying
  - A color (for the link in the sidebar menu nor notification menu)
- - A checkbox to display a dashboard link in the sidebar menu
- - A checkbox to display a dashboard link in the notification menu
+ - A checkbox to display a dashboard's link in the sidebar menu
+ - A checkbox to display a dashboard's link in the notification menu
  - A type of dashboard
  - Type specific options (see bellow)
 
-A dashboard can be used 
+A dashboard can be used #TODO
  - as quick search
  - as landing page
 

@@ -65,9 +65,6 @@ class DashboardManager implements EntityServiceInterface
         }
         $encoder = new Encoder();
         $name = $dashboard->getName();
-        if (null === $name) {
-            throw new \RuntimeException('Unexpected null name');
-        }
         $webalized = $encoder->webalize($name);
         if (null === $webalized) {
             throw new \RuntimeException('Unexpected null webalized name');
@@ -170,5 +167,15 @@ class DashboardManager implements EntityServiceInterface
         }
         $dashboard->setLandingPage(true);
         $this->update($dashboard);
+    }
+
+    public function getLandingPage(): ?Dashboard
+    {
+        return $this->dashboardRepository->getLandingPage();
+    }
+
+    public function getQuickSearch(): ?Dashboard
+    {
+        return $this->dashboardRepository->getQuickSearch();
     }
 }

@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\Dashboard\DashboardService;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
+use EMS\CoreBundle\Routes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +28,11 @@ final class DashboardController extends AbstractController
 
     public function landing(): RedirectResponse
     {
+        $dashboard = $this->dashboardManager->getLandingPage();
+        if (null !== $dashboard) {
+            return $this->redirectToRoute(Routes::DASHBOARD, ['name' => $dashboard->getName()]);
+        }
+
         if ($this->taskManager->hasDashboard()) {
             return $this->redirectToRoute('ems_core_task_dashboard');
         }

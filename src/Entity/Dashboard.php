@@ -120,7 +120,7 @@ class Dashboard implements EntityInterface
         $this->modified = new \DateTime();
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }

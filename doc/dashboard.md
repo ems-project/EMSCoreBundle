@@ -4,10 +4,14 @@ Dashboards are customizable views that can apply to many content types at the sa
 
 A dashboard id defined by
  - A name (webalized for generating the url)
- - A label for displaying
+ - A role to allow access
  - An icon
+ - A label for displaying
+ - A color (for the link in the sidebar menu nor notification menu)
+ - A checkbox to display a dashboard link in the sidebar menu
+ - A checkbox to display a dashboard link in the notification menu
  - A type of dashboard
- - Type specific options
+ - Type specific options (see bellow)
 
 A dashboard can be used 
  - as quick search
@@ -32,6 +36,7 @@ Generate a DOM outside the elasticms interface. You can use all twig filters and
 Options:
 - Body: DOM (Twig format) that will be injected in the content block of the elasticms interface
 - Filename: Text (Twig format) that will use to generate the file name.
+- An optional mimetype
 - Disposition: File disposition: Attachment or Inline.
 
 

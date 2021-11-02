@@ -802,9 +802,15 @@ Views: Views
 'New WYSIWYG profile': 'New WYSIWYG profile'
 dashboard.actions.delete_selected: 'Deleted selected'
 dashboard.actions.edit: Edit
+dashboard.actions.set_quick_search: 'As quick search'
+dashboard.actions.set_quick_search_confirm: 'Do you confirm'
+dashboard.actions.set_landing_page: 'As landing page'
+dashboard.actions.set_landing_page_confirm: 'Do you confirm'
 dashboard.actions.delete: Delete
 dashboard.actions.delete_confirm: 'Do you confirm'
 dashboard.index.column.name: Name
 dashboard.index.column.label: Label
 log.service.dashboard.delete: 'Dashboard %name% has been deleted'
 dashboard.index.column.type: Type
+dashboard.index.column.landing_page: Landing page
+dashboard.index.column.quick_search: Quick search

@@ -143,4 +143,32 @@ class DashboardManager implements EntityServiceInterface
 
         return $menu;
     }
+
+    public function setQuickSearch(Dashboard $dashboard): void
+    {
+        if ($dashboard->isQuickSearch()) {
+            return;
+        }
+        $quickSearch = $this->dashboardRepository->getQuickSearch();
+        if (null !== $quickSearch) {
+            $quickSearch->setQuickSearch(false);
+            $this->update($quickSearch);
+        }
+        $dashboard->setQuickSearch(true);
+        $this->update($dashboard);
+    }
+
+    public function setLandingPage(Dashboard $dashboard): void
+    {
+        if ($dashboard->isLandingPage()) {
+            return;
+        }
+        $landingPage = $this->dashboardRepository->getLandingPage();
+        if (null !== $landingPage) {
+            $landingPage->setLandingPage(false);
+            $this->update($landingPage);
+        }
+        $dashboard->setLandingPage(true);
+        $this->update($dashboard);
+    }
 }

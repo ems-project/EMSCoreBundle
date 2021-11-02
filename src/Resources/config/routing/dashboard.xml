@@ -25,4 +25,10 @@
     <route id="emsco_dashboard_admin_delete" path="/admin/dashboard/delete/{dashboard}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::delete</default>
     </route>
+    <route id="emsco_dashboard_admin_set_landing_page" path="/admin/dashboard/as-landing-page/{dashboard}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::setLandingPage</default>
+    </route>
+    <route id="emsco_dashboard_admin_set_quick_search" path="/admin/dashboard/as-quick-search/{dashboard}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::setQuickSearch</default>
+    </route>
 </routes>

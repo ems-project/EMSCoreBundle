@@ -112,6 +112,20 @@ class DashboardController extends AbstractController
         return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
     }
 
+    public function setQuickSearch(Dashboard $dashboard): Response
+    {
+        $this->dashboardManager->setQuickSearch($dashboard);
+
+        return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
+    }
+
+    public function setLandingPage(Dashboard $dashboard): Response
+    {
+        $this->dashboardManager->setLandingPage($dashboard);
+
+        return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
+    }
+
     private function initTable(): EntityTable
     {
         $table = new EntityTable($this->dashboardManager, $this->generateUrl('emsco_dashboard_admin_index_ajax'));
@@ -121,8 +135,12 @@ class DashboardController extends AbstractController
             return $dashboard->getIcon();
         });
         $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.type', 'type', '@EMSCore/dashboard/columns.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.landing_page', 'landing_page', '@EMSCore/dashboard/columns.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.quick_search', 'quick_search', '@EMSCore/dashboard/columns.html.twig'));
         $table->addItemGetAction(Routes::DASHBOARD_ADMIN_EDIT, 'dashboard.actions.edit', 'pencil');
         $table->addItemPostAction(Routes::DASHBOARD_ADMIN_DELETE, 'dashboard.actions.delete', 'trash', 'dashboard.actions.delete_confirm')->setButtonType('outline-danger');
+        $table->addItemPostAction(Routes::DASHBOARD_ADMIN_SET_LANDING_PAGE, 'dashboard.actions.set_landing_page', 'dot-circle-o', 'dashboard.actions.set_landing_page_confirm');
+        $table->addItemPostAction(Routes::DASHBOARD_ADMIN_SET_QUICK_SEARCH, 'dashboard.actions.set_quick_search', 'search', 'dashboard.actions.set_quick_search_confirm');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'dashboard.actions.delete_selected', 'dashboard.actions.delete_selected_confirm')
             ->setCssClass('btn btn-outline-danger');
         $table->setDefaultOrder('orderKey');

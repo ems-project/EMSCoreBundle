@@ -60,6 +60,16 @@ class Dashboard implements EntityInterface
     private bool $notificationMenu = false;
 
     /**
+     * @ORM\Column(name="landing_page", type="boolean", options={"default" : 0})
+     */
+    private bool $landingPage = false;
+
+    /**
+     * @ORM\Column(name="quick_search", type="boolean", options={"default" : 0})
+     */
+    private bool $quickSearch = false;
+
+    /**
      * @ORM\Column(name="type", type="string", length=2048)
      */
     protected string $type;
@@ -224,5 +234,25 @@ class Dashboard implements EntityInterface
     public function setColor(?string $color): void
     {
         $this->color = $color;
+    }
+
+    public function isLandingPage(): bool
+    {
+        return $this->landingPage;
+    }
+
+    public function setLandingPage(bool $landingPage): void
+    {
+        $this->landingPage = $landingPage;
+    }
+
+    public function isQuickSearch(): bool
+    {
+        return $this->quickSearch;
+    }
+
+    public function setQuickSearch(bool $quickSearch): void
+    {
+        $this->quickSearch = $quickSearch;
     }
 }

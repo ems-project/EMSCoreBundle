@@ -7,8 +7,10 @@ namespace EMS\CoreBundle\Form\Form;
 use EMS\CoreBundle\Core\Dashboard\DashboardService;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Dashboard;
+use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\DashboardPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Form\Field\RolePickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -54,7 +56,13 @@ final class DashboardType extends AbstractType
                     'class' => 'col-md-4',
                 ],
             ])
-            ->add('sideMenu', CheckboxType::class, [
+            ->add('role', RolePickerType::class, [
+                'required' => true,
+                'row_attr' => [
+                    'class' => 'col-md-4',
+                ],
+            ])
+            ->add('sidebarMenu', CheckboxType::class, [
                 'required' => false,
                 'row_attr' => [
                     'class' => 'col-md-12',
@@ -64,6 +72,12 @@ final class DashboardType extends AbstractType
                 'required' => false,
                 'row_attr' => [
                     'class' => 'col-md-12',
+                ],
+            ])
+            ->add('color', ColorPickerType::class, [
+                'required' => false,
+                'row_attr' => [
+                    'class' => 'col-md-4',
                 ],
             ])
             ->add('type', DashboardPickerType::class, [

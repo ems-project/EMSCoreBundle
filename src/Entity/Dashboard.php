@@ -50,9 +50,9 @@ class Dashboard implements EntityInterface
     private string $label;
 
     /**
-     * @ORM\Column(name="side_menu", type="boolean", options={"default" : 1})
+     * @ORM\Column(name="sidebar_menu", type="boolean", options={"default" : 1})
      */
-    private bool $sideMenu = true;
+    private bool $sidebarMenu = true;
 
     /**
      * @ORM\Column(name="notification_menu", type="boolean", options={"default" : 0})
@@ -63,6 +63,16 @@ class Dashboard implements EntityInterface
      * @ORM\Column(name="type", type="string", length=2048)
      */
     protected string $type;
+
+    /**
+     * @ORM\Column(name="role", type="string", length=100)
+     */
+    protected string $role;
+
+    /**
+     * @ORM\Column(name="color", type="string", length=50, nullable=true)
+     */
+    protected string $color;
 
     /**
      * @var array<string, mixed>
@@ -166,14 +176,14 @@ class Dashboard implements EntityInterface
         $this->icon = $icon;
     }
 
-    public function isSideMenu(): bool
+    public function isSidebarMenu(): bool
     {
-        return $this->sideMenu;
+        return $this->sidebarMenu;
     }
 
-    public function setSideMenu(bool $sideMenu): void
+    public function setSidebarMenu(bool $sidebarMenu): void
     {
-        $this->sideMenu = $sideMenu;
+        $this->sidebarMenu = $sidebarMenu;
     }
 
     public function isNotificationMenu(): bool
@@ -194,5 +204,25 @@ class Dashboard implements EntityInterface
     public function setType(string $type): void
     {
         $this->type = $type;
+    }
+
+    public function getRole(): string
+    {
+        return $this->role;
+    }
+
+    public function setRole(string $role): void
+    {
+        $this->role = $role;
+    }
+
+    public function getColor(): string
+    {
+        return $this->color;
+    }
+
+    public function setColor(string $color): void
+    {
+        $this->color = $color;
     }
 }

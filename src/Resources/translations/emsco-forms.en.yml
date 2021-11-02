@@ -3,8 +3,10 @@ dashboard.icon: Icon
 dashboard.name: Name
 dashboard.save: Save
 dashboard.create: Create
+dashboard.role: Role
+dashboard.color: Color
 dashboard.type: 'Type of dashboard'
-dashboard.sideMenu: 'Visible in the side menu'
+dashboard.sidebarMenu: 'Visible in the side menu'
 dashboard.notificationMenu: 'Visible in the notification menu'
 dashboard.export.none: None
 dashboard.export.attachment: Attachment

@@ -54,6 +54,6 @@ final class QuerySearchController extends AbstractController
             return $this->querySearchService->searchAndGetDatalinks($request, $querySearchName);
         }
 
-        return $this->elasticsearchController->deprecatedSearchApiAction($request, $this->logger, $this->searchService, $this->elasticaService, $this->contentTypeService, $this->authorizationChecker, $this->viewTypes);
+        return $this->elasticsearchController->deprecatedSearchApiAction($request);
     }
 }

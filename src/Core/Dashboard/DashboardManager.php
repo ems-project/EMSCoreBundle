@@ -105,7 +105,7 @@ class DashboardManager implements EntityServiceInterface
         ]);
     }
 
-    public function getSideMenu(): Menu
+    public function getSidebarMenu(): Menu
     {
         $menu = new Menu();
         foreach ($this->dashboardRepository->getSideMenu() as $dashboard) {

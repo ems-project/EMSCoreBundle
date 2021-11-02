@@ -54,7 +54,7 @@ class TwigElementsController extends AbstractController
             [
                 'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
                 'status' => $status,
-                'dashboardMenu' => $this->dashboardManager->getSideMenu(),
+                'dashboardMenu' => $this->dashboardManager->getSidebarMenu(),
             ]
         );
     }

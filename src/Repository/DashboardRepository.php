@@ -27,10 +27,22 @@ final class DashboardRepository extends ServiceEntityRepository
     /**
      * @return Dashboard[]
      */
-    public function getSideMenu(): array
+    public function getSidebarMenu(): array
     {
         return $this->findBy([
             'sideMenu' => true,
+        ], [
+            'orderKey' => 'ASC',
+        ]);
+    }
+
+    /**
+     * @return Dashboard[]
+     */
+    public function getNotificationMenu(): array
+    {
+        return $this->findBy([
+            'notificationMenu' => true,
         ], [
             'orderKey' => 'ASC',
         ]);

@@ -108,7 +108,7 @@ class DashboardManager implements EntityServiceInterface
     public function getSidebarMenu(): Menu
     {
         $menu = new Menu();
-        foreach ($this->dashboardRepository->getSideMenu() as $dashboard) {
+        foreach ($this->dashboardRepository->getSidebarMenu() as $dashboard) {
             $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), $this->router->generate(Routes::DASHBOARD, ['name' => $dashboard->getName()]));
         }
 
@@ -123,5 +123,15 @@ class DashboardManager implements EntityServiceInterface
         }
 
         return $dashboard;
+    }
+
+    public function getNotificationMenu(): Menu
+    {
+        $menu = new Menu();
+        foreach ($this->dashboardRepository->getNotificationMenu() as $dashboard) {
+            $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), $this->router->generate(Routes::DASHBOARD, ['name' => $dashboard->getName()]));
+        }
+
+        return $menu;
     }
 }

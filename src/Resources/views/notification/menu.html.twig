@@ -1,28 +1,18 @@
 {% trans_default_domain 'EMSCoreBundle' %}
- <!-- Notifications Menu -->
- <li class="dropdown notifications-menu">
-   <!-- Menu toggle button -->
+
+{%  for menu in dashboardMenu.children %}
+    <li class="notifications-menu">
+        <a href="{{ menu.url }}">
+            <i class="{{ menu.icon }}"></i>
+        </a>
+    </li>
+{% endfor %}
+
+ <li class="notifications-menu">
    <a href="{{ path('notifications.inbox') }}">
      <i class="fa fa-envelope-o"></i>
      {% if counter > 0 %}
      	<span class="label label-warning">{{ counter }}</span>
-     {% else %}
-{#      	<span class="label label-primary">{{ counter }}</span>#}
      {% endif %}
    </a>
-{#   <ul class="dropdown-menu">#}
-{#    <li class="header">You have 10 notifications</li>#}
-{#      <li>#}
-{#        <!-- Inner Menu: contains the notifications -->#}
-{#        <ul class="menu">#}
-{#         <li><!-- start notification -->#}
-{#           <a href="#">#}
-{#             <i class="fa fa-users text-aqua"></i> 5 new members joined today#}
-{#           </a>#}
-{#         </li>#}
-{#         <!-- end notification -->#}
-{#       </ul>#}
-{#     </li>#}
-{#     <li class="footer"><a href="#">View all</a></li>#}
-{#   </ul>#}
  </li>

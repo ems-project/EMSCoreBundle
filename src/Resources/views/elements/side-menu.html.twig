@@ -61,7 +61,7 @@
             <li class="header">{{ 'views.elements.side-menu-html.dashboards'|trans }}</li>
             {% for dashboard in dashboardMenu.children %}
                 <li class="treeview">
-                    <a href="{{ dashboard.url }}">
+                    <a href="{{ dashboard.url }}"{% if dashboard.color %} class="text-{{ dashboard.color }}"{% endif %}>
                         <i class="{{ dashboard.icon }}"></i>&nbsp;<span>{{ dashboard.label }}</span>
                     </a>
                 </li>

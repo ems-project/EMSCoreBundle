@@ -9,9 +9,9 @@ class Menu
     /** @var MenuEntry[] */
     private array $children = [];
 
-    public function addChild(string $getLabel, string $getIcon, string $url): void
+    public function addChild(string $getLabel, string $getIcon, string $url, ?string $color = null): void
     {
-        $this->children[] = new MenuEntry($getLabel, $getIcon, $url);
+        $this->children[] = new MenuEntry($getLabel, $getIcon, $url, $color);
     }
 
     /**

@@ -1,9 +1,9 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
-{%  for menu in dashboardMenu.children %}
+{%  for dashboard in dashboardMenu.children %}
     <li class="notifications-menu">
-        <a href="{{ menu.url }}">
-            <i class="{{ menu.icon }}"></i>
+        <a href="{{ dashboard.url }}"{% if dashboard.color %} class="text-{{ dashboard.color }}"{% endif %}>
+            <i class="{{ dashboard.icon }}"></i>
         </a>
     </li>
 {% endfor %}

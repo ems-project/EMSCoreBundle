@@ -72,7 +72,7 @@ class Dashboard implements EntityInterface
     /**
      * @ORM\Column(name="color", type="string", length=50, nullable=true)
      */
-    protected string $color;
+    protected ?string $color;
 
     /**
      * @var array<string, mixed>
@@ -216,12 +216,12 @@ class Dashboard implements EntityInterface
         $this->role = $role;
     }
 
-    public function getColor(): string
+    public function getColor(): ?string
     {
         return $this->color;
     }
 
-    public function setColor(string $color): void
+    public function setColor(?string $color): void
     {
         $this->color = $color;
     }

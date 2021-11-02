@@ -115,7 +115,7 @@ class DashboardManager implements EntityServiceInterface
             if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
                 continue;
             }
-            $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), $this->router->generate(Routes::DASHBOARD, ['name' => $dashboard->getName()]));
+            $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), $this->router->generate(Routes::DASHBOARD, ['name' => $dashboard->getName()]), $dashboard->getColor());
         }
 
         return $menu;
@@ -138,7 +138,7 @@ class DashboardManager implements EntityServiceInterface
             if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
                 continue;
             }
-            $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), $this->router->generate(Routes::DASHBOARD, ['name' => $dashboard->getName()]));
+            $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), $this->router->generate(Routes::DASHBOARD, ['name' => $dashboard->getName()]), $dashboard->getColor());
         }
 
         return $menu;

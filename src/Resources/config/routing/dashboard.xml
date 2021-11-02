@@ -5,6 +5,9 @@
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="ems_core_dashboard" path="/dashboard" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\DashboardController::landing</default>
+    </route>
+    <route id="emsco_dashboard" path="/dashboard/{name}" methods="GET,POST">
         <default key="_controller">EMS\CoreBundle\Controller\DashboardController::dashboard</default>
     </route>
     <route id="emsco_dashboard_admin_index" path="/admin/dashboard" methods="GET,POST">

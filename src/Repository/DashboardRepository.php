@@ -111,4 +111,14 @@ final class DashboardRepository extends ServiceEntityRepository
                 ->setParameter(':term', '%'.$searchValue.'%');
         }
     }
+
+    public function getByName(string $name): ?Dashboard
+    {
+        $dashboard = $this->findOneBy(['name' => $name]);
+        if (null !== $dashboard && !$dashboard instanceof Dashboard) {
+            throw new \RuntimeException('Unexpected dashboard type');
+        }
+
+        return $dashboard;
+    }
 }

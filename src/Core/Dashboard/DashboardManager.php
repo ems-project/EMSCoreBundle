@@ -10,6 +10,7 @@ use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Repository\DashboardRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DashboardManager implements EntityServiceInterface
 {
@@ -108,5 +109,15 @@ class DashboardManager implements EntityServiceInterface
         }
 
         return $menu;
+    }
+
+    public function getByName(string $name): Dashboard
+    {
+        $dashboard = $this->dashboardRepository->getByName($name);
+        if (null === $dashboard) {
+            throw new NotFoundHttpException('Dashboard not found');
+        }
+
+        return $dashboard;
     }
 }

@@ -3,7 +3,7 @@
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
-        <li><a href="{{ path('emsco_dashboard_admin_index') }}"><i class="{{ 'view.icon.class.dashboard'|trans }}"></i> {{ 'dashboard.menu'|trans }}</li></a>
+        <li><a href="{{ path('emsco_dashboard_admin_index') }}"><i class="{{ 'view.icon.class.dashboard'|trans }}"></i> {{ 'dashboard.menu'|trans }}</a></li>
         {% block breadcrumb_items %}{% endblock breadcrumb_items %}
     </ol>
 {% endblock %}

@@ -39,8 +39,6 @@ Options:
 
 Here a list of dashboard types that we may  develop in the future:
 
-- export just a raw html/twig template with filename and mimetype
-- template: 3 templates to render the boday an optional header (i.e. styles) and an optional footer (i.e. javascripts)
 - logs: a tools to have access to logs (filtered fir the current user or severity or not)
 - analytics: integration with analytics tools such Google Analytics, Matomo, ...
 - structure: A structure tools that organise documents in a structure (i.e. linked to a path_en field)
@@ -53,4 +51,5 @@ Here a list of dashboard types that we may  develop in the future:
 - jobs
 - link/shortcut
 - shopping basket
+- redirect
 - ...

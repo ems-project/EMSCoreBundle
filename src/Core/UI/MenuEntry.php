@@ -8,11 +8,13 @@ class MenuEntry
 {
     private string $label;
     private string $icon;
+    private string $url;
 
-    public function __construct(string $label, string $icon)
+    public function __construct(string $label, string $icon, string $url)
     {
         $this->label = $label;
         $this->icon = $icon;
+        $this->url = $url;
     }
 
     public function getLabel(): string
@@ -23,5 +25,10 @@ class MenuEntry
     public function getIcon(): string
     {
         return $this->icon;
+    }
+
+    public function getUrl(): string
+    {
+        return $this->url;
     }
 }

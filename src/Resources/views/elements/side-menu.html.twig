@@ -57,11 +57,11 @@
     {% endif %}
 
     {% if dashboardMenu.children|length > 0 %}
-        <ul class="sidebar-menu" data-widget="tree">
+        <ul class="sidebar-menu">
             <li class="header">{{ 'views.elements.side-menu-html.dashboards'|trans }}</li>
             {% for dashboard in dashboardMenu.children %}
                 <li class="treeview">
-                    <a href="#">
+                    <a href="{{ dashboard.url }}">
                         <i class="{{ dashboard.icon }}"></i>&nbsp;<span>{{ dashboard.label }}</span>
                     </a>
                 </li>

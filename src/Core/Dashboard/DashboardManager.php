@@ -8,19 +8,23 @@ use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Repository\DashboardRepository;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\RouterInterface;
 
 class DashboardManager implements EntityServiceInterface
 {
     private DashboardRepository $dashboardRepository;
     private LoggerInterface $logger;
+    private RouterInterface $router;
 
-    public function __construct(DashboardRepository $dashboardRepository, LoggerInterface $logger)
+    public function __construct(DashboardRepository $dashboardRepository, LoggerInterface $logger, RouterInterface $router)
     {
         $this->dashboardRepository = $dashboardRepository;
         $this->logger = $logger;
+        $this->router = $router;
     }
 
     public function isSortable(): bool
@@ -105,7 +109,7 @@ class DashboardManager implements EntityServiceInterface
     {
         $menu = new Menu();
         foreach ($this->dashboardRepository->getSideMenu() as $dashboard) {
-            $menu->addChild($dashboard->getLabel(), $dashboard->getIcon());
+            $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), $this->router->generate(Routes::DASHBOARD, ['name' => $dashboard->getName()]));
         }
 
         return $menu;

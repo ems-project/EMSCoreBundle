@@ -22,6 +22,7 @@
         <service id="ems.dashboard.manager" class="EMS\CoreBundle\Core\Dashboard\DashboardManager">
             <argument type="service" id="ems.repository.dashboard"/>
             <argument type="service" id="logger"/>
+            <argument type="service" id="router"/>
         </service>
         <service id="ems.service.channel" class="EMS\CoreBundle\Service\Channel\ChannelService">
             <argument type="service" id="ems.repository.channel"/>

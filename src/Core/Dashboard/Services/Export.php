@@ -40,20 +40,22 @@ class Export extends AbstractType implements DashboardInterface
             ])
             ->add('filename', CodeEditorType::class, [
                 'required' => false,
-                'attr' => [
-                ],
                 'row_attr' => [
                     'class' => 'col-md-12',
                 ],
                 'max-lines' => 5,
                 'min-lines' => 5,
             ])
+            ->add('mimetype', null, [
+                'required' => false,
+                'row_attr' => [
+                    'class' => 'col-md-12',
+                ],
+            ])
             ->add('fileDisposition', ChoiceType::class, [
                 'expanded' => true,
                 'row_attr' => [
                     'class' => 'col-md-12',
-                ],
-                'attr' => [
                 ],
                 'choices' => [
                     'dashboard.export.none' => null,
@@ -83,6 +85,10 @@ class Export extends AbstractType implements DashboardInterface
 
             $filename = $dashboard->getOptions()['filename'] ?? 'filename';
             $disposition = $dashboard->getOptions()['fileDisposition'] ?? 'text/text';
+            $mimetype = $dashboard->getOptions()['mimetype'] ?? null;
+            if (\is_string($mimetype)) {
+                $response->headers->set('Content-Type', $mimetype);
+            }
             $disposition = $response->headers->makeDisposition($disposition, $filename);
             $response->headers->set('Content-Disposition', $disposition);
         } catch (\Throwable $e) {

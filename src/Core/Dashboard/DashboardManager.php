@@ -13,18 +13,21 @@ use EMS\CoreBundle\Service\EntityServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class DashboardManager implements EntityServiceInterface
 {
     private DashboardRepository $dashboardRepository;
     private LoggerInterface $logger;
     private RouterInterface $router;
+    private AuthorizationCheckerInterface $authorizationChecker;
 
-    public function __construct(DashboardRepository $dashboardRepository, LoggerInterface $logger, RouterInterface $router)
+    public function __construct(DashboardRepository $dashboardRepository, LoggerInterface $logger, RouterInterface $router, AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->dashboardRepository = $dashboardRepository;
         $this->logger = $logger;
         $this->router = $router;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     public function isSortable(): bool
@@ -109,6 +112,9 @@ class DashboardManager implements EntityServiceInterface
     {
         $menu = new Menu();
         foreach ($this->dashboardRepository->getSidebarMenu() as $dashboard) {
+            if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
+                continue;
+            }
             $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), $this->router->generate(Routes::DASHBOARD, ['name' => $dashboard->getName()]));
         }
 
@@ -129,6 +135,9 @@ class DashboardManager implements EntityServiceInterface
     {
         $menu = new Menu();
         foreach ($this->dashboardRepository->getNotificationMenu() as $dashboard) {
+            if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
+                continue;
+            }
             $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), $this->router->generate(Routes::DASHBOARD, ['name' => $dashboard->getName()]));
         }
 

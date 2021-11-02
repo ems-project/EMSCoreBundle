@@ -10,6 +10,7 @@ use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 final class DashboardController extends AbstractController
 {
@@ -36,6 +37,9 @@ final class DashboardController extends AbstractController
     public function dashboard(string $name): Response
     {
         $dashboard = $this->dashboardManager->getByName($name);
+        if (!$this->isGranted($dashboard->getRole())) {
+            throw new AccessDeniedHttpException();
+        }
         $dashboardService = $this->dashboardService->get($dashboard->getType());
 
         return $dashboardService->getResponse($dashboard);

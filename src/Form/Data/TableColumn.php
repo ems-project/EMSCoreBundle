@@ -24,6 +24,8 @@ class TableColumn
     /** @var ConditionInterface[] */
     private array $conditions = [];
     private $orderField;
+    /** @var array<string, mixed> */
+    private array $transLabelOptions = [];
 
     public function __construct(string $titleKey, string $attribute)
     {
@@ -245,5 +247,21 @@ class TableColumn
     public function getOrderField(): string
     {
         return $this->orderField;
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function setLabelTransOption(array $options): void
+    {
+        $this->transLabelOptions = $options;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getTransLabelOptions(): array
+    {
+        return $this->transLabelOptions;
     }
 }

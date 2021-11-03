@@ -181,7 +181,8 @@
 {% endblock emsco_form_table_column_data %}
 
 {% block emsco_form_table_column_action_checkbox %}
-    {% for chekbox in form.selected|filter(f => f.vars.value == line.data.id) %}
+    {% set id = table.idField is defined ? attribute(line.data, table.idField) : line.data.id %}
+    {% for chekbox in form.selected|filter(f => f.vars.value == id) %}
         {{ form_widget(chekbox) }}
     {%  endfor %}
 {% endblock emsco_form_table_column_action_checkbox %}
@@ -195,7 +196,7 @@
                     {% for name, property in action.routeParameters %}
                         {% set data = line.data %}
                         {% for token in property|split('.') %}
-                            {% set data = attribute(data, token)|default(null) %}
+                            {% set data = attribute(data, token)|default(property) %}
                         {% endfor %}
                         {% set routeParameters = routeParameters|merge({ (name): data }) %}
                     {%  endfor %}
@@ -211,7 +212,7 @@
                             'btnType': action.buttonType,
                             'itemLabel': attribute(line.data, table.labelAttribute),
                             'icon': action.icon,
-                            'group_class': 'pull-right',
+                            'group_class': loop.last ? 'pull-right' : '',
                         }%}
                     {% endif %}
                 {% else %}
@@ -235,6 +236,11 @@
         <div class="col-md-12">
             {{ form_start(form) }}
             <div class="box ">
+                {% if form.vars.title_label|default(false) %}
+                    <div class="box-header with-border">
+                        <h2 class="box-title">{{ form.vars.title_label|trans }}</h2>
+                    </div>
+                {% endif %}
                 <div class="box-header with-border">
                     <div class="btn-group  pull-right">
                         {% if toolbar is defined %}

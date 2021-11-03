@@ -2,7 +2,8 @@
 
 namespace EMS\CoreBundle\Controller;
 
-use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\Persistence\ManagerRegistry;
+use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\NotificationFilter;
@@ -17,6 +18,8 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\PublishService;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,21 +27,42 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class NotificationController extends AppController
+class NotificationController extends AbstractController
 {
+    private PublishService $publishService;
+    private EnvironmentService $environmentService;
+    private NotificationService $notificationService;
+    private AuthorizationCheckerInterface $authorizationChecker;
+    private ManagerRegistry $doctrine;
+    private LoggerInterface $logger;
+    private DashboardManager $dashboardManager;
+
+    public function __construct(
+        LoggerInterface $logger,
+        PublishService $publishService,
+        EnvironmentService $environmentService,
+        ManagerRegistry $doctrine,
+        NotificationService $notificationService,
+        AuthorizationCheckerInterface $authorizationChecker,
+        DashboardManager $dashboardManager)
+    {
+        $this->logger = $logger;
+        $this->environmentService = $environmentService;
+        $this->notificationService = $notificationService;
+        $this->publishService = $publishService;
+        $this->authorizationChecker = $authorizationChecker;
+        $this->doctrine = $doctrine;
+        $this->dashboardManager = $dashboardManager;
+    }
+
     /**
-     * @return Response
-     *
-     * @throws NonUniqueResultException
-     *
      * @Route("/notification/add/{objectId}.json", name="notification.ajaxnotification", methods={"POST"})
      */
-    public function ajaxNotificationAction(Request $request, NotificationService $notificationService)
+    public function ajaxNotificationAction(Request $request): Response
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $templateId = $request->request->get('templateId');
         $environmentName = $request->request->get('environmentName');
@@ -71,7 +95,7 @@ class NotificationController extends AppController
             throw new NotFoundHttpException('Unknown revision');
         }
 
-        $success = $notificationService->addNotification(\intval($templateId), $revision, $env);
+        $success = $this->notificationService->addNotification(\intval($templateId), $revision, $env);
 
         return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => $success,
@@ -83,9 +107,9 @@ class NotificationController extends AppController
      *
      * @Route("/notification/cancel/{notification}", name="notification.cancel", methods={"POST"})
      */
-    public function cancelNotificationsAction(Notification $notification, NotificationService $notificationService)
+    public function cancelNotificationsAction(Notification $notification)
     {
-        $notificationService->setStatus($notification, 'cancelled');
+        $this->notificationService->setStatus($notification, 'cancelled');
 
         return $this->redirectToRoute('notifications.sent');
     }
@@ -95,9 +119,9 @@ class NotificationController extends AppController
      *
      * @Route("/notification/acknowledge/{notification}", name="notification.acknowledge", methods={"POST"})
      */
-    public function acknowledgeNotificationsAction(Notification $notification, NotificationService $notificationService)
+    public function acknowledgeNotificationsAction(Notification $notification)
     {
-        $notificationService->setStatus($notification, 'acknowledged');
+        $this->notificationService->setStatus($notification, 'acknowledged');
 
         return $this->redirectToRoute('notifications.inbox');
     }
@@ -107,7 +131,7 @@ class NotificationController extends AppController
      *
      * @Route("/notification/treat", name="notification.treat", methods={"POST"})
      */
-    public function treatNotificationsAction(Request $request, PublishService $publishService, EnvironmentService $environmentService, NotificationService $notificationService)
+    public function treatNotificationsAction(Request $request)
     {
         $treatNotification = new TreatNotifications();
         $form = $this->createForm(TreatNotificationsType::class, $treatNotification, [
@@ -127,28 +151,28 @@ class NotificationController extends AppController
         $em = $this->getDoctrine()->getManager();
         $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
 
-        $publishIn = $environmentService->getAliasByName($treatNotification->getPublishTo());
+        $publishIn = $this->environmentService->getAliasByName($treatNotification->getPublishTo());
 
         foreach ($treatNotification->getNotifications() as $notificationId => $true) {
             /** @var Notification $notification */
             $notification = $repositoryNotification->find($notificationId);
             if (empty($notification)) {
-                $this->getLogger()->error('log.notification.notification_not_found', [
+                $this->logger->error('log.notification.notification_not_found', [
                     'notification_id' => $notificationId,
                 ]);
                 continue;
             }
 
             if (!empty($publishIn)) {
-                $publishService->publish($notification->getRevision(), $publishIn);
+                $this->publishService->publish($notification->getRevision(), $publishIn);
             }
 
             if ($treatNotification->getAccept()) {
-                $notificationService->accept($notification, $treatNotification);
+                $this->notificationService->accept($notification, $treatNotification);
             }
 
             if ($treatNotification->getReject()) {
-                $notificationService->reject($notification, $treatNotification);
+                $this->notificationService->reject($notification, $treatNotification);
             }
         }
 
@@ -160,11 +184,12 @@ class NotificationController extends AppController
      *
      * @Route("/notification/menu", name="notification.menu")
      */
-    public function menuNotificationAction(AuthorizationCheckerInterface $authorizationChecker, NotificationService $notificationService)
+    public function menuNotificationAction()
     {
-        $vars['counter'] = $notificationService->menuNotification();
-
-        return $this->render('@EMSCore/notification/menu.html.twig', $vars);
+        return $this->render('@EMSCore/notification/menu.html.twig', [
+            'counter' => $this->notificationService->menuNotification(),
+            'dashboardMenu' => $this->dashboardManager->getNotificationMenu(),
+        ]);
     }
 
     /**
@@ -176,7 +201,7 @@ class NotificationController extends AppController
      * @Route("/notifications/inbox", name="notifications.inbox", defaults={"folder"="inbox"})
      * @Route("/notifications/sent", name="notifications.sent", defaults={"folder"="sent"})
      */
-    public function listNotificationsAction($folder, Request $request, NotificationService $notificationService, AuthorizationCheckerInterface $authorizationChecker, RouterInterface $router)
+    public function listNotificationsAction($folder, Request $request)
     {
         $filters = $request->query->get('notification_form');
 
@@ -192,9 +217,9 @@ class NotificationController extends AppController
             $form->getData();
         }
 
-        $countRejected = $notificationService->countRejected();
-        $countPending = $notificationService->countPending();
-        $countSent = $notificationService->countSent();
+        $countRejected = $this->notificationService->countRejected();
+        $countPending = $this->notificationService->countPending();
+        $countSent = $this->notificationService->countSent();
         $count = $countRejected + $countPending;
 
         // for pagination
@@ -207,18 +232,18 @@ class NotificationController extends AppController
 
         $rejectedNotifications = [];
         if ('sent' == $folder) {
-            $notifications = $notificationService->listSentNotifications(($page - 1) * $paging_size, $paging_size, $filters);
+            $notifications = $this->notificationService->listSentNotifications(($page - 1) * $paging_size, $paging_size, $filters);
             $lastPage = \ceil($countSent / $paging_size);
         } else {
-            $notifications = $notificationService->listInboxNotifications(($page - 1) * $paging_size, $paging_size, $filters);
-            $rejectedNotifications = $notificationService->listRejectedNotifications(($page - 1) * $paging_size, $paging_size, $filters);
+            $notifications = $this->notificationService->listInboxNotifications(($page - 1) * $paging_size, $paging_size, $filters);
+            $rejectedNotifications = $this->notificationService->listRejectedNotifications(($page - 1) * $paging_size, $paging_size, $filters);
             $lastPage = \ceil(($countRejected > $countPending ? $countRejected : $countPending) / $paging_size);
         }
 
         $treatNotification = new TreatNotifications();
 
         $treatForm = $this->createForm(TreatNotificationsType::class, $treatNotification, [
-                 'action' => $router->generate('notification.treat', [], UrlGeneratorInterface::RELATIVE_PATH),
+                 'action' => $this->generateUrl('notification.treat', [], UrlGeneratorInterface::RELATIVE_PATH),
                  'notifications' => $notifications,
          ]);
 

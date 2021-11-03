@@ -116,6 +116,20 @@ views.elements.side-menu-html.uploaded-files-logs: 'Uploaded file logs'
 uploaded-file-logs.index.title: 'Uploaded file logs'
 view.icon.class.uploaded-file: 'fa fa-upload'
 uploaded-file-logs.menu: 'Uploaded file logs'
+view.icon.class.dashboard: 'fa fa-dashboard'
+view.elements.side-menu.dashboard-admin.index-link: Dashboards
+dashboard.menu: Dashboards
+dashboard.tagline: 'Customize the lobby'
+dashboard.index.title: 'List of dashboards'
+table.index.button.add: Add
+dashboard.add.title: 'Add a dashboard'
+dashboard.edit.title: 'Edit the dashboard "%label%"'
+ems_core.dashboard.template.icon: 'fa fa-html5'
+ems_core.dashboard.template.label: Template
+ems_core.dashboard.export.icon: 'glyphicon glyphicon-export'
+ems_core.dashboard.export.label: Export
+views.elements.side-menu-html.dashboards: Dashboards
+dashboard.exception.title: 'The dashboard %name% raised an exception'
 release.release-revisison.publish: Publish
 release.release-revisison.unpublish: Unpublish
 release.release-revisison.revision: '%date% finalized by %user%'

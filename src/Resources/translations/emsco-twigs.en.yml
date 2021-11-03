@@ -135,4 +135,5 @@ release.release-revisison.unpublish: Unpublish
 release.release-revisison.revision: '%date% finalized by %user%'
 release.release-revisison.missing-revision: 'The document %ouuid% is no more available in %environment%'
 release.release-revisison.not-applicable: 'not applicable'
-release.release-revisison.rollbackable: Rollbackable
+release.release-revisison.still_in_target: 'Still released in %target%'
+release.release-revisison.no_more_in_target: 'This revision has been unpublished from %target%'

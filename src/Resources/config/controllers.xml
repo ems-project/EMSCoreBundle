@@ -10,6 +10,8 @@
 
         <service id="EMS\CoreBundle\Controller\DashboardController" public="true">
             <argument type="service" id="ems_core.core_revision_task.task_manager" />
+            <argument type="service" id="ems.dashboard.manager" />
+            <argument type="service" id="ems_core.dashboard.dashboards" />
             <tag name="controller.service_arguments"/>
         </service>
 
@@ -94,6 +96,20 @@
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\ElasticsearchController" public="true">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.index" />
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.asset_extractor" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.search" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="ems.content_type.view_types" />
+            <argument type="service" id="ems.service.job" />
+            <argument type="service" id="ems.service.aggregate_option" />
+            <argument type="service" id="ems.service.sort_option" />
+            <argument type="service" id="ems.dashboard.manager" />
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Search\QuerySearchController" public="true">
@@ -101,10 +117,33 @@
             <argument type="service" id="ems.service.search" />
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.service.contenttype" />
-            <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface" />
+            <argument type="service" id="security.authorization_checker" />
             <argument type="service" id="ems.content_type.view_types" />
             <argument type="service" id="ems.service.query_search" />
             <argument type="service" id="EMS\CoreBundle\Controller\ElasticsearchController" />
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\Dashboard\DashboardController" public="true">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.dashboard.manager" />
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\TwigElementsController" public="true">
+            <argument type="service" id="ems.service.asset_extractor"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.user"/>
+            <argument type="service" id="ems.service.job"/>
+            <argument type="service" id="ems.dashboard.manager"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\NotificationController" public="true">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.publish"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems.service.notification"/>
+            <argument type="service" id="security.authorization_checker"/>
+            <argument type="service" id="ems.dashboard.manager"/>
             <tag name="controller.service_arguments"/>
         </service>
     </services>

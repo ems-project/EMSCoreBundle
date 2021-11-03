@@ -12,6 +12,7 @@ ROLE_SUPER_ADMIN: 'Super Admin'
 ROLE_SUPER_AUTHOR: 'Super Author'
 ROLE_SUPER_PUBLISHER: 'Super Publisher'
 ROLE_SUPER_USER: 'Super User'
+dashboard.index.reorder: Reorder
 ROLE_SUPER_WEBMASTER: 'Super Webmaster'
 ROLE_TASK_MANAGER: 'Task Manager'
 ROLE_TRADUCTOR: Traductor
@@ -61,7 +62,7 @@ field_type.json_menu_editor.edit: Edit
 field_type.json_menu_editor.item_label_placeholder: 'Define a label for this entry'
 field_type.json_menu_editor.move_item: Move
 field_type.json_menu_editor.copy: Copy
-field_type.json_menu_editor.copy_all: Copy all
+field_type.json_menu_editor.copy_all: 'Copy all'
 field_type.json_menu_editor.paste: Paste
 form.analyzer.char_filter.html_strip: 'HTML Strip'
 form.analyzer.char_filter.label: 'Char Filter'
@@ -663,7 +664,7 @@ view.icon.class.uploaded-file: 'fa fa-upload'
 revision.draft-in-progress.column.label: Label
 revision.draft-in-progress.column.created: Created
 revision.draft-in-progress.column.modified: 'Last update'
-revision.draft-in-progress.column.auto-save-by: 'By'
+revision.draft-in-progress.column.auto-save-by: By
 revision.draft-in-progress.column.locked: 'Locked until'
 revision.draft-in-progress.column.locked-by: 'Locked by'
 revision.draft-in-progress.column.view-revision: 'View draft in progress'
@@ -799,3 +800,17 @@ Views: Views
 'Add a style set': 'Add a style set'
 'Click on ''Add a styles set'' to create a first styles set': 'Click on ''Add a styles set'' to create a first styles set'
 'New WYSIWYG profile': 'New WYSIWYG profile'
+dashboard.actions.delete_selected: 'Deleted selected'
+dashboard.actions.edit: Edit
+dashboard.actions.set_quick_search: 'As quick search'
+dashboard.actions.set_quick_search_confirm: 'Do you confirm'
+dashboard.actions.set_landing_page: 'As landing page'
+dashboard.actions.set_landing_page_confirm: 'Do you confirm'
+dashboard.actions.delete: Delete
+dashboard.actions.delete_confirm: 'Do you confirm'
+dashboard.index.column.name: Name
+dashboard.index.column.label: Label
+log.service.dashboard.delete: 'Dashboard %name% has been deleted'
+dashboard.index.column.type: Type
+dashboard.index.column.landing_page: 'Landing page'
+dashboard.index.column.quick_search: 'Quick search'

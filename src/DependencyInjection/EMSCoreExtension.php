@@ -34,6 +34,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $xmlLoader->load('form.xml');
         $xmlLoader->load('repositories.xml');
         $xmlLoader->load('view_types.xml');
+        $xmlLoader->load('dashboards.xml');
         $yamlLoader->load('services.yml');
         $xmlLoader->load('controllers.xml');
         $xmlLoader->load('services.xml');

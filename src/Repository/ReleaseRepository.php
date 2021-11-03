@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\Entity\Release;
 
 final class ReleaseRepository extends ServiceEntityRepository
@@ -84,7 +83,7 @@ final class ReleaseRepository extends ServiceEntityRepository
         $qb->where('r.status = :status')
         ->andWhere('r.executionDate <= :dateTime')
         ->setParameters([
-            'status' => ReleaseStatusEnumType::READY_STATUS,
+            'status' => Release::READY_STATUS,
             'dateTime' => new \DateTime(),
         ]);
 

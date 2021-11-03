@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -19,6 +18,13 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class Release implements EntityInterface
 {
+    public const WIP_STATUS = 'wip';
+    public const READY_STATUS = 'ready';
+    public const APPLIED_STATUS = 'applied';
+    public const CANCELED_STATUS = 'canceled';
+    public const SCHEDULED_STATUS = 'scheduled';
+    public const ROLLBACKED_STATUS = 'rollbacked';
+
     /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -32,7 +38,7 @@ class Release implements EntityInterface
     private ?\Datetime $executionDate;
 
     /**
-     * @ORM\Column(type="release_status_enum")
+     * @ORM\Column(name="status", type="string", length=20)
      */
     private string $status;
 
@@ -62,7 +68,7 @@ class Release implements EntityInterface
     public function __construct()
     {
         $this->revisions = new ArrayCollection();
-        $this->status = ReleaseStatusEnumType::WIP_STATUS;
+        $this->status = Release::WIP_STATUS;
     }
 
     public function getId(): int

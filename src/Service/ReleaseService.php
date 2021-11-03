@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Common\EMSLink;
-use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Repository\ReleaseRepository;
@@ -157,7 +156,7 @@ final class ReleaseService implements EntityServiceInterface
 
     public function publishRelease(Release $release, bool $command = false): void
     {
-        if (ReleaseStatusEnumType::READY_STATUS !== $release->getStatus()) {
+        if (Release::READY_STATUS !== $release->getStatus()) {
             $this->logger->error('log.service.release.not.ready', [
                 'name' => $release->getName(),
             ]);
@@ -181,7 +180,7 @@ final class ReleaseService implements EntityServiceInterface
             }
         }
 
-        $release->setStatus(ReleaseStatusEnumType::APPLIED_STATUS);
+        $release->setStatus(Release::APPLIED_STATUS);
         $this->update($release);
     }
 }

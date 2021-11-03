@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
@@ -71,7 +70,7 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
         ->setParameters([
             'ouuid' => $ouuid,
             'contentType' => $contentType,
-            'status' => [ReleaseStatusEnumType::WIP_STATUS, ReleaseStatusEnumType::READY_STATUS],
+            'status' => [Release::WIP_STATUS, Release::READY_STATUS],
         ]);
 
         return $qb->getQuery()->execute();

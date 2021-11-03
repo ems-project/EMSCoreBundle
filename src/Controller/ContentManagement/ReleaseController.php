@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\CoreBundle\DBAL\ReleaseStatusEnumType;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Form\Data\Condition\NotEmpty;
 use EMS\CoreBundle\Form\Data\Condition\Terms;
@@ -242,20 +241,20 @@ final class ReleaseController extends AbstractController
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.env_source', 'environmentSource', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.env_target', 'environmentTarget', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addItemGetAction(Routes::RELEASE_VIEW, 'release.actions.show', 'eye')
-        ->addCondition(new Terms('status', [ReleaseStatusEnumType::APPLIED_STATUS, ReleaseStatusEnumType::SCHEDULED_STATUS, ReleaseStatusEnumType::READY_STATUS]));
+        ->addCondition(new Terms('status', [Release::APPLIED_STATUS, Release::SCHEDULED_STATUS, Release::READY_STATUS]));
         $table->addItemGetAction(Routes::RELEASE_EDIT, 'release.actions.edit', 'pencil')
-        ->addCondition(new Terms('status', [ReleaseStatusEnumType::WIP_STATUS]));
+        ->addCondition(new Terms('status', [Release::WIP_STATUS]));
         $table->addItemGetAction(Routes::RELEASE_ADD_REVISIONS, 'release.actions.add_revisions', 'plus')
-        ->addCondition(new Terms('status', [ReleaseStatusEnumType::WIP_STATUS]));
-        $table->addItemGetAction(Routes::RELEASE_SET_STATUS, 'release.actions.set_status_ready', 'play', ['status' => ReleaseStatusEnumType::READY_STATUS])
-        ->addCondition(new Terms('status', [ReleaseStatusEnumType::WIP_STATUS]))
+        ->addCondition(new Terms('status', [Release::WIP_STATUS]));
+        $table->addItemGetAction(Routes::RELEASE_SET_STATUS, 'release.actions.set_status_ready', 'play', ['status' => Release::READY_STATUS])
+        ->addCondition(new Terms('status', [Release::WIP_STATUS]))
         ->addCondition(new NotEmpty('revisionsOuuids'));
-        $table->addItemGetAction(Routes::RELEASE_SET_STATUS, 'release.actions.set_status_wip', 'rotate-left', ['status' => ReleaseStatusEnumType::WIP_STATUS])
-        ->addCondition(new Terms('status', [ReleaseStatusEnumType::CANCELED_STATUS]));
+        $table->addItemGetAction(Routes::RELEASE_SET_STATUS, 'release.actions.set_status_wip', 'rotate-left', ['status' => Release::WIP_STATUS])
+        ->addCondition(new Terms('status', [Release::CANCELED_STATUS]));
         $table->addItemPostAction(Routes::RELEASE_PUBLISH, 'release.actions.publish_release', 'toggle-on', 'release.actions.publish_confirm')
-        ->addCondition(new Terms('status', [ReleaseStatusEnumType::READY_STATUS]));
-        $table->addItemGetAction(Routes::RELEASE_SET_STATUS, 'release.actions.set_status_canceled', 'ban', ['status' => ReleaseStatusEnumType::CANCELED_STATUS])
-        ->addCondition(new Terms('status', [ReleaseStatusEnumType::READY_STATUS]));
+        ->addCondition(new Terms('status', [Release::READY_STATUS]));
+        $table->addItemGetAction(Routes::RELEASE_SET_STATUS, 'release.actions.set_status_canceled', 'ban', ['status' => Release::CANCELED_STATUS])
+        ->addCondition(new Terms('status', [Release::READY_STATUS]));
         $table->addItemPostAction(Routes::RELEASE_DELETE, 'release.actions.delete', 'trash', 'release.actions.delete_confirm')
         ->setButtonType('outline-danger');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'release.actions.delete_selected', 'release.actions.delete_selected_confirm')->setCssClass('btn btn-outline-danger');
@@ -272,10 +271,10 @@ final class ReleaseController extends AbstractController
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.action', 'action', '@EMSCore/release/columns/release-revisions.html.twig'));
 
         switch ($release->getStatus()) {
-            case ReleaseStatusEnumType::WIP_STATUS:
+            case Release::WIP_STATUS:
                 $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
                 break;
-            case ReleaseStatusEnumType::APPLIED_STATUS:
+            case Release::APPLIED_STATUS:
                 $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.rollbackable', 'rollbackable', '@EMSCore/release/columns/release-revisions.html.twig'));
                 $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.previous', 'previous', '@EMSCore/release/columns/release-revisions.html.twig'));
                 break;

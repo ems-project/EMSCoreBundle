@@ -24,8 +24,10 @@ views.elements.revision-toolbar-html.unpublish-from-label: 'Unpublish from'
 form_submissions.overview: Overview
 form_submissions.title: 'Form Submissions'
 view.elements.side-menu.chanel-admin.index-link: Channels
+view.elements.side-menu.release-admin.index-link: Releases
 view.elements.side-menu.query_search.index-link: QuerySearch
 view.icon.class.channel: 'fa fa-road'
+view.icon.class.release: 'fa fa-cube'
 view.icon.class.query_search: 'fa fa-list-alt'
 views.elements.side-menu-html.anonymous-user: 'Anonymous user'
 views.elements.side-menu-html.quick-search-placeholder: Search...
@@ -128,3 +130,9 @@ ems_core.dashboard.export.icon: 'glyphicon glyphicon-export'
 ems_core.dashboard.export.label: Export
 views.elements.side-menu-html.dashboards: Dashboards
 dashboard.exception.title: 'The dashboard %name% raised an exception'
+release.release-revisison.publish: Publish
+release.release-revisison.unpublish: Unpublish
+release.release-revisison.revision: '%date% finalized by %user%'
+release.release-revisison.missing-revision: 'The document %ouuid% is no more available in %environment%'
+release.release-revisison.not-applicable: 'not applicable'
+release.release-revisison.rollbackable: Rollbackable

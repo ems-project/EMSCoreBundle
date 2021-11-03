@@ -160,7 +160,12 @@
 	
 	{% if is_granted('ROLE_PUBLISHER') %}
       <ul class="sidebar-menu">
-        <li class="header">{{ 'views.elements.side-menu-html.publishers'|trans }}</li>
+         <li class="header">{{ 'views.elements.side-menu-html.publishers'|trans }}</li>
+         <li class="treeview">
+              <a href="{{ path('emsco_release_index') }}">
+                <i class="{{ 'view.icon.class.release'|trans }}"></i> <span>{{ 'view.elements.side-menu.release-admin.index-link'|trans }}</span>
+              </a>
+          </li>
           <li class="treeview">
             <a href="{{ path('environment.align') }}" id="menu-environment-align">
             	<i class="fa fa-align-center"></i> <span>{{ 'views.elements.side-menu-html.compare-environments'|trans }}</span>

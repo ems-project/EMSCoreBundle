@@ -2,27 +2,22 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Command\Release\PublishReleaseCommand;
 use EMS\CoreBundle\Service\JobService;
-use Symfony\Component\Console\Command\Command;
+use EMS\CoreBundle\Service\ReleaseService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class JobCommand extends Command
+class JobCommand extends PublishReleaseCommand
 {
-    /** @var JobService */
-    private $jobService;
-    /** @var SymfonyStyle */
-    private $io;
-    /**
-     * @var string
-     */
-    private $dateFormat;
+    private JobService $jobService;
+    private string $dateFormat;
 
-    public function __construct(JobService $jobService, string $dateFormat)
+    public function __construct(JobService $jobService, string $dateFormat, ReleaseService $releaseService)
     {
-        parent::__construct();
+        parent::__construct($releaseService);
         $this->jobService = $jobService;
         $this->dateFormat = $dateFormat;
     }
@@ -31,7 +26,7 @@ class JobCommand extends Command
     {
         $this
             ->setName('ems:job:run')
-            ->setDescription('Execute the next pending job if exist')
+            ->setDescription('Publish the releases and execute the next pending job if exist')
             ->addOption(
                 'dump',
                 null,
@@ -47,6 +42,10 @@ class JobCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        parent::execute($input, $output);
+
+        $this->io->title('EMSCO - Job');
+
         $job = $this->jobService->findNext();
         if (null === $job) {
             $this->io->comment('No pending job to treat.');

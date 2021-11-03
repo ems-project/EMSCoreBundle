@@ -13,6 +13,7 @@ final class EntityTable extends TableAbstract
     private bool $loadAll;
     private ?int $count = null;
     private ?int $totalCount = null;
+    private bool $massAction = true;
     /**
      * @var mixed|null
      */
@@ -41,6 +42,11 @@ final class EntityTable extends TableAbstract
     public function getContext()
     {
         return $this->context;
+    }
+
+    public function setMassAction(bool $massAction): void
+    {
+        $this->massAction = $massAction;
     }
 
     public function resetIterator(DataTableRequest $dataTableRequest): void
@@ -93,7 +99,8 @@ final class EntityTable extends TableAbstract
         if (!$this->loadAll) {
             return false;
         }
-        if ($this->totalCount() <= 1) {
+        $min = $this->massAction ? 1 : 0;
+        if ($this->totalCount() <= $min) {
             return false;
         }
         foreach ($this->getTableActions() as $action) {

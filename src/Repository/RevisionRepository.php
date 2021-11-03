@@ -12,6 +12,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\Revision;
 
 class RevisionRepository extends EntityRepository
@@ -360,9 +361,9 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param string $source
-     * @param string $target
-     * @param array  $contentTypes
+     * @param int   $source
+     * @param int   $target
+     * @param array $contentTypes
      *
      * @return mixed
      *
@@ -372,7 +373,6 @@ class RevisionRepository extends EntityRepository
     {
         $sqb = $this->getCompareQueryBuilder($source, $target, $contentTypes);
         $sqb->select('max(r.id)');
-//         $subQuery()
         $qb = $this->createQueryBuilder('rev');
         $qb->select('count(rev)');
         $qb->where($qb->expr()->in('rev.id', $sqb->getDQL()));
@@ -386,16 +386,17 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param string $source
-     * @param string $target
-     * @param array  $contentTypes
+     * @param int      $source
+     * @param int      $target
+     * @param array    $contentTypes
+     * @param string[] $ouuids
      *
      * @return QueryBuilder
      */
-    private function getCompareQueryBuilder($source, $target, $contentTypes)
+    private function getCompareQueryBuilder($source, $target, $contentTypes, array $ouuids = [], string $searchValue = '')
     {
         $qb = $this->createQueryBuilder('r');
-        $qb->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.singularName content_type_singular_name', 'c.icon', 'r.ouuid', 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid', 'max(r.id) lastRevId')
+        $qb->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.singularName content_type_singular_name', 'c.icon', 'r.ouuid', "CONCAT(c.name, ':', r.ouuid) AS emsLink", 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created, \'/\', r.finalizedBy)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created, \'/\', r.finalizedBy)) maxrevid', 'max(r.id) lastRevId')
         ->join('r.contentType', 'c')
         ->join('r.environments', 'e')
         ->where('e.id in (:source, :target)')
@@ -405,10 +406,25 @@ class RevisionRepository extends EntityRepository
         ->orHaving('count(r.id) = 1')
         ->orHaving('max(r.id) <> min(r.id)')
         ->setParameters([
-                'source' => $source,
-                'target' => $target,
-                'false' => false,
+            'source' => $source,
+            'target' => $target,
+            'false' => false,
         ]);
+
+        if (\count($ouuids) > 0) {
+            $qb->andWhere($qb->expr()->notin('r.ouuid', $ouuids));
+        }
+
+        if (\strlen($searchValue) > 0) {
+            $literal = $qb->expr()->literal('%'.\strtolower($searchValue).'%');
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('LOWER(r.lockBy)', $literal),
+                $qb->expr()->like('LOWER(r.autoSaveBy)', $literal),
+                $qb->expr()->like('LOWER(r.labelField)', $literal),
+            );
+            $qb->andWhere($or);
+        }
+
         if (!empty($contentTypes)) {
             $qb->andWhere('c.name in (\''.\implode("','", $contentTypes).'\')');
         }
@@ -417,8 +433,8 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param string $source
-     * @param string $target
+     * @param int    $source
+     * @param int    $target
      * @param array  $contentTypes
      * @param int    $from
      * @param int    $limit
@@ -950,7 +966,7 @@ class RevisionRepository extends EntityRepository
             $qb->setParameter('contentType', $context);
         }
         $qb->setFirstResult($from)
-            ->setMaxResults($size);
+        ->setMaxResults($size);
 
         if (null !== $orderField) {
             $qb->orderBy(\sprintf('rev.%s', $orderField), $orderDirection);
@@ -994,5 +1010,45 @@ class RevisionRepository extends EntityRepository
             $qb->andWhere($or)
                 ->setParameter(':term', '%'.\strtolower($searchValue).'%');
         }
+    }
+
+    /**
+     * @param string[] $contentTypes
+     *
+     * @return Revision[]
+     */
+    public function getAvailableRevisionsForRelease(int $from, int $size, Release $release, array $contentTypes, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->getCompareQueryBuilder($release->getEnvironmentSource()->getId(), $release->getEnvironmentTarget()->getId(), $contentTypes, $release->getRevisionsOuuids(), $searchValue);
+        if (null === $orderField) {
+            $qb->orderBy('r.ouuid', $orderDirection);
+        } else {
+            $qb->orderBy('r.ouuid', $orderDirection);
+        }
+        $qb->setFirstResult($from)
+            ->setMaxResults($size);
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
+     * @param string[] $contentTypes
+     */
+    public function countAvailableRevisionsForRelease(Release $release, array $contentTypes, string $searchValue): int
+    {
+        $sqb = $this->getCompareQueryBuilder($release->getEnvironmentSource()->getId(), $release->getEnvironmentTarget()->getId(), $contentTypes, $release->getRevisionsOuuids(), $searchValue);
+        $sqb->select('max(r.id)');
+
+        $qb = $this->createQueryBuilder('rev');
+        $qb->select('count(rev)');
+        $qb->where($qb->expr()->in('rev.id', $sqb->getDQL()));
+        $qb->setParameters([
+            'source' => $release->getEnvironmentSource()->getId(),
+            'target' => $release->getEnvironmentTarget()->getId(),
+            'false' => false,
+        ]);
+        $query = $qb->getQuery();
+
+        return \intval($query->getSingleScalarResult());
     }
 }

@@ -530,6 +530,16 @@ class Revision implements EntityInterface
         return null !== $this->ouuid;
     }
 
+    public function getEmsId(): string
+    {
+        return \sprintf('%s:%s', $this->giveContentType(), $this->giveOuuid());
+    }
+
+    public function getEmsLink(): string
+    {
+        return \sprintf('ems://object:%s:%s', $this->giveContentType(), $this->giveOuuid());
+    }
+
     /**
      * Set startTime.
      *

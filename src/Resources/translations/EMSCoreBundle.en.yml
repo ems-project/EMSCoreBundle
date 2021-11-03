@@ -878,3 +878,5 @@ log.service.dashboard.delete: 'Dashboard %name% has been deleted'
 dashboard.index.column.type: Type
 dashboard.index.column.landing_page: 'Landing page'
 dashboard.index.column.quick_search: 'Quick search'
+release.revision.table.rollback.action: Rollback
+release.revision.table.rollback.confirm: 'Do you confirm ?'

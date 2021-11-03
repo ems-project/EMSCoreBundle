@@ -9,4 +9,12 @@ class Routes
     public const DISCARD_DRAFT = 'emsco_discard_draft';
     public const DRAFT_IN_PROGRESS = 'emsco_draft_in_progress';
     public const DRAFT_IN_PROGRESS_AJAX = 'emsco_draft_in_progress_ajax';
+    public const DASHBOARD_ADMIN_INDEX = 'emsco_dashboard_admin_index';
+    public const DASHBOARD_ADMIN_INDEX_AJAX = 'emsco_dashboard_admin_index_ajax';
+    public const DASHBOARD_ADMIN_ADD = 'emsco_dashboard_admin_add';
+    public const DASHBOARD_ADMIN_EDIT = 'emsco_dashboard_admin_edit';
+    public const DASHBOARD_ADMIN_DELETE = 'emsco_dashboard_admin_delete';
+    public const DASHBOARD_ADMIN_SET_QUICK_SEARCH = 'emsco_dashboard_admin_set_quick_search';
+    public const DASHBOARD_ADMIN_SET_LANDING_PAGE = 'emsco_dashboard_admin_set_landing_page';
+    public const DASHBOARD = 'emsco_dashboard';
 }

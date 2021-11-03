@@ -442,6 +442,8 @@ release.status.applied: Applied
 release.status.canceled: Canceled
 release.status.scheduled: Scheduled
 release.status.rollbacked: 'Rolled back'
+release.revision.index.column.rollbackable: 'Roll backable'
+release.all_releases.label: 'All releases'
 search.aggregate_option_label: 'Aggregate Option'
 search.search_field_option_label: 'Search Field Option'
 search.sort_option_label: 'Sort Option'

@@ -7,14 +7,13 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20211031154935 extends AbstractMigration
+final class Version20211103094752 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
         $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
-        $this->addSql('CREATE TABLE "release" (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, environment_source_id INTEGER DEFAULT NULL, environment_target_id INTEGER DEFAULT NULL, execution_date DATETIME DEFAULT NULL, status TEXT CHECK( status IN (\'wip\', \'ready\', \'applied\', \'scheduled\', \'canceled\', \'rollbacked\')) NOT NULL --(DC2Type:release_status_enum)
-        , name VARCHAR(255) NOT NULL)');
+        $this->addSql('CREATE TABLE "release" (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, environment_source_id INTEGER DEFAULT NULL, environment_target_id INTEGER DEFAULT NULL, execution_date DATETIME DEFAULT NULL, status VARCHAR(20) NOT NULL, name VARCHAR(255) NOT NULL)');
         $this->addSql('CREATE INDEX IDX_9E47031D570FDFA8 ON "release" (environment_source_id)');
         $this->addSql('CREATE INDEX IDX_9E47031DD7BDC8AF ON "release" (environment_target_id)');
         $this->addSql('CREATE TABLE release_revision (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, release_id INTEGER DEFAULT NULL, revision_id INTEGER DEFAULT NULL, revision_before_publish_id INTEGER DEFAULT NULL, content_type_id BIGINT DEFAULT NULL, revision_ouuid VARCHAR(255) NOT NULL)');

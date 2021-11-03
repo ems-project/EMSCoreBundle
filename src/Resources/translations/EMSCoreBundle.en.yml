@@ -443,7 +443,7 @@ release.status.applied: Applied
 release.status.canceled: Canceled
 release.status.scheduled: Scheduled
 release.status.rollbacked: 'Rolled back'
-release.revision.index.column.rollbackable: 'Roll backable'
+release.revision.index.column.still_in_target: 'Still in %target%'
 release.all_releases.label: 'All releases'
 search.aggregate_option_label: 'Aggregate Option'
 search.search_field_option_label: 'Search Field Option'

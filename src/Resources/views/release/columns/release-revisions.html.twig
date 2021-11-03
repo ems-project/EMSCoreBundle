@@ -4,7 +4,7 @@
     {% if data.revision %}
         {{ data.revision.label }}
     {% else %}
-        {% set info = data.emsLink|emsco_document_info %}
+        {% set info = data.emsId|emsco_document_info %}
         {% set release = info.getRevision(data.release.environmentSource.name) %}
         {% if release %}
             {{ release.label }}
@@ -24,10 +24,10 @@
             {{ 'release.release-revisison.revision'|trans({ '%date%' : data.revision.created|date(date_time_format) ,'%user%' : data.revision.finalizedBy|default('')|displayname }) }}
         </a>
     {% else %}
-        {% set info = data.emsLink|emsco_document_info %}
+        {% set info = data.emsId|emsco_document_info %}
         {% set revision = info.getRevision(data.release.environmentSource.name) %}
         {% if revision %}
-            {{ 'release.release-revisison.revision'|trans({ '%date%' : revision.created|date(date_time_format) ,'%user%' : revision.finalizedBy|default('')|displayname }) }}
+            {{ 'release.release-revisison.revision-not-applicable'|trans }}
         {% endif %}
     {% endif %}
 {% endblock revision %}

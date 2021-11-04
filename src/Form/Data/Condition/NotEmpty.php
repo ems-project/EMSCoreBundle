@@ -11,10 +11,7 @@ class NotEmpty implements ConditionInterface
     /** @var string[] */
     private array $pathProperties;
 
-    /**
-     * @param string $pathProperties
-     */
-    public function __construct(...$pathProperties)
+    public function __construct(string ...$pathProperties)
     {
         $this->pathProperties = $pathProperties;
     }

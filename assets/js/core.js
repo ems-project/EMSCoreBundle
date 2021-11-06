@@ -7,7 +7,7 @@ const assetPath = document.querySelector("BODY").getAttribute('data-asset-path')
 window.CryptoJS = require("crypto-js");
 
 
-import FileUploader from "@elasticms/file-uploader";
+import FileUploader from "./FileUploader";
 window.FileUploader = FileUploader;
 import AjaxRequest from "./AjaxRequest";
 window.AjaxRequest = AjaxRequest;

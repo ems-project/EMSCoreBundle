@@ -3,7 +3,7 @@ import jquery from 'jquery';
 import ace from 'ace-builds/src-noconflict/ace';
 require('icheck');
 import JsonMenuEditor from './JsonMenuEditor';
-import FileUploader from "@elasticms/file-uploader";
+import FileUploader from "./FileUploader";
 
 
 export default class EmsListeners {

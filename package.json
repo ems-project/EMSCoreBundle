@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "@a2lix/symfony-collection": "^0.4.0",
-    "@elasticms/file-uploader": "^1.0.1",
     "ace-builds": "^1.4.12",
     "admin-lte": "^2.3.2",
     "bootstrap-fileinput": "^4.5.0",

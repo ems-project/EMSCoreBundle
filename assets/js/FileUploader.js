@@ -11,7 +11,7 @@ export default class FileUploader {
 
         // Define all file status values and the size of slice to compute the sha1 and the size of the uploaded chunk
         this.statics = {
-            CHUNK_SIZE: 1024 * 1024 /* bytes */,
+            CHUNK_SIZE: 1024 * 1024 * 8 /* bytes */,
             UPLOADED: 1,
             ERROR: 2,
             UPLOADING: 3,

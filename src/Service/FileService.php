@@ -251,7 +251,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
         }
 
         $em->persist($uploadedAsset);
-        $em->flush($uploadedAsset);
+        $em->flush();
 
         return $uploadedAsset;
     }

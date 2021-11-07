@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_asset" path="/get/{hash}" methods="GET">
+    <route id="emsco_api_extract_data" path="/get/{hash}" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\Api\File\ExtractDataController:get</default>
     </route>
 

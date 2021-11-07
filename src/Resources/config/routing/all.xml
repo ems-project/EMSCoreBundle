@@ -27,4 +27,6 @@
             prefix="/data" />
     <import resource="@EMSCoreBundle/Resources/config/routing/search.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/task.xml"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/api/search.xml"
+            prefix="/api/search" />
 </routes>

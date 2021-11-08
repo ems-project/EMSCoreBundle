@@ -105,4 +105,18 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
 
         return \intval($query->getSingleScalarResult());
     }
+
+    /**
+     * @param string[] $ids
+     *
+     * @return ReleaseRevision[]
+     */
+    public function getByIds(array $ids): array
+    {
+        $queryBuilder = $this->createQueryBuilder('rr');
+        $queryBuilder->where('rr.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

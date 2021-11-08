@@ -183,4 +183,29 @@ final class ReleaseService implements EntityServiceInterface
         $release->setStatus(Release::APPLIED_STATUS);
         $this->update($release);
     }
+
+    /**
+     * @param string[] $ids
+     */
+    public function rollback(Release $release, array $ids): Release
+    {
+        $revisions = $this->releaseRevisionService->getByIds($ids);
+        $rollback = new Release();
+        $rollback->setEnvironmentSource($release->getEnvironmentSource());
+        $rollback->setEnvironmentTarget($release->getEnvironmentTarget());
+        $rollback->setName(\sprintf('Rollback "%s"', $release->getName()));
+        $rollback->setStatus(Release::WIP_STATUS);
+        foreach ($revisions as $revision) {
+            $releaseRevision = new ReleaseRevision();
+            $releaseRevision->setRelease($rollback);
+            $releaseRevision->setRevisionBeforePublish(null);
+            $releaseRevision->setRevision($revision->getRevisionBeforePublish());
+            $releaseRevision->setContentType($revision->getContentType());
+            $releaseRevision->setRevisionOuuid($revision->getRevisionOuuid());
+            $release->addRevision($releaseRevision);
+        }
+        $this->update($rollback);
+
+        return $rollback;
+    }
 }

@@ -29,6 +29,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class ReleaseController extends AbstractController
 {
+    public const ROLLBACK_ACTION = 'rollback_action';
     private LoggerInterface $logger;
     private ReleaseService $releaseService;
     private ReleaseRevisionService $releaseRevisionService;
@@ -163,12 +164,30 @@ final class ReleaseController extends AbstractController
         ]);
     }
 
-    public function view(Release $release): Response
+    public function view(Request $request, Release $release): Response
     {
         $table = $this->getMemberRevisionsTable($release);
         $form = $this->createForm(TableType::class, $table, [
             'title_label' => 'release.revision.view.title',
         ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
+                switch ($action->getName()) {
+                    case self::ROLLBACK_ACTION:
+                        $rollback = $this->releaseService->rollback($release, $table->getSelected());
+
+                        return $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $rollback->getId()]);
+                    default:
+                        $this->logger->error('log.controller.release.unknown_action');
+                }
+            } else {
+                $this->logger->error('log.controller.release.unknown_action');
+            }
+
+            return $this->redirectToRoute(Routes::RELEASE_VIEW, ['release' => $release->getId()]);
+        }
 
         return $this->render('@EMSCore/release/view.html.twig', [
             'form' => $form->createView(),
@@ -275,8 +294,10 @@ final class ReleaseController extends AbstractController
                 $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', 'release.revision.actions.remove', 'release.revision.actions.remove_confirm');
                 break;
             case Release::APPLIED_STATUS:
-                $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.rollbackable', 'rollbackable', '@EMSCore/release/columns/release-revisions.html.twig'));
+                $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.still_in_target', 'stil_in_target', '@EMSCore/release/columns/release-revisions.html.twig'))->setLabelTransOption(['%target%' => $release->getEnvironmentTarget()->getLabel()]);
                 $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.previous', 'previous', '@EMSCore/release/columns/release-revisions.html.twig'));
+                $table->addDynamicItemGetAction(Routes::VIEW_REVISIONS, 'release.revision.index.column.compare', 'compress', ['type' => 'contentType', 'ouuid' => 'revisionOuuid', 'revisionId' => 'revision.id', 'compareId' => 'revisionBeforePublish.id'])->addCondition(new NotEmpty('revisionBeforePublish', 'revision'));
+                $table->addTableAction(self::ROLLBACK_ACTION, 'fa fa-rotate-left', 'release.revision.table.rollback.action', 'release.revision.table.rollback.confirm');
                 break;
         }
 

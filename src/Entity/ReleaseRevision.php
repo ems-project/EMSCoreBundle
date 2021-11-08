@@ -111,4 +111,14 @@ class ReleaseRevision implements EntityInterface
     {
         return $this->revisionBeforePublish;
     }
+
+    public function getEmsId(): string
+    {
+        return \implode(':', [$this->contentType->getName(), $this->revisionOuuid]);
+    }
+
+    public function getName(): string
+    {
+        return $this->getRevisionOuuid();
+    }
 }

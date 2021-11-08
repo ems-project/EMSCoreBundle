@@ -13,6 +13,9 @@
     <route id="emsco_api_cluster_version" path="/version" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:version</default>
     </route>
+    <route id="emsco_api_cluster_health_status" path="/health-status" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:healthStatus</default>
+    </route>
     <route id="emsco_api_scroll_init" path="/init-scroll" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:initScroll</default>
     </route>

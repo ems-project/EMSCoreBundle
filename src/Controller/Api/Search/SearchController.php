@@ -70,6 +70,13 @@ class SearchController
         ]);
     }
 
+    public function healthStatus(): Response
+    {
+        return new JsonResponse([
+            'status' => $this->elasticaService->getHealthStatus(),
+        ]);
+    }
+
     public function refresh(Request $request): Response
     {
         $json = Json::decode((string) $request->getContent());

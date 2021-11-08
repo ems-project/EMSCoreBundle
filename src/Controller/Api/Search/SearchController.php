@@ -141,10 +141,9 @@ class SearchController
         $document = $this->elasticaService->getDocument($index, $contentType, $ouuid, $sourceIncludes, $sourcesExcludes);
 
         return new JsonResponse([
-            'source' => $document->getSource(),
-            'content-type' => $document->getContentType(),
-            'ouuid' => $document->getId(),
-            'index' => $document->getIndex(),
+            '_source' => $document->getSource(),
+            '_id' => $document->getId(),
+            '_index' => $document->getIndex(),
         ]);
     }
 

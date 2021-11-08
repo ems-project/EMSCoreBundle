@@ -156,5 +156,9 @@
             <argument type="service" id="ems_common.service.elastica"/>
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Api\File\ExtractDataController" public="true">
+            <argument type="service" id="ems.service.asset_extractor" />
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

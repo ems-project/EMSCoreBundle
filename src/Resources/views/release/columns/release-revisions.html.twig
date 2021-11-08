@@ -4,7 +4,7 @@
     {% if data.revision %}
         {{ data.revision.label }}
     {% else %}
-        {% set info = data.emsLink|emsco_document_info %}
+        {% set info = data.emsId|emsco_document_info %}
         {% set release = info.getRevision(data.release.environmentSource.name) %}
         {% if release %}
             {{ release.label }}
@@ -24,10 +24,10 @@
             {{ 'release.release-revisison.revision'|trans({ '%date%' : data.revision.created|date(date_time_format) ,'%user%' : data.revision.finalizedBy|default('')|displayname }) }}
         </a>
     {% else %}
-        {% set info = data.emsLink|emsco_document_info %}
+        {% set info = data.emsId|emsco_document_info %}
         {% set revision = info.getRevision(data.release.environmentSource.name) %}
         {% if revision %}
-            {{ 'release.release-revisison.revision'|trans({ '%date%' : revision.created|date(date_time_format) ,'%user%' : revision.finalizedBy|default('')|displayname }) }}
+            {{ 'release.release-revisison.revision-not-applicable'|trans }}
         {% endif %}
     {% endif %}
 {% endblock revision %}
@@ -52,18 +52,18 @@
     {% endif %}
 {% endblock previous %}
 
-{% block rollbackable %}
-    {% set rollbackable = false %}
+{% block stil_in_target %}
+    {% set stil_in_target = false %}
     {% if data.revision %}
         {% set info = data.revision.emsLink|emsco_document_info %}
         {% set revision = info.getRevision(data.release.environmentTarget) %}
-        {% set rollbackable = (data.revision.id is same as (revision.id)) %}
+        {% set stil_in_target = (data.revision.id is same as (revision.id)) %}
     {% else %}
-        {% set rollbackable = true %}
+        {% set stil_in_target = true %}
     {% endif %}
-    {%  if rollbackable %}
-        <i class="fa fa-check-square"><span class="sr-only"</span>{{ 'release.release-revisison.rollbackable'|trans }}</i>
+    {%  if stil_in_target %}
+        <i class="fa fa-check-square"><span class="sr-only"</span>{{ 'release.release-revisison.still_in_target'|trans({'%target%': data.release.environmentTarget.label}) }}</i>
     {% else %}
-        <i class="fa fa-square-o"><span class="sr-only"</span>{{ 'release.release-revisison.rollbackable'|trans }}</i>
+        <i class="fa fa-square-o"><span class="sr-only"</span>{{ 'release.release-revisison.no_more_in_target'|trans({'%target%': data.release.environmentTarget.label})  }}</i>
     {% endif %}
-{% endblock rollbackable %}
+{% endblock stil_in_target %}

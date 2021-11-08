@@ -29,4 +29,6 @@
     <import resource="@EMSCoreBundle/Resources/config/routing/task.xml"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/api/search.xml"
             prefix="/api/search" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/api/extract-data.xml"
+            prefix="/api/extract-data" />
 </routes>

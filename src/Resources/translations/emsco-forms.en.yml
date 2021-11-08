@@ -6,7 +6,7 @@ dashboard.create: Create
 dashboard.role: Role
 dashboard.color: Color
 dashboard.type: 'Type of dashboard'
-dashboard.sidebarMenu: 'Visible in the side menu'
+dashboard.sidebarMenu: 'Visible in the sidebar menu'
 dashboard.notificationMenu: 'Visible in the notification menu'
 dashboard.export.none: None
 dashboard.export.attachment: Attachment

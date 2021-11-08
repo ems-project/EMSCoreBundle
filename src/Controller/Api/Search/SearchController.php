@@ -88,6 +88,66 @@ class SearchController
         ]);
     }
 
+    public function getAliasesFromIndex(Request $request): Response
+    {
+        $json = Json::decode((string) $request->getContent());
+        $index = $json['index'] ?? null;
+        if (!\is_string($index)) {
+            throw new \RuntimeException('Unexpected: index must be a string');
+        }
+
+        return new JsonResponse([
+            'aliases' => $this->elasticaService->getAliasesFromIndex($index),
+        ]);
+    }
+
+    public function getIndicesFromAlias(Request $request): Response
+    {
+        $json = Json::decode((string) $request->getContent());
+        $alias = $json['alias'] ?? null;
+        if (!\is_string($alias)) {
+            throw new \RuntimeException('Unexpected: index must be a string');
+        }
+
+        return new JsonResponse([
+            'indices' => $this->elasticaService->getIndicesFromAlias($alias),
+        ]);
+    }
+
+    public function getDocument(Request $request): Response
+    {
+        $json = Json::decode((string) $request->getContent());
+        $index = $json['index'] ?? null;
+        if (!\is_string($index)) {
+            throw new \RuntimeException('Unexpected: index must be a string');
+        }
+        $contentType = $json['content-type'] ?? null;
+        if (!\is_string($contentType)) {
+            throw new \RuntimeException('Unexpected: content-type must be a string');
+        }
+        $ouuid = $json['ouuid'] ?? null;
+        if (!\is_string($ouuid)) {
+            throw new \RuntimeException('Unexpected: ouuid must be a string');
+        }
+        $sourceIncludes = $json['source-includes'] ?? [];
+        if (!\is_array($sourceIncludes)) {
+            throw new \RuntimeException('Unexpected: source-includes must be an array');
+        }
+        $sourcesExcludes = $json['source-excludes'] ?? [];
+        if (!\is_array($sourcesExcludes)) {
+            throw new \RuntimeException('Unexpected: source-excludes must be an array');
+        }
+
+        $document = $this->elasticaService->getDocument($index, $contentType, $ouuid);
+
+        return new JsonResponse([
+            'source' => $document->getSource(),
+            'content-type' => $document->getContentType(),
+            'ouuid' => $document->getId(),
+            'index' => $document->getIndex(),
+        ]);
+    }
+
     /**
      * @param array<mixed> $json
      */

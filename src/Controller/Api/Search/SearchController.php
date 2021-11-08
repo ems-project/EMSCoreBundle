@@ -122,7 +122,7 @@ class SearchController
             throw new \RuntimeException('Unexpected: index must be a string');
         }
         $contentType = $json['content-type'] ?? null;
-        if (!\is_string($contentType)) {
+        if (null !== $contentType && !\is_string($contentType)) {
             throw new \RuntimeException('Unexpected: content-type must be a string');
         }
         $ouuid = $json['ouuid'] ?? null;
@@ -138,7 +138,7 @@ class SearchController
             throw new \RuntimeException('Unexpected: source-excludes must be an array');
         }
 
-        $document = $this->elasticaService->getDocument($index, $contentType, $ouuid);
+        $document = $this->elasticaService->getDocument($index, $contentType, $ouuid, $sourceIncludes, $sourcesExcludes);
 
         return new JsonResponse([
             'source' => $document->getSource(),

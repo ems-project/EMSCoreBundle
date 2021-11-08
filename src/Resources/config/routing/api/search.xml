@@ -7,5 +7,20 @@
     <route id="emsco_api_search" path="/search" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:search</default>
     </route>
+    <route id="emsco_api_search_count" path="/count" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:count</default>
+    </route>
+    <route id="emsco_api_cluster_version" path="/version" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:version</default>
+    </route>
+    <route id="emsco_api_scroll_init" path="/init-scroll" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:initScroll</default>
+    </route>
+    <route id="emsco_api_scroll_next" path="/next-scroll" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:nextScroll</default>
+    </route>
+    <route id="emsco_api_index_refresh" path="/refresh" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:refresh</default>
+    </route>
 
 </routes>

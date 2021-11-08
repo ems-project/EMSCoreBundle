@@ -45,9 +45,9 @@ class SearchController
         $expireTime = $json['expire-time'] ?? '3m';
         $scroll = $this->elasticaService->scrollById($search, $expireTime);
 
-        return new JsonResponse([
-            'scroll-id' => $scroll->getResponse()->getScrollId(),
-        ]);
+        return new JsonResponse(
+            $scroll->getResponse()->getData(),
+        );
     }
 
     public function nextScroll(Request $request): Response

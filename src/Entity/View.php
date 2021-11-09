@@ -48,6 +48,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     protected ?string $icon;
 
     /**
+     * @var array<mixed>
      * @ORM\Column(name="options", type="json_array", nullable=true)
      */
     protected array $options;
@@ -86,7 +87,7 @@ class View extends JsonDeserializer implements \JsonSerializable
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {

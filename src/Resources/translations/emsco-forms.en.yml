@@ -24,3 +24,25 @@ view.icon: Icon
 view.create: Create
 view.public: 'Publicly available (without authentication)'
 view.type: Type
+role.not-defined: 'Not defined'
+ROLE_ADMIN: Administrator
+ROLE_ALLOW_ALIGN: 'Align Environment'
+ROLE_API: API
+ROLE_AUTHOR: Author
+ROLE_COPY_PASTE: Copy/Paste
+ROLE_DEFAULT_SEARCH: 'Default search'
+ROLE_FORM_CRM: 'Form CRM'
+ROLE_PUBLISHER: Publisher
+ROLE_REVIEWER: Reviewer
+ROLE_SUPER: 'Super user'
+ROLE_SUPER_ADMIN: 'Super Admin'
+ROLE_SUPER_AUTHOR: 'Super Author'
+ROLE_SUPER_PUBLISHER: 'Super Publisher'
+ROLE_SUPER_USER: 'Super User'
+ROLE_SUPER_WEBMASTER: 'Super Webmaster'
+ROLE_TASK_MANAGER: 'Task Manager'
+ROLE_TRADUCTOR: Traductor
+ROLE_USER: User
+ROLE_USER_MANAGEMENT: 'User Management'
+ROLE_USER_READ: 'User read'
+ROLE_WEBMASTER: Webmaster

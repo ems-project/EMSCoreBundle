@@ -7936,11 +7936,6 @@ parameters:
 			path: src/Form/Field/RenderOptionType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\RolePickerType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/RolePickerType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\SelectPickerType\\:\\:humanize\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/SelectPickerType.php

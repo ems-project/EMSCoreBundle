@@ -36,15 +36,9 @@ class ViewType extends AbstractType
             ],
         ])
         ->add('role', RolePickerType::class, [
-            'required' => true,
-            'row_attr' => [
-                'class' => 'col-md-4',
-            ],
-        ])
-        ->add('type', ViewTypePickerType::class, [
             'required' => false,
             'row_attr' => [
-                'class' => 'col-md-6',
+                'class' => 'col-md-4',
             ],
         ])
         ->add('public', CheckboxType::class, [
@@ -55,12 +49,37 @@ class ViewType extends AbstractType
         ]);
 
         if ($options['create']) {
-            $builder->add('create', SubmitEmsType::class, [
+            $builder->add('type', ViewTypePickerType::class, [
+                'required' => false,
+                'row_attr' => [
+                    'class' => 'col-md-6',
+                ],
+            ])->add('create', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm',
                 ],
                 'icon' => 'fa fa-save',
             ]);
+        } else {
+            $builder->add('options', $options['options'], [
+                    'view' => $view,
+                    'row_attr' => [
+                        'class' => 'col-md-12',
+                    ],
+                ])
+                ->add('save', SubmitEmsType::class, [
+                    'attr' => [
+                        'class' => 'btn-primary btn-sm',
+//                        'data-ajax-save-url' => $this->generateUrl('view.edit', ['id' => $id, '_format' => 'json']),
+                    ],
+                    'icon' => 'fa fa-save',
+                ])
+                ->add('saveAndClose', SubmitEmsType::class, [
+                    'attr' => [
+                        'class' => 'btn-primary btn-sm',
+                    ],
+                    'icon' => 'fa fa-save',
+                ]);
         }
     }
 
@@ -71,6 +90,7 @@ class ViewType extends AbstractType
             'label_format' => 'view.%name%',
             'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
             'create' => false,
+            'options' => null,
         ]);
     }
 }

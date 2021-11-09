@@ -19,8 +19,14 @@
                         {{ form_row(form.icon) }}
                         <div class="clearfix"></div>
                         {{ form_row(form.public) }}
-                        <div class="clearfix"></div>
-                        {{ form_row(form.type) }}
+                        {%  if form.create is defined %}
+                            <div class="clearfix"></div>
+                            {{ form_row(form.type) }}
+                        {% endif %}
+                        {%  if form.options is defined %}
+                            <div class="clearfix"></div>
+                            {{ form_row(form.options) }}
+                        {% endif %}
                     </div>
                 </div>
                 <div class="box-footer">
@@ -29,6 +35,7 @@
                     {% endif %}
                     {%  if form.save is defined %}
                         {{ form_widget(form.save) }}
+                        {{ form_widget(form.saveAndClose) }}
                     {% endif %}
                 </div>
                 {{ form_end(form) }}

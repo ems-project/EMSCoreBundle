@@ -24,6 +24,8 @@ view.icon: Icon
 view.create: Create
 view.public: 'Publicly available (without authentication)'
 view.type: Type
+view.save: Save
+view.saveAndClose: 'Save and Close'
 role.not-defined: 'Not defined'
 ROLE_ADMIN: Administrator
 ROLE_ALLOW_ALIGN: 'Align Environment'

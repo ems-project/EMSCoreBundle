@@ -144,4 +144,5 @@ content-type.menu: 'Content Types'
 content-type.edit: '%type%'
 view.tagline: ''
 view.icon.class: 'fa fa-tv'
-view.list.menu: 'Views'
+view.list.menu: Views
+view.edit.title: 'Edit view "%name%" for %type%'

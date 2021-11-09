@@ -7,14 +7,10 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\View;
-use EMS\CoreBundle\Form\Field\IconPickerType;
-use EMS\CoreBundle\Form\Field\IconTextType;
-use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\ViewType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -107,13 +103,9 @@ class ViewController extends AppController
     }
 
     /**
-     * @return Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
      * @Route("/view/edit/{id}.{_format}", name="view.edit", defaults={"_format"="html"})
      */
-    public function editAction(string $id, string $_format, Request $request, ContainerInterface $container)
+    public function editAction(string $id, string $_format, Request $request, ContainerInterface $container): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -127,33 +119,10 @@ class ViewController extends AppController
             throw new NotFoundHttpException('View type not found');
         }
 
-        $form = $this->createFormBuilder($view)
-            ->add('name', IconTextType::class, [
-                'icon' => 'fa fa-tag',
-            ])
-            ->add('public', CheckboxType::class, [
-                'required' => false,
-            ])
-            ->add('icon', IconPickerType::class, [
-                'required' => false,
-            ])
-            ->add('options', \get_class($container->get($view->getType())), [
-                'view' => $view,
-            ])
-            ->add('save', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn-primary btn-sm',
-                    'data-ajax-save-url' => $this->generateUrl('view.edit', ['id' => $id, '_format' => 'json']),
-                ],
-                'icon' => 'fa fa-save',
-            ])
-            ->add('saveAndClose', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn-primary btn-sm',
-                ],
-                'icon' => 'fa fa-save',
-            ])
-            ->getForm();
+        $form = $this->createForm(ViewType::class, $view, [
+            'create' => false,
+            'options' => \get_class($container->get($view->getType())),
+        ]);
 
         $form->handleRequest($request);
 
@@ -178,6 +147,7 @@ class ViewController extends AppController
 
         return $this->render('@EMSCore/view/edit.html.twig', [
             'form' => $form->createView(),
+            'contentType' => $view->getContentType(),
             'view' => $view,
         ]);
     }

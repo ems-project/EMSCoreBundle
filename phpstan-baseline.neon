@@ -3421,31 +3421,6 @@ parameters:
 			path: src/Entity/UserInterface.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\View\\:\\:\\$options type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/View.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\View\\:\\:\\$contentType has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/View.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\View\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/View.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\View\\:\\:setOptions\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/View.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\View\\:\\:getOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/View.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\WysiwygProfile\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/WysiwygProfile.php
@@ -8484,21 +8459,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Form\\\\TreatNotificationsType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/Form/TreatNotificationsType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Form\\\\ViewType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Form/ViewType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Form\\\\ViewType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
-			count: 1
-			path: src/Form/Form/ViewType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Form\\\\ViewType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/Form/ViewType.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Form\\\\WysiwygProfileType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"

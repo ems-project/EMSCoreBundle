@@ -81,7 +81,9 @@ class ViewController extends AppController
         $view = new View();
         $view->setContentType($contentTypes[0]);
 
-        $form = $this->createForm(ViewType::class, $view);
+        $form = $this->createForm(ViewType::class, $view, [
+            'create' => true,
+        ]);
 
         $form->handleRequest($request);
 

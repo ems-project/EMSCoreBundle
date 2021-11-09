@@ -2,43 +2,75 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\CoreBundle\Form\Field\RolePickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Field\ViewTypePickerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ViewType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var Template $template */
-        $template = $builder->getData();
+        $view = $builder->getData();
+        if (!$view instanceof View) {
+            throw new \RuntimeException('Unexpected non View object');
+        }
 
-        $builder
-        ->add('name', IconTextType::class, [
+        $builder->add('name', IconTextType::class, [
             'icon' => 'fa fa-tag',
+            'row_attr' => [
+                'class' => 'col-md-8',
+            ],
         ])
         ->add('icon', IconPickerType::class, [
             'required' => false,
+            'row_attr' => [
+                'class' => 'col-md-4',
+            ],
+        ])
+        ->add('role', RolePickerType::class, [
+            'required' => true,
+            'row_attr' => [
+                'class' => 'col-md-4',
+            ],
         ])
         ->add('type', ViewTypePickerType::class, [
             'required' => false,
+            'row_attr' => [
+                'class' => 'col-md-6',
+            ],
         ])
         ->add('public', CheckboxType::class, [
             'required' => false,
-        ])
-        ->add('create', SubmitEmsType::class, [
+            'row_attr' => [
+                'class' => 'col-md-12',
+            ],
+        ]);
+
+        if ($options['create']) {
+            $builder->add('create', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm',
                 ],
                 'icon' => 'fa fa-save',
+            ]);
+        }
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => View::class,
+            'label_format' => 'view.%name%',
+            'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+            'create' => false,
         ]);
     }
 }

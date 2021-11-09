@@ -69,7 +69,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     /**
      * @var int
      *
-     * @ORM\Column(name="orderKey", type="integer")
+     * @ORM\Column(name="order_key", type="integer")
      */
     protected $orderKey;
 
@@ -85,6 +85,11 @@ class View extends JsonDeserializer implements \JsonSerializable
      * @ORM\Column(name="public", type="boolean", options={"default" : 0})
      */
     protected $public;
+
+    /**
+     * @ORM\Column(name="role", type="string", length=100, nullable=true)
+     */
+    protected ?string $role;
 
     public function __construct()
     {
@@ -333,6 +338,16 @@ class View extends JsonDeserializer implements \JsonSerializable
         $this->public = $public;
 
         return $this;
+    }
+
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(string $role): void
+    {
+        $this->role = $role;
     }
 
     /**

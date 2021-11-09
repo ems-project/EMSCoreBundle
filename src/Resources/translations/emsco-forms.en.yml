@@ -18,3 +18,9 @@ dashboard.template.body: Body
 dashboard.template.header: Header
 dashboard.template.footer: Footer
 dashboard.export.mimetype: Mime-Type
+view.name: Name
+view.role: Role
+view.icon: Icon
+view.create: Create
+view.public: 'Publicly available (without authentication)'
+view.type: Type

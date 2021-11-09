@@ -7796,16 +7796,6 @@ parameters:
 			path: src/Form/Field/I18nContentType.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\Field\\\\IconPickerType\\:\\:\\$choices has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/IconPickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\IconPickerType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/IconPickerType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\IconTextType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/IconTextType.php

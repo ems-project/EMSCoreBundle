@@ -124,5 +124,10 @@
             <argument type="service" id="session.flash_bag" />
             <argument type="service" id="translator" />
         </service>
+
+        <service id="ems.view.manager" class="EMS\CoreBundle\Core\View\ViewManager">
+            <argument type="service" id="ems.repository.view"/>
+            <argument type="service" id="logger"/>
+        </service>
     </services>
 </container>

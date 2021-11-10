@@ -297,6 +297,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      * @var string
      *
      * @ORM\Column(name="view_role", type="string", length=100, nullable=true)
+     * @ORM\OrderBy({"orderKey" = "ASC"})
      */
     protected $viewRole;
 

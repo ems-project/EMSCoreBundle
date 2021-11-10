@@ -4,9 +4,6 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_core_dashboard" path="/dashboard" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\DashboardController::landing</default>
-    </route>
     <route id="emsco_dashboard" path="/dashboard/{name}" methods="GET,POST">
         <default key="_controller">EMS\CoreBundle\Controller\DashboardController::dashboard</default>
     </route>
@@ -30,5 +27,10 @@
     </route>
     <route id="emsco_dashboard_admin_set_quick_search" path="/admin/dashboard/as-quick-search/{dashboard}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::setQuickSearch</default>
+    </route>
+
+    <!-- Deprecated routes -->
+    <route id="ems_core_dashboard" path="/dashboard" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\DashboardController::landing</default>
     </route>
 </routes>

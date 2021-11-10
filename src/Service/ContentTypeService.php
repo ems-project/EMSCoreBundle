@@ -582,5 +582,6 @@ class ContentTypeService
 
         $draftInProgress = $menuEntry->addChild('sidebar_menu.content_type.draft_in_progress', 'fa fa-fire', Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentType->getId()]);
         $draftInProgress->setTranslation([]);
+        $draftInProgress->setBadge($menuEntry->getBadge(), $contentType->getColor());
     }
 }

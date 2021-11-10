@@ -22,6 +22,7 @@ class MenuEntry
      * @var array<string, mixed>
      */
     private array $parameters = [];
+    private ?string $badgeColor;
 
     /**
      * @param array<string, mixed> $routeParameters
@@ -84,6 +85,11 @@ class MenuEntry
         return $this->color;
     }
 
+    public function getBadgeColor(): ?string
+    {
+        return $this->badgeColor ?? $this->color;
+    }
+
     public function getBadge(): ?string
     {
         return $this->badge;
@@ -94,9 +100,10 @@ class MenuEntry
         return null !== $this->badge;
     }
 
-    public function setBadge(?string $badge): void
+    public function setBadge(?string $badge, ?string $color = null): void
     {
         $this->badge = $badge;
+        $this->badgeColor = $color;
     }
 
     /**

@@ -13,7 +13,7 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class View extends JsonDeserializer implements \JsonSerializable
+class View extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
      * @ORM\Column(name="id", type="integer")

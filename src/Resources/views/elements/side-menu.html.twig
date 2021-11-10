@@ -92,13 +92,6 @@
 	          	<ul class="treeview-menu">
 	            	{% if contentType.environment.managed %}
 
-	            	{% if contentType.orderField and (contentType.fieldType.__get('ems_'~contentType.orderField).options.restrictionOptions.minimum_role is not defined or is_granted(contentType.fieldType.__get('ems_'~contentType.orderField).options.restrictionOptions.minimum_role)) %}
-	          			<li class=""><a id="menu-data-reorder-{{ contentType.id }}" href="{{ path('nature.reorder', { contentType: contentType.id } ) }}">
-	          				<i class="fa fa-sort"></i>
-	          				<span>Reorder</span>
-	          			</a></li>
-	            	{% endif %}
-
 	            	{% if (not contentType.createRole or is_granted(contentType.createRole)) and is_granted(contentType.createLinkDisplayRole) %}
 						<li class=""><a id="menu-data-add-{{ contentType.id }}" href="{{ path('data.add', { contentType: contentType.id }) }}">
 							<i class="fa fa-plus"></i>

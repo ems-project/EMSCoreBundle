@@ -91,7 +91,6 @@ class ViewController extends AbstractController
         ]);
     }
 
-
     /**
      * @deprecated
      */

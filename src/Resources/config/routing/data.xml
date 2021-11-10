@@ -16,5 +16,8 @@
     <route id="emsco_data_add" path="/add/{contentType}" methods="GET,POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:addAction</default>
     </route>
+    <route id="emsco_data_trash" path="/trash/{contentType}" methods="GET,POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:trashAction</default>
+    </route>
 
 </routes>

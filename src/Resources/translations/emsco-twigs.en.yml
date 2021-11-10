@@ -153,3 +153,4 @@ sidebar_menu.content_type.search: 'Search in %plural%'
 sidebar_menu.content_type.search_in_my_circle: 'In my %name%'
 sidebar_menu.content_type.draft_in_progress: 'Draft in progress'
 sidebar_menu.content_type.create: 'New %name%'
+sidebar_menu.content_type.trash: Trash

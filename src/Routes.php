@@ -39,4 +39,5 @@ class Routes
     public const DATA_PUBLIC_VIEW = 'emsco_data_public_view';
     public const DATA_PRIVATE_VIEW = 'emsco_data_private_view';
     public const DATA_ADD = 'emsco_data_add';
+    public const DATA_TRASH = 'emsco_data_trash';
 }

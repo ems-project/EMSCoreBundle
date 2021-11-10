@@ -531,10 +531,14 @@ class ContentTypeService
             $this->addMenuViewLinks($contentType, $menuEntry);
             $this->addDraftInProgressLink($contentType, $menuEntry);
             if ($this->authorizationChecker->isGranted($contentType->getCreateRole())) {
-                $createLInk = $menuEntry->addChild('sidebar_menu.content_type.create', 'fa fa-plus', Routes::DATA_ADD, ['contentType' => $contentType->getId()]);
-                $createLInk->setTranslation([
+                $createLink = $menuEntry->addChild('sidebar_menu.content_type.create', 'fa fa-plus', Routes::DATA_ADD, ['contentType' => $contentType->getId()]);
+                $createLink->setTranslation([
                     '%name%' => $contentType->getSingularName(),
                 ]);
+            }
+            if ($this->authorizationChecker->isGranted($contentType->getTrashRole())) {
+                $trashLink = $menuEntry->addChild('sidebar_menu.content_type.trash', 'fa fa-trash', Routes::DATA_TRASH, ['contentType' => $contentType->getId()]);
+                $trashLink->setTranslation([]);
             }
         }
 

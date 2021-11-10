@@ -3,12 +3,9 @@
     <section class="sidebar">
       <div class="user-panel">
         <div class="pull-left image">
-            {% include '@EMSCore/elements/user-image.html.twig' with {
-                'class': 'img-circle'
-            } %}
+            {% include '@EMSCore/elements/user-image.html.twig' with { 'class': 'img-circle' } %}
         </div>
         <div class="pull-left info">
-          
           	{% if app.user %}
 	          	<p><a href="{{ path(user_profile_route) }}" class="">{{ app.user.displayName }}</a></p>
 		        <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-{{ status }}"></i> {{ status }}</a>
@@ -16,7 +13,6 @@
 	         	<p>{{ 'views.elements.side-menu-html.anonymous-user'|trans }}</p>
 		        <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-"></i> </a>
 	      	{% endif %}
-          
         </div>
       </div>
 {% if app.user %}
@@ -70,48 +66,6 @@
             {% endfor %}
         </ul>
     {% endif %}
-
-	{% if get_content_types()|length > 0 %}
-      <ul class="sidebar-menu" data-widget="tree">
-        <li class="header">Content Management</li>
-        {% for contentType in get_content_types() %}
-        	{% if contentType.active and (not contentType.viewRole or is_granted(contentType.viewRole) or contentType.rootContentType ) %}
-	          <li class="treeview">
-	          	<a href="{{ path('data.root', {name: contentType.name}) }}" class="text-{{ contentType.color }}">
-	          		<i class=" {% if contentType.icon %}{{ contentType.icon }}{% else %}fa fa-book{% endif %}"></i> <span>{{ contentType.pluralName }}</span>
-	          		
-	            	{% if draftCounterGroupedByContentType[contentType.id] is defined and is_granted(contentType.editRole)  %}
-	          			<span class="label {% if contentType.color %}bg-{{ contentType.color }}{% else %}label-primary{% endif %} pull-right-container">{{ draftCounterGroupedByContentType[contentType.id] }}</span>
-	          		{% else %}
-		          		<i class="fa fa-angle-left pull-right"></i>
-	          		{% endif %}
-	          	</a>
-	          	<ul class="treeview-menu">
-	            	{% if contentType.environment.managed %}
-
-	            	{% if (not contentType.createRole or is_granted(contentType.createRole)) and is_granted(contentType.createLinkDisplayRole) %}
-						<li class=""><a id="menu-data-add-{{ contentType.id }}" href="{{ path('data.add', { contentType: contentType.id }) }}">
-							<i class="fa fa-plus"></i>
-	          				New {{ contentType.singularName }}
-						</a></li>
-					{% endif %}
-
-
-                    {% if is_granted(contentType.trashRole) %}
-						<li class="">
-							<a id="menu-data-trash-{{ contentType.id }}" href="{{ path('ems_data_trash', { contentType: contentType.id }) }}">
-    							<i class="fa fa-trash"></i>
-                                {{ 'views.elements.side-menu-html.trash'|trans }}
-							</a>
-						</li>
-                    {% endif %}
-                {% endif %}
-	          	</ul>
-	          </li>
-	        {% endif %}
-         {% endfor %}
-		</ul>
-	{% endif %}
 	
 	{% if is_granted('ROLE_PUBLISHER') %}
       <ul class="sidebar-menu">

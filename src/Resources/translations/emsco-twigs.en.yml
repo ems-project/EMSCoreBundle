@@ -146,3 +146,5 @@ view.tagline: ''
 view.icon.class: 'fa fa-tv'
 view.list.menu: Views
 view.edit.title: 'Edit view "%name%" for %type%'
+view.index.title: '%type%''s views'
+view.index.add_button: 'Add a View'

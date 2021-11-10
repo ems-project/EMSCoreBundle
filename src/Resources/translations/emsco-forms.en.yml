@@ -930,3 +930,6 @@ orientation.pdf_orientation: 'PDF Orientation'
 orientation.orientation: Orientation
 orientation.portrait: Portrait
 orientation.landscape: Landscape
+ems.view.report: 'Report view'
+ems.view.hierarchical: 'Hierarchical view'
+ems.view.sorter: 'Sorter view'

@@ -3,10 +3,13 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CoreBundle\Core\View\ViewManager;
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
+use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
+use EMS\CoreBundle\Form\Data\TranslationTableColumn;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Form\ViewType;
 use EMS\CoreBundle\Helper\DataTableRequest;
@@ -212,10 +215,11 @@ class ViewController extends AbstractController
             '_format' => 'json',
         ]), $contentType);
         $table->addColumn('table.index.column.loop_count', 'orderKey');
-        $table->addColumn('view.index.column.name', 'name');
+        $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.public', 'public', '@EMSCore/view/columns.html.twig'));
         $table->addColumn('view.index.column.name', 'name')->setItemIconCallback(function (View $view) {
             return $view->getIcon() ?? '';
         });
+        $table->addColumnDefinition(new TranslationTableColumn('dashboard.index.column.type', 'type', EMSCoreBundle::TRANS_FORM_DOMAIN));
         $table->addItemGetAction(Routes::VIEW_EDIT, 'view.actions.edit', 'pencil');
         $table->addItemPostAction(Routes::VIEW_DUPLICATE, 'view.actions.duplicate', 'pencil', 'view.actions.duplicate_confirm');
         $table->addItemPostAction(Routes::VIEW_DELETE, 'view.actions.delete', 'trash', 'view.actions.delete_confirm')->setButtonType('outline-danger');

@@ -12,8 +12,8 @@
           	{% if app.user %}
 	          	<p><a href="{{ path(user_profile_route) }}" class="">{{ app.user.displayName }}</a></p>
 		        <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-{{ status }}"></i> {{ status }}</a>
-	         {% else %} 
-	         	<p><a href="{{ path(user_profile_route) }}" class=""> {{ 'views.elements.side-menu-html.anonymous-user'|trans }}</a></p>
+	         {% else %}
+	         	<p>{{ 'views.elements.side-menu-html.anonymous-user'|trans }}</p>
 		        <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-"></i> </a>
 	      	{% endif %}
           

@@ -60,6 +60,7 @@ class TwigElementsController extends AbstractController
                 'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
                 'status' => $status,
                 'menu' => [
+                    $this->userService->getSidebarMenu(),
                     $this->dashboardManager->getSidebarMenu(),
                     $this->contentTypeService->getContentTypeMenu(),
                     $this->getPublisherMenu(),

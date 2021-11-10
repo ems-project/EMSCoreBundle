@@ -9,6 +9,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\UI\Menu;
+use EMS\CoreBundle\Core\UI\MenuEntry;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
@@ -526,25 +527,44 @@ class ContentTypeService
             if (isset($counters[$contentType->getId()])) {
                 $menuEntry->setBadge(\strval($counters[$contentType->getId()]));
             }
-            if ($this->authorizationChecker->isGranted($contentType->getSearchLinkDisplayRole())) {
-                $search = $menuEntry->addChild('sidebar_menu.content_type.search', 'fa fa-search', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()]);
-                $search->setTranslation(['%plural%' => $contentType->getPluralName()]);
-
-                if (null !== $circleContentType && null !== $contentType->getCirclesField() && '' !== $contentType->getCirclesField() && !empty($user->getCircles())) {
-                    $inMyCircle = $menuEntry->addChild('sidebar_menu.content_type.search_in_my_circle', $circleContentType->getIcon() ?? '', Routes::DATA_IN_MY_CIRCLE_VIEW, ['name' => $contentType->getName()]);
-                    $inMyCircle->setTranslation([
-                        '%name%' => \count($user->getCircles()) > 1 ? $circleContentType->getPluralName() : $circleContentType->getSingularName(),
-                    ]);
-                }
-            }
-            foreach ($contentType->getViews() as $view) {
-                if (!$this->authorizationChecker->isGranted($view->getRole()) || 'ems.view.data_link' === $view->getType()) {
-                    continue;
-                }
-                $menuEntry->addChild($view->getName(), $view->getIcon() ?? '', $view->isPublic() ? Routes::DATA_PUBLIC_VIEW : Routes::DATA_PRIVATE_VIEW, ['view' => $view->getId()]);
-            }
+            $this->addMenuSearchLinks($contentType, $menuEntry, $circleContentType, $user);
+            $this->addMenuViewLinks($contentType, $menuEntry);
+            $this->addDraftInProgressLink($contentType, $menuEntry);
         }
 
         return $menu;
+    }
+
+    private function addMenuSearchLinks(ContentType $contentType, MenuEntry $menuEntry, ?ContentType $circleContentType, UserInterface $user): void
+    {
+        if ($this->authorizationChecker->isGranted($contentType->getSearchLinkDisplayRole())) {
+            $search = $menuEntry->addChild('sidebar_menu.content_type.search', 'fa fa-search', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()]);
+            $search->setTranslation(['%plural%' => $contentType->getPluralName()]);
+
+            if (null !== $circleContentType && null !== $contentType->getCirclesField() && '' !== $contentType->getCirclesField() && !empty($user->getCircles())) {
+                $inMyCircle = $menuEntry->addChild('sidebar_menu.content_type.search_in_my_circle', $circleContentType->getIcon() ?? '', Routes::DATA_IN_MY_CIRCLE_VIEW, ['name' => $contentType->getName()]);
+                $inMyCircle->setTranslation([
+                    '%name%' => \count($user->getCircles()) > 1 ? $circleContentType->getPluralName() : $circleContentType->getSingularName(),
+                ]);
+            }
+        }
+    }
+
+    private function addMenuViewLinks(ContentType $contentType, MenuEntry $menuEntry): void
+    {
+        foreach ($contentType->getViews() as $view) {
+            if (!$this->authorizationChecker->isGranted($view->getRole()) || 'ems.view.data_link' === $view->getType()) {
+                continue;
+            }
+            $menuEntry->addChild($view->getName(), $view->getIcon() ?? '', $view->isPublic() ? Routes::DATA_PUBLIC_VIEW : Routes::DATA_PRIVATE_VIEW, ['view' => $view->getId()]);
+        }
+    }
+
+    private function addDraftInProgressLink(ContentType $contentType, MenuEntry $menuEntry): void
+    {
+        if ($contentType->giveEnvironment()->getManaged() && $menuEntry->hasBadge() && $this->authorizationChecker->isGranted($contentType->getEditRole())) {
+            $draftInProgress = $menuEntry->addChild('sidebar_menu.content_type.draft_in_progress', 'fa fa-fire', Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentType->getId()]);
+            $draftInProgress->setTranslation([]);
+        }
     }
 }

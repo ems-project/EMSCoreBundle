@@ -90,12 +90,6 @@
 	          		{% endif %}
 	          	</a>
 	          	<ul class="treeview-menu">
-	            	{% if draftCounterGroupedByContentType[contentType.id] is defined and is_granted(contentType.editRole) %}
-	          			<li class=""><a id="menu-data-draft-{{ contentType.id }}" href="{{ path('data.draft_in_progress', { contentTypeId: contentType.id } ) }}">
-	          				<i class="fa fa-fire"></i>
-	          				<span>Drafts in progress</span> <span class="label {% if contentType.color %}bg-{{ contentType.color }}{% else %}label-primary{% endif %} pull-right-container">{{ draftCounterGroupedByContentType[contentType.id] }}</span>
-	          			</a></li>
-	            	{% endif %}
 	            	{% if contentType.environment.managed %}
 
 	            	{% if contentType.orderField and (contentType.fieldType.__get('ems_'~contentType.orderField).options.restrictionOptions.minimum_role is not defined or is_granted(contentType.fieldType.__get('ems_'~contentType.orderField).options.restrictionOptions.minimum_role)) %}

@@ -13,5 +13,8 @@
     <route id="emsco_data_private_view" path="/custom-index-view/{view}" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customIndexViewAction</default>
     </route>
+    <route id="emsco_data_draft_in_progress" path="/custom-index-view/{view}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customIndexViewAction</default>
+    </route>
 
 </routes>

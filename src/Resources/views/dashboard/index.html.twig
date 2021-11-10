@@ -1,0 +1,17 @@
+{% extends '@EMSCore/dashboard/abstract.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block title %}{{ 'dashboard.index.title'|trans }}{% endblock %}
+
+
+{% block body %}
+    {%  set toolbar %}
+        <a class="btn btn-primary" href="{{ path('emsco_dashboard_admin_add') }}"><i class="fa fa-plus"></i> {{ add_label|default(form.vars.add_label)|trans }}</a>
+    {%  endset %}
+
+    {% form_theme form '@EMSCore/form/forms.html.twig' %}
+    {{ form(form, {
+        reorder_label: 'dashboard.index.reorder',
+        toolbar: toolbar
+    }) }}
+{% endblock %}

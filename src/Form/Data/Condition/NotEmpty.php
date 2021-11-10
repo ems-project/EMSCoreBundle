@@ -8,11 +8,12 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class NotEmpty implements ConditionInterface
 {
-    private string $pathProperty;
+    /** @var string[] */
+    private array $pathProperties;
 
-    public function __construct(string $pathProperty)
+    public function __construct(string ...$pathProperties)
     {
-        $this->pathProperty = $pathProperty;
+        $this->pathProperties = $pathProperties;
     }
 
     /**
@@ -21,8 +22,13 @@ class NotEmpty implements ConditionInterface
     public function valid($objectOrArray): bool
     {
         $accessor = new PropertyAccessor();
-        $date = $accessor->getValue($objectOrArray, $this->pathProperty);
+        foreach ($this->pathProperties as $pathProperty) {
+            $date = $accessor->getValue($objectOrArray, $pathProperty);
+            if (empty($date)) {
+                return false;
+            }
+        }
 
-        return !empty($date);
+        return true;
     }
 }

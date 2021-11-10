@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Elastica\Query\AbstractQuery;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\Exists;
 use Elastica\Query\Terms;
@@ -48,7 +49,7 @@ class SearchService
         $body = [];
         $query = $commonSearch->getQuery();
         if (null !== $query) {
-            $body['query'] = $query->toArray();
+            $body['query'] = $query instanceof AbstractQuery ? $query->toArray() : $query;
         }
         $body['sort'] = $commonSearch->getSort();
 

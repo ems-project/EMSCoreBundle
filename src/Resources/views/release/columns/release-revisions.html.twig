@@ -1,0 +1,69 @@
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block label %}
+    {% if data.revision %}
+        {{ data.revision.label }}
+    {% else %}
+        {% set info = data.emsId|emsco_document_info %}
+        {% set release = info.getRevision(data.release.environmentSource.name) %}
+        {% if release %}
+            {{ release.label }}
+        {% else %}
+            {{ 'release.release-revisison.missing-revision'|trans({'%ouuid%': data.revisionOuuid, '%environment%': data.release.environmentSource.label}) }}
+        {% endif %}
+    {% endif %}
+{% endblock label %}
+
+{% block contentType %}
+    {{ data.contentType.singularName }}
+{% endblock contentType %}
+
+{% block revision %}
+    {% if data.revision %}
+        <a href="{{ path('emsco_view_revisions', {ouuid: data.revisionOuuid, type: data.contentType.name, revisionId: data.revision.id}) }}">
+            {{ 'release.release-revisison.revision'|trans({ '%date%' : data.revision.created|date(date_time_format) ,'%user%' : data.revision.finalizedBy|default('')|displayname }) }}
+        </a>
+    {% else %}
+        {% set info = data.emsId|emsco_document_info %}
+        {% set revision = info.getRevision(data.release.environmentSource.name) %}
+        {% if revision %}
+            {{ 'release.release-revisison.revision-not-applicable'|trans }}
+        {% endif %}
+    {% endif %}
+{% endblock revision %}
+
+{% block action %}
+    {% if data.revision %}
+        {{ 'release.release-revisison.publish'|trans }}
+    {% else %}
+        {{ 'release.release-revisison.unpublish'|trans }}
+    {% endif %}
+{% endblock action %}
+
+{% block previous %}
+    {% if data.revisionBeforePublish %}
+        <a href="{{ path('emsco_view_revisions', {ouuid: data.revisionBeforePublish.ouuid, type: data.revisionBeforePublish.contentType.name, revisionId: data.revisionBeforePublish.id}) }}">
+            {{ 'release.release-revisison.revision'|trans({ '%date%' : data.revisionBeforePublish.created|date(date_time_format) ,'%user%' : data.revisionBeforePublish.finalizedBy|default('')|displayname }) }}
+        </a>
+    {% else %}
+        <span class="text-muted">
+            {{ 'release.release-revisison.not-applicable'|trans }}
+        </span>
+    {% endif %}
+{% endblock previous %}
+
+{% block stil_in_target %}
+    {% set stil_in_target = false %}
+    {% if data.revision %}
+        {% set info = data.revision.emsLink|emsco_document_info %}
+        {% set revision = info.getRevision(data.release.environmentTarget) %}
+        {% set stil_in_target = (data.revision.id is same as (revision.id)) %}
+    {% else %}
+        {% set stil_in_target = true %}
+    {% endif %}
+    {%  if stil_in_target %}
+        <i class="fa fa-check-square"><span class="sr-only"</span>{{ 'release.release-revisison.still_in_target'|trans({'%target%': data.release.environmentTarget.label}) }}</i>
+    {% else %}
+        <i class="fa fa-square-o"><span class="sr-only"</span>{{ 'release.release-revisison.no_more_in_target'|trans({'%target%': data.release.environmentTarget.label})  }}</i>
+    {% endif %}
+{% endblock stil_in_target %}

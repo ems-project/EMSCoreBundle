@@ -1,0 +1,139 @@
+<?php
+
+declare(strict_types=1);
+
+namespace EMS\CoreBundle\Service;
+
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Release;
+use EMS\CoreBundle\Entity\ReleaseRevision;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
+use EMS\CoreBundle\Repository\ReleaseRevisionRepository;
+use EMS\CoreBundle\Repository\RevisionRepository;
+use Psr\Log\LoggerInterface;
+
+final class ReleaseRevisionService implements QueryServiceInterface, EntityServiceInterface
+{
+    private ReleaseRevisionRepository $releaseRevisionRepository;
+    private RevisionRepository $revisionRepository;
+    private LoggerInterface $logger;
+    private UserService $userService;
+    private ContentTypeService $contentTypeService;
+
+    public function __construct(ReleaseRevisionRepository $releaseRevisionRepository, RevisionRepository $revisionRepository, LoggerInterface $logger, ContentTypeService $contentTypeService, UserService $userService)
+    {
+        $this->releaseRevisionRepository = $releaseRevisionRepository;
+        $this->revisionRepository = $revisionRepository;
+        $this->logger = $logger;
+        $this->userService = $userService;
+        $this->contentTypeService = $contentTypeService;
+    }
+
+    public function isQuerySortable(): bool
+    {
+        return false;
+    }
+
+    public function remove(ReleaseRevision $releaseRevision): void
+    {
+        $this->releaseRevisionRepository->delete($releaseRevision);
+    }
+
+    /**
+     * @param mixed $context
+     *
+     * @return Revision[]
+     */
+    public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    {
+        if (!$context instanceof Release) {
+            throw new \RuntimeException('Unexpected release object');
+        }
+        $contentTypes = $this->getContentTypeWithPublishRole();
+
+        return $this->revisionRepository->getAvailableRevisionsForRelease($from, $size, $context, $contentTypes, $orderField, $orderDirection, $searchValue);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'release_revision';
+    }
+
+    /**
+     * @param mixed $context
+     */
+    public function countQuery(string $searchValue = '', $context = null): int
+    {
+        if (!$context instanceof Release) {
+            throw new \RuntimeException('Unexpected release object');
+        }
+        $contentTypes = $this->getContentTypeWithPublishRole();
+
+        return $this->revisionRepository->countAvailableRevisionsForRelease($context, $contentTypes, $searchValue);
+    }
+
+    public function findToRemove(Release $release, string $ouuid, ContentType $contentType): ReleaseRevision
+    {
+        return $this->releaseRevisionRepository->findByReleaseByRevisionOuuidAndContentType($release, $ouuid, $contentType);
+    }
+
+    public function finalizeDraftEvent(RevisionFinalizeDraftEvent $event): void
+    {
+        $revision = $event->getRevision();
+        $releaseRevisions = $this->releaseRevisionRepository->getRevisionsLinkedToReleasesByOuuid($revision->getOuuid(), $revision->getContentType());
+        foreach ($releaseRevisions as $releaseRevision) {
+            $this->logger->warning('log.service.release_revision.preceding.revision.in.release', [
+                'name' => $releaseRevision->getRelease()->getName(),
+            ]);
+        }
+    }
+
+    public function isSortable(): bool
+    {
+        return false;
+    }
+
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    {
+        if (!$context instanceof Release) {
+            throw new \RuntimeException('Unexpected non Release context');
+        }
+
+        return $this->releaseRevisionRepository->findByRelease($context, $from, $size, $orderField, $orderDirection, $searchValue);
+    }
+
+    public function count(string $searchValue = '', $context = null): int
+    {
+        if (!$context instanceof Release) {
+            throw new \RuntimeException('Unexpected non Release context');
+        }
+
+        return $this->releaseRevisionRepository->countByRelease($context, $searchValue);
+    }
+
+    /**
+     * @param string[] $ids
+     *
+     * @return ReleaseRevision[]
+     */
+    public function getByIds(array $ids): array
+    {
+        return $this->releaseRevisionRepository->getByIds($ids);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getContentTypeWithPublishRole(): array
+    {
+        $contentTypes = [];
+        foreach ($this->contentTypeService->getAll() as $contentType) {
+            if (!$contentType->getDeleted() && null !== $contentType->getPublishRole() && $this->userService->isGrantedRole($contentType->getPublishRole())) {
+                $contentTypes[] = $contentType->getName();
+            }
+        }
+
+        return $contentTypes;
+    }
+}

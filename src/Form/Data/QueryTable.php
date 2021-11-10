@@ -15,6 +15,8 @@ class QueryTable extends TableAbstract
     private $context;
     private QueryServiceInterface $service;
     private $queryName;
+    private bool $massAction = true;
+    private string $idField = 'id';
 
     /**
      * @param mixed $context
@@ -42,13 +44,28 @@ class QueryTable extends TableAbstract
         return $this->context;
     }
 
+    public function setMassAction(bool $massAction): void
+    {
+        $this->massAction = $massAction;
+    }
+
+    public function setIdField(string $idField): void
+    {
+        $this->idField = $idField;
+    }
+
+    public function getIdField(): string
+    {
+        return $this->idField;
+    }
+
     /**
      * @return \IteratorAggregate<string, QueryRow>
      */
     public function getIterator(): iterable
     {
         foreach ($this->service->query($this->getFrom(), $this->getSize(), $this->getOrderField(), $this->getOrderDirection(), $this->getSearchValue(), $this->context) as $data) {
-            $id = $data['id'] ?? null;
+            $id = $data[$this->idField] ?? null;
             if (null === $id) {
                 continue;
             }
@@ -71,7 +88,8 @@ class QueryTable extends TableAbstract
         if (!$this->loadAll) {
             return false;
         }
-        if ($this->totalCount() <= 1) {
+        $min = $this->massAction ? 1 : 0;
+        if ($this->totalCount() <= $min) {
             return false;
         }
         foreach ($this->getTableActions() as $action) {

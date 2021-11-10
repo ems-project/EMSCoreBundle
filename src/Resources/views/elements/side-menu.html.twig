@@ -56,6 +56,19 @@
         {{ render(controller(application_menu_controller)) }}
     {% endif %}
 
+    {% if dashboardMenu.children|length > 0 %}
+        <ul class="sidebar-menu">
+            <li class="header">{{ 'views.elements.side-menu-html.dashboards'|trans }}</li>
+            {% for dashboard in dashboardMenu.children %}
+                <li class="treeview">
+                    <a href="{{ dashboard.url }}"{% if dashboard.color %} class="text-{{ dashboard.color }}"{% endif %}>
+                        <i class="{{ dashboard.icon }}"></i>&nbsp;<span>{{ dashboard.label }}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
 	{% if get_content_types()|length > 0 %}
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">Content Management</li>
@@ -147,7 +160,12 @@
 	
 	{% if is_granted('ROLE_PUBLISHER') %}
       <ul class="sidebar-menu">
-        <li class="header">{{ 'views.elements.side-menu-html.publishers'|trans }}</li>
+         <li class="header">{{ 'views.elements.side-menu-html.publishers'|trans }}</li>
+         <li class="treeview">
+              <a href="{{ path('emsco_release_index') }}">
+                <i class="{{ 'view.icon.class.release'|trans }}"></i> <span>{{ 'view.elements.side-menu.release-admin.index-link'|trans }}</span>
+              </a>
+          </li>
           <li class="treeview">
             <a href="{{ path('environment.align') }}" id="menu-environment-align">
             	<i class="fa fa-align-center"></i> <span>{{ 'views.elements.side-menu-html.compare-environments'|trans }}</span>
@@ -199,6 +217,11 @@
         <li class="treeview">
           <a href="{{ path('ems_core_channel_index') }}">
           	<i class="{{ 'view.icon.class.channel'|trans }}"></i> <span>{{ 'view.elements.side-menu.chanel-admin.index-link'|trans }}</span>
+          </a>
+        </li>
+        <li class="treeview">
+          <a href="{{ path('emsco_dashboard_admin_index') }}">
+          	<i class="{{ 'view.icon.class.dashboard'|trans }}"></i> <span>{{ 'view.elements.side-menu.dashboard-admin.index-link'|trans }}</span>
           </a>
         </li>
         <li class="treeview">

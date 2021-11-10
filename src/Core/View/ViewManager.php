@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\View;
 
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Repository\ViewRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
@@ -30,11 +31,11 @@ class ViewManager implements EntityServiceInterface
      */
     public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
-        if (null !== $context) {
+        if (!$context instanceof ContentType) {
             throw new \RuntimeException('Unexpected not null context');
         }
 
-        return $this->viewRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
+        return $this->viewRepository->get($context, $from, $size, $orderField, $orderDirection, $searchValue);
     }
 
     public function getEntityName(): string
@@ -44,17 +45,17 @@ class ViewManager implements EntityServiceInterface
 
     public function count(string $searchValue = '', $context = null): int
     {
-        if (null !== $context) {
+        if (!$context instanceof ContentType) {
             throw new \RuntimeException('Unexpected not null context');
         }
 
-        return $this->viewRepository->counter($searchValue);
+        return $this->viewRepository->counter($context, $searchValue);
     }
 
     public function update(View $view): void
     {
         if (0 === $view->getOrderKey()) {
-            $view->setOrderKey($this->viewRepository->counter() + 1);
+            $view->setOrderKey($this->viewRepository->counter($view->getContentType()) + 1);
         }
         $this->viewRepository->create($view);
     }

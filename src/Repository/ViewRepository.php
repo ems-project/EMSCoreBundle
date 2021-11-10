@@ -29,10 +29,12 @@ class ViewRepository extends ServiceEntityRepository
         ]);
     }
 
-    public function counter(string $searchValue = ''): int
+    public function counter(ContentType $contentType, string $searchValue = ''): int
     {
         $qb = $this->createQueryBuilder('view');
         $qb->select('count(view.id)');
+        $qb->where('view.contentType = :contentType')
+            ->setParameter('contentType', $contentType);
         $this->addSearchFilters($qb, $searchValue);
 
         return \intval($qb->getQuery()->getSingleScalarResult());
@@ -77,17 +79,19 @@ class ViewRepository extends ServiceEntityRepository
     /**
      * @return View[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    public function get(ContentType $contentType, int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
     {
         $qb = $this->createQueryBuilder('view')
             ->setFirstResult($from)
             ->setMaxResults($size);
+        $qb->where('view.contentType = :contentType')
+            ->setParameter('contentType', $contentType);
         $this->addSearchFilters($qb, $searchValue);
 
         if (\in_array($orderField, ['name'])) {
             $qb->orderBy(\sprintf('view.%s', $orderField), $orderDirection);
         } else {
-            $qb->orderBy('c.orderKey', $orderDirection);
+            $qb->orderBy('view.orderKey', $orderDirection);
         }
 
         return $qb->getQuery()->execute();

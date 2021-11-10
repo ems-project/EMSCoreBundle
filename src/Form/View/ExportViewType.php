@@ -9,6 +9,7 @@ use EMS\CommonBundle\Service\Pdf\Pdf;
 use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
+use EMS\CoreBundle\Form\Field\FileDispositionType;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -80,17 +81,7 @@ class ExportViewType extends ViewType
                 'min-lines' => 4,
                 'max-lines' => 4,
         ])
-        ->add('disposition', ChoiceType::class, [
-                'label' => 'File diposition',
-                'expanded' => true,
-                'attr' => [
-                ],
-                'choices' => [
-                        'None' => null,
-                        'Attachment' => 'attachment',
-                        'Inline' => 'inline',
-                ],
-        ])
+        ->add('disposition', FileDispositionType::class)
         ->add('export_type', ChoiceType::class, [
                 'label' => 'Export type',
                 'expanded' => false,

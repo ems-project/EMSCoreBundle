@@ -10,6 +10,7 @@ class MenuEntry
     private string $icon;
     private string $url;
     private ?string $color;
+    private ?string $badge = null;
 
     public function __construct(string $label, string $icon, string $url, ?string $color = null)
     {
@@ -37,5 +38,20 @@ class MenuEntry
     public function getColor(): ?string
     {
         return $this->color;
+    }
+
+    public function getBadge(): ?string
+    {
+        return $this->badge;
+    }
+
+    public function hasBadge(): bool
+    {
+        return null !== $this->badge;
+    }
+
+    public function setBadge(?string $badge): void
+    {
+        $this->badge = $badge;
     }
 }

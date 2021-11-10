@@ -13,55 +13,57 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
+use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 class ContentTypeService
 {
-    /** @var string */
     private const CONTENT_TYPE_AGGREGATION_NAME = 'content-types';
 
-    /** @var Registry */
-    protected $doctrine;
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var Mapping */
-    private $mappingService;
-    /** @var ElasticaService */
-    private $elasticaService;
-    /** @var EnvironmentService */
-    private $environmentService;
-    /** @var FormRegistryInterface */
-    private $formRegistry;
-    /** @var TranslatorInterface */
-    private $translator;
-    /** @var string */
-    private $instanceId;
-    /** @var ContentType[] */
-    protected $orderedContentTypes = [];
-    /** @var ContentType[] */
-    protected $contentTypeArrayByName = [];
-    private AuthorizationCheckerInterface $authorizationChecker;
+    protected Registry $doctrine;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mappingService, ElasticaService $elasticaService, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, AuthorizationCheckerInterface $authorizationChecker, $instanceId)
+    protected LoggerInterface $logger;
+
+    private Mapping $mappingService;
+
+    private ElasticaService $elasticaService;
+
+    private EnvironmentService $environmentService;
+    /** @var ContentType[] */
+    protected array $orderedContentTypes = [];
+    /** @var ContentType[] */
+    protected array $contentTypeArrayByName = [];
+    private AuthorizationCheckerInterface $authorizationChecker;
+    private RevisionRepository $revisionRepository;
+    private TokenStorageInterface $tokenStorage;
+
+    public function __construct(
+        Registry $doctrine,
+        LoggerInterface $logger,
+        Mapping $mappingService,
+        ElasticaService $elasticaService,
+        EnvironmentService $environmentService,
+        AuthorizationCheckerInterface $authorizationChecker,
+        RevisionRepository $revisionRepository,
+        TokenStorageInterface $tokenStorage)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->mappingService = $mappingService;
         $this->elasticaService = $elasticaService;
         $this->environmentService = $environmentService;
-        $this->formRegistry = $formRegistry;
-        $this->instanceId = $instanceId;
-        $this->translator = $translator;
         $this->authorizationChecker = $authorizationChecker;
+        $this->revisionRepository = $revisionRepository;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -491,12 +493,29 @@ class ContentTypeService
     public function getContentTypeMenu(): Menu
     {
         $menu = new Menu();
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new \RuntimeException('Unexpected null token');
+        }
+        $user = $token->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new \RuntimeException('Unexpected user type');
+        }
+        $temp = $this->revisionRepository->draftCounterGroupedByContentType($user->getCircles(), $this->authorizationChecker->isGranted('ROLE_ADMIN'));
+        $counters = [];
+        foreach ($temp as $item) {
+            $counters[$item['content_type_id']] = $item['counter'];
+        }
+
         foreach ($this->orderedContentTypes as $contentType) {
             $role = $contentType->getViewRole();
             if ($contentType->getDeleted() || !$contentType->getActive() || (null !== $role && !$this->authorizationChecker->isGranted($role)) && !$contentType->getRootContentType()) {
                 continue;
             }
-            $menu->addChild($contentType->getPluralName(), $contentType->getIcon() ?? 'fa fa-book', '/', $contentType->getColor());
+            $menuEntry = $menu->addChild($contentType->getPluralName(), $contentType->getIcon() ?? 'fa fa-book', '/', $contentType->getColor());
+            if (isset($counters[$contentType->getId()])) {
+                $menuEntry->setBadge(\strval($counters[$contentType->getId()]));
+            }
         }
 
         return $menu;

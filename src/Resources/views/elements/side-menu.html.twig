@@ -58,13 +58,18 @@
 
     {% if dashboardMenu.children|length > 0 %}
         <ul class="sidebar-menu">
-            <li class="header">{{ 'views.elements.side-menu-html.dashboards'|trans }}</li>
-            {% for dashboard in dashboardMenu.children %}
-                <li class="treeview">
-                    <a href="{{ dashboard.url }}"{% if dashboard.color %} class="text-{{ dashboard.color }}"{% endif %}>
-                        <i class="{{ dashboard.icon }}"></i>&nbsp;<span>{{ dashboard.label }}</span>
-                    </a>
-                </li>
+            <li class="header">{{ 'views.elements.sidebar-menu-html.dashboards'|trans }}</li>
+            {% for menu in dashboardMenu.children %}
+                {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if contentTypeMenu.children|length > 0 %}
+        <ul class="sidebar-menu">
+            <li class="header">{{ 'views.elements.sidebar-menu-html.content-types'|trans }}</li>
+            {% for menu in contentTypeMenu.children %}
+                {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
             {% endfor %}
         </ul>
     {% endif %}

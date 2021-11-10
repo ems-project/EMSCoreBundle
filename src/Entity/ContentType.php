@@ -294,12 +294,10 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $editRole;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="view_role", type="string", length=100, nullable=true)
      * @ORM\OrderBy({"orderKey" = "ASC"})
      */
-    protected $viewRole;
+    protected ?string $viewRole;
 
     /**
      * @var string
@@ -1620,12 +1618,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Get viewRole.
-     *
-     * @return string
-     */
-    public function getViewRole()
+    public function getViewRole(): ?string
     {
         return $this->viewRole;
     }

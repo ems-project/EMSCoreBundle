@@ -8,6 +8,7 @@ use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
@@ -20,6 +21,7 @@ use EMS\CoreBundle\Repository\ViewRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class ContentTypeService
@@ -47,8 +49,9 @@ class ContentTypeService
     protected $orderedContentTypes = [];
     /** @var ContentType[] */
     protected $contentTypeArrayByName = [];
+    private AuthorizationCheckerInterface $authorizationChecker;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mappingService, ElasticaService $elasticaService, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, $instanceId)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mappingService, ElasticaService $elasticaService, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, AuthorizationCheckerInterface $authorizationChecker, $instanceId)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -58,6 +61,7 @@ class ContentTypeService
         $this->formRegistry = $formRegistry;
         $this->instanceId = $instanceId;
         $this->translator = $translator;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -482,5 +486,19 @@ class ContentTypeService
         }
         $this->persist($contentType);
         $em->flush();
+    }
+
+    public function getContentTypeMenu(): Menu
+    {
+        $menu = new Menu();
+        foreach ($this->orderedContentTypes as $contentType) {
+            $role = $contentType->getViewRole();
+            if ($contentType->getDeleted() || !$contentType->getActive() || (null !== $role && !$this->authorizationChecker->isGranted($role)) && !$contentType->getRootContentType()) {
+                continue;
+            }
+            $menu->addChild($contentType->getPluralName(), $contentType->getIcon() ?? 'fa fa-book', '/', $contentType->getColor());
+        }
+
+        return $menu;
     }
 }

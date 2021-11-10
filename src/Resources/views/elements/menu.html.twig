@@ -1,0 +1,9 @@
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block sidebarMenu %}
+    <li class="treeview">
+        <a href="{{ menu.url }}"{% if menu.color %} class="text-{{ menu.color }}"{% endif %}>
+            <i class="{{ menu.icon }}"></i>&nbsp;<span>{{ menu.label }}</span>
+        </a>
+    </li>
+{% endblock sidebarMenu %}

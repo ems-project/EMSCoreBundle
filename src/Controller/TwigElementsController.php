@@ -6,6 +6,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\AssetExtractorService;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,14 +21,16 @@ class TwigElementsController extends AbstractController
     private UserService $userService;
     private JobService $jobService;
     private DashboardManager $dashboardManager;
+    private ContentTypeService $contentTypeService;
 
-    public function __construct(AssetExtractorService $assetExtractorService, ElasticaService $elasticaService, UserService $userService, JobService $jobService, DashboardManager $dashboardManager)
+    public function __construct(AssetExtractorService $assetExtractorService, ElasticaService $elasticaService, UserService $userService, JobService $jobService, DashboardManager $dashboardManager, ContentTypeService $contentTypeService)
     {
         $this->assetExtractorService = $assetExtractorService;
         $this->elasticaService = $elasticaService;
         $this->userService = $userService;
         $this->jobService = $jobService;
         $this->dashboardManager = $dashboardManager;
+        $this->contentTypeService = $contentTypeService;
     }
 
     public function sideMenuAction(): Response
@@ -55,6 +58,7 @@ class TwigElementsController extends AbstractController
                 'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
                 'status' => $status,
                 'dashboardMenu' => $this->dashboardManager->getSidebarMenu(),
+                'contentTypeMenu' => $this->contentTypeService->getContentTypeMenu(),
             ]
         );
     }

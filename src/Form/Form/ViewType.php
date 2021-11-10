@@ -9,6 +9,7 @@ use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\RolePickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Field\ViewTypePickerType;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,6 +17,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ViewType extends AbstractType
 {
+    private ContainerInterface $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $view = $builder->getData();
@@ -61,7 +69,7 @@ class ViewType extends AbstractType
                 'icon' => 'fa fa-save',
             ]);
         } else {
-            $builder->add('options', $options['options'], [
+            $builder->add('options', \get_class($this->container->get($view->getType())), [
                     'view' => $view,
                     'row_attr' => [
                         'class' => 'col-md-12',
@@ -90,7 +98,6 @@ class ViewType extends AbstractType
             'label_format' => 'view.%name%',
             'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
             'create' => false,
-            'options' => null,
             'ajax-save-url' => null,
         ]);
     }

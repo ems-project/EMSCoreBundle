@@ -2,136 +2,78 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Core\View\ViewManager;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\ViewType;
-use EMS\CoreBundle\Repository\ContentTypeRepository;
-use EMS\CoreBundle\Repository\ViewRepository;
-use Psr\Container\ContainerInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use EMS\CoreBundle\Routes;
+use EMS\CoreBundle\Service\ContentTypeService;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
-class ViewController extends AppController
+class ViewController extends AbstractController
 {
-    /**
-     * @param string $type
-     *
-     * @return Response
-     *
-     * @Route("/view/{type}", name="view.index")
-     */
-    public function indexAction($type)
+    private ContentTypeService $contentTypeService;
+    private ViewManager $viewManager;
+    private LoggerInterface $logger;
+
+    public function __construct(ContentTypeService $contentTypeService, ViewManager $viewManager, LoggerInterface $logger)
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $this->contentTypeService = $contentTypeService;
+        $this->viewManager = $viewManager;
+        $this->logger = $logger;
+    }
 
-        $contentTypes = $contentTypeRepository->findBy([
-            'deleted' => false,
-            'name' => $type,
-        ]);
-
-        if (!$contentTypes || 1 != \count($contentTypes)) {
-            throw new NotFoundHttpException('Content type not found');
-        }
-
+    public function index(string $type): Response
+    {
         return $this->render('@EMSCore/view/index.html.twig', [
-            'contentType' => $contentTypes[0],
+            'contentType' => $this->contentTypeService->giveByName($type),
         ]);
     }
 
-    /**
-     * @param string $type
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/view/add/{type}", name="view.add")
-     */
-    public function addAction($type, Request $request)
+    public function add(string $type, Request $request): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
-
-        $contentTypes = $contentTypeRepository->findBy([
-            'deleted' => false,
-            'name' => $type,
-        ]);
-
-        if (!$contentTypes || 1 != \count($contentTypes)) {
-            throw new NotFoundHttpException('Content type not found');
-        }
-
+        $contentType = $this->contentTypeService->giveByName($type);
         $view = new View();
-        $view->setContentType($contentTypes[0]);
+        $view->setContentType($contentType);
 
         $form = $this->createForm(ViewType::class, $view, [
             'create' => true,
         ]);
 
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($view);
-            $em->flush();
+            $this->viewManager->update($view);
 
-            $this->getLogger()->notice('log.view.created', [
+            $this->logger->notice('log.view.created', [
                 'view_name' => $view->getName(),
             ]);
 
-            return $this->redirectToRoute('view.edit', [
+            return $this->redirectToRoute(Routes::VIEW_EDIT, [
                 'id' => $view->getId(),
             ]);
         }
 
         return $this->render('@EMSCore/view/add.html.twig', [
-            'contentType' => $contentTypes[0],
+            'contentType' => $contentType,
             'form' => $form->createView(),
         ]);
     }
 
-    /**
-     * @Route("/view/edit/{id}.{_format}", name="view.edit", defaults={"_format"="html"})
-     */
-    public function editAction(string $id, string $_format, Request $request, ContainerInterface $container): Response
+    public function edit(View $view, string $_format, Request $request): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var ViewRepository $viewRepository */
-        $viewRepository = $em->getRepository('EMSCoreBundle:View');
-
-        /** @var View|null $view */
-        $view = $viewRepository->find($id);
-
-        if (null === $view) {
-            throw new NotFoundHttpException('View type not found');
-        }
-
         $form = $this->createForm(ViewType::class, $view, [
             'create' => false,
-            'options' => \get_class($container->get($view->getType())),
-            'ajax-save-url' => $this->generateUrl('view.edit', ['id' => $id, '_format' => 'json']),
+            'ajax-save-url' => $this->generateUrl(Routes::VIEW_EDIT, ['id' => $view->getId(), '_format' => 'json']),
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($view);
-            $em->flush();
+            $this->viewManager->update($view);
 
-            $this->getLogger()->notice('log.view.updated', [
+            $this->logger->notice('log.view.updated', [
                 'view_name' => $view->getName(),
             ]);
 
@@ -141,7 +83,7 @@ class ViewController extends AppController
                 ]);
             }
 
-            return $this->redirectToRoute('view.index', [
+            return $this->redirectToRoute(Routes::VIEW_INDEX, [
                 'type' => $view->getContentType()->getName(),
             ]);
         }
@@ -153,60 +95,26 @@ class ViewController extends AppController
         ]);
     }
 
-    /**
-     * @return RedirectResponse
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/view/duplicate/{view}", name="emsco_view_duplicate", methods={"POST"})
-     */
-    public function duplicateAction(View $view)
+    public function duplicate(View $view): Response
     {
         $newView = clone $view;
+        $this->viewManager->update($newView);
 
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        $em->persist($newView);
-        $em->flush();
-
-        return $this->redirectToRoute('view.edit', ['id' => $newView->getId()]);
+        return $this->redirectToRoute(Routes::VIEW_EDIT, ['id' => $newView->getId()]);
     }
 
-    /**
-     * @param int $id
-     *
-     * @return RedirectResponse
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/view/remove/{id}", name="view.remove", methods={"POST"})
-     */
-    public function removeAction($id)
+    public function delete(View $view): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var ViewRepository $viewRepository */
-        $viewRepository = $em->getRepository('EMSCoreBundle:View');
+        $name = $view->getName();
+        $contentType = $view->getContentType();
 
-        /** @var View|null $view */
-        $view = $viewRepository->find($id);
-
-        if (null === $view) {
-            throw new NotFoundHttpException('View not found');
-        }
-
-        $em->remove($view);
-        $em->flush();
-
-        $this->getLogger()->notice('log.view.deleted', [
-            'view_name' => $view->getName(),
+        $this->viewManager->delete($view);
+        $this->logger->notice('log.view.deleted', [
+            'view_name' => $name,
         ]);
 
-        return $this->redirectToRoute('view.index', [
-            'type' => $view->getContentType()->getName(),
+        return $this->redirectToRoute(Routes::VIEW_INDEX, [
+            'type' => $contentType->getName(),
         ]);
     }
 }

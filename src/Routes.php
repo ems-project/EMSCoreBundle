@@ -29,4 +29,8 @@ class Routes
     public const RELEASE_AJAX_DATA_TABLE = 'emsco_release_ajax_data_table';
     public const RELEASE_MEMBER_REVISION_AJAX = 'emsco_release_ajax_data_table_member_revision';
     public const RELEASE_NON_MEMBER_REVISION_AJAX = 'emsco_release_ajax_data_table_non_member_revision';
+    public const VIEW_INDEX = 'emsco_view_index';
+    public const VIEW_EDIT = 'emsco_view_edit';
+    public const VIEW_ADD = 'emsco_view_add';
+    public const VIEW_DELETE = 'emsco_view_delete';
 }

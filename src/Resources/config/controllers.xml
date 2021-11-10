@@ -156,5 +156,11 @@
             <argument type="service" id="ems.service.asset_extractor" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ViewController" public="true">
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.view.manager" />
+            <argument type="service" id="logger"/>
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

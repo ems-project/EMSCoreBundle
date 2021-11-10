@@ -12,21 +12,18 @@ use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class DashboardManager implements EntityServiceInterface
 {
     private DashboardRepository $dashboardRepository;
     private LoggerInterface $logger;
-    private RouterInterface $router;
     private AuthorizationCheckerInterface $authorizationChecker;
 
-    public function __construct(DashboardRepository $dashboardRepository, LoggerInterface $logger, RouterInterface $router, AuthorizationCheckerInterface $authorizationChecker)
+    public function __construct(DashboardRepository $dashboardRepository, LoggerInterface $logger, AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->dashboardRepository = $dashboardRepository;
         $this->logger = $logger;
-        $this->router = $router;
         $this->authorizationChecker = $authorizationChecker;
     }
 
@@ -112,7 +109,7 @@ class DashboardManager implements EntityServiceInterface
             if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
                 continue;
             }
-            $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), $this->router->generate(Routes::DASHBOARD, ['name' => $dashboard->getName()]), $dashboard->getColor());
+            $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), Routes::DASHBOARD, ['name' => $dashboard->getName()], $dashboard->getColor());
         }
 
         return $menu;
@@ -135,7 +132,7 @@ class DashboardManager implements EntityServiceInterface
             if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
                 continue;
             }
-            $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), $this->router->generate(Routes::DASHBOARD, ['name' => $dashboard->getName()]), $dashboard->getColor());
+            $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), Routes::DASHBOARD, ['name' => $dashboard->getName()], $dashboard->getColor());
         }
 
         return $menu;

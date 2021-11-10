@@ -8,15 +8,23 @@ class MenuEntry
 {
     private string $label;
     private string $icon;
-    private string $url;
+    private string $route;
+    /**
+     * @var array<string, mixed>
+     */
+    private array $routeParameters;
     private ?string $color;
     private ?string $badge = null;
 
-    public function __construct(string $label, string $icon, string $url, ?string $color = null)
+    /**
+     * @param array<string, mixed> $routeParameters
+     */
+    public function __construct(string $label, string $icon, string $route, array $routeParameters = [], ?string $color = null)
     {
         $this->label = $label;
         $this->icon = $icon;
-        $this->url = $url;
+        $this->route = $route;
+        $this->routeParameters = $routeParameters;
         $this->color = $color;
     }
 
@@ -30,9 +38,30 @@ class MenuEntry
         return $this->icon;
     }
 
-    public function getUrl(): string
+    public function getRoute(): string
     {
-        return $this->url;
+        return $this->route;
+    }
+
+    public function setRoute(string $route): void
+    {
+        $this->route = $route;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getRouteParameters(): array
+    {
+        return $this->routeParameters;
+    }
+
+    /**
+     * @param array<string, mixed> $routeParameters
+     */
+    public function setRouteParameters(array $routeParameters): void
+    {
+        $this->routeParameters = $routeParameters;
     }
 
     public function getColor(): ?string

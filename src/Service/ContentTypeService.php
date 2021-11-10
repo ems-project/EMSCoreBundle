@@ -530,6 +530,12 @@ class ContentTypeService
             $this->addMenuSearchLinks($contentType, $menuEntry, $circleContentType, $user);
             $this->addMenuViewLinks($contentType, $menuEntry);
             $this->addDraftInProgressLink($contentType, $menuEntry);
+            if ($this->authorizationChecker->isGranted($contentType->getCreateRole())) {
+                $createLInk = $menuEntry->addChild('sidebar_menu.content_type.create', 'fa fa-plus', Routes::DATA_ADD, ['contentType' => $contentType->getId()]);
+                $createLInk->setTranslation([
+                    '%name%' => $contentType->getSingularName(),
+                ]);
+            }
         }
 
         return $menu;

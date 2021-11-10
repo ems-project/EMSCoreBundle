@@ -537,17 +537,21 @@ class ContentTypeService
 
     private function addMenuSearchLinks(ContentType $contentType, MenuEntry $menuEntry, ?ContentType $circleContentType, UserInterface $user): void
     {
-        if ($this->authorizationChecker->isGranted($contentType->getSearchLinkDisplayRole())) {
-            $search = $menuEntry->addChild('sidebar_menu.content_type.search', 'fa fa-search', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()]);
-            $search->setTranslation(['%plural%' => $contentType->getPluralName()]);
-
-            if (null !== $circleContentType && null !== $contentType->getCirclesField() && '' !== $contentType->getCirclesField() && !empty($user->getCircles())) {
-                $inMyCircle = $menuEntry->addChild('sidebar_menu.content_type.search_in_my_circle', $circleContentType->getIcon() ?? '', Routes::DATA_IN_MY_CIRCLE_VIEW, ['name' => $contentType->getName()]);
-                $inMyCircle->setTranslation([
-                    '%name%' => \count($user->getCircles()) > 1 ? $circleContentType->getPluralName() : $circleContentType->getSingularName(),
-                ]);
-            }
+        if (!$this->authorizationChecker->isGranted($contentType->getSearchLinkDisplayRole())) {
+            return;
         }
+
+        $search = $menuEntry->addChild('sidebar_menu.content_type.search', 'fa fa-search', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()]);
+        $search->setTranslation(['%plural%' => $contentType->getPluralName()]);
+
+        if (null === $circleContentType || null === $contentType->getCirclesField() || '' === $contentType->getCirclesField() || empty($user->getCircles())) {
+            return;
+        }
+
+        $inMyCircle = $menuEntry->addChild('sidebar_menu.content_type.search_in_my_circle', $circleContentType->getIcon() ?? '', Routes::DATA_IN_MY_CIRCLE_VIEW, ['name' => $contentType->getName()]);
+        $inMyCircle->setTranslation([
+            '%name%' => \count($user->getCircles()) > 1 ? $circleContentType->getPluralName() : $circleContentType->getSingularName(),
+        ]);
     }
 
     private function addMenuViewLinks(ContentType $contentType, MenuEntry $menuEntry): void
@@ -562,9 +566,11 @@ class ContentTypeService
 
     private function addDraftInProgressLink(ContentType $contentType, MenuEntry $menuEntry): void
     {
-        if ($contentType->giveEnvironment()->getManaged() && $menuEntry->hasBadge() && $this->authorizationChecker->isGranted($contentType->getEditRole())) {
-            $draftInProgress = $menuEntry->addChild('sidebar_menu.content_type.draft_in_progress', 'fa fa-fire', Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentType->getId()]);
-            $draftInProgress->setTranslation([]);
+        if (!$contentType->giveEnvironment()->getManaged() || !$menuEntry->hasBadge() || !$this->authorizationChecker->isGranted($contentType->getEditRole())) {
+            return;
         }
+
+        $draftInProgress = $menuEntry->addChild('sidebar_menu.content_type.draft_in_progress', 'fa fa-fire', Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentType->getId()]);
+        $draftInProgress->setTranslation([]);
     }
 }

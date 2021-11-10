@@ -40,5 +40,8 @@
         <service id="ems.repository.release_revision" class="EMS\CoreBundle\Repository\ReleaseRevisionRepository" public="true">
            <argument type="service" id="doctrine"/>
         </service>
+        <service id="ems.repository.view" class="EMS\CoreBundle\Repository\ViewRepository" public="true">
+            <argument type="service" id="doctrine"/>
+        </service>
     </services>
 </container>

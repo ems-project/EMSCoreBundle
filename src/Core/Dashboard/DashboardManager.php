@@ -104,7 +104,7 @@ class DashboardManager implements EntityServiceInterface
 
     public function getSidebarMenu(): Menu
     {
-        $menu = new Menu();
+        $menu = new Menu('views.elements.sidebar-menu-html.dashboards');
         foreach ($this->dashboardRepository->getSidebarMenu() as $dashboard) {
             if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
                 continue;
@@ -127,7 +127,7 @@ class DashboardManager implements EntityServiceInterface
 
     public function getNotificationMenu(): Menu
     {
-        $menu = new Menu();
+        $menu = new Menu('views.elements.notification-menu-html.dashboards');
         foreach ($this->dashboardRepository->getNotificationMenu() as $dashboard) {
             if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
                 continue;

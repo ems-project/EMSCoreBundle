@@ -59,13 +59,15 @@ class TwigElementsController extends AbstractController
             [
                 'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
                 'status' => $status,
-                'dashboardMenu' => $this->dashboardManager->getSidebarMenu(),
-                'contentTypeMenu' => $this->contentTypeService->getContentTypeMenu(),
-                'publisherMenu' => $this->getPublisherMenu(),
-                'crmMenu' => $this->getCrmMenu(),
-                'adminUserMenu' => $this->getUserAdminMenu(),
-                'adminMenu' => $this->getAdminMenu(),
-                'otherMenu' => $this->getOtherMenu(),
+                'menu' => [
+                    $this->dashboardManager->getSidebarMenu(),
+                    $this->contentTypeService->getContentTypeMenu(),
+                    $this->getPublisherMenu(),
+                    $this->getCrmMenu(),
+                    $this->getUserAdminMenu(),
+                    $this->getAdminMenu(),
+                    $this->getOtherMenu(),
+                ],
             ]
         );
     }
@@ -102,7 +104,7 @@ class TwigElementsController extends AbstractController
 
     private function getOtherMenu(): Menu
     {
-        $menu = new Menu();
+        $menu = new Menu('views.elements.side-menu-html.other');
         $menu->addChild('views.elements.side-menu-html.documentations', 'fa fa-book', 'documentation')->setTranslation([]);
 
         return $menu;
@@ -110,7 +112,7 @@ class TwigElementsController extends AbstractController
 
     private function getUserAdminMenu(): Menu
     {
-        $menu = new Menu();
+        $menu = new Menu('views.elements.side-menu-html.user-management');
         if (!$this->isGranted('ROLE_USER_MANAGEMENT')) {
             return $menu;
         }
@@ -121,7 +123,7 @@ class TwigElementsController extends AbstractController
 
     private function getAdminMenu(): Menu
     {
-        $menu = new Menu();
+        $menu = new Menu('views.elements.side-menu-html.admin');
         if (!$this->isGranted('ROLE_ADMIN')) {
             return $menu;
         }
@@ -143,7 +145,7 @@ class TwigElementsController extends AbstractController
 
     private function getCrmMenu(): Menu
     {
-        $menu = new Menu();
+        $menu = new Menu('form_submissions.title');
         if (!$this->isGranted('ROLE_FORM_CRM')) {
             return $menu;
         }
@@ -154,7 +156,7 @@ class TwigElementsController extends AbstractController
 
     private function getPublisherMenu(): Menu
     {
-        $menu = new Menu();
+        $menu = new Menu('views.elements.side-menu-html.publishers');
         if (!$this->isGranted('ROLE_PUBLISHER')) {
             return $menu;
         }

@@ -45,70 +45,17 @@
                     </li>
                 </ul>
             {% endif %}
-
-            {% if dashboardMenu.hasChildren %}
-                <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">{{ 'views.elements.sidebar-menu-html.dashboards'|trans }}</li>
-                    {% for menu in dashboardMenu.children %}
-                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
-                    {% endfor %}
-                </ul>
-            {% endif %}
-
-            {% if contentTypeMenu.hasChildren %}
-                <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">{{ 'views.elements.sidebar-menu-html.content-types'|trans }}</li>
-                    {% for menu in contentTypeMenu.children %}
-                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
-                    {% endfor %}
-                </ul>
-            {% endif %}
-
-            {% if publisherMenu.hasChildren %}
-                <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">{{ 'views.elements.side-menu-html.publishers'|trans }}</li>
-                    {% for menu in publisherMenu.children %}
-                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
-                    {% endfor %}
-                </ul>
-            {% endif %}
-
-            {% if crmMenu.hasChildren %}
-                <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">{{ 'form_submissions.title'|trans }}</li>
-                    {% for menu in crmMenu.children %}
-                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
-                    {% endfor %}
-                </ul>
-            {% endif %}
-
-            {% if adminUserMenu.hasChildren %}
-                <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">{{ 'views.elements.side-menu-html.user-management'|trans }}</li>
-                    {% for menu in adminUserMenu.children %}
-                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
-                    {% endfor %}
-                </ul>
-            {% endif %}
-
-            {% if adminMenu.hasChildren %}
-                <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">{{ 'views.elements.side-menu-html.admin'|trans }}</li>
-                    {% for menu in adminMenu.children %}
-                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
-                    {% endfor %}
-                </ul>
-            {% endif %}
-
-            {% if otherMenu.hasChildren %}
-                <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">{{ 'views.elements.side-menu-html.other'|trans }}</li>
-                    {% for menu in otherMenu.children %}
-                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
-                    {% endfor %}
-                </ul>
-            {% endif %}
-
         {% endif %}
+
+        {% for item in menu|default([]) %}
+            {% if item.hasChildren %}
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">{{ item.title|trans }}</li>
+                    {% for menu in item.children %}
+                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
     </section>
 </aside>

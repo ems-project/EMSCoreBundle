@@ -8,6 +8,12 @@ class Menu
 {
     /** @var MenuEntry[] */
     private array $children = [];
+    private string $title;
+
+    public function __construct(string $title)
+    {
+        $this->title = $title;
+    }
 
     /**
      * @param array<string, mixed> $routeParameters
@@ -28,5 +34,10 @@ class Menu
     public function hasChildren(): bool
     {
         return \count($this->children) > 0;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
     }
 }

@@ -502,7 +502,7 @@ class ContentTypeService
 
     public function getContentTypeMenu(): Menu
     {
-        $menu = new Menu();
+        $menu = new Menu('views.elements.sidebar-menu-html.content-types');
         $token = $this->tokenStorage->getToken();
         if (null === $token) {
             throw new \RuntimeException('Unexpected null token');

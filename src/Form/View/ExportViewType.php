@@ -9,6 +9,7 @@ use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\FileDispositionType;
+use EMS\CoreBundle\Form\Field\OrientationType;
 use EMS\CoreBundle\Form\Field\PdfSizeType;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -92,12 +93,8 @@ class ExportViewType extends ViewType
                         'PDF (dompdf)' => 'dompdf',
                 ],
         ])
-        ->add('pdf_orientation', ChoiceType::class, [
+        ->add('pdf_orientation', OrientationType::class, [
             'required' => false,
-            'choices' => [
-                'Portrait' => 'portrait',
-                'Landscape' => 'landscape',
-            ],
         ])
         ->add('pdf_size', PdfSizeType::class, [
             'required' => false,

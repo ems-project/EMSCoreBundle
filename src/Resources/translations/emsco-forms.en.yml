@@ -926,3 +926,7 @@ pdf_size.8.5x11: 8.5x11
 pdf_size.8.5x14: 8.5x14
 pdf_size.11x17: 11x17
 pdf_size.pdf_size: 'PDF Size'
+orientation.pdf_orientation: 'PDF Orientation'
+orientation.orientation: Orientation
+orientation.portrait: Portrait
+orientation.landscape: Landscape

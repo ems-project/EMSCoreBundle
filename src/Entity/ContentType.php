@@ -1057,12 +1057,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return null !== $this->fieldType;
     }
 
-    /**
-     * Get fieldType.
-     *
-     * @return FieldType
-     */
-    public function getFieldType()
+    public function getFieldType(): FieldType
     {
         if (null === $this->fieldType) {
             throw new \RuntimeException('Field type is unset!');

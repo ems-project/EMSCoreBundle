@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\View;
 
-use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Repository\ViewRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
@@ -57,13 +56,6 @@ class ViewManager implements EntityServiceInterface
         if (0 === $view->getOrderKey()) {
             $view->setOrderKey($this->viewRepository->counter() + 1);
         }
-        $encoder = new Encoder();
-        $name = $view->getName();
-        $webalized = $encoder->webalize($name);
-        if (null === $webalized) {
-            throw new \RuntimeException('Unexpected null webalized name');
-        }
-        $view->setName($webalized);
         $this->viewRepository->create($view);
     }
 

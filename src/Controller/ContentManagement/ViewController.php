@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CoreBundle\Core\View\ViewManager;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -34,6 +33,16 @@ class ViewController extends AbstractController
         $this->logger = $logger;
     }
 
+    /**
+     * @deprecated
+     */
+    public function indexDeprecated(string $type, string $_format, Request $request): Response
+    {
+        @\trigger_error(\sprintf('Route view.index is deprecated, use %s instead', Routes::VIEW_INDEX), E_USER_DEPRECATED);
+
+        return $this->index($type, $_format, $request);
+    }
+
     public function index(string $type, string $_format, Request $request): Response
     {
         $contentType = $this->contentTypeService->giveByName($type);
@@ -57,6 +66,10 @@ class ViewController extends AbstractController
                     case EntityTable::DELETE_ACTION:
                         $this->viewManager->deleteByIds($table->getSelected());
                         break;
+                    case TableType::REORDER_ACTION:
+                        $newOrder = TableType::getReorderedKeys($form->getName(), $request);
+                        $this->viewManager->reorderByIds($newOrder);
+                        break;
                     default:
                         $this->logger->error('log.controller.view.unknown_action');
                 }
@@ -64,13 +77,26 @@ class ViewController extends AbstractController
                 $this->logger->error('log.controller.view.unknown_action');
             }
 
-            return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
+            return $this->redirectToRoute(Routes::VIEW_INDEX, [
+                'type' => $contentType->getName(),
+            ]);
         }
 
         return $this->render('@EMSCore/view/index.html.twig', [
             'contentType' => $contentType,
             'form' => $form->createView(),
         ]);
+    }
+
+
+    /**
+     * @deprecated
+     */
+    public function addDeprecated(string $type, Request $request): Response
+    {
+        @\trigger_error(\sprintf('Route view.add is deprecated, use %s instead', Routes::VIEW_ADD), E_USER_DEPRECATED);
+
+        return $this->add($type, $request);
     }
 
     public function add(string $type, Request $request): Response
@@ -92,7 +118,7 @@ class ViewController extends AbstractController
             ]);
 
             return $this->redirectToRoute(Routes::VIEW_EDIT, [
-                'id' => $view->getId(),
+                'view' => $view->getId(),
             ]);
         }
 
@@ -102,11 +128,21 @@ class ViewController extends AbstractController
         ]);
     }
 
+    /**
+     * @deprecated
+     */
+    public function editDeprecated(View $view, string $_format, Request $request): Response
+    {
+        @\trigger_error(\sprintf('Route view.edit is deprecated, use %s instead', Routes::VIEW_EDIT), E_USER_DEPRECATED);
+
+        return $this->edit($view, $_format, $request);
+    }
+
     public function edit(View $view, string $_format, Request $request): Response
     {
         $form = $this->createForm(ViewType::class, $view, [
             'create' => false,
-            'ajax-save-url' => $this->generateUrl(Routes::VIEW_EDIT, ['id' => $view->getId(), '_format' => 'json']),
+            'ajax-save-url' => $this->generateUrl(Routes::VIEW_EDIT, ['view' => $view->getId(), '_format' => 'json']),
         ]);
 
         $form->handleRequest($request);
@@ -141,7 +177,17 @@ class ViewController extends AbstractController
         $newView = clone $view;
         $this->viewManager->update($newView);
 
-        return $this->redirectToRoute(Routes::VIEW_EDIT, ['id' => $newView->getId()]);
+        return $this->redirectToRoute(Routes::VIEW_EDIT, ['view' => $newView->getId()]);
+    }
+
+    /**
+     * @deprecated
+     */
+    public function deleteDeprecated(View $view): Response
+    {
+        @\trigger_error(\sprintf('Route view.delete is deprecated, use %s instead', Routes::VIEW_DELETE), E_USER_DEPRECATED);
+
+        return $this->delete($view);
     }
 
     public function delete(View $view): Response
@@ -167,11 +213,11 @@ class ViewController extends AbstractController
         ]), $contentType);
         $table->addColumn('table.index.column.loop_count', 'orderKey');
         $table->addColumn('view.index.column.name', 'name');
-        $table->addColumn('view.index.column.name', 'name')->setItemIconCallback(function (Dashboard $dashboard) {
-            return $dashboard->getIcon();
+        $table->addColumn('view.index.column.name', 'name')->setItemIconCallback(function (View $view) {
+            return $view->getIcon() ?? '';
         });
         $table->addItemGetAction(Routes::VIEW_EDIT, 'view.actions.edit', 'pencil');
-        $table->addItemGetAction(Routes::VIEW_DUPLICATE, 'view.actions.duplicate', 'pencil');
+        $table->addItemPostAction(Routes::VIEW_DUPLICATE, 'view.actions.duplicate', 'pencil', 'view.actions.duplicate_confirm');
         $table->addItemPostAction(Routes::VIEW_DELETE, 'view.actions.delete', 'trash', 'view.actions.delete_confirm')->setButtonType('outline-danger');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'view.actions.delete_selected', 'view.actions.delete_selected_confirm')
             ->setCssClass('btn btn-outline-danger');

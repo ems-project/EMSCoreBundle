@@ -80,6 +80,7 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
             $now = new \DateTime('now');
             $this->created = $now;
             $this->modified = $now;
+            $this->orderKey = 0;
         }
     }
 

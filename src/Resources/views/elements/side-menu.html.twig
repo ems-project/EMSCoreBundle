@@ -15,180 +15,100 @@
 	      	{% endif %}
         </div>
       </div>
-{% if app.user %}
-      <form action="{{ path('ems_quick_search') }}" method="get" class="sidebar-form">
-        <div class="input-group">
-            <label for="q" class="sr-only">{{ 'views.elements.side-menu-html.quick-search-label'|trans }}</label>
-            <input id="q" type="text" name="q" class="form-control" placeholder="{{ 'views.elements.side-menu-html.quick-search-placeholder'|trans }}">
-          <span class="input-group-btn">
-            <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-            </button>
-          </span>
-        </div>
-      </form>
+        {% if app.user %}
+            <form action="{{ path('ems_quick_search') }}" method="get" class="sidebar-form">
+                <div class="input-group">
+                    <label for="q" class="sr-only">{{ 'views.elements.side-menu-html.quick-search-label'|trans }}</label>
+                    <input id="q" type="text" name="q" class="form-control" placeholder="{{ 'views.elements.side-menu-html.quick-search-placeholder'|trans }}">
+                    <span class="input-group-btn">
+                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </form>
 
-      {% if app.user %}
-	      {% set searches = app.user.username|searches %}
-	      {% if searches|length > 0 %}
-	      <ul class="sidebar-menu" data-widget="tree">
-	        <li class="header">{{ app.user.displayName }}</li>
-	          <li class="treeview">
-	          	<a href="#" class="">
-	          		<i class="fa fa-search"></i> <span>Searches</span>
-	          		<i class="fa fa-angle-left pull-right"></i>
-	          		
-	          	</a>
-	          	<ul class="treeview-menu">
-	          		{% for search in searches %}
-	          			<li class=""><a id="menu-search-preset-{{ search.id }}" href="{{ path('elasticsearch.search', { 'searchId': search.id  }) }}"> {{ search.name }}</a></li>
-	          		{% endfor %}
-	          	</ul>
-	          </li>
-			</ul>
-			{% endif %}
-	{% endif %}
+            {% set searches = app.user.username|searches %}
+            {% if searches|length > 0 %}
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">{{ app.user.displayName }}</li>
+                    <li class="treeview">
+                        <a href="#" class="">
+                            <i class="fa fa-search"></i> <span>Searches</span>
+                            <i class="fa fa-angle-left pull-right"></i>
 
+                        </a>
+                        <ul class="treeview-menu">
+                            {% for search in searches %}
+                                <li class=""><a id="menu-search-preset-{{ search.id }}" href="{{ path('elasticsearch.search', { 'searchId': search.id  }) }}"> {{ search.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            {% endif %}
 
-    {% if dashboardMenu.children|length > 0 %}
-        <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">{{ 'views.elements.sidebar-menu-html.dashboards'|trans }}</li>
-            {% for menu in dashboardMenu.children %}
-                {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
-            {% endfor %}
-        </ul>
-    {% endif %}
+            {% if dashboardMenu.hasChildren %}
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">{{ 'views.elements.sidebar-menu-html.dashboards'|trans }}</li>
+                    {% for menu in dashboardMenu.children %}
+                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
-    {% if contentTypeMenu.children|length > 0 %}
-        <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">{{ 'views.elements.sidebar-menu-html.content-types'|trans }}</li>
-            {% for menu in contentTypeMenu.children %}
-                {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
-            {% endfor %}
-        </ul>
-    {% endif %}
-	
-	{% if is_granted('ROLE_PUBLISHER') %}
-      <ul class="sidebar-menu">
-         <li class="header">{{ 'views.elements.side-menu-html.publishers'|trans }}</li>
-         <li class="treeview">
-              <a href="{{ path('emsco_release_index') }}">
-                <i class="{{ 'view.icon.class.release'|trans }}"></i> <span>{{ 'view.elements.side-menu.release-admin.index-link'|trans }}</span>
-              </a>
-          </li>
-          <li class="treeview">
-            <a href="{{ path('environment.align') }}" id="menu-environment-align">
-            	<i class="fa fa-align-center"></i> <span>{{ 'views.elements.side-menu-html.compare-environments'|trans }}</span>
-            </a>
-          </li>
-          <li class="treeview">
-              <a href="{{ path('ems_core_uploaded_file_index') }}">
-                  <i class="fa fa-upload"></i> <span>{{ 'views.elements.side-menu-html.uploaded-files'|trans }}</span>
-              </a>
-          </li>
-      </ul>	
-    {% endif %}
+            {% if contentTypeMenu.hasChildren %}
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">{{ 'views.elements.sidebar-menu-html.content-types'|trans }}</li>
+                    {% for menu in contentTypeMenu.children %}
+                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
-    {% if is_granted('ROLE_FORM_CRM') %}
-        <ul class="sidebar-menu">
-            <li class="header">{{ 'form_submissions.title'|trans }}</li>
-            <li class="treeview">
-                <a href="{{ path('form.submissions') }}" id="menu-environment-align">
-                    <i class="fa fa-list-alt"></i> <span>{{ 'form_submissions.overview'|trans }}</span>
-                </a>
-            </li>
-        </ul>
-    {% endif %}
-    
-    {% if is_granted('ROLE_USER_MANAGEMENT') %}
-        <ul class="sidebar-menu">
-            <li class="header">{{ 'views.elements.side-menu-html.user-management'|trans }}</li>
-            <li class="treeview">
-                <a href="{{ path('ems.user.index') }}" id="menu-user-index">
-                    <i class="fa fa-users"></i> <span>{{ 'views.elements.side-menu-html.users'|trans }}</span>
-                </a>
-            </li>
-        </ul>
-    {% endif %}
-	  
-	{% if is_granted('ROLE_ADMIN') %}
-      <ul class="sidebar-menu">
-        <li class="header">{{ 'views.elements.side-menu-html.admin'|trans }}</li>
-          <li class="treeview">
-            <a href="{{ path('contenttype.index') }}" id="menu-contenttype-list">
-            	<i class="fa fa-sitemap"></i> <span>{{ 'views.elements.side-menu-html.content-types'|trans }}</span>
-            </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('environment.index') }}" id="menu-environment-list">
-          	<i class="fa fa-database"></i> <span>{{ 'views.elements.side-menu-html.environments'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('ems_core_channel_index') }}">
-          	<i class="{{ 'view.icon.class.channel'|trans }}"></i> <span>{{ 'view.elements.side-menu.chanel-admin.index-link'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('emsco_dashboard_admin_index') }}">
-          	<i class="{{ 'view.icon.class.dashboard'|trans }}"></i> <span>{{ 'view.elements.side-menu.dashboard-admin.index-link'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('ems_core_query_search_index') }}">
-          	<i class="{{ 'view.icon.class.query_search'|trans }}"></i> <span>{{ 'view.elements.side-menu.query_search.index-link'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('ems_wysiwyg_index') }}" id="menu-wysiwyg-index">
-          	<i class="fa fa-edit"></i> <span>{{ 'views.elements.side-menu-html.wysiwyg'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('ems_search_options_index') }}" id="menu-wysiwyg-index">
-          	<i class="fa fa-search"></i> <span>{{ 'views.elements.side-menu-html.search'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('i18n_index') }}" id="menu-i18n-index">
-          	<i class="fa fa-language"></i> <span>{{ 'views.elements.side-menu-html.i18n'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('job.index') }}" id="menu-job-index">
-          	<i class="fa fa-terminal"></i> <span>{{ 'views.elements.side-menu-html.jobs'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('ems_analyzer_index') }}" id="menu-analyzer-index">
-          	<i class="fa fa-signal"></i> <span>{{ 'views.elements.side-menu-html.analyzers'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('ems_filter_index') }}" id="menu-filter-index">
-          	<i class="fa fa-filter"></i> <span>{{ 'views.elements.side-menu-html.filters'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-            <a href="{{ path('ems_core_uploaded_file_logs') }}">
-                <i class="fa fa-upload"></i> <span>{{ 'views.elements.side-menu-html.uploaded-files-logs'|trans }}</span>
-            </a>
-        </li>
-	  </ul>
-	 {% endif %}
-	 
-	  {% endif %}
-      <ul class="sidebar-menu">
-        <li class="header">{{ 'views.elements.side-menu-html.other'|trans }}</li>
-        <li class="treeview">
-          <a href="{{ path('elasticsearch.status') }}" id="menu-elasticsearch-status">
-          	<i class="fa fa-cubes"></i> <span>{{ 'views.elements.side-menu-html.status'|trans }}</span>
-          </a>
-        </li>
-        <li>
-        	<a id="menu-documentation" href="{{ path('documentation') }}">
-        		<i class="fa fa-book"></i> <span>{{ 'views.elements.side-menu-html.documentations'|trans }}</span>
-        	</a>
-        </li>
-      </ul>
+            {% if publisherMenu.hasChildren %}
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">{{ 'views.elements.side-menu-html.publishers'|trans }}</li>
+                    {% for menu in publisherMenu.children %}
+                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if crmMenu.hasChildren %}
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">{{ 'form_submissions.title'|trans }}</li>
+                    {% for menu in crmMenu.children %}
+                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if adminUserMenu.hasChildren %}
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">{{ 'views.elements.side-menu-html.user-management'|trans }}</li>
+                    {% for menu in adminUserMenu.children %}
+                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if adminMenu.hasChildren %}
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">{{ 'views.elements.side-menu-html.admin'|trans }}</li>
+                    {% for menu in adminMenu.children %}
+                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if otherMenu.hasChildren %}
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">{{ 'views.elements.side-menu-html.other'|trans }}</li>
+                    {% for menu in otherMenu.children %}
+                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+        {% endif %}
     </section>
-  </aside>
+</aside>

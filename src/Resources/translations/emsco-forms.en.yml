@@ -26,6 +26,8 @@ view.public: 'Publicly available (without authentication)'
 view.type: Type
 view.save: Save
 view.saveAndClose: 'Save and Close'
+view.pdf_orientation: 'PDF Orientation'
+view.pdf_size: 'PDF Size'
 role.not-defined: 'Not defined'
 ROLE_ADMIN: Administrator
 ROLE_ALLOW_ALIGN: 'Align Environment'

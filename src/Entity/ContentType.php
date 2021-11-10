@@ -1343,9 +1343,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get views.
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection<int, View>
      */
     public function getViews()
     {

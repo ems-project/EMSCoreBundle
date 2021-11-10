@@ -46,6 +46,7 @@ class ContentTypeService
     private AuthorizationCheckerInterface $authorizationChecker;
     private RevisionRepository $revisionRepository;
     private TokenStorageInterface $tokenStorage;
+    private ?string $circleContentTypeName;
 
     public function __construct(
         Registry $doctrine,
@@ -55,7 +56,8 @@ class ContentTypeService
         EnvironmentService $environmentService,
         AuthorizationCheckerInterface $authorizationChecker,
         RevisionRepository $revisionRepository,
-        TokenStorageInterface $tokenStorage)
+        TokenStorageInterface $tokenStorage,
+        ?string $circleContentTypeName)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -65,6 +67,7 @@ class ContentTypeService
         $this->authorizationChecker = $authorizationChecker;
         $this->revisionRepository = $revisionRepository;
         $this->tokenStorage = $tokenStorage;
+        $this->circleContentTypeName = $circleContentTypeName;
     }
 
     /**
@@ -491,6 +494,11 @@ class ContentTypeService
         $em->flush();
     }
 
+    public function getCircleContentType(): ?ContentType
+    {
+        return $this->contentTypeArrayByName[$this->circleContentTypeName] ?? null;
+    }
+
     public function getContentTypeMenu(): Menu
     {
         $menu = new Menu();
@@ -507,6 +515,7 @@ class ContentTypeService
         foreach ($temp as $item) {
             $counters[$item['content_type_id']] = $item['counter'];
         }
+        $circleContentType = $this->getCircleContentType();
 
         foreach ($this->orderedContentTypes as $contentType) {
             $role = $contentType->getViewRole();
@@ -520,6 +529,19 @@ class ContentTypeService
             if ($this->authorizationChecker->isGranted($contentType->getSearchLinkDisplayRole())) {
                 $search = $menuEntry->addChild('sidebar_menu.content_type.search', 'fa fa-search', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()]);
                 $search->setTranslation(['%plural%' => $contentType->getPluralName()]);
+
+                if (null !== $circleContentType && null !== $contentType->getCirclesField() && '' !== $contentType->getCirclesField() && !empty($user->getCircles())) {
+                    $inMyCircle = $menuEntry->addChild('sidebar_menu.content_type.search_in_my_circle', $circleContentType->getIcon() ?? '', Routes::DATA_IN_MY_CIRCLE_VIEW, ['name' => $contentType->getName()]);
+                    $inMyCircle->setTranslation([
+                        '%name%' => \count($user->getCircles()) > 1 ? $circleContentType->getPluralName() : $circleContentType->getSingularName(),
+                    ]);
+                }
+            }
+            foreach ($contentType->getViews() as $view) {
+                if (!$this->authorizationChecker->isGranted($view->getRole()) || 'ems.view.data_link' === $view->getType()) {
+                    continue;
+                }
+                $menuEntry->addChild($view->getName(), $view->getIcon() ?? '', $view->isPublic() ? Routes::DATA_PUBLIC_VIEW : Routes::DATA_PRIVATE_VIEW, ['view' => $view->getId()]);
             }
         }
 

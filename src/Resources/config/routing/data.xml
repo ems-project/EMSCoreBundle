@@ -4,8 +4,14 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_data_default_view" path="/data/{type}" methods="GET">
+    <route id="emsco_data_default_view" path="/{type}" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:rootAction</default>
+    </route>
+    <route id="emsco_data_in_my_circle_view" path="/in-my-circles/{name}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:inMyCirclesAction</default>
+    </route>
+    <route id="emsco_data_private_view" path="/custom-index-view/{view}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customIndexViewAction</default>
     </route>
 
 </routes>

@@ -90,40 +90,6 @@
 	          		{% endif %}
 	          	</a>
 	          	<ul class="treeview-menu">
-                    {% if is_granted(contentType.searchLinkDisplayRole) %}
-                        <li class="">
-                            <a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_data_default_search', {'name':contentType.name}) }}">
-                                <i class="fa fa-search"></i> Search {{ contentType.pluralName }}
-                            </a>
-                        </li>
-
-                        {% if contentType.circlesField and app.user.circles|length > 0 %}
-
-                            {% set label = contentType.circlesField %}
-                            {% set circleField = contentType|get_field_by_path(contentType.circlesField, true) %}
-
-                            {% if circleField and circleField.options.displayOptions.type is defined  %}
-                                {% set circleContenttype = circleField.options.displayOptions.type|get_content_type %}
-                                {% if circleContenttype %}
-                                    {% if app.user.circles|length > 1 %}
-                                        {% set label = circleContenttype.pluralName %}
-                                    {% else %}
-                                        {% set label = circleContenttype.singularName %}
-                                    {% endif %}
-                                    <li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_search_in_my_circles', {'name':contentType.name} ) }}"><i class="{{ circleContenttype.icon }}"></i> In my {{ label }}</a></li>
-                                {% endif %}
-                            {% endif %}
-
-                        {% endif %}
-                    {% endif %}
-	            	{% for view in contentType.views|filter(v => v.type not in ['ems.view.data_link']) %}
-	            		<li>
-	            			<a id="menu-data-view-{{ contentType.id }}-{{ view.id }}" href="{{ path(view.public?'ems_custom_view_public':'ems_custom_view_protected', { viewId: view.id }) }}">
-	            				<i class="{{ view.icon }}"></i>
-	            				{{ view.name }}
-	            			</a>
-	            		</li>
-	            	{% endfor %}
 	            	{% if draftCounterGroupedByContentType[contentType.id] is defined and is_granted(contentType.editRole) %}
 	          			<li class=""><a id="menu-data-draft-{{ contentType.id }}" href="{{ path('data.draft_in_progress', { contentTypeId: contentType.id } ) }}">
 	          				<i class="fa fa-fire"></i>

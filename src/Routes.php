@@ -35,4 +35,7 @@ class Routes
     public const VIEW_DELETE = 'emsco_view_delete';
     public const VIEW_DUPLICATE = 'emsco_view_duplicate';
     public const DATA_DEFAULT_VIEW = 'emsco_data_default_view';
+    public const DATA_IN_MY_CIRCLE_VIEW = 'emsco_data_in_my_circle_view';
+    public const DATA_PUBLIC_VIEW = 'emsco_data_public_view';
+    public const DATA_PRIVATE_VIEW = 'emsco_data_private_view';
 }

@@ -1,7 +1,7 @@
 {% extends '@EMSCore/view/abstract.html.twig' %}
 {% trans_default_domain 'emsco-twigs' %}
 
-{% block title %}{{ 'view.index.title'|trans({'%type%': contentType.name}) }}{% endblock %}
+{% block title %}{{ 'view.index.title'|trans({'%type%': contentType.singularName}) }}{% endblock %}
 
 {% block body %}
 	{%  set toolbar %}

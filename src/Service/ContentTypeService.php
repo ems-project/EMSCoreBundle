@@ -517,6 +517,10 @@ class ContentTypeService
             if (isset($counters[$contentType->getId()])) {
                 $menuEntry->setBadge(\strval($counters[$contentType->getId()]));
             }
+            if ($this->authorizationChecker->isGranted($contentType->getSearchLinkDisplayRole())) {
+                $search = $menuEntry->addChild('sidebar_menu.content_type.search', 'fa fa-search', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()]);
+                $search->setTranslation(['%plural%' => $contentType->getPluralName()]);
+            }
         }
 
         return $menu;

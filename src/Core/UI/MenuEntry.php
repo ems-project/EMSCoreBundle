@@ -15,6 +15,13 @@ class MenuEntry
     private array $routeParameters;
     private ?string $color;
     private ?string $badge = null;
+    /** @var MenuEntry[] */
+    private array $children = [];
+    private bool $translation = false;
+    /**
+     * @var array<string, mixed>
+     */
+    private array $parameters = [];
 
     /**
      * @param array<string, mixed> $routeParameters
@@ -26,6 +33,14 @@ class MenuEntry
         $this->route = $route;
         $this->routeParameters = $routeParameters;
         $this->color = $color;
+    }
+
+    /**
+     * @param array<string, mixed> $routeParameters
+     */
+    public function addChild(string $getLabel, string $getIcon, string $route, array $routeParameters = [], ?string $color = null): MenuEntry
+    {
+        return $this->children[] = new MenuEntry($getLabel, $getIcon, $route, $routeParameters, $color);
     }
 
     public function getLabel(): string
@@ -82,5 +97,40 @@ class MenuEntry
     public function setBadge(?string $badge): void
     {
         $this->badge = $badge;
+    }
+
+    /**
+     * @return MenuEntry[]
+     */
+    public function getChildren(): array
+    {
+        return $this->children;
+    }
+
+    public function hasChildren(): bool
+    {
+        return \count($this->children) > 0;
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    public function setTranslation(array $parameters): void
+    {
+        $this->translation = true;
+        $this->parameters = $parameters;
+    }
+
+    public function isTranslation(): bool
+    {
+        return $this->translation;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getParameters(): array
+    {
+        return $this->parameters;
     }
 }

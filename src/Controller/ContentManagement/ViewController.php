@@ -122,6 +122,7 @@ class ViewController extends AppController
         $form = $this->createForm(ViewType::class, $view, [
             'create' => false,
             'options' => \get_class($container->get($view->getType())),
+            'ajax-save-url' => $this->generateUrl('view.edit', ['id' => $id, '_format' => 'json']),
         ]);
 
         $form->handleRequest($request);

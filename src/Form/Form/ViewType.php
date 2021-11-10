@@ -70,7 +70,7 @@ class ViewType extends AbstractType
                 ->add('save', SubmitEmsType::class, [
                     'attr' => [
                         'class' => 'btn-primary btn-sm',
-//                        'data-ajax-save-url' => $this->generateUrl('view.edit', ['id' => $id, '_format' => 'json']),
+                        'data-ajax-save-url' => $options['ajax-save-url'],
                     ],
                     'icon' => 'fa fa-save',
                 ])
@@ -91,6 +91,7 @@ class ViewType extends AbstractType
             'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
             'create' => false,
             'options' => null,
+            'ajax-save-url' => null,
         ]);
     }
 }

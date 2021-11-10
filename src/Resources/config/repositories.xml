@@ -11,6 +11,9 @@
         <service id="ems.repository.query_search" class="EMS\CoreBundle\Repository\QuerySearchRepository" public="true">
             <argument type="service" id="doctrine"/>
         </service>
+        <service id="ems.repository.search" class="EMS\CoreBundle\Repository\SearchRepository" public="true">
+            <argument type="service" id="doctrine"/>
+        </service>
         <service id="ems.repository.analyzer" class="EMS\CoreBundle\Repository\AnalyzerRepository" public="true">
             <argument type="service" id="doctrine"/>
         </service>

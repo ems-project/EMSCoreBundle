@@ -52,9 +52,6 @@
 			{% endif %}
 	{% endif %}
 
-    {% if application_menu_controller %}
-        {{ render(controller(application_menu_controller)) }}
-    {% endif %}
 
     {% if dashboardMenu.children|length > 0 %}
         <ul class="sidebar-menu" data-widget="tree">

@@ -6,8 +6,10 @@ namespace EMS\CoreBundle\Twig;
 
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Common\DocumentInfo;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use Ramsey\Uuid\UuidInterface;
 use Twig\Extension\RuntimeExtensionInterface;
 
 class RevisionRuntime implements RuntimeExtensionInterface
@@ -29,6 +31,30 @@ class RevisionRuntime implements RuntimeExtensionInterface
         $revision = $this->revisionService->getCurrentRevisionByOuuidAndContentType($ouuid, $contentTypeName);
 
         return $revision ? $revision->getId() : null;
+    }
+
+    /**
+     * @param array<mixed> $rawData
+     */
+    public function createRevision(ContentType $contentType, UuidInterface $uuid, array $rawData = []): Revision
+    {
+        return $this->revisionService->create($contentType, $uuid, $rawData);
+    }
+
+    /**
+     * @param array<mixed> $rawData
+     */
+    public function updateRevision(string $emsLink, array $rawData): Revision
+    {
+        return $this->revisionService->updateRawDataByEmsLink(EMSLink::fromText($emsLink), $rawData, false);
+    }
+
+    /**
+     * @param array<mixed> $rawData
+     */
+    public function mergeRevision(string $emsLink, array $rawData): Revision
+    {
+        return $this->revisionService->updateRawDataByEmsLink(EMSLink::fromText($emsLink), $rawData);
     }
 
     /**

@@ -381,7 +381,11 @@ services:
         arguments: [  '@ems.service.user' ]
         tags:
             - { name: form.type }
-
+    ems.form.form.releasetype:
+        class: EMS\CoreBundle\Form\Form\ReleaseType
+        arguments: ['@ems.service.environment']
+        tags:
+            - { name: form.type }
 
 ### regular services
     ems.service.mapping:
@@ -495,6 +499,16 @@ services:
     ems.service.action:
         class: EMS\CoreBundle\Service\ActionService
         arguments: ['@ems.repository.template', '@logger']
+    EMS\CoreBundle\Service\ReleaseService: '@ems.service.release'
+    ems.service.release:
+        class: EMS\CoreBundle\Service\ReleaseService
+        arguments: ['@ems.repository.release', '@ems.service.contenttype' ,'@ems.service.data', '@ems.service.release_revision', '@ems.service.publish','@logger']
+    EMS\CoreBundle\Service\ReleaseRevisionService: '@ems.service.release_revision'
+    ems.service.release_revision:
+        class: EMS\CoreBundle\Service\ReleaseRevisionService
+        arguments: ['@ems.repository.release_revision', '@EMS\CoreBundle\Repository\RevisionRepository', '@logger', '@ems.service.contenttype', '@ems.service.user']
+        tags:
+          - { name: kernel.event_listener, event: revision.finalize_draft, method: finalizeDraftEvent, priority: 0 }
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']
@@ -631,10 +645,9 @@ services:
             - { name: console.command }
     ems.job.run:
         class: EMS\CoreBundle\Command\JobCommand
-        arguments: ['@ems.service.job', '%ems_core.date_time_format%']
+        arguments: ['@ems.service.job', '%ems_core.date_time_format%', '@ems.service.release']
         tags:
             - { name: console.command }
-
 #### security services
     api_key_user_provider:
         class: EMS\CoreBundle\Security\ApiKeyUserProvider
@@ -676,18 +689,6 @@ services:
     ems.service.data:
         alias: 'EMS\CoreBundle\Service\DataService'
         public: true
-
-### Loggers ####
-    ems_common.monolog.ems_handler:
-        class: EMS\CommonBundle\Logger\ElasticsearchLogger
-        arguments: ['%ems_core.log_level%', '%ems_core.instance_id%', '', 'ems_core', '@ems_common.elastica.client', '@security.helper', '@ems_common.service.mapping', '%ems_core.log_by_pass%']
-        tags:
-            - { name: kernel.cache_warmer }
-            - { name: kernel.event_listener, event: kernel.terminate }
-            - { name: kernel.event_listener, event: console.terminate }
-    ems_common.monolog.flash_handler:
-        class: EMS\CommonBundle\Logger\FlashMessageLogger
-        arguments: ['@session', '@translator', 'EMSCoreBundle']
 
 ### Repositories ###
     EMS\CoreBundle\Repository\ContentTypeRepository:

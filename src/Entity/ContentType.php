@@ -1427,12 +1427,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Get circlesField.
-     *
-     * @return string
-     */
-    public function getCirclesField()
+    public function getCirclesField(): ?string
     {
         return $this->circlesField;
     }

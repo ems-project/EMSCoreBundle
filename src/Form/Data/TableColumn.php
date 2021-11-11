@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
+use EMS\CoreBundle\Form\Data\Condition\ConditionInterface;
+
 class TableColumn
 {
     private string $titleKey;
@@ -19,11 +21,29 @@ class TableColumn
     private array $htmlAttributes = [];
     private ?\Closure $pathCallback = null;
     private string $pathTarget = '';
+    /** @var ConditionInterface[] */
+    private array $conditions = [];
+    private $orderField;
+    /** @var array<string, mixed> */
+    private array $transLabelOptions = [];
 
     public function __construct(string $titleKey, string $attribute)
     {
         $this->titleKey = $titleKey;
-        $this->attribute = $attribute;
+        $this->orderField = $this->attribute = $attribute;
+    }
+
+    public function addCondition(ConditionInterface $condition): void
+    {
+        $this->conditions[] = $condition;
+    }
+
+    /**
+     * @return ConditionInterface[]
+     */
+    public function getConditions(): array
+    {
+        return $this->conditions;
     }
 
     public function getTitleKey(): string
@@ -201,5 +221,47 @@ class TableColumn
     public function getPathTarget(): string
     {
         return $this->pathTarget;
+    }
+
+    /**
+     * @param object|array<mixed> $objectOrArray
+     */
+    public function valid($objectOrArray): bool
+    {
+        foreach ($this->conditions as $condition) {
+            if (!$condition->valid($objectOrArray)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function setOrderField(string $orderField): TableColumn
+    {
+        $this->orderField = $orderField;
+
+        return $this;
+    }
+
+    public function getOrderField(): string
+    {
+        return $this->orderField;
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function setLabelTransOption(array $options): void
+    {
+        $this->transLabelOptions = $options;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getTransLabelOptions(): array
+    {
+        return $this->transLabelOptions;
     }
 }

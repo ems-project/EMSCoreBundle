@@ -12,6 +12,7 @@ ROLE_SUPER_ADMIN: 'Super Admin'
 ROLE_SUPER_AUTHOR: 'Super Author'
 ROLE_SUPER_PUBLISHER: 'Super Publisher'
 ROLE_SUPER_USER: 'Super User'
+dashboard.index.reorder: Reorder
 ROLE_SUPER_WEBMASTER: 'Super Webmaster'
 ROLE_TASK_MANAGER: 'Task Manager'
 ROLE_TRADUCTOR: Traductor
@@ -60,6 +61,9 @@ field_type.json_menu_editor.delete_item: 'Delete this entry'
 field_type.json_menu_editor.edit: Edit
 field_type.json_menu_editor.item_label_placeholder: 'Define a label for this entry'
 field_type.json_menu_editor.move_item: Move
+field_type.json_menu_editor.copy: Copy
+field_type.json_menu_editor.copy_all: 'Copy all'
+field_type.json_menu_editor.paste: Paste
 form.analyzer.char_filter.html_strip: 'HTML Strip'
 form.analyzer.char_filter.label: 'Char Filter'
 form.analyzer.filter.built_in.asciifolding: 'ASCII Folding'
@@ -168,6 +172,10 @@ form.form.channel.public: 'Make channel available for non-authenticated users ?'
 form.form.query_search.environments: Environments
 form.form.query_search.label: Label
 form.form.query_search.name: Name
+form.form.release.environmentSource: 'Environment source'
+form.form.release.environmentTarget: 'Environment target'
+form.form.release.execution_date: 'Execution date'
+form.form.release.name: Name
 form.form.revision-type.copy-label: Copy
 form.form.revision-type.paste-label: Paste
 form.form.revision-type.save-draft-label: 'Save as draft'
@@ -244,6 +252,7 @@ log.contenttype.unreferenced_not_found: 'Unreferenced content type not found'
 log.contenttype.updated: 'The content type %contenttype% has been updated'
 log.controller.channel.unknown_action: 'Unknown action'
 log.controller.query_search.unknown_action: 'Unknown action'
+log.controller.release.unknown_action: 'Unknown action'
 log.controller.uploaded-file-logs.unknown_action: 'Unknown action'
 log.crud.create_error: 'The revision for contenttype %contenttype% can not be created, reason: %error_message%'
 log.crud.delete_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be deleted, reason: %error_message%'
@@ -338,6 +347,10 @@ log.revision_error: 'Error "%error_message%" with the document ems://object:%con
 log.service.action.delete: 'The action %name% has been deleted'
 log.service.channel.delete: 'The channel %name% has been deleted'
 log.service.content-type.get-unreferenced-content-type.unexpected-error: 'Unexpected error while get unreferenced content type from environment %environment%: %error_message%'
+log.service.release.delete: 'The Release %name% has been deleted'
+log.service.release.not.environments.defined: 'Environments source or/and target not defined for Release %name%'
+log.service.release.not.ready: 'Status of Release %name% is not ready'
+log.service.release_revision.preceding.revision.in.release: 'Has a previous revision related to Release %name%'
 log.service.query_search.delete: 'The QuerySearch %name% has been deleted'
 log.user.api_key: 'New API key for the user %user_display_name%: %api_key%'
 log.user.deleted: 'The user %user_display_name% has been deleted'
@@ -383,6 +396,55 @@ query_search.index.column.public: 'Public access'
 query_search.index.reorder: 'Reorder QuerySearch'
 query_search.index.title: 'List of QuerySearch'
 query_search.menu: QuerySearch
+release.actions.add_revisions: 'Add documents'
+release.actions.delete: Delete
+release.actions.delete_confirm: 'Delete the Release?'
+release.actions.delete_selected: 'Delete selected'
+release.actions.delete_selected_confirm: 'Delete all selected Releases?'
+release.actions.edit: Edit
+release.actions.publish_release: 'Publish Release'
+release.actions.publish_confirm: 'Publish the Releases?'
+release.actions.set_status_canceled: 'Cancel Release'
+release.actions.set_status_ready: 'Ready Release'
+release.actions.set_status_wip: 'Wip Release'
+release.actions.show: View
+release.add.save: Create
+release.add.title: 'Add a Release'
+release.edit.save: Save
+release.edit.saveAndClose: 'Save and Close'
+release.edit.title: 'Edit a Release'
+release.index.column.env_source: 'Environment source'
+release.index.column.env_target: 'Environment target'
+release.index.column.execution_date: 'Execution date'
+release.index.column.name: Name
+release.index.column.status: Status
+release.index.column.docs_count: '# Documents'
+release.index.title: 'List of Releases'
+release.menu: Releases
+release.revision.actions.add: 'Add document'
+release.revision.action.add: 'Add document to release'
+release.revision.actions.add_confirm: 'Do you confirm ?'
+release.revision.actions.remove: 'Remove documents'
+release.revision.index.column.CT: 'Content Type'
+release.revision.index.column.label: Label
+release.revision.index.column.minRevId: 'Environment source'
+release.revision.index.column.maxRevId: 'Environment target'
+release.revision.index.title: 'List of documents available for release'
+release.revision.menu: 'Add documents'
+release.revision.index.column.revision: Revision
+release.revision.index.column.document: Document
+release.revision.index.column.action: Action
+release.revision.index.column.previous: 'Previous revision'
+release.revision.index.column.not-applicable: 'not applicable'
+release.revision.view.title: 'Release''s documents'
+release.status.wip: WIP
+release.status.ready: Ready
+release.status.applied: Applied
+release.status.canceled: Canceled
+release.status.scheduled: Scheduled
+release.status.rollbacked: 'Rolled back'
+release.revision.index.column.still_in_target: 'Still in %target%'
+release.all_releases.label: 'All releases'
 search.aggregate_option_label: 'Aggregate Option'
 search.search_field_option_label: 'Search Field Option'
 search.sort_option_label: 'Sort Option'
@@ -395,7 +457,7 @@ service.contenttype.mappings_updated: 'Mappings successfully updated/created for
 service.contenttype.pipelines: 'Pipelines have been updated/created for %contenttype%'
 service.contenttype.pipelines_error: 'elasticms was not able to generate pipelines for the content type %contenttype%, they are disabled. Please consider to update your elasticsearch cluster (>=5.0). %elasticsearch_error_type% : %elasticsearch_error_reason%'
 service.contenttype.reordered: 'Content type "%contenttype% has been reordered'
-service.contenttype.should_reindex: 'You should try to rebuild the indexes for  %contenttype%. Message from Elasticsearch; %elasticsearch_error_type% : %elasticsearch_error_reason%'
+service.contenttype.update_mapping_exception: 'Error on updating %environments%''s mapping : %elasticsearch_error%'
 service.data.already_unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already deleted from %environment%'
 service.data.cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is (see previous warnings)'
 service.data.cant_finalize_field: '%error_message%'
@@ -433,6 +495,7 @@ service.notification.treated: '%notification_name% for document ems://object:%co
 service.notification.update: 'A "%notification_name%" notification has been %notification_status% for a "%contenttype%" document (%ouuid%)'
 service.object_choice_cache.alias_not_found: 'Alias not found for content type %contenttype%'
 service.object_choice_cache.contenttype_not_found: 'Content type %contenttype% not found'
+service.object_choice_cache.limited_result_set: 'The data link picker is limited to the first %limit% of %count% documents'
 service.object_choice_cache.object_key_not_found: 'Object key %object_key% not found'
 service.publish.already_published: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already published in %environment%'
 service.publish.already_unpublished: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already unpublished from %environment%'
@@ -440,6 +503,7 @@ service.publish.draft_published: 'A draft of the document ems://object:%contentt
 service.publish.not_authorized: 'You can not (un)publish the content type %contenttype%'
 service.publish.not_in_circles: 'You can not (un)publish the content type %contenttype% as you don''t share any circle'
 service.publish.not_in_default_environment: 'You can not (un)publish in the default environment %environment% of the document ems://object:%contenttype%:%ouuid%'
+service.publish.publish_failed: 'The publication of the revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% failed!'
 service.publish.publish_draft_error: 'A draft of the document ems://object:%contenttype%:%ouuid% can''t be published in %environment% : %error_message%'
 service.publish.published: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been published in %environment%'
 service.publish.revision_not_found_in_source: 'Missing revision in the environment %environment% for the document ems://object:%contenttype%:%ouuid%'
@@ -573,6 +637,7 @@ view.contenttype.reorder_item.edit_field_button: 'Edit %name%'
 view.contenttype.reorder_item.edit_main_container_button: 'Edit the main container'
 view.data.json-menu-nested-json-preview.field-type-not-found: 'The type definition associated to this item is missing (probably deleted).'
 view.elements.side-menu.chanel-admin.index-link: Channels
+view.elements.side-menu.release-admin.index-link: Releases
 view.elements.side-menu.query_search.index-link: QuerySearch
 view.environment.index.action_label: Action
 view.environment.index.add_alias_button: 'Add alias'
@@ -636,6 +701,7 @@ view.form.fields.asset.upload-files: 'Upload files'
 view.form.fields.asset.view-button: View
 view.form-submission.index.title: 'Form Submissions Overview'
 view.icon.class.channel: 'fa fa-road'
+view.icon.class.release: 'fa fa-cube'
 view.icon.class.query_search: 'fa fa-list-alt'
 view.macros.data-field-type.macros.data-field-type.collection_added_items: '{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added'
 view.macros.data-field-type.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
@@ -655,6 +721,24 @@ wysiwyg.invalid_config_format: 'Format not valid: %msg%'
 view.macros.data-field-type.collection_removed_items: '{0} Nothing has been removed.|{1} One item has been removed.|]1,Inf[ %count% item have been removed.'
 view.macros.data-field-type.collection_added_items: '{0} Nothing has been added.|{1} One item has been added.|]1,Inf[ %count% items have been added.'
 view.icon.class.uploaded-file: 'fa fa-upload'
+revision.draft-in-progress.column.label: Label
+revision.draft-in-progress.column.created: Created
+revision.draft-in-progress.column.modified: 'Last update'
+revision.draft-in-progress.column.auto-save-by: By
+revision.draft-in-progress.column.locked: 'Locked until'
+revision.draft-in-progress.column.locked-by: 'Locked by'
+revision.draft-in-progress.column.view-revision: 'View draft in progress'
+revision.draft-in-progress.column.edit-draft: 'Edit draft'
+revision.draft-in-progress.column.discard-draft: 'Delete this draft'
+revision.draft-in-progress.column.confirm-discard-draft: 'Modifications made in this draft will be lost'
+revision.draft-in-progress.action.discard-selected-draft: 'Delete selected drafts'
+revision.draft-in-progress.action.discard-selected-confirm: 'All modifications made on those drafts will lost'
+revision.draft-in-progress.title: '%contentType% in progress'
+revision.draft-in-progress.breadcrumb: '%contentType% in progress'
+log.controller.draft-in-progress.discard_draft: 'Draft "%revision%" has been deleted'
+log.controller.draft-in-progress.unknown_action: 'Unknown action'
+log.controller.draft-in-progress.draft-not-found: 'Draft (%revisionId%) not found'
+form.header.checkbo.select-all: 'Select all'
 'An Error Occurred': 'An Error Occurred'
 'Oops! An Error Occurred': 'Oops! An Error Occurred'
 'The server returned a %status_code%': 'The server returned a %status_code%'
@@ -776,4 +860,24 @@ Views: Views
 'Add a style set': 'Add a style set'
 'Click on ''Add a styles set'' to create a first styles set': 'Click on ''Add a styles set'' to create a first styles set'
 'New WYSIWYG profile': 'New WYSIWYG profile'
-form.header.checkbo.select-all: 'Select all'
+'%date% Finalized by %user%': '%date% Finalized by %user%'
+'no revision in %env%': 'no revision in %env%'
+'Unpublish in %env%': 'Unpublish in %env%'
+'replace by revision %date%': 'replace by revision %date%'
+dashboard.actions.delete_selected: 'Deleted selected'
+dashboard.actions.edit: Edit
+dashboard.actions.set_quick_search: 'As quick search'
+dashboard.actions.set_quick_search_confirm: 'Do you confirm'
+dashboard.actions.set_landing_page: 'As landing page'
+dashboard.actions.set_landing_page_confirm: 'Do you confirm'
+dashboard.actions.delete: Delete
+dashboard.actions.delete_confirm: 'Do you confirm'
+dashboard.index.column.name: Name
+dashboard.index.column.label: Label
+log.service.dashboard.delete: 'Dashboard %name% has been deleted'
+dashboard.index.column.type: Type
+dashboard.index.column.landing_page: 'Landing page'
+dashboard.index.column.quick_search: 'Quick search'
+release.revision.table.rollback.action: Rollback
+release.revision.table.rollback.confirm: 'Do you confirm ?'
+release.revision.index.column.compare: Compare

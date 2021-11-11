@@ -19,6 +19,12 @@
         </service>
 
         <!-- core service -->
+        <service id="ems.dashboard.manager" class="EMS\CoreBundle\Core\Dashboard\DashboardManager">
+            <argument type="service" id="ems.repository.dashboard"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="security.authorization_checker"/>
+        </service>
         <service id="ems.service.channel" class="EMS\CoreBundle\Service\Channel\ChannelService">
             <argument type="service" id="ems.repository.channel"/>
             <argument type="service" id="logger"/>
@@ -115,5 +121,15 @@
             <argument type="service" id="EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface"/>
         </service>
         <service id="ems_core.service.uploaded-file" alias="EMS\CoreBundle\Service\DatatableService"/>
+        <service id="ems_core.core_revision.draft_in_progress" class="EMS\CoreBundle\Core\Revision\DraftInProgress">
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
+            <argument type="service" id="security.authorization_checker"/>
+            <argument type="service" id="ems.service.user"/>
+        </service>
+
+        <service id="ems_core.core_ui.flash_message_logger" class="EMS\CoreBundle\Core\UI\FlashMessageLogger">
+            <argument type="service" id="session.flash_bag" />
+            <argument type="service" id="translator" />
+        </service>
     </services>
 </container>

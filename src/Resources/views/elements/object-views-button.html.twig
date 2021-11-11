@@ -28,6 +28,16 @@
     								<i class="fa fa-external-link pull-right"></i>
     							</a></li>
 
+						{% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::RAW_HTML') %}
+							{%- if (is_granted(template.role)) or template.role == "not-defined" -%}
+								{%- set rawHTML = template.body|generate_from_template({
+									environment: environment,
+									contentType: contentType,
+									object: object,
+									source: source
+								}) -%}
+								{%- if rawHTML != '' -%}<li>{{ rawHTML|raw  }}</li>{%- endif -%}
+							{%- endif -%}
 						{% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::NOTIFICATION') %}
 							{% if ( is_granted(template.role) and ((attribute(source, contentType.circlesField) is not defined) or (source and attribute(source, contentType.circlesField)|in_my_circles) or (environment.circles|in_my_circles and is_granted('ROLE_PUBLISHER')) ) ) %}
 								<li><a href='#' class="request_notification" onclick="requestNotification(this, {{template.id}}, '{{environment.name}}', '{{contentType.id}}' , '{{ouuid}}'); return false;" href="#" data-url="{{ path('notification.ajaxnotification', {'objectId' : ouuid}) }}">

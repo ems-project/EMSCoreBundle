@@ -2,6 +2,39 @@
 
 # Functions
 
+## emsco_revision_create
+Create a new revision from twig
+
+```twig
+{% set contentType = 'page'|get_content_type %}
+{% set newRevision = emsco_revision_create(contentType, emsco_uuid(), {
+    'title': 'Test',
+    'locale': 'de'
+}) %}
+```
+
+## emsco_revision_update
+Will overwrite the rawData, you can also use [emsco_revision_merge](#emsco_revision_merge).
+Use case example: update an other document on post processing.
+It will return the new revision, if you do not needed you can just use twig ``do``
+
+```twig
+{% do emsco_revision_update("ems://object:page:1", {
+    title: 'Update test',
+    body: '<h1>TEST<\/h1>'  
+}) %}
+```
+
+## emsco_revision_merge
+Will merge the passed rawData into the current rawData.
+It will return the new revision, if you do not needed you can just use twig ``do``
+
+```twig
+{% do emsco_revision_merge("ems://object:page:1", {
+    body: '<h1>Merge<\/h1>'  
+}) %}
+```
+
 ## emsco_revisions_draft
 
 Returns a iteratable result of revisions for the given contentTypeName

@@ -1,0 +1,20 @@
+dashboard.label: Label
+dashboard.icon: Icon
+dashboard.name: Name
+dashboard.save: Save
+dashboard.create: Create
+dashboard.role: Role
+dashboard.color: Color
+dashboard.type: 'Type of dashboard'
+dashboard.sidebarMenu: 'Visible in the sidebar menu'
+dashboard.notificationMenu: 'Visible in the notification menu'
+dashboard.export.none: None
+dashboard.export.attachment: Attachment
+dashboard.export.inline: Inline
+dashboard.export.body: Body
+dashboard.export.filename: Filename
+dashboard.export.fileDisposition: Disposition
+dashboard.template.body: Body
+dashboard.template.header: Header
+dashboard.template.footer: Footer
+dashboard.export.mimetype: Mime-Type

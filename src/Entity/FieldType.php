@@ -19,6 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class FieldType extends JsonDeserializer implements \JsonSerializable
 {
+    public const DISPLAY_OPTIONS = 'displayOptions';
     /**
      * @var int
      *
@@ -354,14 +355,12 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $this->description;
     }
 
-    public function getDisplayOptions()
+    /**
+     * @return array<mixed>
+     */
+    public function getDisplayOptions(): array
     {
-        $options = $this->getOptions();
-        if (isset($options['displayOptions'])) {
-            return $options['displayOptions'];
-        }
-
-        return [];
+        return $this->options[self::DISPLAY_OPTIONS] ?? [];
     }
 
     public function getDisplayOption($key, $default = null)
@@ -372,6 +371,11 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         }
 
         return $default;
+    }
+
+    public function getDisplayBoolOption(string $key, bool $default): bool
+    {
+        return \boolval($this->options[self::DISPLAY_OPTIONS][$key] ?? $default);
     }
 
     public function getMappingOption($key, $default = null)
@@ -856,6 +860,6 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
             },
             ARRAY_FILTER_USE_KEY
         );
-        $this->options['displayOptions'] = $filtered;
+        $this->options[self::DISPLAY_OPTIONS] = $filtered;
     }
 }

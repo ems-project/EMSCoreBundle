@@ -11,7 +11,7 @@
 
 {% block emsco_form_table_column_data_value_data_links %}
     {%- set value = attribute(line.data, column.attribute)|default([]) -%}
-    {%- if value is iterable -%}
+    {%- if value is iterable and column.valid(line.data) -%}
         {%- for link in value -%}
             {{- link|data_link|raw -}}
             {%- if not loop.last -%}
@@ -37,7 +37,7 @@
 
 {% block emsco_form_table_column_data_value_datetime %}
     {%- set value = attribute(line.data, column.attribute)|default(false) -%}
-        {%- if value -%}
+        {%- if value and column.valid(line.data) -%}
             {{- block('emsco_form_table_column_data_label_prefix') -}}
             {{- value|date(date_time_format) }}
             {{- block('emsco_form_table_column_data_label_suffix') -}}
@@ -46,7 +46,7 @@
 
 {% block emsco_form_table_column_data_value_date %}
     {%- set value = attribute(line.data, column.attribute)|default(false) -%}
-        {%- if value -%}
+        {%- if value and column.valid(line.data)  -%}
             {{- block('emsco_form_table_column_data_label_prefix') -}}
             {{- value|date(date_format) }}
             {{- block('emsco_form_table_column_data_label_suffix') -}}
@@ -55,7 +55,7 @@
 
 {% block emsco_form_table_column_data_value_time %}
     {%- set value = attribute(line.data, column.attribute)|default(false) -%}
-        {%- if value -%}
+        {%- if value and column.valid(line.data)  -%}
             {{- block('emsco_form_table_column_data_label_prefix') -}}
             {{- value|date(time_format) }}
             {{- block('emsco_form_table_column_data_label_suffix') -}}
@@ -71,7 +71,7 @@
 
 {% block emsco_form_table_column_data_value_roles %}
     {%- set value = attribute(line.data, column.attribute)|default([]) -%}
-    {%- if value is iterable -%}
+    {%- if value is iterable and column.valid(line.data)  -%}
         {%- for string in value -%}
             {%- if not loop.first -%}
                 {%- if loop.last -%}
@@ -94,7 +94,7 @@
 
 {% block emsco_form_table_column_data_value_bytes %}
     {%- set value = attribute(line.data, column.attribute)|default(false) -%}
-    {%- if value -%}
+    {%- if value and column.valid(line.data)  -%}
         {{- block('emsco_form_table_column_data_label_prefix') -}}
         {{- value|format_bytes -}}
         {{- block('emsco_form_table_column_data_label_suffix') -}}
@@ -110,7 +110,7 @@
 
 {% block emsco_form_table_column_data_value_translation %}
     {%- set value = attribute(line.data, column.attribute)|default(false) -%}
-    {%- if value -%}
+    {%- if value and column.valid(line.data)  -%}
         {{- block('emsco_form_table_column_data_label_prefix') -}}
         {{- value|trans({}, column.domain) -}}
         {{- block('emsco_form_table_column_data_label_suffix') -}}
@@ -126,10 +126,12 @@
 
 {% block emsco_form_table_column_data_value_user %}
     {%- set value = attribute(line.data, column.attribute)|default('') -%}
-    {%- set displayname = value|displayname  -%}
-    {{- block('emsco_form_table_column_data_label_prefix') -}}
-    {{- displayname -}}
-    {{- block('emsco_form_table_column_data_label_suffix') -}}
+    {% if column.valid(line.data) %}
+        {%- set displayname = value|displayname  -%}
+        {{- block('emsco_form_table_column_data_label_prefix') -}}
+        {{- displayname -}}
+        {{- block('emsco_form_table_column_data_label_suffix') -}}
+    {% endif %}
 {% endblock emsco_form_table_column_data_value_user %}
 
 {% block emsco_form_table_column_data_user %}
@@ -165,9 +167,11 @@
 
 {% block emsco_form_table_column_data_value %}
     {%- set value = attribute(line.data, column.attribute) -%}
-    {{- block('emsco_form_table_column_data_label_prefix') -}}
-    {{- value -}}
-    {{- block('emsco_form_table_column_data_label_suffix') -}}
+    {% if column.valid(line.data) %}
+        {{- block('emsco_form_table_column_data_label_prefix') -}}
+        {{- value -}}
+        {{- block('emsco_form_table_column_data_label_suffix') -}}
+    {% endif %}
 {% endblock emsco_form_table_column_data_value %}
 
 {% block emsco_form_table_column_data %}
@@ -177,42 +181,49 @@
 {% endblock emsco_form_table_column_data %}
 
 {% block emsco_form_table_column_action_checkbox %}
-    {% for chekbox in form.selected|filter(f => f.vars.value == line.data.id) %}
+    {% set id = table.idField is defined ? attribute(line.data, table.idField) : line.data.id %}
+    {% for chekbox in form.selected|filter(f => f.vars.value == id) %}
         {{ form_widget(chekbox) }}
     {%  endfor %}
 {% endblock emsco_form_table_column_action_checkbox %}
 
 {% block emsco_form_table_column_row_actions %}
-    <div class="btn-group">
+    <div class="btn-group {{ table.rowActionsClass }}">
         {% for action in table.itemActions %}
-            {%  if action.dynamic == true %}
-                {% set routeParameters = {} %}
-                {% for name, property in action.routeParameters %}
-                    {% set routeParameters = routeParameters|merge({ (name): attribute(line.data, property) }) %}
-                {%  endfor %}
-            {% else %}
-                {% set routeParameters = action.routeParameters|merge({(table.attributeName): line.data.id}) %}
-            {% endif %}
-            {% if action.post %}
-                {% if action.route != 'EMS_user_apikey' or 'ROLE_API' in line.data.roles  %}
-                    {% include '@EMSCore/elements/post-button.html.twig' with {
-                        'url': path(action.route, routeParameters),
-                        'message': action.messageKey,
+            {% if action.valid(line.data) %}
+                {%  if action.dynamic == true %}
+                    {% set routeParameters = {} %}
+                    {% for name, property in action.routeParameters %}
+                        {% set data = line.data %}
+                        {% for token in property|split('.') %}
+                            {% set data = attribute(data, token)|default(property) %}
+                        {% endfor %}
+                        {% set routeParameters = routeParameters|merge({ (name): data }) %}
+                    {%  endfor %}
+                {% else %}
+                    {% set routeParameters = action.routeParameters|merge({(table.attributeName): line.data.id}) %}
+                {% endif %}
+                {% if action.post %}
+                    {% if action.route != 'EMS_user_apikey' or 'ROLE_API' in line.data.roles  %}
+                        {% include '@EMSCore/elements/post-button.html.twig' with {
+                            'url': path(action.route, routeParameters),
+                            'message': action.messageKey,
+                            'label': action.labelKey,
+                            'btnType': action.buttonType,
+                            'itemLabel': attribute(line.data, table.labelAttribute),
+                            'icon': action.icon,
+                            'group_class': loop.last ? 'pull-right' : '',
+                        }%}
+                    {% endif %}
+                {% else %}
+                    {% include '@EMSCore/elements/get-button.html.twig' with {
+                        'url':  path(action.route, routeParameters),
                         'label': action.labelKey,
-                        'btnType': action.buttonType,
                         'itemLabel': attribute(line.data, table.labelAttribute),
+                        'btnType': action.buttonType,
                         'icon': action.icon,
-                        'group_class': 'pull-right',
                     }%}
                 {% endif %}
-            {% else %}
-                {% include '@EMSCore/elements/get-button.html.twig' with {
-                    'url':  path(action.route, routeParameters),
-                    'label': action.labelKey,
-                    'itemLabel': attribute(line.data, table.labelAttribute),
-                    'btnType': action.buttonType,
-                    'icon': action.icon,
-                }%}
             {% endif %}
         {% endfor %}
     </div>
@@ -225,6 +236,11 @@
         <div class="col-md-12">
             {{ form_start(form) }}
             <div class="box ">
+                {% if form.vars.title_label|default(false) %}
+                    <div class="box-header with-border">
+                        <h2 class="box-title">{{ form.vars.title_label|trans }}</h2>
+                    </div>
+                {% endif %}
                 <div class="box-header with-border">
                     <div class="btn-group  pull-right">
                         {% if toolbar is defined %}
@@ -251,10 +267,10 @@
                                 {% for column in table.columns %}
                                     <th class="nowrap" data-orderable="{{ column.orderable ? 'true' : 'false' }}" data-name="{{  column.attribute }}">
                                         {% if column.iconClass %}
-                                            <i class="{{ column.iconClass }}" aria-hidden="true" title="{{ column.titleKey|trans|e('html_attr') }}"></i>
+                                            <i class="{{ column.iconClass }}" aria-hidden="true" title="{{ column.titleKey|trans(column.transLabelOptions)|e('html_attr') }}"></i>
                                             <span class="sr-only">{{ column.titleKey|trans }}</span>
                                         {% else %}
-                                            {{ column.titleKey|trans }}
+                                            {{ column.titleKey|trans(column.transLabelOptions) }}
                                         {% endif %}
                                     </th>
                                 {% endfor %}

@@ -3,6 +3,10 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Elastica\Query\AbstractQuery;
+use Elastica\Query\BoolQuery;
+use Elastica\Query\Exists;
+use Elastica\Query\Terms;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Elasticsearch\Document\Document as ElasticsearchDocument;
 use EMS\CommonBundle\Search\Search as CommonSearch;
@@ -13,19 +17,19 @@ use EMS\CoreBundle\Entity\Form\Search;
 
 class SearchService
 {
-    /** @var Mapping */
-    private $mapping;
-    /** @var ElasticaService */
-    private $elasticaService;
-    /** @var EnvironmentService */
-    private $environmentService;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var Registry */
-    private $doctrine;
+    private Mapping $mapping;
+    private ElasticaService $elasticaService;
+    private EnvironmentService $environmentService;
+    private ContentTypeService $contentTypeService;
+    private Registry $doctrine;
 
-    public function __construct(Registry $doctrine, Mapping $mapping, ElasticaService $elasticaService, EnvironmentService $environmentService, ContentTypeService $contentTypeService)
-    {
+    public function __construct(
+        Registry $doctrine,
+        Mapping $mapping,
+        ElasticaService $elasticaService,
+        EnvironmentService $environmentService,
+        ContentTypeService $contentTypeService
+    ) {
         $this->mapping = $mapping;
         $this->elasticaService = $elasticaService;
         $this->environmentService = $environmentService;
@@ -45,7 +49,7 @@ class SearchService
         $body = [];
         $query = $commonSearch->getQuery();
         if (null !== $query) {
-            $body['query'] = $query->toArray();
+            $body['query'] = $query instanceof AbstractQuery ? $query->toArray() : $query;
         }
         $body['sort'] = $commonSearch->getSort();
 
@@ -117,15 +121,22 @@ class SearchService
 
     public function getDocument(ContentType $contentType, string $ouuid, ?Environment $environment = null): ElasticsearchDocument
     {
-        if (null === $environment) {
-            $environment = $contentType->getEnvironment();
-        }
-        if (null === $environment) {
-            throw new \RuntimeException('Unexpected null environment');
-        }
+        $environment = $environment ?? $contentType->giveEnvironment();
         $index = $this->contentTypeService->getIndex($contentType, $environment);
+        $searchQuery = null;
 
-        return $this->elasticaService->getDocument($index, $contentType->getName(), $ouuid);
+        if ($contentType->hasVersionTags() && null !== $dateToField = $contentType->getVersionDateToField()) {
+            $shouldVersion = new BoolQuery();
+            $shouldVersion->addMust($this->elasticaService->getTermsQuery(Mapping::VERSION_UUID, [$ouuid]));
+            $shouldVersion->addMustNot(new Exists($dateToField));
+
+            $searchQuery = new BoolQuery();
+            $searchQuery->setMinimumShouldMatch(1);
+            $searchQuery->addShould($shouldVersion);
+            $searchQuery->addShould(new Terms('_id', [$ouuid]));
+        }
+
+        return $this->elasticaService->getDocument($index, $contentType->getName(), $ouuid, [], [], $searchQuery);
     }
 
     public function get(Environment $environment, ContentType $contentType, string $ouuid): Document

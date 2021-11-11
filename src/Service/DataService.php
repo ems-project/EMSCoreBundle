@@ -220,7 +220,7 @@ class DataService
      * @throws PrivilegeException
      * @throws Exception
      */
-    public function lockRevision(Revision $revision, Environment $publishEnv = null, $super = false, $username = null)
+    public function lockRevision(Revision $revision, Environment $publishEnv = null, $super = false, $username = null): string
     {
         if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole() ?: 'ROLE_PUBLISHER')) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
@@ -266,8 +266,9 @@ class DataService
         } else {
             $revision->setLockUntil(new \DateTime($this->lockTime));
         }
-
         $em->flush();
+
+        return $lockerUsername;
     }
 
     public function getAllDeleted(ContentType $contentType)
@@ -1214,7 +1215,8 @@ class DataService
             $revision->setEndTime($now);
             $revision->clearTasks();
 
-            $this->lockRevision($newDraft, null, false, $username);
+            $lockedBy = $this->lockRevision($newDraft, null, false, $username);
+            $newDraft->setAutoSaveBy($lockedBy);
 
             $em->persist($revision);
             $em->persist($newDraft);

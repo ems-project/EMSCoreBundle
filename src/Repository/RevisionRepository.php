@@ -12,6 +12,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\Revision;
 
 class RevisionRepository extends EntityRepository
@@ -42,6 +43,27 @@ class RevisionRepository extends EntityRepository
         return isset($result[0]) && $result[0] instanceof Revision ? $result[0] : null;
     }
 
+    public function findLatestByOuuid(string $ouuid): ?Revision
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))
+            ->setMaxResults(1)
+            ->setParameters(['ouuid' => $ouuid])
+            ->orderBy('r.startTime', 'DESC');
+
+        try {
+            $result = $qb->getQuery()->getSingleResult();
+            if (!$result instanceof Revision) {
+                throw new \RuntimeException('Unexpected revision object');
+            }
+
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
     public function findByContentType(ContentType $contentType, $orderBy = null, $limit = null, $offset = null)
     {
         return $this->findBy([
@@ -65,6 +87,9 @@ class RevisionRepository extends EntityRepository
         if (isset($search['contentType'])) {
             $qb->andWhere($qb->expr()->eq('r.contentType', ':contentType'))->setParameter('contentType', $search['contentType']);
         }
+        if (isset($search['contentTypeName'])) {
+            $qb->andWhere($qb->expr()->eq('c.name', ':contentTypeName'))->setParameter('contentTypeName', $search['contentTypeName']);
+        }
         if (isset($search['modifiedBefore'])) {
             $qb->andWhere($qb->expr()->lt('r.modified', ':modified'))->setParameter('modified', $search['modifiedBefore']);
         }
@@ -73,6 +98,13 @@ class RevisionRepository extends EntityRepository
         }
         if (isset($search['archived'])) {
             $qb->andWhere($qb->expr()->eq('r.archived', ':archived'))->setParameter('archived', $search['archived']);
+        }
+        if (\array_key_exists('endTime', $search)) {
+            if (null === $search['endTime']) {
+                $qb->andWhere($qb->expr()->isNull('r.endTime'));
+            } else {
+                $qb->andWhere($qb->expr()->lt('r.endTime', ':endTime'))->setParameter('endTime', $search['endTime']);
+            }
         }
 
         return $qb;
@@ -329,9 +361,9 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param string $source
-     * @param string $target
-     * @param array  $contentTypes
+     * @param int   $source
+     * @param int   $target
+     * @param array $contentTypes
      *
      * @return mixed
      *
@@ -341,7 +373,6 @@ class RevisionRepository extends EntityRepository
     {
         $sqb = $this->getCompareQueryBuilder($source, $target, $contentTypes);
         $sqb->select('max(r.id)');
-//         $subQuery()
         $qb = $this->createQueryBuilder('rev');
         $qb->select('count(rev)');
         $qb->where($qb->expr()->in('rev.id', $sqb->getDQL()));
@@ -355,16 +386,17 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param string $source
-     * @param string $target
-     * @param array  $contentTypes
+     * @param int      $source
+     * @param int      $target
+     * @param array    $contentTypes
+     * @param string[] $ouuids
      *
      * @return QueryBuilder
      */
-    private function getCompareQueryBuilder($source, $target, $contentTypes)
+    private function getCompareQueryBuilder($source, $target, $contentTypes, array $ouuids = [], string $searchValue = '')
     {
         $qb = $this->createQueryBuilder('r');
-        $qb->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.singularName content_type_singular_name', 'c.icon', 'r.ouuid', 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid', 'max(r.id) lastRevId')
+        $qb->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.singularName content_type_singular_name', 'c.icon', 'r.ouuid', "CONCAT(c.name, ':', r.ouuid) AS emsLink", 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created, \'/\', r.finalizedBy)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created, \'/\', r.finalizedBy)) maxrevid', 'max(r.id) lastRevId')
         ->join('r.contentType', 'c')
         ->join('r.environments', 'e')
         ->where('e.id in (:source, :target)')
@@ -374,10 +406,25 @@ class RevisionRepository extends EntityRepository
         ->orHaving('count(r.id) = 1')
         ->orHaving('max(r.id) <> min(r.id)')
         ->setParameters([
-                'source' => $source,
-                'target' => $target,
-                'false' => false,
+            'source' => $source,
+            'target' => $target,
+            'false' => false,
         ]);
+
+        if (\count($ouuids) > 0) {
+            $qb->andWhere($qb->expr()->notin('r.ouuid', $ouuids));
+        }
+
+        if (\strlen($searchValue) > 0) {
+            $literal = $qb->expr()->literal('%'.\strtolower($searchValue).'%');
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('LOWER(r.lockBy)', $literal),
+                $qb->expr()->like('LOWER(r.autoSaveBy)', $literal),
+                $qb->expr()->like('LOWER(r.labelField)', $literal),
+            );
+            $qb->andWhere($or);
+        }
+
         if (!empty($contentTypes)) {
             $qb->andWhere('c.name in (\''.\implode("','", $contentTypes).'\')');
         }
@@ -386,8 +433,8 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param string $source
-     * @param string $target
+     * @param int    $source
+     * @param int    $target
      * @param array  $contentTypes
      * @param int    $from
      * @param int    $limit
@@ -879,5 +926,129 @@ class RevisionRepository extends EntityRepository
         ;
 
         return $qbSelect->getQuery()->execute();
+    }
+
+    public function countDraftInProgress(string $searchValue, ?ContentType $context): int
+    {
+        $qb = $this->createQueryBuilder('rev');
+        $qb->select('count(rev.id)');
+        $qb->andWhere($qb->expr()->eq('rev.draft', ':true'));
+        $qb->andWhere($qb->expr()->eq('rev.deleted', ':false'));
+        $qb->setParameters([
+            ':true' => true,
+            ':false' => false,
+        ]);
+
+        if (null !== $context) {
+            $qb->andWhere($qb->expr()->eq('rev.contentType', ':contentType'));
+            $qb->setParameter('contentType', $context);
+        }
+        $this->addSearchValueFilter($qb, $searchValue);
+
+        return \intval($qb->getQuery()->getSingleScalarResult());
+    }
+
+    /**
+     * @return Revision[]
+     */
+    public function getDraftInProgress(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, ?ContentType $context): array
+    {
+        $qb = $this->createQueryBuilder('rev');
+        $qb->andWhere($qb->expr()->eq('rev.draft', ':true'));
+        $qb->andWhere($qb->expr()->eq('rev.deleted', ':false'));
+        $qb->setParameters([
+            ':true' => true,
+            ':false' => false,
+        ]);
+
+        if (null !== $context) {
+            $qb->andWhere($qb->expr()->eq('rev.contentType', ':contentType'));
+            $qb->setParameter('contentType', $context);
+        }
+        $qb->setFirstResult($from)
+        ->setMaxResults($size);
+
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('rev.%s', $orderField), $orderDirection);
+        }
+        $this->addSearchValueFilter($qb, $searchValue);
+
+        return $qb->getQuery()->execute();
+    }
+
+    public function findLatestVersion(ContentType $contentType, string $versionOuuid): ?Revision
+    {
+        $toField = $contentType->getVersionDateToField();
+
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->andWhere($qb->expr()->eq('r.versionUuid', ':version_ouuid'))
+            ->andWhere($qb->expr()->isNull('r.endTime'))
+            ->setParameter('version_ouuid', $versionOuuid);
+
+        /** @var Revision[] $revisions */
+        $revisions = $qb->getQuery()->getResult();
+
+        foreach ($revisions as $revision) {
+            $toFieldValue = $revision->getRawData()[$toField] ?? 'latest';
+            if ('latest' === $toFieldValue) {
+                return $revision;
+            }
+        }
+
+        return null;
+    }
+
+    private function addSearchValueFilter(QueryBuilder $qb, string $searchValue): void
+    {
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('LOWER(rev.lockBy)', ':term'),
+                $qb->expr()->like('LOWER(rev.autoSaveBy)', ':term'),
+                $qb->expr()->like('LOWER(rev.labelField)', ':term'),
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
+        }
+    }
+
+    /**
+     * @param string[] $contentTypes
+     *
+     * @return Revision[]
+     */
+    public function getAvailableRevisionsForRelease(int $from, int $size, Release $release, array $contentTypes, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->getCompareQueryBuilder($release->getEnvironmentSource()->getId(), $release->getEnvironmentTarget()->getId(), $contentTypes, $release->getRevisionsOuuids(), $searchValue);
+        if (null === $orderField) {
+            $qb->orderBy('r.ouuid', $orderDirection);
+        } else {
+            $qb->orderBy('r.ouuid', $orderDirection);
+        }
+        $qb->setFirstResult($from)
+            ->setMaxResults($size);
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
+     * @param string[] $contentTypes
+     */
+    public function countAvailableRevisionsForRelease(Release $release, array $contentTypes, string $searchValue): int
+    {
+        $sqb = $this->getCompareQueryBuilder($release->getEnvironmentSource()->getId(), $release->getEnvironmentTarget()->getId(), $contentTypes, $release->getRevisionsOuuids(), $searchValue);
+        $sqb->select('max(r.id)');
+
+        $qb = $this->createQueryBuilder('rev');
+        $qb->select('count(rev)');
+        $qb->where($qb->expr()->in('rev.id', $sqb->getDQL()));
+        $qb->setParameters([
+            'source' => $release->getEnvironmentSource()->getId(),
+            'target' => $release->getEnvironmentTarget()->getId(),
+            'false' => false,
+        ]);
+        $query = $qb->getQuery();
+
+        return \intval($query->getSingleScalarResult());
     }
 }

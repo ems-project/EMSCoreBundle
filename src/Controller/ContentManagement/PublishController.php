@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\NonUniqueResultException;
+use Elastica\Query\AbstractQuery;
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Command\Environment\AlignCommand;
@@ -15,6 +16,7 @@ use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\SearchFormType;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
@@ -49,7 +51,7 @@ class PublishController extends AbstractController
             throw new NotFoundHttpException('Revision not found');
         }
 
-        return $this->redirectToRoute('data.revisions', [
+        return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
             'ouuid' => $revisionId->getOuuid(),
             'type' => $contentType->getName(),
             'revisionId' => $revisionId->getId(),
@@ -71,7 +73,7 @@ class PublishController extends AbstractController
 
         $publishService->unpublish($revisionId, $envId);
 
-        return $this->redirectToRoute('data.revisions', [
+        return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
             'ouuid' => $revisionId->getOuuid(),
             'type' => $contentType->getName(),
             'revisionId' => $revisionId->getId(),
@@ -137,7 +139,7 @@ class PublishController extends AbstractController
                 throw new NotFoundHttpException('User not found');
             }
 
-            $query = Json::encode(null === $query ? [] : $query->toArray());
+            $query = Json::encode(null === $query ? [] : ($query instanceof AbstractQuery ? $query->toArray() : $query));
             $command = [
                 Commands::ENVIRONMENT_ALIGN,
                 $environment->getName(),

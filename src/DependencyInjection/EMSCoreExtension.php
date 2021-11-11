@@ -29,10 +29,12 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $yamlLoader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $xmlLoader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $xmlLoader->load('command.xml');
+        $xmlLoader->load('contracts.xml');
         $xmlLoader->load('controllers.xml');
         $xmlLoader->load('form.xml');
         $xmlLoader->load('repositories.xml');
         $xmlLoader->load('view_types.xml');
+        $xmlLoader->load('dashboards.xml');
         $yamlLoader->load('services.yml');
         $xmlLoader->load('controllers.xml');
         $xmlLoader->load('services.xml');
@@ -71,8 +73,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.public_key', $config['public_key']);
         $container->setParameter('ems_core.health_check_allow_origin', $config['health_check_allow_origin']);
         $container->setParameter('ems_core.tika_download_url', $config['tika_download_url']);
-        $container->setParameter('ems_core.log_by_pass', $config['log_by_pass']);
-        $container->setParameter('ems_core.log_level', $config['log_level']);
         $container->setParameter('ems_core.default_bulk_size', $config['default_bulk_size']);
 
         $this->loadLdap($container, $yamlLoader, $config['ldap'] ?? []);

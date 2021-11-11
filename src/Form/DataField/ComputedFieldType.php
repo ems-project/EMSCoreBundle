@@ -4,9 +4,9 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\Field\CodeEditorType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -69,30 +69,23 @@ class ComputedFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific display options
-        $optionsForm->get('displayOptions')->add('valueTemplate', TextareaType::class, [
-                'required' => false,
-                'attr' => [
-                    'rows' => 8,
-                ],
+        $optionsForm->get('displayOptions')->add('valueTemplate', CodeEditorType::class, [
+            'required' => false,
+            'language' => 'ace/mode/twig',
         ])->add('json', CheckboxType::class, [
                 'required' => false,
                 'label' => 'Try to JSON decode',
-        ])->add('displayTemplate', TextareaType::class, [
-                'required' => false,
-                'attr' => [
-                    'rows' => 8,
-                ],
+        ])->add('displayTemplate', CodeEditorType::class, [
+            'required' => false,
+            'language' => 'ace/mode/twig',
         ]);
 
         if ($optionsForm->has('mappingOptions')) {
             $optionsForm
-                ->get('mappingOptions')->remove('index')->remove('analyzer')->add('mappingOptions', TextareaType::class, [
+                ->get('mappingOptions')->remove('index')->remove('analyzer')->add('mappingOptions', CodeEditorType::class, [
                     'required' => false,
-                    'attr' => [
-                        'rows' => 8,
-                    ],
-            ])
+                    'language' => 'ace/mode/json',
+                ])
             ->add('copy_to', TextType::class, [
                     'required' => false,
             ]);

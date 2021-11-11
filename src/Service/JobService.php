@@ -1,34 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use EMS\CoreBundle\Command\JobOutput;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\JobRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class JobService
 {
-    /** @var Registry */
-    private $doctrine;
-    /** @var ObjectManager */
-    private $em;
-    /** @var JobRepository */
-    private $repository;
-    /** @var KernelInterface */
-    private $kernel;
-    /** @var LoggerInterface */
-    private $logger;
+    private ObjectManager $em;
+    private JobRepository $repository;
+    private KernelInterface $kernel;
+    private LoggerInterface $logger;
 
     public function __construct(Registry $doctrine, KernelInterface $kernel, LoggerInterface $logger, JobRepository $jobRepository)
     {
-        $this->doctrine = $doctrine;
         $this->em = $doctrine->getManager();
         $this->repository = $jobRepository;
         $this->kernel = $kernel;
@@ -112,7 +107,7 @@ class JobService
             $application->setAutoExit(false);
 
             $command = (null === $job->getCommand() ? 'list' : $job->getCommand());
-            $input = new ArgvInput(self::getArgv('console '.$command));
+            $input = new StringInput($command);
 
             $application->run($input, $output);
         } catch (\Exception $e) {
@@ -155,10 +150,7 @@ class JobService
         $this->logger->info('Job '.$job->getCommand().' completed.');
     }
 
-    /**
-     * @return Job
-     */
-    private function create(UserInterface $user)
+    private function create(UserInterface $user): Job
     {
         $job = new Job();
         $job->setUser($user->getUsername());
@@ -167,17 +159,5 @@ class JobService
         $job->setProgress(0);
 
         return $job;
-    }
-
-    /**
-     * @param string $string
-     *
-     * @return mixed
-     */
-    private static function getArgv($string)
-    {
-        \preg_match_all('/(?<=^|\s)([\'"]?)(.+?)(?<!\\\\)\1(?=$|\s)/', $string, $ms);
-
-        return $ms[2];
     }
 }

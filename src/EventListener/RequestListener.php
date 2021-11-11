@@ -8,6 +8,7 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\Channel\ChannelRegistrar;
 use Exception;
 use Monolog\Logger;
@@ -84,7 +85,7 @@ class RequestListener
                             'contentTypeId' => $exception->getRevision()->getContentType()->getId(),
                     ], UrlGeneratorInterface::RELATIVE_PATH));
                 } else {
-                    $response = new RedirectResponse($this->router->generate('data.revisions', [
+                    $response = new RedirectResponse($this->router->generate(Routes::VIEW_REVISIONS, [
                             'type' => $exception->getRevision()->getContentType()->getName(),
                             'ouuid' => $exception->getRevision()->getOuuid(),
                     ], UrlGeneratorInterface::RELATIVE_PATH));

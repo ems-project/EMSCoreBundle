@@ -297,9 +297,9 @@
 			</h3>
 			{% if compare %}
 				{% if diffCount < 0 %}
-					<del class="text-red">{{ 'view.macros.data-field-type.collection_removed_items'|transchoice(-diffCount) }}</del>
+					<del class="text-red">{{ 'view.macros.data-field-type.collection_removed_items'|trans({'%count%': -diffCount}) }}</del>
 				{% elseif diffCount > 0 %}
-					<ins class="text-green">{{ 'view.macros.data-field-type.collection_added_items'|transchoice(diffCount) }}</ins>
+					<ins class="text-green">{{ 'view.macros.data-field-type.collection_added_items'|trans({'%count%': diffCount}) }}</ins>
                 {% endif %}
             {% endif %}
 		</div>
@@ -788,7 +788,7 @@
 						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
 					{% else %}
 						{% set jsonMenuItems = dataField.rawData|default('{}')|ems_json_menu_decode.structure %}
-						<div class="json_menu_editor_fieldtype_widget collapsible-container">
+						<div class="json_menu_editor_fieldtype_widget collapsible-container" data-select-node-id="{{ app.request.get('node', false) }}">
 							{% if not dataField.rawData|default(false) %}
 								<span class="text-gray">[not defined]</span>
 							{% elseif jsonMenuItems|length > 0 %}

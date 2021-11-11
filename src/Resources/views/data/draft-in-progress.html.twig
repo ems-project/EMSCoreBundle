@@ -1,112 +1,16 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
 
-{% block title %}Draft in progress for object {{ contentType.singularName }}{% endblock %}
-{% block pagetitle %}Draft in progress for object {{ contentType.singularName }}{% endblock %} 
+{% block title %}{{ 'revision.draft-in-progress.title'|trans({'%contentType%': contentType.pluralName}) }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
 
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><i class="fa fa-fire"></i> {{ 'revision.draft-in-progress.breadcrumb'|trans({'%contentType%': contentType.pluralName}) }}</li>
+	</ol>
+{% endblock %}
 
 {% block body %}
-
-{% if revisions %}
-<div class="row">
-	<div class="col-md-12">
-		<div class="box ">
-			<div class="box-header with-border text-{{ contentType.color }}">
-				<i class=" {% if contentType.icon %}{{ contentType.icon }}{% else %}fa fa-book{% endif %}"></i>
-				<h3 class="box-title"> {{ contentType.pluralName }} in progress</h3>
-			</div>
-			<!-- /.box-header -->
-			<div class="box-body">
-				<div class="table-responsive">
-				<table class="table table-condensed table-striped">
-					<tbody>
-						<tr>
-							<th class="text-center" style="width: 10px">{{ '#'|trans }}</th>
-							{% if is_super() %}<th>{{ 'OUUID'|trans }}</th>{% endif %}
-							<th>{{ 'Label'|trans }}</th>
-							<th>{{ 'Locked'|trans }}</th>
-							<th>{{ 'Last update'|trans }}</th>
-							<th>{{ 'By'|trans }}</th>
-							<th>{{ 'Action'|trans }}</th>
-						</tr>
-						{% for revision in revisions %}
-							<tr>
-								<td class="text-center">{{ loop.index }}.</td>
-                                {% if is_super() %}<td>{{ revision.ouuid }}</td>{% endif %}
-								<td>
-								{% if revision.contentType.labelField is defined and revision.rawData and attribute(revision.rawData, revision.contentType.labelField) is defined %}
-									{{ attribute(revision.rawData, revision.contentType.labelField) }}
-								{% endif %}
-								</td>
-								<td>
-									{% if revision.lockUntil and revision.lockUntil > date('now') %}
-										<i class="fa fa-check-square"> </i>
-									{% else %}
-										<i class="fa fa-square-o"> </i>
-									{% endif %}
-								</td>
-								<td>
-									{% if revision.autoSave %}
-										autosave by {{ revision.autoSaveBy }} <br>
-										at {{ revision.autoSaveAt|date(date_time_format) }}
-									{% else %}
-										draft 
-										at {{ revision.modified|date(date_time_format) }}
-									{% endif %}							
-								
-								</td>
-								<td>
-									{% if revision.lockBy %}
-                                    	{{ revision.lockBy|displayname }}
-                                    {% endif %}
-								</td>
-								<td>
-								
-									<div class="btn-group">
-										{% if revision.ouuid %}
-                                            {% include '@EMSCore/elements/get-button.html.twig' with {
-													'url': path('data.revisions', {
-														'type': revision.contentType.name,
-														'ouuid': revision.ouuid,
-														'revisionId': revision.id
-													}), 
-													'label': 'Revisions'|trans, 
-													'icon': 'eye' }%}
-										{% endif %}
-										{% if not revision.contentType.circlesField or attribute(revision.rawData, revision.contentType.circlesField) is not defined or attribute(revision.rawData, revision.contentType.circlesField)|in_my_circles %}
-                                            {% include '@EMSCore/elements/get-button.html.twig' with {
-												'url':  path('revision.edit', {'revisionId': revision.id}),
-												'label': 'Edit draft'|trans,
-												'icon': 'pencil'
-											}%}
-                                            {% include '@EMSCore/elements/post-button.html.twig' with {
-												'url': path('revision.discard', {'revisionId': revision.id}),
-												'message': 'Discard this draft ?'|trans,
-												'label': 'Discard'|trans,
-												'icon': 'trash'
-											}%}
-										{% endif %}
-				                    </div>
-								
-              
-								</td>
-							</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-				</div>
-
-			</div>
-			<!-- /.box-body -->
-		</div>
-	</div>
-</div>
-{% else %}
-	<div class="callout callout-success">
-    	<h4>Empty</h4>
-		<p>There is no draft in progress.</p>
-    </div>
-{% endif %}
-{% include '@EMSCore/app/menu.html.twig' with {
-	'item':  'data-draft-' ~ contentType.id
-}%}
-{% endblock %}	
+	{% form_theme form '@EMSCore/form/forms.html.twig' %}
+	{{ form(form) }}
+{% endblock %}

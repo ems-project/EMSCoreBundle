@@ -850,12 +850,17 @@
 	{%- for d in data.fieldType.restrictionOption('json_nested_deny', []) -%}{%- set rootDeny = rootDeny|merge([d]) -%}{%- endfor -%}
 	{%- set nodes = data.fieldType.getJsonMenuNestedEditorNodes -%}
 	<div class="json_menu_editor_fieldtype_widget collapsible-container"
-		 data-prototype-nested="{{ block('itemPrototype', '@EMSCore/form/fields/json_menu_nested_editor.html.twig')|e('html_attr') }}">
-		<div class="input-group">
+		 data-select-node-id="{{ app.request.get('node', false) }}"
+		 data-prototype-nested="{{ block('itemPrototype', '@EMSCore/form/fields/json_menu_nested_editor.html.twig')|e('html_attr') }}"
+		 data-paste-url="{{ path('emsco.json_menu_nested.paste', {'revision': revision.id, 'fieldType': data.fieldType.id }) }}"
+	>
+		<div class="json_menu_nested_editor_loading" style="display: none;"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
+		<div class="input-group json-menu-nested-actions">
 			<span class="input-group-btn">
 				{% with { nodes: nodes, currentNode: {'deny': rootDeny}, revision: revision, level: 0, maxDepth: maxDepth  } only %}
 					{{ block('button_add', '@EMSCore/form/fields/json_menu_nested_editor.html.twig') }}
 				{% endwith %}
+				{{ block('button_more', '@EMSCore/form/fields/json_menu_nested_editor.html.twig') }}
 			</span>
 		</div>
 		<ol class="json_menu_sortable vertical not-collapsible" data-node="{{ {'name': 'root', 'deny': rootDeny}|json_encode }}">

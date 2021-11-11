@@ -32,5 +32,7 @@ $ionicons-font-path: $node-modules-path + "ionicons/dist/fonts/";
 @import "ems";
 @import "./modules/tasks";
 @import "./modules/spacer";
+@import "./modules/flags";
+@import "./modules/json_menu_nested_editor";
 @import "./fontello/ems.css";
 @import "./fontello/animation.css";

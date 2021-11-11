@@ -105,6 +105,7 @@ final class TableType extends AbstractType
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             'reorder_label' => 'table.index.button.reorder',
             'add_label' => 'table.index.button.add',
+            'title_label' => false,
         ]);
     }
 
@@ -117,6 +118,7 @@ final class TableType extends AbstractType
         parent::buildView($view, $form, $options);
         $view->vars['reorder_label'] = $options['reorder_label'];
         $view->vars['add_label'] = $options['add_label'];
+        $view->vars['title_label'] = $options['title_label'];
     }
 
     public function getBlockPrefix(): string

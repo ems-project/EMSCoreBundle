@@ -1,6 +1,7 @@
 import jquery from 'jquery';
 import EmsListeners from './EmsListeners';
 import {addEventListeners as editRevisionAddEventListeners} from './../edit-revision';
+import {ajaxJsonPost} from "./helper/ajax";
 require('./nestedSortable');
 
 const uuidv4 = require('uuid/v4');
@@ -42,29 +43,42 @@ export default class JsonMenuEditor {
 
         this.addListeners(target);
         this.updateCollapseButtons();
+
+        window.addEventListener('focus', () => {
+            this.initPaste();
+        });
     }
 
     addListeners(target) {
         const jTarget = jquery(target);
         const self = this;
-        jTarget.find('.json_menu_sortable_remove_button')
-            .on('click', function(event) {
-                self.removeElement(this, event);
-            });
-        jTarget.find('.json_menu_sortable_add_item_button')
-            .on('click', function(event) {
-                event.preventDefault();
-                self.addItem($(this), 'prototype-item', $(this).data());
-            });
-        jTarget.find('.json_menu_sortable_add_node_button')
-            .on('click', function(event) {
-                event.preventDefault();
-                self.addItem($(this), 'prototype-node', $(this).data());
-            });
-        jTarget.find('input.itemLabel')
-            .on('input', function(event) {
-                self.updateLabel(this, event);
-            });
+
+        jTarget.find('.json_menu_sortable_remove_button').on('click', function(event) {
+            self.removeElement(this, event);
+        });
+        jTarget.find('.json_menu_sortable_add_item_button').on('click', function(event) {
+            event.preventDefault();
+            self.addItem($(this), 'prototype-item', $(this).data());
+        });
+        jTarget.find('.json_menu_sortable_add_node_button').on('click', function(event) {
+            event.preventDefault();
+            self.addItem($(this), 'prototype-node', $(this).data());
+        });
+        jTarget.find('.json_menu_sortable_copy_all_button').on('click', function(event) {
+            event.preventDefault();
+            self.copyAll(event);
+        });
+        jTarget.find('.json_menu_sortable_copy_button').on('click', function(event) {
+            event.preventDefault();
+            self.copyItem($(this));
+        });
+        jTarget.find('.json_menu_sortable_paste_button').on('click', function(event) {
+            event.preventDefault();
+            self.paste($(this));
+        });
+        jTarget.find('input.itemLabel').on('input', function(event) {
+            self.updateLabel(this, event);
+        });
 
         if (this.isNested) {
             jTarget.find('.json-menu-nested-add').on('click', function() {
@@ -73,6 +87,8 @@ export default class JsonMenuEditor {
             jTarget.find('.json-menu-nested-edit').on('click', function() {
                 self.$nestedModal.modal('show', $(this));
             });
+
+            this.initPaste();
         }
     }
 
@@ -85,6 +101,129 @@ export default class JsonMenuEditor {
         event.preventDefault();
         jquery(target).closest('li').remove();
         this.relocate();
+    }
+
+    copyAll() {
+        let structure = JSON.parse(this.hiddenField.val());
+        let root = {
+            id: 'root',
+            label: 'root',
+            type: 'root',
+            children: JSON.parse(this.hiddenField.val())
+        };
+
+        this.copy(root);
+    }
+
+    copyName = 'json_menu_nested_copy';
+    copyItem($target) {
+        let liToObject = (li) =>  {
+            let node = li.data('node');
+            let children = [];
+            li.find('> ol > li.nestedSortable').each(function () {
+                children.push(liToObject($(this)));
+            });
+
+            return {
+                id: uuidv4(),
+                label: li.data('label'),
+                type: node.name,
+                object: li.data('object'),
+                children: children,
+            }
+        };
+
+        let li = $target.closest('.nestedSortable').closest('li');
+        this.copy(liToObject(li));
+    }
+    copy(value) {
+        this.refreshPaste(value.type);
+        localStorage.setItem(this.copyName, JSON.stringify(value));
+    }
+    getCopied() {
+        if (localStorage.hasOwnProperty(this.copyName)) {
+            const loopJson = (json, callback, result = {}) => {
+                for (const [key, value] of Object.entries(json)) {
+                    if (key === 'children') {
+                        result[key] = value.map(e => loopJson(e, callback));
+                    } else {
+                        result[key] = callback(key, value);
+                    }
+                }
+                return result;
+            }
+
+            let json = JSON.parse(localStorage.getItem(this.copyName));
+
+            return loopJson(json, (key, value) => key === 'id' && value !== 'root' ? uuidv4() : value);
+        }
+
+        return false;
+    }
+    paste($target) {
+        let copied = this.getCopied(true);
+        if (false === copied) {
+            return;
+        }
+
+        this.parent.find('.json_menu_nested_editor_loading').show();
+
+        let widget = this.parent.find('.json_menu_editor_fieldtype_widget');
+        let url = widget.data('paste-url');
+
+        let li = $target.closest('.nestedSortable').closest('li');
+        let pasteTarget = li.length > 0 ? li[0] : widget[0];
+        let ol = pasteTarget.querySelector('ol');
+
+        ajaxJsonPost(url, JSON.stringify({'paste': copied}), (json) => {
+            var wrapperPaste = document.createElement('div');
+            wrapperPaste.innerHTML = json.html;
+
+            if (ol) {
+                let listItems = wrapperPaste.querySelectorAll('div > ol > li');
+                listItems.forEach((e) => {
+                    ol.insertAdjacentHTML('beforeend', e.outerHTML);
+                    this.addListeners(ol.lastChild);
+                    new EmsListeners(ol.lastChild);
+                });
+            } else {
+                let list = wrapperPaste.querySelector('div > ol');
+                if (list) {
+                    pasteTarget.insertAdjacentHTML('beforeend', list.outerHTML);
+                    this.addListeners(pasteTarget.lastChild);
+                    new EmsListeners(pasteTarget.lastChild);
+                    jquery(pasteTarget).find('.button-collapse:first').attr('aria-expanded', false);
+                }
+            }
+
+            this.relocate();
+            this.parent.find('.json_menu_nested_editor_loading').hide();
+        });
+    }
+    initPaste() {
+        let copied = this.getCopied();
+        let copiedType = copied ? copied.type : false;
+        this.refreshPaste(copiedType);
+    }
+    refreshPaste(copiedType) {
+        let pasteButtons = this.parent.find('button.json_menu_sortable_paste_button');
+
+        if (!copiedType) {
+            pasteButtons.each(function () { $(this).parent('li').hide(); });
+            return;
+        }
+
+        this.parent.find('button.json_menu_sortable_paste_button').each(function () {
+            let actionsContainer = $(this).closest('.json-menu-nested-actions');
+            let addButton = actionsContainer.find('button.json-menu-nested-add-button');
+            let allowTypes = (addButton.length > 0 ? addButton.data('types') : []);
+
+            if (allowTypes.includes(copiedType)) {
+                $(this).parent('li').show();
+            } else {
+                $(this).parent('li').hide();
+            }
+        });
     }
 
     addItem($target, prototypeTarget, data) {
@@ -210,7 +349,10 @@ export default class JsonMenuEditor {
 
             let data = {};
             if ('edit' === action) {
-                data = $target.closest('li').data('object');
+                let closestLi = $target.closest('li');
+                if (closestLi.data('object')) {
+                    data = closestLi.data('object');
+                }
                 data.label = $target.closest('li').data('label');
             }
             self.ajaxNestedModal(node.url, JSON.stringify(data), 'application/json', function () {

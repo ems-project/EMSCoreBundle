@@ -270,16 +270,21 @@ class PublishService
             $this->revRepository->removeEnvironment($item, $environment);
         }
 
+        if (!$command) {
+            $this->dataService->lockRevision($revision, $environment);
+        }
+
         $this->dataService->sign($revision, true);
         if ($this->indexService->indexRevision($revision, $environment)) {
             $this->revRepository->save($revision);
-            $this->logger->notice('service.publish.publish', \array_merge([
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-            ], $logContext));
         } else {
             $this->logger->warning('service.publish.publish_failed', \array_merge([
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
             ], $logContext));
+        }
+
+        if (!$command) {
+            $this->dataService->unlockRevision($revision);
         }
 
         if (!$already) {
@@ -356,7 +361,7 @@ class PublishService
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                EmsFields::LOG_REVISION_ID_FIELD => $environment->getId(),
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
             ]);
 
             $this->dispatcher->dispatch(RevisionUnpublishEvent::NAME, new RevisionUnpublishEvent($revision, $environment));

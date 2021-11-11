@@ -17,7 +17,6 @@ use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\UserInterface;

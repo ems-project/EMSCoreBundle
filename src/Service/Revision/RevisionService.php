@@ -16,6 +16,7 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 class RevisionService implements RevisionServiceInterface

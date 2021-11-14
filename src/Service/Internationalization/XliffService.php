@@ -9,11 +9,13 @@ use EMS\CommonBundle\Elasticsearch\Response\Response;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\XliffException;
 use EMS\CoreBundle\Helper\Xliff\Extractor;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class XliffService
 {
@@ -29,13 +31,44 @@ class XliffService
     }
 
     /**
-     * @param string[] $fields
+     * @param FieldType[] $fields
      */
-    public function extract(Document $source, Extractor $extractor, array $fields, ContentType $targetContentType, Environment $targetEnvironment, ?string $sourceDocumentField): void
+    public function extract(ContentType $contentType, Document $source, Extractor $extractor, array $fields, Environment $sourceEnvironment, Environment $targetEnvironment): void
     {
-        $targetRevision = $this->getTargetRevision($source, $extractor, $fields, $targetContentType, $targetEnvironment, $sourceDocumentField);
-        \dump($targetRevision);
-//        $publishedRevision = $this->getPublishedRevisison($source, $sourceDocumentField, $targetEnvironment);
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+
+        $sourceRevision = $this->revisionService->getCurrentRevisionForEnvironment($source->getId(), $contentType, $sourceEnvironment);
+        $currentRevision = $this->revisionService->getCurrentRevisionForEnvironment($source->getId(), $contentType, $targetEnvironment);
+
+        if (null === $sourceRevision) {
+            throw new \RuntimeException('Unexpected null revision');
+        }
+        $sourceData = $sourceRevision->getRawData();
+
+        if ($currentRevision instanceof Revision) {
+            $currentData = $currentRevision->getRawData();
+        } else {
+            $currentData = [];
+        }
+
+        $xliffDoc = $extractor->addDocument($contentType->getName(), $source->getId(), \strval($sourceRevision->getId()));
+        foreach ($fields as $fieldPath => $field) {
+            $propertyPath = Document::fieldPathToPropertyPath($fieldPath);
+            $value = $propertyAccessor->getValue($sourceData, $propertyPath);
+            if (null === $value) {
+                continue;
+            }
+            $currentValue = $propertyAccessor->getValue($currentData, $propertyPath);
+            if ($currentValue === $value) {
+                //TODO: get the current translation in order to flag it as already OK;
+            }
+
+            if ($this->isHtml($value)) {
+                $extractor->addHtmlField($xliffDoc, $fieldPath, $value, $propertyAccessor->getValue($currentData, $propertyPath));
+            } else {
+                $extractor->addSimpleField($xliffDoc, $fieldPath, $value, $propertyAccessor->getValue($currentData, $propertyPath));
+            }
+        }
     }
 
     /**
@@ -70,5 +103,10 @@ class XliffService
         }
 
         throw new XliffException(\sprintf('Target for source %s found in elasticsearch but not in DB', $source->getId()));
+    }
+
+    private function isHtml(string $value): bool
+    {
+        return 1 === \preg_match('/^<([A-Za-z][A-Za-z0-9]*)\b[^>]*>(.*?)<(\/[A-Za-z][A-Za-z0-9]*\s*|[A-Za-z][A-Za-z0-9]*\s*\/)>$/', \trim($value));
     }
 }

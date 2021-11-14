@@ -116,7 +116,7 @@ class Extractor
         return $this->xliff;
     }
 
-    public function addSimpleField(\SimpleXMLElement $document, string $fieldPath, string $source, ?string $target = null): void
+    public function addSimpleField(\SimpleXMLElement $document, string $fieldPath, string $source, ?string $target = null, bool $isFinal = false): void
     {
         $xliffAttributes = [
             'id' => $fieldPath,
@@ -131,10 +131,10 @@ class Extractor
             $unit->addAttribute($attribute, $value);
         }
 
-        $this->addSegment($unit, $source, $target);
+        $this->addSegment($unit, $source, $target, $isFinal);
     }
 
-    public function addHtmlField(\SimpleXMLElement $document, string $fieldPath, string $sourceHtml, ?string $targetHtml = null): void
+    public function addHtmlField(\SimpleXMLElement $document, string $fieldPath, string $sourceHtml, ?string $targetHtml = null, bool $isFinal = false): void
     {
         $sourceCrawler = new Crawler($sourceHtml);
         $targetCrawler = new Crawler($targetHtml);
@@ -148,11 +148,11 @@ class Extractor
         }
 
         foreach ($sourceCrawler->filterXPath('//body/*') as $domNode) {
-            $this->domNodeToXliff($group, $domNode, $targetCrawler);
+            $this->domNodeToXliff($group, $domNode, $targetCrawler, $isFinal);
         }
     }
 
-    private function domNodeToXliff(\SimpleXMLElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler): void
+    private function domNodeToXliff(\SimpleXMLElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler, bool $isFinal): void
     {
         if (!$this->hasSomethingToTranslate($sourceNode)) {
             return;
@@ -184,10 +184,14 @@ class Extractor
             }
             $this->addId($group, $sourceNode);
             foreach ($sourceNode->childNodes as $childNode) {
-                $this->domNodeToXliff($group, $childNode, $targetCrawler);
+                $this->domNodeToXliff($group, $childNode, $targetCrawler, $isFinal);
             }
         } else {
+            $attributes = [];
             if (\version_compare($this->xliffVersion, '2.0') < 0) {
+                if ($isFinal) {
+                    $attributes['state'] = 'final';
+                }
                 $qualifiedName = null;
             } else {
                 $qualifiedName = 'unit';
@@ -196,7 +200,7 @@ class Extractor
                 $xliffElement = $xliffElement->addChild($qualifiedName);
                 $this->addId($xliffElement, $sourceNode);
             }
-            $this->addSegments($xliffElement, $sourceNode, $targetCrawler);
+            $this->addSegments($xliffElement, $sourceNode, $targetCrawler, $attributes);
         }
     }
 
@@ -363,7 +367,7 @@ class Extractor
         }
     }
 
-    private function addSegment(\SimpleXMLElement $unit, string $source, ?string $target): void
+    private function addSegment(\SimpleXMLElement $unit, string $source, ?string $target, bool $isFinal): void
     {
         if (\version_compare($this->xliffVersion, '2.0') < 0) {
             $qualifiedName = null;
@@ -373,6 +377,9 @@ class Extractor
             $targetAttributes = [];
             if (null !== $this->targetLocale) {
                 $targetAttributes['xml:xml:lang'] = $this->targetLocale;
+            }
+            if ($isFinal) {
+                $targetAttributes['state'] = 'final';
             }
         } else {
             $qualifiedName = 'segment';

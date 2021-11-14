@@ -56,6 +56,8 @@ final class ExtractCommand extends AbstractCommand
     public const OPTION_XLIFF_VERSION = 'xliff-version';
     public const OPTION_FILENAME = 'filename';
     public const OPTION_BASE_URL = 'base-url';
+    public const OPTION_TRANSLATION_FIELD = 'translation-field';
+    public const OPTION_LOCALE_FIELD = 'locale-field';
 
     protected static $defaultName = Commands::XLIFF_EXTRACTOR;
     private string $xliffFilename;
@@ -66,6 +68,8 @@ final class ExtractCommand extends AbstractCommand
      * @var array<int, FieldType[]>
      */
     private $fieldTypesByContentType = [];
+    private string $translationField;
+    private string $localeField;
 
     public function __construct(
         ContentTypeService $contentTypeService,
@@ -96,7 +100,9 @@ final class ExtractCommand extends AbstractCommand
             ->addOption(self::OPTION_TARGET_ENVIRONMENT, null, InputOption::VALUE_OPTIONAL, 'Environment with the target documents')
             ->addOption(self::OPTION_XLIFF_VERSION, null, InputOption::VALUE_OPTIONAL, 'XLIFF format version: '.\implode(' ', Extractor::XLIFF_VERSIONS), Extractor::XLIFF_1_2)
             ->addOption(self::OPTION_FILENAME, null, InputOption::VALUE_OPTIONAL, 'Generate the XLIFF specified file')
-            ->addOption(self::OPTION_BASE_URL, null, InputOption::VALUE_OPTIONAL, 'Base url, in order to generate a download link to the XLIFF file');
+            ->addOption(self::OPTION_BASE_URL, null, InputOption::VALUE_OPTIONAL, 'Base url, in order to generate a download link to the XLIFF file')
+            ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', 'locale')
+            ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', 'translation_id');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -116,6 +122,8 @@ final class ExtractCommand extends AbstractCommand
         $this->xliffFilename = $xliffFilename ?? \tempnam(\sys_get_temp_dir(), 'ems-extract-').'.xlf';
         $this->baseUrl = $this->getOptionStringNull(self::OPTION_BASE_URL);
         $this->xliffVersion = $this->getOptionString(self::OPTION_XLIFF_VERSION);
+        $this->translationField = $this->getOptionString(self::OPTION_TRANSLATION_FIELD);
+        $this->localeField = $this->getOptionString(self::OPTION_LOCALE_FIELD);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -142,7 +150,7 @@ final class ExtractCommand extends AbstractCommand
                 try {
                     $contentType = $this->contentTypeService->giveByName($source->getContentType());
                     $fieldTypes = $this->getFieldTypes($contentType);
-                    $this->xliffService->extract($contentType, $source, $extractor, $fieldTypes, $this->sourceEnvironment, $this->targetEnvironment);
+                    $this->xliffService->extract($contentType, $source, $extractor, $fieldTypes, $this->sourceEnvironment, $this->targetEnvironment, $this->targetLocale, $this->localeField, $this->translationField);
                 } catch (\Throwable $e) {
                     $this->io->warning($e->getMessage());
                 }

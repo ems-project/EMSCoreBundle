@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Internationalization;
 
+use Elastica\Query\Terms;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
+use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
 use EMS\CommonBundle\Elasticsearch\Response\Response;
+use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -33,7 +36,7 @@ class XliffService
     /**
      * @param FieldType[] $fields
      */
-    public function extract(ContentType $contentType, Document $source, Extractor $extractor, array $fields, Environment $sourceEnvironment, Environment $targetEnvironment): void
+    public function extract(ContentType $contentType, Document $source, Extractor $extractor, array $fields, Environment $sourceEnvironment, Environment $targetEnvironment, string $targetLocale, string $localeField, string $translationField): void
     {
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
@@ -51,6 +54,13 @@ class XliffService
             $currentData = [];
         }
 
+        $translationId = $propertyAccessor->getValue($currentData, Document::fieldPathToPropertyPath($translationField));
+        if (null !== $translationId) {
+            $currentTranslationData = $this->getCurrentTranslationData($targetEnvironment, $translationField, $translationId, $localeField, $targetLocale);
+        } else {
+            $currentTranslationData = [];
+        }
+
         $xliffDoc = $extractor->addDocument($contentType->getName(), $source->getId(), \strval($sourceRevision->getId()));
         foreach ($fields as $fieldPath => $field) {
             $propertyPath = Document::fieldPathToPropertyPath($fieldPath);
@@ -59,14 +69,13 @@ class XliffService
                 continue;
             }
             $currentValue = $propertyAccessor->getValue($currentData, $propertyPath);
-            if ($currentValue === $value) {
-                //TODO: get the current translation in order to flag it as already OK;
-            }
+            $translation = $propertyAccessor->getValue($currentTranslationData, $propertyPath);
+            $isFinal = ($currentValue === $value && null !== $translation);
 
             if ($this->isHtml($value)) {
-                $extractor->addHtmlField($xliffDoc, $fieldPath, $value, $propertyAccessor->getValue($currentData, $propertyPath));
+                $extractor->addHtmlField($xliffDoc, $fieldPath, $value, $translation, $isFinal);
             } else {
-                $extractor->addSimpleField($xliffDoc, $fieldPath, $value, $propertyAccessor->getValue($currentData, $propertyPath));
+                $extractor->addSimpleField($xliffDoc, $fieldPath, $value, $translation, $isFinal);
             }
         }
     }
@@ -108,5 +117,24 @@ class XliffService
     private function isHtml(string $value): bool
     {
         return 1 === \preg_match('/^<([A-Za-z][A-Za-z0-9]*)\b[^>]*>(.*?)<(\/[A-Za-z][A-Za-z0-9]*\s*|[A-Za-z][A-Za-z0-9]*\s*\/)>$/', \trim($value));
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    private function getCurrentTranslationData(Environment $targetEnvironment, string $translationField, string $translationId, string $localeField, string $targetLocale): array
+    {
+        $boolQuery = $this->elasticaService->getBoolQuery();
+        $boolQuery->addMust(new Terms($translationField, [$translationId]));
+        $boolQuery->addMust(new Terms($localeField, [$targetLocale]));
+        $search = new Search([$targetEnvironment->getAlias()], $boolQuery);
+        $this->elasticaService->getTermsQuery($translationField, [$translationId]);
+        try {
+            $resultSet = $this->elasticaService->singleSearch($search);
+
+            return $resultSet->getSource();
+        } catch (NotSingleResultException $e) {
+            return [];
+        }
     }
 }

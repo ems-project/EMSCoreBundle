@@ -1,285 +1,42 @@
 {% trans_default_domain 'emsco-twigs' %}
-  <aside class="main-sidebar">
+<aside class="main-sidebar">
     <section class="sidebar">
-      <div class="user-panel">
-        <div class="pull-left image">
-            {% include '@EMSCore/elements/user-image.html.twig' with {
-                'class': 'img-circle'
-            } %}
-        </div>
-        <div class="pull-left info">
-          
-          	{% if app.user %}
-	          	<p><a href="{{ path(user_profile_route) }}" class="">{{ app.user.displayName }}</a></p>
-		        <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-{{ status }}"></i> {{ status }}</a>
-	         {% else %} 
-	         	<p><a href="{{ path(user_profile_route) }}" class=""> {{ 'views.elements.side-menu-html.anonymous-user'|trans }}</a></p>
-		        <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-"></i> </a>
-	      	{% endif %}
-          
-        </div>
-      </div>
-{% if app.user %}
-      <form action="{{ path('ems_quick_search') }}" method="get" class="sidebar-form">
-        <div class="input-group">
-            <label for="q" class="sr-only">{{ 'views.elements.side-menu-html.quick-search-label'|trans }}</label>
-            <input id="q" type="text" name="q" class="form-control" placeholder="{{ 'views.elements.side-menu-html.quick-search-placeholder'|trans }}">
-          <span class="input-group-btn">
-            <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-            </button>
-          </span>
-        </div>
-      </form>
-
-      {% if app.user %}
-	      {% set searches = app.user.username|searches %}
-	      {% if searches|length > 0 %}
-	      <ul class="sidebar-menu" data-widget="tree">
-	        <li class="header">{{ app.user.displayName }}</li>
-	          <li class="treeview">
-	          	<a href="#" class="">
-	          		<i class="fa fa-search"></i> <span>Searches</span>
-	          		<i class="fa fa-angle-left pull-right"></i>
-	          		
-	          	</a>
-	          	<ul class="treeview-menu">
-	          		{% for search in searches %}
-	          			<li class=""><a id="menu-search-preset-{{ search.id }}" href="{{ path('elasticsearch.search', { 'searchId': search.id  }) }}"> {{ search.name }}</a></li>
-	          		{% endfor %}
-	          	</ul>
-	          </li>
-			</ul>
-			{% endif %}
-	{% endif %}
-
-    {% if application_menu_controller %}
-        {{ render(controller(application_menu_controller)) }}
-    {% endif %}
-
-    {% if dashboardMenu.children|length > 0 %}
-        <ul class="sidebar-menu">
-            <li class="header">{{ 'views.elements.side-menu-html.dashboards'|trans }}</li>
-            {% for dashboard in dashboardMenu.children %}
-                <li class="treeview">
-                    <a href="{{ dashboard.url }}"{% if dashboard.color %} class="text-{{ dashboard.color }}"{% endif %}>
-                        <i class="{{ dashboard.icon }}"></i>&nbsp;<span>{{ dashboard.label }}</span>
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-	{% if get_content_types()|length > 0 %}
-      <ul class="sidebar-menu" data-widget="tree">
-        <li class="header">Content Management</li>
-        {% for contentType in get_content_types() %}
-        	{% if contentType.active and (not contentType.viewRole or is_granted(contentType.viewRole) or contentType.rootContentType ) %}
-	          <li class="treeview">
-	          	<a href="{{ path('data.root', {name: contentType.name}) }}" class="text-{{ contentType.color }}">
-	          		<i class=" {% if contentType.icon %}{{ contentType.icon }}{% else %}fa fa-book{% endif %}"></i> <span>{{ contentType.pluralName }}</span>
-	          		
-	            	{% if draftCounterGroupedByContentType[contentType.id] is defined and is_granted(contentType.editRole)  %}
-	          			<span class="label {% if contentType.color %}bg-{{ contentType.color }}{% else %}label-primary{% endif %} pull-right-container">{{ draftCounterGroupedByContentType[contentType.id] }}</span>
-	          		{% else %}
-		          		<i class="fa fa-angle-left pull-right"></i>
-	          		{% endif %}
-	          	</a>
-	          	<ul class="treeview-menu">
-                    {% if is_granted(contentType.searchLinkDisplayRole) %}
-                        <li class="">
-                            <a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_data_default_search', {'name':contentType.name}) }}">
-                                <i class="fa fa-search"></i> Search {{ contentType.pluralName }}
-                            </a>
-                        </li>
-
-                        {% if contentType.circlesField and app.user.circles|length > 0 %}
-
-                            {% set label = contentType.circlesField %}
-                            {% set circleField = contentType|get_field_by_path(contentType.circlesField, true) %}
-
-                            {% if circleField and circleField.options.displayOptions.type is defined  %}
-                                {% set circleContenttype = circleField.options.displayOptions.type|get_content_type %}
-                                {% if circleContenttype %}
-                                    {% if app.user.circles|length > 1 %}
-                                        {% set label = circleContenttype.pluralName %}
-                                    {% else %}
-                                        {% set label = circleContenttype.singularName %}
-                                    {% endif %}
-                                    <li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_search_in_my_circles', {'name':contentType.name} ) }}"><i class="{{ circleContenttype.icon }}"></i> In my {{ label }}</a></li>
-                                {% endif %}
-                            {% endif %}
-
-                        {% endif %}
-                    {% endif %}
-	            	{% for view in contentType.views|filter(v => v.type not in ['ems.view.data_link']) %}
-	            		<li>
-	            			<a id="menu-data-view-{{ contentType.id }}-{{ view.id }}" href="{{ path(view.public?'ems_custom_view_public':'ems_custom_view_protected', { viewId: view.id }) }}">
-	            				<i class="{{ view.icon }}"></i>
-	            				{{ view.name }}
-	            			</a>
-	            		</li>
-	            	{% endfor %}
-	            	{% if draftCounterGroupedByContentType[contentType.id] is defined and is_granted(contentType.editRole) %}
-	          			<li class=""><a id="menu-data-draft-{{ contentType.id }}" href="{{ path('data.draft_in_progress', { contentTypeId: contentType.id } ) }}">
-	          				<i class="fa fa-fire"></i>
-	          				<span>Drafts in progress</span> <span class="label {% if contentType.color %}bg-{{ contentType.color }}{% else %}label-primary{% endif %} pull-right-container">{{ draftCounterGroupedByContentType[contentType.id] }}</span>
-	          			</a></li>
-	            	{% endif %}
-	            	{% if contentType.environment.managed %}
-
-	            	{% if contentType.orderField and (contentType.fieldType.__get('ems_'~contentType.orderField).options.restrictionOptions.minimum_role is not defined or is_granted(contentType.fieldType.__get('ems_'~contentType.orderField).options.restrictionOptions.minimum_role)) %}
-	          			<li class=""><a id="menu-data-reorder-{{ contentType.id }}" href="{{ path('nature.reorder', { contentType: contentType.id } ) }}">
-	          				<i class="fa fa-sort"></i>
-	          				<span>Reorder</span>
-	          			</a></li>
-	            	{% endif %}
-
-	            	{% if (not contentType.createRole or is_granted(contentType.createRole)) and is_granted(contentType.createLinkDisplayRole) %}
-						<li class=""><a id="menu-data-add-{{ contentType.id }}" href="{{ path('data.add', { contentType: contentType.id }) }}">
-							<i class="fa fa-plus"></i>
-	          				New {{ contentType.singularName }}
-						</a></li>
-					{% endif %}
-
-
-                    {% if is_granted(contentType.trashRole) %}
-						<li class="">
-							<a id="menu-data-trash-{{ contentType.id }}" href="{{ path('ems_data_trash', { contentType: contentType.id }) }}">
-    							<i class="fa fa-trash"></i>
-                                {{ 'views.elements.side-menu-html.trash'|trans }}
-							</a>
-						</li>
-                    {% endif %}
+        <div class="user-panel">
+            <div class="pull-left image">
+                {% include '@EMSCore/elements/user-image.html.twig' with { 'class': 'img-circle' } %}
+            </div>
+            <div class="pull-left info">
+                {% if app.user %}
+                    <p><a href="{{ path(user_profile_route) }}" class="">{{ app.user.displayName }}</a></p>
+                    <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-{{ status }}"></i> {{ status }}</a>
+                {% else %}
+                    <p>{{ 'views.elements.side-menu-html.anonymous-user'|trans }}</p>
+                    <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-"></i> </a>
                 {% endif %}
-	          	</ul>
-	          </li>
-	        {% endif %}
-         {% endfor %}
-		</ul>
-	{% endif %}
-	
-	{% if is_granted('ROLE_PUBLISHER') %}
-      <ul class="sidebar-menu">
-         <li class="header">{{ 'views.elements.side-menu-html.publishers'|trans }}</li>
-         <li class="treeview">
-              <a href="{{ path('emsco_release_index') }}">
-                <i class="{{ 'view.icon.class.release'|trans }}"></i> <span>{{ 'view.elements.side-menu.release-admin.index-link'|trans }}</span>
-              </a>
-          </li>
-          <li class="treeview">
-            <a href="{{ path('environment.align') }}" id="menu-environment-align">
-            	<i class="fa fa-align-center"></i> <span>{{ 'views.elements.side-menu-html.compare-environments'|trans }}</span>
-            </a>
-          </li>
-          <li class="treeview">
-              <a href="{{ path('ems_core_uploaded_file_index') }}">
-                  <i class="fa fa-upload"></i> <span>{{ 'views.elements.side-menu-html.uploaded-files'|trans }}</span>
-              </a>
-          </li>
-      </ul>	
-    {% endif %}
+            </div>
+        </div>
+        {% if app.user %}
+            <form action="{{ path('ems_quick_search') }}" method="get" class="sidebar-form">
+                <div class="input-group">
+                    <label for="q" class="sr-only">{{ 'views.elements.side-menu-html.quick-search-label'|trans }}</label>
+                    <input id="q" type="text" name="q" class="form-control" placeholder="{{ 'views.elements.side-menu-html.quick-search-placeholder'|trans }}">
+                    <span class="input-group-btn">
+                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </form>
+        {% endif %}
 
-    {% if is_granted('ROLE_FORM_CRM') %}
-        <ul class="sidebar-menu">
-            <li class="header">{{ 'form_submissions.title'|trans }}</li>
-            <li class="treeview">
-                <a href="{{ path('form.submissions') }}" id="menu-environment-align">
-                    <i class="fa fa-list-alt"></i> <span>{{ 'form_submissions.overview'|trans }}</span>
-                </a>
-            </li>
-        </ul>
-    {% endif %}
-    
-    {% if is_granted('ROLE_USER_MANAGEMENT') %}
-        <ul class="sidebar-menu">
-            <li class="header">{{ 'views.elements.side-menu-html.user-management'|trans }}</li>
-            <li class="treeview">
-                <a href="{{ path('ems.user.index') }}" id="menu-user-index">
-                    <i class="fa fa-users"></i> <span>{{ 'views.elements.side-menu-html.users'|trans }}</span>
-                </a>
-            </li>
-        </ul>
-    {% endif %}
-	  
-	{% if is_granted('ROLE_ADMIN') %}
-      <ul class="sidebar-menu">
-        <li class="header">{{ 'views.elements.side-menu-html.admin'|trans }}</li>
-          <li class="treeview">
-            <a href="{{ path('contenttype.index') }}" id="menu-contenttype-list">
-            	<i class="fa fa-sitemap"></i> <span>{{ 'views.elements.side-menu-html.content-types'|trans }}</span>
-            </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('environment.index') }}" id="menu-environment-list">
-          	<i class="fa fa-database"></i> <span>{{ 'views.elements.side-menu-html.environments'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('ems_core_channel_index') }}">
-          	<i class="{{ 'view.icon.class.channel'|trans }}"></i> <span>{{ 'view.elements.side-menu.chanel-admin.index-link'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('emsco_dashboard_admin_index') }}">
-          	<i class="{{ 'view.icon.class.dashboard'|trans }}"></i> <span>{{ 'view.elements.side-menu.dashboard-admin.index-link'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('ems_core_query_search_index') }}">
-          	<i class="{{ 'view.icon.class.query_search'|trans }}"></i> <span>{{ 'view.elements.side-menu.query_search.index-link'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('ems_wysiwyg_index') }}" id="menu-wysiwyg-index">
-          	<i class="fa fa-edit"></i> <span>{{ 'views.elements.side-menu-html.wysiwyg'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('ems_search_options_index') }}" id="menu-wysiwyg-index">
-          	<i class="fa fa-search"></i> <span>{{ 'views.elements.side-menu-html.search'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('i18n_index') }}" id="menu-i18n-index">
-          	<i class="fa fa-language"></i> <span>{{ 'views.elements.side-menu-html.i18n'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('job.index') }}" id="menu-job-index">
-          	<i class="fa fa-terminal"></i> <span>{{ 'views.elements.side-menu-html.jobs'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('ems_analyzer_index') }}" id="menu-analyzer-index">
-          	<i class="fa fa-signal"></i> <span>{{ 'views.elements.side-menu-html.analyzers'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('ems_filter_index') }}" id="menu-filter-index">
-          	<i class="fa fa-filter"></i> <span>{{ 'views.elements.side-menu-html.filters'|trans }}</span>
-          </a>
-        </li>
-        <li class="treeview">
-            <a href="{{ path('ems_core_uploaded_file_logs') }}">
-                <i class="fa fa-upload"></i> <span>{{ 'views.elements.side-menu-html.uploaded-files-logs'|trans }}</span>
-            </a>
-        </li>
-	  </ul>
-	 {% endif %}
-	 
-	  {% endif %}
-      <ul class="sidebar-menu">
-        <li class="header">{{ 'views.elements.side-menu-html.other'|trans }}</li>
-        <li class="treeview">
-          <a href="{{ path('elasticsearch.status') }}" id="menu-elasticsearch-status">
-          	<i class="fa fa-cubes"></i> <span>{{ 'views.elements.side-menu-html.status'|trans }}</span>
-          </a>
-        </li>
-        <li>
-        	<a id="menu-documentation" href="{{ path('documentation') }}">
-        		<i class="fa fa-book"></i> <span>{{ 'views.elements.side-menu-html.documentations'|trans }}</span>
-        	</a>
-        </li>
-      </ul>
+        {% for item in menu|default([]) %}
+            {% if item.hasChildren %}
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">{{ item.title|trans(item.transParameters) }}</li>
+                    {% for menu in item.children %}
+                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
     </section>
-  </aside>
+</aside>

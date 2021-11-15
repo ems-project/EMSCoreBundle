@@ -1,0 +1,14 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('contenttype.index') }}"><i class="{{ 'content-type.icon.class'|trans }}"></i> {{ 'content-type.menu'|trans }}</a></li>
+        <li><a href="{{ path("contenttype.edit", {id: contentType.id}) }}"><i class="{{ contentType.icon }}"></i> {{ 'content-type.edit'|trans({'%type%': contentType.singularName}) }}</a></li>
+        <li><a href="{{ path("view.index", {type: contentType.name}) }}"><i class="{{ 'view.icon.class'|trans }}"></i> {{ 'view.list.menu'|trans({'%type%': contentType.singularName}) }}</a></li>
+        {% block breadcrumb_items %}{% endblock breadcrumb_items %}
+    </ol>
+{% endblock %}
+
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+{% block subtitle %}<small>{{ 'view.tagline'|trans }}</small>{% endblock %}

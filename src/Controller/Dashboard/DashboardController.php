@@ -128,7 +128,7 @@ class DashboardController extends AbstractController
 
     private function initTable(): EntityTable
     {
-        $table = new EntityTable($this->dashboardManager, $this->generateUrl('emsco_dashboard_admin_index_ajax'));
+        $table = new EntityTable($this->dashboardManager, $this->generateUrl(Routes::DASHBOARD_ADMIN_INDEX_AJAX));
         $table->addColumn('table.index.column.loop_count', 'orderKey');
         $table->addColumn('dashboard.index.column.name', 'name');
         $table->addColumn('dashboard.index.column.label', 'label')->setItemIconCallback(function (Dashboard $dashboard) {

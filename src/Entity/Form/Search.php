@@ -9,7 +9,7 @@ use JsonSerializable;
  * Search.
  *
  * @ORM\Table(name="search")
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SearchRepository")
+ * @ORM\Entity()
  */
 class Search implements JsonSerializable
 {

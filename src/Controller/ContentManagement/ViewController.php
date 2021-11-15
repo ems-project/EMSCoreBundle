@@ -2,164 +2,157 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Core\View\ViewManager;
+use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\View;
-use EMS\CoreBundle\Form\Field\IconPickerType;
-use EMS\CoreBundle\Form\Field\IconTextType;
-use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\TableAbstract;
+use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
+use EMS\CoreBundle\Form\Data\TranslationTableColumn;
+use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Form\ViewType;
-use EMS\CoreBundle\Repository\ContentTypeRepository;
-use EMS\CoreBundle\Repository\ViewRepository;
-use Psr\Container\ContainerInterface;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use EMS\CoreBundle\Helper\DataTableRequest;
+use EMS\CoreBundle\Routes;
+use EMS\CoreBundle\Service\ContentTypeService;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\SubmitButton;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
-class ViewController extends AppController
+class ViewController extends AbstractController
 {
-    /**
-     * @param string $type
-     *
-     * @return Response
-     *
-     * @Route("/view/{type}", name="view.index")
-     */
-    public function indexAction($type)
+    private ContentTypeService $contentTypeService;
+    private ViewManager $viewManager;
+    private LoggerInterface $logger;
+
+    public function __construct(ContentTypeService $contentTypeService, ViewManager $viewManager, LoggerInterface $logger)
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
-
-        $contentTypes = $contentTypeRepository->findBy([
-            'deleted' => false,
-            'name' => $type,
-        ]);
-
-        if (!$contentTypes || 1 != \count($contentTypes)) {
-            throw new NotFoundHttpException('Content type not found');
-        }
-
-        return $this->render('@EMSCore/view/index.html.twig', [
-            'contentType' => $contentTypes[0],
-        ]);
+        $this->contentTypeService = $contentTypeService;
+        $this->viewManager = $viewManager;
+        $this->logger = $logger;
     }
 
     /**
-     * @param string $type
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/view/add/{type}", name="view.add")
+     * @deprecated
      */
-    public function addAction($type, Request $request)
+    public function indexDeprecated(string $type, string $_format, Request $request): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
+        @\trigger_error(\sprintf('Route view.index is deprecated, use %s instead', Routes::VIEW_INDEX), E_USER_DEPRECATED);
 
-        /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        return $this->index($type, $_format, $request);
+    }
 
-        $contentTypes = $contentTypeRepository->findBy([
-            'deleted' => false,
-            'name' => $type,
-        ]);
+    public function index(string $type, string $_format, Request $request): Response
+    {
+        $contentType = $this->contentTypeService->giveByName($type);
+        $table = $this->initTable($contentType);
+        $dataTableRequest = DataTableRequest::fromRequest($request);
 
-        if (!$contentTypes || 1 != \count($contentTypes)) {
-            throw new NotFoundHttpException('Content type not found');
+        if ('json' === $_format) {
+            $table->resetIterator($dataTableRequest);
+
+            return $this->render('@EMSCore/datatable/ajax.html.twig', [
+                'dataTableRequest' => $dataTableRequest,
+                'table' => $table,
+            ], new JsonResponse());
         }
 
-        $view = new View();
-        $view->setContentType($contentTypes[0]);
-
-        $form = $this->createForm(ViewType::class, $view);
-
+        $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($view);
-            $em->flush();
+            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
+                switch ($action->getName()) {
+                    case EntityTable::DELETE_ACTION:
+                        $this->viewManager->deleteByIds($table->getSelected());
+                        break;
+                    case TableType::REORDER_ACTION:
+                        $newOrder = TableType::getReorderedKeys($form->getName(), $request);
+                        $this->viewManager->reorderByIds($newOrder);
+                        break;
+                    default:
+                        $this->logger->error('log.controller.view.unknown_action');
+                }
+            } else {
+                $this->logger->error('log.controller.view.unknown_action');
+            }
 
-            $this->getLogger()->notice('log.view.created', [
-                'view_name' => $view->getName(),
-            ]);
-
-            return $this->redirectToRoute('view.edit', [
-                'id' => $view->getId(),
+            return $this->redirectToRoute(Routes::VIEW_INDEX, [
+                'type' => $contentType->getName(),
             ]);
         }
 
-        return $this->render('@EMSCore/view/add.html.twig', [
-            'contentType' => $contentTypes[0],
+        return $this->render('@EMSCore/view/index.html.twig', [
+            'contentType' => $contentType,
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @return Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/view/edit/{id}.{_format}", name="view.edit", defaults={"_format"="html"})
+     * @deprecated
      */
-    public function editAction(string $id, string $_format, Request $request, ContainerInterface $container)
+    public function addDeprecated(string $type, Request $request): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var ViewRepository $viewRepository */
-        $viewRepository = $em->getRepository('EMSCoreBundle:View');
+        @\trigger_error(\sprintf('Route view.add is deprecated, use %s instead', Routes::VIEW_ADD), E_USER_DEPRECATED);
 
-        /** @var View|null $view */
-        $view = $viewRepository->find($id);
+        return $this->add($type, $request);
+    }
 
-        if (null === $view) {
-            throw new NotFoundHttpException('View type not found');
+    public function add(string $type, Request $request): Response
+    {
+        $contentType = $this->contentTypeService->giveByName($type);
+        $view = new View();
+        $view->setContentType($contentType);
+
+        $form = $this->createForm(ViewType::class, $view, [
+            'create' => true,
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->viewManager->update($view);
+
+            $this->logger->notice('log.view.created', [
+                'view_name' => $view->getName(),
+            ]);
+
+            return $this->redirectToRoute(Routes::VIEW_EDIT, [
+                'view' => $view->getId(),
+            ]);
         }
 
-        $form = $this->createFormBuilder($view)
-            ->add('name', IconTextType::class, [
-                'icon' => 'fa fa-tag',
-            ])
-            ->add('public', CheckboxType::class, [
-                'required' => false,
-            ])
-            ->add('icon', IconPickerType::class, [
-                'required' => false,
-            ])
-            ->add('options', \get_class($container->get($view->getType())), [
-                'view' => $view,
-            ])
-            ->add('save', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn-primary btn-sm',
-                    'data-ajax-save-url' => $this->generateUrl('view.edit', ['id' => $id, '_format' => 'json']),
-                ],
-                'icon' => 'fa fa-save',
-            ])
-            ->add('saveAndClose', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn-primary btn-sm',
-                ],
-                'icon' => 'fa fa-save',
-            ])
-            ->getForm();
+        return $this->render('@EMSCore/view/add.html.twig', [
+            'contentType' => $contentType,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @deprecated
+     */
+    public function editDeprecated(View $view, string $_format, Request $request): Response
+    {
+        @\trigger_error(\sprintf('Route view.edit is deprecated, use %s instead', Routes::VIEW_EDIT), E_USER_DEPRECATED);
+
+        return $this->edit($view, $_format, $request);
+    }
+
+    public function edit(View $view, string $_format, Request $request): Response
+    {
+        $form = $this->createForm(ViewType::class, $view, [
+            'create' => false,
+            'ajax-save-url' => $this->generateUrl(Routes::VIEW_EDIT, ['view' => $view->getId(), '_format' => 'json']),
+        ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($view);
-            $em->flush();
+            $this->viewManager->update($view);
 
-            $this->getLogger()->notice('log.view.updated', [
+            $this->logger->notice('log.view.updated', [
                 'view_name' => $view->getName(),
             ]);
 
@@ -169,71 +162,70 @@ class ViewController extends AppController
                 ]);
             }
 
-            return $this->redirectToRoute('view.index', [
+            return $this->redirectToRoute(Routes::VIEW_INDEX, [
                 'type' => $view->getContentType()->getName(),
             ]);
         }
 
         return $this->render('@EMSCore/view/edit.html.twig', [
             'form' => $form->createView(),
+            'contentType' => $view->getContentType(),
             'view' => $view,
         ]);
     }
 
-    /**
-     * @return RedirectResponse
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/view/duplicate/{view}", name="emsco_view_duplicate", methods={"POST"})
-     */
-    public function duplicateAction(View $view)
+    public function duplicate(View $view): Response
     {
         $newView = clone $view;
+        $this->viewManager->update($newView);
 
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        $em->persist($newView);
-        $em->flush();
-
-        return $this->redirectToRoute('view.edit', ['id' => $newView->getId()]);
+        return $this->redirectToRoute(Routes::VIEW_EDIT, ['view' => $newView->getId()]);
     }
 
     /**
-     * @param int $id
-     *
-     * @return RedirectResponse
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/view/remove/{id}", name="view.remove", methods={"POST"})
+     * @deprecated
      */
-    public function removeAction($id)
+    public function deleteDeprecated(View $view): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var ViewRepository $viewRepository */
-        $viewRepository = $em->getRepository('EMSCoreBundle:View');
+        @\trigger_error(\sprintf('Route view.delete is deprecated, use %s instead', Routes::VIEW_DELETE), E_USER_DEPRECATED);
 
-        /** @var View|null $view */
-        $view = $viewRepository->find($id);
+        return $this->delete($view);
+    }
 
-        if (null === $view) {
-            throw new NotFoundHttpException('View not found');
-        }
+    public function delete(View $view): Response
+    {
+        $name = $view->getName();
+        $contentType = $view->getContentType();
 
-        $em->remove($view);
-        $em->flush();
-
-        $this->getLogger()->notice('log.view.deleted', [
-            'view_name' => $view->getName(),
+        $this->viewManager->delete($view);
+        $this->logger->notice('log.view.deleted', [
+            'view_name' => $name,
         ]);
 
-        return $this->redirectToRoute('view.index', [
-            'type' => $view->getContentType()->getName(),
+        return $this->redirectToRoute(Routes::VIEW_INDEX, [
+            'type' => $contentType->getName(),
         ]);
+    }
+
+    private function initTable(ContentType $contentType): EntityTable
+    {
+        $table = new EntityTable($this->viewManager, $this->generateUrl(Routes::VIEW_INDEX, [
+            'type' => $contentType->getName(),
+            '_format' => 'json',
+        ]), $contentType);
+        $table->addColumn('table.index.column.loop_count', 'orderKey');
+        $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.public', 'public', '@EMSCore/view/columns.html.twig'));
+        $table->addColumn('view.index.column.name', 'name')->setItemIconCallback(function (View $view) {
+            return $view->getIcon() ?? '';
+        });
+        $table->addColumnDefinition(new TranslationTableColumn('dashboard.index.column.type', 'type', EMSCoreBundle::TRANS_FORM_DOMAIN));
+        $table->addItemGetAction(Routes::VIEW_EDIT, 'view.actions.edit', 'pencil');
+        $table->addItemPostAction(Routes::VIEW_DUPLICATE, 'view.actions.duplicate', 'pencil', 'view.actions.duplicate_confirm');
+        $table->addItemPostAction(Routes::VIEW_DELETE, 'view.actions.delete', 'trash', 'view.actions.delete_confirm')->setButtonType('outline-danger');
+        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'view.actions.delete_selected', 'view.actions.delete_selected_confirm')
+            ->setCssClass('btn btn-outline-danger');
+        $table->setDefaultOrder('orderKey');
+
+        return $table;
     }
 }

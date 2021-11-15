@@ -26,7 +26,31 @@ final class DashboardController extends AbstractController
         $this->dashboardService = $dashboardService;
     }
 
+    /**
+     * @deprecated
+     */
     public function landing(): RedirectResponse
+    {
+        @\trigger_error(\sprintf('Route ems_core_dashboard is deprecated, use %s instead', Routes::DASHBOARD), E_USER_DEPRECATED);
+
+        return $this->landingDashboard();
+    }
+
+    public function dashboard(?string $name): Response
+    {
+        if (null === $name) {
+            return $this->landingDashboard();
+        }
+        $dashboard = $this->dashboardManager->getByName($name);
+        if (!$this->isGranted($dashboard->getRole())) {
+            throw new AccessDeniedHttpException();
+        }
+        $dashboardService = $this->dashboardService->get($dashboard->getType());
+
+        return $dashboardService->getResponse($dashboard);
+    }
+
+    private function landingDashboard(): RedirectResponse
     {
         $dashboard = $this->dashboardManager->getLandingPage();
         if (null !== $dashboard) {
@@ -38,16 +62,5 @@ final class DashboardController extends AbstractController
         }
 
         return $this->redirectToRoute('notifications.inbox');
-    }
-
-    public function dashboard(string $name): Response
-    {
-        $dashboard = $this->dashboardManager->getByName($name);
-        if (!$this->isGranted($dashboard->getRole())) {
-            throw new AccessDeniedHttpException();
-        }
-        $dashboardService = $this->dashboardService->get($dashboard->getType());
-
-        return $dashboardService->getResponse($dashboard);
     }
 }

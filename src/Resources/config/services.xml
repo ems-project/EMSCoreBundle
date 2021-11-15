@@ -22,7 +22,6 @@
         <service id="ems.dashboard.manager" class="EMS\CoreBundle\Core\Dashboard\DashboardManager">
             <argument type="service" id="ems.repository.dashboard"/>
             <argument type="service" id="logger"/>
-            <argument type="service" id="router"/>
             <argument type="service" id="security.authorization_checker"/>
         </service>
         <service id="ems.service.channel" class="EMS\CoreBundle\Service\Channel\ChannelService">
@@ -130,6 +129,11 @@
         <service id="ems_core.core_ui.flash_message_logger" class="EMS\CoreBundle\Core\UI\FlashMessageLogger">
             <argument type="service" id="session.flash_bag" />
             <argument type="service" id="translator" />
+        </service>
+
+        <service id="ems.view.manager" class="EMS\CoreBundle\Core\View\ViewManager">
+            <argument type="service" id="ems.repository.view"/>
+            <argument type="service" id="logger"/>
         </service>
     </services>
 </container>

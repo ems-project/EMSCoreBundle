@@ -429,10 +429,10 @@ services:
         arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '@logger', '@ems_common.service.elastica', '%ems_core.instance_id%']
     ems.service.contenttype: '@EMS\CoreBundle\Service\ContentTypeService'
     EMS\CoreBundle\Service\ContentTypeService:
-        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@ems_common.service.elastica', '@ems.service.environment', '@form.registry', '@translator', '%ems_core.instance_id%']
+        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@ems_common.service.elastica', '@ems.service.environment', '@security.authorization_checker', '@EMS\CoreBundle\Repository\RevisionRepository', '@security.token_storage', '%ems_core.circles_object%']
     ems.service.user:
         class: EMS\CoreBundle\Service\UserService
-        arguments: ['@doctrine', '@session', '@security.token_storage', '@security.helper', '%security.role_hierarchy.roles%']
+        arguments: ['@doctrine', '@session', '@security.token_storage', '@security.helper', '@ems.repository.search', '%security.role_hierarchy.roles%']
     ems.service.wysiwyg_profile:
         class: EMS\CoreBundle\Service\WysiwygProfileService
         arguments: ['@doctrine', '@logger', '@translator']

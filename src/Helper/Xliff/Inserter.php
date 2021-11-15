@@ -11,7 +11,7 @@ class Inserter
     private ?string $sourceLocale;
     private ?string $targetLocale;
 
-    public function __construct(\SimpleXMLElement $xliff)
+    private function __construct(\SimpleXMLElement $xliff)
     {
         $this->version = \strval($xliff['version']);
         if (!\in_array($this->version, Extractor::XLIFF_VERSIONS)) {
@@ -26,12 +26,21 @@ class Inserter
         $this->nameSpaces = $xliff->getNameSpaces(true);
     }
 
+    public static function fromFile(string $filename): Inserter
+    {
+        $xliff = new \SimpleXMLElement($filename, 0, true);
+        self::registerNamespaces($xliff);
+
+        return new self($xliff);
+    }
+
     /**
      * @return iterable<InsertionRevision>
      */
     public function getDocuments(): iterable
     {
         foreach ($this->xliff->children() as $document) {
+            self::registerNamespaces($document);
             yield new InsertionRevision($document, $this->version, $this->nameSpaces, $this->sourceLocale, $this->targetLocale);
         }
     }
@@ -39,5 +48,15 @@ class Inserter
     public function count(): int
     {
         return $this->xliff->children()->count();
+    }
+
+    private static function registerNamespaces(\SimpleXMLElement $document): void
+    {
+        foreach ($document->getDocNamespaces() as $strPrefix => $strNamespace) {
+            if (0 == \strlen($strPrefix)) {
+                $strPrefix = 'xliff';
+            }
+            $document->registerXPathNamespace($strPrefix, $strNamespace);
+        }
     }
 }

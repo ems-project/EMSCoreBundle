@@ -18,9 +18,8 @@ class InserterTest extends KernelTestCase
         foreach ($finder as $file) {
             $absoluteFilePath = $file->getRealPath();
             $fileNameWithExtension = $file->getRelativePathname();
-            $translatedXliff = new \SimpleXMLElement($absoluteFilePath.DIRECTORY_SEPARATOR.'translated.xlf', 0, true);
 
-            $importer = new Inserter($translatedXliff);
+            $importer = Inserter::fromFile($absoluteFilePath.DIRECTORY_SEPARATOR.'translated.xlf');
             foreach ($importer->getDocuments() as $document) {
                 $corresponding = \file_get_contents(\join(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'Resources', 'Xliff', 'Revisions', $document->getContentType(), $document->getOuuid(), $document->getRevisionId().'.json']));
                 $this->assertNotFalse($corresponding);

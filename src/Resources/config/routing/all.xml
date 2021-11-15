@@ -4,6 +4,10 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
+    <import resource="@EMSCoreBundle/Resources/config/routing/data.xml"
+            prefix="/data" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/public.xml"
+            prefix="/public" />
     <import resource="@EMSCoreBundle/Resources/config/routing/dashboard.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/action.xml"
             prefix="/action" />
@@ -31,4 +35,6 @@
             prefix="/api/search" />
     <import resource="@EMSCoreBundle/Resources/config/routing/api/extract-data.xml"
             prefix="/api/extract-data" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/view.xml"
+            prefix="/admin" />
 </routes>

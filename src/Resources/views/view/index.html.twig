@@ -1,82 +1,16 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/view/abstract.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
 
-{% block title %}List view for {{ contentType.name }}{% endblock %}
-{% block pagetitle %}List view for content type {{ contentType.name }}{% endblock %} 
-
-{% block breadcrumb %}
-	<ol class="breadcrumb">
-		<li><a href="{{ path("contenttype.index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
-		<li><a href="{{ path("contenttype.edit", {id: contentType.id}) }}"><i class="{{ contentType.icon }}"></i> Edit {{ contentType.singularName }}</a></li>
-		<li class="active">{{ 'Views'|trans }}</li>
-	</ol>
-{% endblock %}
-
+{% block title %}{{ 'view.index.title'|trans({'%type%': contentType.singularName}) }}{% endblock %}
 
 {% block body %}
-<div class="row">
-	<div class="col-md-12">
-		<div class="box ">
-			<div class="box-header with-border">
-				<i class="fa fa-tv"></i>
-				<h3 class="box-title">Views for content type {{ contentType.name }}</h3>
-				<div class="btn-group  pull-right">
-					<a class="btn btn-xs btn-primary" href="{{ path('view.add', {'type':contentType.name }) }}"><i class="fa fa-plus"></i> Add view</a>
-				</div>
-			</div>
-			<!-- /.box-header -->
-			<div class="box-body">
-				<div class="table-responsive">
-				<table class="table table-condensed table-striped">
-					<tbody>
-						<tr>
-							<th class="text-center" style="width: 10px">#</th>
-							<th class="text-center" style="width: 20px">Icon</th>
-							<th class="text-center" style="width: 20px">Public</th>
-							<th>Name</th>
-							<th>Action</th>
-						</tr>
-						{% for view in contentType.views %}
-							<tr>
-								<td class="text-center">{{ loop.index }}.</td>
-								<td class="text-center"><i class="{% if view.icon %}{{ view.icon }}{% else %}fa fa-file-text-o{% endif %}"></i></td>
-								<td class="text-center"><i class="{% if view.public %}fa fa-check-square-o{% else %}fa fa-square-o{% endif %}"></i></td>
-								<td>{{ view.name }}</td>
-								<td>
-								
-									<div class="btn-group">
-                                        {% include '@EMSCore/elements/get-button.html.twig' with {
-											'url':  path('view.edit', {'id': view.id}),
-											'label': 'Edit',
-											'icon': 'pencil'
-										}%}
-										{% include '@EMSCore/elements/post-button.html.twig' with {
-											'url': path('emsco_view_duplicate', {'view': view.id}),
-											'message': 'Duplicate the view ' ~ view.name ~ ' ?',
-											'label': 'Duplicate',
-											'icon': 'clone'
-										}%}
-                                        {% include '@EMSCore/elements/post-button.html.twig' with {
-											'url': path('view.remove', {'id': view.id}),
-											'message': 'Delete the view ' ~ view.name ~ ' ?',
-											'label': 'Delete',
-											'icon': 'trash'
-										}%}
-				                    </div>
-								
-              
-								</td>
-							</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-				</div>
+	{%  set toolbar %}
+		<a class="btn btn-primary" href="{{ path('emsco_view_add', {type: contentType.id}) }}"><i class="fa fa-plus"></i> {{ 'view.index.add_button'|trans }}</a>
+	{%  endset %}
 
-			</div>
-			<!-- /.box-body -->
-		</div>
-	</div>
-</div>
-{% include '@EMSCore/app/menu.html.twig' with {
-	'item':  'contenttype-list'
-}%}
-{% endblock %}	
+	{% form_theme form '@EMSCore/form/forms.html.twig' %}
+	{{ form(form, {
+		reorder_label: 'view.index.reorder',
+		toolbar: toolbar
+	}) }}
+{% endblock %}

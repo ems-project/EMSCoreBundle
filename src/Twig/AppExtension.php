@@ -17,7 +17,6 @@ use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\UserInterface;
@@ -155,7 +154,6 @@ class AppExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('searches', [$this, 'searchesList']),
             new TwigFilter('data', [$this, 'data']),
             new TwigFilter('inArray', [$this, 'inArray']),
             new TwigFilter('firstInArray', [$this, 'firstInArray']),
@@ -1047,26 +1045,6 @@ class AppExtension extends AbstractExtension
     public function md5(string $value): string
     {
         return \md5($value);
-    }
-
-    /**
-     * @return Search[]
-     */
-    public function searchesList(string $username): array
-    {
-        $searchRepository = $this->doctrine->getRepository('EMSCoreBundle:Form\Search');
-        $searches = $searchRepository->findBy([
-            'user' => $username,
-        ]);
-        $out = [];
-        foreach ($searches as $search) {
-            if (!$search instanceof Search) {
-                throw new \RuntimeException('Unexpected class object');
-            }
-            $out[] = $search;
-        }
-
-        return $out;
     }
 
     /**

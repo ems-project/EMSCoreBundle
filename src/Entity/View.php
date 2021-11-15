@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -7,89 +9,70 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
 /**
- * DataField.
- *
  * @ORM\Table(name="view")
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\LinkRepository")
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class View extends JsonDeserializer implements \JsonSerializable
+class View extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    protected int $id;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="created", type="datetime")
      */
-    protected $created;
+    protected \DateTime $created;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="modified", type="datetime")
      */
-    protected $modified;
+    protected \DateTime $modified;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    protected $name;
+    protected string $name;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="type", type="string", length=255)
      */
-    protected $type;
+    protected string $type;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="icon", type="string", length=255, nullable=true)
      */
-    protected $icon;
+    protected ?string $icon;
 
     /**
-     * @var array
-     *
+     * @var array<mixed>
      * @ORM\Column(name="options", type="json_array", nullable=true)
      */
-    protected $options;
+    protected array $options;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="orderKey", type="integer")
+     * @ORM\Column(name="order_key", type="integer")
      */
-    protected $orderKey;
+    protected int $orderKey = 0;
 
     /**
      * @ORM\ManyToOne(targetEntity="ContentType", inversedBy="views")
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
-    protected $contentType;
+    protected ContentType $contentType;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="public", type="boolean", options={"default" : 0})
      */
-    protected $public;
+    protected bool $public = false;
 
-    public function __construct()
-    {
-        $this->public = false;
-    }
+    /**
+     * @ORM\Column(name="role", type="string", length=100, nullable=true)
+     */
+    protected ?string $role;
 
     public function __clone()
     {
@@ -97,6 +80,7 @@ class View extends JsonDeserializer implements \JsonSerializable
             $now = new \DateTime('now');
             $this->created = $now;
             $this->modified = $now;
+            $this->orderKey = 0;
         }
     }
 
@@ -104,161 +88,83 @@ class View extends JsonDeserializer implements \JsonSerializable
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {
             $this->created = $this->modified;
         }
-        if (!isset($this->orderKey)) {
-            $this->orderKey = 0;
-        }
     }
 
-    /******************************************************************
-     *
-     * Generated functions
-     *
-     *******************************************************************/
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return View
-     */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created): View
     {
         $this->created = $created;
 
         return $this;
     }
 
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
+    public function getCreated(): \DateTime
     {
         return $this->created;
     }
 
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return View
-     */
-    public function setModified($modified)
+    public function setModified(\DateTime $modified): View
     {
         $this->modified = $modified;
 
         return $this;
     }
 
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
+    public function getModified(): \DateTime
     {
         return $this->modified;
     }
 
-    /**
-     * Set name.
-     *
-     * @param string $name
-     *
-     * @return View
-     */
-    public function setName($name)
+    public function setName(string $name): View
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * Set type.
-     *
-     * @param string $type
-     *
-     * @return View
-     */
-    public function setType($type)
+    public function setType(string $type): View
     {
         $this->type = $type;
 
         return $this;
     }
 
-    /**
-     * Get type.
-     *
-     * @return string
-     */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * Set icon.
-     *
-     * @param string $icon
-     *
-     * @return View
-     */
-    public function setIcon($icon)
+    public function setIcon(?string $icon): View
     {
         $this->icon = $icon;
 
         return $this;
     }
 
-    /**
-     * Get icon.
-     *
-     * @return string
-     */
-    public function getIcon()
+    public function getIcon(): ?string
     {
         return $this->icon;
     }
 
     /**
-     * Set options.
-     *
-     * @param array $options
-     *
-     * @return View
+     * @param array<mixed> $options
      */
-    public function setOptions($options)
+    public function setOptions(array $options): View
     {
         $this->options = $options;
 
@@ -266,59 +172,33 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get options.
-     *
-     * @return array
+     * @return array<mixed>
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
 
-    /**
-     * Set orderKey.
-     *
-     * @param int $orderKey
-     *
-     * @return View
-     */
-    public function setOrderKey($orderKey)
+    public function setOrderKey(int $orderKey): View
     {
         $this->orderKey = $orderKey;
 
         return $this;
     }
 
-    /**
-     * Get orderKey.
-     *
-     * @return int
-     */
-    public function getOrderKey()
+    public function getOrderKey(): int
     {
         return $this->orderKey;
     }
 
-    /**
-     * Set contentType.
-     *
-     * @param \EMS\CoreBundle\Entity\ContentType $contentType
-     *
-     * @return View
-     */
-    public function setContentType(ContentType $contentType = null)
+    public function setContentType(ContentType $contentType): View
     {
         $this->contentType = $contentType;
 
         return $this;
     }
 
-    /**
-     * Get contentType.
-     *
-     * @return \EMS\CoreBundle\Entity\ContentType
-     */
-    public function getContentType()
+    public function getContentType(): ContentType
     {
         return $this->contentType;
     }
@@ -335,16 +215,16 @@ class View extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Specify data which should be serialized to JSON.
-     *
-     * @see https://php.net/manual/en/jsonserializable.jsonserialize.php
-     *
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     *               which is a value of any type other than a resource
-     *
-     * @since 5.4.0
-     */
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(string $role): void
+    {
+        $this->role = $role;
+    }
+
     public function jsonSerialize()
     {
         $json = new JsonClass(\get_object_vars($this), __CLASS__);

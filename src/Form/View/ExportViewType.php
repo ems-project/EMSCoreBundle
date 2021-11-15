@@ -2,13 +2,15 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use Dompdf\Adapter\CPDF;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Service\Pdf\DomPdfPrinter;
 use EMS\CommonBundle\Service\Pdf\Pdf;
 use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
+use EMS\CoreBundle\Form\Field\FileDispositionType;
+use EMS\CoreBundle\Form\Field\OrientationType;
+use EMS\CoreBundle\Form\Field\PdfSizeType;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -80,17 +82,7 @@ class ExportViewType extends ViewType
                 'min-lines' => 4,
                 'max-lines' => 4,
         ])
-        ->add('disposition', ChoiceType::class, [
-                'label' => 'File diposition',
-                'expanded' => true,
-                'attr' => [
-                ],
-                'choices' => [
-                        'None' => null,
-                        'Attachment' => 'attachment',
-                        'Inline' => 'inline',
-                ],
-        ])
+        ->add('disposition', FileDispositionType::class)
         ->add('export_type', ChoiceType::class, [
                 'label' => 'Export type',
                 'expanded' => false,
@@ -101,16 +93,11 @@ class ExportViewType extends ViewType
                         'PDF (dompdf)' => 'dompdf',
                 ],
         ])
-        ->add('pdf_orientation', ChoiceType::class, [
+        ->add('pdf_orientation', OrientationType::class, [
             'required' => false,
-            'choices' => [
-                'Portrait' => 'portrait',
-                'Landscape' => 'landscape',
-            ],
         ])
-        ->add('pdf_size', ChoiceType::class, [
+        ->add('pdf_size', PdfSizeType::class, [
             'required' => false,
-            'choices' => \array_combine(\array_keys(CPDF::$PAPER_SIZES), \array_keys(CPDF::$PAPER_SIZES)),
         ]);
     }
 

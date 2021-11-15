@@ -881,3 +881,12 @@ dashboard.index.column.quick_search: 'Quick search'
 release.revision.table.rollback.action: Rollback
 release.revision.table.rollback.confirm: 'Do you confirm ?'
 release.revision.index.column.compare: Compare
+view.index.reorder: 'Reorder views'
+view.index.column.name: Name
+view.actions.edit: Edit
+view.actions.duplicate: Duplicate
+view.actions.duplicate_confirm: 'Do you confirm?'
+view.actions.delete: Delete
+view.actions.delete_confirm: 'Do you confirm?'
+view.actions.delete_selected: 'Delete selected views'
+dashboard.index.column.public: Public

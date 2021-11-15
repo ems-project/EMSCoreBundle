@@ -233,4 +233,31 @@ class InsertionRevision
 
         return \strval($attribute);
     }
+
+    public function getTargetLocale(): string
+    {
+        if (null !== $this->targetLocale) {
+            return $this->targetLocale;
+        }
+
+        $result = $this->document->xpath('//xliff:target');
+        if (false === $result) {
+            throw new \RuntimeException('Unexpected false xpath //xliff:target result');
+        }
+        foreach ($result as $target) {
+            if (null === $this->targetLocale) {
+                $this->targetLocale = \strval($target->attributes('xml', true)['lang'] ?? null);
+                continue;
+            }
+            if ($this->targetLocale !== \strval($target->attributes('xml', true)['lang'] ?? null)) {
+                throw new \RuntimeException('Elasticms does\'t support XLIFF files containing multiple target languages');
+            }
+        }
+
+        if (null === $this->targetLocale) {
+            throw new \RuntimeException('Unexpected null targetLocale');
+        }
+
+        return $this->targetLocale;
+    }
 }

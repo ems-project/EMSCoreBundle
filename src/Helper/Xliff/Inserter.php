@@ -35,4 +35,9 @@ class Inserter
             yield new InsertionRevision($document, $this->version, $this->nameSpaces, $this->sourceLocale, $this->targetLocale);
         }
     }
+
+    public function count(): int
+    {
+        return $this->xliff->children()->count();
+    }
 }

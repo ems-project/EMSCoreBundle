@@ -7,15 +7,14 @@ namespace EMS\CoreBundle\Service\Internationalization;
 use Elastica\Query\Terms;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
-use EMS\CommonBundle\Elasticsearch\Response\Response;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Exception\XliffException;
 use EMS\CoreBundle\Helper\Xliff\Extractor;
+use EMS\CoreBundle\Helper\Xliff\InsertionRevision;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -78,38 +77,38 @@ class XliffService
         }
     }
 
-    /**
-     * @param string[] $fields
-     *
-     * @throws XliffException
-     */
-    private function getTargetRevision(Document $source, Extractor $extractor, array $fields, ContentType $targetContentType, Environment $targetEnvironment, ?string $sourceDocumentField): ?Revision
+    public function insert(InsertionRevision $insertionRevision, string $localeField, string $translationField, ?Environment $publishAndArchive): void
     {
-        if (null === $sourceDocumentField) {
-            return $this->revisionService->getCurrentRevisionForEnvironment($source->getId(), $targetContentType, $targetEnvironment) ?? null;
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $revision = $this->revisionService->getByRevisionId($insertionRevision->getRevisionId());
+        $targetLocale = $insertionRevision->getTargetLocale();
+        $target = $this->getTargetDocument(
+            $publishAndArchive ?? $revision->giveContentType()->giveEnvironment(),
+            $revision,
+            $targetLocale,
+            $localeField,
+            $translationField
+        );
+
+        $data = $revision->getRawData();
+        $propertyAccessor->setValue($data, Document::fieldPathToPropertyPath($translationField), $targetLocale);
+        $insertionRevision->extractTranslations($data, $data);
+
+        //TODO: Init draft
+        //TODO:Set Raw, deleted and archive
+        //TOTO: Finalise
+        //TODO:Return Revision
+    }
+
+    private function getTargetDocument(Environment $environment, Revision $revision, string $targetLocale, string $localeField, string $translationField): ?Document
+    {
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $translationId = $propertyAccessor->getValue($revision->getRawData(), Document::fieldPathToPropertyPath($translationField));
+        if (!\is_string($translationId)) {
+            throw new \RuntimeException('Translation ID not found');
         }
 
-        $search = $this->elasticaService->generateTermsSearch([$targetEnvironment->getAlias()], $sourceDocumentField, [$source->getId()], [$targetContentType->getName()]);
-        $resultSet = $this->elasticaService->search($search);
-        $response = Response::fromResultSet($resultSet);
-
-        if (0 === $response->getTotal()) {
-            return $this->revisionService->generate();
-        }
-        if (1 !== $response->getTotal()) {
-            throw new XliffException(\sprintf('Multiple targets found for the source %s', $source->getId()));
-        }
-
-        foreach ($response->getDocuments() as $document) {
-            $revision = $this->revisionService->getCurrentRevisionForEnvironment($document->getId(), $targetContentType, $targetEnvironment);
-            if (null === $revision) {
-                break;
-            }
-
-            return $revision;
-        }
-
-        throw new XliffException(\sprintf('Target for source %s found in elasticsearch but not in DB', $source->getId()));
+        return $this->getCurrentTranslation($environment, $translationField, $translationId, $localeField, $targetLocale);
     }
 
     private function isHtml(string $value): bool
@@ -122,17 +121,22 @@ class XliffService
      */
     private function getCurrentTranslationData(Environment $targetEnvironment, string $translationField, string $translationId, string $localeField, string $targetLocale): array
     {
+        $document = $this->getCurrentTranslation($targetEnvironment, $translationField, $translationId, $localeField, $targetLocale);
+
+        return null === $document ? [] : $document->getSource();
+    }
+
+    private function getCurrentTranslation(Environment $targetEnvironment, string $translationField, string $translationId, string $localeField, string $targetLocale): ?Document
+    {
         $boolQuery = $this->elasticaService->getBoolQuery();
         $boolQuery->addMust(new Terms($translationField, [$translationId]));
         $boolQuery->addMust(new Terms($localeField, [$targetLocale]));
         $search = new Search([$targetEnvironment->getAlias()], $boolQuery);
         $this->elasticaService->getTermsQuery($translationField, [$translationId]);
         try {
-            $resultSet = $this->elasticaService->singleSearch($search);
-
-            return $resultSet->getSource();
+            return $this->elasticaService->singleSearch($search);
         } catch (NotSingleResultException $e) {
-            return [];
+            return null;
         }
     }
 }

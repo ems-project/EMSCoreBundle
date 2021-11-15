@@ -77,7 +77,7 @@ class XliffService
         }
     }
 
-    public function insert(InsertionRevision $insertionRevision, string $localeField, string $translationField, ?Environment $publishAndArchive): void
+    public function insert(InsertionRevision $insertionRevision, string $localeField, string $translationField, ?Environment $publishAndArchive, string $username = null): Revision
     {
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
         $revision = $this->revisionService->getByRevisionId($insertionRevision->getRevisionId());
@@ -91,14 +91,19 @@ class XliffService
         );
 
         $data = $revision->getRawData();
-        $propertyAccessor->setValue($data, Document::fieldPathToPropertyPath($translationField), $targetLocale);
+        $propertyAccessor->setValue($data, Document::fieldPathToPropertyPath($localeField), $targetLocale);
         $insertionRevision->extractTranslations($data, $data);
 
-        \dump($data);
-        //TODO: Init draft
-        //TODO:Set Raw, deleted and archive
-        //TODO: Finalise
-        //TODO:Return Revision
+        if (null === $target) {
+            $currentRevision = $this->revisionService->create($revision->giveContentType());
+        } else {
+            $currentRevision = $this->revisionService->getCurrentRevisionForDocument($target);
+            if (null === $currentRevision) {
+                throw new \RuntimeException(\sprintf('A document %s exist but not the current revision', $target->getId()));
+            }
+        }
+
+        return $this->revisionService->updateRawData($currentRevision, $data, $username);
     }
 
     private function getTargetDocument(Environment $environment, Revision $revision, string $targetLocale, string $localeField, string $translationField): ?Document

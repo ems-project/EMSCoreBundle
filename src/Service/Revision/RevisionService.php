@@ -16,7 +16,6 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 class RevisionService implements RevisionServiceInterface
@@ -166,9 +165,9 @@ class RevisionService implements RevisionServiceInterface
     /**
      * @param array<mixed> $rawData
      */
-    public function create(ContentType $contentType, UuidInterface $uuid, array $rawData = []): Revision
+    public function create(ContentType $contentType, ?UuidInterface $uuid = null, array $rawData = []): Revision
     {
-        return $this->dataService->newDocument($contentType, $uuid->toString(), $rawData);
+        return $this->dataService->newDocument($contentType, null === $uuid ? null : $uuid->toString(), $rawData);
     }
 
     /**

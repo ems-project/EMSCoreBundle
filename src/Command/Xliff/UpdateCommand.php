@@ -17,6 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class UpdateCommand extends AbstractCommand
 {
+    private const XLIFF_UPLOAD = 'XLIFF_UPLOAD';
     protected static $defaultName = Commands::XLIFF_UPDATE;
     public const ARGUMENT_XLIFF_FILE = 'xliff-file';
     public const OPTION_PUBLISH_ARCHIVE = 'publish-archive';
@@ -70,7 +71,7 @@ final class UpdateCommand extends AbstractCommand
         $inserter = Inserter::fromFile($this->xliffFilename);
         $this->io->progressStart($inserter->count());
         foreach ($inserter->getDocuments() as $document) {
-            $this->xliffService->insert($document, $this->localeField, $this->translationField, $this->publishAndArchive);
+            $revision = $this->xliffService->insert($document, $this->localeField, $this->translationField, $this->publishAndArchive, self::XLIFF_UPLOAD);
             //TODO: publish and archive if needed
             $this->io->progressAdvance();
         }

@@ -216,4 +216,14 @@ class RevisionService implements RevisionServiceInterface
             $draft->setRawData($rawData);
         }
     }
+
+    public function getByRevisionId(string $revisionId): Revision
+    {
+        $revision = $this->revisionRepository->find($revisionId);
+        if (!$revision instanceof Revision) {
+            throw new \RuntimeException(\sprintf('Unexpected no Revision object for id: %s', $revisionId));
+        }
+
+        return $revision;
+    }
 }

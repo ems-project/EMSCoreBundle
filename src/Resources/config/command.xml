@@ -91,6 +91,7 @@
         <service id="ems.command.xliff.update" class="EMS\CoreBundle\Command\Xliff\UpdateCommand">
             <argument type="service" id="ems.service.environment"/>
             <argument type="service" id="ems.service.internationalization.xliff"/>
+            <argument type="service" id="ems.service.publish"/>
             <tag name="console.command"/>
         </service>
     </services>

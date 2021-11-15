@@ -10,6 +10,7 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Helper\Xliff\Inserter;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Internationalization\XliffService;
+use EMS\CoreBundle\Service\PublishService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,24 +21,29 @@ final class UpdateCommand extends AbstractCommand
     private const XLIFF_UPLOAD = 'XLIFF_UPLOAD';
     protected static $defaultName = Commands::XLIFF_UPDATE;
     public const ARGUMENT_XLIFF_FILE = 'xliff-file';
-    public const OPTION_PUBLISH_ARCHIVE = 'publish-archive';
+    public const OPTION_PUBLISH_TO = 'publish-to';
+    public const OPTION_ARCHIVE = 'archive';
     public const OPTION_TRANSLATION_FIELD = 'translation-field';
     public const OPTION_LOCALE_FIELD = 'locale-field';
 
     private EnvironmentService $environmentService;
     private XliffService $xliffService;
+    private PublishService $publishService;
 
     private string $xliffFilename;
-    private ?Environment $publishAndArchive = null;
+    private ?Environment $publishTo = null;
+    private bool $archive = false;
     private string $translationField;
     private string $localeField;
 
     public function __construct(
         EnvironmentService $environmentService,
-        XliffService $xliffService
+        XliffService $xliffService,
+        PublishService $publishService
     ) {
         $this->environmentService = $environmentService;
         $this->xliffService = $xliffService;
+        $this->publishService = $publishService;
         parent::__construct();
     }
 
@@ -45,7 +51,8 @@ final class UpdateCommand extends AbstractCommand
     {
         $this
             ->addArgument(self::ARGUMENT_XLIFF_FILE, InputArgument::REQUIRED, 'Input XLIFF file')
-            ->addOption(self::OPTION_PUBLISH_ARCHIVE, null, InputOption::VALUE_OPTIONAL, 'If defined the revision will be published in the defined environment than the document will be archived in it\'s default environment')
+            ->addOption(self::OPTION_PUBLISH_TO, null, InputOption::VALUE_OPTIONAL, 'If defined the revision will be published in the defined environment')
+            ->addOption(self::OPTION_ARCHIVE, null, InputOption::VALUE_NONE, 'If set another revision will be flagged as archived')
             ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', 'locale')
             ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', 'translation_id');
     }
@@ -57,7 +64,8 @@ final class UpdateCommand extends AbstractCommand
         $this->io->title('EMS Core - XLIFF - Update');
 
         $this->xliffFilename = $this->getArgumentString(self::ARGUMENT_XLIFF_FILE);
-        $this->publishAndArchive = $this->environmentService->giveByName($this->getOptionString(self::OPTION_PUBLISH_ARCHIVE));
+        $this->publishTo = $this->environmentService->giveByName($this->getOptionString(self::OPTION_PUBLISH_TO));
+        $this->archive = $this->getOptionBool(self::OPTION_ARCHIVE);
         $this->translationField = $this->getOptionString(self::OPTION_TRANSLATION_FIELD);
         $this->localeField = $this->getOptionString(self::OPTION_LOCALE_FIELD);
     }
@@ -71,8 +79,10 @@ final class UpdateCommand extends AbstractCommand
         $inserter = Inserter::fromFile($this->xliffFilename);
         $this->io->progressStart($inserter->count());
         foreach ($inserter->getDocuments() as $document) {
-            $revision = $this->xliffService->insert($document, $this->localeField, $this->translationField, $this->publishAndArchive, self::XLIFF_UPLOAD);
-            //TODO: publish and archive if needed
+            $revision = $this->xliffService->insert($document, $this->localeField, $this->translationField, $this->publishTo, self::XLIFF_UPLOAD);
+            if (null !== $this->publishTo) {
+                $this->publishService->publish($revision, $this->publishTo, true);
+            }
             $this->io->progressAdvance();
         }
         $this->io->progressFinish();

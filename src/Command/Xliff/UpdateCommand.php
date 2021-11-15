@@ -64,10 +64,15 @@ final class UpdateCommand extends AbstractCommand
         $this->io->title('EMS Core - XLIFF - Update');
 
         $this->xliffFilename = $this->getArgumentString(self::ARGUMENT_XLIFF_FILE);
-        $this->publishTo = $this->environmentService->giveByName($this->getOptionString(self::OPTION_PUBLISH_TO));
+        $environmentName = $this->getOptionStringNull(self::OPTION_PUBLISH_TO);
+        $this->publishTo = null === $environmentName ? null : $this->environmentService->giveByName($environmentName);
         $this->archive = $this->getOptionBool(self::OPTION_ARCHIVE);
         $this->translationField = $this->getOptionString(self::OPTION_TRANSLATION_FIELD);
         $this->localeField = $this->getOptionString(self::OPTION_LOCALE_FIELD);
+
+        if ($this->archive && null === $this->publishTo) {
+            throw new \RuntimeException(\sprintf('The %s option can be activate only if the %s option is DEFINED', self::OPTION_ARCHIVE, self::OPTION_PUBLISH_TO));
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

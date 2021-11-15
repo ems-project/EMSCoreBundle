@@ -92,6 +92,7 @@
             <argument type="service" id="ems.service.environment"/>
             <argument type="service" id="ems.service.internationalization.xliff"/>
             <argument type="service" id="ems.service.publish"/>
+            <argument type="service" id="ems.service.revision"/>
             <tag name="console.command"/>
         </service>
     </services>

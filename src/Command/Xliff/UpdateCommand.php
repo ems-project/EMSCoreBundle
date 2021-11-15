@@ -11,6 +11,7 @@ use EMS\CoreBundle\Helper\Xliff\Inserter;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Internationalization\XliffService;
 use EMS\CoreBundle\Service\PublishService;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class UpdateCommand extends AbstractCommand
 {
-    private const XLIFF_UPLOAD = 'XLIFF_UPLOAD';
+    private const XLIFF_UPLOAD_COMMAND = 'XLIFF_UPLOAD_COMMAND';
     protected static $defaultName = Commands::XLIFF_UPDATE;
     public const ARGUMENT_XLIFF_FILE = 'xliff-file';
     public const OPTION_PUBLISH_TO = 'publish-to';
@@ -29,6 +30,7 @@ final class UpdateCommand extends AbstractCommand
     private EnvironmentService $environmentService;
     private XliffService $xliffService;
     private PublishService $publishService;
+    private RevisionService $revisionService;
 
     private string $xliffFilename;
     private ?Environment $publishTo = null;
@@ -39,11 +41,13 @@ final class UpdateCommand extends AbstractCommand
     public function __construct(
         EnvironmentService $environmentService,
         XliffService $xliffService,
-        PublishService $publishService
+        PublishService $publishService,
+        RevisionService $revisionService
     ) {
         $this->environmentService = $environmentService;
         $this->xliffService = $xliffService;
         $this->publishService = $publishService;
+        $this->revisionService = $revisionService;
         parent::__construct();
     }
 
@@ -84,9 +88,12 @@ final class UpdateCommand extends AbstractCommand
         $inserter = Inserter::fromFile($this->xliffFilename);
         $this->io->progressStart($inserter->count());
         foreach ($inserter->getDocuments() as $document) {
-            $revision = $this->xliffService->insert($document, $this->localeField, $this->translationField, $this->publishTo, self::XLIFF_UPLOAD);
+            $revision = $this->xliffService->insert($document, $this->localeField, $this->translationField, $this->publishTo, self::XLIFF_UPLOAD_COMMAND);
             if (null !== $this->publishTo) {
                 $this->publishService->publish($revision, $this->publishTo, true);
+            }
+            if ($this->archive) {
+                $this->revisionService->archive($revision, self::XLIFF_UPLOAD_COMMAND);
             }
             $this->io->progressAdvance();
         }

@@ -37,7 +37,7 @@ final class ExtractCommand extends AbstractCommand
     private string $sourceLocale;
     private Environment $sourceEnvironment;
     private string $targetLocale;
-    private Environment $targetEnvironment;
+    private ?Environment $targetEnvironment = null;
     /** @var string[] */
     private array $fields;
     /**
@@ -59,7 +59,7 @@ final class ExtractCommand extends AbstractCommand
     public const OPTION_TRANSLATION_FIELD = 'translation-field';
     public const OPTION_LOCALE_FIELD = 'locale-field';
 
-    protected static $defaultName = Commands::XLIFF_EXTRACTOR;
+    protected static $defaultName = Commands::XLIFF_EXTRACT;
     private string $xliffFilename;
     private ?string $baseUrl;
     private string $xliffVersion;

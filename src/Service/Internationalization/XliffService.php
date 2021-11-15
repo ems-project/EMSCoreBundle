@@ -36,26 +36,24 @@ class XliffService
     /**
      * @param FieldType[] $fields
      */
-    public function extract(ContentType $contentType, Document $source, Extractor $extractor, array $fields, Environment $sourceEnvironment, Environment $targetEnvironment, string $targetLocale, string $localeField, string $translationField): void
+    public function extract(ContentType $contentType, Document $source, Extractor $extractor, array $fields, Environment $sourceEnvironment, ?Environment $targetEnvironment, string $targetLocale, string $localeField, string $translationField): void
     {
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
         $sourceRevision = $this->revisionService->getCurrentRevisionForEnvironment($source->getId(), $contentType, $sourceEnvironment);
-        $currentRevision = $this->revisionService->getCurrentRevisionForEnvironment($source->getId(), $contentType, $targetEnvironment);
+        $currentData = [];
+        if (null !== $targetEnvironment) {
+            $currentRevision = $this->revisionService->getCurrentRevisionForEnvironment($source->getId(), $contentType, $targetEnvironment);
+            $currentData = null === $currentRevision ? [] : $currentRevision->getRawData();
+        }
 
         if (null === $sourceRevision) {
             throw new \RuntimeException('Unexpected null revision');
         }
         $sourceData = $sourceRevision->getRawData();
 
-        if ($currentRevision instanceof Revision) {
-            $currentData = $currentRevision->getRawData();
-        } else {
-            $currentData = [];
-        }
-
         $translationId = $propertyAccessor->getValue($currentData, Document::fieldPathToPropertyPath($translationField));
-        if (null !== $translationId) {
+        if (null !== $targetEnvironment && null !== $translationId) {
             $currentTranslationData = $this->getCurrentTranslationData($targetEnvironment, $translationField, $translationId, $localeField, $targetLocale);
         } else {
             $currentTranslationData = [];

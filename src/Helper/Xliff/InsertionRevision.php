@@ -235,9 +235,9 @@ class InsertionRevision
             return $this->targetLocale;
         }
 
-        $result = $this->document->xpath('//xliff:target');
+        $result = $this->document->xpath('//ns:target');
         if (false === $result) {
-            throw new \RuntimeException('Unexpected false xpath //xliff:target result');
+            throw new \RuntimeException('Unexpected false xpath //ns:target result');
         }
         foreach ($result as $target) {
             if (null === $this->targetLocale) {

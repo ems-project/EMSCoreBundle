@@ -94,9 +94,10 @@ class XliffService
         $propertyAccessor->setValue($data, Document::fieldPathToPropertyPath($translationField), $targetLocale);
         $insertionRevision->extractTranslations($data, $data);
 
+        \dump($data);
         //TODO: Init draft
         //TODO:Set Raw, deleted and archive
-        //TOTO: Finalise
+        //TODO: Finalise
         //TODO:Return Revision
     }
 

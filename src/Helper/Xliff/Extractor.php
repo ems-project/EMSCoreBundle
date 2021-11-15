@@ -189,9 +189,6 @@ class Extractor
         } else {
             $attributes = [];
             if (\version_compare($this->xliffVersion, '2.0') < 0) {
-                if ($isFinal) {
-                    $attributes['state'] = 'final';
-                }
                 $qualifiedName = null;
             } else {
                 $qualifiedName = 'unit';
@@ -200,7 +197,7 @@ class Extractor
                 $xliffElement = $xliffElement->addChild($qualifiedName);
                 $this->addId($xliffElement, $sourceNode);
             }
-            $this->addSegments($xliffElement, $sourceNode, $targetCrawler, $attributes);
+            $this->addSegments($xliffElement, $sourceNode, $targetCrawler, $attributes, $isFinal);
         }
     }
 
@@ -224,7 +221,7 @@ class Extractor
     /**
      * @param string[] $attributes
      */
-    private function addSegments(\SimpleXMLElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler, array $attributes = []): void
+    private function addSegments(\SimpleXMLElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler, array $attributes = [], bool $isFinal = false): void
     {
         $sourceAttributes = $sourceNode->attributes;
         if (null !== $sourceAttributes && \version_compare($this->xliffVersion, '2.0') < 0) {
@@ -250,6 +247,9 @@ class Extractor
                     ];
                     if (null !== $this->targetLocale) {
                         $targetAttributes['xml:xml:lang'] = $this->targetLocale;
+                    }
+                    if ($isFinal) {
+                        $targetAttributes['state'] = 'final';
                     }
                 } else {
                     $qualifiedName = 'segment';
@@ -278,7 +278,7 @@ class Extractor
                     $target->addAttribute($attribute, $value);
                 }
             } else {
-                $this->addSegments($xliffElement, $child, $targetCrawler, $attributes);
+                $this->addSegments($xliffElement, $child, $targetCrawler, $attributes, $isFinal);
             }
         }
     }

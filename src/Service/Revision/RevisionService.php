@@ -163,14 +163,6 @@ class RevisionService implements RevisionServiceInterface
         return new DocumentInfo($documentLink, $this->revisionRepository->findAllPublishedRevision($documentLink));
     }
 
-    public function generate(): Revision
-    {
-        $revision = new Revision();
-        $revision->setOuuid(Uuid::uuid4()->toString());
-
-        return $revision;
-    }
-
     /**
      * @param array<mixed> $rawData
      */

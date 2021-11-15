@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Helper\Xliff;
 
+use EMS\CommonBundle\Elasticsearch\Document\Document;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -124,7 +127,7 @@ class InsertionRevision
         if (null === $sourceLocale) {
             throw new \RuntimeException('Unexpected missing source locale');
         }
-        $sourcePropertyPath = \str_replace(self::LOCALE_PLACE_HOLDER, $sourceLocale, $propertyPath);
+        $sourcePropertyPath = Document::fieldPathToPropertyPath(\str_replace(self::LOCALE_PLACE_HOLDER, $sourceLocale, $propertyPath));
 
         $targetLocale = $this->targetLocale;
         $firstTarget = $field->xpath('(//ns:target)[1]');
@@ -138,11 +141,7 @@ class InsertionRevision
         if (null === $targetLocale) {
             throw new \RuntimeException('Unexpected missing target locale');
         }
-        $targetPropertyPath = \str_replace(self::LOCALE_PLACE_HOLDER, $targetLocale, $propertyPath);
-
-        if ($sourcePropertyPath === $targetPropertyPath) {
-            throw new \RuntimeException(\sprintf('Unexpected identical source and target id: %s', $targetPropertyPath));
-        }
+        $targetPropertyPath = Document::fieldPathToPropertyPath(\str_replace(self::LOCALE_PLACE_HOLDER, $targetLocale, $propertyPath));
 
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
         $sourceValue = $propertyAccessor->getValue($rawDataSource, $sourcePropertyPath);
@@ -169,7 +168,7 @@ class InsertionRevision
      */
     private function importSimpleField(\SimpleXMLElement $field, array &$rawDataSource, array &$rawDataTarget): void
     {
-        $propertyPath = \strval($field['id']);
+        $propertyPath = Document::fieldPathToPropertyPath(\strval($field['id']));
 
         if (\version_compare($this->version, '2.0') < 0) {
             $source = $field->source;
@@ -196,10 +195,6 @@ class InsertionRevision
             throw new \RuntimeException('Unexpected missing target locale');
         }
         $targetPropertyPath = \str_replace(self::LOCALE_PLACE_HOLDER, $targetLocale, $propertyPath);
-
-        if ($sourcePropertyPath === $targetPropertyPath) {
-            throw new \RuntimeException(\sprintf('Unexpected identical source and target id: %s', $targetPropertyPath));
-        }
 
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
         $expectedSourceValue = $propertyAccessor->getValue($rawDataSource, $sourcePropertyPath);

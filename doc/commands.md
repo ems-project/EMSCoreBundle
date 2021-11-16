@@ -197,6 +197,58 @@ php bin/console ems:notification:send --dry-run
 php bin/console ems:notification:bulk-action 72 {\"query\":{\"bool\":{\"must\":[{\"range\":{\"expiration_date\":{\"gte\":\"now\",\"lte\":\"now+1M\"}}}]}}} --force --username="bulker" --environment=live
 ```
 
+## XLIFF
 
-                               
-                               
+The core supports XLIFF exports and imports in order to have some content translated by a translation office.
+
+### XLIFF limitation
+
+At this point elasticms only supports XLIFF translation in separated documents. In other words a document is associated to one and only one language. Those documents needs:
+
+ - A keyword field to identify the document's locale i.e. a `locale` field contains values like `'fr'`, `'en'`
+ - A keyword field to link documents that are translation of each other. It can be a `menu_uid` referring to a JSON Menu entry or a data link
+
+So the couple of those two fields must be unique by environment.
+
+A support where fields such as `title_fr` and `title_nl` are in the same document is feasible but is not yet supported.
+
+### XLIFF extraction
+
+This command generates an XML in a [XLIFF format 1.2](http://docs.oasis-open.org/xliff/xliff-core/xliff-core.html).
+
+If a `publish-to` is specified in the options, the command will check if something as changed in source fields between the default environment and the `publish-to` one. If nothing changed and if the target fields are defined those target's sate will be marked as `'final'`
+
+Example:
+
+```
+emsco:xliff:extract next '{"query":{"bool":{"must":[{"term":{"_id":{"value":"db27a1da21b8d9c556abe67451007cd0ad80c54b"}}},{"terms":{"_contenttype":["instruction","additional","intermediate"]}}]}}}' nl de introduction title_short title --base-url=http://instructions-pgsql-admin-dev.localhost --target-environment=latest
+```
+
+This command will 
+ - extract the fields `introduction`, `title_short` and `title`
+ - for the document with the OUUID `db27a1da21b8d9c556abe67451007cd0ad80c54b` if it exists in the `next` environment
+ - The expected locale of this document should be `nl`
+ - It will try to identify a `de` document having the same `translation_id`  in the `latest`
+   - The translatable fields of this document will be used as default target value
+ - It will check if something has changed for the current revision of the document, for the translatable fields, of the revision
+   - in the `latest` environment with the same OUUID
+   - If nothing changed, and if a target is defined it will mark the target's state as `final`
+
+### XLIFF update
+
+Example:
+ ```
+emsco:xliff:update /tmp/ems-extract-BfHeoa.xlf --publish-to=latest --archive
+```
+
+This command will:
+ - Load the XLIFF file passed as argument
+ - Each source document's revisions are identified in the XLIFF file. That exact revision will be used to generate a new revision for the target locale (defined in the XLIFF file)
+ - The target OUUID will be identified via an elasticsearch query looking for a single document  
+   - In the `latest` environment (as it's specified in the `publish-to` option, otherwise it will look in the default environment of the revision)
+   - Having the same `translation_id` field value
+   - Having the locale field value set to target locale
+   - If not found a new document with a brand new OUUID will be generate
+ - As a `publish-to` environment is defined, translated revisions will be directly published in that environment
+ - As the archive option is set the translated revisions will be unpublished from there default environment and mark as archived
+   - This option is available only if a `publish-to` environment is defined

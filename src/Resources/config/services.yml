@@ -549,7 +549,7 @@ services:
             -  { name: console.command }
     ems.contenttype.export:
         class: EMS\CoreBundle\Command\ExportDocumentsCommand
-        arguments: ['@logger', '@ems.service.template', '@ems.service.data', '@ems.service.contenttype', '@ems.service.environment', '@EMS\CommonBundle\Twig\RequestRuntime', '@ems_common.service.elastica', '%ems_core.instance_id%']
+        arguments: ['@logger', '@ems.service.template', '@ems.service.data', '@ems.service.contenttype', '@ems.service.environment', '@ems_common.twig.runtime.asset', '@ems_common.service.elastica', '%ems_core.instance_id%']
         tags:
             -  { name: console.command }
     ems.environment.rebuild:

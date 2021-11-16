@@ -15,4 +15,8 @@ final class Commands
     public const RELEASE_PUBLISH = 'emsco:release:publish';
 
     public const REVISION_TASK_CREATE = 'emsco:revision:task:create';
+
+    public const XLIFF_EXTRACT = 'emsco:xliff:extract';
+
+    public const XLIFF_UPDATE = 'emsco:xliff:update';
 }

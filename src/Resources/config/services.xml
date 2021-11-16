@@ -65,6 +65,13 @@
             <argument type="service" id="logger"/>
         </service>
 
+        <service id="ems.service.internationalization.xliff" alias="EMS\CoreBundle\Service\Internationalization\XliffService"/>
+        <service id="EMS\CoreBundle\Service\Internationalization\XliffService">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.revision"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+        </service>
+
         <service id="ems_core.core_ui.ajax_service" class="EMS\CoreBundle\Core\UI\AjaxService">
             <argument type="service" id="twig" />
             <argument type="service" id="translator" />

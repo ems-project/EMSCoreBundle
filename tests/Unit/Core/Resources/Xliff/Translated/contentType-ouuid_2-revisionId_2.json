@@ -1,0 +1,7 @@
+{
+    "title_fr": "Bonjour",
+    "keywords_fr": "test xliff",
+    "fr": {
+        "body": "<h1 class=\"title\">Rapport<\/h1>\n<table border=\"1\" width=\"100%\">\n    <tr>\n        <td valign=\"top\">Texte dans la cellule r1-c1<\/td>\n        <td valign=\"top\">Texte dans la cellule r1-c2<\/td>\n    <\/tr>\n    <tr>\n        <td bgcolor=\"#C0C0C0\">Texte dans la cellule r2-c1<\/td>\n        <td>Texte dans la cellule r2-c2<\/td>\n    <\/tr>\n<\/table>\n<p>Tous droits r\u00e9serv\u00e9s (c) Gandalf Inc.<\/p>"
+    }
+}

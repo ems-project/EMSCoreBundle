@@ -23,6 +23,7 @@
 		"ext-json": "*",
 		"ext-libxml": "*",
 		"ext-openssl": "*",
+		"ext-simplexml": "*",
 		"ext-soap": "*",
 		"ext-zip": "*",
 		"caxy/php-htmldiff": "^0.1",
@@ -55,7 +56,8 @@
 		"symfony/validator": "^4.4",
 		"symfony/web-link": "^4.4",
 		"symfony/webpack-encore-bundle": "^1.0",
-		"symfony/yaml": "^4.4"
+		"symfony/yaml": "^4.4",
+		"ramsey/uuid-doctrine": "^1.6"
 	},
 	"require-dev" : {
 		"friendsofphp/php-cs-fixer" : "^3.0",

@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Command;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CommonBundle\Twig\RequestRuntime;
+use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -34,14 +34,14 @@ class ExportDocumentsCommand extends EmsCommand
     protected $contentTypeService;
     /** @var TemplateService */
     protected $templateService;
-    /** @var RequestRuntime */
+    /** @var AssetRuntime */
     protected $runtime;
     /** @var string */
     protected $instanceId;
     /** @var ElasticaService */
     private $elasticaService;
 
-    public function __construct(LoggerInterface $logger, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, RequestRuntime $runtime, ElasticaService $elasticaService, string $instanceId)
+    public function __construct(LoggerInterface $logger, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, AssetRuntime $runtime, ElasticaService $elasticaService, string $instanceId)
     {
         $this->logger = $logger;
         $this->templateService = $templateService;
@@ -308,12 +308,9 @@ class ExportDocumentsCommand extends EmsCommand
 
         $zip->close();
         $progress->finish();
-        $output->writeln('');
 
-        if (null === $baseUrl) {
-            $output->writeln('Export: '.$outZipPath);
-        } else {
-            $output->writeln('Export: '.$baseUrl.$this->runtime->assetPath(
+        if (null !== $baseUrl) {
+            $outZipPath = $baseUrl.$this->runtime->assetPath(
                 [
                     EmsFields::CONTENT_FILE_NAME_FIELD_ => 'export.zip',
                     EmsFields::CONTENT_FILE_HASH_FIELD_ => \sha1_file($outZipPath),
@@ -326,8 +323,11 @@ class ExportDocumentsCommand extends EmsCommand
                 EmsFields::CONTENT_FILE_NAME_FIELD,
                 EmsFields::CONTENT_MIME_TYPE_FIELD,
                 UrlGeneratorInterface::ABSOLUTE_PATH
-            ));
+            );
         }
+
+        $output->writeln('');
+        $output->writeln('Export: '.$outZipPath);
 
         return 0;
     }

@@ -1,0 +1,10 @@
+{
+  "title_en": "Hello",
+  "keywords_en": "test xliff",
+  "en": {
+    "body": ""
+  },
+  "fr": {
+    "body": "<p>Bonjour</p>"
+  }
+}

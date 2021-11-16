@@ -10,6 +10,7 @@ use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Contracts\Revision\RevisionServiceInterface;
 use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
@@ -79,6 +80,11 @@ class RevisionService implements RevisionServiceInterface
     public function getCurrentRevisionForDocument(DocumentInterface $document): ?Revision
     {
         return $this->get($document->getId(), $document->getContentType());
+    }
+
+    public function getCurrentRevisionForEnvironment(string $ouuid, ContentType $contentType, Environment $environment): ?Revision
+    {
+        return $this->revisionRepository->findByEnvironment($ouuid, $contentType, $environment);
     }
 
     public function getCurrentRevisionByOuuidAndContentType(string $ouuid, string $contentType): ?Revision
@@ -159,9 +165,9 @@ class RevisionService implements RevisionServiceInterface
     /**
      * @param array<mixed> $rawData
      */
-    public function create(ContentType $contentType, UuidInterface $uuid, array $rawData = []): Revision
+    public function create(ContentType $contentType, ?UuidInterface $uuid = null, array $rawData = []): Revision
     {
-        return $this->dataService->newDocument($contentType, $uuid->toString(), $rawData);
+        return $this->dataService->newDocument($contentType, null === $uuid ? null : $uuid->toString(), $rawData);
     }
 
     /**
@@ -200,5 +206,15 @@ class RevisionService implements RevisionServiceInterface
         } else {
             $draft->setRawData($rawData);
         }
+    }
+
+    public function getByRevisionId(string $revisionId): Revision
+    {
+        $revision = $this->revisionRepository->find($revisionId);
+        if (!$revision instanceof Revision) {
+            throw new \RuntimeException(\sprintf('Unexpected no Revision object for id: %s', $revisionId));
+        }
+
+        return $revision;
     }
 }

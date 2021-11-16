@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="fr">
+    <file id="contentType:ouuid_1:revisionId_1">
+        <unit id="[title_%locale%]">
+            <segment>
+                <source>Foo</source>
+                <target>Bar</target>
+            </segment>
+        </unit>
+    </file>
+    <file id="contentType:ouuid_6:revisionId_2">
+        <unit id="[title_%locale%]">
+            <segment>
+                <source>Hello</source>
+                <target>Bonjour</target>
+            </segment>
+        </unit>
+        <unit id="[keywords_%locale%]">
+            <segment>
+                <source>test xliff</source>
+                <target>test xliff</target>
+            </segment>
+        </unit>
+        <group id="[%locale%][body]">
+            <unit id="/html/body/p">
+                <segment id="/html/body/p/text()">
+                    <source>Hello Mathieu, please visits</source>
+                    <target>Bonjour Mathieu, s'il vous plait visitez</target>
+                </segment>
+                <segment id="/html/body/p/a/text()[1]">
+                    <source/>
+                    <target/>
+                </segment>
+                <segment id="/html/body/p/a/text()[2]">
+                    <source>The elastic</source>
+                    <target>Le site web d'elastic</target>
+                </segment>
+                <segment id="/html/body/p/a/b/text()">
+                    <source>ms</source>
+                    <target>ms</target>
+                </segment>
+                <segment id="/html/body/p/a/text()[3]">
+                    <source>web site</source>
+                    <target/>
+                </segment>
+            </unit>
+        </group>
+    </file>
+</xliff>

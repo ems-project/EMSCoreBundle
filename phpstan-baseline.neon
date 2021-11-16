@@ -3831,11 +3831,6 @@ parameters:
 			path: src/Form/DataField/DataFieldType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\DataFieldType\\:\\:generatePipeline\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/DataField/DataFieldType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\DataFieldType\\:\\:getChoiceList\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/DataField/DataFieldType.php

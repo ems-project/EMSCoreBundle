@@ -488,12 +488,4 @@ abstract class DataFieldType extends AbstractType
 
         return [$current->getName() => $options];
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function generatePipeline(FieldType $current)
-    {
-        return false;
-    }
 }

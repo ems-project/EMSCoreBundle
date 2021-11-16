@@ -21,6 +21,7 @@ class RolePickerType extends SelectPickerType
         $choices = \array_merge(['role.not-defined' => null], $this->userService->listUserRoles());
 
         $resolver->setDefaults([
+            'required' => false,
             'choices' => $choices,
             'attr' => ['data-live-search' => true],
             'choice_attr' => function () {

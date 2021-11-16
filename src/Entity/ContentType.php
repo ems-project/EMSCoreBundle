@@ -127,13 +127,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * @var bool
      *
-     * @ORM\Column(name="have_pipelines", type="boolean", nullable=true)
-     */
-    protected $havePipelines;
-
-    /**
-     * @var bool
-     *
      * @ORM\Column(name="ask_for_ouuid", type="boolean")
      */
     protected $askForOuuid;
@@ -1679,30 +1672,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function getTrashRole()
     {
         return $this->trashRole;
-    }
-
-    /**
-     * Set havePipelines.
-     *
-     * @param bool $havePipelines
-     *
-     * @return ContentType
-     */
-    public function setHavePipelines($havePipelines)
-    {
-        $this->havePipelines = $havePipelines;
-
-        return $this;
-    }
-
-    /**
-     * Get havePipelines.
-     *
-     * @return bool
-     */
-    public function getHavePipelines()
-    {
-        return $this->havePipelines;
     }
 
     /**

@@ -7641,11 +7641,6 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
-			message: "#^Cannot call method getHavePipelines\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
-			path: src/Service/DocumentService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DocumentService\\:\\:flushAndSend\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/DocumentService.php

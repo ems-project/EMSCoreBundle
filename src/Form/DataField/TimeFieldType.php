@@ -127,7 +127,7 @@ class TimeFieldType extends DataFieldType
     /**
      * {@inheritdoc}
      */
-    public function generateMapping(FieldType $current, $withPipeline)
+    public function generateMapping(FieldType $current)
     {
         return [
                 $current->getName() => \array_merge([

@@ -84,14 +84,14 @@ class Mapping
         $this->logger = $logger;
     }
 
-    public function generateMapping(ContentType $contentType, $withPipeline = false)
+    public function generateMapping(ContentType $contentType)
     {
         $out = [
             'properties' => [],
         ];
 
         if (null != $contentType->getFieldType()) {
-            $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
+            $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType());
         }
 
         if ($this->elasticsearchService->withAllMapping()) {
@@ -226,7 +226,7 @@ class Mapping
 
     public function putMapping(ContentType $contentType, string $indexes): bool
     {
-        $body = $this->generateMapping($contentType, $contentType->getHavePipelines());
+        $body = $this->generateMapping($contentType);
         $endpoint = new MappingPut();
         $endpoint->setIndex($indexes);
         $endpoint->setType($this->getTypePath($contentType->getName()));

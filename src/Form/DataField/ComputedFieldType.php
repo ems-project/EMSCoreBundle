@@ -24,7 +24,7 @@ class ComputedFieldType extends DataFieldType
     /**
      * {@inheritdoc}
      */
-    public function generateMapping(FieldType $current, $withPipeline)
+    public function generateMapping(FieldType $current)
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
             try {

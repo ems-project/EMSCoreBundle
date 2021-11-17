@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Application\Migrations;
 
@@ -7,9 +9,9 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20211117080725 extends AbstractMigration
 {
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP INDEX IDX_6D6315CC1A445520');
         $this->addSql('DROP INDEX IDX_6D6315CCE99931F3');
@@ -31,9 +33,9 @@ final class Version20211117080725 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX tuple_index ON revision (end_time, ouuid)');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP INDEX IDX_6D6315CC1A445520');
         $this->addSql('DROP INDEX IDX_6D6315CCE99931F3');

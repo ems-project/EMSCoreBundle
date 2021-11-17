@@ -142,15 +142,6 @@ class DocumentService
         $this->dataService->setMetaFields($newRevision);
 
         if ($documentImportContext->shouldIndexInDefaultEnv() && $documentImportContext->shouldFinalize()) {
-            $indexConfig = [
-                '_index' => $documentImportContext->getEnvironment()->getAlias(),
-                '_type' => $documentImportContext->getContentType()->getName(),
-                '_id' => $ouuid,
-            ];
-
-            if ($newRevision->getContentType()->getHavePipelines()) {
-                $indexConfig['pipeline'] = $this->instanceId.$documentImportContext->getContentType()->getName();
-            }
             $body = $newRevision->getRawData();
 
             $this->bulker->index($documentImportContext->getContentType()->getName(), $ouuid, $documentImportContext->getEnvironment()->getAlias(), $body);

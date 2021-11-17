@@ -41,44 +41,6 @@
 {% block EMS_CoreBundle_Form_DataField_CopyToFieldType %}
 {% endblock %}
 
-{% block EMS_CoreBundle_Form_DataField_UrlAttachmentFieldType %}
-
-	<div class="panel-heading">
-		<h3 class="panel-title">
-			<i class="{% if dataField.fieldType.displayOptions.icon is defined %}{{ dataField.fieldType.displayOptions.icon }}{% else %}fa fa-file-o{% endif %}"></i> 				
-				{% if dataField.fieldType.displayOptions.label is defined %}
-					{{ dataField.fieldType.displayOptions.label }}
-				{% else %}
-					{{ dataField.fieldType.name }}
-				{% endif %}
-		</h3>
-	</div>
-	<div class="panel-body" >
-		{% if dataField.rawData and dataField.rawData._url is defined %}
-			<ul>
-
-				{% if dataField.rawData._url is defined and dataField.rawData._url %}
-					{% if compare %}
-						<li><strong>URL:</strong> {{ diff_text(dataField.rawData._url, compare, '_url', attribute(compareRawData, dataField.fieldType.name) is defined ? attribute(compareRawData, dataField.fieldType.name) : null ) }}</li>
-					{% else %}
-    					<li><a href="{{ dataField.rawData._url }}" target="_blank">URL: {{ dataField.rawData._url }}</a></li>
-					{% endif %}
-					{% if dataField.rawData._size is defined %}
-						<li><strong>Size:</strong> {{ dataField.rawData._size }}</li>
-    				{% endif %}
-    			{% else %}
-    				<li>{{ 'Not defined'|trans }}</li>
-    			{% endif %}
-			</ul>
-		{% endif %}
-		
-	</div>
-{% endblock %}
-
-{% block EMS_CoreBundle_Form_DataField_FileAttachmentFieldType %}
-	{{ _self.renderDataFieldBlock(dataField, source, compare, compareRawData, 'EMS_CoreBundle_Form_DataField_AssetFieldType') }}
-{% endblock %}
-
 {% block EMS_CoreBundle_Form_DataField_IndexedAssetFieldType %}
 	{{ _self.renderDataFieldBlock(dataField, source, compare, compareRawData, 'EMS_CoreBundle_Form_DataField_AssetFieldType') }}
 {% endblock %}

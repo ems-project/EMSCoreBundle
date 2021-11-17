@@ -76,11 +76,9 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
     }
 
     /**
-     * @param bool $withPipeline
-     *
      * @return array<string, array{type: string}>
      */
-    public function generateMapping(FieldType $current, $withPipeline): array
+    public function generateMapping(FieldType $current): array
     {
         return [$current->getName() => ['type' => 'text']];
     }

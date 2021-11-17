@@ -1095,7 +1095,9 @@ class DataController extends AppController
             $objectArray = $revision->getRawData();
             $revision->setRawData($backup);
 
-            $revision->setAutoSaveAt(new \DateTime());
+            $now = new \DateTime();
+            $revision->setAutoSaveAt($now);
+            $revision->setDraftSaveDate($now);
             $revision->setAutoSaveBy($this->getUser()->getUsername());
 
             $em->persist($revision);

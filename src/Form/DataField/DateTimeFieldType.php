@@ -63,11 +63,9 @@ class DateTimeFieldType extends DataFieldType
     }
 
     /**
-     * @param bool $withPipeline
-     *
      * @return array<string, array<mixed>>
      */
-    public function generateMapping(FieldType $current, $withPipeline): array
+    public function generateMapping(FieldType $current): array
     {
         return [
             $current->getName() => \array_merge(

@@ -64,11 +64,9 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     }
 
     /**
-     * @param bool $withPipeline
-     *
      * @return array<mixed>
      */
-    public function generateMapping(FieldType $current, $withPipeline): array
+    public function generateMapping(FieldType $current): array
     {
         $values = $current->getDisplayOption('values');
         if (null === $values) {

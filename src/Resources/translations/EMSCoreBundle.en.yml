@@ -454,8 +454,6 @@ service.asset_extractor.persist_error: 'An issue has been raised while persistin
 service.contenttype.field_not_found: 'Field %field_id% not found and ignored'
 service.contenttype.mappings_error: 'Mappings update for %contenttype% in %environments% failed : %elasticsearch_dump%'
 service.contenttype.mappings_updated: 'Mappings successfully updated/created for %contenttype% in %environments%'
-service.contenttype.pipelines: 'Pipelines have been updated/created for %contenttype%'
-service.contenttype.pipelines_error: 'elasticms was not able to generate pipelines for the content type %contenttype%, they are disabled. Please consider to update your elasticsearch cluster (>=5.0). %elasticsearch_error_type% : %elasticsearch_error_reason%'
 service.contenttype.reordered: 'Content type "%contenttype% has been reordered'
 service.contenttype.update_mapping_exception: 'Error on updating %environments%''s mapping : %elasticsearch_error%'
 service.data.already_unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already deleted from %environment%'

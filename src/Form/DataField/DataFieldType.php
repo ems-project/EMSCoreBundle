@@ -482,18 +482,10 @@ abstract class DataFieldType extends AbstractType
      *
      * @return array
      */
-    public function generateMapping(FieldType $current, $withPipeline)
+    public function generateMapping(FieldType $current)
     {
         $options = $this->elasticsearchService->updateMapping(\array_merge(['type' => 'string'], \array_filter($current->getMappingOptions())));
 
         return [$current->getName() => $options];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function generatePipeline(FieldType $current)
-    {
-        return false;
     }
 }

@@ -105,6 +105,11 @@ class RevisionService implements RevisionServiceInterface
      */
     public function save(Revision $revision, array $rawData): void
     {
+        if ($revision->getDraft()) {
+            $revision->setDraftSaveDate(new \DateTime());
+        } else {
+            $revision->setDraftSaveDate(null);
+        }
         $revision->setRawData($rawData);
         $this->dataService->setMetaFields($revision);
 

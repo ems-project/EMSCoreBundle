@@ -99,7 +99,7 @@ views.data.revisions-data-html.revision-current: 'You are viewing the last revis
 views.data.revisions-data-html.revision-previous: 'This is a revision from the past'
 views.data.revisions-data-html.creation-date: 'Creation date'
 views.data.revisions-data-html.last-update: 'Last update'
-views.data.revisions-data-html.modify-by: 'Modify by'
+views.data.revisions-data-html.modified-by: 'Modified by'
 views.data.revisions-data-html.revisions.th.id: '#'
 views.data.revisions-data-html.revisions.th.date: Date
 views.data.revisions-data-html.revisions.th.finalize: Finalize

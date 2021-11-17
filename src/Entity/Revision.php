@@ -231,6 +231,11 @@ class Revision implements EntityInterface
     private $versionTag;
 
     /**
+     * @ORM\Column(name="draft_save_date", type="datetime", nullable=true)
+     */
+    private ?\DateTime $draftSaveDate;
+
+    /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
@@ -1233,5 +1238,15 @@ class Revision implements EntityInterface
         if ('to' === $field && null !== $dateToField = $contentType->getVersionDateToField()) {
             $this->rawData[$dateToField] = $date->format(\DateTimeImmutable::ATOM);
         }
+    }
+
+    public function getDraftSaveDate(): ?\DateTime
+    {
+        return $this->draftSaveDate;
+    }
+
+    public function setDraftSaveDate(?\DateTime $draftSaveDate): void
+    {
+        $this->draftSaveDate = $draftSaveDate;
     }
 }

@@ -61,6 +61,10 @@
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
+            {% set target = app.request.get('_target_path')|default(null) %}
+            {% if target %}
+                <input type="hidden" name="_target_path" value="{{ target }}" />
+            {% endif %}
           <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}"  class="btn btn-primary btn-block btn-flat"/>
         </div>
         <!-- /.col -->

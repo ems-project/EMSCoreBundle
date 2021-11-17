@@ -168,7 +168,7 @@ class ContainerFieldType extends DataFieldType
     /**
      * {@inheritdoc}
      */
-    public function generateMapping(FieldType $current, $withPipeline)
+    public function generateMapping(FieldType $current)
     {
         return [];
     }

@@ -210,11 +210,11 @@ class FieldTypeType extends AbstractType
         return $out;
     }
 
-    public function generateMapping(FieldType $fieldType, $withPipeline = false)
+    public function generateMapping(FieldType $fieldType)
     {
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($fieldType->getType())->getInnerType();
-        $mapping = $dataFieldType->generateMapping($fieldType, $withPipeline);
+        $mapping = $dataFieldType->generateMapping($fieldType);
         $jsonNames = $dataFieldType->getJsonNames($fieldType);
 
         if (!$dataFieldType::hasMappedChildren()) {
@@ -228,20 +228,20 @@ class FieldTypeType extends AbstractType
                     foreach ($jsonNames as $jsonName) {
                         if (isset($mapping[$jsonName]['properties'])) {
                             if (isset($mapping[$jsonName]['properties']['attachment']['properties']['content'])) {
-                                $mapping[$jsonName]['properties']['attachment']['properties']['content'] = \array_merge_recursive($mapping[$jsonName]['properties']['attachment']['properties']['content'], $this->generateMapping($child, $withPipeline));
+                                $mapping[$jsonName]['properties']['attachment']['properties']['content'] = \array_merge_recursive($mapping[$jsonName]['properties']['attachment']['properties']['content'], $this->generateMapping($child));
                             } elseif (isset($mapping[$jsonName]['properties']['_content'])) {
-                                $mapping[$jsonName]['properties']['_content'] = \array_merge_recursive($mapping[$jsonName]['properties']['_content'], $this->generateMapping($child, $withPipeline));
+                                $mapping[$jsonName]['properties']['_content'] = \array_merge_recursive($mapping[$jsonName]['properties']['_content'], $this->generateMapping($child));
                             } elseif (isset($mapping[$jsonName]['properties']['filename'])) {
-                                $mapping[$jsonName]['properties']['filename'] = \array_merge_recursive($mapping[$jsonName]['properties']['filename'], $this->generateMapping($child, $withPipeline));
+                                $mapping[$jsonName]['properties']['filename'] = \array_merge_recursive($mapping[$jsonName]['properties']['filename'], $this->generateMapping($child));
                             } else {
-                                $mapping[$jsonName]['properties'] = \array_merge_recursive($mapping[$jsonName]['properties'], $this->generateMapping($child, $withPipeline));
+                                $mapping[$jsonName]['properties'] = \array_merge_recursive($mapping[$jsonName]['properties'], $this->generateMapping($child));
                             }
                         } else {
-                            $mapping[$jsonName] = \array_merge_recursive($mapping[$jsonName], $this->generateMapping($child, $withPipeline));
+                            $mapping[$jsonName] = \array_merge_recursive($mapping[$jsonName], $this->generateMapping($child));
                         }
                     }
                 } else {
-                    $mapping = \array_merge_recursive($mapping, $this->generateMapping($child, $withPipeline));
+                    $mapping = \array_merge_recursive($mapping, $this->generateMapping($child));
                 }
             }
         }

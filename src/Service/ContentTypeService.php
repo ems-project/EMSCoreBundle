@@ -191,8 +191,6 @@ class ContentTypeService
 
     public function updateMapping(ContentType $contentType, $envs = false)
     {
-        $contentType->setHavePipelines(false);
-
         try {
             $body = $this->environmentService->getIndexAnalysisConfiguration();
             if (!$envs) {

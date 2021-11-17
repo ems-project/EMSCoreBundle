@@ -150,23 +150,11 @@ services:
         tags:
             - { name: ems.form.datafieldtype, alias: asset }
             - { name: form.type }
-    ems.fieldtype.fileattachement:
-        class: EMS\CoreBundle\Form\DataField\FileAttachmentFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.file', '@logger']
-        tags:
-            - { name: ems.form.datafieldtype, alias: file_attachment }
-            - { name: form.type }
     ems.fieldtype.indexed_asset:
         class: EMS\CoreBundle\Form\DataField\IndexedAssetFieldType
         arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.file', '@session']
         tags:
             - { name: ems.form.datafieldtype, alias: file_attachment }
-            - { name: form.type }
-    ems.fieldtype.urlattachement:
-        class: EMS\CoreBundle\Form\DataField\UrlAttachmentFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.file']
-        tags:
-            - { name: ems.form.datafieldtype, alias: url_attachment }
             - { name: form.type }
     ems.fieldtype.radio:
         class: EMS\CoreBundle\Form\DataField\RadioFieldType

@@ -148,10 +148,7 @@ class JSONFieldType extends DataFieldType
         $resolver->setDefault('rows', null);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function generateMapping(FieldType $current, $withPipeline)
+    public function generateMapping(FieldType $current)
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
             return [$current->getName() => \json_decode($current->getMappingOptions()['mappingOptions'], true)];

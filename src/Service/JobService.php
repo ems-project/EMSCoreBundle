@@ -150,6 +150,23 @@ class JobService
         $this->logger->info('Job '.$job->getCommand().' completed.');
     }
 
+    public function initJob(string $username, ?string $command): Job
+    {
+        $job = new Job();
+        $job->setCommand($command);
+        $job->setUser($username);
+        $job->setStarted(false);
+        $job->setDone(false);
+        $now = new \DateTime();
+        $job->setCreated($now);
+        $job->setModified($now);
+        $job->setProgress(0);
+        $this->em->persist($job);
+        $this->em->flush();
+
+        return $job;
+    }
+
     private function create(UserInterface $user): Job
     {
         $job = new Job();

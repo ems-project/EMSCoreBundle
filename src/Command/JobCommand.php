@@ -2,31 +2,35 @@
 
 namespace EMS\CoreBundle\Command;
 
-use EMS\CoreBundle\Command\Release\PublishReleaseCommand;
+use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Core\Job\ScheduleManager;
+use EMS\CoreBundle\Entity\Job;
+use EMS\CoreBundle\Entity\Schedule;
 use EMS\CoreBundle\Service\JobService;
-use EMS\CoreBundle\Service\ReleaseService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class JobCommand extends PublishReleaseCommand
+class JobCommand extends AbstractCommand
 {
     private JobService $jobService;
     private string $dateFormat;
+    private ScheduleManager $scheduleManager;
 
-    public function __construct(JobService $jobService, string $dateFormat, ReleaseService $releaseService)
+    public function __construct(JobService $jobService, ScheduleManager $scheduleManager, string $dateFormat)
     {
-        parent::__construct($releaseService);
+        parent::__construct();
         $this->jobService = $jobService;
         $this->dateFormat = $dateFormat;
+        $this->scheduleManager = $scheduleManager;
     }
 
     protected function configure(): void
     {
         $this
             ->setName('ems:job:run')
-            ->setDescription('Publish the releases and execute the next pending job if exist')
+            ->setDescription('Execute the next pending job if exist. If not execute the oldest due scheduled job if exist.')
             ->addOption(
                 'dump',
                 null,
@@ -42,17 +46,33 @@ class JobCommand extends PublishReleaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        parent::execute($input, $output);
-
         $this->io->title('EMSCO - Job');
 
         $job = $this->jobService->findNext();
+        $schedule = null;
         if (null === $job) {
-            $this->io->comment('No pending job to treat.');
+            $this->io->comment('No pending job to treat. Looking for due scheduled job.');
+            $schedule = $this->scheduleManager->findNext();
+            $job = $this->jobFomSchedule($schedule);
+        }
+
+        if (null === $job) {
+            $this->io->comment('Nothing to run.');
 
             return 0;
         }
+        if (null !== $schedule) {
+            $this->scheduleManager->setLastRun($schedule, $job);
+        }
 
+        return $this->runJob($job, $input, $output);
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    protected function runJob(Job $job, InputInterface $input, OutputInterface $output): int
+    {
         $this->io->title('Preparing the job');
         $this->io->listing([
             \sprintf('ID: %d', $job->getId()),
@@ -85,5 +105,14 @@ class JobCommand extends PublishReleaseCommand
         }
 
         return 0;
+    }
+
+    private function jobFomSchedule(Schedule $schedule): ?Job
+    {
+        if (null === $schedule) {
+            return null;
+        }
+
+        return $this->jobService->initJob('JobCommand', $schedule->getCommand());
     }
 }

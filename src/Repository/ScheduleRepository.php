@@ -105,4 +105,22 @@ class ScheduleRepository extends ServiceEntityRepository
                 ->setParameter(':term', '%'.$searchValue.'%');
         }
     }
+
+    public function findNext(): ?Schedule
+    {
+        $qb = $this->createQueryBuilder('schedule');
+        $qb->andWhere($qb->expr()->lte('schedule.nextRun', ':now'))
+        ->setParameters([
+            'now' => new \DateTimeImmutable(),
+        ])
+        ->orderBy('schedule.nextRun', 'asc')
+        ->setMaxResults(1);
+
+        $schedule = $qb->getQuery()->getOneOrNullResult();
+        if (null !== $schedule && !$schedule instanceof Schedule) {
+            throw new \RuntimeException('Unexpected Schedule object');
+        }
+
+        return $schedule;
+    }
 }

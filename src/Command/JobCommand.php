@@ -61,9 +61,6 @@ class JobCommand extends AbstractCommand
 
             return 0;
         }
-        if (null !== $schedule) {
-            $this->scheduleManager->setLastRun($schedule, $job);
-        }
 
         return $this->runJob($job, $input, $output);
     }
@@ -112,7 +109,11 @@ class JobCommand extends AbstractCommand
         if (null === $schedule) {
             return null;
         }
+        $startDate = $schedule->getPreviousRun();
+        if (null === $startDate) {
+            throw new \RuntimeException('Unexpected null start date');
+        }
 
-        return $this->jobService->initJob('JobCommand', $schedule->getCommand());
+        return $this->jobService->initJob('JobCommand', $schedule->getCommand(), $startDate);
     }
 }

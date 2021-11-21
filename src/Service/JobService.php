@@ -150,16 +150,15 @@ class JobService
         $this->logger->info('Job '.$job->getCommand().' completed.');
     }
 
-    public function initJob(string $username, ?string $command): Job
+    public function initJob(string $username, ?string $command, \DateTime $startDate): Job
     {
         $job = new Job();
         $job->setCommand($command);
         $job->setUser($username);
         $job->setStarted(false);
         $job->setDone(false);
-        $now = new \DateTime();
-        $job->setCreated($now);
-        $job->setModified($now);
+        $job->setCreated($startDate);
+        $job->setModified(new \DateTime());
         $job->setProgress(0);
         $this->em->persist($job);
         $this->em->flush();

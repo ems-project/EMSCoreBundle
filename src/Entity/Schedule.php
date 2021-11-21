@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Validator\Constraints as EMSAssert;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -49,6 +50,8 @@ class Schedule implements EntityInterface
 
     /**
      * @var string
+     *
+     * @EMSAssert\Cron()
      *
      * @ORM\Column(name="cron", type="string", length=255)
      */

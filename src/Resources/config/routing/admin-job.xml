@@ -8,5 +8,12 @@
         <default key="_controller">EMS\CoreBundle\Controller\Job\ScheduleController:index</default>
         <default key="_format">html</default>
     </route>
+    <route id="emsco_schedule_add" path="/schedule/add" methods="GET,POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Job\ScheduleController::add</default>
+    </route>
+    <route id="emsco_schedule_edit" path="/schedule/edit/{schedule}.{_format}" methods="GET,POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Job\ScheduleController::edit</default>
+        <default key="_format">html</default>
+    </route>
 
 </routes>

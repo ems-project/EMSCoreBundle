@@ -5,7 +5,7 @@
 
 {% block body %}
     {%  set toolbar %}
-{#        <a class="btn btn-primary" href="{{ path('emsco_view_add', {type: contentType.id}) }}"><i class="fa fa-plus"></i> {{ 'view.index.add_button'|trans }}</a>#}
+        <a class="btn btn-primary" href="{{ path('emsco_schedule_add') }}"><i class="fa fa-plus"></i> {{ 'schedule.index.add_button'|trans }}</a>
     {%  endset %}
 
     {% form_theme form '@EMSCore/form/forms.html.twig' %}

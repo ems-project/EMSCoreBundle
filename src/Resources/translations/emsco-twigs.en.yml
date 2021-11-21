@@ -163,3 +163,4 @@ schedule.list.menu: Schedule
 schedule.tagline: 'When you are not at work'
 schedule.index.reorder: Reorder
 schedule.index.title: Schedule
+schedule.index.add_button: 'Add a schedule'

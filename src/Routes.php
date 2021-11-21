@@ -41,4 +41,6 @@ class Routes
     public const DATA_ADD = 'emsco_data_add';
     public const DATA_TRASH = 'emsco_data_trash';
     public const SCHEDULE_INDEX = 'emsco_schedule_index';
+    public const SCHEDULE_ADD = 'emsco_schedule_add';
+    public const SCHEDULE_EDIT = 'emsco_schedule_edit';
 }

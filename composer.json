@@ -92,6 +92,7 @@
 	"scripts": {
 		"phpcs": "php-cs-fixer fix",
 		"phpstan": "phpstan analyse",
-		"phpunit": "phpunit"
+		"phpunit": "phpunit",
+		"phpall": "php-cs-fixer fix && phpunit && phpstan"
 	}
 }

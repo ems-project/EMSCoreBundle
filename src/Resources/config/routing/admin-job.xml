@@ -15,5 +15,11 @@
         <default key="_controller">EMS\CoreBundle\Controller\Job\ScheduleController::edit</default>
         <default key="_format">html</default>
     </route>
+    <route id="emsco_schedule_duplicate" path="/schedule/duplicate/{schedule}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Job\ScheduleController::duplicate</default>
+    </route>
+    <route id="emsco_schedule_delete" path="/schedule/delete/{schedule}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Job\ScheduleController::delete</default>
+    </route>
 
 </routes>

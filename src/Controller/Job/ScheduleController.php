@@ -102,6 +102,9 @@ final class ScheduleController extends AbstractController
         $table->addColumn('schedule.index.column.name', 'name');
         $table->addColumn('schedule.index.column.cron', 'cron');
         $table->addColumn('schedule.index.column.command', 'command');
+        $table->addItemGetAction(Routes::SCHEDULE_EDIT, 'view.actions.edit', 'pencil');
+        $table->addItemPostAction(Routes::SCHEDULE_DUPLICATE, 'view.actions.duplicate', 'pencil', 'view.actions.duplicate_confirm');
+        $table->addItemPostAction(Routes::SCHEDULE_DELETE, 'view.actions.delete', 'trash', 'view.actions.delete_confirm')->setButtonType('outline-danger');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'schedule.actions.delete_selected', 'schedule.actions.delete_selected_confirm')
             ->setCssClass('btn btn-outline-danger');
         $table->setDefaultOrder('orderKey');

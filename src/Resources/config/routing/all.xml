@@ -36,5 +36,5 @@
     <import resource="@EMSCoreBundle/Resources/config/routing/api/extract-data.xml"
             prefix="/api/extract-data" />
     <import resource="@EMSCoreBundle/Resources/config/routing/view.xml"
-            prefix="/admin" />
+            prefix="/admin/view" />
 </routes>

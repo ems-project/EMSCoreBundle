@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller\Job;
 
 use EMS\CoreBundle\Core\Job\ScheduleManager;
 use EMS\CoreBundle\Entity\Schedule;
+use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\ScheduleType;
@@ -102,6 +103,8 @@ final class ScheduleController extends AbstractController
         $table->addColumn('schedule.index.column.name', 'name');
         $table->addColumn('schedule.index.column.cron', 'cron');
         $table->addColumn('schedule.index.column.command', 'command');
+        $table->addColumnDefinition(new DatetimeTableColumn('schedule.index.column.previous-run', 'previousRun'));
+        $table->addColumnDefinition(new DatetimeTableColumn('schedule.index.column.next-run', 'nextRun'));
         $table->addItemGetAction(Routes::SCHEDULE_EDIT, 'view.actions.edit', 'pencil');
         $table->addItemPostAction(Routes::SCHEDULE_DUPLICATE, 'view.actions.duplicate', 'pencil', 'view.actions.duplicate_confirm');
         $table->addItemPostAction(Routes::SCHEDULE_DELETE, 'view.actions.delete', 'trash', 'view.actions.delete_confirm')->setButtonType('outline-danger');

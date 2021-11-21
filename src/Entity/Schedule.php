@@ -18,72 +18,56 @@ use Ramsey\Uuid\UuidInterface;
 class Schedule implements EntityInterface
 {
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
-    private $id;
+    private UuidInterface $id;
 
     /**
-     * @var \Datetime
-     *
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    private \Datetime $created;
 
     /**
-     * @var \Datetime
-     *
      * @ORM\Column(name="modified", type="datetime")
      */
-    private $modified;
+    private \Datetime $modified;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name = '';
+    private string $name = '';
 
     /**
-     * @var string
-     *
      * @EMSAssert\Cron()
      *
      * @ORM\Column(name="cron", type="string", length=255)
      */
-    private $cron = '';
+    private string $cron = '';
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="command", type="string", length=2000, nullable=true)
      */
-    private $command;
+    private ?string $command;
 
     /**
      * @var \Datetime
      *
      * @ORM\Column(name="previous_run", type="datetime", nullable=true)
      */
-    private $previousRun;
+    private ?\Datetime $previousRun;
 
     /**
-     * @var \Datetime
-     *
      * @ORM\Column(name="next_run", type="datetime")
      */
-    private $nextRun;
+    private \Datetime $nextRun;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="order_key", type="integer")
      */
-    private $orderKey = 0;
+    private int $orderKey = 0;
 
     public function __construct()
     {
@@ -158,12 +142,12 @@ class Schedule implements EntityInterface
         $this->command = $command;
     }
 
-    public function getPreviousRun(): \Datetime
+    public function getPreviousRun(): ?\Datetime
     {
         return $this->previousRun;
     }
 
-    public function setPreviousRun(\Datetime $previousRun): void
+    public function setPreviousRun(?\Datetime $previousRun): void
     {
         $this->previousRun = $previousRun;
     }

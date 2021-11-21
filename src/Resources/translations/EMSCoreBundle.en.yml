@@ -889,3 +889,4 @@ view.actions.delete_confirm: 'Do you confirm?'
 view.actions.delete_selected: 'Delete selected views'
 dashboard.index.column.public: Public
 schedule.index.column.name: Name
+log.schedule.created: 'Schedule %name% has been created'

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Job;
 
+use Cron\CronExpression;
 use EMS\CoreBundle\Entity\Schedule;
 use EMS\CoreBundle\Repository\ScheduleRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
@@ -30,6 +31,7 @@ class ScheduleManager implements EntityServiceInterface
 
     public function update(Schedule $schedule): void
     {
+        $this->setNextRun($schedule);
         if (0 === $schedule->getOrderKey()) {
             $schedule->setOrderKey($this->scheduleRepository->counter() + 1);
         }
@@ -94,5 +96,11 @@ class ScheduleManager implements EntityServiceInterface
         }
 
         return $this->scheduleRepository->counter($searchValue);
+    }
+
+    public function setNextRun(Schedule $schedule): void
+    {
+        $cron = new CronExpression($schedule->getCron());
+        $schedule->setNextRun($cron->getNextRunDate());
     }
 }

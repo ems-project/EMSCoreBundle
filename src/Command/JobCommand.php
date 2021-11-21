@@ -107,7 +107,7 @@ class JobCommand extends AbstractCommand
         return 0;
     }
 
-    private function jobFomSchedule(Schedule $schedule): ?Job
+    private function jobFomSchedule(?Schedule $schedule): ?Job
     {
         if (null === $schedule) {
             return null;

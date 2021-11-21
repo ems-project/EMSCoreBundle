@@ -7,12 +7,15 @@ namespace EMS\CoreBundle\Controller\Job;
 use EMS\CoreBundle\Core\Job\ScheduleManager;
 use EMS\CoreBundle\Entity\Schedule;
 use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\ScheduleType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Routes;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,6 +46,25 @@ final class ScheduleController extends AbstractController
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
+                switch ($action->getName()) {
+                    case EntityTable::DELETE_ACTION:
+                        $this->scheduleManager->deleteByIds($table->getSelected());
+                        break;
+                    case TableType::REORDER_ACTION:
+                        $newOrder = TableType::getReorderedKeys($form->getName(), $request);
+                        $this->scheduleManager->reorderByIds($newOrder);
+                        break;
+                    default:
+                        $this->logger->error('log.controller.schedule.unknown_action');
+                }
+            } else {
+                $this->logger->error('log.controller.schedule.unknown_action');
+            }
+
+            return $this->redirectToRoute(Routes::SCHEDULE_INDEX);
+        }
 
         return $this->render('@EMSCore/schedule/index.html.twig', [
             'form' => $form->createView(),
@@ -78,6 +100,11 @@ final class ScheduleController extends AbstractController
         $table = new EntityTable($this->scheduleManager, $this->generateUrl(Routes::SCHEDULE_INDEX, ['_format' => 'json']));
         $table->addColumn('table.index.column.loop_count', 'orderKey');
         $table->addColumn('schedule.index.column.name', 'name');
+        $table->addColumn('schedule.index.column.cron', 'cron');
+        $table->addColumn('schedule.index.column.command', 'command');
+        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'schedule.actions.delete_selected', 'schedule.actions.delete_selected_confirm')
+            ->setCssClass('btn btn-outline-danger');
+        $table->setDefaultOrder('orderKey');
 
         return $table;
     }

@@ -890,3 +890,9 @@ view.actions.delete_selected: 'Delete selected views'
 dashboard.index.column.public: Public
 schedule.index.column.name: Name
 log.schedule.created: 'Schedule %name% has been created'
+schedule.index.reorder: Prioritize
+schedule.actions.delete_selected: 'Delete selected'
+schedule.actions.delete_selected_confirm: 'Do you confirm ?'
+schedule.index.column.command: Command
+schedule.index.column.cron: Cron
+log.controller.schedule.unknown_action: 'Unknow action'

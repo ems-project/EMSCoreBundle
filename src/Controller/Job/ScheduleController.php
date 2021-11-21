@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Controller\Job;
 use EMS\CoreBundle\Core\Job\ScheduleManager;
 use EMS\CoreBundle\Entity\Schedule;
 use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Form\ScheduleType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Routes;
@@ -52,7 +53,7 @@ final class ScheduleController extends AbstractController
     {
         $schedule = new Schedule();
 
-        $form = $this->createForm(Schedule::class, $schedule, [
+        $form = $this->createForm(ScheduleType::class, $schedule, [
             'create' => true,
         ]);
 
@@ -64,9 +65,7 @@ final class ScheduleController extends AbstractController
                 'name' => $schedule->getName(),
             ]);
 
-            return $this->redirectToRoute(Routes::SCHEDULE_EDIT, [
-                'schedule' => $schedule->getId(),
-            ]);
+            return $this->redirectToRoute(Routes::SCHEDULE_INDEX);
         }
 
         return $this->render('@EMSCore/schedule/add.html.twig', [

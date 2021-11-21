@@ -45,14 +45,14 @@ class Schedule implements EntityInterface
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    private $name = '';
 
     /**
      * @var string
      *
      * @ORM\Column(name="cron", type="string", length=255)
      */
-    private $cron;
+    private $cron = '';
 
     /**
      * @var string|null
@@ -80,7 +80,7 @@ class Schedule implements EntityInterface
      *
      * @ORM\Column(name="order_key", type="integer")
      */
-    private $orderKey;
+    private $orderKey = 0;
 
     public function __construct()
     {

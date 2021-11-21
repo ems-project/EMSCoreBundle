@@ -933,3 +933,9 @@ orientation.landscape: Landscape
 ems.view.report: 'Report view'
 ems.view.hierarchical: 'Hierarchical view'
 ems.view.sorter: 'Sorter view'
+schedule.name: Name
+schedule.cron: Cron
+schedule.command: Command
+schedule.create: Create
+schedule.save: Save
+schedule.saveAndClose: 'Save and Close'

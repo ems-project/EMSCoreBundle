@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Job;
 
+use EMS\CoreBundle\Entity\Schedule;
 use EMS\CoreBundle\Repository\ScheduleRepository;
+use EMS\CoreBundle\Service\EntityServiceInterface;
 use Psr\Log\LoggerInterface;
 
-class ScheduleManager
+class ScheduleManager implements EntityServiceInterface
 {
     private ScheduleRepository $scheduleRepository;
     private LoggerInterface $logger;
@@ -16,5 +18,81 @@ class ScheduleManager
     {
         $this->scheduleRepository = $scheduleRepository;
         $this->logger = $logger;
+    }
+
+    /**
+     * @return Schedule[]
+     */
+    public function getAll(): array
+    {
+        return $this->scheduleRepository->getAll();
+    }
+
+    public function update(Schedule $schedule): void
+    {
+        if (0 === $schedule->getOrderKey()) {
+            $schedule->setOrderKey($this->scheduleRepository->counter() + 1);
+        }
+        $this->scheduleRepository->create($schedule);
+    }
+
+    public function delete(Schedule $schedule): void
+    {
+        $name = $schedule->getName();
+        $this->scheduleRepository->delete($schedule);
+        $this->logger->warning('log.service.schedule.delete', [
+            'name' => $name,
+        ]);
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function deleteByIds(array $ids): void
+    {
+        foreach ($this->scheduleRepository->getByIds($ids) as $schedule) {
+            $this->delete($schedule);
+        }
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function reorderByIds(array $ids): void
+    {
+        $counter = 1;
+        foreach ($ids as $id) {
+            $schedule = $this->scheduleRepository->getById($id);
+            $schedule->setOrderKey($counter++);
+            $this->scheduleRepository->create($schedule);
+        }
+    }
+
+    public function isSortable(): bool
+    {
+        return true;
+    }
+
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    {
+        if (null !== $context) {
+            throw new \RuntimeException('Unexpected context');
+        }
+
+        return $this->scheduleRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'schedule';
+    }
+
+    public function count(string $searchValue = '', $context = null): int
+    {
+        if (null !== $context) {
+            throw new \RuntimeException('Unexpected non-null object');
+        }
+
+        return $this->scheduleRepository->counter($searchValue);
     }
 }

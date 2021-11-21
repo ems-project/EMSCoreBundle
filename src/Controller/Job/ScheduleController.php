@@ -76,24 +76,50 @@ final class ScheduleController extends AbstractController
     {
         $schedule = new Schedule();
 
-        $form = $this->createForm(ScheduleType::class, $schedule, [
-            'create' => true,
-        ]);
+        return $this->edit($request, $schedule, 'html', true, 'log.schedule.created', '@EMSCore/schedule/add.html.twig');
+    }
 
+    public function edit(Request $request, Schedule $schedule, string $_format, bool $create = false, string $logMessage = 'log.schedule.updated', string $template = '@EMSCore/schedule/edit.html.twig'): Response
+    {
+        $form = $this->createForm(ScheduleType::class, $schedule, [
+            'create' => $create,
+            'ajax-save-url' => $this->generateUrl(Routes::SCHEDULE_EDIT, ['schedule' => $schedule->getId(), '_format' => 'json']),
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->scheduleManager->update($schedule);
-
-            $this->logger->notice('log.schedule.created', [
+            $this->logger->notice($logMessage, [
                 'name' => $schedule->getName(),
             ]);
 
-            return $this->redirectToRoute(Routes::SCHEDULE_INDEX);
+            if ('json' === $_format) {
+                return $this->render('@EMSCore/ajax/notification.json.twig', [
+                    'success' => true,
+                ]);
+            }
+
+            return $this->redirectToRoute(Routes::SCHEDULE_INDEX, );
         }
 
-        return $this->render('@EMSCore/schedule/add.html.twig', [
+        return $this->render($template, [
             'form' => $form->createView(),
+            'schedule' => $schedule,
         ]);
+    }
+
+    public function duplicate(Schedule $schedule): Response
+    {
+        $newSchedule = clone $schedule;
+        $this->scheduleManager->update($newSchedule);
+
+        return $this->redirectToRoute(Routes::SCHEDULE_EDIT, ['schedule' => $newSchedule->getId()]);
+    }
+
+    public function delete(Schedule $schedule): Response
+    {
+        $this->scheduleManager->delete($schedule);
+
+        return $this->redirectToRoute(Routes::SCHEDULE_INDEX, );
     }
 
     private function initTable(): EntityTable

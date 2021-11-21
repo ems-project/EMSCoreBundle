@@ -165,3 +165,4 @@ schedule.index.reorder: Reorder
 schedule.index.title: Schedule
 schedule.index.add_button: 'Add a schedule'
 schedule.add.title: 'Add a schedule'
+schedule.edit.title: 'Edit schedule "%name%"'

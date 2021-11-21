@@ -78,6 +78,15 @@ class Schedule implements EntityInterface
         $this->modified = $now;
     }
 
+    public function __clone()
+    {
+        $now = new \DateTime('now');
+        $this->id = Uuid::uuid4();
+        $this->created = $now;
+        $this->modified = $now;
+        $this->orderKey = 0;
+    }
+
     public function getId(): string
     {
         return $this->id->toString();

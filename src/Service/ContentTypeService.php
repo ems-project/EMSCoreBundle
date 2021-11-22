@@ -565,7 +565,10 @@ class ContentTypeService
     private function addMenuViewLinks(ContentType $contentType, MenuEntry $menuEntry): void
     {
         foreach ($contentType->getViews() as $view) {
-            if (!$this->authorizationChecker->isGranted($view->getRole()) || 'ems.view.data_link' === $view->getType()) {
+            if (null !== $view->getRole() && !$this->authorizationChecker->isGranted($view->getRole())) {
+                continue;
+            }
+            if ('ems.view.data_link' === $view->getType()) {
                 continue;
             }
             $menuEntry->addChild($view->getName(), $view->getIcon() ?? '', $view->isPublic() ? Routes::DATA_PUBLIC_VIEW : Routes::DATA_PRIVATE_VIEW, ['view' => $view->getId()]);

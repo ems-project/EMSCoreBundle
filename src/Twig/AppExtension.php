@@ -14,6 +14,7 @@ use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\RequestRuntime;
+use EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
@@ -143,6 +144,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_revision_create', [RevisionRuntime::class, 'createRevision']),
             new TwigFunction('emsco_revision_update', [RevisionRuntime::class, 'updateRevision']),
             new TwigFunction('emsco_revision_merge', [RevisionRuntime::class, 'mergeRevision']),
+            new TwigFunction('emsco_json_menu_nested', [JsonMenuRenderer::class, 'generateNested'], ['is_safe' => ['html']]),
         ];
     }
 

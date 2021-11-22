@@ -2,7 +2,9 @@
 import jquery from 'jquery';
 import ace from 'ace-builds/src-noconflict/ace';
 require('icheck');
-import JsonMenuEditor from './JsonMenuEditor';
+import JsonMenu from './module/jsonMenu';
+import JsonMenuNested from './module/jsonMenuNested';
+import collapse from './helper/collapse';
 import FileUploader from "@elasticms/file-uploader";
 
 
@@ -628,7 +630,10 @@ export default class EmsListeners {
 
     addJsonMenuEditorListeners() {
         jquery(this.target).find(".json_menu_editor_fieldtype").each(function(){
-            new JsonMenuEditor(this);
+            new JsonMenu(this);
+        });
+        jquery(this.target).find('.core-json-menu').each(function () {
+            new JsonMenuNested(this);
         });
 
         $(document).ready(function () {

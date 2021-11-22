@@ -20,4 +20,16 @@
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:trashAction</default>
     </route>
 
+    <route id="emsco_data_json_menu_nested_modal_add" path="/json-menu-nested/add/{revision}/{fieldType}" methods="GET|POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\JsonMenuNestedController::modal</default>
+    </route>
+    <route id="emsco_data_json_menu_nested_modal_edit" path="/json-menu-nested/edit/{revision}/{fieldType}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\JsonMenuNestedController::modal</default>
+    </route>
+    <route id="emsco_data_json_menu_nested_paste" path="/json-menu-nested/paste/{revision}/{fieldType}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\JsonMenuNestedController::paste</default>
+    </route>
+    <route id="emsco_data_json_menu_nested_modal_preview" path="/json-menu-nested/preview/{parentFieldType}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\JsonMenuNestedController::modalPreview</default>
+    </route>
 </routes>

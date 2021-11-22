@@ -40,4 +40,9 @@ class Routes
     public const DATA_PRIVATE_VIEW = 'emsco_data_private_view';
     public const DATA_ADD = 'emsco_data_add';
     public const DATA_TRASH = 'emsco_data_trash';
+    public const SCHEDULE_INDEX = 'emsco_schedule_index';
+    public const SCHEDULE_ADD = 'emsco_schedule_add';
+    public const SCHEDULE_EDIT = 'emsco_schedule_edit';
+    public const SCHEDULE_DUPLICATE = 'emsco_schedule_duplicate';
+    public const SCHEDULE_DELETE = 'emsco_schedule_delete';
 }

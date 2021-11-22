@@ -1,0 +1,16 @@
+{% extends '@EMSCore/schedule/abstract.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block title %}{{ 'schedule.index.title'|trans }}{% endblock %}
+
+{% block body %}
+    {%  set toolbar %}
+        <a class="btn btn-primary" href="{{ path('emsco_schedule_add') }}"><i class="fa fa-plus"></i> {{ 'schedule.index.add_button'|trans }}</a>
+    {%  endset %}
+
+    {% form_theme form '@EMSCore/form/forms.html.twig' %}
+    {{ form(form, {
+        reorder_label: 'schedule.index.reorder',
+        toolbar: toolbar
+    }) }}
+{% endblock %}

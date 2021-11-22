@@ -888,3 +888,15 @@ view.actions.delete: Delete
 view.actions.delete_confirm: 'Do you confirm?'
 view.actions.delete_selected: 'Delete selected views'
 dashboard.index.column.public: Public
+schedule.index.column.name: Name
+log.schedule.created: 'Schedule %name% has been created'
+log.schedule.updated: 'Schedule %name% has been updated'
+schedule.index.reorder: Prioritize
+schedule.actions.delete_selected: 'Delete selected'
+schedule.actions.delete_selected_confirm: 'Do you confirm ?'
+schedule.index.column.command: Command
+schedule.index.column.cron: Cron
+schedule.index.column.previous-run: 'Previous run'
+schedule.index.column.next-run: 'Next run'
+log.controller.schedule.unknown_action: 'Unknown action'
+log.service.schedule.delete: 'Schedule %name% has been deleted'

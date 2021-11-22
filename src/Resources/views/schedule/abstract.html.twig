@@ -1,0 +1,13 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('job.index') }}"><i class="{{ 'job.icon.class'|trans }}"></i> {{ 'job.menu'|trans }}</a></li>
+        <li><a href="{{ path('emsco_schedule_index') }}"><i class="{{ 'schedule.icon.class'|trans }}"></i> {{ 'schedule.list.menu'|trans }}</a></li>
+        {% block breadcrumb_items %}{% endblock breadcrumb_items %}
+    </ol>
+{% endblock %}
+
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+{% block subtitle %}<small>{{ 'schedule.tagline'|trans }}</small>{% endblock %}

@@ -70,7 +70,8 @@ class ExportViewType extends ViewType
                 ],
         ])
         ->add('allow_origin', TextType::class, [
-                'label' => 'The Access-Control-Allow-Originm header',
+                'label' => 'The Access-Control-Allow-Origin header',
+                'required' => false,
                 'attr' => [
                 ],
         ])

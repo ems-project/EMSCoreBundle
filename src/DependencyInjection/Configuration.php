@@ -42,6 +42,7 @@ class Configuration implements ConfigurationInterface
     public const TIKA_SERVER = null;
     public const SAVE_ASSETS_IN_DB = false;
     public const DEFAULT_BULK_SIZE = 500;
+    public const CLEAN_JOBS_TIME_STRING = '-7 days';
 
     /**
      * {@inheritdoc}
@@ -90,6 +91,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('health_check_allow_origin')->defaultValue(null)->end()
             ->scalarNode('tika_download_url')->defaultValue(null)->end()
             ->scalarNode('default_bulk_size')->defaultValue(self::DEFAULT_BULK_SIZE)->end()
+            ->scalarNode('clean_jobs_time_string')->defaultValue(self::CLEAN_JOBS_TIME_STRING)->end()
             ->arrayNode('ldap')
             ->children()
             ->scalarNode('base_dn')->end()

@@ -14,16 +14,19 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class JobCommand extends AbstractCommand
 {
+    private const USER_JOB_COMMAND = 'User-Job-Command';
     private JobService $jobService;
     private string $dateFormat;
     private ScheduleManager $scheduleManager;
+    private string $cleanJobsTimeString;
 
-    public function __construct(JobService $jobService, ScheduleManager $scheduleManager, string $dateFormat)
+    public function __construct(JobService $jobService, ScheduleManager $scheduleManager, string $dateFormat, string $cleanJobsTimeString)
     {
         parent::__construct();
         $this->jobService = $jobService;
         $this->dateFormat = $dateFormat;
         $this->scheduleManager = $scheduleManager;
+        $this->cleanJobsTimeString = $cleanJobsTimeString;
     }
 
     protected function configure(): void
@@ -57,7 +60,8 @@ class JobCommand extends AbstractCommand
         }
 
         if (null === $job) {
-            $this->io->comment('Nothing to run.');
+            $this->io->comment('Nothing to run. Cleaning jobs.');
+            $this->cleanJobs();
 
             return 0;
         }
@@ -114,6 +118,11 @@ class JobCommand extends AbstractCommand
             throw new \RuntimeException('Unexpected null start date');
         }
 
-        return $this->jobService->initJob('JobCommand', $schedule->getCommand(), $startDate);
+        return $this->jobService->initJob(self::USER_JOB_COMMAND, $schedule->getCommand(), $startDate);
+    }
+
+    private function cleanJobs(): void
+    {
+        $this->jobService->cleanJob(self::USER_JOB_COMMAND, $this->cleanJobsTimeString);
     }
 }

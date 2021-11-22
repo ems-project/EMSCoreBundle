@@ -73,6 +73,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.health_check_allow_origin', $config['health_check_allow_origin']);
         $container->setParameter('ems_core.tika_download_url', $config['tika_download_url']);
         $container->setParameter('ems_core.default_bulk_size', $config['default_bulk_size']);
+        $container->setParameter('ems_core.clean_jobs_time_string', $config['clean_jobs_time_string']);
 
         $this->loadLdap($container, $yamlLoader, $config['ldap'] ?? []);
     }

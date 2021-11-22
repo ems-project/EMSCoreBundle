@@ -44,4 +44,19 @@ class JobRepository extends EntityRepository
         $this->getEntityManager()->persist($job);
         $this->getEntityManager()->flush();
     }
+
+    public function clean(string $username, \DateTimeInterface $olderDate): int
+    {
+        $qb = $this->createQueryBuilder('job')->delete();
+        $qb->where($qb->expr()->eq('job.done', ':true'));
+        $qb->andWhere($qb->expr()->eq('job.user', ':username'));
+        $qb->andWhere($qb->expr()->lt('job.modified', ':olderDate'));
+        $qb->setParameters([
+            ':true' => true,
+            ':olderDate' => $olderDate,
+            ':username' => $username,
+        ]);
+
+        return \intval($qb->getQuery()->execute());
+    }
 }

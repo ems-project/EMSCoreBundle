@@ -633,7 +633,7 @@ services:
             - { name: console.command }
     ems.job.run:
         class: EMS\CoreBundle\Command\JobCommand
-        arguments: ['@ems.service.job', '@ems.schedule.manager', '%ems_core.date_time_format%']
+        arguments: ['@ems.service.job', '@ems.schedule.manager', '%ems_core.date_time_format%', '%ems_core.clean_jobs_time_string%']
         tags:
             - { name: console.command }
 #### security services

@@ -135,5 +135,9 @@
             <argument type="service" id="ems.repository.view"/>
             <argument type="service" id="logger"/>
         </service>
+        <service id="ems.schedule.manager" class="EMS\CoreBundle\Core\Job\ScheduleManager">
+            <argument type="service" id="ems.repository.schedule"/>
+            <argument type="service" id="logger"/>
+        </service>
     </services>
 </container>

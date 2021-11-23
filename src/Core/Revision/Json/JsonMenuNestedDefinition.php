@@ -18,15 +18,9 @@ final class JsonMenuNestedDefinition
 
     public string $type;
     /** @var array<mixed> */
-    private array $nodes;
-
-    public bool $itemMove;
-    public bool $itemCopy;
-    public bool $itemPaste;
-    public bool $itemAdd;
-    public bool $itemEdit;
-    public bool $itemDelete;
-    public bool $itemPreview;
+    public array $nodes;
+    /** @var string[] */
+    public array $itemActions;
 
     public ?string $hiddenFieldId = null;
 
@@ -42,16 +36,14 @@ final class JsonMenuNestedDefinition
         $this->type = $options['type'];
         $this->revision = $options['revision'] ?? null;
         $this->hiddenFieldId = $options['hidden_field_id'];
-
-        $this->itemMove = $options['item_move'];
-        $this->itemCopy = $options['item_copy'];
-        $this->itemPaste = $options['item_paste'];
-        $this->itemAdd = $options['item_add'];
-        $this->itemEdit = $options['item_edit'];
-        $this->itemDelete = $options['item_delete'];
-        $this->itemPreview = $options['item_preview'];
+        $this->itemActions = $options['item_actions'] ?? [];
 
         $this->nodes = $this->buildNodes();
+    }
+
+    public function hasAction(string $action): bool
+    {
+        return \in_array($action, $this->itemActions, true);
     }
 
     /**
@@ -61,13 +53,13 @@ final class JsonMenuNestedDefinition
     {
         $urls = [];
 
-        if ($this->itemPaste && null !== $this->revision) {
+        if ($this->hasAction('paste') && null !== $this->revision) {
             $urls['paste'] = $this->urlGenerator->generate('emsco_data_json_menu_nested_paste', [
                 'revision' => $this->revision->getId(),
                 'fieldType' => $this->fieldType->getId(),
             ]);
         }
-        if ($this->itemPreview) {
+        if ($this->hasAction('preview')) {
             $urls['preview'] = $this->urlGenerator->generate('emsco_data_json_menu_nested_modal_preview', [
                 'parentFieldType' => $this->fieldType->getId(),
             ]);
@@ -84,14 +76,6 @@ final class JsonMenuNestedDefinition
     public function getMenu(): JsonMenuNested
     {
         return $this->menu;
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function getNodes(): array
-    {
-        return $this->nodes;
     }
 
     /**
@@ -117,7 +101,7 @@ final class JsonMenuNestedDefinition
             'root' => [
                 'id' => 'root',
                 'name' => 'root',
-                'minimumRole' => $this->fieldType->getRestrictionOption('minimum_role', null),
+                'minimumRole' => $this->fieldType->getRestrictionOption('minimum_role'),
                 'deny' => $this->fieldType->getRestrictionOption('json_nested_deny', []),
                 'isLeaf' => false,
             ],
@@ -131,20 +115,20 @@ final class JsonMenuNestedDefinition
             $node = [
                 'id' => $child->getId(),
                 'name' => $child->getName(),
-                'minimumRole' => $child->getRestrictionOption('minimum_role', null),
+                'minimumRole' => $child->getRestrictionOption('minimum_role'),
                 'label' => $child->getDisplayOption('label', $child->getName()),
-                'icon' => $child->getDisplayOption('icon', null),
+                'icon' => $child->getDisplayOption('icon'),
                 'deny' => \array_merge(['root'], $child->getRestrictionOption('json_nested_deny', [])),
                 'isLeaf' => $child->getRestrictionOption('json_nested_is_leaf', false),
             ];
 
-            if ($this->itemAdd && null !== $this->revision) {
+            if ($this->hasAction('add') && null !== $this->revision) {
                 $node['urlAdd'] = $this->urlGenerator->generate('emsco_data_json_menu_nested_modal_add', [
                     'revision' => $this->revision->getId(),
                     'fieldType' => $node['id'],
                 ]);
             }
-            if ($this->itemEdit && null !== $this->revision) {
+            if ($this->hasAction('edit') && null !== $this->revision) {
                 $node['urlEdit'] = $this->urlGenerator->generate('emsco_data_json_menu_nested_modal_edit', [
                     'revision' => $this->revision->getId(),
                     'fieldType' => $node['id'],

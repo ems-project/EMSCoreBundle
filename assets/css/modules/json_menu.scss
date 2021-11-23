@@ -29,9 +29,14 @@ div.core-json-menu {
     }
 
     > li {
-      background-color: #FFFFFF;
+      background-color: #ffffff;
       border: 1px solid #cccccc;
       margin-top: 6px;
+
+      &.json-menu-nested-item-selected {
+          background-color: #F0F8FF;
+          border: 1px solid #999;
+      }
 
       div.json-menu-item {
         display: flex;

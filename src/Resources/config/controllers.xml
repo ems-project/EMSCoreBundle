@@ -49,14 +49,6 @@
             <argument type="service" id="ems.service.data" />
             <tag name="controller.service_arguments"/>
         </service>
-
-        <service id="EMS\CoreBundle\Controller\Revision\JsonMenuNestedOldController" public="true">
-            <argument type="service" id="ems.service.revision" />
-            <argument type="service" id="doctrine" />
-            <argument type="service" id="ems.service.data" />
-            <argument type="service" id="twig"/>
-            <tag name="controller.service_arguments"/>
-        </service>
         <service id="EMS\CoreBundle\Controller\Revision\TaskController" public="true">
             <argument type="service" id="ems_core.core_revision_task.task_manager" />
             <argument type="service" id="ems_core.core_ui.ajax_service" />

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Json;
 
+use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CoreBundle\Service\ContentTypeService;
-use Ramsey\Uuid\Uuid;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
@@ -14,9 +15,10 @@ use Twig\TemplateWrapper;
 
 final class JsonMenuRenderer implements RuntimeExtensionInterface
 {
+    private Environment $environment;
     private UrlGeneratorInterface $urlGenerator;
     private ContentTypeService $contentTypeService;
-    private Environment $environment;
+    private RevisionService $revisionService;
 
     public const TYPE_MODAL = 'modal';
     public const TYPE_PASTE = 'paste';
@@ -27,13 +29,15 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
     public const NESTED_TEMPLATE = '@EMSCore/revision/json/json_menu_nested.html.twig';
 
     public function __construct(
+        Environment $environment,
         UrlGeneratorInterface $urlGenerator,
         ContentTypeService $contentTypeService,
-        Environment $environment
+        RevisionService $revisionService
     ) {
+        $this->environment = $environment;
         $this->urlGenerator = $urlGenerator;
         $this->contentTypeService = $contentTypeService;
-        $this->environment = $environment;
+        $this->revisionService = $revisionService;
     }
 
     /**
@@ -41,19 +45,9 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
      */
     public function generateNested(array $options, string $type = self::TYPE_VIEW): string
     {
-        $definitions[] = $this->createDefinition($type, $options);
-
-//        foreach ($items as $item) {
-//            $doc = Document::fromArray($item['document']);
-//            $structure = $doc->getValue($item['field_document'], '{}');
-//
-//            $contentType = $this->contentTypeService->giveByName($doc->getContentType());
-//            $fieldType = $contentType->getFieldType()->getChildByName($item['field_name']);
-//
-//            $definitions[] = new JsonMenuNestedDefinition($fieldType, $structure);
-//        }
-
-        return $this->template()->renderBlock('render', ['definitions' => $definitions]);
+        return $this->template()->renderBlock('render', [
+            'def' => $this->createDefinition($type, $options),
+        ]);
     }
 
     /**
@@ -65,7 +59,7 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
             'def' => $this->createDefinition(self::TYPE_MODAL, $options),
             'level' => $options['level'],
             'item' => [
-                'id' => $options['id'] ?? Uuid::uuid4(),
+                'id' => $options['id'],
                 'type' => $options['type'],
                 'label' => $options['object']['label'] ?? '',
                 'object' => $options['object'],
@@ -93,56 +87,73 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
      */
     private function createDefinition(string $type, array $options): JsonMenuNestedDefinition
     {
+        $options = $this->revolveOptions($type, $options);
+        $options['type'] = $type;
+
+        return new JsonMenuNestedDefinition($this->urlGenerator, $options);
+    }
+
+    /**
+     * @param array<mixed> $options
+     *
+     * @return array<mixed>
+     */
+    private function revolveOptions(string $type, array $options): array
+    {
         $optionsResolver = new OptionsResolver();
         $optionsResolver
+            ->setRequired(['field_type'])
             ->setDefaults([
                 'revision' => null,
-                'field_type' => null,
                 'structure' => '{}',
                 'hidden_field_id' => null,
-                'item_move' => true,
-                'item_copy' => true,
-                'item_paste' => true,
-                'item_add' => true,
-                'item_edit' => true,
-                'item_delete' => true,
-                'item_preview' => false,
+                'item_actions' => ['move', 'copy', 'paste', 'add', 'edit', 'delete'],
             ]);
 
         switch ($type) {
             case self::TYPE_VIEW:
-                $optionsResolver->setDefaults(['documents' => []]);
-                break;
+                return $this->revolveViewOptions($optionsResolver, $options);
             case self::TYPE_PREVIEW:
-                $options = \array_merge($options, [
-                    'item_move' => false,
-                    'item_copy' => false,
-                    'item_paste' => false,
-                    'item_add' => false,
-                    'item_edit' => false,
-                    'item_delete' => false,
-                    'item_preview' => true,
-                ]);
-                $optionsResolver->setRequired(['field_type', 'structure']);
+                $options['item_actions'] = ['preview', 'copy'];
+                $optionsResolver->setRequired(['structure']);
                 break;
             case self::TYPE_REVISION_EDIT:
-                $optionsResolver->setRequired(['field_type', 'structure', 'revision']);
+                $optionsResolver->setRequired(['structure', 'revision']);
                 break;
             case self::TYPE_MODAL:
                 $optionsResolver
-                    ->setDefaults(['id' => null])
-                    ->setRequired(['field_type', 'revision', 'level', 'type', 'object']);
+                    ->setRequired(['revision', 'level', 'type', 'object', 'id']);
                 break;
             case self::TYPE_PASTE:
-                $optionsResolver->setRequired(['field_type', 'revision', 'structure']);
+                $optionsResolver->setRequired(['revision', 'structure']);
                 break;
             default:
                 throw new \Exception('Invalid render type');
         }
 
-        $options = $optionsResolver->resolve($options);
-        $options['type'] = $type;
+        return $optionsResolver->resolve($options);
+    }
 
-        return new JsonMenuNestedDefinition($this->urlGenerator, $options);
+    /**
+     * @param array<mixed> $options
+     *
+     * @return array<mixed>
+     */
+    private function revolveViewOptions(OptionsResolver $optionsResolver, array $options): array
+    {
+        $fieldDocument = $options['field_document'] ?? $options['field'];
+
+        $doc = Document::fromArray($options['document']);
+        $options['structure'] = $doc->getValue($fieldDocument, '{}');
+
+        $contentType = $this->contentTypeService->giveByName($doc->getContentType());
+        $options['field_type'] = $contentType->getFieldType()->getChildByName($options['field']);
+        $options['revision'] = $this->revisionService->getCurrentRevisionForDocument($doc);
+
+        $optionsResolver
+            ->setDefaults(['field_document' => $fieldDocument])
+            ->setRequired(['document', 'field', 'field_document']);
+
+        return $optionsResolver->resolve($options);
     }
 }

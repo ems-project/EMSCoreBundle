@@ -635,18 +635,6 @@ export default class EmsListeners {
         jquery(this.target).find('.core-json-menu').each(function () {
             new JsonMenuNested(this);
         });
-
-        $(document).ready(function () {
-            $(this).find(".json_menu_editor_fieldtype_widget").each(function(){
-                const selectNodeId = $(this).data('select-node-id');
-                const selectLi = selectNodeId ? $(this).find('li#'+selectNodeId) : false;
-
-                if (selectLi) {
-                    selectLi.parentsUntil('.json_menu_editor_fieldtype_widget', 'ol').show();
-                    selectLi.focus();
-                }
-            });
-        });
     }
 
     addRemoveButtonListeners() {

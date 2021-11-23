@@ -15,6 +15,7 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Service\DataService;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -40,7 +41,6 @@ final class JsonMenuNestedController extends AbstractController
     {
         $requestData = $this->getRequestJsonData($request);
         $level = \intval($request->get('level'));
-        $itemId = $request->get('itemId');
 
         $newLevel = $level + 1;
         $maxDepth = $fieldType->getRestrictionOption('json_nested_max_depth', 0);
@@ -51,7 +51,7 @@ final class JsonMenuNestedController extends AbstractController
         $form = $this->getForm($revision, $fieldType, $requestData);
         $form->handleRequest($request);
 
-        if (null !== $successResponse = $this->validateForm($form, $revision, $fieldType, $level, $itemId)) {
+        if (null !== $successResponse = $this->validateForm($form, $revision, $fieldType, $request, $level)) {
             return $successResponse;
         }
 
@@ -105,6 +105,7 @@ final class JsonMenuNestedController extends AbstractController
                 'revision' => $revision,
                 'field_type' => $fieldType,
                 'structure' => Json::encode($structure),
+                'item_actions' => $request->get('a'),
             ]),
         ]);
     }
@@ -147,7 +148,7 @@ final class JsonMenuNestedController extends AbstractController
     /**
      * @param FormInterface<FormInterface> $form
      */
-    private function validateForm(FormInterface $form, Revision $revision, FieldType $fieldType, int $level, ?string $id = null): ?JsonResponse
+    private function validateForm(FormInterface $form, Revision $revision, FieldType $fieldType, Request $request, int $level): ?JsonResponse
     {
         if (!$form->isSubmitted()) {
             return null;
@@ -162,15 +163,18 @@ final class JsonMenuNestedController extends AbstractController
         }
 
         $this->dataService->getPostProcessing()->jsonMenuNested($formDataField, $revision->giveContentType(), $objectArray);
+        $itemId = $request->get('itemId', Uuid::uuid4());
 
         return $this->getAjaxModal()->getSuccessResponse([
+            'itemId' => $itemId,
             'html' => $this->jsonMenuRenderer->generateNestedItem([
                 'field_type' => $fieldType->getJsonMenuNestedEditor(),
                 'revision' => $revision,
                 'level' => $level,
                 'type' => $fieldType->getName(),
                 'object' => $objectArray,
-                'id' => $id,
+                'id' => $itemId,
+                'item_actions' => $request->get('a'),
             ]),
         ]);
     }

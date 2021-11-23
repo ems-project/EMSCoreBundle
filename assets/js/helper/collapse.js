@@ -25,11 +25,18 @@ export default function collapse() {
                 event.preventDefault();
                 let expanded = button.getAttribute('aria-expanded');
                 button.setAttribute('aria-expanded', expanded == 'true' ? 'false' : 'true');
-
-                collapse.forEach((c) => {
-                    c.style.display = expanded == 'true' ? 'none' : 'block';
-                });
+                collapse.forEach((c) => { c.style.display = expanded == 'true' ? 'none' : 'block'; });
             }
+            button.addEventListener('show', (evt) => {
+                evt.preventDefault();
+                evt.target.setAttribute('aria-expanded', 'true');
+                collapse.forEach((c) => { c.style.display = 'block'; });
+            });
+            button.addEventListener('show', (evt) => {
+                evt.preventDefault();
+                evt.target.setAttribute('aria-expanded', 'false');
+                collapse.forEach((c) => { c.style.display = 'none'; });
+            });
         }
     });
 }

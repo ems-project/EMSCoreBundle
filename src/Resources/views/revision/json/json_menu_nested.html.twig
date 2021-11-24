@@ -5,15 +5,14 @@
     {%- set item = def.menu -%}
     {%- set itemJson = { 'id': item.id, 'label': item.label, 'type': item.type, 'object': (item.object|merge({ 'label': item.label }))  } -%}
     {%- set node = def.getNodeByName(item.type) -%}
-    {%- set selectItemId = app.request.get('select-item-id', false) -%}
 
-    <div class="core-json-menu json-menu-nested json-menu-nested-item {{ def.isSortable ? 'json-menu-sortable' }}"
+    <div class="json-menu-nested json-menu-nested-item {{ def.isSortable ? 'json-menu-nested-sortable' }}"
          data-item-id="{{ item.id }}"
          data-item="{{ itemJson|json_encode|e('html_attr') }}"
          data-node-id="{{ node.id }}"
          data-nodes="{{ def.nodes|json_encode|e('html_attr') }}"
          data-urls="{{ def.urls|json_encode|e('html_attr') }}"
-         {%- if selectItemId %}data-select-item-id="{{- selectItemId -}}"{% endif -%}
+         {%- if app.request.get('item', false) %}data-select-item-id="{{- app.request.get('item') -}}"{% endif -%}
          {%- if def.hiddenFieldId != null %}data-hidden-field-id="{{ def.hiddenFieldId }}"{% endif -%}
         >
         <div class="json-menu-nested-loading"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
@@ -23,7 +22,7 @@
                 {{ block('buttonMore') }}
             </span>
         {% endif %}
-        <ol class="json-menu-list json-menu-root" data-list="root">
+        <ol class="json-menu-nested-list json-menu-nested-root" data-list="root">
             {%- set level = level + 1 -%}
             {% for item in item.children %}{{ block('renderItem') }}{% endfor %}
         </ol>
@@ -33,13 +32,13 @@
 {% block renderItem %}
     {%- set node = def.getNodeByName(item.type) -%}
     {%- set itemJson = { 'id': item.id, 'label': item.label, 'type': item.type, 'object': (item.object|merge({ 'label': item.label }))  } -%}
-    <li class="collapsible json-menu-nested-item {{ def.isSortable ? 'json-menu-sortable mjs-nestedSortable' }}"
+    <li class="collapsible json-menu-nested-item {{ def.isSortable ? 'json-menu-nested-sortable mjs-nestedSortable' }}"
         data-node-id="{{ node.id }}"
         data-item-id="{{ item.id }}"
         data-item="{{ itemJson|json_encode|e('html_attr') }}">
         {{ block('itemDisplay') }}
         {% if item is defined and item.children|default([])|length > 0 %}
-            <ol class="json-menu-list collapse" data-list="{{ item.id }}">
+            <ol class="json-menu-nested-list collapse" data-list="{{ item.id }}">
                 {%- for childItem in item.children|default([]) -%}
                     {%- set level = level + 1 -%}
                     {%- with { 'item': childItem } -%}{{ block('renderItem') }}{% endwith %}
@@ -55,11 +54,11 @@
 {%- endblock -%}
 
 {% block itemDisplay %}
-    <div class="json-menu-item">
+    <div class="json-menu-nested-item">
         <button class="btn btn-default btn-sm btn-collapse" role="button" aria-expanded="false"></button>
-        {%- if node.icon is defined -%}<i class="json-menu-item-icon {{ node.icon }}"></i>{%- endif -%}
-        <div class="json-menu-item-label">{{ item.label }}</div>
-        <div class="json-menu-item-actions">
+        {%- if node.icon is defined -%}<i class="json-menu-nested-item-icon {{ node.icon }}"></i>{%- endif -%}
+        <div class="json-menu-nested-item-label">{{ item.label }}</div>
+        <div class="json-menu-nested-item-actions">
             <div class="btn-group pull-right">
                 {{ block('renderItemButtons') }}
             </div>
@@ -91,14 +90,14 @@
     {{ block('buttonAdd') }}
     {{ block('buttonMore') }}
     {% if 'move' in node.actions %}
-        <a type="button" class="btn btn-sm btn-default btn-json-menu-move"
+        <a type="button" class="btn btn-sm btn-default btn-json-menu-nested-move"
            title="{{- 'field_type.json_menu_editor.move_item'|trans -}}">
             <i class="fa fa-arrows"></i>
             {{ 'field_type.json_menu_editor.move_item'|trans }}
         </a>
     {% endif %}
     {% if 'delete' in node.actions %}
-        <button type="button" class="btn btn-sm btn-outline-danger btn-json-menu-delete"
+        <button type="button" class="btn btn-sm btn-outline-danger btn-json-menu-nested-delete"
                 title="{{- 'field_type.json_menu_editor.delete_item'|trans -}}"
                 data-item-id="{{ item.id }}">
             <i class="fa fa-trash"></i>&nbsp;<span class="sr-only">{{- 'field_type.json_menu_editor.delete_item'|trans -}}</span>

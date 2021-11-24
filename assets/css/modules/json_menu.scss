@@ -1,4 +1,4 @@
-div.core-json-menu {
+div.json-menu-nested {
   position: relative;
 
   div.json-menu-nested-loading {
@@ -13,18 +13,18 @@ div.core-json-menu {
     font-size: 1em;
   }
 
-  ol.json-menu-list {
+  ol.json-menu-nested-list {
     list-style: none;
     padding: 0;
     margin: 0;
 
-    &.json-menu-root, {
+    &.json-menu-nested-root, {
       border: 1px solid #cccccc;
       padding: 8px;
       padding-bottom: 14px;
     }
 
-    ol.json-menu-list {
+    ol.json-menu-nested-list {
       padding: 0 8px 8px 30px;
     }
 
@@ -38,22 +38,22 @@ div.core-json-menu {
           border: 1px solid #999;
       }
 
-      div.json-menu-item {
+      div.json-menu-nested-item {
         display: flex;
         flex-direction: row;
         padding: 4px;
 
-        i.json-menu-item-icon {
+        i.json-menu-nested-item-icon {
           margin-left: 5px;
           align-self: center;
         }
 
-        div.json-menu-item-label {
+        div.json-menu-nested-item-label {
           padding: 5px;
           align-self: center;
         }
 
-        div.json-menu-item-actions {
+        div.json-menu-nested-item-actions {
           margin-left: auto;
           justify-self: flex-start;
         }

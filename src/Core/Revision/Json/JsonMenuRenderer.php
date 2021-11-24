@@ -113,7 +113,7 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
             case self::TYPE_VIEW:
                 return $this->revolveViewOptions($optionsResolver, $options);
             case self::TYPE_PREVIEW:
-                $options['item_actions'] = ['preview' => ['nodes' => 'all'], 'copy' => ['nodes' => 'all']];
+                $options['actions'] = ['preview' => [], 'copy' => ['deny' => ['root']]];
                 $optionsResolver->setRequired(['structure']);
                 break;
             case self::TYPE_REVISION_EDIT:

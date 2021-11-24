@@ -28,7 +28,6 @@ export default class EmsListeners {
 
     addListeners() {
         this.addCheckBoxListeners();
-        this.addJsonMenuEditorListeners();
         this.addSelect2Listeners();
         this.addCollapsibleCollectionListeners();
         this.addSortableListListeners();
@@ -625,15 +624,6 @@ export default class EmsListeners {
             allowClear: true,
             placeholder: "",
             escapeMarkup: function (markup) { return markup; }
-        });
-    }
-
-    addJsonMenuEditorListeners() {
-        jquery(this.target).find(".json_menu_editor_fieldtype").each(function(){
-            new JsonMenu(this);
-        });
-        jquery(this.target).find('.core-json-menu').each(function () {
-            new JsonMenuNested(this);
         });
     }
 

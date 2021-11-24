@@ -18,10 +18,10 @@ export default class JsonMenuNested {
 
         this.parseAttributes();
 
-        if (this.target.classList.contains('json-menu-sortable')) {
-            this.nestedSortable = $(this.target).find('ol.json-menu-root').nestedSortable({
-                handle: 'a.btn-json-menu-move',
-                items: 'li.json-menu-sortable',
+        if (this.target.classList.contains('json-menu-nested-sortable')) {
+            this.nestedSortable = $(this.target).find('ol.json-menu-nested-root').nestedSortable({
+                handle: 'a.btn-json-menu-nested-move',
+                items: 'li.json-menu-nested-sortable',
                 isTree: true,
                 expression: /.*/,
                 toleranceElement: '> div',
@@ -30,7 +30,7 @@ export default class JsonMenuNested {
                 },
                 isAllowed: function(placeholder, parent, current) {
                     let li = $(current).data();
-                    let parentData = parent ?  $(parent).data() : $(current).closest('div.core-json-menu').data();
+                    let parentData = parent ?  $(parent).data() : self.target.data();
 
                     let draggingNode = self.nodes[li.nodeId];
                     let targetNode = self.nodes[parentData.nodeId];
@@ -41,15 +41,14 @@ export default class JsonMenuNested {
         }
 
         this.eventListeners(this.target);
-        window.addEventListener('focus', () => {
-            this.refreshPasteButtons();
-        });
-        window.addEventListener('DOMContentLoaded', () => {
-            if (this.selectItemId) {
-                this.selectItem(this.selectItemId, true);
-            }
+        window.addEventListener('focus', () => { this.refreshPasteButtons(); });
+
+        if (this.selectItemId) {
+            this.selectItem(this.selectItemId, true);
             this.loading(false);
-        });
+        } else {
+            this.loading(false);
+        }
     }
 
     parseAttributes() {
@@ -81,10 +80,10 @@ export default class JsonMenuNested {
             if (!ol.hasAttribute('data-list')) {
                 ol.setAttribute('data-list', ol.parentElement.dataset.item);
             }
-            if (!ol.classList.contains('json-menu-list')) {
-                ol.classList.add('json-menu-list');
+            if (!ol.classList.contains('json-menu-nested-list')) {
+                ol.classList.add('json-menu-nested-list');
             }
-            if (!ol.classList.contains('collapse') && !ol.classList.contains('json-menu-root')) {
+            if (!ol.classList.contains('collapse') && !ol.classList.contains('json-menu-nested-root')) {
                 ol.classList.add('collapse');
             }
         });
@@ -143,7 +142,7 @@ export default class JsonMenuNested {
         }
 
         while(parentNode) {
-            if (parentNode.classList.contains('json-menu-root')) { break; }
+            if (parentNode.classList.contains('json-menu-nested-root')) { break; }
             if (parentNode.classList.contains('json-menu-nested-item')) {
                 let btnCollapse = parentNode.querySelector('.btn-collapse');
                 if (btnCollapse) {
@@ -263,7 +262,7 @@ export default class JsonMenuNested {
     }
 
     buttonItemDelete(element) {
-        element.querySelectorAll('.btn-json-menu-delete').forEach((btnDelete) => {
+        element.querySelectorAll('.btn-json-menu-nested-delete').forEach((btnDelete) => {
             btnDelete.onclick = (e) => {
                 e.preventDefault();
                 let itemId = btnDelete.dataset.itemId;

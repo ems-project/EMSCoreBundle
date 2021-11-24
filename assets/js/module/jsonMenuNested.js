@@ -10,12 +10,13 @@ export default class JsonMenuNested {
     copyName = 'json_menu_nested_copy';
     nodes = {};
     urls = {};
-    itemActions = [];
     selectItemId = false;
 
     constructor(target) {
         const self = this;
         this.target = target;
+
+        this.parseAttributes();
 
         if (this.target.classList.contains('json-menu-sortable')) {
             this.nestedSortable = $(this.target).find('ol.json-menu-root').nestedSortable({
@@ -28,26 +29,21 @@ export default class JsonMenuNested {
                     self.relocate();
                 },
                 isAllowed: function(placeholder, parent, current) {
-                    const item = $(current).data();
-                    const parentData = parent ?  $(parent).data() : $(current).closest('div.core-json-menu').data();
+                    let li = $(current).data();
+                    let parentData = parent ?  $(parent).data() : $(current).closest('div.core-json-menu').data();
 
-                    if (parentData.hasOwnProperty('node') && parentData.node.hasOwnProperty('deny')) {
-                        const deny = parentData.node.deny;
-                        return deny.indexOf(item.node.name) === -1;
-                    }
+                    let draggingNode = self.nodes[li.nodeId];
+                    let targetNode = self.nodes[parentData.nodeId];
 
-                    return true;
+                    return targetNode.addNodes.includes(draggingNode.name);
                 }
             });
         }
 
-        this.parseAttributes();
         this.eventListeners(this.target);
-
         window.addEventListener('focus', () => {
             this.refreshPasteButtons();
         });
-
         window.addEventListener('DOMContentLoaded', () => {
             if (this.selectItemId) {
                 this.selectItem(this.selectItemId, true);
@@ -63,7 +59,6 @@ export default class JsonMenuNested {
 
         this.nodes = this.target.hasAttribute('data-nodes') ? JSON.parse(this.target.dataset.nodes) : {};
         this.urls = this.target.hasAttribute('data-urls') ? JSON.parse(this.target.dataset.urls) : {};
-        this.itemActions = this.target.hasAttribute('data-item-actions') ? JSON.parse(this.target.dataset.itemActions) : [];
         this.selectItemId = this.target.hasAttribute('data-select-item-id') ? this.target.dataset.selectItemId : false;
     }
     eventListeners(element) {
@@ -151,7 +146,9 @@ export default class JsonMenuNested {
             if (parentNode.classList.contains('json-menu-root')) { break; }
             if (parentNode.classList.contains('json-menu-nested-item')) {
                 let btnCollapse = parentNode.querySelector('.btn-collapse');
-                if (btnCollapse) { btnCollapse.dispatchEvent(new CustomEvent('show')); }
+                if (btnCollapse) {
+                    btnCollapse.dispatchEvent(new CustomEvent('show'));
+                }
             }
 
             parentNode = parentNode.parentNode;
@@ -209,7 +206,7 @@ export default class JsonMenuNested {
                     }
                 };
 
-                let params = this.makeParams();
+                let params = this.makeParams(node);
                 params.append('level', level);
 
                 ajaxModal.load({
@@ -251,7 +248,7 @@ export default class JsonMenuNested {
                     this.eventListeners(this.getElementItem(itemId).parentElement);
                 };
 
-                let params = this.makeParams();
+                let params = this.makeParams(node);
                 params.append('itemId', itemId);
                 params.append('level', level);
 
@@ -340,8 +337,10 @@ export default class JsonMenuNested {
 
                 let itemId = btnPaste.dataset.itemId;
                 let li = this.getElementItem(itemId);
+                let nodeId = btnPaste.dataset.nodeId;
+                let node = this.nodes[nodeId];
 
-                let params = this.makeParams();
+                let params = this.makeParams(node);
 
                 ajaxJsonPost(this.urls.paste + '?' + params.toString(), JSON.stringify({'copied': copied}), (json) => {
                     this.appendHtml(itemId, json.html);
@@ -372,9 +371,9 @@ export default class JsonMenuNested {
         let loading = this.target.querySelector('.json-menu-nested-loading');
         loading.style.display = (flag ? 'flex' : 'none');
     }
-    makeParams() {
+    makeParams(node) {
         let params = new URLSearchParams();
-        this.itemActions.forEach((itemAction) => { params.append('a[]', itemAction); });
+        params.append('actions', node.actions.join('|'));
         return params;
     }
 
@@ -404,12 +403,11 @@ export default class JsonMenuNested {
             let node = this.nodes[nodeId];
 
             let copyType = copy.type;
-            let deny = node.hasOwnProperty('deny') ? node.deny : [];
 
-            if (deny.includes(copyType)) {
-                buttonLi.style.display = 'none';
-            } else {
+            if (node.addNodes.includes(copyType)) {
                 buttonLi.style.display = 'list-item';
+            } else {
+                buttonLi.style.display = 'none';
             }
         });
     }

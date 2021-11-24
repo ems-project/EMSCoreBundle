@@ -7,28 +7,34 @@ namespace EMS\CoreBundle\Core\Revision\Json;
 use EMS\CommonBundle\Json\JsonMenuNested;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Form\DataField\DateFieldType;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class JsonMenuNestedDefinition
 {
+    private AuthorizationCheckerInterface $authorizationChecker;
     private UrlGeneratorInterface $urlGenerator;
     private FieldType $fieldType;
     private JsonMenuNested $menu;
     private ?Revision $revision;
+    /** @var array<mixed> */
+    private array $actions = [];
 
     public string $type;
     /** @var array<mixed> */
     public array $nodes;
-    /** @var string[] */
-    public array $itemActions;
-
     public ?string $hiddenFieldId = null;
 
     /**
      * @param array<mixed> $options
      */
-    public function __construct(UrlGeneratorInterface $urlGenerator, array $options = [])
-    {
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        UrlGeneratorInterface $urlGenerator,
+        array $options = []
+    ) {
+        $this->authorizationChecker = $authorizationChecker;
         $this->urlGenerator = $urlGenerator;
         $this->fieldType = $options['field_type'];
         $this->menu = JsonMenuNested::fromStructure($options['structure']);
@@ -36,14 +42,14 @@ final class JsonMenuNestedDefinition
         $this->type = $options['type'];
         $this->revision = $options['revision'] ?? null;
         $this->hiddenFieldId = $options['hidden_field_id'];
-        $this->itemActions = $options['item_actions'] ?? [];
+        $this->actions = \array_keys($options['actions']);
 
-        $this->nodes = $this->buildNodes();
+        $this->nodes = $this->buildNodes($options['actions']);
     }
 
-    public function hasAction(string $action): bool
+    public function isSortable(): bool
     {
-        return \in_array($action, $this->itemActions, true);
+        return $this->hasAction('move');
     }
 
     /**
@@ -92,52 +98,159 @@ final class JsonMenuNestedDefinition
         return [];
     }
 
+    private function getRevision(): Revision
+    {
+        if (null === $this->revision) {
+            throw new \Exception('Revision required!');
+        }
+
+        return $this->revision;
+    }
+
+    private function isGranted(): bool
+    {
+        return $this->isGrantedFieldType($this->fieldType);
+    }
+
+    private function isGrantedFieldType(FieldType $fieldType): bool
+    {
+        $fieldMinimumRole = $fieldType->getRestrictionOption('minimum_role');
+
+        return $this->authorizationChecker->isGranted($fieldMinimumRole);
+    }
+
+    private function hasAction(string $action): bool
+    {
+        return \in_array($action, $this->actions, true);
+    }
+
     /**
+     * @param array<mixed> $optionActions
+     *
      * @return array<mixed>
      */
-    private function buildNodes(): array
+    private function buildNodes(array $optionActions): array
     {
         $nodes = [
             'root' => [
                 'id' => 'root',
                 'name' => 'root',
                 'minimumRole' => $this->fieldType->getRestrictionOption('minimum_role'),
-                'deny' => $this->fieldType->getRestrictionOption('json_nested_deny', []),
-                'isLeaf' => false,
+                'addNodes' => $this->buildAddNodes($this->fieldType),
+                'actions' => $this->buildNodeActions($this->fieldType, 'root', $optionActions),
             ],
         ];
 
-        foreach ($this->fieldType->loopChildren() as $child) {
-            if ($child->getDeleted() || !$child->getType()::isContainer()) {
-                continue;
+        foreach ($this->fieldType->getChildren() as $child) {
+            /** @var DateFieldType $type */
+            $type = $child->getType();
+            if (!$child->getDeleted() && $type::isContainer()) {
+                $nodes[$child->getId()] = $this->buildNode($child, $optionActions);
             }
-
-            $node = [
-                'id' => $child->getId(),
-                'name' => $child->getName(),
-                'minimumRole' => $child->getRestrictionOption('minimum_role'),
-                'label' => $child->getDisplayOption('label', $child->getName()),
-                'icon' => $child->getDisplayOption('icon'),
-                'deny' => \array_merge(['root'], $child->getRestrictionOption('json_nested_deny', [])),
-                'isLeaf' => $child->getRestrictionOption('json_nested_is_leaf', false),
-            ];
-
-            if ($this->hasAction('add') && null !== $this->revision) {
-                $node['urlAdd'] = $this->urlGenerator->generate('emsco_data_json_menu_nested_modal_add', [
-                    'revision' => $this->revision->getId(),
-                    'fieldType' => $node['id'],
-                ]);
-            }
-            if ($this->hasAction('edit') && null !== $this->revision) {
-                $node['urlEdit'] = $this->urlGenerator->generate('emsco_data_json_menu_nested_modal_edit', [
-                    'revision' => $this->revision->getId(),
-                    'fieldType' => $node['id'],
-                ]);
-            }
-
-            $nodes[$child->getId()] = $node;
         }
 
         return $nodes;
+    }
+
+    /**
+     * @param array<mixed> $optionActions
+     *
+     * @return array<mixed>
+     */
+    private function buildNode(FieldType $child, array $optionActions): array
+    {
+        $nodeActions = $this->buildNodeActions($child, $child->getName(), $optionActions);
+        $node = [
+            'id' => $child->getId(),
+            'name' => $child->getName(),
+            'minimumRole' => $child->getRestrictionOption('minimum_role'),
+            'label' => $child->getDisplayOption('label', $child->getName()),
+            'icon' => $child->getDisplayOption('icon'),
+            'addNodes' => $this->buildAddNodes($child),
+            'actions' => $nodeActions,
+        ];
+
+        if (\in_array('add', $nodeActions, true)) {
+            $node['urlAdd'] = $this->urlGenerator->generate('emsco_data_json_menu_nested_modal_add', [
+                'revision' => $this->getRevision()->getId(),
+                'fieldType' => $node['id'],
+            ]);
+        }
+        if (\in_array('edit', $nodeActions, true)) {
+            $node['urlEdit'] = $this->urlGenerator->generate('emsco_data_json_menu_nested_modal_edit', [
+                'revision' => $this->getRevision()->getId(),
+                'fieldType' => $node['id'],
+            ]);
+        }
+
+        return $node;
+    }
+
+    /**
+     * @param array<mixed> $optionActions
+     *
+     * @return array<mixed>
+     */
+    private function buildNodeActions(FieldType $fieldType, string $nodeType, array $optionActions): array
+    {
+        $resolved = [];
+
+        if (!$this->isGranted() || !$this->isGrantedFieldType($fieldType)) {
+            return $resolved;
+        }
+
+        if ('root' === $nodeType) {
+            $optionActions = \array_filter([
+                'add' => $optionActions['add'] ?? ['deny' => ['root']],
+                'copy' => $optionActions['copy'] ?? ['deny' => ['root']],
+                'paste' => $optionActions['paste'] ?? ['deny' => ['root']],
+            ]);
+        }
+
+        foreach ($optionActions as $actionName => $settings) {
+            if (\in_array($nodeType, $settings['deny'])) {
+                continue;
+            }
+            if (\count($settings['allow']) > 0 && !\in_array($nodeType, $settings['allow'])) {
+                continue;
+            }
+            if (!\in_array($actionName, ['copy', 'preview']) && null === $this->revision) {
+                continue;
+            }
+
+            $resolved[] = $actionName;
+        }
+
+        return $resolved;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function buildAddNodes(FieldType $node): array
+    {
+        $isLeaf = $node->getRestrictionOption('json_nested_is_leaf', false);
+        if (!$this->isGranted() || $isLeaf) {
+            return [];
+        }
+
+        $types = [];
+        $deny = $node->getRestrictionOption('json_nested_deny', []);
+
+        foreach ($this->fieldType->getChildren() as $child) {
+            /** @var DateFieldType $dataFieldType */
+            $dataFieldType = $child->getType();
+            if ($child->getDeleted() || !$dataFieldType::isContainer()) {
+                continue;
+            }
+
+            if (\in_array($child->getName(), $deny, true) || !$this->isGrantedFieldType($child)) {
+                continue;
+            }
+
+            $types[] = $child->getName();
+        }
+
+        return $types;
     }
 }

@@ -105,7 +105,7 @@ final class JsonMenuNestedController extends AbstractController
                 'revision' => $revision,
                 'field_type' => $fieldType,
                 'structure' => Json::encode($structure),
-                'item_actions' => $request->get('a'),
+                'actions' => \explode('|', $request->get('actions', [])),
             ]),
         ]);
     }
@@ -174,7 +174,7 @@ final class JsonMenuNestedController extends AbstractController
                 'type' => $fieldType->getName(),
                 'object' => $objectArray,
                 'id' => $itemId,
-                'item_actions' => $request->get('a'),
+                'actions' => \explode('|', $request->get('actions', [])),
             ]),
         ]);
     }

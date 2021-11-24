@@ -141,8 +141,9 @@
         </service>
         <service id="EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer">
             <argument type="service" id="twig"/>
+            <argument type="service" id="security.authorization_checker"/>
             <argument type="service" id="router"/>
-            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
             <argument type="service" id="ems.service.revision"/>
             <tag name="twig.runtime"/>
         </service>

@@ -32,7 +32,7 @@ export default function collapse() {
                 evt.target.setAttribute('aria-expanded', 'true');
                 collapse.forEach((c) => { c.style.display = 'block'; });
             });
-            button.addEventListener('show', (evt) => {
+            button.addEventListener('hide', (evt) => {
                 evt.preventDefault();
                 evt.target.setAttribute('aria-expanded', 'false');
                 collapse.forEach((c) => { c.style.display = 'none'; });

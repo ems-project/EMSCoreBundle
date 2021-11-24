@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Revision\Json;
 
 use EMS\CommonBundle\Elasticsearch\Document\Document;
-use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 use Twig\Extension\RuntimeExtensionInterface;
 use Twig\TemplateWrapper;
@@ -16,8 +19,9 @@ use Twig\TemplateWrapper;
 final class JsonMenuRenderer implements RuntimeExtensionInterface
 {
     private Environment $environment;
+    private AuthorizationCheckerInterface $authorizationChecker;
     private UrlGeneratorInterface $urlGenerator;
-    private ContentTypeService $contentTypeService;
+    private ContentTypeRepository $contentTypeRepository;
     private RevisionService $revisionService;
 
     public const TYPE_MODAL = 'modal';
@@ -27,16 +31,19 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
     public const TYPE_REVISION_EDIT = 'revision_edit';
 
     public const NESTED_TEMPLATE = '@EMSCore/revision/json/json_menu_nested.html.twig';
+    private const ITEM_ACTIONS = ['move', 'copy', 'paste', 'add', 'edit', 'delete', 'preview'];
 
     public function __construct(
         Environment $environment,
+        AuthorizationCheckerInterface $authorizationChecker,
         UrlGeneratorInterface $urlGenerator,
-        ContentTypeService $contentTypeService,
+        ContentTypeRepository $contentTypeRepository,
         RevisionService $revisionService
     ) {
+        $this->authorizationChecker = $authorizationChecker;
         $this->environment = $environment;
         $this->urlGenerator = $urlGenerator;
-        $this->contentTypeService = $contentTypeService;
+        $this->contentTypeRepository = $contentTypeRepository;
         $this->revisionService = $revisionService;
     }
 
@@ -90,7 +97,7 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
         $options = $this->revolveOptions($type, $options);
         $options['type'] = $type;
 
-        return new JsonMenuNestedDefinition($this->urlGenerator, $options);
+        return new JsonMenuNestedDefinition($this->authorizationChecker, $this->urlGenerator, $options);
     }
 
     /**
@@ -100,21 +107,13 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
      */
     private function revolveOptions(string $type, array $options): array
     {
-        $optionsResolver = new OptionsResolver();
-        $optionsResolver
-            ->setRequired(['field_type'])
-            ->setDefaults([
-                'revision' => null,
-                'structure' => '{}',
-                'hidden_field_id' => null,
-                'item_actions' => ['move', 'copy', 'paste', 'add', 'edit', 'delete'],
-            ]);
+        $optionsResolver = $this->getOptionsResolver();
 
         switch ($type) {
             case self::TYPE_VIEW:
                 return $this->revolveViewOptions($optionsResolver, $options);
             case self::TYPE_PREVIEW:
-                $options['item_actions'] = ['preview', 'copy'];
+                $options['item_actions'] = ['preview' => ['nodes' => 'all'], 'copy' => ['nodes' => 'all']];
                 $optionsResolver->setRequired(['structure']);
                 break;
             case self::TYPE_REVISION_EDIT:
@@ -128,7 +127,7 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
                 $optionsResolver->setRequired(['revision', 'structure']);
                 break;
             default:
-                throw new \Exception('Invalid render type');
+                throw new \Exception(\sprintf('Invalid render type: "%s"', $type));
         }
 
         return $optionsResolver->resolve($options);
@@ -146,7 +145,11 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
         $doc = Document::fromArray($options['document']);
         $options['structure'] = $doc->getValue($fieldDocument, '{}');
 
-        $contentType = $this->contentTypeService->giveByName($doc->getContentType());
+        $contentType = $this->contentTypeRepository->findOneBy(['name' => $doc->getContentType(), 'deleted' => false]);
+        if (!$contentType instanceof ContentType) {
+            throw new \Exception(\sprintf('ContentType not found %s', $doc->getContentType()));
+        }
+
         $options['field_type'] = $contentType->getFieldType()->getChildByName($options['field']);
         $options['revision'] = $this->revisionService->getCurrentRevisionForDocument($doc);
 
@@ -155,5 +158,46 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
             ->setRequired(['document', 'field', 'field_document']);
 
         return $optionsResolver->resolve($options);
+    }
+
+    private function getOptionsResolver(): OptionsResolver
+    {
+        $optionsResolver = new OptionsResolver();
+        $optionsResolver
+            ->setRequired(['field_type'])
+            ->setDefaults([
+                'revision' => null,
+                'structure' => '{}',
+                'hidden_field_id' => null,
+            ])
+            ->setDefault('actions', function (Options $options) {
+                $actions = [];
+                foreach (self::ITEM_ACTIONS as $action) {
+                    $actions[$action] = ['allow' => [], 'deny' => []];
+                }
+
+                return $actions;
+            })
+            ->setNormalizer('actions', function (Options $options, $value) {
+                $actionResolver = new OptionsResolver();
+                $actionResolver
+                    ->setDefaults(['allow' => [], 'deny' => []])
+                    ->setAllowedTypes('allow', ['array'])
+                    ->setAllowedTypes('deny', ['array']);
+
+                $actions = [];
+                foreach ($value as $key => $valueAction) {
+                    if (\is_string($valueAction)) {
+                        $actions[$valueAction] = $actionResolver->resolve([]);
+                    } else {
+                        $actions[$key] = $actionResolver->resolve($valueAction);
+                    }
+                }
+
+                return $actions;
+            })
+        ;
+
+        return $optionsResolver;
     }
 }

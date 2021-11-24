@@ -6,17 +6,18 @@
     {%- set itemJson = { 'id': item.id, 'label': item.label, 'type': item.type, 'object': (item.object|merge({ 'label': item.label }))  } -%}
     {%- set node = def.getNodeByName(item.type) -%}
     {%- set selectItemId = app.request.get('select-item-id', false) -%}
-    <div class="core-json-menu json-menu-nested json-menu-nested-item {{ def.hasAction('move') ? 'json-menu-sortable' }}"
+
+    <div class="core-json-menu json-menu-nested json-menu-nested-item {{ def.isSortable ? 'json-menu-sortable' }}"
          data-item-id="{{ item.id }}"
          data-item="{{ itemJson|json_encode|e('html_attr') }}"
-         data-item-actions="{{ def.itemActions|json_encode|e('html_attr') }}"
+         data-node-id="{{ node.id }}"
          data-nodes="{{ def.nodes|json_encode|e('html_attr') }}"
          data-urls="{{ def.urls|json_encode|e('html_attr') }}"
          {%- if selectItemId %}data-select-item-id="{{- selectItemId -}}"{% endif -%}
          {%- if def.hiddenFieldId != null %}data-hidden-field-id="{{ def.hiddenFieldId }}"{% endif -%}
         >
         <div class="json-menu-nested-loading"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
-        {% if def.hasAction('add') or def.hasAction('paste') or def.hasAction('copy') %}
+        {% if 'add' in node.actions or 'copy' in node.actions or 'paste' in node.actions %}
             <span class="input-group-btn">
                 {{ block('buttonAdd') }}
                 {{ block('buttonMore') }}
@@ -32,16 +33,16 @@
 {% block renderItem %}
     {%- set node = def.getNodeByName(item.type) -%}
     {%- set itemJson = { 'id': item.id, 'label': item.label, 'type': item.type, 'object': (item.object|merge({ 'label': item.label }))  } -%}
-    <li class="collapsible json-menu-nested-item {{ def.hasAction('move') ? 'json-menu-sortable mjs-nestedSortable' }}"
+    <li class="collapsible json-menu-nested-item {{ def.isSortable ? 'json-menu-sortable mjs-nestedSortable' }}"
+        data-node-id="{{ node.id }}"
         data-item-id="{{ item.id }}"
-        data-item="{{ itemJson|json_encode|e('html_attr') }}"
-    >
+        data-item="{{ itemJson|json_encode|e('html_attr') }}">
         {{ block('itemDisplay') }}
         {% if item is defined and item.children|default([])|length > 0 %}
             <ol class="json-menu-list collapse" data-list="{{ item.id }}">
                 {%- for childItem in item.children|default([]) -%}
-                        {%- set level = level + 1 -%}
-                        {%- with { 'item': childItem } -%}{{ block('renderItem') }}{% endwith %}
+                    {%- set level = level + 1 -%}
+                    {%- with { 'item': childItem } -%}{{ block('renderItem') }}{% endwith %}
                 {% endfor %}
             </ol>
         {% endif %}
@@ -67,8 +68,7 @@
 {% endblock %}
 
 {% block renderItemButtons %}
-    {%- set isGranted = node.minimumRole is null or is_granted(node.minimumRole) -%}
-    {%- if def.hasAction('edit') and isGranted -%}
+    {%- if 'edit' in node.actions -%}
         <div class="btn-group">
             <button type="button" class="btn btn-sm btn-primary dropdown-toggle btn-json-menu-nested-edit" data-action="edit"
                     title="{{- 'field_type.json_menu_editor.edit'|trans -}}"
@@ -80,7 +80,7 @@
             </button>
         </div>
     {% endif %}
-    {% if def.hasAction('preview') %}
+    {% if 'preview' in node.actions %}
         <button type="button" class="btn btn-sm btn-json-menu-nested-preview btn-default"
             data-title="{{ item.label }}"
             data-item-id="{{ item.id }}">
@@ -90,14 +90,14 @@
     {% endif %}
     {{ block('buttonAdd') }}
     {{ block('buttonMore') }}
-    {% if def.hasAction('move') and isGranted %}
+    {% if 'move' in node.actions %}
         <a type="button" class="btn btn-sm btn-default btn-json-menu-move"
            title="{{- 'field_type.json_menu_editor.move_item'|trans -}}">
             <i class="fa fa-arrows"></i>
             {{ 'field_type.json_menu_editor.move_item'|trans }}
         </a>
     {% endif %}
-    {% if def.hasAction('delete') and isGranted %}
+    {% if 'delete' in node.actions %}
         <button type="button" class="btn btn-sm btn-outline-danger btn-json-menu-delete"
                 title="{{- 'field_type.json_menu_editor.delete_item'|trans -}}"
                 data-item-id="{{ item.id }}">
@@ -107,52 +107,49 @@
 {% endblock %}
 
 {% block buttonAdd %}
-    {%- if def.hasAction('add') and (def.maxDepth == 0 or level < def.maxDepth) and node.isLeaf|default(false) == false -%}
-        {%- set deny = node.deny|default([]) -%}
-        {%- set addNodes = def.nodes|filter(n => n.id != 'root' and n.name not in deny and (n.minimumRole is null or is_granted(n.minimumRole) ) ) -%}
+    {%- if 'add' in node.actions and node.addNodes|length > 0 and (def.maxDepth == 0 or level < def.maxDepth)  -%}
         <div class="btn-group btn-group-sm">
-            {%- if addNodes|length > 0 -%}
-                <button type="button" class="btn btn-sm btn-default dropdown-toggle json-menu-nested-add-button"
-                        data-types="{{ addNodes|keys|merge((level == 0 ? ['root'] : []))|json_encode }}"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="fa fa-plus"></span>
-                    {{ 'field_type.json_menu_editor.add'|trans }}
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu {{ item.id != 'root' ? 'pull-right' }}">
-                    {%- for addNode in addNodes -%}
-                        <li>
-                            <button type="button" class="btn-json-menu-nested-add"
-                                    title="{{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': addNode.label}) }}"
-                                    data-item-id="{{ item.id }}"
-                                    data-node-id="{{ addNode.id }}"
-                                    data-level="{{ level }}">
-                                {%- if addNode.icon|default(false) -%}<i class="{{ addNode.icon }}"></i>{%- endif -%}
-                                {{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': addNode.label}) }}
-                            </button>
-                        </li>
-                    {%- endfor -%}
-                </ul>
-            {%- endif -%}
+            <button type="button" class="btn btn-sm btn-default dropdown-toggle json-menu-nested-add-button"
+                    data-types="{{ node.addNodes|merge((level == 0 ? ['root'] : []))|json_encode }}"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="fa fa-plus"></span>
+                {{ 'field_type.json_menu_editor.add'|trans }}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu {{ item.id != 'root' ? 'pull-right' }}">
+                {%- for addNodeName in node.addNodes -%}
+                    {%- set addNode = def.getNodeByName(addNodeName) -%}
+                    <li>
+                        <button type="button" class="btn-json-menu-nested-add"
+                                title="{{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': addNode.label}) }}"
+                                data-item-id="{{ item.id }}"
+                                data-node-id="{{ addNode.id }}"
+                                data-level="{{ level }}">
+                            {%- if addNode.icon|default(false) -%}<i class="{{ addNode.icon }}"></i>{%- endif -%}
+                            {{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': addNode.label}) }}
+                        </button>
+                    </li>
+                {%- endfor -%}
+            </ul>
         </div>
     {%- endif -%}
 {% endblock %}
 
 {% block buttonMore %}
-    {% if item.id == 'root' and ( (def.hasAction('copy') and def.hasAction('move')) or def.hasAction('paste')) %}
+    {% if item.id == 'root' and ( ('copy' in node.actions and def.isSortable) or 'paste' in node.actions) %}
         <div class="btn-group">
             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                {%- if def.hasAction('copy') and def.hasAction('move') -%}
+                {%- if 'copy' in node.actions and def.isSortable -%}
                     <li>
                         <button class="btn-json-menu-nested-copy-all">
                             <span class="fa fa-copy"></span>&nbsp;{{ 'field_type.json_menu_editor.copy_all'|trans }}
                         </button>
                     </li>
                 {% endif %}
-                {%- if def.hasAction('paste') -%}
+                {%- if 'paste' in node.actions and def.maxDepth == 0 or level < def.maxDepth -%}
                     <li style="display:none;">
                         <button class="btn-json-menu-nested-paste" data-item-id="{{ item.id }}" data-node-id="{{ node.id }}">
                             <span class="fa fa-paste"></span>&nbsp;{{ 'field_type.json_menu_editor.paste'|trans }}
@@ -161,20 +158,20 @@
                 {% endif %}
             </ul>
         </div>
-    {% elseif item.id != 'root' and (def.hasAction('copy') or def.hasAction('paste')) %}
+    {% elseif item.id != 'root' and ('copy' in node.actions or 'paste' in node.actions) %}
         <div class="btn-group">
             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu pull-right">
-                {%- if def.hasAction('copy') -%}
+                {%- if 'copy' in node.actions -%}
                     <li>
                         <button class="btn-json-menu-nested-copy" data-item-id="{{ item.id }}">
                             <span class="fa fa-copy"></span>&nbsp;{{ 'field_type.json_menu_editor.copy'|trans }}
                         </button>
                     </li>
                 {%- endif -%}
-                {%- if def.hasAction('paste') and def.maxDepth == 0 or level < def.maxDepth -%}
+                {%- if 'paste' in node.actions and def.maxDepth == 0 or level < def.maxDepth -%}
                     <li style="display:none;">
                         <button class="btn-json-menu-nested-paste" data-item-id="{{ item.id }}" data-node-id="{{ node.id }}">
                             <span class="fa fa-paste"></span>&nbsp;{{ 'field_type.json_menu_editor.paste'|trans }}

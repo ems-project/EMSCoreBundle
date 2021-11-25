@@ -125,9 +125,13 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param array<mixed> $data
+     * @param string       $class
+     * @param string|null  $format
+     * @param array<mixed> $context
+     *
+     * @return array<mixed>|object
      */
-    //TODO: Refactoring
     public function denormalize($data, $class, $format = null, array $context = [])
     {
         $class = $data['__jsonclass__'][0];

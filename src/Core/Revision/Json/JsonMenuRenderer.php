@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Core\Revision\Json;
 
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
+use EMS\CommonBundle\Json\JsonMenuNested;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Service\Revision\RevisionService;
@@ -19,7 +20,7 @@ use Twig\TemplateWrapper;
 
 final class JsonMenuRenderer implements RuntimeExtensionInterface
 {
-    private Environment $environment;
+    private Environment $twig;
     private AuthorizationCheckerInterface $authorizationChecker;
     private UrlGeneratorInterface $urlGenerator;
     private ContentTypeRepository $contentTypeRepository;
@@ -36,14 +37,14 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
     private const ITEM_ACTIONS = ['move', 'copy', 'paste', 'add', 'edit', 'delete', 'preview'];
 
     public function __construct(
-        Environment $environment,
+        Environment $twig,
         AuthorizationCheckerInterface $authorizationChecker,
         UrlGeneratorInterface $urlGenerator,
         ContentTypeRepository $contentTypeRepository,
         RevisionService $revisionService
     ) {
         $this->authorizationChecker = $authorizationChecker;
-        $this->environment = $environment;
+        $this->twig = $twig;
         $this->urlGenerator = $urlGenerator;
         $this->contentTypeRepository = $contentTypeRepository;
         $this->revisionService = $revisionService;
@@ -70,12 +71,12 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
         return $this->template()->renderBlock('renderItem', [
             'def' => $this->createDefinition(self::TYPE_MODAL, $options),
             'level' => $options['item_level'],
-            'item' => [
+            'item' => new JsonMenuNested([
                 'id' => $options['item_id'],
                 'type' => $options['item_type'],
                 'label' => $options['item_object']['label'] ?? '',
                 'object' => $options['item_object'],
-            ],
+            ]),
         ]);
     }
 
@@ -112,12 +113,12 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
 
     public function generateAlertOutOfSync(): string
     {
-        return $this->template()->renderBlock('renderAlertOutOfSync');
+        return $this->template()->renderBlock('alertOutOfSync');
     }
 
     private function template(): TemplateWrapper
     {
-        return $this->environment->load(self::NESTED_TEMPLATE);
+        return $this->twig->load(self::NESTED_TEMPLATE);
     }
 
     /**
@@ -127,7 +128,12 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
     {
         $options = $this->revolveOptions($type, $options);
 
-        return new JsonMenuNestedDefinition($this->authorizationChecker, $this->urlGenerator, $options);
+        return new JsonMenuNestedDefinition(
+            $this->twig,
+            $this->authorizationChecker,
+            $this->urlGenerator,
+            $options
+        );
     }
 
     /**
@@ -179,7 +185,6 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
             ->remove(['field_type'])
             ->setDefaults([
                 'silent_publish' => true,
-                'blocks' => [],
                 'structure' => null,
             ])
             ->setDefault('field_document', function (Options $options) {
@@ -212,6 +217,8 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
             ->setDefaults([
                 'revision' => null,
                 'structure' => '{}',
+                'blocks' => [],
+                'context' => [],
             ])
             ->setDefault('actions', function (Options $options) {
                 $actions = [];

@@ -11,9 +11,11 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Environment;
 
 final class JsonMenuNestedDefinition
 {
+    private Environment $twig;
     private AuthorizationCheckerInterface $authorizationChecker;
     private UrlGeneratorInterface $urlGenerator;
     private FieldType $fieldType;
@@ -21,23 +23,28 @@ final class JsonMenuNestedDefinition
     private ?Revision $revision;
     private ?string $fieldDocument;
     /** @var array<mixed> */
-    private array $actions;
+    private array $actionsNames;
+    /** @var array<mixed> */
+    private array $blocks;
+    /** @var array<mixed> */
+    private array $context;
 
     public string $id;
     /** @var array<mixed> */
     public array $nodes;
     public bool $isSilentPublish;
-
-    public string $config = '';
+    public string $config;
 
     /**
      * @param array<mixed> $options
      */
     public function __construct(
+        Environment $twig,
         AuthorizationCheckerInterface $authorizationChecker,
         UrlGeneratorInterface $urlGenerator,
         array $options = []
     ) {
+        $this->twig = $twig;
         $this->authorizationChecker = $authorizationChecker;
         $this->urlGenerator = $urlGenerator;
         $this->fieldType = $options['field_type'];
@@ -45,17 +52,21 @@ final class JsonMenuNestedDefinition
         $json = Json::decode($options['structure']);
         $this->menu = isset($json['id']) ? new JsonMenuNested($json) : JsonMenuNested::fromStructure($options['structure']);
 
-        $this->config = \base64_encode(Json::encode([
-            'actions' => $options['actions'],
-        ]));
-
         $this->id = $options['id'];
         $this->revision = $options['revision'] ?? null;
-        $this->actions = \array_keys($options['actions']);
+        $this->actionsNames = \array_keys($options['actions']);
         $this->fieldDocument = $options['field_document'] ?? null;
         $this->isSilentPublish = $options['silent_publish'] ?? false;
+        $this->blocks = $options['blocks'] ?? [];
+        $this->context = $options['context'] ?? [];
 
         $this->nodes = $this->buildNodes($options['actions']);
+
+        $this->config = \base64_encode(Json::encode([
+            'actions' => $options['actions'],
+            'blocks' => $options['blocks'],
+            'context' => $options['context'],
+        ]));
     }
 
     public function isSortable(): bool
@@ -116,6 +127,49 @@ final class JsonMenuNestedDefinition
         return [];
     }
 
+    /**
+     * @param array<mixed> $context
+     *
+     * @return array<int, string>
+     */
+    public function renderBlocks(string $type, array $context): array
+    {
+        $results = [];
+
+        $contextItem = $context['item'];
+        if (!$contextItem instanceof JsonMenuNested) {
+            return $results;
+        }
+
+        $context = \array_merge($this->context, $context);
+
+        foreach ($this->getBlocks($type) as $block) {
+            $blockItemType = $block['item_type'] ?? null;
+            if ($contextItem->getType() !== $blockItemType) {
+                continue;
+            }
+
+            $results[] = $this->twig->createTemplate($block['html'])->render($context);
+        }
+
+        return $results;
+    }
+
+    /**
+     * @return iterable<array{'html': string, 'type': string, 'item_type': ?string}>
+     */
+    private function getBlocks(string $type): iterable
+    {
+        foreach ($this->blocks as $block) {
+            $blockType = $block['type'] ?? null;
+            $blockHtml = $block['html'] ?? null;
+
+            if ($blockType === $type && null !== $blockHtml) {
+                yield $block;
+            }
+        }
+    }
+
     private function getRevision(): Revision
     {
         if (null === $this->revision) {
@@ -137,9 +191,9 @@ final class JsonMenuNestedDefinition
         return $this->authorizationChecker->isGranted($fieldMinimumRole);
     }
 
-    private function hasAction(string $action): bool
+    private function hasAction(string $actionName): bool
     {
-        return \in_array($action, $this->actions, true);
+        return \in_array($actionName, $this->actionsNames, true);
     }
 
     /**
@@ -153,7 +207,6 @@ final class JsonMenuNestedDefinition
             'root' => [
                 'id' => 'root',
                 'name' => 'root',
-                'minimumRole' => $this->fieldType->getRestrictionOption('minimum_role'),
                 'addNodes' => $this->buildAddNodes($this->fieldType),
                 'actions' => $this->buildNodeActions($this->fieldType, 'root', $optionActions),
             ],
@@ -181,20 +234,19 @@ final class JsonMenuNestedDefinition
         $node = [
             'id' => $child->getId(),
             'name' => $child->getName(),
-            'minimumRole' => $child->getRestrictionOption('minimum_role'),
             'label' => $child->getDisplayOption('label', $child->getName()),
             'icon' => $child->getDisplayOption('icon'),
             'addNodes' => $this->buildAddNodes($child),
             'actions' => $nodeActions,
         ];
 
-        if (\in_array('add', $nodeActions, true)) {
+        if ($this->hasAction('add')) {
             $node['urlAdd'] = $this->urlGenerator->generate('emsco_data_json_menu_nested_modal_add', [
                 'revision' => $this->getRevision()->getId(),
                 'fieldType' => $node['id'],
             ]);
         }
-        if (\in_array('edit', $nodeActions, true)) {
+        if ($this->hasAction('edit')) {
             $node['urlEdit'] = $this->urlGenerator->generate('emsco_data_json_menu_nested_modal_edit', [
                 'revision' => $this->getRevision()->getId(),
                 'fieldType' => $node['id'],
@@ -226,7 +278,7 @@ final class JsonMenuNestedDefinition
         }
 
         foreach ($optionActions as $actionName => $settings) {
-            if (\in_array($nodeType, $settings['deny'])) {
+            if (\in_array($nodeType, $settings['deny']) || \in_array('all', $settings['deny'])) {
                 continue;
             }
             if (\count($settings['allow']) > 0 && !\in_array($nodeType, $settings['allow'])) {

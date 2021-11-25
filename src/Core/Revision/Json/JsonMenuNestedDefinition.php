@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Json;
 
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Json\JsonMenuNested;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
@@ -18,13 +19,16 @@ final class JsonMenuNestedDefinition
     private FieldType $fieldType;
     private JsonMenuNested $menu;
     private ?Revision $revision;
+    private ?string $fieldDocument;
     /** @var array<mixed> */
     private array $actions = [];
 
-    public string $type;
+    public string $id;
     /** @var array<mixed> */
     public array $nodes;
-    public ?string $hiddenFieldId = null;
+    public bool $isSilentPublish;
+
+    public string $config = '';
 
     /**
      * @param array<mixed> $options
@@ -39,10 +43,15 @@ final class JsonMenuNestedDefinition
         $this->fieldType = $options['field_type'];
         $this->menu = JsonMenuNested::fromStructure($options['structure']);
 
-        $this->type = $options['type'];
+        $this->config = \base64_encode(Json::encode([
+            'actions' => $options['actions'],
+        ]));
+
+        $this->id = $options['id'];
         $this->revision = $options['revision'] ?? null;
-        $this->hiddenFieldId = $options['hidden_field_id'];
         $this->actions = \array_keys($options['actions']);
+        $this->fieldDocument = $options['field_document'] ?? null;
+        $this->isSilentPublish = $options['silent_publish'] ?? false;
 
         $this->nodes = $this->buildNodes($options['actions']);
     }
@@ -59,15 +68,22 @@ final class JsonMenuNestedDefinition
     {
         $urls = [];
 
-        if ($this->hasAction('paste') && null !== $this->revision) {
+        if ($this->hasAction('paste')) {
             $urls['paste'] = $this->urlGenerator->generate('emsco_data_json_menu_nested_paste', [
-                'revision' => $this->revision->getId(),
+                'revision' => $this->getRevision()->getId(),
                 'fieldType' => $this->fieldType->getId(),
             ]);
         }
         if ($this->hasAction('preview')) {
             $urls['preview'] = $this->urlGenerator->generate('emsco_data_json_menu_nested_modal_preview', [
                 'parentFieldType' => $this->fieldType->getId(),
+            ]);
+        }
+        if ($this->isSilentPublish) {
+            $urls['silentPublish'] = $this->urlGenerator->generate('emsco_data_json_menu_nested_silent_publish', [
+                'revision' => $this->getRevision()->getId(),
+                'fieldType' => $this->fieldType->getId(),
+                'field' => $this->fieldDocument,
             ]);
         }
 
@@ -196,7 +212,7 @@ final class JsonMenuNestedDefinition
         $resolved = [];
 
         if (!$this->isGranted() || !$this->isGrantedFieldType($fieldType)) {
-            return $resolved;
+            $optionActions = \array_filter(['preview' => $optionActions['preview'] ?? null]);
         }
 
         if ('root' === $nodeType) {

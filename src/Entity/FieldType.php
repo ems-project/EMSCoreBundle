@@ -527,36 +527,6 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * @return array<mixed>
-     */
-    public function getJsonMenuNestedEditorNodes(): array
-    {
-        $nodes = [];
-
-        if (null === $jsonMenuNestedEditor = $this->getJsonMenuNestedEditor()) {
-            return $nodes;
-        }
-
-        foreach ($jsonMenuNestedEditor->children as $child) {
-            if ($child->getDeleted() || !$child->getType()::isContainer()) {
-                continue;
-            }
-
-            $nodes[$child->getName()] = [
-                'id' => $child->getId(),
-                'name' => $child->getName(),
-                'minimumRole' => $child->getRestrictionOption('minimum_role', null),
-                'label' => $child->getDisplayOption('label', $child->getName()),
-                'icon' => $child->getDisplayOption('icon', null),
-                'deny' => \array_merge(['root'], $child->getRestrictionOption('json_nested_deny', [])),
-                'isLeaf' => $child->getRestrictionOption('json_nested_is_leaf', false),
-            ];
-        }
-
-        return $nodes;
-    }
-
-    /**
      * Set orderKey.
      *
      * @param int $orderKey

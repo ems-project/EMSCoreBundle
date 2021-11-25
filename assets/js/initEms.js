@@ -197,7 +197,13 @@ import JsonMenuNested from "./module/jsonMenuNested";
 
     function initJsonMenu() {
         $('.json_menu_editor_fieldtype').each(function(){ new JsonMenu(this); });
-        $('.json-menu-nested').each(function () { new JsonMenuNested(this); });
+
+        let jsonMenuNestedList = [];
+        $('.json-menu-nested').each(function () {
+            let menu = new JsonMenuNested(this);
+            jsonMenuNestedList[menu.getId()] = menu;
+        });
+        window.jsonMenuNested = jsonMenuNestedList;
     }
 
     function initAjaxFormSave() {
@@ -266,6 +272,8 @@ import JsonMenuNested from "./module/jsonMenuNested";
         window.setInterval(function(){
             updateStatusFct();
         }, 180000);
+
+        window.dispatchEvent(new CustomEvent('emsReady'));
     });
 
 }));

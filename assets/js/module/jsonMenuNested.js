@@ -1,5 +1,5 @@
 import ajaxModal from "./../helper/ajaxModal";
-import {ajaxJsonPost} from "./../helper/ajax";
+import {ajaxJsonPost, ajaxJsonSubmit} from "./../helper/ajax";
 import collapse from "../helper/collapse";
 
 require('./../nestedSortable');
@@ -11,128 +11,39 @@ export default class JsonMenuNested {
     nodes = {};
     urls = {};
     selectItemId = false;
+    config = null;
 
-    constructor(target) {
-        const self = this;
-        this.target = target;
-
-        this.parseAttributes();
-
-        if (this.target.classList.contains('json-menu-nested-sortable')) {
-            this.nestedSortable = $(this.target).find('ol.json-menu-nested-root').nestedSortable({
-                handle: 'a.btn-json-menu-nested-move',
-                items: 'li.json-menu-nested-sortable',
-                isTree: true,
-                expression: /.*/,
-                toleranceElement: '> div',
-                stop: function () {
-                    self.relocate();
-                },
-                isAllowed: function(placeholder, parent, current) {
-                    let li = $(current).data();
-                    let parentData = parent ?  $(parent).data() : self.target.data();
-
-                    let draggingNode = self.nodes[li.nodeId];
-                    let targetNode = self.nodes[parentData.nodeId];
-
-                    return targetNode.addNodes.includes(draggingNode.name);
-                }
-            });
-        }
-
-        this.eventListeners(this.target);
-        window.addEventListener('focus', () => { this.refreshPasteButtons(); });
-
-        if (this.selectItemId) {
-            this.selectItem(this.selectItemId, true);
-            this.loading(false);
-        } else {
-            this.loading(false);
-        }
-    }
-
-    parseAttributes() {
-        if (this.target.hasAttribute('data-hidden-field-id')) {
-            this.hiddenField = document.getElementById(this.target.dataset.hiddenFieldId);
-        }
-
-        this.nodes = this.target.hasAttribute('data-nodes') ? JSON.parse(this.target.dataset.nodes) : {};
-        this.urls = this.target.hasAttribute('data-urls') ? JSON.parse(this.target.dataset.urls) : {};
-        this.selectItemId = this.target.hasAttribute('data-select-item-id') ? this.target.dataset.selectItemId : false;
-    }
-    eventListeners(element) {
-        this.relocate();
-        this.buttonItemAdd(element);
-        this.buttonItemEdit(element);
-        this.buttonItemDelete(element);
-        this.buttonItemPreview(element);
-        this.buttonItemCopy(element);
-        this.buttonItemCopyAll(element);
-        this.buttonItemPaste(element);
-        this.refreshPasteButtons();
-    }
-    relocate() {
-        this.target.querySelectorAll('li.json-menu-nested-item').forEach((li) => {
-            li.classList.remove('json-menu-nested-item-selected');
-        });
-
-        this.target.querySelectorAll('ol').forEach((ol) => {
-            if (!ol.hasAttribute('data-list')) {
-                ol.setAttribute('data-list', ol.parentElement.dataset.item);
-            }
-            if (!ol.classList.contains('json-menu-nested-list')) {
-                ol.classList.add('json-menu-nested-list');
-            }
-            if (!ol.classList.contains('collapse') && !ol.classList.contains('json-menu-nested-root')) {
-                ol.classList.add('collapse');
-            }
-        });
-
-        collapse();
-
-        let structureJson = this.getStructureJson();
-        if (structureJson && this.hasOwnProperty('hiddenField') && this.hiddenField !== null) {
-            this.hiddenField.value = structureJson;
-            $(this.hiddenField).trigger('input').trigger('change');
-        }
+    getId() {
+        return this.target.getAttribute('id');
     }
     getStructureJson() {
-        if (!this.nestedSortable) {
-            return null;
+        const makeChildren = (element) => {
+            let children = [];
+            let childList = element.querySelector('ol.json-menu-nested-list');
+            if (childList) {
+                childList.querySelectorAll(':scope > li.json-menu-nested-item').forEach((li) => {
+                    let childItem = JSON.parse(li.dataset.item);
+                    childItem.children = makeChildren(li);
+                    children.push(childItem);
+                });
+            }
+            return children;
         }
 
-        const recursiveMapHierarchy = (obj, results = []) => {
-            const r = results;
-            Object.keys(obj).forEach(key => {
-                const value = obj[key];
-                const result = value.item;
-                if (value.hasOwnProperty('children')) {
-                    result.children = recursiveMapHierarchy(value.children);
-                }
-                r.push(result);
-            });
-            return r;
-        };
-
-        const toHierarchy = this.nestedSortable.nestedSortable('toHierarchy', {startDepthCount: 0});
-
-        return JSON.stringify(recursiveMapHierarchy(toHierarchy));
+        return JSON.stringify(makeChildren(this.target));
     }
-
-    getElementItem(itemId) {
-        return this.target.parentElement.querySelector(`[data-item-id="${itemId}"]`);
-    }
-    getElementItemList(itemId) {
-        return this.target.querySelector(`[data-list="${itemId}"]`);
+    loading(flag) {
+        let loading = this.target.querySelector('.json-menu-nested-loading');
+        loading.style.display = (flag ? 'flex' : 'none');
     }
     selectItem(itemId, scroll = false) {
-        let item = this.getElementItem(itemId);
+        let item = this._getElementItem(itemId);
         if (null === item) {
             return;
         }
 
         this.target.querySelectorAll('li.json-menu-nested-item').forEach((li) => {
-           li.classList.remove('json-menu-nested-item-selected');
+            li.classList.remove('json-menu-nested-item-selected');
         });
         item.classList.add('json-menu-nested-item-selected');
 
@@ -158,7 +69,104 @@ export default class JsonMenuNested {
         }
     }
 
-    getCopy() {
+    constructor(target) {
+        const self = this;
+        this.target = target;
+
+        this._parseAttributes();
+
+        if (this.target.classList.contains('json-menu-nested-sortable')) {
+            this.nestedSortable = $(this.target).find('ol.json-menu-nested-root').nestedSortable({
+                handle: 'a.btn-json-menu-nested-move',
+                items: 'li.json-menu-nested-sortable',
+                isTree: true,
+                expression: /.*/,
+                toleranceElement: '> div',
+                update: function () {
+                    self._relocate();
+                },
+                isAllowed: function(placeholder, parent, current) {
+                    let li = $(current).data();
+                    let parentData = parent ?  $(parent).data() : $(self.target).data();
+
+                    let draggingNode = self.nodes[li.nodeId];
+                    let targetNode = self.nodes[parentData.nodeId];
+
+                    return targetNode.addNodes.includes(draggingNode.name);
+                }
+            });
+        }
+
+        this._addEventListeners(this.target);
+        window.addEventListener('focus', () => { this._refreshPasteButtons(); });
+        this._initSilentPublish();
+
+        if (this.selectItemId) {
+            this.selectItem(this.selectItemId, true);
+            this.loading(false);
+        } else {
+            this.loading(false);
+        }
+    }
+    
+    _parseAttributes() {
+        if (this.target.hasAttribute('data-hidden-field-id')) {
+            this.hiddenField = document.getElementById(this.target.dataset.hiddenFieldId);
+        }
+
+        this.config = this.target.dataset.config;
+        this.nodes = JSON.parse(this.target.dataset.nodes);
+        this.urls = JSON.parse(this.target.dataset.urls);
+        this.selectItemId = this.target.hasAttribute('data-select-item-id') ? this.target.dataset.selectItemId : false;
+    }
+    _addEventListeners(element) {
+        this._relocate();
+        this._buttonItemAdd(element);
+        this._buttonItemEdit(element);
+        this._buttonItemDelete(element);
+        this._buttonItemPreview(element);
+        this._buttonItemCopy(element);
+        this._buttonItemCopyAll(element);
+        this._buttonItemPaste(element);
+        this._refreshPasteButtons();
+    }
+    _relocate() {
+        this.target.querySelectorAll('li.json-menu-nested-item').forEach((li) => {
+            li.classList.remove('json-menu-nested-item-selected');
+        });
+
+        this.target.querySelectorAll('ol').forEach((ol) => {
+            if (!ol.hasAttribute('data-list')) {
+                ol.setAttribute('data-list', ol.parentElement.dataset.item);
+            }
+            if (!ol.classList.contains('json-menu-nested-list')) {
+                ol.classList.add('json-menu-nested-list');
+            }
+            if (!ol.classList.contains('collapse') && !ol.classList.contains('json-menu-nested-root')) {
+                ol.classList.add('collapse');
+            }
+        });
+
+        collapse();
+
+        let structureJson = this.getStructureJson();
+        if (structureJson && this.hasOwnProperty('hiddenField') && this.hiddenField !== null) {
+            this.hiddenField.value = structureJson;
+            if (this.hiddenField.classList.contains('json-menu-nested-silent-publish')) {
+                this.hiddenField.dispatchEvent(new CustomEvent('silentPublish'));
+            } else {
+                $(this.hiddenField).trigger('input').trigger('change');
+            }
+        }
+    }
+
+    _getElementItem(itemId) {
+        return this.target.parentElement.querySelector(`[data-item-id="${itemId}"]`);
+    }
+    _getElementItemList(itemId) {
+        return this.target.querySelector(`[data-list="${itemId}"]`);
+    }
+    _getCopy() {
         if (localStorage.hasOwnProperty(this.copyName)) {
             const loopJson = (json, callback, result = {}) => {
                 for (const [key, value] of Object.entries(json)) {
@@ -178,12 +186,12 @@ export default class JsonMenuNested {
 
         return false;
     }
-    setCopy(value) {
+    _setCopy(value) {
         localStorage.setItem(this.copyName, JSON.stringify(value));
-        this.refreshPasteButtons();
+        this._refreshPasteButtons();
     }
 
-    buttonItemAdd(element) {
+    _buttonItemAdd(element) {
         element.querySelectorAll('.btn-json-menu-nested-add').forEach((btnAdd) => {
             btnAdd.onclick = (e) => {
                 e.preventDefault();
@@ -197,32 +205,35 @@ export default class JsonMenuNested {
                 }
 
                 let node = this.nodes[nodeId];
+                let addItemId = uuidv4();
 
                 let callback = (json, request) => {
                     if (json.hasOwnProperty('success') && json.success === true) {
-                        this.appendHtml(itemId, json.html);
-                        this.selectItem(json.itemId);
+                        this._appendHtml(itemId, json.html);
+                        this.selectItem(addItemId);
                     }
                 };
 
-                let params = this.makeParams(node);
-                params.append('level', level);
-
-                ajaxModal.load({
-                    url: node.urlAdd + '?' + params.toString(),
+                let addModal = ajaxModal.load({
+                    url: node.urlAdd,
                     title: (node.icon ? `<i class="${node.icon}"></i> ` : '') + `Add: ${node.label}`,
+                    data: JSON.stringify({ '_data': {
+                        'level': level,
+                        'item_id': addItemId,
+                        'config': this.config
+                    } }),
                     size: 'lg'
                 }, callback);
             }
         });
     }
-    buttonItemEdit(element) {
+    _buttonItemEdit(element) {
         element.querySelectorAll('.btn-json-menu-nested-edit').forEach((btnEdit) => {
             btnEdit.onclick = (e) => {
                 e.preventDefault();
 
                 let itemId = btnEdit.dataset.itemId;
-                let item = JSON.parse(this.getElementItem(itemId).dataset.item);
+                let item = JSON.parse(this._getElementItem(itemId).dataset.item);
                 let nodeId = btnEdit.dataset.nodeId;
                 let level = btnEdit.dataset.level;
 
@@ -237,42 +248,42 @@ export default class JsonMenuNested {
                         return;
                     }
 
-                    let ol = this.getElementItemList(itemId);
-                    this.getElementItem(itemId).outerHTML = json.html;
+                    let ol = this._getElementItemList(itemId);
+                    this._getElementItem(itemId).outerHTML = json.html;
 
                     if (ol) {
-                        this.getElementItem(itemId).insertAdjacentHTML('beforeend', ol.outerHTML);
+                        this._getElementItem(itemId).insertAdjacentHTML('beforeend', ol.outerHTML);
                     }
 
-                    this.eventListeners(this.getElementItem(itemId).parentElement);
+                    this._addEventListeners(this._getElementItem(itemId).parentNode);
                 };
 
-                let params = this.makeParams(node);
-                params.append('itemId', itemId);
-                params.append('level', level);
-
                 ajaxModal.load({
-                    url: node.urlEdit  + `?` + params.toString(),
+                    url: node.urlEdit,
                     title: (node.icon ? `<i class="${node.icon}"></i> ` : '') + `Edit: ${node.label}`,
-                    data: JSON.stringify(item.object),
+                    data: JSON.stringify({ '_data': {
+                        'level': level,
+                        'item_id': itemId,
+                        'object' : item.object,
+                        'config': this.config
+                    }}),
                     size: 'lg'
                 }, callback);
             }
         });
     }
-
-    buttonItemDelete(element) {
+    _buttonItemDelete(element) {
         element.querySelectorAll('.btn-json-menu-nested-delete').forEach((btnDelete) => {
             btnDelete.onclick = (e) => {
                 e.preventDefault();
                 let itemId = btnDelete.dataset.itemId;
-                let li = this.getElementItem(itemId);
+                let li = this._getElementItem(itemId);
                 li.parentNode.removeChild(li);
-                this.relocate();
+                this._relocate();
             }
         });
     }
-    buttonItemCopyAll(element) {
+    _buttonItemCopyAll(element) {
         let btnCopyAll = element.querySelector('.btn-json-menu-nested-copy-all');
         if (null === btnCopyAll) {
             return;
@@ -280,7 +291,7 @@ export default class JsonMenuNested {
 
         btnCopyAll.onclick = (e) => {
             e.preventDefault();
-            this.setCopy({
+            this._setCopy({
                 id: 'root',
                 label: 'root',
                 type: 'root',
@@ -288,20 +299,20 @@ export default class JsonMenuNested {
             });
         }
     }
-    buttonItemCopy(element) {
+    _buttonItemCopy(element) {
         element.querySelectorAll('.btn-json-menu-nested-copy').forEach((btnCopy) => {
             let buttonLi = btnCopy.parentElement;
 
             btnCopy.onclick = (e) => {
                 e.preventDefault();
                 let itemId = btnCopy.dataset.itemId;
-                let li = this.getElementItem(itemId);
+                let li = this._getElementItem(itemId);
 
                 let liToObject = (li) =>  {
                     let item = JSON.parse(li.dataset.item);
 
                     let children = [];
-                    let childList = this.getElementItemList(li.dataset.itemId);
+                    let childList = this._getElementItemList(li.dataset.itemId);
                     if (childList) {
                         childList.querySelectorAll(':scope > li').forEach((childLi) => {
                             children.push(liToObject(childLi));
@@ -318,16 +329,16 @@ export default class JsonMenuNested {
                 }
 
                 let value = liToObject(li);
-                this.setCopy(value);
+                this._setCopy(value);
             }
         });
     }
-    buttonItemPaste(element) {
+    _buttonItemPaste(element) {
         element.querySelectorAll('.btn-json-menu-nested-paste').forEach((btnPaste) => {
             btnPaste.onclick = (e) => {
                 e.preventDefault();
 
-                let copied = this.getCopy(true);
+                let copied = this._getCopy(true);
                 if (false === copied) {
                     return;
                 }
@@ -335,61 +346,84 @@ export default class JsonMenuNested {
                 this.loading(true);
 
                 let itemId = btnPaste.dataset.itemId;
-                let li = this.getElementItem(itemId);
+                let li = this._getElementItem(itemId);
                 let nodeId = btnPaste.dataset.nodeId;
                 let node = this.nodes[nodeId];
 
-                let params = this.makeParams(node);
-
-                ajaxJsonPost(this.urls.paste + '?' + params.toString(), JSON.stringify({'copied': copied}), (json) => {
-                    this.appendHtml(itemId, json.html);
-                    this.loading(false);
-                });
+                ajaxJsonPost(
+                    this.urls.paste,
+                    JSON.stringify({'_data': { 'copied': copied, 'config': this.config }}),
+                    (json) => {
+                        this._appendHtml(itemId, json.html);
+                        this.loading(false);
+                    }
+                );
             }
         });
     }
-    buttonItemPreview(element) {
+    _buttonItemPreview(element) {
         element.querySelectorAll('.btn-json-menu-nested-preview').forEach((btnPreview) => {
             btnPreview.onclick = (e) => {
                 e.preventDefault();
                 let itemId = btnPreview.dataset.itemId;
-                let li = this.getElementItem(itemId);
+                let li = this._getElementItem(itemId);
                 let item = JSON.parse(li.dataset.item);
 
                 ajaxModal.load({
                     url: this.urls.preview,
                     title: btnPreview.dataset.title,
                     size: 'lg',
-                    data: JSON.stringify({ type: item.type, object: item.object})
+                    data: JSON.stringify({ '_data': { 'type': item.type, 'object': item.object } })
                 });
             }
         });
     }
 
-    loading(flag) {
-        let loading = this.target.querySelector('.json-menu-nested-loading');
-        loading.style.display = (flag ? 'flex' : 'none');
-    }
-    makeParams(node) {
-        let params = new URLSearchParams();
-        params.append('actions', node.actions.join('|'));
-        return params;
-    }
-
-    appendHtml(itemId, html) {
-        let ol = this.getElementItemList(itemId);
+    _appendHtml(itemId, html) {
+        let ol = this._getElementItemList(itemId);
         if (ol) {
             ol.insertAdjacentHTML('beforeend', html);
         } else {
             let itemList = `<ol data-list="${itemId}" class="collapse">${html}</ol>`;
-            this.getElementItem(itemId).insertAdjacentHTML('beforeend', itemList );
+            this._getElementItem(itemId).insertAdjacentHTML('beforeend', itemList );
         }
 
-        this.eventListeners(this.getElementItem(itemId).parentElement);
+        this._addEventListeners(this._getElementItem(itemId).parentElement);
     }
+    _initSilentPublish() {
+        if (null === this.hiddenField || !this.hiddenField.classList.contains('json-menu-nested-silent-publish')) {
+            return;
+        }
 
-    refreshPasteButtons() {
-        let copy = this.getCopy();
+        this.hiddenField.addEventListener('silentPublish', (e) => {
+            let value = this.hiddenField.value;
+            this.loading(true);
+
+            ajaxJsonPost(
+                this.urls.silentPublish,
+                JSON.stringify({'_data': { 'update': value, 'config': this.config }}),
+                (json, response) => {
+                    if (response.status === 200) {
+                        if (json.hasOwnProperty('urls')) {
+                            this.urls = json.urls
+                            this.target.setAttribute('data-urls', JSON.stringify(this.urls));
+                        };
+                        if (json.hasOwnProperty('nodes')) {
+                            this.nodes = json.nodes
+                            this.target.setAttribute('data-nodes', JSON.stringify(this.nodes));
+                        };
+                        this.loading(false);
+                        return;
+                    }
+
+                    if (json.hasOwnProperty('alert')) {
+                        document.getElementById(this.getId() + '-alerts').innerHTML = json.alert;
+                    }
+                });
+        });
+    }
+    _refreshPasteButtons() {
+        let copy = this._getCopy();
 
         document.querySelectorAll('.btn-json-menu-nested-paste').forEach((btnPaste) => {
             let buttonLi = btnPaste.parentElement;

@@ -717,6 +717,7 @@
 						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
 					{% else %}
 						{{ emsco_json_menu_nested({
+							'id': ('preview-nested-' ~ dataField.fieldType.id),
 							'field_type': dataField.fieldType,
 							'structure': dataField.rawData|default('{}'),
 						}, 'preview') }}

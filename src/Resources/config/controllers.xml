@@ -46,7 +46,9 @@
         <service id="EMS\CoreBundle\Controller\Revision\JsonMenuNestedController" public="true">
             <argument type="service" id="ems_core.core_ui.ajax_service" />
             <argument type="service" id="EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer" />
+            <argument type="service" id="ems.service.revision" />
             <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.user" />
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Revision\TaskController" public="true">

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Json;
 
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -25,7 +26,7 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
     private RevisionService $revisionService;
 
     public const TYPE_MODAL = 'modal';
-    public const TYPE_PASTE = 'paste';
+    public const TYPE_AJAX = 'ajax';
     public const TYPE_VIEW = 'view';
     public const TYPE_PREVIEW = 'preview';
     public const TYPE_REVISION_EDIT = 'revision_edit';
@@ -60,16 +61,19 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
     /**
      * @param array<mixed> $options
      */
-    public function generateNestedItem(array $options): string
+    public function generateNestedItem(string $config, array $options): string
     {
+        $config = Json::decode(\base64_decode($config));
+        $options = \array_merge($options, $config);
+
         return $this->template()->renderBlock('renderItem', [
             'def' => $this->createDefinition(self::TYPE_MODAL, $options),
-            'level' => $options['level'],
+            'level' => $options['item_level'],
             'item' => [
-                'id' => $options['id'],
-                'type' => $options['type'],
-                'label' => $options['object']['label'] ?? '',
-                'object' => $options['object'],
+                'id' => $options['item_id'],
+                'type' => $options['item_type'],
+                'label' => $options['item_object']['label'] ?? '',
+                'object' => $options['item_object'],
             ],
         ]);
     }
@@ -77,11 +81,37 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
     /**
      * @param array<mixed> $options
      */
-    public function generateNestedPaste(array $options): string
+    public function generateNestedPaste(string $config, array $options): string
     {
+        $config = Json::decode(\base64_decode($config));
+        $options = \array_merge($options, $config);
+
         return $this->template()->renderBlock('renderPaste', [
-            'def' => $this->createDefinition(self::TYPE_PASTE, $options),
+            'def' => $this->createDefinition(self::TYPE_AJAX, $options),
         ]);
+    }
+
+    /**
+     * @param array<mixed> $options
+     *
+     * @return array<mixed>
+     */
+    public function generateSilentPublished(string $config, array $options): array
+    {
+        $config = Json::decode(\base64_decode($config));
+        $options = \array_merge($options, $config);
+
+        $def = $this->createDefinition(self::TYPE_AJAX, $options);
+
+        return [
+            'urls' => $def->getUrls(),
+            'nodes' => $def->nodes,
+        ];
+    }
+
+    public function generateAlertOutOfSync(): string
+    {
+        return $this->template()->renderBlock('renderAlertOutOfSync');
     }
 
     private function template(): TemplateWrapper
@@ -95,7 +125,6 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
     private function createDefinition(string $type, array $options): JsonMenuNestedDefinition
     {
         $options = $this->revolveOptions($type, $options);
-        $options['type'] = $type;
 
         return new JsonMenuNestedDefinition($this->authorizationChecker, $this->urlGenerator, $options);
     }
@@ -120,11 +149,12 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
                 $optionsResolver->setRequired(['structure', 'revision']);
                 break;
             case self::TYPE_MODAL:
-                $optionsResolver
-                    ->setRequired(['revision', 'level', 'type', 'object', 'id']);
+                $optionsResolver->setRequired(['revision', 'item_id', 'item_level', 'item_type', 'item_object']);
                 break;
-            case self::TYPE_PASTE:
-                $optionsResolver->setRequired(['revision', 'structure']);
+            case self::TYPE_AJAX:
+                $optionsResolver
+                    ->setDefaults(['silent_publish' => false, 'field_document' => null])
+                    ->setRequired(['revision', 'structure']);
                 break;
             default:
                 throw new \Exception(\sprintf('Invalid render type: "%s"', $type));
@@ -140,10 +170,22 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
      */
     private function revolveViewOptions(OptionsResolver $optionsResolver, array $options): array
     {
-        $fieldDocument = $options['field_document'] ?? $options['field'];
+        $optionsResolver
+            ->setRequired(['document', 'field', 'field_document'])
+            ->remove(['field_type'])
+            ->setDefaults([
+                'field_document' => null,
+                'silent_publish' => true,
+                'blocks' => [],
+            ])
+            ->setDefault('field_document', function (Options $options) {
+                return $options['field'];
+            });
+
+        $options = $optionsResolver->resolve($options);
 
         $doc = Document::fromArray($options['document']);
-        $options['structure'] = $doc->getValue($fieldDocument, '{}');
+        $options['structure'] = $doc->getValue($options['field_document'], '{}');
 
         $contentType = $this->contentTypeRepository->findOneBy(['name' => $doc->getContentType(), 'deleted' => false]);
         if (!$contentType instanceof ContentType) {
@@ -153,22 +195,17 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
         $options['field_type'] = $contentType->getFieldType()->getChildByName($options['field']);
         $options['revision'] = $this->revisionService->getCurrentRevisionForDocument($doc);
 
-        $optionsResolver
-            ->setDefaults(['field_document' => $fieldDocument])
-            ->setRequired(['document', 'field', 'field_document']);
-
-        return $optionsResolver->resolve($options);
+        return $options;
     }
 
     private function getOptionsResolver(): OptionsResolver
     {
         $optionsResolver = new OptionsResolver();
         $optionsResolver
-            ->setRequired(['field_type'])
+            ->setRequired(['id', 'field_type'])
             ->setDefaults([
                 'revision' => null,
                 'structure' => '{}',
-                'hidden_field_id' => null,
             ])
             ->setDefault('actions', function (Options $options) {
                 $actions = [];

@@ -845,10 +845,10 @@
 {% block json_menu_nested_editor_fieldtype_widget %}
 	{{  form_widget(form) }}
 	{{ emsco_json_menu_nested({
+		'id': form.vars.id,
 		'field_type': data.fieldType,
 		'revision': revision,
 		'structure': data.rawData|default('{}'),
-		'hidden_field_id': form.vars.id,
 	}, 'revision_edit') }}
 {% endblock json_menu_nested_editor_fieldtype_widget %}
 

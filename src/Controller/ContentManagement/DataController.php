@@ -579,7 +579,7 @@ class DataController extends AppController
     {
         return $this->redirectToRoute(Routes::EDIT_REVISION, [
             'revisionId' => $dataService->initNewDraft($type, $ouuid)->getId(),
-            'node' => $request->get('node'),
+            'item' => $request->get('item'),
         ]);
     }
 

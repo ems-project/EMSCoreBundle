@@ -834,7 +834,7 @@
 {% endblock json_menu_editor_fieldtype_widget %}
 
 {% block json_menu_nested_editor_fieldtype_row %}
-	<div class="form-group {% if form.vars.errors|length %} has-error{% endif %} json_menu_editor_fieldtype json_menu_nested_editor"
+	<div class="form-group {% if form.vars.errors|length %} has-error{% endif %}"
 		data-name="{{ form.vars.name }}" data-block-prefix="{{ form.vars.unique_block_prefix }}">
 		{{ form_label(form) }}
 		{{ form_widget(form) }}
@@ -844,33 +844,12 @@
 
 {% block json_menu_nested_editor_fieldtype_widget %}
 	{{  form_widget(form) }}
-	{%- set level = 0 -%}
-	{%- set maxDepth = data.fieldType.restrictionOption('json_nested_max_depth', 0)  %}
-	{%- set rootDeny = [] %}
-	{%- for d in data.fieldType.restrictionOption('json_nested_deny', []) -%}{%- set rootDeny = rootDeny|merge([d]) -%}{%- endfor -%}
-	{%- set nodes = data.fieldType.getJsonMenuNestedEditorNodes -%}
-	<div class="json_menu_editor_fieldtype_widget collapsible-container"
-		 data-select-node-id="{{ app.request.get('node', false) }}"
-		 data-prototype-nested="{{ block('itemPrototype', '@EMSCore/form/fields/json_menu_nested_editor.html.twig')|e('html_attr') }}"
-		 data-paste-url="{{ path('emsco.json_menu_nested.paste', {'revision': revision.id, 'fieldType': data.fieldType.id }) }}"
-	>
-		<div class="json_menu_nested_editor_loading" style="display: none;"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
-		<div class="input-group json-menu-nested-actions">
-			<span class="input-group-btn">
-				{% with { nodes: nodes, currentNode: {'deny': rootDeny}, revision: revision, level: 0, maxDepth: maxDepth  } only %}
-					{{ block('button_add', '@EMSCore/form/fields/json_menu_nested_editor.html.twig') }}
-				{% endwith %}
-				{{ block('button_more', '@EMSCore/form/fields/json_menu_nested_editor.html.twig') }}
-			</span>
-		</div>
-		<ol class="json_menu_sortable vertical not-collapsible" data-node="{{ {'name': 'root', 'deny': rootDeny}|json_encode }}">
-			{%- for child in form.vars.data.rawData|default('[]')|json_decode -%}
-				{% with { nodes: nodes, child: child, revision: revision, level: level, maxDepth: maxDepth } only %}
-					{{ block('item', '@EMSCore/form/fields/json_menu_nested_editor.html.twig') }}
-				{% endwith %}
-			{%- endfor -%}
-		</ol>
-	</div>
+	{{ emsco_json_menu_nested({
+		'id': form.vars.id,
+		'field_type': data.fieldType,
+		'revision': revision,
+		'structure': data.rawData|default('{}'),
+	}, 'revision_edit') }}
 {% endblock json_menu_nested_editor_fieldtype_widget %}
 
 {% block datefieldtype_row %}
@@ -1398,32 +1377,3 @@
 		{{ form_row(form.config) }}
 	</div>
 {%- endblock -%}
-
-{%- block form_end -%}
-	{{ parent() }}
-	{%- for modalName in form.vars.json_menu_nested_modal_names|default([]) -%}
-		<div class="modal fade json-menu-nested-modal" id="{{- modalName -}}" tabindex="-1" role="dialog">
-			<div class="modal-dialog modal-lg" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title"></h4>
-					</div>
-					<div class="modal-body modal-loading">
-						<div class="progress" style="margin-bottom: 0;">
-							<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-								<span class="sr-only">100% Complete</span>
-							</div>
-						</div>
-					</div>
-					<div class="modal-body ajax-content" style="display:none;"></div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="button" class="btn-json-menu-nested-save btn btn-primary" style="display:none;"><i class="fa fa-save"></i>&nbsp;Save</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	{%- endfor -%}
-{%- endblock -%}
-{# Errors #}

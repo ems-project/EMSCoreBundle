@@ -634,6 +634,7 @@ view.breadcrumb.wysiwyg-options: 'WYSIWYG Options'
 view.contenttype.reorder_item.edit_field_button: 'Edit %name%'
 view.contenttype.reorder_item.edit_main_container_button: 'Edit the main container'
 view.data.json-menu-nested-json-preview.field-type-not-found: 'The type definition associated to this item is missing (probably deleted).'
+view.data.json-menu-nested.out_of_sync: 'Out of sync, please refresh and retry!'
 view.elements.side-menu.chanel-admin.index-link: Channels
 view.elements.side-menu.release-admin.index-link: Releases
 view.elements.side-menu.query_search.index-link: QuerySearch

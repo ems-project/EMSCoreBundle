@@ -89,6 +89,17 @@ final class AjaxModal
         return $this;
     }
 
+    /**
+     * @param array<mixed> $data
+     */
+    public function getSuccessResponse(array $data = []): JsonResponse
+    {
+        return new JsonResponse(\array_merge([
+            'success' => true,
+            'modalClose' => true,
+        ], $data));
+    }
+
     public function getResponse(): JsonResponse
     {
         return new JsonResponse(\array_filter([

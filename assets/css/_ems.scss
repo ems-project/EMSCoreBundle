@@ -76,11 +76,13 @@ ol.vertical {
     overflow-y: scroll;
 }
 
-button.button-collapse[aria-expanded=true]:after {
+.btn-collapse, .collapse { display: none;}
+
+button.button-collapse[aria-expanded=true]:after, button.btn-collapse[aria-expanded=false]:after  {
   font-family: FontAwesome;
   content: "\f106";
 }
-button.button-collapse[aria-expanded=false]:after {
+button.button-collapse[aria-expanded=false]:after, button.btn-collapse[aria-expanded=true]:after   {
   font-family: FontAwesome;
   content: "\f107";
 }

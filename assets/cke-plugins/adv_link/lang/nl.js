@@ -67,7 +67,7 @@ CKEDITOR.plugins.setLang( 'adv_link', 'nl', {
 	targetPopup: '<popupvenster>',
 	targetPopupName: 'Naam popupvenster',
 	title: 'Link',
-	toAnchor: 'Interne link in pagina',
+	toAnchor: 'Anker',
 	toEmail: 'E-mail',
 	toUrl: 'URL',
 	toolbar: 'Link invoegen/wijzigen',

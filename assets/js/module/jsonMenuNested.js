@@ -16,7 +16,7 @@ export default class JsonMenuNested {
     getId() {
         return this.target.getAttribute('id');
     }
-    getStructureJson() {
+    getStructureJson(includeRoot = false) {
         const makeChildren = (element) => {
             let children = [];
             let childList = element.querySelector('ol.json-menu-nested-list');
@@ -30,7 +30,16 @@ export default class JsonMenuNested {
             return children;
         }
 
-        return JSON.stringify(makeChildren(this.target));
+        let children = makeChildren(this.target);
+
+        if (!includeRoot) {
+            return JSON.stringify(children);
+        }
+
+        let rootItem = JSON.parse(this.target.dataset.item);
+        rootItem.children = makeChildren(this.target);
+
+        return JSON.stringify(rootItem);
     }
     loading(flag) {
         let loading = this.target.querySelector('.json-menu-nested-loading');
@@ -149,12 +158,12 @@ export default class JsonMenuNested {
 
         collapse();
 
-        let structureJson = this.getStructureJson();
-        if (structureJson && this.hasOwnProperty('hiddenField') && this.hiddenField !== null) {
-            this.hiddenField.value = structureJson;
+        if (this.hasOwnProperty('hiddenField') && this.hiddenField !== null) {
             if (this.hiddenField.classList.contains('json-menu-nested-silent-publish')) {
+                this.hiddenField.value = this.getStructureJson(true);
                 this.hiddenField.dispatchEvent(new CustomEvent('silentPublish'));
             } else {
+                this.hiddenField.value = this.getStructureJson();
                 $(this.hiddenField).trigger('input').trigger('change');
             }
         }
@@ -412,7 +421,7 @@ export default class JsonMenuNested {
                             this.nodes = json.nodes
                             this.target.setAttribute('data-nodes', JSON.stringify(this.nodes));
                         };
-                        this.loading(false);
+                        setTimeout(() => this.loading(false), 250);
                         return;
                     }
 
@@ -436,8 +445,9 @@ export default class JsonMenuNested {
             let node = this.nodes[nodeId];
 
             let copyType = copy.type;
+            let allow = btnPaste.dataset.allow;
 
-            if (node.addNodes.includes(copyType)) {
+            if (node.addNodes.includes(copyType) || allow === copyType) {
                 buttonLi.style.display = 'list-item';
             } else {
                 buttonLi.style.display = 'none';

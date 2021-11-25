@@ -26,7 +26,8 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
     private RevisionService $revisionService;
 
     public const TYPE_MODAL = 'modal';
-    public const TYPE_AJAX = 'ajax';
+    public const TYPE_PASTE = 'paste';
+    public const TYPE_SILENT_PUBLISH = 'silent_publish';
     public const TYPE_VIEW = 'view';
     public const TYPE_PREVIEW = 'preview';
     public const TYPE_REVISION_EDIT = 'revision_edit';
@@ -87,7 +88,7 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
         $options = \array_merge($options, $config);
 
         return $this->template()->renderBlock('renderPaste', [
-            'def' => $this->createDefinition(self::TYPE_AJAX, $options),
+            'def' => $this->createDefinition(self::TYPE_PASTE, $options),
         ]);
     }
 
@@ -101,7 +102,7 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
         $config = Json::decode(\base64_decode($config));
         $options = \array_merge($options, $config);
 
-        $def = $this->createDefinition(self::TYPE_AJAX, $options);
+        $def = $this->createDefinition(self::TYPE_SILENT_PUBLISH, $options);
 
         return [
             'urls' => $def->getUrls(),
@@ -151,7 +152,10 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
             case self::TYPE_MODAL:
                 $optionsResolver->setRequired(['revision', 'item_id', 'item_level', 'item_type', 'item_object']);
                 break;
-            case self::TYPE_AJAX:
+            case self::TYPE_PASTE:
+                $optionsResolver->setRequired(['revision', 'structure']);
+                break;
+            case self::TYPE_SILENT_PUBLISH:
                 $optionsResolver
                     ->setDefaults(['silent_publish' => false, 'field_document' => null])
                     ->setRequired(['revision', 'structure']);
@@ -174,9 +178,9 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
             ->setRequired(['document', 'field', 'field_document'])
             ->remove(['field_type'])
             ->setDefaults([
-                'field_document' => null,
                 'silent_publish' => true,
                 'blocks' => [],
+                'structure' => null,
             ])
             ->setDefault('field_document', function (Options $options) {
                 return $options['field'];
@@ -184,16 +188,18 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
 
         $options = $optionsResolver->resolve($options);
 
-        $doc = Document::fromArray($options['document']);
-        $options['structure'] = $doc->getValue($options['field_document'], '{}');
+        $document = Document::fromArray($options['document']);
+        if (null === $options['structure']) {
+            $options['structure'] = $document->getValue($options['field_document'], '{}');
+        }
 
-        $contentType = $this->contentTypeRepository->findOneBy(['name' => $doc->getContentType(), 'deleted' => false]);
+        $contentType = $this->contentTypeRepository->findOneBy(['name' => $document->getContentType(), 'deleted' => false]);
         if (!$contentType instanceof ContentType) {
-            throw new \Exception(\sprintf('ContentType not found %s', $doc->getContentType()));
+            throw new \Exception(\sprintf('ContentType not found %s', $document->getContentType()));
         }
 
         $options['field_type'] = $contentType->getFieldType()->getChildByName($options['field']);
-        $options['revision'] = $this->revisionService->getCurrentRevisionForDocument($doc);
+        $options['revision'] = $this->revisionService->getCurrentRevisionForDocument($document);
 
         return $options;
     }

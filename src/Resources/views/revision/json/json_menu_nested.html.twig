@@ -1,6 +1,7 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
 {% block render %}
+    {%- set rootLevel = true -%}
     {%- set level = 0 -%}
     {%- set item = def.menu -%}
     {%- set itemJson = { 'id': item.id, 'label': item.label, 'type': item.type, 'object': (item.object|merge({ 'label': item.label }))  } -%}
@@ -24,9 +25,10 @@
             <span class="input-group-btn">
                 {{ block('buttonAdd') }}
                 {{ block('buttonMore') }}
+                {%- set rootLevel = false -%}
             </span>
         {%- endif -%}
-        <ol class="json-menu-nested-list json-menu-nested-root" data-list="root">
+        <ol class="json-menu-nested-list json-menu-nested-root" data-list="{{ item.id }}">
             {%- set level = level + 1 -%}
             {%- for item in item.children -%}{{ block('renderItem') }}{%- endfor -%}
         </ol>
@@ -113,13 +115,12 @@
     {%- if 'add' in node.actions and node.addNodes|length > 0 and (def.maxDepth == 0 or level < def.maxDepth)  -%}
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-sm btn-default dropdown-toggle json-menu-nested-add-button"
-                    data-types="{{ node.addNodes|merge((level == 0 ? ['root'] : []))|json_encode }}"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="fa fa-plus"></span>
                 {{ 'field_type.json_menu_editor.add'|trans }}
                 <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu {{ item.id != 'root' ? 'pull-right' }}">
+            <ul class="dropdown-menu {{ false == rootLevel|default(false) ? 'pull-right' }}">
                 {%- for addNodeName in node.addNodes -%}
                     {%- set addNode = def.getNodeByName(addNodeName) -%}
                     <li>
@@ -144,19 +145,22 @@
             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                 <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu {{ item.id != 'root' ? 'pull-right' }}">
+            <ul class="dropdown-menu {{ false == rootLevel|default(false) ? 'pull-right' }}">
                 {%- if 'copy' in node.actions -%}
                     <li>
-                        <button class="{{ item.id == 'root' ? 'btn-json-menu-nested-copy-all' : 'btn-json-menu-nested-copy' }}"
-                            {%- if item.id != 'root' %}data-item-id="{{ item.id }}"{% endif -%}>
+                        <button class="{{ rootLevel|default(false) ? 'btn-json-menu-nested-copy-all' : 'btn-json-menu-nested-copy' }}"
+                            {%- if false == rootLevel|default(false) %}data-item-id="{{ item.id }}"{% endif -%}>
                             <span class="fa fa-copy"></span>&nbsp;
-                            {{ item.id == 'root' ? 'field_type.json_menu_editor.copy_all'|trans : 'field_type.json_menu_editor.copy'|trans }}
+                            {{ rootLevel|default(false) ? 'field_type.json_menu_editor.copy_all'|trans : 'field_type.json_menu_editor.copy'|trans }}
                         </button>
                     </li>
                 {% endif %}
                 {%- if 'paste' in node.actions and def.maxDepth == 0 or level < def.maxDepth -%}
                     <li style="display:none;">
-                        <button class="btn-json-menu-nested-paste" data-item-id="{{ item.id }}" data-node-id="{{ node.id }}">
+                        <button class="btn-json-menu-nested-paste"
+                                data-item-id="{{ item.id }}"
+                                data-node-id="{{ node.id }}"
+                                {%- if rootLevel|default(false) %}data-allow="root"{% endif -%}>
                             <span class="fa fa-paste"></span>&nbsp;{{ 'field_type.json_menu_editor.paste'|trans }}
                         </button>
                     </li>

@@ -21,7 +21,7 @@ final class JsonMenuNestedDefinition
     private ?Revision $revision;
     private ?string $fieldDocument;
     /** @var array<mixed> */
-    private array $actions = [];
+    private array $actions;
 
     public string $id;
     /** @var array<mixed> */
@@ -41,7 +41,9 @@ final class JsonMenuNestedDefinition
         $this->authorizationChecker = $authorizationChecker;
         $this->urlGenerator = $urlGenerator;
         $this->fieldType = $options['field_type'];
-        $this->menu = JsonMenuNested::fromStructure($options['structure']);
+
+        $json = Json::decode($options['structure']);
+        $this->menu = isset($json['id']) ? new JsonMenuNested($json) : JsonMenuNested::fromStructure($options['structure']);
 
         $this->config = \base64_encode(Json::encode([
             'actions' => $options['actions'],

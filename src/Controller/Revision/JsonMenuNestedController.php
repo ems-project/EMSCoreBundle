@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller\Revision;
 
 use EMS\CommonBundle\Common\ArrayHelper\RecursiveMapper;
 use EMS\CommonBundle\Common\Standard\Json;
+use EMS\CommonBundle\Json\JsonMenuNested;
 use EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Core\UI\AjaxModal;
@@ -157,10 +158,27 @@ final class JsonMenuNestedController extends AbstractController
         }
 
         $requestData = $this->getRequestData($request);
-        $data = $requestData['update'];
+        $updateJson = $requestData['update'];
 
         $rawData = $revision->getRawData();
-        RecursiveMapper::mapPropertyValue($rawData, fn (string $p, $v) => ($field === $p) ? $data : $v);
+        RecursiveMapper::mapPropertyValue($rawData, function (string $property, $v) use ($field, $updateJson) {
+            if ($property !== $field) {
+                return $v;
+            }
+
+            $currentJsonMenuNested = JsonMenuNested::fromStructure($v);
+            $updateJsonMenuNested = new JsonMenuNested(Json::decode($updateJson));
+
+            if ('root' === $updateJsonMenuNested->getId()) {
+                return Json::encode($updateJsonMenuNested->toArrayStructure());
+            }
+
+            if ($item = $currentJsonMenuNested->getItemById($updateJsonMenuNested->getId())) {
+                $item->setChildren($updateJsonMenuNested->getChildren());
+            }
+
+            return JSON::encode($currentJsonMenuNested->toArrayStructure());
+        });
 
         $username = $this->userService->getCurrentUser()->getUsername();
         $updatedRevision = $this->revisionService->updateRawData($revision, $rawData, $username);
@@ -171,7 +189,6 @@ final class JsonMenuNestedController extends AbstractController
             'revision' => $updatedRevision,
             'field_document' => $field,
             'field_type' => $fieldType,
-            'structure' => $data,
         ]));
     }
 

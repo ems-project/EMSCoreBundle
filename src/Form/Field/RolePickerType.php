@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,22 +16,23 @@ class RolePickerType extends SelectPickerType
         $this->userService = $userService;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $choices = \array_merge(['not-defined' => 'not-defined'], $this->userService->listUserRoles());
+        $choices = \array_merge(['role.not-defined' => null], $this->userService->listUserRoles());
 
         $resolver->setDefaults([
+            'required' => false,
             'choices' => $choices,
             'attr' => ['data-live-search' => true],
-            'choice_attr' => function ($category, $key, $index) {
-                //TODO: it would be nice to translate the roles
+            'choice_attr' => function () {
                 return [
-                        'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$this->humanize($key).'</div>',
+                    'data-icon' => 'fa fa-square',
                 ];
             },
             'choice_value' => function ($value) {
                 return $value;
             },
+            'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
         ]);
     }
 }

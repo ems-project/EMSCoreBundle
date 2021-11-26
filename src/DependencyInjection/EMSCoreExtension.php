@@ -64,7 +64,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.user_profile_route', $config['user_profile_route']);
         $container->setParameter('ems_core.user_registration_route', $config['user_registration_route']);
         $container->setParameter('ems_core.add_user_route', $config['add_user_route']);
-        $container->setParameter('ems_core.application_menu_controller', $config['application_menu_controller']);
         $container->setParameter('ems_core.asset_config', $config['asset_config']);
         $container->setParameter('ems_core.tika_server', $config['tika_server']);
         $container->setParameter('ems_core.pre_generated_ouuids', $config['pre_generated_ouuids']);
@@ -74,6 +73,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.health_check_allow_origin', $config['health_check_allow_origin']);
         $container->setParameter('ems_core.tika_download_url', $config['tika_download_url']);
         $container->setParameter('ems_core.default_bulk_size', $config['default_bulk_size']);
+        $container->setParameter('ems_core.clean_jobs_time_string', $config['clean_jobs_time_string']);
 
         $this->loadLdap($container, $yamlLoader, $config['ldap'] ?? []);
     }
@@ -129,7 +129,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'user_profile_route' => $configs[0]['user_profile_route'] ?? Configuration::USER_PROFILE_ROUTE,
             'user_registration_route' => $configs[0]['user_registration_route'] ?? Configuration::USER_REGISTRATION_ROUTE,
             'add_user_route' => $configs[0]['add_user_route'] ?? Configuration::ADD_USER_ROUTE,
-            'application_menu_controller' => $configs[0]['application_menu_controller'] ?? Configuration::APPLICATION_MENU_CONTROLLER,
         ];
 
         if (!empty($configs[0]['template_options'])) {

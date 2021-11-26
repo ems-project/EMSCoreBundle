@@ -443,7 +443,7 @@ release.status.applied: Applied
 release.status.canceled: Canceled
 release.status.scheduled: Scheduled
 release.status.rollbacked: 'Rolled back'
-release.revision.index.column.rollbackable: 'Roll backable'
+release.revision.index.column.still_in_target: 'Still in %target%'
 release.all_releases.label: 'All releases'
 search.aggregate_option_label: 'Aggregate Option'
 search.search_field_option_label: 'Search Field Option'
@@ -454,8 +454,6 @@ service.asset_extractor.persist_error: 'An issue has been raised while persistin
 service.contenttype.field_not_found: 'Field %field_id% not found and ignored'
 service.contenttype.mappings_error: 'Mappings update for %contenttype% in %environments% failed : %elasticsearch_dump%'
 service.contenttype.mappings_updated: 'Mappings successfully updated/created for %contenttype% in %environments%'
-service.contenttype.pipelines: 'Pipelines have been updated/created for %contenttype%'
-service.contenttype.pipelines_error: 'elasticms was not able to generate pipelines for the content type %contenttype%, they are disabled. Please consider to update your elasticsearch cluster (>=5.0). %elasticsearch_error_type% : %elasticsearch_error_reason%'
 service.contenttype.reordered: 'Content type "%contenttype% has been reordered'
 service.contenttype.update_mapping_exception: 'Error on updating %environments%''s mapping : %elasticsearch_error%'
 service.data.already_unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already deleted from %environment%'
@@ -636,6 +634,7 @@ view.breadcrumb.wysiwyg-options: 'WYSIWYG Options'
 view.contenttype.reorder_item.edit_field_button: 'Edit %name%'
 view.contenttype.reorder_item.edit_main_container_button: 'Edit the main container'
 view.data.json-menu-nested-json-preview.field-type-not-found: 'The type definition associated to this item is missing (probably deleted).'
+view.data.json-menu-nested.out_of_sync: 'Out of sync, please refresh and retry!'
 view.elements.side-menu.chanel-admin.index-link: Channels
 view.elements.side-menu.release-admin.index-link: Releases
 view.elements.side-menu.query_search.index-link: QuerySearch
@@ -878,3 +877,27 @@ log.service.dashboard.delete: 'Dashboard %name% has been deleted'
 dashboard.index.column.type: Type
 dashboard.index.column.landing_page: 'Landing page'
 dashboard.index.column.quick_search: 'Quick search'
+release.revision.table.rollback.action: Rollback
+release.revision.table.rollback.confirm: 'Do you confirm ?'
+release.revision.index.column.compare: Compare
+view.index.reorder: 'Reorder views'
+view.index.column.name: Name
+view.actions.edit: Edit
+view.actions.duplicate: Duplicate
+view.actions.duplicate_confirm: 'Do you confirm?'
+view.actions.delete: Delete
+view.actions.delete_confirm: 'Do you confirm?'
+view.actions.delete_selected: 'Delete selected views'
+dashboard.index.column.public: Public
+schedule.index.column.name: Name
+log.schedule.created: 'Schedule %name% has been created'
+log.schedule.updated: 'Schedule %name% has been updated'
+schedule.index.reorder: Prioritize
+schedule.actions.delete_selected: 'Delete selected'
+schedule.actions.delete_selected_confirm: 'Do you confirm ?'
+schedule.index.column.command: Command
+schedule.index.column.cron: Cron
+schedule.index.column.previous-run: 'Previous run'
+schedule.index.column.next-run: 'Next run'
+log.controller.schedule.unknown_action: 'Unknown action'
+log.service.schedule.delete: 'Schedule %name% has been deleted'

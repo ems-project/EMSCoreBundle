@@ -127,13 +127,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * @var bool
      *
-     * @ORM\Column(name="have_pipelines", type="boolean", nullable=true)
-     */
-    protected $havePipelines;
-
-    /**
-     * @var bool
-     *
      * @ORM\Column(name="ask_for_ouuid", type="boolean")
      */
     protected $askForOuuid;
@@ -294,11 +287,10 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $editRole;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="view_role", type="string", length=100, nullable=true)
+     * @ORM\OrderBy({"orderKey" = "ASC"})
      */
-    protected $viewRole;
+    protected ?string $viewRole;
 
     /**
      * @var string
@@ -1058,12 +1050,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return null !== $this->fieldType;
     }
 
-    /**
-     * Get fieldType.
-     *
-     * @return FieldType
-     */
-    public function getFieldType()
+    public function getFieldType(): FieldType
     {
         if (null === $this->fieldType) {
             throw new \RuntimeException('Field type is unset!');
@@ -1344,9 +1331,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get views.
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection<int, View>
      */
     public function getViews()
     {
@@ -1619,12 +1604,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Get viewRole.
-     *
-     * @return string
-     */
-    public function getViewRole()
+    public function getViewRole(): ?string
     {
         return $this->viewRole;
     }
@@ -1692,30 +1672,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function getTrashRole()
     {
         return $this->trashRole;
-    }
-
-    /**
-     * Set havePipelines.
-     *
-     * @param bool $havePipelines
-     *
-     * @return ContentType
-     */
-    public function setHavePipelines($havePipelines)
-    {
-        $this->havePipelines = $havePipelines;
-
-        return $this;
-    }
-
-    /**
-     * Get havePipelines.
-     *
-     * @return bool
-     */
-    public function getHavePipelines()
-    {
-        return $this->havePipelines;
     }
 
     /**

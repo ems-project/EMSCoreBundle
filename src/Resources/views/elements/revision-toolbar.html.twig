@@ -14,7 +14,7 @@
 	{% endif %}
 	{% if current and not draft %}
 		{% include '@EMSCore/elements/post-button.html.twig' with {
-			'url': path('revision.new-draft', {'ouuid': revision.ouuid, 'type':revision.contentType.name, 'node': app.request.get('node') }),
+			'url': path('revision.new-draft', {'ouuid': revision.ouuid, 'type':revision.contentType.name, 'item': app.request.get('item') }),
 			'label': 'views.elements.revision-toolbar-html.new-draft-label'|trans,
 			'btnType': 'primary',
 			'icon': 'pencil' }%}
@@ -23,7 +23,7 @@
 		{% if is_granted(instance.contentType.editRole) %}
 			{% if not  instance.contentType.circlesField or attribute(instance.rawData, instance.contentType.circlesField) is not defined or attribute(instance.rawData, instance.contentType.circlesField)|in_my_circles %}
     			{% include '@EMSCore/elements/get-button.html.twig' with {
-					'url': path('emsco_edit_revision', {'revisionId': revisionId, 'node': app.request.get('node') }),
+					'url': path('emsco_edit_revision', {'revisionId': revisionId, 'item': app.request.get('item') }),
 					'label': 'views.elements.revision-toolbar-html.edit-draft-label'|trans,
 					'btnType': 'primary',
 					'icon': 'pencil' }%}
@@ -60,12 +60,14 @@
 		{# TODO: better way to determine if there is a environement to publish this revision in ? #}
 		{# twig function ?#}
 		{% set hasEnv = false %}
-		{% for env in availableEnv %}
-			{% if env not in environments %}
-	   			{% set hasEnv = true %}
-		   	{% endif %}
-	   	{% endfor %}
-	   	
+		{% if  is_granted(instance.contentType.publishRole) %}
+			{% for env in availableEnv %}
+				{% if env not in environments and env.circles|in_my_circles %}
+					{% set hasEnv = true %}
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+
 		
 		{% for env in environments %}
             {% include '@EMSCore/elements/object-views-button.html.twig' with {
@@ -163,7 +165,7 @@
 					  </div>
 			  {% endif %}
 
-			  {% if instance.contentType.publishRole and is_granted(instance.contentType.publishRole) and ((environments|length > 0 and not current) or (environments|length > 1 and current)) %}
+			  {% if hasEnv and instance.contentType.publishRole and is_granted(instance.contentType.publishRole) and ((environments|length > 0 and not current) or (environments|length > 1 and current)) %}
 				<div class="btn-group">
 					  <button type="button" class="btn btn-sm btn-outline-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span class="fa fa-toggle-off"></span>&nbsp;

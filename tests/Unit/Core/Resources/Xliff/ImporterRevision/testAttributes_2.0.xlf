@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="fr">
+    <file id="contentType:ouuid_1:revisionId_1">
+        <unit id="[title_%locale%]">
+            <segment>
+                <source>Foo</source>
+                <target>Bar</target>
+            </segment>
+        </unit>
+    </file>
+    <file id="contentType:ouuid_2:revisionId_2">
+        <unit id="[title_%locale%]">
+            <segment>
+                <source>Hello</source>
+                <target>Bonjour</target>
+            </segment>
+        </unit>
+        <unit id="[keywords_%locale%]">
+            <segment>
+                <source>test xliff</source>
+            </segment>
+        </unit>
+        <group id="[%locale%][body]">
+            <unit id="/html/body/h1">
+                <segment id="/html/body/h1/text()">
+                    <source>Report</source>
+                </segment>
+            </unit>
+            <group id="/html/body/table">
+                <group id="/html/body/table/tr[1]">
+                    <unit id="/html/body/table/tr[1]/td[1]">
+                        <segment id="/html/body/table/tr[1]/td[1]/text()">
+                            <source>Text in cell r1-c1</source>
+                        </segment>
+                    </unit>
+                    <unit id="/html/body/table/tr[1]/td[2]">
+                        <segment id="/html/body/table/tr[1]/td[2]/text()">
+                            <source>Text in cell r1-c2</source>
+                        </segment>
+                    </unit>
+                </group>
+                <group id="/html/body/table/tr[2]">
+                    <unit id="/html/body/table/tr[2]/td[1]">
+                        <segment id="/html/body/table/tr[2]/td[1]/text()">
+                            <source>Text in cell r2-c1</source>
+                        </segment>
+                    </unit>
+                    <unit id="/html/body/table/tr[2]/td[2]">
+                        <segment id="/html/body/table/tr[2]/td[2]/text()">
+                            <source>Text in cell r2-c2</source>
+                        </segment>
+                    </unit>
+                </group>
+            </group>
+            <unit id="/html/body/p">
+                <segment id="/html/body/p/text()">
+                    <source>All rights reserved (c) Gandalf Inc.</source>
+                </segment>
+            </unit>
+        </group>
+    </file>
+</xliff>

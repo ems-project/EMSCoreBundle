@@ -101,9 +101,9 @@ class IndexedAssetFieldType extends DataFieldType
     /**
      * {@inheritdoc}
      */
-    public function generateMapping(FieldType $current, $withPipeline)
+    public function generateMapping(FieldType $current)
     {
-        $mapping = parent::generateMapping($current, $withPipeline);
+        $mapping = parent::generateMapping($current);
 
         return [
             $current->getName() => [

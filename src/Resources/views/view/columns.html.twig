@@ -1,0 +1,6 @@
+{% extends '@EMSCore/dashboard/form.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block public %}
+    <i class="{% if line.data.public %}fa fa-check-square-o{% else %}fa fa-square-o{% endif %}"></i>
+{% endblock public %}

@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\NonUniqueResultException;
+use Elastica\Query\AbstractQuery;
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Command\Environment\AlignCommand;
@@ -138,7 +139,7 @@ class PublishController extends AbstractController
                 throw new NotFoundHttpException('User not found');
             }
 
-            $query = Json::encode(null === $query ? [] : $query->toArray());
+            $query = Json::encode(null === $query ? [] : ($query instanceof AbstractQuery ? $query->toArray() : $query));
             $command = [
                 Commands::ENVIRONMENT_ALIGN,
                 $environment->getName(),

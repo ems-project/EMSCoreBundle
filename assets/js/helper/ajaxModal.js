@@ -58,13 +58,21 @@ class AjaxModal {
             dialog.classList.add('modal-md');
         }
 
+        this.stateLoading();
         this.modal.querySelector('.modal-title').innerHTML = options.title;
         this.$modal.modal('show');
 
-        ajaxJsonGet(options.url, (json, request) => {
-            this.ajaxReady(json, request, callback);
-            this.stateReady();
-        });
+        if (options.hasOwnProperty('data')) {
+            ajaxJsonPost(options.url, options.data, (json, request) => {
+                this.ajaxReady(json, request, callback);
+                this.stateReady();
+            });
+        } else {
+            ajaxJsonGet(options.url, (json, request) => {
+                this.ajaxReady(json, request, callback);
+                this.stateReady();
+            });
+        }
     }
 
     postRequest(url, data, callback) {
@@ -77,6 +85,9 @@ class AjaxModal {
 
     submitForm(url, callback)
     {
+        for (let i in CKEDITOR.instances) {
+            if(CKEDITOR.instances.hasOwnProperty(i)) { CKEDITOR.instances[i].updateElement(); }
+        }
         var formData = this.$modal.find('form').serialize();
 
         this.stateLoading();
@@ -88,6 +99,12 @@ class AjaxModal {
 
     ajaxReady(json, request, callback) {
         if (request.status === 200) {
+            if (json.hasOwnProperty('modalClose') && json.modalClose === true) {
+                if (typeof callback === 'function') { callback(json, request); };
+                this.$modal.modal('hide');
+                return;
+            }
+
             if (json.hasOwnProperty('modalTitle')) {
                 this.$modal.find('.modal-title').html(json.modalTitle);
             }

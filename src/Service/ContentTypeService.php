@@ -8,56 +8,67 @@ use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\UI\Menu;
+use EMS\CoreBundle\Core\UI\MenuEntry;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
+use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
+use EMS\CoreBundle\Routes;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ContentTypeService
 {
-    /** @var string */
     private const CONTENT_TYPE_AGGREGATION_NAME = 'content-types';
 
-    /** @var Registry */
-    protected $doctrine;
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var Mapping */
-    private $mappingService;
-    /** @var ElasticaService */
-    private $elasticaService;
-    /** @var EnvironmentService */
-    private $environmentService;
-    /** @var FormRegistryInterface */
-    private $formRegistry;
-    /** @var TranslatorInterface */
-    private $translator;
-    /** @var string */
-    private $instanceId;
-    /** @var ContentType[] */
-    protected $orderedContentTypes = [];
-    /** @var ContentType[] */
-    protected $contentTypeArrayByName = [];
+    protected Registry $doctrine;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mappingService, ElasticaService $elasticaService, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, $instanceId)
+    protected LoggerInterface $logger;
+
+    private Mapping $mappingService;
+
+    private ElasticaService $elasticaService;
+
+    private EnvironmentService $environmentService;
+    /** @var ContentType[] */
+    protected array $orderedContentTypes = [];
+    /** @var ContentType[] */
+    protected array $contentTypeArrayByName = [];
+    private AuthorizationCheckerInterface $authorizationChecker;
+    private RevisionRepository $revisionRepository;
+    private TokenStorageInterface $tokenStorage;
+    private ?string $circleContentTypeName;
+
+    public function __construct(
+        Registry $doctrine,
+        LoggerInterface $logger,
+        Mapping $mappingService,
+        ElasticaService $elasticaService,
+        EnvironmentService $environmentService,
+        AuthorizationCheckerInterface $authorizationChecker,
+        RevisionRepository $revisionRepository,
+        TokenStorageInterface $tokenStorage,
+        ?string $circleContentTypeName)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->mappingService = $mappingService;
         $this->elasticaService = $elasticaService;
         $this->environmentService = $environmentService;
-        $this->formRegistry = $formRegistry;
-        $this->instanceId = $instanceId;
-        $this->translator = $translator;
+        $this->authorizationChecker = $authorizationChecker;
+        $this->revisionRepository = $revisionRepository;
+        $this->tokenStorage = $tokenStorage;
+        $this->circleContentTypeName = $circleContentTypeName;
     }
 
     /**
@@ -180,8 +191,6 @@ class ContentTypeService
 
     public function updateMapping(ContentType $contentType, $envs = false)
     {
-        $contentType->setHavePipelines(false);
-
         try {
             $body = $this->environmentService->getIndexAnalysisConfiguration();
             if (!$envs) {
@@ -482,5 +491,98 @@ class ContentTypeService
         }
         $this->persist($contentType);
         $em->flush();
+    }
+
+    public function getCircleContentType(): ?ContentType
+    {
+        return $this->contentTypeArrayByName[$this->circleContentTypeName] ?? null;
+    }
+
+    public function getContentTypeMenu(): Menu
+    {
+        $menu = new Menu('views.elements.sidebar-menu-html.content-types');
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new \RuntimeException('Unexpected null token');
+        }
+        $user = $token->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new \RuntimeException('Unexpected user type');
+        }
+        $temp = $this->revisionRepository->draftCounterGroupedByContentType($user->getCircles(), $this->authorizationChecker->isGranted('ROLE_ADMIN'));
+        $counters = [];
+        foreach ($temp as $item) {
+            $counters[$item['content_type_id']] = $item['counter'];
+        }
+        $circleContentType = $this->getCircleContentType();
+
+        foreach ($this->orderedContentTypes as $contentType) {
+            $role = $contentType->getViewRole();
+            if ($contentType->getDeleted() || !$contentType->getActive() || (null !== $role && !$this->authorizationChecker->isGranted($role)) && !$contentType->getRootContentType()) {
+                continue;
+            }
+            $menuEntry = $menu->addChild($contentType->getPluralName(), $contentType->getIcon() ?? 'fa fa-book', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()], $contentType->getColor());
+            if (isset($counters[$contentType->getId()])) {
+                $menuEntry->setBadge(\strval($counters[$contentType->getId()]));
+            }
+            $this->addMenuSearchLinks($contentType, $menuEntry, $circleContentType, $user);
+            $this->addMenuViewLinks($contentType, $menuEntry);
+            $this->addDraftInProgressLink($contentType, $menuEntry);
+            if ($this->authorizationChecker->isGranted($contentType->getCreateRole())) {
+                $createLink = $menuEntry->addChild('sidebar_menu.content_type.create', 'fa fa-plus', Routes::DATA_ADD, ['contentType' => $contentType->getId()]);
+                $createLink->setTranslation([
+                    '%name%' => $contentType->getSingularName(),
+                ]);
+            }
+            if ($this->authorizationChecker->isGranted($contentType->getTrashRole())) {
+                $trashLink = $menuEntry->addChild('sidebar_menu.content_type.trash', 'fa fa-trash', Routes::DATA_TRASH, ['contentType' => $contentType->getId()]);
+                $trashLink->setTranslation([]);
+            }
+        }
+
+        return $menu;
+    }
+
+    private function addMenuSearchLinks(ContentType $contentType, MenuEntry $menuEntry, ?ContentType $circleContentType, UserInterface $user): void
+    {
+        if (!$this->authorizationChecker->isGranted($contentType->getSearchLinkDisplayRole())) {
+            return;
+        }
+
+        $search = $menuEntry->addChild('sidebar_menu.content_type.search', 'fa fa-search', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()]);
+        $search->setTranslation(['%plural%' => $contentType->getPluralName()]);
+
+        if (null === $circleContentType || null === $contentType->getCirclesField() || '' === $contentType->getCirclesField() || empty($user->getCircles())) {
+            return;
+        }
+
+        $inMyCircle = $menuEntry->addChild('sidebar_menu.content_type.search_in_my_circle', $circleContentType->getIcon() ?? '', Routes::DATA_IN_MY_CIRCLE_VIEW, ['name' => $contentType->getName()]);
+        $inMyCircle->setTranslation([
+            '%name%' => \count($user->getCircles()) > 1 ? $circleContentType->getPluralName() : $circleContentType->getSingularName(),
+        ]);
+    }
+
+    private function addMenuViewLinks(ContentType $contentType, MenuEntry $menuEntry): void
+    {
+        foreach ($contentType->getViews() as $view) {
+            if (null !== $view->getRole() && !$this->authorizationChecker->isGranted($view->getRole())) {
+                continue;
+            }
+            if ('ems.view.data_link' === $view->getType()) {
+                continue;
+            }
+            $menuEntry->addChild($view->getName(), $view->getIcon() ?? '', $view->isPublic() ? Routes::DATA_PUBLIC_VIEW : Routes::DATA_PRIVATE_VIEW, ['view' => $view->getId()]);
+        }
+    }
+
+    private function addDraftInProgressLink(ContentType $contentType, MenuEntry $menuEntry): void
+    {
+        if (!$contentType->giveEnvironment()->getManaged() || !$menuEntry->hasBadge() || !$this->authorizationChecker->isGranted($contentType->getEditRole())) {
+            return;
+        }
+
+        $draftInProgress = $menuEntry->addChild('sidebar_menu.content_type.draft_in_progress', 'fa fa-fire', Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentType->getId()]);
+        $draftInProgress->setTranslation([]);
+        $draftInProgress->setBadge($menuEntry->getBadge(), $contentType->getColor());
     }
 }

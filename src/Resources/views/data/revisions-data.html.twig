@@ -153,21 +153,15 @@
 		<hr>
 		<strong><i class="glyphicon glyphicon-open margin-r-5"></i> {{ 'views.data.revisions-data-html.finalized-on'|trans }}</strong>
 		<p class="text-muted">{{ revision.finalizedDate|date(date_time_format) }}</p>
-	{% endif %}
-
-	<hr>
-	<strong><i class="fa fa-clock-o margin-r-5"></i> {{ 'views.data.revisions-data-html.creation-date'|trans }}</strong>
-	<p class="text-muted">{{ revision.created|date(date_time_format) }}</p>
-
-	{% if is_super() %}
+	{% elseif revision.draftSaveDate %}
 		<hr>
 		<strong><i class="fa fa-pencil margin-r-5"></i> {{ 'views.data.revisions-data-html.last-update'|trans }}</strong>
-		<p class="text-muted">{{ revision.modified|date(date_time_format) }}</p>
+		<p class="text-muted">{{ revision.draftSaveDate|date(date_time_format) }}</p>
 	{% endif %}
 
 	{% if revision.lockby %}
 		<hr>
-		<strong><i class="fa fa-user margin-r-5"></i> {{ 'views.data.revisions-data-html.modify-by'|trans }}</strong>
+		<strong><i class="fa fa-user margin-r-5"></i> {{ 'views.data.revisions-data-html.modified-by'|trans }}</strong>
 		<p class="text-muted">{{ revision.lockby|displayname }}</p>
 	{% endif %}
 

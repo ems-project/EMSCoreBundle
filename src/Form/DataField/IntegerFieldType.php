@@ -68,11 +68,9 @@ class IntegerFieldType extends DataFieldType
     }
 
     /**
-     * @param bool $withPipeline
-     *
      * @return array<mixed>
      */
-    public function generateMapping(FieldType $current, $withPipeline): array
+    public function generateMapping(FieldType $current): array
     {
         return [
                 $current->getName() => $this->elasticsearchService->updateMapping(\array_merge(['type' => 'integer'], \array_filter($current->getMappingOptions()))),

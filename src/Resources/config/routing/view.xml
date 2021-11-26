@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="emsco_view_index" path="/{type}.{_format}" methods="GET,POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ViewController::index</default>
+        <default key="_format">html</default>
+    </route>
+    <route id="emsco_view_add" path="/add/{type}" methods="GET,POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ViewController::add</default>
+    </route>
+    <route id="emsco_view_edit" path="/edit/{view}.{_format}" methods="GET,POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ViewController::edit</default>
+        <default key="_format">html</default>
+    </route>
+    <route id="emsco_view_duplicate" path="/duplicate/{view}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ViewController::duplicate</default>
+    </route>
+    <route id="emsco_view_delete" path="/delete/{view}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ViewController::delete</default>
+    </route>
+
+    <!-- Deprecated routes -->
+    <route id="view.index" path="/{type}" methods="GET,POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ViewController::indexDeprecated</default>
+    </route>
+    <route id="view.add" path="/add/{type}" methods="GET,POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ViewController::addDeprecated</default>
+    </route>
+    <route id="view.edit" path="/edit/{id}.{_format}" methods="GET,POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ViewController::editDeprecated</default>
+        <default key="_format">html</default>
+    </route>
+    <route id="view.remove" path="/delete/{id}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ViewController::deleteDeprecated</default>
+    </route>
+</routes>

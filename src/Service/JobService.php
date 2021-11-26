@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ObjectManager;
+use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CoreBundle\Command\JobOutput;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Entity\UserInterface;
@@ -148,6 +149,46 @@ class JobService
         $this->em->flush();
 
         $this->logger->info('Job '.$job->getCommand().' completed.');
+    }
+
+    public function initJob(string $username, ?string $command, \DateTime $startDate): Job
+    {
+        $job = new Job();
+        $job->setCommand($command);
+        $job->setUser($username);
+        $job->setStarted(false);
+        $job->setDone(false);
+        $job->setCreated($startDate);
+        $job->setModified(new \DateTime());
+        $job->setProgress(0);
+        $this->em->persist($job);
+        $this->em->flush();
+
+        return $job;
+    }
+
+    public function cleanJob(string $username, string $stringTime): int
+    {
+        try {
+            $olderDate = DateTime::create($stringTime);
+        } catch (\Throwable $e) {
+            $this->logger->warning(\sprintf('Invalid string to time format: %s', $stringTime));
+
+            return 0;
+        }
+        try {
+            $jobsCleaned = $this->repository->clean($username, $olderDate);
+        } catch (\Throwable $e) {
+            $this->logger->warning(\sprintf('Error during cleaning jobs: %s', $e->getMessage()));
+
+            return 0;
+        }
+
+        if ($jobsCleaned > 0) {
+            $this->logger->notice(\sprintf('%d scheduled jobs have been cleaned', $jobsCleaned));
+        }
+
+        return $jobsCleaned;
     }
 
     private function create(UserInterface $user): Job

@@ -113,6 +113,16 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
     }
 
     /**
+     * @param string[] $ids
+     *
+     * @return ReleaseRevision[]
+     */
+    public function getByIds(array $ids): array
+    {
+        return $this->releaseRevisionRepository->getByIds($ids);
+    }
+
+    /**
      * @return string[]
      */
     private function getContentTypeWithPublishRole(): array

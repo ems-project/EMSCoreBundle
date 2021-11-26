@@ -220,7 +220,7 @@ class CollectionFieldType extends DataFieldType
         return [$current->getName()];
     }
 
-    public function generateMapping(FieldType $current, $withPipeline)
+    public function generateMapping(FieldType $current)
     {
         return [$current->getName() => [
                 'type' => 'nested',

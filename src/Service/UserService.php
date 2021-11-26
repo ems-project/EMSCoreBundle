@@ -4,9 +4,11 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
+use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
+use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Repository\UserRepository;
 use EMS\CoreBundle\Repository\UserRepositoryInterface;
 use EMS\CoreBundle\Security\CoreLdapUser;
@@ -32,8 +34,9 @@ class UserService implements EntityServiceInterface
     private Security $security;
 
     public const DONT_DETACH = false;
+    private SearchRepository $searchRepository;
 
-    public function __construct(Registry $doctrine, Session $session, TokenStorageInterface $tokenStorage, Security $security, $securityRoles)
+    public function __construct(Registry $doctrine, Session $session, TokenStorageInterface $tokenStorage, Security $security, SearchRepository $searchRepository, $securityRoles)
     {
         $this->doctrine = $doctrine;
         $this->session = $session;
@@ -41,6 +44,7 @@ class UserService implements EntityServiceInterface
         $this->currentUser = null;
         $this->securityRoles = $securityRoles;
         $this->security = $security;
+        $this->searchRepository = $searchRepository;
         $this->userRepository = $doctrine->getManager()->getRepository(User::class);
     }
 
@@ -280,5 +284,22 @@ class UserService implements EntityServiceInterface
     public function isGrantedRole(string $role): bool
     {
         return $this->security->isGranted($role);
+    }
+
+    public function getSidebarMenu(): Menu
+    {
+        $user = $this->getCurrentUser();
+        $menu = new Menu('view.elements.side-menu.user.name', ['%name%' => $user->getDisplayName()]);
+
+        $searches = $this->searchRepository->getByUsername($user->getUsername());
+        if (!empty($searches)) {
+            $link = $menu->addChild('view.elements.side-menu.user.searches', 'fa fa-search', 'elasticsearch.search');
+            $link->setTranslation([]);
+            foreach ($searches as $search) {
+                $link->addChild($search->getName(), '', 'elasticsearch.search', ['searchId' => $search->getId()]);
+            }
+        }
+
+        return $menu;
     }
 }

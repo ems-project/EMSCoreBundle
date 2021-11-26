@@ -44,10 +44,11 @@
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Revision\JsonMenuNestedController" public="true">
+            <argument type="service" id="ems_core.core_ui.ajax_service" />
+            <argument type="service" id="EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer" />
             <argument type="service" id="ems.service.revision" />
-            <argument type="service" id="doctrine" />
             <argument type="service" id="ems.service.data" />
-            <argument type="service" id="twig"/>
+            <argument type="service" id="ems.service.user" />
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Revision\TaskController" public="true">
@@ -140,6 +141,7 @@
             <argument type="service" id="ems.service.user"/>
             <argument type="service" id="ems.service.job"/>
             <argument type="service" id="ems.dashboard.manager"/>
+            <argument type="service" id="ems.service.contenttype"/>
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\NotificationController" public="true">
@@ -150,6 +152,25 @@
             <argument type="service" id="ems.service.notification"/>
             <argument type="service" id="security.authorization_checker"/>
             <argument type="service" id="ems.dashboard.manager"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\Api\Search\SearchController" public="true">
+            <argument type="service" id="ems_common.service.elastica"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\Api\File\ExtractDataController" public="true">
+            <argument type="service" id="ems.service.asset_extractor" />
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ViewController" public="true">
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.view.manager" />
+            <argument type="service" id="logger"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\Job\ScheduleController" public="true">
+            <argument type="service" id="ems.schedule.manager" />
+            <argument type="service" id="logger"/>
             <tag name="controller.service_arguments"/>
         </service>
     </services>

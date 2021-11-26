@@ -79,5 +79,21 @@
             <argument type="service" id="ems.service.file"/>
             <tag name="console.command"/>
         </service>
+        <service id="ems.command.xliff.extract" class="EMS\CoreBundle\Command\Xliff\ExtractCommand">
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.internationalization.xliff"/>
+            <argument type="service" id="ems_common.twig.runtime.asset"/>
+            <argument>%ems_core.default_bulk_size%</argument>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.command.xliff.update" class="EMS\CoreBundle\Command\Xliff\UpdateCommand">
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems.service.internationalization.xliff"/>
+            <argument type="service" id="ems.service.publish"/>
+            <argument type="service" id="ems.service.revision"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>

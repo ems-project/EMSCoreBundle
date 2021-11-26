@@ -11,55 +11,16 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRegistryInterface;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RevisionType extends AbstractType
 {
-    /** @var FormRegistryInterface* */
-    private $formRegistry;
+    private FormRegistryInterface $formRegistry;
 
     public function __construct(FormRegistryInterface $formRegistry)
     {
         $this->formRegistry = $formRegistry;
-    }
-
-    /**
-     * @param FormInterface<FormInterface> $form
-     * @param array<mixed>                 $options
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options): void
-    {
-        $jsonMenuNestedModalNames = [];
-        foreach ($this->allChildren($form) as $child) {
-            if ($child->getConfig()->hasOption('json_menu_nested_modal')) {
-                $blockPrefix = [];
-                $parent = $child;
-                do {
-                    \array_unshift($blockPrefix, $parent->getName());
-                } while (null !== ($parent = $parent->getParent()));
-                $jsonMenuNestedModalNames[] = \sprintf('json-menu-nested-modal_%s', \join('_', $blockPrefix));
-            }
-        }
-        $view->vars['json_menu_nested_modal_names'] = $jsonMenuNestedModalNames;
-    }
-
-    /**
-     * @param FormInterface<FormInterface> $form
-     *
-     * @return iterable|FormInterface[]
-     */
-    private function allChildren(FormInterface $form): iterable
-    {
-        foreach ($form->all() as $element) {
-            yield $element;
-
-            foreach ($this->allChildren($element) as $child) {
-                yield $child;
-            }
-        }
     }
 
     /**

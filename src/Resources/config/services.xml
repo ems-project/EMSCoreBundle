@@ -22,7 +22,6 @@
         <service id="ems.dashboard.manager" class="EMS\CoreBundle\Core\Dashboard\DashboardManager">
             <argument type="service" id="ems.repository.dashboard"/>
             <argument type="service" id="logger"/>
-            <argument type="service" id="router"/>
             <argument type="service" id="security.authorization_checker"/>
         </service>
         <service id="ems.service.channel" class="EMS\CoreBundle\Service\Channel\ChannelService">
@@ -64,6 +63,13 @@
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.repository.query_search"/>
             <argument type="service" id="logger"/>
+        </service>
+
+        <service id="ems.service.internationalization.xliff" alias="EMS\CoreBundle\Service\Internationalization\XliffService"/>
+        <service id="EMS\CoreBundle\Service\Internationalization\XliffService">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.revision"/>
+            <argument type="service" id="ems_common.service.elastica"/>
         </service>
 
         <service id="ems_core.core_ui.ajax_service" class="EMS\CoreBundle\Core\UI\AjaxService">
@@ -123,6 +129,23 @@
         <service id="ems_core.core_ui.flash_message_logger" class="EMS\CoreBundle\Core\UI\FlashMessageLogger">
             <argument type="service" id="session.flash_bag" />
             <argument type="service" id="translator" />
+        </service>
+
+        <service id="ems.view.manager" class="EMS\CoreBundle\Core\View\ViewManager">
+            <argument type="service" id="ems.repository.view"/>
+            <argument type="service" id="logger"/>
+        </service>
+        <service id="ems.schedule.manager" class="EMS\CoreBundle\Core\Job\ScheduleManager">
+            <argument type="service" id="ems.repository.schedule"/>
+            <argument type="service" id="logger"/>
+        </service>
+        <service id="EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer">
+            <argument type="service" id="twig"/>
+            <argument type="service" id="security.authorization_checker"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
+            <argument type="service" id="ems.service.revision"/>
+            <tag name="twig.runtime"/>
         </service>
     </services>
 </container>

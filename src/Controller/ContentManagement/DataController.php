@@ -579,7 +579,7 @@ class DataController extends AppController
     {
         return $this->redirectToRoute(Routes::EDIT_REVISION, [
             'revisionId' => $dataService->initNewDraft($type, $ouuid)->getId(),
-            'node' => $request->get('node'),
+            'item' => $request->get('item'),
         ]);
     }
 
@@ -1095,7 +1095,9 @@ class DataController extends AppController
             $objectArray = $revision->getRawData();
             $revision->setRawData($backup);
 
-            $revision->setAutoSaveAt(new \DateTime());
+            $now = new \DateTime();
+            $revision->setAutoSaveAt($now);
+            $revision->setDraftSaveDate($now);
             $revision->setAutoSaveBy($this->getUser()->getUsername());
 
             $em->persist($revision);

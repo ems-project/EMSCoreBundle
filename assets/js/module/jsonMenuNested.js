@@ -447,7 +447,7 @@ export default class JsonMenuNested {
             let copyType = copy.type;
             let allow = btnPaste.dataset.allow;
 
-            if (node.addNodes.includes(copyType) || allow === copyType) {
+            if ((node !== undefined && node.addNodes.includes(copyType)) || allow === copyType) {
                 buttonLi.style.display = 'list-item';
             } else {
                 buttonLi.style.display = 'none';

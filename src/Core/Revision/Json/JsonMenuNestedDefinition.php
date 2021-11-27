@@ -187,6 +187,9 @@ final class JsonMenuNestedDefinition
     private function isGrantedFieldType(FieldType $fieldType): bool
     {
         $fieldMinimumRole = $fieldType->getRestrictionOption('minimum_role');
+        if (!\is_string($fieldMinimumRole) || '' === $fieldMinimumRole) {
+            return true;
+        }
 
         return $this->authorizationChecker->isGranted($fieldMinimumRole);
     }

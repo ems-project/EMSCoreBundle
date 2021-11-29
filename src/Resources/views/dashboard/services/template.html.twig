@@ -3,7 +3,7 @@
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
-        <li><a href="{{ path('emsco_dashboard', {name: dashboard.name}) }}"><i class="{{ dashboard.icon }}"></i> {{ dashboard.label }}</li></a>
+        <li><a href="{{ path('emsco_dashboard', {name: dashboard.name}) }}"><i class="{{ dashboard.icon }}"></i> {{ dashboard.label }}</a></li>
         {% block breadcrumb_items %}{% endblock breadcrumb_items %}
     </ol>
 {% endblock %}

@@ -273,9 +273,7 @@ class ContentTypeController extends AppController
                     $environment = $contentTypeAdded->getEnvironment();
                     /** @var UploadedFile $file */
                     $file = $request->files->get('form')['import'];
-                    $path = $file->getRealPath() ?: $file->getPathname();
-
-                    $json = \file_get_contents($path);
+                    $json = \file_get_contents($file->getRealPath());
 
                     if (!\is_string($json)) {
                         throw new NotFoundHttpException('JSON file not found');

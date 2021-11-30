@@ -6,14 +6,14 @@
 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
-		<li><a href="{{ path('emsco_release_index') }}"><i class="{{ 'view.icon.class.release'|trans }}"></i> {{ 'release.menu'|trans }}</li></a>
+		<li><a href="{{ path('emsco_release_index') }}"><i class="{{ 'view.icon.class.release'|trans }}"></i> {{ 'release.menu'|trans }}</a></li>
 		<li>{{ 'release.revision.menu'|trans }}</li>
    	</ol>
 {% endblock %}
 
 {% block body %}
 	{%  set toolbar %}
-	   
+
 	{%  endset %}
 
 	{% form_theme form '@EMSCore/form/forms.html.twig' %}

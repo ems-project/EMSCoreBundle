@@ -213,7 +213,6 @@
 		emailBodyRegex = /body=([^;?:@&=$,\/]*)/,
 		anchorRegex = /^#(.*)$/,
 		emsObjectRegex = /^ems:\/\/object:(.*):(.*)$/,
-		emsAssetRegex = /^ems:\/\/asset:(.*)$/,
 		urlRegex = /^((?:http|https|ftp|news):\/\/)?(.*)$/,
 		selectableTargets = /^(_(?:self|top|parent|blank))$/,
 		encodedEmailLinkRegex = /^javascript:void\(location\.href='mailto:'\+String\.fromCharCode\(([^)]+)\)(?:\+'(.*)')?\)$/,
@@ -599,10 +598,6 @@
 					break;
 				case 'fileLink':// @simo
 					set[ 'data-cke-saved-href' ] = data.fileLink;
-
-					break;
-				case 'asset':
-					set[ 'data-cke-saved-href' ] = data.asset;
 
 					break;
 				case 'anchor':

@@ -52,6 +52,10 @@ class SearchFilterType extends AbstractType
                 'Prefix' => 'prefix',
                 'Match phrase' => 'match_phrase',
                 'Match phrase prefix' => 'match_phrase_prefix',
+                'Greater than' => 'gt',
+                'Greater than or equal to' => 'gte',
+                'Less than' => 'lt',
+                'Less than or equal to' => 'lte',
             ],
         ]);
 

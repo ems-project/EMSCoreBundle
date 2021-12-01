@@ -15,6 +15,7 @@ use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 use EMS\CoreBundle\Form\DataField\ComputedFieldType;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType;
+use EMS\CoreBundle\Form\DataField\MultiplexedTabContainerFieldType;
 use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
@@ -175,6 +176,23 @@ final class PostProcessingService
                                 $found = $this->postProcessing($collectionChild, $contentType, $elementsArray, $context, $parent, $childPath) || $found;
                             }
                         }
+                    }
+                } elseif ($childType instanceof MultiplexedTabContainerFieldType) {
+                    $fieldType = $child->getNormData()->getFieldType();
+                    if (!$fieldType instanceof FieldType) {
+                        throw new \RuntimeException('Unexpected non FieldType object');
+                    }
+                    $values = $fieldType->getDisplayOption('values');
+                    if (null !== $values && !\is_string($values)) {
+                        throw new \RuntimeException('Unexpected non nullable string values');
+                    }
+                    foreach (MultiplexedTabContainerFieldType::textAreaToArray($values) as $value) {
+                        if (!isset($objectArray[$value])) {
+                            $objectArray[$value] = [];
+                        }
+
+                        $childPath = $path.('' == $path ? '' : '.').$value;
+                        $found = $this->postProcessing($child, $contentType, $objectArray[$value], $context, $parent, $childPath) || $found;
                     }
                 } elseif ($childType instanceof DataFieldType) {
                     $found = $this->postProcessing($child, $contentType, $objectArray, $context, $parent, $path) || $found;

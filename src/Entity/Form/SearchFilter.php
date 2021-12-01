@@ -166,6 +166,42 @@ class SearchFilter implements JsonSerializable
                         ],
                     ];
                     break;
+                case 'lt':
+                    $out = [
+                        'range' => [
+                            $field ?? '_all' => [
+                                'lt' => $this->pattern ?? '*',
+                            ],
+                        ],
+                    ];
+                    break;
+                case 'lte':
+                    $out = [
+                        'range' => [
+                            $field ?? '_all' => [
+                                'lte' => $this->pattern ?? '*',
+                            ],
+                        ],
+                    ];
+                    break;
+                case 'gt':
+                    $out = [
+                        'range' => [
+                            $field ?? '_all' => [
+                                'gt' => $this->pattern ?? '*',
+                            ],
+                        ],
+                    ];
+                    break;
+                case 'gte':
+                    $out = [
+                        'range' => [
+                            $field ?? '_all' => [
+                                'gte' => $this->pattern ?? '*',
+                            ],
+                        ],
+                    ];
+                    break;
             }
         }
 

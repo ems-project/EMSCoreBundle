@@ -178,21 +178,14 @@ final class PostProcessingService
                         }
                     }
                 } elseif ($childType instanceof MultiplexedTabContainerFieldType) {
-                    $fieldType = $child->getNormData()->getFieldType();
-                    if (!$fieldType instanceof FieldType) {
-                        throw new \RuntimeException('Unexpected non FieldType object');
-                    }
-                    $values = $fieldType->getDisplayOption('values');
-                    if (null !== $values && !\is_string($values)) {
-                        throw new \RuntimeException('Unexpected non nullable string values');
-                    }
-                    foreach (MultiplexedTabContainerFieldType::textAreaToArray($values) as $value) {
-                        if (!isset($objectArray[$value])) {
-                            $objectArray[$value] = [];
+                    foreach ($child as $multiplexedForm) {
+                        if (!$multiplexedForm instanceof FormInterface) {
+                            throw new \RuntimeException('Unexpected non FormInterface object');
                         }
-
-                        $childPath = $path.('' == $path ? '' : '.').$value;
-                        $found = $this->postProcessing($child, $contentType, $objectArray[$value], $context, $parent, $childPath) || $found;
+                        if (!isset($objectArray[$multiplexedForm->getName()])) {
+                            $objectArray[$multiplexedForm->getName()] = [];
+                        }
+                        $found = $this->postProcessing($multiplexedForm, $contentType, $objectArray[$multiplexedForm->getName()], $context, $parent, $path) || $found;
                     }
                 } elseif ($childType instanceof DataFieldType) {
                     $found = $this->postProcessing($child, $contentType, $objectArray, $context, $parent, $path) || $found;

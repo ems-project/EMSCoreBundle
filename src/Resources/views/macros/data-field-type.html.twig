@@ -596,7 +596,7 @@
 		</dt>
 		<dd>
 			<div class="panel panel-default">
-				<div class="panel-body">
+				<div class="panel-body"{% if not doCompare and dataField.fieldType.displayOptions.styles_set_preview|default(false) %} data-styleset-preview="{{ dataField.fieldType.displayOptions.styles_set|default('default') }}"{% endif %}>
                     {{ diff_html(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 				</div>
 			</div>

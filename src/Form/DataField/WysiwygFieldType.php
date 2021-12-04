@@ -208,7 +208,7 @@ class WysiwygFieldType extends DataFieldType
             ])
             ->add('height', IntegerType::class, ['required' => false])
             ->add('styles_set', WysiwygStylesSetPickerType::class, ['required' => false])
-            ->add('styles_set_preview', CheckboxType::class, ['required' => false, ])
+            ->add('styles_set_preview', CheckboxType::class, ['required' => false])
             ->add('format_tags', TextType::class, [
                 'required' => false,
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,

@@ -596,9 +596,14 @@
 		</dt>
 		<dd>
 			<div class="panel panel-default">
-				<div class="panel-body"{% if not doCompare and dataField.fieldType.displayOptions.styles_set_preview|default(false) %} data-styleset-preview="{{ dataField.fieldType.displayOptions.styles_set|default('default') }}"{% endif %}>
-                    {{ diff_html(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
-				</div>
+				{% set panelBody = diff_html(dataField.rawData, compare, dataField.fieldType.name, compareRawData) %}
+				{% if dataField.fieldType.displayOptions.styles_set_preview|default(false) %}
+					<iframe src="{{ path('emsco_wysiwyg_styleset_iframe', {'name': dataField.fieldType.displayOptions.styles_set|default('default')}) }}" class="styleset-preview panel-body" data-iframe-body="{{ panelBody|e('html_attr') }}"></iframe>
+				{% else %}
+					<div class="panel-body">
+						{{ panelBody|raw }}
+					</div>
+				{% endif %}
 			</div>
 		</dd>
 	</dl>

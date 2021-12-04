@@ -90,7 +90,11 @@ class WysiwygFieldType extends DataFieldType
             $assets = $styleSet->getAssets();
             $hash = $assets['sha1'] ?? null;
             if (null !== $assets && \is_string($hash)) {
-                $this->assetRuntime->unzip($hash, $styleSet->getSaveDir() ?? 'bundles/emsch_assets');
+                $saveDir = $styleSet->getSaveDir();
+                $this->assetRuntime->unzip($hash, $saveDir ?? \sprintf('bundles/%s', $hash));
+                if (null === $saveDir) {
+                    $contentCss = \sprintf('/bundles/%s/%s', $hash, $styleSet->getContentCss());
+                }
             }
             $attr['data-table-default-css'] = $styleSet->getTableDefaultCss();
         }

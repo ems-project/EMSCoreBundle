@@ -39,4 +39,6 @@
             prefix="/admin/view" />
     <import resource="@EMSCoreBundle/Resources/config/routing/admin-job.xml"
             prefix="/admin/job" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/wysiwyg.xml"
+            prefix="/wysiwyg" />
 </routes>

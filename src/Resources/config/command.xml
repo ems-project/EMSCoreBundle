@@ -95,5 +95,10 @@
             <argument type="service" id="ems.service.revision"/>
             <tag name="console.command"/>
         </service>
+        <service id="ems.command.revision.discard-drafts" class="EMS\CoreBundle\Command\Revision\DiscardDraftCommand">
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="ems.service.revision"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>

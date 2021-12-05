@@ -94,7 +94,11 @@ final class ArchiveCommand extends Command implements CommandInterface
         $revisions->setBatchSize($this->batchSize);
 
         $revisions->batch(function (Revision $revision) use ($progress, &$countArchived) {
-            $this->revisionService->archive($revision, $revision->getLockBy(), false);
+            $lockedBy = $revision->getLockBy();
+            if (self::USER !== $lockedBy) {
+                throw new \RuntimeException(\sprintf('Unexpected revision not locked by %s', self::USER));
+            }
+            $this->revisionService->archive($revision, $lockedBy, false);
             $progress->advance();
             ++$countArchived;
         });

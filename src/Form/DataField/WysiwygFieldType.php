@@ -10,6 +10,7 @@ use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\WysiwygStylesSetPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType as TextareaSymfonyType;
@@ -89,7 +90,11 @@ class WysiwygFieldType extends DataFieldType
             $assets = $styleSet->getAssets();
             $hash = $assets['sha1'] ?? null;
             if (null !== $assets && \is_string($hash)) {
-                $this->assetRuntime->unzip($hash, $styleSet->getSaveDir() ?? 'bundles/emsch_assets');
+                $saveDir = $styleSet->getSaveDir();
+                $this->assetRuntime->unzip($hash, $saveDir ?? \sprintf('bundles/%s', $hash));
+                if (null === $saveDir) {
+                    $contentCss = \sprintf('/bundles/%s/%s', $hash, $styleSet->getContentCss());
+                }
             }
             $attr['data-table-default-css'] = $styleSet->getTableDefaultCss();
         }
@@ -120,6 +125,7 @@ class WysiwygFieldType extends DataFieldType
         $resolver->setDefault('format_tags', '');
         $resolver->setDefault('styles_set', 'default');
         $resolver->setDefault('content_css', '');
+        $resolver->setDefault('styles_set_preview', false);
     }
 
     /**
@@ -206,6 +212,7 @@ class WysiwygFieldType extends DataFieldType
             ])
             ->add('height', IntegerType::class, ['required' => false])
             ->add('styles_set', WysiwygStylesSetPickerType::class, ['required' => false])
+            ->add('styles_set_preview', CheckboxType::class, ['required' => false])
             ->add('format_tags', TextType::class, [
                 'required' => false,
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,

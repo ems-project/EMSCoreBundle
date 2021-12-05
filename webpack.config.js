@@ -2,9 +2,11 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require('copy-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 
 module.exports = {
     plugins: [
+        new ManifestPlugin({'publicPath': 'bundles/emscore/'}),
         new CopyPlugin([
             {
                 from: './assets/images',

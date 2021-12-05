@@ -456,29 +456,27 @@ $(window).ready(function() {
     addEventListeners($('form[name=revision]'));
 });
 
-$(document).keydown(function(e) {
+if (null !== document.querySelector('form[name="revision"]')) {
+    $(document).keydown(function (e) {
+        let key = undefined;
+        /**
+         * @param {{keyIdentifier:string}} e
+         */
+        const possible = [e.key, e.keyIdentifier, e.keyCode, e.which];
 
-    let key = undefined;
+        while (key === undefined && possible.length > 0) {
+            key = possible.pop();
+        }
 
-    /**
-     * @param {{keyIdentifier:string}} e
-     */
-    const possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
+        if (typeof key === "number" && (115 === key || 83 === key) && (e.ctrlKey || e.metaKey) && !(e.altKey)) {
+            e.preventDefault();
+            onFormChange(e, true);
+            return false;
+        }
+        return true;
 
-    while (key === undefined && possible.length > 0)
-    {
-        key = possible.pop();
-    }
-
-    if (typeof key === "number" && ( 115 === key || 83 === key ) && (e.ctrlKey || e.metaKey) && !(e.altKey))
-    {
-        e.preventDefault();
-        onFormChange(e, true);
-        return false;
-    }
-    return true;
-
-});
+    });
+}
 
 export {
     addEventListeners

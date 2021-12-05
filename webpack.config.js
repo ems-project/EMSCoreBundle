@@ -40,7 +40,7 @@ module.exports = {
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
-            filename: "css/[name].bundle.css",
+            filename: "css/[name].[hash].css",
             chunkFilename: "[id].css"
         }),
     ],
@@ -71,8 +71,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, 'src/Resources/public'),
-        filename: 'js/[name].bundle.js',
-        //publicPath: '../bundles/emscore/',
+        filename: 'js/[name].[hash].js',
     },
     module: {
         rules: [

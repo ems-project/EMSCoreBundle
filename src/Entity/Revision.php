@@ -636,21 +636,21 @@ class Revision implements EntityInterface
         return $this;
     }
 
-    /**
-     * Get lockBy.
-     *
-     * @return string
-     */
-    public function getLockBy()
+    public function getLockBy(): ?string
     {
         return $this->lockBy;
     }
 
     public function isLockedFor(string $username): bool
     {
+        return $this->getLockBy() !== $username && $this->isLocked();
+    }
+
+    public function isLocked(): bool
+    {
         $now = new \DateTime();
 
-        return $this->getLockBy() !== $username && $now < $this->getLockUntil();
+        return $now < $this->getLockUntil();
     }
 
     /**

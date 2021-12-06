@@ -9,8 +9,8 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-    <link rel="stylesheet" href="{{ asset('bundles/emscore/css/app.bundle.css') }}">
-    <link rel="stylesheet" href="{{ asset('bundles/emscore/css/blue.bundle.css') }}">
+    <link rel="stylesheet" href="{{ asset('app.css', 'emscore') }}">
+    <link rel="stylesheet" href="{{ asset('blue.css', 'emscore') }}">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -19,14 +19,14 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <link rel="icon" sizes="128x128" type="image/png" href="{{ asset('bundles/emscore/images/fav-icon.png') }}?v=12" />
-    <link rel="apple-touch-icon" sizes="128x128" type="image/png" href="{{ asset('bundles/emscore/images/fav-icon.png') }}?v=12">
+    <link rel="icon" sizes="128x128" type="image/png" href="{{ asset('images/fav-icon.png', 'emscore') }}" />
+    <link rel="apple-touch-icon" sizes="128x128" type="image/png" href="{{ asset('images/fav-icon.png', 'emscore') }}">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
     <a href="{{ path('homepage') }}">
-		<img alt="elasticms's logo" src="{{ asset('bundles/emscore/images/logo.png') }}" width="360">
+		<img alt="elasticms's logo" src="{{ asset('images/logo.png', 'emscore') }}" width="360">
 	</a>
   </div>
 	  <!-- /.login-logo -->
@@ -83,6 +83,6 @@
 </div>
 <!-- /.login-box -->
 
-<script src="{{ asset('bundles/emscore/js/app.bundle.js') }}"></script>
+<script src="{{ asset('app.js', 'emscore') }}"></script>
 </body>
 </html>

@@ -16,6 +16,8 @@ final class Commands
 
     public const REVISION_TASK_CREATE = 'emsco:revision:task:create';
 
+    public const REVISION_DISCARD_DRAFT = 'emsco:revision:discard-draft';
+
     public const XLIFF_EXTRACT = 'emsco:xliff:extract';
 
     public const XLIFF_UPDATE = 'emsco:xliff:update';

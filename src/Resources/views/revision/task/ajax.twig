@@ -21,7 +21,7 @@
                 <hr />
                 {%- if null != logRejection -%}<p class="task-comment bg-danger">{{ logRejection.comment }}</p>{%- endif -%}
                 {{ form(formRequestValidation) }}
-                <button id="btn-validation-request" class="btn btn-sm btn-primary"> <i class="fa fa-paper-plane"></i>&nbsp;{{ 'task.validation.request'|trans  }}</button>
+                <button id="btn-validation-request" class="btn btn-sm btn-primary"> <i class="fa fa-paper-plane"></i>&nbsp;{{ 'task.validation.send'|trans  }}</button>
             </div>
         {% endif %}
         <div class="clearfix">

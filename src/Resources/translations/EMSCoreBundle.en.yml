@@ -585,7 +585,7 @@ task.validation.approve: Approve
 task.validation.comment: 'Comment for validation'
 task.validation.done: Finish
 task.validation.reject: Reject
-task.validation.request: 'Send for validation'
+task.validation.send: 'Send'
 uploaded-file.action.download_selected: 'Download selected'
 uploaded-file.action.hide-show: Hide/Show
 uploaded-file.action.soft-delete: Delete

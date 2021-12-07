@@ -528,8 +528,8 @@ task.create.submit: 'Create task'
 task.create.success: 'Task "%title%" successfully created.'
 task.create.title: 'Add a new task'
 task.dashboard.action.change_owner: 'Change owner'
-task.dashboard.action.edit_revision: 'Edit to revision'
-task.dashboard.action.go_revision: 'Go to revision'
+task.dashboard.action.edit_revision: 'Edit revision'
+task.dashboard.action.go_revision: 'Revision'
 task.dashboard.column.actions: Actions
 task.dashboard.column.assignee: Assignee
 task.dashboard.column.deadline: Deadline

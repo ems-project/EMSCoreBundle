@@ -28,7 +28,7 @@
             <button class="btn-modal-history-task btn btn-sm btn-default pull-right"
                     data-url="{{ path('ems_core_task_ajax_modal_history', {'revisionId': revisionId, 'taskId': task.id }) }}"
                     data-title="{{ 'task.history'|trans }} : {{ task.title }}">
-                    <i class="fa fa-comments" aria-hidden="true"></i>
+                    <i class="fa fa fa-history" aria-hidden="true"></i>
             </button>
         </div>
     {%- endif -%}
@@ -132,7 +132,7 @@
             </li>
             <li>
                 <a href="#tab_task_history" data-toggle="tab" aria-expanded="false">
-                    <i class="fa fa-comments" aria-hidden="true"></i>&nbsp;{{ 'task.update.tab.history'|trans }}
+                    <i class="fa fa-history" aria-hidden="true"></i>&nbsp;{{ 'task.update.tab.history'|trans }}
                 </a>
             </li>
         </ul>

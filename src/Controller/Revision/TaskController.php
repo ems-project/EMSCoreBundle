@@ -179,10 +179,17 @@ final class TaskController extends AbstractController
         return new JsonResponse(['tasks' => $tasksList]);
     }
 
-    public function ajaxModalTask(string $taskId): JsonResponse
+    public function ajaxModalTask(int $revisionId, string $taskId): JsonResponse
     {
+        $revision = $this->taskManager->getRevision($revisionId);
+
         return $this->getAjaxModal()
-            ->setFooter('modalFooterClose')
+            ->setFooter('modalFooterActions', [
+                'ouuid' => $revision->getOuuid(),
+                'revisionId' => $revision->getId(),
+                'contentType' => $revision->getContentType(),
+                'isManager' => $this->taskManager->isTaskManager(),
+            ])
             ->setBody('modalTaskBody', ['task' => $this->taskManager->getTask($taskId)])
             ->getResponse();
     }

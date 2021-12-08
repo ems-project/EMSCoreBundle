@@ -111,6 +111,29 @@
     </div>
 {% endblock %}
 
+{% block modalFooterActions %}
+    <div class="pull-left">
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+    </div>
+    <div class="pull-right">
+        <div class="btn-group">
+            <a class="btn btn-sm btn-default" href="{{ path('data.revisions', { 'type': contentType.name, 'ouuid': ouuid }) }}">
+                <i class="fa fa-file" aria-hidden="true"></i> {{ 'task.dashboard.action.go_revision'|trans }}
+            </a>
+            <a class="btn btn-sm btn-default" href="{{ path('revision.new-draft', { 'type': contentType.name, 'ouuid': ouuid }) }}">
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'task.dashboard.action.edit_revision'|trans }}
+            </a>
+            {% if isManager %}
+                <a href="#task-change-owner" class="btn btn-sm btn-default btn-task-change-owner-modal"
+                    data-url="{{ path('ems_core_task_ajax_modal_change_owner', { 'revisionId': revisionId }) }}"
+                    data-title="{{ 'task.dashboard.action.change_owner'|trans }}">
+                    <i class="fa fa-user-circle-o" aria-hidden="true"></i> {{ 'task.dashboard.action.change_owner'|trans }}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
 {% block modalCreateBody %}
     {{ block('taskForm') }}
 {% endblock %}

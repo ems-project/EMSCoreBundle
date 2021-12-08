@@ -18,10 +18,9 @@ class RolePickerType extends SelectPickerType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $choices = \array_merge(['role.not-defined' => ''], $this->userService->listUserRoles());
+        $choices = \array_merge(['role.not-defined' => 'not-defined'], $this->userService->listUserRoles());
 
         $resolver->setDefaults([
-            'required' => false,
             'choices' => $choices,
             'attr' => ['data-live-search' => true],
             'choice_attr' => function () {

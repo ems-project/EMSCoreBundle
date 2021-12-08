@@ -28,7 +28,7 @@
             <button class="btn-modal-history-task btn btn-sm btn-default pull-right"
                     data-url="{{ path('ems_core_task_ajax_modal_history', {'revisionId': revisionId, 'taskId': task.id }) }}"
                     data-title="{{ 'task.history'|trans }} : {{ task.title }}">
-                    <i class="fa fa fa-history" aria-hidden="true"></i>
+                    <i class="fa fa-history" aria-hidden="true"></i>
             </button>
         </div>
     {%- endif -%}
@@ -107,13 +107,13 @@
 
 {% block modalFooterClose %}
     <div class="pull-left">
-        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">{{ 'task.close'|trans }}</button>
     </div>
 {% endblock %}
 
 {% block modalFooterActions %}
     <div class="pull-left">
-        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">{{ 'task.close'|trans }}</button>
     </div>
     <div class="pull-right">
         <div class="btn-group">
@@ -205,7 +205,7 @@
         {%- if task.status != 'completed' -%}
             <button id="ajax-modal-submit" class="btn btn-sm btn-primary">{{ 'task.update.submit'|trans }}</button>
         {%- endif -%}
-        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">{{ 'task.close'|trans }}</button>
     </div>
     <div class="pull-right">
         <button type="button" id="btn-task-delete"

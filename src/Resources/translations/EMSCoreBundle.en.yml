@@ -552,6 +552,7 @@ task.field.title: Title
 task.finished.hide: 'Hide finished tasks (%number%)'
 task.finished.show: 'Show finished tasks (%number%)'
 task.for: for
+task.close: Close
 task.history: History
 task.in_progress: 'This task is '
 task.info.change_order: 'Change task order'

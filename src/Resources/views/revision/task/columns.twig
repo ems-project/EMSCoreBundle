@@ -8,6 +8,7 @@
     </a>
 {%- endblock -%}
 
+{%- block version -%}{{- data.versionTag -}}{%- endblock -%}
 {%- block owner -%}{{- data.owner|displayname -}}{%- endblock -%}
 {%- block assignee -%}{{- data.taskCurrent.assignee|displayname -}}{%- endblock -%}
 

@@ -16,6 +16,7 @@ final class TaskTableService implements EntityServiceInterface
 
     private const COL_TITLE = 'title';
     private const COL_DOCUMENT = 'label';
+    private const COL_DOCUMENT_VERSION = 'version';
     private const COL_OWNER = 'owner';
     private const COL_ASSIGNEE = 'assignee';
     private const COL_STATUS = 'status';
@@ -27,6 +28,7 @@ final class TaskTableService implements EntityServiceInterface
     public const COLUMNS = [
         self::COL_TITLE => ['type' => 'block', 'column' => 'taskTitle', 'mapping' => 't.title'],
         self::COL_DOCUMENT => ['column' => 'label', 'mapping' => 'r.labelField'],
+        self::COL_DOCUMENT_VERSION => ['type' => 'block', 'column' => 'version', 'mapping' => 'r.versionTag'],
         self::COL_OWNER => ['type' => 'block', 'column' => 'owner', 'mapping' => 'r.owner'],
         self::COL_ASSIGNEE => ['type' => 'block', 'column' => 'taskAssignee', 'mapping' => 't.assignee'],
         self::COL_STATUS => ['type' => 'block', 'column' => 'taskStatus', 'mapping' => 't.status'],
@@ -42,7 +44,7 @@ final class TaskTableService implements EntityServiceInterface
     public function buildTable(EntityTable $table, TaskTableContext $context): void
     {
         /** @var array<string, array{type: ?string, column: ?string, label: string}> $columns */
-        $columns = $this->getColumns($context->tab);
+        $columns = $this->getColumns($context);
 
         foreach ($columns as $name => $options) {
             $orderField = self::COL_ACTIONS !== $name ? $name : null;
@@ -64,7 +66,7 @@ final class TaskTableService implements EntityServiceInterface
 
     public function buildTableExport(EntityTable $table, TaskTableContext $context): void
     {
-        $columns = $this->getColumns($context->tab);
+        $columns = $this->getColumns($context);
         unset($columns[self::COL_ACTIONS]);
 
         foreach ($columns as $name => $options) {
@@ -107,14 +109,17 @@ final class TaskTableService implements EntityServiceInterface
     /**
      * @return array<mixed>
      */
-    private function getColumns(string $tab): array
+    private function getColumns(TaskTableContext $context): array
     {
         $columns = self::COLUMNS;
-        if (TaskManager::TAB_USER === $tab) {
+        if (TaskManager::TAB_USER === $context->tab) {
             unset($columns[self::COL_ASSIGNEE]);
         }
-        if (TaskManager::TAB_OWNER === $tab) {
+        if (TaskManager::TAB_OWNER === $context->tab) {
             unset($columns[self::COL_OWNER]);
+        }
+        if (!$context->showVersionTagColumn) {
+            unset($columns[self::COL_DOCUMENT_VERSION]);
         }
 
         foreach ($columns as $name => &$column) {

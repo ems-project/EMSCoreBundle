@@ -9,6 +9,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Core\Revision\Task\TaskTableContext;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Entity\UserInterface;
@@ -130,6 +131,19 @@ final class TaskRepository extends ServiceEntityRepository
         return $task;
     }
 
+    public function hasVersionedContentType(): bool
+    {
+        $contentTypes = $this->findTaskContentTypes();
+
+        foreach ($contentTypes as $contentType) {
+            if ($contentType->hasVersionTags()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @param string[] $ids
      *
@@ -178,5 +192,24 @@ final class TaskRepository extends ServiceEntityRepository
     {
         $this->_em->persist($task);
         $this->_em->flush();
+    }
+
+    /**
+     * @return ContentType[]
+     */
+    private function findTaskContentTypes(): array
+    {
+        $subQuery = $this->_em->createQueryBuilder();
+        $subQuery
+            ->select('rc.id')
+            ->from(Revision::class, 'r')
+            ->join('r.contentType', 'rc')
+            ->andWhere($subQuery->expr()->isNotNull('r.taskCurrent'));
+
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('c')->from(ContentType::class, 'c')
+            ->andWhere($qb->expr()->in('c.id', $subQuery->getDQL()));
+
+        return $qb->getQuery()->getResult();
     }
 }

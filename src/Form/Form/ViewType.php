@@ -44,7 +44,6 @@ class ViewType extends AbstractType
             ],
         ])
         ->add('role', RolePickerType::class, [
-            'required' => false,
             'row_attr' => [
                 'class' => 'col-md-4',
             ],

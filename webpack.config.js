@@ -3,10 +3,14 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require('copy-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
     plugins: [
         new ManifestPlugin({'publicPath': 'bundles/emscore/'}),
+        new CleanWebpackPlugin({
+            cleanOnceBeforeBuildPatterns: ['**/*', '!static/**'],
+        }),
         new CopyPlugin([
             {
                 from: './assets/images',

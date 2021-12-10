@@ -1,0 +1,19 @@
+{% extends '@EMSCore/data/abstract-revision.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                {{ form_start(form) }}
+                <div class="box-body">
+                    {{ form_row(form.json) }}
+                </div>
+                <div class="box-footer">
+                    {{ form_widget(form.save) }}
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock body %}

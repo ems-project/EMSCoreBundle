@@ -537,6 +537,7 @@ export default class EmsListeners {
             const circleOnly = selectItem.data('circleOnly');
             const dynamicLoading = selectItem.data('dynamic-loading');
             const sortable = selectItem.data('sortable');
+            const locale = selectItem.data('locale');
 
             const params = {
                 escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
@@ -565,6 +566,10 @@ export default class EmsListeners {
                             searchId: searchId,
                             querySearch: querySearch
                         };
+
+                        if (locale !== undefined) {
+                            data.locale = locale;
+                        }
 
                         if (circleOnly !== undefined) {
                             data.circle = circleOnly;

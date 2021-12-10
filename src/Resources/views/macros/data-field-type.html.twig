@@ -1109,12 +1109,10 @@
 			{% endif %}
 		</dt>
 		<dd>
-			{% if dataField.rawData is iterable %}
+			{% if dataField.fieldType.displayOptions.multiple|default(false) %}
+				{% set choices = dataField.fieldType.rawData|default([]) %}
 				<ul>
-					{% for i, p in dataField.rawData|default([]) %}
-						{% set compareI = attribute(compareRawData,dataField.fieldType.name)|default([]) %}
-						<li>{{ diff_text(p, compare, dataField.fieldType.name, attribute(compareI, i)|default ) }}</li>
-					{% endfor %}
+					{{ diff_choice(dataField.rawData, choices, choices, compare, dataField.fieldType.name, compareRawData) }}
 				</ul>
 			{% else %}
 				{{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData) }}

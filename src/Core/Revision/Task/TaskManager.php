@@ -81,6 +81,7 @@ final class TaskManager
     public function getTable(string $ajaxUrl, string $tab, bool $export): EntityTable
     {
         $taskTableContext = new TaskTableContext($this->userService->getCurrentUser(), $tab);
+        $taskTableContext->showVersionTagColumn = $this->taskRepository->hasVersionedContentType();
 
         $table = new EntityTable($this->taskTableService, $ajaxUrl, $taskTableContext);
 

@@ -10,6 +10,7 @@ views.elements.revision-toolbar-html.view-label: 'View this revision'
 views.elements.revision-toolbar-html.edit-draft-label: 'Edit draft'
 views.elements.revision-toolbar-html.cancel-label: Cancel
 views.elements.revision-toolbar-html.cancel-message: 'Cancel last modifications ?'
+views.elements.revision-toolbar-html.edit-revision-json: 'JSON raw edit'
 views.elements.revision-toolbar-html.finalize-draft-message: 'Confirm save and publish ?'
 views.elements.revision-toolbar-html.finalize-draft-label: 'Save and publish in %environment%'
 views.elements.revision-toolbar-html.discard-draft-label: 'Delete this draft'

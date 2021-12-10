@@ -27,6 +27,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,11 +65,14 @@ class EditController extends AbstractController
 
     public function editJsonRevision(Revision $revision, Request $request): Response
     {
-        $this->dataService->lockRevision($revision);
-
+        if (!$this->isGranted($revision->giveContentType()->getEditRole())) {
+            throw new AccessDeniedException($request->getPathInfo());
+        }
         if (!$revision->getDraft()) {
             throw new ElasticmsException($this->translator->trans('log.data.revision.only_draft_can_be_json_edited', LoggingContext::read($revision), EMSCoreBundle::TRANS_DOMAIN));
         }
+
+        $this->dataService->lockRevision($revision);
         if ($request->isMethod('GET') && null != $revision->getAutoSave()) {
             $data = $revision->getAutoSave();
             $this->logger->warning('log.data.revision.load_from_auto_save', LoggingContext::read($revision));

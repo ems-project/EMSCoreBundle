@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Revision;
 
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Core\Revision\DraftInProgress;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -11,9 +12,11 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\ElasticmsException;
+use EMS\CoreBundle\Form\Form\RevisionJsonType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
+use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
@@ -59,6 +62,42 @@ class EditController extends AbstractController
         $this->draftInProgress = $draftInProgress;
     }
 
+    public function editJsonRevision(Revision $revision, Request $request): Response
+    {
+        $this->dataService->lockRevision($revision);
+
+        if (!$revision->getDraft()) {
+            throw new ElasticmsException($this->translator->trans('log.data.revision.only_draft_can_be_json_edited', LoggingContext::read($revision), EMSCoreBundle::TRANS_DOMAIN));
+        }
+        if ($request->isMethod('GET') && null != $revision->getAutoSave()) {
+            $data = $revision->getAutoSave();
+            $this->logger->warning('log.data.revision.load_from_auto_save', LoggingContext::read($revision));
+        } else {
+            $data = $revision->getRawData();
+        }
+
+        $form = $this->createForm(RevisionJsonType::class, [
+            'json' => Json::encode($data, true),
+        ]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $revision->setAutoSave(null);
+            $objectArray = Json::decode($form->get('json')->getData());
+            $this->revisionService->save($revision, $objectArray);
+
+            return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
+                'type' => $revision->giveContentType()->getName(),
+                'ouuid' => $revision->giveOuuid(),
+                'revisionId' => $revision->getId(),
+            ]);
+        }
+
+        return $this->render('@EMSCore/data/edit-json-revision.html.twig', [
+            'revision' => $revision,
+            'form' => $form->createView(),
+        ]);
+    }
+
     public function editRevision(int $revisionId, Request $request): Response
     {
         if (null === $revision = $this->revisionService->find($revisionId)) {
@@ -71,7 +110,7 @@ class EditController extends AbstractController
             throw new NotFoundException('ContentType not found!');
         }
 
-        if ($revision->getEndTime() && !$this->isGranted('ROLE_SUPER')) {
+        if ($revision->getEndTime() && !$this->isGranted(Roles::ROLE_SUPER)) {
             throw new ElasticmsException($this->translator->trans('log.data.revision.only_super_can_finalize_an_archive', LoggingContext::read($revision), EMSCoreBundle::TRANS_DOMAIN));
         }
 

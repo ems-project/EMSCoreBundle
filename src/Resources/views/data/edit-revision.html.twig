@@ -1,19 +1,5 @@
-{% extends '@EMSCore/base.html.twig' %}
+{% extends '@EMSCore/data/abstract-revision.html.twig' %}
 {% trans_default_domain 'emsco-twigs' %}
-
-{% block title %}
-	{%- if revision.labelField -%}
-		{{ 'views.data.edit-revision-html.title'|trans({'%content-type%': revision.contentType.singularName, '%revision%': revision.labelField}) }}
-	{%- elseif revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) is defined -%}
-		{{ 'views.data.edit-revision-html.title'|trans({'%content-type%': revision.contentType.singularName, '%revision%': attribute(revision.rawData, revision.contentType.labelField) }) }}
-	{%- elseif revision.ouuid -%}
-		{{ 'views.data.edit-revision-html.title'|trans({'%content-type%': revision.contentType.singularName, '%revision%': revision.ouuid }) }}
-	{%- else -%}
-		{{ 'views.data.edit-revision-html.new-draft-title'|trans({'%content-type%': revision.contentType.singularName }) }}
-	{%- endif -%}
-{% endblock %}
-
-{% block pagetitle %}{{ block('title') }}{% endblock %}
 
 {% block subtitle %}<small>{{ 'views.data.edit-revision-html.subtitle'|trans }}</small>{% endblock %}
 

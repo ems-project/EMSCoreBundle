@@ -420,10 +420,54 @@ export default class EmsListeners {
     }
 
 
+    onAssetData(row, data){
+        const mainDiv = $(row);
+        const sha1Input = mainDiv.find(".sha1");
+        const metaFields = (typeof mainDiv.data('meta-fields') !== 'undefined');
+        const typeInput = mainDiv.find(".type");
+        const nameInput = mainDiv.find(".name");
+        const assetHashSignature = mainDiv.find(".asset-hash-signature");
+        const dateInput = mainDiv.find(".date");
+        const authorInput = mainDiv.find(".author");
+        const languageInput = mainDiv.find(".language");
+        const contentInput = mainDiv.find(".content");
+        const titleInput = mainDiv.find(".title");
+        const viewButton = mainDiv.find(".view-asset-button");
+        const clearButton = mainDiv.find(".clear-asset-button");
+        const previewTab = mainDiv.find(".asset-preview-tab");
+        const uploadTab = mainDiv.find(".asset-upload-tab");
+        const previewLink = mainDiv.find(".img-responsive");
+        sha1Input.val(data.sha1);
+        assetHashSignature.empty().append(data.sha1);
+        typeInput.val(data.mimetype);
+        nameInput.val(data.filename);
+        viewButton.attr('href', data.view_url);
+        previewLink.attr('src', data.preview_url);
+        dateInput.val('');
+        authorInput.val('');
+        languageInput.val('');
+        contentInput.val('');
+        titleInput.val('');
+        viewButton.removeClass('disabled');
+        clearButton.removeClass('disabled');
+        previewTab.removeClass('hidden');
+        uploadTab.addClass('hidden');
+
+        if(metaFields) {
+            this.fileDataExtrator(row);
+        } else if(typeof this.onChangeCallback === "function"){
+            this.onChangeCallback();
+        }
+    }
+
     addFileUploaderListerners() {
         const target = jquery(this.target);
         const self = this;
         new PickFileFromServer(this.target);
+
+        target.find(".file-uploader-row").on('updateAssetData', function(event) {
+            self.onAssetData(this, event.originalEvent.detail);
+        });
 
         const fileInputs = target.find(".file-uploader-input");
 

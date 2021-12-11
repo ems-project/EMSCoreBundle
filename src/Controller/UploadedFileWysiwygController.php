@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CoreBundle\Core\UI\AjaxService;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Form\Data\BytesTableColumn;
@@ -26,11 +27,13 @@ final class UploadedFileWysiwygController extends AbstractController
 {
     private LoggerInterface $logger;
     private FileService $fileService;
+    private AjaxService $ajax;
 
-    public function __construct(LoggerInterface $logger, FileService $fileService)
+    public function __construct(LoggerInterface $logger, FileService $fileService, AjaxService $ajax)
     {
         $this->logger = $logger;
         $this->fileService = $fileService;
+        $this->ajax = $ajax;
     }
 
     public function ajaxDataTable(Request $request): Response
@@ -56,6 +59,17 @@ final class UploadedFileWysiwygController extends AbstractController
             'form' => $form->createView(),
             'CKEditorFuncNum' => $request->query->get('CKEditorFuncNum') ?: 0,
         ]);
+    }
+
+    public function modal(Request $request): Response
+    {
+        $form = $this->createForm(TableType::class, $this->initTable());
+
+        return $this->ajax->newAjaxModel('@EMSCore/uploaded-file-wysiwyg/modal.html.twig')
+            ->setBody('modalBody', [
+                'form' => $form->createView(),
+            ])
+            ->getResponse();
     }
 
     private function initTable(): EntityTable

@@ -177,5 +177,11 @@
             <argument type="service" id="ems.service.wysiwyg_styles_set" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\UploadedFileWysiwygController" public="true">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.file" />
+            <argument type="service" id="ems_core.core_ui.ajax_service" />
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

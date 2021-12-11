@@ -1,3 +1,5 @@
+import ajaxModal from "./../helper/ajaxModal";
+
 export default class PickFileFromServer {
     constructor(target) {
         const buttons = target.querySelectorAll('button.file-browse-server');
@@ -11,6 +13,6 @@ export default class PickFileFromServer {
     }
 
     onClick(button) {
-        console.log(button);
+        ajaxModal.load({ url: button.dataset.href, title: button.textContent, size: 'lg' });
     }
 }

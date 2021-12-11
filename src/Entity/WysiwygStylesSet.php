@@ -77,6 +77,13 @@ class WysiwygStylesSet
     private $contentCss;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="content_js", type="string", length=2048, nullable=true)
+     */
+    private $contentJs;
+
+    /**
      * @var array<string, mixed>|null
      *
      * @ORM\Column(name="assets", type="json", nullable=true)
@@ -305,5 +312,15 @@ class WysiwygStylesSet
         $this->tableDefaultCss = $tableDefaultCss ?? '';
 
         return $this;
+    }
+
+    public function getContentJs(): ?string
+    {
+        return $this->contentJs;
+    }
+
+    public function setContentJs(?string $contentJs): void
+    {
+        $this->contentJs = $contentJs;
     }
 }

@@ -15,6 +15,10 @@ class AjaxModal {
         }
     }
 
+    close() {
+        this.$modal.modal('hide');
+    }
+
     reset() {
         this.loadingElement.style.display = 'block';
 

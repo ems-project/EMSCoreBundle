@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller;
 
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\UploadedAsset;
@@ -63,6 +64,9 @@ final class UploadedFileWysiwygController extends AbstractController
         $table->addColumn('uploaded-file.index.column.name', 'name')
             ->addHtmlAttribute('data-url', function (UploadedAsset $data) {
                 return EMSLink::EMSLINK_ASSET_PREFIX.$data->getSha1().'?name='.$data->getName().'&type='.$data->getType();
+            })
+            ->addHtmlAttribute('data-json', function (UploadedAsset $data) {
+                return Json::encode($data->getData());
             })
             ->setRoute('ems_file_download', function (UploadedAsset $data) {
                 if (!$data->getAvailable()) {

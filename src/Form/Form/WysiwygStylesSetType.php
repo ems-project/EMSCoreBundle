@@ -31,6 +31,10 @@ class WysiwygStylesSetType extends AbstractType
                 'required' => false,
                 'icon' => 'fa fa-css3',
             ])
+            ->add('contentJs', IconTextType::class, [
+                'required' => false,
+                'icon' => 'fa fa-js',
+            ])
             ->add('tableDefaultCss', IconTextType::class, [
                 'label' => 'form.wysiwyg_style_set.table_default_css.title',
                 'required' => false,

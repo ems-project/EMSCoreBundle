@@ -187,14 +187,6 @@ import JsonMenuNested from "./module/jsonMenuNested";
         });
     }
 
-    function initDatatable() {
-        $('[data-datatable]').each(function(){
-            const table = $(this);
-            const config = table.data('datatable');
-            table.DataTable(config);
-        });
-    }
-
     function initJsonMenu() {
         $('.json_menu_editor_fieldtype').each(function(){ new JsonMenu(this); });
 
@@ -264,7 +256,6 @@ import JsonMenuNested from "./module/jsonMenuNested";
         initCodeEditorThemeAngLanguage();
         autoOpenModal(queryString());
         startPendingJob();
-        initDatatable();
         initAjaxFormSave();
         initJsonMenu();
 

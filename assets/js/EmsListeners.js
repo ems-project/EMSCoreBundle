@@ -7,6 +7,7 @@ import JsonMenuNested from './module/jsonMenuNested';
 import PickFileFromServer from './module/pickFileFromServer';
 import collapse from './helper/collapse';
 import FileUploader from "@elasticms/file-uploader";
+import Datatables from "./module/datatables";
 
 
 export default class EmsListeners {
@@ -25,6 +26,7 @@ export default class EmsListeners {
         this.fileExtractForced = primaryBox.data('file-extract-forced');
         this.hashAlgo = primaryBox.data('hash-algo');
         this.addListeners();
+        new Datatables();
     }
 
     addListeners() {

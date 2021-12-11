@@ -4,6 +4,7 @@ import ace from 'ace-builds/src-noconflict/ace';
 require('icheck');
 import JsonMenu from './module/jsonMenu';
 import JsonMenuNested from './module/jsonMenuNested';
+import PickFileFromServer from './module/pickFileFromServer';
 import collapse from './helper/collapse';
 import FileUploader from "@elasticms/file-uploader";
 
@@ -420,6 +421,7 @@ export default class EmsListeners {
     addFileUploaderListerners() {
         const target = jquery(this.target);
         const self = this;
+        new PickFileFromServer(this.target);
 
         const fileInputs = target.find(".file-uploader-input");
 

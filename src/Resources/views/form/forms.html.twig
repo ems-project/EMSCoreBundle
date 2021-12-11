@@ -143,6 +143,7 @@
 {% endblock emsco_form_table_column_data_user %}
 
 {% block emsco_form_table_column_data_label_prefix -%}
+    <div{{ block('emsco_form_table_column_data_html_atributes')  }}>
     {%- if column.routeName and column.getRouteProperties(line.data)-%}
         <a href="{{ path(column.routeName, column.getRouteProperties(line.data)) }}" {% if column.routeTarget %}target="{{ column.routeTarget }}"{% endif %}>
     {%- elseif column.hasPath(line.data, app.request.baseUrl) -%}
@@ -157,12 +158,11 @@
     {%- if (column.routeName and column.getRouteProperties(line.data)) or column.hasPath(line.data, app.request.baseUrl) -%}
         </a>
     {%- endif -%}
+    </div>
 {% endblock emsco_form_table_column_data_label_suffix -%}
 
 {% block emsco_form_table_column_data_html_atributes %}
-    {% for key, value in column.htmlAttributes(line.data) %}
-        {{ key }}="{{ value }}" 
-    {% endfor %}
+    {%- for key, value in column.htmlAttributes(line.data) %} {{ key }}="{{ value }}"{% endfor -%}
 {% endblock emsco_form_table_column_data_html_atributes %}
 
 {% block emsco_form_table_column_data_value %}
@@ -175,7 +175,7 @@
 {% endblock emsco_form_table_column_data_value %}
 
 {% block emsco_form_table_column_data %}
-    <td {{ column.htmlAttributes(line.data)|length > 0 ? block('emsco_form_table_column_data_html_atributes') : ''}}>
+    <td>
         {{ block(column.tableDataValueBlock()) }}
     </td>
 {% endblock emsco_form_table_column_data %}

@@ -13,7 +13,7 @@
         {% endif %}
     {% endapply %}
 </head>
-<body>
+<body class="wysiwyg-preview">
 {% if null != styleSet.contentJs %}
     <script src="{{ asset(styleSet.contentJs, styleSet.saveDir == null ? 'emsch' : null) }}"></script>
 {% endif %}

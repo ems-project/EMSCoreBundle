@@ -698,6 +698,7 @@ view.form.fields.asset.move-button: Move
 view.form.fields.asset.preview: 'File preview of field %label%'
 view.form.fields.asset.remove-button: Remove
 view.form.fields.asset.upload-file: 'Upload file'
+view.form.fields.asset.browse-server: 'Pick a file from the server'
 view.form.fields.asset.upload-files: 'Upload files'
 view.form.fields.asset.view-button: View
 view.form-submission.index.title: 'Form Submissions Overview'

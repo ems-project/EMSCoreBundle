@@ -251,4 +251,17 @@ class CollectionFieldType extends DataFieldType
 
         return $out;
     }
+
+    /**
+     * @param string $name
+     *
+     * @return array<string, mixed>
+     */
+    public function getDefaultOptions($name): array
+    {
+        $out = parent::getDefaultOptions($name);
+        $out['mappingOptions']['renumbering'] = true;
+
+        return $out;
+    }
 }

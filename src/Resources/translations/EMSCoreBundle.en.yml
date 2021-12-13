@@ -528,8 +528,9 @@ task.create.submit: 'Create task'
 task.create.success: 'Task "%title%" successfully created.'
 task.create.title: 'Add a new task'
 task.dashboard.action.change_owner: 'Change owner'
-task.dashboard.action.edit_revision: 'Edit to revision'
-task.dashboard.action.go_revision: 'Go to revision'
+task.dashboard.action.edit_revision: 'Edit revision'
+task.dashboard.action.go_revision: 'Revision'
+task.dashboard.column.version: Version
 task.dashboard.column.actions: Actions
 task.dashboard.column.assignee: Assignee
 task.dashboard.column.deadline: Deadline
@@ -551,6 +552,7 @@ task.field.title: Title
 task.finished.hide: 'Hide finished tasks (%number%)'
 task.finished.show: 'Show finished tasks (%number%)'
 task.for: for
+task.close: Close
 task.history: History
 task.in_progress: 'This task is '
 task.info.change_order: 'Change task order'
@@ -585,7 +587,7 @@ task.validation.approve: Approve
 task.validation.comment: 'Comment for validation'
 task.validation.done: Finish
 task.validation.reject: Reject
-task.validation.request: 'Send for validation'
+task.validation.send: 'Send'
 uploaded-file.action.download_selected: 'Download selected'
 uploaded-file.action.hide-show: Hide/Show
 uploaded-file.action.soft-delete: Delete
@@ -696,6 +698,7 @@ view.form.fields.asset.move-button: Move
 view.form.fields.asset.preview: 'File preview of field %label%'
 view.form.fields.asset.remove-button: Remove
 view.form.fields.asset.upload-file: 'Upload file'
+view.form.fields.asset.browse-server: 'Pick a file from the server'
 view.form.fields.asset.upload-files: 'Upload files'
 view.form.fields.asset.view-button: View
 view.form-submission.index.title: 'Form Submissions Overview'

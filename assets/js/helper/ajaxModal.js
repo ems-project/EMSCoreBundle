@@ -15,6 +15,10 @@ class AjaxModal {
         }
     }
 
+    close() {
+        this.$modal.modal('hide');
+    }
+
     reset() {
         this.loadingElement.style.display = 'block';
 
@@ -100,7 +104,7 @@ class AjaxModal {
     ajaxReady(json, request, callback) {
         if (request.status === 200) {
             if (json.hasOwnProperty('modalClose') && json.modalClose === true) {
-                if (typeof callback === 'function') { callback(json, request); };
+                if (typeof callback === 'function') { callback(json, request, this.modal); };
                 this.$modal.modal('hide');
                 return;
             }
@@ -143,7 +147,7 @@ class AjaxModal {
                 });
             }
 
-            if (typeof callback === 'function') { callback(json, request); };
+            if (typeof callback === 'function') { callback(json, request, this.modal); };
         } else {
             this.printMessage('error', 'Error loading ...');
         }

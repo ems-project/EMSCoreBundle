@@ -12,6 +12,7 @@ final class TaskTableContext
     public string $tab;
     /** @var array<string, string> */
     public array $columns = [];
+    public bool $showVersionTagColumn = false;
 
     public function __construct(UserInterface $user, string $tab)
     {

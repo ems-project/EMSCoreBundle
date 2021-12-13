@@ -8,6 +8,10 @@
         <default key="_controller">EMS\CoreBundle\Controller\UploadedFileWysiwygController:index</default>
     </route>
 
+    <route id="ems_core_uploaded_file_wysiwyg_modal" path="/modal" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\UploadedFileWysiwygController:modal</default>
+    </route>
+
     <route id="ems_core_uploaded_file_wysiwyg_ajax" path="/datatable.json" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\UploadedFileWysiwygController:ajaxDataTable</default>
     </route>

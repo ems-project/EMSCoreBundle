@@ -9,3 +9,15 @@ If you call a route that is returning a RedirectionResponse, i.e. the `revision.
 ```
 
 This will reroute the RedirectResponse to view `2` after having published the revision `revisionId` in the environment `liveId`.
+
+
+## Catch the iframe load event in the StyleSet JS appplication
+
+When you activate the iframe preview the JS script (if specified) is loaded before that the DOM is injected. If you want of execute some actions after that the DOM is updated you can listen to the `ems-preview` event.
+
+```javascript
+document.addEventListener('ems-preview', function (event){
+    console.log('ems-preview loaded!');
+    drawioPreviewer();
+});
+```

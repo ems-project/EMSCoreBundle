@@ -17,8 +17,11 @@ export default class IframePreview {
     loadBody(iframe) {
         const body = iframe.getAttribute('data-iframe-body');
         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        iframeDoc.body.innerHTML = body;
+        iframeDoc.body.insertAdjacentHTML('afterbegin', body+iframeDoc.body.innerHTML);
         this.adjustHeight(iframe);
+        const emsPreview = iframeDoc.createEvent('Event');
+        emsPreview.initEvent('ems-preview', true, true);
+        iframeDoc.dispatchEvent(emsPreview);
     }
 
     adjustHeight(iframe) {
@@ -41,7 +44,7 @@ export default class IframePreview {
             iframe.addEventListener('load', function () {
                 self.loadBody(iframe);
             });
-            window.addEventListener('resize',function () {
+            iframe.contentWindow.addEventListener('resize',function () {
                 self.adjustHeight(iframe);
             });
         });

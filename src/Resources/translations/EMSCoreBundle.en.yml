@@ -281,7 +281,6 @@ log.data.revision.can_finalized_as_pending_auto_save: 'The document ems://object
 log.data.revision.can_finalized_error: 'The document ems://object:%contenttype%:%ouuid% can''t be finalized due to an error: %error_message%'
 log.data.revision.cant_delete_has_published: 'The document ems://object:%contenttype%:%ouuid% can''t be deleted as the revision ems://revision:%revision_id% is published in %published_in%'
 log.data.revision.compare: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id%'
-log.data.revision.compare_beta: 'The comparaison tools between two revisions is a beta functionality'
 log.data.revision.compare_more_recent: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id%, wich one is more recent'
 log.data.revision.compare_revision_not_found: 'Impossible to compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision id %compare_revision_id% as this revision does not exists'
 log.data.revision.finalized: 'The revision ems://revision:%revision_id% has been finalized in %environment% for the document ems://object:%contenttype%:%ouuid%'

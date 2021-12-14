@@ -368,8 +368,6 @@ class DataController extends AppController
 
         $compareData = false;
         if ($compareId) {
-            $logger->warning('log.data.revision.compare_beta', []);
-
             try {
                 /** @var Revision $compareRevision */
                 $compareRevision = $repository->findOneById($compareId);

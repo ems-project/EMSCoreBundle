@@ -29,15 +29,15 @@ class ObjectChoiceListItem
 
         if (null !== $contentType) {
             $labelField = $contentType->getLabelField();
-            if (null !== $labelField && isset($source[$labelField])) {
+            if (null !== $labelField && isset($source[$labelField]) && null !== $source[$labelField]) {
                 $this->title = \strval($source[$labelField]);
             }
             $categoryField = $contentType->getCategoryField();
-            if (null !== $categoryField && isset($source[$categoryField])) {
+            if (null !== $categoryField && isset($source[$categoryField]) && null !== $source[$categoryField]) {
                 $this->group = \strval($source[$categoryField]);
             }
             $colorField = $contentType->getColorField();
-            if (null !== $colorField && isset($source[$colorField])) {
+            if (null !== $colorField && isset($source[$colorField]) && null !== $source[$colorField]) {
                 $this->color = \strval($source[$colorField]);
             }
             $contentTypeIcon = $contentType->getIcon();

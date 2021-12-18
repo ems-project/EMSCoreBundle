@@ -9,6 +9,7 @@ use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\FormSubmissionRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 use EMS\CoreBundle\Service\TemplateService;
+use EMS\SubmissionBundle\Request\DatabaseRequest;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -183,7 +184,7 @@ final class FormSubmissionService implements EntityServiceInterface
 
         $this->session->getFlashBag()->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $formSubmission->getId()], 'EMSCoreBundle'));
 
-        $formSubmission->process($user);
+        $formSubmission->process($user->getUsername());
         $this->formSubmissionRepository->save($formSubmission);
     }
 
@@ -200,7 +201,7 @@ final class FormSubmissionService implements EntityServiceInterface
 
         foreach ($ids as $id) {
             $formSubmission = $this->getById($id);
-            $formSubmission->process($user);
+            $formSubmission->process($user->getUsername());
             $this->formSubmissionRepository->persist($formSubmission);
 
             $this->session->getFlashBag()->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $id], 'EMSCoreBundle'));
@@ -212,7 +213,7 @@ final class FormSubmissionService implements EntityServiceInterface
     /**
      * @return array{submission_id: string}
      */
-    public function submit(FormSubmissionRequest $submitRequest): array
+    public function submit(DatabaseRequest $submitRequest): array
     {
         $formSubmission = new FormSubmission($submitRequest);
 

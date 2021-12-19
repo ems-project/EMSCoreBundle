@@ -301,13 +301,20 @@
                         </table>
                     </div>
                 </div>
-                {% if table.supportsTableActions %}
+                {% if table.supportsTableActions or toolbar is defined %}
                     <div class="box-footer with-border">
-                        <div class="btn-group">
-                            {% for action in table.tableActions %}
-                                {{ form_widget(attribute(form, action.name)) }}
-                            {% endfor %}
-                        </div>
+                        {% if table.supportsTableActions %}
+                            <div class="btn-group">
+                                {% for action in table.tableActions %}
+                                    {{ form_widget(attribute(form, action.name)) }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if toolbar is defined %}
+                            <div class="btn-group">
+                                {{ toolbar }}
+                            </div>
+                        {% endif %}
                     </div>
                 {% endif %}
             </div>

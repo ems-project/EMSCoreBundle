@@ -25,6 +25,10 @@
     <route id="emsco_user_api_key" path="/api-key/{username}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\UserController:apiKey</default>
     </route>
+    <route id="emsco_user_spreadsheet_export" path="/users.{_format}" methods="GET">
+        <requirement key="_format">csv|xlsx</requirement>
+        <default key="_controller">EMS\CoreBundle\Controller\UserController:spreadsheetExport</default>
+    </route>
 
 
 

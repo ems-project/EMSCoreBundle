@@ -4,7 +4,9 @@
 
 {% block body %}
     {%  set toolbar %}
-        <a class="btn btn-primary" href="{{ path(add_user_route) }}"><i class="fa fa-plus"></i> {{ 'Add user'|trans }}</a>
+        <a class="btn btn-primary" href="{{ path(add_user_route) }}"><i class="fa fa-plus"></i> {{ 'user.add.button'|trans }}</a>
+        <a class="btn btn-default" href="{{ path('emsco_user_spreadsheet_export', {_format: 'xlsx'}) }}"><i class="fa fa-file-excel-o"></i> {{ 'user.export.excel'|trans }}</a>
+        <a class="btn btn-default" href="{{ path('emsco_user_spreadsheet_export', {_format: 'csv'}) }}"><i class="fa fa-file-text-o"></i> {{ 'user.export.csv'|trans }}</a>
     {%  endset %}
 
     {% form_theme form '@EMSCore/form/forms.html.twig' %}

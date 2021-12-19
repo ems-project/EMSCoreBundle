@@ -195,4 +195,9 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
      * @return string
      */
     public function getEmail();
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastLogin();
 }

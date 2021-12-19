@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
@@ -43,13 +44,15 @@ class UserController extends AbstractController
     private UserService $userService;
     private UserManagerInterface $userManager;
     private LoggerInterface $logger;
+    private SpreadsheetGeneratorServiceInterface $spreadsheetGenerator;
 
-    public function __construct(LoggerInterface $logger, ?string $circleObject, UserService $userService, UserManagerInterface $userManager)
+    public function __construct(LoggerInterface $logger, ?string $circleObject, UserService $userService, UserManagerInterface $userManager, SpreadsheetGeneratorServiceInterface $spreadsheetGenerator)
     {
         $this->circleObject = $circleObject;
         $this->logger = $logger;
         $this->userService = $userService;
         $this->userManager = $userManager;
+        $this->spreadsheetGenerator = $spreadsheetGenerator;
     }
 
     public function ajaxDataTableAction(Request $request): Response
@@ -353,6 +356,37 @@ class UserController extends AbstractController
 
         return $this->render('@EMSCore/ajax/notification.json.twig', [
             'success' => true,
+        ]);
+    }
+
+    public function spreadsheetExport(string $_format): Response
+    {
+        $rows = [['username', 'display name', 'notification', 'email', 'enabled', 'last login', 'roles']];
+        foreach ($this->userService->getAllUsers() as $user) {
+            $lastLogin = $user->getLastLogin();
+            if (null !== $lastLogin) {
+                $lastLogin = $lastLogin->format('c');
+            } else {
+                $lastLogin = '';
+            }
+            $rows[] = [
+                $user->getUsername(),
+                $user->getDisplayName(),
+                $user->getEmailNotification() ? 'Y' : 'N',
+                $user->getEmail(),
+                $user->isEnabled() ? 'Y' : 'N',
+                $lastLogin,
+                \implode(', ', $user->getRoles()),
+            ];
+        }
+
+        return $this->spreadsheetGenerator->generateSpreadsheet([
+            SpreadsheetGeneratorServiceInterface::SHEETS => [[
+                'name' => 'Users',
+                'rows' => $rows,
+            ]],
+            SpreadsheetGeneratorServiceInterface::CONTENT_FILENAME => 'users',
+            SpreadsheetGeneratorServiceInterface::WRITER => $_format,
         ]);
     }
 

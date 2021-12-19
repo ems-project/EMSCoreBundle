@@ -201,7 +201,10 @@ class UserService implements EntityServiceInterface
         $em->remove($user);
     }
 
-    public function getAllUsers()
+    /**
+     * @return UserInterface[]
+     */
+    public function getAllUsers(): array
     {
         return $this->userRepository->findBy([
                 'enabled' => true,

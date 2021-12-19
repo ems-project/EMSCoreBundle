@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Form\Submission;
 
-use EMS\CoreBundle\Entity\FormSubmission;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\FormSubmissionRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 use EMS\CoreBundle\Service\TemplateService;
+use EMS\SubmissionBundle\Entity\FormSubmission;
 use EMS\SubmissionBundle\Request\DatabaseRequest;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\StreamedResponse;

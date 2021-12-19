@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
-use EMS\CoreBundle\Entity\EntityInterface;
+use EMS\SubmissionBundle\Entity\EntityInterface;
 
 final class EntityRow implements TableRowInterface
 {

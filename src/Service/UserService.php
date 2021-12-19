@@ -33,7 +33,7 @@ class UserService implements EntityServiceInterface
     public const DONT_DETACH = false;
     private SearchRepository $searchRepository;
 
-    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, Security $security, SearchRepository $searchRepository, $securityRoles)
+    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, Security $security, UserRepository $userRepository, SearchRepository $searchRepository, $securityRoles)
     {
         $this->doctrine = $doctrine;
         $this->tokenStorage = $tokenStorage;
@@ -41,7 +41,7 @@ class UserService implements EntityServiceInterface
         $this->securityRoles = $securityRoles;
         $this->security = $security;
         $this->searchRepository = $searchRepository;
-        $this->userRepository = $doctrine->getManager()->getRepository(User::class);
+        $this->userRepository = $userRepository;
     }
 
     public function searchUser(string $search): ?UserInterface

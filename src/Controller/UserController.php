@@ -309,7 +309,7 @@ class UserController extends AppController
 
     public function apiKey(string $username, LoggerInterface $logger, UserService $userService): Response
     {
-        $user = $userService->getUser($username, false);
+        $user = $userService->giveUser($username, false);
 
         $roles = $user->getRoles();
         if (!\in_array('ROLE_API', $roles)) {
@@ -339,9 +339,9 @@ class UserController extends AppController
         return $this->redirectToRoute('ems.user.index');
     }
 
-    public function sidebarCollapseAction($collapsed, UserService $userService): Response
+    public function sidebarCollapseAction(bool $collapsed, UserService $userService): Response
     {
-        $user = $userService->getUser($userService->getCurrentUser()->getUsername(), false);
+        $user = $userService->giveUser($userService->getCurrentUser()->getUsername(), false);
         $user->setSidebarCollapse($collapsed);
 
         /** @var EntityManager $em */

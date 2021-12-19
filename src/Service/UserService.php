@@ -113,7 +113,17 @@ class UserService implements EntityServiceInterface
         return $user;
     }
 
-    public function getUser($username, $detachIt = true)
+    public function giveUser(string $username, bool $detachIt = true): UserInterface
+    {
+        $user = $this->getUser($username, $detachIt);
+        if (null === $user) {
+            throw new \RuntimeException('Unexpected null user object');
+        }
+
+        return $user;
+    }
+
+    public function getUser($username, $detachIt = true): ?UserInterface
     {
         $em = $this->doctrine->getManager();
         /** @var \Doctrine\ORM\EntityRepository */
@@ -121,8 +131,14 @@ class UserService implements EntityServiceInterface
         $user = $repository->findOneBy([
                 'username' => $username,
         ]);
+        if (null === $user) {
+            return null;
+        }
+        if (!$user instanceof UserInterface) {
+            throw new \RuntimeException(\sprintf('Unknown user object class: %s', \get_class($user)));
+        }
 
-        if (empty($user) || !$detachIt) {
+        if (!$detachIt) {
             return $user;
         }
 
@@ -147,6 +163,9 @@ class UserService implements EntityServiceInterface
 
         if (null === $this->currentUser && $token->getUser() instanceof CoreLdapUser) {
             $this->currentUser = $token->getUser();
+        }
+        if (null === $this->currentUser) {
+            throw new \RuntimeException('Unexpected null user object');
         }
 
         return $this->currentUser;

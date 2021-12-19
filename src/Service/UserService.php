@@ -12,7 +12,6 @@ use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Repository\UserRepository;
 use EMS\CoreBundle\Repository\UserRepositoryInterface;
 use EMS\CoreBundle\Security\CoreLdapUser;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -20,8 +19,6 @@ class UserService implements EntityServiceInterface
 {
     /** @var Registry */
     private $doctrine;
-    /** @var Session */
-    private $session;
     /** @var TokenStorageInterface */
     private $tokenStorage;
 
@@ -36,10 +33,9 @@ class UserService implements EntityServiceInterface
     public const DONT_DETACH = false;
     private SearchRepository $searchRepository;
 
-    public function __construct(Registry $doctrine, Session $session, TokenStorageInterface $tokenStorage, Security $security, SearchRepository $searchRepository, $securityRoles)
+    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, Security $security, SearchRepository $searchRepository, $securityRoles)
     {
         $this->doctrine = $doctrine;
-        $this->session = $session;
         $this->tokenStorage = $tokenStorage;
         $this->currentUser = null;
         $this->securityRoles = $securityRoles;

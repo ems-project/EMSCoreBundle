@@ -200,4 +200,9 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
      * @return \DateTime|null
      */
     public function getLastLogin();
+
+    /**
+     * @return array{id: int|string, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}
+     */
+    public function toArray(): array;
 }

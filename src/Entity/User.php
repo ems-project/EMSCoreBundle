@@ -149,7 +149,7 @@ class User extends BaseUser implements UserInterface, EntityInterface
     }
 
     /**
-     * @return array{id: int, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}
+     * @return array{id: int|string, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}
      */
     public function toArray(): array
     {

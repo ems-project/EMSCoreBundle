@@ -211,6 +211,14 @@ class UserService implements EntityServiceInterface
         ]);
     }
 
+    /**
+     * @return UserInterface[]
+     */
+    public function getAll(): array
+    {
+        return $this->userRepository->findAll();
+    }
+
     public function getsecurityRoles()
     {
         return $this->securityRoles;

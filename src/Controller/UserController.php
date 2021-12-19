@@ -362,7 +362,7 @@ class UserController extends AbstractController
     public function spreadsheetExport(string $_format): Response
     {
         $rows = [['username', 'display name', 'notification', 'email', 'enabled', 'last login', 'roles']];
-        foreach ($this->userService->getAllUsers() as $user) {
+        foreach ($this->userService->getAll() as $user) {
             $lastLogin = $user->getLastLogin();
             if (null !== $lastLogin) {
                 $lastLogin = $lastLogin->format('c');

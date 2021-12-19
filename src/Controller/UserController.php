@@ -4,8 +4,6 @@ namespace EMS\CoreBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -34,10 +32,8 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AppController
 {
@@ -55,9 +51,6 @@ class UserController extends AppController
         $this->userService = $userService;
     }
 
-    /**
-     * @Route("/user/datatable.json", name="ems_core_user_ajax_data_table")
-     */
     public function ajaxDataTableAction(Request $request): Response
     {
         $table = $this->initTable();
@@ -70,12 +63,7 @@ class UserController extends AppController
         ], new JsonResponse());
     }
 
-    /**
-     * @Route("/user", name="ems.user.index")
-     *
-     * @return Response
-     */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request): Response
     {
         $table = $this->initTable();
 
@@ -87,12 +75,7 @@ class UserController extends AppController
         ]);
     }
 
-    /**
-     * @Route("/user/add", name="user.add")
-     *
-     * @return Response
-     */
-    public function addUserAction(Request $request, UserService $userService, UserManagerInterface $userManager)
+    public function addUserAction(Request $request, UserService $userService, UserManagerInterface $userManager): Response
     {
         $user = new User();
 
@@ -179,21 +162,13 @@ class UserController extends AppController
         ]);
     }
 
-    /**
-     * @param int $id
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/user/{id}/edit", name="user.edit")
-     */
-    public function editUserAction($id, Request $request, LoggerInterface $logger, UserService $userService)
+    public function editUserAction(User $id, Request $request, LoggerInterface $logger, UserService $userService): Response
     {
-        $user = $userService->getUserById($id);
-        // test if user exist before modified it
-        if (!$user) {
-            throw $this->createNotFoundException('user not found');
-        }
+        return $this->edit($id, $request, $logger, $userService);
+    }
 
+    public function edit(User $user, Request $request, LoggerInterface $logger, UserService $userService): Response
+    {
         $form = $this->createFormBuilder($user)
             ->add('email', EmailType::class, [
                 'label' => 'form.email',
@@ -284,21 +259,13 @@ class UserController extends AppController
         ]);
     }
 
-    /**
-     * @param int $id
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/user/{id}/delete", name="user.delete")
-     */
-    public function removeUserAction($id, LoggerInterface $logger, UserService $userService)
+    public function removeUserAction(User $id, LoggerInterface $logger, UserService $userService): Response
     {
-        $user = $userService->getUserById($id);
-        // test if user exist before modified it
-        if (!$user) {
-            throw $this->createNotFoundException('user not found');
-        }
+        return $this->delete($id, $logger, $userService);
+    }
 
+    public function delete(User $user, LoggerInterface $logger, UserService $userService): Response
+    {
         $username = $user->getUsername();
         $displayName = $user->getDisplayName();
         $userService->deleteUser($user);
@@ -313,21 +280,8 @@ class UserController extends AppController
         return $this->redirectToRoute('ems.user.index');
     }
 
-    /**
-     * @param int $id
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/user/{id}/enabling", name="user.enabling")
-     */
-    public function enablingUserAction($id, LoggerInterface $logger, UserService $userService)
+    public function enabling(User $user, LoggerInterface $logger, UserService $userService): Response
     {
-        $user = $userService->getUserById($id);
-        // test if user exist before modified it
-        if (!$user) {
-            throw $this->createNotFoundException('user not found');
-        }
-
         if ($user->isEnabled()) {
             $user->setEnabled(false);
             $message = 'log.user.disabled';
@@ -348,52 +302,12 @@ class UserController extends AppController
         return $this->redirectToRoute('ems.user.index');
     }
 
-    /**
-     * @param int $id
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/user/{id}/locking", name="user.locking")
-     */
-    public function lockingUserAction($id, LoggerInterface $logger, UserService $userService)
+    public function apiKeyAction(string $username, LoggerInterface $logger, UserService $userService): Response
     {
-        $user = $userService->getUserById($id);
-        // test if user exist before modified it
-        if (!$user) {
-            throw $this->createNotFoundException('user not found');
-        }
-
-        if ($user->isLocked()) {
-            $user->setLocked(false);
-            $message = 'log.user.unlocked';
-        } else {
-            $user->setLocked(true);
-            $message = 'log.user.locked';
-        }
-
-        $userService->updateUser($user);
-        $this->getDoctrine()->getManager()->flush();
-
-        $logger->notice($message, [
-            'username_managed' => $user->getUsername(),
-            'user_display_name' => $user->getDisplayName(),
-            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-        ]);
-
-        return $this->redirectToRoute('ems.user.index');
+        return $this->apiKey($username, $logger, $userService);
     }
 
-    /**
-     * @param string $username
-     *
-     * @return RedirectResponse
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/user/{username}/apikey", name="EMS_user_apikey", methods={"POST"})
-     */
-    public function apiKeyAction($username, LoggerInterface $logger, UserService $userService)
+    public function apiKey(string $username, LoggerInterface $logger, UserService $userService): Response
     {
         $user = $userService->getUser($username, false);
 
@@ -425,17 +339,7 @@ class UserController extends AppController
         return $this->redirectToRoute('ems.user.index');
     }
 
-    /**
-     * @param bool $collapsed
-     *
-     * @return Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/profile/sidebar-collapse/{collapsed}", name="user.sidebar-collapse", methods={"POST"})
-     */
-    public function sidebarCollapseAction($collapsed, UserService $userService)
+    public function sidebarCollapseAction($collapsed, UserService $userService): Response
     {
         $user = $userService->getUser($userService->getCurrentUser()->getUsername(), false);
         $user->setSidebarCollapse($collapsed);
@@ -455,9 +359,6 @@ class UserController extends AppController
         return $userService->getExistingRoles();
     }
 
-    /**
-     * Test if email or username exist return on add or edit Form.
-     */
     private function userExist(User $user, string $action, UserManagerInterface $userManager): bool
     {
         $exists = ['email' => $userManager->findUserByEmail($user->getEmail()), 'username' => $userManager->findUserByUsername($user->getUsername())];

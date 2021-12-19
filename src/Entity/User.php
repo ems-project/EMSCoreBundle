@@ -11,7 +11,6 @@ use FOS\UserBundle\Model\User as BaseUser;
 /**
  * @ORM\Entity
  * @ORM\Table(name="`user`")
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class User extends BaseUser implements UserInterface, EntityInterface

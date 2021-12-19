@@ -10,7 +10,6 @@ use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Repository\UserRepository;
-use EMS\CoreBundle\Repository\UserRepositoryInterface;
 use EMS\CoreBundle\Security\CoreLdapUser;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
@@ -78,10 +77,7 @@ class UserService implements EntityServiceInterface
 
     public function getUserById($id)
     {
-        $em = $this->doctrine->getManager();
-        /** @var \Doctrine\ORM\EntityRepository */
-        $repository = $em->getRepository('EMSCoreBundle:User');
-        $user = $repository->findOneBy([
+        $user = $this->userRepository->findOneBy([
                 'id' => $id,
         ]);
 
@@ -90,10 +86,7 @@ class UserService implements EntityServiceInterface
 
     public function findUserByEmail($email)
     {
-        $em = $this->doctrine->getManager();
-        /** @var \Doctrine\ORM\EntityRepository */
-        $repository = $em->getRepository('EMSCoreBundle:User');
-        $user = $repository->findOneBy([
+        $user = $this->userRepository->findOneBy([
                 'email' => $email,
         ]);
 
@@ -122,9 +115,7 @@ class UserService implements EntityServiceInterface
     public function getUser($username, $detachIt = true): ?UserInterface
     {
         $em = $this->doctrine->getManager();
-        /** @var \Doctrine\ORM\EntityRepository */
-        $repository = $em->getRepository('EMSCoreBundle:User');
-        $user = $repository->findOneBy([
+        $user = $this->userRepository->findOneBy([
                 'username' => $username,
         ]);
         if (null === $user) {
@@ -200,13 +191,7 @@ class UserService implements EntityServiceInterface
 
     public function getUsersForRoleAndCircles($role, $circles)
     {
-        /** @var EntityManagerInterface $em */
-        $em = $this->doctrine->getManager();
-
-        /** @var UserRepositoryInterface $repository */
-        $repository = $em->getRepository('EMSCoreBundle:User');
-
-        return $repository->findForRoleAndCircles($role, $circles);
+        return $this->userRepository->findForRoleAndCircles($role, $circles);
     }
 
     public function deleteUser(UserInterface $user)
@@ -218,11 +203,7 @@ class UserService implements EntityServiceInterface
 
     public function getAllUsers()
     {
-        $em = $this->doctrine->getManager();
-        /** @var \Doctrine\ORM\EntityRepository */
-        $repository = $em->getRepository('EMSCoreBundle:User');
-
-        return $repository->findBy([
+        return $this->userRepository->findBy([
                 'enabled' => true,
         ]);
     }

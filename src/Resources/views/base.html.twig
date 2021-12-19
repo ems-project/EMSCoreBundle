@@ -181,7 +181,7 @@
                 </div>
                 <div class="pull-right">
                		{% if is_granted('ROLE_PREVIOUS_ADMIN') %}
-               			<a href="{{ path('ems.user.index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat">{{ 'Exit'|trans }}</a>
+               			<a href="{{ path('emsco_user_index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat">{{ 'Exit'|trans }}</a>
                		{% else %}
                			<a href="{{ path(user_logout_route) }}" class="btn btn-default btn-flat">{{ 'Sign out'|trans }}</a>
                		{% endif %}

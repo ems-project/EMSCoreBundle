@@ -19,6 +19,7 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\UserService;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -151,7 +152,7 @@ class UserController extends AbstractController
                     'User created!'
                 );
 
-                return $this->redirectToRoute('ems.user.index');
+                return $this->redirectToRoute(Routes::USER_INDEX);
             }
         }
 
@@ -249,7 +250,7 @@ class UserController extends AbstractController
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
             ]);
 
-            return $this->redirectToRoute('ems.user.index');
+            return $this->redirectToRoute(Routes::USER_INDEX);
         }
 
         return $this->render('@EMSCore/user/edit.html.twig', [
@@ -276,7 +277,7 @@ class UserController extends AbstractController
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
         ]);
 
-        return $this->redirectToRoute('ems.user.index');
+        return $this->redirectToRoute(Routes::USER_INDEX);
     }
 
     public function enabling(User $user): Response
@@ -298,7 +299,7 @@ class UserController extends AbstractController
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
         ]);
 
-        return $this->redirectToRoute('ems.user.index');
+        return $this->redirectToRoute(Routes::USER_INDEX);
     }
 
     public function apiKeyAction(string $username): Response
@@ -335,7 +336,7 @@ class UserController extends AbstractController
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
         ]);
 
-        return $this->redirectToRoute('ems.user.index');
+        return $this->redirectToRoute(Routes::USER_INDEX);
     }
 
     public function sidebarCollapseAction(bool $collapsed): Response
@@ -383,7 +384,7 @@ class UserController extends AbstractController
 
     private function initTable(): EntityTable
     {
-        $table = new EntityTable($this->userService, $this->generateUrl('ems_core_user_ajax_data_table'));
+        $table = new EntityTable($this->userService, $this->generateUrl(Routes::USER_AJAX_DATA_TABLE));
         $table->addColumn('user.index.column.username', 'username');
         $table->addColumn('user.index.column.displayname', 'displayName');
         $table->addColumnDefinition(new BoolTableColumn('user.index.column.email_notification', 'emailNotification'))
@@ -394,11 +395,11 @@ class UserController extends AbstractController
         $table->addColumnDefinition(new RolesTableColumn('user.index.column.roles', 'roles'));
         $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.lastLogin', 'lastLogin'));
 
-        $table->addDynamicItemGetAction('user.edit', 'user.action.edit', 'pencil', ['id' => 'id']);
+        $table->addDynamicItemGetAction(Routes::USER_EDIT, 'user.action.edit', 'pencil', ['user' => 'id']);
         $table->addDynamicItemGetAction('homepage', 'user.action.switch', 'user-secret', ['_switch_user' => 'username']);
-        $table->addDynamicItemPostAction('user.enabling', 'user.action.disable', 'user-times', 'user.action.disable_confirm', ['id' => 'id']);
-        $table->addDynamicItemPostAction('EMS_user_apikey', 'user.action.generate_api', 'key', 'user.action.generate_api_confirm', ['username' => 'username']);
-        $table->addDynamicItemPostAction('user.delete', 'user.action.delete', 'trash', 'user.action.delete_confirm', ['id' => 'id']);
+        $table->addDynamicItemPostAction(Routes::USER_ENABLING, 'user.action.disable', 'user-times', 'user.action.disable_confirm', ['user' => 'id']);
+        $table->addDynamicItemPostAction(Routes::USER_API_KEY, 'user.action.generate_api', 'key', 'user.action.generate_api_confirm', ['username' => 'username']);
+        $table->addDynamicItemPostAction(Routes::USER_DELETE, 'user.action.delete', 'trash', 'user.action.delete_confirm', ['user' => 'id']);
 
         return $table;
     }

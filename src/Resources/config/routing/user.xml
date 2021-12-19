@@ -16,6 +16,9 @@
     <route id="emsco_user_edit" path="/edit/{user}" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\UserController:edit</default>
     </route>
+    <route id="emsco_user_delete" path="/delete/{user}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\UserController:edit</default>
+    </route>
     <route id="emsco_user_enabling" path="/enabling/{user}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\UserController:enabling</default>
     </route>

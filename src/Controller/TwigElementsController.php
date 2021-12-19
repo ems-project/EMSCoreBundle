@@ -117,7 +117,7 @@ class TwigElementsController extends AbstractController
         if (!$this->isGranted('ROLE_USER_MANAGEMENT')) {
             return $menu;
         }
-        $menu->addChild('views.elements.side-menu-html.users', 'fa fa-users', 'ems.user.index')->setTranslation([]);
+        $menu->addChild('views.elements.side-menu-html.users', 'fa fa-users', Routes::USER_INDEX)->setTranslation([]);
 
         return $menu;
     }

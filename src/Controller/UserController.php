@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Controller;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
@@ -24,31 +23,30 @@ use EMS\CoreBundle\Service\UserService;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserController extends AppController
+class UserController extends AbstractController
 {
-    /**
-     * @var string|null
-     */
-    private $circleObject;
-
+    private ?string $circleObject;
     private UserService $userService;
+    private UserManagerInterface $userManager;
+    private LoggerInterface $logger;
 
-    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime, ?string $circleObject, UserService $userService)
+    public function __construct(LoggerInterface $logger, ?string $circleObject, UserService $userService, UserManagerInterface $userManager)
     {
-        parent::__construct($logger, $formRegistry, $requestRuntime);
         $this->circleObject = $circleObject;
+        $this->logger = $logger;
         $this->userService = $userService;
+        $this->userManager = $userManager;
     }
 
     public function ajaxDataTableAction(Request $request): Response
@@ -75,7 +73,7 @@ class UserController extends AppController
         ]);
     }
 
-    public function addUserAction(Request $request, UserService $userService, UserManagerInterface $userManager): Response
+    public function addUserAction(Request $request): Response
     {
         $user = new User();
 
@@ -127,7 +125,7 @@ class UserController extends AppController
             ]);
         }
 
-        $form = $form->add('roles', ChoiceType::class, ['choices' => $userService->getExistingRoles(),
+        $form = $form->add('roles', ChoiceType::class, ['choices' => $this->userService->getExistingRoles(),
             'label' => 'Roles',
             'expanded' => true,
             'multiple' => true,
@@ -143,11 +141,11 @@ class UserController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $continue = $this->userExist($user, 'add', $userManager);
+            $continue = $this->userExist($user, 'add', $this->userManager);
 
             if ($continue) {
                 $user->setEnabled(true);
-                $userManager->updateUser($user);
+                $this->userManager->updateUser($user);
                 $this->addFlash(
                     'notice',
                     'User created!'
@@ -162,12 +160,12 @@ class UserController extends AppController
         ]);
     }
 
-    public function editUserAction(User $id, Request $request, LoggerInterface $logger, UserService $userService): Response
+    public function editUserAction(User $id, Request $request): Response
     {
-        return $this->edit($id, $request, $logger, $userService);
+        return $this->edit($id, $request);
     }
 
-    public function edit(User $user, Request $request, LoggerInterface $logger, UserService $userService): Response
+    public function edit(User $user, Request $request): Response
     {
         $form = $this->createFormBuilder($user)
             ->add('email', EmailType::class, [
@@ -224,7 +222,8 @@ class UserController extends AppController
                 ],
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ])
-            ->add('roles', ChoiceType::class, ['choices' => $this->getExistingRoles($userService),
+            ->add('roles', ChoiceType::class, [
+                'choices' => $this->getExistingRoles(),
                 'label' => 'Roles',
                 'expanded' => true,
                 'multiple' => true,
@@ -243,8 +242,8 @@ class UserController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $userService->updateUser($user);
-            $logger->notice('log.user.updated', [
+            $this->userService->updateUser($user);
+            $this->logger->notice('log.user.updated', [
                 'username_managed' => $user->getUsername(),
                 'user_display_name' => $user->getDisplayName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
@@ -259,19 +258,19 @@ class UserController extends AppController
         ]);
     }
 
-    public function removeUserAction(User $id, LoggerInterface $logger, UserService $userService): Response
+    public function removeUserAction(User $id): Response
     {
-        return $this->delete($id, $logger, $userService);
+        return $this->delete($id);
     }
 
-    public function delete(User $user, LoggerInterface $logger, UserService $userService): Response
+    public function delete(User $user): Response
     {
         $username = $user->getUsername();
         $displayName = $user->getDisplayName();
-        $userService->deleteUser($user);
+        $this->userService->deleteUser($user);
         $this->getDoctrine()->getManager()->flush();
 
-        $logger->notice('log.user.deleted', [
+        $this->logger->notice('log.user.deleted', [
             'username_managed' => $username,
             'user_display_name' => $displayName,
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
@@ -280,7 +279,7 @@ class UserController extends AppController
         return $this->redirectToRoute('ems.user.index');
     }
 
-    public function enabling(User $user, LoggerInterface $logger, UserService $userService): Response
+    public function enabling(User $user): Response
     {
         if ($user->isEnabled()) {
             $user->setEnabled(false);
@@ -290,10 +289,10 @@ class UserController extends AppController
             $message = 'log.user.enabled';
         }
 
-        $userService->updateUser($user);
+        $this->userService->updateUser($user);
         $this->getDoctrine()->getManager()->flush();
 
-        $logger->notice($message, [
+        $this->logger->notice($message, [
             'username_managed' => $user->getUsername(),
             'user_display_name' => $user->getDisplayName(),
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
@@ -302,20 +301,20 @@ class UserController extends AppController
         return $this->redirectToRoute('ems.user.index');
     }
 
-    public function apiKeyAction(string $username, LoggerInterface $logger, UserService $userService): Response
+    public function apiKeyAction(string $username): Response
     {
-        return $this->apiKey($username, $logger, $userService);
+        return $this->apiKey($username);
     }
 
-    public function apiKey(string $username, LoggerInterface $logger, UserService $userService): Response
+    public function apiKey(string $username): Response
     {
-        $user = $userService->giveUser($username, false);
+        $user = $this->userService->giveUser($username, false);
 
         $roles = $user->getRoles();
         if (!\in_array('ROLE_API', $roles)) {
-            $logger->error('log.user.cannot_request_api_key', [
+            $this->logger->error('log.user.cannot_request_api_key', [
                 'user' => $username,
-                'initiator' => $userService->getCurrentUser()->getUsername(),
+                'initiator' => $this->userService->getCurrentUser()->getUsername(),
             ]);
 
             throw new \RuntimeException(\sprintf('The user %s  does not have the permission to use API functionalities.', $username));
@@ -329,7 +328,7 @@ class UserController extends AppController
         $em->flush();
 
         //TODO: Hide the key in the logs?
-        $logger->notice('log.user.api_key', [
+        $this->logger->notice('log.user.api_key', [
             'username_managed' => $user->getUsername(),
             'user_display_name' => $user->getDisplayName(),
             'api_key' => $authToken->getValue(),
@@ -339,9 +338,9 @@ class UserController extends AppController
         return $this->redirectToRoute('ems.user.index');
     }
 
-    public function sidebarCollapseAction(bool $collapsed, UserService $userService): Response
+    public function sidebarCollapseAction(bool $collapsed): Response
     {
-        $user = $userService->giveUser($userService->getCurrentUser()->getUsername(), false);
+        $user = $this->userService->giveUser($this->userService->getCurrentUser()->getUsername(), false);
         $user->setSidebarCollapse($collapsed);
 
         /** @var EntityManager $em */
@@ -354,9 +353,12 @@ class UserController extends AppController
         ]);
     }
 
-    private function getExistingRoles(UserService $userService)
+    /**
+     * @return array<string, string>
+     */
+    private function getExistingRoles(): array
     {
-        return $userService->getExistingRoles();
+        return $this->userService->getExistingRoles();
     }
 
     private function userExist(User $user, string $action, UserManagerInterface $userManager): bool

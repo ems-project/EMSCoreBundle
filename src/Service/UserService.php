@@ -167,7 +167,10 @@ class UserService implements EntityServiceInterface
         return $this->currentUser;
     }
 
-    public function getExistingRoles()
+    /**
+     * @return array<string, string>
+     */
+    public function getExistingRoles(): array
     {
         $roleHierarchy = $this->securityRoles;
 
@@ -175,12 +178,12 @@ class UserService implements EntityServiceInterface
 
         foreach ($roleHierarchy as $parent => $children) {
             foreach ($children as $child) {
-                if (empty($out[$child])) {
-                    $out[$child] = $child;
+                if (empty($out[\strval($child)])) {
+                    $out[\strval($child)] = \strval($child);
                 }
             }
-            if (empty($out[$parent])) {
-                $out[$parent] = $parent;
+            if (empty($out[\strval($parent)])) {
+                $out[\strval($parent)] = \strval($parent);
             }
         }
 

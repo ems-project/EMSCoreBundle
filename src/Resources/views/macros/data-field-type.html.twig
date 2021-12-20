@@ -1014,8 +1014,7 @@
 		</dt>
 		<dd>
 			<ul>
-				{{ diff_date(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.displayOptions.displayFormat|convertJavascriptDateFormat, false, dataField.fieldType.mappingOptions.format|convertJavaDateFormat) }}
-
+				{{ diff_date(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.displayOptions.displayFormat|convertJavascriptDateFormat, false, dataField.fieldType.mappingOptions.format|default('yyyy/MM/dd')|convertJavaDateFormat) }}
 			</ul>
 		</dd>
 	</dl>

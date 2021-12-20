@@ -38,7 +38,7 @@ class DateFieldType extends DataFieldType
         if (false !== $format) {
             $format = $this->convertJavaDateFormat($format);
         } else {
-            $format = \DateTime::ISO8601;
+            $format = \DateTimeInterface::ISO8601;
         }
         if (\is_string($data)) {
             $dates[] = \DateTime::createFromFormat($format, $data);

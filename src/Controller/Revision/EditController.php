@@ -42,7 +42,6 @@ class EditController extends AbstractController
     private PublishService $publishService;
     private RevisionService $revisionService;
     private TranslatorInterface $translator;
-    private WysiwygStylesSetService $wysiwygStylesSetService;
     private DraftInProgress $draftInProgress;
 
     public function __construct(
@@ -51,15 +50,13 @@ class EditController extends AbstractController
         LoggerInterface $logger,
         PublishService $publishService,
         RevisionService $revisionService,
-        TranslatorInterface $translator,
-        WysiwygStylesSetService $wysiwygStylesSetService
+        TranslatorInterface $translator
     ) {
         $this->dataService = $dataService;
         $this->logger = $logger;
         $this->publishService = $publishService;
         $this->revisionService = $revisionService;
         $this->translator = $translator;
-        $this->wysiwygStylesSetService = $wysiwygStylesSetService;
         $this->draftInProgress = $draftInProgress;
     }
 
@@ -258,8 +255,7 @@ class EditController extends AbstractController
 
         return $this->render('@EMSCore/data/edit-revision.html.twig', [
             'revision' => $revision,
-            'form' => $form->createView(),
-            'stylesSets' => $this->wysiwygStylesSetService->getStylesSets(),
+            'form' => $form->createView()
         ]);
     }
 

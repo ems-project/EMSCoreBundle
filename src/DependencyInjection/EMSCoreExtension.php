@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\DependencyInjection;
 
+use EMS\CoreBundle\Routes;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -128,7 +129,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'user_logout_route' => $configs[0]['user_logout_route'] ?? Configuration::USER_LOGOUT_ROUTE,
             'user_profile_route' => $configs[0]['user_profile_route'] ?? Configuration::USER_PROFILE_ROUTE,
             'user_registration_route' => $configs[0]['user_registration_route'] ?? Configuration::USER_REGISTRATION_ROUTE,
-            'add_user_route' => $configs[0]['add_user_route'] ?? Configuration::ADD_USER_ROUTE,
+            'add_user_route' => $configs[0]['add_user_route'] ?? Routes::USER_ADD,
         ];
 
         if (!empty($configs[0]['template_options'])) {

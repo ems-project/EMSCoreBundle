@@ -26,7 +26,7 @@ export default class EmsListeners {
         this.fileExtractForced = primaryBox.data('file-extract-forced');
         this.hashAlgo = primaryBox.data('hash-algo');
         this.addListeners();
-        new Datatables();
+        new Datatables(target);
     }
 
     addListeners() {

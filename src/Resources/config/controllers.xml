@@ -37,10 +37,10 @@
         </service>
         <service id="EMS\CoreBundle\Controller\UserController" public="true">
             <argument type="service" id="logger" />
-            <argument type="service" id="form.registry" />
-            <argument type="service" id="ems_common.twig.runtime.request" />
             <argument>%ems_core.circles_object%</argument>
             <argument type="service" id="ems.service.user" />
+            <argument type="service" id="fos_user.user_manager" />
+            <argument type="service" id="EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface"/>
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Revision\JsonMenuNestedController" public="true">

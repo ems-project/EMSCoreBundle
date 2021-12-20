@@ -270,4 +270,29 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
     {
         return [];
     }
+
+    /**
+     * @return array{id: int|string, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}
+     */
+    public function toArray(): array
+    {
+        $roles = [];
+        foreach ($this->getRoles() as $role) {
+            if ($role instanceof Role) {
+                $roles[] = $role->getRole();
+            } else {
+                $roles[] = $role;
+            }
+        }
+
+        return [
+            'id' => \sha1($this->getEntry()->getDn()),
+            'username' => $this->getUsername(),
+            'displayName' => $this->getDisplayName(),
+            'roles' => $roles,
+            'email' => $this->getEmail(),
+            'circles' => $this->getCircles(),
+            'lastLogin' => $this->getLastLogin()->format('c'),
+        ];
+    }
 }

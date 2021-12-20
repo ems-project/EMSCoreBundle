@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
-use EMS\SubmissionBundle\Entity\EntityInterface;
+use EMS\CommonBundle\Entity\EntityInterface;
 
 interface EntityServiceInterface
 {

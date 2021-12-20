@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity;
 
-interface EntityInterface extends \EMS\SubmissionBundle\Entity\EntityInterface
+interface EntityInterface extends \EMS\CommonBundle\Entity\EntityInterface
 {
 }

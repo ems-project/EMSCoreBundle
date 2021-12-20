@@ -100,8 +100,8 @@ class WysiwygFieldType extends DataFieldType
         }
 
         if (isset($options['language'])) {
-            $language = \strval($options['language']);
-            $attr['data-lang'] = \explode('_', $language)[0];
+            $splitLanguage = \explode('_', \strval($options['language']));
+            $attr['data-lang'] = \array_shift($splitLanguage);
         }
 
         $attr['data-height'] = $options['height'];

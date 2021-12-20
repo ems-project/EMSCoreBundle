@@ -1,4 +1,4 @@
-import {addEventListeners as editRevisionAddEventListeners} from "./../../edit-revision";
+import {editRevisionEventListeners} from "./../editRevisionEventListeners";
 
 import { ajaxJsonGet, ajaxJsonPost, ajaxJsonSubmit } from "./ajax";
 
@@ -73,7 +73,7 @@ class AjaxModal {
             });
         } else {
             ajaxJsonGet(options.url, (json, request) => {
-                this.ajaxReady(json, request, callback);
+               this.ajaxReady(json, request, callback);
                 this.stateReady();
             });
         }
@@ -137,7 +137,7 @@ class AjaxModal {
 
             var modelForm = this.modal.querySelector('form');
             if (modelForm) {
-                editRevisionAddEventListeners(this.$modal.find('form'));
+                editRevisionEventListeners(this.$modal.find('form'));
             }
 
             var btnAjaxSubmit = this.modal.querySelector('#ajax-modal-submit');

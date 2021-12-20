@@ -775,11 +775,7 @@ class AppExtension extends AbstractExtension
 
     public function getUser(string $username): ?UserInterface
     {
-        $user = $this->userService->getUser($username);
-        if (null === $user || $user instanceof UserInterface) {
-            return $user;
-        }
-        throw new \RuntimeException('Unexpected user object');
+        return $this->userService->getUser($username);
     }
 
     public function displayName(string $username): string

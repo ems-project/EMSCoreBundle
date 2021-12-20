@@ -10,9 +10,7 @@ use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Repository\UserRepository;
-use EMS\CoreBundle\Repository\UserRepositoryInterface;
 use EMS\CoreBundle\Security\CoreLdapUser;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -20,8 +18,6 @@ class UserService implements EntityServiceInterface
 {
     /** @var Registry */
     private $doctrine;
-    /** @var Session */
-    private $session;
     /** @var TokenStorageInterface */
     private $tokenStorage;
 
@@ -36,16 +32,15 @@ class UserService implements EntityServiceInterface
     public const DONT_DETACH = false;
     private SearchRepository $searchRepository;
 
-    public function __construct(Registry $doctrine, Session $session, TokenStorageInterface $tokenStorage, Security $security, SearchRepository $searchRepository, $securityRoles)
+    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, Security $security, UserRepository $userRepository, SearchRepository $searchRepository, $securityRoles)
     {
         $this->doctrine = $doctrine;
-        $this->session = $session;
         $this->tokenStorage = $tokenStorage;
         $this->currentUser = null;
         $this->securityRoles = $securityRoles;
         $this->security = $security;
         $this->searchRepository = $searchRepository;
-        $this->userRepository = $doctrine->getManager()->getRepository(User::class);
+        $this->userRepository = $userRepository;
     }
 
     public function searchUser(string $search): ?UserInterface
@@ -82,10 +77,7 @@ class UserService implements EntityServiceInterface
 
     public function getUserById($id)
     {
-        $em = $this->doctrine->getManager();
-        /** @var \Doctrine\ORM\EntityRepository */
-        $repository = $em->getRepository('EMSCoreBundle:User');
-        $user = $repository->findOneBy([
+        $user = $this->userRepository->findOneBy([
                 'id' => $id,
         ]);
 
@@ -94,10 +86,7 @@ class UserService implements EntityServiceInterface
 
     public function findUserByEmail($email)
     {
-        $em = $this->doctrine->getManager();
-        /** @var \Doctrine\ORM\EntityRepository */
-        $repository = $em->getRepository('EMSCoreBundle:User');
-        $user = $repository->findOneBy([
+        $user = $this->userRepository->findOneBy([
                 'email' => $email,
         ]);
 
@@ -113,16 +102,30 @@ class UserService implements EntityServiceInterface
         return $user;
     }
 
-    public function getUser($username, $detachIt = true)
+    public function giveUser(string $username, bool $detachIt = true): UserInterface
+    {
+        $user = $this->getUser($username, $detachIt);
+        if (null === $user) {
+            throw new \RuntimeException('Unexpected null user object');
+        }
+
+        return $user;
+    }
+
+    public function getUser($username, $detachIt = true): ?UserInterface
     {
         $em = $this->doctrine->getManager();
-        /** @var \Doctrine\ORM\EntityRepository */
-        $repository = $em->getRepository('EMSCoreBundle:User');
-        $user = $repository->findOneBy([
+        $user = $this->userRepository->findOneBy([
                 'username' => $username,
         ]);
+        if (null === $user) {
+            return null;
+        }
+        if (!$user instanceof UserInterface) {
+            throw new \RuntimeException(\sprintf('Unknown user object class: %s', \get_class($user)));
+        }
 
-        if (empty($user) || !$detachIt) {
+        if (!$detachIt) {
             return $user;
         }
 
@@ -148,11 +151,17 @@ class UserService implements EntityServiceInterface
         if (null === $this->currentUser && $token->getUser() instanceof CoreLdapUser) {
             $this->currentUser = $token->getUser();
         }
+        if (null === $this->currentUser) {
+            throw new \RuntimeException('Unexpected null user object');
+        }
 
         return $this->currentUser;
     }
 
-    public function getExistingRoles()
+    /**
+     * @return array<string, string>
+     */
+    public function getExistingRoles(): array
     {
         $roleHierarchy = $this->securityRoles;
 
@@ -160,12 +169,12 @@ class UserService implements EntityServiceInterface
 
         foreach ($roleHierarchy as $parent => $children) {
             foreach ($children as $child) {
-                if (empty($out[$child])) {
-                    $out[$child] = $child;
+                if (empty($out[\strval($child)])) {
+                    $out[\strval($child)] = \strval($child);
                 }
             }
-            if (empty($out[$parent])) {
-                $out[$parent] = $parent;
+            if (empty($out[\strval($parent)])) {
+                $out[\strval($parent)] = \strval($parent);
             }
         }
 
@@ -182,13 +191,7 @@ class UserService implements EntityServiceInterface
 
     public function getUsersForRoleAndCircles($role, $circles)
     {
-        /** @var EntityManagerInterface $em */
-        $em = $this->doctrine->getManager();
-
-        /** @var UserRepositoryInterface $repository */
-        $repository = $em->getRepository('EMSCoreBundle:User');
-
-        return $repository->findForRoleAndCircles($role, $circles);
+        return $this->userRepository->findForRoleAndCircles($role, $circles);
     }
 
     public function deleteUser(UserInterface $user)
@@ -198,15 +201,22 @@ class UserService implements EntityServiceInterface
         $em->remove($user);
     }
 
-    public function getAllUsers()
+    /**
+     * @return UserInterface[]
+     */
+    public function getAllUsers(): array
     {
-        $em = $this->doctrine->getManager();
-        /** @var \Doctrine\ORM\EntityRepository */
-        $repository = $em->getRepository('EMSCoreBundle:User');
-
-        return $repository->findBy([
+        return $this->userRepository->findBy([
                 'enabled' => true,
         ]);
+    }
+
+    /**
+     * @return UserInterface[]
+     */
+    public function getAll(): array
+    {
+        return $this->userRepository->findAll();
     }
 
     public function getsecurityRoles()

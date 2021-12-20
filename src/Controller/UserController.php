@@ -4,14 +4,13 @@ namespace EMS\CoreBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
+use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Data\BoolTableColumn;
+use EMS\CoreBundle\Form\Data\Condition\Terms;
 use EMS\CoreBundle\Form\Data\DataLinksTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
@@ -22,42 +21,40 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
+use EMS\CoreBundle\Roles;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\UserService;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
-class UserController extends AppController
+class UserController extends AbstractController
 {
-    /**
-     * @var string|null
-     */
-    private $circleObject;
-
+    private ?string $circleObject;
     private UserService $userService;
+    private UserManagerInterface $userManager;
+    private LoggerInterface $logger;
+    private SpreadsheetGeneratorServiceInterface $spreadsheetGenerator;
 
-    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime, ?string $circleObject, UserService $userService)
+    public function __construct(LoggerInterface $logger, ?string $circleObject, UserService $userService, UserManagerInterface $userManager, SpreadsheetGeneratorServiceInterface $spreadsheetGenerator)
     {
-        parent::__construct($logger, $formRegistry, $requestRuntime);
         $this->circleObject = $circleObject;
+        $this->logger = $logger;
         $this->userService = $userService;
+        $this->userManager = $userManager;
+        $this->spreadsheetGenerator = $spreadsheetGenerator;
     }
 
-    /**
-     * @Route("/user/datatable.json", name="ems_core_user_ajax_data_table")
-     */
     public function ajaxDataTableAction(Request $request): Response
     {
         $table = $this->initTable();
@@ -70,12 +67,7 @@ class UserController extends AppController
         ], new JsonResponse());
     }
 
-    /**
-     * @Route("/user", name="ems.user.index")
-     *
-     * @return Response
-     */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request): Response
     {
         $table = $this->initTable();
 
@@ -87,12 +79,7 @@ class UserController extends AppController
         ]);
     }
 
-    /**
-     * @Route("/user/add", name="user.add")
-     *
-     * @return Response
-     */
-    public function addUserAction(Request $request, UserService $userService, UserManagerInterface $userManager)
+    public function addUserAction(Request $request): Response
     {
         $user = new User();
 
@@ -144,7 +131,7 @@ class UserController extends AppController
             ]);
         }
 
-        $form = $form->add('roles', ChoiceType::class, ['choices' => $userService->getExistingRoles(),
+        $form = $form->add('roles', ChoiceType::class, ['choices' => $this->userService->getExistingRoles(),
             'label' => 'Roles',
             'expanded' => true,
             'multiple' => true,
@@ -160,17 +147,17 @@ class UserController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $continue = $this->userExist($user, 'add', $userManager);
+            $continue = $this->userExist($user, 'add', $this->userManager);
 
             if ($continue) {
                 $user->setEnabled(true);
-                $userManager->updateUser($user);
+                $this->userManager->updateUser($user);
                 $this->addFlash(
                     'notice',
                     'User created!'
                 );
 
-                return $this->redirectToRoute('ems.user.index');
+                return $this->redirectToRoute(Routes::USER_INDEX);
             }
         }
 
@@ -179,21 +166,13 @@ class UserController extends AppController
         ]);
     }
 
-    /**
-     * @param int $id
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/user/{id}/edit", name="user.edit")
-     */
-    public function editUserAction($id, Request $request, LoggerInterface $logger, UserService $userService)
+    public function editUserAction(User $id, Request $request): Response
     {
-        $user = $userService->getUserById($id);
-        // test if user exist before modified it
-        if (!$user) {
-            throw $this->createNotFoundException('user not found');
-        }
+        return $this->edit($id, $request);
+    }
 
+    public function edit(User $user, Request $request): Response
+    {
         $form = $this->createFormBuilder($user)
             ->add('email', EmailType::class, [
                 'label' => 'form.email',
@@ -249,7 +228,8 @@ class UserController extends AppController
                 ],
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ])
-            ->add('roles', ChoiceType::class, ['choices' => $this->getExistingRoles($userService),
+            ->add('roles', ChoiceType::class, [
+                'choices' => $this->getExistingRoles(),
                 'label' => 'Roles',
                 'expanded' => true,
                 'multiple' => true,
@@ -268,14 +248,14 @@ class UserController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $userService->updateUser($user);
-            $logger->notice('log.user.updated', [
+            $this->userService->updateUser($user);
+            $this->logger->notice('log.user.updated', [
                 'username_managed' => $user->getUsername(),
                 'user_display_name' => $user->getDisplayName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
             ]);
 
-            return $this->redirectToRoute('ems.user.index');
+            return $this->redirectToRoute(Routes::USER_INDEX);
         }
 
         return $this->render('@EMSCore/user/edit.html.twig', [
@@ -284,50 +264,29 @@ class UserController extends AppController
         ]);
     }
 
-    /**
-     * @param int $id
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/user/{id}/delete", name="user.delete")
-     */
-    public function removeUserAction($id, LoggerInterface $logger, UserService $userService)
+    public function removeUserAction(User $id): Response
     {
-        $user = $userService->getUserById($id);
-        // test if user exist before modified it
-        if (!$user) {
-            throw $this->createNotFoundException('user not found');
-        }
+        return $this->delete($id);
+    }
 
+    public function delete(User $user): Response
+    {
         $username = $user->getUsername();
         $displayName = $user->getDisplayName();
-        $userService->deleteUser($user);
+        $this->userService->deleteUser($user);
         $this->getDoctrine()->getManager()->flush();
 
-        $logger->notice('log.user.deleted', [
+        $this->logger->notice('log.user.deleted', [
             'username_managed' => $username,
             'user_display_name' => $displayName,
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
         ]);
 
-        return $this->redirectToRoute('ems.user.index');
+        return $this->redirectToRoute(Routes::USER_INDEX);
     }
 
-    /**
-     * @param int $id
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/user/{id}/enabling", name="user.enabling")
-     */
-    public function enablingUserAction($id, LoggerInterface $logger, UserService $userService)
+    public function enabling(User $user): Response
     {
-        $user = $userService->getUserById($id);
-        // test if user exist before modified it
-        if (!$user) {
-            throw $this->createNotFoundException('user not found');
-        }
-
         if ($user->isEnabled()) {
             $user->setEnabled(false);
             $message = 'log.user.disabled';
@@ -336,72 +295,32 @@ class UserController extends AppController
             $message = 'log.user.enabled';
         }
 
-        $userService->updateUser($user);
+        $this->userService->updateUser($user);
         $this->getDoctrine()->getManager()->flush();
 
-        $logger->notice($message, [
+        $this->logger->notice($message, [
             'username_managed' => $user->getUsername(),
             'user_display_name' => $user->getDisplayName(),
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
         ]);
 
-        return $this->redirectToRoute('ems.user.index');
+        return $this->redirectToRoute(Routes::USER_INDEX);
     }
 
-    /**
-     * @param int $id
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/user/{id}/locking", name="user.locking")
-     */
-    public function lockingUserAction($id, LoggerInterface $logger, UserService $userService)
+    public function apiKeyAction(string $username): Response
     {
-        $user = $userService->getUserById($id);
-        // test if user exist before modified it
-        if (!$user) {
-            throw $this->createNotFoundException('user not found');
-        }
-
-        if ($user->isLocked()) {
-            $user->setLocked(false);
-            $message = 'log.user.unlocked';
-        } else {
-            $user->setLocked(true);
-            $message = 'log.user.locked';
-        }
-
-        $userService->updateUser($user);
-        $this->getDoctrine()->getManager()->flush();
-
-        $logger->notice($message, [
-            'username_managed' => $user->getUsername(),
-            'user_display_name' => $user->getDisplayName(),
-            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-        ]);
-
-        return $this->redirectToRoute('ems.user.index');
+        return $this->apiKey($username);
     }
 
-    /**
-     * @param string $username
-     *
-     * @return RedirectResponse
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/user/{username}/apikey", name="EMS_user_apikey", methods={"POST"})
-     */
-    public function apiKeyAction($username, LoggerInterface $logger, UserService $userService)
+    public function apiKey(string $username): Response
     {
-        $user = $userService->getUser($username, false);
+        $user = $this->userService->giveUser($username, false);
 
         $roles = $user->getRoles();
         if (!\in_array('ROLE_API', $roles)) {
-            $logger->error('log.user.cannot_request_api_key', [
+            $this->logger->error('log.user.cannot_request_api_key', [
                 'user' => $username,
-                'initiator' => $userService->getCurrentUser()->getUsername(),
+                'initiator' => $this->userService->getCurrentUser()->getUsername(),
             ]);
 
             throw new \RuntimeException(\sprintf('The user %s  does not have the permission to use API functionalities.', $username));
@@ -415,29 +334,19 @@ class UserController extends AppController
         $em->flush();
 
         //TODO: Hide the key in the logs?
-        $logger->notice('log.user.api_key', [
+        $this->logger->notice('log.user.api_key', [
             'username_managed' => $user->getUsername(),
             'user_display_name' => $user->getDisplayName(),
             'api_key' => $authToken->getValue(),
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
         ]);
 
-        return $this->redirectToRoute('ems.user.index');
+        return $this->redirectToRoute(Routes::USER_INDEX);
     }
 
-    /**
-     * @param bool $collapsed
-     *
-     * @return Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/profile/sidebar-collapse/{collapsed}", name="user.sidebar-collapse", methods={"POST"})
-     */
-    public function sidebarCollapseAction($collapsed, UserService $userService)
+    public function sidebarCollapseAction(bool $collapsed): Response
     {
-        $user = $userService->getUser($userService->getCurrentUser()->getUsername(), false);
+        $user = $this->userService->giveUser($this->userService->getCurrentUser()->getUsername(), false);
         $user->setSidebarCollapse($collapsed);
 
         /** @var EntityManager $em */
@@ -450,14 +359,45 @@ class UserController extends AppController
         ]);
     }
 
-    private function getExistingRoles(UserService $userService)
+    public function spreadsheetExport(string $_format): Response
     {
-        return $userService->getExistingRoles();
+        $rows = [['username', 'display name', 'notification', 'email', 'enabled', 'last login', 'roles']];
+        foreach ($this->userService->getAll() as $user) {
+            $lastLogin = $user->getLastLogin();
+            if (null !== $lastLogin) {
+                $lastLogin = $lastLogin->format('c');
+            } else {
+                $lastLogin = '';
+            }
+            $rows[] = [
+                $user->getUsername(),
+                $user->getDisplayName(),
+                $user->getEmailNotification() ? 'Y' : 'N',
+                $user->getEmail(),
+                $user->isEnabled() ? 'Y' : 'N',
+                $lastLogin,
+                \implode(', ', $user->getRoles()),
+            ];
+        }
+
+        return $this->spreadsheetGenerator->generateSpreadsheet([
+            SpreadsheetGeneratorServiceInterface::SHEETS => [[
+                'name' => 'Users',
+                'rows' => $rows,
+            ]],
+            SpreadsheetGeneratorServiceInterface::CONTENT_FILENAME => 'users',
+            SpreadsheetGeneratorServiceInterface::WRITER => $_format,
+        ]);
     }
 
     /**
-     * Test if email or username exist return on add or edit Form.
+     * @return array<string, string>
      */
+    private function getExistingRoles(): array
+    {
+        return $this->userService->getExistingRoles();
+    }
+
     private function userExist(User $user, string $action, UserManagerInterface $userManager): bool
     {
         $exists = ['email' => $userManager->findUserByEmail($user->getEmail()), 'username' => $userManager->findUserByUsername($user->getUsername())];
@@ -480,7 +420,7 @@ class UserController extends AppController
 
     private function initTable(): EntityTable
     {
-        $table = new EntityTable($this->userService, $this->generateUrl('ems_core_user_ajax_data_table'));
+        $table = new EntityTable($this->userService, $this->generateUrl(Routes::USER_AJAX_DATA_TABLE));
         $table->addColumn('user.index.column.username', 'username');
         $table->addColumn('user.index.column.displayname', 'displayName');
         $table->addColumnDefinition(new BoolTableColumn('user.index.column.email_notification', 'emailNotification'))
@@ -491,11 +431,11 @@ class UserController extends AppController
         $table->addColumnDefinition(new RolesTableColumn('user.index.column.roles', 'roles'));
         $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.lastLogin', 'lastLogin'));
 
-        $table->addDynamicItemGetAction('user.edit', 'user.action.edit', 'pencil', ['id' => 'id']);
+        $table->addDynamicItemGetAction(Routes::USER_EDIT, 'user.action.edit', 'pencil', ['user' => 'id']);
         $table->addDynamicItemGetAction('homepage', 'user.action.switch', 'user-secret', ['_switch_user' => 'username']);
-        $table->addDynamicItemPostAction('user.enabling', 'user.action.disable', 'user-times', 'user.action.disable_confirm', ['id' => 'id']);
-        $table->addDynamicItemPostAction('EMS_user_apikey', 'user.action.generate_api', 'key', 'user.action.generate_api_confirm', ['username' => 'username']);
-        $table->addDynamicItemPostAction('user.delete', 'user.action.delete', 'trash', 'user.action.delete_confirm', ['id' => 'id']);
+        $table->addDynamicItemPostAction(Routes::USER_ENABLING, 'user.action.disable', 'user-times', 'user.action.disable_confirm', ['user' => 'id']);
+        $table->addDynamicItemPostAction(Routes::USER_API_KEY, 'user.action.generate_api', 'key', 'user.action.generate_api_confirm', ['username' => 'username'])->addCondition(new Terms('roles', [Roles::ROLE_API]));
+        $table->addDynamicItemPostAction(Routes::USER_DELETE, 'user.action.delete', 'trash', 'user.action.delete_confirm', ['user' => 'id']);
 
         return $table;
     }

@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Entity;
 
-interface UserInterface
+interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterface
 {
     /**
      * Get created.
@@ -190,4 +190,19 @@ interface UserInterface
      * @return string
      */
     public function getUsername();
+
+    /**
+     * @return string
+     */
+    public function getEmail();
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastLogin();
+
+    /**
+     * @return array{id: int|string, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}
+     */
+    public function toArray(): array;
 }

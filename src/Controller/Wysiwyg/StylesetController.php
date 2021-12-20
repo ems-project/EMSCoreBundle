@@ -21,7 +21,7 @@ class StylesetController extends AbstractController
     {
         return $this->render('@EMSCore/wysiwyg_styles_set/iframe.html.twig', [
             'styleSet' => $this->wysiwygStylesSetService->getByName($name),
-            'language' => \explode('_', $language)[0],
+            'language' => \array_shift(\explode('_', $language)),
         ]);
     }
 }

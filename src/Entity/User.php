@@ -310,12 +310,7 @@ class User extends BaseUser implements UserInterface, EntityInterface
         return $this;
     }
 
-    /**
-     * Get wysiwygProfile.
-     *
-     * @return WysiwygProfile
-     */
-    public function getWysiwygProfile()
+    public function getWysiwygProfile(): ?WysiwygProfile
     {
         return $this->wysiwygProfile;
     }

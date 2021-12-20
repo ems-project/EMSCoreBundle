@@ -65,7 +65,7 @@ final class WysiwygRuntime implements RuntimeExtensionInterface
         foreach ($styleSets as $styleSet) {
             $styles[] = [
                 'name' => $styleSet->getName(),
-                'config' => Json::decode($styleSet->getConfig())
+                'config' => Json::decode($styleSet->getConfig()),
             ];
         }
 

@@ -22,7 +22,6 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\Revision\LoggingContext;
 use EMS\CoreBundle\Service\Revision\RevisionService;
-use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
@@ -255,7 +254,7 @@ class EditController extends AbstractController
 
         return $this->render('@EMSCore/data/edit-revision.html.twig', [
             'revision' => $revision,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 

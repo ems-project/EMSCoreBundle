@@ -73,12 +73,7 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
      */
     public function setWysiwygProfile(WysiwygProfile $wysiwygProfile);
 
-    /**
-     * Get wysiwygProfile.
-     *
-     * @return WysiwygProfile
-     */
-    public function getWysiwygProfile();
+    public function getWysiwygProfile(): ?WysiwygProfile;
 
     /**
      * Set wysiwygOptions.

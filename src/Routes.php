@@ -45,4 +45,11 @@ class Routes
     public const SCHEDULE_EDIT = 'emsco_schedule_edit';
     public const SCHEDULE_DUPLICATE = 'emsco_schedule_duplicate';
     public const SCHEDULE_DELETE = 'emsco_schedule_delete';
+    public const USER_AJAX_DATA_TABLE = 'emsco_user_datatable';
+    public const USER_INDEX = 'emsco_user_index';
+    public const USER_ADD = 'emsco_user_add';
+    public const USER_EDIT = 'emsco_user_edit';
+    public const USER_ENABLING = 'emsco_user_enabling';
+    public const USER_API_KEY = 'emsco_user_api_key';
+    public const USER_DELETE = 'emsco_user_delete';
 }

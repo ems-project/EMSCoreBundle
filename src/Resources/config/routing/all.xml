@@ -41,4 +41,8 @@
             prefix="/admin/job" />
     <import resource="@EMSCoreBundle/Resources/config/routing/wysiwyg.xml"
             prefix="/wysiwyg" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/user.xml"
+            prefix="/user" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/profile.xml"
+            prefix="/profile" />
 </routes>

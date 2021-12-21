@@ -1361,11 +1361,6 @@ parameters:
 			path: src/Controller/NotificationController.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:getExistingRoles\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/UserController.php
-
-		-
 			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 1
 			path: src/Controller/Views/CalendarController.php
@@ -2556,11 +2551,6 @@ parameters:
 			path: src/Entity/Helper/JsonNormalizer.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonNormalizer\\:\\:denormalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonNormalizer.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/Helper/JsonNormalizer.php
@@ -2707,11 +2697,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:getFinalizedDate\\(\\) should return DateTime but returns DateTime\\|null\\.$#"
-			count: 1
-			path: src/Entity/Revision.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:getLockBy\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
 			path: src/Entity/Revision.php
 
@@ -7881,11 +7866,6 @@ parameters:
 			path: src/Service/Mapping.php
 
 		-
-			message: "#^Call to an undefined method EMS\\\\CoreBundle\\\\Entity\\\\UserInterface\\:\\:getEmail\\(\\)\\.$#"
-			count: 1
-			path: src/Service/NotificationService.php
-
-		-
 			message: "#^Cannot call method send\\(\\) on object\\|null\\.$#"
 			count: 1
 			path: src/Service/NotificationService.php
@@ -8271,11 +8251,6 @@ parameters:
 			path: src/Service/UserService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:__construct\\(\\) has parameter \\$session with no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
-			count: 1
-			path: src/Service/UserService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:deleteUser\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/UserService.php
@@ -8302,16 +8277,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:getAllUsers\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/UserService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:getExistingRoles\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/UserService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:getUser\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/UserService.php
 
@@ -8367,16 +8332,6 @@ parameters:
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:\\$securityRoles has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/UserService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:\\$session type has no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
-			count: 1
-			path: src/Service/UserService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:\\$userRepository \\(EMS\\\\CoreBundle\\\\Repository\\\\UserRepository\\) does not accept Doctrine\\\\Persistence\\\\ObjectRepository\\.$#"
 			count: 1
 			path: src/Service/UserService.php
 

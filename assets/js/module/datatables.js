@@ -3,8 +3,8 @@ require('datatables.net');
 require('datatables.net-bs');
 
 export default class datatables {
-    constructor() {
-        const datatables = document.querySelectorAll('[data-datatable]');
+    constructor(target) {
+        const datatables = target.querySelectorAll('[data-datatable]');
         this.loadDatatables(datatables)
     }
 

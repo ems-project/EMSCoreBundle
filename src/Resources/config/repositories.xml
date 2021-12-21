@@ -49,5 +49,8 @@
         <service id="ems.repository.schedule" class="EMS\CoreBundle\Repository\ScheduleRepository" public="true">
             <argument type="service" id="doctrine"/>
         </service>
+        <service id="ems.repository.user" class="EMS\CoreBundle\Repository\UserRepository" public="true">
+            <argument type="service" id="doctrine"/>
+        </service>
     </services>
 </container>

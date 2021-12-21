@@ -11,7 +11,6 @@ use FOS\UserBundle\Model\User as BaseUser;
 /**
  * @ORM\Entity
  * @ORM\Table(name="`user`")
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class User extends BaseUser implements UserInterface, EntityInterface
@@ -150,7 +149,7 @@ class User extends BaseUser implements UserInterface, EntityInterface
     }
 
     /**
-     * @return array{id: int, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}
+     * @return array{id: int|string, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}
      */
     public function toArray(): array
     {
@@ -311,12 +310,7 @@ class User extends BaseUser implements UserInterface, EntityInterface
         return $this;
     }
 
-    /**
-     * Get wysiwygProfile.
-     *
-     * @return WysiwygProfile
-     */
-    public function getWysiwygProfile()
+    public function getWysiwygProfile(): ?WysiwygProfile
     {
         return $this->wysiwygProfile;
     }

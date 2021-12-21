@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\DependencyInjection;
 
+use EMS\CoreBundle\Routes;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -35,7 +36,6 @@ class Configuration implements ConfigurationInterface
     public const USER_PROFILE_ROUTE = 'fos_user_profile_show';
     public const USER_LOGOUT_ROUTE = 'fos_user_security_logout';
     public const USER_REGISTRATION_ROUTE = 'fos_user_registration_register';
-    public const ADD_USER_ROUTE = 'user.add';
     public const PRIVATE_KEY = null;
     public const PUBLIC_KEY = null;
     public const ASSET_CONFIG = [];
@@ -80,7 +80,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('user_profile_route')->defaultValue(self::USER_PROFILE_ROUTE)->end()
             ->scalarNode('user_logout_route')->defaultValue(self::USER_LOGOUT_ROUTE)->end()
             ->scalarNode('user_registration_route')->defaultValue(self::USER_REGISTRATION_ROUTE)->end()
-            ->scalarNode('add_user_route')->defaultValue(self::ADD_USER_ROUTE)->end()
+            ->scalarNode('add_user_route')->defaultValue(Routes::USER_ADD)->end()
             ->variableNode('asset_config')->defaultValue(self::ASSET_CONFIG)->end()
             ->scalarNode('private_key')->defaultValue(self::PRIVATE_KEY)->end()
             ->scalarNode('public_key')->defaultValue(self::PUBLIC_KEY)->end()

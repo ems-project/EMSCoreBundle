@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use EMS\CoreBundle\Entity\FormSubmission;
+use EMS\SubmissionBundle\Entity\FormSubmission;
 
 class FormSubmissionRepository extends ServiceEntityRepository
 {

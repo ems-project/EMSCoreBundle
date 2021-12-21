@@ -54,6 +54,7 @@
       data-hash-algo="{{ ems_hash_algo|e('html_attr') }}"
       data-status-url="{{ path('elasticsearch.status', {_format: 'json'})|e('html_attr') }}"
       data-wysiwyg-type-filters="{{ type_filters|json_encode|e('html_attr') }}"
+      data-wysiwyg-info="{{ emsco_wysiwyg_info()|e('html_attr') }}"
       data-search-api="{{ path('elasticsearch.api.search')|e('html_attr') }}"
       data-asset-path="{{ asset('')|e('html_attr') }}"
       data-init-upload="{{ path('emsco_file_data_init_upload')|e('html_attr') }}"
@@ -181,7 +182,7 @@
                 </div>
                 <div class="pull-right">
                		{% if is_granted('ROLE_PREVIOUS_ADMIN') %}
-               			<a href="{{ path('ems.user.index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat">{{ 'Exit'|trans }}</a>
+               			<a href="{{ path('emsco_user_index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat">{{ 'Exit'|trans }}</a>
                		{% else %}
                			<a href="{{ path(user_logout_route) }}" class="btn btn-default btn-flat">{{ 'Sign out'|trans }}</a>
                		{% endif %}

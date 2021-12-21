@@ -28,6 +28,9 @@ class Terms implements ConditionInterface
     {
         $accessor = new PropertyAccessor();
         $field = $accessor->getValue($objectOrArray, $this->pathProperty);
+        if (\is_array($field)) {
+            return !empty(\array_intersect($field, $this->values));
+        }
 
         return \in_array($field, $this->values);
     }

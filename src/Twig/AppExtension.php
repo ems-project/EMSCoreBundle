@@ -15,6 +15,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer;
+use EMS\CoreBundle\Core\Revision\Wysiwyg\WysiwygRuntime;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
@@ -145,6 +146,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_revision_update', [RevisionRuntime::class, 'updateRevision']),
             new TwigFunction('emsco_revision_merge', [RevisionRuntime::class, 'mergeRevision']),
             new TwigFunction('emsco_json_menu_nested', [JsonMenuRenderer::class, 'generateNested'], ['is_safe' => ['html']]),
+            new TwigFunction('emsco_wysiwyg_info', [WysiwygRuntime::class, 'getInfo']),
         ];
     }
 
@@ -775,11 +777,7 @@ class AppExtension extends AbstractExtension
 
     public function getUser(string $username): ?UserInterface
     {
-        $user = $this->userService->getUser($username);
-        if (null === $user || $user instanceof UserInterface) {
-            return $user;
-        }
-        throw new \RuntimeException('Unexpected user object');
+        return $this->userService->getUser($username);
     }
 
     public function displayName(string $username): string

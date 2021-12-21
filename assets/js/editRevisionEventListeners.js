@@ -1,94 +1,30 @@
 import EmsListeners from "./EmsListeners";
 
-function onFormChange(event, allowAutoPublish){
-    if (updateMode === 'disabled') {
-        // console.log('No way to save a finalized revision!');
-        return;
-    }
-    else if (updateMode === 'autoPublish' && !allowAutoPublish) {
-        // console.log('The auto-save is disabled in auto-publish mode!');
-        return;
-    }
+let CKEditorConfig = false;
+function initCKEditor() {
+    if (false === CKEditorConfig) {
+        const assetPath = document.querySelector("BODY").getAttribute('data-asset-path') ;
+        CKEDITOR.plugins.addExternal('adv_link', assetPath+'bundles/emscore/js/cke-plugins/adv_link/plugin.js', '' );
+        CKEDITOR.plugins.addExternal('div', assetPath+'bundles/emscore/js/cke-plugins/div/plugin.js', '' );
+        CKEDITOR.plugins.addExternal('imagebrowser', assetPath+'bundles/emscore/js/cke-plugins/imagebrowser/plugin.js', '' );
 
-    synch = false;
+        const wysiwygInfo = JSON.parse(document.querySelector('body').dataset.wysiwygInfo);
 
-    updateChoiceFieldTypes();
-    updateCollectionLabel();
-
-
-    if(waitingResponse) {
-        return;
-        //abort the request might be an option, but it overloads the server
-        // waitingResponse.abort();
-    }
-
-    synch = true;
-    //update ckeditor's text areas
-    for (let i in CKEDITOR.instances) {
-        if(CKEDITOR.instances.hasOwnProperty(i)) {
-            CKEDITOR.instances[i].updateElement();
-        }
-    }
-
-
-    waitingResponse = window.ajaxRequest.post( primaryBox.data('ajax-update'), $("form[name=revision]").serialize())
-        .success(function(response) {
-            $('.has-error').removeClass('has-error');
-            $('span.help-block').remove();
-
-            /**
-             * @param {{formErrors:array}} response
-             */
-            $(response.formErrors).each(function(index, item){
-
-                /**
-                 * @param {{propertyPath:string}} item
-                 */
-                let target = item.propertyPath;
-                const targetLabel = $('#' + target + '__label');
-                const targetError = $('#' + target + '__error');
-
-                let propPath = $('#'+item.propertyPath+'_value');
-                if(propPath.length && propPath.prop('nodeName') === 'TEXTAREA'){
-                    target = item.propertyPath+'_value';
-                }
-
-                const targetParent = $('#' + target);
-                if (targetLabel.length) {
-                    targetLabel.closest('div.form-group').addClass('has-error');
-                    if (item.message && targetError.length > 0) {
-                        targetError.addClass('has-error');
-                        if($('#'+target+'__error span.help-block').length === 0){
-                            targetError.append('<span class="help-block"><ul class="list-unstyled"></ul></span>');
-                        }
-                        $('#'+target+'__error'+' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
-                    }
-                }
-                else {
-                    $('#' + target).closest('div.form-group').addClass('has-error');
-                    targetParent.parents('.form-group').addClass('has-error');
-                    if(item.message) {
-                        if(targetParent.parents('.form-group').find(' span.help-block').length === 0){
-                            targetParent.parent('.form-group').append('<span class="help-block"><ul class="list-unstyled"><li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li></ul></span>');
-                        }
-                        else {
-                            targetParent.parents('.form-group').find(' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
-                        }
-                    }
-                }
-
-            });
-        })
-        .always(function() {
-            waitingResponse = false;
-            if(!synch){
-                onFormChange();
+        if (wysiwygInfo.hasOwnProperty('styles')) {
+            const stylesSets = wysiwygInfo.styles;
+            for(let i=0; i < stylesSets.length; ++i) {
+                CKEDITOR.stylesSet.add(stylesSets[i].name, stylesSets[i].config);
             }
-        });
+        }
+        CKEditorConfig = wysiwygInfo.config;
+    }
+
+    return CKEditorConfig;
 }
 
-function editRevisionEventListeners(target){
-    new EmsListeners(target.get(0), onFormChange);
+function editRevisionEventListeners(target, onChangeCallback = null){
+    const ckconfig = initCKEditor();
+    new EmsListeners(target.get(0), onChangeCallback);
 
     target.find('button#btn-publish-version').on('click', function(e) {
         e.preventDefault();
@@ -102,12 +38,17 @@ function editRevisionEventListeners(target){
         const panel = $(this).closest('.collection-item-panel');
         panel.find('input._ems_internal_deleted').val('deleted');
         panel.hide();
-        onFormChange();
+
+        if (onChangeCallback) {
+            onChangeCallback();
+        }
     });
 
-    target.find("input").not(".ignore-ems-update").on('input', onFormChange);
-    target.find("select").not(".ignore-ems-update").on('change', onFormChange);
-    target.find("textarea").not(".ignore-ems-update").on('input', onFormChange);
+    if (onChangeCallback) {
+        target.find("input").not(".ignore-ems-update").on('input', onChangeCallback);
+        target.find("select").not(".ignore-ems-update").on('change', onChangeCallback);
+        target.find("textarea").not(".ignore-ems-update").on('input', onChangeCallback);
+    }
 
     target.find('.add-content-button').on('click', function(e) {
         // prevent the link from creating a "#" on the URL
@@ -129,8 +70,10 @@ function editRevisionEventListeners(target){
         addEventListeners(newForm);
 
         panel.children('.panel-body').children('.collection-panel-container').append(newForm);
-        onFormChange();
 
+        if (onChangeCallback) {
+            onChangeCallback();
+        }
     });
 
     target.find('.ems-sortable > div').sortable({
@@ -140,12 +83,6 @@ function editRevisionEventListeners(target){
     target.find('.selectpicker').selectpicker();
 
     target.find(".ckeditor_ems").each(function(){
-
-        const ckconfig = wysiwygConfig;
-
-        ckconfig.imageUploadUrl = uploadUrl;
-        ckconfig.imageBrowser_listUrl = imageUrl;
-
         let height = $( this ).attr('data-height');
         if(!height){
             height = 400;
@@ -188,9 +125,8 @@ function editRevisionEventListeners(target){
         ckconfig.extraAllowedContent = 'p(*)[*]{*};div(*)[*]{*};li(*)[*]{*};ul(*)[*]{*}';
         CKEDITOR.dtd.$removeEmpty.i = 0;
 
-
-        if (!CKEDITOR.instances[$( this ).attr('id')] && $(this).hasClass('ignore-ems-update') === false) {
-            CKEDITOR.replace(this, ckconfig).on('key', onFormChange );
+        if (onChangeCallback && !CKEDITOR.instances[$( this ).attr('id')] && $(this).hasClass('ignore-ems-update') === false) {
+            CKEDITOR.replace(this, ckconfig).on('key', onChangeCallback );
         }
         else {
             CKEDITOR.replace( $( this ).attr('id'), ckconfig);
@@ -233,7 +169,9 @@ function editRevisionEventListeners(target){
 
     target.find(".colorpicker-component").colorpicker();
 
-    target.find(".colorpicker-component").bind('changeColor', onFormChange);
+    if (onChangeCallback) {
+        target.find(".colorpicker-component").bind('changeColor', onChangeCallback);
+    }
 
     target.find(".timepicker").each(function(){
 
@@ -248,7 +186,9 @@ function editRevisionEventListeners(target){
         $( this ).unbind( "change" );
 
         if ($(this).not('.ignore-ems-update')) {
-            $( this ).timepicker(settings).on('changeTime.timepicker', onFormChange);
+            if (onChangeCallback) {
+                $( this ).timepicker(settings).on('changeTime.timepicker', onChangeCallback);
+            }
         } else {
             $( this ).timepicker(settings);
         }
@@ -273,7 +213,9 @@ function editRevisionEventListeners(target){
 
         $(this).datepicker(params);
 
-        $(this).not(".ignore-ems-update").on('change', onFormChange);
+        if (onChangeCallback) {
+            $(this).not(".ignore-ems-update").on('change', onChangeCallback);
+        }
     });
 
     target.find('.datetime-picker').each(function( ) {
@@ -283,7 +225,9 @@ function editRevisionEventListeners(target){
             keepInvalid: true, //otherwise daysOfWeekDisabled or disabledHours will not work!
             extraFormats: [moment.ISO_8601]
         });
-        $element.not(".ignore-ems-update").on('change', onFormChange);
+        if (onChangeCallback) {
+            $element.not(".ignore-ems-update").on('change', onChangeCallback);
+        }
     });
 
     target.find('.ems_daterangepicker').each(function( ) {
@@ -292,11 +236,13 @@ function editRevisionEventListeners(target){
         $(this).unbind('change');
 
         if ($(this).not('.ignore-ems-update')) {
-            $(this).daterangepicker(options, function() { onFormChange(); });
+            if (onChangeCallback) {
+                $(this).daterangepicker(options, function() { onChangeCallback(); });
+            }
         } else {
             $(this).daterangepicker(options);
         }
     });
 }
 
-export {onFormChange, editRevisionEventListeners};
+export {editRevisionEventListeners};

@@ -18,5 +18,12 @@
             <tag name="twig.runtime"/>
         </service>
 
+        <service id="ems_core.core_revision_wysiwyg.wysiwyg_runtime" class="EMS\CoreBundle\Core\Revision\Wysiwyg\WysiwygRuntime">
+            <argument type="service" id="ems.service.wysiwyg_styles_set"></argument>
+            <argument type="service" id="ems.service.user"></argument>
+            <argument type="service" id="router"></argument>
+            <tag name="twig.runtime" />
+        </service>
+
     </services>
 </container>

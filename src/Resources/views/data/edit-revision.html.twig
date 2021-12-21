@@ -5,16 +5,6 @@
 
 
 {% block body %}
-	{%- set stylesSetsConfig = {} -%}
-    {%- if stylesSets is defined %}
-        {%- for stylesSet in stylesSets -%}
-			{%- set stylesSetsConfig = stylesSetsConfig|merge([{
-				name: stylesSet.name,
-				config:  stylesSet.config|json_decode
-			}]) -%}
-        {%- endfor -%}
-    {%- endif -%}
-
 <div class="box box-primary" id="revision-primary-box"
 	data-update-mode="
 		{%- if not revision.draft -%}
@@ -24,18 +14,6 @@
 		{%- else -%}
 			autoSave
 		{%- endif -%}"
-	data-wysiwyg-config="
-		{%- if app.user.wysiwygProfile and app.user.wysiwygProfile.config -%}
-			{{- app.user.wysiwygProfile.config|e('html_attr') -}}
-		{%- elseif app.user.wysiwygOptions -%}
-			{{- app.user.wysiwygOptions|e('html_attr') -}}
-        {%- else -%}
-            {}
-		{%- endif -%}"
-	data-upload-url="{{ path('ems_image_upload_url')|e('html_attr') }}"
-	data-image-url="{{ path('ems_images_index')|e('html_attr') }}"
-	data-files-url="{{ path('ems_core_uploaded_file_wysiwyg_index')|e('html_attr') }}"
-	data-styles-sets="{{ stylesSetsConfig|json_encode|e('html_attr') }}"
 	data-ajax-update="{{ path('revision.ajaxupdate', { revisionId: revision.id })|e('html_attr') }}">
 	<div class="box-header with-border">
 		<h3 class="box-title text-{{ revision.contentType.color }}"><i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %} "></i>&nbsp;&nbsp;&nbsp;{{ revision.contentType.singularName }}</h3>

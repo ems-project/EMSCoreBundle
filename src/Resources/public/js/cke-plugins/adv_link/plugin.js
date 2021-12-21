@@ -169,7 +169,8 @@
 					return menu;
 				} );
 			}
-			var url = $('#revision-primary-box').data('files-url');
+
+			var url = editor.config.ems_filesUrl;
             if (editor.config.baseHref) {
                 url += "&baseHref=" + encodeURIComponent(editor.config.baseHref);
             }

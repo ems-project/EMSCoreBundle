@@ -223,7 +223,7 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
         return $this;
     }
 
-    public function getWysiwygOptions(): string
+    public function getWysiwygOptions(): ?string
     {
         return '';
     }

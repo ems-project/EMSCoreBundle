@@ -84,12 +84,7 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
      */
     public function setWysiwygOptions($wysiwygOptions);
 
-    /**
-     * Get wysiwygOptions.
-     *
-     * @return string
-     */
-    public function getWysiwygOptions();
+    public function getWysiwygOptions(): ?string;
 
     /**
      * Set layoutBoxed.

@@ -334,7 +334,7 @@ class User extends BaseUser implements UserInterface, EntityInterface
      *
      * @return string
      */
-    public function getWysiwygOptions()
+    public function getWysiwygOptions(): ?string
     {
         return $this->wysiwygOptions;
     }

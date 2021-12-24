@@ -44,7 +44,12 @@ final class WysiwygRuntime implements RuntimeExtensionInterface
      */
     private function getConfig(): array
     {
-        $user = $this->userService->getCurrentUser();
+        try {
+            $user = $this->userService->getCurrentUser();
+        } catch (\RuntimeException $e) {
+            return [];
+        }
+
         $profile = $user->getWysiwygProfile();
 
         if ($profile && null !== $profile->getConfig()) {

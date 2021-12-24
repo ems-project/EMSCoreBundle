@@ -53,7 +53,7 @@ final class WysiwygRuntime implements RuntimeExtensionInterface
 
         $wysiwygOptions = $user->getWysiwygOptions();
 
-        return Json::isJson($wysiwygOptions) ? Json::decode($wysiwygOptions) : [];
+        return null !== $wysiwygOptions && Json::isJson($wysiwygOptions) ? Json::decode($wysiwygOptions) : [];
     }
 
     /**

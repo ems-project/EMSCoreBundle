@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Controller\Log;
 
 use EMS\CommonBundle\Entity\Log;

@@ -13,6 +13,7 @@ use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Processor\Config;
+use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer;
 use EMS\CoreBundle\Core\Revision\Wysiwyg\WysiwygRuntime;
@@ -67,6 +68,7 @@ class AppExtension extends AbstractExtension
     private \Swift_Mailer $mailer;
     private ElasticaService $elasticaService;
     private SearchService $searchService;
+    private AssetRuntime $assetRuntime;
 
     /**
      * @param array<mixed> $assetConfig
@@ -87,6 +89,7 @@ class AppExtension extends AbstractExtension
         \Swift_Mailer $mailer,
         ElasticaService $elasticaService,
         SearchService $searchService,
+        AssetRuntime $assetRuntime,
         array $assetConfig
     ) {
         $this->doctrine = $doctrine;
@@ -104,6 +107,7 @@ class AppExtension extends AbstractExtension
         $this->mailer = $mailer;
         $this->elasticaService = $elasticaService;
         $this->searchService = $searchService;
+        $this->assetRuntime = $assetRuntime;
         $this->assetConfig = $assetConfig;
     }
 
@@ -797,13 +801,30 @@ class AppExtension extends AbstractExtension
         $path = \substr($path, 0, \strlen($path) - 8);
 
         return \preg_replace_callback(
-            '/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
+            '/(ems:\/\/asset:)(?P<hash>[^\n\r"\'\?]*)(?:\?(?P<query>(?:[^\n\r"|\']*)))?/i',
             function ($matches) use ($path, $fileName) {
                 if ($fileName) {
-                    return $this->fileService->getFile($matches[2]);
+                    return $this->fileService->getFile($matches['hash']);
                 }
 
-                return $path.$matches[2];
+                $parameters = [];
+                $query = \html_entity_decode($matches['query'] ?? '');
+                \parse_str($query, $parameters);
+                if (\is_string($parameters['name'] ?? null) && \is_string($parameters['type'] ?? null)) {
+                    return $this->assetRuntime->assetPath([
+                        EmsFields::CONTENT_FILE_HASH_FIELD => $matches['hash'],
+                        EmsFields::CONTENT_FILE_NAME_FIELD => $parameters['name'],
+                        EmsFields::CONTENT_MIME_TYPE_FIELD => $parameters['type'],
+                    ],[
+                    ],
+                    'ems_asset',
+                    EmsFields::CONTENT_FILE_HASH_FIELD,
+                    EmsFields::CONTENT_FILE_NAME_FIELD,
+                    EmsFields::CONTENT_MIME_TYPE_FIELD,
+                    UrlGeneratorInterface::ABSOLUTE_PATH);
+                }
+
+                return $path.$matches['hash'];
             },
             $input
         );

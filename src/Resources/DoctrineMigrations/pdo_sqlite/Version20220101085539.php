@@ -19,6 +19,7 @@ final class Version20220101085539 extends AbstractMigration
         , formatted CLOB NOT NULL, username VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('ALTER TABLE environment ADD COLUMN label VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE managed_alias ADD COLUMN label VARCHAR(255) DEFAULT NULL');
+        $this->addSql('INSERT INTO schedule (id, created, modified, name, cron, command, next_run, order_key) VALUES (\'e0e77d35-f8b5-4bbe-a804-e513c404ab5a\', \'2022-01-01 12:24:57\', \'2022-01-01 12:24:57\', \'Clear logs\', \'0 2 * * 0\', \'ems:logs:clear\', \'2022-01-01 12:24:57\', 100)');
     }
 
     public function down(Schema $schema): void
@@ -43,5 +44,6 @@ final class Version20220101085539 extends AbstractMigration
         $this->addSql('DROP TABLE __temp__managed_alias');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_CCBD025A5E237E06 ON managed_alias (name)');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_CCBD025AE16C6B94 ON managed_alias (alias)');
+        $this->addSql('DELETE FROM schedule WHERE id = \'e0e77d35-f8b5-4bbe-a804-e513c404ab5a\'');
     }
 }

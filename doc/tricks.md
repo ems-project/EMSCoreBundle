@@ -21,3 +21,17 @@ document.addEventListener('ems-preview', function (event){
     drawioPreviewer();
 });
 ```
+
+Also, if the frontend application alter the iframe in a way where the iframe's height change, you can fire a redraw event on the preview's window:
+
+```javascript
+const script = document.createElement('script');
+script.setAttribute('type', 'text/javascript');
+script.addEventListener("load", function() {
+    const redrawEvent = new Event('redraw');
+    window.dispatchEvent(redrawEvent);
+});
+script.setAttribute('src', '//viewer.diagrams.net/js/viewer-static.min.js');
+document.body.appendChild(script);
+```
+

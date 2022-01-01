@@ -11,6 +11,9 @@
     <route id="emsco_log_delete" path="/delete/{log}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\Log\LogController::delete</default>
     </route>
+    <route id="emsco_log_view" path="/view/{log}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\Log\LogController::view</default>
+    </route>
 
 
 </routes>

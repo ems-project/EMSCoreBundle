@@ -65,6 +65,13 @@ class LogController extends AbstractController
         ]);
     }
 
+    public function view(Log $log): Response
+    {
+        return $this->render('@EMSCore/log/view.html.twig', [
+            'log' => $log,
+        ]);
+    }
+
     public function delete(Log $log): Response
     {
         $this->logManager->delete($log);
@@ -81,6 +88,7 @@ class LogController extends AbstractController
         $table->addColumn('log.index.column.level_name', 'levelName');
         $table->addColumn('log.index.column.message', 'message');
         $table->addColumn('log.index.column.username', 'username');
+        $table->addItemGetAction(Routes::LOG_VIEW, 'view.actions.view', 'eye');
         $table->addItemPostAction(Routes::LOG_DELETE, 'view.actions.delete', 'trash', 'view.actions.delete_confirm')->setButtonType('outline-danger');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'log.actions.delete_selected', 'log.actions.delete_selected_confirm')
             ->setCssClass('btn btn-outline-danger');

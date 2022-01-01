@@ -173,3 +173,10 @@ log.icon.class: 'fa fa-file-text'
 log.menu: Logs
 log.tagline: 'Who did what'
 log.index.title: Logs
+log.view.title: 'Logs of %created%'
+log.view.created: 'Created'
+log.view.message: 'Message'
+log.view.level: 'Severity'
+log.view.chanel: 'Channel'
+log.view.context: 'Context'
+log.view.extra: 'Extra'

@@ -911,3 +911,4 @@ log.index.column.channel: Channel
 log.index.column.level_name: Severity
 log.index.column.message: Message
 log.index.column.username: Username
+view.actions.view: Details

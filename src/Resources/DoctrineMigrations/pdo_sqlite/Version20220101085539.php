@@ -13,7 +13,7 @@ final class Version20220101085539 extends AbstractMigration
     {
         $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
-        $this->addSql('CREATE TABLE log (id CHAR(36) NOT NULL --(DC2Type:uuid)
+        $this->addSql('CREATE TABLE log_message (id CHAR(36) NOT NULL --(DC2Type:uuid)
         , created DATETIME NOT NULL, modified DATETIME NOT NULL, message CLOB NOT NULL, context CLOB NOT NULL --(DC2Type:array)
         , level SMALLINT NOT NULL, level_name VARCHAR(50) NOT NULL, channel VARCHAR(255) NOT NULL, extra CLOB NOT NULL --(DC2Type:array)
         , formatted CLOB NOT NULL, username VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
@@ -26,7 +26,7 @@ final class Version20220101085539 extends AbstractMigration
     {
         $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
-        $this->addSql('DROP TABLE log');
+        $this->addSql('DROP TABLE log_message');
         $this->addSql('DROP INDEX UNIQ_4626DE225E237E06');
         $this->addSql('CREATE TEMPORARY TABLE __temp__environment AS SELECT id, created, modified, name, alias, color, baseUrl, managed, snapshot, circles, in_default_search, extra, order_key, update_referrers FROM environment');
         $this->addSql('DROP TABLE environment');

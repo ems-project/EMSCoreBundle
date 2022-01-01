@@ -13,10 +13,10 @@ final class Version20211231111156 extends AbstractMigration
     {
         $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE log (id UUID NOT NULL, created TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, modified TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, message TEXT NOT NULL, context TEXT NOT NULL, level SMALLINT NOT NULL, level_name VARCHAR(50) NOT NULL, channel VARCHAR(255) NOT NULL, extra TEXT NOT NULL, formatted TEXT NOT NULL, username VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('COMMENT ON COLUMN log.id IS \'(DC2Type:uuid)\'');
-        $this->addSql('COMMENT ON COLUMN log.context IS \'(DC2Type:array)\'');
-        $this->addSql('COMMENT ON COLUMN log.extra IS \'(DC2Type:array)\'');
+        $this->addSql('CREATE TABLE log_message (id UUID NOT NULL, created TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, modified TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, message TEXT NOT NULL, context TEXT NOT NULL, level SMALLINT NOT NULL, level_name VARCHAR(50) NOT NULL, channel VARCHAR(255) NOT NULL, extra TEXT NOT NULL, formatted TEXT NOT NULL, username VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('COMMENT ON COLUMN log_message.id IS \'(DC2Type:uuid)\'');
+        $this->addSql('COMMENT ON COLUMN log_message.context IS \'(DC2Type:array)\'');
+        $this->addSql('COMMENT ON COLUMN log_message.extra IS \'(DC2Type:array)\'');
         $this->addSql('INSERT INTO schedule (id, created, modified, name, cron, command, next_run, order_key) VALUES (\'e0e77d35-f8b5-4bbe-a804-e513c404ab5a\', \'2022-01-01 12:24:57\', \'2022-01-01 12:24:57\', \'Clear logs\', \'0 2 * * 0\', \'ems:logs:clear\', \'2022-01-01 12:24:57\', 100)');
     }
 
@@ -24,7 +24,7 @@ final class Version20211231111156 extends AbstractMigration
     {
         $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('DROP TABLE log');
+        $this->addSql('DROP TABLE log_message');
         $this->addSql('DELETE FROM schedule WHERE id = \'e0e77d35-f8b5-4bbe-a804-e513c404ab5a\'');
     }
 }

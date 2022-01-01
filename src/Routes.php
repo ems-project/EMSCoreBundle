@@ -52,4 +52,6 @@ class Routes
     public const USER_ENABLING = 'emsco_user_enabling';
     public const USER_API_KEY = 'emsco_user_api_key';
     public const USER_DELETE = 'emsco_user_delete';
+    public const LOG_INDEX = 'emsco_log_index';
+    public const LOG_DELETE = 'emsco_log_delete';
 }

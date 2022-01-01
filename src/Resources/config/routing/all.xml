@@ -45,4 +45,6 @@
             prefix="/user" />
     <import resource="@EMSCoreBundle/Resources/config/routing/profile.xml"
             prefix="/profile" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/log.xml"
+            prefix="/admin/log" />
 </routes>

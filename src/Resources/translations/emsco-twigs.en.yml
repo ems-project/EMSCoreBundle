@@ -169,3 +169,7 @@ schedule.add.title: 'Add a schedule'
 schedule.edit.title: 'Edit schedule "%name%"'
 views.elements.side-menu-html.logs: 'Job''s logs'
 views.elements.side-menu-html.schedule: Schedule
+log.icon.class: 'fa fa-file-text'
+log.menu: Logs
+log.tagline: 'Who did what'
+log.index.title: Logs

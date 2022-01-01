@@ -23,7 +23,7 @@ final class FlashMessageLogger extends AbstractProcessingHandler
     }
 
     /**
-     * @param array{level: int, level_name: string, message: string} $record
+     * @param array{level: int, level_name: string, message: string, context: array} $record
      */
     protected function write(array $record): void
     {

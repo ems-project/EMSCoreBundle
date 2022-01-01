@@ -147,5 +147,10 @@
             <argument type="service" id="ems.service.revision"/>
             <tag name="twig.runtime"/>
         </service>
+
+        <service id="ems.log.manager" class="EMS\CoreBundle\Core\Log\LogManager">
+            <argument type="service" id="ems.repository.log"/>
+            <argument type="service" id="logger"/>
+        </service>
     </services>
 </container>

@@ -129,6 +129,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
                 'metadata' => $fieldType,
                 'label' => $labels[$counter++] ?? $value,
                 'migration' => $options['migration'],
+                'icon' => $options['icon'] ?? null,
                 'with_warning' => $options['with_warning'],
                 'raw_data' => $options['raw_data'],
                 'disabled_fields' => $options['disabled_fields'],

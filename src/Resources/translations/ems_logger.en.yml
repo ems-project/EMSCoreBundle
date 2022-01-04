@@ -4,7 +4,6 @@ log.data.revision.finalized: 'The document "%label%" has been published in %envi
 service.data.not_able_to_load_the_private_key: 'It''s impossible to load the private key %private_key_filename% : %error_message%'
 service.data.not_a_data_field: 'Unexpected %field_name% field in the revision form'
 service.data.already_unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already deleted from %environment%'
-service.data.cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is (see previous warnings)'
 service.data.cant_finalize_field: '%error_message%'
 service.data.check_signature_failed: 'Signature mismatch in %environment% for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
 service.data.computed_hash_mismatch: 'Computed hash mismatch in %environment% for document ems://object:%contenttype%:%ouuid%, computed hash: %computed_hash%, DB hash: %db_hash%'

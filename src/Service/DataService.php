@@ -926,13 +926,6 @@ class DataService
                 EmsFields::LOG_PATH_IN_ERROR_FIELD => $errorPath,
             ]);
         }
-
-        $this->logger->warning('service.data.cant_be_finalized', [
-            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-            EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
-            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-        ]);
     }
 
     /**

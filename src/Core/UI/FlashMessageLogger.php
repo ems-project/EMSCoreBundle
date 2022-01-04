@@ -23,7 +23,7 @@ final class FlashMessageLogger extends AbstractProcessingHandler
     }
 
     /**
-     * @param array<mixed> $record
+     * @param array{level: int, level_name: string, message: string, context: array} $record
      */
     protected function write(array $record): void
     {
@@ -31,6 +31,7 @@ final class FlashMessageLogger extends AbstractProcessingHandler
             return;
         }
 
+        //TODO: remove the translator when all logger have been migrated to the localized logger
         $parameters = [];
         foreach ($record['context'] as $key => &$value) {
             $parameters['%'.$key.'%'] = $value;

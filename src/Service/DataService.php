@@ -677,6 +677,7 @@ class DataService
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                             'index_hash' => $indexedItem[Mapping::HASH_FIELD],
                             'db_hash' => $revision->getSha1(),
+                            'label' => $revision->getLabel(),
                         ]);
                     }
                     unset($indexedItem[Mapping::HASH_FIELD]);
@@ -689,42 +690,46 @@ class DataService
                         // Check signature
                         $ok = \openssl_verify($data, $binary_signature, $this->getPublicKey(), self::ALGO);
                         if (0 === $ok) {
-                            $this->logger->warning('service.data.check_signature_failed', [
+                            $this->logger->info('service.data.check_signature_failed', [
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+                                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getLabel(),
                                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                                'label' => $revision->getLabel(),
                             ]);
                         } elseif (1 !== $ok) { //1 means signature is ok
-                            $this->logger->warning('service.data.error_check_signature', [
+                            $this->logger->info('service.data.error_check_signature', [
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                                 EmsFields::LOG_ERROR_MESSAGE_FIELD => \openssl_error_string(),
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+                                'label' => $revision->getLabel(),
                             ]);
                         }
                     } else {
                         $data = \json_encode($indexedItem);
                         if ($this->private_key) {
-                            $this->logger->warning('service.data.revision_not_signed', [
+                            $this->logger->info('service.data.revision_not_signed', [
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+                                'label' => $revision->getLabel(),
                             ]);
                         }
                     }
 
                     $computedHash = $this->storageManager->computeStringHash($data);
                     if ($computedHash !== $revision->getSha1()) {
-                        $this->logger->warning('service.data.computed_hash_mismatch', [
+                        $this->logger->info('service.data.computed_hash_mismatch', [
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                             EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                             'computed_hash' => $computedHash,
                             'db_hash' => $revision->getSha1(),
+                            'label' => $revision->getLabel(),
                         ]);
                     }
                 } else {
@@ -733,6 +738,7 @@ class DataService
                         EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                         EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                         EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        'label' => $revision->getLabel(),
                     ]);
                 }
             } catch (Exception $e) {
@@ -743,6 +749,7 @@ class DataService
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
+                    'label' => $revision->getLabel(),
                 ]);
             }
         }
@@ -870,11 +877,12 @@ class DataService
             } catch (Exception $e) {
                 $this->logger->warning('service.data.post_finalize_failed', [
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_ENVIRONMENT_FIELD => $revision->giveContentType()->getEnvironment()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
+                    'label' => $revision->getLabel(),
                 ]);
             }
         } else {
@@ -1324,15 +1332,17 @@ class DataService
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
                         EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+                        'label' => $revision->getLabel(),
                     ]);
                 } catch (NotFoundException $e) {
                     if (!$revision->getDeleted()) {
                         $this->logger->warning('service.data.already_unpublished', [
+                            'label' => $revision->getLabel(),
                             EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
-                            EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+                            EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getLabel(),
                         ]);
                     }
                     throw $e;
@@ -1778,6 +1788,7 @@ class DataService
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
                     'update_type' => $replaceOrMerge,
+                    'label' => $revision->getLabel(),
                 ]);
 
                 return $revision;
@@ -1800,6 +1811,7 @@ class DataService
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
                 'update_type' => $replaceOrMerge,
+                'label' => $revision->getLabel(),
             ]);
         }
 

@@ -44,7 +44,7 @@ use EMS\CoreBundle\Service\Revision\PostProcessingService;
 use EMS\CoreBundle\Twig\AppExtension;
 use Exception;
 use IteratorAggregate;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -117,8 +117,8 @@ class DataService
     protected $contentTypeService;
     /** @var UserService */
     protected $userService;
-    /** @var Logger */
-    protected $logger;
+
+    protected LoggerInterface $logger;
     /** @var StorageManager */
     private $storageManager;
     /** @var EnvironmentService */
@@ -147,7 +147,7 @@ class DataService
         $dispatcher,
         ContentTypeService $contentTypeService,
         string $privateKey,
-        Logger $logger,
+        LoggerInterface $logger,
         StorageManager $storageManager,
         Twig_Environment $twig,
         AppExtension $appExtension,
@@ -857,8 +857,9 @@ class DataService
             $this->dispatcher->dispatch(RevisionFinalizeDraftEvent::NAME, new RevisionFinalizeDraftEvent($revision));
 
             $this->logger->notice('log.data.revision.finalized', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
+                'label' => $revision->getLabel(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
+                EmsFields::LOG_ENVIRONMENT_FIELD => $revision->giveContentType()->giveEnvironment()->getLabel(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -869,8 +870,8 @@ class DataService
             } catch (Exception $e) {
                 $this->logger->warning('service.data.post_finalize_failed', [
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
+                    EmsFields::LOG_ENVIRONMENT_FIELD => $revision->giveContentType()->getEnvironment()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -2018,6 +2019,8 @@ class DataService
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
         }
+
+        return 0;
     }
 
     public function lockRevisions(ContentType $contentType, \DateTime $until, string $by): int
@@ -2032,6 +2035,8 @@ class DataService
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
         }
+
+        return 0;
     }
 
     public function unlockAllRevisions(string $by): int
@@ -2045,6 +2050,8 @@ class DataService
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
         }
+
+        return 0;
     }
 
     public function unlockRevisions(ContentType $contentType, string $by): int
@@ -2059,6 +2066,8 @@ class DataService
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
         }
+
+        return 0;
     }
 
     public function getAllDrafts(): array

@@ -1,6 +1,6 @@
 service.contenttype.mappings_error: 'Mappings update for %contenttype% in %environments% failed : %elasticsearch_dump%'
 service.contenttype.mappings_updated: 'Mappings successfully updated for content type %contenttype% in %environments%'
-log.data.revision.finalized: 'The revision ems://revision:%revision_id% has been finalized in %environment% for the document ems://object:%contenttype%:%ouuid%'
+log.data.revision.finalized: 'The document "%label%" has been published in %environment%'
 service.data.not_able_to_load_the_private_key: 'It''s impossible to load the private key %private_key_filename% : %error_message%'
 service.data.not_a_data_field: 'Unexpected %field_name% field in the revision form'
 service.data.already_unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already deleted from %environment%'

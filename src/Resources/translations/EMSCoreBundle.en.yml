@@ -526,7 +526,7 @@ task.create.success: 'Task "%title%" successfully created.'
 task.create.title: 'Add a new task'
 task.dashboard.action.change_owner: 'Change owner'
 task.dashboard.action.edit_revision: 'Edit revision'
-task.dashboard.action.go_revision: 'Revision'
+task.dashboard.action.go_revision: Revision
 task.dashboard.column.version: Version
 task.dashboard.column.actions: Actions
 task.dashboard.column.assignee: Assignee
@@ -584,7 +584,7 @@ task.validation.approve: Approve
 task.validation.comment: 'Comment for validation'
 task.validation.done: Finish
 task.validation.reject: Reject
-task.validation.send: 'Send'
+task.validation.send: Send
 uploaded-file.action.download_selected: 'Download selected'
 uploaded-file.action.hide-show: Hide/Show
 uploaded-file.action.soft-delete: Delete
@@ -904,3 +904,9 @@ log.service.schedule.delete: 'Schedule %name% has been deleted'
 user.add.button: 'Add user'
 user.export.excel: 'Excel export'
 user.export.csv: 'CSV export'
+log.index.column.created: Created
+log.index.column.channel: Channel
+log.index.column.level_name: Severity
+log.index.column.message: Message
+log.index.column.username: Username
+view.actions.view: Details

@@ -484,34 +484,82 @@
 {# </div>#}
 {% endblock tabsfieldtype_row %}
 
+{% block tabsfieldtype_widget_tab_label_per_item %}
+	<li id="{{ tab.vars.id}}__label" class="form-group{% if tab.vars.errors|length %} has-error{% endif %}{% if counter == 1%} active{% endif %}{% if tab.vars.class is defined and tab.vars.class != 'col-md-12' %} {{tab.vars.class}}{% endif %}">
+		<a href="#{{ tab.vars.id}}__tab" data-toggle="tab" aria-expanded="{% if counter == 1%}true{%else%}false{% endif %}">
+			{{- form_label(tab) -}}
+		</a>
+	</li>
+{% endblock tabsfieldtype_widget_tab_label_per_item %}
 
+{% block tabsfieldtype_widget_tab_panel_per_item %}
+	<div class="tab-pane{% if counter == 1%} active{% endif %}" id="{{ tab.vars.id}}__tab">
+		<div class="form-group has-error"  id="{{ tab.vars.id}}__error">
+			{{ form_errors(tab) }}
+		</div>
+		<fieldset>
+			{% if counter == 1%}
+				{{- form_widget(tab) -}}
+			{% else %}
+				{{- form_widget(tab) -}}
+			{% endif %}
+		</fieldset>
+	</div>
+{% endblock tabsfieldtype_widget_tab_panel_per_item %}
 
 {% block tabsfieldtype_widget -%}
 {# 	<div class="{% if class %}{{ class }}{% else %}col-xs-12 {% endif %}">#}
 		<div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              {% for tab in  form.iterator %}
-	              <li id="{{ tab.vars.id}}__label" class="form-group{% if tab.vars.errors|length %} has-error{% endif %}{% if loop.index == 1%} active{% endif %}{% if tab.vars.class is defined and tab.vars.class != 'col-md-12' %} {{tab.vars.class}}{% endif %}">
-	              	<a href="#{{ tab.vars.id}}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{%else%}false{% endif %}">
-	              	  {{- form_label(tab) -}}
-	                </a>
-	              </li>
-              {% endfor %}
+				{% set counter = 1 %}
+				{% for tab in  form.iterator %}
+					{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == tab.vars.data.fieldType.type %}
+						{% for item in  tab.iterator %}
+							{% with {
+								'tab': item,
+								'counter': counter,
+								}
+							%}
+								{{ block('tabsfieldtype_widget_tab_label_per_item') }}
+							{% endwith %}
+							{% set counter = counter + 1 %}
+						{% endfor %}
+					{% else %}
+						{% with {
+							  'tab': tab,
+							  'counter': counter,
+							  }
+						  %}
+							{{ block('tabsfieldtype_widget_tab_label_per_item') }}
+						{% endwith %}
+						{% set counter = counter + 1 %}
+					{% endif %}
+				{% endfor %}
             </ul>
             <div class="tab-content panel panel-default">
+			  {% set counter = 1 %}
               {% for tab in  form.iterator %}
-	              <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="{{ tab.vars.id}}__tab">
-	              	<div class="form-group has-error"  id="{{ tab.vars.id}}__error">
-		              {{ form_errors(tab) }}
-	              	</div>
-	              	<fieldset>
-					{% if loop.index == 1%}
-	               		{{- form_widget(tab) -}}
-	               	{% else %}
-	               		{{- form_widget(tab) -}}
-	               	{% endif %}
-	              	</fieldset>
-	              </div>
+				  {% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == tab.vars.data.fieldType.type %}
+					  {% for item in  tab.iterator %}
+						  {% with {
+							  'tab': item,
+							  'counter': counter,
+							  }
+						  %}
+							  {{ block('tabsfieldtype_widget_tab_panel_per_item') }}
+						  {% endwith %}
+						  {% set counter = counter + 1 %}
+					  {% endfor %}
+				  {% else %}
+					  {% with {
+						  'tab': tab,
+						  'counter': counter,
+						  }
+					  %}
+						  {{ block('tabsfieldtype_widget_tab_panel_per_item') }}
+					  {% endwith %}
+					  {% set counter = counter + 1 %}
+				  {% endif %}
               {% endfor %}
             </div>
             <!-- /.tab-content -->

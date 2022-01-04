@@ -1,0 +1,12 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('emsco_log_index') }}"><i class="{{ 'log.icon.class'|trans }}"></i> {{ 'log.menu'|trans }}</a></li>
+        {% block breadcrumb_items %}{% endblock breadcrumb_items %}
+    </ol>
+{% endblock %}
+
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+{% block subtitle %}<small>{{ 'log.tagline'|trans }}</small>{% endblock %}

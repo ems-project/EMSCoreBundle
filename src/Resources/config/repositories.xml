@@ -52,5 +52,8 @@
         <service id="ems.repository.user" class="EMS\CoreBundle\Repository\UserRepository" public="true">
             <argument type="service" id="doctrine"/>
         </service>
+        <service id="ems.repository.log" class="EMS\CoreBundle\Repository\LogRepository" public="true">
+            <argument type="service" id="doctrine"/>
+        </service>
     </services>
 </container>

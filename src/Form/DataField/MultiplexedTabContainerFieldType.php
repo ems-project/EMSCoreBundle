@@ -8,6 +8,7 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
+use EMS\CoreBundle\Form\Field\IconPickerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -41,6 +42,9 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
             'required' => false,
         ])->add('labels', TextareaType::class, [
             'required' => false,
+        ])
+        ->add('icon', IconPickerType::class, [
+            'required' => false,
         ]);
 
         if ($optionsForm->has('mappingOptions')) {
@@ -61,6 +65,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         parent::configureOptions($resolver);
         $resolver->setDefault('values', '');
         $resolver->setDefault('labels', '');
+        $resolver->setDefault('icon', null);
     }
 
     /**
@@ -124,6 +129,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
                 'metadata' => $fieldType,
                 'label' => $labels[$counter++] ?? $value,
                 'migration' => $options['migration'],
+                'icon' => $options['icon'] ?? null,
                 'with_warning' => $options['with_warning'],
                 'raw_data' => $options['raw_data'],
                 'disabled_fields' => $options['disabled_fields'],

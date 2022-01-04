@@ -182,5 +182,10 @@
             <argument type="service" id="ems_core.core_ui.ajax_service" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Log\LogController" public="true">
+            <argument type="service" id="ems.log.manager" />
+            <argument type="service" id="logger" />
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

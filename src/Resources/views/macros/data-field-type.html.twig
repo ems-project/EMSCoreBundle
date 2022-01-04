@@ -412,30 +412,88 @@
 	</div>
 {% endblock %}
 
+{% block tabsfieldtype_widget_tab_label_per_item %}
+	<li class="{% if counter == 1%}active{% endif %}{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class != 'col-md-12' %} {{child.fieldType.displayOptions.class}}{% endif %}">
+		<a href="#item_{{ dataField.fieldType.id~'_'~counter }}__tab" data-toggle="tab" aria-expanded="false">
+			{% if child.fieldType.displayOptions.icon is defined and child.fieldType.displayOptions.icon%}
+				<i class="{{ child.fieldType.displayOptions.icon }}"></i>
+			{% endif %}
+			{{ label }}
+		</a>
+	</li>
+{% endblock tabsfieldtype_widget_tab_label_per_item %}
+
+
 {% block EMS_CoreBundle_Form_DataField_TabsFieldType %}
 	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
+			{% set counter = 1 %}
             {% for child in dataField.children if not child.fieldType.deleted %}
-            	<li class="{% if loop.index == 1%}active{% endif %}{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class != 'col-md-12' %} {{child.fieldType.displayOptions.class}}{% endif %}">
-            		<a href="#item_{{ dataField.fieldType.id~'_'~loop.index }}__tab" data-toggle="tab" aria-expanded="false">
-                        {% if child.fieldType.displayOptions.icon is defined and child.fieldType.displayOptions.icon%}
-                        	<i class="{{ child.fieldType.displayOptions.icon }}"></i>
-                        {% endif %}
-                        {% if child.fieldType.displayOptions.label is defined %}
-                            {{ child.fieldType.displayOptions.label }}
-                        {% else %}
-                            {{ child.fieldType.name }}
-                        {% endif %}
-					</a>
-    			</li>
+				{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == child.fieldType.type|default(null) %}
+					{% set labels = child.fieldType.displayOptions.labels|default('')|replace({"\r":''})|split('\n') %}
+					{% for key, item in  child.children %}
+						{% with {
+							'child': item,
+							'counter': counter,
+							'label': attribute(labels, loop.index0)|default(key),
+							}
+						%}
+							{{ block('tabsfieldtype_widget_tab_label_per_item') }}
+						{% endwith %}
+						{% set counter = counter + 1 %}
+					{% endfor %}
+				{% else %}
+					{% with {
+						'child': child,
+						'counter': counter,
+						'label': child.fieldType.displayOptions.label|default(child.fieldType.name)
+						}
+					%}
+						{{ block('tabsfieldtype_widget_tab_label_per_item') }}
+					{% endwith %}
+					{% set counter = counter + 1 %}
+				{% endif %}
 			{% endfor %}
 		</ul>
 		<div class="tab-content">
+			{% set counter = 1 %}
 			{% for child in dataField.children if not child.fieldType.deleted %}
-			  <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~loop.index }}__tab">
-				{{ _self.renderDataFieldBlock(child, source, compare, compareRawData) }}
-			  </div>
-		  {% endfor %}
+				{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == child.fieldType.type|default(null) %}
+					{% for key, item in  child.children %}
+						{% with {
+							'child': item,
+							'counter': counter,
+							}
+						%}
+							<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~counter }}__tab">
+								{% set childData = source[key]|default([]) %}
+								{% set childCompareData = compareRawData[key]|default([]) %}
+								{% for grandchild in child.children|default([]) %}
+									{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData) }}
+								{% endfor %}
+							</div>
+						{% endwith %}
+						{% set counter = counter + 1 %}
+					{% endfor %}
+				{% elseif 'EMS\\CoreBundle\\Form\\DataField\\ContainerFieldType' == child.fieldType.type|default(null) %}
+					<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~counter }}__tab">
+						{% for grandchild in child.children|default([]) %}
+							{{ _self.renderDataFieldBlock(grandchild, source, compare, compareRawData) }}
+						{% endfor %}
+					</div>
+				{% else %}
+					{% with {
+						'child': child,
+						'counter': counter,
+						}
+					%}
+						<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~counter }}__tab">
+							{{ _self.renderDataFieldBlock(child, source, compare, compareRawData) }}
+						</div>
+					{% endwith %}
+					{% set counter = counter + 1 %}
+				{% endif %}
+		  	{% endfor %}
 		</div>
 		<!-- /.tab-content -->
 	 </div>

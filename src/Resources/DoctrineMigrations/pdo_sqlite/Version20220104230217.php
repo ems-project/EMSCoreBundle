@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Application\Migrations;
 
@@ -10,10 +12,10 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20220104230217 extends AbstractMigration
 {
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TABLE release_entity (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, environment_source_id INTEGER DEFAULT NULL, environment_target_id INTEGER DEFAULT NULL, execution_date DATETIME DEFAULT NULL, status VARCHAR(20) NOT NULL, name VARCHAR(255) NOT NULL)');
         $this->addSql('CREATE INDEX IDX_C0CA3E85570FDFA8 ON release_entity (environment_source_id)');
@@ -177,10 +179,10 @@ final class Version20220104230217 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_AEFF00A6422B0E0C ON form_submission_file (form_submission_id)');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TABLE "release" (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, environment_source_id INTEGER DEFAULT NULL, environment_target_id INTEGER DEFAULT NULL, execution_date DATETIME DEFAULT NULL, status VARCHAR(20) NOT NULL COLLATE BINARY, name VARCHAR(255) NOT NULL COLLATE BINARY)');
         $this->addSql('CREATE INDEX IDX_9E47031DD7BDC8AF ON "release" (environment_target_id)');

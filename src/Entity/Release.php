@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * @ORM\Table(name="`release`")
+ * @ORM\Table(name="release_entity")
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */

@@ -243,14 +243,14 @@ class DataController extends AbstractController
     /**
      * @Route("/data/view/{environmentName}/{type}/{ouuid}", name="data.view")
      */
-    public function viewDataAction(string $environmentName, string $type, string $ouuid, ContentTypeService $contentTypeService, EnvironmentService $environmentService): Response
+    public function viewDataAction(string $environmentName, string $type, string $ouuid, EnvironmentService $environmentService): Response
     {
         $environment = $environmentService->getByName($environmentName);
         if (false === $environment) {
             throw new NotFoundHttpException(\sprintf('Environment %s not found', $environmentName));
         }
 
-        $contentType = $contentTypeService->getByName($type);
+        $contentType = $this->contentTypeService->getByName($type);
         if (false === $contentType) {
             throw new NotFoundHttpException(\sprintf('Content type %s not found', $type));
         }
@@ -325,7 +325,7 @@ class DataController extends AbstractController
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="ems_content_revisions_view")
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="data.revisions")
      */
-    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, ElasticaService $elasticaService, ContentTypeService $contentTypeService)
+    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -451,7 +451,7 @@ class DataController extends AbstractController
         $dataFields = $this->dataService->getDataFieldsStructure($form->get('data'));
 
         $searchForm = new Search();
-        $searchForm->setContentTypes($contentTypeService->getAllNames());
+        $searchForm->setContentTypes($this->contentTypeService->getAllNames());
         $searchForm->setEnvironments([$defaultEnvironment->getName()]);
         $searchForm->setSortBy('_uid');
         $searchForm->setSortOrder('asc');
@@ -484,7 +484,7 @@ class DataController extends AbstractController
         $esSearch->setSize(100);
         $esSearch->setSources([]);
 
-        $referrerResultSet = $elasticaService->search($esSearch);
+        $referrerResultSet = $this->elasticaService->search($esSearch);
         $referrerResponse = CommonResponse::fromResultSet($referrerResultSet);
 
         return $this->render('@EMSCore/data/revisions-data.html.twig', [
@@ -510,9 +510,9 @@ class DataController extends AbstractController
      * @throws DuplicateOuuidException
      * @Route("/data/duplicate/{environment}/{type}/{ouuid}", name="emsco_duplicate_revision", methods={"POST"})
      */
-    public function duplicateAction(string $environment, string $type, string $ouuid, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
+    public function duplicateAction(string $environment, string $type, string $ouuid, EnvironmentService $environmentService)
     {
-        $contentType = $contentTypeService->getByName($type);
+        $contentType = $this->contentTypeService->getByName($type);
         if (false === $contentType) {
             throw new NotFoundHttpException(\sprintf('Content type %s not found', $type));
         }
@@ -555,9 +555,9 @@ class DataController extends AbstractController
     /**
      * @Route("/data/copy/{environment}/{type}/{ouuid}", name="revision.copy", methods={"GET"})
      */
-    public function copyAction(string $environment, string $type, string $ouuid, Request $request, ContentTypeService $contentTypeService, EnvironmentService $environmentService): RedirectResponse
+    public function copyAction(string $environment, string $type, string $ouuid, Request $request, EnvironmentService $environmentService): RedirectResponse
     {
-        $contentType = $contentTypeService->getByName($type);
+        $contentType = $this->contentTypeService->getByName($type);
         if (!$contentType) {
             throw new NotFoundHttpException('Content type '.$type.' not found');
         }

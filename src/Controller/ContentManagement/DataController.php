@@ -243,7 +243,7 @@ class DataController extends AbstractController
     /**
      * @Route("/data/view/{environmentName}/{type}/{ouuid}", name="data.view")
      */
-    public function viewDataAction(string $environmentName, string $type, string $ouuid, SearchService $searchService, ContentTypeService $contentTypeService, EnvironmentService $environmentService): Response
+    public function viewDataAction(string $environmentName, string $type, string $ouuid, ContentTypeService $contentTypeService, EnvironmentService $environmentService): Response
     {
         $environment = $environmentService->getByName($environmentName);
         if (false === $environment) {
@@ -256,7 +256,7 @@ class DataController extends AbstractController
         }
 
         try {
-            $document = $searchService->getDocument($contentType, $ouuid, $environment);
+            $document = $this->searchService->getDocument($contentType, $ouuid, $environment);
         } catch (\Throwable $e) {
             throw new NotFoundHttpException(\sprintf('Document %s with identifier %s not found in environment %s', $contentType->getSingularName(), $ouuid, $environmentName));
         }
@@ -325,7 +325,7 @@ class DataController extends AbstractController
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="ems_content_revisions_view")
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="data.revisions")
      */
-    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService)
+    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, ElasticaService $elasticaService, ContentTypeService $contentTypeService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -480,7 +480,7 @@ class DataController extends AbstractController
         }
 
         $searchForm->setMinimumShouldMatch(1);
-        $esSearch = $searchService->generateSearch($searchForm);
+        $esSearch = $this->searchService->generateSearch($searchForm);
         $esSearch->setSize(100);
         $esSearch->setSources([]);
 
@@ -851,7 +851,7 @@ class DataController extends AbstractController
      * @Route("/data/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="data.customview")
      * @Route("/data/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="ems_data_custom_template_protected")
      */
-    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, TranslatorInterface $translator, SearchService $searchService, TwigEnvironment $twig, PdfPrinterInterface $pdfPrinter)
+    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, TranslatorInterface $translator, TwigEnvironment $twig, PdfPrinterInterface $pdfPrinter)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -880,7 +880,7 @@ class DataController extends AbstractController
         /** @var Environment $environment */
         $environment = $environment[0];
 
-        $document = $searchService->get($environment, $template->getContentType(), $ouuid);
+        $document = $this->searchService->get($environment, $template->getContentType(), $ouuid);
 
         try {
             $body = $twig->createTemplate($template->getBody());
@@ -979,7 +979,7 @@ class DataController extends AbstractController
      * @throws \Throwable
      * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view", methods={"POST"})
      */
-    public function customViewJobAction($environmentName, $templateId, $ouuid, SearchService $searchService, Request $request, TwigEnvironment $twig, JobService $jobService)
+    public function customViewJobAction($environmentName, $templateId, $ouuid, Request $request, TwigEnvironment $twig, JobService $jobService)
     {
         $em = $this->getDoctrine()->getManager();
         /** @var Template|null $template * */
@@ -991,7 +991,7 @@ class DataController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $document = $searchService->get($env, $template->getContentType(), $ouuid);
+        $document = $this->searchService->get($env, $template->getContentType(), $ouuid);
 
         $success = false;
         try {

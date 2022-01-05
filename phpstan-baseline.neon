@@ -7137,7 +7137,7 @@ parameters:
 
 		-
 			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 5
+			count: 2
 			path: src/Service/DataService.php
 
 		-
@@ -7152,12 +7152,12 @@ parameters:
 
 		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 19
+			count: 16
 			path: src/Service/DataService.php
 
 		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 3
+			count: 1
 			path: src/Service/DataService.php
 
 		-
@@ -7376,16 +7376,6 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:lockAllRevisions\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:lockRevisions\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:logFormErrors\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/DataService.php
@@ -7461,22 +7451,12 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:unlockAllRevisions\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:unlockRevision\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/DataService.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:unlockRevision\\(\\) has parameter \\$lockerUsername with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:unlockRevisions\\(\\) should return int but return statement is missing\\.$#"
 			count: 1
 			path: src/Service/DataService.php
 
@@ -8272,11 +8252,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:findUsernameByApikey\\(\\) has parameter \\$apiKey with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/UserService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:getAllUsers\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/UserService.php
 

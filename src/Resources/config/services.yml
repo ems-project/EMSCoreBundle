@@ -381,12 +381,12 @@ services:
         arguments: ['@ems.logger', '@ems_common.elastica.client', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '@ems_common.service.elastica', '%ems_core.instance_id%']
     EMS\CoreBundle\Service\DataService:
         class: EMS\CoreBundle\Service\DataService
-        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@ems_common.service.elastica', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment', '@ems.service.search', '@ems.service.index', '%ems_core.pre_generated_ouuids%', '@ems.service.revision.post_processing']
+        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@ems_common.service.elastica', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@ems.logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment', '@ems.service.search', '@ems.service.index', '%ems_core.pre_generated_ouuids%', '@ems.service.revision.post_processing']
         tags:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
     ems.service.revision.post_processing:
         class: EMS\CoreBundle\Service\Revision\PostProcessingService
-        arguments: ['@twig', '@form.factory', '@logger']
+        arguments: ['@twig', '@form.factory', '@ems.logger']
     ems.service.revision:
         class: EMS\CoreBundle\Service\Revision\RevisionService
         arguments: ['@ems.service.data', '@logger', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.publish', '@ems_common.service.elastica']

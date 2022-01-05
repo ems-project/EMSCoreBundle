@@ -4,6 +4,50 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
+    <route id="emsco_data_default_search" path="/{name}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:rootAction</default>
+    </route>
+    <route id="emsco_data_search_in_my_circles" path="/in-my-circles/{name}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:inMyCirclesAction</default>
+    </route>
+    <route id="emsco_data_put_back" path="/put-back/{contentType}/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:putBackAction</default>
+    </route>
+    <route id="emsco_data_empty_trash" path="/empty-trash/{contentType}/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:emptyTrashAction</default>
+    </route>
+    <route id="emsco_data_view" path="/view/{environmentName}/{type}/{ouuid}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:viewDataAction</default>
+    </route>
+    <route id="emsco_data_revision_in_environment" path="/revisions-in-environment/{environment}/{type}:{ouuid}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:revisionInEnvironmentDataAction</default>
+        <default key="deleted">0</default>
+    </route>
+    <route id="emsco_view_revisions" path="/revisions/{type}:{ouuid}/{revisionId}/{compareId}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:revisionsDataAction</default>
+        <default key="revisionId">0</default>
+        <default key="compareId">0</default>
+    </route>
+    <route id="emsco_duplicate_revision" path="/duplicate/{environment}/{type}/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:duplicateAction</default>
+    </route>
+    <route id="emsco_data_copy" path="/copy/{environment}/{type}/{ouuid}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:copyAction</default>
+    </route>
+    <route id="emsco_data_new_draft" path="/new-draft/{type}/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:newDraftAction</default>
+    </route>
+    <route id="emsco_data_delete" path="/delete/{type}/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:deleteAction</default>
+    </route>
+    <route id="emsco_discard_draft" path="/draft/discard/{revisionId}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:discardRevisionAction</default>
+    </route>
+    <route id="emsco_data_cancel_modifications" path="/cancel/{revision}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:cancelModificationsAction</default>
+    </route>
+
+
     <route id="emsco_data_default_view" path="/{type}" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:rootAction</default>
     </route>
@@ -34,5 +78,57 @@
     </route>
     <route id="emsco_data_json_menu_nested_silent_publish" path="/json-menu-nested/silent-publish/{revision}/{fieldType}/{field}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\Revision\JsonMenuNestedController::silentPublish</default>
+    </route>
+
+    <!--- Deprecated routes -->
+    <route id="ems_data_default_search" path="/{name}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:rootAction</default>
+    </route>
+    <route id="data.root" path="/{name}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:rootAction</default>
+    </route>
+    <route id="ems_search_in_my_circles" path="/in-my-circles/{name}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:inMyCirclesAction</default>
+    </route>
+    <route id="ems_data_trash" path="/trash/{contentType}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:trashAction</default>
+    </route>
+    <route id="ems_data_put_back" path="/put-back/{contentType}/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:putBackAction</default>
+    </route>
+    <route id="ems_data_empty_trash" path="/empty-trash/{contentType}/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:emptyTrashAction</default>
+    </route>
+    <route id="data.view" path="/view/{environmentName}/{type}/{ouuid}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:viewDataAction</default>
+    </route>
+    <route id="data.revision_in_environment" path="/revisions-in-environment/{environment}/{type}:{ouuid}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:revisionInEnvironmentDataAction</default>
+        <default key="deleted">0</default>
+    </route>
+    <route id="ems_content_revisions_view" path="/revisions/{type}:{ouuid}/{revisionId}/{compareId}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:revisionsDataAction</default>
+        <default key="revisionId">0</default>
+        <default key="compareId">0</default>
+    </route>
+    <route id="data.revisions" path="/revisions/{type}:{ouuid}/{revisionId}/{compareId}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:revisionsDataAction</default>
+        <default key="revisionId">0</default>
+        <default key="compareId">0</default>
+    </route>
+    <route id="revision.copy" path="/copy/{environment}/{type}/{ouuid}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:copyAction</default>
+    </route>
+    <route id="revision.new-draft" path="/new-draft/{type}/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:newDraftAction</default>
+    </route>
+    <route id="object.delete" path="/delete/{type}/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:deleteAction</default>
+    </route>
+    <route id="revision.discard" path="/draft/discard/{revisionId}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:discardRevisionAction</default>
+    </route>
+    <route id="revision.cancel" path="/cancel/{revision}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:cancelModificationsAction</default>
     </route>
 </routes>

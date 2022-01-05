@@ -93,15 +93,7 @@ class DataController extends AbstractController
         $this->indexService = $indexService;
     }
 
-    /**
-     * @Route("/data/{name}", name="ems_data_default_search")
-     * @Route("/data/{name}", name="data.root")
-     *
-     * @param string $name
-     *
-     * @return Response
-     */
-    public function rootAction($name)
+    public function rootAction(string $name): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -149,14 +141,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/data/in-my-circles/{name}", name="ems_search_in_my_circles")
-     *
-     * @param string $name
-     *
-     * @return Response
-     */
-    public function inMyCirclesAction($name)
+    public function inMyCirclesAction(string $name): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -207,10 +192,6 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @return Response
-     * @Route("/data/trash/{contentType}", name="ems_data_trash")
-     */
     public function trashAction(ContentType $contentType)
     {
         return $this->render('@EMSCore/data/trash.html.twig', [
@@ -219,14 +200,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string $ouuid
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/data/put-back/{contentType}/{ouuid}", name="ems_data_put_back", methods={"POST"})
-     */
-    public function putBackAction(ContentType $contentType, $ouuid)
+    public function putBackAction(ContentType $contentType, string $ouuid): RedirectResponse
     {
         $revId = $this->dataService->putBack($contentType, $ouuid);
 
@@ -235,14 +209,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string $ouuid
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/data/empty-trash/{contentType}/{ouuid}", name="ems_data_empty_trash", methods={"POST"})
-     */
-    public function emptyTrashAction(ContentType $contentType, $ouuid)
+    public function emptyTrashAction(ContentType $contentType, string $ouuid): RedirectResponse
     {
         $this->dataService->emptyTrash($contentType, $ouuid);
 
@@ -251,9 +218,6 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/data/view/{environmentName}/{type}/{ouuid}", name="data.view")
-     */
     public function viewDataAction(string $environmentName, string $type, string $ouuid): Response
     {
         $environment = $this->environmentService->getByName($environmentName);
@@ -280,14 +244,10 @@ class DataController extends AbstractController
     }
 
     /**
-     * @return RedirectResponse
-     * @Route("/data/revisions-in-environment/{environment}/{type}:{ouuid}", name="data.revision_in_environment", defaults={"deleted"=0})
      * @ParamConverter("contentType", options={"mapping": {"type" = "name", "deleted" = "deleted"}})
      * @ParamConverter("environment", options={"mapping": {"environment" = "name"}})
-     *
-     * @throws NonUniqueResultException
      */
-    public function revisionInEnvironmentDataAction(ContentType $contentType, string $ouuid, Environment $environment)
+    public function revisionInEnvironmentDataAction(ContentType $contentType, string $ouuid, Environment $environment): RedirectResponse
     {
         try {
             $revision = $this->dataService->getRevisionByEnvironment($ouuid, $contentType, $environment);
@@ -321,22 +281,7 @@ class DataController extends AbstractController
         return $response;
     }
 
-    /**
-     * @param string $type
-     * @param string $ouuid
-     * @param int    $revisionId
-     * @param int    $compareId
-     *
-     * @return Response
-     *
-     * @throws NonUniqueResultException
-     * @throws NoResultException
-     *
-     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="emsco_view_revisions")
-     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="ems_content_revisions_view")
-     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="data.revisions")
-     */
-    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request)
+    public function revisionsDataAction(string $type, string $ouuid, int $revisionId, int $compareId, Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -371,7 +316,7 @@ class DataController extends AbstractController
         $repository = $em->getRepository('EMSCoreBundle:Revision');
 
         /* @var Revision $revision */
-        if (!$revisionId) {
+        if (0 === $revisionId) {
             $revision = $repository->findOneBy([
                 'endTime' => null,
                 'ouuid' => $ouuid,
@@ -394,7 +339,7 @@ class DataController extends AbstractController
         }
 
         $compareData = false;
-        if ($compareId) {
+        if (0 !== $compareId) {
             try {
                 /** @var Revision $compareRevision */
                 $compareRevision = $repository->findOneById($compareId);
@@ -515,13 +460,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @return RedirectResponse
-     *
-     * @throws DuplicateOuuidException
-     * @Route("/data/duplicate/{environment}/{type}/{ouuid}", name="emsco_duplicate_revision", methods={"POST"})
-     */
-    public function duplicateAction(string $environment, string $type, string $ouuid)
+    public function duplicateAction(string $environment, string $type, string $ouuid): RedirectResponse
     {
         $contentType = $this->contentTypeService->getByName($type);
         if (false === $contentType) {
@@ -563,9 +502,6 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/data/copy/{environment}/{type}/{ouuid}", name="revision.copy", methods={"GET"})
-     */
     public function copyAction(string $environment, string $type, string $ouuid, Request $request): RedirectResponse
     {
         $contentType = $this->contentTypeService->getByName($type);
@@ -597,9 +533,6 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/data/new-draft/{type}/{ouuid}", name="revision.new-draft")
-     */
     public function newDraftAction(Request $request, string $type, string $ouuid): RedirectResponse
     {
         return $this->redirectToRoute(Routes::EDIT_REVISION, [
@@ -608,12 +541,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @return RedirectResponse
-     *
-     * @Route("/data/delete/{type}/{ouuid}", name="object.delete", methods={"POST"})
-     */
-    public function deleteAction(string $type, string $ouuid)
+    public function deleteAction(string $type, string $ouuid): RedirectResponse
     {
         $revision = $this->dataService->getNewestRevision($type, $ouuid);
         $contentType = $revision->giveContentType();
@@ -661,17 +589,7 @@ class DataController extends AbstractController
         return $this->dataService->discardDraft($revision);
     }
 
-    /**
-     * @param int $revisionId
-     *
-     * @return RedirectResponse
-     *
-     * @throws LockedException
-     * @throws PrivilegeException
-     * @Route("/data/draft/discard/{revisionId}", name="emsco_discard_draft", methods={"POST"})
-     * @Route("/data/draft/discard/{revisionId}", name="revision.discard", methods={"POST"})
-     */
-    public function discardRevisionAction($revisionId)
+    public function discardRevisionAction(int $revisionId): RedirectResponse
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -711,11 +629,6 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @throws LockedException
-     * @throws PrivilegeException
-     * @Route("/data/cancel/{revision}", name="revision.cancel", methods={"POST"})
-     */
     public function cancelModificationsAction(Revision $revision, PublishService $publishService): RedirectResponse
     {
         $contentTypeId = $revision->getContentType()->getId();

@@ -179,7 +179,8 @@
 					  </div>
 			  {% endif %}
 
-			  {% if hasEnv and instance.contentType.publishRole and is_granted(instance.contentType.publishRole) and ((environments|length > 0 and not current) or (environments|length > 1 and current)) %}
+			  {% set unpublishableEnvironments = availableEnv|filter(env => env in environments and env.circles|in_my_circles) %}
+			  {% if unpublishableEnvironments|length > 0 and instance.contentType.publishRole and is_granted(instance.contentType.publishRole) and ((environments|length > 0 and not current) or (environments|length > 1 and current)) %}
 				<div class="btn-group">
 					  <button type="button" class="btn btn-sm btn-outline-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span class="fa fa-toggle-off"></span>&nbsp;
@@ -187,7 +188,7 @@
 							<span class="caret"></span>
 					  </button>
 					   <ul class="dropdown-menu">
-							{% for env in availableEnv if env in environments and env.circles|in_my_circles %}
+							{% for env in unpublishableEnvironments %}
 								<li>
 									<a href="{{ path('revision.unpublish', {'revisionId': revisionId, 'envId': env.id}) }}">{{ env.label }}</a>
 								</li>

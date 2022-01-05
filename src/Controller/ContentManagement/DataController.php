@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -192,7 +191,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function trashAction(ContentType $contentType)
+    public function trashAction(ContentType $contentType): Response
     {
         return $this->render('@EMSCore/data/trash.html.twig', [
             'contentType' => $contentType,

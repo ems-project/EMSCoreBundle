@@ -53,7 +53,12 @@ class AppController extends AbstractController
         return $this->logger;
     }
 
-    protected function returnJsonResponse(Request $request, bool $success, array $body = [])
+    protected function returnJsonResponse(Request $request, bool $success, array $body = []): Response
+    {
+        return self::jsonResponse($request, $success, $body);
+    }
+
+    public static function jsonResponse(Request $request, bool $success, array $body = []): Response
     {
         $body['success'] = $success;
         $body['acknowledged'] = true;

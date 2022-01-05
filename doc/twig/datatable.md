@@ -138,6 +138,25 @@ The `asc_missing_values_position` parameter specifies how docs which are missing
 
 The `desc_missing_values_position` parameter specifies how docs which are missing the sort field, in `desc` direction, should be treated: The missing value can be set to `_last`, `_first`. The default is `_first`.
 
+## default_sort
+
+The `default_sort` parameter specifies how docs should be sorted be default. Useful for the [emsco_datatable_csv_path](#emsco_datatable_csv_path) and the [emsco_datatable_excel_path](#emsco_datatable_excel_path) functions.
+
+Example:
+ ```twig
+{{ emsco_datatable(['ldap'],['ldap_user'], {
+    "default_sort": {
+        "name.keyword": "desc",
+        "_score": "asc"
+    },
+    "columns": [{
+        "label": "Name",
+        "template": "{{ data.source.name|default('') }}",
+        "orderField": "name.keyword"
+    }]
+}) }}
+```
+
 ## row_context
 
 The `row_context` parameter allows you to define variables in a twig template, which variables will be available in your column's template:

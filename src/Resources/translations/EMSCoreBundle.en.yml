@@ -283,7 +283,6 @@ log.data.revision.cant_delete_has_published: 'The document ems://object:%content
 log.data.revision.compare: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id%'
 log.data.revision.compare_more_recent: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id%, wich one is more recent'
 log.data.revision.compare_revision_not_found: 'Impossible to compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision id %compare_revision_id% as this revision does not exists'
-log.data.revision.finalized: 'The revision ems://revision:%revision_id% has been finalized in %environment% for the document ems://object:%contenttype%:%ouuid%'
 log.data.revision.init_document_from_array: 'It was not possible to initiate a new %contenttype% document due to an internal error'
 log.data.revision.load_from_auto_save: 'Data were loaded from an auto-saved version for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
 log.data.revision.new_draft_from_revision: 'A new draft has been initiated, from the revision ems://revision:%revision_id%, for the document ems://object:%contenttype%:%ouuid%'
@@ -451,36 +450,8 @@ service.alias.too_many_indexes: 'There is too many indexes'
 service.asset_extractor.extract_error: 'An issue has been raised while extracting information from the asset/file ems://asset:%file_hash% : %error_message%'
 service.asset_extractor.persist_error: 'An issue has been raised while persisting the information extracted from the asset/file ems://asset:%file_hash% : %error_message%'
 service.contenttype.field_not_found: 'Field %field_id% not found and ignored'
-service.contenttype.mappings_error: 'Mappings update for %contenttype% in %environments% failed : %elasticsearch_dump%'
-service.contenttype.mappings_updated: 'Mappings successfully updated/created for %contenttype% in %environments%'
 service.contenttype.reordered: 'Content type "%contenttype% has been reordered'
 service.contenttype.update_mapping_exception: 'Error on updating %environments%''s mapping : %elasticsearch_error%'
-service.data.already_unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already deleted from %environment%'
-service.data.cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is (see previous warnings)'
-service.data.cant_finalize_field: '%error_message%'
-'service.data.check_signature_failed''': 'Signature mismatch in %environment% for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
-service.data.computed_hash_mismatch: 'Computed hash mismatch in %environment% for document ems://object:%contenttype%:%ouuid%, computed hash: %computed_hash%, DB hash: %db_hash%'
-service.data.data_not_consumed: '{1} A data of this revision was not consumed: %data%|]1,Inf[ Some data (%count%} of this revision were not consumed: %data%'
-service.data.default_value_error: 'It was not possible to initiate the default value (json_decode) for the content type %contenttype%, please check the content type''s configuration'
-service.data.default_value_template_error: 'It was not possible to initiate the default value (compile template) for the content type %contenttype%, please check the content type''s configuration'
-service.data.deleted: 'The document ems://object:%contenttype%:%ouuid% has been deleted'
-service.data.error_check_signature: 'Error checking signature in %environment% the revisions''s data for the document ems://object:%contenttype%:%ouuid% : %error_message%'
-service.data.error_with_fields: 'The field %path% is in error with the message %error_message%'
-service.data.hash_mismatch: 'Hash mismatch in %environment% for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%, hash in the index %index_hash%, hash in the DB %db_hash%'
-service.data.hash_missing: 'Hash missing in %environment% for document ems://object:%contenttype%:%ouuid%'
-service.data.integrity_failed: 'Issue in %environment% while checking integrity of the document ems://object:%contenttype%:%ouuid%: %error_message%'
-service.data.json_parse_post_processing_error: 'Error to JSON parse the result of the post processing script of field %field_name% (|json_encode|raw): %template%'
-service.data.not_a_data_field: 'Unexpected %field_name% field in the revision form'
-service.data.not_a_draft: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already finalized'
-service.data.not_able_to_load_the_private_key: 'It''s impossible to load the private key %private_key_filename% : %error_message%'
-service.data.not_able_to_sign: 'It was not possible to sign the revisions''s data for the document ems://object:%contenttype%:%ouuid% : %error_message%'
-service.data.post_finalize_failed: 'Error while finalize the post processing of the document ems://object:%contenttype%:%ouuid% : %error_message%'
-service.data.revision_not_signed: 'Revision not signed in %environment% for document ems://object:%contenttype%:%ouuid%'
-service.data.template_parse_error: 'Error to parse the computed field %computed_field_name%: %error_message%'
-service.data.transform_content_type.cant_process_draft: 'The document ems://object:%contenttype%:%ouuid% can''t be transformed as it''s last revision ems://revision:%revision_id% is in draft mode'
-service.data.unknown_update_type: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has not been replaced or replaced as the update type "%update_type%" is unknown'
-service.data.unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been unpublished from %environment%'
-service.data.update_referrers_error: 'It was impossible to update referrers of the document ems://object:%contenttype%:%ouuid%'
 service.entity.created: '%entity_type% %entity_name% has been created'
 service.entity.deleted: '%entity_type% %entity_name% has been deleted'
 service.entity.updated: '%entity_type% %entity_name% has been updated'
@@ -528,7 +499,7 @@ task.create.success: 'Task "%title%" successfully created.'
 task.create.title: 'Add a new task'
 task.dashboard.action.change_owner: 'Change owner'
 task.dashboard.action.edit_revision: 'Edit revision'
-task.dashboard.action.go_revision: 'Revision'
+task.dashboard.action.go_revision: Revision
 task.dashboard.column.version: Version
 task.dashboard.column.actions: Actions
 task.dashboard.column.assignee: Assignee
@@ -586,7 +557,7 @@ task.validation.approve: Approve
 task.validation.comment: 'Comment for validation'
 task.validation.done: Finish
 task.validation.reject: Reject
-task.validation.send: 'Send'
+task.validation.send: Send
 uploaded-file.action.download_selected: 'Download selected'
 uploaded-file.action.hide-show: Hide/Show
 uploaded-file.action.soft-delete: Delete
@@ -906,3 +877,9 @@ log.service.schedule.delete: 'Schedule %name% has been deleted'
 user.add.button: 'Add user'
 user.export.excel: 'Excel export'
 user.export.csv: 'CSV export'
+log.index.column.created: Created
+log.index.column.channel: Channel
+log.index.column.level_name: Severity
+log.index.column.message: Message
+log.index.column.username: Username
+view.actions.view: Details

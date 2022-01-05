@@ -17,6 +17,7 @@ class ElasticaTable extends TableAbstract
     private const FRONTEND_OPTIONS = 'frontendOptions';
     private const ASC_MISSING_VALUES_POSITION = 'asc_missing_values_position';
     private const DESC_MISSING_VALUES_POSITION = 'desc_missing_values_position';
+    private const DEFAULT_SORT = 'default_sort';
     public const FILENAME = 'filename';
     public const DISPOSITION = 'disposition';
     public const SHEET_NAME = 'sheet_name';
@@ -33,12 +34,15 @@ class ElasticaTable extends TableAbstract
     private string $ascMissingValuesPosition;
     private string $descMissingValuesPosition;
     private string $rowContext;
+    /** @var array<string, string> */
+    private array $defaultSort;
 
     /**
-     * @param string[] $aliases
-     * @param string[] $contentTypeNames
+     * @param string[]              $aliases
+     * @param string[]              $contentTypeNames
+     * @param array<string, string> $defaultSort
      */
-    public function __construct(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, string $emptyQuery, string $query, string $ascMissingValuesPosition, string $descMissingValuesPosition, string $filename, string $disposition, string $sheetName, string $rowContext)
+    public function __construct(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, string $emptyQuery, string $query, string $ascMissingValuesPosition, string $descMissingValuesPosition, string $filename, string $disposition, string $sheetName, string $rowContext, array $defaultSort = [])
     {
         parent::__construct($ajaxUrl, 0, 0);
         $this->elasticaService = $elasticaService;
@@ -52,6 +56,7 @@ class ElasticaTable extends TableAbstract
         $this->setExportDisposition($disposition);
         $this->setExportSheetName($sheetName);
         $this->rowContext = $rowContext;
+        $this->defaultSort = $defaultSort;
     }
 
     /**
@@ -62,7 +67,7 @@ class ElasticaTable extends TableAbstract
     public static function fromConfig(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, array $options): ElasticaTable
     {
         $options = self::resolveOptions($options);
-        $datatable = new self($elasticaService, $ajaxUrl, $aliases, $contentTypeNames, $options[self::EMPTY_QUERY], $options[self::QUERY], $options[self::ASC_MISSING_VALUES_POSITION], $options[self::DESC_MISSING_VALUES_POSITION], $options[self::FILENAME], $options[self::DISPOSITION], $options[self::SHEET_NAME], $options[self::ROW_CONTEXT]);
+        $datatable = new self($elasticaService, $ajaxUrl, $aliases, $contentTypeNames, $options[self::EMPTY_QUERY], $options[self::QUERY], $options[self::ASC_MISSING_VALUES_POSITION], $options[self::DESC_MISSING_VALUES_POSITION], $options[self::FILENAME], $options[self::DISPOSITION], $options[self::SHEET_NAME], $options[self::ROW_CONTEXT], $options[self::DEFAULT_SORT]);
         foreach ($options[self::COLUMNS] as $column) {
             $datatable->addColumnDefinition(new TemplateTableColumn($column));
         }
@@ -139,6 +144,8 @@ class ElasticaTable extends TableAbstract
                     'order' => $this->getOrderDirection(),
                 ],
             ]);
+        } else {
+            $search->setSort($this->defaultSort);
         }
 
         return $search;
@@ -147,7 +154,7 @@ class ElasticaTable extends TableAbstract
     /**
      * @param array<string, mixed> $options
      *
-     * @return array{columns: array, query: string, empty_query: string, frontendOptions: array, asc_missing_values_position: string, desc_missing_values_position: string, filename: string, disposition: string, sheet_name: string, row_context: string}
+     * @return array{columns: array, query: string, empty_query: string, frontendOptions: array, asc_missing_values_position: string, desc_missing_values_position: string, filename: string, disposition: string, sheet_name: string, row_context: string, default_sort: array<string, string>}
      */
     private static function resolveOptions(array $options)
     {
@@ -168,6 +175,7 @@ class ElasticaTable extends TableAbstract
                 self::DISPOSITION => 'attachment',
                 self::SHEET_NAME => 'Sheet',
                 self::ROW_CONTEXT => '',
+                self::DEFAULT_SORT => [],
             ])
             ->setAllowedTypes(self::COLUMNS, ['array'])
             ->setAllowedTypes(self::QUERY, ['array', 'string'])
@@ -177,6 +185,7 @@ class ElasticaTable extends TableAbstract
             ->setAllowedTypes(self::DISPOSITION, ['string'])
             ->setAllowedTypes(self::SHEET_NAME, ['string'])
             ->setAllowedTypes(self::ROW_CONTEXT, ['string'])
+            ->setAllowedTypes(self::DEFAULT_SORT, ['array'])
             ->setAllowedValues(self::ASC_MISSING_VALUES_POSITION, ['_last', '_first'])
             ->setAllowedValues(self::DESC_MISSING_VALUES_POSITION, ['_last', '_first'])
             ->setNormalizer(self::QUERY, function (Options $options, $value) {
@@ -199,8 +208,23 @@ class ElasticaTable extends TableAbstract
 
                 return $value;
             })
+            ->setNormalizer(self::DEFAULT_SORT, function (Options $options, $value) {
+                if (!\is_array($value)) {
+                    throw new \RuntimeException('Unexpected non array value');
+                }
+                foreach ($value as $field => $order) {
+                    if (!\is_string($field)) {
+                        throw new \RuntimeException('Unexpected non string field');
+                    }
+                    if (!\in_array($order, ['asc', 'desc'])) {
+                        throw new \RuntimeException('Unexpected order value. Expect `desc`or `asc`.');
+                    }
+                }
+
+                return $value;
+            })
         ;
-        /** @var array{columns: array, query: string, empty_query: string, frontendOptions: array, asc_missing_values_position: string, desc_missing_values_position: string, filename: string, disposition: string, sheet_name: string, row_context: string} $resolvedParameter */
+        /** @var array{columns: array, query: string, empty_query: string, frontendOptions: array, asc_missing_values_position: string, desc_missing_values_position: string, filename: string, disposition: string, sheet_name: string, row_context: string, default_sort: array<string, string>} $resolvedParameter */
         $resolvedParameter = $resolver->resolve($options);
 
         return $resolvedParameter;

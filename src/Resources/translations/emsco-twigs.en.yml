@@ -114,6 +114,7 @@ views.elements.object-toolbar-html.view-current-revision: 'View current revision
 views.elements.object-toolbar-html.edit-draft: 'Edit draft'
 views.elements.object-toolbar-html.new-draft: Edit
 views.elements.side-menu-html.uploaded-files-logs: 'Uploaded file logs'
+views.elements.side-menu-html.audit-logs: 'Logs'
 uploaded-file-logs.index.title: 'Uploaded file logs'
 view.icon.class.uploaded-file: 'fa fa-upload'
 uploaded-file-logs.menu: 'Uploaded file logs'
@@ -169,3 +170,14 @@ schedule.add.title: 'Add a schedule'
 schedule.edit.title: 'Edit schedule "%name%"'
 views.elements.side-menu-html.logs: 'Job''s logs'
 views.elements.side-menu-html.schedule: Schedule
+log.icon.class: 'fa fa-file-text'
+log.menu: Logs
+log.tagline: 'Who did what'
+log.index.title: Logs
+log.view.title: 'Logs of %created%'
+log.view.created: 'Created'
+log.view.message: 'Message'
+log.view.level: 'Severity'
+log.view.chanel: 'Channel'
+log.view.context: 'Context'
+log.view.extra: 'Extra'

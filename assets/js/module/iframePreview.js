@@ -47,6 +47,9 @@ export default class IframePreview {
             iframe.contentWindow.addEventListener('resize',function () {
                 self.adjustHeight(iframe);
             });
+            iframe.contentWindow.addEventListener('redraw',function () {
+                self.adjustHeight(iframe);
+            });
         });
     }
 

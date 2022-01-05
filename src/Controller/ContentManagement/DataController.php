@@ -72,14 +72,25 @@ class DataController extends AbstractController
     private SearchService $searchService;
     private ElasticaService $elasticaService;
     private ContentTypeService $contentTypeService;
+    private EnvironmentService $environmentService;
+    private IndexService $indexService;
 
-    public function __construct(LoggerInterface $logger, DataService $dataService, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        DataService $dataService,
+        SearchService $searchService,
+        ElasticaService $elasticaService,
+        ContentTypeService $contentTypeService,
+        EnvironmentService $environmentService,
+        IndexService $indexService
+    ) {
         $this->logger = $logger;
         $this->dataService = $dataService;
         $this->searchService = $searchService;
         $this->elasticaService = $elasticaService;
         $this->contentTypeService = $contentTypeService;
+        $this->environmentService = $environmentService;
+        $this->indexService = $indexService;
     }
 
     /**
@@ -243,9 +254,9 @@ class DataController extends AbstractController
     /**
      * @Route("/data/view/{environmentName}/{type}/{ouuid}", name="data.view")
      */
-    public function viewDataAction(string $environmentName, string $type, string $ouuid, EnvironmentService $environmentService): Response
+    public function viewDataAction(string $environmentName, string $type, string $ouuid): Response
     {
-        $environment = $environmentService->getByName($environmentName);
+        $environment = $this->environmentService->getByName($environmentName);
         if (false === $environment) {
             throw new NotFoundHttpException(\sprintf('Environment %s not found', $environmentName));
         }
@@ -510,13 +521,13 @@ class DataController extends AbstractController
      * @throws DuplicateOuuidException
      * @Route("/data/duplicate/{environment}/{type}/{ouuid}", name="emsco_duplicate_revision", methods={"POST"})
      */
-    public function duplicateAction(string $environment, string $type, string $ouuid, EnvironmentService $environmentService)
+    public function duplicateAction(string $environment, string $type, string $ouuid)
     {
         $contentType = $this->contentTypeService->getByName($type);
         if (false === $contentType) {
             throw new NotFoundHttpException(\sprintf('Content type %s not found', $type));
         }
-        $environmentObject = $environmentService->getByName($environment);
+        $environmentObject = $this->environmentService->getByName($environment);
         if (false === $environmentObject) {
             throw new NotFoundHttpException(\sprintf('Environment %s not found', $environment));
         }
@@ -555,13 +566,13 @@ class DataController extends AbstractController
     /**
      * @Route("/data/copy/{environment}/{type}/{ouuid}", name="revision.copy", methods={"GET"})
      */
-    public function copyAction(string $environment, string $type, string $ouuid, Request $request, EnvironmentService $environmentService): RedirectResponse
+    public function copyAction(string $environment, string $type, string $ouuid, Request $request): RedirectResponse
     {
         $contentType = $this->contentTypeService->getByName($type);
         if (!$contentType) {
             throw new NotFoundHttpException('Content type '.$type.' not found');
         }
-        $environmentObject = $environmentService->getByName($environment);
+        $environmentObject = $this->environmentService->getByName($environment);
         if (false === $environmentObject) {
             throw new NotFoundHttpException(\sprintf('Environment %s not found', $environment));
         }
@@ -602,7 +613,7 @@ class DataController extends AbstractController
      *
      * @Route("/data/delete/{type}/{ouuid}", name="object.delete", methods={"POST"})
      */
-    public function deleteAction(string $type, string $ouuid, EnvironmentService $environmentService)
+    public function deleteAction(string $type, string $ouuid)
     {
         $revision = $this->dataService->getNewestRevision($type, $ouuid);
         $contentType = $revision->giveContentType();
@@ -613,7 +624,7 @@ class DataController extends AbstractController
         }
 
         $found = false;
-        foreach ($environmentService->getAll() as $environment) {
+        foreach ($this->environmentService->getAll() as $environment) {
             /** @var Environment $environment */
             if ($environment !== $revision->getContentType()->getEnvironment()) {
                 try {
@@ -660,7 +671,7 @@ class DataController extends AbstractController
      * @Route("/data/draft/discard/{revisionId}", name="emsco_discard_draft", methods={"POST"})
      * @Route("/data/draft/discard/{revisionId}", name="revision.discard", methods={"POST"})
      */
-    public function discardRevisionAction($revisionId, IndexService $indexService)
+    public function discardRevisionAction($revisionId)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -686,7 +697,7 @@ class DataController extends AbstractController
 
         if (null != $ouuid && null !== $previousRevisionId && $previousRevisionId > 0) {
             if ($autoPublish) {
-                return $this->reindexRevisionAction($indexService, $previousRevisionId, true);
+                return $this->reindexRevisionAction($previousRevisionId, true);
             }
 
             return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
@@ -744,7 +755,7 @@ class DataController extends AbstractController
     /**
      * @Route("/data/revision/re-index/{revisionId}", name="revision.reindex", methods={"POST"})
      */
-    public function reindexRevisionAction(IndexService $indexService, int $revisionId, bool $defaultOnly = false): RedirectResponse
+    public function reindexRevisionAction(int $revisionId, bool $defaultOnly = false): RedirectResponse
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -767,7 +778,7 @@ class DataController extends AbstractController
             /** @var Environment $environment */
             foreach ($revision->getEnvironments() as $environment) {
                 if (!$defaultOnly || $environment === $revision->getContentType()->getEnvironment()) {
-                    if ($indexService->indexRevision($revision, $environment)) {
+                    if ($this->indexService->indexRevision($revision, $environment)) {
                         $this->logger->notice('log.data.revision.reindex', [
                             EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                             EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),

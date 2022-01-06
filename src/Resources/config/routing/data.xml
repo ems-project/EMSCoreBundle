@@ -85,6 +85,15 @@
     <route id="emsco_data_trash" path="/trash/{contentType}" methods="GET,POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:trashAction</default>
     </route>
+    <route id="emsco_data_duplicate_with_jsoncontent" path="/duplicate-json/{contentType}/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:duplicateWithJsonContentAction</default>
+    </route>
+    <route id="emsco_data_add_from_jsoncontent" path="/add-json/{contentType}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:addFromJsonContentAction</default>
+    </route>
+    <route id="emsco_data_add" path="/add/{contentType}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:addAction</default>
+    </route>
 
     <route id="emsco_data_json_menu_nested_modal_add" path="/json-menu-nested/add/{revision}/{fieldType}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\Revision\JsonMenuNestedController::modal</default>
@@ -183,5 +192,8 @@
     </route>
     <route id="revision.finalize" path="/draft/finalize/{revision}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:finalizeDraftAction</default>
+    </route>
+    <route id="data.add" path="/add/{contentType}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:addAction</default>
     </route>
 </routes>

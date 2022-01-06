@@ -1072,9 +1072,6 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/data/duplicate-json/{contentType}/{ouuid}", name="emsco_data_duplicate_with_jsoncontent", methods={"POST"})
-     */
     public function duplicateWithJsonContentAction(ContentType $contentType, string $ouuid, Request $request): RedirectResponse
     {
         $content = $request->get('JSON_BODY', null);
@@ -1084,9 +1081,6 @@ class DataController extends AbstractController
         return $this->intNewDocumentFromArray($contentType, $jsonContent);
     }
 
-    /**
-     * @Route("/data/add-json/{contentType}", name="emsco_data_add_from_jsoncontent", methods={"POST"})
-     */
     public function addFromJsonContentAction(ContentType $contentType, Request $request): RedirectResponse
     {
         $content = $request->get('JSON_BODY', null);
@@ -1129,13 +1123,7 @@ class DataController extends AbstractController
         }
     }
 
-    /**
-     * @return RedirectResponse|Response
-     *
-     * @throws HasNotCircleException
-     * @Route("/data/add/{contentType}", name="data.add")
-     */
-    public function addAction(ContentType $contentType, Request $request)
+    public function addAction(ContentType $contentType, Request $request): Response
     {
         $this->dataService->hasCreateRights($contentType);
 

@@ -26,6 +26,7 @@
             <argument type="service" id="ems.content_type.view_types" />
             <argument type="service" id="twig" />
             <argument type="service" id="ems_common.pdf.printer.dom" />
+            <argument type="service" id="ems.service.job" />
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Api\Form\SubmissionController" public="true">

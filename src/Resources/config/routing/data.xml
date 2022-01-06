@@ -58,6 +58,9 @@
         <default key="public">0</default>
         <default key="_download">0</default>
     </route>
+    <route id="emsco_job_custom_view" path="/custom-view-job/{environmentName}/{templateId}/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customViewJobAction</default>
+    </route>
 
 
     <route id="emsco_data_default_view" path="/{type}" methods="GET">
@@ -163,5 +166,8 @@
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customViewAction</default>
         <default key="public">0</default>
         <default key="_download">0</default>
+    </route>
+    <route id="ems_job_custom_view" path="/custom-view-job/{environmentName}/{templateId}/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customViewJobAction</default>
     </route>
 </routes>

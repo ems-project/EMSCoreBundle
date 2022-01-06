@@ -73,6 +73,7 @@ class DataController extends AbstractController
     private ViewTypes $viewTypes;
     private TwigEnvironment $twig;
     private PdfPrinterInterface $pdfPrinter;
+    private JobService $jobService;
 
     public function __construct(
         LoggerInterface $logger,
@@ -85,7 +86,8 @@ class DataController extends AbstractController
         TranslatorInterface $translator,
         ViewTypes $viewTypes,
         TwigEnvironment $twig,
-        PdfPrinterInterface $pdfPrinter
+        PdfPrinterInterface $pdfPrinter,
+        JobService $jobService
     ) {
         $this->logger = $logger;
         $this->dataService = $dataService;
@@ -98,6 +100,7 @@ class DataController extends AbstractController
         $this->viewTypes = $viewTypes;
         $this->twig = $twig;
         $this->pdfPrinter = $pdfPrinter;
+        $this->jobService = $jobService;
     }
 
     public function rootAction(string $name): Response
@@ -863,17 +866,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string $environmentName
-     * @param int    $templateId
-     * @param string $ouuid
-     *
-     * @return Response
-     *
-     * @throws \Throwable
-     * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view", methods={"POST"})
-     */
-    public function customViewJobAction($environmentName, $templateId, $ouuid, Request $request, TwigEnvironment $twig, JobService $jobService)
+    public function customViewJobAction(string $environmentName, int $templateId, string $ouuid, Request $request): Response
     {
         $em = $this->getDoctrine()->getManager();
         /** @var Template|null $template * */
@@ -889,7 +882,7 @@ class DataController extends AbstractController
 
         $success = false;
         try {
-            $command = $twig->createTemplate($template->getBody())->render([
+            $command = $this->twig->createTemplate($template->getBody())->render([
                 'environment' => $env->getName(),
                 'contentType' => $template->getContentType(),
                 'object' => $document,
@@ -900,7 +893,7 @@ class DataController extends AbstractController
             if (!$user instanceof UserInterface) {
                 throw new \RuntimeException('Unexpected user object');
             }
-            $job = $jobService->createCommand($user, $command);
+            $job = $this->jobService->createCommand($user, $command);
 
             $success = true;
             $this->logger->notice('log.data.job.initialized', [

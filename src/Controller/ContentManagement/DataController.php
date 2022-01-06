@@ -1018,11 +1018,7 @@ class DataController extends AbstractController
         return $response;
     }
 
-    /**
-     * @return RedirectResponse|Response
-     * @Route("/data/draft/finalize/{revision}", name="revision.finalize", methods={"POST"})
-     */
-    public function finalizeDraftAction(Revision $revision)
+    public function finalizeDraftAction(Revision $revision): Response
     {
         $this->dataService->loadDataStructure($revision);
         try {

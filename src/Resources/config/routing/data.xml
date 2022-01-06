@@ -65,6 +65,9 @@
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:ajaxUpdateAction</default>
         <default key="_format">json</default>
     </route>
+    <route id="emsco_data_finalize" path="/draft/finalize/{revision}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:finalizeDraftAction</default>
+    </route>
 
 
     <route id="emsco_data_default_view" path="/{type}" methods="GET">
@@ -177,5 +180,8 @@
     <route id="revision.ajaxupdate" path="/revision/{revisionId}.json" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:ajaxUpdateAction</default>
         <default key="_format">json</default>
+    </route>
+    <route id="revision.finalize" path="/draft/finalize/{revision}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:finalizeDraftAction</default>
     </route>
 </routes>

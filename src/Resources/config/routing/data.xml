@@ -61,6 +61,10 @@
     <route id="emsco_job_custom_view" path="/custom-view-job/{environmentName}/{templateId}/{ouuid}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customViewJobAction</default>
     </route>
+    <route id="emsco_data_ajax_update" path="/revision/{revisionId}.json" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:ajaxUpdateAction</default>
+        <default key="_format">json</default>
+    </route>
 
 
     <route id="emsco_data_default_view" path="/{type}" methods="GET">
@@ -169,5 +173,9 @@
     </route>
     <route id="ems_job_custom_view" path="/custom-view-job/{environmentName}/{templateId}/{ouuid}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customViewJobAction</default>
+    </route>
+    <route id="revision.ajaxupdate" path="/revision/{revisionId}.json" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:ajaxUpdateAction</default>
+        <default key="_format">json</default>
     </route>
 </routes>

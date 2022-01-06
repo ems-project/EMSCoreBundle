@@ -928,17 +928,7 @@ class DataController extends AbstractController
         return $response;
     }
 
-    /**
-     * @param int $revisionId
-     *
-     * @return Response
-     *
-     * @throws LockedException
-     * @throws PrivilegeException
-     * @throws \Exception
-     * @Route("/data/revision/{revisionId}.json", name="revision.ajaxupdate", defaults={"_format"="json"}, methods={"POST"})
-     */
-    public function ajaxUpdateAction($revisionId, Request $request, PublishService $publishService)
+    public function ajaxUpdateAction(int $revisionId, Request $request, PublishService $publishService): Response
     {
         $em = $this->getDoctrine()->getManager();
         $formErrors = [];

@@ -46,6 +46,18 @@
     <route id="emsco_data_cancel_modifications" path="/cancel/{revision}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:cancelModificationsAction</default>
     </route>
+    <route id="emsco_data_reindex" path="/revision/re-index/{revisionId}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:reindexRevisionAction</default>
+    </route>
+    <route id="emsco_data_custom_view_protected" path="/custom-index-view/{viewId}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customIndexViewAction</default>
+        <default key="public">0</default>
+    </route>
+    <route id="emsco_data_action_protected" path="/action/{environmentName}/{templateId}/{ouuid}/{_download}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customViewAction</default>
+        <default key="public">0</default>
+        <default key="_download">0</default>
+    </route>
 
 
     <route id="emsco_data_default_view" path="/{type}" methods="GET">
@@ -130,5 +142,26 @@
     </route>
     <route id="revision.cancel" path="/cancel/{revision}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:cancelModificationsAction</default>
+    </route>
+    <route id="revision.reindex" path="/revision/re-index/{revisionId}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:reindexRevisionAction</default>
+    </route>
+    <route id="data.customindexview" path="/custom-index-view/{viewId}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customIndexViewAction</default>
+        <default key="public">0</default>
+    </route>
+    <route id="ems_custom_view_protected" path="/custom-index-view/{viewId}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customIndexViewAction</default>
+        <default key="public">0</default>
+    </route>
+    <route id="data.customview" path="/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customViewAction</default>
+        <default key="public">0</default>
+        <default key="_download">0</default>
+    </route>
+    <route id="ems_data_custom_template_protected" path="/template/{environmentName}/{templateId}/{ouuid}/{_download}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customViewAction</default>
+        <default key="public">0</default>
+        <default key="_download">0</default>
     </route>
 </routes>

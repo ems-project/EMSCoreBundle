@@ -11,6 +11,7 @@ use EMS\CommonBundle\Service\Pdf\Pdf;
 use EMS\CommonBundle\Service\Pdf\PdfPrinterInterface;
 use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
 use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -28,12 +29,10 @@ use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Form\RevisionType;
-use EMS\CoreBundle\Form\View\ViewType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
-use EMS\CoreBundle\Repository\ViewRepository;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -42,7 +41,6 @@ use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
-use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -61,8 +59,6 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\Error;
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
 
 class DataController extends AbstractController
 {
@@ -73,6 +69,10 @@ class DataController extends AbstractController
     private ContentTypeService $contentTypeService;
     private EnvironmentService $environmentService;
     private IndexService $indexService;
+    private TranslatorInterface $translator;
+    private ViewTypes $viewTypes;
+    private TwigEnvironment $twig;
+    private PdfPrinterInterface $pdfPrinter;
 
     public function __construct(
         LoggerInterface $logger,
@@ -81,7 +81,11 @@ class DataController extends AbstractController
         ElasticaService $elasticaService,
         ContentTypeService $contentTypeService,
         EnvironmentService $environmentService,
-        IndexService $indexService
+        IndexService $indexService,
+        TranslatorInterface $translator,
+        ViewTypes $viewTypes,
+        TwigEnvironment $twig,
+        PdfPrinterInterface $pdfPrinter
     ) {
         $this->logger = $logger;
         $this->dataService = $dataService;
@@ -90,6 +94,10 @@ class DataController extends AbstractController
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->indexService = $indexService;
+        $this->translator = $translator;
+        $this->viewTypes = $viewTypes;
+        $this->twig = $twig;
+        $this->pdfPrinter = $pdfPrinter;
     }
 
     public function rootAction(string $name): Response
@@ -664,9 +672,6 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/data/revision/re-index/{revisionId}", name="revision.reindex", methods={"POST"})
-     */
     public function reindexRevisionAction(int $revisionId, bool $defaultOnly = false): RedirectResponse
     {
         /** @var EntityManager $em */
@@ -729,52 +734,18 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @param int  $viewId
-     * @param bool $public
-     *
-     * @return mixed
-     *
-     * @Route("/public/view/{viewId}", name="ems_custom_view_public", defaults={"public"=true})
-     * @Route("/data/custom-index-view/{viewId}", name="data.customindexview", defaults={"public"=false})
-     * @Route("/data/custom-index-view/{viewId}", name="ems_custom_view_protected", defaults={"public"=false})
-     */
-    public function customIndexViewAction($viewId, $public, Request $request, TranslatorInterface $translator, ContainerInterface $container)
+    public function customIndexViewAction(View $viewId, bool $public, Request $request): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var ViewRepository $viewRepository */
-        $viewRepository = $em->getRepository('EMSCoreBundle:View');
-
-        /** @var View|null $view * */
-        $view = $viewRepository->find($viewId);
-
-        if (null === $view || ($public && !$view->isPublic())) {
-            throw new NotFoundHttpException($translator->trans('log.view.not_found', ['%view_id%' => $viewId], EMSCoreBundle::TRANS_DOMAIN));
+        $view = $viewId;
+        if ($public && !$view->isPublic()) {
+            throw new NotFoundHttpException($this->translator->trans('log.view.not_found', ['%view_id%' => $viewId->getId()], EMSCoreBundle::TRANS_DOMAIN));
         }
-        /** @var ViewType $viewType */
-        $viewType = $container->get($view->getType());
+        $viewType = $this->viewTypes->get($view->getType());
 
         return $viewType->generateResponse($view, $request);
     }
 
-    /**
-     * @param string $environmentName
-     * @param int    $templateId
-     * @param string $ouuid
-     * @param bool   $_download
-     * @param bool   $public
-     *
-     * @return Response
-     *
-     * @throws \Throwable
-     * @throws LoaderError
-     * @throws SyntaxError
-     * @Route("/public/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=true}, name="ems_data_custom_template_public")
-     * @Route("/data/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="data.customview")
-     * @Route("/data/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="ems_data_custom_template_protected")
-     */
-    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, TranslatorInterface $translator, TwigEnvironment $twig, PdfPrinterInterface $pdfPrinter)
+    public function customViewAction(string $environmentName, int $templateId, string $ouuid, bool $_download, bool $public): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -806,14 +777,14 @@ class DataController extends AbstractController
         $document = $this->searchService->get($environment, $template->getContentType(), $ouuid);
 
         try {
-            $body = $twig->createTemplate($template->getBody());
+            $body = $this->twig->createTemplate($template->getBody());
         } catch (Error $e) {
             $this->logger->error('log.template.twig.error', [
                 'template_id' => $template->getId(),
                 'template_name' => $template->getName(),
                 'error_message' => $e->getMessage(),
             ]);
-            $body = $twig->createTemplate($translator->trans('log.template.twig.error', [
+            $body = $this->twig->createTemplate($this->translator->trans('log.template.twig.error', [
                 '%template_id%' => $template->getId(),
                 '%template_name%' => $template->getName(),
                 '%error_message%' => $e->getMessage(),
@@ -828,7 +799,7 @@ class DataController extends AbstractController
                 'source' => $document->getSource(),
                 '_download' => true,
             ]);
-            $filename = $this->generateFilename($twig, $template->getFilename() ?? 'document.pdf', [
+            $filename = $this->generateFilename($this->twig, $template->getFilename() ?? 'document.pdf', [
                 'environment' => $environment,
                 'contentType' => $template->getContentType(),
                 'object' => $document,
@@ -845,14 +816,14 @@ class DataController extends AbstractController
                 PdfPrintOptions::SIZE => $template->getSize() ?? 'A4',
             ]);
 
-            return $pdfPrinter->getStreamedResponse($pdf, $printOptions);
+            return $this->pdfPrinter->getStreamedResponse($pdf, $printOptions);
         }
         if ($_download || (0 === \strcmp($template->getRenderOption(), RenderOptionType::EXPORT) && !$template->getPreview())) {
             if (null != $template->getMimeType()) {
                 \header('Content-Type: '.$template->getMimeType());
             }
 
-            $filename = $this->generateFilename($twig, $template->getFilename() ?? $ouuid, [
+            $filename = $this->generateFilename($this->twig, $template->getFilename() ?? $ouuid, [
                 'environment' => $environment,
                 'contentType' => $template->getContentType(),
                 'object' => $document,

@@ -22,6 +22,10 @@
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.environment" />
             <argument type="service" id="ems.service.index" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="ems.content_type.view_types" />
+            <argument type="service" id="twig" />
+            <argument type="service" id="ems_common.pdf.printer.dom" />
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Api\Form\SubmissionController" public="true">

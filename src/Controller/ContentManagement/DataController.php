@@ -23,9 +23,6 @@ use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Exception\DuplicateOuuidException;
 use EMS\CoreBundle\Exception\ElasticmsException;
-use EMS\CoreBundle\Exception\HasNotCircleException;
-use EMS\CoreBundle\Exception\LockedException;
-use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Form\RevisionType;
@@ -1172,14 +1169,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @return RedirectResponse
-     *
-     * @throws ElasticmsException
-     * @throws \Exception
-     * @Route("/data/revisions/revert/{id}", name="revision.revert", methods={"POST"})
-     */
-    public function revertRevisionAction(Revision $revision)
+    public function revertRevisionAction(Revision $revision): Response
     {
         $type = $revision->getContentType()->getName();
         $ouuid = $revision->getOuuid();
@@ -1202,11 +1192,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @return RedirectResponse
-     * @Route("/data/link/{key}", name="data.link")
-     */
-    public function linkDataAction(string $key, ContentTypeService $ctService)
+    public function linkDataAction(string $key, ContentTypeService $ctService): Response
     {
         $category = $type = $ouuid = null;
         $split = \explode(':', $key);

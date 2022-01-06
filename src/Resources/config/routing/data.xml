@@ -94,6 +94,12 @@
     <route id="emsco_data_add" path="/add/{contentType}" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:addAction</default>
     </route>
+    <route id="emsco_data_revert" path="/revisions/revert/{id}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:revertRevisionAction</default>
+    </route>
+    <route id="emsco_data_link" path="/link/{key}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:linkDataAction</default>
+    </route>
 
     <route id="emsco_data_json_menu_nested_modal_add" path="/json-menu-nested/add/{revision}/{fieldType}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\Revision\JsonMenuNestedController::modal</default>
@@ -195,5 +201,11 @@
     </route>
     <route id="data.add" path="/add/{contentType}" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:addAction</default>
+    </route>
+    <route id="revision.revert" path="/revisions/revert/{id}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:revertRevisionAction</default>
+    </route>
+    <route id="data.link" path="/link/{key}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:linkDataAction</default>
     </route>
 </routes>

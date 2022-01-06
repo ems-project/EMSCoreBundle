@@ -19,6 +19,7 @@ use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Exception\DuplicateOuuidException;
@@ -130,7 +131,7 @@ class DataController extends AbstractController
 
         $searchForm = new Search();
         $searchForm->setContentTypes([$contentType->getName()]);
-        $searchForm->setEnvironments([$contentType->getEnvironment()->getName()]);
+        $searchForm->setEnvironments([$contentType->giveEnvironment()->getName()]);
         $searchForm->setSortBy('_finalization_datetime');
         if ($contentType->getSortBy()) {
             $searchForm->setSortBy($contentType->getSortBy());
@@ -154,19 +155,18 @@ class DataController extends AbstractController
 
         /** @var ContentTypeRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:ContentType');
-        /** @var ContentType $contentType */
         $contentType = $repository->findOneBy([
             'name' => $name,
             'deleted' => false,
         ]);
 
-        if (!$contentType) {
+        if (!$contentType instanceof ContentType) {
             throw new NotFoundHttpException('Content type '.$name.' not found');
         }
 
         $searchForm = new Search();
         $searchForm->setContentTypes([$contentType->getName()]);
-        $searchForm->setEnvironments([$contentType->getEnvironment()->getName()]);
+        $searchForm->setEnvironments([$contentType->giveEnvironment()->getName()]);
         $searchForm->setSortBy('_finalization_datetime');
         if ($contentType->getSortBy()) {
             $searchForm->setSortBy($contentType->getSortBy());
@@ -182,19 +182,28 @@ class DataController extends AbstractController
         }
 
         $searchForm->filters = [];
-        foreach ($this->getUser()->getCircles() as $cicle) {
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new \RuntimeException('Unexpected user object');
+        }
+        foreach ($user->getCircles() as $circle) {
             $filter = new SearchFilter();
             $filter->setBooleanClause('should')
                 ->setField($circleField)
                 ->setOperator('term')
-                ->setPattern($cicle);
+                ->setPattern($circle);
             $searchForm->addFilter($filter);
+        }
+
+        $formEncoded = \json_encode($searchForm);
+        if (false === $formEncoded) {
+            throw new \RuntimeException('Unexpected null json');
         }
 
         return $this->forward('EMSCoreBundle:Elasticsearch:search', [
             'query' => null,
         ], [
-            'search_form' => \json_decode(\json_encode($searchForm), true),
+            'search_form' => \json_decode($formEncoded, true),
         ]);
     }
 
@@ -318,7 +327,6 @@ class DataController extends AbstractController
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Revision');
 
-        /* @var Revision $revision */
         if (0 === $revisionId) {
             $revision = $repository->findOneBy([
                 'endTime' => null,
@@ -327,11 +335,10 @@ class DataController extends AbstractController
                 'contentType' => $contentType,
             ]);
         } else {
-            /* @var Revision $revision */
             $revision = $repository->findOneById($revisionId);
         }
 
-        if (!$revision && $contentType->hasVersionTags()) {
+        if (!$revision instanceof Revision && $contentType->hasVersionTags()) {
             $latestVersionRevision = $repository->findLatestVersion($contentType, $ouuid);
             if ($latestVersionRevision && $latestVersionRevision->getOuuid() !== $ouuid) {
                 return $this->redirectToRoute('emsco_view_revisions', [
@@ -339,6 +346,10 @@ class DataController extends AbstractController
                    'ouuid' => $latestVersionRevision->getOuuid(),
                 ]);
             }
+        }
+
+        if (!$revision instanceof Revision) {
+            throw new \RuntimeException('Unexpected revision object');
         }
 
         $compareData = false;
@@ -351,14 +362,14 @@ class DataController extends AbstractController
                     if ($compareRevision->getCreated() <= $revision->getCreated()) {
                         $this->logger->notice('log.data.revision.compare', [
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             'compare_revision_id' => $compareRevision->getId(),
                         ]);
                     } else {
                         $this->logger->warning('log.data.revision.compare_more_recent', [
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             'compare_revision_id' => $compareRevision->getId(),
                         ]);
@@ -366,9 +377,9 @@ class DataController extends AbstractController
                 } else {
                     $this->logger->notice('log.data.document.compare', [
                         EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        'compare_contenttype' => $compareRevision->getContentType()->getName(),
+                        'compare_contenttype' => $compareRevision->giveContentType()->getName(),
                         'compare_ouuid' => $compareRevision->getOuuid(),
                         'compare_revision_id' => $compareRevision->getId(),
                     ]);
@@ -376,14 +387,14 @@ class DataController extends AbstractController
             } catch (\Throwable $e) {
                 $this->logger->warning('log.data.revision.compare_revision_not_found', [
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                     'compare_revision_id' => $compareId,
                 ]);
             }
         }
 
-        if (!$revision || $revision->getOuuid() != $ouuid || $revision->getContentType() !== $contentType || $revision->getDeleted()) {
+        if ($revision->getOuuid() != $ouuid || $revision->getContentType() !== $contentType || $revision->getDeleted()) {
             throw new NotFoundHttpException('Revision not found');
         }
 
@@ -400,7 +411,7 @@ class DataController extends AbstractController
         /** @var EnvironmentRepository $envRepository */
         $envRepository = $em->getRepository('EMSCoreBundle:Environment');
         $availableEnv = $envRepository->findAvailableEnvironements(
-            $revision->getContentType()->getEnvironment()
+            $revision->giveContentType()->giveEnvironment()
         );
 
         $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
@@ -555,13 +566,13 @@ class DataController extends AbstractController
         }
 
         $found = false;
-        foreach ($this->environmentService->getAll() as $environment) {
+        foreach ($this->environmentService->getEnvironments() as $environment) {
             /** @var Environment $environment */
-            if ($environment !== $revision->getContentType()->getEnvironment()) {
+            if ($environment !== $revision->giveContentType()->giveEnvironment()) {
                 try {
-                    $sibling = $this->dataService->getRevisionByEnvironment($ouuid, $revision->getContentType(), $environment);
+                    $sibling = $this->dataService->getRevisionByEnvironment($ouuid, $revision->giveContentType(), $environment);
                     $this->logger->warning('log.data.revision.cant_delete_has_published', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                         'published_in' => $environment->getName(),
                         EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                         EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -609,9 +620,9 @@ class DataController extends AbstractController
             throw new BadRequestHttpException('Only authorized on a draft');
         }
 
-        $contentTypeId = $revision->getContentType()->getId();
-        $type = $revision->getContentType()->getName();
-        $autoPublish = $revision->getContentType()->isAutoPublish();
+        $contentTypeId = $revision->giveContentType()->getId();
+        $type = $revision->giveContentType()->getName();
+        $autoPublish = $revision->giveContentType()->isAutoPublish();
         $ouuid = $revision->getOuuid();
 
         $previousRevisionId = $this->discardDraft($revision);
@@ -634,8 +645,8 @@ class DataController extends AbstractController
 
     public function cancelModificationsAction(Revision $revision, PublishService $publishService): RedirectResponse
     {
-        $contentTypeId = $revision->getContentType()->getId();
-        $type = $revision->getContentType()->getName();
+        $contentTypeId = $revision->giveContentType()->getId();
+        $type = $revision->giveContentType()->getName();
         $ouuid = $revision->getOuuid();
 
         $this->dataService->lockRevision($revision);
@@ -646,14 +657,14 @@ class DataController extends AbstractController
         $em->flush();
 
         if (null != $ouuid) {
-            if ($revision->getContentType()->isAutoPublish()) {
+            if ($revision->giveContentType()->isAutoPublish()) {
                 $publishService->silentPublish($revision);
 
                 $this->logger->warning('log.data.revision.auto_publish_rollback', [
                     EmsFields::LOG_OUUID_FIELD => $ouuid,
                     EmsFields::LOG_CONTENTTYPE_FIELD => $type,
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
+                    EmsFields::LOG_ENVIRONMENT_FIELD => $revision->giveContentType()->giveEnvironment()->getName(),
                 ]);
             }
 
@@ -690,10 +701,10 @@ class DataController extends AbstractController
 
             /** @var Environment $environment */
             foreach ($revision->getEnvironments() as $environment) {
-                if (!$defaultOnly || $environment === $revision->getContentType()->getEnvironment()) {
+                if (!$defaultOnly || $environment === $revision->giveContentType()->getEnvironment()) {
                     if ($this->indexService->indexRevision($revision, $environment)) {
                         $this->logger->notice('log.data.revision.reindex', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                             EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -701,7 +712,7 @@ class DataController extends AbstractController
                         ]);
                     } else {
                         $this->logger->warning('log.data.revision.reindex_failed_in', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                             EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -714,7 +725,7 @@ class DataController extends AbstractController
             $em->flush();
         } catch (\Throwable $e) {
             $this->logger->warning('log.data.revision.reindex_failed', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -725,7 +736,7 @@ class DataController extends AbstractController
 
         return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
             'ouuid' => $revision->getOuuid(),
-            'type' => $revision->getContentType()->getName(),
+            'type' => $revision->giveContentType()->getName(),
             'revisionId' => $revision->getId(),
         ]);
     }
@@ -835,8 +846,8 @@ class DataController extends AbstractController
             }
             if (null != $template->getAllowOrigin()) {
                 \header('Access-Control-Allow-Origin: '.$template->getAllowOrigin());
-                \header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Accept-Language, If-None-Match, If-Modified-Since');
-                \header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+                \header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept, Accept-Language, If-None-Match, If-Modified-Since');
+                \header('Access-Control-Allow-Methods: GET, HEAD, OPTIONS');
             }
 
             $output = $body->render([
@@ -937,7 +948,7 @@ class DataController extends AbstractController
 
         if (!$revision->getDraft() || null !== $revision->getEndTime()) {
             $this->logger->warning('log.data.revision.ajax_update_on_finalized', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -951,9 +962,10 @@ class DataController extends AbstractController
             return $response;
         }
 
-        if (empty($request->request->get('revision')) || empty($request->request->get('revision')['allFieldsAreThere']) || !$request->request->get('revision')['allFieldsAreThere']) {
+        $revisionInRequest = $request->request->get('revision');
+        if (empty($revisionInRequest) || !isset($revisionInRequest['allFieldsAreThere']) || empty($revisionInRequest['allFieldsAreThere'])) {
             $this->logger->error('log.data.revision.not_completed_request', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -982,13 +994,17 @@ class DataController extends AbstractController
             $now = new \DateTime();
             $revision->setAutoSaveAt($now);
             $revision->setDraftSaveDate($now);
-            $revision->setAutoSaveBy($this->getUser()->getUsername());
+            $user = $this->getUser();
+            if (!$user instanceof UserInterface) {
+                throw new \RuntimeException('Unexpected user object');
+            }
+            $revision->setAutoSaveBy($user->getUsername());
 
             $em->persist($revision);
             $em->flush();
 
             $this->dataService->isValid($form, null, $objectArray);
-            $this->dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid(), false, false);
+            $this->dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->giveContentType(), $revision->giveContentType()->getName(), $revision->getOuuid(), false, false);
 
             $session = $request->getSession();
             if ($session instanceof Session) {
@@ -997,7 +1013,7 @@ class DataController extends AbstractController
 
             $formErrors = $form->getErrors(true, true);
 
-            if (0 === $formErrors->count() && $revision->getContentType()->isAutoPublish()) {
+            if (0 === $formErrors->count() && $revision->giveContentType()->isAutoPublish()) {
                 $publishService->silentPublish($revision);
             }
         }
@@ -1018,7 +1034,7 @@ class DataController extends AbstractController
             $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
             if (!empty($revision->getAutoSave())) {
                 $this->logger->error('log.data.revision.can_finalized_as_pending_auto_save', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -1032,7 +1048,7 @@ class DataController extends AbstractController
             $revision = $this->dataService->finalizeDraft($revision, $form);
             if (0 !== \count($form->getErrors())) {
                 $this->logger->error('log.data.revision.can_finalized_as_invalid', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -1045,7 +1061,7 @@ class DataController extends AbstractController
             }
         } catch (\Throwable $e) {
             $this->logger->error('log.data.revision.can_finalized_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -1060,7 +1076,7 @@ class DataController extends AbstractController
 
         return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
             'ouuid' => $revision->getOuuid(),
-            'type' => $revision->getContentType()->getName(),
+            'type' => $revision->giveContentType()->getName(),
             'revisionId' => $revision->getId(),
         ]);
     }
@@ -1092,6 +1108,9 @@ class DataController extends AbstractController
         return $this->intNewDocumentFromArray($contentType, $jsonContent);
     }
 
+    /**
+     * @param mixed[] $rawData
+     */
     private function intNewDocumentFromArray(ContentType $contentType, array $rawData): RedirectResponse
     {
         $this->dataService->hasCreateRights($contentType);
@@ -1167,7 +1186,7 @@ class DataController extends AbstractController
 
     public function revertRevisionAction(Revision $revision): Response
     {
-        $type = $revision->getContentType()->getName();
+        $type = $revision->giveContentType()->getName();
         $ouuid = $revision->getOuuid();
 
         $newestRevision = $this->dataService->getNewestRevision($type, $ouuid);
@@ -1177,7 +1196,7 @@ class DataController extends AbstractController
 
         $revertedRevision = $this->dataService->initNewDraft($type, $ouuid, $revision);
         $this->logger->notice('log.data.revision.new_draft_from_revision', [
-            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -1220,10 +1239,9 @@ class DataController extends AbstractController
                 ]);
             }
 
-            /** @var Revision $revision */
-            $revision = $repository->findByOuuidAndContentTypeAndEnvironment($contentType, $ouuid, $contentType->getEnvironment());
+            $revision = $repository->findByOuuidAndContentTypeAndEnvironment($contentType, $ouuid, $contentType->giveEnvironment());
 
-            if (!$revision) {
+            if (!$revision instanceof Revision) {
                 throw new NotFoundHttpException('Impossible to find this item : '.$ouuid);
             }
 
@@ -1247,7 +1265,7 @@ class DataController extends AbstractController
         if (null != $revision->getAutoSave()) {
             $revision->setRawData($revision->getAutoSave());
             $this->logger->warning('log.data.revision.load_from_auto_save', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),

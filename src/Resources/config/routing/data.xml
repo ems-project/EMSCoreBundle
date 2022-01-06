@@ -34,7 +34,7 @@
     <route id="emsco_data_copy" path="/copy/{environment}/{type}/{ouuid}" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:copyAction</default>
     </route>
-    <route id="emsco_data_new_draft" path="/new-draft/{type}/{ouuid}" methods="POST">
+    <route id="emsco_data_new_draft" path="/new-draft/{type}/{ouuid}" methods="POST,GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:newDraftAction</default>
     </route>
     <route id="emsco_data_delete" path="/delete/{type}/{ouuid}" methods="POST">

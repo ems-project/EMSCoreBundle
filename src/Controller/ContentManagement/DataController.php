@@ -50,7 +50,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -276,9 +275,6 @@ class DataController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/public-key" , name="ems_get_public_key")
-     */
     public function publicKey(): Response
     {
         $response = new Response();

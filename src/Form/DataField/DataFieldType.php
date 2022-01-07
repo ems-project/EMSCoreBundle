@@ -238,7 +238,7 @@ abstract class DataFieldType extends AbstractType
     public function getChoiceList(FieldType $fieldType, array $choices)
     {
         //TODO: should be abstract ??
-        throw new ContentTypeStructureException('The field '.$fieldType->getName().' of the content type '.$fieldType->getContentType()->getName().' does not have a limited list of values!');
+        throw new ContentTypeStructureException('The field '.$fieldType->getName().' of the content type '.$fieldType->giveContentType()->getName().' does not have a limited list of values!');
     }
 
     /**

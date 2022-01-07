@@ -1089,7 +1089,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, resource\\|string given\\.$#"
 			count: 3
 			path: src/Controller/ContentManagement/CrudController.php
-
 		-
 			message: "#^Binary operation \"\\.\" between array\\|bool\\|float\\|int\\|string\\|null and string results in an error\\.$#"
 			count: 1

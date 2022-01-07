@@ -291,7 +291,7 @@ class ElasticsearchController extends AbstractController
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
 
         if ($contentType) {
-            $contentType = $this->contentTypeService->getByName($contentType);
+            $contentType = $this->contentTypeService->giveByName($contentType);
             $searchs = $repository->findBy([
                 'contentType' => $contentType->getId(),
             ]);

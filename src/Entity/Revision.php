@@ -258,7 +258,7 @@ class Revision implements EntityInterface
      */
     public function getData()
     {
-        return RawDataTransformer::transform($this->getContentType()->getFieldType(), $this->rawData);
+        return RawDataTransformer::transform($this->giveContentType()->getFieldType(), $this->rawData);
     }
 
     /**
@@ -268,7 +268,7 @@ class Revision implements EntityInterface
      */
     public function setData(array $data)
     {
-        $this->rawData = RawDataTransformer::reverseTransform($this->getContentType()->getFieldType(), $data);
+        $this->rawData = RawDataTransformer::reverseTransform($this->giveContentType()->getFieldType(), $data);
 
         return $this;
     }
@@ -277,7 +277,7 @@ class Revision implements EntityInterface
     {
         return [
             '_id' => $this->ouuid,
-            '_type' => $this->contentType->getName(),
+            '_type' => $this->giveContentType()->getName(),
             '_source' => $this->rawData,
         ];
     }
@@ -346,7 +346,7 @@ class Revision implements EntityInterface
                 '_index' => 'N/A',
                 '_source' => $object,
                 '_id' => $this->ouuid,
-                '_type' => $this->getContentType()->getName(),
+                '_type' => $this->giveContentType()->getName(),
         ];
 
         return $object;
@@ -363,7 +363,7 @@ class Revision implements EntityInterface
         $draft->environments = new ArrayCollection();
 
         $now = new \DateTime('now');
-        $draft->addEnvironment($this->contentType->getEnvironment());
+        $draft->addEnvironment($this->giveContentType()->giveEnvironment());
         $draft->setStartTime($now);
         $draft->setCreated($now);
         $draft->setEndTime(null);
@@ -400,7 +400,7 @@ class Revision implements EntityInterface
         $this->setEndTime($endTime);
         $this->setDraft(false);
         $this->setAutoSave(null);
-        $this->removeEnvironment($this->getContentType()->getEnvironment());
+        $this->removeEnvironment($this->giveContentType()->getEnvironment());
     }
 
     /**

@@ -548,10 +548,10 @@ class RevisionRepository extends EntityRepository
     public function findByOuuidContentTypeAndEnvironment(Revision $revision, Environment $env = null)
     {
         if (!$env) {
-            $env = $revision->getContentType()->getEnvironment();
+            $env = $revision->giveContentType()->getEnvironment();
         }
 
-        return $this->findByOuuidAndContentTypeAndEnvironment($revision->getContentType(), $revision->getOuuid(), $env);
+        return $this->findByOuuidAndContentTypeAndEnvironment($revision->giveContentType(), $revision->giveOuuid(), $env);
     }
 
     /**

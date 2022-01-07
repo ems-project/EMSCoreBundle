@@ -14,7 +14,21 @@
             <argument type="service" id="ems_core.dashboard.dashboards" />
             <tag name="controller.service_arguments"/>
         </service>
-
+        <service id="EMS\CoreBundle\Controller\ContentManagement\DataController" public="true">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.search" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="ems.service.index" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="ems.content_type.view_types" />
+            <argument type="service" id="twig" />
+            <argument type="service" id="ems_common.pdf.printer.dom" />
+            <argument type="service" id="ems.service.job" />
+            <tag name="controller.service_arguments"/>
+        </service>
         <service id="EMS\CoreBundle\Controller\Api\Form\SubmissionController" public="true">
             <argument type="service" id="ems.form_submission" />
             <argument type="service" id="logger" />

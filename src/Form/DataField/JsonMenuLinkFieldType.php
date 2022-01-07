@@ -62,10 +62,10 @@ class JsonMenuLinkFieldType extends DataFieldType
 
         $choices = [];
         if (false !== $options['json_menu_field'] && false !== $options['json_menu_content_type'] && false !== $options['query']) {
-            $contentType = $this->contentTypeService->getByName($options['json_menu_content_type']);
+            $contentType = $this->contentTypeService->giveByName($options['json_menu_content_type']);
 
             $search = $this->elasticaService->convertElasticsearchSearch([
-                'index' => $contentType->getEnvironment()->getAlias(),
+                'index' => $contentType->giveEnvironment()->getAlias(),
                 'type' => $contentType->getName(),
                 'body' => $options['query'],
             ]);
@@ -92,7 +92,7 @@ class JsonMenuLinkFieldType extends DataFieldType
                     $jsonMenu = $this->decoder->jsonMenuDecode($result->getSource()[$options['json_menu_field']] ?? '{}', '/');
                     foreach ($jsonMenu->getUids() as $uid) {
                         if (!\in_array($uid, $alreadyAssignedUids)) {
-                            if (($jsonMenu->getItem($uid)['contentType'] ?? false) === $fieldType->getContentType()->getName()) {
+                            if (($jsonMenu->getItem($uid)['contentType'] ?? false) === $fieldType->giveContentType()->getName()) {
                                 $choices[$label.$jsonMenu->getSlug($uid)] = $uid;
                             }
                         }
@@ -217,9 +217,9 @@ class JsonMenuLinkFieldType extends DataFieldType
     {
         $search = $this->elasticaService->convertElasticsearchSearch([
             'size' => 500,
-            'index' => $fieldType->getContentType()->getEnvironment()->getAlias(),
+            'index' => $fieldType->giveContentType()->giveEnvironment()->getAlias(),
             '_source' => $fieldType->getName(),
-            'type' => $fieldType->getContentType()->getName(),
+            'type' => $fieldType->giveContentType()->getName(),
             'body' => [
                 'query' => [
                     'bool' => [

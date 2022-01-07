@@ -84,7 +84,7 @@ class PublishService
      */
     public function alignRevision($type, $ouuid, $environmentSource, $environmentTarget)
     {
-        if ($this->contentTypeService->getByName($type)->getEnvironment()->getName() === $environmentTarget) {
+        if ($this->contentTypeService->giveByName($type)->getEnvironment()->getName() === $environmentTarget) {
             $this->logger->warning('service.publish.not_in_default_environment', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $type,
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
@@ -93,7 +93,7 @@ class PublishService
 
             return;
         }
-        $contentType = $this->contentTypeService->getByName($type);
+        $contentType = $this->contentTypeService->giveByName($type);
 
         if (!$this->authorizationChecker->isGranted($contentType->getPublishRole())) {
             $this->logger->warning('service.publish.not_authorized', [
@@ -145,14 +145,14 @@ class PublishService
             $this->dataService->sign($revision, true);
             if ($this->indexService->indexRevision($revision)) {
                 $this->logger->notice('service.publish.draft_published', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
+                    EmsFields::LOG_ENVIRONMENT_FIELD => $revision->giveContentType()->giveEnvironment()->getName(),
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                 ]);
             } else {
                 $this->logger->warning('service.publish.draft_published_failed', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -160,9 +160,9 @@ class PublishService
             }
         } catch (Exception $e) {
             $this->logger->warning('service.publish.publish_draft_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
+                EmsFields::LOG_ENVIRONMENT_FIELD => $revision->giveContentType()->giveEnvironment()->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -247,14 +247,14 @@ class PublishService
                 return 0;
             }
 
-            if (!$this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole())) {
+            if (!$this->authorizationChecker->isGranted($revision->giveContentType()->getPublishRole())) {
                 $this->logger->warning('service.publish.not_authorized', $logContext);
 
                 return 0;
             }
         }
 
-        if ($revision->getContentType()->getEnvironment() === $environment && !empty($revision->getEndTime())) {
+        if ($revision->giveContentType()->giveEnvironment() === $environment && !empty($revision->getEndTime())) {
             $this->logger->warning('service.publish.not_in_default_environment', $logContext);
 
             return 0;
@@ -317,7 +317,7 @@ class PublishService
             $user = $this->userService->getCurrentUser();
             if (!empty($environment->getCircles() && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(\array_intersect($environment->getCircles(), $user->getCircles())))) {
                 $this->logger->warning('service.publish.not_in_circles', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                 ]);
@@ -325,9 +325,9 @@ class PublishService
                 return;
             }
 
-            if (!$this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole())) {
+            if (!$this->authorizationChecker->isGranted($revision->giveContentType()->getPublishRole())) {
                 $this->logger->warning('service.publish.not_authorized', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                     EmsFields::LOG_REVISION_ID_FIELD => $environment->getId(),
@@ -337,9 +337,9 @@ class PublishService
             }
         }
 
-        if ($revision->getContentType()->getEnvironment() === $environment) {
+        if ($revision->giveContentType()->giveEnvironment() === $environment) {
             $this->logger->warning('service.publish.not_in_default_environment', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                 EmsFields::LOG_REVISION_ID_FIELD => $environment->getId(),
@@ -358,7 +358,7 @@ class PublishService
         try {
             $this->indexService->delete($revision, $environment);
             $this->logger->notice('service.publish.unpublished', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -368,7 +368,7 @@ class PublishService
         } catch (\Throwable $e) {
             if (!$revision->getDeleted()) {
                 $this->logger->warning('service.publish.already_unpublished', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                     EmsFields::LOG_REVISION_ID_FIELD => $environment->getId(),
@@ -377,7 +377,7 @@ class PublishService
         }
         if (!$command) {
             $this->logger->info('log.data.revision.unpublish', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),

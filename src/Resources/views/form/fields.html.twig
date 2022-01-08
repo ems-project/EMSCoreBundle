@@ -513,7 +513,7 @@
             <ul class="nav nav-tabs">
 				{% set counter = 1 %}
 				{% for tab in  form.iterator %}
-					{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == tab.vars.data.fieldType.type %}
+					{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == tab.vars.data.fieldType.type and form.vars.data.fieldType.type == 'EMS\\CoreBundle\\Form\\DataField\\TabsFieldType' %}
 						{% for item in  tab.iterator %}
 							{% with {
 								'tab': item,
@@ -539,7 +539,7 @@
             <div class="tab-content panel panel-default">
 			  {% set counter = 1 %}
               {% for tab in  form.iterator %}
-				  {% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == tab.vars.data.fieldType.type %}
+				  {% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == tab.vars.data.fieldType.type and form.vars.data.fieldType.type == 'EMS\\CoreBundle\\Form\\DataField\\TabsFieldType' %}
 					  {% for item in  tab.iterator %}
 						  {% with {
 							  'tab': item,

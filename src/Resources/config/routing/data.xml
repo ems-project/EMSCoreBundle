@@ -49,7 +49,7 @@
     <route id="emsco_data_reindex" path="/revision/re-index/{revisionId}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:reindexRevisionAction</default>
     </route>
-    <route id="emsco_data_custom_view_protected" path="/custom-index-view/{viewId}" methods="GET">
+    <route id="emsco_data_private_view" path="/custom-index-view/{viewId}" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customIndexViewAction</default>
         <default key="public">0</default>
     </route>

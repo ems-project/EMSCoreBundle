@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_data_custom_view_public" path="/view/{viewId}" methods="GET">
+    <route id="emsco_data_public_view" path="/view/{viewId}" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customIndexViewAction</default>
         <default key="public">1</default>
     </route>

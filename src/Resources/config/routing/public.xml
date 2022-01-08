@@ -8,7 +8,7 @@
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customIndexViewAction</default>
         <default key="public">1</default>
     </route>
-    <route id="emsco_data_action_public" path="/action/{environmentName}/{templateId}/{ouuid}/{_download}" methods="GET">
+    <route id="emsco_data_public_action" path="/action/{environmentName}/{templateId}/{ouuid}/{_download}" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customViewAction</default>
         <default key="public">1</default>
         <default key="_download">0</default>

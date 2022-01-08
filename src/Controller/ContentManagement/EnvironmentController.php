@@ -97,7 +97,7 @@ class EnvironmentController extends AppController
 
                     $continue = true;
                     foreach ($alignTo as $env) {
-                        if ($revision->getContentType()->getEnvironment()->getName() == $env) {
+                        if ($revision->giveContentType()->giveEnvironment()->getName() == $env) {
                             $this->getLogger()->warning('log.environment.cant_align_default_environment', [
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $env,
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
@@ -108,7 +108,7 @@ class EnvironmentController extends AppController
                             break;
                         }
 
-                        if (!$authorizationChecker->isGranted($revision->getContentType()->getPublishRole())) {
+                        if (!$authorizationChecker->isGranted($revision->giveContentType()->getPublishRole())) {
                             $this->getLogger()->warning('log.environment.dont_have_publish_role', [
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $env,
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
@@ -124,7 +124,7 @@ class EnvironmentController extends AppController
                         foreach ($alignTo as $env) {
                             $firstEnvironment = $revision->getEnvironments()->first();
                             if (false !== $firstEnvironment) {
-                                $publishService->alignRevision($revision->getContentType()->getName(), $revision->getOuuid(), $firstEnvironment->getName(), $env);
+                                $publishService->alignRevision($revision->giveContentType()->getName(), $revision->getOuuid(), $firstEnvironment->getName(), $env);
                             }
                         }
                     }

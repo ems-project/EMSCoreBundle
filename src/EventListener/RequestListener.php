@@ -83,11 +83,11 @@ class RequestListener
                 /** @var LockedException $exception */
                 if (null == $exception->getRevision()->getOuuid()) {
                     $response = new RedirectResponse($this->router->generate('data.draft_in_progress', [
-                            'contentTypeId' => $exception->getRevision()->getContentType()->getId(),
+                            'contentTypeId' => $exception->getRevision()->giveContentType()->getId(),
                     ], UrlGeneratorInterface::RELATIVE_PATH));
                 } else {
                     $response = new RedirectResponse($this->router->generate(Routes::VIEW_REVISIONS, [
-                            'type' => $exception->getRevision()->getContentType()->getName(),
+                            'type' => $exception->getRevision()->giveContentType()->getName(),
                             'ouuid' => $exception->getRevision()->getOuuid(),
                     ], UrlGeneratorInterface::RELATIVE_PATH));
                 }

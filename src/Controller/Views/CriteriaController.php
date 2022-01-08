@@ -410,7 +410,7 @@ class CriteriaController extends AppController
         }
 
         $search = $elasticaService->convertElasticsearchSearch([
-            'index' => $contentType->getEnvironment()->getAlias(),
+            'index' => $contentType->giveEnvironment()->getAlias(),
             'type' => $contentType->getName(),
             'body' => $body,
             'size' => 500, //is it enough?
@@ -505,7 +505,7 @@ class CriteriaController extends AppController
             $authorized = $authorizationChecker->isGranted($view->getContentType()->getEditRole());
             if (!$authorized) {
                 $this->getLogger()->warning('log.view.criteria.update_privilege_issue', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 ]);
@@ -517,7 +517,7 @@ class CriteriaController extends AppController
 
             if ($revision->getDraft()) {
                 $this->getLogger()->warning('log.view.criteria.draft_in_progress', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                     'count' => 0,
@@ -538,7 +538,7 @@ class CriteriaController extends AppController
                 }
 
                 $this->getLogger()->warning('log.view.criteria.locked_revision', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                     'count' => 0,
@@ -592,7 +592,7 @@ class CriteriaController extends AppController
         }
         $query = $elasticaService->filterByContentTypes($boolQuery, [$view->getContentType()->getName()]);
 
-        $search = new Search([$view->getContentType()->getEnvironment()->getAlias()], $query);
+        $search = new Search([$view->getContentType()->giveEnvironment()->getAlias()], $query);
         $response = EmsResponse::fromResultSet($elasticaService->search($search));
 
         if (0 == $response->getTotal()) {
@@ -634,7 +634,7 @@ class CriteriaController extends AppController
             $revision = $dataService->finalizeDraft($revision);
 
             $this->getLogger()->notice('log.view.criteria.new_criteria', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 'target_field_name' => $targetFieldName,
@@ -719,7 +719,7 @@ class CriteriaController extends AppController
         if (!isset($rawData[$criteriaField])) {
             $rawData[$criteriaField] = [];
         }
-        $multipleField = $this->getMultipleField($revision->getContentType()->getFieldType()->__get('ems_'.$criteriaField));
+        $multipleField = $this->getMultipleField($revision->giveContentType()->getFieldType()->__get('ems_'.$criteriaField));
 
         $found = false;
         foreach ($rawData[$criteriaField] as &$criteriaSet) {
@@ -734,11 +734,11 @@ class CriteriaController extends AppController
                 if ($multipleField && false === \array_search($filters[$multipleField], $criteriaSet[$multipleField])) {
                     $criteriaSet[$multipleField][] = $filters[$multipleField];
                     if (!$revision->getDraft()) {
-                        $revision = $dataService->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
+                        $revision = $dataService->initNewDraft($revision->giveContentType()->getName(), $revision->getOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
                     $this->getLogger()->notice('log.view.criteria.added', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                         EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         'field_name' => $multipleField,
@@ -748,7 +748,7 @@ class CriteriaController extends AppController
                     return $revision;
                 } else {
                     $this->getLogger()->notice('log.view.criteria.already_exists', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                         EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         'field_name' => $multipleField,
@@ -770,7 +770,7 @@ class CriteriaController extends AppController
             }
             $rawData[$criteriaField][] = $newCriterion;
             if (!$revision->getDraft()) {
-                $revision = $dataService->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
+                $revision = $dataService->initNewDraft($revision->giveContentType()->getName(), $revision->getOuuid(), $revision);
             }
             $revision->setRawData($rawData);
 
@@ -808,7 +808,7 @@ class CriteriaController extends AppController
 
             if ($revision->getDraft()) {
                 $this->getLogger()->warning('log.view.criteria.draft_in_progress', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                     'count' => 0,
@@ -829,7 +829,7 @@ class CriteriaController extends AppController
                 }
 
                 $this->getLogger()->warning('log.view.criteria.locked_revision', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                     'count' => 0,
@@ -935,7 +935,7 @@ class CriteriaController extends AppController
                     }
                 }
                 $this->getLogger()->info('log.view.criteria.removed', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                     'field_name' => $targetFieldName,
@@ -986,7 +986,7 @@ class CriteriaController extends AppController
         if (!isset($rawData[$criteriaField])) {
             $rawData[$criteriaField] = [];
         }
-        $criteriaFieldType = $revision->getContentType()->getFieldType()->__get('ems_'.$criteriaField);
+        $criteriaFieldType = $revision->giveContentType()->getFieldType()->__get('ems_'.$criteriaField);
         $multipleField = $this->getMultipleField($criteriaFieldType);
 
         $found = false;
@@ -1014,11 +1014,11 @@ class CriteriaController extends AppController
                         }
 
                         if (!$revision->getDraft()) {
-                            $revision = $dataService->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
+                            $revision = $dataService->initNewDraft($revision->giveContentType()->getName(), $revision->getOuuid(), $revision);
                         }
                         $revision->setRawData($rawData);
                         $this->getLogger()->notice('log.view.criteria.removed', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             'field_name' => $multipleField,
@@ -1032,11 +1032,11 @@ class CriteriaController extends AppController
                     $rawData[$criteriaField][$index] = \array_values($rawData[$criteriaField][$index]);
 
                     if (!$revision->getDraft()) {
-                        $revision = $dataService->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
+                        $revision = $dataService->initNewDraft($revision->giveContentType()->getName(), $revision->getOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
                     $this->getLogger()->notice('log.view.criteria.removed', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                         EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         'field_name' => $multipleField,

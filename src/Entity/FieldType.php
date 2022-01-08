@@ -579,6 +579,20 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $parent->contentType;
     }
 
+    public function giveContentType(): ContentType
+    {
+        $parent = $this;
+        while (null != $parent->parent) {
+            $parent = $parent->parent;
+        }
+
+        if (!$parent->contentType instanceof ContentType) {
+            throw new \RuntimeException('Unexpected content type object');
+        }
+
+        return $parent->contentType;
+    }
+
     /**
      * Constructor.
      */

@@ -1089,160 +1089,14 @@ parameters:
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, resource\\|string given\\.$#"
 			count: 3
 			path: src/Controller/ContentManagement/CrudController.php
-
-		-
-			message: "#^Argument of an invalid type array\\|bool supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getContentType\\(\\)\\.$#"
-			count: 2
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getDeleted\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getOuuid\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getRawData\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method getCircles\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method getContentType\\(\\) on object\\|null\\.$#"
-			count: 5
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method getCreated\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 3
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 2
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on object\\|null\\.$#"
-			count: 4
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 18
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 3
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method getOuuid\\(\\) on object\\|null\\.$#"
-			count: 5
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method getUsername\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method isAutoPublish\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 3
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\DataController\\:\\:intNewDocumentFromArray\\(\\) has parameter \\$rawData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Negated boolean expression is always false\\.$#"
-			count: 3
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Parameter \\#1 \\$revision of method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\DataController\\:\\:loadAutoSavedVersion\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Revision, object given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Parameter \\#1 \\$revision of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:testIntegrityInIndexes\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Revision, object given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Parameter \\#2 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:getRevisionByEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Parameter \\#2 \\$replace of function header expects bool, string given\\.$#"
-			count: 2
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Parameter \\#3 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:propagateDataToComputedField\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Parameter \\#3 \\$env of method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:findByOuuidAndContentTypeAndEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
 		-
 			message: "#^Binary operation \"\\.\" between array\\|bool\\|float\\|int\\|string\\|null and string results in an error\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/EnvironmentController.php
 
 		-
-			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
 			message: "#^Cannot call method getId\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false\\.$#"
 			count: 5
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
-			message: "#^Cannot call method getPublishRole\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
 			path: src/Controller/ContentManagement/EnvironmentController.php
 
 		-
@@ -1294,16 +1148,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$instanceId of method EMS\\\\CoreBundle\\\\Entity\\\\ManagedAlias\\:\\:setAlias\\(\\) expects string, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/ManagedAliasController.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
 
 		-
 			message: "#^Cannot call method getUsername\\(\\) on object\\|null\\.$#"
@@ -1382,22 +1226,12 @@ parameters:
 
 		-
 			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 3
+			count: 1
 			path: src/Controller/Views/CriteriaController.php
 
 		-
 			message: "#^Cannot call method getChildByPath\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
 			count: 1
-			path: src/Controller/Views/CriteriaController.php
-
-		-
-			message: "#^Cannot call method getFieldType\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 2
-			path: src/Controller/Views/CriteriaController.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 15
 			path: src/Controller/Views/CriteriaController.php
 
 		-
@@ -2641,21 +2475,6 @@ parameters:
 			path: src/Entity/Notification.php
 
 		-
-			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 2
-			path: src/Entity/Revision.php
-
-		-
-			message: "#^Cannot call method getFieldType\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 2
-			path: src/Entity/Revision.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 2
-			path: src/Entity/Revision.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:buildObject\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/Revision.php
@@ -2767,11 +2586,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Revision.php
-
-		-
-			message: "#^Parameter \\#1 \\$environment of method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:addEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null given\\.$#"
 			count: 1
 			path: src/Entity/Revision.php
 
@@ -3041,44 +2855,9 @@ parameters:
 			path: src/EventListener/RequestListener.php
 
 		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 2
-			path: src/Exception/CantBeFinalizedException.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Exception\\\\HasNotCircleException\\:\\:getEnvironment\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Exception/HasNotCircleException.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
-			path: src/Exception/LockedException.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Exception\\\\LockedException\\:\\:getRevision\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Exception/LockedException.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
-			path: src/Exception/NotLockedException.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Exception\\\\NotLockedException\\:\\:getRevision\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Exception/NotLockedException.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
-			path: src/Exception/PrivilegeException.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Exception\\\\PrivilegeException\\:\\:getRevision\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Exception/PrivilegeException.php
 
 		-
 			message: "#^Cannot access offset 'sha1' on array\\|float\\|int\\|string\\|null\\.$#"
@@ -3696,11 +3475,6 @@ parameters:
 			path: src/Form/DataField/DataFieldType.php
 
 		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
-			path: src/Form/DataField/DataFieldType.php
-
-		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
 			count: 2
 			path: src/Form/DataField/DataFieldType.php
@@ -3962,11 +3736,6 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 'value' on array\\|float\\|int\\|string\\.$#"
-			count: 1
-			path: src/Form/DataField/DataLinkFieldType.php
-
-		-
-			message: "#^Cannot call method getCirclesField\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
 			count: 1
 			path: src/Form/DataField/DataLinkFieldType.php
 
@@ -4616,43 +4385,8 @@ parameters:
 			path: src/Form/DataField/JsonMenuLinkFieldType.php
 
 		-
-			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 2
-			path: src/Form/DataField/JsonMenuLinkFieldType.php
-
-		-
 			message: "#^Cannot call method getDeleted\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
 			count: 1
-			path: src/Form/DataField/JsonMenuLinkFieldType.php
-
-		-
-			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false\\.$#"
-			count: 1
-			path: src/Form/DataField/JsonMenuLinkFieldType.php
-
-		-
-			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
-			path: src/Form/DataField/JsonMenuLinkFieldType.php
-
-		-
-			message: "#^Cannot call method getIcon\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false\\.$#"
-			count: 1
-			path: src/Form/DataField/JsonMenuLinkFieldType.php
-
-		-
-			message: "#^Cannot call method getLabelField\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false\\.$#"
-			count: 3
-			path: src/Form/DataField/JsonMenuLinkFieldType.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false\\.$#"
-			count: 1
-			path: src/Form/DataField/JsonMenuLinkFieldType.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 2
 			path: src/Form/DataField/JsonMenuLinkFieldType.php
 
 		-
@@ -6801,11 +6535,6 @@ parameters:
 			path: src/Repository/NotificationRepository.php
 
 		-
-			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
-			path: src/Repository/RevisionRepository.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:compareEnvironment\\(\\) has parameter \\$contentTypes with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Repository/RevisionRepository.php
@@ -6922,11 +6651,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:publishRevision\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Repository/RevisionRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$contentType of method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:findByOuuidAndContentTypeAndEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
 			count: 1
 			path: src/Repository/RevisionRepository.php
 
@@ -7126,37 +6850,7 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
-			message: "#^Cannot call method getCirclesField\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 9
-			path: src/Service/DataService.php
-
-		-
 			message: "#^Cannot call method getDisplayOption\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 3
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 5
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Cannot call method getFieldType\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 6
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Cannot call method getLabelField\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 19
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 3
 			path: src/Service/DataService.php
 
@@ -7176,18 +6870,13 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
-			message: "#^Cannot call method getPublishRole\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
 			message: "#^Cannot call method getType\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
 			count: 1
 			path: src/Service/DataService.php
 
 		-
 			message: "#^Cannot call method getUsername\\(\\) on Symfony\\\\Component\\\\Security\\\\Core\\\\Authentication\\\\Token\\\\TokenInterface\\|null\\.$#"
-			count: 5
+			count: 2
 			path: src/Service/DataService.php
 
 		-
@@ -7376,16 +7065,6 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:lockAllRevisions\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:lockRevisions\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:logFormErrors\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/DataService.php
@@ -7461,22 +7140,12 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:unlockAllRevisions\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:unlockRevision\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/DataService.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:unlockRevision\\(\\) has parameter \\$lockerUsername with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:unlockRevisions\\(\\) should return int but return statement is missing\\.$#"
 			count: 1
 			path: src/Service/DataService.php
 
@@ -7547,11 +7216,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$environment of method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:addEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null given\\.$#"
-			count: 2
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Parameter \\#1 \\$environment of method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:removeEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null given\\.$#"
 			count: 1
 			path: src/Service/DataService.php
 
@@ -7592,11 +7256,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#2 \\$user of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:getEmptyRevision\\(\\) expects string, null given\\.$#"
-			count: 2
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Parameter \\#3 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:propagateDataToComputedField\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
 			count: 2
 			path: src/Service/DataService.php
 
@@ -8051,33 +7710,8 @@ parameters:
 			path: src/Service/PublishService.php
 
 		-
-			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 4
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 9
-			path: src/Service/PublishService.php
-
-		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 3
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Cannot call method getPublishRole\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false\\.$#"
 			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Cannot call method getPublishRole\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 2
 			path: src/Service/PublishService.php
 
 		-
@@ -8113,11 +7747,6 @@ parameters:
 		-
 			message: "#^PHPDoc tag @var for variable \\$statement has no value type specified in iterable type Doctrine\\\\DBAL\\\\Statement\\.$#"
 			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Parameter \\#1 \\$contentType of method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:findByOuuidAndContentTypeAndEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false given\\.$#"
-			count: 2
 			path: src/Service/PublishService.php
 
 		-
@@ -8272,11 +7901,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:findUsernameByApikey\\(\\) has parameter \\$apiKey with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/UserService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:getAllUsers\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/UserService.php
 

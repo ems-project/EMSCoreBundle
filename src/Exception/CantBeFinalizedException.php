@@ -11,9 +11,9 @@ class CantBeFinalizedException extends ElasticmsException
         if (null === $revision) {
             $message = 'This revision can not be finalized';
         } elseif (null !== $revision->getId()) {
-            $message = \sprintf('The revision %s of the document %s:%s can not be finalized', $revision->getId(), $revision->getContentType()->getName(), $revision->getOuuid());
+            $message = \sprintf('The revision %s of the document %s:%s can not be finalized', $revision->getId(), $revision->giveContentType()->getName(), $revision->getOuuid());
         } else {
-            $message = \sprintf('A new revision for the document %s:%s can not be finalized', $revision->getContentType()->getName(), $revision->getOuuid());
+            $message = \sprintf('A new revision for the document %s:%s can not be finalized', $revision->giveContentType()->getName(), $revision->getOuuid());
         }
         if ('' !== $originMessage) {
             $message .= \sprintf(' : %s', $originMessage);

@@ -49,11 +49,11 @@
     <route id="emsco_data_reindex" path="/revision/re-index/{revisionId}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:reindexRevisionAction</default>
     </route>
-    <route id="emsco_data_custom_view_protected" path="/custom-index-view/{viewId}" methods="GET">
+    <route id="emsco_data_private_view" path="/custom-index-view/{viewId}" methods="GET,POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customIndexViewAction</default>
         <default key="public">0</default>
     </route>
-    <route id="emsco_data_action_protected" path="/action/{environmentName}/{templateId}/{ouuid}/{_download}" methods="GET">
+    <route id="emsco_data_private_action" path="/action/{environmentName}/{templateId}/{ouuid}/{_download}" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customViewAction</default>
         <default key="public">0</default>
         <default key="_download">0</default>
@@ -75,9 +75,6 @@
     </route>
     <route id="emsco_data_in_my_circle_view" path="/in-my-circles/{name}" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:inMyCirclesAction</default>
-    </route>
-    <route id="emsco_data_private_view" path="/custom-index-view/{view}" methods="GET,POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customIndexViewAction</default>
     </route>
     <route id="emsco_data_add" path="/add/{contentType}" methods="GET,POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:addAction</default>

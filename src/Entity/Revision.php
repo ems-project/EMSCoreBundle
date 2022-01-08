@@ -204,7 +204,7 @@ class Revision implements EntityInterface
     /**
      * @ORM\Column(name="labelField", type="text", nullable=true)
      */
-    private ?string $labelField;
+    private ?string $labelField = null;
 
     /**
      * @var string

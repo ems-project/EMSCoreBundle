@@ -175,6 +175,8 @@ log.menu: Logs
 log.tagline: 'Who did what'
 log.index.title: Logs
 log.view.title: 'Logs of %created%'
+log.view.user: 'User'
+log.view.impersonator: 'Impersonator'
 log.view.created: 'Created'
 log.view.message: 'Message'
 log.view.level: 'Severity'

@@ -7,6 +7,18 @@
     <div class="box box-default">
         <div class="box-body">
             <dl>
+                <dt>{{ 'log.view.user'|trans }}</dt>
+                {%  set displayName = log.username|displayname %}
+                <dd>{{ displayName }}{% if log.username != displayName%} ({{ log.username }}){% endif %}</dd>
+            </dl>
+            {% if log.impersonator %}
+                <dl>
+                    <dt>{{ 'log.view.impersonator'|trans }}</dt>
+                    {%  set displayName = log.impersonator|displayname %}
+                    <dd>{{ displayName }}{% if log.impersonator != displayName%} ({{ log.impersonator }}){% endif %}</dd>
+                </dl>
+            {% endif %}
+            <dl>
                 <dt>{{ 'log.view.created'|trans }}</dt>
                 <dd>{{ log.created|date(date_time_format) }}</dd>
             </dl>

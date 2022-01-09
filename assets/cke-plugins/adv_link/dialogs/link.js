@@ -167,7 +167,7 @@
 
 							var objectPicker = $('#'+this.domId);
 							var typeFilter = objectPicker.parents('.cke_dialog_contents_body').find('select.adv_link_type_filter');
-							
+
 							objectPicker.find('select').select2({
 								ajax: {
 									url: object_search_url,
@@ -187,7 +187,7 @@
 										// alter the remote JSON data, except to indicate that infinite
 										// scrolling can be used
 										params.page = params.page || 1;
-								
+
 								      	return {
 									        results: data.items,
 									        pagination: {
@@ -236,7 +236,7 @@
 							    data.pageLabel = '';
 							}
 						}
-					}]						
+					}]
 				},
 				{
 					type : 'vbox',
@@ -271,36 +271,47 @@
                             self = this;
                             var fileUploadField = this.getDialog().getContentElement( 'info', 'file' )
                             var fileInfo = [];
-                            fileUploadField.getInputElement().on('change', function(event){
-                                self.getDialog().getContentElement( 'info', 'fileLink' ).setValue('Upload starting...');
-                                for (var loop = 0; loop < this.$.files.length; loop++) {
-                                    var fileUploader = new FileUploader({
-                                        file: this.$.files[loop],
-                                        algo: hashAlgo,
-                                        initUrl: initUpload,
-                                        emsListener: self,
-                                        onHashAvailable: function(hash, type, name){
-                                            fileInfo['hash'] = hash;
-                                            fileInfo['type'] = type;
-                                            fileInfo['name'] = name;
-                                            self.getDialog().getContentElement( 'info', 'fileLink' ).setValue('File\'s hash: '+hash);
-                                        },
-                                        onProgress: function(status, progress, remaining){
-                                            self.getDialog().getContentElement( 'info', 'fileLink' ).setValue('Upload in progress: '+remaining);
-                                        },
-                                        onUploaded: function(assetUrl, previewUrl){
-                                            var link = 'ems://asset:' + fileInfo['hash'] + '?name=' + encodeURI(fileInfo['name']) + '&type=' + encodeURI(fileInfo['type']);
-                                            self.getDialog().getContentElement( 'info', 'fileLink' ).setValue(fileInfo['name']);
-                                            self.getDialog().getContentElement( 'info', 'fileLink' ).getInputElement().$.setAttribute('data-link', link);
-                                        },
-                                        onError: function(message, code){
-                                            alert(message);
-                                        },
-                                    });
-                                    break;
-                                }
+                            var onFileChangeFunction = function(event){
+								self.getDialog().getContentElement( 'info', 'fileLink' ).setValue('Upload starting...');
+								for (var loop = 0; loop < event.target.files.length; loop++) {
+									var fileUploader = new FileUploader({
+										file: event.target.files[loop],
+										algo: hashAlgo,
+										initUrl: initUpload,
+										emsListener: self,
+										onHashAvailable: function(hash, type, name){
+											fileInfo['hash'] = hash;
+											fileInfo['type'] = type;
+											fileInfo['name'] = name;
+											self.getDialog().getContentElement( 'info', 'fileLink' ).setValue('File\'s hash: '+hash);
+										},
+										onProgress: function(status, progress, remaining){
+											self.getDialog().getContentElement( 'info', 'fileLink' ).setValue('Upload in progress: '+remaining);
+										},
+										onUploaded: function(assetUrl, previewUrl){
+											var link = 'ems://asset:' + fileInfo['hash'] + '?name=' + encodeURI(fileInfo['name']) + '&type=' + encodeURI(fileInfo['type']);
+											self.getDialog().getContentElement( 'info', 'fileLink' ).setValue(fileInfo['name']);
+											self.getDialog().getContentElement( 'info', 'fileLink' ).getInputElement().$.setAttribute('data-link', link);
+										},
+										onError: function(message, code){
+											alert(message);
+										},
+									});
+									break;
+								}
 
-                            });
+							};
+
+                            var node = fileUploadField.getInputElement().$;
+                            if ('INPUT' !== node.nodeName) {
+                            	var iframe = node.getElementsByTagName('iframe')[0];
+								var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+								iframe.onload = function(){
+									iframeDocument.querySelector('input').onchange = onFileChangeFunction;
+								};
+							} else {
+								node.onchange = onFileChangeFunction;
+							}
 						},
                         commit : function( data ) {
 							if ( !data.filename ) {
@@ -975,8 +986,8 @@
 				this._.selectedElement = element;
 
 				this.setupContent( data );
-				
-				
+
+
 			},
 			onOk: function() {
 				var data = {};
@@ -1036,17 +1047,17 @@
 
 					delete this._.selectedElement;
 				}
-				
+
 			},
 			onLoad: function() {
-				
+
 				if ( !editor.config.linkShowAdvancedTab )
 					this.hidePage( 'advanced' ); //Hide Advanded tab.
 
 				if ( !editor.config.linkShowTargetTab )
 					this.hidePage( 'target' ); //Hide Target tab.
-				
-				
+
+
 			},
 			// Inital focus on 'url' field if link is of type URL.
 			onFocus: function() {
@@ -1059,15 +1070,15 @@
 					urlField.select();
 
 				}
-				
+
 			}
 		};
-		
+
 		if(editor.config.hideAssetLink) {
 			advLinkConfig.contents["0"].elements.splice(2,1);
 			advLinkConfig.contents["0"].elements["0"].items.splice(3,1);
 		}
-		
+
 		return advLinkConfig;
 	} );
 } )();

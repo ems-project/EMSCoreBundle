@@ -1,4 +1,4 @@
-import {editRevisionEventListeners} from "./../editRevisionEventListeners";
+import {editRevisionEventListeners} from "../editRevisionEventListeners";
 
 import { ajaxJsonGet, ajaxJsonPost, ajaxJsonSubmit } from "./ajax";
 
@@ -45,15 +45,21 @@ class AjaxModal {
 
         this.modal
             .querySelectorAll('input, button, .select2, textarea')
-            .forEach((e) => { e.setAttribute("disabled","disabled"); });
+            .forEach((e) => {
+                e.classList.add('emsco-modal-has-been-disabled');
+                e.setAttribute("disabled","disabled");
+            });
     }
     stateReady() {
         this.loadingElement.style.display = 'none';
         this.modal.querySelector('.ajax-modal-body').style.display = 'block';
 
         this.modal
-            .querySelectorAll('input, button')
-            .forEach((e) => { e.removeAttribute("disabled"); });
+            .querySelectorAll('input.emsco-modal-has-been-disabled, button.emsco-modal-has-been-disabled, .select2.emsco-modal-has-been-disabled, textarea.emsco-modal-has-been-disabled')
+            .forEach((e) => {
+                e.removeAttribute("disabled");
+                e.classList.remove('emsco-modal-has-been-disabled');
+            });
     }
 
     load(options, callback)
@@ -108,7 +114,7 @@ class AjaxModal {
     ajaxReady(json, request, callback) {
         if (request.status === 200) {
             if (json.hasOwnProperty('modalClose') && json.modalClose === true) {
-                if (typeof callback === 'function') { callback(json, request, this.modal); };
+                if (typeof callback === 'function') { callback(json, request, this.modal); }
                 this.$modal.modal('hide');
                 return;
             }
@@ -134,7 +140,7 @@ class AjaxModal {
                 var message = m[messageType];
                 this.printMessage(messageType, message);
 
-                if (messageType == 'error') {
+                if (messageType === 'error') {
                     location.reload();
                 }
             });
@@ -151,19 +157,20 @@ class AjaxModal {
                 });
             }
 
-            if (typeof callback === 'function') { callback(json, request, this.modal); };
+            if (typeof callback === 'function') { callback(json, request, this.modal); }
         } else {
             this.printMessage('error', 'Error loading ...');
         }
     }
 
     printMessage(messageType, message) {
+        let messageClass;
         switch(messageType) {
             case 'error':
-                var messageClass = 'alert-danger';
+                messageClass = 'alert-danger';
                 break;
             default:
-                var messageClass = 'alert-success';
+                messageClass = 'alert-success';
         }
 
         this.modal.querySelector('.ajax-modal-body').insertAdjacentHTML(

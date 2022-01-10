@@ -71,7 +71,7 @@ class EditController extends AbstractController
         $this->dataService->lockRevision($revision);
         if ($request->isMethod('GET') && null != $revision->getAutoSave()) {
             $data = $revision->getAutoSave();
-            $this->logger->warning('log.data.revision.load_from_auto_save', LoggingContext::read($revision));
+            $this->logger->notice('log.data.revision.load_from_auto_save', LoggingContext::read($revision));
         } else {
             $data = $revision->getRawData();
         }
@@ -116,7 +116,7 @@ class EditController extends AbstractController
 
         if ($request->isMethod('GET') && null != $revision->getAutoSave()) {
             $revision->setRawData($revision->getAutoSave());
-            $this->logger->warning('log.data.revision.load_from_auto_save', LoggingContext::read($revision));
+            $this->logger->notice('log.data.revision.load_from_auto_save', LoggingContext::read($revision));
         }
 
         $form = $this->createForm(RevisionType::class, $revision, [

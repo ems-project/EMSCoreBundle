@@ -481,6 +481,7 @@
 							{{ _self.renderDataFieldBlock(grandchild, source, compare, compareRawData) }}
 						{% endfor %}
 					</div>
+					{% set counter = counter + 1 %}
 				{% else %}
 					{% with {
 						'child': child,

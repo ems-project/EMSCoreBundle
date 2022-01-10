@@ -1264,7 +1264,7 @@ class DataController extends AbstractController
     {
         if (null != $revision->getAutoSave()) {
             $revision->setRawData($revision->getAutoSave());
-            $this->logger->warning('log.data.revision.load_from_auto_save', [
+            $this->logger->notice('log.data.revision.load_from_auto_save', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),

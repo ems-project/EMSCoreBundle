@@ -174,7 +174,7 @@
     {% if 'copy' in node.actions or 'paste' in node.actions %}
         <div class="btn-group">
             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                <span class="caret"></span>
+                <span class="fa fa-ellipsis-h"></span>
             </button>
             <ul class="dropdown-menu {{ 'item' == position ? 'pull-right' }}">
                 {%- if 'copy' in node.actions -%}

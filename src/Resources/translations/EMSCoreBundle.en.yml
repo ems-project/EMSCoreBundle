@@ -284,7 +284,7 @@ log.data.revision.compare: 'Compare the revision ems://revision:%revision_id% of
 log.data.revision.compare_more_recent: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id%, wich one is more recent'
 log.data.revision.compare_revision_not_found: 'Impossible to compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision id %compare_revision_id% as this revision does not exists'
 log.data.revision.init_document_from_array: 'It was not possible to initiate a new %contenttype% document due to an internal error'
-log.data.revision.load_from_auto_save: 'Data were loaded from an auto-saved version for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
+log.data.revision.load_from_auto_save: 'Data were loaded from an auto-saved version'
 log.data.revision.new_draft_from_revision: 'A new draft has been initiated, from the revision ems://revision:%revision_id%, for the document ems://object:%contenttype%:%ouuid%'
 log.data.revision.not_completed_request: 'Incomplete request! It''s not possible to save the document ems://object:%contenttype%:%ouuid%. Please check your PHP/Web configuration (i.e.: max_input_vars in php.ini)'
 log.data.revision.not_found_in_environment: 'It''s impossible to identify a revision for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'

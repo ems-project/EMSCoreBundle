@@ -27,8 +27,13 @@ final class TaskRepository extends ServiceEntityRepository
         $qb
             ->select('count(r.id)')
             ->from(Revision::class, 'r')
+            ->where('r.endTime is null')
+            ->andWhere($qb->expr()->eq('r.deleted', ':false'))
             ->andWhere($qb->expr()->eq('r.owner', ':username'))
-            ->setParameter('username', $user->getUsername());
+            ->setParameters([
+                'username' => $user->getUsername(),
+                'false' => false,
+            ]);
 
         return \intval($qb->getQuery()->getSingleScalarResult());
     }
@@ -86,7 +91,10 @@ final class TaskRepository extends ServiceEntityRepository
         $qb
             ->select('r', 't')
             ->from(Revision::class, 'r')
-            ->join('r.taskCurrent', 't');
+            ->join('r.taskCurrent', 't')
+            ->where('r.endTime is null')
+            ->andWhere($qb->expr()->eq('r.deleted', ':false'))
+            ->setParameter(':false', false);
 
         switch ($context->tab) {
             case TaskManager::TAB_USER:
@@ -204,11 +212,14 @@ final class TaskRepository extends ServiceEntityRepository
             ->select('rc.id')
             ->from(Revision::class, 'r')
             ->join('r.contentType', 'rc')
+            ->andWhere('r.endTime is null')
+            ->andWhere($subQuery->expr()->eq('r.deleted', ':false'))
             ->andWhere($subQuery->expr()->isNotNull('r.taskCurrent'));
 
         $qb = $this->_em->createQueryBuilder();
         $qb->select('c')->from(ContentType::class, 'c')
             ->andWhere($qb->expr()->in('c.id', $subQuery->getDQL()));
+        $qb->setParameter(':false', false);
 
         return $qb->getQuery()->getResult();
     }

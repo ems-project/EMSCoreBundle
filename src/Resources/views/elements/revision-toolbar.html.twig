@@ -31,7 +31,7 @@
 					{% if is_granted('ROLE_SUPER') %}
 						<div class="btn-group">
 							<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-								<span class="caret"></span>
+								<span class="fa fa-ellipsis-h"></span>
 							</button>
 							<ul class="dropdown-menu">
 								<li>
@@ -100,7 +100,7 @@
 				<div class="btn-group">
 					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 						<span class="sr-only">{{ 'views.elements.revision-toolbar-html.other-revision-actions'|trans }}</span>
-						<span class="caret"></span>
+						<span class="fa fa-ellipsis-h"></span>
 					</button>
 					<ul class="dropdown-menu">
 						{% if draft %}
@@ -201,7 +201,7 @@
 				<div class="btn-group">
 					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 						<span class="sr-only">{{ 'views.elements.revision-toolbar-html.other-environment-actions'|trans }}</span>
-						<span class="caret"></span>
+						<span class="fa fa-ellipsis-h"></span>
 					</button>
 					<ul class="dropdown-menu">
 						<li>{% include '@EMSCore/elements/post-button.html.twig' with {

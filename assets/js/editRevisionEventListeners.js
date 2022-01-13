@@ -67,7 +67,7 @@ function editRevisionEventListeners(target, onChangeCallback = null){
         // increase the index with one for the next item
         panel.data('index', (index + 1));
 
-        addEventListeners(newForm);
+        editRevisionEventListeners(newForm);
 
         panel.children('.panel-body').children('.collection-panel-container').append(newForm);
 

@@ -51,6 +51,7 @@ final class LoggingContext
         $context = [
             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+            'label' => $revision->getLabel(),
         ];
 
         if ($contentType = $revision->getContentType()) {

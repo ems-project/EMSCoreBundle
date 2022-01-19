@@ -232,16 +232,21 @@ class ExportDocumentsCommand extends EmsCommand
                 if (false === $result) {
                     continue;
                 }
-                if (null !== $contentType->getBusinessIdField() && isset($result->getData()[$contentType->getBusinessIdField()])) {
-                    $filename = $result->getData()[$contentType->getBusinessIdField()].$extension;
-                } else {
-                    $filename = $result->getId().$extension;
-                }
 
                 if ($withBusinessId) {
                     $document = $this->dataService->hitToBusinessDocument($contentType, $result->getHit());
                 } else {
                     $document = new Document($contentType->getName(), $result->getId(), $result->getData());
+                }
+
+                if ($useTemplate && $this->templateService->hasFilenameTemplate()) {
+                    $filename = $this->templateService->renderFilename($document, $contentType, $environmentName, [
+                        'loop' => $loop,
+                    ]);
+                } elseif (null !== $contentType->getBusinessIdField() && isset($result->getData()[$contentType->getBusinessIdField()])) {
+                    $filename = $result->getData()[$contentType->getBusinessIdField()].$extension;
+                } else {
+                    $filename = $result->getId().$extension;
                 }
 
                 if ($useTemplate) {

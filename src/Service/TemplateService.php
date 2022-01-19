@@ -19,27 +19,19 @@ class TemplateService
     public const MERGED_XML_FORMAT = 'merged-xml';
     public const EXPORT_FORMATS = [self::JSON_FORMAT, self::XML_FORMAT, self::MERGED_JSON_FORMAT, self::MERGED_XML_FORMAT];
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
+    private Registry $doctrine;
+    private Environment $twig;
+    private Template $template;
 
-    /** @var Registry */
-    private $doctrine;
-
-    /** @var Environment */
-    private $twig;
-
-    /** @var Template */
-    private $template;
-
-    /** @var ?TemplateWrapper */
-    private $twigTemplate;
+    private ?TemplateWrapper $twigTemplate = null;
+    private ?TemplateWrapper $filenameTwigTemplate = null;
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, Environment $twig)
     {
         $this->twig = $twig;
         $this->doctrine = $doctrine;
         $this->logger = $logger;
-        $this->twigTemplate = null;
     }
 
     public function getTemplate(): Template
@@ -50,27 +42,43 @@ class TemplateService
     public function init(string $templateId): TemplateService
     {
         $em = $this->doctrine->getManager();
-        $this->template = $em->getRepository(Template::class)->find($templateId);
-
-        if (null === $this->template) {
-            throw new \Exception('Template not found');
+        $template = $em->getRepository(Template::class)->find($templateId);
+        if (!$template instanceof Template) {
+            throw new \RuntimeException('Unexpected Template object');
         }
+        $this->template = $template;
 
         $this->twigTemplate = $this->twig->createTemplate($this->template->getBody());
+        $filenameTemplate = $this->template->getFilename();
+        if (null !== $filenameTemplate) {
+            $this->filenameTwigTemplate = $this->twig->createTemplate($filenameTemplate);
+        }
 
         return $this;
     }
 
+    /**
+     * @param mixed[] $extraContext
+     */
     public function render(Document $document, ContentType $contentType, string $environment, array $extraContext = []): string
     {
-        $context = \array_merge($extraContext, [
-            'environment' => $environment,
-            'contentType' => $contentType,
-            'object' => $document,
-            'source' => $document->getSource(),
-        ]);
+        if (null === $this->twigTemplate) {
+            throw new \RuntimeException('unexpected null twigTemplate');
+        }
 
-        return $this->twigTemplate->render($context);
+        return $this->renderTemplate($extraContext, $environment, $contentType, $document, $this->twigTemplate);
+    }
+
+    /**
+     * @param mixed[] $extraContext
+     */
+    public function renderFilename(Document $document, ContentType $contentType, string $environment, array $extraContext = []): string
+    {
+        if (null === $this->filenameTwigTemplate) {
+            throw new \RuntimeException('unexpected null filenameTwigTemplate');
+        }
+
+        return $this->renderTemplate($extraContext, $environment, $contentType, $document, $this->filenameTwigTemplate);
     }
 
     public function getXml(ContentType $contentType, array $source, bool $arrayOfDocument, ?string $ouuid = null)
@@ -90,6 +98,11 @@ class TemplateService
         return $xmlDocument->saveXML();
     }
 
+    public function hasFilenameTemplate(): bool
+    {
+        return null !== $this->filenameTwigTemplate;
+    }
+
     private function addNested(\DOMDocument $xmlDocument, \DOMNode $parent, string $fieldName, array $rawData, array $attributes = [])
     {
         $child = $parent->appendChild($xmlDocument->createElement($fieldName));
@@ -107,5 +120,20 @@ class TemplateService
                 $child->appendChild($xmlDocument->createElement($index, \htmlspecialchars($fieldData)));
             }
         }
+    }
+
+    /**
+     * @param mixed[] $extraContext
+     */
+    public function renderTemplate(array $extraContext, string $environment, ContentType $contentType, Document $document, TemplateWrapper $template): string
+    {
+        $context = \array_merge($extraContext, [
+            'environment' => $environment,
+            'contentType' => $contentType,
+            'object' => $document,
+            'source' => $document->getSource(),
+        ]);
+
+        return $template->render($context);
     }
 }

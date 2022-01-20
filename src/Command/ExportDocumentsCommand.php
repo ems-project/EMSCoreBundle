@@ -242,7 +242,7 @@ class ExportDocumentsCommand extends EmsCommand
                 if ($useTemplate && $this->templateService->hasFilenameTemplate()) {
                     $filename = $this->templateService->renderFilename($document, $contentType, $environmentName, [
                         'loop' => $loop,
-                    ]);
+                    ]).$extension;
                 } elseif (null !== $contentType->getBusinessIdField() && isset($result->getData()[$contentType->getBusinessIdField()])) {
                     $filename = $result->getData()[$contentType->getBusinessIdField()].$extension;
                 } else {

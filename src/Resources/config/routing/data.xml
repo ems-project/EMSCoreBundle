@@ -196,7 +196,7 @@
     <route id="revision.finalize" path="/draft/finalize/{revision}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:finalizeDraftAction</default>
     </route>
-    <route id="data.add" path="/add/{contentType}" methods="GET">
+    <route id="data.add" path="/add/{contentType}" methods="GET,POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:addAction</default>
     </route>
     <route id="revision.revert" path="/revisions/revert/{id}" methods="POST">

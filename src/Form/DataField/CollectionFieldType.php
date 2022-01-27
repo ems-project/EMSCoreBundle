@@ -155,7 +155,7 @@ class CollectionFieldType extends DataFieldType
 
         $rawData = $dataField->getRawData();
 
-        if (!empty($restrictionOptions['max']) && \count($rawData ?? []) > $restrictionOptions['max']) {
+        if (!empty($restrictionOptions['max']) && \is_array($rawData) && \count($rawData) > $restrictionOptions['max']) {
             $dataField->addMessage('Too many items (max '.$restrictionOptions['max'].')');
             $isValid = false;
         }

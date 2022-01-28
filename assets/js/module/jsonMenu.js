@@ -120,7 +120,7 @@ export default class JsonMenu {
            const r = results;
            Object.keys(obj).forEach(key => {
               const value = obj[key];
-              const result = {'id': value.id, 'label': value.label, 'type': value.type, 'object': value.object};
+              const result = {'id': value.id, 'label': value.label, 'contentType': value.contentType, 'type': value.type, 'object': value.object};
               if (value.hasOwnProperty('children')) {
                 result.children = recursiveMapHierarchy(value.children);
               }

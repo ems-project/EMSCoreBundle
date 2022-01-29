@@ -41,6 +41,7 @@ class Routes
     public const DATA_ADD = 'emsco_data_add';
     public const DATA_TRASH = 'emsco_data_trash';
     public const DATA_PICK_A_RELEASE_AJAX_DATA_TABLE = 'emsco_data_pick_a_release_ajax_data_table';
+    public const DATA_ADD_REVISION_TO_RELEASE = 'emsco_data_add_revision_to_release';
     public const SCHEDULE_INDEX = 'emsco_schedule_index';
     public const SCHEDULE_ADD = 'emsco_schedule_add';
     public const SCHEDULE_EDIT = 'emsco_schedule_edit';

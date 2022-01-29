@@ -215,6 +215,17 @@ final class ReleaseController extends AbstractController
         return $this->redirectToRoute(Routes::RELEASE_INDEX);
     }
 
+    public function addRevisionById(Release $release, Revision $revision): Response
+    {
+        $this->releaseService->addRevision($release, $revision);
+
+        return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
+            'type' => $revision->giveContentType()->getName(),
+            'ouuid' => $revision->getOuuid(),
+            'revisionId' => $revision->getId(),
+        ]);
+    }
+
     public function addRevision(Release $release, string $emsLinkToAdd): Response
     {
         $this->releaseService->addRevisions($release, [$emsLinkToAdd]);
@@ -270,6 +281,7 @@ final class ReleaseController extends AbstractController
     {
         $table = new EntityTable($this->releaseService, $this->generateUrl(Routes::DATA_PICK_A_RELEASE_AJAX_DATA_TABLE, ['revision' => $revision]), $revision);
         $this->addBaseReleaseTableColumns($table);
+        $table->addItemPostAction(Routes::DATA_ADD_REVISION_TO_RELEASE, 'data.actions.add_to_release', 'plus', 'data.actions.add_to_release_confirm', ['revision' => $revision->getId()])->setButtonType('primary');
 
         return $table;
     }

@@ -885,3 +885,5 @@ log.index.column.username: Username
 log.index.column.impersonator: Impersonator
 view.actions.view: Details
 pick-a-release.title: 'Pick a release for "%label%"'
+data.actions.add_to_release: 'Add to release'
+data.actions.add_to_release_confirm: 'Do you confirm ?'

@@ -10,6 +10,7 @@ use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\ReleaseRepository;
+use EMS\CoreBundle\Service\Revision\LoggingContext;
 use Psr\Log\LoggerInterface;
 
 final class ReleaseService implements EntityServiceInterface
@@ -49,6 +50,38 @@ final class ReleaseService implements EntityServiceInterface
     public function update(Release $release): void
     {
         $this->releaseRepository->create($release);
+    }
+
+    public function addRevision(Release $release, Revision $revision): void
+    {
+        if ($revision->getDraft()) {
+            $this->logger->error('log.data.revision.can_not_add_draft_in_release', \array_merge(['release' => $release->getName()], LoggingContext::read($revision)));
+
+            return;
+        }
+        foreach ($release->getRevisions() as $releaseRevision) {
+            if ($releaseRevision->getRevisionOuuid() !== $revision->giveOuuid()) {
+                continue;
+            }
+            if ($releaseRevision->getRevision() === $revision) {
+                $this->logger->notice('log.data.revision.already_in_release', \array_merge(['release' => $release->getName()], LoggingContext::read($revision)));
+
+                return;
+            }
+            $releaseRevision->setRevision($revision);
+            $this->releaseRepository->create($release);
+            $this->logger->notice('log.data.revision.document_already_in_release_but_updated', \array_merge(['release' => $release->getName()], LoggingContext::read($revision)));
+
+            return;
+        }
+        $releaseRevision = new ReleaseRevision();
+        $releaseRevision->setRelease($release);
+        $releaseRevision->setContentType($revision->giveContentType());
+        $releaseRevision->setRevisionOuuid($revision->getOuuid());
+        $releaseRevision->setRevision($revision);
+        $release->addRevision($releaseRevision);
+        $this->releaseRepository->create($release);
+        $this->logger->notice('log.data.revision.added_to_release', \array_merge(['release' => $release->getName()], LoggingContext::read($revision)));
     }
 
     /**

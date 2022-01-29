@@ -357,6 +357,7 @@ final class ReleaseController extends AbstractController
 
     private function addBaseReleaseTableColumns(EntityTable $table): void
     {
+        $table->setDefaultOrder('executionDate');
         $table->addColumn('release.index.column.name', 'name');
         $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.execution_date', 'executionDate'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.status', 'status', '@EMSCore/release/columns/revisions.html.twig'));

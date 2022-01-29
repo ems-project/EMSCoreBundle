@@ -317,6 +317,7 @@ final class ReleaseController extends AbstractController
     private function getMemberRevisionsTable(Release $release): EntityTable
     {
         $table = new EntityTable($this->releaseRevisionService, $this->generateUrl(Routes::RELEASE_MEMBER_REVISION_AJAX, ['release' => $release->getId()]), $release);
+        $table->setMassAction(true);
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.CT', 'contentType', '@EMSCore/release/columns/release-revisions.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.document', 'label', '@EMSCore/release/columns/release-revisions.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.revision', 'revision', '@EMSCore/release/columns/release-revisions.html.twig'));
@@ -340,7 +341,7 @@ final class ReleaseController extends AbstractController
     private function getNonMemberRevisionsTable(Release $release): QueryTable
     {
         $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish', $this->generateUrl(Routes::RELEASE_NON_MEMBER_REVISION_AJAX, ['release' => $release->getId()]), $release);
-        $table->setMassAction(false);
+        $table->setMassAction(true);
         $table->setLabelAttribute('item_labelField');
         $table->setIdField('emsLink');
         $table->addColumn('release.revision.index.column.label', 'item_labelField');

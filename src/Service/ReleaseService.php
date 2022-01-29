@@ -8,6 +8,7 @@ use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\ReleaseRepository;
 use Psr\Log\LoggerInterface;
 
@@ -122,6 +123,9 @@ final class ReleaseService implements EntityServiceInterface
      */
     public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
+        if ($context instanceof Revision) {
+            return $this->releaseRepository->getInWip($from, $size, $orderField, $orderDirection, $searchValue);
+        }
         if (null !== $context) {
             throw new \RuntimeException('Unexpected context');
         }
@@ -139,6 +143,9 @@ final class ReleaseService implements EntityServiceInterface
      */
     public function count(string $searchValue = '', $context = null): int
     {
+        if ($context instanceof Revision) {
+            return $this->releaseRepository->countWipReleases();
+        }
         if (null !== $context) {
             throw new \RuntimeException('Unexpected non-null object');
         }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CoreBundle\Entity\Release;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Data\Condition\NotEmpty;
 use EMS\CoreBundle\Form\Data\Condition\Terms;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
@@ -250,13 +251,29 @@ final class ReleaseController extends AbstractController
         return $this->redirectToRoute(Routes::RELEASE_INDEX);
     }
 
+    public function pickRelease(Request $request, Revision $revision): Response
+    {
+        $table = $this->initAddToReleaseTable($revision);
+        $form = $this->createForm(TableType::class, $table);
+
+        return $this->render('@EMSCore/release/add-to-release.html.twig', [
+            'form' => $form->createView(),
+            'revision' => $revision,
+        ]);
+    }
+
+    private function initAddToReleaseTable(?Revision $revision): EntityTable
+    {
+        $table = new EntityTable($this->releaseService, $this->generateUrl(Routes::RELEASE_AJAX_DATA_TABLE), $revision);
+        $this->addBaseReleaseTableColumns($table);
+
+        return $table;
+    }
+
     private function initReleaseTable(): EntityTable
     {
         $table = new EntityTable($this->releaseService, $this->generateUrl(Routes::RELEASE_AJAX_DATA_TABLE));
-        $table->addColumn('release.index.column.name', 'name');
-        $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.execution_date', 'executionDate'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.status', 'status', '@EMSCore/release/columns/revisions.html.twig'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', '@EMSCore/release/columns/revisions.html.twig'))->setCellClass('text-right');
+        $this->addBaseReleaseTableColumns($table);
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.env_source', 'environmentSource', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.env_target', 'environmentTarget', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addItemGetAction(Routes::RELEASE_VIEW, 'release.actions.show', 'eye')
@@ -319,5 +336,13 @@ final class ReleaseController extends AbstractController
         $table->addDynamicItemPostAction(Routes::RELEASE_ADD_REVISION, 'release.revision.action.add', 'plus', 'release.revision.actions.add_confirm', ['release' => \sprintf('%d', $release->getId()), 'emsLinkToAdd' => 'emsLink']);
 
         return $table;
+    }
+
+    private function addBaseReleaseTableColumns(EntityTable $table): void
+    {
+        $table->addColumn('release.index.column.name', 'name');
+        $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.execution_date', 'executionDate'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.status', 'status', '@EMSCore/release/columns/revisions.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', '@EMSCore/release/columns/revisions.html.twig'))->setCellClass('text-right');
     }
 }

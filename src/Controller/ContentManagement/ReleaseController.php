@@ -42,9 +42,13 @@ final class ReleaseController extends AbstractController
         $this->releaseRevisionService = $releaseRevisionService;
     }
 
-    public function ajaxReleaseTable(Request $request): Response
+    public function ajaxReleaseTable(Request $request, ?Revision $revision = null): Response
     {
-        $table = $this->initReleaseTable();
+        if (null === $revision) {
+            $table = $this->initReleaseTable();
+        } else {
+            $table = $this->initAddToReleaseTable($revision);
+        }
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
@@ -262,9 +266,9 @@ final class ReleaseController extends AbstractController
         ]);
     }
 
-    private function initAddToReleaseTable(?Revision $revision): EntityTable
+    private function initAddToReleaseTable(Revision $revision): EntityTable
     {
-        $table = new EntityTable($this->releaseService, $this->generateUrl(Routes::RELEASE_AJAX_DATA_TABLE), $revision);
+        $table = new EntityTable($this->releaseService, $this->generateUrl(Routes::DATA_PICK_A_RELEASE_AJAX_DATA_TABLE, ['revision' => $revision]), $revision);
         $this->addBaseReleaseTableColumns($table);
 
         return $table;

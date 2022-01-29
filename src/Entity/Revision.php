@@ -236,6 +236,12 @@ class Revision implements EntityInterface
     private ?\DateTime $draftSaveDate;
 
     /**
+     * @var Collection<int, ReleaseRevision>
+     * @ORM\OneToMany(targetEntity="ReleaseRevision", mappedBy="release", cascade={"remove"})
+     */
+    private Collection $releases;
+
+    /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
@@ -289,6 +295,7 @@ class Revision implements EntityInterface
         $this->allFieldsAreThere = false;
         $this->environments = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->releases = new ArrayCollection();
 
         $a = \func_get_args();
         $i = \func_num_args();
@@ -1248,5 +1255,25 @@ class Revision implements EntityInterface
     public function setDraftSaveDate(?\DateTime $draftSaveDate): void
     {
         $this->draftSaveDate = $draftSaveDate;
+    }
+
+    public function addRelease(ReleaseRevision $release): Revision
+    {
+        $this->releases[] = $release;
+
+        return $this;
+    }
+
+    public function removeRevision(ReleaseRevision $release): void
+    {
+        $this->releases->removeElement($release);
+    }
+
+    /**
+     * @return ReleaseRevision[]
+     */
+    public function getReleases(): array
+    {
+        return $this->releases->toArray();
     }
 }

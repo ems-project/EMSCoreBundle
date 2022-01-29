@@ -279,7 +279,7 @@ final class ReleaseController extends AbstractController
 
     private function initAddToReleaseTable(Revision $revision): EntityTable
     {
-        $table = new EntityTable($this->releaseService, $this->generateUrl(Routes::DATA_PICK_A_RELEASE_AJAX_DATA_TABLE, ['revision' => $revision]), $revision);
+        $table = new EntityTable($this->releaseService, $this->generateUrl(Routes::DATA_PICK_A_RELEASE_AJAX_DATA_TABLE, ['revision' => $revision->getId()]), $revision);
         $this->addBaseReleaseTableColumns($table);
         $table->addItemPostAction(Routes::DATA_ADD_REVISION_TO_RELEASE, 'data.actions.add_to_release', 'plus', 'data.actions.add_to_release_confirm', ['revision' => $revision->getId()])->setButtonType('primary');
 

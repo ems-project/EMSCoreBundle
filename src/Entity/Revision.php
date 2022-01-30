@@ -237,7 +237,7 @@ class Revision implements EntityInterface
 
     /**
      * @var Collection<int, ReleaseRevision>
-     * @ORM\OneToMany(targetEntity="ReleaseRevision", mappedBy="release", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="ReleaseRevision", mappedBy="revision", cascade={"remove"})
      */
     private Collection $releases;
 

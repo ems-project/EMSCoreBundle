@@ -1257,18 +1257,6 @@ class Revision implements EntityInterface
         $this->draftSaveDate = $draftSaveDate;
     }
 
-    public function addRelease(ReleaseRevision $release): Revision
-    {
-        $this->releases[] = $release;
-
-        return $this;
-    }
-
-    public function removeRevision(ReleaseRevision $release): void
-    {
-        $this->releases->removeElement($release);
-    }
-
     /**
      * @return ReleaseRevision[]
      */

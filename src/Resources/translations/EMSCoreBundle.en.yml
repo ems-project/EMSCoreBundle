@@ -400,10 +400,10 @@ release.actions.delete_confirm: 'Delete the Release?'
 release.actions.delete_selected: 'Delete selected'
 release.actions.delete_selected_confirm: 'Delete all selected Releases?'
 release.actions.edit: Edit
-release.actions.publish_release: 'Publish Release'
+release.actions.publish_release: 'Publish now'
 release.actions.publish_confirm: 'Publish the Releases?'
 release.actions.set_status_canceled: 'Cancel Release'
-release.actions.set_status_ready: 'Ready Release'
+release.actions.set_status_ready: 'Validate Release'
 release.actions.set_status_wip: 'Wip Release'
 release.actions.show: View
 release.add.save: Create
@@ -884,3 +884,11 @@ log.index.column.message: Message
 log.index.column.username: Username
 log.index.column.impersonator: Impersonator
 view.actions.view: Details
+pick-a-release.title: 'Pick a release for "%label%"'
+data.actions.add_to_release: 'Add to release'
+data.actions.add_to_release_confirm: 'Do you confirm ?'
+views.elements.revision-toolbar-html.add-to-release: 'Add to release'
+log.data.revision.added_to_release: 'Document "%label%" has been added to release "%release%"'
+log.data.revision.can_not_add_draft_in_release: 'Revision in draft mode can not be added to a release'
+log.data.revision.document_already_in_release_but_updated: 'Document "%label%" has been updated with a new revision in release "%release%"'
+log.data.revision.already_in_release: 'This revision of document "%label%" was already in release "%release%"'

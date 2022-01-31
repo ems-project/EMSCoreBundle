@@ -1,0 +1,17 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'pick-a-release.title'|trans({'%label%': revision.label}) }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('emsco_view_revisions', {type: revision.contentType.name, ouuid: revision.ouuid, revisionId: revision.id}) }}"><i class="{{ revision.contentType.icon|default('fa fa-book') }}"></i> {{ revision.label }}</a></li>
+        <li>{{ block('title') }}</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+    {% form_theme form '@EMSCore/form/forms.html.twig' %}
+    {{ form(form) }}
+{% endblock %}

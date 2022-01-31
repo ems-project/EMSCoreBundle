@@ -118,6 +118,13 @@
 								}%}</li>
 							{% endif %}
 						{% else %}
+							{% if is_granted('ROLE_PUBLISHER') and revision.id|default(false) %} {% dump %}
+								<li>{% include '@EMSCore/elements/get-button.html.twig' with {
+										'url': path('emsco_pick_a_release', {revision: revision.id}),
+										'btnClass': '',
+										'label': 'views.elements.revision-toolbar-html.add-to-release'|trans(),
+										'icon': 'glyphicon glyphicon-pushpin' }%}</li>
+							{% endif %}
 							{% if instance.contentType.fieldType.fieldsRoles|one_granted(true) %}
 								<li>{% include '@EMSCore/elements/get-button.html.twig' with {
 									'url': path('emsco_edit_revision', {'revisionId': revisionId}),

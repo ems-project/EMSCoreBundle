@@ -27,7 +27,7 @@ class ReleaseRevision implements EntityInterface
     private Release $release;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Revision")
+     * @ORM\ManyToOne(targetEntity="Revision", inversedBy="releases")
      * @ORM\JoinColumn(name="revision_id", referencedColumnName="id", nullable=true)
      */
     private ?Revision $revision;

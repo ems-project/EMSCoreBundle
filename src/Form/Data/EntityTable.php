@@ -99,7 +99,8 @@ final class EntityTable extends TableAbstract
         if (!$this->loadAll) {
             return false;
         }
-        $min = $this->massAction ? 1 : 0;
+        $min = $this->massAction ? 0 : 1;
+
         if ($this->totalCount() <= $min) {
             return false;
         }

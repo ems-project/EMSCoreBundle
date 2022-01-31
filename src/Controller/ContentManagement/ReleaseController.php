@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CoreBundle\Entity\Release;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Data\Condition\NotEmpty;
 use EMS\CoreBundle\Form\Data\Condition\Terms;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
@@ -41,9 +42,13 @@ final class ReleaseController extends AbstractController
         $this->releaseRevisionService = $releaseRevisionService;
     }
 
-    public function ajaxReleaseTable(Request $request): Response
+    public function ajaxReleaseTable(Request $request, ?Revision $revision = null): Response
     {
-        $table = $this->initReleaseTable();
+        if (null === $revision) {
+            $table = $this->initReleaseTable();
+        } else {
+            $table = $this->initAddToReleaseTable($revision);
+        }
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
@@ -210,6 +215,17 @@ final class ReleaseController extends AbstractController
         return $this->redirectToRoute(Routes::RELEASE_INDEX);
     }
 
+    public function addRevisionById(Release $release, Revision $revision): Response
+    {
+        $this->releaseService->addRevision($release, $revision);
+
+        return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
+            'type' => $revision->giveContentType()->getName(),
+            'ouuid' => $revision->getOuuid(),
+            'revisionId' => $revision->getId(),
+        ]);
+    }
+
     public function addRevision(Release $release, string $emsLinkToAdd): Response
     {
         $this->releaseService->addRevisions($release, [$emsLinkToAdd]);
@@ -250,13 +266,30 @@ final class ReleaseController extends AbstractController
         return $this->redirectToRoute(Routes::RELEASE_INDEX);
     }
 
+    public function pickRelease(Request $request, Revision $revision): Response
+    {
+        $table = $this->initAddToReleaseTable($revision);
+        $form = $this->createForm(TableType::class, $table);
+
+        return $this->render('@EMSCore/release/add-to-release.html.twig', [
+            'form' => $form->createView(),
+            'revision' => $revision,
+        ]);
+    }
+
+    private function initAddToReleaseTable(Revision $revision): EntityTable
+    {
+        $table = new EntityTable($this->releaseService, $this->generateUrl(Routes::DATA_PICK_A_RELEASE_AJAX_DATA_TABLE, ['revision' => $revision->getId()]), $revision);
+        $this->addBaseReleaseTableColumns($table);
+        $table->addItemPostAction(Routes::DATA_ADD_REVISION_TO_RELEASE, 'data.actions.add_to_release', 'plus', 'data.actions.add_to_release_confirm', ['revision' => $revision->getId()])->setButtonType('primary');
+
+        return $table;
+    }
+
     private function initReleaseTable(): EntityTable
     {
         $table = new EntityTable($this->releaseService, $this->generateUrl(Routes::RELEASE_AJAX_DATA_TABLE));
-        $table->addColumn('release.index.column.name', 'name');
-        $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.execution_date', 'executionDate'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.status', 'status', '@EMSCore/release/columns/revisions.html.twig'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', '@EMSCore/release/columns/revisions.html.twig'))->setCellClass('text-right');
+        $this->addBaseReleaseTableColumns($table);
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.env_source', 'environmentSource', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.env_target', 'environmentTarget', '@EMSCore/release/columns/revisions.html.twig'));
         $table->addItemGetAction(Routes::RELEASE_VIEW, 'release.actions.show', 'eye')
@@ -284,6 +317,7 @@ final class ReleaseController extends AbstractController
     private function getMemberRevisionsTable(Release $release): EntityTable
     {
         $table = new EntityTable($this->releaseRevisionService, $this->generateUrl(Routes::RELEASE_MEMBER_REVISION_AJAX, ['release' => $release->getId()]), $release);
+        $table->setMassAction(true);
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.CT', 'contentType', '@EMSCore/release/columns/release-revisions.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.document', 'label', '@EMSCore/release/columns/release-revisions.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.revision', 'revision', '@EMSCore/release/columns/release-revisions.html.twig'));
@@ -307,7 +341,7 @@ final class ReleaseController extends AbstractController
     private function getNonMemberRevisionsTable(Release $release): QueryTable
     {
         $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish', $this->generateUrl(Routes::RELEASE_NON_MEMBER_REVISION_AJAX, ['release' => $release->getId()]), $release);
-        $table->setMassAction(false);
+        $table->setMassAction(true);
         $table->setLabelAttribute('item_labelField');
         $table->setIdField('emsLink');
         $table->addColumn('release.revision.index.column.label', 'item_labelField');
@@ -319,5 +353,14 @@ final class ReleaseController extends AbstractController
         $table->addDynamicItemPostAction(Routes::RELEASE_ADD_REVISION, 'release.revision.action.add', 'plus', 'release.revision.actions.add_confirm', ['release' => \sprintf('%d', $release->getId()), 'emsLinkToAdd' => 'emsLink']);
 
         return $table;
+    }
+
+    private function addBaseReleaseTableColumns(EntityTable $table): void
+    {
+        $table->setDefaultOrder('executionDate');
+        $table->addColumn('release.index.column.name', 'name');
+        $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.execution_date', 'executionDate'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.status', 'status', '@EMSCore/release/columns/revisions.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', '@EMSCore/release/columns/revisions.html.twig'))->setCellClass('text-right');
     }
 }

@@ -401,10 +401,10 @@ release.actions.delete_selected: 'Delete selected'
 release.actions.delete_selected_confirm: 'Delete all selected Releases?'
 release.actions.edit: Edit
 release.actions.publish_release: 'Publish now'
-release.actions.publish_confirm: 'Publish the Releases?'
-release.actions.set_status_canceled: 'Cancel Release'
-release.actions.set_status_ready: 'Validate Release'
-release.actions.set_status_wip: 'Wip Release'
+release.actions.publish_confirm: 'Publish the release?'
+release.actions.set_status_canceled: 'Cancel release'
+release.actions.set_status_ready: 'Validate release'
+release.actions.set_status_wip: 'Rework release'
 release.actions.show: View
 release.add.save: Create
 release.add.title: 'Add a Release'
@@ -435,7 +435,7 @@ release.revision.index.column.action: Action
 release.revision.index.column.previous: 'Previous revision'
 release.revision.index.column.not-applicable: 'not applicable'
 release.revision.view.title: 'Release''s documents'
-release.status.wip: WIP
+release.status.wip: Draft
 release.status.ready: Ready
 release.status.applied: Applied
 release.status.canceled: Canceled

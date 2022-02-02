@@ -17,6 +17,7 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Form\FormInterface;
 
 class RevisionService implements RevisionServiceInterface
 {
@@ -119,22 +120,12 @@ class RevisionService implements RevisionServiceInterface
     }
 
     /**
-     * @param array<mixed> $rawData
-     */
-    public function saveFinalize(Revision $revision, array $rawData): Revision
-    {
-        $this->save($revision, $rawData);
-        $this->dataService->finalizeDraft($revision);
-
-        return $revision;
-    }
-
-    /**
      * The revision is a draft, version meta fields set in Revision->setVersionMetaFields().
      *
-     * @param array<mixed> $rawData
+     * @param array<mixed>                  $rawData
+     * @param ?FormInterface<FormInterface> $form
      */
-    public function saveVersion(Revision $revision, array $rawData, ?string $versionTag = null): Revision
+    public function saveVersion(Revision $revision, array $rawData, ?string $versionTag = null, ?FormInterface &$form = null): Revision
     {
         if (null !== $versionTag) {
             $revision->setVersionTag($versionTag); //update version_tag archived versions
@@ -142,7 +133,10 @@ class RevisionService implements RevisionServiceInterface
 
         if (null === $versionTag || null !== $revision->getVersionDate('to') || !$revision->hasOuuid()) {
             //silent version publish || changing archived version revision || new document draft
-            return $this->saveFinalize($revision, $rawData);
+            $this->save($revision, $rawData);
+            $this->dataService->finalizeDraft($revision, $form);
+
+            return $revision;
         }
 
         $now = new \DateTimeImmutable();
@@ -150,7 +144,11 @@ class RevisionService implements RevisionServiceInterface
         $newVersion = $revision->clone(); //create new version revision
         $this->dataService->lockRevision($newVersion);
         $newVersion->setVersionDate('from', $now);
-        $this->dataService->finalizeDraft($newVersion);
+        $this->dataService->finalizeDraft($newVersion, $form);
+
+        if (0 < \count($form->getErrors(true))) {
+            return $revision;
+        }
 
         $this->dataService->discardDraft($revision); //discard draft changes previous revision
 

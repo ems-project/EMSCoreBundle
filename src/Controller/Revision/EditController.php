@@ -176,7 +176,7 @@ class EditController extends AbstractController
                 $revision->setAutoSaveBy($user->getUsername());
                 if (isset($requestRevision['publish_version'])) {
                     $versionTag = $form->get('publish_version_tags')->getData();
-                    $revision = $this->revisionService->saveVersion($revision, $objectArray, $versionTag);
+                    $revision = $this->revisionService->saveVersion($revision, $objectArray, $versionTag, $form);
                 } else {
                     $this->revisionService->save($revision, $objectArray);
                 }

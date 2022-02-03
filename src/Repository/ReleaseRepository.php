@@ -77,6 +77,29 @@ final class ReleaseRepository extends ServiceEntityRepository
     /**
      * @return Release[]
      */
+    public function getInWip(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->setFirstResult($from)
+            ->setMaxResults($size);
+        $qb->where('r.status = :status')
+            ->setParameters([
+                'status' => Release::WIP_STATUS,
+            ]);
+        $this->addSearchFilters($qb, $searchValue);
+
+        if (\in_array($orderField, ['name', 'executionDate', 'created'])) {
+            $qb->orderBy(\sprintf('r.%s', $orderField), $orderDirection);
+        } else {
+            $qb->orderBy('r.name', $orderDirection);
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
+     * @return Release[]
+     */
     public function findReadyAndDue(): array
     {
         $qb = $this->createQueryBuilder('r');
@@ -99,5 +122,17 @@ final class ReleaseRepository extends ServiceEntityRepository
             $qb->andWhere($or)
                 ->setParameter(':term', '%'.$searchValue.'%');
         }
+    }
+
+    public function countWipReleases(): int
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb->select('count(r.id)');
+        $qb->where('r.status = :status')
+            ->setParameters([
+                'status' => Release::WIP_STATUS,
+            ]);
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

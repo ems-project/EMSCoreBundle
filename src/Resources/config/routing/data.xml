@@ -113,6 +113,15 @@
     <route id="emsco_data_json_menu_nested_silent_publish" path="/json-menu-nested/silent-publish/{revision}/{fieldType}/{field}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\Revision\JsonMenuNestedController::silentPublish</default>
     </route>
+    <route id="emsco_data_pick_a_release_ajax_data_table" path="/pick-a-release/{revision}.json" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:ajaxReleaseTable</default>
+    </route>
+    <route id="emsco_pick_a_release" path="/pick-a-release/{revision}" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:pickRelease</default>
+    </route>
+    <route id="emsco_data_add_revision_to_release" path="/add-to-release/{revision}/{release}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ReleaseController:addRevisionById</default>
+    </route>
 
     <!--- Deprecated routes -->
     <route id="ems_data_default_search" path="/{name}" methods="GET">

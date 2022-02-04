@@ -7,5 +7,8 @@
     <route id="emsco_api_content_type_index" path="/content-type" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\Api\Config\ContentTypeController:index</default>
     </route>
+    <route id="emsco_api_content_type_get" path="/content-type/{name}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Config\ContentTypeController:get</default>
+    </route>
 
 </routes>

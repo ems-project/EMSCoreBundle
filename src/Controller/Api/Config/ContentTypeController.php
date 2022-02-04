@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Controller\Api\Config;
 use EMS\CoreBundle\Service\ContentTypeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ContentTypeController
 {
@@ -28,5 +29,15 @@ class ContentTypeController
         }
 
         return new JsonResponse($names);
+    }
+
+    public function get(string $name): Response
+    {
+        $contentType = $this->contentTypeService->getByName($name);
+        if (false === $contentType) {
+            throw new NotFoundHttpException();
+        }
+
+        return new JsonResponse($contentType);
     }
 }

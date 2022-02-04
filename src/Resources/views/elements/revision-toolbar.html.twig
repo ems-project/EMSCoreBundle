@@ -118,7 +118,7 @@
 								}%}</li>
 							{% endif %}
 						{% else %}
-							{% if is_granted('ROLE_PUBLISHER') and revision.id|default(false) %} {% dump %}
+							{% if is_granted('ROLE_PUBLISHER') and revision.id|default(false) %}
 								<li>{% include '@EMSCore/elements/get-button.html.twig' with {
 										'url': path('emsco_pick_a_release', {revision: revision.id}),
 										'btnClass': '',

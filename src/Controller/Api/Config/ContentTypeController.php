@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller\Api\Config;
 
 use EMS\CoreBundle\Service\ContentTypeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -39,5 +40,20 @@ class ContentTypeController
         }
 
         return new JsonResponse($contentType);
+    }
+
+    public function update(string $name, Request $request): Response
+    {
+        $contentType = $this->contentTypeService->getByName($name);
+        if (false === $contentType) {
+            throw new NotFoundHttpException();
+        }
+        $content = $request->getContent();
+        if (!\is_string($content)) {
+            throw new \RuntimeException('Unexpected non string content');
+        }
+        $this->contentTypeService->updateFromJson($contentType, $content, true, true);
+
+        return new JsonResponse();
     }
 }

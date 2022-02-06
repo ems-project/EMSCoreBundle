@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle;
 
 use EMS\CoreBundle\DependencyInjection\Compiler\DataFieldTypeCompilerPass;
-use EMS\CoreBundle\DependencyInjection\Compiler\EntityServiceCompilerPass;
 use EMS\CoreBundle\DependencyInjection\Compiler\RegisterCompilerPass;
 use EMS\CoreBundle\DependencyInjection\Compiler\StorageServiceCompilerPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
@@ -24,6 +23,5 @@ class EMSCoreBundle extends Bundle
         $container->addCompilerPass(new DataFieldTypeCompilerPass(), PassConfig::TYPE_OPTIMIZE);
         $container->addCompilerPass(new StorageServiceCompilerPass(), PassConfig::TYPE_OPTIMIZE);
         $container->addCompilerPass(new RegisterCompilerPass());
-        $container->addCompilerPass(new EntityServiceCompilerPass());
     }
 }

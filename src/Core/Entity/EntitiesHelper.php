@@ -12,9 +12,14 @@ class EntitiesHelper
     /** @var EntityServiceInterface[] */
     private array $entityServices = [];
 
-    public function add(EntityServiceInterface $entityService): void
+    /**
+     * @param iterable<EntityServiceInterface> $entityServices
+     */
+    public function __construct(iterable $entityServices)
     {
-        $this->entityServices[$entityService->getEntityName()] = $entityService;
+        foreach ($entityServices as $entityService) {
+            $this->entityServices[$entityService->getEntityName()] = $entityService;
+        }
     }
 
     public function getEntityService(string $entityName): EntityServiceInterface

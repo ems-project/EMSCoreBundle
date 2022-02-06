@@ -202,7 +202,7 @@
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Api\Admin\EntitiesController" public="true">
-            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="emsco.helper.entities" />
             <tag name="controller.service_arguments"/>
         </service>
     </services>

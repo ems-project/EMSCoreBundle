@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Api\Admin;
 
-use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Core\Entity\EntitiesHelper;
+use EMS\CoreBundle\Entity\EntityInterface;
+use EMS\CoreBundle\Exception\EntityServiceNotFoundException;
+use EMS\CoreBundle\Service\EntityServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,21 +15,26 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EntitiesController
 {
-    private ContentTypeService $contentTypeService;
+    private EntitiesHelper $entitiesHelper;
 
-    public function __construct(ContentTypeService $contentTypeService)
+    public function __construct(EntitiesHelper $entitiesHelper)
     {
-        $this->contentTypeService = $contentTypeService;
+        $this->entitiesHelper = $entitiesHelper;
     }
 
     public function index(string $entity): Response
     {
+        $entityService = $this->getEntityService($entity);
+        $count = $entityService->count();
         $names = [];
-        foreach ($this->contentTypeService->getAll() as $contentType) {
-            if ($contentType->getDeleted()) {
-                continue;
+        for ($from = 0; $from < $count; $from += 10) {
+            foreach ($entityService->get($from, 10, null, 'asc', '') as $entity) {
+                if ($entity instanceof EntityInterface) {
+                    $names[] = $entity->getName();
+                } else {
+                    $names[] = \strval($entity->getId());
+                }
             }
-            $names[] = $contentType->getName();
         }
 
         return new JsonResponse($names);
@@ -34,8 +42,9 @@ class EntitiesController
 
     public function get(string $entity, string $name): Response
     {
-        $contentType = $this->contentTypeService->getByName($name);
-        if (false === $contentType) {
+        $entityService = $this->getEntityService($entity);
+        $contentType = $entityService->getByItemName($name);
+        if (null === $contentType) {
             throw new NotFoundHttpException();
         }
 
@@ -44,16 +53,28 @@ class EntitiesController
 
     public function update(string $entity, string $name, Request $request): Response
     {
-        $contentType = $this->contentTypeService->getByName($name);
-        if (false === $contentType) {
+        $entityService = $this->getEntityService($entity);
+        $entity = $entityService->getByItemName($name);
+        if (null === $entity) {
             throw new NotFoundHttpException();
         }
         $content = $request->getContent();
         if (!\is_string($content)) {
             throw new \RuntimeException('Unexpected non string content');
         }
-        $this->contentTypeService->updateFromJson($contentType, $content, true, true);
+        $entityService->updateEntityFromJson($entity, $content);
 
         return new JsonResponse();
+    }
+
+    protected function getEntityService(string $entity): EntityServiceInterface
+    {
+        try {
+            $entityService = $this->entitiesHelper->getEntityService($entity);
+        } catch (EntityServiceNotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        }
+
+        return $entityService;
     }
 }

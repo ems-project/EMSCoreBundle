@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elastica\Exception\ResponseException;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -601,12 +602,7 @@ class ContentTypeService implements EntityServiceInterface
         if (null !== $context) {
             throw new \RuntimeException('Unexpected non-null object');
         }
-
-        $em = $this->doctrine->getManager();
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
-        if (!$contentTypeRepository instanceof ContentTypeRepository) {
-            throw new \RuntimeException('Unexpected non ContentTypeRepository object');
-        }
+        $contentTypeRepository = $this->getContentTypeRepository();
 
         return $contentTypeRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
@@ -621,13 +617,35 @@ class ContentTypeService implements EntityServiceInterface
         if (null !== $context) {
             throw new \RuntimeException('Unexpected non-null object');
         }
+        $contentTypeRepository = $this->getContentTypeRepository();
 
+        return $contentTypeRepository->counter($searchValue);
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        $contentTypeRepository = $this->getContentTypeRepository();
+
+        return $contentTypeRepository->findByName($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        if (!$entity instanceof ContentType) {
+            throw new \RuntimeException('unexpected non ContentType entity');
+        }
+
+        return $this->updateFromJson($entity, $json, true, true);
+    }
+
+    protected function getContentTypeRepository(): ContentTypeRepository
+    {
         $em = $this->doctrine->getManager();
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
         if (!$contentTypeRepository instanceof ContentTypeRepository) {
             throw new \RuntimeException('Unexpected non ContentTypeRepository object');
         }
 
-        return $contentTypeRepository->counter($searchValue);
+        return $contentTypeRepository;
     }
 }

@@ -63,6 +63,21 @@ class UploadedAssetRepository extends EntityRepository
     }
 
     /**
+     * @param string   $id
+     * @param int|null $lockMode
+     * @param int|null $lockVersion
+     */
+    public function find($id, $lockMode = null, $lockVersion = null): ?UploadedAsset
+    {
+        $uploadedAsset = parent::find($id, $lockMode, $lockVersion);
+        if (!$uploadedAsset instanceof UploadedAsset && null !== $uploadedAsset) {
+            throw new \RuntimeException('Unexpected non UploadedAsset object');
+        }
+
+        return $uploadedAsset;
+    }
+
+    /**
      * @param string $hash
      *
      * @return mixed

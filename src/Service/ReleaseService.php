@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Entity\Revision;
@@ -247,5 +248,15 @@ final class ReleaseService implements EntityServiceInterface
         $this->update($rollback);
 
         return $rollback;
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->releaseRepository->getById($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

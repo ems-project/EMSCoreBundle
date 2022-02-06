@@ -119,4 +119,13 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
 
         return $queryBuilder->getQuery()->getResult();
     }
+
+    public function getById(string $id): ReleaseRevision
+    {
+        $queryBuilder = $this->createQueryBuilder('rr');
+        $queryBuilder->where('rr.id = :id')
+            ->setParameter('id', $id);
+
+        return $queryBuilder->getQuery()->getSingleResult();
+    }
 }

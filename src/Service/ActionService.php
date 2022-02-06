@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Repository\TemplateRepository;
@@ -99,5 +100,15 @@ final class ActionService implements EntityServiceInterface
         }
 
         return $this->templateRepository->counter($searchValue, $context);
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->templateRepository->getById($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Job;
 
 use Cron\CronExpression;
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\Schedule;
 use EMS\CoreBundle\Repository\ScheduleRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
@@ -116,5 +117,15 @@ class ScheduleManager implements EntityServiceInterface
         $this->update($schedule);
 
         return $schedule;
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->scheduleRepository->getById($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

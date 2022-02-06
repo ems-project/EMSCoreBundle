@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Task;
 
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Form\Data\DateTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
@@ -127,5 +128,15 @@ final class TaskTableService implements EntityServiceInterface
         }
 
         return $columns;
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->taskRepository->findTaskById($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

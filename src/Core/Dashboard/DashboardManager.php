@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Dashboard;
 
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Entity\Dashboard;
@@ -174,5 +175,15 @@ class DashboardManager implements EntityServiceInterface
     public function getQuickSearch(): ?Dashboard
     {
         return $this->dashboardRepository->getQuickSearch();
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->dashboardRepository->getByName($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

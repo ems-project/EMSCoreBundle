@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\HashMismatchException;
 use EMS\CommonBundle\Storage\NotFoundException;
@@ -422,5 +423,15 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
     public function hashesToIds(array $hashes): array
     {
         return $this->uploadedAssetRepository->hashesToIds($hashes);
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->uploadedAssetRepository->find($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

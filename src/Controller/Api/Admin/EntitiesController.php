@@ -43,12 +43,12 @@ class EntitiesController
     public function get(string $entity, string $name): Response
     {
         $entityService = $this->getEntityService($entity);
-        $contentType = $entityService->getByItemName($name);
-        if (null === $contentType) {
+        $item = $entityService->getByItemName($name);
+        if (null === $item) {
             throw new NotFoundHttpException();
         }
 
-        return new JsonResponse($contentType);
+        return new JsonResponse($item);
     }
 
     public function update(string $entity, string $name, Request $request): Response

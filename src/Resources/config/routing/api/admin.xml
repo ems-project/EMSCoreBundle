@@ -5,13 +5,13 @@
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="emsco_api_content_type_index" path="/{entity}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntityController:index</default>
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:index</default>
     </route>
     <route id="emsco_api_content_type_get" path="/{entity}/{name}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntityController:get</default>
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:get</default>
     </route>
     <route id="emsco_api_content_type_update" path="/{entity}/{name}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntityController:update</default>
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:update</default>
     </route>
 
 </routes>

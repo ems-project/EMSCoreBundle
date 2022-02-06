@@ -4,13 +4,19 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_api_content_type_index" path="/{entity}" methods="GET">
+    <route id="emsco_api_content_type_index" path="/{entity}.{_format}" methods="GET">
+        <requirement key="_format">json</requirement>
+        <default key="_format">json</default>
         <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:index</default>
     </route>
-    <route id="emsco_api_content_type_get" path="/{entity}/{name}" methods="GET">
+    <route id="emsco_api_content_type_get" path="/{entity}/{name}.{_format}" methods="GET">
+        <requirement key="_format">json</requirement>
+        <default key="_format">json</default>
         <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:get</default>
     </route>
-    <route id="emsco_api_content_type_update" path="/{entity}/{name}" methods="POST">
+    <route id="emsco_api_content_type_update" path="/{entity}/{name}.{_format}" methods="POST">
+        <requirement key="_format">json</requirement>
+        <default key="_format">json</default>
         <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:update</default>
     </route>
 

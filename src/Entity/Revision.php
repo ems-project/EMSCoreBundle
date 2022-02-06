@@ -1264,4 +1264,9 @@ class Revision implements EntityInterface
     {
         return $this->releases->toArray();
     }
+
+    public function getName(): string
+    {
+        return \strval($this->id ?? '');
+    }
 }

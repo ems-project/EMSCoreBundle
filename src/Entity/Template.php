@@ -39,11 +39,9 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     protected $modified;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    protected $name;
+    protected string $name = '';
 
     /**
      * @var string
@@ -300,12 +298,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         return $this;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }

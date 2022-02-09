@@ -44,7 +44,7 @@ class QuerySearch implements EntityInterface
     /**
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    private string $name;
+    private string $name = '';
 
     /**
      * @var Collection <int,Environment>
@@ -105,7 +105,7 @@ class QuerySearch implements EntityInterface
         $this->label = $label;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }

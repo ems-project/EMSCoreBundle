@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elastica\Exception\ResponseException;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -27,7 +28,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class ContentTypeService
+class ContentTypeService implements EntityServiceInterface
 {
     private const CONTENT_TYPE_AGGREGATION_NAME = 'content-types';
 
@@ -584,5 +585,67 @@ class ContentTypeService
         $draftInProgress = $menuEntry->addChild('sidebar_menu.content_type.draft_in_progress', 'fa fa-fire', Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentType->getId()]);
         $draftInProgress->setTranslation([]);
         $draftInProgress->setBadge($menuEntry->getBadge(), $contentType->getColor());
+    }
+
+    public function isSortable(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @param mixed|null $context
+     *
+     * @return ContentType[]
+     */
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    {
+        if (null !== $context) {
+            throw new \RuntimeException('Unexpected non-null object');
+        }
+        $contentTypeRepository = $this->getContentTypeRepository();
+
+        return $contentTypeRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'content-type';
+    }
+
+    public function count(string $searchValue = '', $context = null): int
+    {
+        if (null !== $context) {
+            throw new \RuntimeException('Unexpected non-null object');
+        }
+        $contentTypeRepository = $this->getContentTypeRepository();
+
+        return $contentTypeRepository->counter($searchValue);
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        $contentTypeRepository = $this->getContentTypeRepository();
+
+        return $contentTypeRepository->findByName($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        if (!$entity instanceof ContentType) {
+            throw new \RuntimeException('unexpected non ContentType entity');
+        }
+
+        return $this->updateFromJson($entity, $json, true, true);
+    }
+
+    protected function getContentTypeRepository(): ContentTypeRepository
+    {
+        $em = $this->doctrine->getManager();
+        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        if (!$contentTypeRepository instanceof ContentTypeRepository) {
+            throw new \RuntimeException('Unexpected non ContentTypeRepository object');
+        }
+
+        return $contentTypeRepository;
     }
 }

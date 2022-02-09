@@ -8,6 +8,7 @@ use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Elasticsearch\Response\ResponseInterface;
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Document\DataLinks;
 use EMS\CoreBundle\Entity\ContentType;
@@ -189,5 +190,15 @@ final class QuerySearchService implements EntityServiceInterface
         }
 
         return $aliases;
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->getOneByName($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

@@ -53,11 +53,9 @@ class UploadedAsset implements EntityInterface
     private $sha1;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=1024)
      */
-    private $name;
+    private string $name = '';
 
     /**
      * @var string
@@ -250,12 +248,7 @@ class UploadedAsset implements EntityInterface
         return $this;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }

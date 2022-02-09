@@ -152,5 +152,9 @@
             <argument type="service" id="ems.repository.log"/>
             <argument type="service" id="logger"/>
         </service>
+
+        <service id="emsco.helper.entities" class="EMS\CoreBundle\Core\Entity\EntitiesHelper">
+            <argument type="tagged_iterator" tag="emsco.entity.service"/>
+        </service>
     </services>
 </container>

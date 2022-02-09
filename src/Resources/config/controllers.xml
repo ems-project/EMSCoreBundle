@@ -201,5 +201,9 @@
             <argument type="service" id="logger" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Api\Admin\EntitiesController" public="true">
+            <argument type="service" id="emsco.helper.entities" />
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

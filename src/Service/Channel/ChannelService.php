@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Channel;
 
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Repository\ChannelRepository;
@@ -35,11 +36,7 @@ final class ChannelService implements EntityServiceInterface
             $channel->setOrderKey($this->channelRepository->counter() + 1);
         }
         $encoder = new Encoder();
-        $name = $channel->getName();
-        if (null === $name) {
-            throw new \RuntimeException('Unexpected null name');
-        }
-        $webalized = $encoder->webalize($name);
+        $webalized = $encoder->webalize($channel->getName());
         if (null === $webalized) {
             throw new \RuntimeException('Unexpected null webalized name');
         }
@@ -113,5 +110,15 @@ final class ChannelService implements EntityServiceInterface
         }
 
         return $this->channelRepository->counter($searchValue);
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->channelRepository->findRegistered($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

@@ -203,7 +203,7 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
             throw new \Exception(\sprintf('ContentType not found %s', $document->getContentType()));
         }
 
-        $options['field_type'] = $contentType->getFieldType()->getChildByName($options['field']);
+        $options['field_type'] = $contentType->getFieldType()->findChildByName($options['field']);
         $options['revision'] = $this->revisionService->getCurrentRevisionForDocument($document);
 
         return $options;

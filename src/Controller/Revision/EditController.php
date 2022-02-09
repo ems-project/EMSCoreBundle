@@ -179,6 +179,11 @@ class EditController extends AbstractController
                     $revision = $this->revisionService->saveVersion($revision, $objectArray, $versionTag, $form);
                 } else {
                     $this->revisionService->save($revision, $objectArray);
+                    if (null !== $revision->getEndTime()) {
+                        foreach ($revision->getEnvironments() as $publishedEnvironment) {
+                            $this->publishService->publish($revision, $publishedEnvironment);
+                        }
+                    }
                 }
 
                 if (isset($requestRevision['publish'])) {//Finalize

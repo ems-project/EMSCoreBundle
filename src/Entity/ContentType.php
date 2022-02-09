@@ -15,7 +15,7 @@ use EMS\CoreBundle\Form\DataField\ContainerFieldType;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\ContentTypeRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class ContentType extends JsonDeserializer implements \JsonSerializable
+class ContentType extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
      * @var int
@@ -41,11 +41,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $modified;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=100)
      */
-    protected $name;
+    protected string $name = '';
 
     /**
      * @var string
@@ -555,12 +553,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }

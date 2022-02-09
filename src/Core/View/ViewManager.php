@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\View;
 
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Repository\ViewRepository;
@@ -90,5 +91,15 @@ class ViewManager implements EntityServiceInterface
         $this->logger->warning('log.service.view.delete', [
             'name' => $name,
         ]);
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->viewRepository->getById($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

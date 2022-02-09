@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Log;
 
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Entity\Log;
 use EMS\CoreBundle\Repository\LogRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
@@ -70,5 +71,15 @@ class LogManager implements EntityServiceInterface
         }
 
         return $this->logRepository->counter($searchValue);
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        throw new \RuntimeException('getByItemName method not yet implemented');
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

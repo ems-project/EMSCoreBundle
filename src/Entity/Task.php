@@ -232,4 +232,9 @@ class Task implements EntityInterface
 
         return $latestStatusLog instanceof TaskLog ? $latestStatusLog : null;
     }
+
+    public function getName(): string
+    {
+        return $this->getId();
+    }
 }

@@ -55,6 +55,15 @@ final class ReleaseRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
+    public function getById(string $id): Release
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+        $queryBuilder->where('r.id = :id')
+            ->setParameter('id', $id);
+
+        return $queryBuilder->getQuery()->getSingleResult();
+    }
+
     /**
      * @return Release[]
      */

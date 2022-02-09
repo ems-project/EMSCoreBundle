@@ -318,7 +318,7 @@
                     </div>
                 {% endif %}
             </div>
-            {%  if table.sortable and table.supportsTableActions %}
+            {%  if attribute(form, 'reordered') is defined and table.supportsTableActions %}
                 <div class="modal fade" id="{{ table.attributeName|e('html_attr') }}_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="{{ table.attributeName|e('html_attr') }}_modal_reorder_label">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">

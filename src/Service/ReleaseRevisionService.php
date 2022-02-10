@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
@@ -135,5 +136,15 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
         }
 
         return $contentTypes;
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->releaseRevisionRepository->getById($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

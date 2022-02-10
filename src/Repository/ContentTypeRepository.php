@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\ContentType;
 
 /**
@@ -96,5 +97,52 @@ class ContentTypeRepository extends EntityRepository
          ->getSingleScalarResult() ?? 0;
 
         return $max + 1;
+    }
+
+    public function counter(string $searchValue = ''): int
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)');
+        $this->addSearchFilters($qb, $searchValue);
+
+        try {
+            return \intval($qb->getQuery()->getSingleScalarResult());
+        } catch (NonUniqueResultException $e) {
+            return 0;
+        }
+    }
+
+    /**
+     * @return ContentType[]
+     */
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->setFirstResult($from)
+            ->setMaxResults($size);
+        $this->addSearchFilters($qb, $searchValue);
+
+        if (\in_array($orderField, ['name', 'pluralName', 'singularName', 'active'])) {
+            $qb->orderBy(\sprintf('c.%s', $orderField), $orderDirection);
+        } else {
+            $qb->orderBy('c.orderKey', $orderDirection);
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
+    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    {
+        $qb->where($qb->expr()->eq('c.deleted', ':false'));
+        $qb->setParameter(':false', false);
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('c.label', ':term'),
+                $qb->expr()->like('c.pluralName', ':term'),
+                $qb->expr()->like('c.singularName', ':term')
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.$searchValue.'%');
+        }
     }
 }

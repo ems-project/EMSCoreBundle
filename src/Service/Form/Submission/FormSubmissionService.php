@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Form\Submission;
 
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\FormSubmissionRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
@@ -256,5 +257,15 @@ final class FormSubmissionService implements EntityServiceInterface
     public function count(string $filterValue = '', $context = null): int
     {
         return $this->formSubmissionRepository->countAllUnprocessed($filterValue);
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        throw new \RuntimeException('getByItemName method not yet implemented');
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

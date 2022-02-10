@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
@@ -39,13 +40,26 @@ class RevisionType extends AbstractType
                 'with_warning' => $options['with_warning'],
                 'raw_data' => $options['raw_data'],
                 'disabled_fields' => $contentType->getDisabledDataFields(),
-        ])->add('save', SubmitEmsType::class, [
-            'label' => 'form.form.revision-type.save-draft-label',
-            'attr' => [
-                    'class' => 'btn btn-default btn-sm ',
-            ],
-            'icon' => 'fa fa-save',
         ]);
+
+        if ($revision && null === $revision->getEndTime()) {
+            $builder->add('save', SubmitEmsType::class, [
+                'label' => 'form.form.revision-type.save-draft-label',
+                'attr' => ['class' => 'btn btn-default btn-sm'],
+                'icon' => 'fa fa-save',
+            ]);
+        } elseif ($revision) {
+            $publishedEnvironmentLabels = $revision->getEnvironments()->map(fn (Environment $e) => $e->getLabel());
+            //update published revision in other environment
+            $builder->add('save', SubmitEmsType::class, [
+                'label' => 'form.form.revision-type.publish-label',
+                'label_translation_parameters' => [
+                    '%environment%' => \implode(', ', $publishedEnvironmentLabels->toArray()),
+                ],
+                'attr' => ['class' => 'btn btn-primary btn-sm'],
+                'icon' => 'glyphicon glyphicon-open',
+            ]);
+        }
 
         $builder->get('data')
         ->addModelTransformer(new DataFieldModelTransformer($contentType->getFieldType(), $this->formRegistry))

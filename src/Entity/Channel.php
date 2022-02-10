@@ -41,11 +41,9 @@ class Channel implements EntityInterface
     private $modified;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    private string $name = '';
 
     /**
      * @var string
@@ -112,7 +110,7 @@ class Channel implements EntityInterface
         $this->modified = new \DateTime();
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }

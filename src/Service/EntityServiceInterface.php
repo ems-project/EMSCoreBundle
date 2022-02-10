@@ -23,4 +23,8 @@ interface EntityServiceInterface
      * @param mixed $context
      */
     public function count(string $searchValue = '', $context = null): int;
+
+    public function getByItemName(string $name): ?EntityInterface;
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface;
 }

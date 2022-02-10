@@ -734,9 +734,23 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $this->children;
     }
 
-    public function getChildByName(string $name): ?FieldType
+    public function findChildByName(string $name): ?FieldType
     {
         foreach ($this->loopChildren() as $child) {
+            if (!$child->getDeleted() && $child->getName() === $name) {
+                return $child;
+            }
+        }
+
+        return null;
+    }
+
+    public function getChildByName(string $name): ?FieldType
+    {
+        foreach ($this->children as $child) {
+            if ($child->getDeleted()) {
+                continue;
+            }
             if ($child->getName() === $name) {
                 return $child;
             }
@@ -751,6 +765,9 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function loopChildren(): \Generator
     {
         foreach ($this->children as $child) {
+            if ($child->getDeleted()) {
+                continue;
+            }
             yield $child;
             yield from $child->loopChildren();
         }

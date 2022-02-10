@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\DataField\Options;
 
 use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\Field\RolePickerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -52,13 +51,11 @@ class RestrictionOptionsType extends AbstractType
             if ($jsonMenuNestedEditor = $fieldType->getJsonMenuNestedEditor()) {
                 $choices = [];
 
-                foreach ($jsonMenuNestedEditor->loopChildren() as $child) {
-                    /** @var DateFieldType $type */
-                    $type = $child->getType();
-
-                    if (!$child->getDeleted() and $type::isContainer()) {
-                        $choices[$child->getName()] = $child->getName();
+                foreach ($jsonMenuNestedEditor->getChildren() as $child) {
+                    if ($child->getDeleted()) {
+                        continue;
                     }
+                    $choices[$child->getName()] = $child->getName();
                 }
 
                 $builder->add('json_nested_deny', ChoiceType::class, [

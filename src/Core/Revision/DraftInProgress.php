@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision;
 
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Form\Data\Condition\DateInFuture;
 use EMS\CoreBundle\Form\Data\Condition\InMyCircles;
@@ -93,5 +94,15 @@ class DraftInProgress implements EntityServiceInterface
         }
 
         return $table;
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->revisionRepository->findOneById(\intval($name));
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

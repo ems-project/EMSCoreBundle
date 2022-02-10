@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
@@ -311,5 +312,20 @@ class UserService implements EntityServiceInterface
         }
 
         return $menu;
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        $user = $this->getUser($name);
+        if (!$user instanceof User && null !== $user) {
+            throw new \RuntimeException(\sprintf('Unknown user object class: %s', \get_class($user)));
+        }
+
+        return $user;
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 }

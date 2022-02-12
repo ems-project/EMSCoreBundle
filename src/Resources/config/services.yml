@@ -415,6 +415,8 @@ services:
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:
         arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '@logger', '@ems_common.service.elastica', '%ems_core.instance_id%']
+        tags:
+            - { name: emsco.entity.service }
     ems.service.contenttype: '@EMS\CoreBundle\Service\ContentTypeService'
     EMS\CoreBundle\Service\ContentTypeService:
         arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@ems_common.service.elastica', '@ems.service.environment', '@security.authorization_checker', '@EMS\CoreBundle\Repository\RevisionRepository', '@security.token_storage', '%ems_core.circles_object%']

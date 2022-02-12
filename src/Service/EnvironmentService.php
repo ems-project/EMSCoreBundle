@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Analyzer;
@@ -15,7 +16,7 @@ use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class EnvironmentService
+class EnvironmentService implements EntityServiceInterface
 {
     /** @var Registry */
     private $doctrine;
@@ -351,5 +352,35 @@ class EnvironmentService
         }
         $em->persist($environment);
         $em->flush();
+    }
+
+    public function isSortable(): bool
+    {
+        return true;
+    }
+
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    {
+        return $this->environmentRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'environment';
+    }
+
+    public function count(string $searchValue = '', $context = null): int
+    {
+        return $this->environmentRepository->counter($searchValue);
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->environmentRepository->findByName($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new \Exception('Not yet supported');
     }
 }

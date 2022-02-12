@@ -9,7 +9,7 @@
         <default key="_format">json</default>
         <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:index</default>
     </route>
-    <route id="emsco_api_content_type_index" path="/{entity}.{_format}" methods="POST">
+    <route id="emsco_api_content_type_create" path="/{entity}.{_format}" methods="POST">
         <requirement key="_format">json</requirement>
         <default key="_format">json</default>
         <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:create</default>

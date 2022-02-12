@@ -24,5 +24,10 @@
         <default key="_format">json</default>
         <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:update</default>
     </route>
+    <route id="emsco_api_content_type_delete" path="/{entity}/{name}.{_format}" methods="DELETE">
+        <requirement key="_format">json</requirement>
+        <default key="_format">json</default>
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:delete</default>
+    </route>
 
 </routes>

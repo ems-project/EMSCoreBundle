@@ -670,8 +670,19 @@ class ContentTypeService implements EntityServiceInterface
         return $contentTypeRepository;
     }
 
-    public function deleteByItemName(string $name = null): string
+    public function deleteByItemName(string $name): string
     {
-        throw new \RuntimeException('deleteByItemName method not yet implemented');
+        $contentTypeRepository = $this->getContentTypeRepository();
+        $contentType = $this->getByItemName($name);
+        if (null === $contentType) {
+            throw new \RuntimeException(\sprintf('Entity %s not found', $name));
+        }
+        if (!$contentType instanceof ContentType) {
+            throw new \RuntimeException('Unexpected non ContentType object');
+        }
+        $id = $contentType->getId();
+        $contentTypeRepository->delete($contentType);
+
+        return \strval($id);
     }
 }

@@ -334,7 +334,7 @@ class UserService implements EntityServiceInterface
         throw new \RuntimeException('createEntityFromJson method not yet implemented');
     }
 
-    public function deleteByItemName(string $name = null): string
+    public function deleteByItemName(string $name): string
     {
         throw new \RuntimeException('deleteByItemName method not yet implemented');
     }

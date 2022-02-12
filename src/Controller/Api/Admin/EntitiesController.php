@@ -67,7 +67,7 @@ class EntitiesController
         }
 
         return new JsonResponse([
-            'id' => $entity->getId(),
+            'id' => \strval($entity->getId()),
         ]);
     }
 

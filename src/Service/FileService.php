@@ -377,6 +377,14 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
         return 'UploadedAsset';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [];
+    }
+
     public function count(string $searchValue = '', $context = null): int
     {
         return $this->uploadedAssetRepository->searchCount($searchValue, null !== $context && ($context['available'] ?? false));

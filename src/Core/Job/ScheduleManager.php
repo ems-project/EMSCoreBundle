@@ -90,6 +90,14 @@ class ScheduleManager implements EntityServiceInterface
         return 'schedule';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [];
+    }
+
     public function count(string $searchValue = '', $context = null): int
     {
         if (null !== $context) {

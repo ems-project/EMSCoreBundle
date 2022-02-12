@@ -254,6 +254,14 @@ final class FormSubmissionService implements EntityServiceInterface
         return 'formSubmission';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [];
+    }
+
     public function count(string $filterValue = '', $context = null): int
     {
         return $this->formSubmissionRepository->countAllUnprocessed($filterValue);

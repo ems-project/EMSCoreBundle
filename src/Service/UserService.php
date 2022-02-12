@@ -287,6 +287,14 @@ class UserService implements EntityServiceInterface
         return 'user';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [];
+    }
+
     public function count(string $searchValue = '', $context = null): int
     {
         return $this->userRepository->countUsers($searchValue);

@@ -612,6 +612,20 @@ class ContentTypeService implements EntityServiceInterface
         return 'content-type';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [
+            'content-types',
+            'contenttype',
+            'contenttypes',
+            'Content-Type',
+            'Content-Types',
+        ];
+    }
+
     public function count(string $searchValue = '', $context = null): int
     {
         if (null !== $context) {

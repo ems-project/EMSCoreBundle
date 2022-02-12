@@ -370,6 +370,18 @@ class EnvironmentService implements EntityServiceInterface
         return 'environment';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [
+            'environments',
+            'Environment',
+            'Environments',
+        ];
+    }
+
     public function count(string $searchValue = '', $context = null): int
     {
         return $this->environmentRepository->counter($searchValue);

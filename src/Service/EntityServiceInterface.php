@@ -20,6 +20,11 @@ interface EntityServiceInterface
     public function getEntityName(): string;
 
     /**
+     * @return string[]
+     */
+    public function getAliasesName(): array;
+
+    /**
      * @param mixed $context
      */
     public function count(string $searchValue = '', $context = null): int;

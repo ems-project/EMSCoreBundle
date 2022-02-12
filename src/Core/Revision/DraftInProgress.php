@@ -51,6 +51,14 @@ class DraftInProgress implements EntityServiceInterface
         return 'draft_in_progress';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [];
+    }
+
     public function count(string $searchValue = '', $context = null): int
     {
         if (null !== $context && !$context instanceof ContentType) {

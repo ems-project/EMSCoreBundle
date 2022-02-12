@@ -64,6 +64,14 @@ class LogManager implements EntityServiceInterface
         return 'log';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [];
+    }
+
     public function count(string $searchValue = '', $context = null): int
     {
         if (null !== $context) {

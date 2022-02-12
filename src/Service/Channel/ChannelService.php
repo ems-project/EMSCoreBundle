@@ -101,6 +101,14 @@ final class ChannelService implements EntityServiceInterface
     }
 
     /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [];
+    }
+
+    /**
      * @param mixed $context
      */
     public function count(string $searchValue = '', $context = null): int

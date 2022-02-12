@@ -62,6 +62,14 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
     }
 
     /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [];
+    }
+
+    /**
      * @param mixed $context
      */
     public function countQuery(string $searchValue = '', $context = null): int

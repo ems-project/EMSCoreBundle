@@ -24,10 +24,16 @@ class EntitiesHelper
 
     public function getEntityService(string $entityName): EntityServiceInterface
     {
-        if (!isset($this->entityServices[$entityName])) {
-            throw new EntityServiceNotFoundException($entityName);
+        if (isset($this->entityServices[$entityName])) {
+            return $this->entityServices[$entityName];
         }
 
-        return $this->entityServices[$entityName];
+        foreach ($this->entityServices as $entityService) {
+            if (\in_array($entityName, $entityService->getAliasesName())) {
+                return $entityService;
+            }
+        }
+
+        throw new EntityServiceNotFoundException($entityName);
     }
 }

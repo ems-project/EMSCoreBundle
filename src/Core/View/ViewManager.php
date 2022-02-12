@@ -44,6 +44,14 @@ class ViewManager implements EntityServiceInterface
         return 'view';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [];
+    }
+
     public function count(string $searchValue = '', $context = null): int
     {
         if (!$context instanceof ContentType) {

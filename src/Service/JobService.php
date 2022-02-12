@@ -9,6 +9,7 @@ use Doctrine\Persistence\ObjectManager;
 use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Command\JobOutput;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\JobRepository;
@@ -17,6 +18,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class JobService implements EntityServiceInterface
 {
@@ -24,13 +26,15 @@ class JobService implements EntityServiceInterface
     private JobRepository $repository;
     private KernelInterface $kernel;
     private LoggerInterface $logger;
+    private TokenStorageInterface $tokenStorage;
 
-    public function __construct(Registry $doctrine, KernelInterface $kernel, LoggerInterface $logger, JobRepository $jobRepository)
+    public function __construct(Registry $doctrine, KernelInterface $kernel, LoggerInterface $logger, JobRepository $jobRepository, TokenStorageInterface $tokenStorage)
     {
         $this->em = $doctrine->getManager();
         $this->repository = $jobRepository;
         $this->kernel = $kernel;
         $this->logger = $logger;
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function clean(): void
@@ -254,7 +258,22 @@ class JobService implements EntityServiceInterface
 
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
-        throw new \RuntimeException('Job entities doesn\'t support JSON update');
+        if (null !== $name) {
+            throw new RuntimeException('Job entities doesn\'t support JSON update');
+        }
+        $meta = JsonClass::fromJsonString($json);
+        $job = $meta->jsonDeserialize();
+        if (!$job instanceof Job) {
+            throw new \RuntimeException('Unexpected non Job object');
+        }
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new \RuntimeException('Unexpected null token');
+        }
+        $job->setUser($token->getUsername());
+        $this->repository->save($job);
+
+        return $job;
     }
 
     public function deleteByItemName(string $name): string

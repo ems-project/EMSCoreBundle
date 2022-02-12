@@ -43,7 +43,7 @@ class Job extends JsonDeserializer implements \JsonSerializable, \EMS\CommonBund
      *
      * @ORM\Column(name="status", type="text", nullable=true)
      */
-    private $status;
+    private $status = '';
 
     /**
      * @var string
@@ -57,21 +57,21 @@ class Job extends JsonDeserializer implements \JsonSerializable, \EMS\CommonBund
      *
      * @ORM\Column(name="done", type="boolean")
      */
-    private $done;
+    private $done = false;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="started", type="boolean")
      */
-    private $started;
+    private $started = false;
 
     /**
      * @var int
      *
      * @ORM\Column(name="progress", type="integer")
      */
-    private $progress;
+    private $progress = 0;
 
     /**
      * @var string
@@ -85,7 +85,7 @@ class Job extends JsonDeserializer implements \JsonSerializable, \EMS\CommonBund
      *
      * @ORM\Column(name="command", type="string", length=2000, nullable=true)
      */
-    private $command;
+    protected $command;
 
     /**
      * @ORM\PrePersist

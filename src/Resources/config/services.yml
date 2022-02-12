@@ -483,7 +483,7 @@ services:
     ems.service.job: '@EMS\CoreBundle\Service\JobService'
     EMS\CoreBundle\Service\JobService:
         class: EMS\CoreBundle\Service\JobService
-        arguments: ['@doctrine', '@kernel', '@logger', '@EMS\CoreBundle\Repository\JobRepository']
+        arguments: ['@doctrine', '@kernel', '@logger', '@EMS\CoreBundle\Repository\JobRepository', '@security.token_storage']
         tags:
             - { name: emsco.entity.service }
     ems.service.document:

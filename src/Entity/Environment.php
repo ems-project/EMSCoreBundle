@@ -644,6 +644,15 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     {
         $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
+        $json->removeProperty('alias');
+        $json->removeProperty('indexes');
+        $json->removeProperty('total');
+        $json->removeProperty('counter');
+        $json->removeProperty('deletedRevision');
+        $json->removeProperty('revisions');
+        $json->removeProperty('contentTypesHavingThisAsDefault');
 
         return $json;
     }

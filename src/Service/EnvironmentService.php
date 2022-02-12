@@ -401,14 +401,14 @@ class EnvironmentService implements EntityServiceInterface
         return $environment;
     }
 
-    public function createEntityFromJson(string $name, string $json): EntityInterface
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $meta = JsonClass::fromJsonString($json);
         $environment = $meta->jsonDeserialize();
         if (!$environment instanceof Environment) {
             throw new \RuntimeException('Unexpected non Environment object');
         }
-        if ($environment->getName() !== $name) {
+        if (null !== $name && $environment->getName() !== $name) {
             throw new \RuntimeException(\sprintf('Unexpected mismatched environment name : %s vs %s', $name, $environment->getName()));
         }
         $environment->setAlias($this->generateAlias($environment));

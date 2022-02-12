@@ -61,10 +61,24 @@ class EntitiesController
         }
 
         if (null === $entity) {
-            $entity = $entityService->createEntityFromJson($name, $content);
+            $entity = $entityService->createEntityFromJson($content, $name);
         } else {
             $entity = $entityService->updateEntityFromJson($entity, $content);
         }
+
+        return new JsonResponse([
+            'id' => $entity->getId(),
+        ]);
+    }
+
+    public function create(string $entity, Request $request): Response
+    {
+        $entityService = $this->getEntityService($entity);
+        $content = $request->getContent();
+        if (!\is_string($content)) {
+            throw new \RuntimeException('Unexpected non string content');
+        }
+        $entity = $entityService->createEntityFromJson($content);
 
         return new JsonResponse([
             'id' => $entity->getId(),

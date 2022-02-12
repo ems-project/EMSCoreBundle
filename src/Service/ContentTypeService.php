@@ -638,7 +638,7 @@ class ContentTypeService implements EntityServiceInterface
         return $this->updateFromJson($entity, $json, true, true);
     }
 
-    public function createEntityFromJson(string $name, string $json): EntityInterface
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $firstEnvironment = null;
         foreach ($this->environmentService->getEnvironments() as $environment) {
@@ -652,7 +652,7 @@ class ContentTypeService implements EntityServiceInterface
             throw new \RuntimeException('At least one managed environment is required');
         }
         $contentType = $this->contentTypeFromJson($json, $firstEnvironment);
-        if ($contentType->getName() !== $name) {
+        if (null !== $name && $contentType->getName() !== $name) {
             throw new \RuntimeException(\sprintf('Unexpected mismatched content type name : %s vs %s', $name, $contentType->getName()));
         }
 

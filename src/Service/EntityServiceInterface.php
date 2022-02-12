@@ -28,5 +28,5 @@ interface EntityServiceInterface
 
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface;
 
-    public function createEntityFromJson(string $name, string $json): EntityInterface;
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface;
 }

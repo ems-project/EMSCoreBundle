@@ -425,6 +425,16 @@ class EnvironmentService implements EntityServiceInterface
 
     public function deleteByItemName(string $name): string
     {
-        throw new \RuntimeException('deleteByItemName method not yet implemented');
+        $environment = $this->getByItemName($name);
+        if (null === $environment) {
+            throw new \RuntimeException(\sprintf('Environment %s not found', $name));
+        }
+        if (!$environment instanceof Environment) {
+            throw new \RuntimeException('Unexpected non Environment object');
+        }
+        $id = $environment->getId();
+        $this->environmentRepository->delete($environment);
+
+        return \strval($id);
     }
 }

@@ -91,7 +91,7 @@ class EntitiesController
         $entity = $entityService->createEntityFromJson($content);
 
         return new JsonResponse([
-            'id' => $entity->getId(),
+            'id' => \strval($entity->getId()),
         ]);
     }
 

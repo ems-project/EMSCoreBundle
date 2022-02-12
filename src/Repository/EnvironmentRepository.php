@@ -193,6 +193,12 @@ class EnvironmentRepository extends EntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function delete(Environment $environment): void
+    {
+        $this->getEntityManager()->remove($environment);
+        $this->getEntityManager()->flush();
+    }
+
     private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
     {
         if (\strlen($searchValue) > 0) {

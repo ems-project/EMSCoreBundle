@@ -187,6 +187,12 @@ class EnvironmentRepository extends EntityRepository
         }
     }
 
+    public function create(Environment $environment): void
+    {
+        $this->getEntityManager()->persist($environment);
+        $this->getEntityManager()->flush();
+    }
+
     private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
     {
         if (\strlen($searchValue) > 0) {

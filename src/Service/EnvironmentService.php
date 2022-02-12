@@ -9,6 +9,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Filter;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Repository\AnalyzerRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\FilterRepository;
@@ -381,6 +382,21 @@ class EnvironmentService implements EntityServiceInterface
 
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
-        throw new \Exception('Not yet supported');
+        if (!$entity instanceof Environment) {
+            throw new \RuntimeException('unexpected non Environment entity');
+        }
+        $name = $entity->getName();
+        $meta = JsonClass::fromJsonString($json);
+        $environment = $meta->jsonDeserialize($entity);
+        if (!$environment instanceof Environment) {
+            throw new \RuntimeException('Unexpected non Environment object');
+        }
+        if ($environment->getName() !== $name) {
+            throw new \RuntimeException(\sprintf('Unexpected mismatched environment name : %s vs %s', $name, $entity->getName()));
+        }
+
+        $this->environmentRepository->create($environment);
+
+        return $environment;
     }
 }

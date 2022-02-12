@@ -83,7 +83,7 @@ class EnvironmentService implements EntityServiceInterface
 
         $environment = new Environment();
         $environment->setName($name);
-        $environment->setAlias($this->instanceId.$environment->getName());
+        $environment->setAlias($this->generateAlias($environment));
         $environment->setManaged(true);
         $environment->setUpdateReferrers($updateReferrers);
 
@@ -349,7 +349,7 @@ class EnvironmentService implements EntityServiceInterface
     {
         $em = $this->doctrine->getManager();
         if (null === $environment->getAlias()) {
-            $environment->setAlias($this->instanceId.$environment->getName());
+            $environment->setAlias($this->generateAlias($environment));
         }
         $em->persist($environment);
         $em->flush();
@@ -392,11 +392,34 @@ class EnvironmentService implements EntityServiceInterface
             throw new \RuntimeException('Unexpected non Environment object');
         }
         if ($environment->getName() !== $name) {
-            throw new \RuntimeException(\sprintf('Unexpected mismatched environment name : %s vs %s', $name, $entity->getName()));
+            throw new \RuntimeException(\sprintf('Unexpected mismatched environment name : %s vs %s', $name, $environment->getName()));
         }
+        $environment->setAlias($this->generateAlias($environment));
 
         $this->environmentRepository->create($environment);
 
         return $environment;
+    }
+
+    public function createEntityFromJson(string $name, string $json): EntityInterface
+    {
+        $meta = JsonClass::fromJsonString($json);
+        $environment = $meta->jsonDeserialize();
+        if (!$environment instanceof Environment) {
+            throw new \RuntimeException('Unexpected non Environment object');
+        }
+        if ($environment->getName() !== $name) {
+            throw new \RuntimeException(\sprintf('Unexpected mismatched environment name : %s vs %s', $name, $environment->getName()));
+        }
+        $environment->setAlias($this->generateAlias($environment));
+
+        $this->environmentRepository->create($environment);
+
+        return $environment;
+    }
+
+    protected function generateAlias(Environment $environment): string
+    {
+        return $this->instanceId.$environment->getName();
     }
 }

@@ -638,6 +638,27 @@ class ContentTypeService implements EntityServiceInterface
         return $this->updateFromJson($entity, $json, true, true);
     }
 
+    public function createEntityFromJson(string $name, string $json): EntityInterface
+    {
+        $firstEnvironment = null;
+        foreach ($this->environmentService->getEnvironments() as $environment) {
+            if (!$environment->getManaged() || $environment->getSnapshot()) {
+                continue;
+            }
+            $firstEnvironment = $environment;
+            break;
+        }
+        if (null === $firstEnvironment) {
+            throw new \RuntimeException('At least one managed environment is required');
+        }
+        $contentType = $this->contentTypeFromJson($json, $firstEnvironment);
+        if ($contentType->getName() !== $name) {
+            throw new \RuntimeException(\sprintf('Unexpected mismatched content type name : %s vs %s', $name, $contentType->getName()));
+        }
+
+        return $this->importContentType($contentType);
+    }
+
     protected function getContentTypeRepository(): ContentTypeRepository
     {
         $em = $this->doctrine->getManager();

@@ -128,4 +128,9 @@ class ScheduleManager implements EntityServiceInterface
     {
         throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
+
+    public function createEntityFromJson(string $name, string $json): EntityInterface
+    {
+        throw new \RuntimeException('createEntityFromJson method not yet implemented');
+    }
 }

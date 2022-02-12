@@ -55,16 +55,20 @@ class EntitiesController
     {
         $entityService = $this->getEntityService($entity);
         $entity = $entityService->getByItemName($name);
-        if (null === $entity) {
-            throw new NotFoundHttpException();
-        }
         $content = $request->getContent();
         if (!\is_string($content)) {
             throw new \RuntimeException('Unexpected non string content');
         }
-        $entityService->updateEntityFromJson($entity, $content);
 
-        return new JsonResponse();
+        if (null === $entity) {
+            $entity = $entityService->createEntityFromJson($name, $content);
+        } else {
+            $entity = $entityService->updateEntityFromJson($entity, $content);
+        }
+
+        return new JsonResponse([
+            'id' => $entity->getId(),
+        ]);
     }
 
     protected function getEntityService(string $entity): EntityServiceInterface

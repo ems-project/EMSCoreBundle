@@ -128,7 +128,6 @@ class EnvironmentRepository extends EntityRepository
     public function findByName($name)
     {
         return $this->findOneBy([
-                'deleted' => false,
                 'name' => $name,
         ]);
     }

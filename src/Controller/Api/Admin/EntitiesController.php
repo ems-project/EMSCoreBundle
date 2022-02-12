@@ -71,6 +71,16 @@ class EntitiesController
         ]);
     }
 
+    public function delete(string $entity, string $name): Response
+    {
+        $entityService = $this->getEntityService($entity);
+        $id = $entityService->deleteByItemName($name);
+
+        return new JsonResponse([
+            'id' => $id,
+        ]);
+    }
+
     public function create(string $entity, Request $request): Response
     {
         $entityService = $this->getEntityService($entity);

@@ -126,4 +126,9 @@ final class ChannelService implements EntityServiceInterface
     {
         throw new \RuntimeException('createEntityFromJson method not yet implemented');
     }
+
+    public function deleteByItemName(string $name = null): string
+    {
+        throw new \RuntimeException('deleteByItemName method not yet implemented');
+    }
 }

@@ -669,4 +669,9 @@ class ContentTypeService implements EntityServiceInterface
 
         return $contentTypeRepository;
     }
+
+    public function deleteByItemName(string $name = null): string
+    {
+        throw new \RuntimeException('deleteByItemName method not yet implemented');
+    }
 }

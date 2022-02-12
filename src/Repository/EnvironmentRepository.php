@@ -155,4 +155,48 @@ class EnvironmentRepository extends EntityRepository
 
         return $out;
     }
+
+    /**
+     * @return Environment[]
+     */
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->setFirstResult($from)
+            ->setMaxResults($size);
+        $this->addSearchFilters($qb, $searchValue);
+
+        if (\in_array($orderField, ['name', 'label'])) {
+            $qb->orderBy(\sprintf('e.%s', $orderField), $orderDirection);
+        } else {
+            $qb->orderBy('e.orderKey', $orderDirection);
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
+    public function counter(string $searchValue = ''): int
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('count(e.id)');
+        $this->addSearchFilters($qb, $searchValue);
+
+        try {
+            return \intval($qb->getQuery()->getSingleScalarResult());
+        } catch (NonUniqueResultException $e) {
+            return 0;
+        }
+    }
+
+    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    {
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('e.label', ':term'),
+                $qb->expr()->like('e.name', ':term')
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.$searchValue.'%');
+        }
+    }
 }

@@ -3,6 +3,8 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
 /**
  * DataField.
@@ -11,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\JobRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Job
+class Job extends JsonDeserializer implements \JsonSerializable, \EMS\CommonBundle\Entity\EntityInterface
 {
     /**
      * @var int
@@ -208,5 +210,21 @@ class Job
     public function getCommand(): ?string
     {
         return $this->command;
+    }
+
+    public function jsonSerialize()
+    {
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
+        $json->removeProperty('status');
+        $json->removeProperty('output');
+        $json->removeProperty('done');
+        $json->removeProperty('started');
+        $json->removeProperty('progress');
+        $json->removeProperty('user');
+
+        return $json;
     }
 }

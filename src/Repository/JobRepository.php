@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Job;
 
 class JobRepository extends EntityRepository
@@ -20,18 +21,21 @@ class JobRepository extends EntityRepository
         return $job;
     }
 
-    public function countJobs(): int
+    public function countJobs(string $searchValue = ''): int
     {
-        return \intval($this->createQueryBuilder('a')
-            ->select('COUNT(a)')
+        $qb = $this->createQueryBuilder('job');
+        $this->addSearchFilters($qb, $searchValue);
+
+        return \intval(
+            $qb->select('COUNT(job)')
             ->getQuery()
             ->getSingleScalarResult());
     }
 
     public function countPendingJobs(): int
     {
-        $qb = $this->createQueryBuilder('a')->select('COUNT(a)');
-        $qb->where($qb->expr()->eq('a.done', ':false'));
+        $qb = $this->createQueryBuilder('job')->select('COUNT(job)');
+        $qb->where($qb->expr()->eq('job.done', ':false'));
         $qb->setParameters([
             ':false' => false,
         ]);
@@ -58,5 +62,37 @@ class JobRepository extends EntityRepository
         ]);
 
         return \intval($qb->getQuery()->execute());
+    }
+
+    /**
+     * @return Job[]
+     */
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->createQueryBuilder('job')
+            ->setFirstResult($from)
+            ->setMaxResults($size);
+        $this->addSearchFilters($qb, $searchValue);
+
+        if (\in_array($orderField, ['username', 'command', 'created', 'modified'])) {
+            $qb->orderBy(\sprintf('job.%s', $orderField), $orderDirection);
+        } else {
+            $qb->orderBy('job.created', $orderDirection);
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
+    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    {
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('job.username', ':term'),
+                $qb->expr()->like('job.command', ':term'),
+                $qb->expr()->like('job.output', ':term')
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.$searchValue.'%');
+        }
     }
 }

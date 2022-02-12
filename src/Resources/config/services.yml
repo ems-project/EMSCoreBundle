@@ -484,6 +484,8 @@ services:
     EMS\CoreBundle\Service\JobService:
         class: EMS\CoreBundle\Service\JobService
         arguments: ['@doctrine', '@kernel', '@logger', '@EMS\CoreBundle\Repository\JobRepository']
+        tags:
+            - { name: emsco.entity.service }
     ems.service.document:
         class: EMS\CoreBundle\Service\DocumentService
         arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '%ems_core.instance_id%']

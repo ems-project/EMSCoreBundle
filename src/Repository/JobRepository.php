@@ -49,6 +49,12 @@ class JobRepository extends EntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function delete(Job $job): void
+    {
+        $this->getEntityManager()->remove($job);
+        $this->getEntityManager()->flush();
+    }
+
     public function clean(string $username, \DateTimeInterface $olderDate): int
     {
         $qb = $this->createQueryBuilder('job')->delete();

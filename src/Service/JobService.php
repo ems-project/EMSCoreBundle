@@ -278,6 +278,10 @@ class JobService implements EntityServiceInterface
 
     public function deleteByItemName(string $name): string
     {
-        throw new \RuntimeException('deleteByItemName method not yet implemented');
+        $job = $this->repository->findById(\intval($name));
+        $id = $job->getId();
+        $this->repository->delete($job);
+
+        return \strval($id);
     }
 }

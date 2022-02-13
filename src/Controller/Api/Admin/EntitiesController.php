@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller\Api\Admin;
 
 use EMS\CoreBundle\Core\Entity\EntitiesHelper;
 use EMS\CoreBundle\Entity\EntityInterface;
+use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Exception\EntityServiceNotFoundException;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -92,6 +93,20 @@ class EntitiesController
 
         return new JsonResponse([
             'id' => \strval($entity->getId()),
+        ]);
+    }
+
+    public function jobStatus(Job $job): Response
+    {
+        return new JsonResponse([
+            'id' => \strval($job->getId()),
+            'created' => $job->getCreated()->format('c'),
+            'modified' => $job->getModified()->format('c'),
+            'command' => $job->getCommand(),
+            'user' => $job->getUser(),
+            'done' => $job->getDone(),
+            'output' => $job->getOutput(),
+            'started' => $job->getStarted(),
         ]);
     }
 

@@ -254,6 +254,14 @@ final class FormSubmissionService implements EntityServiceInterface
         return 'formSubmission';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [];
+    }
+
     public function count(string $filterValue = '', $context = null): int
     {
         return $this->formSubmissionRepository->countAllUnprocessed($filterValue);
@@ -267,5 +275,15 @@ final class FormSubmissionService implements EntityServiceInterface
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         throw new \RuntimeException('updateEntityFromJson method not yet implemented');
+    }
+
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    {
+        throw new \RuntimeException('createEntityFromJson method not yet implemented');
+    }
+
+    public function deleteByItemName(string $name): string
+    {
+        throw new \RuntimeException('deleteByItemName method not yet implemented');
     }
 }

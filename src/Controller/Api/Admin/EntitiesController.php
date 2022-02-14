@@ -55,16 +55,44 @@ class EntitiesController
     {
         $entityService = $this->getEntityService($entity);
         $entity = $entityService->getByItemName($name);
-        if (null === $entity) {
-            throw new NotFoundHttpException();
-        }
         $content = $request->getContent();
         if (!\is_string($content)) {
             throw new \RuntimeException('Unexpected non string content');
         }
-        $entityService->updateEntityFromJson($entity, $content);
 
-        return new JsonResponse();
+        if (null === $entity) {
+            $entity = $entityService->createEntityFromJson($content, $name);
+        } else {
+            $entity = $entityService->updateEntityFromJson($entity, $content);
+        }
+
+        return new JsonResponse([
+            'id' => \strval($entity->getId()),
+        ]);
+    }
+
+    public function delete(string $entity, string $name): Response
+    {
+        $entityService = $this->getEntityService($entity);
+        $id = $entityService->deleteByItemName($name);
+
+        return new JsonResponse([
+            'id' => $id,
+        ]);
+    }
+
+    public function create(string $entity, Request $request): Response
+    {
+        $entityService = $this->getEntityService($entity);
+        $content = $request->getContent();
+        if (!\is_string($content)) {
+            throw new \RuntimeException('Unexpected non string content');
+        }
+        $entity = $entityService->createEntityFromJson($content);
+
+        return new JsonResponse([
+            'id' => \strval($entity->getId()),
+        ]);
     }
 
     protected function getEntityService(string $entity): EntityServiceInterface

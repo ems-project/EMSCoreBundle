@@ -1760,6 +1760,8 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
         $json->removeProperty('environment');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
         $json->handlePersistentCollections('templates', 'views');
 
         return $json;

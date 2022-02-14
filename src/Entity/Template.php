@@ -936,6 +936,8 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         $json->removeProperty('id');
         $json->removeProperty('contentType');
         $json->removeProperty('environments');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
 
         return $json;
     }

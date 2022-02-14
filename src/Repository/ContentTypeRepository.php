@@ -131,6 +131,18 @@ class ContentTypeRepository extends EntityRepository
         return $qb->getQuery()->execute();
     }
 
+    public function delete(ContentType $contentType): void
+    {
+        $fieldType = $contentType->getFieldType();
+        $contentType->unsetFieldType();
+        $this->getEntityManager()->persist($contentType);
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->remove($fieldType);
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->remove($contentType);
+        $this->getEntityManager()->flush();
+    }
+
     private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
     {
         $qb->where($qb->expr()->eq('c.deleted', ':false'));

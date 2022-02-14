@@ -612,6 +612,20 @@ class ContentTypeService implements EntityServiceInterface
         return 'content-type';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [
+            'content-types',
+            'contenttype',
+            'contenttypes',
+            'Content-Type',
+            'Content-Types',
+        ];
+    }
+
     public function count(string $searchValue = '', $context = null): int
     {
         if (null !== $context) {
@@ -638,6 +652,27 @@ class ContentTypeService implements EntityServiceInterface
         return $this->updateFromJson($entity, $json, true, true);
     }
 
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    {
+        $firstEnvironment = null;
+        foreach ($this->environmentService->getEnvironments() as $environment) {
+            if (!$environment->getManaged() || $environment->getSnapshot()) {
+                continue;
+            }
+            $firstEnvironment = $environment;
+            break;
+        }
+        if (null === $firstEnvironment) {
+            throw new \RuntimeException('At least one managed environment is required');
+        }
+        $contentType = $this->contentTypeFromJson($json, $firstEnvironment);
+        if (null !== $name && $contentType->getName() !== $name) {
+            throw new \RuntimeException(\sprintf('Unexpected mismatched content type name : %s vs %s', $name, $contentType->getName()));
+        }
+
+        return $this->importContentType($contentType);
+    }
+
     protected function getContentTypeRepository(): ContentTypeRepository
     {
         $em = $this->doctrine->getManager();
@@ -647,5 +682,21 @@ class ContentTypeService implements EntityServiceInterface
         }
 
         return $contentTypeRepository;
+    }
+
+    public function deleteByItemName(string $name): string
+    {
+        $contentTypeRepository = $this->getContentTypeRepository();
+        $contentType = $this->getByItemName($name);
+        if (null === $contentType) {
+            throw new \RuntimeException(\sprintf('Entity %s not found', $name));
+        }
+        if (!$contentType instanceof ContentType) {
+            throw new \RuntimeException('Unexpected non ContentType object');
+        }
+        $id = $contentType->getId();
+        $contentTypeRepository->delete($contentType);
+
+        return \strval($id);
     }
 }

@@ -3,11 +3,13 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Filter;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Repository\AnalyzerRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\FilterRepository;
@@ -15,7 +17,7 @@ use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class EnvironmentService
+class EnvironmentService implements EntityServiceInterface
 {
     /** @var Registry */
     private $doctrine;
@@ -81,7 +83,7 @@ class EnvironmentService
 
         $environment = new Environment();
         $environment->setName($name);
-        $environment->setAlias($this->instanceId.$environment->getName());
+        $environment->setAlias($this->generateAlias($environment));
         $environment->setManaged(true);
         $environment->setUpdateReferrers($updateReferrers);
 
@@ -347,9 +349,104 @@ class EnvironmentService
     {
         $em = $this->doctrine->getManager();
         if (null === $environment->getAlias()) {
-            $environment->setAlias($this->instanceId.$environment->getName());
+            $environment->setAlias($this->generateAlias($environment));
         }
         $em->persist($environment);
         $em->flush();
+    }
+
+    public function isSortable(): bool
+    {
+        return true;
+    }
+
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    {
+        return $this->environmentRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'environment';
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [
+            'environments',
+            'Environment',
+            'Environments',
+        ];
+    }
+
+    public function count(string $searchValue = '', $context = null): int
+    {
+        return $this->environmentRepository->counter($searchValue);
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->environmentRepository->findByName($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        if (!$entity instanceof Environment) {
+            throw new \RuntimeException('unexpected non Environment entity');
+        }
+        $name = $entity->getName();
+        $meta = JsonClass::fromJsonString($json);
+        $environment = $meta->jsonDeserialize($entity);
+        if (!$environment instanceof Environment) {
+            throw new \RuntimeException('Unexpected non Environment object');
+        }
+        if ($environment->getName() !== $name) {
+            throw new \RuntimeException(\sprintf('Unexpected mismatched environment name : %s vs %s', $name, $environment->getName()));
+        }
+        $environment->setAlias($this->generateAlias($environment));
+
+        $this->environmentRepository->create($environment);
+
+        return $environment;
+    }
+
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    {
+        $meta = JsonClass::fromJsonString($json);
+        $environment = $meta->jsonDeserialize();
+        if (!$environment instanceof Environment) {
+            throw new \RuntimeException('Unexpected non Environment object');
+        }
+        if (null !== $name && $environment->getName() !== $name) {
+            throw new \RuntimeException(\sprintf('Unexpected mismatched environment name : %s vs %s', $name, $environment->getName()));
+        }
+        $environment->setAlias($this->generateAlias($environment));
+
+        $this->environmentRepository->create($environment);
+
+        return $environment;
+    }
+
+    protected function generateAlias(Environment $environment): string
+    {
+        return $this->instanceId.$environment->getName();
+    }
+
+    public function deleteByItemName(string $name): string
+    {
+        $environment = $this->getByItemName($name);
+        if (null === $environment) {
+            throw new \RuntimeException(\sprintf('Environment %s not found', $name));
+        }
+        if (!$environment instanceof Environment) {
+            throw new \RuntimeException('Unexpected non Environment object');
+        }
+        $id = $environment->getId();
+        $this->environmentRepository->delete($environment);
+
+        return \strval($id);
     }
 }

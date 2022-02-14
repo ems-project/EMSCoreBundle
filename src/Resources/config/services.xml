@@ -23,6 +23,7 @@
             <argument type="service" id="ems.repository.dashboard"/>
             <argument type="service" id="logger"/>
             <argument type="service" id="security.authorization_checker"/>
+            <tag name="emsco.entity.service"/>
         </service>
         <service id="ems.service.channel" class="EMS\CoreBundle\Service\Channel\ChannelService">
             <argument type="service" id="ems.repository.channel"/>

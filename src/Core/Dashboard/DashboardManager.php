@@ -52,7 +52,11 @@ class DashboardManager implements EntityServiceInterface
      */
     public function getAliasesName(): array
     {
-        return [];
+        return [
+            'dashboards',
+            'Dashboard',
+            'Dashboards',
+        ];
     }
 
     public function count(string $searchValue = '', $context = null): int
@@ -192,16 +196,32 @@ class DashboardManager implements EntityServiceInterface
 
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
-        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
+        $dashboard = Dashboard::fromJson($json, $entity);
+        $this->dashboardRepository->create($dashboard);
+
+        return $dashboard;
     }
 
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
-        throw new \RuntimeException('createEntityFromJson method not yet implemented');
+        $dashboard = Dashboard::fromJson($json);
+        if (null !== $name && $dashboard->getName() !== $name) {
+            throw new \RuntimeException(\sprintf('Dashboard name mismatched: %s vs %s', $dashboard->getName(), $name));
+        }
+        $this->dashboardRepository->create($dashboard);
+
+        return $dashboard;
     }
 
     public function deleteByItemName(string $name): string
     {
-        throw new \RuntimeException('deleteByItemName method not yet implemented');
+        $dashboard = $this->dashboardRepository->getByName($name);
+        if (null === $dashboard) {
+            throw new \RuntimeException(\sprintf('Dashboard %s not found', $name));
+        }
+        $id = $dashboard->getId();
+        $this->dashboardRepository->delete($dashboard);
+
+        return $id;
     }
 }

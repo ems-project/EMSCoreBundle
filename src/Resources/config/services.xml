@@ -154,6 +154,10 @@
             <argument type="service" id="logger"/>
         </service>
 
+        <service id="emsco.helper.analyzer" class="EMS\CoreBundle\Core\Mapping\AnalyzerManager">
+            <argument type="service" id="ems.repository.analyzer"/>
+            <tag name="emsco.entity.service"/>
+        </service>
         <service id="emsco.helper.entities" class="EMS\CoreBundle\Core\Entity\EntitiesHelper">
             <argument type="tagged_iterator" tag="emsco.entity.service"/>
         </service>

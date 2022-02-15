@@ -680,8 +680,6 @@ view.macros.data-field-type.macros.data-field-type.collection_removed_items: '{1
 view.macros.data-field-type.menu-option-button: View
 view.macros.data-field-type.modal-close-button: Close
 view.user.index.title: 'User list'
-views.elements.object-views-button.corresponding-revision-icon-class: 'fa fa-archive'
-views.elements.object-views-button.corresponding-revision: 'Corresponding revision'
 views.elements.object-views-button.action-dropdown-icon-class: 'fa fa-eye'
 views.elements.object-views-button.action-dropdown-sr-only: 'Toggle dropdown of %environment%''s actions'
 views.elements.object-views-button.copy-data: 'Copy data'

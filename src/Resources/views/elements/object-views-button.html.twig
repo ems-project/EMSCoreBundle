@@ -66,15 +66,6 @@
 					{% endif %}	
 					{% endif %}					
 				{% endfor %}
-				
-				{% if environment.managed %}
-					<li>
-						<a href="{{ path('data.revision_in_environment', {'type': contentType.name, 'ouuid': ouuid, 'environment':environment.name } ) }}" >
-							<i class="{{ 'views.elements.object-views-button.corresponding-revision-icon-class'|trans }}"></i>
-							{{ 'views.elements.object-views-button.corresponding-revision'|trans }}
-						</a>
-					</li>
-				{% endif %}
 				{% if is_granted('ROLE_COPY_PASTE') %}
 					<li>
 						<a href="{{ path('revision.copy', {'environment': environment.name, 'type': contentType.name, 'ouuid': ouuid} ) }}">

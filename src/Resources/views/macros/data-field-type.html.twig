@@ -5,7 +5,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro renderDataFieldBlock(dataField, source, compare, compareRawData, blockName = '') %}
+{% macro renderDataFieldBlock(dataField, source, compare, compareRawData, blockName = '', path = []) %}
 	{% if blockName is same as('') %}
 		{% set blockName = dataField.fieldType.type|replace({'\\': '_'}) %}
 	{% endif %}
@@ -14,7 +14,8 @@
 		'dataField': dataField,
 		'source': source,
 		'compare': compare,
-		'compareRawData': compareRawData
+		'compareRawData': compareRawData,
+		'path': path|merge([dataField.fieldType.name]),
 		}
 	%}
 		{{ block(blockName) }}
@@ -42,7 +43,7 @@
 {% endblock %}
 
 {% block EMS_CoreBundle_Form_DataField_IndexedAssetFieldType %}
-	{{ _self.renderDataFieldBlock(dataField, source, compare, compareRawData, 'EMS_CoreBundle_Form_DataField_AssetFieldType') }}
+	{{ _self.renderDataFieldBlock(dataField, source, compare, compareRawData, 'EMS_CoreBundle_Form_DataField_AssetFieldType', path) }}
 {% endblock %}
 
 
@@ -268,6 +269,7 @@
 		<div class="panel-body {% if collapsible %}collapse{% endif %}">
 			{% for idx, rawChild in dataField.rawData %}
 				{%  set child = dataField.children[loop.index0] %}
+				{%  set subpath = path|merge([loop.index0]) %}
 				<div class="{% if dataField.fieldType.displayOptions.itemBootstrapClass is defined and dataField.fieldType.displayOptions.itemBootstrapClass %}{{ dataField.fieldType.displayOptions.itemBootstrapClass }}{% else %}col-md-12{% endif %}">
                     <div class="panel panel-default">
 						<div class="panel-heading">
@@ -294,7 +296,7 @@
 							<div class="row">
 								{% for grandchild in child.children %}
 									<div class="{% if grandchild.fieldType.displayOptions.class is defined and grandchild.fieldType.displayOptions.class  %}{{ grandchild.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-										{{ _self.renderDataFieldBlock(grandchild, source, compare, (attribute(compareCollectionRawData, idx) is defined?attribute(compareCollectionRawData, idx):null)) }}
+										{{ _self.renderDataFieldBlock(grandchild, source, compare, (attribute(compareCollectionRawData, idx) is defined?attribute(compareCollectionRawData, idx):null), '', subpath) }}
 									</div>
 									{% if grandchild.fieldType.displayOptions.lastOfRow is defined and grandchild.fieldType.displayOptions.lastOfRow %}
 										</div><div class="row">
@@ -332,7 +334,7 @@
 		{% for child in dataField.children|filter(c => false == c.fieldType.deleted) %}
 		
 			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-				{{ _self.renderDataFieldBlock(child, source, compare, compareRawData) }}
+				{{ _self.renderDataFieldBlock(child, source, compare, compareRawData, '', path) }}
 			</div>
 			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
 				</div><div class="row">
@@ -371,7 +373,7 @@
 
     {% for child in dataField.children if not child.fieldType.deleted %}
 	<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-				{{ _self.renderDataFieldBlock(child, source, compare, compareSubRawData) }}
+				{{ _self.renderDataFieldBlock(child, source, compare, compareSubRawData, '', path) }}
 			</div>
 			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
 				</div><div class="row">
@@ -392,7 +394,7 @@
 		<ul class="nav nav-tabs">
 			{% for value in values|default([]) %}
 				<li class="{% if loop.index == 1%}active{% endif %}">
-					<a href="#item_{{ dataField.fieldType.id~'_'~loop.index }}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{% else %}false{% endif %}">
+					<a href="#item_{{ path|join('_')~'_'~loop.index0 }}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{% else %}false{% endif %}">
 						{{ attribute(labels, loop.index0)|default(values|default) }}
 					</a>
 				</li>
@@ -400,11 +402,11 @@
 		</ul>
 		<div class="tab-content">
 			{% for value in values|default([]) %}
-				<div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~loop.index }}__tab">
+				<div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~loop.index0 }}__tab">
 					{% set childData = source[value]|default([]) %}
 					{% set childCompareData = compareRawData[value]|default([]) %}
 					{% for grandchild in dataField.children.get(value).children|default([]) %}
-						{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData) }}
+						{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([loop.index0])) }}
 					{% endfor %}
 				</div>
 			{% endfor %}
@@ -414,7 +416,7 @@
 
 {% block tabsfieldtype_widget_tab_label_per_item %}
 	<li class="{% if counter == 1%}active{% endif %}{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class != 'col-md-12' %} {{child.fieldType.displayOptions.class}}{% endif %}">
-		<a href="#item_{{ dataField.fieldType.id~'_'~counter }}__tab" data-toggle="tab" aria-expanded="false">
+		<a href="#item_{{ path|join('_') }}__tab" data-toggle="tab" aria-expanded="false">
 			{% if child.fieldType.displayOptions.icon is defined and child.fieldType.displayOptions.icon%}
 				<i class="{{ child.fieldType.displayOptions.icon }}"></i>
 			{% endif %}
@@ -436,6 +438,7 @@
 							'child': item,
 							'counter': counter,
 							'label': attribute(labels, loop.index0)|default(key),
+							'path': path|merge([counter]),
 							}
 						%}
 							{{ block('tabsfieldtype_widget_tab_label_per_item') }}
@@ -446,7 +449,8 @@
 					{% with {
 						'child': child,
 						'counter': counter,
-						'label': child.fieldType.displayOptions.label|default(child.fieldType.name)
+						'label': child.fieldType.displayOptions.label|default(child.fieldType.name),
+						'path': path|merge([counter]),
 						}
 					%}
 						{{ block('tabsfieldtype_widget_tab_label_per_item') }}
@@ -465,20 +469,20 @@
 							'counter': counter,
 							}
 						%}
-							<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~counter }}__tab">
+							<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~counter }}__tab">
 								{% set childData = source[key]|default([]) %}
 								{% set childCompareData = compareRawData[key]|default([]) %}
 								{% for grandchild in child.children|default([]) %}
-									{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData) }}
+									{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([counter])) }}
 								{% endfor %}
 							</div>
 						{% endwith %}
 						{% set counter = counter + 1 %}
 					{% endfor %}
 				{% elseif 'EMS\\CoreBundle\\Form\\DataField\\ContainerFieldType' == child.fieldType.type|default(null) %}
-					<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~counter }}__tab">
+					<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~counter }}__tab">
 						{% for grandchild in child.children|default([]) %}
-							{{ _self.renderDataFieldBlock(grandchild, source, compare, compareRawData) }}
+							{{ _self.renderDataFieldBlock(grandchild, source, compare, compareRawData, '', path|merge([counter])) }}
 						{% endfor %}
 					</div>
 					{% set counter = counter + 1 %}
@@ -488,8 +492,8 @@
 						'counter': counter,
 						}
 					%}
-						<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~counter }}__tab">
-							{{ _self.renderDataFieldBlock(child, source, compare, compareRawData) }}
+						<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~counter }}__tab">
+							{{ _self.renderDataFieldBlock(child, source, compare, compareRawData, '', path|merge([counter])) }}
 						</div>
 					{% endwith %}
 					{% set counter = counter + 1 %}

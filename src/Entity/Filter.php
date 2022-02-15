@@ -14,7 +14,7 @@ use EMS\CoreBundle\Form\Field\FilterOptionsType;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class Filter extends JsonDeserializer implements \JsonSerializable
+class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
      * @var int
@@ -26,11 +26,9 @@ class Filter extends JsonDeserializer implements \JsonSerializable
     private $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    protected $name;
+    protected string $name = '';
 
     /**
      * @var bool
@@ -102,26 +100,14 @@ class Filter extends JsonDeserializer implements \JsonSerializable
         return $this->id;
     }
 
-    /**
-     * Set name.
-     *
-     * @param string $name
-     *
-     * @return Filter
-     */
-    public function setName($name)
+    public function setName(string $name): Filter
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -282,7 +268,20 @@ class Filter extends JsonDeserializer implements \JsonSerializable
     {
         $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
 
         return $json;
+    }
+
+    public static function fromJson(string $json, ?\EMS\CommonBundle\Entity\EntityInterface $filter = null): Filter
+    {
+        $meta = JsonClass::fromJsonString($json);
+        $filter = $meta->jsonDeserialize($filter);
+        if (!$filter instanceof Filter) {
+            throw new \Exception(\sprintf('Unexpected object class, got %s', $meta->getClass()));
+        }
+
+        return $filter;
     }
 }

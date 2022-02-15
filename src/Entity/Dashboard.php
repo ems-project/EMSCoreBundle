@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CommonBundle\Entity\EntityInterface;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -14,7 +17,7 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class Dashboard implements EntityInterface
+class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
      * @ORM\Id
@@ -35,39 +38,39 @@ class Dashboard implements EntityInterface
     private \Datetime $modified;
 
     /**
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    private string $name;
+    protected string $name;
 
     /**
      * @ORM\Column(name="icon", type="text", length=255)
      */
-    private string $icon;
+    protected string $icon;
 
     /**
      * @ORM\Column(name="label", type="string", length=255)
      */
-    private string $label;
+    protected string $label;
 
     /**
      * @ORM\Column(name="sidebar_menu", type="boolean", options={"default" : 1})
      */
-    private bool $sidebarMenu = true;
+    protected bool $sidebarMenu = true;
 
     /**
      * @ORM\Column(name="notification_menu", type="boolean", options={"default" : 0})
      */
-    private bool $notificationMenu = false;
+    protected bool $notificationMenu = false;
 
     /**
      * @ORM\Column(name="landing_page", type="boolean", options={"default" : 0})
      */
-    private bool $landingPage = false;
+    protected bool $landingPage = false;
 
     /**
      * @ORM\Column(name="quick_search", type="boolean", options={"default" : 0})
      */
-    private bool $quickSearch = false;
+    protected bool $quickSearch = false;
 
     /**
      * @ORM\Column(name="type", type="string", length=2048)
@@ -89,12 +92,12 @@ class Dashboard implements EntityInterface
      *
      * @ORM\Column(name="options", type="json", nullable=true)
      */
-    private array $options;
+    protected array $options;
 
     /**
      * @ORM\Column(name="order_key", type="integer")
      */
-    private int $orderKey;
+    protected int $orderKey;
 
     public function __construct()
     {
@@ -254,5 +257,26 @@ class Dashboard implements EntityInterface
     public function setQuickSearch(bool $quickSearch): void
     {
         $this->quickSearch = $quickSearch;
+    }
+
+    public function jsonSerialize()
+    {
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
+
+        return $json;
+    }
+
+    public static function fromJson(string $json, ?EntityInterface $dashboard = null): Dashboard
+    {
+        $meta = JsonClass::fromJsonString($json);
+        $dashboard = $meta->jsonDeserialize($dashboard);
+        if (!$dashboard instanceof Dashboard) {
+            throw new \Exception(\sprintf('Unexpected object class, got %s', $meta->getClass()));
+        }
+
+        return $dashboard;
     }
 }

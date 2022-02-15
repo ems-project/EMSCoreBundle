@@ -13,7 +13,7 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\EnvironmentRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Environment extends JsonDeserializer implements \JsonSerializable
+class Environment extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
      * @var int
@@ -39,11 +39,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     protected $modified;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    protected $name;
+    protected string $name = '';
 
     /**
      * @ORM\Column(name="label", type="string", length=255, nullable=true)
@@ -248,12 +246,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -651,6 +644,15 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     {
         $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
+        $json->removeProperty('alias');
+        $json->removeProperty('indexes');
+        $json->removeProperty('total');
+        $json->removeProperty('counter');
+        $json->removeProperty('deletedRevision');
+        $json->removeProperty('revisions');
+        $json->removeProperty('contentTypesHavingThisAsDefault');
 
         return $json;
     }

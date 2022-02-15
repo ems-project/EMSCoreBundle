@@ -837,6 +837,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     {
         $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
         $json->updateProperty('children', $this->getValidChildren());
 
         return $json;

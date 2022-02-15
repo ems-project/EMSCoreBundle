@@ -173,6 +173,14 @@ final class ReleaseService implements EntityServiceInterface
     }
 
     /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [];
+    }
+
+    /**
      * @param mixed $context
      */
     public function count(string $searchValue = '', $context = null): int
@@ -258,5 +266,15 @@ final class ReleaseService implements EntityServiceInterface
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         throw new \RuntimeException('updateEntityFromJson method not yet implemented');
+    }
+
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    {
+        throw new \RuntimeException('createEntityFromJson method not yet implemented');
+    }
+
+    public function deleteByItemName(string $name): string
+    {
+        throw new \RuntimeException('deleteByItemName method not yet implemented');
     }
 }

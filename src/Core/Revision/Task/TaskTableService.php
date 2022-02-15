@@ -98,6 +98,14 @@ final class TaskTableService implements EntityServiceInterface
         return 'task';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [];
+    }
+
     public function count(string $searchValue = '', $context = null): int
     {
         if (!$context instanceof TaskTableContext) {
@@ -138,5 +146,15 @@ final class TaskTableService implements EntityServiceInterface
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         throw new \RuntimeException('updateEntityFromJson method not yet implemented');
+    }
+
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    {
+        throw new \RuntimeException('createEntityFromJson method not yet implemented');
+    }
+
+    public function deleteByItemName(string $name): string
+    {
+        throw new \RuntimeException('deleteByItemName method not yet implemented');
     }
 }

@@ -415,6 +415,8 @@ services:
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:
         arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '@logger', '@ems_common.service.elastica', '%ems_core.instance_id%']
+        tags:
+            - { name: emsco.entity.service }
     ems.service.contenttype: '@EMS\CoreBundle\Service\ContentTypeService'
     EMS\CoreBundle\Service\ContentTypeService:
         arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@ems_common.service.elastica', '@ems.service.environment', '@security.authorization_checker', '@EMS\CoreBundle\Repository\RevisionRepository', '@security.token_storage', '%ems_core.circles_object%']
@@ -481,7 +483,9 @@ services:
     ems.service.job: '@EMS\CoreBundle\Service\JobService'
     EMS\CoreBundle\Service\JobService:
         class: EMS\CoreBundle\Service\JobService
-        arguments: ['@doctrine', '@kernel', '@logger', '@EMS\CoreBundle\Repository\JobRepository']
+        arguments: ['@doctrine', '@kernel', '@logger', '@EMS\CoreBundle\Repository\JobRepository', '@security.token_storage']
+        tags:
+            - { name: emsco.entity.service }
     ems.service.document:
         class: EMS\CoreBundle\Service\DocumentService
         arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '%ems_core.instance_id%']

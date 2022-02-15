@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller\Api\Admin;
 
 use EMS\CoreBundle\Core\Entity\EntitiesHelper;
 use EMS\CoreBundle\Entity\EntityInterface;
+use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Exception\EntityServiceNotFoundException;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -55,16 +56,58 @@ class EntitiesController
     {
         $entityService = $this->getEntityService($entity);
         $entity = $entityService->getByItemName($name);
-        if (null === $entity) {
-            throw new NotFoundHttpException();
-        }
         $content = $request->getContent();
         if (!\is_string($content)) {
             throw new \RuntimeException('Unexpected non string content');
         }
-        $entityService->updateEntityFromJson($entity, $content);
 
-        return new JsonResponse();
+        if (null === $entity) {
+            $entity = $entityService->createEntityFromJson($content, $name);
+        } else {
+            $entity = $entityService->updateEntityFromJson($entity, $content);
+        }
+
+        return new JsonResponse([
+            'id' => \strval($entity->getId()),
+        ]);
+    }
+
+    public function delete(string $entity, string $name): Response
+    {
+        $entityService = $this->getEntityService($entity);
+        $id = $entityService->deleteByItemName($name);
+
+        return new JsonResponse([
+            'id' => $id,
+        ]);
+    }
+
+    public function create(string $entity, Request $request): Response
+    {
+        $entityService = $this->getEntityService($entity);
+        $content = $request->getContent();
+        if (!\is_string($content)) {
+            throw new \RuntimeException('Unexpected non string content');
+        }
+        $entity = $entityService->createEntityFromJson($content);
+
+        return new JsonResponse([
+            'id' => \strval($entity->getId()),
+        ]);
+    }
+
+    public function jobStatus(Job $job): Response
+    {
+        return new JsonResponse([
+            'id' => \strval($job->getId()),
+            'created' => $job->getCreated()->format('c'),
+            'modified' => $job->getModified()->format('c'),
+            'command' => $job->getCommand(),
+            'user' => $job->getUser(),
+            'done' => $job->getDone(),
+            'output' => $job->getOutput(),
+            'started' => $job->getStarted(),
+        ]);
     }
 
     protected function getEntityService(string $entity): EntityServiceInterface

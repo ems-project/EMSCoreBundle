@@ -7,28 +7,34 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ObjectManager;
 use EMS\CommonBundle\Common\Standard\DateTime;
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Command\JobOutput;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\JobRepository;
+use PHPUnit\TextUI\RuntimeException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class JobService
+class JobService implements EntityServiceInterface
 {
     private ObjectManager $em;
     private JobRepository $repository;
     private KernelInterface $kernel;
     private LoggerInterface $logger;
+    private TokenStorageInterface $tokenStorage;
 
-    public function __construct(Registry $doctrine, KernelInterface $kernel, LoggerInterface $logger, JobRepository $jobRepository)
+    public function __construct(Registry $doctrine, KernelInterface $kernel, LoggerInterface $logger, JobRepository $jobRepository, TokenStorageInterface $tokenStorage)
     {
         $this->em = $doctrine->getManager();
         $this->repository = $jobRepository;
         $this->kernel = $kernel;
         $this->logger = $logger;
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function clean(): void
@@ -71,9 +77,13 @@ class JobService
         return $job;
     }
 
-    public function count(): int
+    public function count(string $searchValue = '', $context = null): int
     {
-        return $this->repository->countJobs();
+        if (null !== $context) {
+            throw new \RuntimeException('Unexpected context');
+        }
+
+        return $this->repository->countJobs($searchValue);
     }
 
     public function countPending(): int
@@ -200,5 +210,78 @@ class JobService
         $job->setProgress(0);
 
         return $job;
+    }
+
+    public function isSortable(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @return Job[]
+     */
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    {
+        return $this->repository->get($from, $size, $orderField, $orderDirection, $searchValue);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'job';
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [
+            'jobs',
+            'Job',
+            'Jobs',
+        ];
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        try {
+            return $this->repository->findById(\intval($name));
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        throw new RuntimeException('Job entities doesn\'t support JSON update');
+    }
+
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    {
+        if (null !== $name) {
+            throw new RuntimeException('Job entities doesn\'t support JSON update');
+        }
+        $meta = JsonClass::fromJsonString($json);
+        $job = $meta->jsonDeserialize();
+        if (!$job instanceof Job) {
+            throw new \RuntimeException('Unexpected non Job object');
+        }
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new \RuntimeException('Unexpected null token');
+        }
+        $job->setUser($token->getUsername());
+        $this->repository->save($job);
+
+        return $job;
+    }
+
+    public function deleteByItemName(string $name): string
+    {
+        $job = $this->repository->findById(\intval($name));
+        $id = $job->getId();
+        $this->repository->delete($job);
+
+        return \strval($id);
     }
 }

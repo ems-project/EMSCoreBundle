@@ -123,7 +123,7 @@ class ObjectChoiceCacheService
                 }
                 $this->fullyLoaded[$type] = true;
             } else {
-                foreach ($this->cache[$type] as $id => $item) {
+                foreach ($this->cache[$type] ?? [] as $id => $item) {
                     if (!isset($choices[$type.':'.$id])) {
                         $choices[$type.':'.$id] = $item;
                     }

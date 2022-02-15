@@ -70,8 +70,8 @@ class FilterRepository extends ServiceEntityRepository
     {
         if (\strlen($searchValue) > 0) {
             $or = $qb->expr()->orX(
-                $qb->expr()->like('c.label', ':term'),
-                $qb->expr()->like('c.name', ':term'),
+                $qb->expr()->like('filter.label', ':term'),
+                $qb->expr()->like('filter.name', ':term'),
             );
             $qb->andWhere($or)
                 ->setParameter(':term', '%'.$searchValue.'%');

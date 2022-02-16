@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 
 class WysiwygProfileRepository extends ServiceEntityRepository
@@ -51,5 +52,44 @@ class WysiwygProfileRepository extends ServiceEntityRepository
         }
 
         return $profile;
+    }
+
+    /**
+     * @return WysiwygProfile[]
+     */
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->createQueryBuilder('profile')
+            ->setFirstResult($from)
+            ->setMaxResults($size);
+        $this->addSearchFilters($qb, $searchValue);
+
+        if (\in_array($orderField, ['name'])) {
+            $qb->orderBy(\sprintf('profile.%s', $orderField), $orderDirection);
+        } else {
+            $qb->orderBy('profile.orderKey', $orderDirection);
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
+    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    {
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('profile.name', ':term'),
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.$searchValue.'%');
+        }
+    }
+
+    public function counter(string $searchValue = ''): int
+    {
+        $qb = $this->createQueryBuilder('profile');
+        $qb->select('count(profile.id)');
+        $this->addSearchFilters($qb, $searchValue);
+
+        return \intval($qb->getQuery()->getSingleScalarResult());
     }
 }

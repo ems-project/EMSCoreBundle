@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\WysiwygStylesSet;
 
 class WysiwygStylesSetRepository extends ServiceEntityRepository
@@ -51,5 +52,44 @@ class WysiwygStylesSetRepository extends ServiceEntityRepository
         }
 
         return $styleSet;
+    }
+
+    /**
+     * @return WysiwygStylesSet[]
+     */
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->createQueryBuilder('styleset')
+            ->setFirstResult($from)
+            ->setMaxResults($size);
+        $this->addSearchFilters($qb, $searchValue);
+
+        if (\in_array($orderField, ['name'])) {
+            $qb->orderBy(\sprintf('styleset.%s', $orderField), $orderDirection);
+        } else {
+            $qb->orderBy('styleset.orderKey', $orderDirection);
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
+    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    {
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('styleset.name', ':term'),
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.$searchValue.'%');
+        }
+    }
+
+    public function counter(string $searchValue = ''): int
+    {
+        $qb = $this->createQueryBuilder('styleset');
+        $qb->select('count(styleset.id)');
+        $this->addSearchFilters($qb, $searchValue);
+
+        return \intval($qb->getQuery()->getSingleScalarResult());
     }
 }

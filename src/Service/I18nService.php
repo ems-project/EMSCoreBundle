@@ -17,7 +17,7 @@ class I18nService
     /**
      * @param array<string>|null $filters
      */
-    public function count(array $filters = null): int
+    public function counter(array $filters = null): int
     {
         $identifier = null;
 

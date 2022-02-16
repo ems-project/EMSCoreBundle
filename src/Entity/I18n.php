@@ -3,15 +3,18 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CommonBundle\Entity\EntityInterface;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
 /**
  * I18n.
  *
  * @ORM\Table(name="i18n")
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\I18nRepository")
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class I18n
+class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
      * @var int
@@ -42,14 +45,14 @@ class I18n
      * @ORM\Column(name="identifier", type="string", unique=true, length=200)
      * @ORM\OrderBy({"identifier" = "ASC"})
      */
-    private $identifier;
+    protected $identifier;
 
     /**
      * @var array
      *
      * @ORM\Column(name="content", type="json_array")
      */
-    private $content;
+    protected $content;
 
     /**
      * @ORM\PrePersist
@@ -187,5 +190,26 @@ class I18n
     public function getIdentifier()
     {
         return $this->identifier;
+    }
+
+    public function jsonSerialize(): JsonClass
+    {
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
+
+        return $json;
+    }
+
+    public static function fromJson(string $json, ?EntityInterface $dashboard = null): I18n
+    {
+        $meta = JsonClass::fromJsonString($json);
+        $dashboard = $meta->jsonDeserialize($dashboard);
+        if (!$dashboard instanceof I18n) {
+            throw new \Exception(\sprintf('Unexpected object class, got %s', $meta->getClass()));
+        }
+
+        return $dashboard;
     }
 }

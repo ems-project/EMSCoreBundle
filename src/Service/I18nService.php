@@ -2,24 +2,15 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Persistence\ObjectManager;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Repository\I18nRepository;
 
 class I18nService
 {
-    /** @var Registry */
-    private $doctrine;
-    /** @var I18nRepository */
-    private $repository;
-    /** @var ObjectManager */
-    private $manager;
+    private I18nRepository $repository;
 
-    public function __construct(Registry $doctrine, I18nRepository $i18nRepository)
+    public function __construct(I18nRepository $i18nRepository)
     {
-        $this->doctrine = $doctrine;
-        $this->manager = $this->doctrine->getManager();
         $this->repository = $i18nRepository;
     }
 
@@ -39,8 +30,7 @@ class I18nService
 
     public function delete(I18n $i18n): void
     {
-        $this->manager->remove($i18n);
-        $this->manager->flush();
+        $this->repository->delete($i18n);
     }
 
     /**

@@ -2,11 +2,18 @@
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\I18n;
 
-class I18nRepository extends EntityRepository
+class I18nRepository extends ServiceEntityRepository
 {
+    public function __construct(Registry $registry)
+    {
+        parent::__construct($registry, I18n::class);
+    }
+
     public function countWithFilter(?string $identifier): int
     {
         $qb = $this->createQueryBuilder('i')
@@ -39,5 +46,62 @@ class I18nRepository extends EntityRepository
         ->setMaxResults($limit);
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function update(I18n $styleSet): void
+    {
+        $this->getEntityManager()->persist($styleSet);
+        $this->getEntityManager()->flush();
+    }
+
+    public function delete(I18n $styleSet): void
+    {
+        $this->getEntityManager()->remove($styleSet);
+        $this->getEntityManager()->flush();
+    }
+
+    public function findByIdentifier(int $id): ?I18n
+    {
+        $styleSet = $this->find($id);
+        if (null !== $styleSet && !$styleSet instanceof I18n) {
+            throw new \RuntimeException('Unexpected wysiwyg style set type');
+        }
+
+        return $styleSet;
+    }
+
+    /**
+     * @return I18n[]
+     */
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    {
+        $qb = $this->createQueryBuilder('i18n')
+            ->setFirstResult($from)
+            ->setMaxResults($size);
+        $this->addSearchFilters($qb, $searchValue);
+        $qb->orderBy('i18n.identifier', $orderDirection);
+
+        return $qb->getQuery()->execute();
+    }
+
+    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    {
+        if (\strlen($searchValue) > 0) {
+            $or = $qb->expr()->orX(
+                $qb->expr()->like('i18n.identifier', ':term'),
+                $qb->expr()->like('i18n.content', ':term'),
+            );
+            $qb->andWhere($or)
+                ->setParameter(':term', '%'.$searchValue.'%');
+        }
+    }
+
+    public function counter(string $searchValue = ''): int
+    {
+        $qb = $this->createQueryBuilder('i18n');
+        $qb->select('count(i18n.id)');
+        $this->addSearchFilters($qb, $searchValue);
+
+        return \intval($qb->getQuery()->getSingleScalarResult());
     }
 }

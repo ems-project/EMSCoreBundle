@@ -64,6 +64,8 @@
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.repository.query_search"/>
             <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.environment" />
+            <tag name="emsco.entity.service"/>
         </service>
 
         <service id="ems.service.internationalization.xliff" alias="EMS\CoreBundle\Service\Internationalization\XliffService"/>
@@ -156,6 +158,10 @@
 
         <service id="emsco.helper.analyzer" class="EMS\CoreBundle\Core\Mapping\AnalyzerManager">
             <argument type="service" id="ems.repository.analyzer"/>
+            <tag name="emsco.entity.service"/>
+        </service>
+        <service id="emsco.helper.filter" class="EMS\CoreBundle\Core\Mapping\FilterManager">
+            <argument type="service" id="ems.repository.filter"/>
             <tag name="emsco.entity.service"/>
         </service>
         <service id="emsco.helper.entities" class="EMS\CoreBundle\Core\Entity\EntitiesHelper">

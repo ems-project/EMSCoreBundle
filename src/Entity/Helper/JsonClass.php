@@ -3,6 +3,8 @@
 namespace EMS\CoreBundle\Entity\Helper;
 
 use Doctrine\ORM\PersistentCollection;
+use EMS\CommonBundle\Common\Standard\Json;
+use EMS\CoreBundle\Entity\EntityInterface;
 
 class JsonClass implements \JsonSerializable
 {
@@ -15,15 +17,23 @@ class JsonClass implements \JsonSerializable
     /** @var array */
     private $properties;
 
+    /** @var string[] */
+    private array $replacedFields;
+
     public const CLASS_INDEX = 'class';
     public const CONSTRUCTOR_ARGUMNETS_INDEX = 'arguments';
     public const PROPERTIES_INDEX = 'properties';
+    public const REPLACED_FIELDS = 'replaced';
 
-    public function __construct(array $properties, string $class, array $constructorArguments = [])
+    /**
+     * @param string[] $replacedFields
+     */
+    public function __construct(array $properties, string $class, array $constructorArguments = [], array $replacedFields = [])
     {
         $this->class = $class;
         $this->constructorArguments = $constructorArguments;
         $this->properties = $properties;
+        $this->replacedFields = $replacedFields;
     }
 
     public static function fromJsonString(string $jsonString)
@@ -33,8 +43,19 @@ class JsonClass implements \JsonSerializable
         return new self(
             $arguments[self::PROPERTIES_INDEX],
             $arguments[self::CLASS_INDEX],
-            $arguments[self::CONSTRUCTOR_ARGUMNETS_INDEX]
+            $arguments[self::CONSTRUCTOR_ARGUMNETS_INDEX],
+            $arguments[self::REPLACED_FIELDS] ?? [],
         );
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getCollectionEntityNames(string $json, string $property): array
+    {
+        $arguments = Json::decode($json);
+
+        return $arguments[self::PROPERTIES_INDEX][$property] ?? [];
     }
 
     public function getClass(): string
@@ -84,6 +105,7 @@ class JsonClass implements \JsonSerializable
             self::CLASS_INDEX => $this->class,
             self::CONSTRUCTOR_ARGUMNETS_INDEX => $this->constructorArguments,
             self::PROPERTIES_INDEX => $this->properties,
+            self::REPLACED_FIELDS => $this->replacedFields,
         ];
     }
 
@@ -99,10 +121,28 @@ class JsonClass implements \JsonSerializable
             if (!$reflectionClass->hasProperty($name)) {
                 continue;
             }
+            if (\in_array($name, $this->replacedFields)) {
+                continue;
+            }
 
             $instance->deserialize($name, $value);
         }
 
         return $instance;
+    }
+
+    public function replaceCollectionByEntityNames(string $property): void
+    {
+        $this->replacedFields[] = $property;
+        $names = [];
+        if (isset($this->properties[$property])) {
+            foreach ($this->properties[$property]->toArray() as $entity) {
+                if (!$entity instanceof EntityInterface) {
+                    throw new \RuntimeException('Unexpected collection entity type');
+                }
+                $names[] = $entity->getName();
+            }
+        }
+        $this->updateProperty($property, $names);
     }
 }

@@ -3,6 +3,9 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CommonBundle\Entity\EntityInterface;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
 /**
  * DataField.
@@ -11,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class WysiwygProfile
+class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
      * @var int
@@ -206,5 +209,26 @@ class WysiwygProfile
     public function getOrderKey()
     {
         return $this->orderKey;
+    }
+
+    public function jsonSerialize()
+    {
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
+
+        return $json;
+    }
+
+    public static function fromJson(string $json, ?EntityInterface $profile = null): WysiwygProfile
+    {
+        $meta = JsonClass::fromJsonString($json);
+        $profile = $meta->jsonDeserialize($profile);
+        if (!$profile instanceof WysiwygProfile) {
+            throw new \Exception(\sprintf('Unexpected object class, got %s', $meta->getClass()));
+        }
+
+        return $profile;
     }
 }

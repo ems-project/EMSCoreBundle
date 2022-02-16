@@ -3,6 +3,9 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CommonBundle\Entity\EntityInterface;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
 /**
  * DataField.
@@ -11,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class WysiwygStylesSet
+class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
      * @var int
@@ -37,65 +40,63 @@ class WysiwygStylesSet
     private $modified;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    protected string $name = '';
 
     /**
      * @var string
      *
      * @ORM\Column(name="config", type="text", nullable=true)
      */
-    private $config;
+    protected $config;
 
     /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
-    private $orderKey;
+    protected $orderKey;
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="format_tags", type="string", length=255, nullable=true)
      */
-    private $formatTags = 'p;h1;h2;h3;h4;h5;h6;pre;address;div';
+    protected $formatTags = 'p;h1;h2;h3;h4;h5;h6;pre;address;div';
 
     /**
      * @ORM\Column(name="table_default_css", type="string", length=255, nullable=false, options={"default" : "table table-bordered"})
      */
-    private string $tableDefaultCss = 'table table-border';
+    protected string $tableDefaultCss = 'table table-border';
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="content_css", type="string", length=2048, nullable=true)
      */
-    private $contentCss;
+    protected $contentCss;
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="content_js", type="string", length=2048, nullable=true)
      */
-    private $contentJs;
+    protected $contentJs;
 
     /**
      * @var array<string, mixed>|null
      *
      * @ORM\Column(name="assets", type="json", nullable=true)
      */
-    private $assets;
+    protected $assets;
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="save_dir", type="string", length=2048, nullable=true)
      */
-    private $saveDir;
+    protected $saveDir;
 
     /**
      * @ORM\PrePersist
@@ -176,26 +177,14 @@ class WysiwygStylesSet
         return $this->modified;
     }
 
-    /**
-     * Set name.
-     *
-     * @param string $name
-     *
-     * @return WysiwygStylesSet
-     */
-    public function setName($name)
+    public function setName(string $name): WysiwygStylesSet
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -322,5 +311,26 @@ class WysiwygStylesSet
     public function setContentJs(?string $contentJs): void
     {
         $this->contentJs = $contentJs;
+    }
+
+    public function jsonSerialize()
+    {
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
+
+        return $json;
+    }
+
+    public static function fromJson(string $json, ?EntityInterface $styleSet = null): WysiwygStylesSet
+    {
+        $meta = JsonClass::fromJsonString($json);
+        $styleSet = $meta->jsonDeserialize($styleSet);
+        if (!$styleSet instanceof WysiwygStylesSet) {
+            throw new \Exception(\sprintf('Unexpected object class, got %s', $meta->getClass()));
+        }
+
+        return $styleSet;
     }
 }

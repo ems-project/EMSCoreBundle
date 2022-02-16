@@ -1176,6 +1176,11 @@ class Revision implements EntityInterface
         return $dateTime ? $dateTime : null;
     }
 
+    public function hasVersionTag(): bool
+    {
+        return null !== $this->versionTag;
+    }
+
     public function getVersionTag(): ?string
     {
         return $this->versionTag;

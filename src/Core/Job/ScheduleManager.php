@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Core\Job;
 
 use Cron\CronExpression;
 use EMS\CommonBundle\Entity\EntityInterface;
+use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Schedule;
 use EMS\CoreBundle\Repository\ScheduleRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
@@ -36,6 +37,12 @@ class ScheduleManager implements EntityServiceInterface
         if (0 === $schedule->getOrderKey()) {
             $schedule->setOrderKey($this->scheduleRepository->counter() + 1);
         }
+        $encoder = new Encoder();
+        $webalized = $encoder->webalize($schedule->getName());
+        if (null === $webalized) {
+            throw new \RuntimeException('Unexpected null webalized name');
+        }
+        $schedule->setName($webalized);
         $this->scheduleRepository->create($schedule);
     }
 

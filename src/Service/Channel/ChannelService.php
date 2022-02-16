@@ -126,7 +126,7 @@ final class ChannelService implements EntityServiceInterface
 
     public function getByItemName(string $name): ?EntityInterface
     {
-        return $this->channelRepository->findRegistered($name);
+        return $this->channelRepository->getByName($name);
     }
 
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
@@ -150,7 +150,7 @@ final class ChannelService implements EntityServiceInterface
 
     public function deleteByItemName(string $name): string
     {
-        $channel = $this->channelRepository->findRegistered($name);
+        $channel = $this->channelRepository->getByName($name);
         if (null === $channel) {
             throw new \RuntimeException(\sprintf('Filter %s not found', $name));
         }

@@ -28,6 +28,7 @@
         <service id="ems.service.channel" class="EMS\CoreBundle\Service\Channel\ChannelService">
             <argument type="service" id="ems.repository.channel"/>
             <argument type="service" id="logger"/>
+            <tag name="emsco.entity.service"/>
         </service>
         <service id="ems.service.channel.register" class="EMS\CoreBundle\Service\Channel\ChannelRegistrar">
             <argument type="service" id="ems.repository.channel"/>

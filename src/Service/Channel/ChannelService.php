@@ -105,7 +105,11 @@ final class ChannelService implements EntityServiceInterface
      */
     public function getAliasesName(): array
     {
-        return [];
+        return [
+            'channels',
+            'Channel',
+            'Channels',
+        ];
     }
 
     /**
@@ -127,16 +131,32 @@ final class ChannelService implements EntityServiceInterface
 
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
-        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
+        $schedule = Channel::fromJson($json, $entity);
+        $this->update($schedule);
+
+        return $schedule;
     }
 
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
-        throw new \RuntimeException('createEntityFromJson method not yet implemented');
+        $channel = Channel::fromJson($json);
+        if (null !== $name && $channel->getName() !== $name) {
+            throw new \RuntimeException(\sprintf('Filter name mismatched: %s vs %s', $channel->getName(), $name));
+        }
+        $this->update($channel);
+
+        return $channel;
     }
 
     public function deleteByItemName(string $name): string
     {
-        throw new \RuntimeException('deleteByItemName method not yet implemented');
+        $channel = $this->channelRepository->getByName($name);
+        if (null === $channel) {
+            throw new \RuntimeException(\sprintf('Filter %s not found', $name));
+        }
+        $id = $channel->getId();
+        $this->delete($channel);
+
+        return $id;
     }
 }

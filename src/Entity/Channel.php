@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -14,7 +16,7 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class Channel implements EntityInterface
+class Channel extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
      * @var UuidInterface
@@ -43,42 +45,42 @@ class Channel implements EntityInterface
     /**
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private string $name = '';
+    protected string $name = '';
 
     /**
      * @var string
      *
      * @ORM\Column(name="alias", type="string", length=255)
      */
-    private $alias;
+    protected $alias;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="public", type="boolean", options={"default" : 0})
      */
-    private $public;
+    protected $public;
 
     /**
      * @var string
      *
      * @ORM\Column(name="label", type="string", length=255)
      */
-    private $label;
+    protected $label;
 
     /**
      * @var array<string, mixed>
      *
      * @ORM\Column(name="options", type="json", nullable=true)
      */
-    private $options;
+    protected $options;
 
     /**
      * @var int
      *
      * @ORM\Column(name="order_key", type="integer")
      */
-    private $orderKey;
+    protected $orderKey;
 
     public function __construct()
     {
@@ -94,6 +96,17 @@ class Channel implements EntityInterface
             'templateContentType' => 'template',
             'searchConfig' => '{}',
         ];
+    }
+
+    public static function fromJson(string $json, ?\EMS\CommonBundle\Entity\EntityInterface $channel = null): Channel
+    {
+        $meta = JsonClass::fromJsonString($json);
+        $channel = $meta->jsonDeserialize($channel);
+        if (!$channel instanceof Channel) {
+            throw new \Exception(\sprintf('Unexpected object class, got %s', $meta->getClass()));
+        }
+
+        return $channel;
     }
 
     public function getId(): string
@@ -201,5 +214,15 @@ class Channel implements EntityInterface
         }
 
         return \sprintf('/channel/%s%s', $this->getName(), $entryPath);
+    }
+
+    public function jsonSerialize(): JsonClass
+    {
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
+
+        return $json;
     }
 }

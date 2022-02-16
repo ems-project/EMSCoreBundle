@@ -1360,26 +1360,6 @@ parameters:
 			path: src/Controller/Views/CriteriaController.php
 
 		-
-			message: "#^Cannot call method setOrderKey\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\WysiwygProfile\\|null\\.$#"
-			count: 1
-			path: src/Controller/WysiwygController.php
-
-		-
-			message: "#^Cannot call method setOrderKey\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\WysiwygStylesSet\\|null\\.$#"
-			count: 1
-			path: src/Controller/WysiwygController.php
-
-		-
-			message: "#^Parameter \\#1 \\$profile of method EMS\\\\CoreBundle\\\\Service\\\\WysiwygProfileService\\:\\:saveProfile\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\WysiwygProfile, EMS\\\\CoreBundle\\\\Entity\\\\WysiwygProfile\\|null given\\.$#"
-			count: 1
-			path: src/Controller/WysiwygController.php
-
-		-
-			message: "#^Parameter \\#1 \\$stylesSet of method EMS\\\\CoreBundle\\\\Service\\\\WysiwygStylesSetService\\:\\:save\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\WysiwygStylesSet, EMS\\\\CoreBundle\\\\Entity\\\\WysiwygStylesSet\\|null given\\.$#"
-			count: 1
-			path: src/Controller/WysiwygController.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\Compiler\\\\DataFieldTypeCompilerPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/DependencyInjection/Compiler/DataFieldTypeCompilerPass.php
@@ -6673,11 +6653,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\TemplateRepository\\:\\:findByRenderOptionAndContentType\\(\\) has parameter \\$contentTypes with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Repository/TemplateRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\WysiwygProfileRepository\\:\\:findAll\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Repository/WysiwygProfileRepository.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\WysiwygStylesSetRepository\\:\\:findAll\\(\\) return type has no value type specified in iterable type array\\.$#"

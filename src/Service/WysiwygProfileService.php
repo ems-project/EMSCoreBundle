@@ -2,60 +2,39 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 class WysiwygProfileService
 {
-    /** @var Registry */
-    private $doctrine;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var TranslatorInterface */
-    private $translator;
+    private WysiwygProfileRepository $wysiwygProfileRepository;
+    private LoggerInterface $logger;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator)
+    public function __construct(WysiwygProfileRepository $wysiwygProfileRepository, LoggerInterface $logger)
     {
-        $this->doctrine = $doctrine;
+        $this->wysiwygProfileRepository = $wysiwygProfileRepository;
         $this->logger = $logger;
-        $this->translator = $translator;
     }
 
-    public function getProfiles()
+    /**
+     * @return WysiwygProfile[]
+     */
+    public function getProfiles(): array
     {
-        $em = $this->doctrine->getManager();
-        /** @var WysiwygProfileRepository */
-        $repository = $em->getRepository('EMSCoreBundle:WysiwygProfile');
-
-        $profiles = $repository->findAll();
+        $profiles = $this->wysiwygProfileRepository->findAll();
 
         return $profiles;
     }
 
-    /**
-     * @param int $id
-     *
-     * @return WysiwygProfile|null
-     */
-    public function get($id)
+    public function getById(int $id): ?WysiwygProfile
     {
-        $em = $this->doctrine->getManager();
-        /** @var WysiwygProfileRepository */
-        $repository = $em->getRepository('EMSCoreBundle:WysiwygProfile');
-
-        $profile = $repository->find($id);
-
-        return $profile;
+        return $this->wysiwygProfileRepository->findById($id);
     }
 
     public function saveProfile(WysiwygProfile $profile)
     {
-        $em = $this->doctrine->getManager();
-        $em->persist($profile);
-        $em->flush();
+        $this->wysiwygProfileRepository->update($profile);
         $this->logger->notice('service.wysiwyg_profile.updated', [
             'profile_name' => $profile->getName(),
         ]);
@@ -63,9 +42,7 @@ class WysiwygProfileService
 
     public function remove(WysiwygProfile $profile)
     {
-        $em = $this->doctrine->getManager();
-        $em->remove($profile);
-        $em->flush();
+        $this->wysiwygProfileRepository->delete($profile);
         $this->logger->notice('service.wysiwyg_profile.deleted', [
             'profile_name' => $profile->getName(),
         ]);

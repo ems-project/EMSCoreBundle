@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * DataField.
  *
  * @ORM\Table(name="wysiwyg_profile")
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\WysiwygProfileRepository")
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
 class WysiwygProfile

@@ -60,9 +60,9 @@ class I18nRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function findByIdentifier(int $id): ?I18n
+    public function findByIdentifier(string $id): ?I18n
     {
-        $styleSet = $this->find($id);
+        $styleSet = $this->findOneBy(['identifier' => $id]);
         if (null !== $styleSet && !$styleSet instanceof I18n) {
             throw new \RuntimeException('Unexpected wysiwyg style set type');
         }

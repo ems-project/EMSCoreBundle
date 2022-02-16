@@ -458,6 +458,8 @@ services:
     EMS\CoreBundle\Service\I18nService:
         class: EMS\CoreBundle\Service\I18nService
         arguments: ['@ems.repository.i18n']
+        tags:
+            - { name: emsco.entity.service }
     ems.service.rest_client:
         class: EMS\CoreBundle\Service\RestClientService
     ems.service.asset_extractor:

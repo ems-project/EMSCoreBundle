@@ -428,6 +428,8 @@ services:
     ems.service.wysiwyg_profile:
         class: EMS\CoreBundle\Service\WysiwygProfileService
         arguments: ['@ems.repository.wysiwyg_profile', '@logger']
+        tags:
+            - { name: emsco.entity.service }
     ems.service.aggregate_option:
         class: EMS\CoreBundle\Service\AggregateOptionService
         arguments: ['@doctrine', '@logger', '@translator', '@ems_common.service.elastica']
@@ -440,6 +442,8 @@ services:
     ems.service.wysiwyg_styles_set:
         class: EMS\CoreBundle\Service\WysiwygStylesSetService
         arguments: ['@ems.repository.wysiwyg_style_set', '@logger']
+        tags:
+            - { name: emsco.entity.service }
     ems.service.objectchoicecache:
         class: EMS\CoreBundle\Service\ObjectChoiceCacheService
         arguments: ['@logger', '@ems.service.contenttype', '@security.authorization_checker', '@security.token_storage', '@ems_common.service.elastica']

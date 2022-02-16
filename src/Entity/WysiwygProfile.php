@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
@@ -40,11 +39,9 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
     private $modified;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    private string $name = '';
 
     /**
      * @var string
@@ -139,26 +136,14 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
         return $this->modified;
     }
 
-    /**
-     * Set name.
-     *
-     * @param string $name
-     *
-     * @return WysiwygProfile
-     */
-    public function setName($name)
+    public function setName(string $name): WysiwygProfile
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }

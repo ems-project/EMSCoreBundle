@@ -43,7 +43,7 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
     private $modified;
 
     /**
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     protected string $name = '';
 

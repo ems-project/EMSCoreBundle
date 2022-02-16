@@ -123,4 +123,14 @@ class ScheduleRepository extends ServiceEntityRepository
 
         return $schedule;
     }
+
+    public function getByName(string $name): ?Schedule
+    {
+        $schedule = $this->findOneBy(['name' => $name]);
+        if (null !== $schedule && !$schedule instanceof Schedule) {
+            throw new \RuntimeException('Unexpected schedule type');
+        }
+
+        return $schedule;
+    }
 }

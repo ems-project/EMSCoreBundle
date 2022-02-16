@@ -141,6 +141,7 @@
         <service id="ems.schedule.manager" class="EMS\CoreBundle\Core\Job\ScheduleManager">
             <argument type="service" id="ems.repository.schedule"/>
             <argument type="service" id="logger"/>
+            <tag name="emsco.entity.service"/>
         </service>
         <service id="EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer">
             <argument type="service" id="twig"/>

@@ -150,7 +150,7 @@ final class ChannelService implements EntityServiceInterface
 
     public function deleteByItemName(string $name): string
     {
-        $channel = $this->channelRepository->getByName($name);
+        $channel = $this->channelRepository->findRegistered($name);
         if (null === $channel) {
             throw new \RuntimeException(\sprintf('Filter %s not found', $name));
         }

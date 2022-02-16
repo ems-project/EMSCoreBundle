@@ -95,7 +95,11 @@ class ScheduleManager implements EntityServiceInterface
      */
     public function getAliasesName(): array
     {
-        return [];
+        return [
+            'schedules',
+            'Schedule',
+            'Schedules',
+        ];
     }
 
     public function count(string $searchValue = '', $context = null): int
@@ -129,21 +133,37 @@ class ScheduleManager implements EntityServiceInterface
 
     public function getByItemName(string $name): ?EntityInterface
     {
-        return $this->scheduleRepository->getById($name);
+        return $this->scheduleRepository->getByName($name);
     }
 
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
-        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
+        $schedule = Schedule::fromJson($json, $entity);
+        $this->update($schedule);
+
+        return $schedule;
     }
 
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
-        throw new \RuntimeException('createEntityFromJson method not yet implemented');
+        $schedule = Schedule::fromJson($json);
+        if (null !== $name && $schedule->getName() !== $name) {
+            throw new \RuntimeException(\sprintf('Filter name mismatched: %s vs %s', $schedule->getName(), $name));
+        }
+        $this->update($schedule);
+
+        return $schedule;
     }
 
     public function deleteByItemName(string $name): string
     {
-        throw new \RuntimeException('deleteByItemName method not yet implemented');
+        $schedule = $this->scheduleRepository->getByName($name);
+        if (null === $schedule) {
+            throw new \RuntimeException(\sprintf('Filter %s not found', $name));
+        }
+        $id = $schedule->getId();
+        $this->delete($schedule);
+
+        return $id;
     }
 }

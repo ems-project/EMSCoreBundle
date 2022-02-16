@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Validator\Constraints as EMSAssert;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
@@ -15,7 +17,7 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class Schedule implements EntityInterface
+class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
      * @ORM\Id
@@ -38,19 +40,19 @@ class Schedule implements EntityInterface
     /**
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private string $name = '';
+    protected string $name = '';
 
     /**
      * @EMSAssert\Cron()
      *
      * @ORM\Column(name="cron", type="string", length=255)
      */
-    private string $cron = '';
+    protected string $cron = '';
 
     /**
      * @ORM\Column(name="command", type="string", length=2000, nullable=true)
      */
-    private ?string $command;
+    protected ?string $command;
 
     /**
      * @var \Datetime
@@ -67,7 +69,7 @@ class Schedule implements EntityInterface
     /**
      * @ORM\Column(name="order_key", type="integer")
      */
-    private int $orderKey = 0;
+    protected int $orderKey = 0;
 
     public function __construct()
     {
@@ -76,6 +78,17 @@ class Schedule implements EntityInterface
         $this->id = Uuid::uuid4();
         $this->created = $now;
         $this->modified = $now;
+    }
+
+    public static function fromJson(string $json, ?\EMS\CommonBundle\Entity\EntityInterface $schedule = null): Schedule
+    {
+        $meta = JsonClass::fromJsonString($json);
+        $schedule = $meta->jsonDeserialize($schedule);
+        if (!$schedule instanceof Schedule) {
+            throw new \Exception(\sprintf('Unexpected object class, got %s', $meta->getClass()));
+        }
+
+        return $schedule;
     }
 
     public function __clone()
@@ -179,5 +192,17 @@ class Schedule implements EntityInterface
     public function setOrderKey(int $orderKey): void
     {
         $this->orderKey = $orderKey;
+    }
+
+    public function jsonSerialize(): JsonClass
+    {
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
+        $json->removeProperty('previousRun');
+        $json->removeProperty('nextRun');
+
+        return $json;
     }
 }

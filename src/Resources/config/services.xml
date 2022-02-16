@@ -64,6 +64,8 @@
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.repository.query_search"/>
             <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.environment" />
+            <tag name="emsco.entity.service"/>
         </service>
 
         <service id="ems.service.internationalization.xliff" alias="EMS\CoreBundle\Service\Internationalization\XliffService"/>

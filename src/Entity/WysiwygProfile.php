@@ -41,21 +41,21 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
     /**
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private string $name = '';
+    protected string $name = '';
 
     /**
      * @var string
      *
      * @ORM\Column(name="config", type="text", nullable=true)
      */
-    private $config;
+    protected $config;
 
     /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
-    private $orderKey;
+    protected $orderKey;
 
     /**
      * @ORM\PrePersist

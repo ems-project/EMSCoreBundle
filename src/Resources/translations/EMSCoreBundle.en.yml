@@ -342,6 +342,8 @@ log.notification.notification_not_found: 'Notification #%notification_id% not fo
 log.reindex.revision.deleted_but_referenced: 'The document "%label%" is marked as deleted but is still referenced in %environment%'
 log.reindex.revision.error: 'En error occurred while indexing the document "%label%"'
 log.revision_error: 'Error "%error_message%" with the document "%label%"'
+log.locked_exception_error: 'Document "%label%" is currently locked by %username%'
+log.privilege_exception_error: 'You don''t have enough privileges to edit this document'
 log.service.action.delete: 'The action %name% has been deleted'
 log.service.channel.delete: 'The channel %name% has been deleted'
 log.service.content-type.get-unreferenced-content-type.unexpected-error: 'Unexpected error while get unreferenced content type from environment %environment%: %error_message%'

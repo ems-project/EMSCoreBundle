@@ -57,10 +57,6 @@ final class DashboardController extends AbstractController
             return $this->redirectToRoute(Routes::DASHBOARD, ['name' => $dashboard->getName()]);
         }
 
-        if ($this->taskManager->hasDashboard()) {
-            return $this->redirectToRoute('ems_core_task_dashboard');
-        }
-
         return $this->redirectToRoute('notifications.inbox');
     }
 }

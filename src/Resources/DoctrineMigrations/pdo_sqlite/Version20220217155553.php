@@ -1,19 +1,18 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Application\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20220217155553 extends AbstractMigration
 {
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, wysiwyg_profile_id, username, username_canonical, email, email_canonical, enabled, salt, password, last_login, confirmation_token, password_requested_at, roles, created, modified, circles, display_name, allowed_to_configure_wysiwyg, wysiwyg_options, layout_boxed, email_notification, sidebar_mini, sidebar_collapse FROM user');
         $this->addSql('DROP TABLE user');
@@ -24,10 +23,10 @@ final class Version20220217155553 extends AbstractMigration
         $this->addSql('DROP TABLE __temp__user');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, wysiwyg_profile_id, username, username_canonical, email, email_canonical, enabled, salt, password, last_login, confirmation_token, password_requested_at, roles, created, modified, circles, display_name, allowed_to_configure_wysiwyg, wysiwyg_options, layout_boxed, email_notification, sidebar_mini, sidebar_collapse FROM "user"');
         $this->addSql('DROP TABLE "user"');

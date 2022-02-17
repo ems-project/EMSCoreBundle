@@ -58,6 +58,7 @@ final class TaskTableService implements EntityServiceInterface
 
             if ('block' === $type) {
                 $def = new TemplateBlockTableColumn($options['label'], $name, self::TEMPLATE, $orderField);
+                $def->setCellRender(self::COL_DEADLINE !== $name);
                 $table->addColumnDefinition($def)->setCellClass('col-'.$name);
             } else {
                 $table->addColumn($options['label'], $name);

@@ -175,9 +175,11 @@
 {% endblock emsco_form_table_column_data_value %}
 
 {% block emsco_form_table_column_data %}
-    <td>
+    {% if column.cellRender %}
+        <td>{{ block(column.tableDataValueBlock()) }}</td>
+    {% else %}
         {{ block(column.tableDataValueBlock()) }}
-    </td>
+    {% endif %}
 {% endblock emsco_form_table_column_data %}
 
 {% block emsco_form_table_column_action_checkbox %}

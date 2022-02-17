@@ -7,33 +7,27 @@
     <route id="emsco_api_start_job" path="/start-job/{job}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\JobController:startJobAction</default>
     </route>
-    <route id="emsco_api_job_status" path="/job-status/{job}.{_format}" methods="GET">
-        <requirement key="_format">json</requirement>
+    <route id="emsco_api_job_status" path="/job-status/{job}" methods="GET">
         <default key="_format">json</default>
         <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:jobStatus</default>
     </route>
-    <route id="emsco_api_content_type_index" path="/{entity}.{_format}" methods="GET">
-        <requirement key="_format">json</requirement>
+    <route id="emsco_api_content_type_index" path="/{entity}" methods="GET">
         <default key="_format">json</default>
         <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:index</default>
     </route>
-    <route id="emsco_api_content_type_create" path="/{entity}.{_format}" methods="POST">
-        <requirement key="_format">json</requirement>
+    <route id="emsco_api_content_type_create" path="/{entity}" methods="POST">
         <default key="_format">json</default>
         <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:create</default>
     </route>
-    <route id="emsco_api_content_type_get" path="/{entity}/{name}.{_format}" methods="GET">
-        <requirement key="_format">json</requirement>
+    <route id="emsco_api_content_type_get" path="/{entity}/{name}" methods="GET">
         <default key="_format">json</default>
         <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:get</default>
     </route>
-    <route id="emsco_api_content_type_update" path="/{entity}/{name}.{_format}" methods="POST">
-        <requirement key="_format">json</requirement>
+    <route id="emsco_api_content_type_update" path="/{entity}/{name}" methods="POST">
         <default key="_format">json</default>
         <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:update</default>
     </route>
-    <route id="emsco_api_content_type_delete" path="/{entity}/{name}.{_format}" methods="DELETE">
-        <requirement key="_format">json</requirement>
+    <route id="emsco_api_content_type_delete" path="/{entity}/{name}" methods="DELETE">
         <default key="_format">json</default>
         <default key="_controller">EMS\CoreBundle\Controller\Api\Admin\EntitiesController:delete</default>
     </route>

@@ -1,4 +1,5 @@
 import ajaxModal from "./../helper/ajaxModal";
+import {observeDom} from '../helper/observeDom';
 
 export default class PickFileFromServer {
     constructor(target) {
@@ -15,19 +16,33 @@ export default class PickFileFromServer {
     onClick(button) {
         ajaxModal.load({ url: button.dataset.href, title: button.textContent, size: 'lg' }, function(json, request, modal) {
 
-            const linkList = modal.querySelectorAll(['div[data-json] > a']);
-            for (let i = 0; i < linkList.length; i++) {
-                linkList[i].addEventListener('click', function(event) {
-                    if (event.target.parentNode === undefined || event.target.parentNode.dataset.json === undefined) {
+            const addClickCallbacks = function(linkList){
+                for (let i = 0; i < linkList.length; i++) {
+                    linkList[i].addEventListener('click', function(event) {
+                        if (event.target.parentNode === undefined || event.target.parentNode.dataset.json === undefined) {
+                            return;
+                        }
+                        event.preventDefault();
+                        const data =  JSON.parse(event.target.parentNode.dataset.json)
+                        const row = button.closest('.file-uploader-row');
+                        row.dispatchEvent(new CustomEvent('updateAssetData', {detail: data}));
+                        ajaxModal.close();
+                    });
+                }
+            }
+
+            const linkList = modal.querySelectorAll('div[data-json] > a');
+            addClickCallbacks(linkList);
+            observeDom(modal, function(mutationList) {
+                [].forEach.call(mutationList, function(mutation) {
+                    if(mutation.addedNodes.length < 1) {
                         return;
                     }
-                    event.preventDefault();
-                    const data =  JSON.parse(event.target.parentNode.dataset.json)
-                    const row = button.closest('.file-uploader-row');
-                    row.dispatchEvent(new CustomEvent('updateAssetData', {detail: data}));
-                    ajaxModal.close();
+                    [].forEach.call(mutation.addedNodes, function(node) {
+                        addClickCallbacks(node.querySelectorAll('div[data-json] > a'));
+                    });
                 });
-            }
+            });
         });
     }
 }

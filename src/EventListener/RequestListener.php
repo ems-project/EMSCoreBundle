@@ -10,6 +10,7 @@ use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\Channel\ChannelRegistrar;
+use EMS\CoreBundle\Service\Revision\LoggingContext;
 use Exception;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -74,13 +75,7 @@ class RequestListener
 
         try {
             if ($exception instanceof LockedException || $exception instanceof PrivilegeException) {
-                $this->logger->error('log.revision_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $exception->getRevision()->getContentType(),
-                    EmsFields::LOG_OUUID_FIELD => $exception->getRevision()->getOuuid(),
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
-                    EmsFields::LOG_EXCEPTION_FIELD => $exception,
-                ]);
-                /** @var LockedException $exception */
+                $this->logger->error(($exception instanceof LockedException ? 'log.locked_exception_error' : 'log.privilege_exception_error'), \array_merge(['username' => $exception->getRevision()->getLockBy()], LoggingContext::read($exception->getRevision())));
                 if (null == $exception->getRevision()->getOuuid()) {
                     $response = new RedirectResponse($this->router->generate('data.draft_in_progress', [
                             'contentTypeId' => $exception->getRevision()->giveContentType()->getId(),

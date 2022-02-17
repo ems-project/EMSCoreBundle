@@ -2,76 +2,57 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\WysiwygStylesSet;
 use EMS\CoreBundle\Repository\WysiwygStylesSetRepository;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
-class WysiwygStylesSetService
+class WysiwygStylesSetService implements EntityServiceInterface
 {
-    /** @var Registry */
-    private $doctrine;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var TranslatorInterface */
-    private $translator;
+    private WysiwygStylesSetRepository $wysiwygStylesSetRepository;
+    private LoggerInterface $logger;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator)
+    public function __construct(WysiwygStylesSetRepository $wysiwygStylesSetRepository, LoggerInterface $logger)
     {
-        $this->doctrine = $doctrine;
+        $this->wysiwygStylesSetRepository = $wysiwygStylesSetRepository;
         $this->logger = $logger;
-        $this->translator = $translator;
     }
 
-    public function getStylesSets()
+    /**
+     * @return WysiwygStylesSet[]
+     */
+    public function getStylesSets(): array
     {
         static $stylesSets = null;
         if (null !== $stylesSets) {
             return $stylesSets;
         }
-
-        $em = $this->doctrine->getManager();
-        /** @var WysiwygStylesSetRepository */
-        $repository = $em->getRepository('EMSCoreBundle:WysiwygStylesSet');
-
-        $stylesSets = $repository->findAll();
+        $stylesSets = $this->wysiwygStylesSetRepository->findAll();
 
         return $stylesSets;
     }
 
     public function getByName(?string $name): ?WysiwygStylesSet
     {
-        foreach ($this->getStylesSets() as $stylesSet) {
-            if ($name === $stylesSet->getName()) {
+        if (null === $name) {
+            foreach ($this->getStylesSets() as $stylesSet) {
                 return $stylesSet;
             }
+
+            return null;
         }
 
-        return null;
+        return $this->wysiwygStylesSetRepository->getByName($name);
     }
 
-    /**
-     * @param int $id
-     *
-     * @return WysiwygStylesSet|null
-     */
-    public function get($id)
+    public function getById(int $id): ?WysiwygStylesSet
     {
-        $em = $this->doctrine->getManager();
-        /** @var WysiwygStylesSetRepository */
-        $repository = $em->getRepository('EMSCoreBundle:WysiwygStylesSet');
-
-        $profile = $repository->find($id);
-
-        return $profile;
+        return $this->wysiwygStylesSetRepository->findById($id);
     }
 
     public function save(WysiwygStylesSet $stylesSet)
     {
-        $em = $this->doctrine->getManager();
-        $em->persist($stylesSet);
-        $em->flush();
+        $this->wysiwygStylesSetRepository->update($stylesSet);
         $this->logger->notice('service.wysiwyg_styles_set.updated', [
             'wysiwyg_styles_set_name' => $stylesSet->getName(),
         ]);
@@ -80,11 +61,88 @@ class WysiwygStylesSetService
     public function remove(WysiwygStylesSet $stylesSet)
     {
         $name = $stylesSet->getName();
-        $em = $this->doctrine->getManager();
-        $em->remove($stylesSet);
-        $em->flush();
+        $this->wysiwygStylesSetRepository->delete($stylesSet);
         $this->logger->notice('service.wysiwyg_styles_set.deleted', [
             'wysiwyg_styles_set_name' => $name,
         ]);
+    }
+
+    public function isSortable(): bool
+    {
+        return true;
+    }
+
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    {
+        if (null !== $context) {
+            throw new \RuntimeException('Unexpected not null context');
+        }
+
+        return $this->wysiwygStylesSetRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'wysiwyg-style-set';
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [
+            'wysiwyg-style-sets',
+            'WysiwygStyleSet',
+            'WysiwygStyleSets',
+        ];
+    }
+
+    public function count(string $searchValue = '', $context = null): int
+    {
+        if (null !== $context) {
+            throw new \RuntimeException('Unexpected not null context');
+        }
+
+        return $this->wysiwygStylesSetRepository->counter($searchValue);
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->wysiwygStylesSetRepository->getByName($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        if (!$entity instanceof WysiwygStylesSet) {
+            throw new \RuntimeException('Unexpected object class');
+        }
+        $stylesSet = WysiwygStylesSet::fromJson($json, $entity);
+        $this->wysiwygStylesSetRepository->update($stylesSet);
+
+        return $stylesSet;
+    }
+
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    {
+        $styleSet = WysiwygStylesSet::fromJson($json);
+        if (null !== $name && $styleSet->getName() !== $name) {
+            throw new \RuntimeException(\sprintf('WYSIWYG StylesSet name mismatched: %s vs %s', $styleSet->getName(), $name));
+        }
+        $this->wysiwygStylesSetRepository->update($styleSet);
+
+        return $styleSet;
+    }
+
+    public function deleteByItemName(string $name): string
+    {
+        $styleSet = $this->wysiwygStylesSetRepository->getByName($name);
+        if (null === $styleSet) {
+            throw new \RuntimeException(\sprintf('WWYSIWYG StylesSet %s not found', $name));
+        }
+        $id = $styleSet->getId();
+        $this->wysiwygStylesSetRepository->delete($styleSet);
+
+        return \strval($id);
     }
 }

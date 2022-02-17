@@ -16,6 +16,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -44,7 +45,10 @@ class WysiwygController extends AppController
             $order = \json_decode($form->getData()['items'], true);
             $i = 1;
             foreach ($order as $id) {
-                $profile = $wysiwygProfileService->get($id);
+                $profile = $wysiwygProfileService->getById(\intval($id['id']));
+                if (null === $profile) {
+                    throw new NotFoundHttpException(\sprintf('WYSIWYG Profile %d not found', \intval($id['id'])));
+                }
                 $profile->setOrderKey($i++);
 
                 $wysiwygProfileService->saveProfile($profile);
@@ -62,7 +66,10 @@ class WysiwygController extends AppController
             $order = \json_decode($formStylesSet->getData()['items'], true);
             $i = 1;
             foreach ($order as $id) {
-                $stylesSet = $wysiwygStylesSetService->get($id);
+                $stylesSet = $wysiwygStylesSetService->getById(\intval($id['id']));
+                if (null === $stylesSet) {
+                    throw new NotFoundHttpException(\sprintf('WYSIWYG Styles Set %d not found', \intval($id['id'])));
+                }
                 $stylesSet->setOrderKey($i++);
 
                 $wysiwygStylesSetService->save($stylesSet);

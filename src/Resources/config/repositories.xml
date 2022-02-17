@@ -55,6 +55,12 @@
         <service id="ems.repository.log" class="EMS\CoreBundle\Repository\LogRepository" public="true">
             <argument type="service" id="doctrine"/>
         </service>
+        <service id="ems.repository.wysiwyg_profile" class="EMS\CoreBundle\Repository\WysiwygProfileRepository" public="true">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.wysiwyg_style_set" class="EMS\CoreBundle\Repository\WysiwygStylesSetRepository" public="true">
+            <argument type="service" id="doctrine"/>
+        </service>
         <service id="ems.repository.i18n" class="EMS\CoreBundle\Repository\I18nRepository" public="true">
             <argument type="service" id="doctrine"/>
         </service>

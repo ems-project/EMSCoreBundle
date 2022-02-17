@@ -15,7 +15,9 @@
                 </li>
             {% else %}
                 <li>
-                    <a href="{{ path('ems_core_task_dashboard', {'tab': tabName}) }}">{{ "task.dashboard.tab.#{tabName}"|trans }}</a>
+                    <a href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'tab': tabName})) }}">
+                        {{ "task.dashboard.tab.#{tabName}"|trans }}
+                    </a>
                 </li>
             {% endif %}
         {% endfor %}

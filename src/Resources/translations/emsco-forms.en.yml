@@ -939,3 +939,5 @@ schedule.command: Command
 schedule.create: Create
 schedule.save: Save
 schedule.saveAndClose: 'Save and Close'
+user.locale: 'Language UI'
+user.locale_preferred: 'Language preferred'

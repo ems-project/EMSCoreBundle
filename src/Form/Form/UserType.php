@@ -19,6 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class UserType extends AbstractType
@@ -100,6 +101,20 @@ final class UserType extends AbstractType
                 'expanded' => true,
                 'multiple' => true,
                 'mapped' => true,
+            ])
+            ->add('locale', ChoiceType::class, [
+                'label' => 'user.locale',
+                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+                'required' => true,
+                'choices' => [Locales::getName('en') => 'en'],
+                'choice_translation_domain' => false,
+            ])
+            ->add('localePreferred', ChoiceType::class, [
+                'label' => 'user.locale_preferred',
+                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+                'required' => false,
+                'choices' => \array_flip(Locales::getNames()),
+                'choice_translation_domain' => false,
             ])
         ;
 

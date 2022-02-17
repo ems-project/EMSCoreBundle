@@ -18,14 +18,16 @@
 {% endblock %}
 
 {%- block deadline -%}
-    {%- if data.taskCurrent.hasDeadline -%}
-        {%- set deadline = data.taskCurrent.deadline.format(date_format) -%}
-        {%- if data.taskCurrent.deadline.timestamp < date('now').timestamp -%}
-            <span class="text-danger"><strong>{{ deadline }}</strong></span>
-        {%- else -%}
-            {{ deadline }}
+    <td data-order="{{ data.taskCurrent.hasDeadline ? data.taskCurrent.deadline.timestamp : 0 }}">
+        {%- if data.taskCurrent.hasDeadline -%}
+            {%- set deadline = data.taskCurrent.deadline.format(date_format) -%}
+            {%- if data.taskCurrent.deadline.timestamp < date('now').timestamp -%}
+                <span class="text-danger"><strong>{{ deadline }}</strong></span>
+            {%- else -%}
+                {{ deadline }}
+            {%- endif -%}
         {%- endif -%}
-    {%- endif -%}
+    </td>
 {%- endblock -%}
 
 {%- block actions -%}

@@ -4,11 +4,6 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_core_task_dashboard" path="/tasks/dashboard/{tab}" methods="GET">
-        <requirement key="tab">user|owner|manager</requirement>
-        <default key="tab">user</default>
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::dashboard</default>
-    </route>
     <route id="ems_core_task_ajax_datatable" path="/tasks/dashboard/{tab}.json" methods="GET POST">
         <requirement key="tab">user|owner|manager</requirement>
         <default key="tab">user</default>

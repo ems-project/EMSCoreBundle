@@ -40,7 +40,7 @@ class I18nController extends AbstractController
             $form->getData();
         }
 
-        $count = $i18nService->count($filters);
+        $count = $i18nService->counter($filters);
         // for pagination
         $paging_size = $this->getParameter('ems_core.paging_size');
         $lastPage = \ceil($count / $paging_size);
@@ -68,8 +68,6 @@ class I18nController extends AbstractController
     public function newAction(Request $request)
     {
         $i18n = new I18n();
-        $i18n->getContent();
-
         $i18n->setContent([['locale' => '', 'text' => '']]);
 
         $form = $this->createForm(I18nType::class, $i18n);

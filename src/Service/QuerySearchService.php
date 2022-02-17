@@ -13,6 +13,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Document\DataLinks;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Repository\QuerySearchRepository;
 use Psr\Log\LoggerInterface;
@@ -25,13 +26,15 @@ final class QuerySearchService implements EntityServiceInterface
     private QuerySearchRepository $querySearchRepository;
     private LoggerInterface $logger;
     private ContentTypeService $contentTypeService;
+    private EnvironmentService $environmentService;
 
-    public function __construct(ContentTypeService $contentTypeService, ElasticaService $elasticaService, QuerySearchRepository $querySearchRepository, LoggerInterface $logger)
+    public function __construct(ContentTypeService $contentTypeService, ElasticaService $elasticaService, QuerySearchRepository $querySearchRepository, LoggerInterface $logger, EnvironmentService $environmentService)
     {
         $this->elasticaService = $elasticaService;
         $this->querySearchRepository = $querySearchRepository;
         $this->logger = $logger;
         $this->contentTypeService = $contentTypeService;
+        $this->environmentService = $environmentService;
     }
 
     /**
@@ -119,7 +122,14 @@ final class QuerySearchService implements EntityServiceInterface
      */
     public function getAliasesName(): array
     {
-        return [];
+        return [
+            'query-search',
+            'query-searches',
+            'Query-Search',
+            'Query-Searches',
+            'QuerySearch',
+            'QuerySearches',
+        ];
     }
 
     /**
@@ -207,16 +217,45 @@ final class QuerySearchService implements EntityServiceInterface
 
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
-        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
+        $querySearch = $this->buildQuerySearch($json, $entity);
+        $this->querySearchRepository->create($querySearch);
+
+        return $querySearch;
     }
 
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
-        throw new \RuntimeException('createEntityFromJson method not yet implemented');
+        $querySearch = $this->buildQuerySearch($json);
+        if (null !== $name && $querySearch->getName() !== $name) {
+            throw new \RuntimeException(\sprintf('QuerySearch name mismatched: %s vs %s', $querySearch->getName(), $name));
+        }
+        $this->querySearchRepository->create($querySearch);
+
+        return $querySearch;
     }
 
     public function deleteByItemName(string $name): string
     {
-        throw new \RuntimeException('deleteByItemName method not yet implemented');
+        $querySearch = $this->getOneByName($name);
+        if (null === $querySearch) {
+            throw new \RuntimeException(\sprintf('QuerySearch %s not found', $name));
+        }
+        $id = $querySearch->getId();
+        $this->querySearchRepository->delete($querySearch);
+
+        return $id;
+    }
+
+    private function buildQuerySearch(string $json, ?EntityInterface $entity = null): QuerySearch
+    {
+        $querySearch = QuerySearch::fromJson($json, $entity);
+        foreach ($querySearch->getEnvironments() as $environment) {
+            $querySearch->removeEnvironment($environment);
+        }
+        foreach (JsonClass::getCollectionEntityNames($json, 'environments') as $name) {
+            $querySearch->addEnvironment($this->environmentService->giveByName($name));
+        }
+
+        return $querySearch;
     }
 }

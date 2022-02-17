@@ -427,7 +427,9 @@ services:
         arguments: ['@doctrine', '@security.token_storage', '@security.helper', '@ems.repository.user', '@ems.repository.search', '%security.role_hierarchy.roles%']
     ems.service.wysiwyg_profile:
         class: EMS\CoreBundle\Service\WysiwygProfileService
-        arguments: ['@doctrine', '@logger', '@translator']
+        arguments: ['@ems.repository.wysiwyg_profile', '@logger']
+        tags:
+            - { name: emsco.entity.service }
     ems.service.aggregate_option:
         class: EMS\CoreBundle\Service\AggregateOptionService
         arguments: ['@doctrine', '@logger', '@translator', '@ems_common.service.elastica']
@@ -439,7 +441,9 @@ services:
         arguments: ['@doctrine', '@logger', '@translator']
     ems.service.wysiwyg_styles_set:
         class: EMS\CoreBundle\Service\WysiwygStylesSetService
-        arguments: ['@doctrine', '@logger', '@translator']
+        arguments: ['@ems.repository.wysiwyg_style_set', '@logger']
+        tags:
+            - { name: emsco.entity.service }
     ems.service.objectchoicecache:
         class: EMS\CoreBundle\Service\ObjectChoiceCacheService
         arguments: ['@logger', '@ems.service.contenttype', '@security.authorization_checker', '@security.token_storage', '@ems_common.service.elastica']
@@ -457,7 +461,9 @@ services:
     ems.service.i18n: '@EMS\CoreBundle\Service\I18nService'
     EMS\CoreBundle\Service\I18nService:
         class: EMS\CoreBundle\Service\I18nService
-        arguments: ['@doctrine', '@EMS\CoreBundle\Repository\I18nRepository']
+        arguments: ['@ems.repository.i18n']
+        tags:
+            - { name: emsco.entity.service }
     ems.service.rest_client:
         class: EMS\CoreBundle\Service\RestClientService
     ems.service.asset_extractor:

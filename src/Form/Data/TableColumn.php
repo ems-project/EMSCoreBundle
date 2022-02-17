@@ -17,6 +17,7 @@ class TableColumn
     private ?\Closure $itemIconCallback = null;
     private string $cellType = 'td';
     private string $cellClass = '';
+    private bool $cellRender = true;
     /** @var array <string, \Closure> */
     private array $htmlAttributes = [];
     private ?\Closure $pathCallback = null;
@@ -66,6 +67,16 @@ class TableColumn
         $this->routeName = $name;
         $this->routeParametersCallback = $callback;
         $this->routeTarget = $target;
+    }
+
+    public function cellRender(): bool
+    {
+        return $this->cellRender;
+    }
+
+    public function setCellRender(bool $value): void
+    {
+        $this->cellRender = $value;
     }
 
     public function getRouteName(): ?string

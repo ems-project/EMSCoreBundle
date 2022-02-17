@@ -3,10 +3,8 @@
 namespace EMS\CoreBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Data\BoolTableColumn;
@@ -15,10 +13,8 @@ use EMS\CoreBundle\Form\Data\DataLinksTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\RolesTableColumn;
-use EMS\CoreBundle\Form\Field\CodeEditorType;
-use EMS\CoreBundle\Form\Field\ObjectPickerType;
-use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\TableType;
+use EMS\CoreBundle\Form\Form\UserType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
 use EMS\CoreBundle\Roles;
@@ -26,14 +22,7 @@ use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\UserService;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -93,57 +82,7 @@ class UserController extends AbstractController
             $user->setWysiwygProfile($result[0]);
         }
 
-        $form = $this->createFormBuilder($user)
-            ->add('username', null, ['label' => 'form.username', 'translation_domain' => 'FOSUserBundle'])
-            ->add('email', EmailType::class, ['label' => 'form.email', 'translation_domain' => 'FOSUserBundle'])
-            ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'options' => ['translation_domain' => 'FOSUserBundle'],
-                'first_options' => ['label' => 'form.password'],
-                'second_options' => ['label' => 'form.password_confirmation'],
-                'invalid_message' => 'fos_user.password.mismatch', ])
-
-            ->add('allowedToConfigureWysiwyg', CheckboxType::class, [
-                'required' => false,
-            ])
-            ->add('wysiwygProfile', EntityType::class, [
-                'required' => false,
-                'label' => 'WYSIWYG profile',
-                'class' => 'EMSCoreBundle:WysiwygProfile',
-                'choice_label' => 'name',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC');
-                },
-            ])
-            ->add('wysiwygOptions', TextareaType::class, [
-                'required' => false,
-                'label' => 'WYSIWYG custom options',
-                'attr' => [
-                    'rows' => 8,
-                ],
-            ]);
-
-        if ($circleObject = $this->circleObject) {
-            $form->add('circles', ObjectPickerType::class, [
-                'multiple' => true,
-                'type' => $circleObject,
-                'dynamicLoading' => false,
-            ]);
-        }
-
-        $form = $form->add('roles', ChoiceType::class, ['choices' => $this->userService->getExistingRoles(),
-            'label' => 'Roles',
-            'expanded' => true,
-            'multiple' => true,
-            'mapped' => true, ])
-            ->add('create', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-plus',
-            ])
-            ->getForm();
-
+        $form = $this->createForm(UserType::class, $user, ['mode' => UserType::MODE_CREATE]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -173,78 +112,7 @@ class UserController extends AbstractController
 
     public function edit(User $user, Request $request): Response
     {
-        $form = $this->createFormBuilder($user)
-            ->add('email', EmailType::class, [
-                'label' => 'form.email',
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-            ])
-            ->add('username', null, [
-                'label' => 'form.username',
-                'disabled' => true,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-            ])
-            ->add('emailNotification', CheckboxType::class, [
-                'required' => false,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-            ])
-            ->add('displayName', null, [
-                'label' => 'Display name',
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-            ])
-            ->add('circles', ObjectPickerType::class, [
-                'multiple' => true,
-                'type' => $this->circleObject,
-                'dynamicLoading' => true,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-            ])
-            ->add('enabled', CheckboxType::class, [
-                'required' => false,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-            ])
-            ->add('allowedToConfigureWysiwyg', CheckboxType::class, [
-                'required' => false,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-            ])
-            ->add('wysiwygProfile', EntityType::class, [
-                'required' => false,
-                'label' => 'WYSIWYG profile',
-                'class' => 'EMSCoreBundle:WysiwygProfile',
-                'choice_label' => 'name',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC');
-                },
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-                'attr' => [
-                    'data-live-search' => true,
-                    'class' => 'wysiwyg-profile-picker',
-                ],
-            ])
-            ->add('wysiwygOptions', CodeEditorType::class, [
-                'label' => 'WYSIWYG Options',
-                'required' => false,
-                'language' => 'ace/mode/json',
-                'attr' => [
-                    'class' => 'wysiwyg-profile-options',
-                ],
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-            ])
-            ->add('roles', ChoiceType::class, [
-                'choices' => $this->getExistingRoles(),
-                'label' => 'Roles',
-                'expanded' => true,
-                'multiple' => true,
-                'mapped' => true,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-            ])
-            ->add('update', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-save',
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-            ])
-            ->getForm();
-
+        $form = $this->createForm(UserType::class, $user, ['mode' => UserType::MODE_UPDATE]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -426,7 +294,9 @@ class UserController extends AbstractController
         $table->addColumnDefinition(new BoolTableColumn('user.index.column.email_notification', 'emailNotification'))
             ->setIconClass('fa fa-bell');
         $table->addColumn('user.index.column.email', 'email');
-        $table->addColumnDefinition(new DataLinksTableColumn('user.index.column.circles', 'circles'));
+        if ($this->circleObject) {
+            $table->addColumnDefinition(new DataLinksTableColumn('user.index.column.circles', 'circles'));
+        }
         $table->addColumnDefinition(new BoolTableColumn('user.index.column.enabled', 'enabled'));
         $table->addColumnDefinition(new RolesTableColumn('user.index.column.roles', 'roles'));
         $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.lastLogin', 'lastLogin'));

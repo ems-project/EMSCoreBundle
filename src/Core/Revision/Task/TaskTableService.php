@@ -29,7 +29,7 @@ final class TaskTableService implements EntityServiceInterface
     public const COLUMNS = [
         self::COL_TITLE => ['type' => 'block', 'column' => 'taskTitle', 'mapping' => 't.title'],
         self::COL_DOCUMENT => ['column' => 'label', 'mapping' => 'r.labelField'],
-        self::COL_DOCUMENT_VERSION => ['type' => 'block', 'column' => 'version', 'mapping' => 'r.versionTag'],
+        self::COL_DOCUMENT_VERSION => ['type' => 'block', 'column' => 'versionTag', 'mapping' => 'r.versionTag'],
         self::COL_OWNER => ['type' => 'block', 'column' => 'owner', 'mapping' => 'r.owner'],
         self::COL_ASSIGNEE => ['type' => 'block', 'column' => 'taskAssignee', 'mapping' => 't.assignee'],
         self::COL_STATUS => ['type' => 'block', 'column' => 'taskStatus', 'mapping' => 't.status'],
@@ -58,6 +58,7 @@ final class TaskTableService implements EntityServiceInterface
 
             if ('block' === $type) {
                 $def = new TemplateBlockTableColumn($options['label'], $name, self::TEMPLATE, $orderField);
+                $def->setCellRender(self::COL_DEADLINE !== $name);
                 $table->addColumnDefinition($def)->setCellClass('col-'.$name);
             } else {
                 $table->addColumn($options['label'], $name);

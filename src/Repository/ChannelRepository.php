@@ -121,4 +121,14 @@ final class ChannelRepository extends ServiceEntityRepository
                 ->setParameter(':term', '%'.$searchValue.'%');
         }
     }
+
+    public function getByName(string $name): ?Channel
+    {
+        $channel = $this->findOneBy(['name' => $name]);
+        if (null !== $channel && !$channel instanceof Channel) {
+            throw new \RuntimeException('Unexpected channel type');
+        }
+
+        return $channel;
+    }
 }

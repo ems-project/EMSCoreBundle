@@ -28,6 +28,7 @@
         <service id="ems.service.channel" class="EMS\CoreBundle\Service\Channel\ChannelService">
             <argument type="service" id="ems.repository.channel"/>
             <argument type="service" id="logger"/>
+            <tag name="emsco.entity.service"/>
         </service>
         <service id="ems.service.channel.register" class="EMS\CoreBundle\Service\Channel\ChannelRegistrar">
             <argument type="service" id="ems.repository.channel"/>
@@ -64,6 +65,8 @@
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.repository.query_search"/>
             <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.environment" />
+            <tag name="emsco.entity.service"/>
         </service>
 
         <service id="ems.service.internationalization.xliff" alias="EMS\CoreBundle\Service\Internationalization\XliffService"/>
@@ -139,6 +142,7 @@
         <service id="ems.schedule.manager" class="EMS\CoreBundle\Core\Job\ScheduleManager">
             <argument type="service" id="ems.repository.schedule"/>
             <argument type="service" id="logger"/>
+            <tag name="emsco.entity.service"/>
         </service>
         <service id="EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer">
             <argument type="service" id="twig"/>
@@ -154,6 +158,14 @@
             <argument type="service" id="logger"/>
         </service>
 
+        <service id="emsco.helper.analyzer" class="EMS\CoreBundle\Core\Mapping\AnalyzerManager">
+            <argument type="service" id="ems.repository.analyzer"/>
+            <tag name="emsco.entity.service"/>
+        </service>
+        <service id="emsco.helper.filter" class="EMS\CoreBundle\Core\Mapping\FilterManager">
+            <argument type="service" id="ems.repository.filter"/>
+            <tag name="emsco.entity.service"/>
+        </service>
         <service id="emsco.helper.entities" class="EMS\CoreBundle\Core\Entity\EntitiesHelper">
             <argument type="tagged_iterator" tag="emsco.entity.service"/>
         </service>

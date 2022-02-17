@@ -265,16 +265,16 @@ final class ReleaseService implements EntityServiceInterface
 
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
-        throw new \RuntimeException('updateEntityFromJson method not yet implemented');
+        throw new \RuntimeException('updateEntityFromJson method not supported for releases');
     }
 
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
-        throw new \RuntimeException('createEntityFromJson method not yet implemented');
+        throw new \RuntimeException('createEntityFromJson method not supported for releases');
     }
 
     public function deleteByItemName(string $name): string
     {
-        throw new \RuntimeException('deleteByItemName method not yet implemented');
+        throw new \RuntimeException('deleteByItemName method not supported for releases');
     }
 }

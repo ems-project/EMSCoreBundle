@@ -7,6 +7,8 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -16,7 +18,7 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class QuerySearch implements EntityInterface
+class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
      * @ORM\Id
@@ -39,12 +41,12 @@ class QuerySearch implements EntityInterface
     /**
      * @ORM\Column(name="label", type="string", length=255)
      */
-    private string $label;
+    protected string $label;
 
     /**
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    private string $name = '';
+    protected string $name = '';
 
     /**
      * @var Collection <int,Environment>
@@ -62,12 +64,12 @@ class QuerySearch implements EntityInterface
      *
      * @ORM\Column(name="options", type="json", nullable=true)
      */
-    private array $options;
+    protected array $options;
 
     /**
      * @ORM\Column(name="order_key", type="integer")
      */
-    private int $orderKey = 9999;
+    protected int $orderKey = 9999;
 
     public function __construct()
     {
@@ -79,6 +81,17 @@ class QuerySearch implements EntityInterface
         $this->options = [
             'query' => '{}',
         ];
+    }
+
+    public static function fromJson(string $json, ?\EMS\CommonBundle\Entity\EntityInterface $querySearch = null): QuerySearch
+    {
+        $meta = JsonClass::fromJsonString($json);
+        $querySearch = $meta->jsonDeserialize($querySearch);
+        if (!$querySearch instanceof QuerySearch) {
+            throw new \Exception(\sprintf('Unexpected object class, got %s', $meta->getClass()));
+        }
+
+        return $querySearch;
     }
 
     public function getId(): string
@@ -185,5 +198,16 @@ class QuerySearch implements EntityInterface
     public function setOrderKey(int $orderKey): void
     {
         $this->orderKey = $orderKey;
+    }
+
+    public function jsonSerialize()
+    {
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
+        $json->replaceCollectionByEntityNames('environments');
+
+        return $json;
     }
 }

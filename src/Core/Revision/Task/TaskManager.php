@@ -139,23 +139,11 @@ final class TaskManager
         return $revision->hasTaskCurrent() ? $revision->getTaskCurrent() : null;
     }
 
-    public function hasDashboard(): bool
-    {
-        return $this->isTaskUser() || $this->isTaskOwner() || $this->isTaskManager();
-    }
-
     public function isTaskAssignee(Task $task): bool
     {
         $user = $this->userService->getCurrentUser();
 
         return $task->getAssignee() === $user->getUsername();
-    }
-
-    public function isTaskUser(): bool
-    {
-        $user = $this->userService->getCurrentUser();
-
-        return $this->taskRepository->countForUser($user) > 0;
     }
 
     public function isTaskOwner(): bool

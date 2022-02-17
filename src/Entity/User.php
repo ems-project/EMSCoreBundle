@@ -106,6 +106,18 @@ class User extends BaseUser implements UserInterface, EntityInterface
      */
     private $authTokens;
 
+    /**
+     * @ORM\Column(name="locale", type="string", nullable=false)
+     */
+    private string $locale;
+
+    /**
+     * @ORM\Column(name="locale_preferred", type="string", nullable=true)
+     */
+    private ?string $localePreferred = null;
+
+    private const DEFAULT_LOCALE = 'en';
+
     public function __construct()
     {
         parent::__construct();
@@ -114,6 +126,7 @@ class User extends BaseUser implements UserInterface, EntityInterface
         $this->sidebarCollapse = false;
         $this->sidebarMini = true;
         $this->authTokens = new ArrayCollection();
+        $this->locale = self::DEFAULT_LOCALE;
     }
 
     public function __clone()
@@ -161,7 +174,29 @@ class User extends BaseUser implements UserInterface, EntityInterface
             'email' => $this->getEmail(),
             'circles' => $this->getCircles(),
             'lastLogin' => null !== $this->getLastLogin() ? $this->getLastLogin()->format('c') : null,
+            'locale' => $this->getLocale(),
+            'localePreferred' => $this->getLocalePreferred(),
         ];
+    }
+
+    public function getLocale(): string
+    {
+        return $this->locale;
+    }
+
+    public function getLocalePreferred(): ?string
+    {
+        return $this->localePreferred;
+    }
+
+    public function setLocale(string $locale): void
+    {
+        $this->locale = $locale;
+    }
+
+    public function setLocalePreferred(?string $localePreferred): void
+    {
+        $this->localePreferred = $localePreferred;
     }
 
     /**

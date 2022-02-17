@@ -65,6 +65,7 @@ final class TableRenderer
             $row = \json_decode($template->render([
                 'table' => $table,
                 'line' => $line,
+                'export' => true,
             ]));
             if (!\is_array($row)) {
                 throw new \RuntimeException('Unexpected non array object');

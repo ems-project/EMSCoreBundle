@@ -16,8 +16,13 @@
     <div class="box-body">
     	<div class="col-md-6">
 	    	{{ form_row(form.username) }}
-	    	{{ form_row(form.email) }}
+			{{ form_row(form.displayName) }}
 	    	{{ form_row(form.plainPassword) }}
+			{{ form_row(form.locale) }}
+			{{ form_row(form.localePreferred) }}
+	    	{{ form_row(form.email) }}
+			{{ form_row(form.emailNotification) }}
+			{{ form_row(form.enabled) }}
 	    	{% if form.circles is defined %}
 	    	    {{ form_row(form.circles) }}
 	    	{% endif %}
@@ -48,5 +53,5 @@
 {% endblock %}
 
 {% block frontend_application_js %}
-	<script src="{{ asset('user-profile.bundle.js', 'emscore') }}"></script>
+	<script src="{{ asset('user-profile.js', 'emscore') }}"></script>
 {% endblock %}

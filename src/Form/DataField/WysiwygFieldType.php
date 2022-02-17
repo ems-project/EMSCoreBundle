@@ -209,6 +209,7 @@ class WysiwygFieldType extends DataFieldType
             ->add('language', ChoiceType::class, [
                 'required' => false,
                 'choices' => \array_flip(Locales::getNames()),
+                'choice_translation_domain' => false,
             ])
             ->add('height', IntegerType::class, ['required' => false])
             ->add('styles_set', WysiwygStylesSetPickerType::class, ['required' => false])

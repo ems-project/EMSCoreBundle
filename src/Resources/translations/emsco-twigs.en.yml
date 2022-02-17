@@ -130,6 +130,7 @@ ems_core.dashboard.template.icon: 'fa fa-html5'
 ems_core.dashboard.template.label: Template
 ems_core.dashboard.export.icon: 'glyphicon glyphicon-export'
 ems_core.dashboard.export.label: Export
+ems_core.dashboard.revision_task.label: 'Revision tasks'
 views.elements.sidebar-menu-html.dashboards: Dashboards
 views.elements.sidebar-menu-html.content-types: 'Content Types'
 dashboard.exception.title: 'The dashboard %name% raised an exception'

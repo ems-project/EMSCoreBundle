@@ -13,7 +13,6 @@ use EMS\CoreBundle\Core\UI\AjaxService;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use EMS\CoreBundle\Form\Form\RevisionTaskType;
-use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -43,20 +42,6 @@ final class TaskController extends AbstractController
         $this->ajax = $ajax;
         $this->formFactory = $formFactory;
         $this->tableExporter = $tableExporter;
-    }
-
-    public function dashboard(Request $request, string $tab): Response
-    {
-        $table = $this->getTable($tab);
-        $form = $this->createForm(TableType::class, $table);
-        $form->handleRequest($request);
-
-        return $this->render('@EMSCore/revision/task/dashboard.html.twig', [
-            'table' => $table,
-            'formTable' => $form->createView(),
-            'currentTab' => $tab,
-            'tabs' => $this->taskManager->getDashboardTabs(),
-        ]);
     }
 
     public function ajaxDataTable(Request $request, string $tab): Response

@@ -20,7 +20,6 @@ final class Version20220104230217 extends AbstractMigration
         $this->addSql('CREATE TABLE release_entity (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, environment_source_id INTEGER DEFAULT NULL, environment_target_id INTEGER DEFAULT NULL, execution_date DATETIME DEFAULT NULL, status VARCHAR(20) NOT NULL, name VARCHAR(255) NOT NULL)');
         $this->addSql('CREATE INDEX IDX_C0CA3E85570FDFA8 ON release_entity (environment_source_id)');
         $this->addSql('CREATE INDEX IDX_C0CA3E85D7BDC8AF ON release_entity (environment_target_id)');
-        $this->addSql('CREATE TABLE session (id VARCHAR(128) NOT NULL, data BLOB NOT NULL, time INTEGER UNSIGNED NOT NULL, lifetime INTEGER NOT NULL, PRIMARY KEY(id))');
         $this->addSql('DROP TABLE "release"');
         $this->addSql('DROP INDEX IDX_97601F831A445520');
         $this->addSql('CREATE TEMPORARY TABLE __temp__template AS SELECT id, content_type_id, created, modified, name, icon, body, header, edit_with_wysiwyg, render_option, orderKey, accumulate_in_one_file, preview, mime_type, filename, extension, active, role, role_to, role_cc, circles_to, response_template, email_content_type, allow_origin, disposition, orientation, size, public FROM template');
@@ -188,7 +187,6 @@ final class Version20220104230217 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_9E47031DD7BDC8AF ON "release" (environment_target_id)');
         $this->addSql('CREATE INDEX IDX_9E47031D570FDFA8 ON "release" (environment_source_id)');
         $this->addSql('DROP TABLE release_entity');
-        $this->addSql('DROP TABLE session');
         $this->addSql('DROP INDEX IDX_8AF9B66CA76ED395');
         $this->addSql('DROP INDEX auth_tokens_value_unique');
         $this->addSql('CREATE TEMPORARY TABLE __temp__auth_tokens AS SELECT id, user_id, value, created, modified FROM auth_tokens');

@@ -457,7 +457,9 @@ services:
     ems.service.i18n: '@EMS\CoreBundle\Service\I18nService'
     EMS\CoreBundle\Service\I18nService:
         class: EMS\CoreBundle\Service\I18nService
-        arguments: ['@doctrine', '@EMS\CoreBundle\Repository\I18nRepository']
+        arguments: ['@ems.repository.i18n']
+        tags:
+            - { name: emsco.entity.service }
     ems.service.rest_client:
         class: EMS\CoreBundle\Service\RestClientService
     ems.service.asset_extractor:

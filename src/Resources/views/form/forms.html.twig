@@ -223,9 +223,9 @@
                     {% endif %}
                 {% else %}
                     {% include '@EMSCore/elements/get-button.html.twig' with {
-                        'url':  path(action.route, routeParameters),
+                        'url':  action.route is same as('#') ? action.route : path(action.route, routeParameters),
                         'label': action.labelKey,
-                        'itemLabel': attribute(line.data, table.labelAttribute),
+                        'itemLabel': attribute(line.data, table.labelAttribute)|default(''),
                         'btnType': action.buttonType,
                         'icon': action.icon,
                     }%}

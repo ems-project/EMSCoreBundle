@@ -14,6 +14,7 @@ class TemplateTableColumn extends TableColumn
     private const CELL_TYPE = 'cellType';
     private const CELL_CLASS = 'cellClass';
     private const CELL_RENDER = 'cellRender';
+    private const EDITABLE_FIELD = 'editableField';
     private bool $orderable;
     private string $template;
 
@@ -29,6 +30,7 @@ class TemplateTableColumn extends TableColumn
         $this->setCellClass($options[self::CELL_CLASS]);
         $this->setCellType($options[self::CELL_TYPE]);
         $this->setCellRender($options[self::CELL_RENDER]);
+        $this->setEditableField($options[self::EDITABLE_FIELD]);
     }
 
     public function getOrderable(): bool
@@ -49,7 +51,7 @@ class TemplateTableColumn extends TableColumn
     /**
      * @param array<string, mixed> $options
      *
-     * @return array{label: string, template: string, orderField: string|null, cellType: string, cellClass: string, cellRender: bool}
+     * @return array{label: string, template: string, orderField: string|null, cellType: string, cellClass: string, cellRender: bool, editableField: string|null}
      */
     private static function resolveOptions(array $options)
     {
@@ -62,6 +64,7 @@ class TemplateTableColumn extends TableColumn
                 self::CELL_TYPE => 'td',
                 self::CELL_CLASS => '',
                 self::CELL_RENDER => true,
+                self::EDITABLE_FIELD => null,
             ])
             ->setAllowedTypes(self::LABEL, ['string'])
             ->setAllowedTypes(self::TEMPLATE, ['string'])
@@ -69,8 +72,9 @@ class TemplateTableColumn extends TableColumn
             ->setAllowedTypes(self::CELL_TYPE, ['string'])
             ->setAllowedTypes(self::CELL_CLASS, ['string'])
             ->setAllowedTypes(self::CELL_RENDER, ['bool'])
+            ->setAllowedTypes(self::EDITABLE_FIELD, ['string', 'null'])
         ;
-        /** @var array{label: string, template: string, orderField: string|null, cellType: string, cellClass: string, cellRender: bool} $resolvedParameter */
+        /** @var array{label: string, template: string, orderField: string|null, cellType: string, cellClass: string, cellRender: bool, editableField: string|null} $resolvedParameter */
         $resolvedParameter = $resolver->resolve($options);
 
         return $resolvedParameter;

@@ -368,4 +368,15 @@ abstract class TableAbstract implements TableInterface
     {
         $this->rowActionsClass = $rowActionsClass;
     }
+
+    public function isEditable(): bool
+    {
+        foreach ($this->getColumns() as $column) {
+            if ($column->isEditableField()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

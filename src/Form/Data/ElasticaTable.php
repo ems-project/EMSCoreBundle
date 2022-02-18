@@ -71,6 +71,9 @@ class ElasticaTable extends TableAbstract
         foreach ($options[self::COLUMNS] as $column) {
             $datatable->addColumnDefinition(new TemplateTableColumn($column));
         }
+        if ($datatable->isEditable()) {
+            $datatable->addItemGetAction('#', 'datatable.row.edit', 'pencil');
+        }
         $datatable->setExtraFrontendOption($options[self::FRONTEND_OPTIONS]);
 
         return $datatable;

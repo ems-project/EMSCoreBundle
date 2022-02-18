@@ -27,6 +27,7 @@ class TableColumn
     private $orderField;
     /** @var array<string, mixed> */
     private array $transLabelOptions = [];
+    private ?string $editableField = null;
 
     public function __construct(string $titleKey, string $attribute)
     {
@@ -274,5 +275,20 @@ class TableColumn
     public function getTransLabelOptions(): array
     {
         return $this->transLabelOptions;
+    }
+
+    public function setEditableField(?string $editableField): void
+    {
+        $this->editableField = $editableField;
+    }
+
+    public function isEditableField(): bool
+    {
+        return null !== $this->editableField;
+    }
+
+    public function getEditableField(): ?string
+    {
+        return $this->editableField;
     }
 }

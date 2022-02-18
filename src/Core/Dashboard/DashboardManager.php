@@ -196,6 +196,9 @@ class DashboardManager implements EntityServiceInterface
 
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
+        if (!$entity instanceof Dashboard) {
+            throw new \RuntimeException('Unexpected dashboard object');
+        }
         $dashboard = Dashboard::fromJson($json, $entity);
         $this->dashboardRepository->create($dashboard);
 

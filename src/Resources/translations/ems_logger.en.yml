@@ -26,4 +26,7 @@ service.data.unknown_update_type: 'The document "%label%" has not been replaced 
 service.data.unpublished: 'The document "%label%" has been unpublished from %environment%'
 service.data.update_referrers_error: 'It was impossible to update document''s referrers'
 service.data.unlock_revisions_error: 'Unexpected unlock exception'
+api.admin.entities.create: 'An %entity% has been created with id %id%'
+api.admin.entities.update: 'An %entity% has been updated with id %id%'
+api.admin.entities.delete: 'An %entity% has been deleted with id %id%'
 

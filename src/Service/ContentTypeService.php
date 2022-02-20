@@ -156,7 +156,7 @@ class ContentTypeService implements EntityServiceInterface
             if (\array_key_exists('key_'.$item['id'], $ids)) {
                 $fieldType->getChildren()->add($ids['key_'.$item['id']]);
                 $ids['key_'.$item['id']]->setParent($fieldType);
-                $ids['key_'.$item['id']]->setOrderKey($key);
+                $ids['key_'.$item['id']]->setOrderKey($key + 1);
                 $this->reorderFieldsRecu($ids['key_'.$item['id']], isset($item['children']) ? $item['children'] : [], $ids);
             } else {
                 $this->logger->warning('service.contenttype.field_not_found', [

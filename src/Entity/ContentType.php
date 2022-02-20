@@ -319,7 +319,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
-    protected $orderKey;
+    protected $orderKey = 0;
 
     /**
      * @var bool
@@ -1740,7 +1740,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->setActive(false);
         $this->setDirty(true);
         $this->getFieldType()->updateAncestorReferences($this, null);
-        $this->setOrderKey($nextOrderKey);
+        if ($this->getOrderKey() < 1) {
+            $this->setOrderKey($nextOrderKey);
+        }
     }
 
     /**

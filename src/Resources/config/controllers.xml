@@ -206,5 +206,9 @@
             <argument type="service" id="ems.logger" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Api\Admin\MetaController" public="true">
+            <argument type="service" id="ems.service.contenttype" />
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

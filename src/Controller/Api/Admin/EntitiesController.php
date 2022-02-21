@@ -9,6 +9,7 @@ use EMS\CoreBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Exception\EntityServiceNotFoundException;
 use EMS\CoreBundle\Service\EntityServiceInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,10 +18,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class EntitiesController
 {
     private EntitiesHelper $entitiesHelper;
+    private LoggerInterface $logger;
 
-    public function __construct(EntitiesHelper $entitiesHelper)
+    public function __construct(EntitiesHelper $entitiesHelper, LoggerInterface $logger)
     {
         $this->entitiesHelper = $entitiesHelper;
+        $this->logger = $logger;
     }
 
     public function index(string $entity): Response
@@ -55,20 +58,30 @@ class EntitiesController
     public function update(string $entity, string $name, Request $request): Response
     {
         $entityService = $this->getEntityService($entity);
-        $entity = $entityService->getByItemName($name);
+        $entityObject = $entityService->getByItemName($name);
         $content = $request->getContent();
         if (!\is_string($content)) {
             throw new \RuntimeException('Unexpected non string content');
         }
 
-        if (null === $entity) {
-            $entity = $entityService->createEntityFromJson($content, $name);
+        if (null === $entityObject) {
+            $entityObject = $entityService->createEntityFromJson($content, $name);
+            $this->logger->notice('api.admin.entities.create', [
+                'entity' => $entity,
+                'name' => $name,
+                'id' => $entityObject->getId(),
+            ]);
         } else {
-            $entity = $entityService->updateEntityFromJson($entity, $content);
+            $entityObject = $entityService->updateEntityFromJson($entityObject, $content);
+            $this->logger->notice('api.admin.entities.update', [
+                'entity' => $entity,
+                'name' => $name,
+                'id' => $entityObject->getId(),
+            ]);
         }
 
         return new JsonResponse([
-            'id' => \strval($entity->getId()),
+            'id' => \strval($entityObject->getId()),
         ]);
     }
 
@@ -76,6 +89,11 @@ class EntitiesController
     {
         $entityService = $this->getEntityService($entity);
         $id = $entityService->deleteByItemName($name);
+        $this->logger->notice('api.admin.entities.delete', [
+            'entity' => $entity,
+            'name' => $name,
+            'id' => $id,
+        ]);
 
         return new JsonResponse([
             'id' => $id,
@@ -89,10 +107,14 @@ class EntitiesController
         if (!\is_string($content)) {
             throw new \RuntimeException('Unexpected non string content');
         }
-        $entity = $entityService->createEntityFromJson($content);
+        $entityObject = $entityService->createEntityFromJson($content);
+        $this->logger->notice('api.admin.entities.create', [
+            'entity' => $entity,
+            'id' => $entityObject->getId(),
+        ]);
 
         return new JsonResponse([
-            'id' => \strval($entity->getId()),
+            'id' => \strval($entityObject->getId()),
         ]);
     }
 

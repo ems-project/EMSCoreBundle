@@ -291,4 +291,14 @@ class TableColumn
     {
         return $this->editableField;
     }
+
+    /**
+     * @param object|array<mixed> $objectOrArray
+     *
+     * @return array<string, string>
+     */
+    public function getCellAttributes($objectOrArray): array
+    {
+        return [];
+    }
 }

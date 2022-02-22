@@ -2,11 +2,11 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
 {% block emsco_form_table_column_data_value_template %}
-    {{- include(template_from_string(column.template), {
+    <div{% for attr, value in column.getCellAttributes(line.data) %} {{ attr }}="{{ value|e('html_attr') }}" {% endfor %}>{{- include(template_from_string(column.template), {
         data: line.data,
         column: column,
         row_context: row_context|default({}),
-    }) -}}
+    }) -}}</div>
 {% endblock emsco_form_table_column_data_value_template %}
 
 {% block emsco_form_table_column_data_value_data_links %}
@@ -223,9 +223,9 @@
                     {% endif %}
                 {% else %}
                     {% include '@EMSCore/elements/get-button.html.twig' with {
-                        'url':  action.route is same as('#') ? action.route : path(action.route, routeParameters),
+                        'url':  path(action.route, routeParameters),
                         'label': action.labelKey,
-                        'itemLabel': attribute(line.data, table.labelAttribute)|default(''),
+                        'itemLabel': attribute(line.data, table.labelAttribute),
                         'btnType': action.buttonType,
                         'icon': action.icon,
                     }%}

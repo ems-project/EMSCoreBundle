@@ -21,7 +21,7 @@
                     {% endif %}
                 </th>
             {% endfor %}
-            {% if datatable.itemActions|length > 0 or datatable.isEditable %}
+            {% if datatable.itemActions|length > 0 %}
                 <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
             {% endif %}
         </tr>
@@ -37,7 +37,7 @@
                 {% for column in datatable.columns %}
                     {{ block(column.tableDataBlock()) }}
                 {% endfor %}
-                {% if datatable.itemActions|length > 0 or datatable.isEditable %}
+                {% if datatable.itemActions|length > 0 %}
                     <td data-search="">
                         {{ block('emsco_form_table_column_row_actions') }}
                     </td>

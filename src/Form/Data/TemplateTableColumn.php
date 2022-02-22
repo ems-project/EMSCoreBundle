@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
+use EMS\CommonBundle\Elasticsearch\Document\Document;
+use EMS\CoreBundle\Entity\Revision;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TemplateTableColumn extends TableColumn
@@ -78,5 +80,23 @@ class TemplateTableColumn extends TableColumn
         $resolvedParameter = $resolver->resolve($options);
 
         return $resolvedParameter;
+    }
+
+    /**
+     * @param object|array<mixed> $objectOrArray
+     *
+     * @return array<string, string|null>
+     */
+    public function getCellAttributes($objectOrArray): array
+    {
+        $attributes = [];
+        if (!$objectOrArray instanceof Revision and !$objectOrArray instanceof Document) {
+            return $attributes;
+        }
+        if ($this->isEditableField()) {
+            $attributes = ['data-datatable-edit-field' => $this->getEditableField(), 'data-datatable-edit-emslink' => $objectOrArray->getEmsId()];
+        }
+
+        return $attributes;
     }
 }

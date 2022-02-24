@@ -86,8 +86,11 @@ class Extractor
             $xliffAttributes = [
                 'source-language' => $this->sourceLocale,
                 'original' => $id,
-                'datatype' => 'ems-revision',
+                'datatype' => 'database',
             ];
+            if (null !== $this->targetLocale) {
+                $xliffAttributes['target-language'] = $this->targetLocale;
+            }
         } else {
             $subNode = null;
             $xliffAttributes = [
@@ -106,9 +109,18 @@ class Extractor
         return $document;
     }
 
-    public function saveXML(string $filename): bool
+    public function saveXML(string $filename, string $encoding = 'UTF-8'): bool
     {
-        return true === $this->xliff->saveXML($filename);
+        $dom = new \DOMDocument('1.0', $encoding);
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = true;
+        $xml = $this->xliff->asXML();
+        if (false === $xml) {
+            return false;
+        }
+        $dom->loadXML($xml);
+
+        return false !== $dom->save($filename);
     }
 
     public function asXML(): \SimpleXMLElement

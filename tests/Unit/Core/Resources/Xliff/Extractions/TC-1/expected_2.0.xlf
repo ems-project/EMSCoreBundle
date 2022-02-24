@@ -38,6 +38,11 @@
                             <source>Text in cell r1-c2</source>
                         </segment>
                     </unit>
+                    <unit id="/html/body/table/tr[1]/td[3]">
+                        <segment id="/html/body/table/tr[1]/td[3]/text()">
+                            <source>é à   ï «</source>
+                        </segment>
+                    </unit>
                 </group>
                 <group id="/html/body/table/tr[2]">
                     <unit id="/html/body/table/tr[2]/td[1]">
@@ -48,6 +53,11 @@
                     <unit id="/html/body/table/tr[2]/td[2]">
                         <segment id="/html/body/table/tr[2]/td[2]/text()">
                             <source>Text in cell r2-c2</source>
+                        </segment>
+                    </unit>
+                    <unit id="/html/body/table/tr[2]/td[3]">
+                        <segment id="/html/body/table/tr[2]/td[3]/text()">
+                            <source>é à   « ï</source>
                         </segment>
                     </unit>
                 </group>

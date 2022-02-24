@@ -86,8 +86,11 @@ class Extractor
             $xliffAttributes = [
                 'source-language' => $this->sourceLocale,
                 'original' => $id,
-                'datatype' => 'ems-revision',
+                'datatype' => 'database',
             ];
+            if (null !== $this->targetLocale) {
+                $xliffAttributes['target-language'] = $this->targetLocale;
+            }
         } else {
             $subNode = null;
             $xliffAttributes = [

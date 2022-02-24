@@ -34,16 +34,21 @@ class ExtractorTest extends KernelTestCase
                 $xliffParser->addSimpleField($document, '[keywords_%locale%]', 'test xliff');
                 $xliffParser->addHtmlField($document, '[%locale%][body]', $htmlSource, $htmlTarget ?: null);
 
-                $expectedFilename = $absoluteFilePath.DIRECTORY_SEPARATOR.'expected_'.$version.'.xlf';
-                if (!\file_exists($expectedFilename)) {
-                    $xliffParser->saveXML($expectedFilename);
-                }
-
-                $expected = new \SimpleXMLElement($expectedFilename, 0, true);
-                $actual = new \SimpleXMLElement($xliffParser->asXML()->saveXML());
-
-                $this->assertEquals($expected, $actual, \sprintf('testXliffExtractions: %s', $fileNameWithExtension));
+                $this->saveAndCompare($absoluteFilePath, $version, $xliffParser, $fileNameWithExtension, 'UTF-8');
+                $this->saveAndCompare($absoluteFilePath, $version, $xliffParser, $fileNameWithExtension, 'us-ascii');
             }
         }
+    }
+
+    public function saveAndCompare(string $absoluteFilePath, string $version, Extractor $xliffParser, string $fileNameWithExtension, string $encoding): void
+    {
+        $expectedFilename = $absoluteFilePath.DIRECTORY_SEPARATOR.'expected_'.$encoding.$version.'.xlf';
+        if (!\file_exists($expectedFilename)) {
+            $xliffParser->saveXML($expectedFilename, $encoding);
+        }
+        $expected = new \SimpleXMLElement($expectedFilename, 0, true);
+        $actual = new \SimpleXMLElement($xliffParser->asXML()->saveXML());
+
+        $this->assertEquals($expected, $actual, \sprintf('testXliffExtractions: %s', $fileNameWithExtension));
     }
 }

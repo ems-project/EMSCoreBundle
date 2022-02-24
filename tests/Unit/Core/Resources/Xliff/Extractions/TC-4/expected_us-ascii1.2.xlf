@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="en" original="contentType:ouuid_1:revisionId_1" datatype="database" target-language="fr">
+    <body>
+      <trans-unit id="[title_%locale%]">
+        <source xml:lang="en">Foo</source>
+        <target xml:lang="fr">Bar</target>
+      </trans-unit>
+    </body>
+  </file>
+  <file source-language="en" original="contentType:ouuid_2:revisionId_2" datatype="database" target-language="fr">
+    <body>
+      <trans-unit id="[title_%locale%]">
+        <source xml:lang="en">Hello</source>
+        <target xml:lang="fr">Bonjour</target>
+      </trans-unit>
+      <trans-unit id="[keywords_%locale%]">
+        <source xml:lang="en">test xliff</source>
+      </trans-unit>
+      <group id="[%locale%][body]">
+        <trans-unit id="/html/body/p/text()">
+          <source xml:lang="en">Hello Mathieu, please visits</source>
+          <target xml:lang="fr">Bonjour Mathieu</target>
+        </trans-unit>
+        <trans-unit html:href="https://elasticms.eu" id="/html/body/p/a/text()[1]">
+          <source xml:lang="en"> </source>
+          <target xml:lang="fr">Le site d&#180;elasticms</target>
+        </trans-unit>
+        <trans-unit html:href="https://elasticms.eu" id="/html/body/p/a/text()[2]">
+          <source xml:lang="en">The elastic</source>
+        </trans-unit>
+        <trans-unit html:href="https://elasticms.eu" id="/html/body/p/a/b/text()">
+          <source xml:lang="en">ms</source>
+        </trans-unit>
+        <trans-unit html:href="https://elasticms.eu" id="/html/body/p/a/text()[3]">
+          <source xml:lang="en"> web site</source>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

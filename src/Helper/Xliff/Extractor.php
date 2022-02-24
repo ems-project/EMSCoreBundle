@@ -109,9 +109,14 @@ class Extractor
         return $document;
     }
 
-    public function saveXML(string $filename): bool
+    public function saveXML(string $filename, string $encoding = 'UTF-8'): bool
     {
-        return true === $this->xliff->saveXML($filename);
+        $dom = new \DOMDocument('1.0', $encoding);
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = true;
+        $dom->loadXML($this->xliff->asXML());
+
+        return false !== $dom->save($filename);
     }
 
     public function asXML(): \SimpleXMLElement

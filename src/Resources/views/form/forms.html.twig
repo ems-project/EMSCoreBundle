@@ -6,7 +6,8 @@
         data: line.data,
         column: column,
         row_context: row_context|default({}),
-    }) -}}</div>
+    }) -}}{% if loop.last and table.editable and line.data.emsId|emsco_document_info.editable|default(false) %}<button type="button" class="btn btn-default btn-sm" data-emsco-edit-revision="{{ line.data.emsId }}">
+    {{ 'data.row.edit'|trans }}</button>{% endif %}</div>
 {% endblock emsco_form_table_column_data_value_template %}
 
 {% block emsco_form_table_column_data_value_data_links %}

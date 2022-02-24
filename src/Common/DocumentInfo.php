@@ -12,6 +12,7 @@ final class DocumentInfo
     private EMSLink $id;
     /** @var Revision[] */
     private array $revisions;
+    private bool $editable;
 
     /**
      * @param Revision[] $revisions
@@ -20,6 +21,7 @@ final class DocumentInfo
     {
         $this->id = $id;
         $this->revisions = $revisions;
+        $this->editable = false;
     }
 
     public function getRevision(string $environmentName): ?Revision
@@ -29,6 +31,17 @@ final class DocumentInfo
                 if ($environmentName === $environment->getName()) {
                     return $revision;
                 }
+            }
+        }
+
+        return null;
+    }
+
+    public function getCurrentRevision(): ?Revision
+    {
+        foreach ($this->revisions as $revision) {
+            if (!$revision->hasEndTime()) {
+                return $revision;
             }
         }
 
@@ -73,5 +86,15 @@ final class DocumentInfo
         }
 
         return true;
+    }
+
+    public function makeEditable(): void
+    {
+        $this->editable = true;
+    }
+
+    public function isEditable(): bool
+    {
+        return $this->editable;
     }
 }

@@ -389,7 +389,7 @@ services:
         arguments: ['@twig', '@form.factory', '@ems.logger']
     ems.service.revision:
         class: EMS\CoreBundle\Service\Revision\RevisionService
-        arguments: ['@ems.service.data', '@logger', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.publish', '@ems_common.service.elastica']
+        arguments: ['@ems.service.data', '@logger', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.publish', '@ems.service.user', '@security.authorization_checker']
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@logger', '@ems_common.elastica.client', '@EMS\CoreBundle\Repository\EnvironmentRepository', '@EMS\CoreBundle\Repository\ManagedAliasRepository', '@ems_common.service.elastica']

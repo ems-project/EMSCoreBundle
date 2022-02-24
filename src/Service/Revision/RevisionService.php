@@ -12,12 +12,15 @@ use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Form\Data\Condition\InMyCircles;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
+use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class RevisionService implements RevisionServiceInterface
 {
@@ -25,17 +28,23 @@ class RevisionService implements RevisionServiceInterface
     private LoggerInterface $logger;
     private RevisionRepository $revisionRepository;
     private PublishService $publishService;
+    private UserService $userService;
+    private AuthorizationChecker $authorizationChecker;
 
     public function __construct(
         DataService $dataService,
         LoggerInterface $logger,
         RevisionRepository $revisionRepository,
-        PublishService $publishService
+        PublishService $publishService,
+        UserService $userService,
+        AuthorizationChecker $authorizationChecker
     ) {
         $this->dataService = $dataService;
         $this->logger = $logger;
         $this->revisionRepository = $revisionRepository;
         $this->publishService = $publishService;
+        $this->userService = $userService;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     public function archive(Revision $revision, string $archivedBy, bool $flush = true): bool
@@ -162,7 +171,19 @@ class RevisionService implements RevisionServiceInterface
 
     public function getDocumentInfo(EMSLink $documentLink): DocumentInfo
     {
-        return new DocumentInfo($documentLink, $this->revisionRepository->findAllPublishedRevision($documentLink));
+        $documentInfo = new DocumentInfo($documentLink, $this->revisionRepository->findAllPublishedRevision($documentLink));
+
+        if (null !== $documentInfo->getCurrentRevision()) {
+            $contentType = $documentInfo->getCurrentRevision()->getContentType();
+            if (null !== $contentType && $this->userService->isGrantedRole($contentType->getEditRole())) {
+                $condition = new InMyCircles($this->userService, $this->authorizationChecker);
+                if ($condition->inMyCircles($documentInfo->getCurrentRevision()->getCircles())) {
+                    $documentInfo->makeEditable();
+                }
+            }
+        }
+
+        return $documentInfo;
     }
 
     /**

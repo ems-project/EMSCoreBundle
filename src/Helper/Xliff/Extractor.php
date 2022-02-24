@@ -114,7 +114,11 @@ class Extractor
         $dom = new \DOMDocument('1.0', $encoding);
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
-        $dom->loadXML($this->xliff->asXML());
+        $xml = $this->xliff->asXML();
+        if (false === $xml) {
+            return false;
+        }
+        $dom->loadXML($xml);
 
         return false !== $dom->save($filename);
     }

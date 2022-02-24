@@ -42,7 +42,7 @@ class ExtractorTest extends KernelTestCase
 
     public function saveAndCompare(string $absoluteFilePath, string $version, Extractor $xliffParser, string $fileNameWithExtension, string $encoding): void
     {
-        $expectedFilename = $absoluteFilePath . DIRECTORY_SEPARATOR . 'expected_' .$encoding. $version . '.xlf';
+        $expectedFilename = $absoluteFilePath.DIRECTORY_SEPARATOR.'expected_'.$encoding.$version.'.xlf';
         if (!\file_exists($expectedFilename)) {
             $xliffParser->saveXML($expectedFilename, $encoding);
         }

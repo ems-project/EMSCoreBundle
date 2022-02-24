@@ -58,6 +58,7 @@ final class ExtractCommand extends AbstractCommand
     public const OPTION_BASE_URL = 'base-url';
     public const OPTION_TRANSLATION_FIELD = 'translation-field';
     public const OPTION_LOCALE_FIELD = 'locale-field';
+    public const OPTION_ENCODING = 'encoding';
 
     protected static $defaultName = Commands::XLIFF_EXTRACT;
     private string $xliffFilename;
@@ -70,6 +71,7 @@ final class ExtractCommand extends AbstractCommand
     private $fieldTypesByContentType = [];
     private string $translationField;
     private string $localeField;
+    private string $encoding;
 
     public function __construct(
         ContentTypeService $contentTypeService,
@@ -102,6 +104,7 @@ final class ExtractCommand extends AbstractCommand
             ->addOption(self::OPTION_FILENAME, null, InputOption::VALUE_OPTIONAL, 'Generate the XLIFF specified file')
             ->addOption(self::OPTION_BASE_URL, null, InputOption::VALUE_OPTIONAL, 'Base url, in order to generate a download link to the XLIFF file')
             ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', 'locale')
+            ->addOption(self::OPTION_ENCODING, null, InputOption::VALUE_OPTIONAL, 'Encoding used to generate the XLIFF file', 'UTF-8')
             ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', 'translation_id');
     }
 
@@ -124,6 +127,7 @@ final class ExtractCommand extends AbstractCommand
         $this->xliffVersion = $this->getOptionString(self::OPTION_XLIFF_VERSION);
         $this->translationField = $this->getOptionString(self::OPTION_TRANSLATION_FIELD);
         $this->localeField = $this->getOptionString(self::OPTION_LOCALE_FIELD);
+        $this->encoding = $this->getOptionString(self::OPTION_ENCODING);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -159,7 +163,7 @@ final class ExtractCommand extends AbstractCommand
         }
         $this->io->progressFinish();
 
-        if (!$extractor->saveXML($this->xliffFilename)) {
+        if (!$extractor->saveXML($this->xliffFilename, $this->encoding)) {
             throw new \RuntimeException(\sprintf('Unexpected error while saving the XLIFF to the file %s', $this->xliffFilename));
         }
 

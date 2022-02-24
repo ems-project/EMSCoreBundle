@@ -209,6 +209,7 @@ form-submission.index.column.created: 'Created At'
 form-submission.index.column.expire_date: 'Expire Date'
 form-submission.index.column.form: Form
 form-submission.index.column.id: ID
+form-submission.index.column.instance: Instance
 form-submission.index.column.label: Label
 form-submission.index.column.locale: Locale
 form-submission.index.column.name: Name

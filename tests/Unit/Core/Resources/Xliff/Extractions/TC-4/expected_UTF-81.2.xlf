@@ -22,17 +22,17 @@
           <source xml:lang="en">Hello Mathieu, please visits</source>
           <target xml:lang="fr">Bonjour Mathieu</target>
         </trans-unit>
-        <trans-unit html:href="https://elasticms.eu" id="/html/body/p/a/text()[1]">
+        <trans-unit html:href="https://elasticms.eu/path%20with%20space?a1=value1&amp;a2=value2#anchor" id="/html/body/p/a/text()[1]">
           <source xml:lang="en"> </source>
           <target xml:lang="fr">Le site d´elasticms</target>
         </trans-unit>
-        <trans-unit html:href="https://elasticms.eu" id="/html/body/p/a/text()[2]">
+        <trans-unit html:href="https://elasticms.eu/path%20with%20space?a1=value1&amp;a2=value2#anchor" id="/html/body/p/a/text()[2]">
           <source xml:lang="en">The elastic</source>
         </trans-unit>
-        <trans-unit html:href="https://elasticms.eu" id="/html/body/p/a/b/text()">
+        <trans-unit html:href="https://elasticms.eu/path%20with%20space?a1=value1&amp;a2=value2#anchor" id="/html/body/p/a/b/text()">
           <source xml:lang="en">ms</source>
         </trans-unit>
-        <trans-unit html:href="https://elasticms.eu" id="/html/body/p/a/text()[3]">
+        <trans-unit html:href="https://elasticms.eu/path%20with%20space?a1=value1&amp;a2=value2#anchor" id="/html/body/p/a/text()[3]">
           <source xml:lang="en"> web site</source>
         </trans-unit>
       </group>

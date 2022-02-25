@@ -38,6 +38,7 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\PublishService;
+use EMS\CoreBundle\Service\Revision\LoggingContext;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -571,13 +572,10 @@ class DataController extends AbstractController
             if ($environment !== $revision->giveContentType()->giveEnvironment()) {
                 try {
                     $sibling = $this->dataService->getRevisionByEnvironment($ouuid, $revision->giveContentType(), $environment);
-                    $this->logger->warning('log.data.revision.cant_delete_has_published', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        'published_in' => $environment->getName(),
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                        EmsFields::LOG_REVISION_ID_FIELD => $sibling->getId(),
-                    ]);
+                    $this->logger->warning(
+                        'log.data.revision.cant_delete_has_published',
+                        LoggingContext::publish($sibling, $environment)
+                    );
                     $found = true;
                 } catch (NoResultException $e) {
                 }

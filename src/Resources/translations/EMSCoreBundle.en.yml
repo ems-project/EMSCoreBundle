@@ -280,7 +280,7 @@ log.data.revision.can_finalized: 'The document "%label%" can''t be finalized as 
 log.data.revision.can_finalized_as_invalid: '{1} The document "%label%" can''t be finalized has there is one error |]1,Inf[ The document "%label%" can''t be finalized as there is %count% errors'
 log.data.revision.can_finalized_as_pending_auto_save: 'The document "%label%" can''t be finalized as an auto save is pending'
 log.data.revision.can_finalized_error: 'The document "%label%" can''t be finalized due to an error: %error_message%'
-log.data.revision.cant_delete_has_published: 'The document "%label%" can''t be deleted as it is published in %published_in%'
+log.data.revision.cant_delete_has_published: 'The document "%label%" can''t be deleted as it is published in "%environment%"'
 log.data.revision.compare: 'Compare the revision %revision_id% of the document %contenttype%:%ouuid% with the revision %compare_revision_id%'
 log.data.revision.compare_more_recent: 'Compare the revision %revision_id% of the document %contenttype%:%ouuid% with the revision %compare_revision_id%, wich one is more recent'
 log.data.revision.compare_revision_not_found: 'Impossible to compare the revision %revision_id% of the document %contenttype%:%ouuid% with the revision id %compare_revision_id% as this revision does not exists'

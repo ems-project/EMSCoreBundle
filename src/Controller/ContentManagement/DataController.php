@@ -710,7 +710,7 @@ class DataController extends AbstractController
             $em->persist($revision);
             $em->flush();
         } catch (\Throwable $e) {
-            $this->logger->warning('log.data.revision.reindex_failed', array_merge(LoggingContext::update($revision), [
+            $this->logger->warning('log.data.revision.reindex_failed', \array_merge(LoggingContext::update($revision), [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
             ]));

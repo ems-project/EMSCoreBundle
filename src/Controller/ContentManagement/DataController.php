@@ -701,35 +701,19 @@ class DataController extends AbstractController
             foreach ($revision->getEnvironments() as $environment) {
                 if (!$defaultOnly || $environment === $revision->giveContentType()->getEnvironment()) {
                     if ($this->indexService->indexRevision($revision, $environment)) {
-                        $this->logger->notice('log.data.revision.reindex', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                            EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        ]);
+                        $this->logger->notice('log.data.revision.reindex', LoggingContext::update($revision));
                     } else {
-                        $this->logger->warning('log.data.revision.reindex_failed_in', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                            EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        ]);
+                        $this->logger->warning('log.data.revision.reindex_failed_in', LoggingContext::update($revision));
                     }
                 }
             }
             $em->persist($revision);
             $em->flush();
         } catch (\Throwable $e) {
-            $this->logger->warning('log.data.revision.reindex_failed', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+            $this->logger->warning('log.data.revision.reindex_failed', array_merge(LoggingContext::update($revision), [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
-            ]);
+            ]));
         }
 
         return $this->redirectToRoute(Routes::VIEW_REVISIONS, [

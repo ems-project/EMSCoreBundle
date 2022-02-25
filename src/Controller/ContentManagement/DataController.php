@@ -889,7 +889,7 @@ class DataController extends AbstractController
                 'template_id' => $template->getId(),
                 'job_id' => $job->getId(),
                 'template_name' => $template->getName(),
-                'environment' => $env->getName(),
+                'environment' => $env->getLabel(),
             ]);
 
             return AppController::jsonResponse($request, true, [
@@ -903,6 +903,8 @@ class DataController extends AbstractController
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
+                'template_name' => $template->getName(),
+                'environment' => $env->getLabel(),
             ]);
         }
 

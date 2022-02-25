@@ -357,32 +357,16 @@ class PublishService
 
         try {
             $this->indexService->delete($revision, $environment);
-            $this->logger->notice('service.publish.unpublished', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-            ]);
+            $this->logger->notice('service.publish.unpublished', LoggingContext::publish($revision, $environment));
 
             $this->dispatcher->dispatch(RevisionUnpublishEvent::NAME, new RevisionUnpublishEvent($revision, $environment));
         } catch (\Throwable $e) {
             if (!$revision->getDeleted()) {
-                $this->logger->warning('service.publish.already_unpublished', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $environment->getId(),
-                ]);
+                $this->logger->warning('service.publish.already_unpublished', LoggingContext::publish($revision, $environment));
             }
         }
         if (!$command) {
-            $this->logger->info('log.data.revision.unpublish', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-            ]);
+            $this->logger->info('log.data.revision.unpublish', LoggingContext::delete($revision));
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Job;
@@ -26,7 +27,7 @@ class JobController extends AppController
      */
     public function indexAction(Request $request, JobService $jobService): Response
     {
-        $size = $this->getParameter('ems_core.paging_size');
+        $size = Type::integer($this->getParameter('ems_core.paging_size'));
 
         $page = $request->query->get('page', 1);
         $from = ($page - 1) * $size;

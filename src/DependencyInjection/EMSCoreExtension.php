@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\DependencyInjection;
 
+use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CoreBundle\Routes;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Symfony\Component\Config\FileLocator;
@@ -68,7 +69,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.asset_config', $config['asset_config']);
         $container->setParameter('ems_core.tika_server', $config['tika_server']);
         $container->setParameter('ems_core.pre_generated_ouuids', $config['pre_generated_ouuids']);
-        $container->setParameter('ems_core.version', $this->getCoreVersion($container->getParameter('kernel.root_dir')));
+        $container->setParameter('ems_core.version', $this->getCoreVersion(Type::string($container->getParameter('kernel.root_dir'))));
         $container->setParameter('ems_core.private_key', $config['private_key']);
         $container->setParameter('ems_core.public_key', $config['public_key']);
         $container->setParameter('ems_core.health_check_allow_origin', $config['health_check_allow_origin']);
@@ -106,7 +107,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         // get all bundles
         $bundles = $container->getParameter('kernel.bundles');
 
-        $coreVersion = $this->getCoreVersion($container->getParameter('kernel.root_dir'));
+        $coreVersion = $this->getCoreVersion(Type::string($container->getParameter('kernel.root_dir')));
 
         $configs = $container->getExtensionConfig($this->getAlias());
 
@@ -136,7 +137,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             $globals = \array_merge($globals, $configs[0]['template_options']);
         }
 
-        if (isset($bundles['TwigBundle'])) {
+        if (\is_array($bundles) && isset($bundles['TwigBundle'])) {
             $container->prependExtensionConfig('twig', [
                 'globals' => $globals,
                 'form_themes' => [
@@ -145,7 +146,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             ]);
         }
 
-        if (isset($bundles['DoctrineBundle'])) {
+        if (\is_array($bundles) && isset($bundles['DoctrineBundle'])) {
             $container->prependExtensionConfig('doctrine', [
                 'dbal' => [
                     'types' => [

@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -622,7 +623,7 @@ class ElasticsearchController extends AbstractController
 
             $esSearch = $this->searchService->generateSearch($search);
             $esSearch->setFrom(($page - 1) * $this->getParameter('ems_core.paging_size'));
-            $esSearch->setSize($this->getParameter('ems_core.paging_size'));
+            $esSearch->setSize(Type::integer($this->getParameter('ems_core.paging_size')));
 
             $esSearch->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, $this->aggregateOptionService->getContentTypeField(), 15);
             $esSearch->addTermsAggregation(AggregateOptionService::INDEXES_AGGREGATION, '_index', 15);

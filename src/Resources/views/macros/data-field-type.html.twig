@@ -390,12 +390,22 @@
 {% block EMS_CoreBundle_Form_DataField_MultiplexedTabContainerFieldType %}
 	{% set labels = dataField.fieldType.displayOptions.labels|default('')|replace({"\r":''})|split('\n') %}
 	{% set values = dataField.fieldType.displayOptions.values|default('')|replace({"\r":''})|split('\n') %}
+	{% set choices = [] %}
+	{% for value in values %}
+		{% set choices = choices|merge({(value): attribute(labels, loop.index0)|default(value)}) %}
+	{% endfor %}
+	{% if dataField.fieldType.displayOptions.localePreferredFirst|default(false) and app.user.localePreferred|default(false) and app.user.localePreferred in values %}
+		{% set values = values|sort((a, b) => a == app.user.localePreferred ? -1 : b == app.user.localePreferred ? 1 : 0) %}
+	{% endif %}
+
+
+
 	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
 			{% for value in values|default([]) %}
 				<li class="{% if loop.index == 1%}active{% endif %}">
 					<a href="#item_{{ path|join('_')~'_'~loop.index0 }}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{% else %}false{% endif %}">
-						{{ attribute(labels, loop.index0)|default(values|default) }}
+						{{ attribute(choices, value) }}
 					</a>
 				</li>
 			{% endfor %}
@@ -433,11 +443,20 @@
             {% for child in dataField.children if not child.fieldType.deleted %}
 				{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == child.fieldType.type|default(null) %}
 					{% set labels = child.fieldType.displayOptions.labels|default('')|replace({"\r":''})|split('\n') %}
-					{% for key, item in  child.children %}
+					{% set values = child.fieldType.displayOptions.values|default('')|replace({"\r":''})|split('\n')%}
+					{% set choices = [] %}
+					{% for value in values %}
+						{% set choices = choices|merge({(value): attribute(labels, loop.index0)|default(value)}) %}
+					{% endfor %}
+					{% if child.fieldType.displayOptions.localePreferredFirst|default(false) and app.user.localePreferred|default(false) and app.user.localePreferred in values %}
+						{% set values = values|sort((a, b) => a == app.user.localePreferred ? -1 : b == app.user.localePreferred ? 1 : 0) %}
+					{% endif %}
+
+					{% for value in values %}
 						{% with {
-							'child': item,
+							'child': child.children[value],
 							'counter': counter,
-							'label': attribute(labels, loop.index0)|default(key),
+							'label': attribute(choices, value),
 							'path': path|merge([counter]),
 							}
 						%}

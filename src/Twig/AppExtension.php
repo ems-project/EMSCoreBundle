@@ -22,6 +22,7 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Form\Data\Condition\InMyCircles;
@@ -844,7 +845,15 @@ class AppExtension extends AbstractExtension
 
     public function i18n(string $key, string $locale = null): string
     {
-        if (empty($locale)) {
+        try {
+            $user = $this->userService->getCurrentUser(true);
+            if ((null === $locale || '' === $locale) && $user instanceof User) {
+                $locale = $user->getLocalePreferred() ?? $this->router->getContext()->getParameter('_locale');
+            }
+        } catch (\Throwable $e) {
+        }
+
+        if (null === $locale || '' === $locale) {
             $locale = $this->router->getContext()->getParameter('_locale');
         }
         /** @var I18nRepository $repo */

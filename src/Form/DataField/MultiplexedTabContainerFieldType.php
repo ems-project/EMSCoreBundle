@@ -9,12 +9,25 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Service\ElasticsearchService;
+use EMS\CoreBundle\Service\I18nService;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class MultiplexedTabContainerFieldType extends DataFieldType
 {
+    private I18nService $i18nService;
+
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, I18nService $i18nService)
+    {
+        parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
+        $this->i18nService = $i18nService;
+    }
+
     public function getLabel(): string
     {
         return 'Multiplexed Tab Container';
@@ -43,6 +56,9 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         ])->add('labels', TextareaType::class, [
             'required' => false,
         ])
+        ->add('choicesFromI18n', TextType::class, [
+            'required' => false,
+        ])
         ->add('icon', IconPickerType::class, [
             'required' => false,
         ]);
@@ -65,6 +81,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         parent::configureOptions($resolver);
         $resolver->setDefault('values', '');
         $resolver->setDefault('labels', '');
+        $resolver->setDefault('choicesFromI18n', '');
         $resolver->setDefault('icon', null);
     }
 

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Controller;
 
+use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CoreBundle\Entity\Form\I18nFilter;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Form\Form\I18nFormType;
@@ -42,7 +43,7 @@ class I18nController extends AbstractController
 
         $count = $i18nService->counter($filters);
         // for pagination
-        $paging_size = $this->getParameter('ems_core.paging_size');
+        $paging_size = Type::integer($this->getParameter('ems_core.paging_size'));
         $lastPage = \ceil($count / $paging_size);
         $page = $request->query->get('page', 1);
 

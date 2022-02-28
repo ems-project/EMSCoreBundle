@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Controller;
 
 use Doctrine\Persistence\ManagerRegistry;
+use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -223,7 +224,7 @@ class NotificationController extends AbstractController
         $count = $countRejected + $countPending;
 
         // for pagination
-        $paging_size = $this->getParameter('ems_core.paging_size');
+        $paging_size = Type::integer($this->getParameter('ems_core.paging_size'));
         if (null != $request->query->get('page')) {
             $page = $request->query->get('page');
         } else {

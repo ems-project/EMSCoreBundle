@@ -170,7 +170,7 @@ services:
             - { name: form.type }
     ems.fieldtype.multiplexed_tab_container:
         class: EMS\CoreBundle\Form\DataField\MultiplexedTabContainerFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.i18n']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.user']
         tags:
             - { name: ems.form.datafieldtype, alias: multiplexed_tab_container }
             - { name: form.type }

@@ -1,4 +1,4 @@
-{%- trans_default_domain 'EMSCoreBundle' -%}
+{%- trans_default_domain 'emsco-twigs' -%}
 
 <div class="row">
 
@@ -8,7 +8,7 @@
           <div class="box box-primary">
             <div class="box-body box-profile">
 	            <a href="https://www.gravatar.com/emails" target="_blank">
-	              <img class="profile-user-img img-responsive img-circle" src="https://www.gravatar.com/avatar/{{ app.user.email|lower|md5 }}?d={{ "https://www.gravatar.com/avatar"|url_encode }}" alt="User profile picture">
+	              <img class="profile-user-img img-responsive img-circle" src="https://www.gravatar.com/avatar/{{ app.user.email|lower|md5 }}?d={{ "https://www.gravatar.com/avatar"|url_encode }}" alt="{{ 'view.profile.show.alt.user_profile_picture'|trans }}">
 	            </a>
 
               <h3 class="profile-username text-center">{{ user.displayName }}</h3>
@@ -17,16 +17,22 @@
 
               <ul class="list-group list-group-unbordered">
                 <li class="list-group-item">
-                  <b>Login</b> <i class="pull-right">{{ user.username }}</i>
+                  <b>{{ 'view.profile.show.login'|trans }}</b> <i class="pull-right">{{ user.username }}</i>
                 </li>
                 <li class="list-group-item">
-                  <b>Display name</b> <i class="pull-right">{{ user.displayName }}</i>
+                  <b>{{ 'view.profile.show.display_name'|trans }}</b> <i class="pull-right">{{ user.displayName }}</i>
                 </li>
                 <li class="list-group-item">
-                  <b>Email</b> <i class="pull-right">{{ user.email }}</i>
+                  <b>{{ 'view.profile.show.email'|trans }}</b> <i class="pull-right">{{ user.email }}</i>
                 </li>
                 <li class="list-group-item">
-                  <b>{{ 'Email notification' }}</b> <i class="pull-right fa fa-2x fa-{% if user.emailNotification %}check-{% endif %}square-o"></i>
+                  <b>{{ 'view.profile.show.locale'|trans }}</b> <i class="pull-right">{{ user.locale }}</i>
+                </li>
+                <li class="list-group-item">
+                  <b>{{ 'view.profile.show.locale_preferred'|trans }}</b> <i class="pull-right">{{ user.localePreferred }}</i>
+                </li>
+                <li class="list-group-item">
+                  <b>{{ 'view.profile.show.email_notification'|trans }}</b> <i class="pull-right fa fa-2x fa-{% if user.emailNotification %}check-{% endif %}square-o"></i>
                 </li>
                 {% if circles_object and circles_object|get_content_type %}
                     <li class="list-group-item">
@@ -42,18 +48,18 @@
                   <b>Roles : </b>
                   <i class="">
                   	{% for role in user.roles  -%}
-                        <span class="badge text-nowrap">{{- role|trans -}}</span>&nbsp;
+                        <span class="badge text-nowrap">{{- role|trans({}, 'EMSCoreBundle') -}}</span>&nbsp;
                   	{%- endfor %}
 				  </i>
                 </li>
                 <li class="list-group-item">
-                  <b>WYSIWYG</b> <i class="pull-right">{% if user.wysiwygProfile %}{{ user.wysiwygProfile.name }}{% endif %}</i>
+                  <b>{{ 'view.profile.show.wysiwyg'|trans }}</b> <i class="pull-right">{% if user.wysiwygProfile %}{{ user.wysiwygProfile.name }}{% endif %}</i>
                 </li>
               </ul>
 
 				<div class="btn-group">
-	              <a href="{{ path('fos_user_profile_edit') }}" class="btn btn-primary"><i class="fa fa-pencil"></i> <b>Edit</b></a>
-	              <a href="{{ path('fos_user_change_password') }}" class="btn btn-primary"><i class="fa fa-lock"></i> <b>Change password</b></a>
+	              <a href="{{ path('fos_user_profile_edit') }}" class="btn btn-primary"><i class="fa fa-pencil"></i> <b>{{ 'view.profile.show.action.edit'|trans }}</b></a>
+	              <a href="{{ path('fos_user_change_password') }}" class="btn btn-primary"><i class="fa fa-lock"></i> <b>{{ 'view.profile.show.action.change_password'|trans }}</b></a>
 				</div>
               
               

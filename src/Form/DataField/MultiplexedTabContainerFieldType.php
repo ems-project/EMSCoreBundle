@@ -131,20 +131,10 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         if (!$fieldType instanceof FieldType) {
             throw new \RuntimeException('Unexpected FieldType type');
         }
-
-        $labels = $fieldType->getDisplayOption('labels') ?? '';
-        $values = $fieldType->getDisplayOption('values');
-        if (null === $values) {
-            return;
-        }
-
-        $values = self::textAreaToArray($values);
-        $labels = self::textAreaToArray($labels);
-        $counter = 0;
-        foreach ($values as $value) {
+        foreach ($this->getChoices($fieldType) as $label => $value) {
             $builder->add($value, ContainerFieldType::class, [
                 'metadata' => $fieldType,
-                'label' => $labels[$counter++] ?? $value,
+                'label' => $label,
                 'migration' => $options['migration'],
                 'icon' => $options['icon'] ?? null,
                 'with_warning' => $options['with_warning'],
@@ -180,5 +170,31 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         }
 
         return parent::reverseViewTransform($data, $fieldType);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function getChoices(FieldType $fieldType): array
+    {
+        $choices = [];
+        $labels = $fieldType->getDisplayOption('labels') ?? '';
+        $values = $fieldType->getDisplayOption('values');
+        if (null !== $values) {
+            $values = self::textAreaToArray($values);
+            $labels = self::textAreaToArray($labels);
+            $counter = 0;
+            foreach ($values as $value) {
+                $choices[$value] = $labels[$counter++] ?? $value;
+            }
+        }
+        $choices = \array_flip($choices);
+
+        $choicesFromI18n = $fieldType->getDisplayOption('choicesFromI18n');
+        if (\is_string($choicesFromI18n) && \strlen($choicesFromI18n) > 0) {
+            $choices = \array_merge($choices, $this->i18nService->getAsChoiceList($choicesFromI18n));
+        }
+
+        return \array_merge($choices);
     }
 }

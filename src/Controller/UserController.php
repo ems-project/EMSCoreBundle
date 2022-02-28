@@ -294,6 +294,8 @@ class UserController extends AbstractController
         $table->addColumnDefinition(new BoolTableColumn('user.index.column.email_notification', 'emailNotification'))
             ->setIconClass('fa fa-bell');
         $table->addColumn('user.index.column.email', 'email');
+        $table->addColumn('user.index.column.locale_ui', 'locale');
+        $table->addColumn('user.index.column.locale_preferred', 'localePreferred');
         if ($this->circleObject) {
             $table->addColumnDefinition(new DataLinksTableColumn('user.index.column.circles', 'circles'));
         }

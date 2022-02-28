@@ -605,6 +605,8 @@ user.index.column.id: 'User ID'
 user.index.column.lastLogin: 'Last Login'
 user.index.column.roles: Roles
 user.index.column.username: Username
+user.index.column.locale_preferred: 'Locale preferred'
+user.index.column.locale_ui: UI
 view.breadcrumb.wysiwyg-options: 'WYSIWYG Options'
 view.contenttype.reorder_item.edit_field_button: 'Edit %name%'
 view.contenttype.reorder_item.edit_main_container_button: 'Edit the main container'

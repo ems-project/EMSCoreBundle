@@ -8,6 +8,7 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
+use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
@@ -66,7 +67,7 @@ class EnvironmentController extends AppController
         ]);
 
         $form->handleRequest($request);
-        $paging_size = $this->getParameter('ems_core.paging_size');
+        $paging_size = Type::integer($this->getParameter('ems_core.paging_size'));
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();

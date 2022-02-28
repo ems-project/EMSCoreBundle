@@ -91,6 +91,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('health_check_allow_origin')->defaultValue(null)->end()
             ->scalarNode('tika_download_url')->defaultValue(null)->end()
             ->scalarNode('default_bulk_size')->defaultValue(self::DEFAULT_BULK_SIZE)->end()
+            ->scalarNode('url_user')->defaultValue(null)->end()
             ->scalarNode('clean_jobs_time_string')->defaultValue(self::CLEAN_JOBS_TIME_STRING)->end()
             ->arrayNode('ldap')
             ->children()

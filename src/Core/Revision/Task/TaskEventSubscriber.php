@@ -15,17 +15,20 @@ final class TaskEventSubscriber implements EventSubscriberInterface
     private TaskRepository $taskRepository;
     private MailerService $mailerService;
     private UserService $userService;
+    private ?string $backendUrl;
 
     private const MAIL_TEMPLATE = '@EMSCore/revision/task/mail.twig';
 
     public function __construct(
         TaskRepository $taskRepository,
         MailerService $mailerService,
-        UserService $userService
+        UserService $userService,
+        ?string $backendUrl
     ) {
         $this->taskRepository = $taskRepository;
         $this->mailerService = $mailerService;
         $this->userService = $userService;
+        $this->backendUrl = $backendUrl;
     }
 
     /**
@@ -157,6 +160,7 @@ final class TaskEventSubscriber implements EventSubscriberInterface
                 'task' => $task,
                 'revision' => $revision,
                 'changeSet' => $event->changeSet,
+                'backendUrl' => $this->backendUrl,
             ])
         ;
 

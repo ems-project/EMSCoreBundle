@@ -119,6 +119,7 @@ class Extractor
             return false;
         }
         $dom->loadXML($xml);
+        $dom->encoding = $encoding;
 
         return false !== $dom->save($filename);
     }
@@ -143,7 +144,7 @@ class Extractor
             $unit->addAttribute($attribute, $value);
         }
 
-        $this->addSegment($unit, $source, $target, $isFinal);
+        $this->addSegment($unit, $this->escapeSpecialCharacters($source), null === $target ? null : $this->escapeSpecialCharacters($target), $isFinal);
     }
 
     public function addHtmlField(\SimpleXMLElement $document, string $fieldPath, string $sourceHtml, ?string $targetHtml = null, bool $isFinal = false): void
@@ -489,5 +490,10 @@ class Extractor
         }
 
         return $trimmed;
+    }
+
+    private function escapeSpecialCharacters(string $text): string
+    {
+        return \htmlspecialchars($text, ENT_QUOTES, 'UTF-8', true);
     }
 }

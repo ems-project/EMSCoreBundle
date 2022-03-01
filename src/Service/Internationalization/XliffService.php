@@ -35,7 +35,7 @@ class XliffService
     /**
      * @param FieldType[] $fields
      */
-    public function extract(ContentType $contentType, Document $source, Extractor $extractor, array $fields, Environment $sourceEnvironment, ?Environment $targetEnvironment, string $targetLocale, string $localeField, string $translationField): void
+    public function extract(ContentType $contentType, Document $source, Extractor $extractor, array $fields, Environment $sourceEnvironment, ?Environment $targetEnvironment, string $targetLocale, string $localeField, string $translationField, bool $encodeHtml): void
     {
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
@@ -69,10 +69,10 @@ class XliffService
             $translation = $propertyAccessor->getValue($currentTranslationData, $propertyPath);
             $isFinal = (null !== $targetEnvironment && $contentType->giveEnvironment()->getName() !== $targetEnvironment->getName() && $currentValue === $value && null !== $translation);
 
-            if ($this->isHtml($value)) {
-                $extractor->addHtmlField($xliffDoc, $fieldPath, $value, $translation, $isFinal);
-            } else {
+            if ($encodeHtml || !$this->isHtml($value)) {
                 $extractor->addSimpleField($xliffDoc, $fieldPath, $value, $translation, $isFinal);
+            } else {
+                $extractor->addHtmlField($xliffDoc, $fieldPath, $value, $translation, $isFinal);
             }
         }
     }

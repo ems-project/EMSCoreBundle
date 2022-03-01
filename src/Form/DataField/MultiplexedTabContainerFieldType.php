@@ -6,15 +6,33 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Service\ElasticsearchService;
+use EMS\CoreBundle\Service\UserService;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class MultiplexedTabContainerFieldType extends DataFieldType
 {
+    private const LOCALE_PREFERRED_FIRST_DISPLAY_OPTION = 'localePreferredFirst';
+    private const LABELS_DISPLAY_OPTION = 'labels';
+    private const VALUES_DISPLAY_OPTION = 'values';
+    private const ICON_DISPLAY_OPTION = 'icon';
+    private UserService $userService;
+
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, UserService $userService)
+    {
+        parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
+        $this->userService = $userService;
+    }
+
     public function getLabel(): string
     {
         return 'Multiplexed Tab Container';
@@ -38,12 +56,15 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        $optionsForm->get('displayOptions')->add('values', TextareaType::class, [
+        $optionsForm->get('displayOptions')->add(self::VALUES_DISPLAY_OPTION, TextareaType::class, [
             'required' => false,
-        ])->add('labels', TextareaType::class, [
+        ])->add(self::LABELS_DISPLAY_OPTION, TextareaType::class, [
             'required' => false,
         ])
-        ->add('icon', IconPickerType::class, [
+        ->add(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION, CheckboxType::class, [
+            'required' => false,
+        ])
+        ->add(self::ICON_DISPLAY_OPTION, IconPickerType::class, [
             'required' => false,
         ]);
 
@@ -63,9 +84,10 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
-        $resolver->setDefault('values', '');
-        $resolver->setDefault('labels', '');
-        $resolver->setDefault('icon', null);
+        $resolver->setDefault(self::VALUES_DISPLAY_OPTION, '');
+        $resolver->setDefault(self::LABELS_DISPLAY_OPTION, '');
+        $resolver->setDefault(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION, false);
+        $resolver->setDefault(self::ICON_DISPLAY_OPTION, null);
     }
 
     /**
@@ -73,7 +95,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
      */
     public function generateMapping(FieldType $current): array
     {
-        $values = $current->getDisplayOption('values');
+        $values = $current->getDisplayOption(self::VALUES_DISPLAY_OPTION);
         if (null === $values) {
             return [];
         }
@@ -92,7 +114,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
      */
     public static function getJsonNames(FieldType $current): array
     {
-        $values = $current->getDisplayOption('values');
+        $values = $current->getDisplayOption(self::VALUES_DISPLAY_OPTION);
         if (null === $values) {
             return [];
         }
@@ -114,22 +136,12 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         if (!$fieldType instanceof FieldType) {
             throw new \RuntimeException('Unexpected FieldType type');
         }
-
-        $labels = $fieldType->getDisplayOption('labels') ?? '';
-        $values = $fieldType->getDisplayOption('values');
-        if (null === $values) {
-            return;
-        }
-
-        $values = self::textAreaToArray($values);
-        $labels = self::textAreaToArray($labels);
-        $counter = 0;
-        foreach ($values as $value) {
+        foreach ($this->getChoices($fieldType) as $label => $value) {
             $builder->add($value, ContainerFieldType::class, [
                 'metadata' => $fieldType,
-                'label' => $labels[$counter++] ?? $value,
+                'label' => $label,
                 'migration' => $options['migration'],
-                'icon' => $options['icon'] ?? null,
+                'icon' => $options[self::ICON_DISPLAY_OPTION] ?? null,
                 'with_warning' => $options['with_warning'],
                 'raw_data' => $options['raw_data'],
                 'disabled_fields' => $options['disabled_fields'],
@@ -163,5 +175,41 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         }
 
         return parent::reverseViewTransform($data, $fieldType);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function getChoices(FieldType $fieldType): array
+    {
+        $choices = [];
+        $labels = $fieldType->getDisplayOption(self::LABELS_DISPLAY_OPTION) ?? '';
+        $values = $fieldType->getDisplayOption(self::VALUES_DISPLAY_OPTION);
+        if (null !== $values) {
+            $values = self::textAreaToArray($values);
+            $labels = self::textAreaToArray($labels);
+            $counter = 0;
+            foreach ($values as $value) {
+                $choices[$value] = $labels[$counter++] ?? $value;
+            }
+        }
+        $choices = \array_flip($choices);
+
+        $localePreferredFirst = $fieldType->getDisplayOption(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION);
+        if (!\is_bool($localePreferredFirst) || !$localePreferredFirst) {
+            return $choices;
+        }
+
+        $user = $this->userService->getCurrentUser(true);
+        if (!$user instanceof User || null === $localePreferred = $user->getLocalePreferred()) {
+            return $choices;
+        }
+
+        $key = \array_search($localePreferred, $choices, true);
+        if (false === $key) {
+            return $choices;
+        }
+
+        return \array_merge([$key => $localePreferred], $choices);
     }
 }

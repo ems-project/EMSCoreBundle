@@ -93,6 +93,23 @@ class I18nService implements EntityServiceInterface
         return $this->repository->findByIdentifier($name);
     }
 
+    /**
+     * @return array<string, string>
+     */
+    public function getAsChoiceList(string $name): array
+    {
+        $i18n = $this->repository->findByIdentifier($name);
+        if (null === $i18n) {
+            return [];
+        }
+        $choice = [];
+        foreach ($i18n->getContent() as $item) {
+            $choice[\strval($item['text'] ?? '')] = \strval($item['locale'] ?? '');
+        }
+
+        return $choice;
+    }
+
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         if (!$entity instanceof I18n) {

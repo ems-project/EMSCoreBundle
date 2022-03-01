@@ -35,6 +35,24 @@
           <target xml:lang="fr"> </target>
         </trans-unit>
       </group>
+      <trans-unit id="[%locale%][body2]">
+        <source xml:lang="en">
+&lt;p title="Information about Mount Hood"&gt;
+    This
+
+
+    is
+
+    Mount Hood:
+    &lt;img src="mthood.jpg" alt="Mount Hood with its snow-covered top"&gt;
+&lt;/p&gt;</source>
+        <target xml:lang="fr">&lt;p title="Information &#224; propos de Mount Hood"&gt;
+    Ceci
+    est
+    Mount
+    Hood: &lt;img src="mthood.jpg" alt="Mount Hood avec son sommet enneig&#233;"&gt;
+&lt;/p&gt;</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

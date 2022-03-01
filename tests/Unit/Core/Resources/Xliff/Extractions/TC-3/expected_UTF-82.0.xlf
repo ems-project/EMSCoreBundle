@@ -21,5 +21,11 @@
       </segment>
     </unit>
     <group id="[%locale%][body]"/>
+    <unit id="[%locale%][body2]">
+      <segment>
+        <source/>
+        <target>&lt;p&gt;Bonjour&lt;/p&gt;</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

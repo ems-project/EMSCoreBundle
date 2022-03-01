@@ -49,6 +49,22 @@
           <source xml:lang="en">All rights reserved (c) Gandalf Inc.</source>
         </trans-unit>
       </group>
+      <trans-unit id="[%locale%][body2]">
+        <source xml:lang="en">&lt;h1 class="title"&gt;Report&lt;/h1&gt;&#13;
+&lt;table border="1" width="100%"&gt;&#13;
+    &lt;tr&gt;&#13;
+        &lt;td valign="top"&gt;Text in cell r1-c1&lt;/td&gt;&#13;
+        &lt;td valign="top"&gt;Text in cell r1-c2&lt;/td&gt;&#13;
+        &lt;td valign="top"&gt;&amp;eacute; &amp;agrave; &amp;nbsp; &amp;iuml; &amp;laquo;&lt;/td&gt;&#13;
+    &lt;/tr&gt;&#13;
+    &lt;tr&gt;&#13;
+        &lt;td bgcolor="#C0C0C0"&gt;Text in cell r2-c1&lt;/td&gt;&#13;
+        &lt;td&gt;Text in cell r2-c2&lt;/td&gt;&#13;
+        &lt;td&gt;&#233; &#224; &#160; &#171; &#239;&lt;/td&gt;&#13;
+    &lt;/tr&gt;&#13;
+&lt;/table&gt;&#13;
+&lt;p&gt;All rights reserved (c) Gandalf Inc.&lt;/p&gt;</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

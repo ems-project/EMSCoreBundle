@@ -38,6 +38,7 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\PublishService;
+use EMS\CoreBundle\Service\Revision\LoggingContext;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -571,13 +572,10 @@ class DataController extends AbstractController
             if ($environment !== $revision->giveContentType()->giveEnvironment()) {
                 try {
                     $sibling = $this->dataService->getRevisionByEnvironment($ouuid, $revision->giveContentType(), $environment);
-                    $this->logger->warning('log.data.revision.cant_delete_has_published', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        'published_in' => $environment->getName(),
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                        EmsFields::LOG_REVISION_ID_FIELD => $sibling->getId(),
-                    ]);
+                    $this->logger->warning(
+                        'log.data.revision.cant_delete_has_published',
+                        LoggingContext::publish($sibling, $environment)
+                    );
                     $found = true;
                 } catch (NoResultException $e) {
                 }
@@ -703,35 +701,19 @@ class DataController extends AbstractController
             foreach ($revision->getEnvironments() as $environment) {
                 if (!$defaultOnly || $environment === $revision->giveContentType()->getEnvironment()) {
                     if ($this->indexService->indexRevision($revision, $environment)) {
-                        $this->logger->notice('log.data.revision.reindex', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                            EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        ]);
+                        $this->logger->notice('log.data.revision.reindex', LoggingContext::update($revision));
                     } else {
-                        $this->logger->warning('log.data.revision.reindex_failed_in', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                            EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        ]);
+                        $this->logger->warning('log.data.revision.reindex_failed_in', LoggingContext::update($revision));
                     }
                 }
             }
             $em->persist($revision);
             $em->flush();
         } catch (\Throwable $e) {
-            $this->logger->warning('log.data.revision.reindex_failed', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+            $this->logger->warning('log.data.revision.reindex_failed', \array_merge(LoggingContext::update($revision), [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
-            ]);
+            ]));
         }
 
         return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
@@ -907,7 +889,7 @@ class DataController extends AbstractController
                 'template_id' => $template->getId(),
                 'job_id' => $job->getId(),
                 'template_name' => $template->getName(),
-                'environment' => $env->getName(),
+                'environment' => $env->getLabel(),
             ]);
 
             return AppController::jsonResponse($request, true, [
@@ -921,6 +903,8 @@ class DataController extends AbstractController
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
+                'template_name' => $template->getName(),
+                'environment' => $env->getLabel(),
             ]);
         }
 

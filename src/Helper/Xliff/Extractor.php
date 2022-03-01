@@ -86,8 +86,11 @@ class Extractor
             $xliffAttributes = [
                 'source-language' => $this->sourceLocale,
                 'original' => $id,
-                'datatype' => 'ems-revision',
+                'datatype' => 'database',
             ];
+            if (null !== $this->targetLocale) {
+                $xliffAttributes['target-language'] = $this->targetLocale;
+            }
         } else {
             $subNode = null;
             $xliffAttributes = [
@@ -106,9 +109,19 @@ class Extractor
         return $document;
     }
 
-    public function saveXML(string $filename): bool
+    public function saveXML(string $filename, string $encoding = 'UTF-8'): bool
     {
-        return true === $this->xliff->saveXML($filename);
+        $dom = new \DOMDocument('1.0', $encoding);
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = true;
+        $xml = $this->xliff->asXML();
+        if (false === $xml) {
+            return false;
+        }
+        $dom->loadXML($xml);
+        $dom->encoding = $encoding;
+
+        return false !== $dom->save($filename);
     }
 
     public function asXML(): \SimpleXMLElement
@@ -131,7 +144,7 @@ class Extractor
             $unit->addAttribute($attribute, $value);
         }
 
-        $this->addSegment($unit, $source, $target, $isFinal);
+        $this->addSegment($unit, $this->escapeSpecialCharacters($source), null === $target ? null : $this->escapeSpecialCharacters($target), $isFinal);
     }
 
     public function addHtmlField(\SimpleXMLElement $document, string $fieldPath, string $sourceHtml, ?string $targetHtml = null, bool $isFinal = false): void
@@ -477,5 +490,10 @@ class Extractor
         }
 
         return $trimmed;
+    }
+
+    private function escapeSpecialCharacters(string $text): string
+    {
+        return \htmlspecialchars($text, ENT_QUOTES, 'UTF-8', true);
     }
 }

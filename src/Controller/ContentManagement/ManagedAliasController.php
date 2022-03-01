@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Form\Form\ManagedAliasType;
@@ -122,7 +123,7 @@ class ManagedAliasController extends AppController
      */
     private function save(ManagedAlias $managedAlias, array $actions, AliasService $aliasService): void
     {
-        $managedAlias->setAlias($this->getParameter('ems_core.instance_id'));
+        $managedAlias->setAlias(Type::string($this->getParameter('ems_core.instance_id')));
         $aliasService->updateAlias($managedAlias->getAlias(), $actions);
 
         /* @var $em EntityManager */

@@ -35,6 +35,17 @@ final class LoggingContext
     /**
      * @return array<string, int|string|null>
      */
+    public static function delete(Revision $revision): array
+    {
+        $context = self::context($revision);
+        $context[EmsFields::LOG_OPERATION_FIELD] = EmsFields::LOG_OPERATION_DELETE;
+
+        return $context;
+    }
+
+    /**
+     * @return array<string, int|string|null>
+     */
     public static function publish(Revision $revision, Environment $environment): array
     {
         $context = self::context($revision);

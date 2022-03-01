@@ -158,7 +158,8 @@ final class SubmissionController extends AbstractController
     {
         $table = new EntityTable($this->formSubmissionService, $this->generateUrl('ems_core_submission_ajax'));
         $table->addColumn('form-submission.index.column.id', 'id');
-        $table->addColumn('form-submission.index.column.label', 'instance');
+        $table->addColumn('form-submission.index.column.instance', 'instance');
+        $table->addColumn('form-submission.index.column.label', 'label');
         $table->addColumn('form-submission.index.column.form', 'name');
         $table->addColumn('form-submission.index.column.locale', 'locale');
         $table->addColumnDefinition(new DatetimeTableColumn('form-submission.index.column.created', 'created'));

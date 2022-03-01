@@ -28,11 +28,5 @@
         </segment>
       </unit>
     </group>
-    <unit id="[%locale%][body2]">
-      <segment>
-        <source>&lt;p&gt;Hello&lt;/p&gt;</source>
-        <target>&lt;p&gt;Bonjour&lt;/p&gt;</target>
-      </segment>
-    </unit>
   </file>
 </xliff>

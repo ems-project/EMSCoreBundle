@@ -40,25 +40,5 @@
         </segment>
       </unit>
     </group>
-    <unit id="[%locale%][body2]">
-      <segment>
-        <source>
-&lt;p title="Information about Mount Hood"&gt;
-    This
-
-
-    is
-
-    Mount Hood:
-    &lt;img src="mthood.jpg" alt="Mount Hood with its snow-covered top"&gt;
-&lt;/p&gt;</source>
-        <target>&lt;p title="Information à propos de Mount Hood"&gt;
-    Ceci
-    est
-    Mount
-    Hood: &lt;img src="mthood.jpg" alt="Mount Hood avec son sommet enneigé"&gt;
-&lt;/p&gt;</target>
-      </segment>
-    </unit>
   </file>
 </xliff>

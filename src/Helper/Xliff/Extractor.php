@@ -111,7 +111,7 @@ class Extractor
 
     public function saveXML(string $filename, string $encoding = 'UTF-8'): bool
     {
-        $dom = new \DOMDocument('1.0', $encoding);
+        $dom = new \DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         $xml = $this->xliff->asXML();
@@ -119,6 +119,7 @@ class Extractor
             return false;
         }
         $dom->loadXML($xml);
+        $dom->encoding = $encoding;
 
         return false !== $dom->save($filename);
     }

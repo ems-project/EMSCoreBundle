@@ -362,7 +362,7 @@ class ContentTypeController extends AppController
         if ($request->isMethod('POST')) {
             $form = $request->get('form');
             if (isset($form['contentTypeNames']) && \is_array($form['contentTypeNames'])) {
-                $counter = 0;
+                $counter = 1;
                 foreach ($form['contentTypeNames'] as $name) {
                     /** @var ContentType $contentType */
                     $contentType = $contentTypeRepository->findOneBy([

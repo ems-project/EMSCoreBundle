@@ -58,6 +58,7 @@ final class PostProcessingService
             '_source' => &$objectArray, //if update also update the context
             '_type' => $contentType->getName(),
             'index' => $contentType->getEnvironment()->getAlias(),
+            'alias' => $contentType->getEnvironment()->getAlias(),
             'parent' => $parent,
             'path' => $path,
             'form' => $form,

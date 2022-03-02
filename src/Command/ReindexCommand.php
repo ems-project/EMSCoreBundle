@@ -187,6 +187,8 @@ class ReindexCommand extends EmsCommand
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         ]);
                     } else {
+                        $this->dataService->reloadData($revision);
+
                         $rawData = $revision->getRawData();
                         $this->bulker->index($contentType->getName(), $revision->getOuuid(), $index, $rawData);
                     }

@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;

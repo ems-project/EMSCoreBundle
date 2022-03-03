@@ -1182,7 +1182,7 @@ class Revision implements EntityInterface
         return $this->versionUuid;
     }
 
-    public function getVersionDate(string $field): ?\DateTimeInterface
+    public function getVersionDate(string $field): ?\DateTimeImmutable
     {
         if (null === $contentType = $this->contentType) {
             throw new \RuntimeException(\sprintf('ContentType not found for revision %d', $this->getId()));

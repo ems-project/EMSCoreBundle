@@ -152,6 +152,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_revision_merge', [RevisionRuntime::class, 'mergeRevision']),
             new TwigFunction('emsco_json_menu_nested', [JsonMenuRenderer::class, 'generateNested'], ['is_safe' => ['html']]),
             new TwigFunction('emsco_wysiwyg_info', [WysiwygRuntime::class, 'getInfo']),
+            new TwigFunction('emsco_i18n_all', [I18nRuntime::class, 'findAll']),
         ];
     }
 
@@ -323,9 +324,6 @@ class AppExtension extends AbstractExtension
             if (null !== $a) {
                 $textLabel = ($escape ? \htmlentities($a) : $this->internalLinks($a));
             } else {
-//                $textClass = 'text-gray';
-//                $textLabel = '[not defined]';
-//                $tag = 'span';
                 return '<span class="text-gray">[not defined]</span>';
             }
         }

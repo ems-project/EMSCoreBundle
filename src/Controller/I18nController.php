@@ -97,7 +97,6 @@ class I18nController extends AbstractController
      */
     public function editAction(Request $request, I18n $i18n)
     {
-//         $deleteForm = $this->createDeleteForm($i18n);
         if (empty($i18n->getContent())) {
             $i18n->setContent([
                 [

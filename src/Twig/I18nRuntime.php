@@ -16,19 +16,23 @@ class I18nRuntime implements RuntimeExtensionInterface
     }
 
     /**
-     * @return array<int|string, mixed>
+     * @return array<string, mixed>
      */
     public function findAll(string $name, bool $jsonDecode = false): array
     {
         $i18n = $this->i18nService->getByItemName($name);
 
-        $content = [];
-
-        if ($i18n) {
-            \array_map(function ($element) use ($jsonDecode, &$content) {
-                $content[$element['locale']] = $jsonDecode ? Json::decode($element['text']) : $element['text'];
-            }, $i18n->getContent());
+        if (null === $i18n) {
+            return [];
         }
+
+        $content = [];
+        \array_map(function ($element) use ($jsonDecode, &$content) {
+            if (!\is_string($element['locale'])) {
+                throw new \RuntimeException('Unexpected non string locale');
+            }
+            $content[$element['locale']] = $jsonDecode ? Json::decode($element['text']) : $element['text'];
+        }, $i18n->getContent());
 
         return $content;
     }

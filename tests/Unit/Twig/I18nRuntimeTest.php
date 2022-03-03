@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Tests\Twig;
 
-use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Service\I18nService;
 use EMS\CoreBundle\Twig\I18nRuntime;
@@ -50,28 +49,23 @@ class I18nRuntimeTest extends TestCase
         $this->assertEquals($content, $result);
     }
 
-    public function testFindAllDecodeTrue()
+    public function testFindAllThrowsRunTimeException()
     {
-        $i18n = $this->getResults('config');
+        $i18n = $this->getResults('invalid');
 
         $this->service
             ->expects($this->once())
             ->method('getByItemName')
             ->willReturn($i18n);
 
-        $decodedContent = [];
-        foreach ($i18n->getContent() as $content) {
-            $decodedContent[$content['locale']] = Json::decode($content['text']);
-        }
-
-        $result = $this->i18nRuntime->findAll('config', true);
-
-        $this->assertEquals($decodedContent, $result);
+        $this->expectException(\RuntimeException::class);
+        $this->i18nRuntime->findAll('config');
     }
 
     private function getResults(string $name = null)
     {
         $dbResults = [
+            ['id' => 8, 'created' => '2022-03-02 14:44:56', 'modified' => '2022-03-02 14:44:56', 'identifier' => 'invalid', 'content' => [['locale' => 0, 'text' => '{"locales": ["en", "fr","nl","de"]}']]],
             ['id' => 8, 'created' => '2022-03-02 14:44:56', 'modified' => '2022-03-02 14:44:56', 'identifier' => 'config', 'content' => [['locale' => 'en', 'text' => '{"locales": ["en", "fr","nl","de"]}']]],
         ];
 

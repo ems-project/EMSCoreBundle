@@ -15,6 +15,11 @@ class I18nRuntime implements RuntimeExtensionInterface
         $this->i18nService = $i18nService;
     }
 
+    /**
+     * @param string $name
+     * @param bool $jsonDecode
+     * @return array<array>
+     */
     public function findAll(string $name, bool $jsonDecode = false): array
     {
         $i18n = $this->i18nService->getByItemName($name);

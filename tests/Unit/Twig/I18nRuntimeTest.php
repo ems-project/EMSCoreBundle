@@ -67,15 +67,7 @@ class I18nRuntimeTest extends TestCase
     private function getResults(string $name = null)
     {
         $dbResults = [
-            ["id" => 8, "created" => "2022-03-02 14:44:56", "modified" => "2022-03-02 14:44:56", "identifier" => "config", "content" => [["locale" => "en", "text" => '
-            {
-              "locales": [
-                "en",
-                "fr",
-                "nl",
-                "de"
-              ]
-            }']]]
+            ["id" => 8, "created" => "2022-03-02 14:44:56", "modified" => "2022-03-02 14:44:56", "identifier" => "config", "content" => [["locale" => "en", "text" => '{"locales": ["en", "fr","nl","de"]}']]]
         ];
 
         $results = [];
@@ -97,3 +89,4 @@ class I18nRuntimeTest extends TestCase
         return $results;
     }
 }
+

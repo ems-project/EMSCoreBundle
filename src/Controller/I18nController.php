@@ -139,3 +139,4 @@ class I18nController extends AbstractController
     }
 
 }
+

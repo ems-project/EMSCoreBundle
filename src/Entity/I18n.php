@@ -125,6 +125,7 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
 
     /**
      * Set content.
+     * array<locale: string, text: string> $content
      */
     public function setContent(array $content): I18n
     {

@@ -37,6 +37,9 @@ class PublishController extends AbstractController
      */
     public function publishToAction(Revision $revisionId, Environment $envId, PublishService $publishService): Response
     {
+        $revision = $revisionId;
+        $environment = $envId;
+
         $contentType = $revisionId->getContentType();
         if (null === $contentType) {
             throw new \RuntimeException('Content type not found');
@@ -46,15 +49,19 @@ class PublishController extends AbstractController
         }
 
         try {
-            $publishService->publish($revisionId, $envId);
+            if ($revisionId->hasVersionTag()) {
+                $publishService->publishAndAlignVersions($revision, $environment);
+            } else {
+                $publishService->publish($revision, $environment);
+            }
         } catch (NonUniqueResultException $e) {
             throw new NotFoundHttpException('Revision not found');
         }
 
         return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
-            'ouuid' => $revisionId->getOuuid(),
+            'ouuid' => $revision->getOuuid(),
             'type' => $contentType->getName(),
-            'revisionId' => $revisionId->getId(),
+            'revisionId' => $revision->getId(),
         ]);
     }
 

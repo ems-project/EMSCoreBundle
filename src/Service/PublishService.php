@@ -8,6 +8,7 @@ use Doctrine\DBAL\Statement;
 use Doctrine\ORM\NonUniqueResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Elasticsearch\Bulker;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
@@ -73,66 +74,13 @@ class PublishService
         $this->bulker = $bulker;
     }
 
-    /**
-     * @param string $type
-     * @param string $ouuid
-     * @param string $environmentSource
-     * @param string $environmentTarget
-     *
-     * @throws DBALException
-     * @throws NonUniqueResultException
-     */
-    public function alignRevision($type, $ouuid, $environmentSource, $environmentTarget)
+    public function alignRevision(string $contentTypeName, string $ouuid, string $environmentSourceName, string $environmentTargetName)
     {
-        if ($this->contentTypeService->giveByName($type)->getEnvironment()->getName() === $environmentTarget) {
-            $this->logger->warning('service.publish.not_in_default_environment', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $type,
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget,
-            ]);
+        $contentType = $this->contentTypeService->giveByName($contentTypeName);
+        $environmentSourceName = $this->environmentService->giveByName($environmentSourceName);
+        $environmentTargetName = $this->environmentService->giveByName($environmentTargetName);
 
-            return;
-        }
-        $contentType = $this->contentTypeService->giveByName($type);
-
-        if (!$this->authorizationChecker->isGranted($contentType->getPublishRole())) {
-            $this->logger->warning('service.publish.not_authorized', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $type,
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget,
-            ]);
-
-            return;
-        }
-
-        $revision = $this->revRepository->findByOuuidAndContentTypeAndEnvironment(
-            $contentType,
-            $ouuid,
-            $this->environmentService->getByName($environmentSource)
-        );
-
-        if (!$revision) {
-            $this->logger->warning('service.publish.revision_not_found_in_source', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $type,
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget,
-            ]);
-        } else {
-            $target = $this->environmentService->getByName($environmentTarget);
-
-            $toClean = $this->revRepository->findByOuuidAndContentTypeAndEnvironment(
-                $contentType,
-                $ouuid,
-                $target
-            );
-
-            if ($toClean !== $revision) {
-                if ($toClean) {
-                    $this->unpublish($toClean, $target);
-                }
-                $this->publish($revision, $target);
-            }
-        }
+        $this->runAlignRevision($ouuid, $contentType, $environmentSourceName, $environmentTargetName);
     }
 
     public function silentPublish(Revision $revision)
@@ -239,24 +187,7 @@ class PublishService
     public function publish(Revision $revision, Environment $environment, $command = false)
     {
         $logContext = LoggingContext::publish($revision, $environment);
-        if (!$command) {
-            $user = $this->userService->getCurrentUser();
-            if (!empty($environment->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(\array_intersect($environment->getCircles(), $user->getCircles()))) {
-                $this->logger->warning('service.publish.not_in_circles', $logContext);
-
-                return 0;
-            }
-
-            if (!$this->authorizationChecker->isGranted($revision->giveContentType()->getPublishRole())) {
-                $this->logger->warning('service.publish.not_authorized', $logContext);
-
-                return 0;
-            }
-        }
-
-        if ($revision->giveContentType()->giveEnvironment() === $environment && !empty($revision->getEndTime())) {
-            $this->logger->warning('service.publish.not_in_default_environment', $logContext);
-
+        if (!$command && !$this->canPublish($revision, $environment)) {
             return 0;
         }
 
@@ -304,6 +235,25 @@ class PublishService
         }
 
         return $already ? 0 : 1;
+    }
+
+    public function publishAndAlignVersions(Revision $revision, Environment $environment): void
+    {
+        if (!$this->canPublish($revision, $environment)) {
+            return;
+        }
+
+        if (null === $versionUuid = $revision->getVersionUuid()) {
+            throw new \RuntimeException('Revision missing version uuid!');
+        }
+
+        $contentType = $revision->giveContentType();
+        $defaultEnvironment = $contentType->giveEnvironment();
+        $revisions = $this->revRepository->findAllByVersionUuid($versionUuid, $defaultEnvironment);
+
+        foreach ($revisions as $revision) {
+            $this->runAlignRevision($revision->getOuuid(), $contentType, $defaultEnvironment, $environment);
+        }
     }
 
     /**
@@ -367,6 +317,82 @@ class PublishService
         }
         if (!$command) {
             $this->logger->info('log.data.revision.unpublish', LoggingContext::delete($revision));
+        }
+    }
+
+    private function canPublish(Revision $revision, Environment $environment): bool
+    {
+        $logContext = LoggingContext::publish($revision, $environment);
+
+        $user = $this->userService->getCurrentUser();
+        if (!empty($environment->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(\array_intersect($environment->getCircles(), $user->getCircles()))) {
+            $this->logger->warning('service.publish.not_in_circles', $logContext);
+
+            return false;
+        }
+
+        if (!$this->authorizationChecker->isGranted($revision->giveContentType()->getPublishRole())) {
+            $this->logger->warning('service.publish.not_authorized', $logContext);
+
+            return false;
+        }
+
+        if ($revision->giveContentType()->giveEnvironment() === $environment && !empty($revision->getEndTime())) {
+            $this->logger->warning('service.publish.not_in_default_environment', $logContext);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private function runAlignRevision(string $ouuid, ContentType $contentType, Environment $environmentSource, Environment $environmentTarget): void
+    {
+        if ($contentType->giveEnvironment()->getName() === $environmentTarget->getName()) {
+            $this->logger->warning('service.publish.not_in_default_environment', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget,
+            ]);
+
+            return;
+        }
+
+        if (!$this->authorizationChecker->isGranted($contentType->getPublishRole())) {
+            $this->logger->warning('service.publish.not_authorized', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget->getName(),
+            ]);
+
+            return;
+        }
+
+        $revision = $this->revRepository->findByOuuidAndContentTypeAndEnvironment(
+            $contentType,
+            $ouuid,
+            $environmentSource
+        );
+
+        if (!$revision) {
+            $this->logger->warning('service.publish.revision_not_found_in_source', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget->getName(),
+            ]);
+        } else {
+            $toClean = $this->revRepository->findByOuuidAndContentTypeAndEnvironment(
+                $contentType,
+                $ouuid,
+                $environmentTarget
+            );
+
+            if ($toClean !== $revision) {
+                if ($toClean) {
+                    $this->unpublish($toClean, $environmentTarget);
+                }
+                $this->publish($revision, $environmentTarget);
+            }
         }
     }
 }

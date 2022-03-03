@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
@@ -14,6 +15,7 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\Revision;
+use Ramsey\Uuid\UuidInterface;
 
 class RevisionRepository extends EntityRepository
 {
@@ -1050,5 +1052,28 @@ class RevisionRepository extends EntityRepository
         $query = $qb->getQuery();
 
         return \intval($query->getSingleScalarResult());
+    }
+
+    /**
+     * @return Revision[]
+     */
+    public function findAllByVersionUuid(UuidInterface $versionUuid, Environment $defaultEnvironment): array
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->addSelect('e')
+            ->join('r.contentType', 'c')
+            ->join('r.environments', 'e')
+            ->andWhere($qb->expr()->eq('e.id', ':environment_id'))
+            ->andWhere($qb->expr()->eq('r.versionUuid', ':version_uuid'))
+            ->andWhere($qb->expr()->eq('c.deleted', $qb->expr()->literal(false)))
+            ->andWhere($qb->expr()->eq('c.active', $qb->expr()->literal(true)))
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
+            ->setParameters([
+                'version_uuid' => $versionUuid,
+                'environment_id' => $defaultEnvironment->getId(),
+            ]);
+
+        return $qb->getQuery()->execute();
     }
 }

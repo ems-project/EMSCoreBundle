@@ -42,7 +42,12 @@ class I18nRuntimeTest extends TestCase
 
         $result = $this->i18nRuntime->findAll('config');
 
-        $this->assertEquals($i18n->getContent(), $result);
+        $content = [];
+        \array_map(function ($element) use (&$content) {
+            $content[$element['locale']] = $element['text'];
+        }, $i18n->getContent());
+
+        $this->assertEquals($content, $result);
     }
 
     public function testFindAllDecodeTrue()
@@ -56,7 +61,7 @@ class I18nRuntimeTest extends TestCase
 
         $decodedContent = [];
         foreach ($i18n->getContent() as $content) {
-            $decodedContent[] = ['locale' => $content['locale'], 'text' => Json::decode($content['text'])];
+            $decodedContent[$content['locale']] = Json::decode($content['text']);
         }
 
         $result = $this->i18nRuntime->findAll('config', true);

@@ -16,21 +16,20 @@ class I18nRuntime implements RuntimeExtensionInterface
     }
 
     /**
-     * @return array<array>
+     * @return array<int|string, mixed>
      */
     public function findAll(string $name, bool $jsonDecode = false): array
     {
         $i18n = $this->i18nService->getByItemName($name);
 
-        if ($i18n && $jsonDecode) {
-            $decodedContent = [];
-            foreach ($i18n->getContent() as $content) {
-                $decodedContent[] = ['locale' => $content['locale'], 'text' => Json::decode($content['text'])];
-            }
+        $content = [];
 
-            return $decodedContent;
+        if ($i18n) {
+            \array_map(function ($element) use ($jsonDecode, &$content) {
+                $content[$element['locale']] = $jsonDecode ? Json::decode($element['text']) : $element['text'];
+            }, $i18n->getContent());
         }
 
-        return $i18n ? $i18n->getContent() : [];
+        return $content;
     }
 }

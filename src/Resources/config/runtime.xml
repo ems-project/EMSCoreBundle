@@ -25,5 +25,10 @@
             <tag name="twig.runtime" />
         </service>
 
+        <service id="ems.twig.runtime.i18n" class="EMS\CoreBundle\Twig\I18nRuntime">
+            <argument type="service" id="ems.service.i18n"></argument>
+            <tag name="twig.runtime" />
+        </service>
+
     </services>
 </container>

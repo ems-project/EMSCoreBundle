@@ -130,7 +130,7 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
      *
      * @return I18n
      */
-    public function setContent($content)
+    public function setContent(array $content): I18n
     {
         $this->content = $content;
 
@@ -142,7 +142,7 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
      *
      * @return array
      */
-    public function getContent()
+    public function getContent(): array
     {
         return $this->content;
     }

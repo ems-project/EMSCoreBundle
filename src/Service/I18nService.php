@@ -88,7 +88,7 @@ class I18nService implements EntityServiceInterface
         return $this->repository->counter($searchValue);
     }
 
-    public function getByItemName(string $name): ?EntityInterface
+    public function getByItemName(string $name): ?I18n
     {
         return $this->repository->findByIdentifier($name);
     }

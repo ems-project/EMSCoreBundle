@@ -57,8 +57,8 @@ final class PostProcessingService
         $context = \array_merge($context, [
             '_source' => &$objectArray, //if update also update the context
             '_type' => $contentType->getName(),
-            'index' => $contentType->getEnvironment()->getAlias(),
-            'alias' => $contentType->getEnvironment()->getAlias(),
+            'index' => $contentType->giveEnvironment()->getAlias(),
+            'alias' => $contentType->giveEnvironment()->getAlias(),
             'parent' => $parent,
             'path' => $path,
             'form' => $form,

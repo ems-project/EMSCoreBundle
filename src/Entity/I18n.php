@@ -125,10 +125,6 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
 
     /**
      * Set content.
-     *
-     * @param array $content
-     *
-     * @return I18n
      */
     public function setContent(array $content): I18n
     {
@@ -139,8 +135,6 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
 
     /**
      * Get content.
-     *
-     * @return array
      */
     public function getContent(): array
     {

@@ -144,4 +144,3 @@ class I18nService implements EntityServiceInterface
         return \strval($id);
     }
 }
-

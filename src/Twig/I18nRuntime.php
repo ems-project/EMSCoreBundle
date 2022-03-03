@@ -16,8 +16,6 @@ class I18nRuntime implements RuntimeExtensionInterface
     }
 
     /**
-     * @param string $name
-     * @param bool $jsonDecode
      * @return array<array>
      */
     public function findAll(string $name, bool $jsonDecode = false): array
@@ -29,6 +27,7 @@ class I18nRuntime implements RuntimeExtensionInterface
             foreach ($i18n->getContent() as $content) {
                 $decodedContent[] = ['locale' => $content['locale'], 'text' => Json::decode($content['text'])];
             }
+
             return $decodedContent;
         }
 

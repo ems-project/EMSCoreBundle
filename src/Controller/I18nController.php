@@ -137,6 +137,4 @@ class I18nController extends AbstractController
 
         return $this->redirectToRoute('i18n_index');
     }
-
 }
-

@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Common\ArrayHelper\RecursiveMapper;
+use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Service\Mapping;
@@ -899,7 +900,7 @@ class Revision implements EntityInterface
         $rawData = $this->rawData ?? [];
 
         if (null !== $this->versionUuid) {
-            $rawData[Mapping::VERSION_UUID] = $this->versionUuid;
+            $rawData[Mapping::VERSION_UUID] = $this->versionUuid->toString();
         }
 
         return $rawData;
@@ -1013,15 +1014,43 @@ class Revision implements EntityInterface
 
     public function getLabel(): string
     {
+        $label = $this->createLabel();
+
+        if (null !== $this->versionUuid) {
+            $from = $this->getVersionDate('from');
+            $toDate = $this->getVersionDate('to');
+
+            return \vsprintf('%s - %s (%s%s)', [
+                $this->versionTag,
+                $label,
+                ($from ? $from->format('d/m/Y') : ''),
+                ($toDate ? ' - '.$toDate->format('d/m/Y') : ''),
+            ]);
+        }
+
+        return $label;
+    }
+
+    private function createLabel(): string
+    {
+        if (null !== $rawDataLabel = $this->createLabelFromRawData()) {
+            return $rawDataLabel;
+        }
+
         if (null !== $labelField = $this->getLabelField()) {
             return $labelField;
         }
 
+        return '';
+    }
+
+    private function createLabelFromRawData(): ?string
+    {
         $contentType = $this->giveContentType();
         $contentTypeLabelField = $contentType->getLabelField();
 
         if (null === $contentTypeLabelField) {
-            return '';
+            return null;
         }
 
         $label = $this->rawData[$contentTypeLabelField] ?? null;
@@ -1034,7 +1063,7 @@ class Revision implements EntityInterface
             return $label;
         }
 
-        return '';
+        return null;
     }
 
     public function setLabelField(?string $labelField): self

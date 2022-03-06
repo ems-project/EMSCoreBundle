@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Tests\Twig;
 
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Service\I18nService;
+use EMS\CoreBundle\Service\UserService;
 use EMS\CoreBundle\Twig\I18nRuntime;
 use PHPUnit\Framework\TestCase;
 
@@ -14,13 +15,14 @@ class I18nRuntimeTest extends TestCase
 
     public function setUp(): void
     {
-        $this->service = $this->createMock(I18nService::class);
-        $this->i18nRuntime = new I18nRuntime($this->service);
+        $this->i18nService = $this->createMock(I18nService::class);
+        $this->userService = $this->createMock(UserService::class);
+        $this->i18nRuntime = new I18nRuntime($this->i18nService, $this->userService, 'en');
     }
 
     public function testFindAllI18nIsNull()
     {
-        $this->service
+        $this->i18nService
             ->expects($this->once())
             ->method('getByItemName')
             ->willReturn(null);
@@ -34,7 +36,7 @@ class I18nRuntimeTest extends TestCase
     {
         $i18n = $this->getResults('config');
 
-        $this->service
+        $this->i18nService
             ->expects($this->once())
             ->method('getByItemName')
             ->willReturn($i18n);
@@ -53,13 +55,27 @@ class I18nRuntimeTest extends TestCase
     {
         $i18n = $this->getResults('invalid');
 
-        $this->service
+        $this->i18nService
             ->expects($this->once())
             ->method('getByItemName')
             ->willReturn($i18n);
 
         $this->expectException(\RuntimeException::class);
         $this->i18nRuntime->findAll('config');
+    }
+
+    public function testFallbackLocale()
+    {
+        $this->i18nService
+            ->expects($this->once())
+            ->method('getAsList')
+            ->willReturn([
+                'en' => 'hello in en',
+                'fr' => 'hello in fr',
+            ]);
+
+        $value = $this->i18nRuntime->i18n('config', 'nl');
+        $this->assertEquals('hello in en', $value);
     }
 
     private function getResults(string $name = null)

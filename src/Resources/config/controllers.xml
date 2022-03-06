@@ -210,5 +210,10 @@
             <argument type="service" id="ems.service.contenttype" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\JobController" public="true">
+            <argument type="service" id="ems.logger" />
+            <argument type="service" id="ems.service.job" />
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

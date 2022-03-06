@@ -21,7 +21,9 @@
               	{{ form_row(form.layoutBoxed) }}
               	{{ form_row(form.sidebarMini) }}
               	{{ form_row(form.sidebarCollapse) }}
-              	
+              	{{ form_row(form.locale) }}
+              	{{ form_row(form.localePreferred) }}
+
               	{% if form.wysiwygProfile is defined %}
 		    		{% include "@EMSCore/user/wysiwygOptions.html.twig" with {
 						form: form

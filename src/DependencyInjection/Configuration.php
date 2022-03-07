@@ -43,6 +43,7 @@ class Configuration implements ConfigurationInterface
     public const SAVE_ASSETS_IN_DB = false;
     public const DEFAULT_BULK_SIZE = 500;
     public const CLEAN_JOBS_TIME_STRING = '-7 days';
+    public const FALLBACK_LOCALE = 'en';
 
     /**
      * {@inheritdoc}
@@ -93,6 +94,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('default_bulk_size')->defaultValue(self::DEFAULT_BULK_SIZE)->end()
             ->scalarNode('url_user')->defaultValue(null)->end()
             ->scalarNode('clean_jobs_time_string')->defaultValue(self::CLEAN_JOBS_TIME_STRING)->end()
+            ->scalarNode('fallback_locale')->defaultValue(self::FALLBACK_LOCALE)->end()
             ->arrayNode('ldap')
             ->children()
             ->scalarNode('base_dn')->end()

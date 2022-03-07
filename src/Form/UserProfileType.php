@@ -8,7 +8,9 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -32,6 +34,20 @@ class UserProfileType extends AbstractType
             ->add('layoutBoxed')
             ->add('sidebarMini')
             ->add('sidebarCollapse')
+            ->add('locale', ChoiceType::class, [
+                'label' => 'user.locale',
+                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+                'required' => true,
+                'choices' => [Locales::getName('en') => 'en'],
+                'choice_translation_domain' => false,
+            ])
+            ->add('localePreferred', ChoiceType::class, [
+                'label' => 'user.locale_preferred',
+                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+                'required' => false,
+                'choices' => \array_flip(Locales::getNames()),
+                'choice_translation_domain' => false,
+            ])
             ->remove('username');
 
         $builder

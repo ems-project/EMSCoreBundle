@@ -39,8 +39,10 @@
             prefix="/api/admin" />
     <import resource="@EMSCoreBundle/Resources/config/routing/api/meta.xml"
             prefix="/api/meta" />
-    <import resource="@EMSCoreBundle/Resources/config/routing/view.xml"
+    <import resource="@EMSCoreBundle/Resources/config/routing/admin-view.xml"
             prefix="/admin/view" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/views.xml"
+            prefix="/views" />
     <import resource="@EMSCoreBundle/Resources/config/routing/admin-job.xml"
             prefix="/admin/job" />
     <import resource="@EMSCoreBundle/Resources/config/routing/job.xml"

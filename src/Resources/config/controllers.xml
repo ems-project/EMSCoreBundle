@@ -215,5 +215,25 @@
             <argument type="service" id="ems.service.job" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Views\CalendarController" public="true">
+            <argument type="service" id="ems.logger" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.search" />
+        </service>
+        <service id="EMS\CoreBundle\Controller\Views\CriteriaController" public="true">
+            <argument type="service" id="ems.logger" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.form.factories.objectChoiceListFactory" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+        </service>
+        <service id="EMS\CoreBundle\Controller\Views\HierarchicalController" public="true">
+            <argument type="service" id="ems.logger" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.search" />
+        </service>
     </services>
 </container>

@@ -79,6 +79,32 @@
             <argument type="service" id="ems.service.file"/>
             <tag name="console.command"/>
         </service>
+
+        <service id="fos_user.command.activate_user" class="EMS\CoreBundle\Command\User\ActivateUserCommand">
+            <argument type="service" id="fos_user.util.user_manipulator" />
+            <tag name="console.command" command="fos:user:activate" />
+        </service>
+        <service id="fos_user.command.change_password" class="EMS\CoreBundle\Command\User\ChangePasswordCommand">
+            <argument type="service" id="fos_user.util.user_manipulator" />
+            <tag name="console.command" command="fos:user:change-password" />
+        </service>
+        <service id="fos_user.command.create_user" class="EMS\CoreBundle\Command\User\CreateUserCommand">
+            <argument type="service" id="fos_user.util.user_manipulator" />
+            <tag name="console.command" command="fos:user:create" />
+        </service>
+        <service id="fos_user.command.deactivate_user" class="EMS\CoreBundle\Command\User\DeactivateUserCommand">
+            <argument type="service" id="fos_user.util.user_manipulator" />
+            <tag name="console.command" command="fos:user:deactivate" />
+        </service>
+        <service id="fos_user.command.demote_user" class="EMS\CoreBundle\Command\User\DemoteUserCommand">
+            <argument type="service" id="fos_user.util.user_manipulator" />
+            <tag name="console.command" command="fos:user:demote" />
+        </service>
+        <service id="fos_user.command.promote_user" class="EMS\CoreBundle\Command\User\PromoteUserCommand">
+            <argument type="service" id="fos_user.util.user_manipulator" />
+            <tag name="console.command" command="fos:user:promote" />
+        </service>
+        
         <service id="ems.command.xliff.extract" class="EMS\CoreBundle\Command\Xliff\ExtractCommand">
             <argument type="service" id="ems.service.contenttype"/>
             <argument type="service" id="ems.service.environment"/>

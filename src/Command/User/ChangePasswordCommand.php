@@ -9,21 +9,19 @@
  * file that was distributed with this source code.
  */
 
-namespace FOS\UserBundle\Command;
+namespace EMS\CoreBundle\Command\User;
 
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-/**
- * @author Lenar Lõhmus <lenar@city.ee>
- */
-abstract class RoleCommand extends Command
+class ChangePasswordCommand extends Command
 {
+    protected static $defaultName = 'fos:user:change-password';
+
     private $userManipulator;
 
     public function __construct(UserManipulator $userManipulator)
@@ -39,11 +37,25 @@ abstract class RoleCommand extends Command
     protected function configure(): void
     {
         $this
+            ->setName('fos:user:change-password')
+            ->setDescription('Change the password of a user.')
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
-                new InputArgument('role', InputArgument::OPTIONAL, 'The role'),
-                new InputOption('super', null, InputOption::VALUE_NONE, 'Instead specifying role, use this to quickly add the super administrator role'),
-            ]);
+                new InputArgument('password', InputArgument::REQUIRED, 'The password'),
+            ])
+            ->setHelp(<<<'EOT'
+The <info>fos:user:change-password</info> command changes the password of a user:
+
+  <info>php %command.full_name% matthieu</info>
+
+This interactive shell will first ask you for a password.
+
+You can alternatively specify the password as a second argument:
+
+  <info>php %command.full_name% matthieu mypassword</info>
+
+EOT
+            );
     }
 
     /**
@@ -52,31 +64,14 @@ abstract class RoleCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = \strval($input->getArgument('username'));
-        $role = \strval($input->getArgument('role'));
-        $super = (true === $input->getOption('super'));
+        $password = \strval($input->getArgument('password'));
 
-        if ($super && $role) {
-            throw new \InvalidArgumentException('You can pass either the role or the --super option (but not both simultaneously).');
-        }
+        $this->userManipulator->changePassword($username, $password);
 
-        if (!$super && !$role) {
-            throw new \RuntimeException('Not enough arguments.');
-        }
-
-        $manipulator = $this->userManipulator;
-        $this->executeRoleCommand($manipulator, $output, $username, $super, $role);
+        $output->writeln(\sprintf('Changed password for user <comment>%s</comment>', $username));
 
         return 1;
     }
-
-    /**
-     * @see Command
-     *
-     * @param string $username
-     * @param bool   $super
-     * @param string $role
-     */
-    abstract protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, $username, $super, $role): void;
 
     /**
      * {@inheritdoc}
@@ -86,7 +81,7 @@ abstract class RoleCommand extends Command
         $questions = [];
 
         if (!$input->getArgument('username')) {
-            $question = new Question('Please choose a username:');
+            $question = new Question('Please give the username:');
             $question->setValidator(function ($username) {
                 if (empty($username)) {
                     throw new \Exception('Username can not be empty');
@@ -97,16 +92,17 @@ abstract class RoleCommand extends Command
             $questions['username'] = $question;
         }
 
-        if ((true !== $input->getOption('super')) && !$input->getArgument('role')) {
-            $question = new Question('Please choose a role:');
-            $question->setValidator(function ($role) {
-                if (empty($role)) {
-                    throw new \Exception('Role can not be empty');
+        if (!$input->getArgument('password')) {
+            $question = new Question('Please enter the new password:');
+            $question->setValidator(function ($password) {
+                if (empty($password)) {
+                    throw new \Exception('Password can not be empty');
                 }
 
-                return $role;
+                return $password;
             });
-            $questions['role'] = $question;
+            $question->setHidden(true);
+            $questions['password'] = $question;
         }
 
         foreach ($questions as $name => $question) {

@@ -303,6 +303,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected ?string $deleteRole = null;
 
     /**
+     * @ORM\Column(name="archive_role", type="string", length=100, nullable=true)
+     */
+    protected ?string $archiveRole = null;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="trash_role", type="string", length=100, nullable=true)
@@ -1639,6 +1644,23 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function setDeleteRole(?string $deleteRole): ContentType
     {
         $this->deleteRole = $deleteRole;
+
+        return $this;
+    }
+
+    public function hasArchiveRole(): bool
+    {
+        return null !== $this->archiveRole;
+    }
+
+    public function getArchiveRole(): ?string
+    {
+        return $this->archiveRole;
+    }
+
+    public function setArchiveRole(?string $archiveRole): ContentType
+    {
+        $this->archiveRole = $archiveRole;
 
         return $this;
     }

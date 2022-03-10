@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Revision;
 
 use EMS\CommonBundle\Common\ArrayHelper\RecursiveMapper;
+use EMS\CommonBundle\Common\Standard\Base64;
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Json\JsonMenuNested;
 use EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer;
@@ -57,7 +58,15 @@ final class JsonMenuNestedController extends AbstractController
             throw new \RuntimeException(\sprintf('Max depth is %d', $maxDepth));
         }
 
-        $data = RawDataTransformer::transform($fieldType, $requestData['object'] ?? []);
+        $defaultObject = [];
+        $defaultData = $requestData['defaultData'] ?? null;
+        if ($defaultData) {
+            $defaultObject = Json::decode(Base64::decode($defaultData));
+        }
+
+        $object = $requestData['object'] ?? $defaultObject;
+
+        $data = RawDataTransformer::transform($fieldType, $object);
         $data['label'] = $requestData['object']['label'] ?? null;
 
         $form = $this->createForm(RevisionJsonMenuNestedType::class, ['data' => $data], [

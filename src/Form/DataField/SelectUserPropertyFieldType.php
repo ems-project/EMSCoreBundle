@@ -69,6 +69,8 @@ final class SelectUserPropertyFieldType extends DataFieldType
             'user_property' => $options['user_property'],
             'user_roles' => $options['user_roles'],
             'event_dispatcher' => $builder->getEventDispatcher(),
+            'required' => false,
+            'empty_data' => $options['multiple'] ? [] : null,
         ]);
     }
 

@@ -1,25 +1,10 @@
 <?php
 
-/*
- * This file is part of the FOSUserBundle package.
- *
- * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EMS\CoreBundle\Command\User;
 
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * @author Matthieu Bontemps <matthieu@knplabs.com>
- * @author Thibault Duplessis <thibault.duplessis@gmail.com>
- * @author Luis Cordova <cordoval@gmail.com>
- * @author Lenar Lõhmus <lenar@city.ee>
- */
 class PromoteUserCommand extends RoleCommand
 {
     protected static $defaultName = 'fos:user:promote';

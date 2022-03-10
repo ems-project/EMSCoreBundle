@@ -223,13 +223,16 @@ export default class JsonMenuNested {
                     }
                 };
 
+                const params = new URLSearchParams(window.location.search);
+
                 let addModal = ajaxModal.load({
                     url: node.urlAdd,
                     title: (node.icon ? `<i class="${node.icon}"></i> ` : '') + `Add: ${node.label}`,
                     data: JSON.stringify({ '_data': {
                         'level': level,
                         'item_id': addItemId,
-                        'config': this.config
+                        'config': this.config,
+                        'defaultData': params.get('defaultData')
                     } }),
                     size: 'lg'
                 }, callback);

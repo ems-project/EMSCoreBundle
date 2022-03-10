@@ -67,18 +67,28 @@
 				'withView': false,
 				'vertical': false,
 			}%}
-			{% if is_granted(revision.contentType.deleteRole) or (false == revision.contentType.hasDeleteRole and is_granted(revision.contentType.createRole)) %}
-				{% if not  revision.contentType.circlesField or attribute(object._source, revision.contentType.circlesField) is not defined or attribute(object._source, revision.contentType.circlesField)|in_my_circles %}
+			<div class="btn-group pull-right">
+				{% if not revision.archived and revision.contentType.archiveRole and is_granted(revision.contentType.archiveRole) and not revision.hasEndTime %}
 					{% include '@EMSCore/elements/post-button.html.twig' with {
-						'url':  path('object.delete', {'type': revision.contentType.name, 'ouuid': revision.ouuid} ),
-						'label': 'Delete all revisions',
-						'icon': 'trash',
+						'url':  path('emsco_revision_archive', {'revision': revision.id} ),
+						'label': 'Archive',
+						'icon': 'archive',
 						'btnType': 'outline-danger',
-						'message': 'Do you confirm?',
-						'group_class': 'pull-right'
+						'message': 'Do you confirm?'
 					}%}
 				{% endif %}
-			{% endif %}
+				{% if is_granted(revision.contentType.deleteRole) or (false == revision.contentType.hasDeleteRole and is_granted(revision.contentType.createRole)) %}
+					{% if not  revision.contentType.circlesField or attribute(object._source, revision.contentType.circlesField) is not defined or attribute(object._source, revision.contentType.circlesField)|in_my_circles %}
+						{% include '@EMSCore/elements/post-button.html.twig' with {
+							'url':  path('object.delete', {'type': revision.contentType.name, 'ouuid': revision.ouuid} ),
+							'label': 'Delete all revisions',
+							'icon': 'trash',
+							'btnType': 'outline-danger',
+							'message': 'Do you confirm?'
+						}%}
+					{% endif %}
+				{% endif %}
+			</div>
 		</div>
 	</div>
 {% endblock %}

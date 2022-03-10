@@ -253,6 +253,7 @@ class ContentTypeType extends AbstractType
             $builder->add('createRole', RolePickerType::class);
             $builder->add('editRole', RolePickerType::class);
             $builder->add('publishRole', RolePickerType::class);
+            $builder->add('archiveRole', RolePickerType::class);
             $builder->add('deleteRole', RolePickerType::class);
             $builder->add('trashRole', RolePickerType::class);
             $builder->add('ownerRole', RolePickerType::class);

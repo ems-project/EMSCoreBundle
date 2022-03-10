@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Helper\EmsCoreResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormRegistryInterface;
@@ -60,19 +61,6 @@ class AppController extends AbstractController
 
     public static function jsonResponse(Request $request, bool $success, array $body = []): Response
     {
-        $body['success'] = $success;
-        $body['acknowledged'] = true;
-        foreach (['notice', 'warning', 'error'] as $level) {
-            $messages = $request->getSession()->getFlashBag()->get($level);
-            if (!empty($messages)) {
-                $body[$level] = $messages;
-            }
-        }
-
-        $response = new Response();
-        $response->setContent(\json_encode($body));
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return EmsCoreResponse::createJsonResponse($request, $success, $body);
     }
 }

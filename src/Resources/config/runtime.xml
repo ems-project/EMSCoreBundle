@@ -19,14 +19,16 @@
         </service>
 
         <service id="ems_core.core_revision_wysiwyg.wysiwyg_runtime" class="EMS\CoreBundle\Core\Revision\Wysiwyg\WysiwygRuntime">
-            <argument type="service" id="ems.service.wysiwyg_styles_set"></argument>
-            <argument type="service" id="ems.service.user"></argument>
-            <argument type="service" id="router"></argument>
+            <argument type="service" id="ems.service.wysiwyg_styles_set"/>
+            <argument type="service" id="ems.service.user"/>
+            <argument type="service" id="router"/>
             <tag name="twig.runtime" />
         </service>
 
         <service id="ems.twig.runtime.i18n" class="EMS\CoreBundle\Twig\I18nRuntime">
-            <argument type="service" id="ems.service.i18n"></argument>
+            <argument type="service" id="ems.service.i18n"/>
+            <argument type="service" id="ems.service.user"/>
+            <argument>%ems_core.fallback_locale%</argument>
             <tag name="twig.runtime" />
         </service>
 

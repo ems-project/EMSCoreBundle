@@ -522,7 +522,7 @@ class ContentTypeService implements EntityServiceInterface
             if ($contentType->getDeleted() || !$contentType->getActive() || (null !== $role && !$this->authorizationChecker->isGranted($role)) && !$contentType->getRootContentType()) {
                 continue;
             }
-            $menuEntry = $menu->addChild($contentType->getPluralName(), $contentType->getIcon() ?? 'fa fa-book', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()], $contentType->getColor());
+            $menuEntry = new MenuEntry($contentType->getPluralName(), $contentType->getIcon() ?? 'fa fa-book', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()], $contentType->getColor());
             if (isset($counters[$contentType->getId()])) {
                 $menuEntry->setBadge(\strval($counters[$contentType->getId()]));
             }
@@ -538,6 +538,9 @@ class ContentTypeService implements EntityServiceInterface
             if ($this->authorizationChecker->isGranted($contentType->getTrashRole())) {
                 $trashLink = $menuEntry->addChild('sidebar_menu.content_type.trash', 'fa fa-trash', Routes::DATA_TRASH, ['contentType' => $contentType->getId()]);
                 $trashLink->setTranslation([]);
+            }
+            if ($menuEntry->hasChildren()) {
+                $menu->addMenuEntry($menuEntry);
             }
         }
 

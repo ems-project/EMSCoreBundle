@@ -36,7 +36,7 @@ EOT
             if ($manipulator->removeRole($username, $role)) {
                 $output->writeln(\sprintf('Role "%s" has been removed from user "%s". This change will not apply until the user logs out and back in again.', $role, $username));
             } else {
-                $output->writeln(\sprintf('User "%s" didn\'t have "%s" role.', $username, $role));
+                $output->writeln(\sprintf('User "%s" did not have "%s" role.', $username, $role));
             }
         }
     }

@@ -66,13 +66,13 @@ EOT
         $email = \strval($input->getArgument('email'));
         $password = \strval($input->getArgument('password'));
         $inactive = $input->getOption('inactive');
-        $superadmin = $input->getOption('super-admin');
+        $superAdmin = $input->getOption('super-admin');
 
-        if (!\is_bool($superadmin)) {
+        if (!\is_bool($superAdmin)) {
             throw new \RuntimeException('Super-admin option must be a boolean');
         }
 
-        $this->userManipulator->create($username, $password, $email, !$inactive, $superadmin);
+        $this->userManipulator->create($username, $password, $email, !$inactive, $superAdmin);
 
         $output->writeln(\sprintf('Created user <comment>%s</comment>', $username));
 

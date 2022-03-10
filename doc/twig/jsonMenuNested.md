@@ -7,6 +7,8 @@ Every rendering allways checks the **premissions**. On the json_menu_nested fiel
 
 Loading the page with the request parameter **item** and value a item id, will select and focus on the requested item.
 
+
+
 ## Options
 
 ### Required
@@ -68,6 +70,19 @@ Possible actions: **add** | **edit** | **delete** | **move** | **copy** | **past
         'view': { 'allow': ['page'] },
      }
  }) }}
+```
+
+### Default data
+
+If the current request contains a param **defaultData** you can prefill the add modal.
+The **defaultData** should be a valid json and base64 decoded.
+
+Example create a link to the dashboard that contains a jsonMenuNested structure.
+If on the page you add a new item that has the field 'page', it will be prefilled with 'page:#{source._version_uuid}'.
+
+```twig
+{% set defaultData = {'page': "page:#{source._version_uuid}"}|json_encode|ems_base64_encode %}
+<a href="{{ path('emsco_dashboard', { 'name': 'page', 'defaultData': defaultData })  }} ">Page structure</a>
 ```
 
 ### Blocks

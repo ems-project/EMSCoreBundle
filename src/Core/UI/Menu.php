@@ -31,6 +31,11 @@ class Menu
         return $this->children[] = new MenuEntry($getLabel, $getIcon, $route, $routeParameters, $color);
     }
 
+    public function addMenuEntry(MenuEntry $menuEntry): void
+    {
+        $this->children[] = $menuEntry;
+    }
+
     /**
      * @return MenuEntry[]
      */

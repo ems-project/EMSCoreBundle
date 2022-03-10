@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\User;
 
 use FOS\UserBundle\Util\UserManipulator;
@@ -12,7 +14,7 @@ use Symfony\Component\Console\Question\Question;
 
 abstract class RoleCommand extends Command
 {
-    private $userManipulator;
+    private UserManipulator $userManipulator;
 
     public function __construct(UserManipulator $userManipulator)
     {
@@ -21,9 +23,6 @@ abstract class RoleCommand extends Command
         $this->userManipulator = $userManipulator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this
@@ -34,9 +33,6 @@ abstract class RoleCommand extends Command
             ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = \strval($input->getArgument('username'));
@@ -57,18 +53,8 @@ abstract class RoleCommand extends Command
         return 1;
     }
 
-    /**
-     * @see Command
-     *
-     * @param string $username
-     * @param bool   $super
-     * @param string $role
-     */
-    abstract protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, $username, $super, $role): void;
+    abstract protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, string $username, bool $super, string $role): void;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $questions = [];

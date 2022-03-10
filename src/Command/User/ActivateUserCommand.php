@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\User;
 
 use FOS\UserBundle\Util\UserManipulator;
@@ -13,7 +15,7 @@ class ActivateUserCommand extends Command
 {
     protected static $defaultName = 'fos:user:activate';
 
-    private $userManipulator;
+    private UserManipulator $userManipulator;
 
     public function __construct(UserManipulator $userManipulator)
     {
@@ -22,9 +24,6 @@ class ActivateUserCommand extends Command
         $this->userManipulator = $userManipulator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this
@@ -41,9 +40,6 @@ EOT
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $username = \strval($input->getArgument('username'));
@@ -55,9 +51,6 @@ EOT
         return 1;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function interact(InputInterface $input, OutputInterface $output): ?string
     {
         if (!$input->getArgument('username')) {

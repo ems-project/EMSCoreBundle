@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\User;
 
 use FOS\UserBundle\Util\UserManipulator;
@@ -9,9 +11,6 @@ class DemoteUserCommand extends RoleCommand
 {
     protected static $defaultName = 'fos:user:demote';
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         parent::configure();
@@ -28,10 +27,7 @@ EOT
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, $username, $super, $role): void
+    protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, string $username, bool $super, string $role): void
     {
         if ($super) {
             $manipulator->demote($username);

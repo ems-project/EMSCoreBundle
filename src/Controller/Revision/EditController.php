@@ -319,8 +319,8 @@ class EditController extends AbstractController
     {
         $contentType = $revision->giveContentType();
         $archiveRole = $contentType->getArchiveRole();
-        if (null === $archiveRole && !$this->isGranted($archiveRole)) {
-            throw $this->createAccessDeniedException('Delete not granted!');
+        if (null === $archiveRole || !$this->isGranted($archiveRole)) {
+            throw $this->createAccessDeniedException('Archive not granted!');
         }
         if ($revision->hasEndTime()) {
             throw new \RuntimeException('Only a current revision can be archived');

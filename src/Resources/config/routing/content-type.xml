@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="emsco_contenttype_update_from_json" path="/json-update/{contentType}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:updateFromJsonAction</default>
+        <default key="_format">html</default>
+    </route>
+
+</routes>

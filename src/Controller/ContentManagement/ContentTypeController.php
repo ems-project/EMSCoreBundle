@@ -46,11 +46,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Operations on content types such as CRUD but alose rebuild index.
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- */
 class ContentTypeController extends AbstractController
 {
     private LoggerInterface $logger;
@@ -75,9 +70,6 @@ class ContentTypeController extends AbstractController
         return \preg_match('/^[a-z][a-z0-9\-_]*$/i', $name) && \strlen($name) <= 100;
     }
 
-    /**
-     * @Route("/content-type/json-update/{contentType}", name="emsco_contenttype_update_from_json")
-     */
     public function updateFromJsonAction(ContentType $contentType, Request $request): Response
     {
         $jsonUpdate = new ContentTypeJsonUpdate();

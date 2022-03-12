@@ -18,11 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/analyzer")
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- */
 class AnalyzerController extends AbstractController
 {
     private HelperService $helperService;
@@ -34,24 +29,14 @@ class AnalyzerController extends AbstractController
         $this->logger = $logger;
     }
 
-    /**
-     * @Route("/", name="ems_analyzer_index")
-     */
-    public function indexAction(): Response
+    public function index(): Response
     {
         return $this->render('@EMSCore/analyzer/index.html.twig', [
                 'paging' => $this->helperService->getPagingTool('EMSCoreBundle:Analyzer', 'ems_analyzer_index', 'name'),
         ]);
     }
 
-    /**
-     * Edit an analyzer entity.
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/edit/{analyzer}", name="ems_analyzer_edit", methods={"GET", "POST"})
-     */
-    public function editAction(Analyzer $analyzer, Request $request): Response
+    public function edit(Analyzer $analyzer, Request $request): Response
     {
         $form = $this->createForm(AnalyzerType::class, $analyzer);
 
@@ -79,14 +64,7 @@ class AnalyzerController extends AbstractController
         ]);
     }
 
-    /**
-     * Creates a new elasticsearch analyzer entity.
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/delete/{analyzer}", name="ems_analyzer_delete", methods={"POST"})
-     */
-    public function deleteAction(Analyzer $analyzer): RedirectResponse
+    public function delete(Analyzer $analyzer): RedirectResponse
     {
         $id = $analyzer->getId();
         $name = $analyzer->getName();
@@ -106,16 +84,7 @@ class AnalyzerController extends AbstractController
         ]);
     }
 
-    /**
-     * Creates a new elasticsearch analyzer entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/add", name="ems_analyzer_add", methods={"GET", "POST"})
-     */
-    public function addAction(Request $request): Response
+    public function add(Request $request): Response
     {
         $analyzer = new Analyzer();
         $form = $this->createForm(AnalyzerType::class, $analyzer);
@@ -146,9 +115,6 @@ class AnalyzerController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/export/{analyzer}.json", name="emsco_analyzer_export")
-     */
     public function export(Analyzer $analyzer): Response
     {
         $response = new JsonResponse($analyzer);

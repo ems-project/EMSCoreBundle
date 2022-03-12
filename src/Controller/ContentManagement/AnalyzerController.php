@@ -3,8 +3,6 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Form\Form\AnalyzerType;
@@ -16,7 +14,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Routing\Annotation\Route;
 
 class AnalyzerController extends AbstractController
 {

@@ -960,7 +960,7 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function exportAction(ContentType $contentType)
+    public function exportAction(ContentType $contentType): Response
     {
         $jsonContent = \json_encode($contentType, JSON_PRETTY_PRINT);
 

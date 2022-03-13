@@ -235,5 +235,11 @@
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.search" />
         </service>
+        <service id="EMS\CoreBundle\Controller\SearchController" public="true">
+            <argument type="service" id="ems.service.sort_option" />
+            <argument type="service" id="ems.service.aggregate_option" />
+            <argument type="service" id="ems.service.search_field_option" />
+            <argument type="service" id="translator" />
+        </service>
     </services>
 </container>

@@ -42,9 +42,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
 class ContentTypeController extends AbstractController
 {
@@ -97,15 +95,7 @@ class ContentTypeController extends AbstractController
     }
 
     /**
-     * Logically delete a content type.
-     * GET calls aren't supported.
-     *
-     * @param int $id
-     *                identifier of the content type to delete
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type/remove/{id}", name="contenttype.remove", methods={"POST"})
+     * @param int|string $id
      */
     public function removeAction($id): RedirectResponse
     {
@@ -134,17 +124,7 @@ class ContentTypeController extends AbstractController
         return $this->redirectToRoute('contenttype.index');
     }
 
-    /**
-     * Activate (make it available for authors) a content type.
-     * Checks that the content isn't dirty (as far as eMS knows the Mapping in Elasticsearch is up-to-date).
-     *
-     * @return RedirectResponse
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type/activate/{contentType}", name="contenttype.activate", methods={"POST"})
-     */
-    public function activateAction(ContentType $contentType)
+    public function activateAction(ContentType $contentType): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -165,17 +145,7 @@ class ContentTypeController extends AbstractController
         return $this->redirectToRoute('contenttype.index');
     }
 
-    /**
-     * Disable (make it unavailable for authors) a content type.
-     *
-     * @return RedirectResponse
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/content-type/disable/{contentType}", name="contenttype.desactivate", methods={"POST"})
-     */
-    public function disableAction(ContentType $contentType)
+    public function disableAction(ContentType $contentType): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -187,16 +157,7 @@ class ContentTypeController extends AbstractController
         return $this->redirectToRoute('contenttype.index');
     }
 
-    /**
-     * Try to update the Elasticsearch mapping for a specific content type.
-     *
-     * @return RedirectResponse
-     *
-     * @throws BadRequestHttpException
-     *
-     * @Route("/content-type/refresh-mapping/{id}", name="contenttype.refreshmapping", methods={"POST"})
-     */
-    public function refreshMappingAction(ContentType $id)
+    public function refreshMappingAction(ContentType $id): Response
     {
         $this->contentTypeService->updateMapping($id);
         $this->contentTypeService->persist($id);
@@ -204,16 +165,7 @@ class ContentTypeController extends AbstractController
         return $this->redirectToRoute('contenttype.index');
     }
 
-    /**
-     * Initiate a new content type as a draft.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type/add", name="contenttype.add")
-     */
-    public function addAction(Request $request)
+    public function addAction(Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -323,16 +275,7 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    /**
-     * List all content types.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type", name="contenttype.index")
-     */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -395,16 +338,7 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    /**
-     * List all unreferenced content types (from external sources).
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type/unreferenced", name="contenttype.unreferenced")
-     */
-    public function unreferencedAction(Request $request)
+    public function unreferencedAction(Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -510,15 +444,7 @@ class ContentTypeController extends AbstractController
         return false;
     }
 
-    /**
-     * Edit a content type; generic information, but Nothing impacting its structure or it's mapping.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ElasticmsException
-     * @Route("/content-type/{contentType}/field/{field}", name="ems_contenttype_field_edit")
-     */
-    public function editFieldAction(ContentType $contentType, FieldType $field, Request $request)
+    public function editFieldAction(ContentType $contentType, FieldType $field, Request $request): Response
     {
         $editFieldType = new EditFieldType($field);
 
@@ -720,14 +646,7 @@ class ContentTypeController extends AbstractController
         return false;
     }
 
-    /**
-     * Reorder a content type.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/content-type/reorder/{contentType}", name="ems_contenttype_reorder")
-     */
-    public function reorderAction(ContentType $contentType, Request $request)
+    public function reorderAction(ContentType $contentType, Request $request): Response
     {
         $data = [];
         $form = $this->createForm(ReorderType::class, $data, [
@@ -750,17 +669,9 @@ class ContentTypeController extends AbstractController
     }
 
     /**
-     * Edit a content type; generic information, but Nothing impacting its structure or it's mapping.
-     *
-     * @param int $id
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type/{id}", name="contenttype.edit")
+     * @param int|string $id
      */
-    public function editAction($id, Request $request)
+    public function editAction($id, Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -849,19 +760,9 @@ class ContentTypeController extends AbstractController
     }
 
     /**
-     * Edit a content type structure; add subfields.
-     * Each times that a content type strucuture is saved the flag dirty is turned on.
-     *
-     * @param int $id
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ElasticmsException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type/structure/{id}", name="contenttype.structure")
+     * @param string|int $id
      */
-    public function editStructureAction($id, Request $request)
+    public function editStructureAction($id, Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -988,12 +889,8 @@ class ContentTypeController extends AbstractController
     /**
      * @param string $action
      * @param string $subFieldName
-     *
-     * @return RedirectResponse
-     *
-     * @throws ElasticmsException
      */
-    private function treatFieldSubmit(ContentType $contentType, FieldType $field, $action, $subFieldName)
+    private function treatFieldSubmit(ContentType $contentType, FieldType $field, $action, $subFieldName): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -1063,13 +960,6 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    /**
-     * Export a content type in Json format.
-     *
-     * @return Response
-     *
-     * @Route("/content-type/export/{contentType}.{_format}", defaults={"_format"="json"}, name="contenttype.export")
-     */
     public function exportAction(ContentType $contentType)
     {
         $jsonContent = \json_encode($contentType, JSON_PRETTY_PRINT);

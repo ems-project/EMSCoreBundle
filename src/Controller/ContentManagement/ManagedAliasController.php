@@ -6,10 +6,11 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use EMS\CommonBundle\Common\Standard\Type;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Form\Form\ManagedAliasType;
 use EMS\CoreBundle\Service\AliasService;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,8 +21,17 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/environment/managed-alias")
  */
-class ManagedAliasController extends AppController
+class ManagedAliasController extends AbstractController
 {
+    private AliasService $aliasService;
+    private LoggerInterface $logger;
+
+    public function __construct(LoggerInterface $logger, AliasService $aliasService)
+    {
+        $this->aliasService = $aliasService;
+        $this->logger = $logger;
+    }
+
     /**
      * @return RedirectResponse|Response
      *
@@ -30,16 +40,16 @@ class ManagedAliasController extends AppController
      *
      * @Route("/add", name="environment_add_managed_alias")
      */
-    public function addAction(Request $request, AliasService $aliasService)
+    public function addAction(Request $request): Response
     {
         $managedAlias = new ManagedAlias();
         $form = $this->createForm(ManagedAliasType::class, $managedAlias);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->save($managedAlias, $this->getIndexActions($form), $aliasService);
+            $this->save($managedAlias, $this->getIndexActions($form));
 
-            $this->getLogger()->notice('log.managed_alias.created', [
+            $this->logger->notice('log.managed_alias.created', [
                 'managed_alias_name' => $managedAlias->getName(),
             ]);
 
@@ -62,9 +72,9 @@ class ManagedAliasController extends AppController
      *
      * @Route("/edit/{id}", requirements={"id"="\d+"}, name="environment_edit_managed_alias")
      */
-    public function editAction(Request $request, $id, AliasService $aliasService)
+    public function editAction(Request $request, $id): Response
     {
-        $managedAlias = $aliasService->getManagedAlias($id);
+        $managedAlias = $this->aliasService->getManagedAlias($id);
 
         if (!$managedAlias) {
             throw new NotFoundHttpException('Unknow managed alias');
@@ -74,8 +84,8 @@ class ManagedAliasController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->save($managedAlias, $this->getIndexActions($form), $aliasService);
-            $this->getLogger()->notice('log.managed_alias.updated', [
+            $this->save($managedAlias, $this->getIndexActions($form));
+            $this->logger->notice('log.managed_alias.updated', [
                 'managed_alias_name' => $managedAlias->getName(),
             ]);
 
@@ -98,18 +108,18 @@ class ManagedAliasController extends AppController
      *
      * @Route("/remove/{id}", requirements={"id": "\d+"}, name="environment_remove_managed_alias", methods={"POST"})
      */
-    public function removeAction($id, AliasService $aliasService)
+    public function removeAction($id): Response
     {
-        $managedAlias = $aliasService->getManagedAlias($id);
+        $managedAlias = $this->aliasService->getManagedAlias($id);
 
         if ($managedAlias) {
-            $aliasService->removeAlias($managedAlias->getAlias());
+            $this->aliasService->removeAlias($managedAlias->getAlias());
 
             /* @var $em EntityManager */
             $em = $this->getDoctrine()->getManager();
             $em->remove($managedAlias);
             $em->flush();
-            $this->getLogger()->notice('log.managed_alias.deleted', [
+            $this->logger->notice('log.managed_alias.deleted', [
                 'managed_alias_name' => $managedAlias->getName(),
             ]);
         }
@@ -121,10 +131,10 @@ class ManagedAliasController extends AppController
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    private function save(ManagedAlias $managedAlias, array $actions, AliasService $aliasService): void
+    private function save(ManagedAlias $managedAlias, array $actions): void
     {
         $managedAlias->setAlias(Type::string($this->getParameter('ems_core.instance_id')));
-        $aliasService->updateAlias($managedAlias->getAlias(), $actions);
+        $this->aliasService->updateAlias($managedAlias->getAlias(), $actions);
 
         /* @var $em EntityManager */
         $em = $this->getDoctrine()->getManager();

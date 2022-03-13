@@ -21,11 +21,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Wysiwyg controller.
- *
- * @Route("/wysiwyg-options")
- */
 class WysiwygController extends AbstractController
 {
     private WysiwygProfileService $wysiwygProfileService;
@@ -39,13 +34,6 @@ class WysiwygController extends AbstractController
         $this->translator = $translator;
     }
 
-    /**
-     * Lists all Wysiwyg options.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/", name="ems_wysiwyg_index", methods={"GET", "POST"})
-     */
     public function indexAction(Request $request): Response
     {
         $data = [];
@@ -98,13 +86,6 @@ class WysiwygController extends AbstractController
         ]);
     }
 
-    /**
-     * Creates a new WYSIWYG profile entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/profile/new", name="ems_wysiwyg_profile_new", methods={"GET", "POST"})
-     */
     public function newProfileAction(Request $request): Response
     {
         $profile = new WysiwygProfile();
@@ -131,13 +112,6 @@ class WysiwygController extends AbstractController
         ]);
     }
 
-    /**
-     * Creates a new WYSIWYG Styles Set entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/styles-set/new", name="ems_wysiwyg_styles_set_new", methods={"GET", "POST"})
-     */
     public function newStylesSetAction(Request $request): Response
     {
         $stylesSet = new WysiwygStylesSet();
@@ -164,13 +138,6 @@ class WysiwygController extends AbstractController
         ]);
     }
 
-    /**
-     * Displays a form to edit an existing WysiwygStylesSet entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/styles-set/{id}", name="ems_wysiwyg_styles_set_edit", methods={"GET", "POST"})
-     */
     public function editStylesSetAction(Request $request, WysiwygStylesSet $stylesSet): Response
     {
         $form = $this->createForm(WysiwygStylesSetType::class, $stylesSet);
@@ -201,13 +168,6 @@ class WysiwygController extends AbstractController
         ]);
     }
 
-    /**
-     * Displays a form to edit an existing WysiwygProfile entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/profile/{id}", name="ems_wysiwyg_profile_edit", methods={"GET", "POST"})
-     */
     public function editProfileAction(Request $request, WysiwygProfile $profile): Response
     {
         $form = $this->createForm(WysiwygProfileType::class, $profile);

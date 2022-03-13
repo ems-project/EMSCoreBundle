@@ -3,10 +3,6 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
@@ -34,16 +30,14 @@ use EMS\CoreBundle\Service\Mapping;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormError;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EnvironmentController extends AbstractController
@@ -83,17 +77,11 @@ class EnvironmentController extends AbstractController
         $this->jobService = $jobService;
     }
 
-    /**
-     * @return RedirectResponse|Response
-     *
-     * @throws NoResultException
-     * @throws NonUniqueResultException
-     *
-     * @Route("/publisher/align", name="environment.align")
-     * @Security("has_role('ROLE_PUBLISHER')")
-     */
     public function alignAction(Request $request): Response
     {
+        if (!$this->isGranted(['ROLE_PUBLISHER'])) {
+            throw new AccessDeniedHttpException();
+        }
         $data = [];
         $env = [];
         $withEnvi = [];
@@ -327,16 +315,7 @@ class EnvironmentController extends AbstractController
     }
 
     /**
-     * Attach a external index as a new referenced environment.
-     *
      * @param string $name
-     *                     alias name
-     *
-     * @return RedirectResponse
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/environment/attach/{name}", name="environment.attach", methods={"POST"})
      */
     public function attachAction($name): Response
     {
@@ -380,13 +359,7 @@ class EnvironmentController extends AbstractController
     }
 
     /**
-     * Remove unreferenced alias.
-     *
      * @param string $name
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/environment/remove/alias/{name}", name="environment.remove.alias", methods={"POST"})
      */
     public function removeAliasAction($name): Response
     {
@@ -399,17 +372,6 @@ class EnvironmentController extends AbstractController
         return $this->redirectToRoute('environment.index');
     }
 
-    /**
-     * Try to remove an evironment if it is empty form an eMS perspective.
-     * If it's managed environment the Elasticsearch alias will be also removed.
-     *
-     * @return RedirectResponse
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/environment/remove/{id}", name="environment.remove", methods={"POST"})
-     */
     public function removeAction(int $id): Response
     {
         /** @var EntityManager $em */
@@ -476,15 +438,6 @@ class EnvironmentController extends AbstractController
         return \preg_match('/^[a-z][a-z0-9\-_]*$/', $name) && \strlen($name) <= 100;
     }
 
-    /**
-     * Add a new environement.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/environment/add", name="environment.add")
-     */
     public function addAction(Request $request): Response
     {
         $environment = new Environment();
@@ -553,16 +506,6 @@ class EnvironmentController extends AbstractController
         ]);
     }
 
-    /**
-     * Edit environement (name and color). It's not allowed to update the elasticsearch alias.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/environment/edit/{id}", name="environment.edit")
-     */
     public function editAction(int $id, Request $request): Response
     {
         /** @var EntityManager $em */
@@ -603,12 +546,6 @@ class EnvironmentController extends AbstractController
         ]);
     }
 
-    /**
-     * @return response
-     *                  View environement details (especially the mapping information)
-     *
-     * @Route("/environment/{id}", name="environment.view")
-     */
     public function viewAction(int $id): Response
     {
         /** @var EntityManager $em */
@@ -642,16 +579,7 @@ class EnvironmentController extends AbstractController
         ]);
     }
 
-    /**
-     * Rebuils a environement in elasticsearch in a new index or not (depending the rebuild option).
-     *
-     * @param int $id
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/environment/rebuild/{id}", name="environment.rebuild")
-     */
-    public function rebuild($id, Request $request): Response
+    public function rebuild(int $id, Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -706,16 +634,6 @@ class EnvironmentController extends AbstractController
         ]);
     }
 
-    /**
-     * List all environments, orphean indexes, unmanaged aliases and referenced environments.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/environment", name="environment.index")
-     * @Route("/environment", name="ems_environment_index")
-     */
     public function indexAction(Request $request): Response
     {
         try {

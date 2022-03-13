@@ -235,5 +235,8 @@
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.search" />
         </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\IndexController" public="true">
+            <argument type="service" id="ems.service.index" />
+        </service>
     </services>
 </container>

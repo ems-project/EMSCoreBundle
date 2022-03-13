@@ -11,11 +11,11 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\UserService;
 use Exception;
 use Psr\Log\LoggerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -378,10 +378,12 @@ class CrudController extends AbstractController
 
     /**
      * @Route("/{interface}/user-profiles", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
-     * @IsGranted({"ROLE_USER_READ", "ROLE_USER_MANAGEMENT", "ROLE_ADMIN"})
      */
     public function getUserProfiles(): JsonResponse
     {
+        if (!$this->isGranted(['ROLE_USER_READ', 'ROLE_USER_MANAGEMENT', 'ROLE_ADMIN'])) {
+            throw new AccessDeniedHttpException();
+        }
         $users = [];
         foreach ($this->userService->getAllUsers() as $user) {
             if ($user->isEnabled()) {

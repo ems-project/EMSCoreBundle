@@ -17,17 +17,10 @@ use EMS\CoreBundle\Service\SearchFieldOptionService;
 use EMS\CoreBundle\Service\SortOptionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\ClickableInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Wysiwyg controller.
- *
- * @Route("/search-options")
- */
 class SearchController extends AbstractController
 {
     private SortOptionService $sortOptionService;
@@ -43,13 +36,6 @@ class SearchController extends AbstractController
         $this->translator = $translator;
     }
 
-    /**
-     * Lists all Search options.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/", name="ems_search_options_index", methods={"GET","POST"})
-     */
     public function indexAction(Request $request): Response
     {
         $reorderSortOptionForm = $this->createForm(ReorderType::class);
@@ -86,13 +72,6 @@ class SearchController extends AbstractController
         ]);
     }
 
-    /**
-     * Creates a new Sort Option entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/sort/new", name="ems_search_sort_option_new", methods={"GET","POST"})
-     */
     public function newSortOptionAction(Request $request): Response
     {
         $sortOption = new SortOption();
@@ -113,13 +92,6 @@ class SearchController extends AbstractController
         ]);
     }
 
-    /**
-     * Creates a new Search Field Option entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/search-field/new", name="ems_search_field_option_new", methods={"GET","POST"})
-     */
     public function newSearchFieldOptionAction(Request $request): Response
     {
         $searchFieldOption = new SearchFieldOption();
@@ -140,13 +112,6 @@ class SearchController extends AbstractController
         ]);
     }
 
-    /**
-     * Creates a new Agregate Option entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/aggregate/new", name="ems_search_aggregate_option_new", methods={"GET","POST"})
-     */
     public function newAggregateOptionAction(Request $request): Response
     {
         $aggregateOption = new AggregateOption();
@@ -167,13 +132,6 @@ class SearchController extends AbstractController
         ]);
     }
 
-    /**
-     * Displays a form to edit an existing SortOption entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/sort/{id}", name="ems_search_sort_option_edit", methods={"GET","POST"})
-     */
     public function editSortOptionAction(Request $request, SortOption $sortOption): Response
     {
         $form = $this->createForm(SortOptionType::class, $sortOption);
@@ -200,13 +158,6 @@ class SearchController extends AbstractController
         ]);
     }
 
-    /**
-     * Displays a form to edit an existing SearchFieldOption entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/search-field/{id}", name="ems_search_field_option_edit", methods={"GET","POST"})
-     */
     public function editSearchFieldOptionAction(Request $request, SearchFieldOption $searchFieldOption): Response
     {
         $form = $this->createForm(SearchFieldOptionType::class, $searchFieldOption);
@@ -233,13 +184,6 @@ class SearchController extends AbstractController
         ]);
     }
 
-    /**
-     * Displays a form to edit an existing AggregateOption entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/aggregate/{id}", name="ems_search_aggregate_option_edit", methods={"GET","POST"})
-     */
     public function editAggregagteOptionAction(Request $request, AggregateOption $option): Response
     {
         $form = $this->createForm(AggregateOptionType::class, $option);

@@ -6,12 +6,12 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Exception\DataStateException;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\UserService;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,12 +26,14 @@ class CrudController extends AbstractController
     private UserService $userService;
     private LoggerInterface $logger;
     private DataService $dataService;
+    private ContentTypeService $contentTypeService;
 
-    public function __construct(LoggerInterface $logger, UserService $userService, DataService $dataService)
+    public function __construct(LoggerInterface $logger, UserService $userService, DataService $dataService, ContentTypeService $contentTypeService)
     {
         $this->logger = $logger;
         $this->userService = $userService;
         $this->dataService = $dataService;
+        $this->contentTypeService = $contentTypeService;
     }
 
     /**
@@ -39,10 +41,10 @@ class CrudController extends AbstractController
      *
      * @Route("/{interface}/data/{name}/create/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @Route("/{interface}/data/{name}/draft/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
-     * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function createAction($ouuid, ContentType $contentType, Request $request): Response
+    public function createAction($ouuid, string $name, Request $request): Response
     {
+        $contentType = $this->giveContentType($name);
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not create content for a managed content type');
         }
@@ -84,10 +86,10 @@ class CrudController extends AbstractController
      *
      * @Route("/{interface}/data/{name}/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
      * @Route("/{interface}/data/{name}/get/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
-     * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function getAction($ouuid, ContentType $contentType): Response
+    public function getAction($ouuid, string $name): Response
     {
+        $contentType = $this->giveContentType($name);
         try {
             $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
         } catch (Exception $e) {
@@ -123,10 +125,10 @@ class CrudController extends AbstractController
      * @throws Throwable
      *
      * @Route("/{interface}/data/{name}/finalize/{id}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
-     * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function finalizeAction($id, ContentType $contentType): Response
+    public function finalizeAction($id, string $name): Response
     {
+        $contentType = $this->giveContentType($name);
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not finalize content for a managed content type');
         }
@@ -159,10 +161,10 @@ class CrudController extends AbstractController
      * @param string $id
      *
      * @Route("/{interface}/data/{name}/discard/{id}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
-     * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function discardAction($id, ContentType $contentType): Response
+    public function discardAction($id, string $name): Response
     {
+        $contentType = $this->giveContentType($name);
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not discard content for a managed content type');
         }
@@ -201,10 +203,10 @@ class CrudController extends AbstractController
      * @param string $ouuid
      *
      * @Route("/{interface}/data/{name}/delete/{ouuid}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
-     * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function deleteAction($ouuid, ContentType $contentType): Response
+    public function deleteAction($ouuid, string $name): Response
     {
+        $contentType = $this->giveContentType($name);
         $isDeleted = false;
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not delete content for a managed content type');
@@ -241,10 +243,10 @@ class CrudController extends AbstractController
      * @param string $ouuid
      *
      * @Route("/{interface}/data/{name}/replace/{ouuid}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
-     * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function replaceAction($ouuid, ContentType $contentType, Request $request): Response
+    public function replaceAction($ouuid, string $name, Request $request): Response
     {
+        $contentType = $this->giveContentType($name);
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not replace content for a managed content type');
         }
@@ -290,10 +292,10 @@ class CrudController extends AbstractController
      * @param string $ouuid
      *
      * @Route("/{interface}/data/{name}/merge/{ouuid}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
-     * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function mergeAction($ouuid, ContentType $contentType, Request $request): Response
+    public function mergeAction($ouuid, string $name, Request $request): Response
     {
+        $contentType = $this->giveContentType($name);
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not merge content for a managed content type');
         }
@@ -347,10 +349,11 @@ class CrudController extends AbstractController
 
     /**
      * @Route("/{interface}/meta/{name}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
-     * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function getContentTypeInfo(ContentType $contentType): Response
+    public function getContentTypeInfo(string $name): Response
     {
+        $contentType = $this->giveContentType($name);
+
         return $this->render('@EMSCore/ajax/contenttype_info.json.twig', [
                 'success' => true,
                 'contentType' => $contentType,
@@ -387,5 +390,21 @@ class CrudController extends AbstractController
         }
 
         return $this->json($users);
+    }
+
+    private function giveContentType(string $contentTypeName): ContentType
+    {
+        $contentType = $this->contentTypeService->getByName($contentTypeName);
+        if (false === $contentType) {
+            throw new \RuntimeException('Unexpected false content type');
+        }
+        if ($contentType->getDeleted()) {
+            throw new \RuntimeException('Unexpected deleted content type');
+        }
+        if (!$contentType->getActive()) {
+            throw new \RuntimeException('Unexpected inactive content type');
+        }
+
+        return $contentType;
     }
 }

@@ -3,8 +3,6 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Form\Form\ManagedAliasType;
@@ -12,15 +10,10 @@ use EMS\CoreBundle\Service\AliasService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/environment/managed-alias")
- */
 class ManagedAliasController extends AbstractController
 {
     private AliasService $aliasService;
@@ -32,14 +25,6 @@ class ManagedAliasController extends AbstractController
         $this->logger = $logger;
     }
 
-    /**
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/add", name="environment_add_managed_alias")
-     */
     public function addAction(Request $request): Response
     {
         $managedAlias = new ManagedAlias();
@@ -64,13 +49,6 @@ class ManagedAliasController extends AbstractController
 
     /**
      * @param string $id
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/edit/{id}", requirements={"id"="\d+"}, name="environment_edit_managed_alias")
      */
     public function editAction(Request $request, $id): Response
     {
@@ -100,13 +78,6 @@ class ManagedAliasController extends AbstractController
 
     /**
      * @param string $id
-     *
-     * @return RedirectResponse
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/remove/{id}", requirements={"id": "\d+"}, name="environment_remove_managed_alias", methods={"POST"})
      */
     public function removeAction($id): Response
     {
@@ -127,10 +98,6 @@ class ManagedAliasController extends AbstractController
         return $this->redirectToRoute('environment.index');
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     private function save(ManagedAlias $managedAlias, array $actions): void
     {
         $managedAlias->setAlias(Type::string($this->getParameter('ems_core.instance_id')));
@@ -142,10 +109,7 @@ class ManagedAliasController extends AbstractController
         $em->flush();
     }
 
-    /**
-     * @return array
-     */
-    private function getIndexActions(FormInterface $form)
+    private function getIndexActions(FormInterface $form): array
     {
         $actions = [];
         $submitted = $form->get('indexes')->getData();

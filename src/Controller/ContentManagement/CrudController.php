@@ -18,8 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
-use Throwable;
 
 class CrudController extends AbstractController
 {
@@ -36,13 +34,7 @@ class CrudController extends AbstractController
         $this->contentTypeService = $contentTypeService;
     }
 
-    /**
-     * @param string $ouuid
-     *
-     * @Route("/{interface}/data/{name}/create/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
-     * @Route("/{interface}/data/{name}/draft/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
-     */
-    public function createAction($ouuid, string $name, Request $request): Response
+    public function createAction(string $ouuid, string $name, Request $request): Response
     {
         $contentType = $this->giveContentType($name);
         if (!$contentType->getEnvironment()->getManaged()) {
@@ -81,13 +73,7 @@ class CrudController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string $ouuid
-     *
-     * @Route("/{interface}/data/{name}/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
-     * @Route("/{interface}/data/{name}/get/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
-     */
-    public function getAction($ouuid, string $name): Response
+    public function getAction(string $ouuid, string $name): Response
     {
         $contentType = $this->giveContentType($name);
         try {
@@ -120,11 +106,6 @@ class CrudController extends AbstractController
 
     /**
      * @param int $id
-     *
-     * @throws DataStateException
-     * @throws Throwable
-     *
-     * @Route("/{interface}/data/{name}/finalize/{id}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      */
     public function finalizeAction($id, string $name): Response
     {
@@ -158,9 +139,7 @@ class CrudController extends AbstractController
     }
 
     /**
-     * @param string $id
-     *
-     * @Route("/{interface}/data/{name}/discard/{id}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
+     * @param int $id
      */
     public function discardAction($id, string $name): Response
     {
@@ -199,12 +178,7 @@ class CrudController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string $ouuid
-     *
-     * @Route("/{interface}/data/{name}/delete/{ouuid}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
-     */
-    public function deleteAction($ouuid, string $name): Response
+    public function deleteAction(string $ouuid, string $name): Response
     {
         $contentType = $this->giveContentType($name);
         $isDeleted = false;
@@ -239,12 +213,7 @@ class CrudController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string $ouuid
-     *
-     * @Route("/{interface}/data/{name}/replace/{ouuid}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
-     */
-    public function replaceAction($ouuid, string $name, Request $request): Response
+    public function replaceAction(string $ouuid, string $name, Request $request): Response
     {
         $contentType = $this->giveContentType($name);
         if (!$contentType->getEnvironment()->getManaged()) {
@@ -288,12 +257,7 @@ class CrudController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string $ouuid
-     *
-     * @Route("/{interface}/data/{name}/merge/{ouuid}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
-     */
-    public function mergeAction($ouuid, string $name, Request $request): Response
+    public function mergeAction(string $ouuid, string $name, Request $request): Response
     {
         $contentType = $this->giveContentType($name);
         if (!$contentType->getEnvironment()->getManaged()) {
@@ -337,9 +301,6 @@ class CrudController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{interface}/test", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, name="api.test", methods={"GET"})
-     */
     public function testAction(): Response
     {
         return $this->render('@EMSCore/ajax/notification.json.twig', [
@@ -347,9 +308,6 @@ class CrudController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{interface}/meta/{name}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
-     */
     public function getContentTypeInfo(string $name): Response
     {
         $contentType = $this->giveContentType($name);
@@ -360,9 +318,6 @@ class CrudController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{interface}/user-profile", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
-     */
     public function getUserProfile(): JsonResponse
     {
         $user = $this->getUser();
@@ -376,9 +331,6 @@ class CrudController extends AbstractController
         return $this->json($user->toArray());
     }
 
-    /**
-     * @Route("/{interface}/user-profiles", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
-     */
     public function getUserProfiles(): JsonResponse
     {
         if (!$this->isGranted(['ROLE_USER_READ', 'ROLE_USER_MANAGEMENT', 'ROLE_ADMIN'])) {

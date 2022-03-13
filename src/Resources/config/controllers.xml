@@ -235,5 +235,10 @@
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.search" />
         </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\CrudController" public="true">
+            <argument type="service" id="ems.logger" />
+            <argument type="service" id="ems.service.user" />
+            <argument type="service" id="ems.service.data" />
+        </service>
     </services>
 </container>

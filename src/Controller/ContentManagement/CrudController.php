@@ -3,8 +3,6 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CommonBundle\Twig\RequestRuntime;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Exception\DataStateException;
@@ -14,7 +12,7 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,27 +21,27 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
-class CrudController extends AppController
+class CrudController extends AbstractController
 {
-    /** @var UserService */
-    private $userService;
+    private UserService $userService;
+    private LoggerInterface $logger;
+    private DataService $dataService;
 
-    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime, UserService $userService)
+    public function __construct(LoggerInterface $logger, UserService $userService, DataService $dataService)
     {
-        parent::__construct($logger, $formRegistry, $requestRuntime);
+        $this->logger = $logger;
         $this->userService = $userService;
+        $this->dataService = $dataService;
     }
 
     /**
      * @param string $ouuid
      *
-     * @return Response
-     *
      * @Route("/{interface}/data/{name}/create/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @Route("/{interface}/data/{name}/draft/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function createAction($ouuid, ContentType $contentType, Request $request, DataService $dataService)
+    public function createAction($ouuid, ContentType $contentType, Request $request): Response
     {
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not create content for a managed content type');
@@ -55,12 +53,12 @@ class CrudController extends AppController
         }
 
         try {
-            $newRevision = $dataService->createData($ouuid, $rawdata, $contentType);
+            $newRevision = $this->dataService->createData($ouuid, $rawdata, $contentType);
         } catch (Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
-                $this->getLogger()->error('log.crud.create_error', [
+                $this->logger->error('log.crud.create_error', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -84,21 +82,19 @@ class CrudController extends AppController
     /**
      * @param string $ouuid
      *
-     * @return Response
-     *
      * @Route("/{interface}/data/{name}/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
      * @Route("/{interface}/data/{name}/get/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function getAction($ouuid, ContentType $contentType, DataService $dataService)
+    public function getAction($ouuid, ContentType $contentType): Response
     {
         try {
-            $revision = $dataService->getNewestRevision($contentType->getName(), $ouuid);
+            $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
         } catch (Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
-                $this->getLogger()->error('log.crud.read_error', [
+                $this->logger->error('log.crud.read_error', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -123,15 +119,13 @@ class CrudController extends AppController
     /**
      * @param int $id
      *
-     * @return Response
-     *
      * @throws DataStateException
      * @throws Throwable
      *
      * @Route("/{interface}/data/{name}/finalize/{id}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function finalizeAction($id, ContentType $contentType, DataService $dataService)
+    public function finalizeAction($id, ContentType $contentType): Response
     {
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not finalize content for a managed content type');
@@ -141,15 +135,15 @@ class CrudController extends AppController
             'success' => 'false',
         ];
         try {
-            $revision = $dataService->getRevisionById($id, $contentType);
-            $newRevision = $dataService->finalizeDraft($revision);
+            $revision = $this->dataService->getRevisionById($id, $contentType);
+            $newRevision = $this->dataService->finalizeDraft($revision);
             $out['success'] = !$newRevision->getDraft();
             $out['ouuid'] = $newRevision->getOuuid();
         } catch (Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof DataStateException)) {
                 throw $e;
             } else {
-                $this->getLogger()->error('log.crud.finalize_error', [
+                $this->logger->error('log.crud.finalize_error', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -164,27 +158,25 @@ class CrudController extends AppController
     /**
      * @param string $id
      *
-     * @return Response
-     *
      * @Route("/{interface}/data/{name}/discard/{id}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function discardAction($id, ContentType $contentType, DataService $dataService)
+    public function discardAction($id, ContentType $contentType): Response
     {
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not discard content for a managed content type');
         }
 
         try {
-            $revision = $dataService->getRevisionById($id, $contentType);
-            $dataService->discardDraft($revision);
+            $revision = $this->dataService->getRevisionById($id, $contentType);
+            $this->dataService->discardDraft($revision);
             $isDiscard = ($revision->getId() != $id) ? true : false;
         } catch (Exception $e) {
             $isDiscard = false;
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
-                $this->getLogger()->error('log.crud.discard_error', [
+                $this->logger->error('log.crud.discard_error', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -208,12 +200,10 @@ class CrudController extends AppController
     /**
      * @param string $ouuid
      *
-     * @return Response
-     *
      * @Route("/{interface}/data/{name}/delete/{ouuid}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function deleteAction($ouuid, ContentType $contentType, DataService $dataService)
+    public function deleteAction($ouuid, ContentType $contentType): Response
     {
         $isDeleted = false;
         if (!$contentType->getEnvironment()->getManaged()) {
@@ -221,8 +211,8 @@ class CrudController extends AppController
         }
 
         try {
-            $dataService->delete($contentType->getName(), $ouuid);
-            $this->getLogger()->notice('log.crud.deleted', [
+            $this->dataService->delete($contentType->getName(), $ouuid);
+            $this->logger->notice('log.crud.deleted', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
             ]);
@@ -231,7 +221,7 @@ class CrudController extends AppController
             if (($e instanceof NotFoundHttpException) || ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
-                $this->getLogger()->error('log.crud.delete_error', [
+                $this->logger->error('log.crud.delete_error', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     EmsFields::LOG_OUUID_FIELD => $ouuid,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -250,12 +240,10 @@ class CrudController extends AppController
     /**
      * @param string $ouuid
      *
-     * @return Response
-     *
      * @Route("/{interface}/data/{name}/replace/{ouuid}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function replaceAction($ouuid, ContentType $contentType, Request $request, DataService $dataService)
+    public function replaceAction($ouuid, ContentType $contentType, Request $request): Response
     {
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not replace content for a managed content type');
@@ -267,15 +255,15 @@ class CrudController extends AppController
         }
 
         try {
-            $revision = $dataService->getNewestRevision($contentType->getName(), $ouuid);
-            $newDraft = $dataService->replaceData($revision, $rawdata);
+            $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
+            $newDraft = $this->dataService->replaceData($revision, $rawdata);
             $isReplaced = ($revision->getId() != $newDraft->getId()) ? true : false;
         } catch (Exception $e) {
             $isReplaced = false;
             if ($e instanceof NotFoundHttpException) {
                 throw $e;
             } else {
-                $this->getLogger()->error('log.crud.replace_error', [
+                $this->logger->error('log.crud.replace_error', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -301,12 +289,10 @@ class CrudController extends AppController
     /**
      * @param string $ouuid
      *
-     * @return Response
-     *
      * @Route("/{interface}/data/{name}/merge/{ouuid}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function mergeAction($ouuid, ContentType $contentType, Request $request, DataService $dataService)
+    public function mergeAction($ouuid, ContentType $contentType, Request $request): Response
     {
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not merge content for a managed content type');
@@ -318,14 +304,14 @@ class CrudController extends AppController
         }
 
         try {
-            $revision = $dataService->getNewestRevision($contentType->getName(), $ouuid);
-            $newDraft = $dataService->replaceData($revision, $rawdata, 'merge');
+            $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
+            $newDraft = $this->dataService->replaceData($revision, $rawdata, 'merge');
             $isMerged = ($revision->getId() != $newDraft->getId()) ? true : false;
         } catch (Exception $e) {
             if ($e instanceof NotFoundHttpException) {
                 throw $e;
             } else {
-                $this->getLogger()->error('log.crud.merge_error', [
+                $this->logger->error('log.crud.merge_error', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -350,11 +336,9 @@ class CrudController extends AppController
     }
 
     /**
-     * @return Response
-     *
      * @Route("/{interface}/test", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, name="api.test", methods={"GET"})
      */
-    public function testAction()
+    public function testAction(): Response
     {
         return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => true,
@@ -362,12 +346,10 @@ class CrudController extends AppController
     }
 
     /**
-     * @return Response
-     *
      * @Route("/{interface}/meta/{name}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function getContentTypeInfo(ContentType $contentType)
+    public function getContentTypeInfo(ContentType $contentType): Response
     {
         return $this->render('@EMSCore/ajax/contenttype_info.json.twig', [
                 'success' => true,

@@ -94,6 +94,14 @@
         <default key="_controller">EMS\CoreBundle\Controller\Api\Form\SubmissionController::submit</default>
         <default key="_format">json</default>
     </route>
+    <route id="emsco_api_forms_post_verifications" path="/api/forms/verifications" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Form\VerificationController::createVerification</default>
+        <default key="_format">json</default>
+    </route>
+    <route id="emsco_api_forms_get_verifications" path="/api/forms/verifications" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Form\VerificationController::getVerification</default>
+        <default key="_format">json</default>
+    </route>
 
     <!--Deprecated routes -->
     <route id="api.test" path="/{interface}/test" methods="GET">

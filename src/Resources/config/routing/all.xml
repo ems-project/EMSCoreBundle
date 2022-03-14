@@ -57,6 +57,8 @@
             prefix="/profile" />
     <import resource="@EMSCoreBundle/Resources/config/routing/log.xml"
             prefix="/admin/log" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/search-options.xml"
+            prefix="/search-options" />
     <import resource="@EMSCoreBundle/Resources/config/routing/managed-alias.xml"
             prefix="/environment/managed-alias" />
     <import resource="@EMSCoreBundle/Resources/config/routing/indexes.xml"

@@ -235,6 +235,12 @@
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.search" />
         </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController" public="true">
+            <argument type="service" id="ems.logger" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.mapping" />
+            <argument type="service" id="form.registry" />
+        </service>
         <service id="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController" public="true">
             <argument type="service" id="ems.logger" />
             <argument type="service" id="ems.service.helper" />

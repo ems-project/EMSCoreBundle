@@ -56,4 +56,6 @@
     <import resource="@EMSCoreBundle/Resources/config/routing/log.xml"
             prefix="/admin/log" />
     <import resource="@EMSCoreBundle/Resources/config/routing/public-key.xml" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/analyzer.xml"
+            prefix="/analyzer" />
 </routes>

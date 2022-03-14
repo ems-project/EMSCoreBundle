@@ -57,12 +57,14 @@
             prefix="/profile" />
     <import resource="@EMSCoreBundle/Resources/config/routing/log.xml"
             prefix="/admin/log" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/managed-alias.xml"
+            prefix="/environment/managed-alias" />
     <import resource="@EMSCoreBundle/Resources/config/routing/indexes.xml"
             prefix="/indexes" />
     <import resource="@EMSCoreBundle/Resources/config/routing/filter.xml"
             prefix="/filter" />
     <import resource="@EMSCoreBundle/Resources/config/routing/content-type.xml"
-            prefix="/content-type" />
+            prefix="/content-type" />p
     <import resource="@EMSCoreBundle/Resources/config/routing/public-key.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/interface.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/analyzer.xml"

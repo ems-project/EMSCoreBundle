@@ -235,6 +235,11 @@
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.search" />
         </service>
+        <service id="EMS\CoreBundle\Controller\WysiwygController" public="true">
+            <argument type="service" id="ems.service.wysiwyg_profile" />
+            <argument type="service" id="ems.service.wysiwyg_styles_set" />
+            <argument type="service" id="translator" />
+        </service>
         <service id="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController" public="true">
             <argument type="service" id="ems.logger" />
             <argument type="service" id="ems.service.contenttype" />

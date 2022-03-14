@@ -241,5 +241,37 @@
             <argument type="service" id="ems.service.search_field_option" />
             <argument type="service" id="translator" />
         </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController" public="true">
+            <argument type="service" id="ems.logger" />
+            <argument type="service" id="ems.service.alias" />
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\IndexController" public="true">
+            <argument type="service" id="ems.service.index" />
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\CrudController" public="true">
+            <argument type="service" id="ems.logger" />
+            <argument type="service" id="ems.service.user" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.contenttype" />
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\FilterController" public="true">
+            <argument type="service" id="ems.logger" />
+            <argument type="service" id="ems.service.helper" />
+        </service>
+        <service id="EMS\CoreBundle\Controller\WysiwygController" public="true">
+            <argument type="service" id="ems.service.wysiwyg_profile" />
+            <argument type="service" id="ems.service.wysiwyg_styles_set" />
+            <argument type="service" id="translator" />
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController" public="true">
+            <argument type="service" id="ems.logger" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.mapping" />
+            <argument type="service" id="form.registry" />
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController" public="true">
+            <argument type="service" id="ems.logger" />
+            <argument type="service" id="ems.service.helper" />
+        </service>
     </services>
 </container>

@@ -57,6 +57,10 @@
             prefix="/profile" />
     <import resource="@EMSCoreBundle/Resources/config/routing/log.xml"
             prefix="/admin/log" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/environment.xml"
+            prefix="/environment" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/publisher.xml"
+            prefix="/publisher" />
     <import resource="@EMSCoreBundle/Resources/config/routing/search-options.xml"
             prefix="/search-options" />
     <import resource="@EMSCoreBundle/Resources/config/routing/managed-alias.xml"
@@ -66,7 +70,7 @@
     <import resource="@EMSCoreBundle/Resources/config/routing/filter.xml"
             prefix="/filter" />
     <import resource="@EMSCoreBundle/Resources/config/routing/content-type.xml"
-            prefix="/content-type" />p
+            prefix="/content-type" />
     <import resource="@EMSCoreBundle/Resources/config/routing/public-key.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/interface.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/analyzer.xml"

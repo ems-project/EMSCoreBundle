@@ -41,7 +41,6 @@ use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\Revision\LoggingContext;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
@@ -259,12 +258,17 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @ParamConverter("contentType", options={"mapping": {"type" = "name", "deleted" = "deleted"}})
-     * @ParamConverter("environment", options={"mapping": {"environment" = "name"}})
-     */
-    public function revisionInEnvironmentDataAction(ContentType $contentType, string $ouuid, Environment $environment): RedirectResponse
+    public function revisionInEnvironmentDataAction(string $type, string $ouuid, string $environment): RedirectResponse
     {
+        $contentType = $this->contentTypeService->getByName($type);
+        if (!$contentType instanceof ContentType || $contentType->getDeleted()) {
+            throw new NotFoundHttpException(\sprintf('Content type %s not found', $type));
+        }
+        $environment = $this->environmentService->getByName($environment);
+        if (!$environment instanceof Environment) {
+            throw new NotFoundHttpException('Environment not found');
+        }
+
         try {
             $revision = $this->dataService->getRevisionByEnvironment($ouuid, $contentType, $environment);
 

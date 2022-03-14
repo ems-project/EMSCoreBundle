@@ -6,15 +6,12 @@ use EMS\CoreBundle\Security\Authenticator;
 use EMS\CoreBundle\Security\Credentials;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 
 class AuthTokenController
 {
-    /** @var Authenticator */
-    private $authenticator;
-    /** @var Environment */
-    private $twig;
+    private Authenticator $authenticator;
+    private Environment $twig;
 
     public function __construct(Authenticator $authenticator, Environment $twig)
     {
@@ -22,9 +19,6 @@ class AuthTokenController
         $this->twig = $twig;
     }
 
-    /**
-     * @Route("/auth-token", name="auth-token", defaults={"_format": "json"}, methods={"POST"})
-     */
     public function postAuthTokensAction(Request $request): Response
     {
         try {

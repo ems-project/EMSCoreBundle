@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
@@ -27,6 +26,7 @@ use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\Mapping;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Button;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -36,22 +36,29 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Operations on content types such as CRUD but alose rebuild index.
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- */
-class ContentTypeController extends AppController
+class ContentTypeController extends AbstractController
 {
+    private LoggerInterface $logger;
+    private ContentTypeService $contentTypeService;
+    private Mapping $mappingService;
+    private FormRegistryInterface $formRegistry;
+
+    public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, Mapping $mappingService, FormRegistryInterface $formRegistry)
+    {
+        $this->logger = $logger;
+        $this->contentTypeService = $contentTypeService;
+        $this->mappingService = $mappingService;
+        $this->formRegistry = $formRegistry;
+    }
+
     public static function isValidName(string $name): bool
     {
         if (\in_array($name, [Mapping::HASH_FIELD, Mapping::SIGNATURE_FIELD, Mapping::FINALIZED_BY_FIELD, Mapping::FINALIZATION_DATETIME_FIELD])) {
@@ -61,10 +68,7 @@ class ContentTypeController extends AppController
         return \preg_match('/^[a-z][a-z0-9\-_]*$/i', $name) && \strlen($name) <= 100;
     }
 
-    /**
-     * @Route("/content-type/json-update/{contentType}", name="emsco_contenttype_update_from_json")
-     */
-    public function updateFromJsonAction(ContentType $contentType, Request $request, ContentTypeService $contentTypeService): Response
+    public function updateFromJsonAction(ContentType $contentType, Request $request): Response
     {
         $jsonUpdate = new ContentTypeJsonUpdate();
         $form = $this->createForm(ContentTypeUpdateType::class, $jsonUpdate);
@@ -77,7 +81,7 @@ class ContentTypeController extends AppController
                 throw new NotFoundHttpException('JSON file not found');
             }
 
-            $contentTypeService->updateFromJson($contentType, $json, $jsonUpdate->isDeleteExitingTemplates(), $jsonUpdate->isDeleteExitingViews());
+            $this->contentTypeService->updateFromJson($contentType, $json, $jsonUpdate->isDeleteExitingTemplates(), $jsonUpdate->isDeleteExitingViews());
 
             return $this->redirectToRoute('contenttype.edit', [
                 'id' => $contentType->getId(),
@@ -91,17 +95,9 @@ class ContentTypeController extends AppController
     }
 
     /**
-     * Logically delete a content type.
-     * GET calls aren't supported.
-     *
-     * @param int $id
-     *                identifier of the content type to delete
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type/remove/{id}", name="contenttype.remove", methods={"POST"})
+     * @param int|string $id
      */
-    public function removeAction($id, LoggerInterface $logger): RedirectResponse
+    public function removeAction($id): RedirectResponse
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -120,7 +116,7 @@ class ContentTypeController extends AppController
         $em->persist($contentType);
         $em->flush();
 
-        $logger->warning('log.contenttype.deleted', [
+        $this->logger->warning('log.contenttype.deleted', [
             EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
         ]);
@@ -128,23 +124,13 @@ class ContentTypeController extends AppController
         return $this->redirectToRoute('contenttype.index');
     }
 
-    /**
-     * Activate (make it available for authors) a content type.
-     * Checks that the content isn't dirty (as far as eMS knows the Mapping in Elasticsearch is up-to-date).
-     *
-     * @return RedirectResponse
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type/activate/{contentType}", name="contenttype.activate", methods={"POST"})
-     */
-    public function activateAction(ContentType $contentType, LoggerInterface $logger)
+    public function activateAction(ContentType $contentType): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
         if ($contentType->getDirty()) {
-            $logger->error('log.contenttype.dirty', [
+            $this->logger->error('log.contenttype.dirty', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
             ]);
@@ -159,17 +145,7 @@ class ContentTypeController extends AppController
         return $this->redirectToRoute('contenttype.index');
     }
 
-    /**
-     * Disable (make it unavailable for authors) a content type.
-     *
-     * @return RedirectResponse
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     *
-     * @Route("/content-type/disable/{contentType}", name="contenttype.desactivate", methods={"POST"})
-     */
-    public function disableAction(ContentType $contentType)
+    public function disableAction(ContentType $contentType): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -181,33 +157,15 @@ class ContentTypeController extends AppController
         return $this->redirectToRoute('contenttype.index');
     }
 
-    /**
-     * Try to update the Elasticsearch mapping for a specific content type.
-     *
-     * @return RedirectResponse
-     *
-     * @throws BadRequestHttpException
-     *
-     * @Route("/content-type/refresh-mapping/{id}", name="contenttype.refreshmapping", methods={"POST"})
-     */
-    public function refreshMappingAction(ContentType $id, ContentTypeService $contentTypeService)
+    public function refreshMappingAction(ContentType $id): Response
     {
-        $contentTypeService->updateMapping($id);
-        $contentTypeService->persist($id);
+        $this->contentTypeService->updateMapping($id);
+        $this->contentTypeService->persist($id);
 
         return $this->redirectToRoute('contenttype.index');
     }
 
-    /**
-     * Initiate a new content type as a draft.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type/add", name="contenttype.add")
-     */
-    public function addAction(Request $request, LoggerInterface $logger, ContentTypeService $contentTypeService)
+    public function addAction(Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -282,11 +240,11 @@ class ContentTypeController extends AppController
                     if (!$environment instanceof Environment) {
                         throw new NotFoundHttpException('Environment not found');
                     }
-                    $contentType = $contentTypeService->contentTypeFromJson($json, $environment);
+                    $contentType = $this->contentTypeService->contentTypeFromJson($json, $environment);
                     $contentType->setName($name);
                     $contentType->setSingularName($singularName);
                     $contentType->setPluralName($pluralName);
-                    $contentType = $contentTypeService->importContentType($contentType);
+                    $contentType = $this->contentTypeService->importContentType($contentType);
                 } else {
                     $contentType = $contentTypeAdded;
                     $contentType->setAskForOuuid(false);
@@ -298,7 +256,7 @@ class ContentTypeController extends AppController
                 }
                 $em->flush();
 
-                $logger->notice('log.contenttype.created', [
+                $this->logger->notice('log.contenttype.created', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
                 ]);
@@ -307,7 +265,7 @@ class ContentTypeController extends AppController
                     'id' => $contentType->getId(),
                 ]);
             } else {
-                $logger->error('log.contenttype.created_failed', [
+                $this->logger->error('log.contenttype.created_failed', [
                 ]);
             }
         }
@@ -317,16 +275,7 @@ class ContentTypeController extends AppController
         ]);
     }
 
-    /**
-     * List all content types.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type", name="contenttype.index")
-     */
-    public function indexAction(Request $request, LoggerInterface $logger)
+    public function indexAction(Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -376,7 +325,7 @@ class ContentTypeController extends AppController
 
                 $em->flush();
 
-                $logger->notice('log.contenttype.reordered', [
+                $this->logger->notice('log.contenttype.reordered', [
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                 ]);
             }
@@ -389,16 +338,7 @@ class ContentTypeController extends AppController
         ]);
     }
 
-    /**
-     * List all unreferenced content types (from external sources).
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type/unreferenced", name="contenttype.unreferenced")
-     */
-    public function unreferencedAction(Request $request, LoggerInterface $logger, ContentTypeService $contentTypeService)
+    public function unreferencedAction(Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -424,7 +364,7 @@ class ContentTypeController extends AppController
                     $em->persist($contentType);
                     $em->flush();
 
-                    $logger->warning('log.contenttype.referenced', [
+                    $this->logger->warning('log.contenttype.referenced', [
                         EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     ]);
@@ -434,14 +374,14 @@ class ContentTypeController extends AppController
                     ]);
                 }
             }
-            $logger->warning('log.contenttype.unreferenced_not_found', [
+            $this->logger->warning('log.contenttype.unreferenced_not_found', [
             ]);
 
             return $this->redirectToRoute('contenttype.unreferenced');
         }
 
         return $this->render('@EMSCore/contenttype/unreferenced.html.twig', [
-            'referencedContentTypes' => $contentTypeService->getUnreferencedContentTypes(),
+            'referencedContentTypes' => $this->contentTypeService->getUnreferencedContentTypes(),
         ]);
     }
 
@@ -454,7 +394,7 @@ class ContentTypeController extends AppController
      *
      * @throws ElasticmsException
      */
-    private function addNewField(array $formArray, FieldType $fieldType, LoggerInterface $logger)
+    private function addNewField(array $formArray, FieldType $fieldType)
     {
         if (\array_key_exists('add', $formArray)) {
             if (isset($formArray['ems:internal:add:field:name'])
@@ -472,19 +412,19 @@ class ContentTypeController extends AppController
                     $child->setParent($fieldType);
                     $child->setOptions($dataFieldType->getDefaultOptions($fieldName));
                     $fieldType->addChild($child);
-                    $logger->notice('log.contenttype.field.added', [
+                    $this->logger->notice('log.contenttype.field.added', [
                         'field_name' => $fieldName,
                         EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
                     ]);
 
                     return '_ems_'.$child->getName().'_modal_options';
                 } else {
-                    $logger->error('log.contenttype.field.name_not_valid', [
+                    $this->logger->error('log.contenttype.field.name_not_valid', [
                         'field_format' => '/[a-z][a-z0-9_-]*/ !'.Mapping::HASH_FIELD.' !'.Mapping::HASH_FIELD,
                     ]);
                 }
             } else {
-                $logger->error('log.contenttype.field.name_mandatory', [
+                $this->logger->error('log.contenttype.field.name_mandatory', [
                 ]);
             }
 
@@ -493,7 +433,7 @@ class ContentTypeController extends AppController
             /** @var FieldType $child */
             foreach ($fieldType->getChildren() as $child) {
                 if (!$child->getDeleted()) {
-                    $out = $this->addNewField($formArray['ems_'.$child->getName()], $child, $logger);
+                    $out = $this->addNewField($formArray['ems_'.$child->getName()], $child);
                     if (false !== $out) {
                         return '_ems_'.$child->getName().$out;
                     }
@@ -504,15 +444,7 @@ class ContentTypeController extends AppController
         return false;
     }
 
-    /**
-     * Edit a content type; generic information, but Nothing impacting its structure or it's mapping.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ElasticmsException
-     * @Route("/content-type/{contentType}/field/{field}", name="ems_contenttype_field_edit")
-     */
-    public function editFieldAction(ContentType $contentType, FieldType $field, Request $request, LoggerInterface $logger, ContentTypeService $contentTypeService)
+    public function editFieldAction(ContentType $contentType, FieldType $field, Request $request): Response
     {
         $editFieldType = new EditFieldType($field);
 
@@ -530,7 +462,7 @@ class ContentTypeController extends AppController
             /** @var Button $clickable */
             $clickable = $form->getClickedButton();
 
-            return $this->treatFieldSubmit($contentType, $field, $clickable->getName(), $subFieldName, $logger, $contentTypeService);
+            return $this->treatFieldSubmit($contentType, $field, $clickable->getName(), $subFieldName);
         }
 
         return $this->render('@EMSCore/contenttype/field.html.twig', [
@@ -547,7 +479,7 @@ class ContentTypeController extends AppController
      *
      * @return bool|string
      */
-    private function addNewSubfield(array $formArray, FieldType $fieldType, LoggerInterface $logger)
+    private function addNewSubfield(array $formArray, FieldType $fieldType)
     {
         if (\array_key_exists('subfield', $formArray)) {
             if (isset($formArray['ems:internal:add:subfield:name'])
@@ -558,19 +490,19 @@ class ContentTypeController extends AppController
                     $child->setType(SubfieldType::class);
                     $child->setParent($fieldType);
                     $fieldType->addChild($child);
-                    $logger->notice('log.contenttype.subfield.added', [
+                    $this->logger->notice('log.contenttype.subfield.added', [
                         'subfield_name' => $formArray['ems:internal:add:subfield:name'],
                         EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
                     ]);
 
                     return '_ems_'.$child->getName().'_modal_options';
                 } else {
-                    $logger->error('log.contenttype.subfield.name_not_valid', [
+                    $this->logger->error('log.contenttype.subfield.name_not_valid', [
                         'field_format' => '/[a-z][a-z0-9_-]*/',
                     ]);
                 }
             } else {
-                $logger->error('log.contenttype.subfield.name_mandatory', [
+                $this->logger->error('log.contenttype.subfield.name_mandatory', [
                 ]);
             }
 
@@ -579,7 +511,7 @@ class ContentTypeController extends AppController
             /** @var FieldType $child */
             foreach ($fieldType->getChildren() as $child) {
                 if (!$child->getDeleted()) {
-                    $out = $this->addNewSubfield($formArray['ems_'.$child->getName()], $child, $logger);
+                    $out = $this->addNewSubfield($formArray['ems_'.$child->getName()], $child);
                     if (false !== $out) {
                         return '_ems_'.$child->getName().$out;
                     }
@@ -597,7 +529,7 @@ class ContentTypeController extends AppController
      *
      * @return bool|string
      */
-    private function duplicateField(array $formArray, FieldType $fieldType, LoggerInterface $logger)
+    private function duplicateField(array $formArray, FieldType $fieldType)
     {
         if (\array_key_exists('duplicate', $formArray)) {
             if (isset($formArray['ems:internal:add:subfield:target_name'])
@@ -609,19 +541,19 @@ class ContentTypeController extends AppController
                         $parent->addChild($new);
                     }
 
-                    $logger->notice('log.contenttype.field.added', [
+                    $this->logger->notice('log.contenttype.field.added', [
                         'field_name' => $formArray['ems:internal:add:subfield:target_name'],
                         EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
                     ]);
 
                     return 'first_ems_'.$new->getName().'_modal_options';
                 } else {
-                    $logger->error('log.contenttype.field.name_not_valid', [
+                    $this->logger->error('log.contenttype.field.name_not_valid', [
                         'field_format' => '/[a-z][a-z0-9_-]*/ !'.Mapping::HASH_FIELD.' !'.Mapping::HASH_FIELD,
                     ]);
                 }
             } else {
-                $logger->error('log.contenttype.field.name_mandatory', [
+                $this->logger->error('log.contenttype.field.name_mandatory', [
                 ]);
             }
 
@@ -630,7 +562,7 @@ class ContentTypeController extends AppController
             /** @var FieldType $child */
             foreach ($fieldType->getChildren() as $child) {
                 if (!$child->getDeleted()) {
-                    $out = $this->duplicateField($formArray['ems_'.$child->getName()], $child, $logger);
+                    $out = $this->duplicateField($formArray['ems_'.$child->getName()], $child);
                     if (false !== $out) {
                         if (\is_string($out) && 'first' == \substr($out, 0, 5)) {
                             return \substr($out, 5);
@@ -652,11 +584,11 @@ class ContentTypeController extends AppController
      *
      * @return bool
      */
-    private function removeField(array $formArray, FieldType $fieldType, LoggerInterface $logger)
+    private function removeField(array $formArray, FieldType $fieldType)
     {
         if (\array_key_exists('remove', $formArray)) {
             $fieldType->setDeleted(true);
-            $logger->notice('log.contenttype.field.deleted', [
+            $this->logger->notice('log.contenttype.field.deleted', [
                 'field_name' => $fieldType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
             ]);
@@ -665,7 +597,7 @@ class ContentTypeController extends AppController
         } else {
             /** @var FieldType $child */
             foreach ($fieldType->getChildren() as $child) {
-                if (!$child->getDeleted() && $this->removeField($formArray['ems_'.$child->getName()], $child, $logger)) {
+                if (!$child->getDeleted() && $this->removeField($formArray['ems_'.$child->getName()], $child)) {
                     return true;
                 }
             }
@@ -681,7 +613,7 @@ class ContentTypeController extends AppController
      *
      * @return bool
      */
-    private function reorderFields(array $formArray, FieldType $fieldType, LoggerInterface $logger)
+    private function reorderFields(array $formArray, FieldType $fieldType)
     {
         if (\array_key_exists('reorder', $formArray)) {
             /** @var string[] $keys */
@@ -697,7 +629,7 @@ class ContentTypeController extends AppController
                 }
             }
 
-            $logger->notice('log.contenttype.field.reordered', [
+            $this->logger->notice('log.contenttype.field.reordered', [
                 'field_name' => $fieldType->getName(),
             ]);
 
@@ -705,7 +637,7 @@ class ContentTypeController extends AppController
         } else {
             /** @var FieldType $child */
             foreach ($fieldType->getChildren() as $child) {
-                if (!$child->getDeleted() && $this->reorderFields($formArray['ems_'.$child->getName()], $child, $logger)) {
+                if (!$child->getDeleted() && $this->reorderFields($formArray['ems_'.$child->getName()], $child)) {
                     return true;
                 }
             }
@@ -714,14 +646,7 @@ class ContentTypeController extends AppController
         return false;
     }
 
-    /**
-     * Reorder a content type.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/content-type/reorder/{contentType}", name="ems_contenttype_reorder")
-     */
-    public function reorderAction(ContentType $contentType, Request $request, ContentTypeService $contentTypeService)
+    public function reorderAction(ContentType $contentType, Request $request): Response
     {
         $data = [];
         $form = $this->createForm(ReorderType::class, $data, [
@@ -732,7 +657,7 @@ class ContentTypeController extends AppController
         if ($form->isSubmitted()) {
             $data = $form->getData();
             $structure = \json_decode($data['items'], true);
-            $contentTypeService->reorderFields($contentType, $structure);
+            $this->contentTypeService->reorderFields($contentType, $structure);
 
             return $this->redirectToRoute('contenttype.edit', ['id' => $contentType->getId()]);
         }
@@ -744,17 +669,9 @@ class ContentTypeController extends AppController
     }
 
     /**
-     * Edit a content type; generic information, but Nothing impacting its structure or it's mapping.
-     *
-     * @param int $id
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type/{id}", name="contenttype.edit")
+     * @param int|string $id
      */
-    public function editAction($id, Request $request, LoggerInterface $logger, Mapping $mappingService, ContentTypeService $contentTypeService)
+    public function editAction($id, Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -765,7 +682,7 @@ class ContentTypeController extends AppController
         $contentType = $repository->findById($id);
 
         if (null === $contentType) {
-            $logger->error('log.contenttype.not_found', [
+            $this->logger->error('log.contenttype.not_found', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $id,
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
             ]);
@@ -780,9 +697,9 @@ class ContentTypeController extends AppController
 
         $inputContentType = $request->request->get('content_type');
         try {
-            $mapping = $mappingService->getMapping([$environment->getName()]);
+            $mapping = $this->mappingService->getMapping([$environment->getName()]);
         } catch (\Throwable $e) {
-            $logger->warning('log.contenttype.mapping.not_found', [
+            $this->logger->warning('log.contenttype.mapping.not_found', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
             ]);
@@ -801,13 +718,13 @@ class ContentTypeController extends AppController
 
             if (\array_key_exists('save', $inputContentType) || \array_key_exists('saveAndUpdateMapping', $inputContentType) || \array_key_exists('saveAndClose', $inputContentType) || \array_key_exists('saveAndEditStructure', $inputContentType) || \array_key_exists('saveAndReorder', $inputContentType)) {
                 if (\array_key_exists('saveAndUpdateMapping', $inputContentType)) {
-                    $contentTypeService->updateMapping($contentType);
+                    $this->contentTypeService->updateMapping($contentType);
                 }
                 $em->persist($contentType);
                 $em->flush();
 
                 if ($contentType->getDirty()) {
-                    $logger->warning('log.contenttype.dirty', [
+                    $this->logger->warning('log.contenttype.dirty', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     ]);
                 }
@@ -830,7 +747,7 @@ class ContentTypeController extends AppController
         }
 
         if ($contentType->getDirty()) {
-            $logger->warning('log.contenttype.dirty', [
+            $this->logger->warning('log.contenttype.dirty', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
             ]);
         }
@@ -843,19 +760,9 @@ class ContentTypeController extends AppController
     }
 
     /**
-     * Edit a content type structure; add subfields.
-     * Each times that a content type strucuture is saved the flag dirty is turned on.
-     *
-     * @param int $id
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ElasticmsException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/content-type/structure/{id}", name="contenttype.structure")
+     * @param string|int $id
      */
-    public function editStructureAction($id, Request $request, LoggerInterface $logger, ContentTypeService $contentTypeService)
+    public function editStructureAction($id, Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -866,7 +773,7 @@ class ContentTypeController extends AppController
         $contentType = $repository->findById($id);
 
         if (null === $contentType) {
-            $logger->error('log.contenttype.not_found', [
+            $this->logger->error('log.contenttype.not_found', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $id,
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
             ]);
@@ -894,13 +801,13 @@ class ContentTypeController extends AppController
                 $contentType->setDirty($managed);
 
                 if ((\array_key_exists('saveAndClose', $inputContentType) || \array_key_exists('saveAndReorder', $inputContentType)) && $contentType->getDirty()) {
-                    $contentTypeService->updateMapping($contentType);
+                    $this->contentTypeService->updateMapping($contentType);
                 }
 
-                $contentTypeService->persist($contentType);
+                $this->contentTypeService->persist($contentType);
 
                 if ($contentType->getDirty()) {
-                    $logger->warning('log.contenttype.dirty', [
+                    $this->logger->warning('log.contenttype.dirty', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     ]);
                 }
@@ -919,7 +826,7 @@ class ContentTypeController extends AppController
                     'id' => $id,
                 ]);
             } else {
-                if ($out = $this->addNewField($inputContentType['fieldType'], $contentType->getFieldType(), $logger)) {
+                if ($out = $this->addNewField($inputContentType['fieldType'], $contentType->getFieldType())) {
                     $contentType->getFieldType()->updateOrderKeys();
 
                     $em->persist($contentType);
@@ -929,7 +836,7 @@ class ContentTypeController extends AppController
                         'id' => $id,
                         'open' => $out,
                     ]);
-                } elseif ($out = $this->addNewSubfield($inputContentType['fieldType'], $contentType->getFieldType(), $logger)) {
+                } elseif ($out = $this->addNewSubfield($inputContentType['fieldType'], $contentType->getFieldType())) {
                     $contentType->getFieldType()->updateOrderKeys();
                     $em->persist($contentType);
                     $em->flush();
@@ -938,7 +845,7 @@ class ContentTypeController extends AppController
                         'id' => $id,
                         'open' => $out,
                     ]);
-                } elseif ($out = $this->duplicateField($inputContentType['fieldType'], $contentType->getFieldType(), $logger)) {
+                } elseif ($out = $this->duplicateField($inputContentType['fieldType'], $contentType->getFieldType())) {
                     $contentType->getFieldType()->updateOrderKeys();
                     $em->persist($contentType);
                     $em->flush();
@@ -947,7 +854,7 @@ class ContentTypeController extends AppController
                         'id' => $id,
                         'open' => $out,
                     ]);
-                } elseif ($this->removeField($inputContentType['fieldType'], $contentType->getFieldType(), $logger)) {
+                } elseif ($this->removeField($inputContentType['fieldType'], $contentType->getFieldType())) {
                     $contentType->getFieldType()->updateOrderKeys();
                     $em->persist($contentType);
                     $em->flush();
@@ -955,7 +862,7 @@ class ContentTypeController extends AppController
                     return $this->redirectToRoute('contenttype.structure', [
                         'id' => $id,
                     ]);
-                } elseif ($this->reorderFields($inputContentType['fieldType'], $contentType->getFieldType(), $logger)) {
+                } elseif ($this->reorderFields($inputContentType['fieldType'], $contentType->getFieldType())) {
                     // $contentType->getFieldType()->updateOrderKeys();
                     $em->persist($contentType);
                     $em->flush();
@@ -968,7 +875,7 @@ class ContentTypeController extends AppController
         }
 
         if ($contentType->getDirty()) {
-            $logger->warning('log.contenttype.dirty', [
+            $this->logger->warning('log.contenttype.dirty', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
             ]);
         }
@@ -982,12 +889,8 @@ class ContentTypeController extends AppController
     /**
      * @param string $action
      * @param string $subFieldName
-     *
-     * @return RedirectResponse
-     *
-     * @throws ElasticmsException
      */
-    private function treatFieldSubmit(ContentType $contentType, FieldType $field, $action, $subFieldName, LoggerInterface $logger, ContentTypeService $contentTypeService)
+    private function treatFieldSubmit(ContentType $contentType, FieldType $field, $action, $subFieldName): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -1002,11 +905,11 @@ class ContentTypeController extends AppController
             $managed = $env->getManaged();
             $contentType->setDirty($managed);
 
-            $contentTypeService->persist($contentType);
-            $contentTypeService->persistField($field);
+            $this->contentTypeService->persist($contentType);
+            $this->contentTypeService->persistField($field);
 
             if ($contentType->getDirty()) {
-                $logger->warning('log.contenttype.dirty', [
+                $this->logger->warning('log.contenttype.dirty', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 ]);
             }
@@ -1029,7 +932,7 @@ class ContentTypeController extends AppController
                             $em->persist($field);
                             $em->flush();
 
-                            $logger->notice('log.contenttype.subfield.added', [
+                            $this->logger->notice('log.contenttype.subfield.added', [
                                 'subfield_name' => $subFieldName,
                                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
                             ]);
@@ -1039,13 +942,13 @@ class ContentTypeController extends AppController
                             throw new ElasticmsException($e->getMessage());
                         }
                     } else {
-                        $logger->error('log.contenttype.field.name_not_valid', [
+                        $this->logger->error('log.contenttype.field.name_not_valid', [
                             'field_format' => '/[a-z][a-z0-9_-]*/ !'.Mapping::HASH_FIELD.' !'.Mapping::HASH_FIELD,
                         ]);
                     }
                     break;
                 default:
-                    $logger->warning('log.contenttype.action_not_found', [
+                    $this->logger->warning('log.contenttype.action_not_found', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     ]);
             }
@@ -1057,14 +960,7 @@ class ContentTypeController extends AppController
         ]);
     }
 
-    /**
-     * Export a content type in Json format.
-     *
-     * @return Response
-     *
-     * @Route("/content-type/export/{contentType}.{_format}", defaults={"_format"="json"}, name="contenttype.export")
-     */
-    public function exportAction(ContentType $contentType)
+    public function exportAction(ContentType $contentType): Response
     {
         $jsonContent = \json_encode($contentType, JSON_PRETTY_PRINT);
 
@@ -1077,5 +973,14 @@ class ContentTypeController extends AppController
         $response->headers->set('Content-Disposition', $disposition);
 
         return $response;
+    }
+
+    protected function getDataFieldType(string $fieldTypeNameOrServiceName): DataFieldType
+    {
+        $dataFieldType = $this->formRegistry->getType($fieldTypeNameOrServiceName)->getInnerType();
+        if ($dataFieldType instanceof DataFieldType) {
+            return $dataFieldType;
+        }
+        throw new ElasticmsException(\sprintf('Expecting a DataFieldType instance, got a %s', \get_class($dataFieldType)));
     }
 }

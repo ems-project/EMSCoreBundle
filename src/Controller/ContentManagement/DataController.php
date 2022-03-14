@@ -10,7 +10,6 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Service\Pdf\Pdf;
 use EMS\CommonBundle\Service\Pdf\PdfPrinterInterface;
 use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
@@ -27,6 +26,7 @@ use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Form\RevisionType;
+use EMS\CoreBundle\Helper\EmsCoreResponse;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -892,7 +892,7 @@ class DataController extends AbstractController
                 'environment' => $env->getLabel(),
             ]);
 
-            return AppController::jsonResponse($request, true, [
+            return EmsCoreResponse::createJsonResponse($request, true, [
                 'jobId' => $job->getId(),
                 'jobUrl' => $this->generateUrl('emsco_job_start', ['job' => $job->getId()], UrlGeneratorInterface::ABSOLUTE_PATH),
                 'url' => $this->generateUrl('emsco_job_status', ['job' => $job->getId()], UrlGeneratorInterface::ABSOLUTE_PATH),

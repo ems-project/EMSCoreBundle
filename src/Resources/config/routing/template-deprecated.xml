@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="template.datatable.ajax" path="/{contentType}/datatable.json" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ActionController:ajaxDataTableAction</default>
+    </route>
+    <route id="template.index" path="/{type}" methods="GET HEAD">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ActionController:indexAction</default>
+    </route>
+    <route id="template.add" path="/add/{type}" methods="GET POST HEAD">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ActionController:addAction</default>
+    </route>
+    <route id="template.edit" path="/edit/{id}.{_format}" methods="GET POST HEAD">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ActionController:editAction</default>
+        <default key="_format">html</default>
+    </route>
+    <route id="template.remove" path="/remove/{id}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ActionController:removeAction</default>
+    </route>
+
+</routes>

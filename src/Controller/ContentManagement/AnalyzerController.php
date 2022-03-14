@@ -3,46 +3,37 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Form\Form\AnalyzerType;
 use EMS\CoreBundle\Service\HelperService;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/analyzer")
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- */
-class AnalyzerController extends AppController
+class AnalyzerController extends AbstractController
 {
-    /**
-     * @Route("/", name="ems_analyzer_index")
-     */
-    public function indexAction(HelperService $helperService): Response
+    private HelperService $helperService;
+    private LoggerInterface $logger;
+
+    public function __construct(LoggerInterface $logger, HelperService $helperService)
+    {
+        $this->helperService = $helperService;
+        $this->logger = $logger;
+    }
+
+    public function index(): Response
     {
         return $this->render('@EMSCore/analyzer/index.html.twig', [
-                'paging' => $helperService->getPagingTool('EMSCoreBundle:Analyzer', 'ems_analyzer_index', 'name'),
+                'paging' => $this->helperService->getPagingTool('EMSCoreBundle:Analyzer', 'ems_analyzer_index', 'name'),
         ]);
     }
 
-    /**
-     * Edit an analyzer entity.
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/edit/{analyzer}", name="ems_analyzer_edit", methods={"GET", "POST"})
-     */
-    public function editAction(Analyzer $analyzer, Request $request, LoggerInterface $logger): Response
+    public function edit(Analyzer $analyzer, Request $request): Response
     {
         $form = $this->createForm(AnalyzerType::class, $analyzer);
 
@@ -55,7 +46,7 @@ class AnalyzerController extends AppController
             $em->persist($analyzer);
             $em->flush($analyzer);
 
-            $logger->notice('log.analyzer.updated', [
+            $this->logger->notice('log.analyzer.updated', [
                 'analyzer_name' => $analyzer->getName(),
                 'analyzer_id' => $analyzer->getId(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
@@ -70,14 +61,7 @@ class AnalyzerController extends AppController
         ]);
     }
 
-    /**
-     * Creates a new elasticsearch analyzer entity.
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/delete/{analyzer}", name="ems_analyzer_delete", methods={"POST"})
-     */
-    public function deleteAction(Analyzer $analyzer, LoggerInterface $logger): RedirectResponse
+    public function delete(Analyzer $analyzer): RedirectResponse
     {
         $id = $analyzer->getId();
         $name = $analyzer->getName();
@@ -87,7 +71,7 @@ class AnalyzerController extends AppController
         $em->remove($analyzer);
         $em->flush();
 
-        $logger->notice('log.analyzer.deleted', [
+        $this->logger->notice('log.analyzer.deleted', [
             'analyzer_name' => $name,
             'analyzer_id' => $id,
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
@@ -97,16 +81,7 @@ class AnalyzerController extends AppController
         ]);
     }
 
-    /**
-     * Creates a new elasticsearch analyzer entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @Route("/add", name="ems_analyzer_add", methods={"GET", "POST"})
-     */
-    public function addAction(Request $request, LoggerInterface $logger): Response
+    public function add(Request $request): Response
     {
         $analyzer = new Analyzer();
         $form = $this->createForm(AnalyzerType::class, $analyzer);
@@ -121,7 +96,7 @@ class AnalyzerController extends AppController
                 $em->persist($analyzer);
                 $em->flush($analyzer);
 
-                $logger->notice('log.analyzer.created', [
+                $this->logger->notice('log.analyzer.created', [
                     'analyzer_name' => $analyzer->getName(),
                     'analyzer_id' => $analyzer->getId(),
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
@@ -137,9 +112,6 @@ class AnalyzerController extends AppController
         ]);
     }
 
-    /**
-     * @Route("/export/{analyzer}.json", name="emsco_analyzer_export")
-     */
     public function export(Analyzer $analyzer): Response
     {
         $response = new JsonResponse($analyzer);

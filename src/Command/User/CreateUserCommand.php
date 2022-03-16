@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\User;
 
+use EMS\CoreBundle\Commands;
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -14,7 +15,7 @@ use Symfony\Component\Console\Question\Question;
 
 class CreateUserCommand extends Command
 {
-    protected static $defaultName = 'fos:user:create';
+    protected static $defaultName = Commands::USER_CREATE;
 
     private UserManipulator $userManipulator;
 
@@ -28,7 +29,7 @@ class CreateUserCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('fos:user:create')
+            ->setAliases(['fos:user:create'])
             ->setDescription('Create a user.')
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\User;
 
+use EMS\CoreBundle\Commands;
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -13,7 +14,7 @@ use Symfony\Component\Console\Question\Question;
 
 class DeactivateUserCommand extends Command
 {
-    protected static $defaultName = 'fos:user:deactivate';
+    protected static $defaultName = Commands::USER_DEACTIVATE;
 
     private UserManipulator $userManipulator;
 
@@ -27,7 +28,7 @@ class DeactivateUserCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('fos:user:deactivate')
+            ->setAliases(['fos:user:deactivate'])
             ->setDescription('Deactivate a user')
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),

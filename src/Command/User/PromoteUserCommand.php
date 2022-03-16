@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\User;
 
+use EMS\CoreBundle\Commands;
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class PromoteUserCommand extends RoleCommand
 {
-    protected static $defaultName = 'fos:user:promote';
+    protected static $defaultName = Commands::USER_PROMOTE;
 
     protected function configure(): void
     {
         parent::configure();
 
         $this
-            ->setName('fos:user:promote')
+            ->setAliases(['fos:user:promote'])
             ->setDescription('Promotes a user by adding a role')
             ->setHelp(<<<'EOT'
 The <info>fos:user:promote</info> command promotes a user by adding a role

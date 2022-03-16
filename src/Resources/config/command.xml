@@ -80,29 +80,29 @@
             <tag name="console.command"/>
         </service>
 
-        <service id="fos_user.command.activate_user" class="EMS\CoreBundle\Command\User\ActivateUserCommand">
+        <service id="ems.command.activate_user" class="EMS\CoreBundle\Command\User\ActivateUserCommand">
             <argument type="service" id="fos_user.util.user_manipulator" />
-            <tag name="console.command" command="fos:user:activate" />
+            <tag name="console.command"/>
         </service>
-        <service id="fos_user.command.change_password" class="EMS\CoreBundle\Command\User\ChangePasswordCommand">
+        <service id="ems.command.change_password" class="EMS\CoreBundle\Command\User\ChangePasswordCommand">
             <argument type="service" id="fos_user.util.user_manipulator" />
-            <tag name="console.command" command="fos:user:change-password" />
+            <tag name="console.command"/>
         </service>
-        <service id="fos_user.command.create_user" class="EMS\CoreBundle\Command\User\CreateUserCommand">
+        <service id="ems.command.create_user" class="EMS\CoreBundle\Command\User\CreateUserCommand">
             <argument type="service" id="fos_user.util.user_manipulator" />
-            <tag name="console.command" command="fos:user:create" />
+            <tag name="console.command"/>
         </service>
-        <service id="fos_user.command.deactivate_user" class="EMS\CoreBundle\Command\User\DeactivateUserCommand">
+        <service id="ems.command.deactivate_user" class="EMS\CoreBundle\Command\User\DeactivateUserCommand">
             <argument type="service" id="fos_user.util.user_manipulator" />
-            <tag name="console.command" command="fos:user:deactivate" />
+            <tag name="console.command"/>
         </service>
-        <service id="fos_user.command.demote_user" class="EMS\CoreBundle\Command\User\DemoteUserCommand">
+        <service id="ems.command.demote_user" class="EMS\CoreBundle\Command\User\DemoteUserCommand">
             <argument type="service" id="fos_user.util.user_manipulator" />
-            <tag name="console.command" command="fos:user:demote" />
+            <tag name="console.command"/>
         </service>
-        <service id="fos_user.command.promote_user" class="EMS\CoreBundle\Command\User\PromoteUserCommand">
+        <service id="ems.command.promote_user" class="EMS\CoreBundle\Command\User\PromoteUserCommand">
             <argument type="service" id="fos_user.util.user_manipulator" />
-            <tag name="console.command" command="fos:user:promote" />
+            <tag name="console.command"/>
         </service>
         
         <service id="ems.command.xliff.extract" class="EMS\CoreBundle\Command\Xliff\ExtractCommand">

@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\User;
 
+use EMS\CoreBundle\Commands;
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class DemoteUserCommand extends RoleCommand
 {
-    protected static $defaultName = 'fos:user:demote';
+    protected static $defaultName = Commands::USER_DEMOTE;
 
     protected function configure(): void
     {
         parent::configure();
 
         $this
-            ->setName('fos:user:demote')
+            ->setAliases(['fos:user:demote'])
             ->setDescription('Demote a user by removing a role')
             ->setHelp(<<<'EOT'
 The <info>fos:user:demote</info> command demotes a user by removing a role

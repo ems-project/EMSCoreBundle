@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\User;
 
+use EMS\CoreBundle\Commands;
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -13,7 +14,7 @@ use Symfony\Component\Console\Question\Question;
 
 class ChangePasswordCommand extends Command
 {
-    protected static $defaultName = 'fos:user:change-password';
+    protected static $defaultName = Commands::USER_CHANGE_PASSWORD;
 
     private UserManipulator $userManipulator;
 
@@ -27,7 +28,7 @@ class ChangePasswordCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('fos:user:change-password')
+            ->setAliases(['fos:user:change-password'])
             ->setDescription('Change the password of a user.')
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),

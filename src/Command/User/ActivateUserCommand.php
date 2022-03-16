@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\User;
 
+use EMS\CoreBundle\Commands;
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -13,7 +14,7 @@ use Symfony\Component\Console\Question\Question;
 
 class ActivateUserCommand extends Command
 {
-    protected static $defaultName = 'fos:user:activate';
+    protected static $defaultName = Commands::USER_ACTIVATE;
 
     private UserManipulator $userManipulator;
 
@@ -27,7 +28,7 @@ class ActivateUserCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('fos:user:activate')
+            ->setAliases(['fos:user:activate'])
             ->setDescription('Activate a user')
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),

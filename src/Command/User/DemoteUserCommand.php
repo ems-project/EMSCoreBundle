@@ -17,7 +17,6 @@ class DemoteUserCommand extends RoleCommand
         parent::configure();
 
         $this
-            ->setAliases(['fos:user:demote'])
             ->setDescription('Demote a user by removing a role')
             ->setHelp(<<<'EOT'
 The <info>fos:user:demote</info> command demotes a user by removing a role

@@ -29,7 +29,6 @@ class CreateUserCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setAliases(['fos:user:create'])
             ->setDescription('Create a user.')
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),

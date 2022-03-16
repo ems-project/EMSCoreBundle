@@ -28,7 +28,6 @@ class ChangePasswordCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setAliases(['fos:user:change-password'])
             ->setDescription('Change the password of a user.')
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),

@@ -28,7 +28,6 @@ class DeactivateUserCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setAliases(['fos:user:deactivate'])
             ->setDescription('Deactivate a user')
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),

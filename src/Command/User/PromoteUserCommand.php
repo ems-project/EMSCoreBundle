@@ -17,7 +17,6 @@ class PromoteUserCommand extends RoleCommand
         parent::configure();
 
         $this
-            ->setAliases(['fos:user:promote'])
             ->setDescription('Promotes a user by adding a role')
             ->setHelp(<<<'EOT'
 The <info>fos:user:promote</info> command promotes a user by adding a role

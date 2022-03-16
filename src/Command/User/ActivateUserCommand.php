@@ -28,7 +28,6 @@ class ActivateUserCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setAliases(['fos:user:activate'])
             ->setDescription('Activate a user')
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),

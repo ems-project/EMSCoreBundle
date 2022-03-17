@@ -20,7 +20,6 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\ReleaseService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,18 +28,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateReleaseCommand extends AbstractCommand
 {
     protected static $defaultName = Commands::RELEASE_CREATE;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var ReleaseService */
-    private $releaseService;
-    /** @var EnvironmentService */
-    private $environmentService;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var RevisionService */
-    private $revisionService;
-    /** @var ElasticaService */
-    private $elasticaService;
+    private ReleaseService $releaseService;
+    private EnvironmentService $environmentService;
+    private ContentTypeService $contentTypeService;
+    private RevisionService $revisionService;
+    private ElasticaService $elasticaService;
 
     private ContentType $contentType;
     private Environment $target;
@@ -51,9 +43,8 @@ class CreateReleaseCommand extends AbstractCommand
     private const ARGUMENT_TARGET = 'target';
     private const OPTION_QUERY = 'query';
 
-    public function __construct(LoggerInterface $logger, ReleaseService $releaseService, EnvironmentService $environmentService, ContentTypeService $contentTypeService, RevisionService $revisionService, ElasticaService $elasticaService)
+    public function __construct(ReleaseService $releaseService, EnvironmentService $environmentService, ContentTypeService $contentTypeService, RevisionService $revisionService, ElasticaService $elasticaService)
     {
-        $this->logger = $logger;
         $this->releaseService = $releaseService;
         $this->environmentService = $environmentService;
         $this->contentTypeService = $contentTypeService;

@@ -1,16 +1,10 @@
 <?php
 
-/*
- * This file is part of the FOSUserBundle package.
- *
- * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+declare(strict_types=1);
 
-namespace FOS\UserBundle\Command;
+namespace EMS\CoreBundle\Command\User;
 
+use EMS\CoreBundle\Commands;
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,9 +14,9 @@ use Symfony\Component\Console\Question\Question;
 
 class ChangePasswordCommand extends Command
 {
-    protected static $defaultName = 'fos:user:change-password';
+    protected static $defaultName = Commands::USER_CHANGE_PASSWORD;
 
-    private $userManipulator;
+    private UserManipulator $userManipulator;
 
     public function __construct(UserManipulator $userManipulator)
     {
@@ -31,13 +25,9 @@ class ChangePasswordCommand extends Command
         $this->userManipulator = $userManipulator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this
-            ->setName('fos:user:change-password')
             ->setDescription('Change the password of a user.')
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
@@ -58,9 +48,6 @@ EOT
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = \strval($input->getArgument('username'));
@@ -73,9 +60,6 @@ EOT
         return 1;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $questions = [];

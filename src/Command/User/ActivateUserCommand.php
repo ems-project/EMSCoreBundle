@@ -1,16 +1,10 @@
 <?php
 
-/*
- * This file is part of the FOSUserBundle package.
- *
- * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+declare(strict_types=1);
 
-namespace FOS\UserBundle\Command;
+namespace EMS\CoreBundle\Command\User;
 
+use EMS\CoreBundle\Commands;
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,14 +12,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-/**
- * @author Antoine Hérault <antoine.herault@gmail.com>
- */
-class DeactivateUserCommand extends Command
+class ActivateUserCommand extends Command
 {
-    protected static $defaultName = 'fos:user:deactivate';
+    protected static $defaultName = Commands::USER_ACTIVATE;
 
-    private $userManipulator;
+    private UserManipulator $userManipulator;
 
     public function __construct(UserManipulator $userManipulator)
     {
@@ -34,43 +25,33 @@ class DeactivateUserCommand extends Command
         $this->userManipulator = $userManipulator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this
-            ->setName('fos:user:deactivate')
-            ->setDescription('Deactivate a user')
+            ->setDescription('Activate a user')
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
             ])
             ->setHelp(<<<'EOT'
-The <info>fos:user:deactivate</info> command deactivates a user (will not be able to log in)
+The <info>fos:user:activate</info> command activates a user (so they will be able to log in):
 
   <info>php %command.full_name% matthieu</info>
 EOT
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = \strval($input->getArgument('username'));
 
-        $this->userManipulator->deactivate($username);
+        $this->userManipulator->activate($username);
 
-        $output->writeln(\sprintf('User "%s" has been deactivated.', $username));
+        $output->writeln(\sprintf('User "%s" has been activated.', $username));
 
         return 1;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function interact(InputInterface $input, OutputInterface $output): void
+    protected function interact(InputInterface $input, OutputInterface $output): ?string
     {
         if (!$input->getArgument('username')) {
             $question = new Question('Please choose a username:');
@@ -85,5 +66,7 @@ EOT
 
             $input->setArgument('username', $answer);
         }
+
+        return null;
     }
 }

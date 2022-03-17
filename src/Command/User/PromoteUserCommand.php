@@ -1,38 +1,22 @@
 <?php
 
-/*
- * This file is part of the FOSUserBundle package.
- *
- * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+declare(strict_types=1);
 
-namespace FOS\UserBundle\Command;
+namespace EMS\CoreBundle\Command\User;
 
+use EMS\CoreBundle\Commands;
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * @author Matthieu Bontemps <matthieu@knplabs.com>
- * @author Thibault Duplessis <thibault.duplessis@gmail.com>
- * @author Luis Cordova <cordoval@gmail.com>
- * @author Lenar Lõhmus <lenar@city.ee>
- */
 class PromoteUserCommand extends RoleCommand
 {
-    protected static $defaultName = 'fos:user:promote';
+    protected static $defaultName = Commands::USER_PROMOTE;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         parent::configure();
 
         $this
-            ->setName('fos:user:promote')
             ->setDescription('Promotes a user by adding a role')
             ->setHelp(<<<'EOT'
 The <info>fos:user:promote</info> command promotes a user by adding a role
@@ -43,10 +27,7 @@ EOT
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, $username, $super, $role): void
+    protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, string $username, bool $super, string $role): void
     {
         if ($super) {
             $manipulator->promote($username);

@@ -18,7 +18,13 @@ final class Commands
 
     public const REVISION_DISCARD_DRAFT = 'emsco:revision:discard-draft';
 
-    public const XLIFF_EXTRACT = 'emsco:xliff:extract';
+    public const USER_ACTIVATE = 'emsco:user:activate';
+    public const USER_CHANGE_PASSWORD = 'emsco:user:change-password';
+    public const USER_CREATE = 'emsco:user:create';
+    public const USER_DEACTIVATE = 'emsco:user:deactivate';
+    public const USER_DEMOTE = 'emsco:user:demote';
+    public const USER_PROMOTE = 'emsco:user:promote';
 
+    public const XLIFF_EXTRACT = 'emsco:xliff:extract';
     public const XLIFF_UPDATE = 'emsco:xliff:update';
 }

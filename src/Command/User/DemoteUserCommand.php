@@ -1,36 +1,22 @@
 <?php
 
-/*
- * This file is part of the FOSUserBundle package.
- *
- * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+declare(strict_types=1);
 
-namespace FOS\UserBundle\Command;
+namespace EMS\CoreBundle\Command\User;
 
+use EMS\CoreBundle\Commands;
 use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * @author Antoine Hérault <antoine.herault@gmail.com>
- * @author Lenar Lõhmus <lenar@city.ee>
- */
 class DemoteUserCommand extends RoleCommand
 {
-    protected static $defaultName = 'fos:user:demote';
+    protected static $defaultName = Commands::USER_DEMOTE;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         parent::configure();
 
         $this
-            ->setName('fos:user:demote')
             ->setDescription('Demote a user by removing a role')
             ->setHelp(<<<'EOT'
 The <info>fos:user:demote</info> command demotes a user by removing a role
@@ -41,10 +27,7 @@ EOT
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, $username, $super, $role): void
+    protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, string $username, bool $super, string $role): void
     {
         if ($super) {
             $manipulator->demote($username);
@@ -53,7 +36,7 @@ EOT
             if ($manipulator->removeRole($username, $role)) {
                 $output->writeln(\sprintf('Role "%s" has been removed from user "%s". This change will not apply until the user logs out and back in again.', $role, $username));
             } else {
-                $output->writeln(\sprintf('User "%s" didn\'t have "%s" role.', $username, $role));
+                $output->writeln(\sprintf('User "%s" did not have "%s" role.', $username, $role));
             }
         }
     }

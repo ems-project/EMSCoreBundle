@@ -70,7 +70,7 @@ class FOSUserExtension extends Extension
             $definition->setFactory([new Reference('fos_user.doctrine_registry'), 'getManager']);
         }
 
-        foreach (['validator', 'security', 'util', 'mailer', 'listeners', 'commands'] as $basename) {
+        foreach (['validator', 'security', 'util', 'mailer', 'listeners'] as $basename) {
             $loader->load(\sprintf('%s.xml', $basename));
         }
 

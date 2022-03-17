@@ -61,7 +61,7 @@ class ContentTypeRepository extends EntityRepository
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      *
      * @return ContentType|null
      */

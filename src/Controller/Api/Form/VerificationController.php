@@ -12,14 +12,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 final class VerificationController extends AbstractController
 {
-    /** @var FormVerificationService */
-    private $formVerificationService;
-    /** @var LoggerInterface */
-    private $logger;
+    private FormVerificationService $formVerificationService;
+    private LoggerInterface $logger;
 
     public function __construct(FormVerificationService $formVerificationService, LoggerInterface $logger)
     {
@@ -27,9 +24,6 @@ final class VerificationController extends AbstractController
         $this->logger = $logger;
     }
 
-    /**
-     * @Route("/api/forms/verifications", defaults={"_format": "json"}, methods={"POST"})
-     */
     public function createVerification(Request $request): Response
     {
         try {
@@ -43,9 +37,6 @@ final class VerificationController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/api/forms/verifications", defaults={"_format": "json"}, methods={"GET"})
-     */
     public function getVerification(Request $request): Response
     {
         try {

@@ -26,7 +26,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
 final class ActionController extends AbstractController
 {
@@ -39,9 +38,6 @@ final class ActionController extends AbstractController
         $this->actionService = $actionService;
     }
 
-    /**
-     * @Route("/template/{contentType}/datatable.json", name="ems_core_action_datatable_ajax")
-     */
     public function ajaxDataTableAction(ContentType $contentType, Request $request): Response
     {
         $table = $this->initTable($contentType);
@@ -54,11 +50,6 @@ final class ActionController extends AbstractController
         ], new JsonResponse());
     }
 
-    /**
-     * @Route("/template/{type}", name="template.index", methods={"GET","HEAD"})
-     *
-     * @deprecated
-     */
     public function indexAction(string $type): Response
     {
         \trigger_error('Route template.index is now deprecated, use the route ems_core_action_index', E_USER_DEPRECATED);
@@ -116,11 +107,6 @@ final class ActionController extends AbstractController
         ]);
     }
 
-    /**
-     * @deprecated
-     *
-     * @Route("/template/add/{type}", name="template.add", methods={"GET","HEAD", "POST"})
-     */
     public function addAction(string $type, Request $request): Response
     {
         \trigger_error('Route template.add is now deprecated, use the route ems_core_action_add', E_USER_DEPRECATED);
@@ -174,11 +160,6 @@ final class ActionController extends AbstractController
         ]);
     }
 
-    /**
-     * @deprecated
-     *
-     * @Route("/template/edit/{id}.{_format}", name="template.edit", defaults={"_format"="html"}, methods={"GET", "HEAD", "POST"})
-     */
     public function editAction(Template $id, Request $request, string $_format): Response
     {
         \trigger_error('Route template.edit is now deprecated, use the route ems_core_action_edit', E_USER_DEPRECATED);
@@ -236,11 +217,6 @@ final class ActionController extends AbstractController
         ]);
     }
 
-    /**
-     * @deprecated
-     *
-     * @Route("/template/remove/{id}", name="template.remove", methods={"POST"})
-     */
     public function removeAction(string $id): RedirectResponse
     {
         \trigger_error('Route template.remove is now deprecated, use the route ems_core_action_delete', E_USER_DEPRECATED);

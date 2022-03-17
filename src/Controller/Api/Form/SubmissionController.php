@@ -13,14 +13,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 final class SubmissionController extends AbstractController
 {
-    /** @var FormSubmissionService */
-    private $formSubmissionService;
-    /** @var LoggerInterface */
-    private $logger;
+    private FormSubmissionService $formSubmissionService;
+    private LoggerInterface $logger;
 
     public function __construct(FormSubmissionService $formSubmissionService, LoggerInterface $logger)
     {
@@ -28,9 +25,6 @@ final class SubmissionController extends AbstractController
         $this->logger = $logger;
     }
 
-    /**
-     * @Route("/api/forms/submissions", defaults={"_format": "json"}, methods={"POST"})
-     */
     public function submit(Request $request): Response
     {
         try {

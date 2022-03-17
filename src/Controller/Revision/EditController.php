@@ -315,6 +315,32 @@ class EditController extends AbstractController
         ]);
     }
 
+    public function archiveRevision(Revision $revision): Response
+    {
+        $contentType = $revision->giveContentType();
+        $archiveRole = $contentType->getArchiveRole();
+        if (null === $archiveRole || !$this->isGranted($archiveRole)) {
+            throw $this->createAccessDeniedException('Archive not granted!');
+        }
+        if ($revision->hasEndTime()) {
+            throw new \RuntimeException('Only a current revision can be archived');
+        }
+        if ($revision->isArchived()) {
+            throw new \RuntimeException('This revision is already archived');
+        }
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new \RuntimeException('Unexpect user object');
+        }
+
+        $this->dataService->lockRevision($revision);
+        $this->revisionService->archive($revision, $user->getUsername());
+
+        return $this->redirectToRoute('data.root', [
+            'name' => $contentType->getName(),
+        ]);
+    }
+
     /**
      * @param mixed $input
      */

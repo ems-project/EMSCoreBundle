@@ -4,29 +4,37 @@ namespace EMS\CoreBundle\Controller\Views;
 
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\SearchService;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
-class CalendarController extends AppController
+class CalendarController extends AbstractController
 {
-    /**
-     * @return Response
-     *
-     * @Route("/views/calendar/replan/{view}.json", name="views.calendar.replan", defaults={"_format"="json"}, methods={"POST"})
-     */
-    public function updateAction(View $view, Request $request, DataService $dataService)
+    private DataService $dataService;
+    private LoggerInterface $logger;
+    private SearchService $searchService;
+    private ElasticaService $elasticaService;
+
+    public function __construct(LoggerInterface $logger, ElasticaService $elasticaService, DataService $dataService, SearchService $searchService)
+    {
+        $this->logger = $logger;
+        $this->elasticaService = $elasticaService;
+        $this->dataService = $dataService;
+        $this->searchService = $searchService;
+    }
+
+    public function update(View $view, Request $request): Response
     {
         try {
             $ouuid = $request->request->get('ouuid', false);
             $type = $view->getContentType()->getName();
-            $revision = $dataService->initNewDraft($type, $ouuid);
+            $revision = $this->dataService->initNewDraft($type, $ouuid);
 
             $rawData = $revision->getRawData();
             $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
@@ -53,13 +61,13 @@ class CalendarController extends AppController
             }
 
             $revision->setRawData($rawData);
-            $dataService->finalizeDraft($revision);
+            $this->dataService->finalizeDraft($revision);
 
             return $this->render('@EMSCore/view/custom/calendar_replan.json.twig', [
                     'success' => true,
             ]);
         } catch (\Exception $e) {
-            $this->getLogger()->error('log.error', [
+            $this->logger->error('log.error', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
             ]);
@@ -70,14 +78,7 @@ class CalendarController extends AppController
         }
     }
 
-    /**
-     * @return Response
-     *
-     * @throws \Exception
-     *
-     * @Route("/views/calendar/search/{view}.json", name="views.calendar.search", defaults={"_format"="json"}, methods={"GET"})
-     */
-    public function searchAction(View $view, Request $request, ElasticaService $elasticaService, SearchService $searchService)
+    public function searchAction(View $view, Request $request): Response
     {
         $search = new Search();
         $form = $this->createForm(SearchFormType::class, $search, [
@@ -90,7 +91,7 @@ class CalendarController extends AppController
         /* @var Search $search */
         $search->setEnvironments([$view->getContentType()->getName()]);
 
-        $body = $searchService->generateSearchBody($search);
+        $body = $this->searchService->generateSearchBody($search);
 
         /** @var \DateTime $from */
         $from = new \DateTime($request->query->get('from'));
@@ -143,11 +144,11 @@ class CalendarController extends AppController
                 'body' => $body,
         ];
 
-        $search = $elasticaService->convertElasticsearchSearch($searchQuery);
+        $search = $this->elasticaService->convertElasticsearchSearch($searchQuery);
 
         return $this->render('@EMSCore/view/custom/calendar_search.json.twig', [
                 'success' => true,
-                'data' => $elasticaService->search($search)->getResponse()->getData(),
+                'data' => $this->elasticaService->search($search)->getResponse()->getData(),
                 'field' => $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']),
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),

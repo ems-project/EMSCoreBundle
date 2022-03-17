@@ -14,6 +14,8 @@ final class Commands
 
     public const RELEASE_PUBLISH = 'emsco:release:publish';
 
+    public const RELEASE_CREATE = 'emsco:release:create';
+
     public const REVISION_TASK_CREATE = 'emsco:revision:task:create';
 
     public const REVISION_DISCARD_DRAFT = 'emsco:revision:discard-draft';

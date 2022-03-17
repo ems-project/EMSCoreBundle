@@ -54,6 +54,15 @@
             <argument type="service" id="ems.service.release"/>
             <tag name="console.command"/>
         </service>
+        <service id="emsco.release.create" class="EMS\CoreBundle\Command\Release\CreateReleaseCommand">
+            <argument type="service" id="ems.service.release"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.revision"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <tag name="console.command"/>
+        </service>
+
         <!-- EMS notification -->
         <service id="ems.command.notification.bulk_action" class="EMS\CoreBundle\Command\Notification\BulkActionCommand">
             <argument type="service" id="ems.service.notification"/>

@@ -313,20 +313,25 @@
 {% endblock %}
 
 {% block EMS_CoreBundle_Form_DataField_ContainerFieldType %}
+	{% set parent = dataField.fieldType.parent %}
+	{% set parentType = parent ? parent.type : false %}
+
     {% if dataField.fieldType.displayOptions.label is defined and dataField.fieldType.displayOptions.label %}
     	<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">
-					{% if dataField.fieldType.displayOptions.icon is defined %}
-						<i class="{{ dataField.fieldType.displayOptions.icon }}"></i> 
-					{% endif %}
-					{% if dataField.fieldType.displayOptions.label is defined and dataField.fieldType.displayOptions.label%}
-						{{ dataField.fieldType.displayOptions.label }}
-					{% else %}
-						{{ dataField.fieldType.name }}
-					{% endif %}
-				</h3>
-			</div>
+			{% if parentType != 'EMS\\CoreBundle\\Form\\DataField\\TabsFieldType' %}
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						{% if dataField.fieldType.displayOptions.icon is defined %}
+							<i class="{{ dataField.fieldType.displayOptions.icon }}"></i>
+						{% endif %}
+						{% if dataField.fieldType.displayOptions.label is defined and dataField.fieldType.displayOptions.label%}
+							{{ dataField.fieldType.displayOptions.label }}
+						{% else %}
+							{{ dataField.fieldType.name }}
+						{% endif %}
+					</h3>
+				</div>
+			{% endif %}
 			<div class="panel-body container-fluid">
 	{% endif %}
 
@@ -500,9 +505,7 @@
 					{% endfor %}
 				{% elseif 'EMS\\CoreBundle\\Form\\DataField\\ContainerFieldType' == child.fieldType.type|default(null) %}
 					<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~counter }}__tab">
-						{% for grandchild in child.children|default([]) %}
-							{{ _self.renderDataFieldBlock(grandchild, source, compare, compareRawData, '', path|merge([counter])) }}
-						{% endfor %}
+						{{ _self.renderDataFieldBlock(child, source, compare, compareRawData) }}
 					</div>
 					{% set counter = counter + 1 %}
 				{% else %}

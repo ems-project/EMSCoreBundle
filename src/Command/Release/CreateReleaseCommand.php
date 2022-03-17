@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command\Release;
 
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Search\Search;
@@ -17,33 +21,31 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\ReleaseService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-class CreateReleaseCommand extends Command
+class CreateReleaseCommand extends AbstractCommand
 {
     protected static $defaultName = Commands::RELEASE_CREATE;
     /** @var LoggerInterface */
-    protected $logger;
+    private $logger;
     /** @var ReleaseService */
-    protected $releaseService;
+    private $releaseService;
     /** @var EnvironmentService */
-    protected $environmentService;
+    private $environmentService;
     /** @var ContentTypeService */
-    protected $contentTypeService;
+    private $contentTypeService;
     /** @var RevisionService */
-    protected $revisionService;
+    private $revisionService;
     /** @var ElasticaService */
-    protected $elasticaService;
+    private $elasticaService;
 
-    private SymfonyStyle $io;
     private ContentType $contentType;
     private Environment $target;
-    private string $query;
+    /** @var array<mixed> */
+    private array $query;
 
     private const ARGUMENT_CONTENT_TYPE = 'contentType';
     private const ARGUMENT_TARGET = 'target';
@@ -71,35 +73,10 @@ class CreateReleaseCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $targetName = $input->getArgument(self::ARGUMENT_TARGET);
-        if (!\is_string($targetName)) {
-            throw new \RuntimeException('Target name has to be a string');
-        }
-        $target = $this->environmentService->getByName($targetName);
-        if (!$target) {
-            throw new \RuntimeException('Unexpected null target environment');
-        }
-        $this->target = $target;
-
-        $contentType = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
-        if (!\is_string($contentType)) {
-            throw new \RuntimeException('ContentType has to be a string');
-        }
-        $contentType = $this->contentTypeService->getByName($contentType);
-        if (!$contentType) {
-            throw new \RuntimeException('Unexpected null contenttype');
-        }
-        $this->contentType = $contentType;
-        if (null !== $input->getOption(self::OPTION_QUERY)) {
-            $this->query = $input->getOption(self::OPTION_QUERY);
-            if (!\is_string($this->query)) {
-                throw new \RuntimeException('Unexpected query argument');
-            }
-            $body = \json_decode($this->query, true);
-            if (\json_last_error() > 0) {
-                throw new \RuntimeException(\sprintf('Invalid json query %s', $this->query));
-            }
-        }
+        parent::initialize($input, $output);
+        $this->target = $this->environmentService->giveByName($this->getArgumentString(self::ARGUMENT_TARGET));
+        $this->contentType = $this->contentTypeService->giveByName($this->getArgumentString(self::ARGUMENT_CONTENT_TYPE));
+        $this->query = Json::decode($this->getOptionString(self::OPTION_QUERY));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -107,25 +84,23 @@ class CreateReleaseCommand extends Command
         if (null === $this->contentType->getEnvironment()) {
             throw new \RuntimeException('Unexpected null contenttype');
         }
-        $this->io = new SymfonyStyle($input, $output);
         $this->io->title(\sprintf('EMSCO - Add Release for %s', $this->contentType));
 
-        $query = \json_decode($this->query, true);
         $search = $this->elasticaService->convertElasticsearchSearch([
             'index' => $this->contentType->getEnvironment()->getAlias(),
             '_source' => false,
             'type' => $this->contentType->getName(),
-            'body' => \count($query) > 0 ? $query : null,
+            'body' => \count($this->query) > 0 ? $this->query : null,
         ]);
 
         $documentCount = $this->elasticaService->count($search);
         if (0 === $documentCount) {
-            $this->io->error(\count($query) > 0 ? \sprintf('No document found in %s with this query : %s', $this->contentType->getName(), $this->query) : \sprintf('No document found in %s', $this->contentType->getName()));
+            $this->io->error(\count($this->query) > 0 ? \sprintf('No document found in %s with this query : %s', $this->contentType->getName(), Json::encode($this->query)) : \sprintf('No document found in %s', $this->contentType->getName()));
 
             return -1;
         }
 
-        $this->io->comment(\count($query) > 0 ? \sprintf('%s document(s) found in %s with this query : %s', $documentCount, $this->contentType->getName(), $this->query) : \sprintf('%s document(s) found in %s', $documentCount, $this->contentType->getName()));
+        $this->io->comment(\count($this->query) > 0 ? \sprintf('%s document(s) found in %s with this query : %s', $documentCount, $this->contentType->getName(), Json::encode($this->query)) : \sprintf('%s document(s) found in %s', $documentCount, $this->contentType->getName()));
 
         $release = new Release();
         $release->setName(\sprintf('CMD-Release for %s to %s', $this->contentType, $this->target->getName()));
@@ -143,13 +118,20 @@ class CreateReleaseCommand extends Command
                 $releaseRevision->setContentType($this->contentType);
                 $releaseRevision->setRevision($revision);
                 $release->addRevision($releaseRevision);
+                ++$revisionCount;
             }
         }
 
+        if (0 === $revisionCount) {
+            $this->io->error('No revisions to publish');
+
+            return -1;
+        }
+        $this->io->comment(\sprintf('%s document(s) added to publish', $revisionCount));
         $this->releaseService->add($release);
         $this->io->success(\sprintf('Release %s has created', $release->getName()));
 
-        return 0;
+        return self::EXECUTE_SUCCESS;
     }
 
     /**

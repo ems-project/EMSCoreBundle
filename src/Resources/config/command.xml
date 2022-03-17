@@ -62,6 +62,7 @@
             <argument type="service" id="ems_common.service.elastica"/>
             <tag name="console.command"/>
         </service>
+
         <!-- EMS notification -->
         <service id="ems.command.notification.bulk_action" class="EMS\CoreBundle\Command\Notification\BulkActionCommand">
             <argument type="service" id="ems.service.notification"/>

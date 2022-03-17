@@ -25,6 +25,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+
 class CreateReleaseCommand extends AbstractCommand
 {
     protected static $defaultName = Commands::RELEASE_CREATE;

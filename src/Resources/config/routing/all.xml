@@ -65,6 +65,10 @@
             prefix="/environment" />
     <import resource="@EMSCoreBundle/Resources/config/routing/publisher.xml"
             prefix="/publisher" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/publish.xml"
+            prefix="/publish" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/revision.xml"
+            prefix="/revision" />
     <import resource="@EMSCoreBundle/Resources/config/routing/search-options.xml"
             prefix="/search-options" />
     <import resource="@EMSCoreBundle/Resources/config/routing/managed-alias.xml"

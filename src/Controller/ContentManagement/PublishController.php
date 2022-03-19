@@ -28,7 +28,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
 class PublishController extends AbstractController
 {
@@ -49,9 +48,6 @@ class PublishController extends AbstractController
         $this->elasticaService = $elasticaService;
     }
 
-    /**
-     * @Route("/publish/to/{revisionId}/{envId}", name="revision.publish_to")
-     */
     public function publishToAction(Revision $revisionId, Environment $envId): Response
     {
         $revision = $revisionId;
@@ -82,9 +78,6 @@ class PublishController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/revision/unpublish/{revisionId}/{envId}", name="revision.unpublish")
-     */
     public function unPublishAction(Revision $revisionId, Environment $envId): RedirectResponse
     {
         $contentType = $revisionId->getContentType();
@@ -104,9 +97,6 @@ class PublishController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/publish/search-result", name="search.publish", defaults={"deleted"=0, "managed"=1})
-     */
     public function publishSearchResult(Request $request): Response
     {
         if (!$this->isGranted('ROLE_PUBLISHER')) {

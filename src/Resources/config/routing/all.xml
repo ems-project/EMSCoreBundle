@@ -93,6 +93,8 @@
     <import resource="@EMSCoreBundle/Resources/config/routing/interface.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/analyzer.xml"
             prefix="/analyzer" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/notifications.xml"
+            prefix="/notifications" />
     <import resource="@EMSCoreBundle/Resources/config/routing/form.xml"
             prefix="/form" />
     <import resource="@EMSCoreBundle/Resources/config/routing/default.xml" />

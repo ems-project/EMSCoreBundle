@@ -261,6 +261,7 @@
         <service id="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController" public="true">
             <argument type="service" id="ems.logger" />
             <argument type="service" id="ems.service.alias" />
+            <argument>%ems_core.instance_id%</argument>
         </service>
         <service id="EMS\CoreBundle\Controller\ContentManagement\IndexController" public="true">
             <argument type="service" id="ems.service.index" />

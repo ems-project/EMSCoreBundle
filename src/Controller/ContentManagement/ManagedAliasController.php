@@ -18,11 +18,13 @@ class ManagedAliasController extends AbstractController
 {
     private AliasService $aliasService;
     private LoggerInterface $logger;
+    private string $instanceId;
 
-    public function __construct(LoggerInterface $logger, AliasService $aliasService)
+    public function __construct(LoggerInterface $logger, AliasService $aliasService, string $instanceId)
     {
         $this->aliasService = $aliasService;
         $this->logger = $logger;
+        $this->instanceId = $instanceId;
     }
 
     public function addAction(Request $request): Response
@@ -100,7 +102,7 @@ class ManagedAliasController extends AbstractController
 
     private function save(ManagedAlias $managedAlias, array $actions): void
     {
-        $managedAlias->setAlias(Type::string($this->getParameter('ems_core.instance_id')));
+        $managedAlias->setAlias($this->instanceId);
         $this->aliasService->updateAlias($managedAlias->getAlias(), $actions);
 
         /* @var $em EntityManager */

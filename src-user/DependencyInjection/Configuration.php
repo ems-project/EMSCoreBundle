@@ -81,7 +81,6 @@ class Configuration implements ConfigurationInterface
         $this->addRegistrationSection($rootNode);
         $this->addResettingSection($rootNode);
         $this->addServiceSection($rootNode);
-        $this->addGroupSection($rootNode);
 
         return $treeBuilder;
     }
@@ -225,32 +224,6 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('token_generator')->defaultValue('fos_user.util.token_generator.default')->end()
                             ->scalarNode('username_canonicalizer')->defaultValue('fos_user.util.canonicalizer.default')->end()
                             ->scalarNode('user_manager')->defaultValue('fos_user.user_manager.default')->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end();
-    }
-
-    private function addGroupSection(ArrayNodeDefinition $node)
-    {
-        $node
-            ->children()
-                ->arrayNode('group')
-                    ->canBeUnset()
-                    ->children()
-                        ->scalarNode('group_class')->isRequired()->cannotBeEmpty()->end()
-                        ->scalarNode('group_manager')->defaultValue('fos_user.group_manager.default')->end()
-                        ->arrayNode('form')
-                            ->addDefaultsIfNotSet()
-                            ->fixXmlConfig('validation_group')
-                            ->children()
-                                ->scalarNode('type')->defaultValue(Type\GroupFormType::class)->end()
-                                ->scalarNode('name')->defaultValue('fos_user_group_form')->end()
-                                ->arrayNode('validation_groups')
-                                    ->prototype('scalar')->end()
-                                    ->defaultValue(['Registration', 'Default'])
-                                ->end()
-                            ->end()
                         ->end()
                     ->end()
                 ->end()

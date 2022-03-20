@@ -370,7 +370,7 @@ Only four configuration's node are required to use the bundle:
 .. note::
 
     FOSUserBundle uses a compiler pass to register mappings for the base
-    User and Group model classes with the object manager that you configured
+    User model classes with the object manager that you configured
     it to use. (Unless specified explicitly, this is the default manager
     of your doctrine configuration.)
 

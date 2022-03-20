@@ -47,9 +47,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Throwable;
 
 class ElasticsearchController extends AbstractController
 {
@@ -100,13 +98,7 @@ class ElasticsearchController extends AbstractController
         $this->dashboardManager = $dashboardManager;
     }
 
-    /**
-     * Create an alias for an index.
-     *
-     * @return RedirectResponse|Response
-     * @Route("/elasticsearch/alias/add/{name}", name="elasticsearch.alias.add")
-     */
-    public function addAliasAction(string $name, Request $request)
+    public function addAliasAction(string $name, Request $request): Response
     {
         $form = $this->createFormBuilder([])->add('name', IconTextType::class, [
             'icon' => 'fa fa-key',
@@ -138,9 +130,6 @@ class ElasticsearchController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/health_check.{_format}", defaults={"_format"="html"}, name="health-check")
-     */
     public function healthCheckAction(string $_format): Response
     {
         try {
@@ -162,9 +151,6 @@ class ElasticsearchController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/status.{_format}", defaults={"_format"="html"}, name="elasticsearch.status")
-     */
     public function statusAction(string $_format): Response
     {
         try {
@@ -212,12 +198,8 @@ class ElasticsearchController extends AbstractController
 
     /**
      * @param int $id
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/elasticsearch/delete-search/{id}", name="elasticsearch.search.delete")
      */
-    public function deleteSearchAction($id)
+    public function deleteSearchAction($id): Response
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
@@ -233,12 +215,7 @@ class ElasticsearchController extends AbstractController
         return $this->redirectToRoute('elasticsearch.search');
     }
 
-    /**
-     * @return Response
-     *
-     * @Route("/quick-search", name="ems_quick_search", methods={"GET"})
-     */
-    public function quickSearchAction(Request $request)
+    public function quickSearchAction(Request $request): Response
     {
         $dashboard = $this->dashboardManager->getQuickSearch();
         if (null !== $dashboard) {
@@ -281,12 +258,8 @@ class ElasticsearchController extends AbstractController
     /**
      * @param int    $id
      * @param string $contentType
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/elasticsearch/set-default-search/{id}/{contentType}", defaults={"contentType"=false}, name="ems_search_set_default_search_from", methods={"POST"})
      */
-    public function setDefaultSearchAction($id, $contentType)
+    public function setDefaultSearchAction($id, $contentType): Response
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
@@ -329,9 +302,6 @@ class ElasticsearchController extends AbstractController
         return $this->redirectToRoute('elasticsearch.search', ['searchId' => $id]);
     }
 
-    /**
-     * @Route("/elasticsearch/index/delete/{name}", name="elasticsearch.index.delete")
-     */
     public function deleteIndexAction(string $name): RedirectResponse
     {
         try {
@@ -350,10 +320,8 @@ class ElasticsearchController extends AbstractController
 
     /**
      * @deprecated
-     *
-     * @return JsonResponse
      */
-    public function deprecatedSearchApiAction(Request $request)
+    public function deprecatedSearchApiAction(Request $request): JsonResponse
     {
         @\trigger_error('QuerySearch not defined, you should refer to one', E_USER_DEPRECATED);
         $environments = $request->query->get('environment', null);
@@ -479,11 +447,7 @@ class ElasticsearchController extends AbstractController
         return new JsonResponse($dataLinks->toArray());
     }
 
-    /**
-     * @return RedirectResponse
-     * @Route("/search/export/{contentType}", name="emsco_search_export", methods={"POST"})
-     */
-    public function exportAction(Request $request, ContentType $contentType)
+    public function exportAction(Request $request, ContentType $contentType): Response
     {
         $exportDocuments = new ExportDocuments($contentType, $this->generateUrl('emsco_search_export', ['contentType' => $contentType]), '{}');
         $form = $this->createForm(ExportDocumentsType::class, $exportDocuments);
@@ -512,21 +476,12 @@ class ElasticsearchController extends AbstractController
         ]);
     }
 
-    /**
-     * @return RedirectResponse|Response
-     *
-     * @throws Throwable
-     * @Route("/search", name="ems_search")
-     * @Route("/search", name="elasticsearch.search")
-     */
-    public function searchAction(Request $request)
+    public function searchAction(Request $request): Response
     {
         try {
             $search = new Search();
 
-            //Save the form (uses POST method)
             if ('POST' == $request->getMethod()) {
-//                 $request->query->get('search_form')['name'] = $request->request->get('form')['name'];
                 $request->request->set('search_form', $request->query->get('search_form'));
 
                 $form = $this->createForm(SearchFormType::class, $search);

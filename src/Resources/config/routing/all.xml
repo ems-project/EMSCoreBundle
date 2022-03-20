@@ -83,10 +83,13 @@
             prefix="/filter" />
     <import resource="@EMSCoreBundle/Resources/config/routing/content-type.xml"
             prefix="/content-type" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/elasticsearch.xml"
+            prefix="/elasticsearch" />
     <import resource="@EMSCoreBundle/Resources/config/routing/public-key.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/interface.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/analyzer.xml"
             prefix="/analyzer" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/default.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/file.xml"
             prefix="/file" />
     <import resource="@EMSCoreBundle/Resources/config/routing/images.xml"

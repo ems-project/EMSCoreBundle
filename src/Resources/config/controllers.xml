@@ -130,6 +130,7 @@
             <argument type="service" id="ems.service.aggregate_option" />
             <argument type="service" id="ems.service.sort_option" />
             <argument type="service" id="ems.dashboard.manager" />
+            <argument>%ems_core.paging_size%</argument>
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Search\QuerySearchController" public="true">

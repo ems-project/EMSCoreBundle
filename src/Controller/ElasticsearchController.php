@@ -65,6 +65,7 @@ class ElasticsearchController extends AbstractController
     private SortOptionService $sortOptionService;
     private AggregateOptionService $aggregateOptionService;
     private DashboardManager $dashboardManager;
+    private int $pagingSize;
 
     public function __construct(
         LoggerInterface $logger,
@@ -80,7 +81,8 @@ class ElasticsearchController extends AbstractController
         JobService $jobService,
         AggregateOptionService $aggregateOptionService,
         SortOptionService $sortOptionService,
-        DashboardManager $dashboardManager)
+        DashboardManager $dashboardManager,
+        int $pagingSize)
     {
         $this->logger = $logger;
         $this->indexService = $indexService;
@@ -96,6 +98,7 @@ class ElasticsearchController extends AbstractController
         $this->aggregateOptionService = $aggregateOptionService;
         $this->sortOptionService = $sortOptionService;
         $this->dashboardManager = $dashboardManager;
+        $this->pagingSize = $pagingSize;
     }
 
     public function addAliasAction(string $name, Request $request): Response
@@ -577,8 +580,8 @@ class ElasticsearchController extends AbstractController
             $environments = $environmentRepository->findAllAsAssociativeArray('alias');
 
             $esSearch = $this->searchService->generateSearch($search);
-            $esSearch->setFrom(($page - 1) * $this->getParameter('ems_core.paging_size'));
-            $esSearch->setSize(Type::integer($this->getParameter('ems_core.paging_size')));
+            $esSearch->setFrom(($page - 1) * $this->pagingSize);
+            $esSearch->setSize(Type::integer($this->pagingSize));
 
             $esSearch->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, $this->aggregateOptionService->getContentTypeField(), 15);
             $esSearch->addTermsAggregation(AggregateOptionService::INDEXES_AGGREGATION, '_index', 15);
@@ -591,9 +594,9 @@ class ElasticsearchController extends AbstractController
                         'total' => $response->getTotal(),
                         'paging' => '50.000',
                     ]);
-                    $lastPage = \ceil(50000 / $this->getParameter('ems_core.paging_size'));
+                    $lastPage = \ceil(50000 / $this->pagingSize);
                 } else {
-                    $lastPage = \ceil($response->getTotal() / $this->getParameter('ems_core.paging_size'));
+                    $lastPage = \ceil($response->getTotal() / $this->pagingSize);
                 }
             } catch (ElasticsearchException $e) {
                 $this->logger->warning('log.error', [

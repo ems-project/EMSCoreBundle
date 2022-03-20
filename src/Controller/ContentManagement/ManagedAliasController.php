@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\EntityManager;
-use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Form\Form\ManagedAliasType;
 use EMS\CoreBundle\Service\AliasService;

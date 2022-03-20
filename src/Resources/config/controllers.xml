@@ -131,6 +131,8 @@
             <argument type="service" id="ems.service.sort_option" />
             <argument type="service" id="ems.dashboard.manager" />
             <argument>%ems_core.paging_size%</argument>
+            <argument>%ems_core.health_check_allow_origin%</argument>
+            <argument>%ems_core.elasticsearch_cluster%</argument>
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Search\QuerySearchController" public="true">

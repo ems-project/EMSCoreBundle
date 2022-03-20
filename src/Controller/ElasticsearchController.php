@@ -66,7 +66,13 @@ class ElasticsearchController extends AbstractController
     private AggregateOptionService $aggregateOptionService;
     private DashboardManager $dashboardManager;
     private int $pagingSize;
+    private ?string $healthCheckAllowOrigin;
+    /** @var string[] */
+    private array $elasticsearchCluster;
 
+    /**
+     * @param string[] $elasticsearchCluster
+     */
     public function __construct(
         LoggerInterface $logger,
         IndexService $indexService,
@@ -82,7 +88,9 @@ class ElasticsearchController extends AbstractController
         AggregateOptionService $aggregateOptionService,
         SortOptionService $sortOptionService,
         DashboardManager $dashboardManager,
-        int $pagingSize)
+        int $pagingSize,
+        ?string $healthCheckAllowOrigin,
+        array $elasticsearchCluster)
     {
         $this->logger = $logger;
         $this->indexService = $indexService;
@@ -99,6 +107,8 @@ class ElasticsearchController extends AbstractController
         $this->sortOptionService = $sortOptionService;
         $this->dashboardManager = $dashboardManager;
         $this->pagingSize = $pagingSize;
+        $this->healthCheckAllowOrigin = $healthCheckAllowOrigin;
+        $this->elasticsearchCluster = $elasticsearchCluster;
     }
 
     public function addAliasAction(string $name, Request $request): Response
@@ -143,7 +153,7 @@ class ElasticsearchController extends AbstractController
                 'globalStatus' => $health['status'] ?? 'red',
             ]);
 
-            $allowOrigin = $this->getParameter('ems_core.health_check_allow_origin');
+            $allowOrigin = $this->healthCheckAllowOrigin;
             if (\is_string($allowOrigin) && \strlen($allowOrigin) > 0) {
                 $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
             }
@@ -194,7 +204,7 @@ class ElasticsearchController extends AbstractController
             ]);
         } catch (NoNodesAvailableException $e) {
             return $this->render('@EMSCore/elasticsearch/no-nodes-available.'.$_format.'.twig', [
-                'cluster' => $this->getParameter('ems_core.elasticsearch_cluster'),
+                'cluster' => $this->elasticsearchCluster,
             ]);
         }
     }

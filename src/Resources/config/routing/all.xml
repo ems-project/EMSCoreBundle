@@ -27,6 +27,8 @@
             prefix="/query-search" />
     <import resource="@EMSCoreBundle/Resources/config/routing/datatable.xml"
             prefix="/datatable" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/data/file.xml"
+            prefix="/data/file" />
     <import resource="@EMSCoreBundle/Resources/config/routing/edit.xml"
             prefix="/data" />
     <import resource="@EMSCoreBundle/Resources/config/routing/search.xml" />
@@ -39,11 +41,17 @@
             prefix="/api/admin" />
     <import resource="@EMSCoreBundle/Resources/config/routing/api/meta.xml"
             prefix="/api/meta" />
-    <import resource="@EMSCoreBundle/Resources/config/routing/admin-view.xml"
+    <import resource="@EMSCoreBundle/Resources/config/routing/api/file.xml"
+            prefix="/api/file" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/admin/view.xml"
             prefix="/admin/view" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/admin/file.xml"
+            prefix="/admin/file" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/api/images.xml"
+            prefix="/api/images" />
     <import resource="@EMSCoreBundle/Resources/config/routing/views.xml"
             prefix="/views" />
-    <import resource="@EMSCoreBundle/Resources/config/routing/admin-job.xml"
+    <import resource="@EMSCoreBundle/Resources/config/routing/admin/job.xml"
             prefix="/admin/job" />
     <import resource="@EMSCoreBundle/Resources/config/routing/job.xml"
             prefix="/job" />
@@ -79,4 +87,8 @@
     <import resource="@EMSCoreBundle/Resources/config/routing/interface.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/analyzer.xml"
             prefix="/analyzer" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/file.xml"
+            prefix="/file" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/images.xml"
+            prefix="/images" />
 </routes>

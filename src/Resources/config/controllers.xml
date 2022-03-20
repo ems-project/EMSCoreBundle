@@ -237,6 +237,7 @@
         </service>
         <service id="EMS\CoreBundle\Controller\I18nController" public="true">
             <argument type="service" id="ems.service.i18n" />
+            <argument>%ems_core.paging_size%</argument>
         </service>
         <service id="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController" public="true">
             <argument type="service" id="ems.logger" />

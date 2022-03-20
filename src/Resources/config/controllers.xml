@@ -288,6 +288,15 @@
             <argument type="service" id="ems.logger" />
             <argument type="service" id="ems.service.helper" />
         </service>
+
+        <service id="EMS\CoreBundle\Controller\ContentManagement\PublishController" public="true">
+            <argument type="service" id="ems.service.publish" />
+            <argument type="service" id="ems.service.job" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.search" />
+            <argument type="service" id="ems_common.service.elastica" />
+        </service>
         <service id="EMS\CoreBundle\Controller\ContentManagement\FileController" public="true">
             <argument type="service" id="ems.service.file" />
             <argument type="service" id="ems.logger" />

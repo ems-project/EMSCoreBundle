@@ -131,7 +131,7 @@ class UserService implements EntityServiceInterface
         }
 
         $clone = clone $user;
-        $em->detach($clone);
+        $em->clear(\get_class($clone));
 
         return $clone;
     }

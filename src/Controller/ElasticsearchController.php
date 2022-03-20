@@ -232,7 +232,7 @@ class ElasticsearchController extends AbstractController
             'default' => true,
         ]);
         if ($search) {
-            $em->detach($search);
+            $em->clear(\get_class($search));
             $search->resetFilters();
             /** @var SearchFilter $filter */
             foreach ($search->getFilters() as &$filter) {

@@ -6,7 +6,7 @@
     * showAlwaysFirstAndLast (bool) : Always show first and last link (just disabled)
     * lastPage (int) : represents the total number of existing pages
 #}
-{% spaceless %}
+{% apply spaceless %}
 
 	{% if paging is defined %}
 		{% set currentFilters = app.request.query %}
@@ -68,4 +68,4 @@
             {% endif %}
         </ul>
     {% endif %}
-{% endspaceless %}
+{% endapply %}

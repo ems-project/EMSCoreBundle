@@ -35,6 +35,7 @@ class NotificationController extends AbstractController
     private ManagerRegistry $doctrine;
     private LoggerInterface $logger;
     private DashboardManager $dashboardManager;
+    private int $pagingSize;
 
     public function __construct(
         LoggerInterface $logger,
@@ -42,7 +43,8 @@ class NotificationController extends AbstractController
         EnvironmentService $environmentService,
         ManagerRegistry $doctrine,
         NotificationService $notificationService,
-        DashboardManager $dashboardManager)
+        DashboardManager $dashboardManager,
+        int $pagingSize)
     {
         $this->logger = $logger;
         $this->environmentService = $environmentService;
@@ -50,6 +52,7 @@ class NotificationController extends AbstractController
         $this->publishService = $publishService;
         $this->doctrine = $doctrine;
         $this->dashboardManager = $dashboardManager;
+        $this->pagingSize = $pagingSize;
     }
 
     public function ajaxNotificationAction(Request $request): Response
@@ -186,7 +189,7 @@ class NotificationController extends AbstractController
         $count = $countRejected + $countPending;
 
         // for pagination
-        $paging_size = Type::integer($this->getParameter('ems_core.paging_size'));
+        $paging_size = Type::integer($this->pagingSize);
         if (null != $request->query->get('page')) {
             $page = $request->query->get('page');
         } else {

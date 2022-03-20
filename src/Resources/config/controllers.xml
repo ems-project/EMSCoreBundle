@@ -165,6 +165,7 @@
             <argument type="service" id="doctrine"/>
             <argument type="service" id="ems.service.notification"/>
             <argument type="service" id="ems.dashboard.manager"/>
+            <argument>%ems_core.paging_size%</argument>
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Api\Search\SearchController" public="true">

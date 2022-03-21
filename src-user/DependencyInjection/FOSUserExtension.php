@@ -29,15 +29,6 @@ class FOSUserExtension extends Extension
             'registry' => 'doctrine',
             'tag' => 'doctrine.event_subscriber',
         ],
-        'mongodb' => [
-            'registry' => 'doctrine_mongodb',
-            'tag' => 'doctrine_mongodb.odm.event_subscriber',
-        ],
-        'couchdb' => [
-            'registry' => 'doctrine_couchdb',
-            'tag' => 'doctrine_couchdb.event_subscriber',
-            'listener_class' => 'FOS\UserBundle\Doctrine\CouchDB\UserListener',
-        ],
     ];
 
     private $mailerNeeded = false;

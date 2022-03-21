@@ -11,9 +11,7 @@
 
 namespace FOS\UserBundle;
 
-use Doctrine\Bundle\CouchDBBundle\DependencyInjection\Compiler\DoctrineCouchDBMappingsPass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
-use Doctrine\Bundle\MongoDBBundle\DependencyInjection\Compiler\DoctrineMongoDBMappingsPass;
 use FOS\UserBundle\DependencyInjection\Compiler\CheckForMailerPass;
 use FOS\UserBundle\DependencyInjection\Compiler\CheckForSessionPass;
 use FOS\UserBundle\DependencyInjection\Compiler\InjectRememberMeServicesPass;
@@ -48,14 +46,6 @@ class FOSUserBundle extends Bundle
 
         if (\class_exists('Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass')) {
             $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, ['fos_user.model_manager_name'], 'fos_user.backend_type_orm'));
-        }
-
-        if (\class_exists('Doctrine\Bundle\MongoDBBundle\DependencyInjection\Compiler\DoctrineMongoDBMappingsPass')) {
-            $container->addCompilerPass(DoctrineMongoDBMappingsPass::createXmlMappingDriver($mappings, ['fos_user.model_manager_name'], 'fos_user.backend_type_mongodb'));
-        }
-
-        if (\class_exists('Doctrine\Bundle\CouchDBBundle\DependencyInjection\Compiler\DoctrineCouchDBMappingsPass')) {
-            $container->addCompilerPass(DoctrineCouchDBMappingsPass::createXmlMappingDriver($mappings, ['fos_user.model_manager_name'], 'fos_user.backend_type_couchdb'));
         }
     }
 }

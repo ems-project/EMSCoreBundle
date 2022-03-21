@@ -6,7 +6,6 @@
 
     <parameters>
         <parameter key="fos_user.resetting.email.template">@FOSUser/Resetting/email.txt.twig</parameter>
-        <parameter key="fos_user.registration.confirmation.template">@FOSUser/Registration/email.txt.twig</parameter>
     </parameters>
 
     <services>

@@ -22,22 +22,9 @@
     </unit>
     <group id="[%locale%][body]">
       <unit id="/html/body/p">
-        <segment id="/html/body/p/text()">
-          <source>Hello Mathieu, please visits</source>
-          <target>Bonjour Mathieu</target>
-        </segment>
-        <segment id="/html/body/p/a/text()[1]">
-          <source> </source>
-          <target>Le site d&#180;elasticms</target>
-        </segment>
-        <segment id="/html/body/p/a/text()[2]">
-          <source>The elastic</source>
-        </segment>
-        <segment id="/html/body/p/a/b/text()">
-          <source>ms</source>
-        </segment>
-        <segment id="/html/body/p/a/text()[3]">
-          <source> web site</source>
+        <segment id="/html/body/p">
+          <source>Hello Mathieu, please visits<g ctype="x-html-a" html:href="https://elasticms.eu/path%20with%20space?a1=value1&amp;a2=value2#anchor"> <g ctype="italic" html:class="elasticms"/>The elastic<g ctype="bold">ms</g> web site</g></source>
+          <target>Bonjour Mathieu<g ctype="x-html-a" html:href="https://elasticms.eu/path%20with%20space?a1=value1&amp;a2=value2#anchor">Le site d&#180;elasticms</g></target>
         </segment>
       </unit>
     </group>

@@ -18,21 +18,9 @@
         <source xml:lang="en">test xliff</source>
       </trans-unit>
       <group id="[%locale%][body]">
-        <trans-unit id="/html/body/p[@title]">
-          <source xml:lang="en">Information about Mount Hood</source>
-          <target xml:lang="fr">Information à propos de Mount Hood</target>
-        </trans-unit>
-        <trans-unit id="/html/body/p/text()[1]">
-          <source xml:lang="en"> This is Mount Hood: </source>
-          <target xml:lang="fr"> Ceci est Mount Hood: </target>
-        </trans-unit>
-        <trans-unit id="/html/body/p/img[@alt]">
-          <source xml:lang="en">Mount Hood with its snow-covered top</source>
-          <target xml:lang="fr">Mount Hood avec son sommet enneigé</target>
-        </trans-unit>
-        <trans-unit id="/html/body/p/text()[2]">
-          <source xml:lang="en"> </source>
-          <target xml:lang="fr"> </target>
+        <trans-unit id="/html/body/p">
+          <source xml:lang="en"> This is Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood with its snow-covered top"/> </source>
+          <target xml:lang="fr"> Ceci est Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood avec son sommet enneigé"/> </target>
         </trans-unit>
       </group>
     </body>

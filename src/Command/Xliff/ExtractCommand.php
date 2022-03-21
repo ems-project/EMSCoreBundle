@@ -75,8 +75,6 @@ final class ExtractCommand extends AbstractCommand
     private string $localeField;
     private string $encoding;
     private bool $encodeHtml;
-    /** @var string[] */
-    private $internalTags;
 
     public function __construct(
         ContentTypeService $contentTypeService,
@@ -111,8 +109,7 @@ final class ExtractCommand extends AbstractCommand
             ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', 'locale')
             ->addOption(self::OPTION_ENCODING, null, InputOption::VALUE_OPTIONAL, 'Encoding used to generate the XLIFF file', 'UTF-8')
             ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', 'translation_id')
-            ->addOption(self::OPTION_ENCODE_HTML, null, InputOption::VALUE_NONE, 'HTML fields will be encoded in simple fields')
-            ->addOption(self::OPTION_INLINE_TAGS, null, InputOption::VALUE_OPTIONAL, 'Those HTML tags won\'t be split', 'a,abbr,acronym,applet,b,bdo,big,blink,br,button,cite,code,del,dfn,em,embed,face,font,i,iframe,img,input,ins,kbd,label,map,nobr,object,param,q,rb,rbc,rp,rt,rtc,ruby,s,samp,select,small,span,spacer,strike,strong,sub,sup,symbol,textarea,tt,u,var,wbr');
+            ->addOption(self::OPTION_ENCODE_HTML, null, InputOption::VALUE_NONE, 'HTML fields will be encoded in simple fields');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -136,7 +133,6 @@ final class ExtractCommand extends AbstractCommand
         $this->localeField = $this->getOptionString(self::OPTION_LOCALE_FIELD);
         $this->encoding = $this->getOptionString(self::OPTION_ENCODING);
         $this->encodeHtml = $this->getOptionBool(self::OPTION_ENCODE_HTML);
-        $this->internalTags = \explode(',', $this->getOptionString(self::OPTION_INLINE_TAGS));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -152,7 +148,7 @@ final class ExtractCommand extends AbstractCommand
         $total = $this->elasticaService->count($search);
         $this->io->progressStart($total);
 
-        $extractor = new Extractor($this->sourceLocale, $this->targetLocale, $this->xliffVersion, $this->internalTags);
+        $extractor = new Extractor($this->sourceLocale, $this->targetLocale, $this->xliffVersion);
 
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {

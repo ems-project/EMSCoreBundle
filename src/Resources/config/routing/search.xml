@@ -10,4 +10,13 @@
     <route id="emsco_ajax_query_search" path="/search.json" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\Search\QuerySearchController</default>
     </route>
+    <route id="emsco_search_export" path="/search/export/{contentType}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ElasticsearchController::exportAction</default>
+    </route>
+    <route id="ems_search" path="/search" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ElasticsearchController::searchAction</default>
+    </route>
+    <route id="elasticsearch.search" path="/search" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ElasticsearchController::searchAction</default>
+    </route>
 </routes>

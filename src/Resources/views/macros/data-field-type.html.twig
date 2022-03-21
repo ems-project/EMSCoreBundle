@@ -376,7 +376,7 @@
 		{% set compareSubRawData = attribute(compareRawData, dataField.fieldType.name) %}
 	{% endif %}
 
-    {% for child in dataField.children if not child.fieldType.deleted %}
+    {% for child in dataField.children|filter(child => not child.fieldType.deleted) %}
 	<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
 				{{ _self.renderDataFieldBlock(child, source, compare, compareSubRawData, '', path) }}
 			</div>
@@ -445,7 +445,7 @@
 	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
 			{% set counter = 1 %}
-            {% for child in dataField.children if not child.fieldType.deleted %}
+            {% for child in dataField.children|filter(child => not child.fieldType.deleted) %}
 				{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == child.fieldType.type|default(null) %}
 					{% set labels = child.fieldType.displayOptions.labels|default('')|replace({"\r":''})|split('\n') %}
 					{% set values = child.fieldType.displayOptions.values|default('')|replace({"\r":''})|split('\n')%}
@@ -485,7 +485,7 @@
 		</ul>
 		<div class="tab-content">
 			{% set counter = 1 %}
-			{% for child in dataField.children if not child.fieldType.deleted %}
+			{% for child in dataField.children|filter(child => not child.fieldType.deleted) %}
 				{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == child.fieldType.type|default(null) %}
 					{% for key, item in  child.children %}
 						{% with {

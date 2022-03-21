@@ -60,7 +60,6 @@ final class ExtractCommand extends AbstractCommand
     public const OPTION_ENCODE_HTML = 'encode-html';
     public const OPTION_LOCALE_FIELD = 'locale-field';
     public const OPTION_ENCODING = 'encoding';
-    public const OPTION_INLINE_TAGS = 'inline-tags';
 
     protected static $defaultName = Commands::XLIFF_EXTRACT;
     private string $xliffFilename;

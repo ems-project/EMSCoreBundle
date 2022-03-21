@@ -104,10 +104,6 @@ class FOSUserExtension extends Extension
             $this->loadProfile($config['profile'], $container, $loader);
         }
 
-        if (!empty($config['registration'])) {
-            $this->loadRegistration($config['registration'], $container, $loader, $config['from_email']);
-        }
-
         if (!empty($config['change_password'])) {
             $this->loadChangePassword($config['change_password'], $container, $loader);
         }
@@ -170,29 +166,6 @@ class FOSUserExtension extends Extension
 
         $this->remapParametersNamespaces($config, $container, [
             'form' => 'fos_user.profile.form.%s',
-        ]);
-    }
-
-    private function loadRegistration(array $config, ContainerBuilder $container, XmlFileLoader $loader, array $fromEmail)
-    {
-        $loader->load('registration.xml');
-        $this->sessionNeeded = true;
-
-        if ($config['confirmation']['enabled']) {
-            $this->mailerNeeded = true;
-            $loader->load('email_confirmation.xml');
-        }
-
-        if (isset($config['confirmation']['from_email'])) {
-            // overwrite the global one
-            $fromEmail = $config['confirmation']['from_email'];
-            unset($config['confirmation']['from_email']);
-        }
-        $container->setParameter('fos_user.registration.confirmation.from_email', [$fromEmail['address'] => $fromEmail['sender_name']]);
-
-        $this->remapParametersNamespaces($config, $container, [
-            'confirmation' => 'fos_user.registration.confirmation.%s',
-            'form' => 'fos_user.registration.form.%s',
         ]);
     }
 

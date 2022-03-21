@@ -10,9 +10,6 @@
         resource="@FOSUserBundle/Resources/config/routing/profile.xml"
         prefix="/profile" />
     <import
-        resource="@FOSUserBundle/Resources/config/routing/registration.xml"
-        prefix="/register" />
-    <import
         resource="@FOSUserBundle/Resources/config/routing/resetting.xml"
         prefix="/resetting" />
     <import

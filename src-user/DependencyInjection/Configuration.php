@@ -78,7 +78,6 @@ class Configuration implements ConfigurationInterface
 
         $this->addProfileSection($rootNode);
         $this->addChangePasswordSection($rootNode);
-        $this->addRegistrationSection($rootNode);
         $this->addResettingSection($rootNode);
         $this->addServiceSection($rootNode);
 
@@ -102,44 +101,6 @@ class Configuration implements ConfigurationInterface
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
                                     ->defaultValue(['Profile', 'Default'])
-                                ->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end();
-    }
-
-    private function addRegistrationSection(ArrayNodeDefinition $node)
-    {
-        $node
-            ->children()
-                ->arrayNode('registration')
-                    ->addDefaultsIfNotSet()
-                    ->canBeUnset()
-                    ->children()
-                        ->arrayNode('confirmation')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->booleanNode('enabled')->defaultFalse()->end()
-                                ->scalarNode('template')->defaultValue('@FOSUser/Registration/email.txt.twig')->end()
-                                ->arrayNode('from_email')
-                                    ->canBeUnset()
-                                    ->children()
-                                        ->scalarNode('address')->isRequired()->cannotBeEmpty()->end()
-                                        ->scalarNode('sender_name')->isRequired()->cannotBeEmpty()->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                        ->end()
-                        ->arrayNode('form')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('type')->defaultValue(Type\RegistrationFormType::class)->end()
-                                ->scalarNode('name')->defaultValue('fos_user_registration_form')->end()
-                                ->arrayNode('validation_groups')
-                                    ->prototype('scalar')->end()
-                                    ->defaultValue(['Registration', 'Default'])
                                 ->end()
                             ->end()
                         ->end()

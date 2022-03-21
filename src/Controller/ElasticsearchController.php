@@ -65,7 +65,14 @@ class ElasticsearchController extends AbstractController
     private SortOptionService $sortOptionService;
     private AggregateOptionService $aggregateOptionService;
     private DashboardManager $dashboardManager;
+    private int $pagingSize;
+    private ?string $healthCheckAllowOrigin;
+    /** @var string[] */
+    private array $elasticsearchCluster;
 
+    /**
+     * @param string[] $elasticsearchCluster
+     */
     public function __construct(
         LoggerInterface $logger,
         IndexService $indexService,
@@ -80,7 +87,10 @@ class ElasticsearchController extends AbstractController
         JobService $jobService,
         AggregateOptionService $aggregateOptionService,
         SortOptionService $sortOptionService,
-        DashboardManager $dashboardManager)
+        DashboardManager $dashboardManager,
+        int $pagingSize,
+        ?string $healthCheckAllowOrigin,
+        array $elasticsearchCluster)
     {
         $this->logger = $logger;
         $this->indexService = $indexService;
@@ -96,6 +106,9 @@ class ElasticsearchController extends AbstractController
         $this->aggregateOptionService = $aggregateOptionService;
         $this->sortOptionService = $sortOptionService;
         $this->dashboardManager = $dashboardManager;
+        $this->pagingSize = $pagingSize;
+        $this->healthCheckAllowOrigin = $healthCheckAllowOrigin;
+        $this->elasticsearchCluster = $elasticsearchCluster;
     }
 
     public function addAliasAction(string $name, Request $request): Response
@@ -140,7 +153,7 @@ class ElasticsearchController extends AbstractController
                 'globalStatus' => $health['status'] ?? 'red',
             ]);
 
-            $allowOrigin = $this->getParameter('ems_core.health_check_allow_origin');
+            $allowOrigin = $this->healthCheckAllowOrigin;
             if (\is_string($allowOrigin) && \strlen($allowOrigin) > 0) {
                 $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
             }
@@ -191,7 +204,7 @@ class ElasticsearchController extends AbstractController
             ]);
         } catch (NoNodesAvailableException $e) {
             return $this->render('@EMSCore/elasticsearch/no-nodes-available.'.$_format.'.twig', [
-                'cluster' => $this->getParameter('ems_core.elasticsearch_cluster'),
+                'cluster' => $this->elasticsearchCluster,
             ]);
         }
     }
@@ -577,8 +590,8 @@ class ElasticsearchController extends AbstractController
             $environments = $environmentRepository->findAllAsAssociativeArray('alias');
 
             $esSearch = $this->searchService->generateSearch($search);
-            $esSearch->setFrom(($page - 1) * $this->getParameter('ems_core.paging_size'));
-            $esSearch->setSize(Type::integer($this->getParameter('ems_core.paging_size')));
+            $esSearch->setFrom(($page - 1) * $this->pagingSize);
+            $esSearch->setSize(Type::integer($this->pagingSize));
 
             $esSearch->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, $this->aggregateOptionService->getContentTypeField(), 15);
             $esSearch->addTermsAggregation(AggregateOptionService::INDEXES_AGGREGATION, '_index', 15);
@@ -591,9 +604,9 @@ class ElasticsearchController extends AbstractController
                         'total' => $response->getTotal(),
                         'paging' => '50.000',
                     ]);
-                    $lastPage = \ceil(50000 / $this->getParameter('ems_core.paging_size'));
+                    $lastPage = \ceil(50000 / $this->pagingSize);
                 } else {
-                    $lastPage = \ceil($response->getTotal() / $this->getParameter('ems_core.paging_size'));
+                    $lastPage = \ceil($response->getTotal() / $this->pagingSize);
                 }
             } catch (ElasticsearchException $e) {
                 $this->logger->warning('log.error', [

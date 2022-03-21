@@ -52,6 +52,9 @@ class EnvironmentController extends AbstractController
     private Mapping $mapping;
     private AliasService $aliasService;
     private JobService $jobService;
+    private int $pagingSize;
+    private string $instanceId;
+    private ?string $circlesObject;
 
     public function __construct(
         LoggerInterface $logger,
@@ -63,7 +66,10 @@ class EnvironmentController extends AbstractController
         IndexService $indexService,
         Mapping $mapping,
         AliasService $aliasService,
-        JobService $jobService)
+        JobService $jobService,
+        int $pagingSize,
+        string $instanceId,
+        ?string $circlesObject)
     {
         $this->logger = $logger;
         $this->searchService = $searchService;
@@ -75,6 +81,9 @@ class EnvironmentController extends AbstractController
         $this->mapping = $mapping;
         $this->aliasService = $aliasService;
         $this->jobService = $jobService;
+        $this->pagingSize = $pagingSize;
+        $this->instanceId = $instanceId;
+        $this->circlesObject = $circlesObject;
     }
 
     public function alignAction(Request $request): Response
@@ -90,7 +99,7 @@ class EnvironmentController extends AbstractController
         ]);
 
         $form->handleRequest($request);
-        $paging_size = Type::integer($this->getParameter('ems_core.paging_size'));
+        $paging_size = $this->pagingSize;
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
@@ -477,7 +486,7 @@ class EnvironmentController extends AbstractController
                     //TODO: test name format
                     $form->get('name')->addError(new FormError('Another environment named '.$environment->getName().' already exists'));
                 } else {
-                    $environment->setAlias($this->getParameter('ems_core.instance_id').$environment->getName());
+                    $environment->setAlias($this->instanceId.$environment->getName());
                     $environment->setManaged(true);
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($environment);
@@ -522,8 +531,8 @@ class EnvironmentController extends AbstractController
         }
 
         $options = [];
-        if ($this->getParameter('ems_core.circles_object')) {
-            $options['type'] = $this->getParameter('ems_core.circles_object');
+        if (null !== $this->circlesObject && '' !== $this->circlesObject) {
+            $options['type'] = $this->circlesObject;
         }
 
         $form = $this->createForm(EditEnvironmentType::class, $environment, $options);

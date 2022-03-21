@@ -26,7 +26,7 @@ class ExtractorTest extends KernelTestCase
             }
 
             foreach (Extractor::XLIFF_VERSIONS as $version) {
-                $xliffParser = new Extractor('en', 'fr', $version);
+                $xliffParser = new Extractor('en', 'fr', $version, \explode(',', 'a,abbr,acronym,applet,b,bdo,big,blink,br,button,cite,code,del,dfn,em,embed,face,font,i,iframe,img,input,ins,kbd,label,map,nobr,object,param,q,rb,rbc,rp,rt,rtc,ruby,s,samp,select,small,span,spacer,strike,strong,sub,sup,symbol,textarea,tt,u,var,wbr'));
                 $document = $xliffParser->addDocument('contentType', 'ouuid_1', 'revisionId_1');
                 $xliffParser->addSimpleField($document, '[title_%locale%]', 'Foo', 'Bar');
                 $document = $xliffParser->addDocument('contentType', 'ouuid_2', 'revisionId_2');

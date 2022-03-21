@@ -38,8 +38,13 @@ class Extractor
     private string $sourceLocale;
     private ?string $targetLocale;
     private \SimpleXMLElement $xliff;
+    /** @var string[] */
+    private array $inlineTags;
 
-    public function __construct(string $sourceLocale, ?string $targetLocale = null, string $xliffVersion = self::XLIFF_1_2)
+    /**
+     * @param string[] $inlineTags
+     */
+    public function __construct(string $sourceLocale, ?string $targetLocale = null, string $xliffVersion = self::XLIFF_1_2, array $inlineTags = [])
     {
         if (!\in_array($xliffVersion, self::XLIFF_VERSIONS)) {
             throw new \RuntimeException(\sprintf('Unsupported XLIFF version "%s", use one of the supported one: %s', $xliffVersion, \join(', ', self::XLIFF_VERSIONS)));
@@ -49,6 +54,7 @@ class Extractor
         $this->sourceLocale = $sourceLocale;
         $this->targetLocale = $targetLocale;
         $this->xliffVersion = $xliffVersion;
+        $this->inlineTags = $inlineTags;
 
         switch ($xliffVersion) {
             case self::XLIFF_1_2:

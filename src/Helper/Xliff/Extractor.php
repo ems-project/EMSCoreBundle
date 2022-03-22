@@ -536,8 +536,6 @@ class Extractor
                 $this->fillInline($child, $subNode);
             } elseif ($child instanceof \DOMText) {
                 $source->appendChild(new \DOMText($this->trimUselessWhiteSpaces($child->textContent)));
-            } else {
-                throw new \RuntimeException('Unexpected node type');
             }
         }
     }

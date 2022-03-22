@@ -1,15 +1,3 @@
-group:
-    edit:
-        submit: 'Update group'
-    show:
-        name: 'Group name'
-    new:
-        submit: 'Create group'
-    flash:
-        updated: 'The group has been updated.'
-        created: 'The group has been created.'
-        deleted: 'The group has been deleted.'
-
 security:
     login:
         username: Username
@@ -30,26 +18,6 @@ change_password:
     submit: 'Change password'
     flash:
         success: 'The password has been changed.'
-
-registration:
-    check_email: |
-        An email has been sent to %email%. It contains an activation link you must click to activate your account.
-    confirmed: 'Congrats %username%, your account is now activated.'
-    back: 'Back to the originating page.'
-    submit: Register
-    flash:
-        user_created: 'The user has been created successfully.'
-    email:
-        subject: 'Welcome %username%!'
-        message: |
-            Hello %username%!
-
-            To finish activating your account - please visit %confirmationUrl%
-
-            This link can only be used once to validate your account.
-
-            Regards,
-            the Team.
 
 resetting:
     check_email: |

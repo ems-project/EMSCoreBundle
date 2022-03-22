@@ -29,15 +29,6 @@ class FOSUserExtension extends Extension
             'registry' => 'doctrine',
             'tag' => 'doctrine.event_subscriber',
         ],
-        'mongodb' => [
-            'registry' => 'doctrine_mongodb',
-            'tag' => 'doctrine_mongodb.odm.event_subscriber',
-        ],
-        'couchdb' => [
-            'registry' => 'doctrine_couchdb',
-            'tag' => 'doctrine_couchdb.event_subscriber',
-            'listener_class' => 'FOS\UserBundle\Doctrine\CouchDB\UserListener',
-        ],
     ];
 
     private $mailerNeeded = false;
@@ -113,20 +104,12 @@ class FOSUserExtension extends Extension
             $this->loadProfile($config['profile'], $container, $loader);
         }
 
-        if (!empty($config['registration'])) {
-            $this->loadRegistration($config['registration'], $container, $loader, $config['from_email']);
-        }
-
         if (!empty($config['change_password'])) {
             $this->loadChangePassword($config['change_password'], $container, $loader);
         }
 
         if (!empty($config['resetting'])) {
             $this->loadResetting($config['resetting'], $container, $loader, $config['from_email']);
-        }
-
-        if (!empty($config['group'])) {
-            $this->loadGroups($config['group'], $container, $loader, $config['db_driver']);
         }
 
         if ($this->mailerNeeded) {
@@ -186,29 +169,6 @@ class FOSUserExtension extends Extension
         ]);
     }
 
-    private function loadRegistration(array $config, ContainerBuilder $container, XmlFileLoader $loader, array $fromEmail)
-    {
-        $loader->load('registration.xml');
-        $this->sessionNeeded = true;
-
-        if ($config['confirmation']['enabled']) {
-            $this->mailerNeeded = true;
-            $loader->load('email_confirmation.xml');
-        }
-
-        if (isset($config['confirmation']['from_email'])) {
-            // overwrite the global one
-            $fromEmail = $config['confirmation']['from_email'];
-            unset($config['confirmation']['from_email']);
-        }
-        $container->setParameter('fos_user.registration.confirmation.from_email', [$fromEmail['address'] => $fromEmail['sender_name']]);
-
-        $this->remapParametersNamespaces($config, $container, [
-            'confirmation' => 'fos_user.registration.confirmation.%s',
-            'form' => 'fos_user.registration.form.%s',
-        ]);
-    }
-
     private function loadChangePassword(array $config, ContainerBuilder $container, XmlFileLoader $loader)
     {
         $loader->load('change_password.xml');
@@ -237,31 +197,6 @@ class FOSUserExtension extends Extension
             ],
             'email' => 'fos_user.resetting.email.%s',
             'form' => 'fos_user.resetting.form.%s',
-        ]);
-    }
-
-    /**
-     * @param string $dbDriver
-     */
-    private function loadGroups(array $config, ContainerBuilder $container, XmlFileLoader $loader, $dbDriver)
-    {
-        $loader->load('group.xml');
-        if ('custom' !== $dbDriver) {
-            if (isset(self::$doctrineDrivers[$dbDriver])) {
-                $loader->load('doctrine_group.xml');
-            } else {
-                $loader->load(\sprintf('%s_group.xml', $dbDriver));
-            }
-        }
-
-        $container->setAlias('fos_user.group_manager', new Alias($config['group_manager'], true));
-        $container->setAlias('FOS\UserBundle\Model\GroupManagerInterface', new Alias('fos_user.group_manager', false));
-
-        $this->remapParametersNamespaces($config, $container, [
-            '' => [
-                'group_class' => 'fos_user.model.group.class',
-            ],
-            'form' => 'fos_user.group.form.%s',
         ]);
     }
 }

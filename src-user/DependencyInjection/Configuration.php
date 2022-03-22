@@ -34,7 +34,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('fos_user');
         $rootNode = $treeBuilder->getRootNode();
 
-        $supportedDrivers = ['orm', 'mongodb', 'couchdb', 'custom'];
+        $supportedDrivers = ['orm', 'custom'];
 
         $rootNode
             ->children()
@@ -78,10 +78,8 @@ class Configuration implements ConfigurationInterface
 
         $this->addProfileSection($rootNode);
         $this->addChangePasswordSection($rootNode);
-        $this->addRegistrationSection($rootNode);
         $this->addResettingSection($rootNode);
         $this->addServiceSection($rootNode);
-        $this->addGroupSection($rootNode);
 
         return $treeBuilder;
     }
@@ -103,44 +101,6 @@ class Configuration implements ConfigurationInterface
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
                                     ->defaultValue(['Profile', 'Default'])
-                                ->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end();
-    }
-
-    private function addRegistrationSection(ArrayNodeDefinition $node)
-    {
-        $node
-            ->children()
-                ->arrayNode('registration')
-                    ->addDefaultsIfNotSet()
-                    ->canBeUnset()
-                    ->children()
-                        ->arrayNode('confirmation')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->booleanNode('enabled')->defaultFalse()->end()
-                                ->scalarNode('template')->defaultValue('@FOSUser/Registration/email.txt.twig')->end()
-                                ->arrayNode('from_email')
-                                    ->canBeUnset()
-                                    ->children()
-                                        ->scalarNode('address')->isRequired()->cannotBeEmpty()->end()
-                                        ->scalarNode('sender_name')->isRequired()->cannotBeEmpty()->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                        ->end()
-                        ->arrayNode('form')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('type')->defaultValue(Type\RegistrationFormType::class)->end()
-                                ->scalarNode('name')->defaultValue('fos_user_registration_form')->end()
-                                ->arrayNode('validation_groups')
-                                    ->prototype('scalar')->end()
-                                    ->defaultValue(['Registration', 'Default'])
                                 ->end()
                             ->end()
                         ->end()
@@ -225,32 +185,6 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('token_generator')->defaultValue('fos_user.util.token_generator.default')->end()
                             ->scalarNode('username_canonicalizer')->defaultValue('fos_user.util.canonicalizer.default')->end()
                             ->scalarNode('user_manager')->defaultValue('fos_user.user_manager.default')->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end();
-    }
-
-    private function addGroupSection(ArrayNodeDefinition $node)
-    {
-        $node
-            ->children()
-                ->arrayNode('group')
-                    ->canBeUnset()
-                    ->children()
-                        ->scalarNode('group_class')->isRequired()->cannotBeEmpty()->end()
-                        ->scalarNode('group_manager')->defaultValue('fos_user.group_manager.default')->end()
-                        ->arrayNode('form')
-                            ->addDefaultsIfNotSet()
-                            ->fixXmlConfig('validation_group')
-                            ->children()
-                                ->scalarNode('type')->defaultValue(Type\GroupFormType::class)->end()
-                                ->scalarNode('name')->defaultValue('fos_user_group_form')->end()
-                                ->arrayNode('validation_groups')
-                                    ->prototype('scalar')->end()
-                                    ->defaultValue(['Registration', 'Default'])
-                                ->end()
-                            ->end()
                         ->end()
                     ->end()
                 ->end()

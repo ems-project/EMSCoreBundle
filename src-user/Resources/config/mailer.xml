@@ -6,7 +6,6 @@
 
     <parameters>
         <parameter key="fos_user.resetting.email.template">@FOSUser/Resetting/email.txt.twig</parameter>
-        <parameter key="fos_user.registration.confirmation.template">@FOSUser/Registration/email.txt.twig</parameter>
     </parameters>
 
     <services>
@@ -15,10 +14,8 @@
             <argument type="service" id="router" />
             <argument type="service" id="twig" />
             <argument type="collection">
-                <argument key="confirmation.template">%fos_user.registration.confirmation.template%</argument>
                 <argument key="resetting.template">%fos_user.resetting.email.template%</argument>
                 <argument key="from_email" type="collection">
-                    <argument key="confirmation">%fos_user.registration.confirmation.from_email%</argument>
                     <argument key="resetting">%fos_user.resetting.email.from_email%</argument>
                 </argument>
             </argument>
@@ -31,11 +28,9 @@
             <argument type="service" id="twig" />
             <argument type="collection">
                 <argument key="template" type="collection">
-                    <argument key="confirmation">%fos_user.registration.confirmation.template%</argument>
                     <argument key="resetting">%fos_user.resetting.email.template%</argument>
                 </argument>
                 <argument key="from_email" type="collection">
-                    <argument key="confirmation">%fos_user.registration.confirmation.from_email%</argument>
                     <argument key="resetting">%fos_user.resetting.email.from_email%</argument>
                 </argument>
             </argument>

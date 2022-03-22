@@ -1805,6 +1805,8 @@ class DataService
                 return $revision;
             }
 
+            $this->setMetaFields($newDraft);
+
             $newDraft->setStartTime($now);
             $revision->setEndTime($now);
 

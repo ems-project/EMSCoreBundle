@@ -28,5 +28,13 @@
         </segment>
       </unit>
     </group>
+    <group id="[%locale%][body2]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source>Hello</source>
+          <target>Bonjour</target>
+        </segment>
+      </unit>
+    </group>
   </file>
 </xliff>

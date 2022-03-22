@@ -28,5 +28,26 @@
         </segment>
       </unit>
     </group>
+    <group id="[%locale%][body2]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source>
+    This
+
+
+    is
+
+    Mount Hood:
+    &lt;img src="mthood.jpg" alt="Mount Hood with its snow-covered top"/&gt;
+</source>
+          <target>
+    Ceci
+    est
+    Mount
+    Hood: &lt;img src="mthood.jpg" alt="Mount Hood avec son sommet enneig&amp;#xE9;"/&gt;
+</target>
+        </segment>
+      </unit>
+    </group>
   </file>
 </xliff>

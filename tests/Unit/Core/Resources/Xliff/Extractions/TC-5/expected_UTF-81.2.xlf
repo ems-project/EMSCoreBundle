@@ -23,6 +23,25 @@
           <target xml:lang="fr"> Ceci est Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood avec son sommet enneigé"/> </target>
         </trans-unit>
       </group>
+      <group id="[%locale%][body2]">
+        <trans-unit id="/html/body/p">
+          <source xml:lang="en">
+    This
+
+
+    is
+
+    Mount Hood:
+    &lt;img src="mthood.jpg" alt="Mount Hood with its snow-covered top"/&gt;
+</source>
+          <target xml:lang="fr">
+    Ceci
+    est
+    Mount
+    Hood: &lt;img src="mthood.jpg" alt="Mount Hood avec son sommet enneig&amp;#xE9;"/&gt;
+</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
 </xliff>

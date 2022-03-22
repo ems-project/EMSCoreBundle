@@ -18,6 +18,7 @@
         <source xml:lang="en">test xliff</source>
       </trans-unit>
       <group id="[%locale%][body]"/>
+      <group id="[%locale%][body2]"/>
     </body>
   </file>
 </xliff>

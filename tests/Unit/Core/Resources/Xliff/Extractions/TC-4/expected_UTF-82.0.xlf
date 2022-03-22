@@ -28,5 +28,13 @@
         </segment>
       </unit>
     </group>
+    <group id="[%locale%][body2]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source>Hello Mathieu, please visits&lt;a href="https://elasticms.eu/path%20with%20space?a1=value1&amp;amp;a2=value2#anchor"&gt; &lt;i class="elasticms"/&gt;The elastic&lt;b&gt;ms&lt;/b&gt; web site&lt;/a&gt;</source>
+          <target>Bonjour Mathieu&lt;a href="https://elasticms.eu/path%20with%20space?a1=value1&amp;amp;a2=value2#anchor"&gt;Le site d´elasticms&lt;/a&gt;</target>
+        </segment>
+      </unit>
+    </group>
   </file>
 </xliff>

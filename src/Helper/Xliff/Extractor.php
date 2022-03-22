@@ -206,13 +206,13 @@ class Extractor
         $this->addTextSegment($unit, $this->escapeSpecialCharacters($source), null === $target ? null : $this->escapeSpecialCharacters($target), $isFinal);
     }
 
-    public function addHtmlField(\DOMElement $document, string $fieldPath, string $sourceHtml, ?string $targetHtml = null, bool $isFinal = false): void
+    public function addHtmlField(\DOMElement $document, string $fieldPath, string $sourceHtml, ?string $targetHtml = null, bool $isFinal = false, bool $htmlEncodeInlines = false): void
     {
         $sourceCrawler = new Crawler($sourceHtml);
         $targetCrawler = new Crawler($targetHtml);
         $added = false;
         foreach ($sourceCrawler->filterXPath('//body') as $domNode) {
-            $this->addGroupNode($document, $domNode, $targetCrawler, $isFinal, $fieldPath);
+            $this->addGroupNode($document, $domNode, $targetCrawler, $isFinal, $htmlEncodeInlines, $fieldPath);
             $added = true;
         }
         if (!$added) {
@@ -222,14 +222,14 @@ class Extractor
         }
     }
 
-    private function addGroupNode(\DOMElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler, bool $isFinal, ?string $id = null): void
+    private function addGroupNode(\DOMElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler, bool $isFinal, bool $htmlEncodeInlines = false, ?string $id = null): void
     {
         if (!$this->hasSomethingToTranslate($sourceNode)) {
             return;
         }
 
         if ($this->isSegmentNode($sourceNode)) {
-            $this->addSegmentNode($xliffElement, $sourceNode, $targetCrawler, $isFinal);
+            $this->addSegmentNode($xliffElement, $sourceNode, $targetCrawler, $isFinal, $htmlEncodeInlines);
 
             return;
         }
@@ -264,7 +264,7 @@ class Extractor
             $group->setAttribute('id', $id);
         }
         foreach ($sourceNode->childNodes as $childNode) {
-            $this->addGroupNode($group, $childNode, $targetCrawler, $isFinal);
+            $this->addGroupNode($group, $childNode, $targetCrawler, $isFinal, $htmlEncodeInlines);
         }
     }
 
@@ -441,7 +441,7 @@ class Extractor
         return true;
     }
 
-    private function addSegmentNode(\DOMElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler, bool $isFinal): void
+    private function addSegmentNode(\DOMElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler, bool $isFinal, bool $htmlEncodeInlines = false): void
     {
         $attributes = [];
         if (\version_compare($this->xliffVersion, '2.0') < 0) {
@@ -498,7 +498,13 @@ class Extractor
             $source->setAttribute($attribute, $value);
         }
 
-        $this->fillInline($sourceNode, $source);
+        if ($htmlEncodeInlines) {
+            foreach ($sourceNode->childNodes as $childNode) {
+                $source->appendChild(new \DOMText($childNode->ownerDocument->saveXML($childNode)));
+            }
+        } else {
+            $this->fillInline($sourceNode, $source);
+        }
         $nodeXPath = $this->getXPath($sourceNode);
         if (null === $nodeXPath) {
             return;
@@ -517,7 +523,13 @@ class Extractor
         foreach ($targetAttributes as $attribute => $value) {
             $target->setAttribute($attribute, $value);
         }
-        $this->fillInline($foundTarget, $target);
+        if ($htmlEncodeInlines) {
+            foreach ($foundTarget->childNodes as $childNode) {
+                $target->appendChild(new \DOMText($childNode->ownerDocument->saveXML($childNode)));
+            }
+        } else {
+            $this->fillInline($foundTarget, $target);
+        }
     }
 
     private function fillInline(\DOMNode $sourceNode, \DOMElement $source): void

@@ -23,6 +23,12 @@
           <target xml:lang="fr">Bonjour</target>
         </trans-unit>
       </group>
+      <group id="[%locale%][body2]">
+        <trans-unit id="/html/body/p">
+          <source xml:lang="en">Hello</source>
+          <target xml:lang="fr">Bonjour</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
 </xliff>

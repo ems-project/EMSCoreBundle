@@ -33,7 +33,7 @@ class ExtractorTest extends KernelTestCase
                 $xliffParser->addSimpleField($document, '[title_%locale%]', 'Hello', 'Bonjour');
                 $xliffParser->addSimpleField($document, '[keywords_%locale%]', 'test xliff');
                 $xliffParser->addHtmlField($document, '[%locale%][body]', $htmlSource, $htmlTarget ?: null);
-//                $xliffParser->addSimpleField($document, '[%locale%][body2]', $htmlSource, $htmlTarget ?: null);
+                $xliffParser->addHtmlField($document, '[%locale%][body2]', $htmlSource, $htmlTarget ?: null, false, true);
 
                 $this->saveAndCompare($absoluteFilePath, $version, $xliffParser, $fileNameWithExtension, 'UTF-8');
                 $this->saveAndCompare($absoluteFilePath, $version, $xliffParser, $fileNameWithExtension, 'us-ascii');
@@ -47,8 +47,12 @@ class ExtractorTest extends KernelTestCase
         if (!\file_exists($expectedFilename)) {
             $xliffParser->saveXML($expectedFilename, $encoding);
         }
-        $expected = new \SimpleXMLElement($expectedFilename, 0, true);
-        $actual = new \SimpleXMLElement($xliffParser->asXML()->saveXML());
+
+        $temp_file = \tempnam(\sys_get_temp_dir(), 'TC-');
+        $xliffParser->saveXML($temp_file, $encoding);
+
+        $expected = \file_get_contents($expectedFilename);
+        $actual = \file_get_contents($temp_file);
 
         $this->assertEquals($expected, $actual, \sprintf('testXliffExtractions: %s', $fileNameWithExtension));
     }

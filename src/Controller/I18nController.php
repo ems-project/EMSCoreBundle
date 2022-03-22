@@ -9,24 +9,21 @@ use EMS\CoreBundle\Form\Form\I18nFormType;
 use EMS\CoreBundle\Form\Form\I18nType;
 use EMS\CoreBundle\Service\I18nService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * I18n controller.
- *
- * @Route("/i18n")
- */
 class I18nController extends AbstractController
 {
-    /**
-     * Lists all I18n entities.
-     *
-     * @Route("/", name="i18n_index", methods={"GET"})
-     */
-    public function indexAction(Request $request, I18nService $i18nService): Response
+    private I18nService $i18nService;
+    private int $pagingSize;
+
+    public function __construct(I18nService $i18nService, int $pagingSize)
+    {
+        $this->i18nService = $i18nService;
+        $this->pagingSize = $pagingSize;
+    }
+
+    public function indexAction(Request $request): Response
     {
         $filters = $request->query->get('i18n_form');
 
@@ -41,13 +38,12 @@ class I18nController extends AbstractController
             $form->getData();
         }
 
-        $count = $i18nService->counter($filters);
-        // for pagination
-        $paging_size = Type::integer($this->getParameter('ems_core.paging_size'));
+        $count = $this->i18nService->counter($filters);
+        $paging_size = Type::integer($this->pagingSize);
         $lastPage = \ceil($count / $paging_size);
         $page = $request->query->get('page', 1);
 
-        $i18ns = $i18nService->findAll(($page - 1) * $paging_size, $paging_size, $filters);
+        $i18ns = $this->i18nService->findAll(($page - 1) * $paging_size, $paging_size, $filters);
 
         return $this->render('@EMSCore/i18n/index.html.twig', [
             'i18nkeys' => $i18ns,
@@ -59,14 +55,7 @@ class I18nController extends AbstractController
         ]);
     }
 
-    /**
-     * Creates a new I18n entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/new", name="i18n_new", methods={"GET","POST"})
-     */
-    public function newAction(Request $request)
+    public function newAction(Request $request): Response
     {
         $i18n = new I18n();
         $i18n->setContent([['locale' => '', 'text' => '']]);
@@ -88,14 +77,7 @@ class I18nController extends AbstractController
         ]);
     }
 
-    /**
-     * Displays a form to edit an existing I18n entity.
-     *
-     * @return RedirectResponse|Response
-     *
-     * @Route("/{id}/edit", name="i18n_edit", methods={"GET", "POST"})
-     */
-    public function editAction(Request $request, I18n $i18n)
+    public function editAction(Request $request, I18n $i18n): Response
     {
         if (empty($i18n->getContent())) {
             $i18n->setContent([
@@ -124,16 +106,9 @@ class I18nController extends AbstractController
         ]);
     }
 
-    /**
-     * Deletes a I18n entity.
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/{id}", name="i18n_delete", methods={"POST"})
-     */
-    public function deleteAction(I18n $i18n, I18nService $i18nService)
+    public function deleteAction(I18n $i18n): Response
     {
-        $i18nService->delete($i18n);
+        $this->i18nService->delete($i18n);
 
         return $this->redirectToRoute('i18n_index');
     }

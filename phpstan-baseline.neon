@@ -61,19 +61,9 @@ parameters:
 			path: src-user/DependencyInjection/Compiler/CheckForSessionPass.php
 
 		-
-			message: "#^Binary operation \"\\.\" between 'security…' and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
-			count: 4
-			path: src-user/DependencyInjection/Compiler/InjectRememberMeServicesPass.php
-
-		-
 			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\InjectRememberMeServicesPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src-user/DependencyInjection/Compiler/InjectRememberMeServicesPass.php
-
-		-
-			message: "#^Binary operation \"\\.\" between 'security\\.user…' and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
-			count: 2
-			path: src-user/DependencyInjection/Compiler/InjectUserCheckerPass.php
 
 		-
 			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\InjectUserCheckerPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
@@ -1081,18 +1071,9 @@ parameters:
 			path: src/Controller/ContentManagement/CrudController.php
 
 		-
-			message: "#^Parameter \\#1 \\$id of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:getRevisionById\\(\\) expects int, string given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/CrudController.php
-
-		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, resource\\|string given\\.$#"
 			count: 3
 			path: src/Controller/ContentManagement/CrudController.php
-		-
-			message: "#^Binary operation \"\\.\" between array\\|bool\\|float\\|int\\|string\\|null and string results in an error\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/EnvironmentController.php
 
 		-
 			message: "#^Cannot call method getId\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false\\.$#"
@@ -1105,11 +1086,6 @@ parameters:
 			path: src/Controller/ContentManagement/EnvironmentController.php
 
 		-
-			message: "#^Parameter \\#5 \\$limit of method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:compareEnvironment\\(\\) expects int, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/FileController.php
@@ -1118,11 +1094,6 @@ parameters:
 			message: "#^Parameter \\#3 \\$filename of method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:uploadFile\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/FileController.php
-
-		-
-			message: "#^Parameter \\#1 \\$size of method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:scroll\\(\\) expects int, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/JobController.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ManagedAliasController\\:\\:getIndexActions\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
@@ -1142,11 +1113,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$id of method EMS\\\\CoreBundle\\\\Service\\\\AliasService\\:\\:getManagedAlias\\(\\) expects int, string given\\.$#"
 			count: 2
-			path: src/Controller/ContentManagement/ManagedAliasController.php
-
-		-
-			message: "#^Parameter \\#1 \\$instanceId of method EMS\\\\CoreBundle\\\\Entity\\\\ManagedAlias\\:\\:setAlias\\(\\) expects string, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
-			count: 1
 			path: src/Controller/ContentManagement/ManagedAliasController.php
 
 		-
@@ -1180,29 +1146,9 @@ parameters:
 			path: src/Controller/ElasticsearchController.php
 
 		-
-			message: "#^Parameter \\#1 \\$size of method EMS\\\\CommonBundle\\\\Search\\\\Search\\:\\:setSize\\(\\) expects int, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
 			message: "#^Parameter \\#3 \\$query of class EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\ExportDocuments constructor expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Parameter \\#2 \\$limit of method EMS\\\\CoreBundle\\\\Service\\\\I18nService\\:\\:findAll\\(\\) expects int, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
-			count: 1
-			path: src/Controller/I18nController.php
-
-		-
-			message: "#^Parameter \\#2 \\$limit of method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:listInboxNotifications\\(\\) expects int, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
-			count: 1
-			path: src/Controller/NotificationController.php
-
-		-
-			message: "#^Parameter \\#2 \\$limit of method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:listSentNotifications\\(\\) expects int, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
-			count: 1
-			path: src/Controller/NotificationController.php
 
 		-
 			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
@@ -1370,16 +1316,6 @@ parameters:
 			path: src/DependencyInjection/Compiler/StorageServiceCompilerPass.php
 
 		-
-			message: "#^Cannot access offset 'DoctrineBundle' on array\\|bool\\|float\\|int\\|string\\|null\\.$#"
-			count: 1
-			path: src/DependencyInjection/EMSCoreExtension.php
-
-		-
-			message: "#^Cannot access offset 'TwigBundle' on array\\|bool\\|float\\|int\\|string\\|null\\.$#"
-			count: 1
-			path: src/DependencyInjection/EMSCoreExtension.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:load\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/DependencyInjection/EMSCoreExtension.php
@@ -1397,11 +1333,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
 			count: 1
-			path: src/DependencyInjection/EMSCoreExtension.php
-
-		-
-			message: "#^Parameter \\#1 \\$rootDir of method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:getCoreVersion\\(\\) expects string, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
-			count: 2
 			path: src/DependencyInjection/EMSCoreExtension.php
 
 		-
@@ -3196,11 +3127,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$var of function count expects array\\|Countable, array\\|float\\|int\\|string given\\.$#"
-			count: 1
-			path: src/Form/DataField/CollectionFieldType.php
-
-		-
-			message: "#^Parameter \\#1 \\$var of function count expects array\\|Countable, array\\|float\\|int\\|string\\|null given\\.$#"
 			count: 1
 			path: src/Form/DataField/CollectionFieldType.php
 
@@ -6655,11 +6581,6 @@ parameters:
 			path: src/Repository/TemplateRepository.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\WysiwygStylesSetRepository\\:\\:findAll\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Repository/WysiwygStylesSetRepository.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Security\\\\ApiKeyAuthenticator\\:\\:authenticateToken\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Security/ApiKeyAuthenticator.php
@@ -7685,11 +7606,6 @@ parameters:
 			path: src/Service/PublishService.php
 
 		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:__construct\\(\\) has parameter \\$instanceId with no typehint specified\\.$#"
 			count: 1
 			path: src/Service/PublishService.php
@@ -7730,21 +7646,6 @@ parameters:
 			path: src/Service/PublishService.php
 
 		-
-			message: "#^Parameter \\#2 \\$environment of method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:publish\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false given\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Parameter \\#2 \\$environment of method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:unpublish\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false given\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Parameter \\#3 \\$env of method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:findByOuuidAndContentTypeAndEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false given\\.$#"
-			count: 2
-			path: src/Service/PublishService.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$revRepository \\(EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\) does not accept Doctrine\\\\Persistence\\\\ObjectRepository\\.$#"
 			count: 1
 			path: src/Service/PublishService.php
@@ -7768,11 +7669,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\Copy\\\\CopyContextFactory\\:\\:jsonDecode\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Service/Revision/Copy/CopyContextFactory.php
-
-		-
-			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 1
-			path: src/Service/Revision/PostProcessingService.php
 
 		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
@@ -7805,16 +7701,6 @@ parameters:
 			path: src/Service/SortOptionService.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:getBody\\(\\)\\.$#"
-			count: 1
-			path: src/Service/TemplateService.php
-
-		-
-			message: "#^Cannot call method render\\(\\) on Twig\\\\TemplateWrapper\\|null\\.$#"
-			count: 1
-			path: src/Service/TemplateService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\TemplateService\\:\\:addNested\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/TemplateService.php
@@ -7836,16 +7722,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\TemplateService\\:\\:getXml\\(\\) has parameter \\$source with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/TemplateService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\TemplateService\\:\\:render\\(\\) has parameter \\$extraContext with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/TemplateService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\TemplateService\\:\\:\\$template \\(EMS\\\\CoreBundle\\\\Entity\\\\Template\\) does not accept object\\|null\\.$#"
 			count: 1
 			path: src/Service/TemplateService.php
 
@@ -7935,16 +7811,6 @@ parameters:
 			path: src/Service/UserService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\WysiwygProfileService\\:\\:get\\(\\) should return EMS\\\\CoreBundle\\\\Entity\\\\WysiwygProfile\\|null but returns object\\|null\\.$#"
-			count: 1
-			path: src/Service/WysiwygProfileService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\WysiwygProfileService\\:\\:getProfiles\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/WysiwygProfileService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\WysiwygProfileService\\:\\:remove\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/WysiwygProfileService.php
@@ -7953,16 +7819,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\WysiwygProfileService\\:\\:saveProfile\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/WysiwygProfileService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\WysiwygStylesSetService\\:\\:get\\(\\) should return EMS\\\\CoreBundle\\\\Entity\\\\WysiwygStylesSet\\|null but returns object\\|null\\.$#"
-			count: 1
-			path: src/Service/WysiwygStylesSetService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\WysiwygStylesSetService\\:\\:getStylesSets\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/WysiwygStylesSetService.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\WysiwygStylesSetService\\:\\:remove\\(\\) has no return typehint specified\\.$#"

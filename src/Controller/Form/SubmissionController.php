@@ -21,8 +21,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -45,9 +43,6 @@ final class SubmissionController extends AbstractController
         $this->spreadsheetGeneratorService = $spreadsheetGeneratorService;
     }
 
-    /**
-     * @Route("/form/datatable.json", name="ems_core_submission_ajax", methods={"GET"})
-     */
     public function ajaxDataTable(Request $request): Response
     {
         $table = $this->initTable();
@@ -60,9 +55,6 @@ final class SubmissionController extends AbstractController
         ], new JsonResponse());
     }
 
-    /**
-     * @Route("/form/submissions", name="form.submissions", methods={"GET", "POST"})
-     */
     public function indexAction(Request $request, UserInterface $user): Response
     {
         $table = $this->initTable();
@@ -96,9 +88,6 @@ final class SubmissionController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/form/submissions/process/{formSubmission}", name="form.submissions.process",  methods={"POST"})
-     */
     public function process(Request $request, UserInterface $user): RedirectResponse
     {
         $this->formSubmissionService->process($request->get('formSubmission'), $user);
@@ -106,11 +95,6 @@ final class SubmissionController extends AbstractController
         return $this->redirectToRoute('form.submissions');
     }
 
-    /**
-     * @Route("/form/submissions/download/{formSubmission}", name="form.submissions.download", requirements={"id"="\S+"}, methods={"GET"})
-     *
-     * @return StreamedResponse|Response
-     */
     public function download(string $formSubmission): Response
     {
         try {
@@ -132,10 +116,8 @@ final class SubmissionController extends AbstractController
 
     /**
      * @param array<string> $submissionIds
-     *
-     * @return StreamedResponse|Response
      */
-    private function downloadMultiple(array $submissionIds)
+    private function downloadMultiple(array $submissionIds): Response
     {
         try {
             $response = $this->formSubmissionService->createDownloadForMultiple($submissionIds);

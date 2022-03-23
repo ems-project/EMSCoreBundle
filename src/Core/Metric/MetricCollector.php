@@ -34,9 +34,9 @@ class MetricCollector implements EMSMetricsCollectorInterface
     {
         $status = $this->elasticaService->getHealthStatus('green', '15s');
         $boolStatus = 0;
-        if ($status === "green" or $status === "yellow" ){
+        if ('green' === $status or 'yellow' === $status) {
             $boolStatus = 3;
-        }elseif ($status === "yellow"){
+        } elseif ('yellow' === $status) {
             $boolStatus = 2;
         }
 
@@ -55,9 +55,9 @@ class MetricCollector implements EMSMetricsCollectorInterface
             'The number of Content Type',
             ['env']
         );
-        foreach($envs as $env){
+        foreach ($envs as $env) {
             $totalContentTypeByEnv = $this->contentTypeRepository->countContentTypeByEnvironment($env->getId());
-            $count->set(floatval($totalContentTypeByEnv), [$env->getName()]);
+            $count->set(\floatval($totalContentTypeByEnv), [$env->getName()]);
         }
 
         $documentCounter = $registry->getOrRegisterGauge(
@@ -67,9 +67,9 @@ class MetricCollector implements EMSMetricsCollectorInterface
             ['contenttype']
         );
         $allContentTypes = $this->contentTypeRepository->findAll();
-        foreach($allContentTypes as $cT ){
+        foreach ($allContentTypes as $cT) {
             $revision = $this->revisionRepository->findByContentType($cT);
-            $documentCounter->set(count($revision), [$cT->getName()]);
+            $documentCounter->set(\count($revision), [$cT->getName()]);
         }
     }
 }

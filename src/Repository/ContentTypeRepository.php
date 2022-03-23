@@ -164,7 +164,7 @@ class ContentTypeRepository extends EntityRepository
         $qb
             ->select('count(c.id)')
             ->andWhere($qb->expr()->eq('c.environment', ':environment'))
-            ->setParameter('environment' , $environment);
+            ->setParameter('environment', $environment);
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }

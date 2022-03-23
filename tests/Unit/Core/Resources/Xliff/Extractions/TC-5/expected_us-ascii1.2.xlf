@@ -20,7 +20,7 @@
       <group id="[%locale%][body]">
         <trans-unit id="/html/body/p">
           <source xml:lang="en"> This is Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood with its snow-covered top"/> </source>
-          <target xml:lang="fr"> Ceci est Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood avec son sommet enneig&#233;"/> </target>
+          <target xml:lang="fr" state="needs-translation"> Ceci est Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood avec son sommet enneig&#233;"/> </target>
         </trans-unit>
       </group>
       <group id="[%locale%][body2]">
@@ -34,7 +34,7 @@
     Mount Hood:
     &lt;img src="mthood.jpg" alt="Mount Hood with its snow-covered top"/&gt;
 </source>
-          <target xml:lang="fr">
+          <target xml:lang="fr" state="needs-translation">
     Ceci
     est
     Mount

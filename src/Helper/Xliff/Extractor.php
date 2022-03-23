@@ -456,18 +456,11 @@ class Extractor
             $xliffElement = $tempElement;
         }
 
-        $targetAttributes = [];
         if (\version_compare($this->xliffVersion, '2.0') < 0) {
             $qualifiedName = 'trans-unit';
             $sourceAttributes = [
                 'xml:lang' => $this->sourceLocale,
             ];
-            if (null !== $this->targetLocale) {
-                $targetAttributes['xml:lang'] = $this->targetLocale;
-            }
-            if ($isFinal) {
-                $targetAttributes['state'] = 'final';
-            }
         } else {
             $qualifiedName = 'segment';
             $sourceAttributes = [];
@@ -511,24 +504,35 @@ class Extractor
         }
 
         $foundTarget = $targetCrawler->filterXPath($nodeXPath);
-        if (1 !== $foundTarget->count()) {
-            return;
-        }
-        $foundTarget = $foundTarget->getNode(0);
-        if (!$foundTarget instanceof \DOMElement) {
-            return;
-        }
+        $foundTargetNode = $foundTarget->getNode(0);
         $target = new \DOMElement('target');
         $segment->appendChild($target);
-        foreach ($targetAttributes as $attribute => $value) {
-            $target->setAttribute($attribute, $value);
+
+        $isTranslated = 1 === $foundTarget->count() && $foundTargetNode instanceof \DOMElement;
+
+        if (\version_compare($this->xliffVersion, '2.0') < 0) {
+            if (null !== $this->targetLocale) {
+                $target->setAttribute('xml:lang', $this->targetLocale);
+            }
+            if ($isFinal && $isTranslated) {
+                $target->setAttribute('state', 'final');
+            } elseif($isTranslated) {
+                $target->setAttribute('state', 'needs-translation');
+            } else {
+                $target->setAttribute('state', 'new');
+            }
         }
+
+        if (!$isTranslated) {
+            return;
+        }
+
         if ($htmlEncodeInlines) {
-            foreach ($foundTarget->childNodes as $childNode) {
+            foreach ($foundTargetNode->childNodes as $childNode) {
                 $target->appendChild(new \DOMText($childNode->ownerDocument->saveXML($childNode)));
             }
         } else {
-            $this->fillInline($foundTarget, $target);
+            $this->fillInline($foundTargetNode, $target);
         }
     }
 

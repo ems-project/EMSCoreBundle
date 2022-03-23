@@ -157,4 +157,15 @@ class ContentTypeRepository extends EntityRepository
                 ->setParameter(':term', '%'.$searchValue.'%');
         }
     }
+
+    public function countContentTypeByEnvironment(int $environment): int
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb
+            ->select('count(c.id)')
+            ->andWhere($qb->expr()->eq('c.environment', ':environment'))
+            ->setParameter('environment' , $environment);
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
 }

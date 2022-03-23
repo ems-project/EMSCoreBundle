@@ -18,12 +18,14 @@
     <unit id="[keywords_%locale%]">
       <segment>
         <source>test xliff</source>
+        <target/>
       </segment>
     </unit>
     <group id="[%locale%][body]">
       <unit id="/html/body/h1">
         <segment id="/html/body/h1">
           <source>Report</source>
+          <target/>
         </segment>
       </unit>
       <group id="/html/body/table">
@@ -31,16 +33,19 @@
           <unit id="/html/body/table/tr[1]/td[1]">
             <segment id="/html/body/table/tr[1]/td[1]">
               <source>Text in cell r1-c1</source>
+              <target/>
             </segment>
           </unit>
           <unit id="/html/body/table/tr[1]/td[2]">
             <segment id="/html/body/table/tr[1]/td[2]">
               <source>Text in cell r1-c2</source>
+              <target/>
             </segment>
           </unit>
           <unit id="/html/body/table/tr[1]/td[3]">
             <segment id="/html/body/table/tr[1]/td[3]">
               <source>é à   ï «</source>
+              <target/>
             </segment>
           </unit>
         </group>
@@ -48,16 +53,19 @@
           <unit id="/html/body/table/tr[2]/td[1]">
             <segment id="/html/body/table/tr[2]/td[1]">
               <source>Text in cell r2-c1</source>
+              <target/>
             </segment>
           </unit>
           <unit id="/html/body/table/tr[2]/td[2]">
             <segment id="/html/body/table/tr[2]/td[2]">
               <source>Text in cell r2-c2</source>
+              <target/>
             </segment>
           </unit>
           <unit id="/html/body/table/tr[2]/td[3]">
             <segment id="/html/body/table/tr[2]/td[3]">
               <source>é à   « ï</source>
+              <target/>
             </segment>
           </unit>
         </group>
@@ -65,6 +73,7 @@
       <unit id="/html/body/p">
         <segment id="/html/body/p">
           <source>All rights reserved (c) Gandalf Inc.</source>
+          <target/>
         </segment>
       </unit>
     </group>
@@ -72,6 +81,7 @@
       <unit id="/html/body/h1">
         <segment id="/html/body/h1">
           <source>Report</source>
+          <target/>
         </segment>
       </unit>
       <group id="/html/body/table">
@@ -79,16 +89,19 @@
           <unit id="/html/body/table/tr[1]/td[1]">
             <segment id="/html/body/table/tr[1]/td[1]">
               <source>Text in cell r1-c1</source>
+              <target/>
             </segment>
           </unit>
           <unit id="/html/body/table/tr[1]/td[2]">
             <segment id="/html/body/table/tr[1]/td[2]">
               <source>Text in cell r1-c2</source>
+              <target/>
             </segment>
           </unit>
           <unit id="/html/body/table/tr[1]/td[3]">
             <segment id="/html/body/table/tr[1]/td[3]">
               <source>é à   ï «</source>
+              <target/>
             </segment>
           </unit>
         </group>
@@ -96,16 +109,19 @@
           <unit id="/html/body/table/tr[2]/td[1]">
             <segment id="/html/body/table/tr[2]/td[1]">
               <source>Text in cell r2-c1</source>
+              <target/>
             </segment>
           </unit>
           <unit id="/html/body/table/tr[2]/td[2]">
             <segment id="/html/body/table/tr[2]/td[2]">
               <source>Text in cell r2-c2</source>
+              <target/>
             </segment>
           </unit>
           <unit id="/html/body/table/tr[2]/td[3]">
             <segment id="/html/body/table/tr[2]/td[3]">
               <source>é à   « ï</source>
+              <target/>
             </segment>
           </unit>
         </group>
@@ -113,6 +129,7 @@
       <unit id="/html/body/p">
         <segment id="/html/body/p">
           <source>All rights reserved (c) Gandalf Inc.</source>
+          <target/>
         </segment>
       </unit>
     </group>

@@ -5,6 +5,8 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <defaults autowire="true"/>
+
         <service id="EMS\CoreBundle\Controller\DashboardController" public="true">
             <argument type="service" id="ems_core.core_revision_task.task_manager" />
             <argument type="service" id="ems.dashboard.manager" />
@@ -307,6 +309,10 @@
         <service id="EMS\CoreBundle\Controller\ContentManagement\FileController" public="true">
             <argument type="service" id="ems.service.file" />
             <argument type="service" id="ems.logger" />
+        </service>
+        <service id="EMS\CoreBundle\Controller\UploadedFileController" public="true">
+            <argument type="service" id="ems.logger" />
+            <argument type="service" id="ems.service.file" />
         </service>
     </services>
 </container>

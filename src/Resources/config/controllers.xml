@@ -310,5 +310,9 @@
             <argument type="service" id="ems.service.file" />
             <argument type="service" id="ems.logger" />
         </service>
+        <service id="EMS\CoreBundle\Controller\UploadedFileController" public="true">
+            <argument type="service" id="ems.logger" />
+            <argument type="service" id="ems.service.file" />
+        </service>
     </services>
 </container>

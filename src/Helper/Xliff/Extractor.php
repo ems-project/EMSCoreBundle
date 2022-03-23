@@ -332,7 +332,10 @@ class Extractor
         }
 
         $isTranslated = null !== $target && \strlen($target) > 0;
-        if (!$isTranslated) {
+        if (!$isTranslated && 0 === \strlen($source)) {
+            $isTranslated = true;
+        }
+        if (!$isTranslated || null === $target) {
             $targetChild = new \DOMElement('target');
         } else {
             $targetChild = new \DOMElement('target', $target);
@@ -501,10 +504,13 @@ class Extractor
         $segment->appendChild($target);
 
         $isTranslated = 1 === $foundTarget->count() && $foundTargetNode instanceof \DOMElement;
+        if (!$isTranslated && '' === $source->textContent) {
+            $isTranslated = true;
+        }
 
         $this->setTargetAttributes($target, $isFinal, $isTranslated);
 
-        if (!$isTranslated) {
+        if (!$isTranslated || null === $foundTargetNode) {
             return;
         }
 

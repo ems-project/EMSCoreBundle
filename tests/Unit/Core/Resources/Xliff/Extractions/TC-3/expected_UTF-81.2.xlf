@@ -18,8 +18,13 @@
         <source xml:lang="en">test xliff</source>
         <target xml:lang="fr" state="new"/>
       </trans-unit>
+      <trans-unit id="[empty]">
+        <source xml:lang="en"/>
+        <target xml:lang="fr" state="final"/>
+      </trans-unit>
       <group id="[%locale%][body]"/>
       <group id="[%locale%][body2]"/>
+      <group id="[%locale%][body3]"/>
     </body>
   </file>
 </xliff>

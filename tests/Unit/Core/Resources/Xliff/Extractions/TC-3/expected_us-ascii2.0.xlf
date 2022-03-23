@@ -21,5 +21,6 @@
       </segment>
     </unit>
     <group id="[%locale%][body]"/>
+    <group id="[%locale%][body2]"/>
   </file>
 </xliff>

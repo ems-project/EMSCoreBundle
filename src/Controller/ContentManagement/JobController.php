@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Entity\UserInterface;
@@ -24,17 +23,20 @@ class JobController extends AbstractController
 {
     private JobService $jobService;
     private LoggerInterface $logger;
+    private int $pagingSize;
+    private bool $triggerJobFromWeb;
 
-    public function __construct(LoggerInterface $logger, JobService $jobService)
+    public function __construct(LoggerInterface $logger, JobService $jobService, int $pagingSize, bool $triggerJobFromWeb)
     {
         $this->logger = $logger;
         $this->jobService = $jobService;
+        $this->pagingSize = $pagingSize;
+        $this->triggerJobFromWeb = $triggerJobFromWeb;
     }
 
     public function index(Request $request): Response
     {
-        $size = Type::integer($this->getParameter('ems_core.paging_size'));
-
+        $size = $this->pagingSize;
         $page = $request->query->get('page', 1);
         $from = ($page - 1) * $size;
         $total = $this->jobService->count();
@@ -60,7 +62,7 @@ class JobController extends AbstractController
             'job' => $job,
             'status' => $encoder->encodeUrl($job->getStatus()),
             'output' => $encoder->encodeUrl($converter->convert($job->getOutput())),
-            'launchJob' => true === $this->getParameter('ems_core.trigger_job_from_web') && false === $job->getStarted(),
+            'launchJob' => true === $this->triggerJobFromWeb && false === $job->getStarted(),
         ]);
     }
 
@@ -117,7 +119,7 @@ class JobController extends AbstractController
             return new SymfonyJsonResponse('job already done');
         }
 
-        if (false === $this->getParameter('ems_core.trigger_job_from_web')) {
+        if (false === $this->triggerJobFromWeb) {
             return EmsCoreResponse::createJsonResponse($request, true, [
                 'message' => 'job is scheduled',
                 'job_id' => $job->getId(),

@@ -15,10 +15,12 @@ use Symfony\Component\HttpFoundation\Response;
 class I18nController extends AbstractController
 {
     private I18nService $i18nService;
+    private int $pagingSize;
 
-    public function __construct(I18nService $i18nService)
+    public function __construct(I18nService $i18nService, int $pagingSize)
     {
         $this->i18nService = $i18nService;
+        $this->pagingSize = $pagingSize;
     }
 
     public function indexAction(Request $request): Response
@@ -37,8 +39,7 @@ class I18nController extends AbstractController
         }
 
         $count = $this->i18nService->counter($filters);
-        // for pagination
-        $paging_size = Type::integer($this->getParameter('ems_core.paging_size'));
+        $paging_size = Type::integer($this->pagingSize);
         $lastPage = \ceil($count / $paging_size);
         $page = $request->query->get('page', 1);
 

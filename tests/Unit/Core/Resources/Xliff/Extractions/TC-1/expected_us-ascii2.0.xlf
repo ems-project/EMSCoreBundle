@@ -22,48 +22,96 @@
     </unit>
     <group id="[%locale%][body]">
       <unit id="/html/body/h1">
-        <segment id="/html/body/h1/text()">
+        <segment id="/html/body/h1">
           <source>Report</source>
         </segment>
       </unit>
       <group id="/html/body/table">
         <group id="/html/body/table/tr[1]">
           <unit id="/html/body/table/tr[1]/td[1]">
-            <segment id="/html/body/table/tr[1]/td[1]/text()">
+            <segment id="/html/body/table/tr[1]/td[1]">
               <source>Text in cell r1-c1</source>
             </segment>
           </unit>
           <unit id="/html/body/table/tr[1]/td[2]">
-            <segment id="/html/body/table/tr[1]/td[2]/text()">
+            <segment id="/html/body/table/tr[1]/td[2]">
               <source>Text in cell r1-c2</source>
             </segment>
           </unit>
           <unit id="/html/body/table/tr[1]/td[3]">
-            <segment id="/html/body/table/tr[1]/td[3]/text()">
+            <segment id="/html/body/table/tr[1]/td[3]">
               <source>&#233; &#224; &#160; &#239; &#171;</source>
             </segment>
           </unit>
         </group>
         <group id="/html/body/table/tr[2]">
           <unit id="/html/body/table/tr[2]/td[1]">
-            <segment id="/html/body/table/tr[2]/td[1]/text()">
+            <segment id="/html/body/table/tr[2]/td[1]">
               <source>Text in cell r2-c1</source>
             </segment>
           </unit>
           <unit id="/html/body/table/tr[2]/td[2]">
-            <segment id="/html/body/table/tr[2]/td[2]/text()">
+            <segment id="/html/body/table/tr[2]/td[2]">
               <source>Text in cell r2-c2</source>
             </segment>
           </unit>
           <unit id="/html/body/table/tr[2]/td[3]">
-            <segment id="/html/body/table/tr[2]/td[3]/text()">
+            <segment id="/html/body/table/tr[2]/td[3]">
               <source>&#233; &#224; &#160; &#171; &#239;</source>
             </segment>
           </unit>
         </group>
       </group>
       <unit id="/html/body/p">
-        <segment id="/html/body/p/text()">
+        <segment id="/html/body/p">
+          <source>All rights reserved (c) Gandalf Inc.</source>
+        </segment>
+      </unit>
+    </group>
+    <group id="[%locale%][body2]">
+      <unit id="/html/body/h1">
+        <segment id="/html/body/h1">
+          <source>Report</source>
+        </segment>
+      </unit>
+      <group id="/html/body/table">
+        <group id="/html/body/table/tr[1]">
+          <unit id="/html/body/table/tr[1]/td[1]">
+            <segment id="/html/body/table/tr[1]/td[1]">
+              <source>Text in cell r1-c1</source>
+            </segment>
+          </unit>
+          <unit id="/html/body/table/tr[1]/td[2]">
+            <segment id="/html/body/table/tr[1]/td[2]">
+              <source>Text in cell r1-c2</source>
+            </segment>
+          </unit>
+          <unit id="/html/body/table/tr[1]/td[3]">
+            <segment id="/html/body/table/tr[1]/td[3]">
+              <source>&#233; &#224; &#160; &#239; &#171;</source>
+            </segment>
+          </unit>
+        </group>
+        <group id="/html/body/table/tr[2]">
+          <unit id="/html/body/table/tr[2]/td[1]">
+            <segment id="/html/body/table/tr[2]/td[1]">
+              <source>Text in cell r2-c1</source>
+            </segment>
+          </unit>
+          <unit id="/html/body/table/tr[2]/td[2]">
+            <segment id="/html/body/table/tr[2]/td[2]">
+              <source>Text in cell r2-c2</source>
+            </segment>
+          </unit>
+          <unit id="/html/body/table/tr[2]/td[3]">
+            <segment id="/html/body/table/tr[2]/td[3]">
+              <source>&#233; &#224; &#160; &#171; &#239;</source>
+            </segment>
+          </unit>
+        </group>
+      </group>
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
           <source>All rights reserved (c) Gandalf Inc.</source>
         </segment>
       </unit>

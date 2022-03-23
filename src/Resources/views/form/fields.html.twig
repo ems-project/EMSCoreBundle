@@ -1348,7 +1348,7 @@
 			      </div>
 			      <div class="modal-body">
 					<ul class="list-group sortable" id="{{ form.vars.id }}_modal_reorder_list">
-			      		{% for child in form.vars.data.children if not child.deleted %}
+			      		{% for child in form.vars.data.children|filter(child => not child.deleted) %}
 			      			<li class="list-group-item">
 			      				<i class="glyphicon glyphicon-move"></i>
 			      				{{ child.name }}

@@ -18,8 +18,10 @@
     <unit id="[keywords_%locale%]">
       <segment>
         <source>test xliff</source>
+        <target/>
       </segment>
     </unit>
     <group id="[%locale%][body]"/>
+    <group id="[%locale%][body2]"/>
   </file>
 </xliff>

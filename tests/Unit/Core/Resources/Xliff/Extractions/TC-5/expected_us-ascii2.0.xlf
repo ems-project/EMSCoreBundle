@@ -18,25 +18,35 @@
     <unit id="[keywords_%locale%]">
       <segment>
         <source>test xliff</source>
+        <target/>
       </segment>
     </unit>
     <group id="[%locale%][body]">
       <unit id="/html/body/p">
-        <segment id="/html/body/p[@title]">
-          <source>Information about Mount Hood</source>
-          <target>Information &#224; propos de Mount Hood</target>
+        <segment id="/html/body/p">
+          <source> This is Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood with its snow-covered top"/> </source>
+          <target> Ceci est Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood avec son sommet enneig&#233;"/> </target>
         </segment>
-        <segment id="/html/body/p/text()[1]">
-          <source> This is Mount Hood: </source>
-          <target> Ceci est Mount Hood: </target>
-        </segment>
-        <segment id="/html/body/p/img[@alt]">
-          <source>Mount Hood with its snow-covered top</source>
-          <target>Mount Hood avec son sommet enneig&#233;</target>
-        </segment>
-        <segment id="/html/body/p/text()[2]">
-          <source> </source>
-          <target> </target>
+      </unit>
+    </group>
+    <group id="[%locale%][body2]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source>
+    This
+
+
+    is
+
+    Mount Hood:
+    &lt;img src="mthood.jpg" alt="Mount Hood with its snow-covered top"/&gt;
+</source>
+          <target>
+    Ceci
+    est
+    Mount
+    Hood: &lt;img src="mthood.jpg" alt="Mount Hood avec son sommet enneig&amp;#xE9;"/&gt;
+</target>
         </segment>
       </unit>
     </group>

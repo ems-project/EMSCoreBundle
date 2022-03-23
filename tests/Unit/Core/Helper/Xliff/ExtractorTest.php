@@ -32,8 +32,10 @@ class ExtractorTest extends KernelTestCase
                 $document = $xliffParser->addDocument('contentType', 'ouuid_2', 'revisionId_2');
                 $xliffParser->addSimpleField($document, '[title_%locale%]', 'Hello', 'Bonjour');
                 $xliffParser->addSimpleField($document, '[keywords_%locale%]', 'test xliff');
+                $xliffParser->addSimpleField($document, '[empty]', '', null, true);
                 $xliffParser->addHtmlField($document, '[%locale%][body]', $htmlSource, $htmlTarget ?: null);
                 $xliffParser->addHtmlField($document, '[%locale%][body2]', $htmlSource, $htmlTarget ?: null, false, true);
+                $xliffParser->addHtmlField($document, '[%locale%][body3]', $htmlSource, $htmlTarget ?: null, true);
 
                 $this->saveAndCompare($absoluteFilePath, $version, $xliffParser, $fileNameWithExtension, 'UTF-8');
                 $this->saveAndCompare($absoluteFilePath, $version, $xliffParser, $fileNameWithExtension, 'us-ascii');

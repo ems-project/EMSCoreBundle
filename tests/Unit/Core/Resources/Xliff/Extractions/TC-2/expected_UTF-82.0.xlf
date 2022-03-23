@@ -21,6 +21,12 @@
         <target/>
       </segment>
     </unit>
+    <unit id="[empty]">
+      <segment>
+        <source/>
+        <target/>
+      </segment>
+    </unit>
     <group id="[%locale%][body]">
       <unit id="/html/body/p">
         <segment id="/html/body/p">
@@ -30,6 +36,14 @@
       </unit>
     </group>
     <group id="[%locale%][body2]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source>Hello</source>
+          <target>Bonjour</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="[%locale%][body3]">
       <unit id="/html/body/p">
         <segment id="/html/body/p">
           <source>Hello</source>

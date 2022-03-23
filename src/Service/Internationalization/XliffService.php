@@ -69,10 +69,10 @@ class XliffService
             $translation = $propertyAccessor->getValue($currentTranslationData, $propertyPath);
             $isFinal = (null !== $targetEnvironment && $contentType->giveEnvironment()->getName() !== $targetEnvironment->getName() && $currentValue === $value && null !== $translation);
 
-            if ($encodeHtml || !$this->isHtml($value)) {
-                $extractor->addSimpleField($xliffDoc, $fieldPath, $value, $translation, $isFinal);
+            if ($this->isHtml($value)) {
+                $extractor->addHtmlField($xliffDoc, $fieldPath, $value, $translation, $isFinal, $encodeHtml);
             } else {
-                $extractor->addHtmlField($xliffDoc, $fieldPath, $value, $translation, $isFinal);
+                $extractor->addSimpleField($xliffDoc, $fieldPath, $value, $translation, $isFinal);
             }
         }
     }

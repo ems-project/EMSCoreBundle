@@ -173,6 +173,8 @@
         <service id="emsco.metric.collector" class="EMS\CoreBundle\Core\Metric\MetricCollector">
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
             <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
+            <argument type="service" id="EMS\CommonBundle\Service\ElasticaService"/>
+            <argument type="service" id="EMS\CoreBundle\Service\EnvironmentService"/>
             <tag name="ems.collector"/>
         </service>
     </services>

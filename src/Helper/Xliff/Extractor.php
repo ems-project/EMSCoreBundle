@@ -318,17 +318,9 @@ class Extractor
             $sourceAttributes = [
                 'xml:lang' => $this->sourceLocale,
             ];
-            $targetAttributes = [];
-            if (null !== $this->targetLocale) {
-                $targetAttributes['xml:lang'] = $this->targetLocale;
-            }
-            if ($isFinal) {
-                $targetAttributes['state'] = 'final';
-            }
         } else {
             $qualifiedName = 'segment';
             $sourceAttributes = [];
-            $targetAttributes = [];
         }
         if (null !== $qualifiedName) {
             $unit = $unit->appendChild(new \DOMElement($qualifiedName));
@@ -339,14 +331,14 @@ class Extractor
             $sourceChild->setAttribute($attribute, $value);
         }
 
-        if (null === $target) {
-            return;
+        $isTranslated = null !== $target && \strlen($target) > 0;
+        if (!$isTranslated) {
+            $targetChild = new \DOMElement('target');
+        } else {
+            $targetChild = new \DOMElement('target', $target);
         }
-        $targetChild = new \DOMElement('target', $target);
         $unit->appendChild($targetChild);
-        foreach ($targetAttributes as $attribute => $value) {
-            $targetChild->setAttribute($attribute, $value);
-        }
+        $this->setTargetAttributes($targetChild, $isFinal, $isTranslated);
     }
 
     public static function getRestype(string $nodeName): string
@@ -510,18 +502,7 @@ class Extractor
 
         $isTranslated = 1 === $foundTarget->count() && $foundTargetNode instanceof \DOMElement;
 
-        if (\version_compare($this->xliffVersion, '2.0') < 0) {
-            if (null !== $this->targetLocale) {
-                $target->setAttribute('xml:lang', $this->targetLocale);
-            }
-            if ($isFinal && $isTranslated) {
-                $target->setAttribute('state', 'final');
-            } elseif($isTranslated) {
-                $target->setAttribute('state', 'needs-translation');
-            } else {
-                $target->setAttribute('state', 'new');
-            }
-        }
+        $this->setTargetAttributes($target, $isFinal, $isTranslated);
 
         if (!$isTranslated) {
             return;
@@ -552,6 +533,22 @@ class Extractor
                 $this->fillInline($child, $subNode);
             } elseif ($child instanceof \DOMText) {
                 $source->appendChild(new \DOMText($this->trimUselessWhiteSpaces($child->textContent)));
+            }
+        }
+    }
+
+    private function setTargetAttributes(\DOMElement $targetChild, bool $isFinal, bool $isTranslated): void
+    {
+        if (\version_compare($this->xliffVersion, '2.0') < 0) {
+            if (null !== $this->targetLocale) {
+                $targetChild->setAttribute('xml:lang', $this->targetLocale);
+            }
+            if ($isFinal && $isTranslated) {
+                $targetChild->setAttribute('state', 'final');
+            } elseif ($isTranslated) {
+                $targetChild->setAttribute('state', 'needs-translation');
+            } else {
+                $targetChild->setAttribute('state', 'new');
             }
         }
     }

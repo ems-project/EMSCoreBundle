@@ -4,7 +4,7 @@
     <body>
       <trans-unit id="[title_%locale%]">
         <source xml:lang="en">Foo</source>
-        <target xml:lang="fr">Bar</target>
+        <target xml:lang="fr" state="needs-translation">Bar</target>
       </trans-unit>
     </body>
   </file>
@@ -12,10 +12,11 @@
     <body>
       <trans-unit id="[title_%locale%]">
         <source xml:lang="en">Hello</source>
-        <target xml:lang="fr">Bonjour</target>
+        <target xml:lang="fr" state="needs-translation">Bonjour</target>
       </trans-unit>
       <trans-unit id="[keywords_%locale%]">
         <source xml:lang="en">test xliff</source>
+        <target xml:lang="fr" state="new"/>
       </trans-unit>
       <group id="[%locale%][body]">
         <trans-unit html:class="title" id="/html/body/h1">

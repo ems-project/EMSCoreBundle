@@ -82,7 +82,7 @@ class FileController extends AbstractController
     /**
      * @param int $size
      */
-    public function initUploadFileAction($sha1, $size, bool $apiRoute, Request $request): Response
+    public function initUploadFileAction(?string $sha1, $size, bool $apiRoute, Request $request): Response
     {
         if ($sha1 || $size) {
             @\trigger_error('You should use the routes emsco_file_data_init_upload or emsco_file_api_init_upload which doesn\'t require url parameters', E_USER_DEPRECATED);

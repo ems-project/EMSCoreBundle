@@ -8,6 +8,7 @@ import PickFileFromServer from './module/pickFileFromServer';
 import collapse from './helper/collapse';
 import FileUploader from "@elasticms/file-uploader";
 import Datatables from "./module/datatables";
+import LiveEditRevision from "./module/liveEditRevision";
 
 
 export default class EmsListeners {
@@ -27,6 +28,7 @@ export default class EmsListeners {
         this.hashAlgo = primaryBox.data('hash-algo');
         this.addListeners();
         new Datatables(target);
+        new LiveEditRevision(target);
     }
 
     addListeners() {

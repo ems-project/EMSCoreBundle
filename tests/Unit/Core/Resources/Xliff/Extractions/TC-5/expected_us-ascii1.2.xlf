@@ -4,7 +4,7 @@
     <body>
       <trans-unit id="[title_%locale%]">
         <source xml:lang="en">Foo</source>
-        <target xml:lang="fr">Bar</target>
+        <target xml:lang="fr" state="needs-translation">Bar</target>
       </trans-unit>
     </body>
   </file>
@@ -12,15 +12,20 @@
     <body>
       <trans-unit id="[title_%locale%]">
         <source xml:lang="en">Hello</source>
-        <target xml:lang="fr">Bonjour</target>
+        <target xml:lang="fr" state="needs-translation">Bonjour</target>
       </trans-unit>
       <trans-unit id="[keywords_%locale%]">
         <source xml:lang="en">test xliff</source>
+        <target xml:lang="fr" state="new"/>
+      </trans-unit>
+      <trans-unit id="[empty]">
+        <source xml:lang="en"/>
+        <target xml:lang="fr" state="final"/>
       </trans-unit>
       <group id="[%locale%][body]">
         <trans-unit id="/html/body/p">
           <source xml:lang="en"> This is Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood with its snow-covered top"/> </source>
-          <target xml:lang="fr"> Ceci est Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood avec son sommet enneig&#233;"/> </target>
+          <target xml:lang="fr" state="needs-translation"> Ceci est Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood avec son sommet enneig&#233;"/> </target>
         </trans-unit>
       </group>
       <group id="[%locale%][body2]">
@@ -34,12 +39,18 @@
     Mount Hood:
     &lt;img src="mthood.jpg" alt="Mount Hood with its snow-covered top"/&gt;
 </source>
-          <target xml:lang="fr">
+          <target xml:lang="fr" state="needs-translation">
     Ceci
     est
     Mount
     Hood: &lt;img src="mthood.jpg" alt="Mount Hood avec son sommet enneig&amp;#xE9;"/&gt;
 </target>
+        </trans-unit>
+      </group>
+      <group id="[%locale%][body3]">
+        <trans-unit id="/html/body/p">
+          <source xml:lang="en"> This is Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood with its snow-covered top"/> </source>
+          <target xml:lang="fr" state="final"> Ceci est Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood avec son sommet enneig&#233;"/> </target>
         </trans-unit>
       </group>
     </body>

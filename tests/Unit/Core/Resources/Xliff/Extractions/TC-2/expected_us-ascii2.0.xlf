@@ -18,6 +18,13 @@
     <unit id="[keywords_%locale%]">
       <segment>
         <source>test xliff</source>
+        <target/>
+      </segment>
+    </unit>
+    <unit id="[empty]">
+      <segment>
+        <source/>
+        <target/>
       </segment>
     </unit>
     <group id="[%locale%][body]">
@@ -29,6 +36,14 @@
       </unit>
     </group>
     <group id="[%locale%][body2]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source>Hello</source>
+          <target>Bonjour</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="[%locale%][body3]">
       <unit id="/html/body/p">
         <segment id="/html/body/p">
           <source>Hello</source>

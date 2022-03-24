@@ -18,6 +18,13 @@
     <unit id="[keywords_%locale%]">
       <segment>
         <source>test xliff</source>
+        <target/>
+      </segment>
+    </unit>
+    <unit id="[empty]">
+      <segment>
+        <source/>
+        <target/>
       </segment>
     </unit>
     <group id="[%locale%][body]">
@@ -46,6 +53,14 @@
     Mount
     Hood: &lt;img src="mthood.jpg" alt="Mount Hood avec son sommet enneig&amp;#xE9;"/&gt;
 </target>
+        </segment>
+      </unit>
+    </group>
+    <group id="[%locale%][body3]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source> This is Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood with its snow-covered top"/> </source>
+          <target> Ceci est Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood avec son sommet enneigé"/> </target>
         </segment>
       </unit>
     </group>

@@ -12,6 +12,5 @@ export default class datatables {
         [].forEach.call(datatables, function(datatable) {
             jquery(datatable).DataTable(JSON.parse(datatable.dataset.datatable));
         });
-
     }
 }

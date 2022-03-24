@@ -126,10 +126,7 @@ class FileController extends AbstractController
         ]);
     }
 
-    /**
-     * @param bool $apiRoute
-     */
-    public function uploadChunkAction(?string $sha1, ?string $hash, $apiRoute, Request $request): Response
+    public function uploadChunkAction(?string $sha1, ?string $hash, bool $apiRoute, Request $request): Response
     {
         if (null !== $sha1) {
             $hash = $sha1;

@@ -308,6 +308,7 @@
         </service>
         <service id="EMS\CoreBundle\Controller\ContentManagement\FileController" public="true">
             <argument type="service" id="ems.service.file" />
+            <argument type="service" id="ems.service.asset_extractor" />
             <argument type="service" id="ems.logger" />
         </service>
         <service id="EMS\CoreBundle\Controller\UploadedFileController" public="true">

@@ -21,11 +21,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class FileController extends AbstractController
 {
     private FileService $fileService;
+    private AssetExtractorService $assetExtractorService;
     private LoggerInterface $logger;
 
-    public function __construct(FileService $fileService, LoggerInterface $logger)
+    public function __construct(FileService $fileService, AssetExtractorService $assetExtractorService, LoggerInterface $logger)
     {
         $this->fileService = $fileService;
+        $this->assetExtractorService = $assetExtractorService;
         $this->logger = $logger;
     }
 
@@ -49,12 +51,12 @@ class FileController extends AbstractController
         return $this->redirectToRoute('ems_core_uploaded_file_logs');
     }
 
-    public function extractFileContentForced(AssetExtractorService $assetExtractorService, Request $request, string $sha1): Response
+    public function extractFileContentForced(Request $request, string $sha1): Response
     {
-        return $this->extractFileContent($assetExtractorService, $request, $sha1, true);
+        return $this->extractFileContent($request, $sha1, true);
     }
 
-    public function extractFileContent(AssetExtractorService $assetExtractorService, Request $request, string $sha1, bool $forced = false): Response
+    public function extractFileContent(Request $request, string $sha1, bool $forced = false): Response
     {
         if ($request->hasSession()) {
             $session = $request->getSession();
@@ -65,7 +67,7 @@ class FileController extends AbstractController
         }
 
         try {
-            $data = $assetExtractorService->extractData($sha1, null, $forced);
+            $data = $this->assetExtractorService->extractData($sha1, null, $forced);
         } catch (NotFoundException $e) {
             throw new NotFoundHttpException(\sprintf('Asset %s not found', $sha1));
         }

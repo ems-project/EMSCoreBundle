@@ -23,121 +23,121 @@
         <target xml:lang="fr" state="final"/>
       </trans-unit>
       <group id="[%locale%][body]">
-        <trans-unit html:class="title" id="/html/body/h1">
+        <trans-unit restype="x-html-h1" html:class="title" id="/html/body/h1">
           <source xml:lang="en">Report</source>
           <target xml:lang="fr" state="new"/>
         </trans-unit>
         <group restype="table" html:border="1" html:width="100%" id="/html/body/table">
           <group restype="row" id="/html/body/table/tr[1]">
-            <trans-unit html:valign="top" id="/html/body/table/tr[1]/td[1]">
+            <trans-unit restype="cell" html:valign="top" id="/html/body/table/tr[1]/td[1]">
               <source xml:lang="en">Text in cell r1-c1</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
-            <trans-unit html:valign="top" id="/html/body/table/tr[1]/td[2]">
+            <trans-unit restype="cell" html:valign="top" id="/html/body/table/tr[1]/td[2]">
               <source xml:lang="en">Text in cell r1-c2</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
-            <trans-unit html:valign="top" id="/html/body/table/tr[1]/td[3]">
+            <trans-unit restype="cell" html:valign="top" id="/html/body/table/tr[1]/td[3]">
               <source xml:lang="en">é à   ï «</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
           </group>
           <group restype="row" id="/html/body/table/tr[2]">
-            <trans-unit html:bgcolor="#C0C0C0" id="/html/body/table/tr[2]/td[1]">
+            <trans-unit restype="cell" html:bgcolor="#C0C0C0" id="/html/body/table/tr[2]/td[1]">
               <source xml:lang="en">Text in cell r2-c1</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
-            <trans-unit id="/html/body/table/tr[2]/td[2]">
+            <trans-unit restype="cell" id="/html/body/table/tr[2]/td[2]">
               <source xml:lang="en">Text in cell r2-c2</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
-            <trans-unit id="/html/body/table/tr[2]/td[3]">
+            <trans-unit restype="cell" id="/html/body/table/tr[2]/td[3]">
               <source xml:lang="en">é à   « ï</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
           </group>
         </group>
-        <trans-unit id="/html/body/p">
+        <trans-unit restype="x-html-p" id="/html/body/p">
           <source xml:lang="en">All rights reserved (c) Gandalf Inc.</source>
           <target xml:lang="fr" state="new"/>
         </trans-unit>
       </group>
       <group id="[%locale%][body2]">
-        <trans-unit html:class="title" id="/html/body/h1">
+        <trans-unit restype="x-html-h1" html:class="title" id="/html/body/h1">
           <source xml:lang="en">Report</source>
           <target xml:lang="fr" state="new"/>
         </trans-unit>
         <group restype="table" html:border="1" html:width="100%" id="/html/body/table">
           <group restype="row" id="/html/body/table/tr[1]">
-            <trans-unit html:valign="top" id="/html/body/table/tr[1]/td[1]">
+            <trans-unit restype="cell" html:valign="top" id="/html/body/table/tr[1]/td[1]">
               <source xml:lang="en">Text in cell r1-c1</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
-            <trans-unit html:valign="top" id="/html/body/table/tr[1]/td[2]">
+            <trans-unit restype="cell" html:valign="top" id="/html/body/table/tr[1]/td[2]">
               <source xml:lang="en">Text in cell r1-c2</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
-            <trans-unit html:valign="top" id="/html/body/table/tr[1]/td[3]">
+            <trans-unit restype="cell" html:valign="top" id="/html/body/table/tr[1]/td[3]">
               <source xml:lang="en">é à   ï «</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
           </group>
           <group restype="row" id="/html/body/table/tr[2]">
-            <trans-unit html:bgcolor="#C0C0C0" id="/html/body/table/tr[2]/td[1]">
+            <trans-unit restype="cell" html:bgcolor="#C0C0C0" id="/html/body/table/tr[2]/td[1]">
               <source xml:lang="en">Text in cell r2-c1</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
-            <trans-unit id="/html/body/table/tr[2]/td[2]">
+            <trans-unit restype="cell" id="/html/body/table/tr[2]/td[2]">
               <source xml:lang="en">Text in cell r2-c2</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
-            <trans-unit id="/html/body/table/tr[2]/td[3]">
+            <trans-unit restype="cell" id="/html/body/table/tr[2]/td[3]">
               <source xml:lang="en">é à   « ï</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
           </group>
         </group>
-        <trans-unit id="/html/body/p">
+        <trans-unit restype="x-html-p" id="/html/body/p">
           <source xml:lang="en">All rights reserved (c) Gandalf Inc.</source>
           <target xml:lang="fr" state="new"/>
         </trans-unit>
       </group>
       <group id="[%locale%][body3]">
-        <trans-unit html:class="title" id="/html/body/h1">
+        <trans-unit restype="x-html-h1" html:class="title" id="/html/body/h1">
           <source xml:lang="en">Report</source>
           <target xml:lang="fr" state="new"/>
         </trans-unit>
         <group restype="table" html:border="1" html:width="100%" id="/html/body/table">
           <group restype="row" id="/html/body/table/tr[1]">
-            <trans-unit html:valign="top" id="/html/body/table/tr[1]/td[1]">
+            <trans-unit restype="cell" html:valign="top" id="/html/body/table/tr[1]/td[1]">
               <source xml:lang="en">Text in cell r1-c1</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
-            <trans-unit html:valign="top" id="/html/body/table/tr[1]/td[2]">
+            <trans-unit restype="cell" html:valign="top" id="/html/body/table/tr[1]/td[2]">
               <source xml:lang="en">Text in cell r1-c2</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
-            <trans-unit html:valign="top" id="/html/body/table/tr[1]/td[3]">
+            <trans-unit restype="cell" html:valign="top" id="/html/body/table/tr[1]/td[3]">
               <source xml:lang="en">é à   ï «</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
           </group>
           <group restype="row" id="/html/body/table/tr[2]">
-            <trans-unit html:bgcolor="#C0C0C0" id="/html/body/table/tr[2]/td[1]">
+            <trans-unit restype="cell" html:bgcolor="#C0C0C0" id="/html/body/table/tr[2]/td[1]">
               <source xml:lang="en">Text in cell r2-c1</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
-            <trans-unit id="/html/body/table/tr[2]/td[2]">
+            <trans-unit restype="cell" id="/html/body/table/tr[2]/td[2]">
               <source xml:lang="en">Text in cell r2-c2</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
-            <trans-unit id="/html/body/table/tr[2]/td[3]">
+            <trans-unit restype="cell" id="/html/body/table/tr[2]/td[3]">
               <source xml:lang="en">é à   « ï</source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
           </group>
         </group>
-        <trans-unit id="/html/body/p">
+        <trans-unit restype="x-html-p" id="/html/body/p">
           <source xml:lang="en">All rights reserved (c) Gandalf Inc.</source>
           <target xml:lang="fr" state="new"/>
         </trans-unit>

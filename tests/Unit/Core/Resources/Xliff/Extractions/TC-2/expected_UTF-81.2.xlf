@@ -23,19 +23,19 @@
         <target xml:lang="fr" state="final"/>
       </trans-unit>
       <group id="[%locale%][body]">
-        <trans-unit id="/html/body/p">
+        <trans-unit restype="x-html-p" id="/html/body/p">
           <source xml:lang="en">Hello</source>
           <target xml:lang="fr" state="needs-translation">Bonjour</target>
         </trans-unit>
       </group>
       <group id="[%locale%][body2]">
-        <trans-unit id="/html/body/p">
+        <trans-unit restype="x-html-p" id="/html/body/p">
           <source xml:lang="en">Hello</source>
           <target xml:lang="fr" state="needs-translation">Bonjour</target>
         </trans-unit>
       </group>
       <group id="[%locale%][body3]">
-        <trans-unit id="/html/body/p">
+        <trans-unit restype="x-html-p" id="/html/body/p">
           <source xml:lang="en">Hello</source>
           <target xml:lang="fr" state="final">Bonjour</target>
         </trans-unit>

@@ -456,9 +456,13 @@ class Extractor
             $sourceAttributes = [
                 'xml:lang' => $this->sourceLocale,
             ];
+            $attributes = [
+                'restype' => $this->getRestype($sourceNode->nodeName),
+            ];
         } else {
             $qualifiedName = 'segment';
             $sourceAttributes = [];
+            $attributes = [];
         }
 
         if (null !== $sourceNode->attributes && \version_compare($this->xliffVersion, '2.0') < 0) {

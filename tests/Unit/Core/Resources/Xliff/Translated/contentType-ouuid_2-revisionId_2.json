@@ -1,7 +1,10 @@
 {
     "title_fr": "Bonjour",
-    "keywords_fr": "test xliff",
+    "keywords_fr": "Test xliff",
+    "empty": "",
     "fr": {
-        "body": "<h1 class=\"title\">Rapport<\/h1>\n<table border=\"1\" width=\"100%\">\n    <tr>\n        <td valign=\"top\">Texte dans la cellule r1-c1<\/td>\n        <td valign=\"top\">Texte dans la cellule r1-c2<\/td>\n    <\/tr>\n    <tr>\n        <td bgcolor=\"#C0C0C0\">Texte dans la cellule r2-c1<\/td>\n        <td>Texte dans la cellule r2-c2<\/td>\n    <\/tr>\n<\/table>\n<p>Tous droits r\u00e9serv\u00e9s (c) Gandalf Inc.<\/p>"
+        "body": "<h1 class=\"title\">Rapport<\/h1>\n        <table border=\"1\" width=\"100%\">\n          <tr>\n            <td valign=\"top\">Texte dans la cellule r1-c1<\/td>\n            <td valign=\"top\">Texte dans la cellule r1-c2<\/td>\n            <td valign=\"top\">&#xE9; &#xE0; &#xA0; &#xEF; &#xAB;<\/td>\n          <\/tr>\n          <tr>\n            <td bgcolor=\"#C0C0C0\">Texte dans la cellule r2-c1<\/td>\n            <td>Texte dans la cellule r2-c2<\/td>\n            <td>&#xE9; &#xE0; &#xA0; &#xAB; &#xEF;<\/td>\n          <\/tr>\n        <\/table>\n        <p>Tous droits r&#xE9;serv&#xE9;s &#xA9; Gandalf Inc.<\/p>",
+        "body2": "<h1 class=\"title\">Rapport<\/h1>\n        <table border=\"1\" width=\"100%\">\n          <tr>\n            <td valign=\"top\">Texte dans la cellule r1-c1<\/td>\n            <td valign=\"top\">Texte dans la cellule r1-c2<\/td>\n            <td valign=\"top\">&#xE9; &#xE0; &#xA0; &#xEF; &#xAB;<\/td>\n          <\/tr>\n          <tr>\n            <td bgcolor=\"#C0C0C0\">Texte dans la cellule r2-c1<\/td>\n            <td>Texte dans la cellule r2-c2<\/td>\n            <td>&#xE9; &#xE0; &#xA0; &#xAB; &#xEF;<\/td>\n          <\/tr>\n        <\/table>\n        <p>Tous droits r&#xE9;serv&#xE9;s &#xA9; Gandalf Inc.<\/p>",
+        "body3": "<h1 class=\"title\">Rapport<\/h1>\n        <table border=\"1\" width=\"100%\">\n          <tr>\n            <td valign=\"top\">Texte dans la cellule r1-c1<\/td>\n            <td valign=\"top\">Texte dans la cellule r1-c2<\/td>\n            <td valign=\"top\">&#xE9; &#xE0; &#xA0; &#xEF; &#xAB;<\/td>\n          <\/tr>\n          <tr>\n            <td bgcolor=\"#C0C0C0\">Texte dans la cellule r2-c1<\/td>\n            <td>Texte dans la cellule r2-c2<\/td>\n            <td>&#xE9; &#xE0; &#xA0; &#xAB; &#xEF;<\/td>\n          <\/tr>\n        <\/table>\n        <p>Tous droits r&#xE9;serv&#xE9;s &#xA9; Gandalf Inc.<\/p>"
     }
 }

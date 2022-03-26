@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="en" original="contentType:ouuid_1:revisionId_1" datatype="database" target-language="fr">
+    <body>
+      <trans-unit id="[title_%locale%]">
+        <source xml:lang="en">Foo</source>
+        <target xml:lang="fr" state="needs-translation">Bar</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

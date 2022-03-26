@@ -2,34 +2,38 @@
 
 namespace EMS\CoreBundle\Helper\Xliff;
 
+use EMS\CoreBundle\Helper\XML\DomHelper;
+
 class Inserter
 {
     private string $version;
     /** @var string[] */
-    private array $nameSpaces;
-    private \SimpleXMLElement $xliff;
+    private array $nameSpaces = [];
+    private \DOMNode $xliff;
     private ?string $sourceLocale;
     private ?string $targetLocale;
 
-    private function __construct(\SimpleXMLElement $xliff)
+    private function __construct(\DOMDocument $document)
     {
-        $this->version = \strval($xliff['version']);
+        $this->xliff = DomHelper::getSingleNodeFromDocument($document, 'xliff');
+        $this->version = DomHelper::getStringAttr($this->xliff, 'version');
+
+        foreach (['xml'] as $ns) {
+            $this->nameSpaces[$ns] = $document->lookupNamespaceURI($ns);
+        }
+
         if (!\in_array($this->version, Extractor::XLIFF_VERSIONS)) {
             throw new \RuntimeException(\sprintf('Not supported %s XLIFF version', $this->version));
         }
 
-        $srcLang = $xliff['srcLang'];
-        $this->sourceLocale = (null === $srcLang ? null : \strval($srcLang));
-        $trgLang = $xliff['trgLang'];
-        $this->targetLocale = (null === $trgLang ? null : \strval($trgLang));
-        $this->nameSpaces = $xliff->getNameSpaces(true);
-        $xliff->registerXPathNamespace('ns', $this->nameSpaces['']);
-        $this->xliff = $xliff;
+        $this->sourceLocale = DomHelper::getNullStringAttr($this->xliff, 'srcLang');
+        $this->targetLocale = DomHelper::getNullStringAttr($this->xliff, 'trgLang');
     }
 
     public static function fromFile(string $filename): Inserter
     {
-        $xliff = new \SimpleXMLElement($filename, 0, true);
+        $xliff = new \DOMDocument('1.0', 'UTF-8');
+        $xliff->load($filename);
 
         return new self($xliff);
     }
@@ -39,14 +43,24 @@ class Inserter
      */
     public function getDocuments(): iterable
     {
-        foreach ($this->xliff->children() as $document) {
-            $document->registerXPathNamespace('ns', $this->nameSpaces['']);
+        foreach ($this->xliff->childNodes as $document) {
+            if (!$document instanceof \DOMElement) {
+                continue;
+            }
             yield new InsertionRevision($document, $this->version, $this->nameSpaces, $this->sourceLocale, $this->targetLocale);
         }
     }
 
     public function count(): int
     {
-        return $this->xliff->children()->count();
+        $counter = 0;
+        foreach ($this->xliff->childNodes as $document) {
+            if (!$document instanceof \DOMElement) {
+                continue;
+            }
+            ++$counter;
+        }
+
+        return $counter;
     }
 }

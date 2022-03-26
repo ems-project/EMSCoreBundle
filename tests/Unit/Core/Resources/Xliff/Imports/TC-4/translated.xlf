@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="fr">
-    <file id="contentType:ouuid_3:revisionId_1">
-        <unit id="[title_%locale%]">
-            <segment>
-                <source>Foo</source>
-                <target>Bar</target>
-            </segment>
-        </unit>
-    </file>
-    <file id="contentType:ouuid_4:revisionId_2">
-        <unit id="[title_%locale%]">
-            <segment>
-                <source>Hello</source>
-                <target>Bonjour</target>
-            </segment>
-        </unit>
-        <unit id="[keywords_%locale%]">
-            <segment>
-                <source>test xliff</source>
-                <target>test xliff</target>
-            </segment>
-        </unit>
-        <group id="[%locale%][body]">
-            <unit id="/html/body/p">
-                <segment id="/html/body/p/text()">
-                    <source>Hello</source>
-                    <target>Bonjour</target>
-                </segment>
-            </unit>
-        </group>
-    </file>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="en" original="contentType:ouuid_4:revisionId_1" datatype="database" target-language="fr">
+    <body>
+      <trans-unit id="[title_%locale%]">
+        <source xml:lang="en">Hello</source>
+        <target xml:lang="fr" state="needs-translation">Salut</target>
+      </trans-unit>
+    </body>
+  </file>
+  <file source-language="en" original="contentType:ouuid_4:revisionId_2" datatype="database" target-language="fr">
+    <body>
+      <trans-unit id="[title_%locale%]">
+        <source xml:lang="en">Hello</source>
+        <target xml:lang="fr" state="needs-translation">Bonjour</target>
+      </trans-unit>
+      <trans-unit id="[keywords_%locale%]">
+        <source xml:lang="en">test xliff</source>
+        <target xml:lang="fr" state="new"/>
+      </trans-unit>
+      <trans-unit id="[empty]">
+        <source xml:lang="en"/>
+        <target xml:lang="fr" state="final"/>
+      </trans-unit>
+      <group id="[%locale%][body]">
+        <trans-unit restype="x-html-p" id="/html/body/p">
+          <source xml:lang="en">Hello Mathieu, please visits<g ctype="x-html-a" html:href="https://elasticms.eu/path%20with%20space?a1=value1&amp;a2=value2#anchor"> <g ctype="italic" html:class="elasticms"/>The elastic<g ctype="bold">ms</g> web site</g></source>
+          <target xml:lang="fr" state="needs-translation">Bonjour Mathieu<g ctype="x-html-a" html:href="https://elasticms.eu/path%20with%20space?a1=value1&amp;a2=value2#anchor">Le site d´elasticms</g></target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
 </xliff>

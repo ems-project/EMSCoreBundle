@@ -2,6 +2,6 @@
   "title_en": "Hello",
   "keywords_en": "test xliff",
   "en": {
-    "body": "<p>Hello</p>"
+    "body": "<p>\n  Hello Mathieu, please visits <a href= \"https://elasticms.eu/path%20with%20space?a1=value1&amp;a2=value2#anchor\">\n  The elastic<b>ms</b> web site</a>\n</p>"
   }
 }

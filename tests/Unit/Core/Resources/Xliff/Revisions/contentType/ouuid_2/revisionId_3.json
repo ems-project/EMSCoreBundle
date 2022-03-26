@@ -1,0 +1,10 @@
+{
+  "title_en": "Hello",
+  "keywords_en": "test xliff",
+  "empty": "",
+  "en": {
+    "body": "<p>\n  Hello\n</p>\n",
+    "body2": "<p>\n  Hello\n</p>\n",
+    "body3": "<p>\n  Hello\n</p>\n"
+  }
+}

@@ -22,9 +22,24 @@
         <source xml:lang="en"/>
         <target xml:lang="fr" state="final"/>
       </trans-unit>
-      <group id="[%locale%][body]"/>
-      <group id="[%locale%][body2]"/>
-      <group id="[%locale%][body3]"/>
+      <group id="[%locale%][body]">
+        <trans-unit>
+          <source xml:lang="en"/>
+          <target xml:lang="fr" state="final"/>
+        </trans-unit>
+      </group>
+      <group id="[%locale%][body2]">
+        <trans-unit>
+          <source xml:lang="en"/>
+          <target xml:lang="fr" state="final"/>
+        </trans-unit>
+      </group>
+      <group id="[%locale%][body3]">
+        <trans-unit>
+          <source xml:lang="en"/>
+          <target xml:lang="fr" state="final"/>
+        </trans-unit>
+      </group>
     </body>
   </file>
 </xliff>

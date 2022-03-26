@@ -9,7 +9,7 @@ use Symfony\Component\DomCrawler\Crawler;
 class Extractor
 {
     //Source: https://docs.oasis-open.org/xliff/v1.2/xliff-profile-html/xliff-profile-html-1.2.html#SectionDetailsElements
-    private const PRE_DEFINED_VALUES = [
+    public const PRE_DEFINED_VALUES = [
         'b' => 'bold',
         'br' => 'lb',
         'caption' => 'caption',
@@ -219,6 +219,7 @@ class Extractor
             $group = new \DOMElement('group');
             $document->appendChild($group);
             $group->setAttribute('id', $fieldPath);
+            $this->addSegmentNode($group, null, null, true, $htmlEncodeInlines);
         }
     }
 
@@ -349,20 +350,6 @@ class Extractor
         return self::PRE_DEFINED_VALUES[$nodeName] ?? \sprintf('x-html-%s', $nodeName);
     }
 
-    public function translateDom(Crawler $crawler, \SimpleXMLElement $field, string $nameSpace): void
-    {
-        $field->registerXPathNamespace('ns', $nameSpace);
-        if (\version_compare($this->xliffVersion, '2.0') < 0) {
-            $xpath = "//ns:trans-unit[@id='%s']/ns:target";
-        } else {
-            $xpath = "//ns:segment[@id='%s']/ns:target";
-        }
-
-        foreach ($crawler->children() as $child) {
-            $this->recursiveTranslateDom($child, $field, $xpath);
-        }
-    }
-
     private function getId(\DOMNode $domNode, ?string $attributeName = null): string
     {
         $id = $domNode->getNodePath();
@@ -374,40 +361,6 @@ class Extractor
         }
 
         return $id;
-    }
-
-    private function recursiveTranslateDom(\DOMNode $node, \SimpleXMLElement $field, string $xpath): void
-    {
-        foreach ($node->childNodes as $domNode) {
-            if (!$this->hasSomethingToTranslate($domNode)) {
-                continue;
-            }
-            if ($domNode instanceof \DOMText) {
-                $id = $this->getId($domNode);
-                $targets = $field->xpath(\sprintf($xpath, $id));
-                if (false === $targets || 1 !== \count($targets)) {
-                    throw new \RuntimeException(\sprintf('Target not fount for DOM %s', $id));
-                }
-                $domNode->nodeValue = \strval($targets[0]);
-            } else {
-                $this->recursiveTranslateDom($domNode, $field, $xpath);
-            }
-
-            $attributes = $domNode->attributes;
-            if (null === $attributes) {
-                continue;
-            }
-            foreach (self::TRANSLATABLE_ATTRIBUTES as $attributeName) {
-                if (null !== $attributeValue = $attributes->getNamedItem($attributeName)) {
-                    $id = $this->getId($domNode, $attributeValue->nodeName);
-                    $targets = $field->xpath(\sprintf($xpath, $id));
-                    if (false === $targets || 1 !== \count($targets)) {
-                        throw new \RuntimeException(\sprintf('Target not fount for attribute %s in DOM %s', $attributeValue->nodeName, $id));
-                    }
-                    $attributeValue->nodeValue = \strval($targets[0]);
-                }
-            }
-        }
     }
 
     private function trimUselessWhiteSpaces(string $text): string
@@ -436,9 +389,11 @@ class Extractor
         return true;
     }
 
-    private function addSegmentNode(\DOMElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler, bool $isFinal, bool $htmlEncodeInlines = false): void
+    private function addSegmentNode(\DOMElement $xliffElement, ?\DOMNode $sourceNode, ?Crawler $targetCrawler, bool $isFinal, bool $htmlEncodeInlines = false): void
     {
-        $attributes = [];
+        if ((null == $sourceNode || null === $targetCrawler) && $sourceNode !== $targetCrawler) {
+            throw new \RuntimeException('Unexpected case where there is a source and no target defined or the opposite');
+        }
         if (\version_compare($this->xliffVersion, '2.0') < 0) {
             $qualifiedName = null;
         } else {
@@ -447,25 +402,29 @@ class Extractor
         if (null !== $qualifiedName) {
             $tempElement = new \DOMElement($qualifiedName);
             $xliffElement->appendChild($tempElement);
-            $this->addId($tempElement, $sourceNode);
+            if (null !== $sourceNode) {
+                $this->addId($tempElement, $sourceNode);
+            }
             $xliffElement = $tempElement;
         }
 
+        $attributes = [];
         if (\version_compare($this->xliffVersion, '2.0') < 0) {
             $qualifiedName = 'trans-unit';
             $sourceAttributes = [
                 'xml:lang' => $this->sourceLocale,
             ];
-            $attributes = [
-                'restype' => $this->getRestype($sourceNode->nodeName),
-            ];
+            if (null !== $sourceNode) {
+                $attributes = [
+                    'restype' => $this->getRestype($sourceNode->nodeName),
+                ];
+            }
         } else {
             $qualifiedName = 'segment';
             $sourceAttributes = [];
-            $attributes = [];
         }
 
-        if (null !== $sourceNode->attributes && \version_compare($this->xliffVersion, '2.0') < 0) {
+        if (null !== $sourceNode && null !== $sourceNode->attributes && \version_compare($this->xliffVersion, '2.0') < 0) {
             foreach ($sourceNode->attributes as $value) {
                 if (!$value instanceof \DOMAttr) {
                     throw new \RuntimeException('Unexpected attribute object');
@@ -482,12 +441,24 @@ class Extractor
         foreach ($attributes as $attribute => $value) {
             $segment->setAttribute($attribute, $value);
         }
-        $this->addId($segment, $sourceNode);
+
+        if (null !== $sourceNode) {
+            $this->addId($segment, $sourceNode);
+        }
 
         $source = new \DOMElement('source');
         $segment->appendChild($source);
+
+        $target = new \DOMElement('target');
+        $segment->appendChild($target);
+
         foreach ($sourceAttributes as $attribute => $value) {
             $source->setAttribute($attribute, $value);
+        }
+        if (null === $sourceNode || null === $targetCrawler) {
+            $this->setTargetAttributes($target, true, true);
+
+            return;
         }
 
         if ($htmlEncodeInlines) {
@@ -504,8 +475,6 @@ class Extractor
 
         $foundTarget = $targetCrawler->filterXPath($nodeXPath);
         $foundTargetNode = $foundTarget->getNode(0);
-        $target = new \DOMElement('target');
-        $segment->appendChild($target);
 
         $isTranslated = 1 === $foundTarget->count() && $foundTargetNode instanceof \DOMElement;
         if (!$isTranslated && '' === $source->textContent) {

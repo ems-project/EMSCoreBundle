@@ -21,7 +21,14 @@
         <target/>
       </segment>
     </unit>
+    <unit id="[empty]">
+      <segment>
+        <source/>
+        <target/>
+      </segment>
+    </unit>
     <group id="[%locale%][body]"/>
     <group id="[%locale%][body2]"/>
+    <group id="[%locale%][body3]"/>
   </file>
 </xliff>

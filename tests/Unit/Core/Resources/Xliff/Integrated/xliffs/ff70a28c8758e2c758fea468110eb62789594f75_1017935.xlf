@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:ff70a28c8758e2c758fea468110eb62789594f75:1017935" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Oudere werknemers - Wallonië (zonder de Duitstalige Gemeenschap)</source>
+        <target xml:lang="de" state="final">Ältere Arbeitnehmer - Wallonie (ohne deutschsprachige Gemeinschaft)</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Oudere werknemers - Wallonië</source>
+        <target xml:lang="de" state="final">Ältere Arbeitnehmer - Wallonie</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Vanaf 1 juli 2017 introduceert Wallonië een nieuwe doelgroepvermindering voor oudere werknemers <g ctype="x-html-strong">ter vervanging</g> van de bestaande doelgroepvermindering ouderen. Dit geldt enkel voor de werknemers die werkzaam zijn in of afhangen van een vestigingseenheid in het <g ctype="x-html-strong">Waals Gewest </g>(zonder de Duitstalige Gemeenschap). Voor de werknemers tewerkgesteld in een andere regio wijzigt er niets. </source>
+          <target xml:lang="de" state="final">Ab 01.07.2017 führt die Wallonie eine neue Zielgruppenermäßigung für ältere Arbeitnehmer <g ctype="x-html-strong">als Ersatz</g> der bestehenden Zielgruppenermäßigung ältere Arbeitnehmer ein. Dies gilt nur für Arbeitnehmer, die in einer <g ctype="x-html-strong">Niederlassungseinheit in der Wallonie (ohne Deutschsprachige Gemeinschaft) tätig sind oder von ihr abhängig sind</g>. Für Arbeitnehmer, die in einer anderen Region beschäftigt sind, ändert sich nichts. </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl"> Het bedrag van de doelgroepvermindering hangt af van de leeftijd van de werknemer. </source>
+          <target xml:lang="de" state="final"> Der Betrag der Zielgruppenermäßigung hängt vom Alter des Arbeitnehmers ab. </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-h2" id="/html/body/h2[1]">
+          <source xml:lang="nl">Betrokken werkgevers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitgeber</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Alle werkgevers die werknemers tewerkstellen die onderworpen zijn aan het <g ctype="x-html-strong">geheel der regelingen. </g>Voor de RSZ zijn dit:</source>
+          <target xml:lang="de" state="final">Alle Arbeitgeber, die Arbeitnehmer beschäftigen, die <g ctype="x-html-strong">allen Regelungen</g> unterliegen.</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[1]">
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[1]">
+            <source xml:lang="nl">de rust- en overlevingspensioenen voor werknemers;</source>
+            <target xml:lang="de" state="final">Alters- und Hinterbliebenenpensionen für Arbeitnehmer;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]">
+            <source xml:lang="nl">de ziekte- en invaliditeitsverzekering, sector geneeskundige verzorging;</source>
+            <target xml:lang="de" state="final">Kranken- und Invalidenversicherung, Sektor Gesundheitspflege;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[3]">
+            <source xml:lang="nl">de ziekte- en invaliditeitsverzekering, sector uitkeringen;</source>
+            <target xml:lang="de" state="final">Kranken- und Invalidenversicherung, Sektor Entschädigungen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[4]">
+            <source xml:lang="nl">de werkloosheid;</source>
+            <target xml:lang="de" state="final">Arbeitslosigkeit;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[5]">
+            <source xml:lang="nl">de beroepsziekten;</source>
+            <target xml:lang="de" state="final">Berufskrankheiten;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[6]">
+            <source xml:lang="nl">de arbeidsongevallen;</source>
+            <target xml:lang="de" state="final">Arbeitsunfälle;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[7]">
+            <source xml:lang="nl">de jaarlijkse vakantie.</source>
+            <target xml:lang="de" state="final">Jahresurlaub.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h2" html:id="h21" id="/html/body/h2[2]">
+          <source xml:lang="nl">Betrokken werknemers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitnehmer</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[2]">
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]">
+            <source xml:lang="nl">Het gaat (zoals bij het vroegere systeem) enkel om werknemers uit categorie 1 van de structurele vermindering</source>
+            <target xml:lang="de" state="final">Es handelt sich (wie beim früheren System) ausschließlich um Arbeitnehmer der Kategorie 1 der Strukturermäßigung,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]">
+            <source xml:lang="nl">De werknemer moet op de laatste dag van het kwartaal minimum 55 jaar zijn en hij mag het voorafgaande kwartaal de wettelijke pensioenleeftijd (65 jaar) niet bereikt hebben.</source>
+            <target xml:lang="de" state="final">Der Arbeitnehmer muss am letzten Tag des Quartals wenigstens 55 Jahre alt sein und er darf im vorhergehenden Quartal das gesetzliche Rentenalter (65 Jahre) nicht erreicht haben.</target>
+          </trans-unit>
+          <group restype="listitem" id="/html/body/ul[2]/li[3]">
+            <trans-unit id="/html/body/ul[2]/li[3]/text()[1]">
+              <source xml:lang="nl">Enkel oudere werknemers van wie het refertekwartaalloon van het lopende kwartaal lager is dan 13.942,47 EUR komen in aanmerking. Dit plafond wordt aangepast bij de aanpassing van de loonplafonds van de werkbonus, vanaf het kwartaal dat volgt op het kwartaal waarin deze loongrenzen verhoogd worden of, indien deze verhoging samenvalt met het begin van een kwartaal, met ingang van dat kwartaal: </source>
+              <target xml:lang="de" state="final">Nur ältere Arbeitnehmer, deren Referenzquartalslohn des laufenden Quartals weniger als 13.942,47 EUR beträgt, kommen in Betracht. Diese Grenze wird bei der Anpassung der Lohngrenze des Arbeitsbonus ab dem Quartal, das auf das Quartal folgt, in dem diese Lohngrenze erhöht wird, oder, wenn diese Erhöhung bei Quartalsbeginn erfolgt, ab diesem Quartal, angepasst: </target>
+            </trans-unit>
+            <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/ul[2]/li[3]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[3]/ul/li">
+                <source xml:lang="nl">vanaf het <g ctype="x-html-span" html:class="newWord">4<g ctype="x-html-sup">de</g> kwartaal 2021</g> is het plafond gelijk aan <g ctype="x-html-span" html:class="newWord">14.795,87 EUR</g>.</source>
+                <target xml:lang="de" state="final">ab dem <g ctype="x-html-span" html:class="newWord">4.<g ctype="x-html-sup"/> Quartal 2021</g> entspricht die Grenze <g ctype="x-html-span" html:class="newWord">14.795,87 EUR</g>.</target>
+              </trans-unit>
+            </group>
+          </group>
+        </group>
+        <trans-unit restype="x-html-h3" id="/html/body/h3">
+          <source xml:lang="nl">Uitsluitingen</source>
+          <target xml:lang="de" state="final">Ausschlüsse</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Werknemers die het volledige kwartaal geen effectieve prestaties leveren, zijn uitgesloten, behalve in het geval van:</source>
+          <target xml:lang="de" state="final">Arbeitnehmer, die über das gesamte Quartal keine effektiven Leistungen erbringen, sind ausgeschlossen, ausgenommen im Fall:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[3]">
+          <group restype="listitem" id="/html/body/ul[3]/li[1]">
+            <trans-unit id="/html/body/ul[3]/li[1]/text()[1]">
+              <source xml:lang="nl">wettelijke volledige schorsing van de uitvoering van de arbeidsovereenkomst zoals </source>
+              <target xml:lang="de" state="final">einer gesetzlichen vollständigen Aussetzung der Ausführung des Arbeitsvertrags, wie </target>
+            </trans-unit>
+            <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/ul[3]/li[1]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[3]/li[1]/ul/li[1]">
+                <source xml:lang="nl">de schorsingen bepaald in de wet van 3 juli 1978 betreffende de arbeidsovereenkomsten (ziekte en ongeval, ...)</source>
+                <target xml:lang="de" state="final">die im Gesetz vom 03. Juli 1978 über die Arbeitsverträge bestimmten Aussetzungen (Krankheit, Unfall, …)</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[3]/li[1]/ul/li[2]">
+                <source xml:lang="nl">bij volledige onderbreking in het kader van tijdskrediet</source>
+                <target xml:lang="de" state="final">einer vollständigen Unterbrechung im Rahmen eines Zeitkredits</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[3]/li[1]/ul/li[3]">
+                <source xml:lang="nl">bij volledige onderbreking in het kader van een thematische verlof</source>
+                <target xml:lang="de" state="final">einer vollständigen Unterbrechung im Rahmen eines thematischen Urlaubs</target>
+              </trans-unit>
+            </group>
+          </group>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[2]">
+            <source xml:lang="nl">vrijstelling van prestaties tijdens de periode van opzegging zoals bedoeld bij artikel 37 van diezelfde wet.</source>
+            <target xml:lang="de" state="final">einer Freistellung von Leistungen während des Kündigungszeitraums gemäß Artikel 37 desselben Gesetzes.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">De werkgever duidt in het DmfA-blok 'tewerkstelling inlichtingen' in de zone '<g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/fill_in_dmfa/dmfa_fillinrules/nssoinformation/prestationexemption.html">vrijstelling prestaties</g>' aan wat de situatie van de werknemer is.</source>
+          <target xml:lang="de" state="final">Der Arbeitgeber meldet im DmfA-Block ‚Beschäftigung Auskünfte‘ im Feld ‚<g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/fill_in_dmfa/dmfa_fillinrules/nssoinformation/prestationexemption.html">Freistellung von Leistungen</g>‘ die Situation des Arbeitnehmers.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" html:id="h22" id="/html/body/h2[3]">
+          <source xml:lang="nl">Bedrag van de vermindering</source>
+          <target xml:lang="de" state="final">Betrag der Ermäßigung</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[4]">
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[1]">
+            <source xml:lang="nl">De oudere werknemer van minstens 55 jaar en jonger dan 58 jaar (op de laatste dag van het kwartaal) opent het recht op een doelgroepvermindering <g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> (400,00 EUR).</source>
+            <target xml:lang="de" state="final">Der mindestens 55, aber weniger als 58 Jahre alte Arbeitnehmer (am letzten Tag des Quartals) eröffnet das Recht auf eine Zielgruppenermäßigung <g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> (400,00 EUR).</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[2]">
+            <source xml:lang="nl">De oudere werknemer van minstens 58 jaar en jonger dan 62 jaar (op de laatste dag van het kwartaal) opent het recht op een doelgroepvermindering <g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> (1.000,00 EUR).</source>
+            <target xml:lang="de" state="final">Der mindestens 58, aber weniger als 62 Jahre alte Arbeitnehmer (am letzten Tag des Quartals) eröffnet das Recht auf eine Zielgruppenermäßigung <g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> (1.000,00 EUR).</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[3]">
+            <source xml:lang="nl">De oudere werknemer van minstens 62 jaar (op de laatste dag van het kwartaal) opent het recht op een doelgroepvermindering <g ctype="x-html-strong">G<g ctype="x-html-sub">8</g></g> (1.500,00 EUR).</source>
+            <target xml:lang="de" state="final">Der mindestens 62 Jahre alte Arbeitnehmer (am letzten Tag des Quartals) eröffnet das Recht auf eine Zielgruppenermäßigung <g ctype="x-html-strong">G<g ctype="x-html-sub">8</g></g>(1.150,00 EUR).</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

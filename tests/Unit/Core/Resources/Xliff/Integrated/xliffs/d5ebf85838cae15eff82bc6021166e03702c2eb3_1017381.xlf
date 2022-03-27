@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:d5ebf85838cae15eff82bc6021166e03702c2eb3:1017381" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Langdurig werkzoekenden - de doorstromingsprogramma's</source>
+        <target xml:lang="de" state="final">Langzeitarbeitssuchende – Berufsübergangsprogramme</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Langdurig werkzoekenden - doorstromingsprogramma's</source>
+        <target xml:lang="de" state="final">Langzeitarbeitssuchende – Berufsübergangsprogramme</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit restype="x-html-p" id="/html/body/p">
+          <source xml:lang="nl">Dit hoofdstuk heeft betrekking op werknemers die aangenomen werden in het kader van een doorstromingsprogramma.</source>
+          <target xml:lang="de" state="final">Dieses Kapitel bezieht sich auf Arbeitnehmer, die im Rahmen eines Berufsübergangsprogramms angenommen wurden.</target>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-h2" id="/html/body/h2[1]">
+          <source xml:lang="nl">Betrokken werkgevers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitgeber</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Het betreft</source>
+          <target xml:lang="de" state="final">Dies betrifft</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[1]">
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[1]">
+            <source xml:lang="nl">de Staat, de Gewesten, de Gemeenschappen en de instellingen van openbaar nut en de openbare instellingen die van de hiervoor genoemde overheden afhangen,</source>
+            <target xml:lang="de" state="final">den Staat, die Regionen, Gemeinschaften und gemeinnützige und öffentliche Einrichtungen, die von den o.a. Verwaltungen abhängen,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]">
+            <source xml:lang="nl">de plaatselijke en provinciale besturen,</source>
+            <target xml:lang="de" state="final">die provinzialen und lokalen Verwaltungen,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[3]">
+            <source xml:lang="nl">de verenigingen zonder winstgevend doel en andere niet-commerciële verenigingen.</source>
+            <target xml:lang="de" state="final">Vereinigungen ohne Erwerbszweck und andere Vereinigungen im nichtkommerziellen Sektor.</target>
+          </trans-unit>
+        </group>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[1]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[1]/h3">
+            <source xml:lang="nl">Vlaams Gewest:</source>
+            <target xml:lang="de" state="final">Flämische Region:</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p[1]">
+            <source xml:lang="nl">Op <g ctype="x-html-strong">30 september 2015</g> lopen de laatste werkervaringsprojecten onder de vorm van doorstromingsprogramma's in <g ctype="x-html-strong">Vlaanderen </g>af. Dit wil zeggen dat voor werknemers die afhangen van vestigingseenheden in het Vlaamse Gewest deze doelgroepvermindering niet meer kan worden toegepast.</source>
+            <target xml:lang="de" state="final">Am <g ctype="x-html-strong">30.09.2015</g> laufen die letzten Berufserfahrungsprojekte in Form von Berufsübergangsprogrammen in <g ctype="x-html-strong">Flandern</g> ab. Das bedeutet, dass diese Zielgruppenermäßigung für Arbeitnehmer, die Niederlassungseinheiten in der Flämischen Region unterliegen, nicht mehr angewandt werden kann.</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p[2]">
+            <source xml:lang="nl">Op <g ctype="x-html-strong">1 september 2016</g> wordt de doelgroepvermindering geschrapt voor <g ctype="x-html-strong">Vlaanderen</g>.</source>
+            <target xml:lang="de" state="final">Am <g ctype="x-html-strong">01. September 2016</g> wird die Zielgruppenermäßigung für <g ctype="x-html-strong">Flandern</g> abgeschafft.</target>
+          </trans-unit>
+        </group>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[2]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[2]/h3">
+            <source xml:lang="nl">Duitstalige Gemeenschap:</source>
+            <target xml:lang="de" state="final">Deutschsprachige Gemeinschaft:</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[2]/p">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 oktober 2016 </g>wordt het systeem van doorstromingsprogramma's opgeheven voor de <g ctype="x-html-strong">Duitstalige Gemeenschap</g>.</source>
+            <target xml:lang="de" state="final">Ab <g ctype="x-html-strong">01.10.2016</g> wird das System der Berufsübergangsprogramme für die <g ctype="x-html-strong">Deutschsprachige Gemeinschaft</g> aufgehoben.</target>
+          </trans-unit>
+        </group>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[3]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[3]/h3">
+            <source xml:lang="nl">Waals Gewest (zonder de Duitstalige Gemeenschap):</source>
+            <target xml:lang="de" state="final">Wallonische Region (außer die Deutschsprachige Gemeinschaft):</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[3]/p[1]">
+            <source xml:lang="nl"> Op <g ctype="x-html-strong">28 februari 2021</g> loopt het laatste doorstromingsprogramma in Wallonië af. Dit wil zeggen dat voor werknemers die afhangen van vestigingseenheden in het Waals Gewest deze doelgroepvermindering niet meer kan worden toegepast.</source>
+            <target xml:lang="de" state="final"> Am <g ctype="x-html-strong">28. Februar 2021</g> läuft das letzte Programm für den beruflichen Übergang in Wallonien aus. Das bedeutet, dass diese Zielgruppenermäßigung für Arbeitnehmer, die Niederlassungseinheiten in der Wallonischen Region unterliegen, nicht mehr angewandt werden kann.</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[3]/p[2]">
+            <source xml:lang="nl"> Vanaf het 2<g ctype="x-html-sup">de</g> kwartaal 2021 wordt de doelgroepvermindering geschrapt voor <g ctype="x-html-strong">Wallonië</g>.</source>
+            <target xml:lang="de" state="final"> Ab dem 2.<g ctype="x-html-sup"/> Quartal 2021 wird die Zielgruppenermäßigung für <g ctype="x-html-strong">Wallonien</g> abgeschafft.</target>
+          </trans-unit>
+        </group>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[4]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[4]/h3">
+            <source xml:lang="nl">Brussels Hoofdstedelijk Gewest:</source>
+            <target xml:lang="de" state="final">Region Brüssel-Hauptstadt:</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[4]/p">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 januari 2021 </g>wordt het systeem van doorstromingsprogramma's opgeheven voor <g ctype="x-html-strong">het Brussels Hoofdstedelijk Gewest</g>.</source>
+            <target xml:lang="de" state="final">Ab dem <g ctype="x-html-strong">01. Januar 2021 </g>wird das System der Berufsübergangsprogramme für die <g ctype="x-html-strong">Region Brüssel-Hauptstadt</g> aufgehoben.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[2]">
+          <source xml:lang="nl">Betrokken werknemers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitnehmer</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">Het gaat om werkzoekenden, waarmee bedoeld wordt de niet-werkende werknemers die als werkzoekende ingeschreven zijn bij de gewestelijke dienst voor arbeidsbemiddeling. Deze werkzoekenden moeten aangeworven zijn in het kader van een doorstromingsprogramma zoals bedoeld in het koninklijk besluit van 9 juni 1997 ter uitvoering van het artikel 7 § 1, 3<g ctype="x-html-sup">de</g> lid, m van de besluitwet van 28 december 1944 betreffende de maatschappelijke zekerheid der arbeiders.</source>
+          <target xml:lang="de" state="final">Es betrifft Arbeitssuchende, mit denen nicht arbeitende Arbeitnehmer gemeint sind, die als Arbeitssuchende bei der regionalen Dienststelle für Arbeitsvermittlung eingetragen sind. Diese Arbeitssuchenden müssen im Rahmen eines Berufsübergangsprogramms im Sinne des Königlichen Erlasses vom 09.06.1997 in Ausführung von Artikel 7 § 1, Absatz 3, m des Erlassgesetzes vom 28.12.1994 über die soziale Sicherheit der Arbeitnehmer eingestellt worden sein. <g ctype="x-html-sup"/></target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl">Volgende categorieën komen in aanmerking:</source>
+          <target xml:lang="de" state="final">Folgende Kategorien kommen in Betracht:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[2]">
+          <group restype="listitem" id="/html/body/ul[2]/li[1]">
+            <trans-unit id="/html/body/ul[2]/li[1]/text()[1]">
+              <source xml:lang="nl">1° hij die op de dag van indienstneming volledig uitkeringsgerechtigd werkloos is en </source>
+              <target xml:lang="de" state="final">1° die Person, die beim Dienstantrittsdatum entschädigt vollarbeitslos ist und </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li[1]/ul">
+              <group restype="listitem" id="/html/body/ul[2]/li[1]/ul/li">
+                <trans-unit id="/html/body/ul[2]/li[1]/ul/li/text()[1]">
+                  <source xml:lang="nl">minder dan 45 jaar oud is op datum van indienstneming en </source>
+                  <target xml:lang="de" state="final">bei Dienstantritt keine 45 Jahre alt ist und </target>
+                </trans-unit>
+                <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/ul[2]/li[1]/ul/li/ul">
+                  <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]/ul/li/ul/li[1]">
+                    <source xml:lang="nl">ofwel geen diploma, getuigschrift of brevet hoger secundair onderwijs heeft, jonger dan 25 is en gedurende minstens 9 maand zonder onderbreking een wacht- (inschakelings-) of werkloosheidsuitkering geniet,</source>
+                    <target xml:lang="de" state="final">entweder kein Abitur gemacht hat, jünger als 25 Jahre ist und mindestens 9 Monate ohne Unterbrechung eine Wartezeitentschädigung (Eingliederungsentschädigung) oder eine Arbeitslosenunterstützung erhält;</target>
+                  </trans-unit>
+                  <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]/ul/li/ul/li[2]">
+                    <source xml:lang="nl">ofwel gedurende ten minste 12 maanden zonder onderbreking een wachtuitkering (inschakelingsuitkering) geniet;</source>
+                    <target xml:lang="de" state="final">oder ohne Unterbrechung mindestens 12 Monate eine Wartezeitentschädigung (Eingliederungsentschädigung) erhält;</target>
+                  </trans-unit>
+                </group>
+              </group>
+            </group>
+          </group>
+          <group restype="listitem" id="/html/body/ul[2]/li[2]">
+            <trans-unit id="/html/body/ul[2]/li[2]/text()[1]">
+              <source xml:lang="nl">2° hij die op de dag van indienstneming volledig uitkeringsgerechtigd werkloos is en </source>
+              <target xml:lang="de" state="final">2° die Person, die beim Dienstantrittsdatum entschädigt vollarbeitslos ist und </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li[2]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]/ul/li[1]">
+                <source xml:lang="nl">minder dan 45 jaar oud is op datum van indienstneming en</source>
+                <target xml:lang="de" state="final">bei Dienstantritt keine 45 Jahre alt ist und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]/ul/li[2]">
+                <source xml:lang="nl">ten minste 24 maanden zonder onderbreking een werkloosheidsuitkering geniet;</source>
+                <target xml:lang="de" state="final">ohne Unterbrechung mindestens 24 Monate Arbeitslosengeld erhält;</target>
+              </trans-unit>
+            </group>
+          </group>
+          <group restype="listitem" id="/html/body/ul[2]/li[3]">
+            <trans-unit id="/html/body/ul[2]/li[3]/text()[1]">
+              <source xml:lang="nl">3° hij die op de dag van indienstneming volledig uitkeringsgerechtigd werkloos is en </source>
+              <target xml:lang="de" state="final">3° die Person, die beim Dienstantrittsdatum entschädigt vollarbeitslos ist und </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li[3]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[3]/ul/li[1]">
+                <source xml:lang="nl">minstens 45 jaar oud is op datum van indienstneming en</source>
+                <target xml:lang="de" state="final">bei Dienstantritt mindestens 45 Jahre alt ist und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[3]/ul/li[2]">
+                <source xml:lang="nl">ten minste 12 maanden zonder onderbreking een wachtuitkering (inschakelingsuitkering) geniet;</source>
+                <target xml:lang="de" state="final">ohne Unterbrechung mindestens 12 Monate eine Wartezeitentschädigung (Eingliederungsentschädigung) erhält;</target>
+              </trans-unit>
+            </group>
+          </group>
+          <group restype="listitem" id="/html/body/ul[2]/li[4]">
+            <trans-unit id="/html/body/ul[2]/li[4]/text()[1]">
+              <source xml:lang="nl">4° hij die op de dag van indienstneming volledig uitkeringsgerechtigd werkloos is en </source>
+              <target xml:lang="de" state="final">die Person, die beim Dienstantrittsdatum entschädigt vollarbeitslos ist und </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li[4]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[4]/ul/li[1]">
+                <source xml:lang="nl">minstens 45 jaar oud is op datum van indienstneming en</source>
+                <target xml:lang="de" state="final">bei Dienstantritt mindestens 45 Jahre alt ist und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[4]/ul/li[2]">
+                <source xml:lang="nl">ten minste 24 maanden zonder onderbreking een werkloosheidsuitkering geniet.</source>
+                <target xml:lang="de" state="final">ohne Unterbrechung mindestens 24 Monate Arbeitslosengeld erhält.</target>
+              </trans-unit>
+            </group>
+          </group>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl">Dezelfde categorieën van gerechtigden op maatschappelijke integratie en van rechthebbenden op financiële maatschappelijke hulp tewerkgesteld in een doorstromingsprogramma, komen in aanmerking.</source>
+          <target xml:lang="de" state="final">Es kommen dieselben Kategorien von Berechtigten auf gesellschaftliche Integration und von Berechtigten auf finanzielle gesellschaftliche Unterstützung, die in einem beruflichen Übergangsprogramm beschäftigt sind, in Betracht.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl">Volgende werknemers komen niet in aanmerking voor de vermindering :</source>
+          <target xml:lang="de" state="final">Folgende Arbeitnehmer kommen für die Ermäßigung nicht in Betracht:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[3]">
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[1]">
+            <source xml:lang="nl">de werknemer die van het voordeel van de vrijstelling uitgesloten werd door een beslissing van het beheerscomité van de Rijksdienst voor Sociale Zekerheid, genomen op basis van een rapport van de inspectiediensten van de Inspectie van de Sociale Wetten, de Sociale Inspectie, de RVA of de RSZ, indien na klacht werd vastgesteld dat de werknemer werd aangenomen ter vervanging en in eenzelfde functie van een ontslagen werknemer met als hoofdzakelijk doel de voordelen van dit koninklijk besluit te verkrijgen;</source>
+            <target xml:lang="de" state="final">Arbeitnehmer, die aufgrund eines Berichts der Inspektionsdienststellen der Inspektion der Sozialgesetze, der Sozialinspektion, des LfA oder des LSS durch den Verwaltungsausschuss des Landesamtes für Soziale Sicherheit gefassten Beschlusses vom Vorteil der Befreiung ausgeschlossen wurden, wenn nach einer Klage festgestellt wurde, dass sie als Ersatz für einen entlassenen Arbeitnehmer und in derselben Funktion hauptsächlich mit dem Ziel eingestellt wurden, die Vorteile dieses Königlichen Erlasses zu beanspruchen.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[2]">
+            <source xml:lang="nl">de werknemers die worden aangeworven vanaf het ogenblik dat zij zich in een statutaire toestand bevinden;</source>
+            <target xml:lang="de" state="final">Arbeitnehmer, die ab dem Zeitpunkt eingestellt werden, zu dem sie sich in einem satzungsgemäßen Zustand befinden;</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[3]">
+          <source xml:lang="nl">Bedrag van de vermindering</source>
+          <target xml:lang="de" state="final">Betrag der Ermäßigung</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[7]">
+          <source xml:lang="nl">De werkgever kan volgende verminderingen genieten voor de werknemer van:</source>
+          <target xml:lang="de" state="final">Der Arbeitgeber kann folgende Ermäßigungen beanspruchen für Arbeitnehmer der</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[4]">
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[1]">
+            <source xml:lang="nl">categorie 1°: G<g ctype="x-html-sub">1</g> gedurende het kwartaal van indienstneming en de 4 daarop volgende kwartalen en vervolgens G<g ctype="x-html-sub">2</g> gedurende 4 kwartalen;</source>
+            <target xml:lang="de" state="final">Kategorie 1°: G<g ctype="x-html-sub">1</g> im Quartal des Dienstantritts und den 4 folgenden Quartalen und danach G<g ctype="x-html-sub">2</g> für 4 Quartale;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[2]">
+            <source xml:lang="nl">categorie 2°: G<g ctype="x-html-sub">1</g> gedurende het kwartaal van indienstneming en de 8 daarop volgende kwartalen;</source>
+            <target xml:lang="de" state="final">Kategorie 2°: G<g ctype="x-html-sub">1</g> im Quartal des Dienstantritts und den 8 darauf folgenden Quartalen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[3]">
+            <source xml:lang="nl">categorie 3°: G<g ctype="x-html-sub">1</g> gedurende het kwartaal van indienstneming en de 4 daarop volgende kwartalen en vervolgens G<g ctype="x-html-sub">2</g> gedurende 8 kwartalen;</source>
+            <target xml:lang="de" state="final">Kategorie 3°: G<g ctype="x-html-sub">1</g> im Quartal des Dienstantritts und den 4folgenden Quartalen und danach G<g ctype="x-html-sub">2</g> für 8 Quartale;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[4]">
+            <source xml:lang="nl">categorie 4°: G<g ctype="x-html-sub">1 </g>gedurende het kwartaal van indienstneming en de 12 daarop volgende kwartalen.</source>
+            <target xml:lang="de" state="final">Kategorie 4°: G<g ctype="x-html-sub">1</g> im Quartal des Dienstantritts und den 12 darauf folgenden Quartalen;</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[4]">
+          <source xml:lang="nl">Te vervullen formaliteiten</source>
+          <target xml:lang="de" state="final">Zu erledigende Formalitäten</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[8]">
+          <source xml:lang="nl">De bepalingen van het koninklijk besluit van 9 juni 1997 tot uitvoering van artikel 7, § 1, derde lid, m, van de besluitwet van 28 december 1944 betreffende de maatschappelijke zekerheid der arbeiders betreffende de doorstromingsprogramma's moeten gerespecteerd worden. De RVA geeft aan de RSZ de gegevens van de werknemers door die recht geven op deze doelgroepvermindering. Meer informatie vindt u terug op de <g ctype="x-html-a" html:href="http://www.rva.be/nl/documentatie/infoblad/t10" html:target="_blank">website van de RVA</g>.</source>
+          <target xml:lang="de" state="final">Die Bestimmungen des Königlichen Erlasses vom 09.06.1997 zur Ausführung von Artikel 7, § 1, Absatz 3, m, des Erlassgesetzes vom 28.12.1994 über die soziale Sicherheit der Arbeitnehmer über Berufsübergangsprogramme müssen eingehalten werden. Das LfA leitet dem LSS die Daten der Arbeitnehmer zu, die das Recht auf diese Zielgruppenermäßigung eröffnen. Weitere Informationen finden Sie auf der <g ctype="x-html-a" html:href="http://www.rva.be/nl/documentatie/infoblad/t10" html:target="_blank">Website des LfA</g>.</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

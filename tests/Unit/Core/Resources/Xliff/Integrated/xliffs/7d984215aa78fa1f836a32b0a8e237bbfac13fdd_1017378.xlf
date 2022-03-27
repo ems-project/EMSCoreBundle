@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:7d984215aa78fa1f836a32b0a8e237bbfac13fdd:1017378" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Langdurig werkzoekenden - algemene categorie</source>
+        <target xml:lang="de" state="final">Langzeitarbeitssuchende – allgemeine Kategorie</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Langdurig werkzoekenden</source>
+        <target xml:lang="de" state="final">Langzeitarbeitssuchende</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Wanneer de werkgever een langdurig werkzoekende aanwerft, kan hij onder bepaalde voorwaarden genieten van volgende twee voordelen: </source>
+          <target xml:lang="de" state="final">Wenn der Arbeitgeber einen Langzeitarbeitssuchenden einstellt, kann er unter bestimmten Bedingungen die beiden folgenden Vorteile in Anspruch nehmen: </target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul">
+          <trans-unit restype="listitem" id="/html/body/ul/li[1]">
+            <source xml:lang="nl">een <g ctype="x-html-strong">vermindering van de werkgeversbijdragen</g> voor sociale zekerheid onder de vorm van een doelgroepvermindering voor langdurig werkzoekenden;</source>
+            <target xml:lang="de" state="final">eine <g ctype="x-html-strong">Ermäßigung der Arbeitgeberbeiträge</g> für die soziale Sicherheit in Form einer Zielgruppenermäßigung für Langzeitarbeitssuchende;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[2]">
+            <source xml:lang="nl">een tussenkomst in het nettoloon van de werknemer via een <g ctype="x-html-strong"> activering van de werkloosheidsuitkering</g> (werkuitkering of inschakelingsuitkering), die de werkgever in mindering mag brengen van het nettoloon van de werknemer.</source>
+            <target xml:lang="de" state="final">einen Anteil am Nettolohn des Arbeitnehmers über eine <g ctype="x-html-strong">Aktivierung des Arbeitslosengeldes</g> (Arbeitsentschädigung oder Wiedereingliederungsentschädigung), das der Arbeitgeber vom Nettolohn des Arbeitnehmers abziehen darf.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">De hiernavolgende tekst handelt enkel over de bijdragevermindering, de toekenning van de uitkeringen valt immers onder de bevoegdheid van de RVA of van het OCMW. </source>
+          <target xml:lang="de" state="final">Im folgenden Text werden nur die Bestimmungen bezüglich der Beitragsermäßigung behandelt; für die Gewährung der Entschädigungen ist das LfA oder das ÖSHZ zuständig. </target>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-h2" id="/html/body/h2[1]">
+          <source xml:lang="nl">Betrokken werkgevers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitgeber</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Alle werkgevers, zowel van de privésector als van de openbare sector, komen in aanmerking voor de vermindering.</source>
+          <target xml:lang="de" state="final">Alle Arbeitgeber, sowohl des privaten als auch des öffentlichen Sektors, kommen für die Ermäßigung in Betracht.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Zijn evenwel uitgesloten:</source>
+          <target xml:lang="de" state="final">Folgende Arbeitgeber sind jedoch ausgeschlossen:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[1]">
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[1]">
+            <source xml:lang="nl">het Rijk, met daarin begrepen de Rechterlijke macht, de Raad van State, het leger en de federale politie;</source>
+            <target xml:lang="de" state="final">der Staat, einschließlich der richterlichen Gewalt, des Staatsrats, der Armee und der föderalen Polizei;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]">
+            <source xml:lang="nl">de Gemeenschappen en Gewesten;</source>
+            <target xml:lang="de" state="final">Gemeinschaften und Regionen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[3]">
+            <source xml:lang="nl">de instellingen van openbaar nut en de openbare instellingen die van de hiervoor genoemde overheden afhangen.</source>
+            <target xml:lang="de" state="final">gemeinnützige und öffentliche Einrichtungen, die von den oben genannten Verwaltungen abhängen.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">Komen voor de overheidssector wel in aanmerking:</source>
+          <target xml:lang="de" state="final">Folgende Arbeitgeber kommen für den öffentlichen Sektor jedoch in Betracht:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[2]">
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]">
+            <source xml:lang="nl">de openbare kredietinstellingen;</source>
+            <target xml:lang="de" state="final">öffentliche Kreditinstitute;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]">
+            <source xml:lang="nl">de autonome overheidsbedrijven;</source>
+            <target xml:lang="de" state="final">die autonomen öffentlichen Unternehmen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[3]">
+            <source xml:lang="nl">de openbare maatschappijen voor personenvervoer;</source>
+            <target xml:lang="de" state="final">öffentliche Gesellschaften zur Personenbeförderung;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[4]">
+            <source xml:lang="nl">de openbare instellingen voor het personeel dat zij in dienst nemen als uitzendkrachten, om het ter beschikking te stellen van gebruikers met het oog op het uitvoeren van een tijdelijke arbeid, overeenkomstig de wet van 24 juli 1987 betreffende de tijdelijke arbeid, de uitzendarbeid en het ter beschikking stellen van werknemers ten behoeve van gebruikers;</source>
+            <target xml:lang="de" state="final">öffentliche Einrichtungen für die Mitglieder des Personals, die sie als Aushilfsarbeitskräfte einstellen, um sie Entleihern zwecks Durchführung einer zeitweiligen Arbeit zu überlassen, gemäß dem Gesetz vom 24.07.1987 über die zeitweilige Arbeit, die Aushilfsarbeit und die Leiharbeit;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[5]">
+            <source xml:lang="nl">de onderwijsinstellingen voor hun contractueel onderhouds-, administratief - of ondersteunend personeel;</source>
+            <target xml:lang="de" state="final">Unterrichtsanstalten für ihr Vertragspersonal für Unterhalt, Verwaltung oder Hilfsarbeiten;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[6]">
+            <source xml:lang="nl">de polders en wateringen alsook de kerkfabrieken</source>
+            <target xml:lang="de" state="final">die Bewässerungs- und Entwässerungsgenossenschaften und Kirchenfabriken</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[7]">
+            <source xml:lang="nl">de gemeenten;</source>
+            <target xml:lang="de" state="final">die Gemeinden;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[8]">
+            <source xml:lang="nl">de intercommunales;</source>
+            <target xml:lang="de" state="final">die Interkommunalen Einrichtungen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[9]">
+            <source xml:lang="nl">de aan de gemeenten ondergeschikte openbare instellingen (o.a. de autonome gemeentebedrijven, de openbare centra voor maatschappelijk welzijn en de verenigingen van openbare centra voor maatschappelijk welzijn);</source>
+            <target xml:lang="de" state="final">die von Gemeinden abhängigen öffentliche Einrichtungen (u. a. die autonomen Gemeinderegien, die Öffentlichen Sozialhilfezentren und die Vereinigungen von Öffentlichen Sozialhilfezentren);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[10]">
+            <source xml:lang="nl">de lokale politiezones;</source>
+            <target xml:lang="de" state="final">die lokalen Polizeizonen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[11]">
+            <source xml:lang="nl">de hulpverleningszones;</source>
+            <target xml:lang="de" state="final">die Hilfeleistungszonen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[12]">
+            <source xml:lang="nl">de provincies;</source>
+            <target xml:lang="de" state="final">die Provinzen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[13]">
+            <source xml:lang="nl">de aan de provincies ondergeschikte openbare instellingen (o.a. de autonome provinciebedrijven).</source>
+            <target xml:lang="de" state="final">die von Provinzen abhängigen öffentliche Einrichtungen (u. a. die autonomen Provinzialregien).</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl">Ook de in België gevestigde diplomatieke zendingen en de supranationale instellingen komen in aanmerking.</source>
+          <target xml:lang="de" state="final">Auch in Belgien ansässige diplomatische Vertretungen und supranationale Einrichtungen kommen in Betracht.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[2]">
+          <source xml:lang="nl">Betrokken werknemers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitnehmer</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl">Het gaat om werkzoekenden, waarmee bedoeld wordt de niet-werkende werknemers die als werkzoekende ingeschreven zijn bij de gewestelijke dienst voor arbeidsbemiddeling.</source>
+          <target xml:lang="de" state="final">Es betrifft Arbeitssuchende, mit denen nicht arbeitende Arbeitnehmer gemeint sind, die als Arbeitssuchende bei der regionalen Dienststelle für Arbeitsvermittlung eingetragen sind.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl">Om in aanmerking te komen moet de werknemer dus op de dag van indienstneming ingeschreven zijn als niet-werkend werkzoekende en kunnen aantonen dat hij tijdens een bepaalde periode, variërend volgens leeftijd, een minimum aantal dagen als dusdanig ingeschreven geweest is. Op basis van deze parameters leverde de RVA een <g ctype="x-html-strong">werkkaart </g>af met overeenstemmende code.</source>
+          <target xml:lang="de" state="final">Um in Betracht zu kommen, muss der Arbeitnehmer daher am Tag des Dienstantritts als arbeitsloser Arbeitssuchender eingetragen sein und nachweisen können, dass er an einer Mindestzahl von Tagen als solcher während einer bestimmten Periode eingetragen war, die sich je nach Alter unterscheidet. Auf Grundlage dieser Parameter stellte das LfA eine <g ctype="x-html-strong">Arbeitskarte</g> mit dem entsprechenden Code aus.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[7]">
+          <source xml:lang="nl">Onder het puntje 'vermindering' kan u een tabel raadplegen met de vereiste dagen niet-werkend werkzoekend zijn, de verminderingscodes en de overeenkomstige RVA-codes op de werkkaart.</source>
+          <target xml:lang="de" state="final">Unter dem Punkt ,Ermäßigung' können Sie eine Tabelle mit den erforderlichen Tagen des arbeitslosen Arbeitssuchenden, den Ermäßigungscodes und den entsprechenden LfA-Codes auf der Arbeitskarte einsehen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[8]">
+          <source xml:lang="nl">De voorwaarde dat zij de hoedanigheid van werkzoekende moeten hebben op het ogenblik van de indienstneming, geldt evenwel niet voor werknemers die verder worden tewerkgesteld na afloop van één van de volgende periodes:</source>
+          <target xml:lang="de" state="final">Die Bedingung, dass sie die Eigenschaft eines Arbeitssuchenden bei Dienstantritt haben müssen, gilt jedoch nicht für Arbeitnehmer, die nach Ablauf einer der folgenden Perioden weiter beschäftigt werden:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[3]">
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[1]">
+            <source xml:lang="nl">de periode van tewerkstelling in toepassing van artikel 60, § 7, van de organieke wet van 8 juli 1976 betreffende de openbare centra voor maatschappelijk welzijn;</source>
+            <target xml:lang="de" state="final">die Periode der Beschäftigung in Anwendung von Artikel 60, § 7 des Grundlagengesetzes vom 08.07.1976 über die öffentlichen Sozialhilfezentren;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[2]">
+            <source xml:lang="nl">de periode van deeltijds onderwijs in het kader van de deeltijdse leerplicht;</source>
+            <target xml:lang="de" state="final">die Periode des Teilzeitunterrichts im Rahmen der Teilzeitschulpflicht;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[3]">
+            <source xml:lang="nl">de periode van alternerende tewerkstelling en opleiding bedoeld in het koninklijk besluit nr. 495 van 31 december 1986 tot invoering van een stelsel van alternerende tewerkstelling en opleiding voor de jongeren tussen 18 en 25 jaar en tot tijdelijke vermindering van de socialezekerheidsbijdragen van de werkgever verschuldigd voor deze jongeren;</source>
+            <target xml:lang="de" state="final">die Periode der dualen Ausbildung im Sinne des K. E. Nr. 495 vom 31.12.1986 zur Einführung eines Systems zur Verbindung von Arbeit und Ausbildung für Jugendliche zwischen 18 und 25 Jahren und zur zeitweiligen Herabsetzung der für Jugendlichen geschuldeten Arbeitgeberbeiträge zur Sozialen Sicherheit;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[4]">
+            <source xml:lang="nl">de werknemer tewerkgesteld in een doorstromingsprogramma in toepassing van het koninklijk besluit van 9 juni 1997 tot uitvoering van artikel 7, § 1, derde lid, m, van de besluitwet van 28 december 1944 betreffende de maatschappelijke zekerheid der arbeiders, betreffende de doorstromingsprogramma's;</source>
+            <target xml:lang="de" state="final">der im Rahmen eines Berufsübergangsprogramms beschäftigte Arbeitnehmer in Anwendung des K. E. vom 09.06.1997 zur Ausführung von Artikel 7, § 1, Absatz 3, m, des Erlassgesetzes vom 28.12.1994 über die soziale Sicherheit der Arbeitnehmer, betreffend Berufsübergangsprogramme;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[5]">
+            <source xml:lang="nl">de werkzoekende met een verminderde arbeidsgeschiktheid.</source>
+            <target xml:lang="de" state="final">der Arbeitssuchende mit einer verminderten Arbeitsfähigkeit;</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[9]">
+          <source xml:lang="nl">De werknemers van de volgende categorieën komen niet in aanmerking voor de vermindering :</source>
+          <target xml:lang="de" state="final">Die Arbeitnehmer der folgenden Kategorien kommen für die Ermäßigung nicht in Betracht:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[4]">
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[1]">
+            <source xml:lang="nl">de werknemer die van het voordeel van de vrijstelling werd uitgesloten door een beslissing van het beheerscomité van de Rijksdienst voor Sociale Zekerheid, genomen op basis van een rapport van de inspectiediensten van de Inspectie van de Sociale Wetten, de Sociale Inspectie, de RVA of de RSZ, indien na klacht werd vastgesteld dat de werknemer werd aangenomen ter vervanging en in eenzelfde functie van een ontslagen werknemer met als hoofdzakelijk doel de voordelen van dit koninklijk besluit te verkrijgen;</source>
+            <target xml:lang="de" state="final">Arbeitnehmer, die aufgrund eines Berichts der Inspektionsdienststellen der Inspektion der Sozialgesetze, der Sozialinspektion, des LfA oder des LSS durch den Verwaltungsausschuss des Landesamtes für Soziale Sicherheit gefassten Beschlusses vom Vorteil der Befreiung ausgeschlossen wurden, wenn nach einer Klage festgestellt wurde, dass sie als Ersatz für einen entlassenen Arbeitnehmer und in derselben Funktion hauptsächlich mit dem Ziel eingestellt wurden, die Vorteile dieses Königlichen Erlasses zu beanspruchen.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[2]">
+            <source xml:lang="nl">de werknemers die worden aangeworven vanaf het ogenblik dat zij zich in een statutaire toestand bevinden;</source>
+            <target xml:lang="de" state="final">Arbeitnehmer, die ab dem Zeitpunkt eingestellt werden, zu dem sie sich in einem satzungsgemäßen Zustand befinden;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[3]">
+            <source xml:lang="nl">de werknemers die worden aangeworven als leden van het academisch en wetenschappelijk personeel door de instellingen van universitair onderwijs of als leden van het onderwijzend personeel in de andere onderwijsinstellingen;</source>
+            <target xml:lang="de" state="final">Arbeitnehmer, die als Mitglieder des akademischen und wissenschaftlichen Personals von Universitäten oder als Mitglieder der Lehrerschaft in den anderen Bildungsanstalten eingestellt werden;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[4]">
+            <source xml:lang="nl">de werknemers die in dienst worden genomen in het kader van een doorstromingsprogramma in toepassing van het koninklijke besluit van 9 juni 1997 betreffende de doorstromingsprogramma's;</source>
+            <target xml:lang="de" state="final">Arbeitnehmer, die im Rahmen eines Berufsübergangsprogramms gemäß K. E. vom 09.06.1997 betreffend Berufsübergangsprogramme eingestellt werden;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[5]">
+            <source xml:lang="nl">voor <g ctype="x-html-strong">Vlaanderen</g>: de werknemer die vóór 1 januari 2016 bij de werkgever tewerkgesteld was als gesubsidieerde contractueel;</source>
+            <target xml:lang="de" state="final">für <g ctype="x-html-strong">Flandern</g>: der Arbeitnehmer, der vor dem 01.01.2016 beim Arbeitgeber als bezuschusster Vertragsbediensteter beschäftigt war;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[6]">
+            <source xml:lang="nl">voor <g ctype="x-html-strong">Vlaanderen</g>: de werknemer die de werkgever opnieuw in dienst neemt binnen een periode van 12 maanden na beëindiging van de vorige arbeidsovereenkomst waarvoor hij de voordelen gesubsidieerde contractueel genoten heeft</source>
+            <target xml:lang="de" state="final">für <g ctype="x-html-strong">Flandern</g>: der Arbeitnehmer, den der Arbeitgeber innerhalb einer Frist von 12 Monaten nach Beendigung des vorausgehenden Arbeitsvertrags, für den er die Vorteile eines bezuschussten Vertragsbediensteten erhalten hat, erneut einstellt.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[10]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="alert message" id="/html/body/div[1]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[1]/h3">
+            <source xml:lang="nl">Vlaams Gewest:</source>
+            <target xml:lang="de" state="final">Flämische Region:</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p[1]">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 januari 2017</g> kan voor werknemers die in dienst treden bij een werkgever voor een tewerkstelling in <g ctype="x-html-strong">Vlaanderen </g>niet langer de 'doelgroepvermindering langdurig werkzoekenden - algemene categorie' toegepast worden.</source>
+            <target xml:lang="de" state="final">Ab <g ctype="x-html-strong">01.01.2017</g> kann für Arbeitnehmer, die bei einem Arbeitgeber für eine Beschäftigung in <g ctype="x-html-strong">Flandern</g> eingestellt werden, nicht mehr die „Zielgruppenermäßigung Langzeitarbeitssuchende im Aktiva-Plan“ angewandt werden.</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p[2]">
+            <source xml:lang="nl">De vermindering is definitief stopgezet op 31 december 2018.</source>
+            <target xml:lang="de" state="final">Die Ermäßigung ist am 31.12.2018 endgültig ausgelaufen.</target>
+          </trans-unit>
+        </group>
+        <group restype="x-html-div" html:class="alert message" id="/html/body/div[2]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[2]/h3">
+            <source xml:lang="nl">Waals Gewest (zonder de Duitstalige Gemeenschap):</source>
+            <target xml:lang="de" state="final">Wallonische Region (außer die Deutschsprachige Gemeinschaft):</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[2]/p[1]">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 juli 2017</g> kan voor werknemers die in dienst treden bij een werkgever voor een tewerkstelling in <g ctype="x-html-strong">Wallonië </g>niet langer de 'doelgroepvermindering langdurig werkzoekenden - algemene categorie' toegepast worden.</source>
+            <target xml:lang="de" state="final">Ab <g ctype="x-html-strong">01.07.2017</g> kann für Arbeitnehmer, die bei einem Arbeitgeber für eine Beschäftigung in der <g ctype="x-html-strong">Wallonie</g> eingestellt werden, nicht mehr die „Zielgruppenermäßigung Langzeitarbeitssuchende im Aktiva-Plan“ angewandt werden.</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[2]/p[2]">
+            <source xml:lang="nl">De vermindering is definitief stopgezet op 30 juni 2020.</source>
+            <target xml:lang="de" state="final">Die Ermäßigung läuft endgültig am 30. Juni 2020 ab. </target>
+          </trans-unit>
+        </group>
+        <group restype="x-html-div" html:class="alert message" id="/html/body/div[3]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[3]/h3">
+            <source xml:lang="nl">Brussels Hoofdstedelijk Gewest:</source>
+            <target xml:lang="de" state="final">Region Brüssel-Hauptstadt:</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[3]/p[1]">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 oktober 2017</g> kan voor werknemers die in dienst treden bij een werkgever voor een tewerkstelling in <g ctype="x-html-strong">Brussel </g>niet langer de 'doelgroepvermindering langdurig werkzoekenden - algemene categorie' toegepast worden.</source>
+            <target xml:lang="de" state="final">Ab <g ctype="x-html-strong">01.10.2017</g> kann für Arbeitnehmer, die bei einem Arbeitgeber für eine Beschäftigung in <g ctype="x-html-strong">Brüssel</g> eingestellt werden, nicht mehr die „Zielgruppenermäßigung Langzeitarbeitssuchende im Aktiva-Plan“ angewandt werden.</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[3]/p[2]">
+            <source xml:lang="nl">De vermindering is definitief stopgezet op 31 december 2018.</source>
+            <target xml:lang="de" state="final">Die Ermäßigung ist am 31.12.2018 endgültig ausgelaufen.</target>
+          </trans-unit>
+        </group>
+        <group restype="x-html-div" html:class="alert message" id="/html/body/div[4]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[4]/h3">
+            <source xml:lang="nl">Duitstalige Gemeenschap:</source>
+            <target xml:lang="de" state="final">Deutschsprachige Gemeinschaft:</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[4]/p[1]">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 januari 2019</g> kan voor werknemers die in dienst treden bij een werkgever voor een tewerkstelling in een van de gemeentes van de <g ctype="x-html-strong">Duitstalige Gemeenschap</g>, niet langer de 'doelgroepvermindering langdurig werkzoekenden - algemene categorie' toegepast worden.</source>
+            <target xml:lang="de" state="final">Ab <g ctype="x-html-strong">01.01.2019</g> kann für Arbeitnehmer, die bei einem Arbeitgeber für eine Beschäftigung in einer der Gemeinden der <g ctype="x-html-strong">Deutschsprachigen Gemeinschaft</g> eingestellt werden, nicht mehr die „Zielgruppenermäßigung Langzeitarbeitssuchende im Aktiva-Plan“ angewandt werden.</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[4]/p[2]">
+            <source xml:lang="nl">Als <g ctype="x-html-strong">overgangsmaatregel </g>kunnen werkgevers die werknemers hebben die in dienst getreden zijn vóór 1 januari 2019 en <g ctype="x-html-strong">ononderbroken </g>verder in dienst blijven (met een doorlopende of aansluitende arbeidsovereenkomst), voor deze werknemers voor de hen resterende kwartalen en onder dezelfde voorwaarden, de vermindering blijven genieten. Er zijn <g ctype="x-html-strong">geen </g>specifieke verminderingscodes voor deze overgangsmaatregelen, de vroegere codes blijven behouden. Er is geen einddatum van de overgangsmaatregelen voorzien. </source>
+            <target xml:lang="de" state="final">Als <g ctype="x-html-strong">Übergangsmaßnahme </g>können Arbeitgeber, die Arbeitnehmer eingestellt haben, die vor 01.01.2019 ihren Dienst antraten und <g ctype="x-html-strong">ununterbrochen </g>weiter im Dienst bleiben (mit einem dauerhaften oder anschließenden Arbeitsvertrag), die Ermäßigung für diese Arbeitnehmer für die ihnen verbleibenden Quartale unter den gleichen Bedingungen weiterhin beanspruchen. Es gibt <g ctype="x-html-strong">keine </g>speziellen Ermäßigungscodes für diese Übergangsmaßnahmen, die früheren Codes bleiben in Kraft. Es ist kein Enddatum für die Übergangsmaßnahmen vorgesehen. </target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[4]/p[3]">
+            <source xml:lang="nl"> </source>
+            <target xml:lang="de" state="final"> </target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[11]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[3]">
+          <source xml:lang="nl">Bedrag van de vermindering</source>
+          <target xml:lang="de" state="final">Betrag der Ermäßigung</target>
+        </trans-unit>
+        <group restype="table" html:class="table-bordered table-striped" id="/html/body/table">
+          <trans-unit restype="caption" id="/html/body/table/caption">
+            <source xml:lang="nl">De werkgever kan volgende verminderingen genieten:</source>
+            <target xml:lang="de" state="final">Der Arbeitgeber kann folgende Ermäßigungen beanspruchen:</target>
+          </trans-unit>
+          <group restype="x-html-thead" id="/html/body/table/thead">
+            <group restype="row" id="/html/body/table/thead/tr">
+              <group restype="x-html-th" id="/html/body/table/thead/tr/th[1]">
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[1]/p[1]">
+                  <source xml:lang="nl">Leeftijd</source>
+                  <target xml:lang="de" state="final">Alter</target>
+                </trans-unit>
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[1]/p[2]">
+                  <source xml:lang="nl"> </source>
+                  <target xml:lang="de" state="final"> </target>
+                </trans-unit>
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[1]/p[3]">
+                  <source xml:lang="nl">indienst</source>
+                  <target xml:lang="de" state="final">Beschäftigungsbeginn</target>
+                </trans-unit>
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[1]/p[4]">
+                  <source xml:lang="nl">(jaar)</source>
+                  <target xml:lang="de" state="final">(Jahr)</target>
+                </trans-unit>
+              </group>
+              <group restype="x-html-th" id="/html/body/table/thead/tr/th[2]">
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[2]/p">
+                  <source xml:lang="nl">Maatregel</source>
+                  <target xml:lang="de" state="final">Maßnahme</target>
+                </trans-unit>
+              </group>
+              <group restype="x-html-th" id="/html/body/table/thead/tr/th[3]">
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[3]/p[1]">
+                  <source xml:lang="nl">Min. aantal dagen</source>
+                  <target xml:lang="de" state="final">Mindestanzahl der Tage</target>
+                </trans-unit>
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[3]/p[2]">
+                  <source xml:lang="nl">'werkzoekend'</source>
+                  <target xml:lang="de" state="final">‚arbeitssuchend‘</target>
+                </trans-unit>
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[3]/p[3]">
+                  <source xml:lang="nl">(regime 6 dagen)</source>
+                  <target xml:lang="de" state="final">(6-Tage-Regelung)</target>
+                </trans-unit>
+              </group>
+              <group restype="x-html-th" id="/html/body/table/thead/tr/th[4]">
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[4]/p[1]">
+                  <source xml:lang="nl">Referte-</source>
+                  <target xml:lang="de" state="final">Referenz-</target>
+                </trans-unit>
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[4]/p[2]">
+                  <source xml:lang="nl">periode</source>
+                  <target xml:lang="de" state="final">periode</target>
+                </trans-unit>
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[4]/p[3]">
+                  <source xml:lang="nl">(maand)</source>
+                  <target xml:lang="de" state="final">(Monat)</target>
+                </trans-unit>
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[4]/p[4]">
+                  <source xml:lang="nl">(<g ctype="x-html-sup">1</g>)</source>
+                  <target xml:lang="de" state="final">(<g ctype="x-html-sup">1</g>)</target>
+                </trans-unit>
+              </group>
+              <group restype="x-html-th" id="/html/body/table/thead/tr/th[5]">
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[5]/p[1]">
+                  <source xml:lang="nl">Aantal kwartalen G<g ctype="x-html-sub">8</g></source>
+                  <target xml:lang="de" state="final">Anzahl Quartale G<g ctype="x-html-sub">8</g></target>
+                </trans-unit>
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[5]/p[2]">
+                  <source xml:lang="nl">(<g ctype="x-html-sup">2</g>)</source>
+                  <target xml:lang="de" state="final">(<g ctype="x-html-sup">2</g>)</target>
+                </trans-unit>
+              </group>
+              <group restype="x-html-th" id="/html/body/table/thead/tr/th[6]">
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[6]/p[1]">
+                  <source xml:lang="nl">Aantal kwartalen G<g ctype="x-html-sub">1</g></source>
+                  <target xml:lang="de" state="final">Anzahl Quartale G<g ctype="x-html-sub">1</g></target>
+                </trans-unit>
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[6]/p[2]">
+                  <source xml:lang="nl">(<g ctype="x-html-sup">2</g><g ctype="x-html-sup">) </g></source>
+                  <target xml:lang="de" state="final">(<g ctype="x-html-sup">2</g><g ctype="x-html-sup">) </g></target>
+                </trans-unit>
+              </group>
+              <group restype="x-html-th" id="/html/body/table/thead/tr/th[7]">
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[7]/p[1]">
+                  <source xml:lang="nl">Aantal kwartalen G<g ctype="x-html-sub">2</g></source>
+                  <target xml:lang="de" state="final">Anzahl Quartale G<g ctype="x-html-sub">2</g></target>
+                </trans-unit>
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[7]/p[2]">
+                  <source xml:lang="nl">(<g ctype="x-html-sup"><g ctype="x-html-sup">2</g>) </g></source>
+                  <target xml:lang="de" state="final">(<g ctype="x-html-sup"><g ctype="x-html-sup">2</g>) </g></target>
+                </trans-unit>
+              </group>
+              <group restype="x-html-th" id="/html/body/table/thead/tr/th[8]">
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[8]/p">
+                  <source xml:lang="nl">RVA-codes.</source>
+                  <target xml:lang="de" state="final">LfA-Codes.</target>
+                </trans-unit>
+              </group>
+              <group restype="x-html-th" id="/html/body/table/thead/tr/th[9]">
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[9]/p[1]">
+                  <source xml:lang="nl">Verminderings</source>
+                  <target xml:lang="de" state="final">Ermäßigungs</target>
+                </trans-unit>
+                <trans-unit restype="x-html-p" id="/html/body/table/thead/tr/th[9]/p[2]">
+                  <source xml:lang="nl">-codes</source>
+                  <target xml:lang="de" state="final">-Codes</target>
+                </trans-unit>
+              </group>
+            </group>
+          </group>
+          <group restype="x-html-tbody" id="/html/body/table/tbody">
+            <group restype="row" id="/html/body/table/tbody/tr[1]">
+              <group restype="cell" id="/html/body/table/tbody/tr[1]/td[1]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[1]/td[1]/p">
+                  <source xml:lang="nl">&lt; 45</source>
+                  <target xml:lang="de" state="final">&lt; 45</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[1]/td[2]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[1]/td[2]/p">
+                  <source xml:lang="nl">ACTIVA</source>
+                  <target xml:lang="de" state="final">AKTIVA</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[1]/td[3]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[1]/td[3]/p">
+                  <source xml:lang="nl">936</source>
+                  <target xml:lang="de" state="final">936</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[1]/td[4]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[1]/td[4]/p">
+                  <source xml:lang="nl">54</source>
+                  <target xml:lang="de" state="final">54</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[1]/td[5]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[1]/td[5]/p">
+                  <source xml:lang="nl">-</source>
+                  <target xml:lang="de" state="final">-</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[1]/td[6]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[1]/td[6]/p">
+                  <source xml:lang="nl">9</source>
+                  <target xml:lang="de" state="final">9</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[1]/td[7]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[1]/td[7]/p">
+                  <source xml:lang="nl">4</source>
+                  <target xml:lang="de" state="final">4</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[1]/td[8]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[1]/td[8]/p">
+                  <source xml:lang="nl">C5, C6, C38</source>
+                  <target xml:lang="de" state="final">C5, C6, C38</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[1]/td[9]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[1]/td[9]/p">
+                  <source xml:lang="nl">3202<g ctype="lb"/> <g ctype="lb"/>  </source>
+                  <target xml:lang="de" state="final">3202<g ctype="lb"/> <g ctype="lb"/>  </target>
+                </trans-unit>
+              </group>
+            </group>
+            <group restype="row" id="/html/body/table/tbody/tr[2]">
+              <group restype="cell" id="/html/body/table/tbody/tr[2]/td[1]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[2]/td[1]/p">
+                  <source xml:lang="nl">&lt; 45</source>
+                  <target xml:lang="de" state="final">&lt; 45</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[2]/td[2]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[2]/td[2]/p">
+                  <source xml:lang="nl">ACTIVA</source>
+                  <target xml:lang="de" state="final">AKTIVA</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[2]/td[3]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[2]/td[3]/p">
+                  <source xml:lang="nl">1560</source>
+                  <target xml:lang="de" state="final">1560</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[2]/td[4]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[2]/td[4]/p">
+                  <source xml:lang="nl">90</source>
+                  <target xml:lang="de" state="final">90</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[2]/td[5]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[2]/td[5]/p">
+                  <source xml:lang="nl">-</source>
+                  <target xml:lang="de" state="final">-</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[2]/td[6]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[2]/td[6]/p">
+                  <source xml:lang="nl">9</source>
+                  <target xml:lang="de" state="final">9</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[2]/td[7]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[2]/td[7]/p">
+                  <source xml:lang="nl">12</source>
+                  <target xml:lang="de" state="final">12</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[2]/td[8]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[2]/td[8]/p">
+                  <source xml:lang="nl">C7, C8, C39</source>
+                  <target xml:lang="de" state="final">C7, C8, C39</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[2]/td[9]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[2]/td[9]/p">
+                  <source xml:lang="nl">3203<g ctype="lb"/> <g ctype="lb"/>  </source>
+                  <target xml:lang="de" state="final">3203<g ctype="lb"/> <g ctype="lb"/>  </target>
+                </trans-unit>
+              </group>
+            </group>
+            <group restype="row" id="/html/body/table/tbody/tr[3]">
+              <group restype="cell" id="/html/body/table/tbody/tr[3]/td[1]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[3]/td[1]/p">
+                  <source xml:lang="nl">&gt;= 45</source>
+                  <target xml:lang="de" state="final">&gt;= 45</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[3]/td[2]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[3]/td[2]/p">
+                  <source xml:lang="nl">ACTIVA</source>
+                  <target xml:lang="de" state="final">AKTIVA</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[3]/td[3]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[3]/td[3]/p">
+                  <source xml:lang="nl">156</source>
+                  <target xml:lang="de" state="final">156</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[3]/td[4]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[3]/td[4]/p">
+                  <source xml:lang="nl">9</source>
+                  <target xml:lang="de" state="final">9</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[3]/td[5]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[3]/td[5]/p">
+                  <source xml:lang="nl">-</source>
+                  <target xml:lang="de" state="final">-</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[3]/td[6]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[3]/td[6]/p">
+                  <source xml:lang="nl">5</source>
+                  <target xml:lang="de" state="final">5</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[3]/td[7]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[3]/td[7]/p">
+                  <source xml:lang="nl">16</source>
+                  <target xml:lang="de" state="final">16</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[3]/td[8]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[3]/td[8]/p">
+                  <source xml:lang="nl">D1, D19</source>
+                  <target xml:lang="de" state="final">D1, D19</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[3]/td[9]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[3]/td[9]/p">
+                  <source xml:lang="nl">3210<g ctype="lb"/> <g ctype="lb"/>  </source>
+                  <target xml:lang="de" state="final">3210<g ctype="lb"/> <g ctype="lb"/>  </target>
+                </trans-unit>
+              </group>
+            </group>
+            <group restype="row" id="/html/body/table/tbody/tr[4]">
+              <group restype="cell" id="/html/body/table/tbody/tr[4]/td[1]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[4]/td[1]/p">
+                  <source xml:lang="nl">&gt;= 45</source>
+                  <target xml:lang="de" state="final">&gt;= 45</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[4]/td[2]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[4]/td[2]/p">
+                  <source xml:lang="nl">ACTIVA</source>
+                  <target xml:lang="de" state="final">AKTIVA</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[4]/td[3]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[4]/td[3]/p">
+                  <source xml:lang="nl">312</source>
+                  <target xml:lang="de" state="final">312</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[4]/td[4]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[4]/td[4]/p">
+                  <source xml:lang="nl">18</source>
+                  <target xml:lang="de" state="final">18</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[4]/td[5]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[4]/td[5]/p">
+                  <source xml:lang="nl">-</source>
+                  <target xml:lang="de" state="final">-</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[4]/td[6]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[4]/td[6]/p">
+                  <source xml:lang="nl">21</source>
+                  <target xml:lang="de" state="final">21</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[4]/td[7]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[4]/td[7]/p">
+                  <source xml:lang="nl">–</source>
+                  <target xml:lang="de" state="final">–</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[4]/td[8]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[4]/td[8]/p">
+                  <source xml:lang="nl">D3, D20</source>
+                  <target xml:lang="de" state="final">D3, D20</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[4]/td[9]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[4]/td[9]/p">
+                  <source xml:lang="nl">3211<g ctype="lb"/> <g ctype="lb"/>  </source>
+                  <target xml:lang="de" state="final">3211<g ctype="lb"/> <g ctype="lb"/>  </target>
+                </trans-unit>
+              </group>
+            </group>
+            <group restype="row" id="/html/body/table/tbody/tr[5]">
+              <group restype="cell" id="/html/body/table/tbody/tr[5]/td[1]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[5]/td[1]/p">
+                  <source xml:lang="nl">&gt;= 45</source>
+                  <target xml:lang="de" state="final">&gt;= 45</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[5]/td[2]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[5]/td[2]/p">
+                  <source xml:lang="nl">ACTIVA</source>
+                  <target xml:lang="de" state="final">AKTIVA</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[5]/td[3]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[5]/td[3]/p">
+                  <source xml:lang="nl">468</source>
+                  <target xml:lang="de" state="final">468</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[5]/td[4]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[5]/td[4]/p">
+                  <source xml:lang="nl">27</source>
+                  <target xml:lang="de" state="final">27</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[5]/td[5]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[5]/td[5]/p">
+                  <source xml:lang="nl">-</source>
+                  <target xml:lang="de" state="final">-</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[5]/td[6]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[5]/td[6]/p">
+                  <source xml:lang="nl">21</source>
+                  <target xml:lang="de" state="final">21</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[5]/td[7]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[5]/td[7]/p">
+                  <source xml:lang="nl">–</source>
+                  <target xml:lang="de" state="final">–</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[5]/td[8]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[5]/td[8]/p">
+                  <source xml:lang="nl">D5, D6, D21</source>
+                  <target xml:lang="de" state="final">D5, D6, D21</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[5]/td[9]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[5]/td[9]/p">
+                  <source xml:lang="nl">3211<g ctype="lb"/> <g ctype="lb"/>  </source>
+                  <target xml:lang="de" state="final">3211<g ctype="lb"/> <g ctype="lb"/>  </target>
+                </trans-unit>
+              </group>
+            </group>
+            <group restype="row" id="/html/body/table/tbody/tr[6]">
+              <group restype="cell" id="/html/body/table/tbody/tr[6]/td[1]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[6]/td[1]/p">
+                  <source xml:lang="nl">&lt; 27</source>
+                  <target xml:lang="de" state="final">&lt; 27</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[6]/td[2]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[6]/td[2]/p">
+                  <source xml:lang="nl">ACTIVA</source>
+                  <target xml:lang="de" state="final">AKTIVA</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[6]/td[3]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[6]/td[3]/p">
+                  <source xml:lang="nl">312</source>
+                  <target xml:lang="de" state="final">312</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[6]/td[4]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[6]/td[4]/p">
+                  <source xml:lang="nl">18</source>
+                  <target xml:lang="de" state="final">18</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[6]/td[5]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[6]/td[5]/p">
+                  <source xml:lang="nl">12</source>
+                  <target xml:lang="de" state="final">12</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[6]/td[6]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[6]/td[6]/p">
+                  <source xml:lang="nl">–</source>
+                  <target xml:lang="de" state="final">–</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[6]/td[7]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[6]/td[7]/p">
+                  <source xml:lang="nl">–</source>
+                  <target xml:lang="de" state="final">–</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[6]/td[8]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[6]/td[8]/p">
+                  <source xml:lang="nl">C40, C41</source>
+                  <target xml:lang="de" state="final">C40, C41</target>
+                </trans-unit>
+              </group>
+              <group restype="cell" id="/html/body/table/tbody/tr[6]/td[9]">
+                <trans-unit restype="x-html-p" id="/html/body/table/tbody/tr[6]/td[9]/p">
+                  <source xml:lang="nl">3205<g ctype="lb"/> <g ctype="lb"/>  </source>
+                  <target xml:lang="de" state="final">3205<g ctype="lb"/> <g ctype="lb"/>  </target>
+                </trans-unit>
+              </group>
+            </group>
+            <group restype="row" id="/html/body/table/tbody/tr[7]">
+              <trans-unit restype="cell" id="/html/body/table/tbody/tr[7]/td[1]">
+                <source xml:lang="nl">&lt; 30</source>
+                <target xml:lang="de" state="final">&lt; 30</target>
+              </trans-unit>
+              <trans-unit restype="cell" id="/html/body/table/tbody/tr[7]/td[2]">
+                <source xml:lang="nl">ACTIVA</source>
+                <target xml:lang="de" state="final">AKTIVA</target>
+              </trans-unit>
+              <trans-unit restype="cell" id="/html/body/table/tbody/tr[7]/td[3]">
+                <source xml:lang="nl">156</source>
+                <target xml:lang="de" state="final">156</target>
+              </trans-unit>
+              <trans-unit restype="cell" id="/html/body/table/tbody/tr[7]/td[4]">
+                <source xml:lang="nl">9</source>
+                <target xml:lang="de" state="final">9</target>
+              </trans-unit>
+              <trans-unit restype="cell" id="/html/body/table/tbody/tr[7]/td[5]">
+                <source xml:lang="nl">12</source>
+                <target xml:lang="de" state="final">12</target>
+              </trans-unit>
+              <trans-unit restype="cell" id="/html/body/table/tbody/tr[7]/td[6]">
+                <source xml:lang="nl">–</source>
+                <target xml:lang="de" state="final">–</target>
+              </trans-unit>
+              <trans-unit restype="cell" id="/html/body/table/tbody/tr[7]/td[7]">
+                <source xml:lang="nl">–</source>
+                <target xml:lang="de" state="final">–</target>
+              </trans-unit>
+              <trans-unit restype="cell" id="/html/body/table/tbody/tr[7]/td[8]">
+                <source xml:lang="nl">C42, C43</source>
+                <target xml:lang="de" state="final">C42, C43</target>
+              </trans-unit>
+              <trans-unit restype="cell" id="/html/body/table/tbody/tr[7]/td[9]">
+                <source xml:lang="nl">3205<g ctype="lb"/> <g ctype="lb"/>  </source>
+                <target xml:lang="de" state="final">3205<g ctype="lb"/> <g ctype="lb"/>  </target>
+              </trans-unit>
+            </group>
+          </group>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[12]">
+          <source xml:lang="nl">(<g ctype="x-html-sup">1</g>) maand van indienstneming niet meegeteld</source>
+          <target xml:lang="de" state="final">(<g ctype="x-html-sup">1</g>) Monat des Beschäftigungsbeginns nicht mitgeteilt</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[13]">
+          <source xml:lang="nl">(<g ctype="x-html-sup">2</g>) kwartaal van indienstneming meegeteld</source>
+          <target xml:lang="de" state="final">(<g ctype="x-html-sup">1</g>) Quartal des Beschäftigungsbeginns mitgeteilt</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[14]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[15]">
+          <source xml:lang="nl">De op de werkkaart vermelde codes zijn specifiek voor de RVA en bepalen onder andere of de betrokken werknemer recht heeft op een werkuitkering. In de tabel vindt u de overeenkomstige RSZ-verminderingscode terug. De RSZ-verminderingscodes houden geen rekening met het recht op een eventuele werkuitkering.</source>
+          <target xml:lang="de" state="final">Die auf der Arbeitskarte angegebenen Codes sind spezifisch für das LfA und bestimmen u. a., ob der betreffende Arbeitnehmer Anspruch auf eine Arbeitsunterstützung hat. In der folgenden Tabelle finden Sie den entsprechenden LSS-Ermäßigungscode. Die LSS-Ermäßigungscodes berücksichtigen nicht das Recht auf eine etwaige Arbeitsunterstützung.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[16]">
+          <source xml:lang="nl">Vanaf 1 juli 2013 is een specifieke activering van de werkloosheidsuitkering mogelijk voor laaggeschoolde jongeren. Samengaand met deze maatregel wordt er voorzien in een doelgroepvermindering langdurig werkzoekenden met een verhoogd forfait. Twee bijkomende RVA-codes werden gecreëerd om dit te kunnen attesteren op de werkkaart. Vanaf 1 januari 2014 wordt dit uitgebreid naar jongeren tot 30 jaar en werkzoekend gedurende 156 dagen in de loop van de 9 voorafgaande kalendermaanden (twee nieuwe RVA-codes).</source>
+          <target xml:lang="de" state="final">Ab 01.07.2013 ist eine spezifische Aktivierung des Arbeitslosengelds für gering qualifizierte Jugendliche möglich. Neben dieser Maßnahme ist eine Zielgruppenermäßigung Langzeitarbeitssuchende mit einer erhöhten Pauschale vorgesehen. Zwei zusätzliche LfA-Codes wurden eingeführt, um dies auf der Arbeitskarte belegen zu können. Ab 01.01.2014 wird dies erweitert auf Jugendliche unter 30 Jahre, die in den 9 vorausgegangenen Kalendermonaten mindestens 156 Tage arbeitssuchend waren (zwei neue LfA-Codes).</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[17]">
+          <source xml:lang="nl">Vanaf 1 januari 2012 kan een werknemer niet meer in dienst treden gebruik makend van het systeem tijdelijk versterkte activering (win-win). De daarmee samenhangende codes werden in de tabel geschrapt.</source>
+          <target xml:lang="de" state="final">Ab 01.01.2012 können mit dem System der zeitweilig erhöhten Aktivierung (Win-win) keine Arbeitnehmer mehr eingestellt werden. Die diesbezüglichen Codes wurden aus der Tabelle entfernt.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[18]">
+          <source xml:lang="nl">Vanaf 1 september 2011 is een specifieke activering van de werkloosheidsuitkering mogelijk voor personen met een verminderde arbeidsgeschiktheid. Deze maatregel heeft geen directe uitwerking op de doelgroepvermindering langdurig werkzoekenden maar sluit niet uit dat de betrokkene daar toch voor in aanmerking komt als aan de randvoorwaarden wordt voldaan. Een aantal bijkomende RVA-codes werden gecreëerd om dit te kunnen attesteren op de werkkaart.</source>
+          <target xml:lang="de" state="final">Ab 01.09.2011 ist eine spezifische Aktivierung des Arbeitslosengelds für Personen mit verringerter Arbeitsfähigkeit möglich. Diese Maßnahme hat keine unmittelbare Auswirkung auf die Zielgruppenermäßigung Langzeitarbeitssuchende, schließt aber nicht aus, dass der Betroffene dafür dennoch in Betracht kommt, wenn die Voraussetzungen erfüllt werden. Eine Reihe zusätzlicher LfA-Codes wurde eingeführt, um dies auf der Arbeitskarte belegen zu können.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[19]">
+          <source xml:lang="nl">De in de tabel opgenomen verminderingskwartalen slaan enkel op de 'doelgroepvermindering langdurig werkzoekenden'. De werknemers met een werkkaart C35 openen geen recht op de doelgroepvermindering langdurig werkzoekenden maar genieten wel een werkuitkering. Zij kunnen mogelijk wel in aanmerking komen voor de 'doelgroepvermindering jonge werknemers'.</source>
+          <target xml:lang="de" state="final">Die in die Tabelle aufgenommenen Ermäßigungsquartale betreffen ausschließlich die „Zielgruppenermäßigung Langzeitarbeitssuchende“. Arbeitnehmer mit einer Arbeitskarte C35 haben keinen Anspruch auf die Zielgruppenermäßigung Langzeitarbeitssuchende; sie erhalten aber eine Arbeitsunterstützung. Sie können aber für die „Zielgruppenermäßigung junge Arbeitnehmer“ in Betracht kommen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[20]">
+          <source xml:lang="nl">Indien een werkgever deze doelgroepvermindering, de overgangsmaatregelen activa of de maatregelen activa reeds genoten heeft voor een werknemer die hij opnieuw in dienst neemt binnen de 30 maanden na het einde van de vorige arbeidsovereenkomst en deze werknemer nog een geldige werkkaart kan voorleggen, wordt deze tewerkstelling ononderbroken geacht wat betreft het vaststellen van het recht op de vermindering G<g ctype="x-html-sub">1</g>, G<g ctype="x-html-sub">2 </g>of G<g ctype="x-html-sub">8</g> en het aantal resterende kwartalen waarin hij hierop nog recht heeft. De periode van onderbreking verlengt dus de periode gedurende dewelke de voordelen kunnen worden toegekend, niet.</source>
+          <target xml:lang="de" state="final">Wenn ein Arbeitgeber diese Zielgruppenermäßigung, die Aktiva-Übergangsmaßnahmen oder die Aktiva-Maßnahmen bereits für einen Arbeitnehmer beansprucht hat, den er innerhalb von 30 Monaten nach dem Ende des vorigen Arbeitsvertrags neu einstellt und wenn dieser Arbeitnehmer eine gültige Arbeitskarte vorlegen kann, gilt diese Beschäftigung als ununterbrochen für die Feststellung des Rechts auf die Ermäßigung G<g ctype="x-html-sub">1</g>, G<g ctype="x-html-sub">2 </g>oder G<g ctype="x-html-sub">8</g> und der Anzahl der restlichen Quartale, für die dieses Recht noch gilt. Die Periode der Unterbrechung verlängert deshalb nicht die Periode, während derer die Vorteile gewährt werden können.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[21]">
+          <source xml:lang="nl">De werkgever kan geen aanspraak maken op deze doelgroepvermindering voor de werknemer die hij terug in dienst neemt binnen een periode van 12 maand na beëindiging van de vorige arbeidsovereenkomst die gesloten was voor onbepaalde duur wanneer hij voor deze tewerkstelling de voordelen van het banenplan genoten heeft.</source>
+          <target xml:lang="de" state="final">Der Arbeitgeber kann die Zielgruppenermäßigung nicht für den Arbeitnehmer beanspruchen, den er innerhalb einer Periode von 12 Monaten nach Beendigung des vorigen, auf unbestimmte Zeit abgeschlossenen Arbeitsvertrags neu einstellt, wenn er für diese Beschäftigung die Vorteile des Beschäftigungsplans beansprucht hat.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[22]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[4]">
+          <source xml:lang="nl">Te vervullen formaliteiten</source>
+          <target xml:lang="de" state="final">Zu erledigende Formalitäten</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[23]">
+          <source xml:lang="nl">De werkzoekenden die voldoen aan de voorwaarden voor deze doelgroepvermindering, konden bij het regionaal bureau van de RVA waarvan zij af hangen, een <g ctype="x-html-strong">werkkaart </g>verkrijgen als bewijs van deze hoedanigheid. <g ctype="x-html-strong">De RVA levert vanaf 1 juli 2019 nergens nog werkkaarten af</g>.</source>
+          <target xml:lang="de" state="final">Arbeitssuchende, die den Bedingungen für diese Zielgruppenermäßigung entsprechen, konnten beim zuständigen regionalen Amt des LfA eine <g ctype="x-html-strong">Arbeitskarte</g> als Beleg für diese Eigenschaft erhalten. <g ctype="x-html-strong">Das LfA gibt ab dem 01. Juli 2019 keine Arbeitskarten mehr ab</g>.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[24]">
+          <source xml:lang="nl">Indien de werkzoekende op het ogenblik van zijn indienstneming niet in het bezit is van een geldige werkkaart, dan kon ook de werkgever de kaart aanvragen bij de RVA. De aanvraag die van de werkgever uitgaat zal enkel geldig zijn indien zij voor iedere werkzoekende afzonderlijk gebeurt, en wordt slechts aanvaard voor zover op die aanvraag de namen van de werkgever en van de werknemer vermeld zijn, en ook het domicilie van de werknemer, zijn identificatienummer voor de sociale zekerheid en de datum van zijn indiensttreding.</source>
+          <target xml:lang="de" state="final">Wenn der Arbeitssuchende zum Zeitpunkt seines Dienstantritts nicht über eine gültige Arbeitskarte verfügte, konnte auch der Arbeitgeber diese Karte beim LfA beantragen. Der Arbeitgeber muss für jeden Arbeitssuchenden einzeln einen Antrag einreichen. Die Anträge werden nur bearbeitet, sofern darauf die Namen des Arbeitgebers und des Arbeitnehmers sowie dessen Wohnsitz, seine Erkennungsnummer für die soziale Sicherheit und das Datum seines Dienstantritts angegeben werden.</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

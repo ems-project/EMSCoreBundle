@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:1ead2cb0ea33f334bccc0b6055c0049dedcca20a:1015734" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Jonge werknemers</source>
+        <target xml:lang="de" state="final">Junge Arbeitnehmer</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Jonge werknemers</source>
+        <target xml:lang="de" state="final">Junge Arbeitnehmer</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Deze doelgroepvermindering richt zich op de aanwerving van jonge werknemers. Zij bestaat in feite uit 2 afzonderlijke verminderingen:</source>
+          <target xml:lang="de" state="final">Diese Zielgruppenermäßigung betrifft die Einstellung junger Arbeitnehmer. Es handelt sich dabei um 2 außerordentliche Ermäßigungen:</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">- de doelgroepvermindering jonge werknemers – middengeschoolden, laaggeschoolden en erg laaggeschoolden <g ctype="lb"/> - de doelgroepvermindering jonge werknemers – min 19-jarigen</source>
+          <target xml:lang="de" state="final">- Zielgruppenermäßigung „junge Arbeitnehmer“ – Jugendliche mit Sekundarabschluss, gering Qualifizierte und sehr gering Qualifizierte <g ctype="lb"/> - Zielgruppenermäßigung „junge Arbeitnehmer“ – unter 19-Jährige</target>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-h2" id="/html/body/h2[1]">
+          <source xml:lang="nl">Betrokken werkgevers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitgeber</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Zowel de werkgevers uit de openbare als uit de private sector komen voor de doelgroepvermindering in aanmerking, ongeacht het aantal werknemers dat zij tewerkstellen.</source>
+          <target xml:lang="de" state="final">Sowohl Arbeitgeber aus dem öffentlichen Sektor als auch aus dem Privatsektor kommen für die Zielgruppenermäßigung in Betracht, ungeachtet der Anzahl der Arbeitnehmer, die sie beschäftigen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Om de doelgroepvermindering 'jonge werknemers' te kunnen genieten moeten de werkgevers voldoen aan de <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/obligations/obligations_other/startingjobobligation.html">jongerenverplichting</g>.</source>
+          <target xml:lang="de" state="final">Um Anspruch auf die Zielgruppenermäßigung „junge Arbeitnehmer“ erheben zu können, müssen Arbeitgeber die <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/obligations/obligations_other/startingjobobligation.html">Jungarbeitnehmerverpflichtung</g> erfüllen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[2]">
+          <source xml:lang="nl">Betrokken werknemers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitnehmer</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h3" id="/html/body/h3[1]">
+          <source xml:lang="nl">Doelgroepvermindering jonge werknemers - middengeschoolden, laaggeschoolden en erg laaggeschoolden.</source>
+          <target xml:lang="de" state="final">Zielgruppenermäßigung für junge Arbeitnehmer – mit mittlerer Qualifikation, geringer Qualifikation und sehr geringer Qualifikation.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl">Enkel de jongeren die een refertekwartaalloon hebben dat de 9.000,00 EUR niet overschrijdt, komen in aanmerking (zowel voor degenen die in dienst zijn getreden vóór 1 januari 2013 als degene die daarna in dienst zijn getreden).</source>
+          <target xml:lang="de" state="final">Nur Jugendliche, deren Referenzquartalslohn 9000,00 EUR nicht überschreitet, kommen in Betracht (unabhängig davon, ob sie vor oder nach dem 01.01.2013 eingestellt wurden).</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl">Tot deze groep behoren de jongeren (tot en met het kwartaal dat ze 26 jaar worden) tewerkgesteld met een startbaanovereenkomst in dienst getreden met een werkkaart die attesteert dat ze aan de rechtopenende voorwaarden voldoen. Onder <g ctype="x-html-strong">startbaanovereenkomst </g>moet worden verstaan elke overeenkomst gesloten met een jongere, zoals hieronder opgedeeld in verschillende types:</source>
+          <target xml:lang="de" state="final">Zu dieser Gruppe gehören Jugendliche (bis einschließlich des Quartals, in dem sie 26 Jahre alt werden), die mit einem Erstbeschäftigungsvertrag beschäftigt sind und deren Arbeitskarte bescheinigt, dass sie die Bedingungen erfüllen, die den Anspruch verleihen. Mit <g ctype="x-html-strong">Erstbeschäftigungsabkommen</g>ist jeder Vertrag gemeint, der wie nachstehend in verschiedene Arten aufgeteilt und mit einem Jugendlichen abgeschlossen wird:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[1]">
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[1]">
+            <source xml:lang="nl">I. een minstens halftijdse arbeidsovereenkomst;</source>
+            <target xml:lang="de" state="final">I. ein Arbeitsvertrag mit zumindest halber Stelle;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]">
+            <source xml:lang="nl">II. een combinatie van een deeltijdse arbeidsovereenkomst (minstens halftijds) en een door de jongere gevolgde opleiding, met ingang van de dag waarop de jongere begint met de uitvoering van de arbeidsovereenkomst;</source>
+            <target xml:lang="de" state="final">II. eine Kombination eines Teilzeitarbeitsvertrags (mindestens halbe Stelle) mit einer vom Jugendlichen besuchten Ausbildung, ab dem Tag, an dem der Jugendliche mit der Erfüllung des Arbeitsvertrags beginnt;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[3]">
+            <source xml:lang="nl">III. een <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/persons/specific/apprentices.html">overeenkomst in het kader van een alternerende opleiding voor leerlingen alternerend leren</g> en elke andere vorm van opleidings- of inschakelingsovereenkomst door de Koning bepaald.</source>
+            <target xml:lang="de" state="final">III. Ein <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/persons/specific/apprentices.html">Vertrag im Rahmen einer dualen Ausbildung für Lehrlinge alternierendes Lernen</g> und jede andere Form eines durch den König bestimmten Ausbildungs- oder Eingliederungsvertrags.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[7]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[8]">
+          <source xml:lang="nl">Een werkkaart attesteert of de jongere aan de voorwaarden voldoet om in aanmerking te komen voor de doelgroepvermindering (laaggeschoold, gehandicapt, ...). Indien de jongere in de loop van het kalenderjaar nog geen 19 jaar wordt, is een werkkaart overbodig. Hij valt automatisch onder de doelgroepvermindering jonge werknemers – min 19-jarigen. Om de doelgroepvermindering laaggeschoolde jongere te verkrijgen in het jaar dat hij 19 wordt en de daarop volgende jaren, moest <g ctype="x-html-strong"><g ctype="x-html-strong">zijn werkgever</g> ten laatste op 31 januari van het jaar waarin hij 19 wordt een werkkaart voor hem aanvragen. </g></source>
+          <target xml:lang="de" state="final">Eine Arbeitskarte bescheinigt, ob der Jugendliche die Bedingungen erfüllt, um für die Zielgruppenermäßigung in Betracht zu kommen (gering qualifiziert, behindert…). Wenn der Jugendliche im Laufe des Kalenderjahres noch keine 19 Jahre wird, erübrigt sich eine Arbeitskarte. Er fällt automatisch in die Zielgruppenermäßigung für junge Arbeitnehmer – unter 19-Jährige. Um die Zielgruppenermäßigung für junge Arbeitnehmer mit geringer Qualifikation in dem Jahr, in dem er 19 Jahre wird, und in den darauf folgenden Jahren zu erhalten, musste <g ctype="x-html-strong"><g ctype="x-html-strong">sein Arbeitgeber</g> spätestens am 31. Januar des Jahres, in dem er 19 Jahre wird, für ihn eine Arbeitskarte beantragen.</g></target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[9]">
+          <source xml:lang="nl">Zolang de werkgever de jongere ononderbroken verder in dienst houdt onder één van de drie vermelde types van overeenkomsten, blijft dit beschouwd als een tewerkstelling in het kader van een startbaanovereenkomst als jongere behorend tot de geattesteerde groep, tot de laatste dag van het kwartaal waarin de jongere de leeftijd van 26 jaar bereikt.</source>
+          <target xml:lang="de" state="final">Solange der Arbeitgeber den Jugendlichen ununterbrochen weiter unter einem der drei oben genannten Vertragstypen beschäftigt, gilt dies als Beschäftigung im Rahmen eines Erstbeschäftigungsabkommens als Jugendlicher, der zu der bescheinigten Gruppe gehört, bis zum letzten Tag des Quartals, in dem der Jugendliche 26 Jahre alt wird.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[10]">
+          <source xml:lang="nl">Onder <g ctype="x-html-strong">jongere </g>in het kader van de startbaanovereenkomst moet worden verstaan eenieder die op het ogenblik van zijn indiensttreding minder dan 26 jaar oud is. De voorwaarde dat de jongere op het moment van indienstname ingeschreven moet zijn als werkzoekende, is weggevallen vanaf 1 april 2010.</source>
+          <target xml:lang="de" state="final">Mit einem <g ctype="x-html-strong">Jugendlichen</g> im Rahmen der Erstbeschäftigungsabkommen ist jeder gemeint, der zum Zeitpunkt seines Dienstantritts weniger als 26 Jahre alt ist. Die Bedingung, dass der Jugendliche bei Dienstantritt arbeitssuchend gemeldet sein muss, ist am 01.04.2010 entfallen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[11]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h3" id="/html/body/h3[2]">
+          <source xml:lang="nl">Doelgroepvermindering jonge werknemers – min 19-jarigen.</source>
+          <target xml:lang="de" state="final">Zielgruppenermäßigung junge Arbeitnehmer – unter 19-Jährige.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[12]">
+          <source xml:lang="nl">Tot deze groep behoren de jongeren in het algemeen die in de loop van het kalenderjaar de leeftijd van 19 jaar niet bereiken.</source>
+          <target xml:lang="de" state="final">Diese Gruppe setzt sich zusammen aus Jugendlichen im Allgemeinen, die im Laufe des Kalenderjahres das Alter von 19 Jahren nicht erreichen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[13]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[1]">
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p[1]">
+            <source xml:lang="nl"> </source>
+            <target xml:lang="de" state="final"> </target>
+          </trans-unit>
+          <trans-unit restype="x-html-h3" id="/html/body/div[1]/h3">
+            <source xml:lang="nl">Vlaanderen:</source>
+            <target xml:lang="de" state="final">Flandern:</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p[2]">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 juli 2016</g> kan voor werknemers die tewerkgesteld worden in <g ctype="x-html-strong">Vlaanderen </g>niet langer de 'doelgroepvermindering jonge werknemers' toegepast worden maar wel de '<g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/deductions/structuralreduction_targetgroupreductions/youngworkers_vl.html">doelgroepvermindering jonge werknemers - Vlaanderen</g>'. Er zijn overgangsmaatregelen voorzien voor de jongeren die vóór die datum reeds indienst zijn.</source>
+            <target xml:lang="de" state="final">Ab dem <g ctype="x-html-strong">01. Juli 2016</g> kann für Arbeitnehmer, die in <g ctype="x-html-strong">Flandern</g> beschäftigt werden, nicht mehr die ‚Zielgruppenermäßigung junge Arbeitnehmer‘ angewandt werden, sondern die <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/deductions/structuralreduction_targetgroupreductions/youngworkers_vl.html">‚Zielgruppenermäßigung junge Arbeitnehmer - Flandern</g>‘. Für die jungen Arbeitnehmer, die vor diesem Datum bereits im Dienst waren, sind Übergangsmaßnahmen vorgesehen.</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p[3]">
+            <source xml:lang="nl"> De vermindering is definitief stopgezet op 31 december 2018.</source>
+            <target xml:lang="de" state="final">Die Ermäßigung ist am 31.12.2018 endgültig ausgelaufen.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[14]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[2]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[2]/h3">
+            <source xml:lang="nl">Waals Gewest (zonder de Duitstalige Gemeenschap):</source>
+            <target xml:lang="de" state="final">Wallonische Region (außer die Deutschsprachige Gemeinschaft):</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[2]/p[1]">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 juli 2017</g> kan voor werknemers die in dienst treden bij een werkgever voor een tewerkstelling in <g ctype="x-html-strong">Wallonië </g>niet langer de 'doelgroepvermindering jonge werknemers' toegepast worden.</source>
+            <target xml:lang="de" state="final">Ab dem <g ctype="x-html-strong">01. Juli 2017</g> kann für Arbeitnehmer, die bei einem Arbeitgeber für eine Beschäftigung in der <g ctype="x-html-strong">Wallonie </g>eingestellt werden, nicht mehr die „Zielgruppenermäßigung junge Arbeitnehmer“ angewandt werden.</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[2]/p[2]">
+            <source xml:lang="nl"> De vermindering is definitief stopgezet op 30 juni 2020.</source>
+            <target xml:lang="de" state="final"> Die Ermäßigung läuft endgültig am 30. Juni 2020 ab. </target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[15]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[16]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[3]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[3]/h3">
+            <source xml:lang="nl">Brussels Hoofdstedelijk Gewest:</source>
+            <target xml:lang="de" state="final">Region Brüssel-Hauptstadt:</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[3]/p[1]">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 oktober 2017</g> kan voor werknemers die in dienst treden bij een werkgever voor een tewerkstelling in <g ctype="x-html-strong">Brussel </g>niet langer de 'doelgroepvermindering jonge werknemers' toegepast worden.</source>
+            <target xml:lang="de" state="final">Ab <g ctype="x-html-strong">01. Oktober 2017</g> kann für Arbeitnehmer, die bei einem Arbeitgeber für eine Beschäftigung in <g ctype="x-html-strong">Brüssel</g> eingestellt werden, nicht mehr die „Zielgruppenermäßigung junge Arbeitnehmer“ angewandt werden.</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[3]/p[2]">
+            <source xml:lang="nl">De vermindering is definitief stopgezet op 31 december 2018.</source>
+            <target xml:lang="de" state="final">Die Ermäßigung ist am 31.12.2018 endgültig ausgelaufen.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[17]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[18]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[19]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[4]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[4]/h3">
+            <source xml:lang="nl">Duitstalige Gemeenschap:</source>
+            <target xml:lang="de" state="final">Deutschsprachige Gemeinschaft:</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[4]/p[1]">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 januari 2019</g> kan voor werknemers die in dienst treden bij een werkgever voor een tewerkstelling in een van de gemeentes van de <g ctype="x-html-strong">Duitstalige Gemeenschap</g>, niet langer de 'doelgroepvermindering jongeren' toegepast worden.</source>
+            <target xml:lang="de" state="final">Ab <g ctype="x-html-strong">01.01.2019</g> kann für Arbeitnehmer, die bei einem Arbeitgeber für eine Beschäftigung in einer der Gemeinden der <g ctype="x-html-strong">Deutschsprachigen Gemeinschaft</g> eingestellt werden, nicht mehr die „Zielgruppenermäßigung Jugendliche“ angewandt werden.</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[4]/p[2]">
+            <source xml:lang="nl">Als <g ctype="x-html-strong">overgangsmaatregel </g>kunnen werkgevers die werknemers hebben die in dienst getreden zijn vóór 1 januari 2019 en <g ctype="x-html-strong">ononderbroken </g>verder in dienst blijven (met een doorlopende of aansluitende arbeidsovereenkomst), voor deze werknemers voor de hen resterende kwartalen en onder dezelfde voorwaarden, de vermindering blijven genieten. Er zijn <g ctype="x-html-strong">geen </g>specifieke verminderingscodes voor deze overgangsmaatregelen, de vroegere codes blijven behouden. Er is geen einddatum van de overgangsmaatregelen voorzien. </source>
+            <target xml:lang="de" state="final">Als <g ctype="x-html-strong">Übergangsmaßnahme </g>können Arbeitgeber, die Arbeitnehmer eingestellt haben, die vor 01.01.2019 ihren Dienst antraten und <g ctype="x-html-strong">ununterbrochen </g>weiter im Dienst bleiben (mit einem dauerhaften oder anschließenden Arbeitsvertrag), die Ermäßigung für diese Arbeitnehmer für die ihnen verbleibenden Quartale unter den gleichen Bedingungen weiterhin beanspruchen. Es gibt <g ctype="x-html-strong">keine </g>speziellen Ermäßigungscodes für diese Übergangsmaßnahmen, die früheren Codes bleiben in Kraft. Es ist kein Enddatum für die Übergangsmaßnahmen vorgesehen. </target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[4]/p[3]">
+            <source xml:lang="nl"> </source>
+            <target xml:lang="de" state="final"> </target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[20]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[21]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[3]">
+          <source xml:lang="nl">Bedrag van de vermindering</source>
+          <target xml:lang="de" state="final">Betrag der Ermäßigung</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[22]">
+          <source xml:lang="nl">De doelgroepvermindering jonge werknemers wordt enkel gekoppeld aan de voorwaarde dat de werkgever moet voldoen aan zijn jongerenverplichting. Dit speelt dus in het voordeel van de werkgevers die inspanningen doen zonder daartoe verplicht te zijn (ondernemingen &lt; 50 werknemers, vrijgestelde ondernemingen, ..).</source>
+          <target xml:lang="de" state="final">Die Zielgruppenermäßigung für junge Arbeitnehmer wird nur an die Bedingung gekoppelt, dass der Arbeitgeber seiner Jungarbeitnehmerverpflichtung entsprechen muss. Dies ist deshalb für Arbeitgeber günstig, die Anstrengungen unternehmen, ohne dazu verpflichtet zu sein (Unternehmen &lt; 50 Arbeitnehmer, freigestellte Unternehmen, usw.)</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h3" id="/html/body/h3[3]">
+          <source xml:lang="nl">Bedrag doelgroepvermindering jonge werknemers - middengeschoolden, laaggeschoolden en erg laaggeschoolden.</source>
+          <target xml:lang="de" state="final">Zielgruppenermäßigung für junge Arbeitnehmer – mit mittlerer Qualifikation, gering Qualifizierte und sehr gering Qualifizierte.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[23]">
+          <source xml:lang="nl"><g ctype="x-html-strong">Voor de jongeren, in dienst genomen met een startbaanovereenkomst vanaf 1 januari 2013, </g>gelden volgende forfaits voor zolang hij in dienst is met een startbaanovereenkomst (de vermindering eindigt dus in elk geval in het kwartaal waarin de jongere 26 jaar wordt):</source>
+          <target xml:lang="de" state="final"><g ctype="x-html-strong">Für junge Arbeitnehmer, die mit einem Erstbeschäftigungsvertrag ab dem 1.1.2013 beschäftigt sind, </g>gelten die folgenden Pauschalen, solange die Beschäftigung im Rahmen des Erstbeschäftigungsvertrags andauert (die Ermäßigung endet in einem solchen Fall in dem Quartal, in dem der junge Arbeitnehmer 26 Jahre alt wird):</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[2]">
+          <group restype="listitem" id="/html/body/ul[2]/li">
+            <trans-unit id="/html/body/ul[2]/li/text()[1]">
+              <source xml:lang="nl">Voor elke </source>
+              <target xml:lang="de" state="final">Für alle </target>
+            </trans-unit>
+            <trans-unit restype="x-html-strong" id="/html/body/ul[2]/li/strong">
+              <source xml:lang="nl">middengeschoolde jongere</source>
+              <target xml:lang="de" state="final">jungen Arbeitnehmer mit mittlerer Qualifikation</target>
+            </trans-unit>
+            <trans-unit id="/html/body/ul[2]/li/text()[2]">
+              <source xml:lang="nl">: </source>
+              <target xml:lang="de" state="final">: </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li/ul/li[1]">
+                <source xml:lang="nl"><g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> voor het kwartaal van indienstneming en de 3 daarop volgende kwartalen</source>
+                <target xml:lang="de" state="final"><g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> im Quartal des Dienstantritts und den 3 darauf folgenden Quartalen</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li/ul/li[2]">
+                <source xml:lang="nl"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> gedurende de 8 daarop volgende kwartalen. Voor deze jongeren geldt, behalve als ze gehandicapt zijn, een bijkomend criterium dat ze werkzoekend moeten zijn geweest gedurende minstens 156 dagen gerekend in een 6-dagenstelsel tijdens de maand van indienstneming en de 9 daaraan voorafgaande kalendermaanden.</source>
+                <target xml:lang="de" state="final"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> während der 8 darauf folgenden Quartale. Mit Ausnahme von behinderten Jugendlichen gilt für diese Jugendlichen auch die Voraussetzung, dass sie seit mindestens 156 Tagen - gerechnet in der 6-Tagesregelung während des Monats der Einstellung und den 9 vorausgegangenen Kalendermonaten - arbeitslos sein müssen.</target>
+              </trans-unit>
+            </group>
+          </group>
+        </group>
+        <group restype="x-html-ul" id="/html/body/ul[3]">
+          <group restype="listitem" id="/html/body/ul[3]/li">
+            <trans-unit id="/html/body/ul[3]/li/text()[1]">
+              <source xml:lang="nl">Voor elke</source>
+              <target xml:lang="de" state="final">Für jeden </target>
+            </trans-unit>
+            <trans-unit restype="x-html-strong" id="/html/body/ul[3]/li/strong">
+              <source xml:lang="nl"> laaggeschoolde jongere</source>
+              <target xml:lang="de" state="final">jungen Arbeitnehmer mit geringer Qualifikation</target>
+            </trans-unit>
+            <trans-unit id="/html/body/ul[3]/li/text()[2]">
+              <source xml:lang="nl">: </source>
+              <target xml:lang="de" state="final">: </target>
+            </trans-unit>
+            <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/ul[3]/li/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[3]/li/ul/li[1]">
+                <source xml:lang="nl"><g ctype="x-html-strong">G<g ctype="x-html-sub">8</g></g> voor het kwartaal van indienstneming en de 7 daarop volgende kwartalen</source>
+                <target xml:lang="de" state="final"><g ctype="x-html-strong">G<g ctype="x-html-sub">8</g></g> für das Quartal des Dienstantritts und die 7 darauf folgenden Quartale</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[3]/li/ul/li[2]">
+                <source xml:lang="nl"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> gedurende de 4 daarop volgende kwartalen.</source>
+                <target xml:lang="de" state="final"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> während der 4 darauf folgenden Quartale.</target>
+              </trans-unit>
+            </group>
+          </group>
+        </group>
+        <group restype="x-html-ul" id="/html/body/ul[4]">
+          <group restype="listitem" id="/html/body/ul[4]/li">
+            <trans-unit id="/html/body/ul[4]/li/text()[1]">
+              <source xml:lang="nl">Voor elke </source>
+              <target xml:lang="de" state="final">Für jeden </target>
+            </trans-unit>
+            <trans-unit restype="x-html-strong" id="/html/body/ul[4]/li/strong">
+              <source xml:lang="nl">erg laaggeschoolde jongere</source>
+              <target xml:lang="de" state="final">jungen Arbeitnehmer mit sehr geringer Qualifikation</target>
+            </trans-unit>
+            <trans-unit id="/html/body/ul[4]/li/text()[2]">
+              <source xml:lang="nl">: </source>
+              <target xml:lang="de" state="final">: </target>
+            </trans-unit>
+            <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/ul[4]/li/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[4]/li/ul/li[1]">
+                <source xml:lang="nl"><g ctype="x-html-strong">G</g><g ctype="x-html-sub"><g ctype="x-html-strong">8</g> </g>voor het kwartaal van indienstneming en de 11 daarop volgende kwartalen</source>
+                <target xml:lang="de" state="final"><g ctype="x-html-strong">G</g><g ctype="x-html-sub"><g ctype="x-html-strong">8</g> </g> für das Quartal des Dienstantritts und die 11 darauf folgenden Quartale</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[4]/li/ul/li[2]">
+                <source xml:lang="nl"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> gedurende de 4 daarop volgende kwartalen.</source>
+                <target xml:lang="de" state="final"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> während der 4 darauf folgenden Quartale.</target>
+              </trans-unit>
+            </group>
+          </group>
+        </group>
+        <group restype="x-html-ul" id="/html/body/ul[5]">
+          <group restype="listitem" id="/html/body/ul[5]/li">
+            <trans-unit id="/html/body/ul[5]/li/text()[1]">
+              <source xml:lang="nl">Voor elke </source>
+              <target xml:lang="de" state="final">Für jeden </target>
+            </trans-unit>
+            <trans-unit restype="x-html-strong" id="/html/body/ul[5]/li/strong[1]">
+              <source xml:lang="nl"><g ctype="x-html-a" html:href="startingjobobligation-nl_1">gehandicapte</g> </source>
+              <target xml:lang="de" state="final"><g ctype="x-html-a" html:href="startingjobobligation-nl_1">behinderten</g> </target>
+            </trans-unit>
+            <trans-unit id="/html/body/ul[5]/li/text()[2]">
+              <source xml:lang="nl">of van </source>
+              <target xml:lang="de" state="final"> Arbeitnehmer oder </target>
+            </trans-unit>
+            <trans-unit restype="x-html-strong" id="/html/body/ul[5]/li/strong[2]">
+              <source xml:lang="nl">
+                <g ctype="x-html-a" html:href="startingjobobligation-nl_1">buitenlandse afkomst</g>
+              </source>
+              <target xml:lang="de" state="final">
+                <g ctype="x-html-a" html:href="startingjobobligation-nl_1">ausländischen</g>
+              </target>
+            </trans-unit>
+            <trans-unit id="/html/body/ul[5]/li/text()[3]">
+              <source xml:lang="nl"> zijnde, </source>
+              <target xml:lang="de" state="final"> Arbeitnehmer, </target>
+            </trans-unit>
+            <trans-unit restype="x-html-strong" id="/html/body/ul[5]/li/strong[3]">
+              <source xml:lang="nl">laaggeschoolde jongere</source>
+              <target xml:lang="de" state="final">die junge Arbeitnehmer mit geringer Qualifikation sind</target>
+            </trans-unit>
+            <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/ul[5]/li/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[5]/li/ul/li[1]">
+                <source xml:lang="nl"><g ctype="x-html-strong">G<g ctype="x-html-sub">8</g></g> voor het kwartaal van indienstneming en de 11 daarop volgende kwartalen</source>
+                <target xml:lang="de" state="final"><g ctype="x-html-strong">G<g ctype="x-html-sub">8</g></g> für das Quartal des Dienstantritts und die 11 darauf folgenden Quartale</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[5]/li/ul/li[2]">
+                <source xml:lang="nl"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> voor de 4 daarop volgende kwartalen.</source>
+                <target xml:lang="de" state="final"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> für die 4 darauf folgenden Quartale.</target>
+              </trans-unit>
+            </group>
+          </group>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[24]">
+          <source xml:lang="nl">In tegenstelling met het systeem vóór 2013, loopt de vermindering niet meer door tot het kwartaal dat de jongere 26 jaar wordt maar hangt het af van het aantal reeds opgebruikte kwartalen. De RVA attesteert tot welke categorie de jongere behoort.</source>
+          <target xml:lang="de" state="final">Im Gegensatz zum System vor 2013 erstreckt sich die Ermäßigung nicht bis zum Quartal, in dem der Jugendliche 26 Jahre wird, sondern sie richtet sich nach der Anzahl der bereits verbrauchten Quartale. Das LfA bescheinigt, zu welcher Kategorie der Jugendliche gehört.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[25]">
+          <source xml:lang="nl">De vermindering voor middengeschoolde jongeren, kan dus enkel worden toegepast voor jongeren die bij de werkgever voor het eerst in dienst genomen worden vanaf het 1<g ctype="x-html-sup">ste</g> kwartaal van 2013.</source>
+          <target xml:lang="de" state="final">Die Ermäßigung für Jugendliche mit Sekundarabschluss kann daher nur für Jugendliche angewandt werden, die bei dem Arbeitgeber zum ersten Mal ab dem 1. Quartal 2013 ihren Dienst antreten. <g ctype="x-html-sup"/></target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="readMoreContent" id="/html/body/div[5]">
+          <trans-unit restype="x-html-p" id="/html/body/div[5]/p[1]">
+            <source xml:lang="nl">
+              <g ctype="x-html-strong">Indien de jongere vóór 1 januari 2013 reeds in dienst genomen werd, blijven de vroegere verminderingsforfaits en periodes van toepassing :</g>
+            </source>
+            <target xml:lang="de" state="final">
+              <g ctype="x-html-strong">Falls der Jugendliche bereits vor dem 01.01.2013 eingestellt wurde, bleiben die früheren Ermäßigungspauschalen und Perioden anwendbar:</g>
+            </target>
+          </trans-unit>
+          <group restype="x-html-ul" id="/html/body/div[5]/ul[1]">
+            <group restype="listitem" id="/html/body/div[5]/ul[1]/li">
+              <trans-unit id="/html/body/div[5]/ul[1]/li/text()[1]">
+                <source xml:lang="nl">Voor elke</source>
+                <target xml:lang="de" state="final">Für jeden </target>
+              </trans-unit>
+              <trans-unit restype="x-html-strong" id="/html/body/div[5]/ul[1]/li/strong">
+                <source xml:lang="nl"> laaggeschoolde jongere</source>
+                <target xml:lang="de" state="final">jungen Arbeitnehmer mit geringer Qualifikation</target>
+              </trans-unit>
+              <trans-unit id="/html/body/div[5]/ul[1]/li/text()[2]">
+                <source xml:lang="nl"> die hij in dienst neemt met een startbaanovereenkomst: </source>
+                <target xml:lang="de" state="final">, den er mit einem Erstbeschäftigungsvertrag einstellt: </target>
+              </trans-unit>
+              <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/div[5]/ul[1]/li/ul">
+                <trans-unit restype="listitem" id="/html/body/div[5]/ul[1]/li/ul/li[1]">
+                  <source xml:lang="nl"><g ctype="x-html-strong">G</g><g ctype="x-html-sub"><g ctype="x-html-strong">1</g> </g>voor het kwartaal van indienstneming en de 7 daarop volgende kwartalen</source>
+                  <target xml:lang="de" state="final"><g ctype="x-html-strong">G</g><g ctype="x-html-sub"><g ctype="x-html-strong">1</g> </g> für das Quartal des Dienstantritts und die 7 darauf folgenden Quartale</target>
+                </trans-unit>
+                <trans-unit restype="listitem" id="/html/body/div[5]/ul[1]/li/ul/li[2]">
+                  <source xml:lang="nl"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> voor de daaropvolgende kwartalen, en dit voor zolang hij in dienst is met een startbaanovereenkomst (de vermindering eindigt dus in elk geval in het kwartaal waarin de jongere 26 jaar wordt).</source>
+                  <target xml:lang="de" state="final"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> für die darauf folgenden Quartale und solange sie mit dem Erstbeschäftigungsvertrag beschäftigt sind (die Ermäßigung endet somit in jedem Fall in dem Quartal, in dem der junge Arbeitnehmer 26 Jahre alt wird).</target>
+                </trans-unit>
+              </group>
+            </group>
+          </group>
+          <group restype="x-html-ul" id="/html/body/div[5]/ul[2]">
+            <group restype="listitem" id="/html/body/div[5]/ul[2]/li">
+              <trans-unit id="/html/body/div[5]/ul[2]/li/text()[1]">
+                <source xml:lang="nl">Voor elke </source>
+                <target xml:lang="de" state="final">Für </target>
+              </trans-unit>
+              <trans-unit restype="x-html-strong" id="/html/body/div[5]/ul[2]/li/strong">
+                <source xml:lang="nl">erg laaggeschoolde jongere</source>
+                <target xml:lang="de" state="final">jeden jungen Arbeitnehmer mit sehr geringer Qualifikation</target>
+              </trans-unit>
+              <trans-unit id="/html/body/div[5]/ul[2]/li/text()[2]">
+                <source xml:lang="nl"> die hij in dienst neemt met een startbaanovereenkomst </source>
+                <target xml:lang="de" state="final">, den er mit einem Erstbeschäftigungsvertrag einstellt </target>
+              </trans-unit>
+              <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/div[5]/ul[2]/li/ul">
+                <trans-unit restype="listitem" id="/html/body/div[5]/ul[2]/li/ul/li[1]">
+                  <source xml:lang="nl"><g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> voor het kwartaal van indienstneming en de 15 daarop volgende kwartalen</source>
+                  <target xml:lang="de" state="final"><g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> für das Quartal des Dienstantritts und die 15 darauf folgenden Quartale</target>
+                </trans-unit>
+                <trans-unit restype="listitem" id="/html/body/div[5]/ul[2]/li/ul/li[2]">
+                  <source xml:lang="nl"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> voor de daaropvolgende kwartalen, en dit voor zolang hij in dienst is met een startbaanovereenkomst (de vermindering eindigt dus in elk geval in het kwartaal waarin de jongere 26 jaar wordt).</source>
+                  <target xml:lang="de" state="final"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> für die darauf folgenden Quartale und solange sie mit dem Erstbeschäftigungsvertrag beschäftigt sind (die Ermäßigung endet somit in jedem Fall in dem Quartal, in dem der junge Arbeitnehmer 26 Jahre alt wird).</target>
+                </trans-unit>
+              </group>
+            </group>
+          </group>
+          <group restype="x-html-ul" id="/html/body/div[5]/ul[3]">
+            <group restype="listitem" id="/html/body/div[5]/ul[3]/li">
+              <trans-unit id="/html/body/div[5]/ul[3]/li/text()[1]">
+                <source xml:lang="nl">Voor elke </source>
+                <target xml:lang="de" state="final">Für jeden </target>
+              </trans-unit>
+              <trans-unit restype="x-html-strong" id="/html/body/div[5]/ul[3]/li/strong[1]">
+                <source xml:lang="nl">gehandicapte</source>
+                <target xml:lang="de" state="final">behinderten</target>
+              </trans-unit>
+              <trans-unit id="/html/body/div[5]/ul[3]/li/text()[2]">
+                <source xml:lang="nl"> of van </source>
+                <target xml:lang="de" state="final"> Arbeitnehmer oder </target>
+              </trans-unit>
+              <trans-unit restype="x-html-strong" id="/html/body/div[5]/ul[3]/li/strong[2]">
+                <source xml:lang="nl">buitenlandse afkomst</source>
+                <target xml:lang="de" state="final">ausländischen</target>
+              </trans-unit>
+              <trans-unit id="/html/body/div[5]/ul[3]/li/text()[3]">
+                <source xml:lang="nl"> zijnde,</source>
+                <target xml:lang="de" state="final"> Arbeitnehmer, </target>
+              </trans-unit>
+              <trans-unit restype="x-html-strong" id="/html/body/div[5]/ul[3]/li/strong[3]">
+                <source xml:lang="nl"> laaggeschoolde jongere</source>
+                <target xml:lang="de" state="final">die junge Arbeitnehmer mit geringer Qualifikation sind</target>
+              </trans-unit>
+              <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/div[5]/ul[3]/li/ul">
+                <trans-unit restype="listitem" id="/html/body/div[5]/ul[3]/li/ul/li[1]">
+                  <source xml:lang="nl"><g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> die hij in dienst neemt met een startbaanovereenkomst voor het kwartaal van indienstneming en de 15 daarop volgende kwartalen</source>
+                  <target xml:lang="de" state="final"><g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> den er mit einem Erstbeschäftigungsvertrag beschäftigt für das Quartal des Dienstantritts und die 15 darauf folgenden Quartale</target>
+                </trans-unit>
+                <trans-unit restype="listitem" id="/html/body/div[5]/ul[3]/li/ul/li[2]">
+                  <source xml:lang="nl"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> voor de daaropvolgende kwartalen, en dit voor zolang hij in dienst is met een startbaanovereenkomst (de vermindering eindigt dus in elk geval in het kwartaal waarin de jongere 26 jaar wordt).</source>
+                  <target xml:lang="de" state="final"><g ctype="x-html-strong">G<g ctype="x-html-sub">2</g></g> für die darauf folgenden Quartale und solange sie mit dem Erstbeschäftigungsvertrag beschäftigt sind (die Ermäßigung endet somit in jedem Fall in dem Quartal, in dem der junge Arbeitnehmer 26 Jahre alt wird).</target>
+                </trans-unit>
+              </group>
+            </group>
+          </group>
+          <trans-unit restype="x-html-p" id="/html/body/div[5]/p[2]">
+            <source xml:lang="nl">De RVA attesteert tot welke categorie de jongere behoort.</source>
+            <target xml:lang="de" state="final">Das LfA bescheinigt, zu welcher Kategorie der Jugendliche gehört.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[26]">
+          <source xml:lang="nl">Als <g ctype="x-html-strong">kwartaal van indienstneming</g> wordt het kwartaal in aanmerking genomen waarin de jongere voor de allereerste keer in dienst komt van de betrokken werkgever. Indien de jongere echter reeds in dienst was vóór het eerste kwartaal van het kalenderjaar waarin hij 19 jaar oud wordt, wordt het eerste kwartaal van het jaar waarin hij 19 jaar wordt beschouwd als het kwartaal van indienstneming. Dat wil zeggen dat een werkgever de vermindering voor erg laaggeschoolden, laaggeschoolde gehandicapten en laaggeschoolde allochtonen ook kan toepassen voor jongeren die reeds vóór 1 april 2006 bij hem tewerkgesteld waren zolang deze jongeren in 2006 nog geen 19 werden.</source>
+          <target xml:lang="de" state="final">Als <g ctype="x-html-strong">Quartal des Dienstantritts</g> gilt das Quartal, in dem der Jugendliche zum allerersten Mal den Dienst beim Arbeitgeber antritt. Wenn der Jugendliche aber bereits vor dem ersten Quartal des Kalenderjahrs, in dem er 19 Jahre alt wird, beim Arbeitgeber beschäftigt war, wird das erste Quartal des Jahres, in dem er 19 wird, als Quartal des Dienstantritts betrachtet. Das bedeutet, dass ein Arbeitgeber die Ermäßigung für sehr gering Qualifizierte, gering qualifizierte Behinderte und gering qualifizierte Ausländer auch für Jugendliche anwenden kann, die bereits vor dem 01.04.2006 bei ihm beschäftigt waren, solange diese Jugendlichen 2006 noch nicht 19 Jahre alt werden.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[27]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h3" id="/html/body/h3[4]">
+          <source xml:lang="nl">Bedrag doelgroepvermindering jonge werknemers – min 19-jarigen.</source>
+          <target xml:lang="de" state="final">Betrag Zielgruppenermäßigung junge Arbeitnehmer – unter 19-Jährige.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[28]">
+          <source xml:lang="nl">Een forfaitair verminderingsbedrag <g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> wordt toegekend aan de werkgever voor elke jongere die hij in dienst neemt tot en met het 4<g ctype="x-html-sup">de</g> kwartaal van het kalenderjaar dat zijn werknemer 18 wordt. Het betreft dus zowel jongeren aangeworven met als zonder startbaanovereenkomst en ongeacht of zij verbonden zijn met een leerovereenkomst of een arbeidsovereenkomst.</source>
+          <target xml:lang="de" state="final">Eine Ermäßigungspauschale <g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> wird dem Arbeitgeber für jeden Jugendlichen gewährt, den er bis zum vierten Quartal des Kalenderjahres einstellt, in dem sein Arbeitnehmer 18 Jahre alt wird. <g ctype="x-html-sup"/> Es betrifft deshalb Jugendliche, die mit bzw. ohne Erstbeschäftigungsabkommen eingestellt wurden, unabhängig davon, ob sie einen Lehr- oder Arbeitsvertrag abgeschlossen haben.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[29]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[4]">
+          <source xml:lang="nl">Te vervullen formaliteiten</source>
+          <target xml:lang="de" state="final">Zu erledigende Formalitäten</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h3" id="/html/body/h3[5]">
+          <source xml:lang="nl">Doelgroepvermindering jonge werknemers – min 19-jarigen.</source>
+          <target xml:lang="de" state="final">Zielgruppenermäßigung junge Arbeitnehmer – unter 19-Jährige.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[30]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[31]">
+          <source xml:lang="nl">Buiten het aanduiden van de overeenkomstige doelgroepvermindering(en), zijn er geen specifieke administratieve plichtplegingen verbonden aan de doelgroepvermindering jonge werknemers – min 19-jarigen.</source>
+          <target xml:lang="de" state="final">Neben der Angabe der entsprechenden Zielgruppenermäßigung(en) gibt es spezifische Verwaltungsformalitäten in Verbindung mit der Zielgruppenermäßigung für junge Arbeitnehmer – unter 19-Jährige.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h3" id="/html/body/h3[6]">
+          <source xml:lang="nl">Doelgroepvermindering jonge werknemers - middengeschoolden, laaggeschoolden en erg laaggeschoolden.</source>
+          <target xml:lang="de" state="final">Zielgruppenermäßigung für junge Arbeitnehmer – mit mittlerer Qualifikation, geringer Qualifikation und sehr geringer Qualifikation.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[32]">
+          <source xml:lang="nl">Om de doelgroepvermindering jonge werknemers – middengeschoolden, laaggeschoolden en erg laaggeschoolden te kunnen genieten, moet de jongere worden tewerkgesteld met een startbaanovereenkomst.</source>
+          <target xml:lang="de" state="final">Um Anspruch auf die Zielgruppenermäßigung „junge Arbeitnehmer – Jugendliche mit Sekundarabschluss, gering Qualifizierte und sehr gering Qualifizierte“ erheben zu können, müssen die Jugendlichen mit einem Erstbeschäftigungsvertrag eingestellt werden.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[33]">
+          <source xml:lang="nl">Indien de jongere in de loop van het kalenderjaar van indiensttreding <g ctype="x-html-strong">19 jaar wordt of ouder</g><g ctype="x-html-strong">,</g> moet hij op het moment van de indienstneming een geldige <g ctype="x-html-strong">werkkaart </g>kunnen voorleggen om aan te tonen dat hij aan de voorwaarden voldoet. Hij kan de werkkaart verkrijgen bij het werkloosheidsbureau van de Rijksdienst voor Arbeidsvoorziening van zijn woonplaats. <g ctype="x-html-strong">Vanaf 1 juli 2019 levert de RVA nergens nog werkkaarten af</g>.</source>
+          <target xml:lang="de" state="final">Wenn die junge Person im Lauf des Kalenderjahrs des Beschäftigungsbeginns <g ctype="x-html-strong">19 Jahre oder älter wird</g> <g ctype="x-html-strong">,</g> muss sie zum Zeitpunkt des Beschäftigungsbeginns eine gültige <g ctype="x-html-strong">Beschäftigungskarte</g> vorlegen können, die bescheinigt, dass sie zur berechtigenden Gruppe gehört. Sie können diese Karte beim Arbeitslosigkeitsbüro des Landesamts für Arbeitsbeschaffung Ihres Wohnorts erhalten. <g ctype="x-html-strong">Das LfA gibt ab dem 01. Juli 2019 keine Arbeitskarten mehr ab</g>.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[34]">
+          <source xml:lang="nl">De <g ctype="x-html-strong">startbaanovereenkomst </g>moet niet meer gebeuren volgens een vastgelegd model. Elke arbeidsovereenkomst gesloten volgens de bepalingen van een startbaanovereenkomst (minstens halftijds, ...), wordt geacht een startbaanovereenkomst te zijn.</source>
+          <target xml:lang="de" state="final">Das <g ctype="x-html-strong">Erstbeschäftigungsabkommen </g>muss nicht mehr gemäß einem festgelegten Modell erfolgen. Jeder Arbeitsvertrag, der nach den Bestimmungen eines Erstbeschäftigungsabkommens abgeschlossen wurde (mindestens halbzeitlich usw.), wird als Erstbeschäftigungsabkommen betrachtet.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[35]">
+          <source xml:lang="nl">Via de <g ctype="x-html-strong">multifunctionele aangifte </g>deelt de werkgever, in het veld 'Maatregelen tot bevordering van de werkgelegenheid' mee met welk type van startbaanovereenkomst de jongere wordt aangeworven en tot welke categorie hij behoort. In het geval van een overeenkomst specifiek voor leerlingen of stagiairs, moet de werkgever eveneens bij de parameters van de tewerkstellingslijn aanduiden over welk 'type van leerling' het gaat. In het veld 'begindatum doelgroepvermindering' moet de werkgever de datum van de allereerste indiensttreding invullen (er wordt voor de berekening van het aantal kwartalen G<g ctype="x-html-sub">x</g> automatisch GEEN rekening gehouden met de kwartalen vóór 1 januari van het jaar dat de werknemer 19 wordt). Deze aanduidingen zijn verplicht en kunnen een impact hebben op de berekening van de jongerenverplichting, het recht op de doelgroepvermindering en/of de berekening van de verschuldigde bijdragen.</source>
+          <target xml:lang="de" state="final">Über die <g ctype="x-html-strong">multifunktionelle Meldung</g> teilt der Arbeitgeber im Feld „Maßnahmen zur Beschäftigungsförderung“ mit, mit welchem Typ von Erstbeschäftigungsabkommen der Jugendliche eingestellt wird und zu welcher Kategorie er gehört. Wenn es einen Vertrag betrifft, der spezifisch für Lehrlinge oder Praktikanten gilt, muss der Arbeitgeber bei den Parametern der Beschäftigungszeile auch angeben, um welche ,Art Lehrling‘ es sich handelt. In dem Feld „Beginndatum Zielgruppenermäßigung“ muss der Arbeitgeber das Datum des allerersten Dienstantritts eintragen (für die Berechnung der Anzahl der Quartale G<g ctype="x-html-sub">x</g> werden Quartale vor dem 01. Januar des Jahres, in dem der Arbeitnehmer 19 wird, automatisch NICHT berücksichtigt). Diese Angaben sind obligatorisch und können sich auf die Berechnung der Jungarbeitnehmerverpflichtung, das Recht der Zielgruppenermäßigung und/oder die Berechnung der geschuldeten Beiträge auswirken.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[36]">
+          <source xml:lang="nl">Daarnaast duidt de werkgever de overeenkomstige doelgroepvermindering aan.</source>
+          <target xml:lang="de" state="final">Daneben gibt der Arbeitgeber die entsprechende Zielgruppenermäßigung an.</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

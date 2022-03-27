@@ -280,24 +280,6 @@ class Extractor
         return false;
     }
 
-    private function hasSomethingToTranslate(\DOMNode $sourceNode): bool
-    {
-        if (!$this->empty($sourceNode->nodeValue)) {
-            return true;
-        }
-        $attributes = $sourceNode->attributes;
-        if (null === $attributes) {
-            return false;
-        }
-        foreach (self::TRANSLATABLE_ATTRIBUTES as $attributeName) {
-            if (null !== $attributes->getNamedItem($attributeName)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private function getXPath(\DOMNode $sourceNode): ?string
     {
         $nodePath = $sourceNode->getNodePath();

@@ -445,7 +445,6 @@ class Extractor
             $this->addId($segment, $sourceNode);
         }
 
-
         if ($sourceNode instanceof \DOMText) {
             $source = new \DOMElement('source', $sourceNode->textContent);
         } else {

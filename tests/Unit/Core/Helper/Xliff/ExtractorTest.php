@@ -5,11 +5,61 @@ declare(strict_types=1);
 namespace Unit\Core\Helper\Xliff;
 
 use EMS\CoreBundle\Helper\Xliff\Extractor;
+use EMS\CoreBundle\Helper\Xliff\Inserter;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Finder\Finder;
 
 class ExtractorTest extends KernelTestCase
 {
+    public function testBrInEmptyParagraph(): void
+    {
+        $rawData = [
+            'nl' => [
+                'body' => "<p>
+    Deze doelgroepvermindering is in elke regio aangepast en/of
+    vervangen. U vindt meer op de desbetreffende pagina's.
+    </p>
+    <p>
+    <br>
+    </p>
+    <p>
+    EOD
+    </p>",
+            ],
+        ];
+
+        $existing = [
+            'de' => [
+                'body' => "<p>
+    [de] Deze doelgroepvermindering is in elke regio aangepast en/of
+    vervangen. U vindt meer op de desbetreffende pagina's.
+    </p>
+    <p>
+    <br>
+    </p>
+    <p>
+    [de] EOD
+    </p>",
+            ],
+        ];
+
+        $extracted = [];
+
+        $xliffParser = new Extractor('nl', 'de', Extractor::XLIFF_1_2);
+        $document = $xliffParser->addDocument('contentType', 'ouuid_1', 'revisionId_1');
+        $xliffParser->addHtmlField($document, '[%locale%][body]', $rawData['nl']['body'], $existing['de']['body']);
+
+        $inserter = new Inserter($xliffParser->getDom());
+        foreach ($inserter->getDocuments() as $document) {
+            $document->extractTranslations($rawData, $extracted);
+        }
+        $this->assertEquals([
+            'de' => [
+                'body' => "<p> [de] Deze doelgroepvermindering is in elke regio aangepast en/of vervangen. U vindt meer op de desbetreffende pagina's. </p><p> <br/> </p><p> [de] EOD </p>",
+            ],
+        ], $extracted);
+    }
+
     public function testXliffExtractions(): void
     {
         $finder = new Finder();
@@ -46,9 +96,9 @@ class ExtractorTest extends KernelTestCase
     public function saveAndCompare(string $absoluteFilePath, string $version, Extractor $xliffParser, string $fileNameWithExtension, string $encoding): void
     {
         $expectedFilename = $absoluteFilePath.DIRECTORY_SEPARATOR.'expected_'.$encoding.$version.'.xlf';
-//        if (!\file_exists($expectedFilename)) {
-        $xliffParser->saveXML($expectedFilename, $encoding);
-//        }
+        if (!\file_exists($expectedFilename)) {
+            $xliffParser->saveXML($expectedFilename, $encoding);
+        }
 
         $temp_file = \tempnam(\sys_get_temp_dir(), 'TC-');
         $xliffParser->saveXML($temp_file, $encoding);

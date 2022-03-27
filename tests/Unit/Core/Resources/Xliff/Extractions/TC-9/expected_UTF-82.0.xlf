@@ -34,6 +34,12 @@
           <target/>
         </segment>
       </unit>
+      <unit id="/html/body/p[2]">
+        <segment id="/html/body/p[2]">
+          <source> <g ctype="lb"/> </source>
+          <target/>
+        </segment>
+      </unit>
       <group id="/html/body/div">
         <unit id="/html/body/div/h3">
           <segment id="/html/body/div/h3">
@@ -55,6 +61,14 @@
           <source>&amp;#13;
     Deze doelgroepvermindering is in elke regio aangepast en/of&amp;#13;
     vervangen. U vindt meer op de desbetreffende pagina's.&amp;#13;
+</source>
+          <target/>
+        </segment>
+      </unit>
+      <unit id="/html/body/p[2]">
+        <segment id="/html/body/p[2]">
+          <source>&amp;#13;
+    &lt;br/&gt;&amp;#13;
 </source>
           <target/>
         </segment>
@@ -87,6 +101,12 @@
       <unit id="/html/body/p[1]">
         <segment id="/html/body/p[1]">
           <source> Deze doelgroepvermindering is in elke regio aangepast en/of vervangen. U vindt meer op de desbetreffende pagina's. </source>
+          <target/>
+        </segment>
+      </unit>
+      <unit id="/html/body/p[2]">
+        <segment id="/html/body/p[2]">
+          <source> <g ctype="lb"/> </source>
           <target/>
         </segment>
       </unit>

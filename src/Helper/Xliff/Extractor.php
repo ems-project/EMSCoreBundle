@@ -225,10 +225,6 @@ class Extractor
 
     private function addGroupNode(\DOMElement $xliffElement, \DOMNode $sourceNode, Crawler $targetCrawler, bool $isFinal, bool $htmlEncodeInlines = false, ?string $id = null): void
     {
-        if (!$this->hasSomethingToTranslate($sourceNode)) {
-            return;
-        }
-
         if ($this->isSegmentNode($sourceNode)) {
             $this->addSegmentNode($xliffElement, $sourceNode, $targetCrawler, $isFinal, $htmlEncodeInlines);
 
@@ -391,7 +387,7 @@ class Extractor
 
     private function addSegmentNode(\DOMElement $xliffElement, ?\DOMNode $sourceNode, ?Crawler $targetCrawler, bool $isFinal, bool $htmlEncodeInlines = false): void
     {
-        if (null !== $sourceNode && !$sourceNode instanceof \DOMElement) {
+        if (null !== $sourceNode && !$sourceNode instanceof \DOMElement && $this->isEmpty($sourceNode->textContent)) {
             return;
         }
         if ((null === $sourceNode || null === $targetCrawler) && $sourceNode !== $targetCrawler) {
@@ -417,7 +413,7 @@ class Extractor
             $sourceAttributes = [
                 'xml:lang' => $this->sourceLocale,
             ];
-            if (null !== $sourceNode) {
+            if (null !== $sourceNode && $sourceNode instanceof \DOMElement) {
                 $attributes = [
                     'restype' => $this->getRestype($sourceNode->nodeName),
                 ];
@@ -449,7 +445,12 @@ class Extractor
             $this->addId($segment, $sourceNode);
         }
 
-        $source = new \DOMElement('source');
+
+        if ($sourceNode instanceof \DOMText) {
+            $source = new \DOMElement('source', $sourceNode->textContent);
+        } else {
+            $source = new \DOMElement('source');
+        }
         $segment->appendChild($source);
 
         $target = new \DOMElement('target');
@@ -490,6 +491,10 @@ class Extractor
             return;
         }
 
+        if ($foundTargetNode instanceof \DOMText) {
+            $text = new \DOMText($foundTargetNode->textContent);
+            $target->appendChild($text);
+        }
         if ($htmlEncodeInlines) {
             foreach ($foundTargetNode->childNodes as $childNode) {
                 $target->appendChild(new \DOMText($childNode->ownerDocument->saveXML($childNode)));
@@ -533,5 +538,10 @@ class Extractor
                 $targetChild->setAttribute('state', 'new');
             }
         }
+    }
+
+    private function isEmpty(string $textContent): bool
+    {
+        return \in_array($this->trimUselessWhiteSpaces($textContent), ['', ' ']);
     }
 }

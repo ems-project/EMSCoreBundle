@@ -27,6 +27,10 @@
           <source xml:lang="en"> Deze doelgroepvermindering is in elke regio aangepast en/of vervangen. U vindt meer op de desbetreffende pagina's. </source>
           <target xml:lang="fr" state="new"/>
         </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="en"> <g ctype="lb"/> </source>
+          <target xml:lang="fr" state="new"/>
+        </trans-unit>
         <group restype="x-html-div" html:class="message alert" id="/html/body/div">
           <trans-unit restype="x-html-h3" id="/html/body/div/h3">
             <source xml:lang="en"> Vlaams Gewest: </source>
@@ -43,6 +47,12 @@
           <source xml:lang="en">&amp;#13;
     Deze doelgroepvermindering is in elke regio aangepast en/of&amp;#13;
     vervangen. U vindt meer op de desbetreffende pagina's.&amp;#13;
+</source>
+          <target xml:lang="fr" state="new"/>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="en">&amp;#13;
+    &lt;br/&gt;&amp;#13;
 </source>
           <target xml:lang="fr" state="new"/>
         </trans-unit>
@@ -69,6 +79,10 @@
       <group id="[%locale%][body3]">
         <trans-unit restype="x-html-p" id="/html/body/p[1]">
           <source xml:lang="en"> Deze doelgroepvermindering is in elke regio aangepast en/of vervangen. U vindt meer op de desbetreffende pagina's. </source>
+          <target xml:lang="fr" state="new"/>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="en"> <g ctype="lb"/> </source>
           <target xml:lang="fr" state="new"/>
         </trans-unit>
         <group restype="x-html-div" html:class="message alert" id="/html/body/div">

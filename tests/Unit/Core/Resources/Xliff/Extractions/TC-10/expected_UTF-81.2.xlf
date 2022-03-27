@@ -34,9 +34,7 @@
               <target xml:lang="fr" state="new"/>
             </trans-unit>
             <trans-unit id="/html/body/ul/li/text()[2]">
-              <source xml:lang="en"> die&#13;
-        hij in dienst neemt met een startbaanovereenkomst&#13;
-        </source>
+              <source xml:lang="en"> die hij in dienst neemt met een startbaanovereenkomst </source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
             <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/ul/li/ul">
@@ -64,9 +62,7 @@
               <target xml:lang="fr" state="new"/>
             </trans-unit>
             <trans-unit id="/html/body/ul/li/text()[2]">
-              <source xml:lang="en"> die&#13;
-        hij in dienst neemt met een startbaanovereenkomst&#13;
-        </source>
+              <source xml:lang="en"> die hij in dienst neemt met een startbaanovereenkomst </source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
             <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/ul/li/ul">
@@ -103,9 +99,7 @@
               <target xml:lang="fr" state="new"/>
             </trans-unit>
             <trans-unit id="/html/body/ul/li/text()[2]">
-              <source xml:lang="en"> die&#13;
-        hij in dienst neemt met een startbaanovereenkomst&#13;
-        </source>
+              <source xml:lang="en"> die hij in dienst neemt met een startbaanovereenkomst </source>
               <target xml:lang="fr" state="new"/>
             </trans-unit>
             <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/ul/li/ul">

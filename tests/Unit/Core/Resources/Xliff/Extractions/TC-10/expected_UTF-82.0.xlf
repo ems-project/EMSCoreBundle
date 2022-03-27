@@ -44,9 +44,7 @@
           </unit>
           <unit id="/html/body/ul/li/text()[2]">
             <segment id="/html/body/ul/li/text()[2]">
-              <source> die&#13;
-        hij in dienst neemt met een startbaanovereenkomst&#13;
-        </source>
+              <source> die hij in dienst neemt met een startbaanovereenkomst </source>
               <target/>
             </segment>
           </unit>
@@ -84,9 +82,7 @@
           </unit>
           <unit id="/html/body/ul/li/text()[2]">
             <segment id="/html/body/ul/li/text()[2]">
-              <source> die&#13;
-        hij in dienst neemt met een startbaanovereenkomst&#13;
-        </source>
+              <source> die hij in dienst neemt met een startbaanovereenkomst </source>
               <target/>
             </segment>
           </unit>
@@ -133,9 +129,7 @@
           </unit>
           <unit id="/html/body/ul/li/text()[2]">
             <segment id="/html/body/ul/li/text()[2]">
-              <source> die&#13;
-        hij in dienst neemt met een startbaanovereenkomst&#13;
-        </source>
+              <source> die hij in dienst neemt met een startbaanovereenkomst </source>
               <target/>
             </segment>
           </unit>

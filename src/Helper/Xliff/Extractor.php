@@ -428,7 +428,7 @@ class Extractor
         }
 
         if ($sourceNode instanceof \DOMText) {
-            $source = new \DOMElement('source', $sourceNode->textContent);
+            $source = new \DOMElement('source', $this->trimUselessWhiteSpaces($sourceNode->textContent));
         } else {
             $source = new \DOMElement('source');
         }
@@ -473,7 +473,7 @@ class Extractor
         }
 
         if ($foundTargetNode instanceof \DOMText) {
-            $text = new \DOMText($foundTargetNode->textContent);
+            $text = new \DOMText($this->trimUselessWhiteSpaces($foundTargetNode->textContent));
             $target->appendChild($text);
         }
         if ($htmlEncodeInlines) {

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:939d282f60307f701d269f4d79ecf791de139886:1015722" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Doelgroepvermindering -- algemene bepalingen en berekeningsformule</source>
+        <target xml:lang="de" state="final">Zielgruppenermäßigung – Allgemeine Bestimmungen und Berechnungsformel</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Doelgroepvermindering - algemeenheden</source>
+        <target xml:lang="de" state="final">Zielgruppenermäßigung - Allgemeines</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit>
+          <source xml:lang="nl"/>
+          <target xml:lang="de" state="final"/>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-h2" id="/html/body/h2[1]">
+          <source xml:lang="nl">Wat?</source>
+          <target xml:lang="de" state="final">Was?</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">De doelgroepverminderingen beogen ofwel een bepaalde groep werkgevers te favoriseren, ofwel bepaalde werknemers. Per tewerkstellingslijn van de werknemer kan de werkgever één van deze doelgroepverminderingen aanduiden voor zover zowel hijzelf als de werknemer aan de criteria voldoet.</source>
+          <target xml:lang="de" state="final">Mit den Zielgruppenermäßigungen werden entweder eine bestimmte Arbeitgebergruppe oder bestimmte Arbeitnehmer begünstigt. Pro Beschäftigungszeile kann der Arbeitgeber eine dieser Zielgruppenermäßigungen angeben, sofern sowohl er als auch der Arbeitnehmer den Kriterien entsprechen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">In tegenstelling met de structurele vermindering, moet de werknemer niet a priori onderworpen zijn aan alle regelingen. Indien dit criterium bij een doelgroepvermindering meespeelt zal dit bij de bespreking van die doelgroepvermindering worden toegelicht.</source>
+          <target xml:lang="de" state="final">Im Gegensatz zur strukturellen Ermäßigung muss der Arbeitnehmer nicht unbedingt allen Regelungen unterliegen. Wenn dieses Kriterium bei einer Zielgruppenermäßigung anzuwenden ist, wird dies bei der Erörterung der Zielgruppenermäßigung erläutert.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[2]">
+          <source xml:lang="nl">Berekening en forfaits</source>
+          <target xml:lang="de" state="final">Berechnung und Pauschalen</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">De doelgroepvermindering (P<g ctype="x-html-sub">g</g>) berekent men, per tewerkstellingslijn, door een forfaitair verminderingsbedrag te vermenigvuldigen met de vaste vermenigvuldigingsfactor en de prestatiebreuk:</source>
+          <target xml:lang="de" state="final">Die Zielgruppenermäßigung (P<g ctype="x-html-sub">g</g>) berechnet man pro Beschäftigungszeile, indem ein pauschaler Ermäßigungsbetrag mit dem festen Multiplikator und dem Leistungsbruch multipliziert wird:</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl">P<g ctype="x-html-sub">g</g> = G x µ x β<g ctype="x-html-sub">g</g></source>
+          <target xml:lang="de" state="final">P<g ctype="x-html-sub">g</g> = G x µ x β<g ctype="x-html-sub">g</g></target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl">P<g ctype="x-html-sub">g</g> wordt afgerond tot op de eurocent waarbij 0,005 EUR wordt afgerond naar 0,01 EUR.</source>
+          <target xml:lang="de" state="final">P<g ctype="x-html-sub">g</g> wird auf den Eurocent gerundet, wobei 0,005 EUR auf 0,01 EUR aufgerundet wird.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl">Afhankelijk van de beoogde doelgroep stemt <g ctype="x-html-strong">G </g>overeen met één van de volgende forfaits. De vermindering wordt toegekend gedurende een aantal kwartalen, variërend volgens de karakteristieken van de doelgroep. De vermindering bedraagt voor:</source>
+          <target xml:lang="de" state="final">Je nach der Zielgruppe entspricht <g ctype="x-html-strong">G </g>einer der folgenden Pauschalen. Die Ermäßigung gilt für einige Quartale und hängt auch von den Merkmalen der Zielgruppe ab. Die Ermäßigung beträgt deshalb für:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[1]">
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[1]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">1</g> : 1.000,00 EUR,</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">1</g> = 1.000 EUR;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">2 </g>: 400,00 EUR,</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">2</g>: 400,00 EUR,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[3]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">3 </g>: 300,00 EUR,</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">3</g>: 300,00 EUR,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[4]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">4</g> : 600,00 EUR,</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">4</g>: 600,00 EUR,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[5]">
+            <source xml:lang="nl"> G<g ctype="x-html-sub">5</g> : 750,00 EUR,</source>
+            <target xml:lang="de" state="final"> G<g ctype="x-html-sub">5</g>: 750,00 EUR,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[6]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">6</g> : 1.150,00 EUR,</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">6</g>: 1.150,00 EUR,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[7]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">7</g> : het saldo van de verschuldigde basisbijdragen na de eventuele sociale maribel aftrek en na toepassing van de structurele vermindering,</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">7</g>: Der Saldo der geschuldeten Basisbeiträge nach eventuellem Abzug der „Maribel Sozial“-Maßnahme und nach Anwendung der strukturellen Ermäßigung,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[8]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">8</g> : 1.500,00 EUR,</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">8</g> = 1.500 EUR;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[9]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">9</g> : 800,00 EUR,</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">9</g>: 800,00 EUR,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[10]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">10</g>: 500,00 EUR,</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">10</g>: 500,00 EUR,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[11]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">11</g>: 770,00 EUR,</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">11</g>: 770,00 EUR,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[12]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">12</g>: 726,50 EUR,</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">12</g>: 726,50 EUR,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[13]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">13</g> : het saldo van de verschuldigde basisbijdragen, verminderd met de loonmatigingsbijdrage (DmfAPPL),</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">13</g>: der Saldo der geschuldeten Basisbeiträge, verringert um den Lohnermäßigungsbeitrag (DmfAPPL),</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[14]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">14</g>: 1.550,00 EUR,</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">14</g>: 1.550,00 EUR,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[15]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">15</g>: 1.050,00 EUR,</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">15</g>: 1.050,00 EUR,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[16]">
+            <source xml:lang="nl">G<g ctype="x-html-sub">16</g>: 450,00 EUR</source>
+            <target xml:lang="de" state="final">G<g ctype="x-html-sub">16</g>: 450,00 EUR</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[3]">
+          <source xml:lang="nl">Regionalisering</source>
+          <target xml:lang="de" state="final">Regionalisierung</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[7]">
+          <source xml:lang="nl">In het kader van de 6<g ctype="x-html-sup">de</g> Staatshervorming, werden vanaf het 3<g ctype="x-html-sup">de</g> kwartaal 2014 een aantal bevoegdheden geregionaliseerd, waaronder het grootste deel van de huidige ‘specifieke’ doelgroepwerkgeversbijdrageverminderingen. De eerder ‘algemene’ federale werkgeversbijdrageverminderingen kunnen verder toegepast worden. In de instructies zal u merken dat gradueel een aantal specifieke werkgeversbijdrageverminderingen geschrapt werden en dat er een aantal overeenkomstige doelgroepverminderingen werden gecreëerd. </source>
+          <target xml:lang="de" state="final">Im Rahmen der 6.<g ctype="x-html-sup"/> Staatsreform wurden ab dem 3.<g ctype="x-html-sup"/> Quartal 2014 eine Reihe von Zuständigkeiten regionalisiert, darunter der größte Teil der derzeitigen spezifischen Zielgruppen-Arbeitgeberbeitragsermäßigungen. Die früheren ,allgemeinen‘ föderalen Arbeitgeberbeitragsermäßigungen können weiter angewandt werden. In den Anweisungen werden Sie feststellen, dass allmählich eine Reihe spezifischer Arbeitgeberbeitragsermäßigungen abgeschafft wurde und dass eine entsprechende Zahl von Zielgruppenermäßigungen eingerichtet wurde. </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[8]">
+          <source xml:lang="nl">De RSZ is de enige administratieve en technische operator voor de aangifte en uitvoering van de regionale doelgroepverminderingen, maar enkel de Gewesten kunnen voor de tewerkstelling op hun grondgebied een regionale doelgroepverminderingen afschaffen, wijzigen of nieuwe doelgroepverminderingen creëren. De federale overheid kan de bestaande regionale doelgroepverminderingen niet meer wijzigen. Zolang de Gewesten de vóór 1 juli 2014 ingevoerde doelgroepverminderingen niet wijzigen, blijven deze van toepassing.</source>
+          <target xml:lang="de" state="final">Das LSS ist der einzige administrative und technische Operator für die Meldung und Ausführung der regionalen Zielgruppenermäßigungen, aber nur die Regionen können für die Beschäftigung auf ihrem Gebiet eine regionale Zielgruppenermäßigung abschaffen, ändern oder neue Zielgruppenermäßigungen schaffen. Die föderale Regierung kann die bestehenden regionalen Zielgruppenermäßigungen nicht mehr ändern. So lange die Regionen die vor dem 01. Juli 2014 eingeführten Zielgruppenermäßigungen nicht ändern, werden diese weiterhin angewendet.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[9]">
+          <source xml:lang="nl">De zone 'identificatienummer van de lokale eenheid' op het niveau van de tewerkstellingslijn speelt een essentiële rol in het bepalen van de toepasselijke verminderingen. Elk gewest financiert de doelgroepverminderingen die op zijn grondgebied toegekend worden. De RSZ legt iedere doelgroepvermindering die toegekend wordt, ten laste van het Gewest op basis van de plaats van de tewerkstelling van de werknemer die geniet van de doelgroepvermindering. Een doelgroepvermindering wordt geweigerd als het vestigingseenheidsnummer niet gekend is in de Kruispuntbank van Ondernemingen voor het kwartaal waarin de doelgroepvermindering gevraagd wordt, of als er geen geldig of correct vestigingseenheidsnummer in <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/fill_in_dmfa/dmfa_fillinrules/workerrecord_occupationrecords/occupationrecord.html">de DmfA</g> (of in <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/fill_in_dmfappl/workerrecord_occupationrecords/occupationrecord/number_localunit.html">de DmfAPPL</g>) vermeld wordt. </source>
+          <target xml:lang="de" state="final">Das Feld ‚Identifikationsnummer der lokalen Einheit‘ auf der Ebene der Beschäftigungszeile spielt eine wichtige Rolle bei der Bestimmung der anwendbaren Ermäßigungen. Jede Region finanziert ab die Zielgruppenermäßigungen, die in ihrem Gebiet bewilligt werden. Das LSS wird jede Zielgruppenermäßigung, die bewilligt wird, der Region aufgrund des Beschäftigungsortes des Arbeitnehmers, der von der Zielgruppenermäßigung profitiert, zur Last legen. Eine Zielgruppenermäßigung wird abgelehnt, wenn die Niederlassungseinheitsnummer in der Zentralen Datenbank der Unternehmen nicht für das Quartal, in dem die Zielgruppenermäßigung beantragt wird, erfasst wird oder wenn <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/fill_in_dmfa/dmfa_fillinrules/workerrecord_occupationrecords/occupationrecord.html">in der DmfA</g> (oder in der <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/fill_in_dmfappl/workerrecord_occupationrecords/occupationrecord/number_localunit.html">DmfAPPL</g>) keine gültige oder korrekte Niederlassungseinheitsnummer angegeben wird. </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[10]">
+          <source xml:lang="nl">Voor volgende doelgroepen bestaan federale doelgroepmaatregelen:</source>
+          <target xml:lang="de" state="final">Für die folgenden Zielgruppen bestehen föderale Zielgruppenmaßnahmen:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[2]">
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]">
+            <source xml:lang="nl">Nieuwe werkgevers – eerste aanwervingen</source>
+            <target xml:lang="de" state="final">Neue Arbeitgeber – Ersteinstellungen</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]">
+            <source xml:lang="nl">Werkgevers die een collectieve arbeidsduurvermindering of een vierdagenweek instellen</source>
+            <target xml:lang="de" state="final">Arbeitgeber, die eine kollektive Arbeitszeitverkürzung oder Viertagewoche einführen</target>
+          </trans-unit>
+          <group restype="listitem" id="/html/body/ul[2]/li[3]">
+            <trans-unit restype="x-html-p" id="/html/body/ul[2]/li[3]/p">
+              <source xml:lang="nl"> Tijdelijke collectieve arbeidsduurvermindering - coronamaatregel</source>
+              <target xml:lang="de" state="final"> Zeitweilige kollektive Arbeitszeitverkürzung – Corona-Maßnahme</target>
+            </trans-unit>
+          </group>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[4]">
+            <source xml:lang="nl">Horeca</source>
+            <target xml:lang="de" state="final">Hotels und Gaststättengewerbe</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[5]">
+            <source xml:lang="nl">Contractuele vervangers openbare sector</source>
+            <target xml:lang="de" state="final">Vertragliche Ersatzkräfte öffentlicher Sektor</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[11]">
+          <source xml:lang="nl">Voor volgende doelgroepen bestaan geregionaliseerde doelgroepmaatregelen</source>
+          <target xml:lang="de" state="final">Für die folgenden Zielgruppen bestehen regionale Zielgruppenmaßnahmen:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[3]">
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[1]">
+            <source xml:lang="nl">Oudere werknemers - Brussel</source>
+            <target xml:lang="de" state="final">Ältere Arbeitnehmer – Brüssel</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[2]">
+            <source xml:lang="nl">Oudere werknemers - Duitstalige Gemeenschap</source>
+            <target xml:lang="de" state="final">Ältere Arbeitnehmer - Deutschsprachige Gemeinschaft</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[3]">
+            <source xml:lang="nl">Oudere werknemers - Vlaanderen</source>
+            <target xml:lang="de" state="final">Ältere Arbeitnehmer – Flandern</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[4]">
+            <source xml:lang="nl">Oudere werknemers - Wallonië</source>
+            <target xml:lang="de" state="final">Ältere Arbeitnehmer - Wallonie</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[5]">
+            <source xml:lang="nl">Langdurig werkzoekenden - algemene categorie</source>
+            <target xml:lang="de" state="final">Langzeitarbeitssuchende – allgemeine Kategorie</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[6]">
+            <source xml:lang="nl">Langdurig werkzoekenden - doorstromingsprogramma's</source>
+            <target xml:lang="de" state="final">Langzeitarbeitssuchende – Berufsübergangsprogramme</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[7]">
+            <source xml:lang="nl">Langdurig werkzoekenden - SINE</source>
+            <target xml:lang="de" state="final">Langzeitarbeitssuchende - ESW</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[8]">
+            <source xml:lang="nl">Werknemers artikel 60, § 7, van de wet van 8 juli 1976 (OCMW's)</source>
+            <target xml:lang="de" state="final">Arbeitnehmer Artikel 60, § 7 des Gesetzes vom 08. Juli 1976 (ÖSZH)</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[9]">
+            <source xml:lang="nl">Jonge werknemers</source>
+            <target xml:lang="de" state="final">Junge Arbeitnehmer</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[10]">
+            <source xml:lang="nl">Jonge werknemers - Vlaanderen</source>
+            <target xml:lang="de" state="final">Junge Arbeitnehmer – Flandern</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[11]">
+            <source xml:lang="nl">Mentors</source>
+            <target xml:lang="de" state="final">Mentoren</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[12]">
+            <source xml:lang="nl">Herstructurering</source>
+            <target xml:lang="de" state="final">Umstrukturierung</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[13]">
+            <source xml:lang="nl">Gesubsidieerde contractuelen</source>
+            <target xml:lang="de" state="final">Bezuschusste Vertragsbedienstete</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[14]">
+            <source xml:lang="nl">Huispersoneel</source>
+            <target xml:lang="de" state="final">Hauspersonal</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[15]">
+            <source xml:lang="nl">Kinderopvang</source>
+            <target xml:lang="de" state="final">Kinderbetreuung</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[16]">
+            <source xml:lang="nl">Kunstenaars</source>
+            <target xml:lang="de" state="final">Künstler</target>
+          </trans-unit>
+        </group>
+        <group restype="x-html-div" html:class="alert message" id="/html/body/div">
+          <trans-unit restype="x-html-p" id="/html/body/div/p">
+            <source xml:lang="nl">De toepassing van deze doelgroepen hangt af van het correct vermelden van het "identificatienummer van de lokale eenheid (de vestigingseenheid)" op het niveau van de tewerkstellingslijn.</source>
+            <target xml:lang="de" state="final">Die Anwendung dieser Zielgruppen hängt von der korrekten Angabe der „Identifizierungsnummer der lokalen Einheit (der Niederlassungseinheit)“ auf dem Niveau der Beschäftigungszeile ab.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[12]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

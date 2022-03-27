@@ -387,7 +387,7 @@ class Extractor
 
     private function addSegmentNode(\DOMElement $xliffElement, ?\DOMNode $sourceNode, ?Crawler $targetCrawler, bool $isFinal, bool $htmlEncodeInlines = false): void
     {
-        if (null !== $sourceNode && !$sourceNode instanceof \DOMElement && $this->isEmpty($sourceNode->textContent)) {
+        if (null !== $sourceNode && !$sourceNode instanceof \DOMElement && $this->isEmpty($sourceNode)) {
             return;
         }
         if ((null === $sourceNode || null === $targetCrawler) && $sourceNode !== $targetCrawler) {
@@ -518,6 +518,9 @@ class Extractor
                 }
                 $this->fillInline($child, $subNode);
             } elseif ($child instanceof \DOMText) {
+                if ($this->isEmpty($child)) {
+                    continue;
+                }
                 $source->appendChild(new \DOMText($this->trimUselessWhiteSpaces($child->textContent)));
             }
         }
@@ -539,8 +542,19 @@ class Extractor
         }
     }
 
-    private function isEmpty(string $textContent): bool
+    private function isEmpty(\DOMNode $sourceNode): bool
     {
-        return \in_array($this->trimUselessWhiteSpaces($textContent), ['', ' ']);
+        $trimmed = $this->trimUselessWhiteSpaces($sourceNode->textContent);
+        if ('' === $trimmed) {
+            return true;
+        }
+        if (' ' === $trimmed && $sourceNode->nextSibling instanceof \DOMElement && !\in_array($sourceNode->nextSibling->nodeName, self::INTERNAL_TAGS)) {
+            return true;
+        }
+        if (' ' === $trimmed && $sourceNode->previousSibling instanceof \DOMElement && !\in_array($sourceNode->previousSibling->nodeName, self::INTERNAL_TAGS)) {
+            return true;
+        }
+
+        return false;
     }
 }

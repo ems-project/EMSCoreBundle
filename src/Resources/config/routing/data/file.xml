@@ -27,25 +27,25 @@
     <route id="file.init-upload" path="/init-upload/{sha1}/{size}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::initUploadFileAction</default>
         <default key="_format">json</default>
-        <default key="apiRoute">false</default>
+        <default key="apiRoute"><bool>false</bool></default>
     </route>
     <route id="emsco_file_data_init_upload" path="/init-upload" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::initUploadFileAction</default>
         <default key="_format">json</default>
-        <default key="apiRoute">false</default>
+        <default key="apiRoute"><bool>false</bool></default>
         <default key="sha1" xsi:nil="true"/>
         <default key="size" xsi:nil="true"/>
     </route>
     <route id="file.uploadchunk" path="/upload-chunk/{sha1}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::uploadChunkAction</default>
         <default key="_format">json</default>
-        <default key="apiRoute">false</default>
+        <default key="apiRoute"><bool>false</bool></default>
         <default key="hash" xsi:nil="true"/>
     </route>
     <route id="emsco_file_data_chunk_upload" path="/chunk/{hash}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::uploadChunkAction</default>
         <default key="_format">json</default>
-        <default key="apiRoute">false</default>
+        <default key="apiRoute"><bool>false</bool></default>
         <default key="sha1" xsi:nil="true"/>
     </route>
 </routes>

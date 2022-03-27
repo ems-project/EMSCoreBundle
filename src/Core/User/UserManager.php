@@ -6,9 +6,9 @@ namespace EMS\CoreBundle\Core\User;
 
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
+use FOS\UserBundle\Model\UserManagerInterface as FosUserManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use FOS\UserBundle\Model\UserManagerInterface as FosUserManager;
 
 final class UserManager
 {
@@ -21,20 +21,20 @@ final class UserManager
         $this->fosUserManager = $fosUserManager;
     }
 
-    public function getAuthenticatedUser(): UserInterface
+    public function getAuthenticatedUser(): User
     {
         $token = $this->getToken();
         $user = $token->getUser();
 
-        if (!$user instanceof UserInterface) {
+        if (!$user instanceof User) {
             throw new \RuntimeException('Invalid user!');
         }
 
-        return  $user;
+        return $user;
     }
 
     /**
-     * @param UserInterface|User $user
+     * @param User $user
      */
     public function update(User $user): void
     {

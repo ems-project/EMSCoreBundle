@@ -26,7 +26,7 @@ class ProfileController extends AbstractController
     public function show(): Response
     {
         return $this->render('@EMSCore/user/profile/show.html.twig', [
-            'user' => $this->userManager->getAuthenticatedUser()
+            'user' => $this->userManager->getAuthenticatedUser(),
         ]);
     }
 
@@ -44,7 +44,7 @@ class ProfileController extends AbstractController
         }
 
         return $this->render('@EMSCore/user/profile/edit.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 }

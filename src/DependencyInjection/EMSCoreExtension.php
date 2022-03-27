@@ -182,7 +182,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
                 'db_driver' => 'orm',
                 'from_email' => $fromEmail,
                 'firewall_name' => 'main',
-                'user_class' => 'EMS\CoreBundle\Entity\User'
+                'user_class' => 'EMS\CoreBundle\Entity\User',
             ]);
         }
     }

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:b09ec21885f7cfb042c66b64bc45258d01e878b1:1017926" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">De structurele vermindering (DmfA)</source>
+        <target xml:lang="de" state="final">Die strukturelle Ermäßigung (DmfA)</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">De structurele vermindering</source>
+        <target xml:lang="de" state="final">Strukturelle Ermäßigung</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit>
+          <source xml:lang="nl"/>
+          <target xml:lang="de" state="final"/>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-h2" id="/html/body/h2[1]">
+          <source xml:lang="nl">Betrokken werkgevers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitgeber</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Alle werkgevers die werknemers tewerkstellen die onderworpen zijn aan het geheel der regelingen.</source>
+          <target xml:lang="de" state="final">Alle Arbeitgeber, die Arbeitnehmer beschäftigen, die allen Regelungen unterliegen.</target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message" id="/html/body/div[1]">
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p">
+            <source xml:lang="nl">Werkgevers Plaatselijke en Provinciale Overheden (aangifte DmfAPPL) komen dus niet in aanmerking.</source>
+            <target xml:lang="de" state="final">Arbeitgeber Lokale und Provinziale Verwaltungen (Meldung DmfAPPL) kommen daher nicht in Betracht.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[2]">
+          <source xml:lang="nl">Betrokken werknemers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitnehmer</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Alle werknemers die onderworpen zijn aan het geheel der regelingen. Voor de RSZ zijn dit:</source>
+          <target xml:lang="de" state="final">Alle Arbeitnehmer, die allen Regelungen unterliegen: Für das LSS sind dies:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[1]">
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[1]">
+            <source xml:lang="nl">de rust- en overlevingspensioenen voor werknemers;</source>
+            <target xml:lang="de" state="final">Alters- und Hinterbliebenenpensionen für Arbeitnehmer;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]">
+            <source xml:lang="nl">de ziekte- en invaliditeitsverzekering, sector geneeskundige verzorging;</source>
+            <target xml:lang="de" state="final">Kranken- und Invalidenversicherung, Sektor Gesundheitspflege;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[3]">
+            <source xml:lang="nl">de ziekte- en invaliditeitsverzekering, sector uitkeringen;</source>
+            <target xml:lang="de" state="final">Kranken- und Invalidenversicherung, Sektor Entschädigungen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[4]">
+            <source xml:lang="nl">de werkloosheid;</source>
+            <target xml:lang="de" state="final">Arbeitslosigkeit;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[5]">
+            <source xml:lang="nl">de beroepsziekten;</source>
+            <target xml:lang="de" state="final">Berufskrankheiten;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[6]">
+            <source xml:lang="nl">de arbeidsongevallen;</source>
+            <target xml:lang="de" state="final">Arbeitsunfälle;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[7]">
+            <source xml:lang="nl">de jaarlijkse vakantie.</source>
+            <target xml:lang="de" state="final">Jahresurlaub.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">Voor de privésector komen dus onder andere niet in aanmerking:</source>
+          <target xml:lang="de" state="final">Für den privaten Sektor kommen deshalb u. a. nicht in Betracht:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[2]">
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]">
+            <source xml:lang="nl">de jongeren tot 31 december van het jaar waarin ze de leeftijd van 18 jaar bereiken;</source>
+            <target xml:lang="de" state="final">Jugendliche bis zum 31. Dezember des Jahres, in dem sie 18 Jahre alt werden;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]">
+            <source xml:lang="nl">de betaalde sportbeoefenaars;</source>
+            <target xml:lang="de" state="final">entlohnte Sportler;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[3]">
+            <source xml:lang="nl">gelegenheidsarbeiders in de land- en tuinbouw;</source>
+            <target xml:lang="de" state="final">Gelegenheitsarbeitnehmer in der Landwirtschaft und im Gartenbau;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[4]">
+            <source xml:lang="nl">de geneesheren in opleiding tot specialist;</source>
+            <target xml:lang="de" state="final">Ärzte in Ausbildung zum Facharzt;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[5]">
+            <source xml:lang="nl">de onthaalouders.</source>
+            <target xml:lang="de" state="final">Tageseltern.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl">De meeste statutaire en contractuele personeelsleden van de <g ctype="x-html-strong">openbare sector</g> vallen niet onder alle socialezekerheidsregelingen en komen dus niet in aanmerking voor de vermindering. De Koninklijke Muntschouwburg  en het Paleis voor Schone Kunsten komen voor al hun personeel tewerkgesteld onder arbeidsovereenkomst echter wel in aanmerking.</source>
+          <target xml:lang="de" state="final">Die meisten statutarischen und vertraglich angestellten Personalmitglieder des <g ctype="x-html-strong">öffentlichen Sektors</g> fallen nicht unter alle Sozialversicherungsregeln und kommen deshalb für die Ermäßigung nicht in Betracht. Das mit Arbeitsvertrag angestellte Personal des Théâtre Royal de la Monnaie und des Palais des Beaux-Arts kommen dafür jedoch in Betracht.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl">De mogelijkheid om de vermindering toe te passen is bijgevolg alleen voorzien voor die werkgevers uit de openbare sector die personeelsleden kunnen tewerkstellen die onder alle regelingen vallen (bv. kerkfabrieken, erkende maatschappijen voor het bouwen van goedkope woningen, polders en wateringen, bepaalde plaatselijke vervoermaatschappijen, HR Rail, de naamloze vennootschappen van publiek recht 'Brussels South Charleroi Airport Security', 'Liège Airport Security' en 'le circuit de Spa-Francorchamps', ...).</source>
+          <target xml:lang="de" state="final">Die Möglichkeit der Anwendung der Ermäßigung ist deshalb nur für die Arbeitgeber aus dem öffentlichen Sektor vorgesehen, die Personal beschäftigen können, das unter alle Regelungen fällt (z. B. Kirchenfabriken, zugelassene Gesellschaften für sozialen Wohnungsbau, Bewässerungs- und Entwässerungsgenossenschaften, bestimmte öffentliche Beförderungsgesellschaften, HR Rail, die öffentlich-rechtlichen Aktiengesellschaften „Brussels South Charleroi Airport-Security“, „Liège-Airport-Security“ und „Le Circuit de Spa-Francorchamps“, …).</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[3]">
+          <source xml:lang="nl">Bedrag van de vermindering</source>
+          <target xml:lang="de" state="final">Betrag der Ermäßigung</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl">De <g ctype="x-html-strong">structurele vermindering (P<g ctype="x-html-sub">s</g>)</g> berekent men door een forfaitair verminderingsbedrag te vermenigvuldigen met de vaste vermenigvuldigingsfactor en de prestatiebreuk:</source>
+          <target xml:lang="de" state="final">Die <g ctype="x-html-strong">strukturelle Ermäßigung (P<g ctype="x-html-sub">s</g>)</g> berechnet man, indem ein pauschaler Ermäßigungsbetrag mit dem festen Multiplikator und der Leistungsbruchzahl multipliziert wird:</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[7]">
+          <source xml:lang="nl">
+            <g ctype="x-html-strong">P<g ctype="x-html-sub">s</g> = R x µ x ß<g ctype="x-html-sub">s</g></g>
+          </source>
+          <target xml:lang="de" state="final">
+            <g ctype="x-html-strong">P<g ctype="x-html-sub">s</g> = R x µ x ß<g ctype="x-html-sub">s</g></g>
+          </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[8]">
+          <source xml:lang="nl">P<g ctype="x-html-sub">s</g> wordt afgerond tot op de eurocent waarbij 0,005 EUR wordt afgerond naar 0,01 EUR.</source>
+          <target xml:lang="de" state="final">P<g ctype="x-html-sub">s</g> wird auf den Eurocent gerundet, wobei 0,005 EUR auf 0,01 EUR aufgerundet wird.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[9]">
+          <source xml:lang="nl">Het forfaitaire verminderingsbedrag <g ctype="x-html-strong">R</g> wordt samengesteld uit een vast forfaitair bedrag<g ctype="x-html-strong"> F</g>, een lagelonencomponent indien het refertekwartaalloon <g ctype="x-html-strong">S </g>lager is dan een vastgelegde loongrens <g ctype="x-html-strong">S<g ctype="x-html-sub">0</g></g> en een hogelonencomponent indien het loon <g ctype="x-html-strong">W </g>hoger is dan een vastgelegde loongrens <g ctype="x-html-strong">S<g ctype="x-html-sub">1</g></g>.</source>
+          <target xml:lang="de" state="final">Die Ermäßigungspauschale <g ctype="x-html-strong">R</g> umfasst eine feste Pauschale<g ctype="x-html-strong"> F</g>, eine Niedriglohnkomponente, wenn der Referenzquartalslohn <g ctype="x-html-strong">S </g>unter einer festgelegten Lohngrenze <g ctype="x-html-strong">S<g ctype="x-html-sub">0</g></g> liegt und eine Hochlohnkomponente, wenn der Lohn <g ctype="x-html-strong">W </g>eine festgelegte Lohngrenze <g ctype="x-html-strong">S<g ctype="x-html-sub">1</g></g> überschreitet.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[10]">
+          <source xml:lang="nl">Vanaf 2012 worden S<g ctype="x-html-sub">0</g> voor de beschutte werkplaatsen en S<g ctype="x-html-sub">1</g> voor alle categorieën aangepast bij elke verhoging van de loongrenzen van de werkbonus als gevolg van een indexaanpassing. Vanaf 2014 wordt ook S<g ctype="x-html-sub">0</g> voor de algemene categorie en voor de categorie sociale maribel automatisch aangepast. De wijziging loopt vanaf het kwartaal dat volgt op het kwartaal waarin deze loongrenzen verhoogd worden of, indien deze verhoging samenvalt met het begin van een kwartaal, vanaf het kwartaal van verhoging van de loongrenzen.</source>
+          <target xml:lang="de" state="final">Ab 2012 werden infolge einer Indexanpassung S<g ctype="x-html-sub">0</g> für die beschützten Werkstätten und S<g ctype="x-html-sub">1</g> für alle Kategorien bei jeder Erhöhung der Lohngrenzen des Arbeitsbonus angepasst. Ab 2014 wird auch S<g ctype="x-html-sub">0</g> für die allgemeine Kategorie und für die Kategorie „Maribel sozial“ automatisch angepasst. Die Änderung wird ab dem Quartal wirksam, das auf das Quartal folgt, in dem diese Lohngrenzen erhöht werden, oder, wenn diese Erhöhung bei Quartalsbeginn erfolgt, ab dem Quartal der Erhöhung der Lohngrenzen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[11]">
+          <source xml:lang="nl">
+            <g ctype="x-html-strong">R = F + α x (S<g ctype="x-html-sub">0</g> – S) + δ x (W – S<g ctype="x-html-sub">1</g>) </g>
+          </source>
+          <target xml:lang="de" state="final">
+            <g ctype="x-html-strong">R = F + α x (S<g ctype="x-html-sub">0</g> – S) + δ x (W – S<g ctype="x-html-sub">1</g>)</g>
+          </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[12]">
+          <source xml:lang="nl">De hellingscoëfficiënt α (‘alfa’) vergroot het complement lineair naargelang het <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/deductions/structuralreduction_targetgroupreductions/introduction.html">referteloon <g ctype="x-html-strong">S</g></g> lager is ten opzichte van de lageloongrens S<g ctype="x-html-sub">0</g>. Het complement α x (S<g ctype="x-html-sub">0</g> – S) wordt afzonderlijk afgerond tot op de eurocent waarbij 0,005 EUR wordt afgerond naar 0,01 EUR, en wordt als 0,00 EUR beschouwd mocht het resultaat van de berekening negatief zijn.</source>
+          <target xml:lang="de" state="final">Der Neigungskoeffizient α („Alpha“) vergrößert das Komplement linear, je nachdem, ob der <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/deductions/structuralreduction_targetgroupreductions/introduction.html">Referenzlohn <g ctype="x-html-strong">S</g></g> unter der Niedriglohngrenze S<g ctype="x-html-sub">0</g> liegt. Das Komplement α x (S<g ctype="x-html-sub">0</g> – S) wird einzeln auf den Eurocent gerundet, wobei 0,005 EUR auf 0,01 EUR aufgerundet wird, und wird als 0,00 EUR betrachtet, wenn das Ergebnis der Berechnung negativ sein sollte.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[13]">
+          <source xml:lang="nl">De hellingscoëfficiënt δ (‘delta’) vergroot het complement lineair naargelang het <g ctype="x-html-a" html:href="introduction">loon <g ctype="x-html-strong">W</g></g> hoger is ten opzichte van de hogeloongrens S<g ctype="x-html-sub">1</g>. Het complement δ x (W – S<g ctype="x-html-sub">1</g>) wordt afzonderlijk afgerond tot op de eurocent waarbij 0,005 EUR wordt afgerond naar 0,01 EUR, en wordt als 0,00 EUR beschouwd mocht het resultaat van de berekening negatief zijn.</source>
+          <target xml:lang="de" state="final">Der Neigungskoeffizient δ („Delta“) vergrößert das Komplement linear, je nachdem, ob der <g ctype="x-html-a" html:href="introduction">Lohn <g ctype="x-html-strong">W</g></g> über der Hochlohngrenze S<g ctype="x-html-sub">1</g> liegt. Das Komplement δ x (W – S<g ctype="x-html-sub">1</g>) wird einzeln auf den Eurocent gerundet, wobei 0,005 EUR EUR auf 0,01 EUR aufgerundet wird, und wird als 0,00 EUR betrachtet, wenn das Ergebnis der Berechnung negativ sein sollte.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[14]">
+          <source xml:lang="nl">Zowel S<g ctype="x-html-sub">0</g>, S<g ctype="x-html-sub">1</g>, F als α zijn afhankelijk van de <g ctype="x-html-strong">categorie</g> waartoe de werknemer (zowel deze onder arbeidsovereenkomst als onder leerovereenkomst) behoort:</source>
+          <target xml:lang="de" state="final">Sowohl S<g ctype="x-html-sub">0</g>, S<g ctype="x-html-sub">1</g>, F als auch α sind von der <g ctype="x-html-strong">Kategorie</g> abhängig, zu der der Arbeitnehmer gehört (dies gilt sowohl für den Arbeitsvertrag als auch für den Lehrvertrag):</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[3]">
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[1]">
+            <source xml:lang="nl"><g ctype="x-html-strong">categorie 1</g>: werknemers die niet tot een van de twee volgende categorieën behoren en vanaf het 2<g ctype="x-html-sup">de</g> kwartaal 2016 de werknemers van de Koninklijke Muntschouwburg en het Paleis voor Schone Kunsten tewerkgesteld onder arbeidsovereenkomst ;</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">Kategorie</g>: Arbeitnehmer, die nicht zu einer der beiden folgenden Kategorien gehören und ab dem 2. Quartal 2016 die Arbeitnehmer des Théâtre Royal de la Monnaie und des Palais des Beaux-Arts, die mit einem Arbeitsvertrag angestellt sind; <g ctype="x-html-sup"/></target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[2]">
+            <source xml:lang="nl"><g ctype="x-html-strong">categorie 2</g>: werknemers tewerkgesteld door werkgevers die onder het toepassingsgebied van de <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/deductions/otheremployersreductions/workpromotion_nonprofitsector.html">sociale maribel</g> vallen met uitzondering van de werknemers tewerkgesteld bij een werkgever onder het paritair comité voor de diensten voor gezins- en bejaardenhulp en zij die worden tewerkgesteld in een erkende beschutte werkplaats;</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">Kategorie 2</g>: Arbeitnehmer, die von Arbeitgebern beschäftigt sind, die in den Anwendungsbereich der <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/deductions/otheremployersreductions/workpromotion_nonprofitsector.html">sozialen Maribel-Maßnahme</g> fallen, außer Arbeitnehmer, die bei einem Arbeitgeber beschäftigt sind, die in den Anwendungsbereich der Paritätischen Kommission für Familien- und Seniorenhilfsdienste fallen, und Beschäftigte in einer anerkannten beschützten Werkstätte;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[3]">
+            <source xml:lang="nl"><g ctype="x-html-strong">categorie 3</g>: werknemers die worden tewerkgesteld in een erkende beschutte werkplaats; vanaf het 2<g ctype="x-html-sup">de</g> kwartaal 2016 maakt men een onderscheid tussen werknemers voor wie de loonmatiging verschuldigd is en zij voor wie de loonmatiging niet verschuldigd is.</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">Arbeitnehmer</g>, die in einer anerkannten beschützten Werkstätte beschäftigt werden; ab dem 2. Quartal 2016 wird unterschieden zwischen Arbeitnehmern, für die die Lohnmäßigung geschuldet wird, und Arbeitnehmern, für die keine Lohnmäßigung geschuldet wird. <g ctype="x-html-sup"/></target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[15]">
+          <source xml:lang="nl">De formules om het forfaitaire <g ctype="x-html-strong">verminderingsbedrag R</g> te berekenen, uitgedrukt in EUR, zien er dus als volgt uit (per categorie waartoe de werknemer behoort, met de overeenkomstige waarden van <g ctype="x-html-strong">S<g ctype="x-html-sub">0</g></g> en <g ctype="x-html-strong">S<g ctype="x-html-sub">1</g></g> na een eventuele loonevolutieaanpassing, het vast forfaitair bedrag <g ctype="x-html-strong">F</g> en de <g ctype="x-html-strong">hellingscoëfficiënten α</g> en <g ctype="x-html-strong">δ</g>):</source>
+          <target xml:lang="de" state="final">Die Formeln zur Berechnung des pauschalen <g ctype="x-html-strong">Ermäßigungsbetrags R</g>, ausgedrückt in EUR, sehen deshalb wie folgt aus (pro Kategorie, zu welcher der Arbeitnehmer gehört, mit den entsprechenden Werten <g ctype="x-html-strong">S<g ctype="x-html-sub">0</g></g> und <g ctype="x-html-strong">S<g ctype="x-html-sub">1</g></g> nach einer eventuellen Anpassung an die Lohnentwicklung, den festen Pauschalbetrag <g ctype="x-html-strong">F</g> und den <g ctype="x-html-strong">Neigungskoeffizienten α</g> und <g ctype="x-html-strong">δ</g>):</target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message" id="/html/body/div[2]">
+          <trans-unit restype="x-html-p" id="/html/body/div[2]/p">
+            <source xml:lang="nl"><g ctype="x-html-strong">R</g><g ctype="x-html-sub">categorie 1</g> = <g ctype="x-html-strong">0,1400</g> x ( <g ctype="x-html-span" html:class="newWord"><g ctype="x-html-strong">9.400,01</g></g> – <g ctype="x-html-strong">S</g>); (algemene categorie)<g ctype="lb"/> <g ctype="x-html-strong">R</g><g ctype="x-html-sub">categorie 2</g> = <g ctype="x-html-strong">79,00</g> + <g ctype="x-html-strong">0,2557</g> x ( <g ctype="x-html-span" html:class="newWord"><g ctype="x-html-strong">7.896,64</g></g> – <g ctype="x-html-strong">S) </g>+<g ctype="x-html-strong"> 0,0600 </g>x (<g ctype="x-html-strong">W</g> –<g ctype="x-html-strong"> <g ctype="x-html-span" html:class="newWord">13.785,10</g></g>); (categorie sociale maribel)<g ctype="lb"/> <g ctype="x-html-strong">R</g><g ctype="x-html-sub">categorie 3 met loonmatiging</g> = <g ctype="x-html-strong">0,1400</g> x (<g ctype="x-html-strong"> <g ctype="x-html-span" html:class="newWord">10.185,52</g> </g>–<g ctype="x-html-strong"> S</g>); (categorie erkende beschutte werkplaats, werknemers met loonmatiging)<g ctype="lb"/> <g ctype="x-html-strong">R</g><g ctype="x-html-sub">categorie 3 zonder loonmatiging</g> = <g ctype="x-html-strong">495,00</g> + <g ctype="x-html-strong">0,1785</g> x ( <g ctype="x-html-span" html:class="newWord"><g ctype="x-html-strong">9.670,52</g></g> –<g ctype="x-html-strong"> S</g>). (categorie erkende beschutte werkplaats, werknemers zonder loonmatiging)</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">R</g><g ctype="x-html-sub">Kategorie 1</g> = <g ctype="x-html-strong">0,1400</g> x (<g ctype="x-html-span" html:class="newWord"><g ctype="x-html-strong">9.215,70</g></g> – <g ctype="x-html-strong">S</g>); (allgemeine Kategorie)<g ctype="lb"/> <g ctype="x-html-strong">R</g><g ctype="x-html-sub">Kategorie 2</g> = <g ctype="x-html-strong">79,00</g> + <g ctype="x-html-strong">0,2557</g> x ( <g ctype="x-html-span" html:class="newWord"><g ctype="x-html-strong">7.896,64</g></g> – <g ctype="x-html-strong">S) </g>+<g ctype="x-html-strong"> 0,0600 </g>x (<g ctype="x-html-strong">W</g> –<g ctype="x-html-strong"> <g ctype="x-html-span" html:class="newWord">13.785,10</g></g>); (Kategorie Maribel Sozial)<g ctype="lb"/> <g ctype="x-html-strong">R</g><g ctype="x-html-sub">Kategorie 3 mit Lohnmäßigung</g> = <g ctype="x-html-strong">0,1400</g> x (<g ctype="x-html-strong"> <g ctype="x-html-span" html:class="newWord">10.185,52</g> </g>–<g ctype="x-html-strong"> S</g>); (Kategorie der anerkannten beschützten Werkstätte, Arbeitnehmer mit Lohnmäßigung)<g ctype="lb"/> <g ctype="x-html-strong">R</g><g ctype="x-html-sub">Kategorie 3 ohne Lohnmäßigung</g> = <g ctype="x-html-strong">495,00</g> + <g ctype="x-html-strong">0,1785</g> x ( <g ctype="x-html-span" html:class="newWord"><g ctype="x-html-strong">9.670,52</g></g> –<g ctype="x-html-strong"> S</g>). (Kategorie der anerkannten beschützten Werkstätte, Arbeitnehmer mit Lohnmäßigung)</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[4]">
+          <source xml:lang="nl">Te vervullen formaliteiten</source>
+          <target xml:lang="de" state="final">Zu erledigende Formalitäten</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[16]">
+          <source xml:lang="nl">Geen bijzondere formaliteiten.</source>
+          <target xml:lang="de" state="final">Keine besonderen Formalitäten.</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

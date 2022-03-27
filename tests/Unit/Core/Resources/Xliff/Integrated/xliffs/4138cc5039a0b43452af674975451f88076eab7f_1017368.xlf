@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:4138cc5039a0b43452af674975451f88076eab7f:1017368" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Inleiding</source>
+        <target xml:lang="de" state="final">Einleitung</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Inleiding</source>
+        <target xml:lang="de" state="final">Einleitung</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit>
+          <source xml:lang="nl"/>
+          <target xml:lang="de" state="final"/>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-h2" id="/html/body/h2[1]">
+          <source xml:lang="nl">Loonmassa (W)</source>
+          <target xml:lang="de" state="final">Lohnsumme (W)</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl"><g ctype="x-html-strong">W</g> is de loonmassa die per tewerkstellingslijn driemaandelijks wordt aangegeven (tegen 100 %) met uitzondering van</source>
+          <target xml:lang="de" state="final"><g ctype="x-html-strong">W</g> ist die Lohnsumme, die je Beschäftigungszeile alle drei Monate angegeben wird (zu 100 %), ausgenommen</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[1]">
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[1]">
+            <source xml:lang="nl">de vergoedingen die worden betaald ingevolge een verbreking van de arbeidsovereenkomst en in zoverre deze worden uitgedrukt in arbeidsduur,</source>
+            <target xml:lang="de" state="final">die Entschädigungen, die infolge einer Kündigung des Arbeitsvertrages bezahlt werden, sofern diese in Arbeitsdauer ausgedrückt werden,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]">
+            <source xml:lang="nl">de eindejaarspremies die betaald worden door derden,</source>
+            <target xml:lang="de" state="final">die Jahresendprämien, die von Dritten gezahlt werden,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[3]">
+            <source xml:lang="nl">de vergoedingen voor uren die geen arbeidsuren zijn,</source>
+            <target xml:lang="de" state="final">die Entschädigungen für Stunden, die keine Arbeitsstunden sind,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[4]">
+            <source xml:lang="nl">het enkel vertrekvakantiegeld uitbetaald door een werkgever aan zijn (ex-)werknemer,</source>
+            <target xml:lang="de" state="final">das einfache Abgangsurlaubsgeld, das der Arbeitgeber seinem (ehemaligen) Arbeitnehmer zahlt,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[5]">
+            <source xml:lang="nl">het flexi-loon en het loon voor de overuren horeca,</source>
+            <target xml:lang="de" state="final">der Flexi-Lohn und der Überstundenlohn im Horeca-Sektor,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[6]">
+            <source xml:lang="nl">een aantal vrijgestelde vergoedingen aangegeven in de DmfAPPL.</source>
+            <target xml:lang="de" state="final">einige befreite Entschädigungen, die in der DmfAPPL angegeben sind.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Het gaat om de looncodes</source>
+          <target xml:lang="de" state="final">Es geht um die Lohncodes</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[2]">
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]">
+            <source xml:lang="nl">(DmfA) 1, 2, 4, 5 en 12,</source>
+            <target xml:lang="de" state="final">(DmfA) 1, 2, 4, 5 und 12,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]">
+            <source xml:lang="nl">(DmfAPPL) 101, 131, 150, 315, 318, 801, 804, 806, 817, 821, 822, 823, 824, 833, 834, 835, 836, 837, 851, 852, 853, 854, 855, 902, 906, 910, 912, 914, 916, 917, 924, 940, 942, 951, 954, 957, 961, 962, 970, 971, 974, 975, 976, 991, 992 en 993.</source>
+            <target xml:lang="de" state="final">(DmfAPPL) 101, 131, 150, 315, 318, 801, 804, 806, 817, 821, 822, 823, 824, 833, 834, 835, 836, 837, 851, 852, 853, 854, 855, 902, 906, 910, 912, 914, 916, 917, 924, 940, 942, 951, 954, 957, 961, 962, 970, 971, 974, 975, 976, 991, 992 und 993.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">De vermindering kan dus niet worden toegepast op</source>
+          <target xml:lang="de" state="final">Die Ermäßigung gilt deshalb nicht für</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[3]">
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[1]">
+            <source xml:lang="nl">(DmfA) een tewerkstellingslijn met looncode 3 of 9 (verbrekingsvergoeding) of met looncode 22 (flexi-loon) en op de bedragen aangegeven onder looncode 6, 7, 11, 13 en 23,</source>
+            <target xml:lang="de" state="final">(DmfA) eine Beschäftigungszeile mit Lohncode 3 oder 9 (Vertragsbruchentschädigung) oder mit Lohncode 22 (Flexi-Lohn) und für die unter Lohncode 6, 7, 11, 13 und 23 angegebenen Beträge.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[2]">
+            <source xml:lang="nl">(DmfAPPL) een tewerkstellingslijn met looncode 130 of 132 (verbrekingsvergoeding) en op de bedragen aangegeven onder looncode 313, 317, 110, 160, 2XX, 310, 311, 312, 314, 316, 319, 320, 348, 349, 350, 4XX en 5XX .</source>
+            <target xml:lang="de" state="final">(DmfAPPL) eine Beschäftigungszeile mit Lohncode 130 oder 132 (Vertragsbruchentschädigung) und auf die Beträge angegeben unter dem Lohncode 313, 317, 110, 140, 160, 2XX, 310, 311, 312, 314, 316, 319, 320, 348, 349, 350, 4XX und 5XX.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl"><g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/salary/particularcases/holidaypay.html">Bekijk de voorbeelden</g>.</source>
+          <target xml:lang="de" state="final"><g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/salary/particularcases/holidaypay.html">Siehe Beispiele</g>.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl">Voor <g ctype="x-html-strong">werknemers voor wie een eindejaarspremie betaald wordt door een betalende derde</g> (bv. een fonds voor bestaanszekerheid), wordt het kwartaalloon (W) voor het 4<g ctype="x-html-sup">de</g> kwartaal verhoogd met 25%. In afwijking daarvan bedraagt de verhoging slechts 15% voor de erkende uitzendkantoren en dit tijdens het 1<g ctype="x-html-sup">ste</g> kwartaal. Na deze verhoging wordt W afgerond tot op de eurocent waarbij 0,005 EUR wordt afgerond naar 0,01 EUR.</source>
+          <target xml:lang="de" state="final">Für <g ctype="x-html-strong">Arbeitnehmer, für die eine Jahresendprämie durch einen Dritten</g> (z. B. einen Fonds für Existenzsicherheit) bezahlt wird, wird der Quartalslohn (W) für das 4.<g ctype="x-html-sup"/> Quartal um 25 % erhöht. Abweichend davon beträgt die Erhöhung nur 15 % für anerkannte Unternehmen für Aushilfsarbeit, und dies im 1.<g ctype="x-html-sup"/> Quartal. Nach dieser Erhöhung wird W auf den Eurocent gerundet, wobei 0,005 EUR auf 0,01 EUR aufgerundet wird.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[2]">
+          <source xml:lang="nl">Refertekwartaalloon (S)</source>
+          <target xml:lang="de" state="final">Referenzquartalslohn (S)</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[7]">
+          <source xml:lang="nl">Het <g ctype="x-html-strong">refertekwartaalloon S,</g> of de omzetting van het reële loon naar een referteloon, wordt als volgt berekend (per tewerkstellingslijn):</source>
+          <target xml:lang="de" state="final">Der <g ctype="x-html-strong">Referenzquartalslohn S</g> oder die Umsetzung des Reallohns in einen Referenzlohn wird wie folgt berechnet (pro Beschäftigungszeile):</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[4]">
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[1]">
+            <source xml:lang="nl"><g ctype="x-html-strong">voor de tewerkstelling uitsluitend aangegeven in dagen: </g><g ctype="x-html-strong">S = W x (13 x D / J) </g><g ctype="lb"/> met<g ctype="x-html-strong"> J</g> = X zonder de wettelijke vakantiedagen voor arbeiders, de niet door de werkgever betaalde vakantiedagen toegekend ingevolge algemeen verbindend verklaarde CAO, flexi-vakantiedagen, de dagen inhaalrust bouwbedrijf en de dagen tijdelijke werkloosheid ingevolge slecht weer; het gaat m.a.w. om de prestatiecodes 1, 3, 4, 5 en 20;<g ctype="lb"/> met <g ctype="x-html-strong">D</g> = het aantal dagen per week van het arbeidsstelsel;</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">Für eine Beschäftigung, die ausschließlich in Tagen angegeben wird:</g><g ctype="x-html-strong">S = W x (13 x D / J)</g><g ctype="lb"/> wobei <g ctype="x-html-strong">J</g> = X ohne die gesetzlichen Urlaubstage für Arbeiter, die nicht vom Arbeitgeber bezahlten Urlaubstage, die infolge eines für allgemein verbindlich erklärten KAA gewährt werden, Flexi-Urlaubstage, die Ausgleichsruhetage im Bausektor und Tage vorübergehender Arbeitslosigkeit infolge ungünstiger Witterung; es betrifft mit anderen Worten die Leistungscodes 1, 3, 4, 5 und 20;<g ctype="lb"/> wobei <g ctype="x-html-strong">D</g> = Anzahl der Tage pro Woche der Arbeitsregelung;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[2]">
+            <source xml:lang="nl"><g ctype="x-html-strong">voor de tewerkstelling aangegeven in uren en dagen wordt dit: </g><g ctype="x-html-strong">S = W x (13 x U / H) </g><g ctype="lb"/> met <g ctype="x-html-strong">H</g> = Z zonder de uren die overeenstemmen met de wettelijke vakantiedagen voor arbeiders, de uren die overeenstemmen met de niet door de werkgever betaalde vakantiedagen toegekend ingevolge algemeen verbindend verklaarde CAO of met de flexi-vakantiedagen, met de dagen inhaalrust bouwbedrijf en de uren die overeenstemmen met de dagen tijdelijke werkloosheid ingevolge slecht weer; het gaat m.a.w. om de prestatiecodes 1, 3, 4, 5 en 20;<g ctype="lb"/> met <g ctype="x-html-strong">U</g> = het gemiddeld aantal uren per week van de maatpersoon.</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">Für die in Tagen und Stunden angegebene Beschäftigung ist dies: </g><g ctype="x-html-strong">S = W x (13 x U / H)</g><g ctype="lb"/> wobei <g ctype="x-html-strong">H</g> = Z ohne die Stunden, die mit den gesetzlichen Urlaubstagen für Arbeiter übereinstimmen, Stunden, die mit den nicht vom Arbeitgeber bezahlten Urlaubstagen übereinstimmen, die infolge eines für allgemein verbindlich erklärten KAA oder mit den Flexi-Urlaubstagen gewährt werden, die Ausgleichsruhezeit im Bausektor und Stunden, die mit den Tagen vorübergehender Arbeitslosigkeit infolge ungünstiger Witterung übereinstimmen; es betrifft mit anderen Worten die Leistungscodes 1, 3, 4, 5 und 20;<g ctype="lb"/> wobei <g ctype="x-html-strong">U</g> = die durchschnittliche Anzahl der Stunden pro Woche der Referenzperson ist.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[8]">
+          <source xml:lang="nl">(13 x D / J) en (13 x U / H) worden afgerond tot op het tweede cijfer na de komma waarbij 0,005 naar boven wordt afgerond; S wordt afgerond tot op de eurocent waarbij 0,005 EUR wordt afgerond naar 0,01 EUR.</source>
+          <target xml:lang="de" state="final">(13 x D / J) und (13 x U / H) wird auf die zweite Stelle nach dem Komma abgerundet, wobei 0,005 aufgerundet wird; S wird auf den Eurocent gerundet, wobei 0,005 EUR auf 0,01 EUR aufgerundet wird.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[9]">
+          <source xml:lang="nl">Voor werknemers tewerkgesteld bij een beperkte groep van werkgevers die vóór 1 oktober 2001 de arbeidsduur verminderden of de vierdagenweek invoerden en van wie aan de werknemers een tussenkomst wordt toegekend om het loonverlies gedeeltelijk te compenseren (looncode 5 DmfA), wordt S forfaitair verminderd met 241,70 EUR per kwartaal. Het handelt hier om de werkgevers die in aanmerking kwamen voor een doelgroepvermindering op basis van artikel 367, 369 of 370 van de Programmawet van 24 december 2002 (de oude verminderingscodes 1331, 1333 en 1341 zijn niet meer toepasbaar).</source>
+          <target xml:lang="de" state="final">Für Arbeitnehmer, die bei einer begrenzten Arbeitgebergruppe beschäftigt sind, die vor dem 01.10.2001 die Arbeitszeit verkürzten oder die Viertagewoche einführten und deren Arbeitnehmern ein Zuschuss gewährt wird, um den Lohnverlust teilweise auszugleichen (Lohncode 5 DmfA), wird S pauschalmäßig um 241,70 EUR pro Quartal verringert. Es betrifft Arbeitgeber, die für eine Zielgruppenermäßigung auf der Basis von Artikel 367, 369 oder 370 des Programmgesetzes vom 24.12.2002 in Betracht kamen (die alten Ermäßigungscodes 1331, 1333 und 1341 sind nicht mehr anwendbar).</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[3]">
+          <source xml:lang="nl">Verminderingsbedrag</source>
+          <target xml:lang="de" state="final">Ermäßigungsbetrag</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[10]">
+          <source xml:lang="nl">De vermindering wordt steeds aangerekend op het niveau van de tewerkstellingslijn.</source>
+          <target xml:lang="de" state="final">Die Ermäßigung wird stets auf dem Niveau der Beschäftigungszeile berechnet.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[11]">
+          <source xml:lang="nl">Zowel bij de berekening van de structurele vermindering (P<g ctype="x-html-sub">s</g>) als bij de doelgroepvermindering (P<g ctype="x-html-sub">g</g>) wordt rekening gehouden met de prestatiebreuk (µ) van de tewerkstellingslijn en een vaste multiplicatiefactor (β<g ctype="x-html-sub">s</g> en β<g ctype="x-html-sub">g</g>) die het mogelijk maakt, afhankelijk van de geleverde arbeidsprestaties van de verschillende tewerkstellingen, af te wijken van een strikt proportionele vermindering van de bijdragen. De som van P<g ctype="x-html-sub">s</g> en P<g ctype="x-html-sub">g</g> geeft het bedrag dat men in mindering mag brengen van de voor deze tewerkstellingslijn van de werknemer, verschuldigde werkgeversbijdragen voor volgende regelingen:</source>
+          <target xml:lang="de" state="final">Sowohl bei der Berechnung der strukturellen Ermäßigung (P<g ctype="x-html-sub">s</g>) als auch bei der Zielgruppenermäßigung (P<g ctype="x-html-sub">g</g>) wird der Leistungsbruch (µ) der Beschäftigungszeile und ein fester Multiplikator (β<g ctype="x-html-sub">s</g> und β<g ctype="x-html-sub">g</g>) berücksichtigt, der es ermöglicht, je nach den erbrachten Arbeitsleistungen der verschiedenen Beschäftigungen von einer strikt proportionalen Ermäßigung dieser Beiträge abzuweichen. Die Summe von P<g ctype="x-html-sub">s</g> und P<g ctype="x-html-sub">g</g> ergibt den Betrag, den man von den für diese Beschäftigungszeile des Arbeitnehmers geschuldeten Arbeitgeberbeiträgen für folgende Regelungen in Abzug bringen darf:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[5]">
+          <trans-unit restype="listitem" id="/html/body/ul[5]/li[1]">
+            <source xml:lang="nl">de patronale basisbijdrage na vermindering met de niet-toepasselijke regelingen;</source>
+            <target xml:lang="de" state="final">den Arbeitgebergrundbeitrag nach Abzug der nicht anwendbaren Regelungen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[5]/li[2]">
+            <source xml:lang="nl">de loonmatigingsbijdrage.</source>
+            <target xml:lang="de" state="final">Lohnmäßigungsbeitrag.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[12]">
+          <source xml:lang="nl">De vermindering mag echter niet worden toegepast op het gedeelte van de loonmatigingsbijdrage berekend op de bijdrage van 1,60 % wanneer de werkgever minstens 10 personen tewerkstelde en op de basisbijdrage en de bijzondere bijdrage voor het Fonds voor Sluiting van Ondernemingen.</source>
+          <target xml:lang="de" state="final">Die Ermäßigung darf aber nicht auf den Teil des Lohnmäßigungsbeitrags angewandt werden, der auf den Beitrag in Höhe von 1,60 % berechnet wird, wenn der Arbeitgeber mindestens 10 Personen beschäftigte, sowie auf den Grundbeitrag und den Sonderbeitrag für die Schließungsfonds.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[13]">
+          <source xml:lang="nl">De vermindering mag evenmin worden toegepast op de  speciale bijdrage 1,40 % voor statutairen in de openbare sector (DmfA).</source>
+          <target xml:lang="de" state="final">Die Ermäßigung darf ebenfalls nicht auf den Sonderbeitrag von 1,40 % für statutarische Bedienstete im öffentlichen Sektor angewandt werden (DmfA).</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[14]">
+          <source xml:lang="nl">In het geval dat de som van P<g ctype="x-html-sub">s</g> en P<g ctype="x-html-sub">g</g> meer bedraagt dan het bedrag van de werkgeversbijdragen voor de regelingen waarop de vermindering kan worden toegepast, wordt eerst het bedrag van de doelgroepvermindering afgetopt en vervolgens het bedrag van de structurele vermindering.</source>
+          <target xml:lang="de" state="final">Wenn die Summe von P<g ctype="x-html-sub">s</g> und P<g ctype="x-html-sub">g</g> den Betrag der Arbeitgeberbeiträge der Regelungen überschreitet, auf die die Ermäßigung angewandt werden kann, wird zunächst der Betrag der Zielgruppenermäßigung und danach der Betrag der strukturellen Ermäßigung verringert.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[15]">
+          <source xml:lang="nl">Enkel vertrekvakantiegeld (vakantieregeling privé-sector) dat door een werkgever wordt uitbetaald aan zijn (ex-)werknemer, maakt geen deel uit van de loonmassa voor de berekening van de refertekwartaallonen. Op dit enkel vertrekvakantiegeld kan de geharmoniseerde vermindering ook niet worden toegepast. Het deel van het vakantiegeld dat overeenstemt met het normale loon voor de vakantiedagen, dat vervroegd werd uitbetaald door de vroegere werkgever, maakt wel deel uit van de loonmassa en wordt dus wel in rekening gebracht voor de berekening van de refertekwartaallonen. <g ctype="x-html-a" html:href="holidaypay-nl_1">Bekijk de voorbeelden</g>.</source>
+          <target xml:lang="de" state="final">Einfaches Abgangsurlaubsgeld (Urlaubsregelung im Privatsektor), das ein Arbeitgeber seinem (ehemaligen) Arbeitnehmer zahlt, ist nicht Bestandteil der Lohnsumme bei der Berechnung der Referenzquartalslöhne. Auf dieses einfache Abgangsurlaubsgeld kann die harmonisierte Ermäßigung auch nicht angewandt werden. Der Teil des Urlaubsgelds, der dem normalen Lohn für Urlaubstage entspricht, der vom vorigen Arbeitgeber verfrüht ausgezahlt wurde, ist sehr wohl Bestandteil der Lohnsumme und wird daher bei der Berechnung der Referenzquartalslöhne berücksichtigt. <g ctype="x-html-a" html:href="holidaypay-nl_1">Siehe Beispiele</g>.</target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div">
+          <trans-unit restype="x-html-p" id="/html/body/div/p">
+            <source xml:lang="nl">De vermindering van de bijdragen waar een werkgever recht op heeft, kan geheel of gedeeltelijk worden geweigerd bij de werkgevers die zonder rechtvaardiging hun verplichtingen aangaande betalingen van socialezekerheidsbijdragen niet nakomen of die schuldig worden bevonden aan het doen of laten verrichten van arbeid door een werknemer voor wie geen bijdragen werden betaald aan de Rijksdienst voor Sociale Zekerheid.</source>
+            <target xml:lang="de" state="final">Die Ermäßigung der Beiträge, auf die ein Arbeitgeber Recht hat, kann ganz oder teilweise bei den Arbeitgebern einbehalten werden, die unberechtigt ihrer Verpflichtung zur Zahlung der Sozialversicherungsbeiträge nicht nachkommen oder die für schuldig befunden werden, Arbeiten durch einen Arbeitnehmer ausführen zu lassen, für den dem Landesamt für soziale Sicherheit keine Beiträge gezahlt wurden.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[4]">
+          <source xml:lang="nl">Bepalen van de prestatiebreuk µ (‘mu’)</source>
+          <target xml:lang="de" state="final">Bestimmen der Leistungsbruchzahl µ („MU“)</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[16]">
+          <source xml:lang="nl">Men moet een onderscheid maken tussen de tewerkstellingen die enkel aangegeven worden in dagen en deze die aangegeven worden in dagen en uren:</source>
+          <target xml:lang="de" state="final">Es muss zwischen den Beschäftigungen unterschieden werden, die nur in Tagen, und solchen, die in Tagen und Stunden angegeben werden:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[6]">
+          <trans-unit restype="listitem" id="/html/body/ul[6]/li[1]">
+            <source xml:lang="nl"><g ctype="x-html-strong">aangegeven in dagen:</g> µ = X / (13 x D)<g ctype="x-html-strong"> </g><g ctype="lb"/> met <g ctype="x-html-strong">X</g> = het aantal arbeidsdagen en dagen tijdelijke werkloosheid ingevolge slecht weer (prestatiecodes 1, 2, 3, 4, 5, 12, 20 en 72); de dagen gedekt door een verbrekingsvergoeding komen niet in aanmerking voor de berekening van X.<g ctype="lb"/> met <g ctype="x-html-strong">D</g> = het aantal dagen per week van het arbeidsstelsel;</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">in Tagen angegeben:</g> µ = X / (13 x D)<g ctype="x-html-strong"> </g><g ctype="lb"/> wobei <g ctype="x-html-strong">X</g> = Anzahl der Arbeitsstunden und der Tage vorübergehender Arbeitslosigkeit infolge ungünstiger Witterung (Leistungscodes 1, 2, 3, 4, 5, 12, 20 und 72); die durch eine Entlassungsentschädigung gedeckten Tage kommen für die Berechnung von X nicht in Betracht.<g ctype="lb"/> wobei <g ctype="x-html-strong">D</g> = Anzahl der Tage pro Woche der Arbeitsregelung;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[6]/li[2]">
+            <source xml:lang="nl"><g ctype="x-html-strong">aangegeven in dagen en uren:</g> µ = Z / (13 x U)<g ctype="x-html-strong"> </g><g ctype="lb"/> met <g ctype="x-html-strong">Z</g> = het aantal arbeidsuren en uren die overeenstemmen met de dagen tijdelijke werkloosheid ingevolge slecht weer (prestatiecodes 1, 2, 3, 4, 5, 12, 20 en 72); de uren die overeenkomen met de dagen gedekt door een verbrekingsvergoeding komen niet in aanmerking voor de berekening van Z.<g ctype="lb"/> met <g ctype="x-html-strong">U </g>= het gemiddeld aantal uren per week van de maatpersoon.</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">Anzahl der Arbeitsstunden und der Stunden:</g> µ = Z / (13 x U)<g ctype="x-html-strong"> </g><g ctype="lb"/> wobei <g ctype="x-html-strong">Z</g> = Anzahl der Arbeitsstunden und der Stunden, die mit den Tagen vorübergehender Arbeitslosigkeit infolge ungünstiger Witterung übereinstimmen (Leistungscodes 1, 2, 3, 4, 5, 12, 20 und 72). Die durch eine Entlassungsentschädigung gedeckten Tage kommen für die Berechnung von Z nicht in Betracht.<g ctype="lb"/> wobei <g ctype="x-html-strong">U </g>= die durchschnittliche Anzahl der Stunden pro Woche der Referenzperson.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[17]">
+          <source xml:lang="nl">µ wordt afgerond tot op het tweede cijfer na de komma waarbij 0,005 naar boven wordt afgerond.</source>
+          <target xml:lang="de" state="final">µ wird bis auf die zweite Ziffer nach dem Komma gerundet, wobei 0,005 aufgerundet wird.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[18]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[19]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[20]">
+          <source xml:lang="nl">De prestaties van de flexi-jobs  en de overuren horeca blijven volledig buiten de berekening van de µ<g ctype="x-html-sub">(glob)</g>, µ, ....</source>
+          <target xml:lang="de" state="final">Völlig unberücksichtigt bleiben die Leistungen von Flexijobs und die Überstunden Horeca bei der Berechnung von µ<g ctype="x-html-sub">(glob)</g>, µ, ….</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[21]">
+          <source xml:lang="nl">Aan de hand van de prestatiebreuk µ worden de verminderingsbedragen geproportioneerd. De som van alle µ’s geeft de totale prestatie van de werknemer µ (glob). Aan de hand van µ (glob) wordt nagegaan of de werknemer tijdens het kwartaal voldoende prestaties heeft.</source>
+          <target xml:lang="de" state="final">Anhand des Leistungsbruchs µ werden die Ermäßigungsbeträge proportional festgelegt. Die Summe aller µ ergibt die gesamte Leistung des Arbeitnehmers µ (glob). Anhand von µ (glob) wird geprüft, ob der Arbeitnehmer im Laufe des Quartals genügend Leistungen hat.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[22]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[5]">
+          <source xml:lang="nl">Vaste multiplicatiefactor ß ('beta')</source>
+          <target xml:lang="de" state="final">Fester Multiplikator ß (,beta‘)</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[23]">
+          <source xml:lang="nl">De waarde van ß is afhankelijk van de globale tewerkstelling bij dezelfde werkgever en kan verschillend zijn voor de structurele - en de doelgroepvermindering:</source>
+          <target xml:lang="de" state="final">Der Wert von β hängt von der Gesamtbeschäftigung beim gleichen Arbeitgeber ab und kann für die strukturelle - und Zielgruppenermäßigung verschieden sein:</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[24]">
+          <source xml:lang="nl">Voor de structurele vermindering (β<g ctype="x-html-sub">s</g>):</source>
+          <target xml:lang="de" state="final">Für die strukturelle Ermäßigung (β<g ctype="x-html-sub">s</g>):</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[7]">
+          <trans-unit restype="listitem" id="/html/body/ul[7]/li[1]">
+            <source xml:lang="nl">als µ (glob) &lt; 0,55, dan is ß<g ctype="x-html-sub">s</g> = 1,18;</source>
+            <target xml:lang="de" state="final">wenn µ (glob) &lt;0,55, dann entspricht ß<g ctype="x-html-sub">s</g> = 1,18;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[7]/li[2]">
+            <source xml:lang="nl">als µ (glob) &gt;= 0,55, en &lt; 0,80, dan is ß<g ctype="x-html-sub">s</g> = 1,18 + ((µ (glob) - 0,55) x 0,28);</source>
+            <target xml:lang="de" state="final">wenn µ (glob) &gt;= 0,55 und &lt;0,80, dann entspricht ß<g ctype="x-html-sub">s</g> = 1,18 + ((µ (glob) - 0,55) x 0,28);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[7]/li[3]">
+            <source xml:lang="nl">als µ (glob) &gt;= 0,80, dan is ß<g ctype="x-html-sub">s</g> = 1/ µ (glob) (m.a.w. vanaf 80 % prestaties bekomt men een volledige vermindering).</source>
+            <target xml:lang="de" state="final">wenn µ (glob) &gt;= 0,80, dann entspricht ß<g ctype="x-html-sub">s</g> = 1/ µ (glob) (mit anderen Worten ab 80 % Leistungen bekommt man eine vollständige Ermäßigung).</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[25]">
+          <source xml:lang="nl">Voor de doelgroepvermindering (β<g ctype="x-html-sub">g</g>):</source>
+          <target xml:lang="de" state="final">Für die Zielgruppenermäßigung (β<g ctype="x-html-sub">g</g>):</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[8]">
+          <trans-unit restype="listitem" id="/html/body/ul[8]/li[1]">
+            <source xml:lang="nl">als µ (glob) &lt; 0,55, dan is ß<g ctype="x-html-sub">g</g> = 1;</source>
+            <target xml:lang="de" state="final">wenn µ (glob) &lt;0,55, dann entspricht ß<g ctype="x-html-sub">g</g> = 1;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[8]/li[2]">
+            <source xml:lang="nl">als µ (glob) &gt;= 0,55, en &lt; 0,80, dan is ß<g ctype="x-html-sub">g</g> = 1 + (µ (glob) - 0,55);</source>
+            <target xml:lang="de" state="final">wenn µ (glob) &gt;= 0,55 und &lt;0,80, dann entspricht ß<g ctype="x-html-sub">g</g> = 1 + ((µ (glob) - 0,55);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[8]/li[3]">
+            <source xml:lang="nl">als µ (glob) &gt;= 0,80, dan is ß<g ctype="x-html-sub">g</g> = 1/ µ (glob) (m.a.w. vanaf 80 % prestaties bekomt men een volledige vermindering).</source>
+            <target xml:lang="de" state="final">wenn µ (glob) &gt;= 0,80, dann entspricht ß<g ctype="x-html-sub">g</g> = 1/ µ (glob) (mit anderen Worten ab 80 % Leistungen bekommt man eine vollständige Ermäßigung).</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[26]">
+          <source xml:lang="nl">ß wordt nooit afgerond.</source>
+          <target xml:lang="de" state="final">ß wird nie gerundet.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[27]">
+          <source xml:lang="nl">Door de waarde van ß te variëren, kan zowel een minimumprestatiegrens worden ingevoerd als een gelijkstelling van deeltijdse prestaties met voltijdse, afhankelijk van het geheel van de prestaties bij dezelfde werkgever.</source>
+          <target xml:lang="de" state="final">Indem der Wert von β variiert wird, kann sowohl eine minimale Leistungsgrenze als auch eine Gleichsetzung von Teilzeitleistungen mit Vollzeitleistungen eingeführt werden, je nach der Gesamtheit der Leistungen beim gleichen Arbeitgeber.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[28]">
+          <source xml:lang="nl">Voor een µ (glob) &lt; 0,275 wordt de vaste multiplicatiefactor ß<g ctype="x-html-sub">s</g> en ß<g ctype="x-html-sub">g</g> = 0, behalve:</source>
+          <target xml:lang="de" state="final">Wenn µ (glob) &lt; 0,275, wird der feste Multiplikator ß<g ctype="x-html-sub">s</g> und ß<g ctype="x-html-sub">g</g> = 0, außer:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[9]">
+          <trans-unit restype="listitem" id="/html/body/ul[9]/li">
+            <source xml:lang="nl">voor de werknemers tewerkgesteld bij erkende beschutte werkplaatsen, waar er geen ondergrens is; het zijn de werknemers van categorie 3 zoals hieronder vermeld in het hoofdstuk ‘structurele vermindering’ (zowel voor de structurele - als de doelgroepvermindering),</source>
+            <target xml:lang="de" state="final">für die Arbeitnehmer, die bei anerkannten beschützten Werkstätten beschäftigt sind, für die keine Untergrenze gilt; es sind Arbeitnehmer von Kategorie 3, wie nachstehend im Kapitel „strukturelle Ermäßigung“ erwähnt (für die strukturelle- und Zielgruppenermäßigung),</target>
+          </trans-unit>
+        </group>
+        <group restype="x-html-ul" id="/html/body/ul[10]">
+          <trans-unit restype="listitem" id="/html/body/ul[10]/li[1]">
+            <source xml:lang="nl">vanaf 1 april 2004, voor werknemers die met een minstens halftijdse arbeidsovereenkomst worden tewerkgesteld, m.a.w. indien het gemiddeld aantal uren per week van de werknemer ten minste de helft bedraagt van het gemiddeld aantal uren per week van de maatpersoon. Concreet houdt dit dus in dat deeltijdse werknemers zonder een minstens halftijdse arbeidsovereenkomst, die in de loop van een kwartaal slechts een beperkt aantal uren presteren, voor deze vermindering (zowel de structurele als de doelgroepenvermindering) niet in aanmerking zullen komen,</source>
+            <target xml:lang="de" state="final">ab dem 01.04.2004 für Arbeitnehmer, die mit mindestens einem Halbzeitarbeitsvertrag beschäftigt werden, d. h. wenn die durchschnittliche Anzahl der Stunden pro Woche des Arbeitnehmers mindestens der Hälfte der durchschnittlichen Anzahl der Stunden pro Woche der Referenzperson entspricht. Konkret heißt dies, dass Teilzeitarbeitnehmer, die nicht zumindest einen Halbzeitarbeitsvertrag abgeschlossen haben und im Laufe eines Quartals nur eine begrenzte Anzahl Stunden leisten, für diese Ermäßigung (sowohl die strukturelle als auch die Zielgruppenermäßigung) nicht in Betracht kommen werden,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[10]/li[2]">
+            <source xml:lang="nl">vanaf 1 april 2007, voor werknemers uit de horeca die onder alle regelingen vallen, maar enkel voor de toepassing van de structurele vermindering (niet voor de toepassing van de doelgroepverminderingen),</source>
+            <target xml:lang="de" state="final">ab 01.04.2007 für Arbeitnehmer aus dem Horeca-Sektor, für die alle Regelungen, jedoch ausschließlich für die Strukturermäßigung, gelten (ausgenommen der Anwendung der Zielgruppenermäßigungen),</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[10]/li[3]">
+            <source xml:lang="nl">vanaf 1 januari 2014 voor de tewerkstelling van een 'gesubsidieerde contractueel' of een 'contractuele vervanger openbare sector' (zowel voor de structurele- als de doelgroepvermindering 'gesubsidieerde contractuelen' of 'contractuele vervangers openbare sector'),</source>
+            <target xml:lang="de" state="final">ab 01.01.2014 für die Beschäftigung von ,bezuschussten Vertragsbediensteten‘ oder ,vertraglichen Ersatzkräften öffentlicher Sektor‘ (sowohl für die strukturelle als auch die Zielgruppenermäßigung ,bezuschusste Vertragsbedienstete‘ oder ,vertragliche Ersatzkräfte öffentlicher Sektor‘),</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[10]/li[4]">
+            <source xml:lang="nl">vanaf 1 januari 2014 voor de tewerkstelling van een kunstenaar (zowel voor de structurele- als de doelgroepvermindering kunstenaars),</source>
+            <target xml:lang="de" state="final">ab 01.01.2014 für die Beschäftigungen eines Künstlers (sowohl die strukturelle als auch die Zielgruppenermäßigung Künstler),</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[10]/li[5]">
+            <source xml:lang="nl">vanaf 1 januari 2014 voor de werknemers, tewerkgesteld op grond van <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/persons/specific/occupation_article60.html">artikel 60, §7 van de OCMW-wet </g>(DmfAPPL).</source>
+            <target xml:lang="de" state="final">ab dem 01.01.2014 für die Arbeitnehmer, die im Rahmen von <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/persons/specific/occupation_article60.html">Artikel 60 § 7 des ÖSHZ-Grundlagengesetzes</g> (DmfAPPL) beschäftigt sind.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[6]">
+          <source xml:lang="nl">Cumulaties</source>
+          <target xml:lang="de" state="final">Kombinationen</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[29]">
+          <source xml:lang="nl">Binnen de geharmoniseerde vermindering kan de structurele vermindering per tewerkstelling gecombineerd worden met maximaal één doelgroepvermindering.</source>
+          <target xml:lang="de" state="final">Innerhalb der harmonisierten Ermäßigung kann die strukturelle Ermäßigung pro Beschäftigung mit höchstens einer Zielgruppenermäßigung kombiniert werden.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[30]">
+          <source xml:lang="nl">De structurele vermindering en de doelgroepvermindering zijn niet cumuleerbaar met enige andere werkgeversbijdragevermindering met uitzondering van de <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/deductions/otheremployersreductions/workpromotion_nonprofitsector.html">vermindering sociale maribel</g>, die eigenlijk een inhouding is op de klassieke werkgeversbijdragen om specifieke tewerkstellingsfondsen van de non-profit sector te financieren. De doelgroepvermindering 'langdurig werkzoekenden' en de ermee verbonden overgangsmaatregelen daarentegen zijn ook met de vermindering sociale maribel niet cumuleerbaar.</source>
+          <target xml:lang="de" state="final">Die strukturelle Ermäßigung und die Zielgruppenermäßigung sind nicht mit irgendeiner anderen Arbeitgeberbeitragsermäßigung kumulierbar, mit Ausnahme der <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/deductions/otheremployersreductions/workpromotion_nonprofitsector.html">Maribel sozial</g>-Ermäßigung, die eigentlich eine Einbehaltung der klassischen Arbeitgeberbeiträge darstellt, um besondere Beschäftigungsfonds im nichtkommerziellen Sektor zu finanzieren. Die Zielgruppenermäßigung für Langzeitarbeitssuchende und die damit verbundenen Übergangsmaßnahmen sind hingegen mit der „Maribel sozial“-Ermäßigung nicht kumulierbar.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[31]">
+          <source xml:lang="nl">Bij het berekenen van het verminderingsbedrag trekt men eerst het bedrag sociale maribel af van de verschuldigde werkgeversbijdragen om het maximale bedrag aan werkgeversbijdragen te kennen waarop de geharmoniseerde vermindering in mindering mag worden gebracht.  Het forfait bedraagt vanaf 1 januari 2021:</source>
+          <target xml:lang="de" state="final">Beim Berechnen des Ermäßigungsbetrags zieht man zunächst den „Maribel sozial“-Betrag von den geschuldeten Arbeitgeberbeiträgen ab, um den Höchstbetrag der Arbeitgeberbeiträge zu bestimmen, von dem die harmonisierte Ermäßigung abgezogen werden darf.  Die Pauschale beträgt ab 01. Januar 2021:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[11]">
+          <trans-unit restype="listitem" id="/html/body/ul[11]/li[1]">
+            <source xml:lang="nl"><g ctype="x-html-strong">409,37 EUR</g> voor de werkgevers van het <g ctype="x-html-strong">paritair comité voor de diensten van gezins- en bejaardenhulp</g> (318.xx)</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">409,37 EUR</g> für Arbeitgeber der <g ctype="x-html-strong">Paritätischen Kommission für Familien- und Seniorenhilfsdienste</g> (318.xx)</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[11]/li[2]">
+            <source xml:lang="nl"><g ctype="x-html-strong">507,48 EUR</g> voor de werkgevers van het <g ctype="x-html-strong">paritair comité voor de gezondheidsinrichtingen en diensten</g> (330.xx), met uitzondering van de werkgevers die onder de omschrijving van het paritaire subcomité voor de tandprothese vallen (330.03)</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">507,48 EUR</g> für Arbeitgeber der <g ctype="x-html-strong">Paritätischen Kommission für Gesundheitseinrichtungen und -dienste</g> (330.xx), ausgenommen Arbeitgeber, die unter die Definition der Paritätischen Unterkommission für Zahnprothesen fallen (330.03)</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[11]/li[3]">
+            <source xml:lang="nl"><g ctype="x-html-strong">498,31 EUR</g> voor de werkgevers die vallen onder het <g ctype="x-html-strong">fonds sociale maribel van de overheidssector</g></source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">498,31 EUR</g> für Arbeitgeber, die in den Anwendungsbereich des <g ctype="x-html-strong">Fonds Sozialer Maribel des öffentlichen Sektors</g> fallen</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[11]/li[4]">
+            <source xml:lang="nl"><g ctype="x-html-strong">539,95 EUR</g> voor werknemers die worden tewerkgesteld in een <g ctype="x-html-strong">erkende beschutte werkplaats</g> (categorie 3 structurele vermindering)</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">539,95 EUR</g> für Arbeitnehmer, die in einer <g ctype="x-html-strong">anerkannten beschützten Werkstätte</g> beschäftigt werden (Kategorie 3 strukturelle Ermäßigung)</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[11]/li[5]">
+            <source xml:lang="nl"><g ctype="x-html-strong">504,10 EUR</g> voor alle <g ctype="x-html-strong">andere </g>werkgevers voor elke werknemer die onder het toepassingsgebied van de sociale maribel valt.</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">504,10 EUR</g> für alle <g ctype="x-html-strong">anderen</g> Arbeitgeber für jeden Arbeitnehmer, der in den „Sozialen Maribel“-Anwendungsbereich fällt.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[32]">
+          <source xml:lang="nl">Het forfait 'sociale maribel' moet niet in mindering gebracht worden bij de werknemer als de werkgever voor hem één van de volgende doelgroepverminderingen geniet</source>
+          <target xml:lang="de" state="final">Die Pauschale ‚soziale Maribel‘ muss nicht bei einem Arbeitnehmer abgezogen werden, wenn der Arbeitgeber für ihn eine der folgenden Zielgruppenermäßigungen erhält</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[12]">
+          <trans-unit restype="listitem" id="/html/body/ul[12]/li[1]">
+            <source xml:lang="nl">'langdurig werkzoekenden' (DmfA), of één van de voor deze categorie voorziene overgangsmaatregelen,</source>
+            <target xml:lang="de" state="final">‚langfristig Arbeitsuchende‘ (DmfA) oder eine für diese Kategorie vorgesehene Übergangsmaßnahme,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[12]/li[2]">
+            <source xml:lang="nl">'gesubsidieerde contractuelen' behalve als het gesubsidieerde contractuelen KB nr 474 betreft (DmfAPPL),,</source>
+            <target xml:lang="de" state="final">‚bezuschusste Vertragsbedienstete‘, ausgenommen bezuschusste Vertragsbedienstete gemäß K. E. Nr. 474 (DmfAPPL),</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[12]/li[3]">
+            <source xml:lang="nl">'contractuele vervangers openbare sector',</source>
+            <target xml:lang="de" state="final">,vertragliche Ersatzkräfte öffentlicher Sektor‘,</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[12]/li[4]">
+            <source xml:lang="nl">'art. 60 §7 van de OCMW-wet' (DmfAPPL).</source>
+            <target xml:lang="de" state="final">‚Art. 60 §7 des ÖSHZ-Grundlagengesetzes‘ (DmfAPPL).</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[33]">
+          <source xml:lang="nl">Zij vallen buiten het toepassingsgebied van de sociale maribel. Voor hen gelden dus dezelfde aftoppingsregels als voor de werknemers van werkgevers die niet in aanmerking komen voor de sociale maribel. Voor de werknemers van beschutte werkplaatsen geldt een aparte regeling. Het bedrag sociale maribel moet NOOIT vooraf in mindering gebracht worden</source>
+          <target xml:lang="de" state="final">Sie fallen nicht in den Anwendungsbereich der sozialen Maribel. Für sie gelten deshalb die gleichen Kürzungsregeln wie für Arbeitnehmer von Arbeitgebern, die nicht für die „Maribel sozial“-Ermäßigung in Betracht kommen. Für Arbeitnehmer von beschützten Werkstätten gilt eine separate Regelung. Der „Maribel sozial“-Betrag darf NIEMALS vorher abgezogen werden</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[34]">
+          <source xml:lang="nl">De werknemers waarvoor de werkgever een doelgroepvermindering voor de ‘gesubsidieerde contractuelen KB nr. 474 van de plaatselijke besturen’ (DmfAPPL) geniet, kan deze vermindering cumuleren met de vermindering sociale maribel, maar het bedrag van de vermindering sociale maribel wordt beperkt tot de loonmatigingsbijdrage.</source>
+          <target xml:lang="de" state="final">Für Arbeitnehmer, für die der Arbeitgeber eine Zielgruppenermäßigung für die ‚bezuschussten Vertragsbediensteten K. E. Nr. 474 der lokalen Verwaltungen‘ (DmfAPPL) erhält, kann der Betrag der „Maribel Sozial“-Ermäßigung mit der Zielgruppenermäßigung kumuliert werden, doch der Betrag der „Maribel Sozial“-Ermäßigung wird dann auf den Lohnermäßigungsbeitrag begrenzt.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[35]">
+          <source xml:lang="nl">Indien er meerdere tewerkstellingslijnen zijn en de prestaties van één van de tewerkstellingslijnen onder het toepassingsgebied van de sociale maribel vallen, wordt het bedrag van de sociale maribel verdeeld rekening houdend met het relatieve aandeel van de prestaties van een bepaalde tewerkstellingslijn in het geheel van de prestaties voor dat kwartaal, gebruik makend van de prestatiebreuken ( µ / µ (glob) ) en dit ook voor de tewerkstellingslijnen waarvoor de prestaties niet onder het toepassingsveld van de sociale maribel vallen.</source>
+          <target xml:lang="de" state="final">Wenn es mehrere Beschäftigungszeilen gibt, und die Leistungen von einer der Beschäftigungszeilen unter die „Maribel sozial“-Maßnahme fallen, wird der „Maribel sozial“-Betrag aufgeteilt, unter Berücksichtigung des relativen Anteils der Leistungen einer bestimmten Beschäftigungszeile an der Gesamtheit der Leistungen für dieses Quartal, wobei von den Leistungsbruchzahlen (µ / µ (glob) ) Gebrauch gemacht wird, und dies auch für die Beschäftigungszeilen, deren Leistungen nicht unter diese Maßnahme fallen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[36]">
+          <source xml:lang="nl">Indien echter voor één van de tewerkstellingslijnen de doelgroepvermindering 'langdurig werkzoekenden' of één van de voor deze categorie voorziene overgangsmaatregelen wordt toegepast, of de doelgroepvermindering 'gesubsidieerde contractuelen', 'contractuele vervangers openbare sector' of 'art. 60 §7 van de OCMW-wet', moet voor die werknemer het bedrag van de sociale maribel voor geen van de tewerkstellingslijnen in mindering worden gebracht.</source>
+          <target xml:lang="de" state="final">Wenn aber für eine der Beschäftigungszeilen die Zielgruppenermäßigung für „Langzeitarbeitssuchende“ oder eine für diese Kategorie vorgesehene Übergangsmaßnahme angewendet wird, oder die Zielgruppenermäßigung „bezuschusste Vertragsbedienstete“, „vertragliche Ersatzkräfte öffentlicher Sektor“ oder „Art. 60 § 7 des ÖSHZ-Grundlagengesetzes“, muss für diesen Arbeitnehmer der „Maribel sozial“-Betrag für keine Beschäftigungszeile in Abzug gebracht werden.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[7]">
+          <source xml:lang="nl">Formaliteiten</source>
+          <target xml:lang="de" state="final">Formalitäten</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[37]">
+          <source xml:lang="nl">Per tewerkstellingslijn duidt de werkgever de structurele vermindering aan en één doelgroepvermindering waarop hij aanspraak kan maken. De stukken ter staving van de doelgroepvermindering moet hij gedurende de verjaringstermijn bijhouden en op vraag van de Rijksdienst voor Sociale Zekerheid kunnen voorleggen.</source>
+          <target xml:lang="de" state="final">Pro Beschäftigungszeile gibt der Arbeitgeber die strukturelle Ermäßigung und eine einzige Zielgruppenermäßigung an, auf die er Anspruch erheben kann. Die Belege zur Untermauerung der Zielgruppenermäßigung muss er in der Verjährungsfrist aufbewahren und auf Anfrage des Landesamtes für Soziale Sicherheit vorlegen können.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[8]">
+          <source xml:lang="nl">Fusie, opsplitsing en voortzetting</source>
+          <target xml:lang="de" state="final">Fusion, Aufspaltung und Fortsetzung</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[38]">
+          <source xml:lang="nl">In sommige gevallen van fusie, splitsing of voortzetting, kan de nieuwe werkgever een vermindering verder blijven genieten.</source>
+          <target xml:lang="de" state="final">Bei einer Fusion, Aufspaltung oder Fortsetzung kann der neue Arbeitgeber in einigen Fällen weiterhin die Ermäßigung beanspruchen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[39]">
+          <source xml:lang="nl">Een onderscheid moet worden gemaakt tussen de verminderingen die elk kwartaal per werknemer worden toegekend, uitsluitend afhankelijk van criteria waaraan in de loop van dat specifieke kwartaal moet zijn voldaan, en verminderingen die op een bepaald moment zijn geïnitialiseerd op basis van een aantal criteria waar bovenop nog een aantal voorwaarden moeten zijn vervuld in de loop van het kwartaal dat de vermindering wordt aangevraagd.</source>
+          <target xml:lang="de" state="final">Diesbezüglich muss zwischen den Ermäßigungen unterschieden werden, die jedes Quartal pro Arbeitnehmer nur in Abhängigkeit von Kriterien gewährt werden, denen im Laufe dieses Quartals zu entsprechen ist, und Ermäßigungen, die ab einem bestimmten Zeitpunkt anhand von Kriterien gewährt werden, für die zusätzlich einige Bedingungen im Laufe des Quartals zu erfüllen sind, für das die Ermäßigung beantragt wird.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[40]">
+          <source xml:lang="nl">
+            <g ctype="x-html-strong">Verminderingen enkel op basis van criteria waaraan moet zijn voldaan voor het kwartaal waarvoor de vermindering wordt aangevraagd:</g>
+          </source>
+          <target xml:lang="de" state="final">
+            <g ctype="x-html-strong">Ermäßigungen, die nur anhand von Kriterien gewährt werden, denen im Laufe des Quartals zu entsprechen ist, für das die Ermäßigung beantragt wird:</g>
+          </target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[13]">
+          <trans-unit restype="listitem" id="/html/body/ul[13]/li[1]">
+            <source xml:lang="nl">structurele vermindering</source>
+            <target xml:lang="de" state="final">Strukturelle Ermäßigung</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[13]/li[2]">
+            <source xml:lang="nl">doelgroepvermindering oudere werknemers - Brussel</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung ältere Arbeitnehmer – Brüssel</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[13]/li[3]">
+            <source xml:lang="nl">doelgroepvermindering oudere werknemers - Duitstalige Gemeenschap</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung ältere Arbeitnehmer – Deutschsprachige Gemeinschaft</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[13]/li[4]">
+            <source xml:lang="nl">doelgroepvermindering oudere werknemers - Vlaanderen - oudere zittende werknemers</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung ältere Arbeitnehmer – Flandern – in Beschäftigung stehende ältere Arbeitnehmer</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[13]/li[5]">
+            <source xml:lang="nl">doelgroepvermindering oudere werknemers - Wallonië</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung für ältere Arbeitnehmer - Wallonie</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[13]/li[6]">
+            <source xml:lang="nl">collectieve arbeidsduurvermindering en vierdagenweek, als de werknemer door een fusie of inbreng tot een groep gaat behoren die reeds in een dergelijk systeem zit en waarvoor een vermindering lopend is</source>
+            <target xml:lang="de" state="final">kollektive Arbeitszeitverkürzung und Viertagewochenregelung, wenn der Arbeitnehmer durch eine Fusion oder Einbringung zu einer Gruppe gehört, für die bereits ein derartiges System gilt und die eine Ermäßigung erhält</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[13]/li[7]">
+            <source xml:lang="nl">doelgroepvermindering jonge werknemers – min 19-jarigen</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung junge Arbeitnehmer – unter 19-Jährige</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[13]/li[8]">
+            <source xml:lang="nl">doelgroepvermindering horeca</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung Gaststättengewerbe (Horeca-Sektor)</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[13]/li[9]">
+            <source xml:lang="nl">doelgroepvermindering gesubsidieerde contractuelen</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung bezuschusste Vertragsbedienstete</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[13]/li[10]">
+            <source xml:lang="nl">doelgroepvermindering contractuele vervangers openbare sector</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung vertragliche Ersatzkräfte öffentlicher Dienst</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[13]/li[11]">
+            <source xml:lang="nl">doelgroepvermindering onthaalouders</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung Tageseltern</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[13]/li[12]">
+            <source xml:lang="nl">doelgroepvermindering kunstenaars</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung Künstler</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[13]/li[13]">
+            <source xml:lang="nl">doelgroepvermindering werknemers, tewerkgesteld op basis van artikel 60, §7, van de OCMW-wet</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung für Arbeitnehmer, die auf Basis von Artikel 60 §7 des ÖSHZ-Gesetzes eingestellt sind</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[41]">
+          <source xml:lang="nl">Daar elk kwartaal opnieuw zowel de werkgever als de werknemer aan de voorwaarden moet voldoen, is de vermindering onafhankelijk van een eventuele overname, fusie, omvorming enzovoort.</source>
+          <target xml:lang="de" state="final">Da jedes Quartal sowohl der Arbeitgeber als auch der Arbeitnehmer den Bedingungen neu entsprechen müssen, ist die Ermäßigung unabhängig von einer etwaigen Übernahme, Fusion, Umgestaltung usw.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[42]">
+          <source xml:lang="nl">
+            <g ctype="x-html-strong">Verminderingen op basis van criteria waaraan moet zijn voldaan voor het kwartaal waarvoor de vermindering wordt aangevraagd en waarvoor ook een aantal voorwaarden moeten worden vervuld op het moment van indiensttreding:</g>
+          </source>
+          <target xml:lang="de" state="final">
+            <g ctype="x-html-strong">Ermäßigungen, die anhand von Kriterien gewährt werden, denen im Laufe des Quartals zu entsprechen ist, für das die Ermäßigung beantragt wird, und für die einige zusätzliche Bedingungen zum Zeitpunkt des Dienstantritts zu erfüllen sind:</g>
+          </target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[14]">
+          <trans-unit restype="listitem" id="/html/body/ul[14]/li[1]">
+            <source xml:lang="nl">doelgroepvermindering oudere werknemers - Vlaanderen - oudere niet-werkende werkzoekende werknemers</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung ältere Arbeitnehmer – Flandern – nicht in Beschäftigung stehende ältere Arbeitnehmer</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[14]/li[2]">
+            <source xml:lang="nl">doelgroepvermindering eerste aanwervingen</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung für Ersteinstellungen</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[14]/li[3]">
+            <source xml:lang="nl">doelgroepvermindering langdurig werklozen</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung für Langzeitarbeitslose</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[14]/li[4]">
+            <source xml:lang="nl">doelgroepvermindering collectieve arbeidsduurvermindering en 4-dagenweek</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung für kollektive Arbeitszeitverkürzung und Viertagewochenregelung</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[14]/li[5]">
+            <source xml:lang="nl">doelgroepvermindering jonge werknemers – middengeschoolden, laaggeschoolden en erg laaggeschoolden</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung für junge Arbeitnehmer – Jugendliche mit Sekundarabschluss, gering Qualifizierte und sehr gering Qualifizierte.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[14]/li[6]">
+            <source xml:lang="nl">doelgroepvermindering jonge werknemers – Vlaanderen</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung junge Arbeitnehmer – Flandern</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[14]/li[7]">
+            <source xml:lang="nl">doelgroepvermindering herstructurering</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung Umstrukturierung</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[14]/li[8]">
+            <source xml:lang="nl">doelgroepvermindering huispersoneel</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung Hauspersonal</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[43]">
+          <source xml:lang="nl">Wanneer de juridische entiteit waaraan de werknemer verbonden is, ophoudt te bestaan of niet langer als werkgever van de werknemer die het recht op de vermindering heeft geopend, kan worden beschouwd, gaat in principe het recht op deze verminderingen verloren, behalve wanneer opnieuw aan de beginvoorwaarden zou worden voldaan. De programmawet van 27 december 2004 voorzag een aantal gevallen waarin deze doelgroepverminderingen bij een andere juridische entiteit toch konden worden voortgezet. Al naargelang de werkgever een privé-onderneming betrof, opgenomen in het toepassingsgebied van het wetboek van vennootschappen, een vzw, een stichting, of een natuurlijke persoon al dan niet met handelsactiviteiten, was de mogelijkheid tot voortzetting van de vermindering meer of minder ruim. Dit had als resultaat dat er een ongelijkheid in behandeling was tussen vennootschappen, vzw‘s, stichtingen en natuurlijke personen.</source>
+          <target xml:lang="de" state="final">Wenn die Rechtseinheit, zu der der Arbeitnehmer gehört, nicht länger besteht bzw. nicht länger als Arbeitgeber des Arbeitnehmers betrachtet werden kann, der das Recht auf die Ermäßigung begründet hat, wird das Recht auf diese Ermäßigungen im Grunde verwirkt, außer die Anfangsbedingungen werden erneut erfüllt. Das Programmgesetz vom 27.12.2004 sah einige Fälle vor, in denen diese Zielgruppenermäßigungen bei einer anderen Rechtseinheit dennoch fortgesetzt werden konnten. Der Spielraum für die weitere Anwendung der Ermäßigung richtete sich danach, ob es sich beim Arbeitgeber um ein Privatunternehmen handelte, das in den Anwendungsbereich des Gesellschaftsgesetzbuchs fiel, oder um eine VoG, eine Stiftung oder eine natürliche Person – mit oder ohne gewerbliche Tätigkeiten. Dies führte dazu, dass Gesellschaften, VoG, Stiftungen und natürliche Personen ungleich behandelt wurden.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[44]">
+          <source xml:lang="nl">De wet diverse bepalingen van 22 december 2008 probeert hieraan tegemoet te komen. Het is de bedoeling van de wetgever dat natuurlijke personen, verenigingen en stichtingen, in feitelijk gelijkaardige herstructurerende omstandigheden als bij rechtspersonen/ondernemingen, de verminderingen die voor voortzetting in aanmerking komen, kunnen blijven genieten voor de resterende periode.</source>
+          <target xml:lang="de" state="final">Das Gesetz vom 22.12.2008 zur Festlegung sonstiger Bestimmungen versucht, diese unterschiedliche Behandlung aufzuheben. Der Gesetzgeber zielt darauf ab, dass natürliche Personen, Vereinigungen und Stiftungen unter faktisch gleichartigen Umstrukturierungsbedingungen wie bei juristischen Personen/Unternehmen die für die Fortsetzung in Betracht kommenden Ermäßigungen für den übrigen Zeitraum in Anspruch nehmen können.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[45]">
+          <source xml:lang="nl">Concreet betekent dit:</source>
+          <target xml:lang="de" state="final">Konkret bedeutet dies:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[15]">
+          <trans-unit restype="listitem" id="/html/body/ul[15]/li[1]">
+            <source xml:lang="nl">de toepassing van de voortzetting van de verminderingen voor verenigingen en stichtingen kan in analoge situaties als deze voorzien voor ondernemingen in het wetboek van vennootschappen en verenigingen: de rechtspersoon die de begunstigde is van een juridische herstructureringsoperatie zoals bepaald bij artikelen 12:2 tot en met 12:10 en 12:103 van het Wetboek van vennootschappen en verenigingen (fusie, splitsing, inbreng) (voorheen de artikelen 671 tot 679 en artikel 770 van het Wetboek van vennootschappen)</source>
+            <target xml:lang="de" state="final">die Anwendung der Fortsetzung der Ermäßigungen für Vereinigungen und Stiftungen ist möglich in ähnlichen Situationen wie jener, die für Unternehmen im Gesellschafts- und Vereinigungsgesetzbuch vorgesehen sind: die juristische Person, die Begünstigter einer juristischen Umstrukturierungsoperation im Sinne der Artikel 12:2 bis einschließlich 12:10 des Gesellschafts- und Vereinigungsgesetzbuchs (Fusion, Spaltung, Einbringung) ist (zuvor die Artikel 671 bis 679 und Artikel 770 des Gesellschaftsgesetzbuchs ist)</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[15]/li[2]">
+            <source xml:lang="nl">de toepassing van de voortzetting van de verminderingen bij overgang van de activiteiten en personeel van een natuurlijke persoon naar een rechtspersoon kan in analoge situaties als deze voorzien voor ondernemingen in het wetboek van vennootschappen en verenigingen</source>
+            <target xml:lang="de" state="final">die Anwendung der Fortsetzung der Ermäßigungen beim Übergang der Aktivitäten und von Personal einer natürlichen Person zu einer juristischen Person ist möglich in ähnlichen Situationen wie jener, die für Unternehmen im Gesellschafts- und Vereinigungsgesetzbuch vorgesehen sind</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[15]/li[3]">
+            <source xml:lang="nl">bij uitbreiding kan de toepassing van de voortzetting van de verminderingen eveneens bij overgang van de activiteiten en personeel van een natuurlijke persoon/feitelijke vereniging naar een natuurlijke persoon/feitelijke vereniging in analoge situaties als deze voorzien voor ondernemingen in het wetboek van vennootschappen en verenigingen.</source>
+            <target xml:lang="de" state="final">bei Erweiterung ist die Anwendung der Fortsetzung der Ermäßigungen auch beim Übergang der Aktivitäten und von Personal einer natürlichen Person/nichtrechtsfähigen Vereinigung zu einer natürlichen Person/nichtrechtsfähigen Vereinigung ist möglich in ähnlichen Situationen wie jener, die für Unternehmen im Gesellschafts- und Vereinigungsgesetzbuch vorgesehen sind.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[15]/li[4]">
+            <source xml:lang="nl">.</source>
+            <target xml:lang="de" state="final">.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[46]">
+          <source xml:lang="nl">De essentie van deze doelgroepverminderingen is dat bepaalde doelgroepen/werknemers (terug) actief en volledig in de arbeidsmarkt worden opgenomen. Deze regelgeving heeft tot doel dit te vrijwaren in alle gevallen van reorganisatie die de juridische entiteit overschrijden. Vanuit pragmatisch standpunt aanvaardt de RSZ dan ook dat de voortzettende werkgever verklaart dat hij zich in een rechtverkrijgende positie bevindt, met een bevestiging van de eventuele verplichtingen waaraan hij nog moet voldoen :</source>
+          <target xml:lang="de" state="final">Diese Zielgruppenermäßigungen zielen insbesondere darauf ab, dass bestimmte Zielgruppen/Arbeitnehmer (wieder) aktiv und vollständig in den Arbeitsmarkt eingegliedert werden. Diese Regelung soll dies in allen Fällen der Reorganisation gewährleisten, die über den Rahmen der Rechtseinheit hinausgehen. Aus pragmatischer Sicht bestätigt das LSS daher, dass der Arbeitgeber, die die Fortsetzung anwendet, erklärt, dass er sich in einer Position als Rechtsnachfolger befindet, wobei er bestätigt, dass er eventuell daran geknüpfte Verpflichtungen erfüllt:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[16]">
+          <trans-unit restype="listitem" id="/html/body/ul[16]/li[1]">
+            <source xml:lang="nl">een simpele verklaring van de rechtspersoon/onderneming en de resulterende hem opvolgende rechtspersoon/onderneming dat de overgang/reorganisatie conform is aan één van de situaties voorzien in het wetboek van vennootschappen en verenigingen in de artikelen 12:2 tot 12:10 en 12:103 met overname van alle rechten en plichten die hieraan verbonden zijn, ook naar derden toe</source>
+            <target xml:lang="de" state="final">eine einfache Erklärung der juristischen Person/des Unternehmens und der ihm nachfolgenden juristischen Person/des ihm nachfolgenden Unternehmens, dass der Übergang/die Reorganisation einer der Situationen entspricht, die im Gesellschafts- und Vereinigungsgesetzbuch in den Artikeln 12:2 bis 12:10 und 12:103 vorgesehen sind, mit Übernahme aller damit verbundenen Rechte und Pflichten, einschließlich gegenüber Dritten</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[16]/li[2]">
+            <source xml:lang="nl">een simpele verklaring van de natuurlijke persoon en de resulterende hem opvolgende rechtspersoon dat de overgang/reorganisatie analoog is aan één van de situaties voorzien in het wetboek van vennootschappen en verenigingen in de artikelen 12:2 tot 12:10 en 12:103 met overname van alle rechten en plichten die hieraan verbonden zijn, ook naar derden toe</source>
+            <target xml:lang="de" state="final">eine einfache Erklärung der natürlichen Person und der ihm nachfolgenden juristischen Person, dass der Übergang/die Reorganisation einer der Situationen entspricht, die im Gesellschafts- und Vereinigungsgesetzbuch in den Artikeln 12:2 bis 12:10 und 12:103 vorgesehen sind, mit Übernahme aller damit verbundenen Rechte und Pflichten, einschließlich gegenüber Dritten</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[16]/li[3]">
+            <source xml:lang="nl">een simpele verklaring van de oorspronkelijke stichting/vereniging en de resulterende haar opvolgende stichting/vereniging of rechtspersoon/onderneming dat de overgang/reorganisatie analoog is aan één van de situaties voorzien in het wetboek van vennootschappen en verenigingen in de artikelen  12:2 tot 12:10 en 12:103 met overname van alle rechten en plichten die hieraan verbonden zijn, ook naar derden toe</source>
+            <target xml:lang="de" state="final">eine einfache Erklärung der ursprünglichen Stiftung/Vereinigung und der ihm/ihr nachfolgenden Stiftung/Vereinigung oder der ihm/ihr nachfolgenden juristischen Person/des ihm/ihr nachfolgenden Unternehmens, dass der Übergang/die Reorganisation einer der Situationen entspricht, die im Gesellschafts- und Vereinigungsgesetzbuch in den Artikeln 12:2 bis 12:10 und 12:103 vorgesehen sind, mit Übernahme aller damit verbundenen Rechte und Pflichten, einschließlich gegenüber Dritten</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[16]/li[4]">
+            <source xml:lang="nl">een simpele verklaring van de natuurlijke persoon/feitelijke vereniging/rechtspersoon en de resulterende hem opvolgende natuurlijke persoon/feitelijke vereniging dat de overgang/reorganisatie analoog is aan één van de situaties voorzien in het wetboek van vennootschappen en verenigingen in de artikelen 12:2 tot 12:10 en 12:103 met overname van alle rechten en plichten die hieraan verbonden zijn, ook naar derden toe.</source>
+            <target xml:lang="de" state="final">eine einfache Erklärung der natürlichen Person/der nichtrechtsfähigen Vereinigung/der juristischen Person und der nachfolgenden natürlichen Person/des nachfolgenden Arbeitgebers/ der nachfolgenden nichtrechtsfähigen Vereinigung, dass der Übergang/die Reorganisation einer der Situationen entspricht, die im Gesellschafts- und Vereinigungsgesetzbuch in den Artikeln 12:2 bis 12:10 und 12:103 vorgesehen sind, mit Übernahme aller damit verbundenen Rechte und Pflichten, einschließlich gegenüber Dritten.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[47]">
+          <source xml:lang="nl">Deze aanvraag moet verplicht gebeuren met het opgenomen <g ctype="x-html-a" html:href="ems://asset:1f277e0c62cd174e182422fe2bea5e83df827dfd?name=model-verklaring-voortzetting-geharmoniseerde-2019-nl.pdf&amp;type=application%2Fpdf">model</g>. Uiteraard zijn deze verminderingen niet zomaar verworven maar moet nog aan een aantal voorwaarden worden voldaan, zoals:</source>
+          <target xml:lang="de" state="final">Dieser Antrag muss mit dem <g ctype="x-html-a" html:href="ems://asset:1f277e0c62cd174e182422fe2bea5e83df827dfd?name=model-verklaring-voortzetting-geharmoniseerde-2019-nl.pdf&amp;type=application%2Fpdf">Muster</g> vorgenommen werden. Selbstverständlich werden diese Ermäßigungen nicht ohne Weiteres erworben, sondern es müssen einige der nachstehenden aufgelisteten Bedingungen erfüllt werden:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[17]">
+          <trans-unit restype="listitem" id="/html/body/ul[17]/li[1]">
+            <source xml:lang="nl">de nieuwe werkgever moet tot de groep werkgevers behoren waarop de doelgroepvermindering betrekking heeft</source>
+            <target xml:lang="de" state="final">Der neue Arbeitgeber muss zur Arbeitgebergruppe gehören, auf die sich die Zielgruppenermäßigung bezieht</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[17]/li[2]">
+            <source xml:lang="nl">in het geval van de doelgroepvermindering collectieve arbeidsduurvermindering en 4-dagenweek moet de arbeidsduurvermindering of de arbeidsregeling 4-dagenweek voortgezet worden</source>
+            <target xml:lang="de" state="final">Bei einer Zielgruppenermäßigung für kollektive Arbeitszeitverkürzung und Viertagewochenregelung muss die Arbeitszeitverkürzung oder die Viertagewochenregelung fortgesetzt werden</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[17]/li[3]">
+            <source xml:lang="nl">in het geval van de doelgroepvermindering jonge werknemers moet afhankelijk van de regio waar de jongere tewerkgesteld wordt, de nieuwe werkgever voldoen aan de jongerenverplichting.</source>
+            <target xml:lang="de" state="final">Bei einer Zielgruppenermäßigung für junge Arbeitnehmer muss abhängig von der Region, in der der junge Arbeitnehmer beschäftigt wird, der neue Arbeitgeber der Jungarbeitnehmerverpflichtung entsprechen.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[48]">
+          <source xml:lang="nl">Ook zal de werkgever die er aanspraak op maakt om de doelgroepverminderingen verder te kunnen blijven genieten, hoofdelijk aansprakelijk zijn voor de sociale schulden van de pre-existente juridische entiteiten.</source>
+          <target xml:lang="de" state="final">Auch wird der Arbeitgeber, um diese Zielgruppenermäßigungen weiter beanspruchen zu können, für die sozialen Schulden der vorher bestehenden Rechtseinheiten solidarisch haftbar sein.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[49]">
+          <source xml:lang="nl">De werkgever die de vermindering wenst voort te zetten, deelt dit voorafgaandelijk uitdrukkelijk mee aan de Controledienst van de RSZ aan de hand van het bedoelde model. De Controledienst zal zijn beslissing aan de aanvrager meedelen of indien nodig bijkomende documenten opvragen. De Controledienst zal, in het geval dat de nieuwe werkgever de verminderingen mag voortzetten, eveneens het aantal resterende kwartalen meedelen dat de werkgever de vermindering nog mag toepassen. De RSZ wenst er ook op te wijzen dat een correcte en tijdige aanvraag voor de voortzetting van sommige doelgroepverminderingen ook repercussies heeft voor de activeringsuitkeringen die toegekend worden door de RVA. Deze instelling zal zich voor de voortzetting van de werkuitkeringen immers baseren op het antwoord verstrekt door de RSZ.</source>
+          <target xml:lang="de" state="final">Möchte der Arbeitgeber die Ermäßigung fortsetzen, teilt er dies vorher ausdrücklich dem Kontrolldienst des LSS anhand des betreffenden Musters mit. Der Kontrolldienst wird dem Antragsteller seine Entscheidung mitteilen oder ggf. zusätzliche Dokumente anfordern. Wenn der neue Arbeitgeber die Ermäßigungen fortsetzen darf, wird der Kontrolldienst gleichfalls die Anzahl der restlichen Quartale melden, in denen der Arbeitgeber die Ermäßigung noch anwenden darf. Das LSS möchte auch darauf hinweisen, dass ein fehlerfreier und fristgerechter Antrag zur Fortsetzung bestimmter Zielgruppenermäßigungen auch Auswirkungen für die Aktivierungsunterstützungen hat, die vom LfA gewährt werden. Diese Einrichtung wird sich für die Fortsetzung der Arbeitsunterstützungen auf die Antwort des LSS basieren.</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

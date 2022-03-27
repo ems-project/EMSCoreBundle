@@ -347,8 +347,8 @@ class InsertionRevision
         $expectedSourceValue = $propertyAccessor->getValue($extractedRawData, $sourcePropertyPath);
 
         if ('html' === $format) {
-            $expectedSourceValue = $this->htmlPrettyPrint($expectedSourceValue);
-            $sourceValue = $this->htmlPrettyPrint($sourceValue);
+            $expectedSourceValue = Html::prettyPrint($expectedSourceValue);
+            $sourceValue = Html::prettyPrint($sourceValue);
         } elseif (null !== $format) {
             throw new \RuntimeException(\sprintf('Unexpected %s field format', $format));
         }
@@ -360,17 +360,6 @@ class InsertionRevision
         }
 
         $propertyAccessor->setValue($insertRawData, $targetPropertyPath, $targetValue);
-    }
-
-    private function htmlPrettyPrint(?string $source): string
-    {
-        $source = $source ?? '';
-        $formater = new \tidy();
-        $formater->parseString($source, [
-            'indent' => true,
-        ]);
-
-        return \str_replace(['<body>', '</body>', PHP_EOL.'  '], ['', '', PHP_EOL], $formater->body()->value);
     }
 
     private function rebuildInline(\DOMElement $tagDom, \DOMElement $grandChild): void

@@ -36,22 +36,10 @@
       </unit>
       <group id="/html/body/ol">
         <group id="/html/body/ol/li[1]">
-          <unit id="/html/body/ol/li[1]/text()[1]">
-            <segment id="/html/body/ol/li[1]/text()[1]">
-              <source/>
-              <target/>
-            </segment>
-          </unit>
           <unit id="/html/body/ol/li[1]/strong">
             <segment id="/html/body/ol/li[1]/strong">
               <source>twee maal</source>
               <target>zwei Mal</target>
-            </segment>
-          </unit>
-          <unit id="/html/body/ol/li[1]/text()[2]">
-            <segment id="/html/body/ol/li[1]/text()[2]">
-              <source/>
-              <target/>
             </segment>
           </unit>
           <group id="/html/body/ol/li[1]/ul">
@@ -70,22 +58,10 @@
           </group>
         </group>
         <group id="/html/body/ol/li[2]">
-          <unit id="/html/body/ol/li[2]/text()[1]">
-            <segment id="/html/body/ol/li[2]/text()[1]">
-              <source/>
-              <target/>
-            </segment>
-          </unit>
           <unit id="/html/body/ol/li[2]/strong">
             <segment id="/html/body/ol/li[2]/strong">
               <source>maximale bedrag</source>
               <target>H&#246;chstbetrag</target>
-            </segment>
-          </unit>
-          <unit id="/html/body/ol/li[2]/text()[2]">
-            <segment id="/html/body/ol/li[2]/text()[2]">
-              <source/>
-              <target/>
             </segment>
           </unit>
           <group id="/html/body/ol/li[2]/ul">
@@ -138,22 +114,10 @@
       </unit>
       <group id="/html/body/ol">
         <group id="/html/body/ol/li[1]">
-          <unit id="/html/body/ol/li[1]/text()[1]">
-            <segment id="/html/body/ol/li[1]/text()[1]">
-              <source/>
-              <target/>
-            </segment>
-          </unit>
           <unit id="/html/body/ol/li[1]/strong">
             <segment id="/html/body/ol/li[1]/strong">
               <source>twee maal</source>
               <target>zwei Mal</target>
-            </segment>
-          </unit>
-          <unit id="/html/body/ol/li[1]/text()[2]">
-            <segment id="/html/body/ol/li[1]/text()[2]">
-              <source/>
-              <target/>
             </segment>
           </unit>
           <group id="/html/body/ol/li[1]/ul">
@@ -172,22 +136,10 @@
           </group>
         </group>
         <group id="/html/body/ol/li[2]">
-          <unit id="/html/body/ol/li[2]/text()[1]">
-            <segment id="/html/body/ol/li[2]/text()[1]">
-              <source/>
-              <target/>
-            </segment>
-          </unit>
           <unit id="/html/body/ol/li[2]/strong">
             <segment id="/html/body/ol/li[2]/strong">
               <source>maximale bedrag</source>
               <target>H&#246;chstbetrag</target>
-            </segment>
-          </unit>
-          <unit id="/html/body/ol/li[2]/text()[2]">
-            <segment id="/html/body/ol/li[2]/text()[2]">
-              <source/>
-              <target/>
             </segment>
           </unit>
           <group id="/html/body/ol/li[2]/ul">
@@ -240,22 +192,10 @@
       </unit>
       <group id="/html/body/ol">
         <group id="/html/body/ol/li[1]">
-          <unit id="/html/body/ol/li[1]/text()[1]">
-            <segment id="/html/body/ol/li[1]/text()[1]">
-              <source/>
-              <target/>
-            </segment>
-          </unit>
           <unit id="/html/body/ol/li[1]/strong">
             <segment id="/html/body/ol/li[1]/strong">
               <source>twee maal</source>
               <target>zwei Mal</target>
-            </segment>
-          </unit>
-          <unit id="/html/body/ol/li[1]/text()[2]">
-            <segment id="/html/body/ol/li[1]/text()[2]">
-              <source/>
-              <target/>
             </segment>
           </unit>
           <group id="/html/body/ol/li[1]/ul">
@@ -274,22 +214,10 @@
           </group>
         </group>
         <group id="/html/body/ol/li[2]">
-          <unit id="/html/body/ol/li[2]/text()[1]">
-            <segment id="/html/body/ol/li[2]/text()[1]">
-              <source/>
-              <target/>
-            </segment>
-          </unit>
           <unit id="/html/body/ol/li[2]/strong">
             <segment id="/html/body/ol/li[2]/strong">
               <source>maximale bedrag</source>
               <target>H&#246;chstbetrag</target>
-            </segment>
-          </unit>
-          <unit id="/html/body/ol/li[2]/text()[2]">
-            <segment id="/html/body/ol/li[2]/text()[2]">
-              <source/>
-              <target/>
             </segment>
           </unit>
           <group id="/html/body/ol/li[2]/ul">

@@ -29,17 +29,9 @@
         </trans-unit>
         <group restype="x-html-ol" id="/html/body/ol">
           <group restype="listitem" id="/html/body/ol/li[1]">
-            <trans-unit restype="x-html-#text" id="/html/body/ol/li[1]/text()[1]">
-              <source xml:lang="en"/>
-              <target xml:lang="fr" state="needs-translation"/>
-            </trans-unit>
             <trans-unit restype="x-html-strong" id="/html/body/ol/li[1]/strong">
               <source xml:lang="en">twee maal</source>
               <target xml:lang="fr" state="needs-translation">zwei Mal</target>
-            </trans-unit>
-            <trans-unit restype="x-html-#text" id="/html/body/ol/li[1]/text()[2]">
-              <source xml:lang="en"/>
-              <target xml:lang="fr" state="needs-translation"/>
             </trans-unit>
             <group restype="x-html-ul" id="/html/body/ol/li[1]/ul">
               <trans-unit restype="listitem" id="/html/body/ol/li[1]/ul/li[1]">
@@ -53,17 +45,9 @@
             </group>
           </group>
           <group restype="listitem" id="/html/body/ol/li[2]">
-            <trans-unit restype="x-html-#text" id="/html/body/ol/li[2]/text()[1]">
-              <source xml:lang="en"/>
-              <target xml:lang="fr" state="needs-translation"/>
-            </trans-unit>
             <trans-unit restype="x-html-strong" id="/html/body/ol/li[2]/strong">
               <source xml:lang="en">maximale bedrag</source>
               <target xml:lang="fr" state="needs-translation">Höchstbetrag</target>
-            </trans-unit>
-            <trans-unit restype="x-html-#text" id="/html/body/ol/li[2]/text()[2]">
-              <source xml:lang="en"/>
-              <target xml:lang="fr" state="needs-translation"/>
             </trans-unit>
             <group restype="x-html-ul" id="/html/body/ol/li[2]/ul">
               <trans-unit restype="listitem" id="/html/body/ol/li[2]/ul/li[1]">
@@ -101,17 +85,9 @@
         </trans-unit>
         <group restype="x-html-ol" id="/html/body/ol">
           <group restype="listitem" id="/html/body/ol/li[1]">
-            <trans-unit restype="x-html-#text" id="/html/body/ol/li[1]/text()[1]">
-              <source xml:lang="en"/>
-              <target xml:lang="fr" state="needs-translation"/>
-            </trans-unit>
             <trans-unit restype="x-html-strong" id="/html/body/ol/li[1]/strong">
               <source xml:lang="en">twee maal</source>
               <target xml:lang="fr" state="needs-translation">zwei Mal</target>
-            </trans-unit>
-            <trans-unit restype="x-html-#text" id="/html/body/ol/li[1]/text()[2]">
-              <source xml:lang="en"/>
-              <target xml:lang="fr" state="needs-translation"/>
             </trans-unit>
             <group restype="x-html-ul" id="/html/body/ol/li[1]/ul">
               <trans-unit restype="listitem" id="/html/body/ol/li[1]/ul/li[1]">
@@ -125,17 +101,9 @@
             </group>
           </group>
           <group restype="listitem" id="/html/body/ol/li[2]">
-            <trans-unit restype="x-html-#text" id="/html/body/ol/li[2]/text()[1]">
-              <source xml:lang="en"/>
-              <target xml:lang="fr" state="needs-translation"/>
-            </trans-unit>
             <trans-unit restype="x-html-strong" id="/html/body/ol/li[2]/strong">
               <source xml:lang="en">maximale bedrag</source>
               <target xml:lang="fr" state="needs-translation">Höchstbetrag</target>
-            </trans-unit>
-            <trans-unit restype="x-html-#text" id="/html/body/ol/li[2]/text()[2]">
-              <source xml:lang="en"/>
-              <target xml:lang="fr" state="needs-translation"/>
             </trans-unit>
             <group restype="x-html-ul" id="/html/body/ol/li[2]/ul">
               <trans-unit restype="listitem" id="/html/body/ol/li[2]/ul/li[1]">
@@ -173,17 +141,9 @@
         </trans-unit>
         <group restype="x-html-ol" id="/html/body/ol">
           <group restype="listitem" id="/html/body/ol/li[1]">
-            <trans-unit restype="x-html-#text" id="/html/body/ol/li[1]/text()[1]">
-              <source xml:lang="en"/>
-              <target xml:lang="fr" state="final"/>
-            </trans-unit>
             <trans-unit restype="x-html-strong" id="/html/body/ol/li[1]/strong">
               <source xml:lang="en">twee maal</source>
               <target xml:lang="fr" state="final">zwei Mal</target>
-            </trans-unit>
-            <trans-unit restype="x-html-#text" id="/html/body/ol/li[1]/text()[2]">
-              <source xml:lang="en"/>
-              <target xml:lang="fr" state="final"/>
             </trans-unit>
             <group restype="x-html-ul" id="/html/body/ol/li[1]/ul">
               <trans-unit restype="listitem" id="/html/body/ol/li[1]/ul/li[1]">
@@ -197,17 +157,9 @@
             </group>
           </group>
           <group restype="listitem" id="/html/body/ol/li[2]">
-            <trans-unit restype="x-html-#text" id="/html/body/ol/li[2]/text()[1]">
-              <source xml:lang="en"/>
-              <target xml:lang="fr" state="final"/>
-            </trans-unit>
             <trans-unit restype="x-html-strong" id="/html/body/ol/li[2]/strong">
               <source xml:lang="en">maximale bedrag</source>
               <target xml:lang="fr" state="final">Höchstbetrag</target>
-            </trans-unit>
-            <trans-unit restype="x-html-#text" id="/html/body/ol/li[2]/text()[2]">
-              <source xml:lang="en"/>
-              <target xml:lang="fr" state="final"/>
             </trans-unit>
             <group restype="x-html-ul" id="/html/body/ol/li[2]/ul">
               <trans-unit restype="listitem" id="/html/body/ol/li[2]/ul/li[1]">

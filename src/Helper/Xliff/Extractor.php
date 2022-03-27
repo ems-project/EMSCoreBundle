@@ -391,7 +391,10 @@ class Extractor
 
     private function addSegmentNode(\DOMElement $xliffElement, ?\DOMNode $sourceNode, ?Crawler $targetCrawler, bool $isFinal, bool $htmlEncodeInlines = false): void
     {
-        if ((null == $sourceNode || null === $targetCrawler) && $sourceNode !== $targetCrawler) {
+        if (null !== $sourceNode && !$sourceNode instanceof \DOMElement) {
+            return;
+        }
+        if ((null === $sourceNode || null === $targetCrawler) && $sourceNode !== $targetCrawler) {
             throw new \RuntimeException('Unexpected case where there is a source and no target defined or the opposite');
         }
         if (\version_compare($this->xliffVersion, '2.0') < 0) {

@@ -13,7 +13,7 @@ class Inserter
     private ?string $sourceLocale;
     private ?string $targetLocale;
 
-    private function __construct(\DOMDocument $document)
+    public function __construct(\DOMDocument $document)
     {
         $this->xliff = DomHelper::getSingleNodeFromDocument($document, 'xliff');
         $this->version = DomHelper::getStringAttr($this->xliff, 'version');

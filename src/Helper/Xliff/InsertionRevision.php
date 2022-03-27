@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Helper\Xliff;
 
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CoreBundle\Helper\XML\DomHelper;
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class InsertionRevision
@@ -295,9 +294,13 @@ class InsertionRevision
         $body = new \DOMElement('body');
         $html->appendChild($body);
         $this->groupToHtmlNodes($group, $nodeName, $body, $namespaces);
-        $crawler = new Crawler($document);
 
-        return $crawler->filterXPath('//body')->html();
+        $html = '';
+        foreach ($body->childNodes as $node) {
+            $html .= $document->saveXML($node);
+        }
+
+        return $html;
     }
 
     private function restypeToTag(string $restype): string

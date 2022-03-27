@@ -11,6 +11,20 @@ use Symfony\Component\Finder\Finder;
 
 class InserterTest extends KernelTestCase
 {
+    public function testAttrWithCurlBracket(): void
+    {
+        $document = new \DOMDocument();
+        $html = new \DOMElement('html');
+        $document->appendChild($html);
+        $body = new \DOMElement('body');
+        $html->appendChild($body);
+        $link = new \DOMElement('a', 'Click here');
+        $body->appendChild($link);
+        $link->setAttribute('href', '%{BASE_URL_CURRENT}%/instructions/persons/specific/childsitter.html');
+
+        $this->assertEquals('<body><a href="%{BASE_URL_CURRENT}%/instructions/persons/specific/childsitter.html">Click here</a></body>', $document->saveXML($body));
+    }
+
     public function testXliffImports(): void
     {
         $finder = new Finder();
@@ -30,9 +44,9 @@ class InserterTest extends KernelTestCase
                 $document->extractTranslations($correspondingJson, $target);
 
                 $expectedFilename = \join(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'Resources', 'Xliff', 'Translated', $document->getContentType().'-'.$document->getOuuid().'-'.$document->getRevisionId().'.json']);
-//                if (!\file_exists($expectedFilename)) {
-                \file_put_contents($expectedFilename, \json_encode($target, JSON_PRETTY_PRINT));
-//                }
+                if (!\file_exists($expectedFilename)) {
+                    \file_put_contents($expectedFilename, \json_encode($target, JSON_PRETTY_PRINT));
+                }
                 $expected = \json_decode(\file_get_contents($expectedFilename), true);
                 $this->assertEquals($expected, $target, \sprintf('For the document ems://%s:%s revision %s during the test %s', $document->getContentType(), $document->getOuuid(), $document->getRevisionId(), $fileNameWithExtension));
             }

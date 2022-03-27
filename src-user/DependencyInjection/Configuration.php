@@ -76,37 +76,11 @@ class Configuration implements ConfigurationInterface
                 ->thenInvalid('You need to specify your own group manager service when using the "custom" driver.')
             ->end();
 
-        $this->addProfileSection($rootNode);
         $this->addChangePasswordSection($rootNode);
         $this->addResettingSection($rootNode);
         $this->addServiceSection($rootNode);
 
         return $treeBuilder;
-    }
-
-    private function addProfileSection(ArrayNodeDefinition $node)
-    {
-        $node
-            ->children()
-                ->arrayNode('profile')
-                    ->addDefaultsIfNotSet()
-                    ->canBeUnset()
-                    ->children()
-                        ->arrayNode('form')
-                            ->addDefaultsIfNotSet()
-                            ->fixXmlConfig('validation_group')
-                            ->children()
-                                ->scalarNode('type')->defaultValue(Type\ProfileFormType::class)->end()
-                                ->scalarNode('name')->defaultValue('fos_user_profile_form')->end()
-                                ->arrayNode('validation_groups')
-                                    ->prototype('scalar')->end()
-                                    ->defaultValue(['Profile', 'Default'])
-                                ->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end();
     }
 
     private function addResettingSection(ArrayNodeDefinition $node)

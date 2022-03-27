@@ -9,7 +9,7 @@
 		<div class="box-header with-border">
 			<h3 class="box-title">Edit user {{ user.username }}</h3>
 		</div>
-		{{ form_start(form, { 'action': path('emsco_user_edit', {'user': user.id}), 'attr': { 'class': 'fos_user_profile_edit' } }) }}
+		{{ form_start(form, { 'action': path('emsco_user_edit', {'user': user.id}) }) }}
     <div class="box-body">
     	<div class="col-md-6">
 	    	{{ form_row(form.username) }}

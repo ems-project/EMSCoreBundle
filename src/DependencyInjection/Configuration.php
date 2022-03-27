@@ -32,10 +32,6 @@ class Configuration implements ConfigurationInterface
     public const ALLOW_USER_REGISTRATION = false;
     public const TRIGGER_JOB_FROM_WEB = true;
     public const LOCK_TIME = '+1 minutes';
-    public const USER_LOGIN_ROUTE = 'fos_user_security_login';
-    public const USER_PROFILE_ROUTE = 'fos_user_profile_show';
-    public const USER_LOGOUT_ROUTE = 'fos_user_security_logout';
-    public const USER_REGISTRATION_ROUTE = 'fos_user_registration_register';
     public const PRIVATE_KEY = null;
     public const PUBLIC_KEY = null;
     public const ASSET_CONFIG = [];
@@ -77,11 +73,6 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('allow_user_registration')->defaultValue(self::ALLOW_USER_REGISTRATION)->end()
             ->scalarNode('trigger_job_from_web')->defaultValue(self::TRIGGER_JOB_FROM_WEB)->end()
             ->scalarNode('lock_time')->defaultValue(self::LOCK_TIME)->end()
-            ->scalarNode('user_login_route')->defaultValue(self::USER_LOGIN_ROUTE)->end()
-            ->scalarNode('user_profile_route')->defaultValue(self::USER_PROFILE_ROUTE)->end()
-            ->scalarNode('user_logout_route')->defaultValue(self::USER_LOGOUT_ROUTE)->end()
-            ->scalarNode('user_registration_route')->defaultValue(self::USER_REGISTRATION_ROUTE)->end()
-            ->scalarNode('add_user_route')->defaultValue(Routes::USER_ADD)->end()
             ->variableNode('asset_config')->defaultValue(self::ASSET_CONFIG)->end()
             ->scalarNode('private_key')->defaultValue(self::PRIVATE_KEY)->end()
             ->scalarNode('public_key')->defaultValue(self::PUBLIC_KEY)->end()

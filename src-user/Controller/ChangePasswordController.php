@@ -11,6 +11,7 @@
 
 namespace FOS\UserBundle\Controller;
 
+use EMS\CoreBundle\Routes;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
@@ -75,7 +76,7 @@ class ChangePasswordController extends Controller
             $this->userManager->updateUser($user);
 
             if (null === $response = $event->getResponse()) {
-                $url = $this->generateUrl('fos_user_profile_show');
+                $url = $this->generateUrl(Routes::USER_PROFILE);
                 $response = new RedirectResponse($url);
             }
 

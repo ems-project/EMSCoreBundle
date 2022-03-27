@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\User;
 
 use EMS\CoreBundle\Entity\User;
-use EMS\CoreBundle\Entity\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface as FosUserManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -33,9 +32,6 @@ final class UserManager
         return $user;
     }
 
-    /**
-     * @param User $user
-     */
     public function update(User $user): void
     {
         $this->fosUserManager->updateUser($user);

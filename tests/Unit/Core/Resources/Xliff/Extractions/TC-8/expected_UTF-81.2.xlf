@@ -31,7 +31,7 @@
           <group restype="listitem" id="/html/body/ol/li[1]">
             <trans-unit id="/html/body/ol/li[1]/text()[1]">
               <source xml:lang="en">maximaal </source>
-              <target xml:lang="fr" state="new"/>
+              <target xml:lang="fr" state="needs-translation">höchstens </target>
             </trans-unit>
             <trans-unit restype="x-html-strong" id="/html/body/ol/li[1]/strong">
               <source xml:lang="en">twee maal</source>
@@ -39,7 +39,7 @@
             </trans-unit>
             <trans-unit id="/html/body/ol/li[1]/text()[2]">
               <source xml:lang="en"> tijdens de loopbaan van de werknemer bij een werkgever: </source>
-              <target xml:lang="fr" state="new"/>
+              <target xml:lang="fr" state="needs-translation"> während der Laufbahn des Arbeitnehmers bei dem Arbeitgeber: </target>
             </trans-unit>
             <group restype="x-html-ul" id="/html/body/ol/li[1]/ul">
               <trans-unit restype="listitem" id="/html/body/ol/li[1]/ul/li[1]">
@@ -55,7 +55,7 @@
           <group restype="listitem" id="/html/body/ol/li[2]">
             <trans-unit id="/html/body/ol/li[2]/text()[1]">
               <source xml:lang="en">voor zover het </source>
-              <target xml:lang="fr" state="new"/>
+              <target xml:lang="fr" state="needs-translation">wenn der </target>
             </trans-unit>
             <trans-unit restype="x-html-strong" id="/html/body/ol/li[2]/strong">
               <source xml:lang="en">maximale bedrag</source>
@@ -63,7 +63,7 @@
             </trans-unit>
             <trans-unit id="/html/body/ol/li[2]/text()[2]">
               <source xml:lang="en"> niet hoger is dan: </source>
-              <target xml:lang="fr" state="new"/>
+              <target xml:lang="fr" state="needs-translation"> nicht höher ist als: </target>
             </trans-unit>
             <group restype="x-html-ul" id="/html/body/ol/li[2]/ul">
               <trans-unit restype="listitem" id="/html/body/ol/li[2]/ul/li[1]">
@@ -103,7 +103,7 @@
           <group restype="listitem" id="/html/body/ol/li[1]">
             <trans-unit id="/html/body/ol/li[1]/text()[1]">
               <source xml:lang="en">maximaal </source>
-              <target xml:lang="fr" state="new"/>
+              <target xml:lang="fr" state="needs-translation">höchstens </target>
             </trans-unit>
             <trans-unit restype="x-html-strong" id="/html/body/ol/li[1]/strong">
               <source xml:lang="en">twee maal</source>
@@ -111,7 +111,7 @@
             </trans-unit>
             <trans-unit id="/html/body/ol/li[1]/text()[2]">
               <source xml:lang="en"> tijdens de loopbaan van de werknemer bij een werkgever: </source>
-              <target xml:lang="fr" state="new"/>
+              <target xml:lang="fr" state="needs-translation"> während der Laufbahn des Arbeitnehmers bei dem Arbeitgeber: </target>
             </trans-unit>
             <group restype="x-html-ul" id="/html/body/ol/li[1]/ul">
               <trans-unit restype="listitem" id="/html/body/ol/li[1]/ul/li[1]">
@@ -127,7 +127,7 @@
           <group restype="listitem" id="/html/body/ol/li[2]">
             <trans-unit id="/html/body/ol/li[2]/text()[1]">
               <source xml:lang="en">voor zover het </source>
-              <target xml:lang="fr" state="new"/>
+              <target xml:lang="fr" state="needs-translation">wenn der </target>
             </trans-unit>
             <trans-unit restype="x-html-strong" id="/html/body/ol/li[2]/strong">
               <source xml:lang="en">maximale bedrag</source>
@@ -135,7 +135,7 @@
             </trans-unit>
             <trans-unit id="/html/body/ol/li[2]/text()[2]">
               <source xml:lang="en"> niet hoger is dan: </source>
-              <target xml:lang="fr" state="new"/>
+              <target xml:lang="fr" state="needs-translation"> nicht höher ist als: </target>
             </trans-unit>
             <group restype="x-html-ul" id="/html/body/ol/li[2]/ul">
               <trans-unit restype="listitem" id="/html/body/ol/li[2]/ul/li[1]">
@@ -175,7 +175,7 @@
           <group restype="listitem" id="/html/body/ol/li[1]">
             <trans-unit id="/html/body/ol/li[1]/text()[1]">
               <source xml:lang="en">maximaal </source>
-              <target xml:lang="fr" state="new"/>
+              <target xml:lang="fr" state="final">höchstens </target>
             </trans-unit>
             <trans-unit restype="x-html-strong" id="/html/body/ol/li[1]/strong">
               <source xml:lang="en">twee maal</source>
@@ -183,7 +183,7 @@
             </trans-unit>
             <trans-unit id="/html/body/ol/li[1]/text()[2]">
               <source xml:lang="en"> tijdens de loopbaan van de werknemer bij een werkgever: </source>
-              <target xml:lang="fr" state="new"/>
+              <target xml:lang="fr" state="final"> während der Laufbahn des Arbeitnehmers bei dem Arbeitgeber: </target>
             </trans-unit>
             <group restype="x-html-ul" id="/html/body/ol/li[1]/ul">
               <trans-unit restype="listitem" id="/html/body/ol/li[1]/ul/li[1]">
@@ -199,7 +199,7 @@
           <group restype="listitem" id="/html/body/ol/li[2]">
             <trans-unit id="/html/body/ol/li[2]/text()[1]">
               <source xml:lang="en">voor zover het </source>
-              <target xml:lang="fr" state="new"/>
+              <target xml:lang="fr" state="final">wenn der </target>
             </trans-unit>
             <trans-unit restype="x-html-strong" id="/html/body/ol/li[2]/strong">
               <source xml:lang="en">maximale bedrag</source>
@@ -207,7 +207,7 @@
             </trans-unit>
             <trans-unit id="/html/body/ol/li[2]/text()[2]">
               <source xml:lang="en"> niet hoger is dan: </source>
-              <target xml:lang="fr" state="new"/>
+              <target xml:lang="fr" state="final"> nicht höher ist als: </target>
             </trans-unit>
             <group restype="x-html-ul" id="/html/body/ol/li[2]/ul">
               <trans-unit restype="listitem" id="/html/body/ol/li[2]/ul/li[1]">

@@ -39,7 +39,7 @@
           <unit id="/html/body/ol/li[1]/text()[1]">
             <segment id="/html/body/ol/li[1]/text()[1]">
               <source>maximaal </source>
-              <target/>
+              <target>höchstens </target>
             </segment>
           </unit>
           <unit id="/html/body/ol/li[1]/strong">
@@ -51,7 +51,7 @@
           <unit id="/html/body/ol/li[1]/text()[2]">
             <segment id="/html/body/ol/li[1]/text()[2]">
               <source> tijdens de loopbaan van de werknemer bij een werkgever: </source>
-              <target/>
+              <target> während der Laufbahn des Arbeitnehmers bei dem Arbeitgeber: </target>
             </segment>
           </unit>
           <group id="/html/body/ol/li[1]/ul">
@@ -73,7 +73,7 @@
           <unit id="/html/body/ol/li[2]/text()[1]">
             <segment id="/html/body/ol/li[2]/text()[1]">
               <source>voor zover het </source>
-              <target/>
+              <target>wenn der </target>
             </segment>
           </unit>
           <unit id="/html/body/ol/li[2]/strong">
@@ -85,7 +85,7 @@
           <unit id="/html/body/ol/li[2]/text()[2]">
             <segment id="/html/body/ol/li[2]/text()[2]">
               <source> niet hoger is dan: </source>
-              <target/>
+              <target> nicht höher ist als: </target>
             </segment>
           </unit>
           <group id="/html/body/ol/li[2]/ul">
@@ -141,7 +141,7 @@
           <unit id="/html/body/ol/li[1]/text()[1]">
             <segment id="/html/body/ol/li[1]/text()[1]">
               <source>maximaal </source>
-              <target/>
+              <target>höchstens </target>
             </segment>
           </unit>
           <unit id="/html/body/ol/li[1]/strong">
@@ -153,7 +153,7 @@
           <unit id="/html/body/ol/li[1]/text()[2]">
             <segment id="/html/body/ol/li[1]/text()[2]">
               <source> tijdens de loopbaan van de werknemer bij een werkgever: </source>
-              <target/>
+              <target> während der Laufbahn des Arbeitnehmers bei dem Arbeitgeber: </target>
             </segment>
           </unit>
           <group id="/html/body/ol/li[1]/ul">
@@ -175,7 +175,7 @@
           <unit id="/html/body/ol/li[2]/text()[1]">
             <segment id="/html/body/ol/li[2]/text()[1]">
               <source>voor zover het </source>
-              <target/>
+              <target>wenn der </target>
             </segment>
           </unit>
           <unit id="/html/body/ol/li[2]/strong">
@@ -187,7 +187,7 @@
           <unit id="/html/body/ol/li[2]/text()[2]">
             <segment id="/html/body/ol/li[2]/text()[2]">
               <source> niet hoger is dan: </source>
-              <target/>
+              <target> nicht höher ist als: </target>
             </segment>
           </unit>
           <group id="/html/body/ol/li[2]/ul">
@@ -243,7 +243,7 @@
           <unit id="/html/body/ol/li[1]/text()[1]">
             <segment id="/html/body/ol/li[1]/text()[1]">
               <source>maximaal </source>
-              <target/>
+              <target>höchstens </target>
             </segment>
           </unit>
           <unit id="/html/body/ol/li[1]/strong">
@@ -255,7 +255,7 @@
           <unit id="/html/body/ol/li[1]/text()[2]">
             <segment id="/html/body/ol/li[1]/text()[2]">
               <source> tijdens de loopbaan van de werknemer bij een werkgever: </source>
-              <target/>
+              <target> während der Laufbahn des Arbeitnehmers bei dem Arbeitgeber: </target>
             </segment>
           </unit>
           <group id="/html/body/ol/li[1]/ul">
@@ -277,7 +277,7 @@
           <unit id="/html/body/ol/li[2]/text()[1]">
             <segment id="/html/body/ol/li[2]/text()[1]">
               <source>voor zover het </source>
-              <target/>
+              <target>wenn der </target>
             </segment>
           </unit>
           <unit id="/html/body/ol/li[2]/strong">
@@ -289,7 +289,7 @@
           <unit id="/html/body/ol/li[2]/text()[2]">
             <segment id="/html/body/ol/li[2]/text()[2]">
               <source> niet hoger is dan: </source>
-              <target/>
+              <target> nicht höher ist als: </target>
             </segment>
           </unit>
           <group id="/html/body/ol/li[2]/ul">

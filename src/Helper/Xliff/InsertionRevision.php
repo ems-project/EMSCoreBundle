@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Helper\Xliff;
 
 use EMS\CommonBundle\Elasticsearch\Document\Document;
+use EMS\CoreBundle\Helper\Html;
 use EMS\CoreBundle\Helper\XML\DomHelper;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -255,23 +256,22 @@ class InsertionRevision
                 $this->groupToHtmlNodes($child, $nodeName, $tag, $namespaces, false);
             } elseif ($child instanceof \DOMElement && 'trans-unit' === $child->nodeName) {
                 $restype = DomHelper::getNullStringAttr($child, 'restype');
-                if (null === $restype) {
-                    return;
-                }
-                $tag = $this->restypeToTag($restype);
                 foreach ($child->childNodes as $grandChild) {
                     if (!$grandChild instanceof \DOMElement || $grandChild->nodeName !== $nodeName) {
                         continue;
                     }
+                    if (null === $restype) {
+                        $tagDom = new \DOMText($grandChild->textContent);
+                        $parent->appendChild($tagDom);
+                        break;
+                    }
+                    $tag = $this->restypeToTag($restype);
                     $tagDom = new \DOMElement($tag);
                     $parent->appendChild($tagDom);
                     $this->rebuildInline($tagDom, $grandChild);
                     $this->copyHtmlAttribute($child, $tagDom);
                     break;
                 }
-            } elseif ($child instanceof \DOMText && !\in_array($counter, $skip)) {
-                $tag = new \DOMText($child->textContent);
-                $parent->appendChild($tag);
             }
             ++$counter;
         }

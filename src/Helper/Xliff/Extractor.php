@@ -479,7 +479,7 @@ class Extractor
         $foundTarget = $targetCrawler->filterXPath($nodeXPath);
         $foundTargetNode = $foundTarget->getNode(0);
 
-        $isTranslated = 1 === $foundTarget->count() && $foundTargetNode instanceof \DOMElement;
+        $isTranslated = 1 === $foundTarget->count();
         if (!$isTranslated && '' === $source->textContent) {
             $isTranslated = true;
         }

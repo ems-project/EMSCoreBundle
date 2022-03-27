@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:061305d5aa6ab5f91faf20f5fa4ac4a216680fde:1017950" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Doelgroepvermindering voor kunstenaars</source>
+        <target xml:lang="de" state="final">Zielgruppenermäßigung für Künstler</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Kunstenaars</source>
+        <target xml:lang="de" state="final">Künstler</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit restype="x-html-p" id="/html/body/p">
+          <source xml:lang="nl">Vanaf 1 januari 2014 wordt de vermindering voor de tewerkstelling van kunstenaars die sinds 2003 bestond, geïntegreerd als doelgroepvermindering in het systeem van de geharmoniseerde verminderingen.</source>
+          <target xml:lang="de" state="final">Ab 01.01.2014 wird die seit 2003 bestehende Ermäßigung für die Beschäftigung von Künstler als Zielgruppenermäßigung in das System der harmonisierten Ermäßigungen integriert.</target>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-h2" id="/html/body/h2[1]">
+          <source xml:lang="nl">Betrokken werkgevers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitgeber</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Alle werkgevers, zowel van de privésector als van de openbare sector komen in aanmerking voor de vermindering.</source>
+          <target xml:lang="de" state="final">Alle Arbeitgeber, sowohl des privaten als auch des öffentlichen Sektors, kommen für die Ermäßigung in Betracht.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[2]">
+          <source xml:lang="nl">Betrokken werknemers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitnehmer</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Zowel de kunstenaars die verbonden zijn door een arbeidsovereenkomst, als de <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/persons/specific/artists.html">kunstenaars die, zonder door een arbeidsovereenkomst te zijn verbonden</g>, tegen betaling van een loon artistieke prestaties leveren en/of in opdracht artistieke werken produceren, komen voor de vermindering in aanmerking. Voor statutaire kunstenaars tewerkgesteld in de openbare sector, is de vermindering dus niet van toepassing.</source>
+          <target xml:lang="de" state="final">Sowohl die Künstler, die durch einen Arbeitsvertrag gebunden sind, als auch die <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/persons/specific/artists.html">Künstler, die ohne durch einen Arbeitsvertrag gebunden zu sein</g>, gegen Zahlung eines Lohns künstlerische Leistungen erbringen und/oder im Auftrag künstlerische Werke produzieren, kommen für die Ermäßigung in Betracht. Für statutarische Künstler, die im öffentlichen Sektor beschäftigt sind, ist die Ermäßigung deshalb nicht anwendbar.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">Onder artistieke prestaties wordt verstaan de creatie en/of uitvoering of interpretatie van artistieke oeuvres in de audiovisuele sector, in de beeldende kunsten, in de muziek, de literatuur, het spektakel, het theater en de choreografie.</source>
+          <target xml:lang="de" state="final">„Schaffung und/oder Ausführung oder Interpretation von Werken der audiovisuellen und bildenden Kunst, der Musik, der Literatur, des Spektakels, des Theaters und der Choreographie.“</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl">Het <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/deductions/structuralreduction_targetgroupreductions/introduction.html" html:target="_blank">refertekwartaalloon</g> van de kunstenaar bedraagt minstens 3 maal het GGMMI geldig voor de 1<g ctype="x-html-sup">ste</g> maand van het kwartaal. Vanaf het <g ctype="x-html-span" html:class="newWord">4<g ctype="x-html-sup">de</g> kwartaal van 2021</g> bedraagt deze ondergrens dus <g ctype="x-html-span" html:class="newWord">4.974,69 EUR</g>.</source>
+          <target xml:lang="de" state="final">Der <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/deductions/structuralreduction_targetgroupreductions/introduction.html" html:target="_blank">Referenzquartalslohn</g> des Künstlers beträgt mindestens das 3-fache des GDMME, das für den ersten Monat des Quartals anwendbar ist. <g ctype="x-html-sup"/> Ab dem <g ctype="x-html-span" html:class="newWord">4.<g ctype="x-html-sup"/> Quartal 2021</g> beträgt diese Untergrenze <g ctype="x-html-span" html:class="newWord">4.974,69 EUR</g>.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[3]">
+          <source xml:lang="nl">Bedrag van de vermindering</source>
+          <target xml:lang="de" state="final">Betrag der Ermäßigung</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl">Een vermindering <g ctype="x-html-strong">G<g ctype="x-html-sub">12</g></g> wordt toegekend gedurende de volledige duur van de tewerkstelling. De doelgroepvermindering <g ctype="x-html-strong">P<g ctype="x-html-sub">g</g></g> mag voor een kunstenaar nooit meer bedragen dan 517,00 EUR per kwartaal per tewerkstellingslijn. Het betreft een aftopping van het absolute verminderingsbedrag, na het in rekening brengen van de prestatiebreuk en de multiplicatiefactor. Via deze techniek zal bij onvolledige prestaties de vermindering sneller stijgen bij toename van de prestaties, maar slechts tot een absoluut verminderingsbedrag.</source>
+          <target xml:lang="de" state="final">Eine Ermäßigung <g ctype="x-html-strong">G<g ctype="x-html-sub">12</g></g> wird vertraglichen Ersatzkräften während der gesamten Dauer der Beschäftigung gewährt. Die Zielgruppenermäßigung <g ctype="x-html-strong">P<g ctype="x-html-sub">g</g></g> darf für einen Künstler nie mehr als 517,00 EUR pro Quartal und Beschäftigungzeile betragen. Es handelt sich um eine Kappung des absoluten Ermäßigungsbetrags nach Berücksichtigung der Leistungsbruchzahl und des Multiplikators. Über diese Technik vergrößert sich die Ermäßigung bei unvollständigen Leistungen bei einer Leistungssteigerung schneller, aber nur bis zu einem absoluten Ermäßigungsbetrag.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[4]">
+          <source xml:lang="nl">Te vervullen formaliteiten</source>
+          <target xml:lang="de" state="final">Zu erledigende Formalitäten</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl">Geen bijzondere formaliteiten.</source>
+          <target xml:lang="de" state="final">Keine besonderen Formalitäten.</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

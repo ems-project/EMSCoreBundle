@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:0a2ba030ee32d4bab0629de25f667b9dd3dca48f:1015746" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Gesubsidieerde contractuelen (gesco's)</source>
+        <target xml:lang="de" state="final">Bezuschusste Vertragsbedienstete (BVB)</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Gesubsidieerde contractuelen</source>
+        <target xml:lang="de" state="final">Bezuschusste Vertragsbedienstete</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Gesubsidieerde contractuelen (gesco’s) zijn werknemers met een arbeidsovereenkomst tewerkgesteld bij bepaalde werkgevers, waarvan de loonkost gedekt wordt door een premie van de gewestelijke overheid. </source>
+          <target xml:lang="de" state="final">Bezuschusste Vertragsbedienstete (= BVB) sind Arbeitnehmer und Angestellte, deren Lohn- und/oder Gehaltskosten durch eine Prämie der regionalen Verwaltung gedeckt werden. </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Werkgevers kunnen een gesubsidieerde contractueel in dienst nemen op basis van: </source>
+          <target xml:lang="de" state="final">Arbeitgeber können einen bezuschussten Vertragsbediensteten auf der folgenden Grundlage einstellen: </target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul">
+          <trans-unit restype="listitem" id="/html/body/ul/li[1]">
+            <source xml:lang="nl">het stelsel van de gesubsidieerde contractuelen bij de openbare besturen dat werd ingevoerd door de programmawet van 30 december 1988;</source>
+            <target xml:lang="de" state="final">das System der bezuschussten Vertragsbediensteten bei den lokalen Verwaltungen, das durch das Programmgesetz vom 30.12.1988 eingeführt wurde;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[2]">
+            <source xml:lang="nl">het stelsel van de gesubsidieerde contractuelen bij de plaatselijke besturen dat werd ingevoerd door het Koninklijk Besluit nr. 474 van 28 oktober 1986 tot opzetting van een stelsel van door de Staat gesubsidieerde contractuelen bij sommige plaatselijke besturen (DmfAPPL).</source>
+            <target xml:lang="de" state="final">der Regelung der bezuschussten Vertragsbediensteten in den lokalen Verwaltungen, die durch den Königlichen Erlass Nr. 474 vom Oktober 1986 zur Einrichtung eines Systems für staatlich bezuschusste Vertragsbedienstete (BVB) bei gewissen lokalen Verwaltungen eingeführt wurde (DmfAPPL);</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">Aan de werkgevers die gesubsidieerde contractuelen tewerkstellen werd onder welbepaalde voorwaarden, een vermindering van de werkgeversbijdragen voor sociale zekerheid toegekend in hoofde van deze werknemers. Vanaf 1 januari 2014 wordt de vermindering voor de tewerkstelling van gesco's geïntegreerd als doelgroepvermindering in het systeem van de geharmoniseerde verminderingen. </source>
+          <target xml:lang="de" state="final">Arbeitgebern, die bezuschusste Vertragsbedienstete unter bestimmten Bedingungen einstellen, wird unter bestimmten Bedingungen eine Ermäßigung der Arbeitgeberbeiträge für die soziale Sicherheit dieser Arbeitnehmer gewährt. Ab 01.01.2014 wird die Ermäßigung für die Beschäftigung von BVB als Zielgruppenermäßigung in das System der harmonisierten Ermäßigungen integriert. </target>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-h2" id="/html/body/h2[1]">
+          <source xml:lang="nl">Betrokken werkgevers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitgeber</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Het zijn:</source>
+          <target xml:lang="de" state="final">Dabei handelt es sich um:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul">
+          <trans-unit restype="listitem" id="/html/body/ul/li[1]">
+            <source xml:lang="nl">de administraties en diensten van de federale overheid of deze die onder haar voogdij vallen;</source>
+            <target xml:lang="de" state="final">Verwaltungen und Behörden des föderalen Staats oder jene, die er kontrolliert;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[2]">
+            <source xml:lang="nl">de administraties van de Gemeenschappen en van de Gewesten, en de openbare instellingen die ervan afhangen;</source>
+            <target xml:lang="de" state="final">Verwaltungen der Gemeinschaften und der Regionen und die öffentlichen Anstalten, die von ihnen abhängen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[3]">
+            <source xml:lang="nl">de door de Gemeenschappen ingerichte, erkende of gesubsidieerde onderwijsinstellingen;</source>
+            <target xml:lang="de" state="final">die durch die Gemeinschaften eingerichteten, anerkannten oder bezuschussten Bildungsanstalten;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[4]">
+            <source xml:lang="nl">de instellingen van openbaar nut en de verenigingen zonder winstoogmerk, en die een sociaal, humanitair of cultureel doel nastreven;</source>
+            <target xml:lang="de" state="final">gemeinnützige Anstalten und Vereinigungen ohne Erwerbszweck sowie Anstalten, die einen sozialen, humanitären oder kulturellen Zweck anstreben;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[5]">
+            <source xml:lang="nl">de plaatselijke maatschappijen voor sociale woningen;</source>
+            <target xml:lang="de" state="final">lokale Gesellschaften für Sozialwohnungen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[6]">
+            <source xml:lang="nl">de gemeenten (DmfAPPL);</source>
+            <target xml:lang="de" state="final">die Gemeinden (DmfAPPL);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[7]">
+            <source xml:lang="nl">de autonome gemeentebedrijven in het Waals en Vlaams Gewest(DmfAPPL) ;</source>
+            <target xml:lang="de" state="final">die autonomen Gemeinderegien in der Wallonischen und Flämischen Region (DmfAPPL);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[8]">
+            <source xml:lang="nl">de verenigingen van gemeenten die geen economische finaliteit hebben (DmfAPPL);</source>
+            <target xml:lang="de" state="final">die Gemeindeverbände ohne wirtschaftliche Zielsetzung (DmfAPPL);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[9]">
+            <source xml:lang="nl">de provincies (DmfAPPL);</source>
+            <target xml:lang="de" state="final">die Provinzen (DmfAPPL);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[10]">
+            <source xml:lang="nl">de autonome provinciebedrijven en provinciale ontwikkelingsmaatschappijen in het Vlaamse Gewest (DmfAPPL);</source>
+            <target xml:lang="de" state="final">die autonomen Provinzialregien und die provinzialen Entwicklungsgesellschaften in der Flämischen Region (DmfAPPL);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[11]">
+            <source xml:lang="nl">de OCMW’s (DmfAPPL);</source>
+            <target xml:lang="de" state="final">de ÖSHZ (DmfAPPL);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[12]">
+            <source xml:lang="nl">de verenigingen van OCMW’s en de intercommunale centra voor maatschappelijk welzijn (DmfAPPL);</source>
+            <target xml:lang="de" state="final">die Vereinigungen von ÖSHZ und die interkommunalen Sozialhilfezentren (DmfAPPL);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[13]">
+            <source xml:lang="nl">de lokale politiezones (DmfAPPL);</source>
+            <target xml:lang="de" state="final">die lokalen Polizeizonen (DmfAPPL);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[14]">
+            <source xml:lang="nl">de gewestelijke ontwikkelingsmaatschappijen en de gewestelijke economische raden (DmfAPPL);</source>
+            <target xml:lang="de" state="final">die regionalen Entwicklungsgesellschaften und die regionalen Wirtschaftsräte (DmfAPPL);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[15]">
+            <source xml:lang="nl">de Brusselse Dienst voor Brandweer en Dringende Medische Hulp en het Agentschap voor Netheid, die beide afhangen van het Brussels Hoofdstedelijk Gewest (DmfAPPL);</source>
+            <target xml:lang="de" state="final">die Feuerwehr- und Notdienstservice und die Agentur für städtische Sauberkeit, die beide von der Region Brüssel-Hauptstadt abhängen (DmfAPPL);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[16]">
+            <source xml:lang="nl">de Vlaamse Gemeenschapscommissie (VGC) en de Franse Gemeenschapscommissie (FGC) (DmfAPPL); .</source>
+            <target xml:lang="de" state="final">die Flämische Gemeinschaftskommission (VGC) und die Französische Gemeinschaftskommission (FGC) (DmfAPPL);</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[1]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[1]/h3">
+            <source xml:lang="nl">Duitstalige Gemeenschap:</source>
+            <target xml:lang="de" state="final">Deutschsprachige Gemeinschaft:</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p[1]">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 januari 2018</g> kan voor werknemers tewerkgesteld in het <g ctype="x-html-strong">Duitstalige landsgedeelte</g> niet langer de 'doelgroepvermindering gesubsidieerde contractuelen' toegepast worden.</source>
+            <target xml:lang="de" state="final">Ab <g ctype="x-html-strong">01.01.2018</g> kann für Arbeitnehmer, die für eine Beschäftigung im <g ctype="x-html-strong">deutschsprachigen Landesteil</g> eingestellt werden, nicht mehr die „Zielgruppenermäßigung bezuschusste Vertragsbedienstete“ angewandt werden.</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p[2]">
+            <source xml:lang="nl">Er zijn <g ctype="x-html-strong">geen overgangsmaatregelen</g>.</source>
+            <target xml:lang="de" state="final">Es gibt <g ctype="x-html-strong">keine Übergangsmaßnahmen</g>.</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p[3]">
+            <source xml:lang="nl"> </source>
+            <target xml:lang="de" state="final"> </target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[2]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[2]/h3">
+            <source xml:lang="nl">Vlaams Gewest:</source>
+            <target xml:lang="de" state="final">Flämische Region:</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[2]/p[1]">
+            <source xml:lang="nl">Er worden geen gesubsidieerde contractuelen meer tewerkgesteld in het <g ctype="x-html-strong">Vlaams Gewest</g> bij de plaatselijke en provinciale besturen. De doelgroepvermindering kan in de DmfAPPL aangifte niet meer toegepast worden vanaf het <g ctype="x-html-strong">1<g ctype="x-html-sup">ste</g> kwartaal 2017</g>.</source>
+            <target xml:lang="de" state="final">Es werden keine bezuschussten Vertragsbediensteten, die durch einen Arbeitsvertrag gebunden sind, in der <g ctype="x-html-strong">Flämischen Region</g> beschäftigt. Die Zielgruppenermäßigung kann an dem <g ctype="x-html-strong">ersten Quartal 2017</g> in der DmfAPPL-Meldung nicht mehr angewendet werden. <g ctype="x-html-sup"/></target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[2]/p[2]">
+            <source xml:lang="nl"> </source>
+            <target xml:lang="de" state="final"> </target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[2]">
+          <source xml:lang="nl">Bedrag van de vermindering</source>
+          <target xml:lang="de" state="final">Betrag der Ermäßigung</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[7]">
+          <source xml:lang="nl">Een doelgroepvermindering <g ctype="x-html-strong">G<g ctype="x-html-sub">7</g></g> wordt toegekend voor gesco's gedurende de volledige duur van de tewerkstelling. Gezien deze vermindering alle patronale basisbijdragen vrijstelt, mag ze ook worden toegepast wanneer er geen bezoldigde dagen zijn tijdens het kwartaal, maar bijvoorbeeld alleen een eindejaarspremie wordt betaald.</source>
+          <target xml:lang="de" state="final">Eine Zielgruppenermäßigung <g ctype="x-html-strong">G<g ctype="x-html-sub">7</g></g> wird BVB während der gesamten Dauer der Beschäftigung gewährt. Da diese Ermäßigung von allen Arbeitgebergrundbeiträgen befreit, darf sie auch angewandt werden, wenn es im Quartal keine entlohnten Tage gibt, sondern z. B. nur eine Jahresendprämie bezahlt wird.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[8]">
+          <source xml:lang="nl">Voor de werkgevers die hun aangifte via de DmfAPPL indienen, wordt een doelgroepvermindering <g ctype="x-html-strong">G<g ctype="x-html-sub">13</g></g> toegekend voor gesco's gedurende de volledige duur van de tewerkstelling. Ze mag ook worden toegepast wanneer er geen bezoldigde dagen zijn tijdens het kwartaal, maar bijvoorbeeld alleen een eindejaarspremie wordt betaald.</source>
+          <target xml:lang="de" state="final">Für Arbeitnehmer, die ihre Meldung über die DmfAPPL einreichen, wird eine Zielgruppenermäßigung <g ctype="x-html-strong">G<g ctype="x-html-sub">13</g></g> für BVB während der gesamten Dauer der Beschäftigung gewährt. Sie darf auch angewandt werden, wenn es im Quartal keine entlohnten Tage gibt, sondern z. B. nur eine Jahresendprämie bezahlt wird.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[9]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[3]">
+          <source xml:lang="nl">Indienen van de aanvraag om tewerkstelling van gesco's</source>
+          <target xml:lang="de" state="final">Einreichen eines Antrags auf Anstellung von BVB</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[10]">
+          <source xml:lang="nl">Voor preciezere gegevens over de wijze waarop u de aanvraag om tewerkstelling van gesubsidieerde contractuelen moet indienen bij de bevoegde administratie en inzake de modaliteiten betreffende de betaling en de toekenning van de premie, dient u, naargelang de openbare administratie, contact op te nemen met de bevoegde instanties.</source>
+          <target xml:lang="de" state="final">Für genauere Angaben zur Art und Weise, wie Sie den Antrag auf Einstellung von bezuschussten Vertragsbediensteten bei der zuständigen Behörde einreichen müssen, sowie zu den Bedingungen betreffs Zahlung und Gewährung der Prämie wenden Sie sich an die jeweils zuständigen Stellen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[11]">
+          <source xml:lang="nl">1) Openbare besturen van de federale overheid</source>
+          <target xml:lang="de" state="final">1) öffentliche Verwaltungen des föderalen Staats</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[12]">
+          <source xml:lang="nl">Voor de premieaanvraag<g ctype="lb"/> FOD Werkgelegenheid, Arbeid en Sociaal Overleg, Dienst Gesubsidieerde Contractuelen<g ctype="lb"/> Ernest Blerotstraat 1 te 1070 Brussel.</source>
+          <target xml:lang="de" state="final">Für den Prämienantrag<g ctype="lb"/> FÖD Beschäftigung, Arbeit und Soziale Konzertierung, Dienst Bezuschusste Vertragsbedienstete<g ctype="lb"/> Ernest Blerotstraat/Rue Ernest Blerot 1 in 1070 Brüssel</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[13]">
+          <source xml:lang="nl">Voor de betaling van de premie<g ctype="lb"/> Rijksdienst voor Arbeidsvoorziening, Hoofdbestuur<g ctype="lb"/> Keizerslaan 7 te 1000 Brussel.</source>
+          <target xml:lang="de" state="final">Für die Auszahlung der Prämie<g ctype="lb"/> Landesamt für Arbeitsbeschaffung, Hauptverwaltung<g ctype="lb"/> Keizerslaan 7 te 1000 Brüssel.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[14]">
+          <source xml:lang="nl">2) Openbare besturen van de Vlaamse Gemeenschap</source>
+          <target xml:lang="de" state="final">2) Öffentliche Verwaltungen der Flämischen Gemeinschaft</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[15]">
+          <source xml:lang="nl">Voor de premieaanvraag<g ctype="lb"/> Ministerie van de Vlaamse Gemeenschap, Administratie Economie en Werkgelegenheid, Dienst Werkgelegenheid<g ctype="lb"/> Markiesstraat 1, 1000 Brussel.</source>
+          <target xml:lang="de" state="final">Für den Prämienantrag<g ctype="lb"/> Ministerium der Flämischen Gemeinschaft, Verwaltung der Wirtschaft und Beschäftigung, Dienststelle Beschäftigung<g ctype="lb"/> Markiesstraat 1, 1000 Brüssel.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[16]">
+          <source xml:lang="nl">Voor de betaling van de premie<g ctype="lb"/> Vlaamse Dienst voor Arbeidsbemiddeling en Beroepsopleiding<g ctype="lb"/> Keizerslaan 11, 1000 Brussel.</source>
+          <target xml:lang="de" state="final">Für die Auszahlung der Prämie<g ctype="lb"/> Flämischer Dienst für Arbeitsvermittlung und Berufsausbildung<g ctype="lb"/> Keizerslaan 11, 1000 Brüssel.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[17]">
+          <source xml:lang="nl">3) Openbare besturen van het Waalse Gewest</source>
+          <target xml:lang="de" state="final">3) Öffentliche Verwaltungen der Wallonischen Region</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[18]">
+          <source xml:lang="nl">Voor de premieaanvraag<g ctype="lb"/> Ministère de la Région wallonne, Direction générale de l'Economie et de l'Emploi, Service de l'Emploi<g ctype="lb"/> Place de la Wallonie 1 te 5100 Jambes;</source>
+          <target xml:lang="de" state="final">Für den Prämienantrag<g ctype="lb"/> Ministère de la Région wallonne, Direction générale de l'Economie et de l'Emploi, Service de l'Emploi<g ctype="lb"/> Place de la Wallonie 1 in 5100 Jambes;</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[19]">
+          <source xml:lang="nl">Voor de betaling van de premie<g ctype="lb"/> Office communautaire et régional de la Formation professionnelle et de l'Emploi<g ctype="lb"/> Boulevard Tirou 104 te 6000 Charleroi.</source>
+          <target xml:lang="de" state="final">Für die Auszahlung der Prämie<g ctype="lb"/> Office communautaire et régional de la Formation professionnelle et de l'Emploi<g ctype="lb"/> Boulevard Tirou 104 te 6000 Charleroi.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[20]">
+          <source xml:lang="nl">4) Openbare besturen van het Brussels Hoofdstedelijk Gewest</source>
+          <target xml:lang="de" state="final">4) Öffentliche Verwaltungen der Region Brüssel-Hauptstadt</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[21]">
+          <source xml:lang="nl">Voor de aanvraag en de betaling van de premie<g ctype="lb"/> Brusselse Gewestelijke Dienst voor Arbeidsbemiddeling<g ctype="lb"/> Anspachlaan 65 te 1000 Brussel.</source>
+          <target xml:lang="de" state="final">Für die Beantragung und Bezahlung der Prämie <g ctype="lb"/> Brüsseler regionales Amt für Arbeitsbeschaffung<g ctype="lb"/> Anspachlaan 65 in 1000 Brüssel.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[4]">
+          <source xml:lang="nl">Te vervullen formaliteiten</source>
+          <target xml:lang="de" state="final">Zu erledigende Formalitäten</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[22]">
+          <source xml:lang="nl">Geen bijzondere formaliteiten.</source>
+          <target xml:lang="de" state="final">Keine besonderen Formalitäten.</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:9c329c01cd71580e86683b9d79a376f8176f0176:1015749" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Huispersoneel</source>
+        <target xml:lang="de" state="final">Hauspersonal</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Huispersoneel</source>
+        <target xml:lang="de" state="final">Hauspersonal</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit restype="x-html-p" id="/html/body/p">
+          <source xml:lang="nl">Vanaf 1 januari 2014 wordt de vermindering voor de aanwerving van een 1<g ctype="x-html-sup">ste</g> werknemer in de hoedanigheid van huispersoneel als doelgroepvermindering geïntegreerd in het systeem van de geharmoniseerde verminderingen.</source>
+          <target xml:lang="de" state="final">Ab 01.01.2014 wird die Ermäßigung bei der Einstellung des ersten Arbeitnehmers in der Eigenschaft als Hauspersonal als Zielgruppenermäßigung in das System der harmonisierten Ermäßigungen integriert. <g ctype="x-html-sup"/></target>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-h2" id="/html/body/h2[1]">
+          <source xml:lang="nl">Betrokken werkgevers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitgeber</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Het zijn de natuurlijke personen die sinds 1 januari 1980 niet onderworpen geweest zijn aan de socialezekerheidswet van 27 juni 1969 wegens tewerkstelling van dienstboden, en die een eerste werknemer in de hoedanigheid van huispersoneel, onderworpen aan de socialezekerheidswet, in dienst nemen.</source>
+          <target xml:lang="de" state="final">Es handelt sich um natürliche Personen, die seit dem 01.01.1980 dem Gesetz zur Sozialen Sicherheit vom 27.06.1969 betreffend Beschäftigung von Hausangestellten nicht mehr unterlagen und einen ersten Arbeitnehmer als Hauspersonal, das dem Gesetz zur Sozialen Sicherheit unterliegt, einstellen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[2]">
+          <source xml:lang="nl">Betrokken werknemers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitnehmer</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Het zijn de werknemers die op het ogenblik van de aanwerving, sedert minstens 6 maanden ofwel:</source>
+          <target xml:lang="de" state="final">Es handelt sich um Arbeitnehmer, die bei der Einstellung seit mindestens sechs Monaten entweder:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[1]">
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[1]">
+            <source xml:lang="nl">uitkeringsgerechtigde volledig werkloze zijn;</source>
+            <target xml:lang="de" state="final">entschädigte Vollarbeitsloser sind;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]">
+            <source xml:lang="nl">het voordeel genieten van een beslissing tot toekenning van het leefloon (het vroegere bestaansminimum);</source>
+            <target xml:lang="de" state="final">den Eingliederungseinkommen (das frühere Existenzminimum) erhalten;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[3]">
+            <source xml:lang="nl">ingeschreven zijn in het bevolkingsregister en recht hebben op sociale bijstand, doch ingevolge hun nationaliteit geen recht hebben op het leefloon.</source>
+            <target xml:lang="de" state="final">in das Bevölkerungsregister eingetragen sind und Anspruch auf Sozialhilfe, jedoch infolge ihrer Staatsbürgerschaft keinen Anspruch auf das Eingliederungseinkommen haben.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">De tewerkstelling met een startbaanovereenkomst van een laaggeschoolde jongere wordt beschouwd als een periode van uitkeringsgerechtigd volledige werkloosheid.</source>
+          <target xml:lang="de" state="final">Die Beschäftigung mit einem Erstbeschäftigungsabkommen eines gering qualifizierten Jugendlichen gilt als Periode entschädigter Vollarbeitslosigkeit.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl">Onder <g ctype="x-html-strong">huispersoneel</g> verstaat men:</source>
+          <target xml:lang="de" state="final">Mit <g ctype="x-html-strong">Hauspersonal</g> sind gemeint:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[2]">
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]">
+            <source xml:lang="nl">de dienstbode, d.w.z. de werknemer die zich verbindt tegen loon en onder gezag van de werkgever, in hoofdzaak huishoudelijke handarbeid te verrichten in verband met de huishouding van de werkgever of van zijn gezin;</source>
+            <target xml:lang="de" state="final">Hausangestellte, d. h. Arbeitnehmer, die sich dazu verpflichten, gegen Entlohnung und unter der Autorität des Arbeitgebers hauptsächlich Handarbeit im Zusammenhang mit dem Haushalt des Arbeitgebers oder seiner Familie auszuführen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]">
+            <source xml:lang="nl">de werknemer die zich verbindt tegen loon onder het gezag van de werkgever, hoofd- of handarbeid uit te voeren binnen het onroerend goed, binnenshuis of buiten het huis, voor de privébehoeften van de werkgever of zijn gezin.</source>
+            <target xml:lang="de" state="final">Arbeitnehmer, die sich dazu verpflichten, gegen Lohn und unter der Autorität des Arbeitgebers Geistes- oder Handarbeit innerhalb der Immobilie, im Haus oder im Freien, für die privaten Bedürfnisse des Arbeitgebers oder seiner Familie auszuführen.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="alert message" id="/html/body/div">
+          <trans-unit restype="x-html-h3" id="/html/body/div/h3">
+            <source xml:lang="nl">Waals Gewest (zonder de Duitstalige Gemeenschap):</source>
+            <target xml:lang="de" state="final">Wallonische Region (außer die Deutschsprachige Gemeinschaft):</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div/p[1]">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 juli 2017</g> kan voor werknemers die in dienst treden bij een werkgever voor een tewerkstelling in Wallonië niet langer de 'doelgroepvermindering huispersoneel' toegepast worden.</source>
+            <target xml:lang="de" state="final">Ab 01.07.2017 kann für Arbeitnehmer, die bei einem Arbeitgeber für eine Beschäftigung in Flandern eingestellt werden, nicht mehr die „Zielgruppenermäßigung Hauspersonal“ angewandt werden.<g ctype="x-html-strong"/></target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div/p[2]">
+            <source xml:lang="nl"> De vermindering is definitief stopgezet op 30 juni 2020. </source>
+            <target xml:lang="de" state="final"> Die Ermäßigung läuft endgültig am 30. Juni 2020 ab.  </target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[3]">
+          <source xml:lang="nl">Bedrag van de vermindering</source>
+          <target xml:lang="de" state="final">Betrag der Ermäßigung</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[7]">
+          <source xml:lang="nl">Een doelgroepvermindering <g ctype="x-html-strong">G<g ctype="x-html-sub">7</g></g> wordt toegekend gedurende de volledige duur van de tewerkstelling.</source>
+          <target xml:lang="de" state="final">Eine Zielgruppenermäßigung <g ctype="x-html-strong">G<g ctype="x-html-sub">7</g></g> wird vertraglichen Ersatzkräften während der gesamten Dauer der Beschäftigung gewährt.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[8]">
+          <source xml:lang="nl">Wanneer de arbeidsovereenkomst van deze werknemer een einde neemt, blijft de vermindering behouden indien, binnen de 3 maanden na het einde van de overeenkomst, de werkgever een andere werknemer in de hoedanigheid van huispersoneel aanwerft die de genoemde voorwaarden vervult.</source>
+          <target xml:lang="de" state="final">Wenn der Arbeitsvertrag dieses Arbeitnehmers abläuft, wird die Ermäßigung weiterhin gewährt, wenn der Arbeitgeber innerhalb von drei Monaten nach Beendigung des Vertrags einen anderen Arbeitnehmer in der Eigenschaft von Hauspersonal einstellt, der die genannten Bedingungen erfüllt.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[4]">
+          <source xml:lang="nl">Te vervullen formaliteiten</source>
+          <target xml:lang="de" state="final">Zu erledigende Formalitäten</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[9]">
+          <source xml:lang="nl">Geen bijzondere formaliteiten. De werkgever moet kunnen aantonen dat de werknemer waarvoor de vermindering wordt gevraagd beantwoordt aan de voorwaarden.</source>
+          <target xml:lang="de" state="final">Keine besonderen Formalitäten. Der Arbeitgeber muss den Nachweis erbringen können, dass der Arbeitnehmer, für den die Ermäßigung beantragt wird, die Bedingungen erfüllt.</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

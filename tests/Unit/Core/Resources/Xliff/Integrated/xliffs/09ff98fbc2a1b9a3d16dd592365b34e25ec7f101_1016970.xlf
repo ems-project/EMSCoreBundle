@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:09ff98fbc2a1b9a3d16dd592365b34e25ec7f101:1016970" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Tijdelijke collectieve arbeidsduurvermindering - coronamaatregel</source>
+        <target xml:lang="de" state="final">Zeitweilige kollektive Arbeitszeitverkürzung – Corona-Maßnahme</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Tijdelijke collectieve arbeidsduurvermindering - coronamaatregel</source>
+        <target xml:lang="de" state="final">Zeitweilige kollektive Arbeitszeitverkürzung – Corona-Maßnahme</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Het KB nr. 46 van 26 juni 2020 voorziet in de mogelijkheid dat ondernemingen erkend in moeilijkheden en/of in herstructurering waarvan de begindatum van de erkenning valt in de periode 1 maart 2020 - 31 december 2020, overgaan tot een tijdelijke collectieve vermindering van de arbeidsduur al dan niet in combinatie met de invoering van een vierdagenweek (dit laatste enkel voor de voltijdse werknemers).</source>
+          <target xml:lang="de" state="final">Der Königliche Erlass Nr. 46 vom 26. Juni 2020 sieht die Möglichkeit vor, dass als in Schwierigkeiten befindlich anerkannte Unternehmen und/oder Unternehmen, die sich in einer Umstrukturierung befinden, bei denen das Anfangsdatum der Anerkennung zwischen dem 01. März 2020 und 31. Dezember 2020 liegt, eine zeitweilige kollektive Arbeitszeitverkürzung, eventuell kombiniert mit der Einführung einer Vier-Tage-Woche (Letzteres nur für Vollzeitbeschäftigte), vornehmen können.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">Het is de bedoeling de kosten voor de werkgever tijdelijk te verminderen en de tewerkstelling te behouden, door deze arbeidsduurvermindering in te voeren met (overeenkomstig) loonverlies. De voorziene doelgroepvermindering kan dan aangewend worden om een complement bij het loon van de werknemers te voegen.</source>
+          <target xml:lang="de" state="final">Durch die Einführung dieser Arbeitszeitverkürzung mit (entsprechenden) Lohneinbußen wird beabsichtigt, die Kosten für den Arbeitgeber vorübergehend zu senken und die Beschäftigung zu behalten. Die vorgesehene Zielgruppenermäßigung kann dann angewandt werden, um eine Zulage zum Lohn der Arbeitnehmer hinzuzufügen.</target>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" html:id="h20" id="/html/body/h2[1]">
+          <source xml:lang="nl">Betrokken werkgevers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitgeber</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Het betreft de werkgevers van wie de werknemers onder het toepassingsgebied vallen van de wet van 5 december 1968 betreffende de collectieve arbeidsovereenkomsten en de paritaire comités of onder het toepassingsgebied van de wet van 21 maart 1991 houdende de hervorming van sommige economische overheidsbedrijven. Samengevat zijn dit de werkgevers uit de private sector en de autonome overheidsbedrijven.</source>
+          <target xml:lang="de" state="final">Es betrifft Arbeitgeber, deren Arbeitnehmer in den Anwendungsbereich des Gesetzes vom 05.12.1968 über die kollektiven Arbeitsabkommen und die paritätischen Kommissionen oder in den Anwendungsbereich des Gesetzes vom 21.03.1991 zur Umstrukturierung bestimmter öffentlicher Wirtschaftsunternehmen fallen. Zusammengefasst sind dies Arbeitgeber im Privatsektor und autonome öffentliche Unternehmen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">Enkel werkgevers <g ctype="x-html-strong">erkend in moeilijkheden en/of in herstructurering</g> waarvan de begindatum van de erkenning valt in de <g ctype="x-html-strong">periode 1 maart 2020 - 31 december 2020</g>, die overgaan tot een tijdelijke collectieve vermindering van de arbeidsduur met 1/4<g ctype="x-html-sup">de</g> of 1/5<g ctype="x-html-sup">de</g> al dan niet in combinatie met de invoering van een vierdagenweek, komen in aanmerking. De tijdelijke collectieve arbeidsduurvermindering, al dan niet in combinatie met een vierdagenweek, kan ingevoerd worden voor maximum 1 jaar en kan enkel <g ctype="x-html-strong">gedurende de periode van erkenning</g> en <g ctype="x-html-strong">ten vroegste op 1 juli 2020</g>. Meer uitleg over de erkenning als onderneming in moeilijkheden of in herstructurering is te vinden op de pagina '<g ctype="x-html-a" html:href="https://werk.belgie.be/nl/themas/werkloosheid-en-weer-aan-het-werk/stelsel-van-werkloosheid-met-bedrijfstoeslag#toc_heading_7">Stelsel van werkloosheid met bedrijfsvoorheffing</g>' van de FOD WASO.</source>
+          <target xml:lang="de" state="final">Ausschließlich als <g ctype="x-html-strong">in Schwierigkeiten befindlich anerkannte Unternehmen und/oder Unternehmen, die sich in einer Umstrukturierung befinden,</g> bei denen das Anfangsdatum der Anerkennung zwischen dem <g ctype="x-html-strong">01. März 2020 und 31. Dezember 2020</g> liegt, die eine zeitweilige kollektive Arbeitszeitverkürzung um 1/4<g ctype="x-html-sup"/> oder 1/5<g ctype="x-html-sup"/>, eventuell kombiniert mit der Einführung einer Vier-Tage-Woche vornehmen, kommen in Betracht. Die zeitweilige kollektive Arbeitszeitverkürzung, eventuell kombiniert mit der Einführung einer Vier-Tage-Woche, können für maximal ein Jahr eingeführt werden und dürfen nur <g ctype="x-html-strong">während des Anerkennungszeitraums</g> und <g ctype="x-html-strong">frühestens am 01. Juli 2020</g> eingeführt werden. Weitere Informationen zur Anerkennung als Unternehmen in Schwierigkeiten oder Umstrukturierung finden Sie auf der Seite ‚<g ctype="x-html-a" html:href="https://werk.belgie.be/nl/themas/werkloosheid-en-weer-aan-het-werk/stelsel-van-werkloosheid-met-bedrijfstoeslag#toc_heading_7">System der Arbeitslosigkeit mit Berufssteuervorabzug</g>‚ des FÖD Beschäftigung, Arbeit und soziale Konzertierung.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl">De werkgever kan de arbeidsduurvermindering, al dan niet met vierdagenweek, invoeren voor gans zijn personeel of enkel voor (een) bepaalde categorie(ën) van werknemers (voorbeeld: enkel arbeiders, 45-plussers, ...). De tijdelijke aanpassing van de arbeidsduur en invoering van de vierdagenweek moeten worden vastgesteld</source>
+          <target xml:lang="de" state="final">Der Arbeitgeber kann die Arbeitszeitverkürzung, gegebenenfalls mit Viertagewoche, für sein gesamtes Personal oder nur für (eine) bestimmte Kategorie(n) von Arbeitnehmern einführen (Beispiel: nur Arbeiter, Mitarbeiter über 45 usw.). Die vorübergehende Anpassung der Arbeitsdauer und die Einführung der Viertagewoche müssen</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[1]">
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[1]">
+            <source xml:lang="nl">bij CAO op ondernemingsniveau of</source>
+            <target xml:lang="de" state="final">auf Unternehmensebene in einem kollektiven Arbeitsabkommen oder</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]">
+            <source xml:lang="nl">(bij afwezigheid van een vakbondsafvaardiging) bij een wijziging van het arbeidsreglement.</source>
+            <target xml:lang="de" state="final">(falls es keine Gewerkschaftsvertretung gibt) durch eine Änderung der Arbeitsregelung festgestellt werden.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl">Enkel werkgevers die minstens 3/4<g ctype="x-html-sup">de</g> van deze werkgeversbijdragevermindering aanwenden om als complement bij het loon van de werknemers te voegen ter compensatie van het loonverlies van hun werknemers bij de invoering van de arbeidsduurvermindering, komen in aanmerking.</source>
+          <target xml:lang="de" state="final">Es kommen nur Arbeitgeber, die wenigstens 3/4<g ctype="x-html-sup"/> dieser Arbeitgeberbeitragsermäßigung anwenden, um diese zum Ausgleich des Lohnverlusts ihrer Arbeitnehmer bei der Einführung der Arbeitszeitverringerung als Aufstockung des Lohns der Arbeitnehmer hinzuzufügen, in Betracht.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-div" html:class="backToTop" id="/html/body/div[1]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" html:id="h21" id="/html/body/h2[2]">
+          <source xml:lang="nl">Betrokken werknemers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitnehmer</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl">Alle voltijdse en deeltijdse werknemers die tot een categorie van werknemers behoren die tijdelijk overgegaan zijn tot een effectieve arbeidsduurvermindering met 1/4<g ctype="x-html-sup">de</g> of 1/5<g ctype="x-html-sup">de</g>, kunnen in aanmerking komen voor deze doelgroepvermindering. De situatie voorafgaand aan de invoering van de arbeidsduurvermindering, is bepalend om na te gaan of aan de voorwaarde is voldaan.</source>
+          <target xml:lang="de" state="final">Alle Voll- und Teilzeitbeschäftigten, die eine Arbeitnehmerkategorie angehören, die vorübergehend zu einer effektiven Arbeitszeitverkürzung mit 1/4<g ctype="x-html-sup"/> oder 1/5<g ctype="x-html-sup"/> übergegangen sind, können für diese Zielgruppenermäßigung in Betracht kommen. Die Situation vor der Einführung der Arbeitszeitverringerung ist ausschlaggebend dafür, ob die Bedingungen erfüllt wurden.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[7]">
+          <source xml:lang="nl">Het verhoogde forfait voor de invoering van de vierdagenweek geldt enkel voor voltijdsen.</source>
+          <target xml:lang="de" state="final">Die erhöhte Pauschale vor der Einführung der Viertagewoche gilt nur für Vollzeitbeschäftigte.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[8]">
+          <source xml:lang="nl">Deeltijdsen waarbij enkel het gemiddeld aantal uren per week van de maatman, maar niet van de werknemer zelf, vermindert met 1/4<g ctype="x-html-sup">de</g> of 1/5<g ctype="x-html-sup">de</g>, komen voor de bijdragevermindering niet in aanmerking. Het gaat hier om de zogenaamde 'absolute' deeltijdsen, van wie de prestaties in de arbeidsovereenkomst niet zijn uitgedrukt als een percentage van de voltijdse maatman maar uitgedrukt in een absoluut te presteren aantal uren en dagen. Door de invoering van de arbeidsduurvermindering vergroot hun prestatiebreuk.</source>
+          <target xml:lang="de" state="final">Teilzeitbeschäftigte, bei denen nur die durchschnittliche Anzahl Wochenstunden der Referenzperson, aber nicht die des Arbeitnehmers selbst, um 1/4<g ctype="x-html-sup"/> oder 1/5<g ctype="x-html-sup"/> verringert werden, kommen nicht für die Beitragsermäßigung in Betracht. Es handelt sich hierbei um die sogenannten ‚absoluten‘ Teilzeitbeschäftigten, deren Leistungen im Arbeitsvertrag nicht als prozentualer Anteil der vollzeitlich beschäftigten Referenzperson ausgedrückt werden, sondern in einer absolut zu leistenden Anzahl Stunden oder Tage. Durch die Einführung der Arbeitszeitverkürzung erhöht sich ihr Leistungsbruch.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-div" html:class="backToTop" id="/html/body/div[2]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" html:id="h22" id="/html/body/h2[3]">
+          <source xml:lang="nl">Bedrag van de vermindering</source>
+          <target xml:lang="de" state="final">Betrag der Ermäßigung</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[9]">
+          <source xml:lang="nl">De werkgever kan aanspraak maken al naar het geval op volgende vermindering vanaf het moment van invoering van de arbeidsduurvermindering:</source>
+          <target xml:lang="de" state="final">Ab dem Zeitpunkt der Einführung der Arbeitszeitverkürzung kann der Arbeitgeber die folgende Ermäßigung geltend machen:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[2]">
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]">
+            <source xml:lang="nl"><g ctype="x-html-strong">G</g><g ctype="x-html-strong"><g ctype="x-html-sub">4</g></g> (600,00 EUR) vanaf het moment waarop de arbeidsduur verminderd wordt met 1/5<g ctype="x-html-sup">de</g></source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">G</g><g ctype="x-html-strong"><g ctype="x-html-sub">4</g></g> (600,00 EUR) ab dem Zeitpunkt, an dem die Arbeitszeit um 1/5<g ctype="x-html-sup"/> verkürzt wird</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]">
+            <source xml:lang="nl"><g ctype="x-html-strong">G</g><g ctype="x-html-strong"><g ctype="x-html-sub">5</g></g> (750,00 EUR) vanaf het moment waarop de arbeidsduur verminderd wordt met 1/4<g ctype="x-html-sup">de</g></source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">G</g><g ctype="x-html-strong"><g ctype="x-html-sub">5</g></g> (750,00 EUR) ab dem Zeitpunkt, an dem die Arbeitszeit um 1/4 <g ctype="x-html-sup"/>verkürzt wird</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[3]">
+            <source xml:lang="nl"><g ctype="x-html-strong">G</g><g ctype="x-html-strong"><g ctype="x-html-sub">1</g></g> (1.000,00 EUR) vanaf het moment waarop de arbeidsduur verminderd wordt met 1/5<g ctype="x-html-sup">de</g> en tegelijkertijd de vierdagenweek wordt ingevoerd (enkel voor de voltijdse werknemers)</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">G</g><g ctype="x-html-strong"><g ctype="x-html-sub">1</g></g> (EUR 1.000,00) ab dem Zeitpunkt, an dem die Arbeitszeit um 1/5<g ctype="x-html-sup"/> reduziert und gleichzeitig die Viertagewoche eingeführt wird (nur für Vollzeitbeschäftigte)</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[4]">
+            <source xml:lang="nl"><g ctype="x-html-strong">G</g><g ctype="x-html-strong"><g ctype="x-html-sub">6</g></g> (1.150,00 EUR) vanaf het moment waarop de arbeidsduur verminderd wordt met 1/4<g ctype="x-html-sup">de</g> en tegelijkertijd de vierdagenweek wordt ingevoerd (enkel voor de voltijdse werknemers)</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">G</g><g ctype="x-html-strong"><g ctype="x-html-sub">6</g></g> (EUR 1.150,00) ab dem Zeitpunkt, an dem die Arbeitszeit um 1/4<g ctype="x-html-sup"/> reduziert und gleichzeitig die Vier-Tage-Woche eingeführt wird (nur für Vollzeitbeschäftigte)</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[10]">
+          <source xml:lang="nl">Onder ‘<g ctype="x-html-strong">vierdagenweek</g>’ moet worden verstaan: de regeling waarbij de wekelijkse arbeidsduur gespreid wordt hetzij over vier arbeidsdagen per week, hetzij over vijf arbeidsdagen per week welke drie volledige en twee halve arbeidsdagen inhouden.</source>
+          <target xml:lang="de" state="final">Mit ‚<g ctype="x-html-strong">Viertagewoche</g>‘ ist die folgende Regelung gemeint: die Regelung, bei der die wöchentliche Arbeitszeit über entweder vier Arbeitstage pro Woche oder über fünf Arbeitstage pro Woche verteilt wird, die drei ganze und zwei halbe Tage beinhalten.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[11]">
+          <source xml:lang="nl">Onder ‘<g ctype="x-html-strong">halve arbeidsdag</g>’ verstaat men: ten hoogste de helft van het aantal arbeidsuren dat voorzien wordt in het werkrooster voor de langste van de drie volledige arbeidsdagen.</source>
+          <target xml:lang="de" state="final">Mit ‚<g ctype="x-html-strong">halbem Arbeitstag</g>‘ ist Folgendes gemeint: höchstens die Hälfte der Anzahl Arbeitsstunden, die im Arbeitsplan für den längsten der drei ganzen Arbeitstage vorgesehen wird.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[12]">
+          <source xml:lang="nl">Aangezien het de bedoeling is de kosten voor de werkgever tijdelijk te verminderen, zal deze arbeidsduurvermindering ingevoerd worden met (overeenkomstig) loonverlies. De doelgroepvermindering kan evenwel slechts worden toegekend indien <g ctype="x-html-strong">minstens 3/4<g ctype="x-html-sup">de</g> ervan aangewend wordt om als complement</g> bij het loon te worden gevoegd van de werknemers. Dit verplichte complement is loon waarop socialezekerheidsbijdragen betaald moeten worden. Het moet worden aangegeven onder <g ctype="x-html-strong">looncode 5</g>.</source>
+          <target xml:lang="de" state="final">Da beabsichtigt ist, die Kosten für den Arbeitgeber vorübergehend zu senken, wird diese Einführung der Arbeitszeitverkürzung mit (entsprechenden) Lohneinbußen einhergehen. Die Zielgruppenermäßigung kann jedoch nur gewährt werden, wenn <g ctype="x-html-strong">mindestens 3/4<g ctype="x-html-sup"/> davon zur Aufstockung</g> der Löhne der Arbeitnehmer verwendet werden. Bei dieser obligatorischen Aufstockung handelt es sich um einen Lohn, auf den Sozialversicherungsbeiträge entrichtet werden müssen. Sie muss unter dem <g ctype="x-html-strong">Lohncode 5</g> angegeben werden.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[13]">
+          <source xml:lang="nl">Voor het bepalen van de '3/4<g ctype="x-html-sup">de'</g> wordt het bruto bedrag <g ctype="x-html-strong">zonder</g> de werkgeversbijdrage beschouwd. Het gaat hierbij om het forfait waarop de werkgever voor de betreffende werknemer in principe recht heeft, eventueel geproratiseerd naar de effectieve betaalde prestaties van de werknemer volgens de berekeningswijze opgenomen in de ondernemingsCAO die moet worden voorgelegd aan de FOD Werkgelegenheid, Arbeid en Sociaal Overleg. De berekening van het complement is dus onafhankelijk van de uiteindelijk toegekende bijdragevermindering. Indien u meer details wenst te bekomen, kan u uw systeem van looncompensatie voorleggen op het <g ctype="x-html-a" html:href="https://werk.belgie.be/nl/over-de-fod/structuur-van-de-fod/arbeidsinspectie-ad-toezicht-op-de-sociale-wetten/externe">TSW kantoor</g> (Toezicht op de Sociale Wetten) van de plaats waar de werkgever de CAO zal neerleggen.</source>
+          <target xml:lang="de" state="final">Für die Bestimmung der ‚3/4<g ctype="x-html-sup"/>‘ wird der Bruttobetrag <g ctype="x-html-strong">ohne</g> Arbeitgeberbeitrag betrachtet. Es handelt sich hierbei um eine Pauschale, auf die der Arbeitgeber für den betreffenden Arbeitnehmer im Prinzip Anspruch hat, eventuell anteilig an den effektiv bezahlten Leistungen des Arbeitnehmers anhand der im kollektiven Arbeitsabkommen des Unternehmens gehandhabten Berechnungsmethode, die dem FÖD Beschäftigung, Arbeit und soziale Konzertierung vorgelegt werden muss. Die Berechnung der Aufstockung ist also unabhängig von der letztendlich zugewiesenen Beitragsverringerung. Für weitere Informationen können Sie Ihr System des Lohnausgleichs der <g ctype="x-html-a" html:href="https://werk.belgie.be/nl/over-de-fod/structuur-van-de-fod/arbeidsinspectie-ad-toezicht-op-de-sociale-wetten/externe">Aufsicht über die Sozialgesetze</g> des Ortes vorlegen, an dem der Arbeitgeber das KAA hinterlegen wird.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[14]">
+          <source xml:lang="nl">U moet er rekening mee houden dat het complement niet altijd 3/4 van het forfait kan bedragen maar dat het soms lager en soms hoger zal moeten zijn:</source>
+          <target xml:lang="de" state="final">Sie müssen berücksichtigen, dass die Aufstockung nicht immer 3/4 der Pauschale betragen kann, sondern dass sie manchmal niedriger und manchmal höher sein muss:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[3]">
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[1]">
+            <source xml:lang="nl">het complement voor een individuele werknemer mag nooit tot gevolg hebben dat de werknemer tijdens de arbeidsduurvermindering meer brutoloon heeft dan voordien. In dat geval moet het complement beperkt worden tot het verschil.</source>
+            <target xml:lang="de" state="final">die Aufstockung für einen einzelnen Arbeitnehmer darf niemals zur Folge haben, dass der Arbeitnehmer während der Arbeitszeitverkürzung einen höheren Bruttolohn erhält als zuvor. In diesem Fall muss die Aufstockung auf die Differenz begrenzt werden.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[2]">
+            <source xml:lang="nl">tijdens de arbeidsduurvermindering blijven de regels inzake minimumloon gelden. Het is dus mogelijk dat voor bepaalde werknemers een grotere looncompensatie voorzien moet worden om het minimumloon te bereiken.</source>
+            <target xml:lang="de" state="final">während der Arbeitszeitverkürzung gelten auch weiterhin die Regeln bezüglich des Mindestlohns. Es ist also möglich, dass für bestimmte Arbeitnehmer eine höhere Lohnaufstockung vorgesehen werden muss, um den Mindestlohn zu erreichen.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[15]">
+          <source xml:lang="nl">Werknemers die in dienst komen na de invoering van de arbeidsduurvermindering hebben eveneens recht op deze vermindering als ze tot een categorie behoren die daarvoor in aanmerking komt. De feitelijke situatie waarop de tewerkstellingslijn betrekking heeft is bepalend of de werknemer tot de rechtopenende groep behoort of niet.</source>
+          <target xml:lang="de" state="final">Arbeitnehmer, die nach der Einführung der Arbeitszeitverkürzung eingestellt werden, haben auch Anspruch auf diese Ermäßigung, wenn sie zu einer Kategorie gehören, die dafür in Betracht kommt. Die faktische Situation, auf die sich die Beschäftigungszeile bezieht, ist bestimmend, ob der Arbeitnehmer zur Gruppe gehört, die das Recht auf die Ermäßigung eröffnet, oder nicht.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[16]">
+          <source xml:lang="nl">De toekenning van de vermindering is voorlopig. Zij wordt definitief indien vaststaat dat de werkgever alle voorwaarden voor de toekenning vervult.</source>
+          <target xml:lang="de" state="final">Die Zuweisung der Verringerung ist vorläufig. Sie wird endgültig, wenn feststeht, dass der Arbeitgeber alle Bedingungen für die Zuweisung erfüllt.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" html:id="h23" id="/html/body/h2[4]">
+          <source xml:lang="nl">Te vervullen formaliteiten</source>
+          <target xml:lang="de" state="final">Zu erledigende Formalitäten</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[17]">
+          <source xml:lang="nl">Onder <g ctype="x-html-strong">arbeidsduur</g> verstaat men de normale<g ctype="x-html-sup">(1)</g> gemiddelde<g ctype="x-html-sup">(2)</g> wekelijkse arbeidsduur van de werknemers. De arbeidsduur van de voltijdse maatman zowel vóór als na de invoering van het stelsel van crisis arbeidsduurvermindering moet worden meegedeeld in een apart scherm van de webapplicatie of in een apart functioneel blok:</source>
+          <target xml:lang="de" state="final">Unter <g ctype="x-html-strong">Arbeitszeit</g> versteht man die normale <g ctype="x-html-sup">(1)</g> durchschnittliche<g ctype="x-html-sup">(2)</g> Wochenarbeitszeit des Arbeitnehmers. Die Arbeitszeit einer vollzeitlich beschäftigten Referenzperson sowohl vor als auch nach der Einführung der Krisenarbeitszeitverkürzung muss in einem separaten Bildschirm der Webanwendung oder in einem separaten Funktionsblock mitgeteilt werden:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[4]">
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[1]">
+            <source xml:lang="nl"><g ctype="x-html-sup">(1)</g> Normaal betekent rekening houdend met de theoretische gemiddelde wekelijkse arbeidsduur, dus zonder rekening te houden met de gepresteerde overuren, en ongeacht eventuele afwezigheden wegens ziekte, tijdelijke werkloosheid, gewettigde of ongewettigde afwezigheid,... In feite is dit de arbeidsduur die staat in de arbeidsovereenkomst of de eventuele aanpassingen daarvan.</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-sup">(1)</g>Normal bedeutet: unter Berücksichtigung der theoretischen, durchschnittlichen, wöchentlichen Arbeitszeit, d. h. ohne Berücksichtigung der geleisteten Überstunden und ungeachtet etwaiger Abwesenheiten wegen Krankheit, vorübergehender Arbeitslosigkeit, berechtigter oder unberechtigter Abwesenheit usw. Im Grunde ist dies die Arbeitsdauer, die im Arbeitsvertrag oder den etwaigen Anpassungen angegeben wird.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[2]">
+            <source xml:lang="nl"><g ctype="x-html-sup">(2)</g> Gemiddeld betekent het gemiddelde van de arbeidscyclus die een afgesloten geheel vormt, samengesteld uit te werken dagen en rustdagen, en die zich volgens eenzelfde patroon herhaalt. In geval van flexibele arbeidsregelingen kan deze cyclus zich uitstrekken over twaalf maanden.</source>
+            <target xml:lang="de" state="final">Mit <g ctype="x-html-sup">(2)</g> durchschnittlich ist der Durchschnitt des Arbeitszyklus gemeint, der ein abgeschlossenes Ganzes bildet und der aus Tagen, an denen zu arbeiten ist, sowie aus Ausgleichstagen besteht, und der sich gemäß dem gleichen Muster wiederholt. Im Falle flexibler Arbeitsregelungen kann sich dieser Zyklus über zwölf Monate erstrecken.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[18]">
+          <source xml:lang="nl">In de aangifte moet bij de karakteristieken van de tewerkstellingslijn ook het <g ctype="x-html-strong">gemiddeld aantal uren per week</g> van de werknemer (Q) en de voltijdse maatman (S) worden ingevuld. Het gaat om de normale gemiddelde wekelijkse arbeidsduur, verhoogd met de betaalde uren inhaalrust<g ctype="x-html-sup">(3)</g> ingevolge een klassieke regeling tot vermindering van de arbeidsduur (zie ook de uitleg van deze ‘dubbeltelling’ bij de bespreking van het invullen van ‘<g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/fill_in_dmfa/dmfa_fillinrules/workerrecord_occupationrecords/occupationrecord.html">het gemiddeld aantal uren per week’</g> ). In sommige gevallen (bijvoorbeeld in de bouwsector) zal S dus verschillen met de arbeidsduur van de voltijdse maatman.</source>
+          <target xml:lang="de" state="final">In der Meldung müssen in den Eigenschaften der Beschäftigungszeile auch die <g ctype="x-html-strong">durchschnittliche Anzahl der Stunden pro Woche</g> des Arbeitnehmers (Q) und der vollzeitlich beschäftigten Referenzperson (S) eingetragen werden. Es geht um die normale durchschnittliche Wochenarbeitszeit, erhöht um die bezahlten Ausgleichsruhezeiten<g ctype="x-html-sup">(3)</g> infolge einer herkömmlichen Regelung zur Verringerung der Arbeitszeit (siehe auch die Erklärung zu diese ‚Doppelzählung‘ bei der Besprechung des Eintrags der ‚<g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/fill_in_dmfa/dmfa_fillinrules/workerrecord_occupationrecords/occupationrecord.html">durchschnittlichen Anzahl Stunden pro Woche‘</g>). In einigen Fällen (beispielsweise im Bausektor) wird S von der Arbeitszeit der vollzeitlich beschäftigten Referenzperson abweichen.</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[5]">
+          <trans-unit restype="listitem" id="/html/body/ul[5]/li">
+            <source xml:lang="nl"><g ctype="x-html-sup">(3)</g> Zowel voor de werknemer als voor de maatpersoon wordt rekening gehouden met uren inhaalrust ingevolge een ‘klassieke’ regeling tot vermindering van de arbeidstijd, indien het gaat om inhaalrust die betaald wordt op het moment dat hij opgenomen wordt. De eventuele uren inhaalrust van de tijdelijke arbeidsduurvermindering wordt hier niet meegerekend.</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-sup">(3)</g>Sowohl für den Arbeitnehmer als auch für die Referenzperson werden Ausgleichsruhezeiten infolge einer ‚herkömmlichen‘ Regelung zur Arbeitszeitverkürzung berücksichtigt, wenn es sich um Ausgleichsruhezeit handelt, die zu dem Zeitpunkt bezahlt wird, zu dem sie genommen wird. Die eventuellen Ausgleichsruhezeiten der vorübergehenden Arbeitszeitverringerung werden hier nicht eingerechnet.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[19]">
+          <source xml:lang="nl">Dit aantal zal na de invoering van de tijdelijke arbeidsduurvermindering steeds kleiner zijn dan voordien, zodat er steeds een <g ctype="x-html-strong">nieuwe tewerkstellingslijn</g> moet begonnen worden (want andere Q en S en eventueel ook ander arbeidsregime).</source>
+          <target xml:lang="de" state="final">Diese Anzahl wird nach der Einführung der vorübergehenden Arbeitszeitverringerung immer geringer sein als vorher, sodass immer eine <g ctype="x-html-strong">neue Beschäftigungszeile</g> begonnen werden muss (denn andere Q und S und eventuell auch andere Arbeitsregelung).</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[20]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="readMoreContent" id="/html/body/div[3]">
+          <trans-unit restype="x-html-p" id="/html/body/div[3]/p[1]">
+            <source xml:lang="nl">
+              <g ctype="x-html-strong">Voorbeeld 1:</g>
+            </source>
+            <target xml:lang="de" state="final">
+              <g ctype="x-html-strong"> Beispiel 1:</g>
+            </target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[3]/p[2]">
+            <source xml:lang="nl">Een werkgever, van wie de voltijdse maatman een arbeidsduur heeft van 38 uur/week (S = 38), stapt in het systeem van een tijdelijke arbeidsduurvermindering van 1/4<g ctype="x-html-sup">de</g>. De arbeidsduur vermindert dus naar 28,5 uur/week (S = 28,5).</source>
+            <target xml:lang="de" state="final">Ein Arbeitgeber, dessen vollzeitlich beschäftigte Referenzperson eine Arbeitszeit von 38 Stunden/Woche (S = 38) hat, tritt in das System der vorübergehenden Arbeitszeitverringerung von 1/4<g ctype="x-html-sup"/> ein. Die Arbeitszeit verringert sich somit auf 28,5 Stunden/Woche (S = 28,5).</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[21]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="readMoreContent" id="/html/body/div[4]">
+          <trans-unit restype="x-html-p" id="/html/body/div[4]/p[1]">
+            <source xml:lang="nl">
+              <g ctype="x-html-strong">Voorbeeld 2:</g>
+            </source>
+            <target xml:lang="de" state="final">
+              <g ctype="x-html-strong">Beispiel 2:</g>
+            </target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[4]/p[2]">
+            <source xml:lang="nl">Een werkgever in de bouw van wie de voltijdse maatman een arbeidsduur heeft van 38 uur/week en van wie het personeel een aantal arbeidsduurverminderingsdagen heeft die betaald worden op het moment van recuperatie (S = 40), stapt eveneens in het systeem van een tijdelijke arbeidsduurvermindering van 1/4<g ctype="x-html-sup">de</g>. De arbeidsduur vermindert dus ook naar 28,5 uur/week (S = 30,5).</source>
+            <target xml:lang="de" state="final">Ein Arbeitgeber im Bausektor, dessen vollzeitlich beschäftigte Referenzperson eine Arbeitszeit von 38 Stunden/Woche hat und dessen Personal Arbeitszeitverringerungstage hat, die zum Zeitpunkt der Rückforderung (S = 40) bezahlt werden, tritt ebenfalls in das System der vorübergehenden Arbeitszeitverkürzung von 1/4<g ctype="x-html-sup"/> ein. Die Arbeitszeit verringert sich somit ebenfalls auf 28,5 Stunden/Woche (S = 30,5).</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[22]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[23]">
+          <source xml:lang="nl">De <g ctype="x-html-strong">datum van inwerkingtreding en beëindiging</g> van het stelsel moet eveneens worden meegedeeld.</source>
+          <target xml:lang="de" state="final">Das <g ctype="x-html-strong">Datum des Inkrafttretens und der Beendigung</g> des Systems ist auch mitzuteilen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[24]">
+          <source xml:lang="nl">Meer informatie, onder andere over de <g ctype="x-html-a" html:href="https://werk.belgie.be/nl/themas/arbeidsreglementering/arbeidsduur-en-rusttijden/tijdelijke-vermindering-van-de-arbeidsduur#toc_heading_3">minimale inhoud van de CAO's of van het arbeidsreglement</g>, bevindt zich op de pagina '<g ctype="x-html-a" html:href="https://werk.belgie.be/nl/themas/arbeidsreglementering/arbeidsduur-en-rusttijden/tijdelijke-vermindering-van-de-arbeidsduur">Tijdelijke vermindering van de arbeidsduur in het kader van de COVID-19 pandemie</g>' van de FOD WASO.</source>
+          <target xml:lang="de" state="final">Weiter Informationen über u. a. den <g ctype="x-html-a" html:href="https://werk.belgie.be/nl/themas/arbeidsreglementering/arbeidsduur-en-rusttijden/tijdelijke-vermindering-van-de-arbeidsduur#toc_heading_3">Mindestinhalt der KAA oder der Arbeitsregelung</g> finden Sie auf der Seite ‚<g ctype="x-html-a" html:href="https://werk.belgie.be/nl/themas/arbeidsreglementering/arbeidsduur-en-rusttijden/tijdelijke-vermindering-van-de-arbeidsduur">Vorübergehende Verringerung der Arbeitszeit im Rahmen der COVID-19-Pandemie</g>‘ des FÖD Beschäftigung, Arbeit und soziale Konzertierung.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[25]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

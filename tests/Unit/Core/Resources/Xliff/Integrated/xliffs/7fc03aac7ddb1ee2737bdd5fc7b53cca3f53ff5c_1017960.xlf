@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:7fc03aac7ddb1ee2737bdd5fc7b53cca3f53ff5c:1017960" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Tijdelijke doelgroepvermindering evenementensector - coronamaatregel</source>
+        <target xml:lang="de" state="final">Vorübergehende Zielgruppenermäßigung im Veranstaltungssektor – Corona-Maßnahme</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Tijdelijke doelgroepvermindering evenementensector - coronamaatregel</source>
+        <target xml:lang="de" state="final">Vorübergehende Zielgruppenermäßigung im Veranstaltungssektor – Corona-Maßnahme</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">De wet van 2 april 2021 (BS van 13 april 2021) voorziet een bijdragevermindering voor de werkgevers die deel uitmaken van de evenementensector. Het doel bestaat erin deze sector te ondersteunen, die zwaar getroffen werd door de beperkende maatregelen tegen de verspreiding van het coronavirus.</source>
+          <target xml:lang="de" state="final">Das Gesetz vom 02. April 2021 (B.S. vom 13. April 2021) sieht eine Beitragsermäßigung für Arbeitgeber vor, die im Veranstaltungssektor tätig sind. Ziel ist es, diesen Sektor zu unterstützen, der von den Einschränkungen zur Verhinderung der Ausbreitung des Coronavirus stark betroffen ist.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">Deze doelgroepvermindering kan toegekend worden tijdens het 2<g ctype="x-html-sup">de</g> en 3<g ctype="x-html-sup">de</g> kwartaal 2021.</source>
+          <target xml:lang="de" state="final">Diese Zielgruppenermäßigung kann im 2.<g ctype="x-html-sup"/> und 3.<g ctype="x-html-sup"/> Quartal 2021 gewährt werden.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" html:id="h20" id="/html/body/h2[1]">
+          <source xml:lang="nl">Betrokken werkgevers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitgeber</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Het betreft de werkgevers uit de privésector waarvan de hoofdactiviteit zich situeert in de evenementensector.</source>
+          <target xml:lang="de" state="final">Es betrifft Arbeitgeber aus dem Privatsektor, die hauptsächlich im Veranstaltungssektor tätig sind.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">Concreet gaat het om de werkgevers</source>
+          <target xml:lang="de" state="final">Im Einzelnen sind dies die Arbeitgeber,</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[1]">
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[1]">
+            <source xml:lang="nl">die vallen onder het Paritair Comité voor het vermakelijkheidsbedrijf (PC 304), d.w.z. aan wie de werkgeverscategorie <g ctype="x-html-strong">562</g> of <g ctype="x-html-strong">662</g> toegekend werd</source>
+            <target xml:lang="de" state="final">die unter die Paritätische Kommission für Unterhaltungsdarbietungen (PK 304) fallen, d.h. die der Arbeitgeberkategorie <g ctype="x-html-strong">562</g> oder <g ctype="x-html-strong">662</g> zugeordnet sind</target>
+          </trans-unit>
+          <group restype="listitem" id="/html/body/ul[1]/li[2]">
+            <trans-unit restype="x-html-strong" id="/html/body/ul[1]/li[2]/strong">
+              <source xml:lang="nl">of</source>
+              <target xml:lang="de" state="final">oder</target>
+            </trans-unit>
+            <trans-unit id="/html/body/ul[1]/li[2]/text()[1]">
+              <source xml:lang="nl"> wiens hoofdactiviteit in de evenementensector bestaat uit: </source>
+              <target xml:lang="de" state="final"> deren Haupttätigkeit im Veranstaltungssektor aus Folgendem besteht: </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[1]/li[2]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[1]">
+                <source xml:lang="nl">de beoefening van uitvoerende kunsten, inclusief de beoefening van uitvoerende kunsten door zelfstandig werkende artiesten (NACE-code <g ctype="x-html-strong">90011</g>) en de beoefening van uitvoerende kunsten door artistieke ensembles (NACE-code <g ctype="x-html-strong">90012</g>);</source>
+                <target xml:lang="de" state="final">Darbietungen von selbständig arbeitenden Künstlern im Bereich der darstellenden Kunst (NACE-Code <g ctype="x-html-strong">90011</g>) und Darbietungen von Künstlergruppen im Bereich der darstellenden Kunst (NACE-Code <g ctype="x-html-strong">90012</g>);</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[2]">
+                <source xml:lang="nl">de promotie en organisatie van uitvoerende kunstevenementen (NACE-code <g ctype="x-html-strong">90021</g>);</source>
+                <target xml:lang="de" state="final">Förderung und Organisation von Veranstaltungen im Bereich der darstellenden Kunst (NACE-Code <g ctype="x-html-strong">90021</g>);</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[3]">
+                <source xml:lang="nl">het ontwerp en de bouw van podia (NACE-code <g ctype="x-html-strong">90022</g>);</source>
+                <target xml:lang="de" state="final">Entwurf und Bau von Bühnen (NACE-Code <g ctype="x-html-strong">90022</g>);</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[4]">
+                <source xml:lang="nl">de gespecialiseerde beeld-, verlichtings- en geluidstechnieken (NACE-code <g ctype="x-html-strong">90023</g>);</source>
+                <target xml:lang="de" state="final">Spezialisierte Bild-, Beleuchtungs- und Tontechniken (NACE-Code <g ctype="x-html-strong">90022</g>);</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[5]">
+                <source xml:lang="nl">ondersteunende activiteiten voor de uitvoerende kunsten (NACE-code <g ctype="x-html-strong">90029</g>);</source>
+                <target xml:lang="de" state="final">Sonstige unterstützende Tätigkeiten im Bereich der ausführenden Kunst (NACE-Code <g ctype="x-html-strong">90029</g>);</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[6]">
+                <source xml:lang="nl">de beoefening van scheppende kunsten (NACE-code <g ctype="x-html-strong">90031</g>);</source>
+                <target xml:lang="de" state="final">Ausübung der schaffenden Kunst (NACE-Code <g ctype="x-html-strong">90031</g>);</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[7]">
+                <source xml:lang="nl">ondersteunende activiteiten voor scheppende kunsten (NACE-code <g ctype="x-html-strong">90032</g>);</source>
+                <target xml:lang="de" state="final">Unterstützende Tätigkeiten im Bereich der schaffenden Kunst (NACE-Code <g ctype="x-html-strong">90032</g>);</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[8]">
+                <source xml:lang="nl">de exploitatie van schouwburgen, theaters, concertzalen, music-halls, cabarets en andere accomodaties voor podiumkunst (NACE-code <g ctype="x-html-strong">90041</g>);</source>
+                <target xml:lang="de" state="final">Betreibung von Schauspielhäusern, Theatern, Konzertsälen, Musikhallen, Kabaretts und anderen Unterkünften für Bühnenkunst (NACE-Code <g ctype="x-html-strong">90041</g>);</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[9]">
+                <source xml:lang="nl">de exploitatie van geluidsopnamestudio’s voor rekening van derden (NACE-code <g ctype="x-html-strong">90041</g>);</source>
+                <target xml:lang="de" state="final">Betrieb von Tonstudios für Dritte (NACE-Code <g ctype="x-html-strong">90041</g>);</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[10]">
+                <source xml:lang="nl">het beheer en exploitatie van culturele centra (NACE-code <g ctype="x-html-strong">90042</g>);</source>
+                <target xml:lang="de" state="final">Betrieb von Kulturzentren (NACE-Code <g ctype="x-html-strong">90042</g>);</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[11]">
+                <source xml:lang="nl">het beheer en exploitatie van multifunctionele centra en evenementenhallen, overwegend ten behoeve van de scheppende en uitvoerende kunst (NACE-code <g ctype="x-html-strong">90042</g>);</source>
+                <target xml:lang="de" state="final">Verwaltung und Betrieb von Multifunktionszentren und Veranstaltungshallen, hauptsächlich für Tätigkeiten im Bereich der schaffenden und darstellenden Kunst (NACE-Code <g ctype="x-html-strong">90042</g>);</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[12]">
+                <source xml:lang="nl">de organisatie van congressen en beurzen (NACE-code <g ctype="x-html-strong">82300</g>);</source>
+                <target xml:lang="de" state="final">Messe-, Ausstellungs- und Kongressveranstalter (NACE-Code <g ctype="x-html-strong">82300</g>);</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[13]">
+                <source xml:lang="nl">de organisatie van sportevenementen. Wat de organisatie van sportevenementen betreft, wordt de maatregel beperkt tot de werkgevers met de NACE-code <g ctype="x-html-strong">93199</g> die kunnen aantonen dat hun hoofdactiviteit bestaat uit de organisatie van sportevenementen.</source>
+                <target xml:lang="de" state="final">Organisation von Sportveranstaltungen. Was die Organisation von Sportveranstaltungen betrifft, so ist die Maßnahme auf diejenigen Arbeitgeber mit dem NACE-Code <g ctype="x-html-strong">93199</g> beschränkt, die nachweisen können, dass ihre Haupttätigkeit in der Organisation von Sportveranstaltungen besteht.</target>
+              </trans-unit>
+            </group>
+          </group>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl">De werkgevers die niet vallen onder het PC 304 of de voormelde NACE-codes, maar die gelijkaardige activiteiten uitoefenen, kunnen ook van de maatregel genieten <g ctype="x-html-strong">als ze kunnen aantonen dat hun hoofdactiviteit zich in de evenementensector situeert</g>.  De RSZ zal a posteriori controles uitoefenen.</source>
+          <target xml:lang="de" state="final">Arbeitgeber, die nicht unter die PK 304 oder die oben genannten NACE-Codes fallen, aber ähnliche Tätigkeiten ausüben, können ebenfalls von der Maßnahme profitieren, <g ctype="x-html-strong">wenn sie nachweisen können, dass ihre Haupttätigkeit im Veranstaltungssektor angesiedelt ist</g>.  Das LSS wird nachträglich Kontrollen durchführen.</target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div">
+          <trans-unit restype="x-html-p" id="/html/body/div/p">
+            <source xml:lang="nl">Voor de toepassing van de maatregel kan een <g ctype="x-html-strong">'evenement' </g>beschouwd worden als een georganiseerde gebeurtenis die tijdelijk is en op een publiek gericht is.  Het evenement kan een openbaar of een besloten karakter hebben.  Het kan groot of klein zijn en terugkerend of eenmalig van aard.  Een evenement is in ieder geval beperkt in de tijd.</source>
+            <target xml:lang="de" state="final">Für die Zwecke der Maßnahme kann eine <g ctype="x-html-strong">„Veranstaltung“</g> als ein organisiertes Ereignis betrachtet werden, das zeitlich begrenzt ist und sich an ein Publikum richtet.  Die Veranstaltung kann öffentlicher oder privater Natur sein.  Sie kann groß oder klein sein und wiederkehrend oder einmalig sein.  In jedem Fall ist eine Veranstaltung zeitlich begrenzt.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h3" id="/html/body/h3">
+          <source xml:lang="nl">Bijkomende voorwaarden</source>
+          <target xml:lang="de" state="final">Zusätzliche Bedingungen</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl">Om voor de doelgroepvermindering in aanmerking te komen, moet de werkgever aan de volgende bijkomende voorwaarden voldoen:</source>
+          <target xml:lang="de" state="final">Um die Zielgruppenermäßigung in Anspruch nehmen zu können, muss der Arbeitgeber die folgenden zusätzlichen Bedingungen erfüllen:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[2]">
+          <group restype="listitem" id="/html/body/ul[2]/li[1]">
+            <trans-unit id="/html/body/ul[2]/li[1]/text()[1]">
+              <source xml:lang="nl">de werknemers waarvoor hij de doelgroepvermindering toepast, ononderbroken in dienst houden gedurende de twee betrokken kwartalen (2021/2 en 2021/3), behalve als de werknemer </source>
+              <target xml:lang="de" state="final">die Arbeitnehmer/-innen, für die er die Zielgruppenermäßigung anwendet, im betreffenden Quartal ununterbrochen weiterbeschäftigen, es sei denn, dass der/die Arbeitnehmer/-in </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li[1]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]/ul/li[1]">
+                <source xml:lang="nl">zelf ontslag neemt (dus <g ctype="x-html-strong">niet </g>als met wederzijds akkoord),</source>
+                <target xml:lang="de" state="final">selbst kündigt (also <g ctype="x-html-strong">nicht</g> im gegenseitigen Einvernehmen),</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]/ul/li[2]">
+                <source xml:lang="nl">om dringende redenen ontslagen wordt</source>
+                <target xml:lang="de" state="final">aus schwerwiegenden Gründen entlassen wird</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]/ul/li[3]">
+                <source xml:lang="nl">of als hij een tijdskrediet of een thematisch verlof opneemt;</source>
+                <target xml:lang="de" state="final">oder einen Zeitkredit oder thematischen Urlaub nimmt;</target>
+              </trans-unit>
+            </group>
+          </group>
+          <group restype="listitem" id="/html/body/ul[2]/li[2]">
+            <trans-unit id="/html/body/ul[2]/li[2]/text()[1]">
+              <source xml:lang="nl">in 2021 </source>
+              <target xml:lang="de" state="final">im Jahr 2021 </target>
+            </trans-unit>
+            <trans-unit restype="x-html-strong" id="/html/body/ul[2]/li[2]/strong[1]">
+              <source xml:lang="nl">al zijn werknemers </source>
+              <target xml:lang="de" state="final">allen Arbeitnehmerinnen und Arbeitnehmern </target>
+            </trans-unit>
+            <trans-unit id="/html/body/ul[2]/li[2]/text()[2]">
+              <source xml:lang="nl">een concrete en individuele opleiding </source>
+              <target xml:lang="de" state="final">eine konkrete und individuelle Schulung </target>
+            </trans-unit>
+            <trans-unit restype="x-html-strong" id="/html/body/ul[2]/li[2]/strong[2]">
+              <source xml:lang="nl">aanbieden gedurende ten minste 5 volledige dagen per voltijds equivalente werknemer in 2021</source>
+              <target xml:lang="de" state="final">für mindestens 5 volle Tage pro Vollzeitkraft anbieten.</target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li[2]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]/ul/li[1]">
+                <source xml:lang="nl">het betreft zowel de werknemers die de doelgroepvermindering genieten, als de andere werknemers, of ze nu in tijdelijke werkloosheid werden geplaatst of niet</source>
+                <target xml:lang="de" state="final">Dies betrifft sowohl die Arbeitnehmer/-innen, die von der Zielgruppenermäßigung profitieren, als auch die anderen Arbeitnehmer/-innen, unabhängig davon, ob sie als vorübergehend arbeitslos erklärt wurden oder nicht;</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]/ul/li[2]">
+                <source xml:lang="nl">voor deeltijdse werknemers heeft de werkgever de mogelijkheid om het aandeel opleidingsdagen te verminderen in verhouding tot hun contractuele arbeidsduur;</source>
+                <target xml:lang="de" state="final">bei Teilzeitbeschäftigten hat der Arbeitgeber die Möglichkeit, den Anteil der Schulungstage im Verhältnis zur vertraglichen Arbeitszeit zu reduzieren;</target>
+              </trans-unit>
+            </group>
+          </group>
+          <group restype="listitem" id="/html/body/ul[2]/li[3]">
+            <trans-unit id="/html/body/ul[2]/li[3]/text()[1]">
+              <source xml:lang="nl">zich in 2021 onthouden van: </source>
+              <target xml:lang="de" state="final">im Jahr 2021 Folgendes zu unterlassen: </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li[3]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[3]/ul/li[1]">
+                <source xml:lang="nl">de uitkering van dividenden aan de aandeelhouders;</source>
+                <target xml:lang="de" state="final">die Ausschüttung von Dividenden an die Aktionäre;</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[3]/ul/li[2]">
+                <source xml:lang="nl">de uitkering van bonussen aan de leden van de Raad van Bestuur en aan de directie  van de onderneming;</source>
+                <target xml:lang="de" state="final">die Zahlung von Boni an die Mitglieder des Verwaltungsorgans und der Geschäftsführung des Unternehmens;</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[3]/ul/li[3]">
+                <source xml:lang="nl">de inkoop van eigen aandelen;</source>
+                <target xml:lang="de" state="final">den Erwerb eigener Aktien;</target>
+              </trans-unit>
+            </group>
+          </group>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[4]">
+            <source xml:lang="nl">de ondernemingsraad of bij ontstentenis hieraan, de vakbondsafvaardiging, of bij ontstentenis hieraan, de werknemers, informeren over de toepassing van de maatregel in de onderneming en de voorwaarden waaraan de werkgever moet voldoen, met name op het vlak van het opleidingsaanbod, en er overleg over plegen;</source>
+            <target xml:lang="de" state="final">die Unterrichtung und Anhörung des Betriebsrats oder, in Ermangelung eines solchen, der Gewerkschaftsvertretung oder, in Ermangelung eines solchen, der Arbeitnehmer über die Anwendung der Maßnahme im Unternehmen und die vom Arbeitgeber zu erfüllenden Bedingungen, insbesondere in Bezug auf die angebotenen Schulungen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[5]">
+            <source xml:lang="nl">garanderen dat de som van het aantal dagen tijdelijke werkloosheid wegens overmacht coronavirus (prestatiecode 77) en het aantal dagen tijdelijke werkloosheid ingevolge gebrek aan werk wegens economische redenen (prestatiecode 71 en 76) die in de DmfA-aangifte zijn opgenomen voor het kwartaal waarvoor de vermindering gevraagd wordt, niet hoger is dan de som van dagen prestatiecode 71, 76 en 77 van het 1<g ctype="x-html-sup">ste</g> kwartaal 2021.</source>
+            <target xml:lang="de" state="final">gewährleisten, dass die Summe der Tage vorübergehender Arbeitslosigkeit aufgrund höherer Gewalt (Leistungscode 77) und der Tage vorübergehender Arbeitslosigkeit aufgrund von Arbeitsmangel aus wirtschaftlichen Gründen (Leistungscodes 71 und 76), die in der DmfA-Meldung für das Quartal, für das die Ermäßigung beantragt wird, enthalten sind, die Summe der Tage der Leistungscodes 71, 76 und 77 des 1.<g ctype="x-html-sup"/> Quartals 2021 nicht überschreitet.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl">De RSZ zal a posteriori controles op het naleven van de voorwaarden uitvoeren.</source>
+          <target xml:lang="de" state="final">Das LSS wird die Einhaltung der Bedingungen im Nachgang überprüfen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[7]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[2]">
+          <source xml:lang="nl">Bedrag van de vermindering</source>
+          <target xml:lang="de" state="final">Betrag der Ermäßigung</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[8]">
+          <source xml:lang="nl">Het gaat om een doelgroepvermindering voor het <g ctype="x-html-strong">2<g ctype="x-html-sup">de</g> en 3<g ctype="x-html-sup">de</g> kwartaal 2021</g> die overeenstemt met het saldo van de patronale basisbijdragen in de DmfA van de genoemde kwartalen voor <g ctype="x-html-strong">maximum 5 werknemers. </g></source>
+          <target xml:lang="de" state="final">Es geht um die Zielgruppenermäßigung für das <g ctype="x-html-strong">2.<g ctype="x-html-sup"/> und 3.<g ctype="x-html-sup"/> Quartal 202</g>1, die dem Saldo der Basisarbeitgeberbeiträge in der DmfA der genannten Quartale für <g ctype="x-html-strong">maximal 5 Arbeitnehmer entspricht.</g></target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[9]">
+          <source xml:lang="nl">Deze doelgroepvermindering wordt aangevraagd via de gewone aangifte DmfA van het 2<g ctype="x-html-sup">de</g> en/of het 3<g ctype="x-html-sup">de </g>kwartaal 2021 met:</source>
+          <target xml:lang="de" state="final">Diese Zielgruppenermäßigung wird über die reguläre DmfA-Meldung des 2.<g ctype="x-html-sup"/> und/oder 3.<g ctype="x-html-sup"/> Quartals 2021 beantragt:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[3]">
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[1]">
+            <source xml:lang="nl">als nieuwe verminderingscode: <g ctype="x-html-strong">3703</g>;</source>
+            <target xml:lang="de" state="final">mit dem neuen Ermäßigungscode: <g ctype="x-html-strong">3703</g>;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[2]">
+            <source xml:lang="nl">doelgroepvermindering '<g ctype="x-html-strong">G<g ctype="x-html-sub">7</g></g>' ;</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung ‚<g ctype="x-html-strong">G<g ctype="x-html-sub">7</g></g>‘;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[3]">
+            <source xml:lang="nl">en aanvaard onder voorbehoud van de controles a posteriori (wat betreft het toepassingsgebied en de voorwaarden).</source>
+            <target xml:lang="de" state="final">und vorbehaltlich der nachträglichen Prüfung durch das LSS (hinsichtlich des Umfangs und der Bedingungen) angenommen.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[10]">
+          <source xml:lang="nl">Als uit de controles a posteriori blijkt dat de werkgever niet in het toepassingsgebied van de maatregel valt of de toekenningsvoorwaarden niet naleeft, dan annuleert de RSZ de vermindering in de DmfA-aangifte.</source>
+          <target xml:lang="de" state="final">Wenn eine nachträgliche Prüfung ergibt, dass der Arbeitgeber nicht in den Anwendungsbereich der Maßnahme fällt und die Bewilligungsbedingungen nicht erfüllt, wird die Ermäßigung in der DmfA-Meldung gestrichen.</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

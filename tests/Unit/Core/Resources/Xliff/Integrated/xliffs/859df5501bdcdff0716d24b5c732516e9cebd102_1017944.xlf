@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:859df5501bdcdff0716d24b5c732516e9cebd102:1017944" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Mentors</source>
+        <target xml:lang="de" state="final">Mentoren</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Mentors</source>
+        <target xml:lang="de" state="final">Mentoren</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit restype="x-html-p" id="/html/body/p">
+          <source xml:lang="nl">Een werkgever kan voor een aantal werknemers die stages opvolgen of opleiding geven in het kader van een beroepsopleiding, een doelgroepvermindering mentors genieten. Onder '<g ctype="x-html-strong">de opvolging verzekeren van stages</g>' en '<g ctype="x-html-strong">het instaan voor opleiding</g>' wordt verstaan 'de begeleiding van personen behorende tot bepaalde doelgroepen'. </source>
+          <target xml:lang="de" state="final">Ein Arbeitgeber kann für eine Reihe von Arbeitnehmern, die im Rahmen einer Berufsausbildung Praktika besuchen oder Ausbildungen erteilen, eine Zielgruppenermäßigung Mentoren erhalten. Unter „<g ctype="x-html-strong">die Betreuung von Praktika gewährleisten</g>“ und „<g ctype="x-html-strong">die Übernahme der Ausbildung</g>“ wird „die Betreuung von Personen, die zu einer bestimmten Zielgruppe gehören“, verstanden. </target>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-h2" id="/html/body/h2[1]">
+          <source xml:lang="nl">Betrokken werkgevers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitgeber</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Zowel de werkgevers uit de openbare als uit de private sector kunnen deze doelgroepvermindering genieten als zij zich ertoe verbinden stages op te volgen of opleidingen te organiseren via daartoe opgeleide 'mentors', voor volgende doelgroepen:</source>
+          <target xml:lang="de" state="final">Sowohl Arbeitgeber aus dem öffentlichen Dienst als auch aus dem Privatsektor können diese Zielgruppenermäßigung beanspruchen, wenn sie eine Verpflichtung eingegangen sind, mit speziell ausgebildeten ,Mentoren‘ für folgende Zielgruppen Praktika zu betreuen oder Ausbildungen zu organisieren:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[1]">
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[1]">
+            <source xml:lang="nl">leerlingen of leraren uit het voltijds secundair technisch en beroepsonderwijs of deeltijds onderwijs,</source>
+            <target xml:lang="de" state="final">Lehrlinge oder Lehrer aus dem technischen und beruflichen Sekundarunterricht in Vollzeit oder dem Teilzeitunterricht;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]">
+            <source xml:lang="nl">werkzoekenden jonger dan 26 jaar die een beroepsopleiding volgen, zoals bedoeld in artikel 27, 6°, van het koninklijk besluit van 25 november 1991 houdende de werkloosheidsreglementering (o.a. IBO'ers),</source>
+            <target xml:lang="de" state="final">Arbeitssuchende unter 26 Jahren, die eine Berufsausbildung besuchen, im Sinne von Artikel 27, des Königlichen Erlasses vom 25.11.1991 über die Regelung der Arbeitslosigkeit (u. a. IBU);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[3]">
+            <source xml:lang="nl">werkzoekenden in een instapstage,</source>
+            <target xml:lang="de" state="final">Arbeitssuchende in einem Eingliederungspraktikum;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[4]">
+            <source xml:lang="nl">cursisten jonger dan 26 jaar uit het volwassenenonderwijs</source>
+            <target xml:lang="de" state="final">unter 26 Jahre alte Kursteilnehmer des Erwachsenenunterrichts;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[5]">
+            <source xml:lang="nl">cursisten jonger dan 26 jaar die een door de bevoegde Gemeenschap erkende opleiding volgen, in het kader van de overeenkomsten die worden gesloten met respectievelijk ofwel de onderwijs- of vormingsinstellingen, ofwel de gewestelijke dienst voor arbeidsbemiddeling of de beroepsopleiding.</source>
+            <target xml:lang="de" state="final">unter 26 Jahre alte Kursteilnehmer, die eine von der zuständigen Gemeinschaft anerkannte Ausbildung besuchen, im Rahmen der Verträge, die mit den Unterrichts- oder Ausbildungseinrichtungen oder der regionalen Dienststelle für Arbeitsvermittlung und Berufsausbildung abgeschlossen werden.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[1]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[1]/h3">
+            <source xml:lang="nl">Duitstalige Gemeenschap</source>
+            <target xml:lang="de" state="final">Deutschsprachige Gemeinschaft</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p">
+            <source xml:lang="nl">Voor de werknemers/mentors van een vestigingseenheid in de Duitstalige Gemeenschap, houdt men rekening met leerlingen en stagiairs verbonden met één van de volgende overeenkomsten:</source>
+            <target xml:lang="de" state="final">Für die Arbeitnehmer/Mentor einer Niederlassungseinheit in der Deutschsprachigen Gemeinschaft werden Lehrlinge und Praktikanten berücksichtigt, die einen der folgenden Verträge haben:</target>
+          </trans-unit>
+          <group restype="x-html-ul" id="/html/body/div[1]/ul">
+            <trans-unit restype="listitem" id="/html/body/div[1]/ul/li[1]">
+              <source xml:lang="nl">de leerovereenkomst industrieel leerlingwezen</source>
+              <target xml:lang="de" state="final">der Lehrvertrag in der industriellen Lehrlingsausbildung</target>
+            </trans-unit>
+            <trans-unit restype="listitem" id="/html/body/div[1]/ul/li[2]">
+              <source xml:lang="nl">de leerovereenkomst voortdurende vorming in de Middenstand</source>
+              <target xml:lang="de" state="final">der Lehrvertrag ständige Weiterbildung des Mittelstandes</target>
+            </trans-unit>
+            <trans-unit restype="listitem" id="/html/body/div[1]/ul/li[3]">
+              <source xml:lang="nl">de leerovereenkomst die wordt gesloten met toepassing van de regelgeving tot oprichting van een stelsel voor opleiding in een bedrijf met het oog op de voorbereiding van de inschakeling van personen met een handicap in het arbeidsproces en</source>
+              <target xml:lang="de" state="final">der Lehrvertrag, der unter Anwendung der Regelung zur Einrichtung eines Ausbildungssystems in einem Unternehmen in Bezug auf die Vorbereitung der Eingliederung von behinderten Personen in den Arbeitsprozess geschlossen wird, und</target>
+            </trans-unit>
+            <trans-unit restype="listitem" id="/html/body/div[1]/ul/li[4]">
+              <source xml:lang="nl">de beroepsinlevingsovereenkomst.</source>
+              <target xml:lang="de" state="final">der Berufseinarbeitungsvertrag.</target>
+            </trans-unit>
+          </group>
+        </group>
+        <trans-unit restype="x-html-ul" id="/html/body/ul[2]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[2]">
+          <source xml:lang="nl">Betrokken werknemers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitnehmer</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">Om als mentor te kunnen worden beschouwd, moet de werknemer</source>
+          <target xml:lang="de" state="final">Um als Mentor betrachtet zu werden, muss der Arbeitnehmer</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[3]">
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[1]">
+            <source xml:lang="nl">een <g ctype="x-html-strong">beroepservaring</g> van minstens 5 jaar in het beroep kunnen voorleggen dat geheel of gedeeltelijk aangeleerd wordt in het kader van de stage of opleiding, en</source>
+            <target xml:lang="de" state="final">mindestens fünf Jahre <g ctype="x-html-strong">Berufserfahrung</g> in dem Beruf nachweisen können, der ganz oder teilweise als Praktikum oder Ausbildung gelernt wird, und</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[2]">
+            <source xml:lang="nl">in het bezit zijn van een <g ctype="x-html-strong">getuigschrift</g> 'mentor' uitgereikt door de bevoegde Gemeenschap, door een door de bevoegde Gemeenschap erkende instantie of door een door de Gemeenschap of door het bevoegd sectorfonds ingerichte of erkende opleidings- of onderwijsverstrekker.</source>
+            <target xml:lang="de" state="final">im Besitz eines <g ctype="x-html-strong">Zeugnisses</g> als ‚Mentor‘ sein, das von der zuständigen Gemeinschaft, von einer von der zuständigen Gemeinschaft anerkannten Stelle oder von einem von der Gemeinschaft oder vom zuständigen Sektorfonds eingerichteten oder anerkannten Ausbildungs- oder Unterrichtsanbieter ausgestellt wurde.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[2]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[2]/h3">
+            <source xml:lang="nl">Waals Gewest (zonder de Duitstalige Gemeenschap)</source>
+            <target xml:lang="de" state="final">Wallonische Region (ohne Deutschsprachige Gemeinschaft)</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[2]/p">
+            <source xml:lang="nl">Het decreet van 20 juli 2016 houdende wijziging van verschillende wetgevingen in verband met de alternerende opleiding, schaft met ingang van 1 september 2016 deze bijdragevermindering af voor werknemers tewerkgesteld in <g ctype="x-html-strong">Wallonië</g> (met uitzondering van de Duitstalige Gemeenschap). Gezien de DmfA-aangifte op kwartaalbasis gebeurt, wordt aanvaard dat deze vermindering berekend wordt op basis van de voor het ganse 3<g ctype="x-html-sup">de</g> kwartaal 2016 aangegeven  loon- en prestatiegegevens (dus met inbegrip van de maand september). Vanaf het <g ctype="x-html-strong">4<g ctype="x-html-sup">de</g> kwartaal van 2016</g> mag deze vermindering niet meer toegepast worden.</source>
+            <target xml:lang="de" state="final">Durch das Dekret vom <g ctype="x-html-strong">20.07.2016</g> zur Änderung der verschiedenen Gesetzgebungen in Verbindung mit der alternierenden Ausbildung wird diese Beitragsermäßigung mit Wirkung vom 01.09.2016 für Arbeitnehmer, die in der Wallonie beschäftigt sind (mit Ausnahme der Deutschsprachigen Gemeinschaft), abgeschafft. Da die DmfA-Meldung auf Quartalsbasis erfolgt, wird davon ausgegangen, dass diese Ermäßigung auf der Grundlage der für das gesamte 3. Quartal 2016 gemeldeten Lohn- und Leistungsangaben (d. h. einschließlich des Monats September) berechnet wird. <g ctype="x-html-sup"/> Ab dem vierten Quartal 2016 darf diese Ermäßigung nicht mehr angewandt werden. <g ctype="x-html-strong"><g ctype="x-html-sup"/></g></target>
+          </trans-unit>
+        </group>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[3]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[3]/h3">
+            <source xml:lang="nl">Brussels Hoofdstedelijk Gewest</source>
+            <target xml:lang="de" state="final">Region Brüssel-Hauptstadt</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[3]/p">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 juli 2018</g> kan voor werknemers die in dienst zijn bij een werkgever voor een tewerkstelling in <g ctype="x-html-strong">Brussel </g>niet langer de 'doelgroepvermindering mentors' toegepast worden.</source>
+            <target xml:lang="de" state="final">Ab <g ctype="x-html-strong">01. Juli 2018</g> kann für Arbeitnehmer, die bei einem Arbeitgeber für eine Beschäftigung in <g ctype="x-html-strong">Brüssel</g> eingestellt sind, nicht mehr die ‚Zielgruppenermäßigung Mentoren‘ angewandt werden.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-ul" id="/html/body/ul[4]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[3]">
+          <source xml:lang="nl">Bedrag van de vermindering</source>
+          <target xml:lang="de" state="final">Betrag der Ermäßigung</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl">De werkgever kan een vermindering G<g ctype="x-html-sub">9 </g>genieten voor een aantal 'mentors' die hij in dienst heeft voor de begeleiding van personen behorende tot de doelgroepen. Het aantal mentors waarvoor hij een vermindering kan krijgen is beperkt en hangt af van het 'aantal begeleide personen' behorende tot de doelgroepen. De wijze waarop het 'aantal begeleide personen' in rekening wordt gebracht is op zijn beurt verschillend voor personen die moeten worden aangegeven in Dimona of Dmfa of niet:</source>
+          <target xml:lang="de" state="final">Der Arbeitgeber kann für eine Reihe von ‚Mentoren‘, die bei ihm beschäftigt sind, eine Ermäßigung G<g ctype="x-html-sub">9 </g>für die Betreuung von Personen der Zielgruppen erhalten. Die Anzahl der Mentoren, für die er eine Ermäßigung erhalten kann, ist beschränkt und richtet sich nach der ,Anzahl betreuter Personen‘ der Zielgruppen. Die Art und Weise, wie die ‚Anzahl betreuter Personen‘ berücksichtigt wird, unterscheidet sich wiederum je nachdem, ob die Personen in der Dimona oder DmfA oder nicht zu melden sind:</target>
+        </trans-unit>
+        <group restype="x-html-ol" id="/html/body/ol">
+          <group restype="listitem" id="/html/body/ol/li[1]">
+            <trans-unit id="/html/body/ol/li[1]/text()[1]">
+              <source xml:lang="nl">Voor de personen voor wie voor hun stageactiviteiten een Dimona- of Dmfa-aangifte vereist is (erkende leerlingen, IBO'ers, onderworpen beroepsinlevingsovereenkomsten...): </source>
+              <target xml:lang="de" state="final">Für Personen, für deren Praktikumsaktivitäten eine Dimona- oder DmfA-Meldung erforderlich ist (anerkannte Lehrlinge, IBU, die an einen Berufseinarbeitungsvertrag gebunden sind…): </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ol/li[1]/ul">
+              <trans-unit restype="listitem" id="/html/body/ol/li[1]/ul/li[1]">
+                <source xml:lang="nl">de verbintenis wordt (automatisch) vastgesteld aan de hand van de meegedeelde datum van' in- en uitdiensttreding';</source>
+                <target xml:lang="de" state="final">die Verpflichtung wird anhand des gemeldeten Datums ‚Dienstantritt und -austritt‘ (automatisch) festgelegt;</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ol/li[1]/ul/li[2]">
+                <source xml:lang="nl">een kwartaal waarbij een dergelijke persoon 'in dienst' komt, 'in dienst' is of 'uit dienst' treedt, wordt in aanmerking genomen;</source>
+                <target xml:lang="de" state="final">ein Quartal, in dem eine solche Person ‚den Dienst antritt‘, ‚im Dienst ist‘ oder ‚aus dem Dienst ausscheidet‘, wird berücksichtigt;</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ol/li[1]/ul/li[3]">
+                <source xml:lang="nl">het aantal mentors waarvoor het recht kan worden geopend, is 1/5de van de som van het aantal in aanmerking te nemen kwartalen, naar de hogere eenheid afgerond.</source>
+                <target xml:lang="de" state="final">die Anzahl der Mentoren, für die das Recht eröffnet werden kann, entspricht 1/5 der Summe der Anzahl zu berücksichtigender Quartale, aufgerundet auf die höhere Einheit.</target>
+              </trans-unit>
+            </group>
+          </group>
+          <group restype="listitem" id="/html/body/ol/li[2]">
+            <trans-unit id="/html/body/ol/li[2]/text()[1]">
+              <source xml:lang="nl">Voor personen voor wie de stageactiviteiten geen Dimona- of Dmfa-aangifte vereisen (leerkrachten TSO, cursisten jonger dan 26 jaar uit het volwassenonderwijs, ...): </source>
+              <target xml:lang="de" state="final">Für Personen, deren Praktikumsaktivitäten keine Dimona- oder DmfA-Meldung erfordern (Lehrkräfte im technischen Sekundarunterricht, weniger als 26 Jahre alte Kursteilnehmer der Erwachsenenbildung…): </target>
+            </trans-unit>
+            <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/ol/li[2]/ul">
+              <trans-unit restype="listitem" id="/html/body/ol/li[2]/ul/li[1]">
+                <source xml:lang="nl">de verbintenis wordt vastgesteld aan de hand van een overeenkomst tussen de participanten;</source>
+                <target xml:lang="de" state="final">die Verpflichtung wird anhand einer Vereinbarung zwischen den Teilnehmern festgelegt;</target>
+              </trans-unit>
+              <group restype="listitem" id="/html/body/ol/li[2]/ul/li[2]">
+                <trans-unit id="/html/body/ol/li[2]/ul/li[2]/text()[1]">
+                  <source xml:lang="nl">Het aantal mentors waarvoor het recht kan worden geopend, is beperkt tot het laagste resultaat van volgende breuken: </source>
+                  <target xml:lang="de" state="final">die Anzahl der Mentoren, für die das Recht eröffnet werden kann, ist auf das kleinste Ergebnis folgender Bruchzahlen beschränkt: </target>
+                </trans-unit>
+                <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/ol/li[2]/ul/li[2]/ul">
+                  <trans-unit restype="listitem" id="/html/body/ol/li[2]/ul/li[2]/ul/li[1]">
+                    <source xml:lang="nl">(aantal jongeren of leerkrachten)/5 , afgerond naar de hogere eenheid</source>
+                    <target xml:lang="de" state="final">(Anzahl Jugendliche oder Lehrkräfte)/5, auf die größere Einheit aufgerundet</target>
+                  </trans-unit>
+                  <trans-unit restype="listitem" id="/html/body/ol/li[2]/ul/li[2]/ul/li[2]">
+                    <source xml:lang="nl">(aantal uren opvolging of opleiding)/400, afgerond naar de lagere eenheid. Indien de overeenkomst geen volledig jaar beslaat, wordt het (aantal kwartalen) x 100 als deler beschouwd.</source>
+                    <target xml:lang="de" state="final">(Anzahl Stunden Besuch der Ausbildung)/400, auf die kleinere Einheit abgerundet. Dauert der Vertrag kein ganzes Jahr, wird die (Anzahl Quartale) x 100 als Teiler betrachtet.</target>
+                  </trans-unit>
+                </group>
+              </group>
+            </group>
+          </group>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[7]">
+          <source xml:lang="nl">Het uiteindelijk aantal mentors voor wie de werkgever een vermindering kan aanvragen, is de som van de onder punt 1 en punt 2 bekomen totalen.</source>
+          <target xml:lang="de" state="final">Die endgültige Anzahl der Mentoren, für die der Arbeitgeber eine Ermäßigung beantragen kann, entspricht der Summe der in Punkt 1 und 2 erhaltenen Gesamtbeträge.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[4]">
+          <source xml:lang="nl">Te vervullen formaliteiten</source>
+          <target xml:lang="de" state="final">Zu erledigende Formalitäten</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[8]">
+          <source xml:lang="nl">In de (eventuele) verbintenis geeft de werkgever het aantal jongeren of leerkrachten op die hij de mogelijkheid geeft stage of opleiding te volgen, het aantal uren en eventueel nadere details over de pedagogische omkadering en de spreiding in de tijd van de stages en opleidingen.</source>
+          <target xml:lang="de" state="final">In der (eventuellen) Verpflichtung gibt der Arbeitgeber die Anzahl der Jugendlichen oder Lehrkräfte an, denen er die Möglichkeit zum Besuch einer Ausbildung anbietet, die Anzahl der Stunden und gegebenenfalls weitere Einzelheiten über die pädagogische Betreuung und die zeitliche Gestaltung der Praktika und Ausbildungen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[9]">
+          <source xml:lang="nl">De werkgever maakt tot 31 december 2014 aan de Algemene Directie Werkgelegenheid en Arbeidsmarkt FOD WASO volgende gegevens over:</source>
+          <target xml:lang="de" state="final">Der Arbeitgeber übermittelt der Generaldirektion Beschäftigung und Arbeitsmarkt des FÖD BASK bis 31.12.2014 folgende Unterlagen:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[5]">
+          <trans-unit restype="listitem" id="/html/body/ul[5]/li[1]">
+            <source xml:lang="nl">een kopie van overeenkomst (indien nodig)</source>
+            <target xml:lang="de" state="final">eine Kopie des Vertrags (falls erforderlich)</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[5]/li[2]">
+            <source xml:lang="nl">een lijst van de mentors die hij tewerkstelt</source>
+            <target xml:lang="de" state="final">eine Liste der von ihm beschäftigten Mentoren</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[5]/li[3]">
+            <source xml:lang="nl">voor elke mentor het bewijs van minimale praktijkervaring</source>
+            <target xml:lang="de" state="final">für jeden Mentor den Nachweis über die minimale praktische Erfahrung</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[5]/li[4]">
+            <source xml:lang="nl">voor elke mentor een kopie van het getuigschrift mentor</source>
+            <target xml:lang="de" state="final">für jeden Mentor eine Kopie des Mentor-Zeugnisses</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[10]">
+          <source xml:lang="nl">De FOD stuurt de gegevens door naar de RSZ via elektronische weg. Vanaf 1 januari 2015 zijn de regio's bevoegd. Op volgende adressen kan u terecht voor meer informatie en/of om de nodige documenten naar toe te sturen:</source>
+          <target xml:lang="de" state="final">Der FÖD übermittelt dem LSS die Unterlagen auf elektronischem Weg. Ab 01.01.2015 sind die Regionen zuständig. An folgende Adressen können Sie sich wenden, um weitere Informationen und/oder die notwendigen Dokumente zu übermitteln:</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h3" id="/html/body/h3[1]">
+          <source xml:lang="nl">Vlaanderen:</source>
+          <target xml:lang="de" state="final">Flandern:</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[11]">
+          <source xml:lang="nl"><g ctype="x-html-strong">Departement Werk en Sociale Economie</g><g ctype="lb"/> Mentorkorting<g ctype="lb"/> Koning Albert II laan 35 bus 20 1030 Brussel<g ctype="lb"/> 02 553 10 75<g ctype="lb"/> mentorkorting@vlaanderen.be<g ctype="lb"/> <g ctype="x-html-a" html:href="https://www.vlaanderen.be/mentorkorting" html:target="_blank">https://www.vlaanderen.be/mentorkorting</g></source>
+          <target xml:lang="de" state="final"><g ctype="x-html-strong">Departement Werk en Sociale Economie</g><g ctype="lb"/> Mentorkorting<g ctype="lb"/> Koning Albert II laan 35 bus 20 1030 Brüssel<g ctype="lb"/> 02 553 10 75<g ctype="lb"/> mentorkorting@vlaanderen.be<g ctype="lb"/> <g ctype="x-html-a" html:href="https://www.vlaanderen.be/mentorkorting" html:target="_blank">https://www.vlaanderen.be/mentorkorting</g></target>
+        </trans-unit>
+        <trans-unit restype="x-html-h3" id="/html/body/h3[2]">
+          <source xml:lang="nl">Duitstalig landsgedeelte</source>
+          <target xml:lang="de" state="final">Deutschsprachiger Landesteil</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[12]">
+          <source xml:lang="nl"><g ctype="x-html-strong">IAWM</g><g ctype="lb"/> Eric Schifflers<g ctype="lb"/> Vervierser Straße 4a, 4700 Eupen<g ctype="lb"/> 087 30.68.80<g ctype="lb"/> <g ctype="x-html-a" html:href="http://www.adg.be/de/desktopdefault.aspx/tabid-5339/9317_read-50631/">http://www.adg.be/de/desktopdefault.aspx/tabid-5339/9317_read-50631/</g></source>
+          <target xml:lang="de" state="final"><g ctype="x-html-strong">IAWM</g><g ctype="lb"/> Eric Schifflers<g ctype="lb"/> Vervierser Straße 4a, 4700 Eupen<g ctype="lb"/> 087 30.68.80<g ctype="lb"/> <g ctype="x-html-a" html:href="http://www.adg.be/de/desktopdefault.aspx/tabid-5339/9317_read-50631/">http://www.adg.be/de/desktopdefault.aspx/tabid-5339/9317_read-50631/</g></target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

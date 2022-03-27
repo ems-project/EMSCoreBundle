@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:355e70520ca2610377df248e62d31ed6f7df83c3:1016254" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Jonge werknemers - Vlaanderen</source>
+        <target xml:lang="de" state="final">Junge Arbeitnehmer – Flandern</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Jonge werknemers - Vlaanderen</source>
+        <target xml:lang="de" state="final">Junge Arbeitnehmer – Flandern</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Vanaf 1 juli 2016 introduceert Vlaanderen een nieuwe doelgroepvermindering voor jonge werknemers <g ctype="x-html-strong">ter vervanging</g> van de doelgroepvermindering erg laaggeschoolde, laaggeschoolde en middenschoolde jongeren en jonge werknemers - min 19 jaar. Dit geldt enkel voor de werknemers die <g ctype="x-html-strong">werkzaam zijn in of afhangen van een vestigingseenheid in Vlaanderen</g>. <g ctype="lb"/> </source>
+          <target xml:lang="de" state="final">Ab 01.07.2016 führt Flandern eine neue Zielgruppenermäßigung für junge Arbeitnehmer <g ctype="x-html-strong">als Ersatz</g> für die Zielgruppenermäßigung junge Arbeitnehmer mit sehr geringer Qualifikation, geringer Qualifikation und mittlerer Qualifikation und junge Arbeitnehmer unter 19 Jahren ein. Dies gilt nur für Arbeitnehmer, die <g ctype="x-html-strong">in einer Niederlassungseinheit in Flandern tätig sind oder von ihr abhängig sind</g>. <g ctype="lb"/> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Zij bestaat in feite uit 2 afzonderlijke verminderingen: </source>
+          <target xml:lang="de" state="final">Es handelt sich dabei um 2 außerordentliche Ermäßigungen: </target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul">
+          <trans-unit restype="listitem" id="/html/body/ul/li[1]">
+            <source xml:lang="nl">de doelgroepvermindering jonge werknemers – middengeschoolden en laaggeschoolden</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung für junge Arbeitnehmer – Jugendliche mit mittlerer Qualifikation und gering Qualifizierte</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul/li[2]">
+            <source xml:lang="nl">de doelgroepvermindering jonge werknemers – leerlingen alternerend leren en DBSO-jongeren (deeltijds beroepssecundair onderwijs) met een deeltijdse arbeidsovereenkomst.</source>
+            <target xml:lang="de" state="final">Zielgruppenermäßigung für junge Arbeitnehmer – Lehrlinge alternierende Ausbildung und junge Arbeitnehmer in beruflicher Bildung in Teilzeit mit einem Teilzeitarbeitsvertrag.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-h2" html:id="h20" id="/html/body/h2[1]">
+          <source xml:lang="nl">Betrokken werkgevers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitgeber</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Zowel de werkgevers uit de openbare als uit de private sector komen voor de doelgroepvermindering in aanmerking, ongeacht het aantal werknemers dat zij tewerkstellen.</source>
+          <target xml:lang="de" state="final">Sowohl Arbeitgeber aus dem öffentlichen Sektor als auch aus dem Privatsektor kommen für die Zielgruppenermäßigung in Betracht, ungeachtet der Anzahl der Arbeitnehmer, die sie beschäftigen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Het is niet langer een verplichting om voor het verkrijgen van de doelgroepvermindering 'jonge werknemers - Vlaanderen' te voldoen aan de <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/obligations/obligations_other/startingjobobligation.html">jongerenverplichting</g>. De verplichting op zich blijft wel bestaan en de jongeren die in Vlaanderen werken, komen in aanmerking als dusdanig. In de andere regio's kan er nog wel een koppeling zijn tussen het verkrijgen van de doelgroepvermindering jongeren en het voldoen aan de jongerenverplichting.</source>
+          <target xml:lang="de" state="final">Für den Erhalt der Zielgruppenermäßigung ‚junge Arbeitnehmer – Flandern‘ ist es nicht mehr obligatorisch, die <g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/obligations/obligations_other/startingjobobligation.html">Jungarbeitnehmerverpflichtung</g> zu erfüllen. Die Verpflichtung an sich besteht jedoch fort und Jugendliche, die in Flandern arbeiten, kommen dafür in Betracht. In den anderen Regionen kann jedoch noch eine Verbindung zwischen dem Erhalt der Zielgruppenermäßigung junge Arbeitnehmer und dem Erfüllen der Jungarbeitnehmerverpflichtung bestehen.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[2]">
+          <source xml:lang="nl">Betrokken werknemers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitnehmer</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h3" id="/html/body/h3[1]">
+          <source xml:lang="nl">Doelgroepvermindering leerlingen - alternerende opleidingen</source>
+          <target xml:lang="de" state="final">Zielgruppenermäßigung Auszubildende - alternierende Ausbildungen</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[1]">
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[1]">
+            <source xml:lang="nl">Voor indienstnames vanaf 1 juli 2016.</source>
+            <target xml:lang="de" state="final">Für Einstellungen ab 01.07.2016.</target>
+          </trans-unit>
+          <group restype="listitem" id="/html/body/ul[1]/li[2]">
+            <trans-unit id="/html/body/ul[1]/li[2]/text()[1]">
+              <source xml:lang="nl">Het gaat om </source>
+              <target xml:lang="de" state="final">Es handelt sich um </target>
+            </trans-unit>
+            <group restype="x-html-ul" html:style="padding-top: 0px; padding-bottom: 0px;" id="/html/body/ul[1]/li[2]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[1]">
+                <source xml:lang="nl"> <g ctype="x-html-strong"><g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/persons/specific/apprentices.html">leerlingen alternerend leren</g></g> zoals bedoeld in art. 1bis van het koninklijk besluit van 28 november 1969</source>
+                <target xml:lang="de" state="final"><g ctype="x-html-strong"><g ctype="x-html-a" html:href="%{BASE_URL_CURRENT}%/instructions/persons/specific/apprentices.html">Lehrlinge alternierende Ausbildung</g></g> im Sinne von Art. 1bis des Königlichen Erlasses vom 28.11.1969</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]/ul/li[2]">
+                <source xml:lang="nl">jongeren in het deeltijds beroepssecundair onderwijs die in uitvoering van bepaalde alternerende opleidingen verbonden zijn met een deeltijdse arbeidsovereenkomst (<g ctype="x-html-a" html:href="http://www.werk.be/online-diensten/doelgroepverminderingen/jongeren/dbso-jongeren-met-deeltijdse-arbeidsovereenkomst" html:target="_blank"><g ctype="x-html-strong">DBSO-jongeren  met een deeltijdse arbeidsovereenkomst</g></g>). Jongeren met een deeltijdse arbeidsovereenkomst tewerkgesteld bij een werkgever die valt onder het toepassingsgebied van de sociale maribel, komen niet in aanmerking. Om in aanmerking te komen moet de jongere beschikken over een elektronisch dossier (<g ctype="x-html-a" html:class="external" html:href="https://www.vdab.be/mijnloopbaan" html:target="_blank"><g ctype="x-html-strong">portfolio</g></g>) bij de VDAB op de laatste dag van het kwartaal van indienstname.</source>
+                <target xml:lang="de" state="final">junge Arbeitnehmer in beruflicher Bildung in Teilzeit, die zur Ausführung bestimmter alternierender Ausbildungen an einen Teilzeitarbeitsvertrag gebunden sind (<g ctype="x-html-a" html:href="http://www.werk.be/online-diensten/doelgroepverminderingen/jongeren/dbso-jongeren-met-deeltijdse-arbeidsovereenkomst" html:target="_blank"><g ctype="x-html-strong">DBSO-Jugendliche mit einem Teilzeitarbeitsvertrag</g></g>). Jugendliche mit einem Teilzeitarbeitsvertrag, die bei einem Arbeitgeber beschäftigt sind, der in den Anwendungsbereich der „Maribel sozial“-Maßnahme fällt, kommen nicht in Betracht. Um in Betracht zu kommen, muss der Jugendliche beim VDAB am letzten Tag des Quartals der Einstellung über eine elektronische Akte (<g ctype="x-html-a" html:class="external" html:href="https://www.vdab.be/mijnloopbaan" html:target="_blank"><g ctype="x-html-strong">Portfolio</g></g>) verfügen.</target>
+              </trans-unit>
+            </group>
+          </group>
+        </group>
+        <trans-unit restype="x-html-h3" id="/html/body/h3[2]">
+          <source xml:lang="nl">Doelgroepvermindering laag- en middengeschoold</source>
+          <target xml:lang="de" state="final">Zielgruppenermäßigung geringe und mittlere Qualifikation</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[2]">
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]">
+            <source xml:lang="nl">Voor indienstnames onder arbeidsovereenkomst vanaf 1 juli 2016.</source>
+            <target xml:lang="de" state="final">Für Einstellungen mit Arbeitsvertrag ab 01.07.2016.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]">
+            <source xml:lang="nl">Voor jongeren die op het einde van het kwartaal van indienstname jonger zijn dan 25 jaar.</source>
+            <target xml:lang="de" state="final">Für Jugendliche, die am Ende des Quartals der Einstellung weniger als 25 Jahre alt sind.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[3]">
+            <source xml:lang="nl"><g ctype="x-html-strong">Laaggeschoolde jongeren </g> mogen geen diploma of getuigschrift secundair onderwijs, 2<g ctype="x-html-sup">de</g> leerjaar 3<g ctype="x-html-sup">de</g> graad, of gelijkwaardig hebben. Een vollediger <g ctype="x-html-a" html:href="https://www.werk.be/faq-categorie/doelgroepverminderingen">overzicht  </g>bevindt zich op de website van WSE Vlaanderen. De VDAB attesteert en bepaalt wie in aanmerking komt. Via een elektronische flux geeft de VDAB het studieniveau door aan de RSZ.</source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">Gering qualifizierte Jugendliche</g> dürfen kein Diplom oder Zeugnis des Sekundarunterrichts, 2. Lehrjahr 3. Stufe oder eine gleichwertige Ausbildung besitzen. <g ctype="x-html-sup"/><g ctype="x-html-sup"/> Ein vollständiger <g ctype="x-html-a" html:href="https://www.werk.be/faq-categorie/doelgroepverminderingen">Überblick</g> befindet sich auf der Website der Flämischen Subventionsstelle für Beschäftigung und Sozialwirtschaft. Der VDAB bescheinigt und stellt fest, wer in Betracht kommt. Der VDAB übermittelt dem LSS den Bildungsabschluss auf elektronischem Weg.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[4]">
+            <source xml:lang="nl"><g ctype="x-html-strong">Middengeschoolde jongeren</g> (uiterlijk op 31 december 2019 bij de werkgever in dienst getreden) mogen hoogstens een diploma of getuigschrift secundair onderwijs, 2<g ctype="x-html-sup">de</g> leerjaar 3<g ctype="x-html-sup">de</g> graad, of gelijkwaardig hebben. Wanneer voorzien is dat de jongere binnen de 4 maanden te rekenen vanaf de dag van zijn indiensttreding een diploma Hoger Onderwijs behaalt, komt hij niet in aanmerking. De VDAB attesteert en bepaalt wie in aanmerking komt. Via een elektronische flux geeft de VDAB het studieniveau door aan de RSZ. </source>
+            <target xml:lang="de" state="final"><g ctype="x-html-strong">Jugendliche mit mittlerer Qualifikation</g> (die spätestens am 31. Dezember 2019 beim Arbeitgeber in Dienst getreten sind) dürfen höchstens ein Diplom oder Zeugnis des Sekundarunterrichts, 2.<g ctype="x-html-sup"/> Lehrjahr 3.<g ctype="x-html-sup"/> Stufe oder eine gleichwertige Ausbildung besitzen. Wenn vorgesehen ist, dass ein Jugendlicher innerhalb von vier Monaten ab dem Tag seines Beschäftigungsbeginns ein Hochschulzeugnis erwirbt, kommt er nicht in Betracht. Der VDAB bescheinigt und stellt fest, wer in Betracht kommt. Der VDAB übermittelt dem LSS den Bildungsabschluss auf elektronischem Weg. </target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[5]">
+            <source xml:lang="nl">Om in aanmerking te komen moet de jongere beschikken over een elektronisch dossier (<g ctype="x-html-a" html:class="external" html:href="https://www.vdab.be/mijnloopbaan" html:target="_blank"><g ctype="x-html-strong">portfolio</g></g>) bij de VDAB op de laatste dag van het kwartaal van indienstname; indien de jongere hierover niet beschikt voor het kwartaal van indienstname en de daarop volgende kwartalen, wordt het overeenkomstig aantal kwartalen in mindering gebracht (flux VDAB).</source>
+            <target xml:lang="de" state="final">Um in Betracht zu kommen, muss der Jugendliche beim VDAB am letzten Tag des Quartals der Einstellung über eine elektronische Akte (<g ctype="x-html-a" html:class="external" html:href="https://www.vdab.be/mijnloopbaan" html:target="_blank"><g ctype="x-html-strong">Portfolio</g></g>) verfügen; wenn der Jugendliche diese für das Quartal der Einstellung und die darauffolgenden Quartale nicht vorlegen kann, wird die entsprechende Anzahl Quartale abgezogen (Datenfluss VDAB).</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[2]/li[6]">
+            <source xml:lang="nl">Het refertekwartaalloon moet lager zijn dan 7.500,00 EUR voor de eerste 4 kwartalen en lager dan 8.100,00 EUR  voor de volgende 4 kwartalen.</source>
+            <target xml:lang="de" state="final">Der Referenzquartalslohn muss für die ersten 4 Quartale weniger als 7.500,00 EUR und für die folgenden 4 Quartale weniger als 8.100,00 EUR betragen.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h2" html:id="h22" id="/html/body/h2[3]">
+          <source xml:lang="nl">Bedrag van de vermindering</source>
+          <target xml:lang="de" state="final">Betrag der Ermäßigung</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h3" id="/html/body/h3[3]">
+          <source xml:lang="nl">Doelgroepvermindering leerlingen - alternerende opleidingen</source>
+          <target xml:lang="de" state="final">Zielgruppenermäßigung Auszubildende - alternierende Ausbildungen</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[3]">
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[1]">
+            <source xml:lang="nl">De jongere opent gedurende zijn tewerkstelling in het systeem alternerend leren en alternerende opleiding het recht op een vermindering <g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> (1.000,00 EUR).</source>
+            <target xml:lang="de" state="final">Der junge Arbeitnehmer eröffnet während seiner Beschäftigung im System des alternierenden Ausbildung und der alternierenden Ausbildung das Recht auf eine Ermäßigung <g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> (1.000,00 EUR).</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[2]">
+            <source xml:lang="nl">De kwartalen dat deze vermindering genoten wordt, tellen niet mee voor de verminderingsperiode laag- en middengeschoold.</source>
+            <target xml:lang="de" state="final">Quartale, in denen diese Ermäßigung in Anspruch genommen werden kann, werden bei der Ermäßigungsperiode für Jugendliche mit geringer und mittlerer Qualifikation nicht mitgerechnet.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-ul" id="/html/body/ul[4]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h3" id="/html/body/h3[4]">
+          <source xml:lang="nl">Doelgroepvermindering laaggeschoold</source>
+          <target xml:lang="de" state="final">Zielgruppenermäßigung gering qualifizierte Jugendliche</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[5]">
+          <trans-unit restype="listitem" id="/html/body/ul[5]/li[1]">
+            <source xml:lang="nl">De laaggeschoolde jongere opent een vermindering <g ctype="x-html-strong">G<g ctype="x-html-sub">7</g></g> (saldo) voor het kwartaal van indienstname en de 7 daarop volgende kwartalen. Het forfait <g ctype="x-html-strong">G<g ctype="x-html-sub">7</g></g> geldt vanaf het 1<g ctype="x-html-sup">ste</g> kwartaal 2019 voor nieuwe indiensttredingen en voor de resterende kwartalen van degenen die het recht reeds geopend hadden.</source>
+            <target xml:lang="de" state="final">Gering qualifizierte Jugendliche eröffnet das Recht auf eine Ermäßigung <g ctype="x-html-strong">G<g ctype="x-html-sub">7</g></g> (Saldo) für das Quartal der Einstellung und die 7 darauffolgenden Quartale. Die Pauschale <g ctype="x-html-strong">G<g ctype="x-html-sub">7</g></g> gilt ab dem 1. Quartal 2019 für Neueinstellungen und für die übrigen Quartale derjenigen, die das Recht bereits geöffnet hatten.<g ctype="x-html-sup"/></target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[5]/li[2]">
+            <source xml:lang="nl">Bij een hertewerkstelling binnen de 4 kwartalen na de beëindiging van een vorige tewerkstelling wordt de oorspronkelijke tewerkstelling en de hertewerkstelling beschouwd als één tewerkstelling waarbij de telling van het aantal kwartalen doorloopt.</source>
+            <target xml:lang="de" state="final">Bei einer Wiederbeschäftigung innerhalb von 4 Quartalen nach der Beendigung einer vorherigen Beschäftigung werden die ursprüngliche Beschäftigung und die Wiederbeschäftigung als 1 Beschäftigung betrachtet, wobei die Anzahl der Quartale weiter gerechnet wird.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[5]/li[3]">
+            <source xml:lang="nl"> De aansluitende tewerkstelling bij dezelfde werkgever na een tewerkstelling 1bis alternerend leren of alternerende opleiding (met een deeltijdse arbeidsovereenkomst), wordt beschouwd als een nieuwe indienstname.</source>
+            <target xml:lang="de" state="final"> Die anschließende Beschäftigung beim gleichen Arbeitgeber nach einer Beschäftigung 1bis duale oder alternierende Ausbildung (mit einem Teilzeitarbeitsvertrag) wird ebenfalls als Neueinstellung betrachtet.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-ul" id="/html/body/ul[6]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-h3" id="/html/body/h3[5]">
+          <source xml:lang="nl"> Overgangsmaatregel voor middengeschoolde jongeren</source>
+          <target xml:lang="de" state="final"> Übergangsmaßnahme für Jugendliche mit mittlerer Qualifikation</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[7]">
+          <trans-unit restype="listitem" id="/html/body/ul[7]/li[1]">
+            <source xml:lang="nl">De middengeschoolde jongere, die uiterlijk op 31 december 2019 bij de werkgever in dienst is getreden, opent verder een vermindering <g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> (1.000,00 EUR) voor het kwartaal van indienstname en de 7 daarop volgende kwartalen.</source>
+            <target xml:lang="de" state="final">Jugendliche mit mittlerer Qualifikation, die spätestens am 31. Dezember 2019 beim Arbeitgeber in Dienst getreten sind, eröffnen ferner das Recht auf eine Ermäßigung <g ctype="x-html-strong">G<g ctype="x-html-sub">1</g></g> (1.000,00 EUR) für das Quartal der Einstellung und die 7 darauffolgenden Quartale.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[7]/li[2]">
+            <source xml:lang="nl">Bij een hertewerkstelling binnen de 4 kwartalen na de beëindiging van een vorige tewerkstelling wordt de oorspronkelijke tewerkstelling en de hertewerkstelling beschouwd als één tewerkstelling waarbij de telling van het aantal kwartalen doorloopt.</source>
+            <target xml:lang="de" state="final">Bei einer Wiederbeschäftigung innerhalb von 4 Quartalen nach der Beendigung einer vorherigen Beschäftigung werden die ursprüngliche Beschäftigung und die Wiederbeschäftigung als 1 Beschäftigung betrachtet, wobei die Anzahl der Quartale weiter gerechnet wird.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[7]/li[3]">
+            <source xml:lang="nl"> De aansluitende tewerkstelling bij dezelfde werkgever na een tewerkstelling 1bis alternerend leren of alternerende opleiding (met een deeltijdse arbeidsovereenkomst) wordt, zoals bij de introductie van de 'doelgroepvermindering jongeren Vlaanderen', ook beschouwd als een nieuwe indienstname, niet als een hertewerkstelling. Als deze nieuwe tewerkstelling zich situeert na 31 december 2019, komt zij niet in aanmerking voor de overgangsbepaling 'doelgroepvermindering middengeschoolde jongere'.</source>
+            <target xml:lang="de" state="final"> Die anschließende Beschäftigung beim gleichen Arbeitgeber nach einer Beschäftigung 1bis duale oder alternierende Ausbildung (mit einem Teilzeitarbeitsvertrag) wird wie bei der Einführung der ‚Zielgruppenermäßigung für Jugendliche in Flandern‘ ebenfalls als Neueinstellung betrachtet und nicht als Wiedereinstellung. Wenn diese Neueinstellung nach dem 31. Dezember 2019 liegt, kommt sie nicht für die Übergangsmaßnahme ‚Zielgruppenermäßigung für Jugendliche mit mittlerer Qualifikation‘.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[4]">
+          <source xml:lang="nl">Te vervullen formaliteiten</source>
+          <target xml:lang="de" state="final">Zu erledigende Formalitäten</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[8]">
+          <trans-unit restype="listitem" id="/html/body/ul[8]/li[1]">
+            <source xml:lang="nl">De laag- en middengeschoolde jongere, evenals de DBSO-jongere, moet een elektronisch dossier (<g ctype="x-html-a" html:class="external" html:href="https://www.vdab.be/mijnloopbaan" html:target="_blank"><g ctype="x-html-strong">portfolio</g></g>) bij de VDAB samenstellen.</source>
+            <target xml:lang="de" state="final">Der Jugendliche mit geringer und mittlerer Qualifikation sowie der junge Arbeitnehmer in beruflicher Bildung in Teilzeit muss beim VDAB eine elektronische Akte (<g ctype="x-html-a" html:class="external" html:href="https://www.vdab.be/mijnloopbaan" html:target="_blank"><g ctype="x-html-strong">Portfolio</g></g>) erstellen.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[8]/li[2]">
+            <source xml:lang="nl">Het aanmaken van een elektronisch dossier bij de VDAB is verplicht ongeacht de domicilie van de jongere.</source>
+            <target xml:lang="de" state="final">Das Erstellen der elektronischen Akte beim VDAB ist unabhängig vom Wohnsitz des Jugendlichen obligatorisch.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[8]/li[3]">
+            <source xml:lang="nl">De jongerenverplichting blijft federaal, dus de gegevens moeten verder in de Dmfa ingevuld worden (zoals 'gehandicapt' of van 'buitenlandse afkomst' zoals gedefinieerd in de desbetreffende wet van 24 december 1999 ter bevordering van de werkgelegenheid, art. 23). </source>
+            <target xml:lang="de" state="final">Die Jungarbeitnehmerverpflichtung bleibt auf föderaler Ebene bestehen, die Angaben müssen daher weiterhin in die DmfA eingetragen werden (wie z. B. ‚behindert‘ oder ,ausländischer Herkunft‘, wie dies festgelegt ist im diesbezüglichen Gesetz vom 24.12.1999 zur Förderung der Beschäftigung, Art. 23). </target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[8]/li[4]">
+            <source xml:lang="nl">Het voldoen aan de jongerenverplichting is geen vereiste meer voor de Vlaamse doelgroepvermindering, maar kan wel leiden tot een eventuele sanctionering FOD WASO.</source>
+            <target xml:lang="de" state="final">Die Erfüllung der Jungarbeitnehmerverpflichtung ist keine Voraussetzung mehr für die flämische Zielgruppenermäßigung, kann aber Gegenstand einer eventuellen Sanktion durch den FÖD BASK sein.</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[8]/li[5]">
+            <source xml:lang="nl">Wanneer de werkgever de doelgroepvermindering jongeren vraagt voor de tewerkstelling in een andere regio, moet nog wel voldaan worden aan de jongerenverplichting over heel België (federaal).</source>
+            <target xml:lang="de" state="final">Wenn der Arbeitgeber die Zielgruppenermäßigung Jugendliche für die Beschäftigung in einer anderen Region beantragt, ist nach wie vor die Jungarbeitnehmerverpflichtung für ganz Belgien (föderal) zu erfüllen.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[5]">
+          <source xml:lang="nl">Meer info</source>
+          <target xml:lang="de" state="final">Weitere Informationen</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl">Bijkomende informatie vindt u op de website van Vlaanderen: <g ctype="x-html-a" html:href="https://www.vlaanderen.be/doelgroepverminderingen#doelgroepverminderingen-voor-jongeren" html:target="_blank">https://www.vlaanderen.be/doelgroepverminderingen#doelgroepverminderingen-voor-jongeren</g>.</source>
+          <target xml:lang="de" state="final">Weitere Informationen finden Sie auf der Website von Flandern: <g ctype="x-html-a" html:href="https://www.vlaanderen.be/doelgroepverminderingen#doelgroepverminderingen-voor-jongeren" html:target="_blank">https://www.vlaanderen.be/doelgroepverminderingen#doelgroepverminderingen-voor-jongeren.</g></target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

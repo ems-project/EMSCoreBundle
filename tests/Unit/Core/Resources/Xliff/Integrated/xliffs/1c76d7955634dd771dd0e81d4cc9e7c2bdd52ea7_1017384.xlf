@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="nl" original="content_type:1c76d7955634dd771dd0e81d4cc9e7c2bdd52ea7:1017384" datatype="database" target-language="de">
+    <body>
+      <trans-unit id="[title]">
+        <source xml:lang="nl">Langdurig werkzoekenden - de sociale inschakelingseconomie</source>
+        <target xml:lang="de" state="final">Langzeitarbeitssuchende – Eingliederungssozialwirtschaft</target>
+      </trans-unit>
+      <trans-unit id="[title_short]">
+        <source xml:lang="nl">Langdurig werkzoekenden - SINE</source>
+        <target xml:lang="de" state="final">Langzeitarbeitssuchende - ESW</target>
+      </trans-unit>
+      <group id="[introduction]">
+        <trans-unit restype="x-html-p" id="/html/body/p">
+          <source xml:lang="nl">Dit hoofdstuk betreft de herinschakeling van zeer moeilijk te plaatsen werklozen. <g ctype="lb"/> </source>
+          <target xml:lang="de" state="final">Dieses Kapitel betrifft die Wiedereingliederung von schwer zu vermittelnden Arbeitslosen. <g ctype="lb"/> </target>
+        </trans-unit>
+      </group>
+      <group id="[description]">
+        <trans-unit restype="x-html-h2" id="/html/body/h2[1]">
+          <source xml:lang="nl">Betrokken werkgevers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitgeber</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[1]">
+          <source xml:lang="nl">Het betreft de werkgevers bedoeld in artikel 1, § 1 van het koninklijk besluit van 3 mei 1999 ter uitvoering van artikel 7, § 1, derde lid, m van de besluitwet van 28 december 1944 betreffende de maatschappelijke zekerheid der arbeiders, betreffende de herinschakeling van zeer moeilijk te plaatsen werklozen. Tot 31 december 2014 werd aan werkgevers die in aanmerking kwamen een attest afgeleverd door de Directeur-generaal van de Algemene Directie Werkgelegenheid en Arbeidsmarkt van de FOD Werkgelegenheid, Arbeid en Sociaal Overleg (FOD WASO). Vanaf 1 januari 2015 worden deze attesten toegekend door het bevoegde Gewest.</source>
+          <target xml:lang="de" state="final">Es betrifft Arbeitgeber im Sinne von Artikel 1, § 1 des Königlichen Erlasses vom 03.05.1999 zur Ausführung von Artikel 7, § 1, Absatz 3, m, des Erlassgesetzes vom 28.12.1944 über die soziale Sicherheit der Arbeitnehmer, zur Förderung der Wiedereingliederung von schwer vermittelbaren Arbeitslosen. Bis 31.12.2014 wurde Arbeitgebern, die dafür in Betracht kamen, eine Bescheinigung der Generaldirektor der Generaldirektion Beschäftigung und Arbeitsmarkt des FÖD Beschäftigung, Arbeit und Soziale Konzertierung (FÖD BASK) ausgestellt. Ab 01.01.2015 werden diese Bescheinigungen von der zuständigen Region erteilt.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[2]">
+          <source xml:lang="nl">Het gaat o.a. over volgende, als dusdang erkende, werkgevers:</source>
+          <target xml:lang="de" state="final">Es geht dabei u. a. um die folgenden, als solche anerkannten, Arbeitgeber:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[1]">
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[1]">
+            <source xml:lang="nl">beschutte en sociale werkplaatsen</source>
+            <target xml:lang="de" state="final">geschützte und soziale Arbeitsplätze</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[2]">
+            <source xml:lang="nl">inschakelbedrijven</source>
+            <target xml:lang="de" state="final">Subunternehmen</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[3]">
+            <source xml:lang="nl">sociale huisvesting en sociale verhuurkantoren</source>
+            <target xml:lang="de" state="final">Soziale Wohnungsbaugesellschaften und soziale Vermietungsbüros</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[4]">
+            <source xml:lang="nl">vennootschappen met een sociaal oogmerk</source>
+            <target xml:lang="de" state="final">Gesellschaften mit sozialer Zielsetzung</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[5]">
+            <source xml:lang="nl">OCMW's</source>
+            <target xml:lang="de" state="final">ÖSHZ</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[6]">
+            <source xml:lang="nl">plaatselijke werkgelegenheidsagentschappen</source>
+            <target xml:lang="de" state="final">lokale Arbeitsagenturen</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[7]">
+            <source xml:lang="nl">plaatselijke initiatieven voor de ontwikkeling van werkgelegenheid</source>
+            <target xml:lang="de" state="final">lokale Initiativen zur Entwicklung von Beschäftigung</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[8]">
+            <source xml:lang="nl">werkgevers die nabijheidsdiensten organiseren</source>
+            <target xml:lang="de" state="final">Arbeitgeber, die nachbarschaftliche Hilfeleistungen organisieren</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[1]/li[9]">
+            <source xml:lang="nl">werkgevers die lokale diensteneconomie-initiatieven inrichten</source>
+            <target xml:lang="de" state="final">Arbeitgeber, die lokale Dienstleistungswirtschaftsinitiativen einrichten</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[2]">
+          <source xml:lang="nl">Betrokken werknemers</source>
+          <target xml:lang="de" state="final">Betroffene Arbeitnehmer</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[3]">
+          <source xml:lang="nl">Het gaat om uitkeringsgerechtigde volledige werklozen, gerechtigden op maatschappelijke integratie en rechthebbenden op financiële maatschappelijke hulp.</source>
+          <target xml:lang="de" state="final">Es betrifft entschädigte Vollarbeitslose, Berechtigte im System der sozialen Eingliederung und Berechtigte mit Anspruch auf finanzielle Sozialhilfe.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[4]">
+          <source xml:lang="nl">Volgende categorieën komen in aanmerking:</source>
+          <target xml:lang="de" state="final">Folgende Kategorien kommen in Betracht:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[2]">
+          <group restype="listitem" id="/html/body/ul[2]/li[1]">
+            <trans-unit id="/html/body/ul[2]/li[1]/text()[1]">
+              <source xml:lang="nl">1° hij die op de dag van indienstneming volledig uitkeringsgerechtigd werkloos is en </source>
+              <target xml:lang="de" state="final">1° die Person, die beim Dienstantrittsdatum entschädigt vollarbeitslos ist und </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li[1]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]/ul/li[1]">
+                <source xml:lang="nl">minder dan 45 jaar oud is op datum van indienstneming en</source>
+                <target xml:lang="de" state="final">bei Dienstantritt keine 45 Jahre alt ist und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]/ul/li[2]">
+                <source xml:lang="nl">volledig uitkeringsgerechtigd is geweest gedurende ten minste 312 dagen gerekend in een regime van 6 dagen gezien over een periode overeenkomend met de maand van indienstneming en de 18 kalendermaanden daaraan voorafgaand en</source>
+                <target xml:lang="de" state="final">mindestens 312 Tage in einer Sechstagewochenregelung voll entschädigungsberechtigt über eine Periode gewesen ist, die mit dem Dienstantrittsmonat und den 18 Kalendermonaten davor übereinstimmt und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[1]/ul/li[3]">
+                <source xml:lang="nl">geen diploma of getuigschrift hoger secundair onderwijs heeft;</source>
+                <target xml:lang="de" state="final">kein Diplom oder Abschlusszeugnis der Oberstufe des Sekundarunterrichts besitzt;</target>
+              </trans-unit>
+            </group>
+          </group>
+          <group restype="listitem" id="/html/body/ul[2]/li[2]">
+            <trans-unit id="/html/body/ul[2]/li[2]/text()[1]">
+              <source xml:lang="nl">2° hij die op de dag van indienstneming volledig uitkeringsgerechtigd werkloos is en </source>
+              <target xml:lang="de" state="final">2° die Person, die beim Dienstantrittsdatum entschädigt vollarbeitslos ist und </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li[2]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]/ul/li[1]">
+                <source xml:lang="nl">minder dan 45 jaar oud is op datum van indienstneming en</source>
+                <target xml:lang="de" state="final">bei Dienstantritt keine 45 Jahre alt ist und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]/ul/li[2]">
+                <source xml:lang="nl">volledig uitkeringsgerechtigd is geweest gedurende ten minste 624 dagen gerekend in een regime van 6 dagen gezien over een periode overeenkomend met de maand van indienstneming en de 36 kalendermaanden daaraan voorafgaand en</source>
+                <target xml:lang="de" state="final">mindestens 624 Tage in einer Sechstagewochenregelung voll entschädigungsberechtigt über eine Periode gewesen ist, die mit dem Dienstantrittsmonat und den 36 Kalendermonaten davor übereinstimmt und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[2]/ul/li[3]">
+                <source xml:lang="nl">geen diploma of getuigschrift hoger secundair onderwijs heeft;</source>
+                <target xml:lang="de" state="final">kein Diplom oder Abschlusszeugnis der Oberstufe des Sekundarunterrichts besitzt;</target>
+              </trans-unit>
+            </group>
+          </group>
+          <group restype="listitem" id="/html/body/ul[2]/li[3]">
+            <trans-unit id="/html/body/ul[2]/li[3]/text()[1]">
+              <source xml:lang="nl">3° hij die op de dag van indienstneming volledig uitkeringsgerechtigd werkloos is en </source>
+              <target xml:lang="de" state="final">3° die Person, die beim Dienstantrittsdatum entschädigt vollarbeitslos ist und </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li[3]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[3]/ul/li[1]">
+                <source xml:lang="nl">minstens 45 jaar oud is op datum van indienstneming en</source>
+                <target xml:lang="de" state="final">bei Dienstantritt mindestens 45 Jahre alt ist und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[3]/ul/li[2]">
+                <source xml:lang="nl">volledig uitkeringsgerechtigd is geweest gedurende ten minste 156 dagen gerekend in een regime van 6 dagen gezien over een periode overeenkomend met de maand van indienstneming en de 9 kalendermaanden daaraan voorafgaand en</source>
+                <target xml:lang="de" state="final">mindestens 156 Tage in einer Sechstagewochenregelung voll entschädigungsberechtigt über eine Periode gewesen ist, die mit dem Dienstantrittsmonat und den 9 Kalendermonaten davor übereinstimmt und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[3]/ul/li[3]">
+                <source xml:lang="nl">geen diploma of getuigschrift hoger secundair onderwijs heeft;</source>
+                <target xml:lang="de" state="final">kein Diplom oder Abschlusszeugnis der Oberstufe des Sekundarunterrichts besitzt;</target>
+              </trans-unit>
+            </group>
+          </group>
+          <group restype="listitem" id="/html/body/ul[2]/li[4]">
+            <trans-unit id="/html/body/ul[2]/li[4]/text()[1]">
+              <source xml:lang="nl">4° hij die op de dag van indienstneming recht heeft op maatschappelijke integratie of op financiële maatschappelijke hulp en </source>
+              <target xml:lang="de" state="final">4° die Person, die beim Dienstantrittsdatum Anspruch auf soziale Eingliederung oder finanzielle Sozialhilfe hat und </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li[4]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[4]/ul/li[1]">
+                <source xml:lang="nl">minder dan 45 jaar oud is op datum van indienstneming en</source>
+                <target xml:lang="de" state="final">bei Dienstantritt keine 45 Jahre alt ist und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[4]/ul/li[2]">
+                <source xml:lang="nl">recht gehad heeft gedurende ten minste 156 dagen gerekend in een regime van 6 dagen op maatschappelijke integratie of op financiële maatschappelijke hulp gezien over een periode overeenkomend met de maand van indienstneming en de 9 kalendermaanden daaraan voorafgaand en</source>
+                <target xml:lang="de" state="final">mindestens 156 Tage in einer Sechstagewochenregelung Anspruch auf soziale Eingliederung oder finanzielle Sozialhilfe in einer Periode hatte, die mit dem Dienstantrittsmonat und den 9 Kalendermonaten davor übereinstimmt und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[4]/ul/li[3]">
+                <source xml:lang="nl">geen diploma of getuigschrift hoger secundair onderwijs heeft;</source>
+                <target xml:lang="de" state="final">kein Diplom oder Abschlusszeugnis der Oberstufe des Sekundarunterrichts besitzt;</target>
+              </trans-unit>
+            </group>
+          </group>
+          <group restype="listitem" id="/html/body/ul[2]/li[5]">
+            <trans-unit id="/html/body/ul[2]/li[5]/text()[1]">
+              <source xml:lang="nl">5° hij die op de dag van indienstneming recht heeft op maatschappelijke integratie of op financiële maatschappelijke hulp en </source>
+              <target xml:lang="de" state="final">5° die Person, die beim Dienstantrittsdatum Anspruch auf soziale Eingliederung oder finanzielle Sozialhilfe hat und </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li[5]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[5]/ul/li[1]">
+                <source xml:lang="nl">minder dan 45 jaar oud is op datum van indienstneming en</source>
+                <target xml:lang="de" state="final">bei Dienstantritt keine 45 Jahre alt ist und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[5]/ul/li[2]">
+                <source xml:lang="nl">recht gehad heeft gedurende ten minste 312 dagen gerekend in een regime van 6 dagen op maatschappelijke integratie of op financiële maatschappelijke hulp gezien over een periode overeenkomend met de maand van indienstneming en de 18 kalendermaanden daaraan voorafgaand en</source>
+                <target xml:lang="de" state="final">mindestens 312 Tage in einer Sechstagewochenregelung Anspruch auf soziale Eingliederung oder finanzielle Sozialhilfe in einer Periode hatte, die mit dem Dienstantrittsmonat und den 18 Kalendermonaten davor übereinstimmt und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[5]/ul/li[3]">
+                <source xml:lang="nl">geen diploma of getuigschrift hoger secundair onderwijs heeft;</source>
+                <target xml:lang="de" state="final">kein Diplom oder Abschlusszeugnis der Oberstufe des Sekundarunterrichts besitzt;</target>
+              </trans-unit>
+            </group>
+          </group>
+          <group restype="listitem" id="/html/body/ul[2]/li[6]">
+            <trans-unit id="/html/body/ul[2]/li[6]/text()[1]">
+              <source xml:lang="nl">6° hij die op de dag van indienstneming recht heeft op maatschappelijke integratie of op financiële maatschappelijke hulp en </source>
+              <target xml:lang="de" state="final">die Person, die beim Dienstantrittsdatum Anspruch auf soziale Eingliederung oder finanzielle Sozialhilfe hat und </target>
+            </trans-unit>
+            <group restype="x-html-ul" id="/html/body/ul[2]/li[6]/ul">
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[6]/ul/li[1]">
+                <source xml:lang="nl">minstens 45 jaar oud is op datum van indienstneming en</source>
+                <target xml:lang="de" state="final">bei Dienstantritt mindestens 45 Jahre alt ist und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[6]/ul/li[2]">
+                <source xml:lang="nl">recht gehad heeft gedurende ten minste 156 dagen gerekend in een regime van 6 dagen op maatschappelijke integratie of op financiële maatschappelijke hulp gezien over een periode overeenkomend met de maand van indienstneming en de 9 kalendermaanden daaraan voorafgaand en</source>
+                <target xml:lang="de" state="final">mindestens 156 Tage in einer Sechstagewochenregelung Anspruch auf soziale Eingliederung oder finanzielle Sozialhilfe in einer Periode hatte, die mit dem Dienstantrittsmonat und den 9 Kalendermonaten davor übereinstimmt und</target>
+              </trans-unit>
+              <trans-unit restype="listitem" id="/html/body/ul[2]/li[6]/ul/li[3]">
+                <source xml:lang="nl">geen diploma of getuigschrift hoger secundair onderwijs heeft.</source>
+                <target xml:lang="de" state="final">kein Abitur gemacht hat.</target>
+              </trans-unit>
+            </group>
+          </group>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[5]">
+          <source xml:lang="nl">De voorwaarde dat zij de hoedanigheid van volledig uitkeringsgerechtigd werkloze, gerechtigde op maatschappelijke integratie of rechthebbende op financiële maatschappelijke hulp moeten hebben op het ogenblik van de indienstneming, geldt evenwel niet voor werknemers die verder worden tewerkgesteld na afloop van één van de volgende periodes:</source>
+          <target xml:lang="de" state="final">Die Bedingung, dass sie die Eigenschaft eines entschädigten Vollarbeitslosen, eines Berechtigten für soziale Eingliederung oder finanzielle Sozialhilfe bei Dienstantritt haben müssen, gilt jedoch nicht für Arbeitnehmer, die nach Ablauf einer der folgenden Perioden weiter beschäftigt werden:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[3]">
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[1]">
+            <source xml:lang="nl">de periode van tewerkstelling in toepassing van artikel 60, § 7, van de organieke wet van 8 juli 1976 betreffende de openbare centra voor maatschappelijk welzijn;</source>
+            <target xml:lang="de" state="final">die Periode der Beschäftigung in Anwendung von Artikel 60, § 7 des Grundlagengesetzes vom 08.07.1976 über die öffentlichen Sozialhilfezentren;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[2]">
+            <source xml:lang="nl">de periode van tewerkstelling, bij een werkgever bedoeld in artikel 1, § 1, van het koninklijk besluit van 3 mei 1999, in de programma’s van wedertewerkstelling bedoeld in artikel 6, §1, IX, 2° van de Bijzondere Wet van 8 augustus 1980 tot hervorming van de instellingen;</source>
+            <target xml:lang="de" state="final">die Periode der Beschäftigung bei einem Arbeitgeber im Sinne von Artikel 1, § 1, des K. E. vom 03.05.1999, in den Programmen der Wiederbeschäftigung im Sinne von Artikel 6, §1, IX, 2° des Sondergesetzes vom 08.08.1980 über institutionelle Reformen;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[3]">
+            <source xml:lang="nl">de periode van tewerkstelling in het kader van een doorstromingsprogramma gedurende dewelke de werknemer een bepaalde uitkering genoot;</source>
+            <target xml:lang="de" state="final">die Periode der Beschäftigung im Rahmen eines Berufsübergangsprogramms, während derer der Arbeitnehmer eine bestimmte Leistung erhielt;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[3]/li[4]">
+            <source xml:lang="nl">de periode van tewerkstelling in het kader van een erkende arbeidspost gedurende dewelke de werknemer een bepaalde uitkering genoot.</source>
+            <target xml:lang="de" state="final">die Periode der Beschäftigung im Rahmen eines anerkannten Arbeitsplatzes, während derer der Arbeitnehmer eine bestimmte Leistung erhielt.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[6]">
+          <source xml:lang="nl">Bepaalde periodes worden gelijkgesteld met periodes van uitkeringsgerechtigde werkloosheid, gerechtigde op maatschappelijke integratie of rechthebbende op financiële maatschappelijke hulp.</source>
+          <target xml:lang="de" state="final">Bestimmte Perioden werden mit Perioden entschädigungsberechtigter Arbeitslosigkeit, Berechtigten für soziale Eingliederung oder Berechtigten für finanzielle Sozialhilfe gleichgesetzt.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[7]">
+          <source xml:lang="nl">De werknemers van de volgende categorieën komen niet in aanmerking voor de vermindering :</source>
+          <target xml:lang="de" state="final">Die Arbeitnehmer der folgenden Kategorien kommen für die Ermäßigung nicht in Betracht:</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[4]">
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[1]">
+            <source xml:lang="nl">voor <g ctype="x-html-strong">Vlaanderen</g>: de werknemer die vóór 1 januari 2016 bij de werkgever tewerkgesteld was als gesubsidieerde contractueel;</source>
+            <target xml:lang="de" state="final">für <g ctype="x-html-strong">Flandern</g>: der Arbeitnehmer, der vor dem 01.01.2016 beim Arbeitgeber als bezuschusster Vertragsbediensteter beschäftigt war;</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[4]/li[2]">
+            <source xml:lang="nl">voor <g ctype="x-html-strong">Vlaanderen:</g> de werknemer die de werkgever opnieuw in dienst neemt binnen een periode van 12 maanden na beëindiging van de vorige arbeidsovereenkomst waarvoor hij de voordelen gesubsidieerde contractueel genoten heeft.</source>
+            <target xml:lang="de" state="final">für <g ctype="x-html-strong">Flandern:</g> der Arbeitnehmer, den der Arbeitgeber innerhalb einer Frist von 12 Monaten nach Beendigung des vorausgehenden Arbeitsvertrags, für den er die Vorteile eines bezuschussten Vertragsbediensteten erhalten hat, erneut einstellt.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[8]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[1]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[1]/h3">
+            <source xml:lang="nl">Duitstalige Gemeenschap:</source>
+            <target xml:lang="de" state="final">Deutschsprachige Gemeinschaft:</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p[1]">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 januari 2019</g> kan voor werknemers die in dienst treden bij een werkgever voor een tewerkstelling in een van de gemeentes van de <g ctype="x-html-strong">Duitstalige Gemeenschap</g>, niet langer de 'doelgroepvermindering langdurig werkzoekenden - SINE' toegepast worden.</source>
+            <target xml:lang="de" state="final">Ab <g ctype="x-html-strong">01.01.2019</g> kann für Arbeitnehmer, die bei einem Arbeitgeber für eine Beschäftigung in einer der Gemeinden der <g ctype="x-html-strong">Deutschsprachigen Gemeinschaft</g> eingestellt werden, nicht mehr die „Zielgruppenermäßigung Langzeitarbeitssuchende - SINE“ angewandt werden.</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[1]/p[2]">
+            <source xml:lang="nl">Als <g ctype="x-html-strong">overgangsmaatregel </g>kunnen werkgevers die werknemers hebben die in dienst getreden zijn vóór 1 januari 2019 en <g ctype="x-html-strong">ononderbroken </g>verder in dienst blijven (met een doorlopende of aansluitende arbeidsovereenkomst), voor deze werknemers voor de hen resterende kwartalen en onder dezelfde voorwaarden, de vermindering blijven genieten. Er zijn <g ctype="x-html-strong">specifieke verminderingscodes</g> voor deze overgangsmaatregelen. Er is geen einddatum van de overgangsmaatregelen voorzien. </source>
+            <target xml:lang="de" state="final">Als <g ctype="x-html-strong">Übergangsmaßnahme </g>können Arbeitgeber, die Arbeitnehmer eingestellt haben, die vor 01.01.2019 ihren Dienst antraten und <g ctype="x-html-strong">ununterbrochen </g>weiter im Dienst bleiben (mit einem dauerhaften oder anschließenden Arbeitsvertrag), die Ermäßigung für diese Arbeitnehmer für die ihnen verbleibenden Quartale unter den gleichen Bedingungen weiterhin beanspruchen. Es gibt <g ctype="x-html-strong">spezielle Ermäßigungscodes</g> für diese Übergangsmaßnahmen. Es ist kein Enddatum für die Übergangsmaßnahmen vorgesehen. </target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[9]">
+          <source xml:lang="nl"> </source>
+          <target xml:lang="de" state="final"> </target>
+        </trans-unit>
+        <group restype="x-html-div" html:class="message alert" id="/html/body/div[2]">
+          <trans-unit restype="x-html-h3" id="/html/body/div[2]/h3">
+            <source xml:lang="nl">Brussels Hoofdstedelijk Gewest:</source>
+            <target xml:lang="de" state="final">Region Brüssel-Hauptstadt:</target>
+          </trans-unit>
+          <trans-unit restype="x-html-p" id="/html/body/div[2]/p">
+            <source xml:lang="nl">Vanaf <g ctype="x-html-strong">1 januari 2021 </g>kan de 'doelgroepvermindering langdurig werkzoekenden - SINE' niet langer toegepast worden voor een tewerkstelling in het <g ctype="x-html-strong">Brussels Hoofdstedelijk Gewest</g></source>
+            <target xml:lang="de" state="final">Ab dem <g ctype="x-html-strong">01. Januar 2021</g> kann die ‚Zielgruppenermäßigung langfristig Arbeitsuchende - SINE‘ nicht länger für eine Beschäftigung in der <g ctype="x-html-strong">Region Brüssel-Hauptstadt</g> angewandt werden.</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[3]">
+          <source xml:lang="nl">Bedrag van de vermindering</source>
+          <target xml:lang="de" state="final">Betrag der Ermäßigung</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[10]">
+          <source xml:lang="nl">Naast een tussenkomst in de loonkost van de werknemer via een herinschakelingsuitkering van de RVA of een financiële tussenkomst van het OCMW, kan de werkgever volgende verminderingen genieten voor de werknemer van</source>
+          <target xml:lang="de" state="final">Neben einem Anteil an den Lohnkosten des Arbeitnehmers über eine Wiedereingliederungsunterstützung des LfA oder einer finanziellen Beteiligung des ÖSHZ, kann der Arbeitgeber die folgenden Ermäßigungen für den Arbeitnehmer in Anspruch nehmen</target>
+        </trans-unit>
+        <group restype="x-html-ul" id="/html/body/ul[5]">
+          <trans-unit restype="listitem" id="/html/body/ul[5]/li[1]">
+            <source xml:lang="nl">categorie 1° en 4°: G<g ctype="x-html-sub">1</g> gedurende het kwartaal van indienstneming en de 10 daarop volgende kwartalen (wanneer de bevoegde regionale dienst voor arbeidsbemiddeling na afloop van de 10 kwartalen oordeelt dat de werknemer nog altijd niet geschikt is om zich te integreren in de gewone arbeidsmarkt, kan de duur van de doelgroepvermindering verlengd worden met een nieuwe periode van maximum 10 kwartalen);</source>
+            <target xml:lang="de" state="final">Kategorie 1° und 4°: G<g ctype="x-html-sub">1</g> im Quartal des Dienstantritts und den 10 folgenden Quartalen (wenn das zuständige regionale Arbeitsvermittlungsamt nach den 10 Quartalen der Ansicht ist, dass der Arbeitnehmer immer noch nicht geeignet ist, sich in den normalen Arbeitsmarkt zu integrieren, kann die Dauer der Zielgruppenermäßigung um eine neue Periode von höchstens 10 Quartalen verlängert werden);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[5]/li[2]">
+            <source xml:lang="nl">categorie 2° en 5°: G<g ctype="x-html-sub">1 </g>gedurende het kwartaal van indienstneming en de 20 daarop volgende kwartalen (wanneer de bevoegde regionale dienst voor arbeidsbemiddeling na afloop van de 20 kwartalen oordeelt dat de werknemer nog altijd niet geschikt is om zich te integreren in de gewone arbeidsmarkt, kan de duur van de doelgroepvermindering verlengd worden met een nieuwe periode van maximum 20 kwartalen);</source>
+            <target xml:lang="de" state="final">Kategorie 2° und 5°: G<g ctype="x-html-sub">1</g> im Quartal des Dienstantritts und den 20 folgenden Quartalen (wenn das zuständige regionale Arbeitsvermittlungsamt nach den 20 Quartalen der Ansicht ist, dass der Arbeitnehmer immer noch nicht geeignet ist, sich in den normalen Arbeitsmarkt zu integrieren, kann die Dauer der Zielgruppenermäßigung um eine neue Periode von höchstens 20 Quartalen verlängert werden);</target>
+          </trans-unit>
+          <trans-unit restype="listitem" id="/html/body/ul[5]/li[3]">
+            <source xml:lang="nl">categorie 3° en 6°: G<g ctype="x-html-sub">1</g> gedurende het kwartaal van indienstneming en de daarop volgende kwartalen.</source>
+            <target xml:lang="de" state="final">Kategorie 3° und 6°: G<g ctype="x-html-sub">1</g> im Quartal des Dienstantritts und den darauf folgenden Quartalen;</target>
+          </trans-unit>
+        </group>
+        <trans-unit restype="x-html-p" id="/html/body/p[11]">
+          <source xml:lang="nl">Indien een werkgever deze vermindering reeds heeft genoten voor een werknemer die hij opnieuw in dienst neemt binnen de 12 maanden na het einde van de vorige arbeidsovereenkomst, wordt de tewerkstelling geacht ononderbroken te zijn voor wat betreft het vaststellen van het recht op de vermindering G<g ctype="x-html-sub">1</g> en het aantal resterende kwartalen dat hij hierop nog recht heeft. De periode van onderbreking verlengt dus de periode waarin de voordelen kunnen worden toegekend, niet.</source>
+          <target xml:lang="de" state="final">Wenn ein Arbeitgeber diese Ermäßigung bereits für einen Arbeitnehmer beansprucht hat, den er innerhalb einer Periode von 12 Monaten nach dem Ende des vorigen Arbeitsvertrags neu einstellt, gilt die Beschäftigung als ununterbrochen für die Feststellung des Rechts auf die Ermäßigung G<g ctype="x-html-sub">1</g> und der Anzahl der restlichen Quartale, für die dieses Recht noch gilt. Die Periode der Unterbrechung verlängert deshalb nicht die Periode, während derer die Vorteile gewährt werden können.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-h2" id="/html/body/h2[4]">
+          <source xml:lang="nl">Te vervullen formaliteiten</source>
+          <target xml:lang="de" state="final">Zu erledigende Formalitäten</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[12]">
+          <source xml:lang="nl">De werkgever moet voorafgaandelijk een attest verkrijgen dat bewijst dat hij onder het toepassingsgebied van deze maatregel valt. Tot 31 december 2014 werd dit attest afgeleverd door de Directeur-generaal van de Algemene Directie Werkgelegenheid en Arbeidsmarkt van de FOD Werkgelegenheid, Arbeid en Sociaal Overleg (FOD WASO). Vanaf 1 januari 2015 worden deze attesten toegekend door het bevoegde Gewest.</source>
+          <target xml:lang="de" state="final">Hierzu müssen sie erst eine Bescheinigung erhalten, aus der hervorgeht, dass sie in den Anwendungsbereich von SINE fallen. Bis 31.12.2014 wurde Arbeitgebern, die dafür in Betracht kamen, eine Bescheinigung der Generaldirektor der Generaldirektion Beschäftigung und Arbeitsmarkt des FÖD Beschäftigung, Arbeit und Soziale Konzertierung (FÖD BASK) ausgestellt. Ab 01.01.2015 werden diese Bescheinigungen von der zuständigen Region erteilt.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[13]">
+          <source xml:lang="nl">Om in aanmerking te komen voor de vermindering moet de werknemer (of de werkgever indien het gaat om een activering van de tussenkomst vanwege een OCMW) een herinschakelingsuitkering genieten in het kader van de sociale inschakelingseconomie. Bij zijn aanvraag voor een herinschakelingsuitkering voegt de werknemer, respectievelijk de werkgever, het hierboven vermelde attest.</source>
+          <target xml:lang="de" state="final">Um für die Ermäßigung in Betracht zu kommen, muss der Arbeitnehmer (oder der Arbeitgeber, wenn es die Aktivierung einer Leistung seitens eines ÖSHZ betrifft) eine Wiedereingliederungsunterstützung im Rahmen der Eingliederungssozialwirtschaft erhalten. Seinem Antrag auf eine Wiedereingliederungsunterstützung legt der Arbeitnehmer bzw. der Arbeitgeber das obige Attest bei.</target>
+        </trans-unit>
+        <trans-unit restype="x-html-p" id="/html/body/p[14]">
+          <source xml:lang="nl">De RVA geeft aan de RSZ de gegevens van de werknemers door die recht geven op deze doelgroepvermindering. Het OCMW, dat een financiële tussenkomst verleent voor een gerechtigde op maatschappelijke integratie of een rechthebbende op financiële maatschappelijke hulp, tewerkgesteld in het kader van de sociale inschakelingseconomie, moet het gewestelijk RVA-bureau hiervan verwittigen met een typebrief van de POD Maatschappelijke Integratie.</source>
+          <target xml:lang="de" state="final">Das LfA leitet dem LSS die Daten der Arbeitnehmer zu, die das Recht auf diese Zielgruppenermäßigung eröffnen. Das ÖSHZ, das eine finanzielle Beteiligung für einen Berechtigten mit Anspruch auf Sozialhilfe oder einen Berechtigten mit Anspruch auf finanzielle Sozialhilfe gewährt, der im Rahmen der Sozialeingliederungswirtschaft eingestellt wird, muss das regionale LfA-Büro davon mittels eines Musterbriefs des ÖPD Sozialeingliederung in Kenntnis setzen.</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

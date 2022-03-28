@@ -100,10 +100,6 @@ class FOSUserExtension extends Extension
             ],
         ]);
 
-        if (!empty($config['profile'])) {
-            $this->loadProfile($config['profile'], $container, $loader);
-        }
-
         if (!empty($config['change_password'])) {
             $this->loadChangePassword($config['change_password'], $container, $loader);
         }
@@ -158,15 +154,6 @@ class FOSUserExtension extends Extension
                 }
             }
         }
-    }
-
-    private function loadProfile(array $config, ContainerBuilder $container, XmlFileLoader $loader)
-    {
-        $loader->load('profile.xml');
-
-        $this->remapParametersNamespaces($config, $container, [
-            'form' => 'fos_user.profile.form.%s',
-        ]);
     }
 
     private function loadChangePassword(array $config, ContainerBuilder $container, XmlFileLoader $loader)

@@ -178,13 +178,13 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="{{ path(user_profile_route) }}" class="btn btn-default btn-flat">{{ 'User profile'|trans }}</a>
+                  <a href="{{ path(routes.USER_PROFILE) }}" class="btn btn-default btn-flat">{{ 'User profile'|trans }}</a>
                 </div>
                 <div class="pull-right">
                		{% if is_granted('ROLE_PREVIOUS_ADMIN') %}
                			<a href="{{ path('emsco_user_index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat">{{ 'Exit'|trans }}</a>
                		{% else %}
-               			<a href="{{ path(user_logout_route) }}" class="btn btn-default btn-flat">{{ 'Sign out'|trans }}</a>
+               			<a href="{{ path(routes.USER_LOGOUT) }}" class="btn btn-default btn-flat">{{ 'Sign out'|trans }}</a>
                		{% endif %}
                 </div>
               </li>
@@ -193,7 +193,7 @@
           <!-- Control Sidebar Toggle Button -->
           {% else %}
           <li>
-            <a href="{{ path(user_login_route) }}" ><span class="glyphicon glyphicon-lock"></span> Login</a>
+            <a href="{{ path(routes.USER_LOGIN) }}" ><span class="glyphicon glyphicon-lock"></span> Login</a>
           </li>
           {% endif %}
         </ul>

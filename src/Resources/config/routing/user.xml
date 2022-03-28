@@ -30,6 +30,12 @@
         <default key="_controller">EMS\CoreBundle\Controller\UserController:spreadsheetExport</default>
     </route>
 
+    <route id="emsco_user_profile" path="/profile" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\User\ProfileController::show</default>
+    </route>
+    <route id="emsco_user_profile_edit" path="/profile/edit" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\User\ProfileController::edit</default>
+    </route>
 
 
     <!-- Deprecated -->

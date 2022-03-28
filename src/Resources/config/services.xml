@@ -170,5 +170,10 @@
         <service id="emsco.helper.entities" class="EMS\CoreBundle\Core\Entity\EntitiesHelper">
             <argument type="tagged_iterator" tag="emsco.entity.service"/>
         </service>
+
+        <service id="emsco.manager.user" class="EMS\CoreBundle\Core\User\UserManager">
+            <argument type="service" id="security.token_storage" />
+            <argument type="service" id="fos_user.user_manager" />
+        </service>
     </services>
 </container>

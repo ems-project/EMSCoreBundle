@@ -1,39 +1,53 @@
 <?php
 
-namespace EMS\CoreBundle\Form;
+declare(strict_types=1);
+
+namespace EMS\CoreBundle\Form\User;
 
 use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserProfileType extends AbstractType
 {
-    /** @var TokenStorageInterface */
-    private $tokenStorage;
-
-    public function __construct(TokenStorageInterface $tokenStorage)
-    {
-        $this->tokenStorage = $tokenStorage;
-    }
-
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('displayName')
+            ->add('displayName', null, ['label' => 'user.display_name'])
+            ->add('email', EmailType::class, ['label' => 'user.email'])
             ->add('emailNotification', CheckboxType::class, [
-                    'required' => false,
+                'label' => 'user.email_notification',
+                'required' => false,
             ])
-            ->add('layoutBoxed')
-            ->add('sidebarMini')
-            ->add('sidebarCollapse')
+            ->add('current_password', PasswordType::class, [
+                'label' => 'user.current_password',
+                'mapped' => false,
+                'constraints' => [
+                    new NotBlank(),
+                    new UserPassword(['message' => 'fos_user.current_password.invalid']),
+                ],
+                'attr' => [
+                    'autocomplete' => 'current-password',
+                ],
+            ])
+            ->add('layoutBoxed', null, ['label' => 'user.layout_boxed'])
+            ->add('sidebarMini', null, ['label' => 'user.sidebar_mini'])
+            ->add('sidebarCollapse', null, ['label' => 'user.sidebar_collapse'])
             ->add('locale', ChoiceType::class, [
                 'label' => 'user.locale',
                 'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
@@ -53,7 +67,7 @@ class UserProfileType extends AbstractType
         $builder
             ->add('wysiwygProfile', EntityType::class, [
                 'required' => false,
-                'label' => 'WYSIWYG profile',
+                'label' => 'user.wysiwyg_profile',
                 'class' => 'EMSCoreBundle:WysiwygProfile',
                 'choice_label' => 'name',
                 'query_builder' => function (EntityRepository $er) {
@@ -65,7 +79,7 @@ class UserProfileType extends AbstractType
                 ],
             ])
             ->add('wysiwygOptions', CodeEditorType::class, [
-                'label' => 'WYSIWYG Options',
+                'label' => 'user.wysiwyg_options',
                 'required' => false,
                 'language' => 'ace/mode/json',
                 'attr' => [
@@ -74,18 +88,14 @@ class UserProfileType extends AbstractType
             ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        /*set the default option value for this kind of compound field*/
         parent::configureOptions($resolver);
-        $resolver->setDefault('translation_domain', EMSCoreBundle::TRANS_DOMAIN);
-    }
-
-    public function getParent()
-    {
-        return 'FOS\UserBundle\Form\Type\ProfileFormType';
+        $resolver->setDefaults([
+            'csrf_token_id' => 'profile',
+            'data_class' => User::class,
+            'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+            'validation_groups' => ['Profile', 'Default'],
+        ]);
     }
 }

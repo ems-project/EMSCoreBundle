@@ -5,15 +5,6 @@ security:
         remember_me: 'Remember me'
         submit: 'Log in'
 
-profile:
-    show:
-        username: Username
-        email: Email
-    edit:
-        submit: Update
-    flash:
-        updated: 'The profile has been updated.'
-
 change_password:
     submit: 'Change password'
     flash:

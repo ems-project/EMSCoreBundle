@@ -7,9 +7,6 @@
     <import
         resource="@FOSUserBundle/Resources/config/routing/security.xml" />
     <import
-        resource="@FOSUserBundle/Resources/config/routing/profile.xml"
-        prefix="/profile" />
-    <import
         resource="@FOSUserBundle/Resources/config/routing/resetting.xml"
         prefix="/resetting" />
     <import

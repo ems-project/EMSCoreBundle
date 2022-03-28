@@ -44,33 +44,6 @@ final class FOSUserEvents
     public const CHANGE_PASSWORD_COMPLETED = 'fos_user.change_password.edit.completed';
 
     /**
-     * The PROFILE_EDIT_INITIALIZE event occurs when the profile editing process is initialized.
-     *
-     * This event allows you to modify the default values of the user before binding the form.
-     *
-     * @Event("FOS\UserBundle\Event\GetResponseUserEvent")
-     */
-    public const PROFILE_EDIT_INITIALIZE = 'fos_user.profile.edit.initialize';
-
-    /**
-     * The PROFILE_EDIT_SUCCESS event occurs when the profile edit form is submitted successfully.
-     *
-     * This event allows you to set the response instead of using the default one.
-     *
-     * @Event("FOS\UserBundle\Event\FormEvent")
-     */
-    public const PROFILE_EDIT_SUCCESS = 'fos_user.profile.edit.success';
-
-    /**
-     * The PROFILE_EDIT_COMPLETED event occurs after saving the user in the profile edit process.
-     *
-     * This event allows you to access the response which will be sent.
-     *
-     * @Event("FOS\UserBundle\Event\FilterUserResponseEvent")
-     */
-    public const PROFILE_EDIT_COMPLETED = 'fos_user.profile.edit.completed';
-
-    /**
      * The RESETTING_RESET_REQUEST event occurs when a user requests a password reset of the account.
      *
      * This event allows you to check if a user is locked out before requesting a password.

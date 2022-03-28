@@ -35,7 +35,7 @@ Loading the page with the request parameter **item** and value a item id, will s
 
 ### Actions
 
-Possible actions: **add** | **edit** | **delete** | **move** | **copy** | **paste** | **view**.
+Possible actions: **add** | **edit** | **delete** | **move** | **copy** | **paste** | **preview**.
 > Foreach action you can define an array with **allow** or **deny** types.
 > Disabling or enabling **root** add, copy, paste you can use **root** as type
 
@@ -52,7 +52,7 @@ Possible actions: **add** | **edit** | **delete** | **move** | **copy** | **past
         'move': { 'deny': ['all'] },
         'copy': { 'deny': ['all'] },
         'paste': { 'deny': ['all'] },
-        'view': { 'deny': ['all'] },
+        'preview': { 'deny': ['all'] },
      }
  }) }}
 ```
@@ -67,7 +67,7 @@ Possible actions: **add** | **edit** | **delete** | **move** | **copy** | **past
      'actions': {
         'copy': { 'allow': ['page'] },
         'move': { 'allow': ['page'] },
-        'view': { 'allow': ['page'] },
+        'preview': { 'allow': ['page'] },
      }
  }) }}
 ```

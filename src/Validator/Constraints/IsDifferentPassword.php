@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -9,8 +11,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class IsDifferentPassword extends Constraint
 {
-    /** @var string */
-    public $message = 'Password has to be different from the previous one.';
+    public string $message = 'Password has to be different from the previous one.';
 
     public function getTargets(): string
     {

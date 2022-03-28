@@ -36,6 +36,9 @@
     <route id="emsco_user_profile_edit" path="/profile/edit" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\User\ProfileController::edit</default>
     </route>
+    <route id="emsco_user_change_password" path="/profile/change-password" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\User\ChangePasswordController::changePassword</default>
+    </route>
 
 
     <!-- Deprecated -->

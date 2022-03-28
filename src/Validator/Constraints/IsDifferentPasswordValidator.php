@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -17,12 +19,12 @@ class IsDifferentPasswordValidator extends ConstraintValidator
             return false;
         }
 
-        if (!isset($_POST['fos_user_change_password_form'])) {
+        if (!isset($_POST['emsco_change_password'])) {
             return true;
         }
 
-        $old = $_POST['fos_user_change_password_form']['current_password'];
-        $new = $_POST['fos_user_change_password_form']['plainPassword']['first'];
+        $old = $_POST['emsco_change_password']['current_password'];
+        $new = $_POST['emsco_change_password']['plainPassword']['first'];
         if ($old === $new) {
             $this->context->addViolation($constraint->message);
 

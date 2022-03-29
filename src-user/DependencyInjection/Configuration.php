@@ -76,7 +76,6 @@ class Configuration implements ConfigurationInterface
                 ->thenInvalid('You need to specify your own group manager service when using the "custom" driver.')
             ->end();
 
-        $this->addChangePasswordSection($rootNode);
         $this->addResettingSection($rootNode);
         $this->addServiceSection($rootNode);
 
@@ -114,30 +113,6 @@ class Configuration implements ConfigurationInterface
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
                                     ->defaultValue(['ResetPassword', 'Default'])
-                                ->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end();
-    }
-
-    private function addChangePasswordSection(ArrayNodeDefinition $node)
-    {
-        $node
-            ->children()
-                ->arrayNode('change_password')
-                    ->addDefaultsIfNotSet()
-                    ->canBeUnset()
-                    ->children()
-                        ->arrayNode('form')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('type')->defaultValue(Type\ChangePasswordFormType::class)->end()
-                                ->scalarNode('name')->defaultValue('fos_user_change_password_form')->end()
-                                ->arrayNode('validation_groups')
-                                    ->prototype('scalar')->end()
-                                    ->defaultValue(['ChangePassword', 'Default'])
                                 ->end()
                             ->end()
                         ->end()

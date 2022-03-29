@@ -1,8 +1,8 @@
 {%- trans_default_domain 'emsco-twigs' -%}
 {% extends '@EMSCore/layout.html.twig' %}
 
-{% block title %}Your profile{% endblock %}
-{% block pagetitle %}Your profile{% endblock %}
+{% block title %}{{ 'view.profile.show.action.profile.title'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'view.profile.show.action.profile.title'|trans }}{% endblock %}
 {% block subtitle %}{% endblock %}
 
 {% block content %}
@@ -58,7 +58,7 @@
                     </ul>
                     <div class="btn-group">
                         <a href="{{ path(routes.USER_PROFILE_EDIT) }}" class="btn btn-primary"><i class="fa fa-pencil"></i> <b>{{ 'view.profile.show.action.edit'|trans }}</b></a>
-                        <a href="{{ path('fos_user_change_password') }}" class="btn btn-primary"><i class="fa fa-lock"></i> <b>{{ 'view.profile.show.action.change_password'|trans }}</b></a>
+                        <a href="{{ path(routes.USER_CHANGE_PASSWORD) }}" class="btn btn-primary"><i class="fa fa-lock"></i> <b>{{ 'view.profile.show.action.change_password'|trans }}</b></a>
                     </div>
                 </div>
             </div>

@@ -320,5 +320,9 @@
             <argument type="service" id="emsco.manager.user" />
             <argument type="service" id="ems.logger" />
         </service>
+        <service id="EMS\CoreBundle\Controller\User\ChangePasswordController" public="true">
+            <argument type="service" id="emsco.manager.user" />
+            <argument type="service" id="ems.logger" />
+        </service>
     </services>
 </container>

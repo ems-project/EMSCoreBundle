@@ -58,6 +58,7 @@ class Routes
     public const USER_DELETE = 'emsco_user_delete';
     public const USER_PROFILE = 'emsco_user_profile';
     public const USER_PROFILE_EDIT = 'emsco_user_profile_edit';
+    public const USER_CHANGE_PASSWORD = 'emsco_user_change_password';
     public const USER_LOGOUT = 'fos_user_security_logout';
     public const USER_LOGIN = 'fos_user_security_login';
     public const LOG_INDEX = 'emsco_log_index';

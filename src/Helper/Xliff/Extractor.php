@@ -448,7 +448,8 @@ class Extractor
 
         if ($htmlEncodeInlines) {
             foreach ($sourceNode->childNodes as $childNode) {
-                $source->appendChild(new \DOMText($childNode->ownerDocument->saveXML($childNode)));
+                $textValue = \str_replace('&#13;', '', $childNode->ownerDocument->saveXML($childNode));
+                $source->appendChild(new \DOMText($textValue));
             }
         } else {
             $this->fillInline($sourceNode, $source);

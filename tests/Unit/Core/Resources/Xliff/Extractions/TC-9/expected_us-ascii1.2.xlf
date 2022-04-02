@@ -33,7 +33,7 @@
         </trans-unit>
         <group restype="x-html-div" html:class="message alert" id="/html/body/div">
           <trans-unit restype="x-html-h3" id="/html/body/div/h3">
-            <source xml:lang="en">Vlaams Gewest:</source>
+            <source xml:lang="en"> Vlaams Gewest: </source>
             <target xml:lang="fr" state="new"/>
           </trans-unit>
           <trans-unit restype="x-html-p" id="/html/body/div/p">
@@ -44,31 +44,33 @@
       </group>
       <group id="[%locale%][body2]">
         <trans-unit restype="x-html-p" id="/html/body/p[1]">
-          <source xml:lang="en">&amp;#13;
-    Deze doelgroepvermindering is in elke regio aangepast en/of&amp;#13;
-    vervangen. U vindt meer op de desbetreffende pagina's.&amp;#13;
+          <source xml:lang="en">
+    Deze doelgroepvermindering is in elke regio aangepast en/of
+    vervangen. U vindt meer op de desbetreffende pagina's.
 </source>
           <target xml:lang="fr" state="new"/>
         </trans-unit>
         <trans-unit restype="x-html-p" id="/html/body/p[2]">
-          <source xml:lang="en">&amp;#13;
-    &lt;br/&gt;&amp;#13;
+          <source xml:lang="en">
+    &lt;br/&gt;
 </source>
           <target xml:lang="fr" state="new"/>
         </trans-unit>
         <group restype="x-html-div" html:class="message alert" id="/html/body/div">
           <trans-unit restype="x-html-h3" id="/html/body/div/h3">
-            <source xml:lang="en">Vlaams Gewest:</source>
+            <source xml:lang="en">
+        Vlaams Gewest:
+    </source>
             <target xml:lang="fr" state="new"/>
           </trans-unit>
           <trans-unit restype="x-html-p" id="/html/body/div/p">
-            <source xml:lang="en">&amp;#13;
-        Vanaf &lt;strong&gt;1 juli 2016&lt;/strong&gt; kan voor werknemers die&amp;#13;
-        tewerkgesteld worden in &lt;strong&gt;Vlaanderen&lt;/strong&gt; niet&amp;#13;
-        langer de 'doelgroepvermindering oudere werknemers' toegepast&amp;#13;
-        worden maar wel de '&lt;a href="%{BASE_URL_CURRENT}%/instructions/deductions/structuralreduction_targetgroupreductions/elderlyworkers_vl.html"&gt;doelgroepvermindering&amp;#13;
-        oudere werknemers - Vlaanderen&lt;/a&gt;'. Er zijn geen&amp;#13;
-        overgangsmaatregelen voorzien.&amp;#13;
+            <source xml:lang="en">
+        Vanaf &lt;strong&gt;1 juli 2016&lt;/strong&gt; kan voor werknemers die
+        tewerkgesteld worden in &lt;strong&gt;Vlaanderen&lt;/strong&gt; niet
+        langer de 'doelgroepvermindering oudere werknemers' toegepast
+        worden maar wel de '&lt;a href="%{BASE_URL_CURRENT}%/instructions/deductions/structuralreduction_targetgroupreductions/elderlyworkers_vl.html"&gt;doelgroepvermindering
+        oudere werknemers - Vlaanderen&lt;/a&gt;'. Er zijn geen
+        overgangsmaatregelen voorzien.
     </source>
             <target xml:lang="fr" state="new"/>
           </trans-unit>
@@ -85,7 +87,7 @@
         </trans-unit>
         <group restype="x-html-div" html:class="message alert" id="/html/body/div">
           <trans-unit restype="x-html-h3" id="/html/body/div/h3">
-            <source xml:lang="en">Vlaams Gewest:</source>
+            <source xml:lang="en"> Vlaams Gewest: </source>
             <target xml:lang="fr" state="new"/>
           </trans-unit>
           <trans-unit restype="x-html-p" id="/html/body/div/p">

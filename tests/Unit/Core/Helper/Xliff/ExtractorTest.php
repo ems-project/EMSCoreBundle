@@ -55,7 +55,16 @@ class ExtractorTest extends KernelTestCase
         }
         $this->assertEquals([
             'de' => [
-                'body' => "<p> [de] Deze doelgroepvermindering is in elke regio aangepast en/of vervangen. U vindt meer op de desbetreffende pagina's. </p><p> <br/> </p><p> [de] EOD </p>",
+                'body' => "<p>
+  [de] Deze doelgroepvermindering is in elke regio aangepast
+  en/of vervangen. U vindt meer op de desbetreffende pagina's.
+</p>
+<p>
+  <br>
+</p>
+<p>
+  [de] EOD
+</p>",
             ],
         ], $extracted);
     }

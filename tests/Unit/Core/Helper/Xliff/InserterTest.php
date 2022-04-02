@@ -19,10 +19,22 @@ class InserterTest extends KernelTestCase
         $body = new \DOMElement('body');
         $html->appendChild($body);
         $link = new \DOMElement('a', 'Click here');
+        $supp = new \DOMElement('supp');
         $body->appendChild($link);
+        $body->appendChild(new \DOMText(' '));
+        $body->appendChild($supp);
         $link->setAttribute('href', '%{BASE_URL_CURRENT}%/instructions/persons/specific/childsitter.html');
 
-        $this->assertEquals('<body><a href="%{BASE_URL_CURRENT}%/instructions/persons/specific/childsitter.html">Click here</a></body>', $document->saveXML($body));
+        $formater = new \tidy();
+        $formater->parseString($document->saveXML($body), [
+            'newline' => 'LF',
+        ]);
+        $this->assertEquals('<body>
+<a href=
+"%{BASE_URL_CURRENT}%/instructions/persons/specific/childsitter.html">
+Click here</a>
+</body>
+', $formater->body()->value);
     }
 
     public function testXliffImports(): void

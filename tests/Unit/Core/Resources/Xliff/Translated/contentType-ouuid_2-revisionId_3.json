@@ -3,8 +3,8 @@
     "keywords_fr": "",
     "empty": "",
     "fr": {
-        "body": "<p>Bonjour<\/p>",
-        "body2": "<p>Bonjour<\/p>",
-        "body3": "<p>Bonjour<\/p>"
+        "body": "<p>\n  Bonjour\n<\/p>",
+        "body2": "<p>\n  Bonjour\n<\/p>",
+        "body3": "<p>\n  Bonjour\n<\/p>"
     }
 }

@@ -300,7 +300,7 @@ class InsertionRevision
             $html .= $document->saveXML($node);
         }
 
-        return $html;
+        return Html::prettyPrint($html);
     }
 
     private function restypeToTag(string $restype): string

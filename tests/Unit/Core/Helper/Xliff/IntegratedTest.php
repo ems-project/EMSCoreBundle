@@ -83,4 +83,31 @@ class IntegratedTest extends KernelTestCase
             }
         }
     }
+
+    public function testImportOnliner(): void
+    {
+        $inserter = Inserter::fromFile(\join(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'Resources', 'Xliff', 'new_extract.xlf']));
+        $this->assertEquals(30, $inserter->count(), 'Only one document is expected');
+        foreach ($inserter->getDocuments() as $document) {
+            $this->saveJson($document);
+        }
+    }
+
+    private function saveJson(InsertionRevision $document)
+    {
+        $source = Json::decode(\file_get_contents(\join(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'Resources', 'Xliff', 'TestRevision', \sprintf('%s_%s.json', $document->getOuuid(), $document->getRevisionId())])));
+        $inserted = $source;
+        $document->extractTranslations($source, $inserted);
+        unset($inserted['date_modification']);
+        unset($inserted['_contenttype']);
+        unset($inserted['_sha1']);
+        unset($inserted['_published_datetime']);
+        $inserted['locale'] = 'de';
+        $filename = \join(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'Resources', 'Xliff', 'TestRevisionOut', \sprintf('%s_%s.json', $document->getOuuid(), $document->getRevisionId())]);
+        if (!\file_exists($filename)) {
+            \file_put_contents($filename, Json::encode($inserted, true));
+        }
+
+        $this->assertEquals(\file_get_contents($filename), Json::encode($inserted, true), \sprintf('with test file %s', $document->getOuuid()));
+    }
 }

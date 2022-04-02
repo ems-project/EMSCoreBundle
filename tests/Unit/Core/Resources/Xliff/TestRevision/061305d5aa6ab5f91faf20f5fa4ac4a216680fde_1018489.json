@@ -1,0 +1,16 @@
+{
+  "_contenttype": "instruction",
+  "context": "dmfa",
+  "date_creation": "2014-10-10T11:23:10+02:00",
+  "date_modification": "2022-01-20T09:45:18+01:00",
+  "description": "<h2>Betrokken werkgevers<\/h2> <p>Alle werkgevers, zowel van de priv\u00e9sector als van de openbare sector komen in aanmerking voor de vermindering.<\/p> <h2>Betrokken werknemers<\/h2> <p>Zowel de kunstenaars die verbonden zijn door een arbeidsovereenkomst, als de <a href=\"%{BASE_URL_CURRENT}%\/instructions\/persons\/specific\/artists.html\">kunstenaars die, zonder door een arbeidsovereenkomst te zijn verbonden<\/a>, tegen betaling van een loon artistieke prestaties leveren en\/of in opdracht artistieke werken produceren, komen voor de vermindering in aanmerking. Voor statutaire kunstenaars tewerkgesteld in de openbare sector, is de vermindering dus niet van toepassing.<\/p> <p>Onder artistieke prestaties wordt verstaan de creatie en\/of uitvoering of interpretatie van artistieke oeuvres in de audiovisuele sector, in de beeldende kunsten, in de muziek, de literatuur, het spektakel, het theater en de choreografie.<\/p> <p>Het <a href=\"%{BASE_URL_CURRENT}%\/instructions\/deductions\/structuralreduction_targetgroupreductions\/introduction.html\" target=\"_blank\">refertekwartaalloon<\/a> van de kunstenaar bedraagt minstens 3 maal het GGMMI geldig voor de 1<sup>ste<\/sup> maand van het kwartaal. Vanaf het <span class=\"newWord\">1<sup>ste<\/sup> kwartaal van 2022<\/span> bedraagt deze ondergrens dus <span class=\"newWord\">5.074,20 EUR<\/span>.<\/p> <h2>Bedrag van de vermindering<\/h2> <p>Een vermindering <strong>G<sub>12<\/sub><\/strong> wordt toegekend gedurende de volledige duur van de tewerkstelling. De doelgroepvermindering <strong>P<sub>g<\/sub><\/strong> mag voor een kunstenaar nooit meer bedragen dan 517,00 EUR per kwartaal per tewerkstellingslijn. Het betreft een aftopping van het absolute verminderingsbedrag, na het in rekening brengen van de prestatiebreuk en de multiplicatiefactor. Via deze techniek zal bij onvolledige prestaties de vermindering sneller stijgen bij toename van de prestaties, maar slechts tot een absoluut verminderingsbedrag.<\/p> <h2>Te vervullen formaliteiten<\/h2> <p>Geen bijzondere formaliteiten.<\/p>",
+  "institution": "institution:50e98b3835fcd2ca2cf279feebb4d842069ee83a",
+  "introduction": "<p>Vanaf 1 januari 2014 wordt de vermindering voor de tewerkstelling van kunstenaars die sinds 2003 bestond, ge\u00efntegreerd als doelgroepvermindering in het systeem van de geharmoniseerde verminderingen.<\/p>",
+  "is_searchable": true,
+  "item_id": "82577b634ede9df37482d4eb7882267befe674bf",
+  "locale": "nl",
+  "title": "Doelgroepvermindering voor kunstenaars",
+  "title_short": "Kunstenaars",
+  "_sha1": "db7227c3c90bcd841917893aa6fc8a075c7fa941",
+  "_published_datetime": "2022-03-19T17:13:51+01:00"
+}

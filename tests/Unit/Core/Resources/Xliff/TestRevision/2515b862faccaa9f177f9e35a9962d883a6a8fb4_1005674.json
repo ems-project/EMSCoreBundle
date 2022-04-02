@@ -1,0 +1,16 @@
+{
+  "_contenttype": "instruction",
+  "context": "dmfa",
+  "date_creation": "2014-10-10T11:23:10+02:00",
+  "date_modification": "2017-08-08T15:50:49+02:00",
+  "description": "<h2>Betrokken werkgevers <\/h2> <p>Het zijn de erkende opvangdiensten waarbij de onthaalouders aangesloten zijn. <\/p> <h2>Betrokken werknemers <\/h2> <p>Het gaat om <a href=\"%{BASE_URL_CURRENT}%\/instructions\/persons\/specific\/childsitter.html\">onthaalouders &apos;sui generis&apos;<\/a>. Deze natuurlijke personen staan in voor de opvang van kinderen in een woning voor de opvang in gezinsverband en zijn aangesloten bij een dienst waarmee ze niet verbonden zijn door een arbeidsovereenkomst. <\/p> <h2>Bedrag van de vermindering <\/h2> <p>Een doelgroepvermindering <strong>G<sub>11<\/sub> <\/strong>wordt toegekend voor onthaalouders gedurende de volledige duur van de tewerkstelling. <\/p> <h2>Te vervullen formaliteiten <\/h2> <p>Geen bijzondere formaliteiten. <\/p>",
+  "institution": "institution:50e98b3835fcd2ca2cf279feebb4d842069ee83a",
+  "introduction": "<p>Vanaf 1 januari 2014 wordt de vermindering voor de tewerkstelling van onthaalouders die sinds 2003 bestond, ge\u00efntegreerd als doelgroepvermindering in het systeem van de geharmomniseerde verminderingen.<\/p>",
+  "is_searchable": true,
+  "item_id": "222d3bc22d8bf77da91851e17d6d1e8fbec093ec",
+  "locale": "nl",
+  "title": "Doelgroepvermindering voor onthaalouders",
+  "title_short": "Onthaalouders",
+  "_sha1": "88ab5fdc7c03f32b30a7bf12ddc6e318b6f46e2c",
+  "_published_datetime": "2022-03-19T18:06:26+01:00"
+}

@@ -1,0 +1,16 @@
+{
+  "_contenttype": "instruction",
+  "context": "dmfa",
+  "date_creation": "2014-10-10T11:23:07+02:00",
+  "date_modification": "2019-04-23T08:50:54+02:00",
+  "description": "<p>Deze doelgroepvermindering is in elke regio aangepast en\/of vervangen. U vindt meer op de desbetreffende pagina&apos;s. <\/p> <p> <br \/> <\/p> <p> <\/p> <ul> <\/ul> <p> <\/p> <div class=\"message alert\"> <h3>Vlaams Gewest: <\/h3> <p>Vanaf <strong>1 juli 2016<\/strong> kan voor werknemers die tewerkgesteld worden in <strong>Vlaanderen <\/strong>niet langer de &apos;doelgroepvermindering oudere werknemers&apos; toegepast worden maar wel de &apos;<a href=\"%{BASE_URL_CURRENT}%\/instructions\/deductions\/structuralreduction_targetgroupreductions\/elderlyworkers_vl.html\">doelgroepvermindering oudere werknemers - Vlaanderen<\/a>&apos;. Er zijn geen overgangsmaatregelen voorzien. <\/p> <\/div> <p> <\/p> <div class=\"message alert\"> <h3>Brussels Hoofdstedelijk Gewest: <\/h3> <p>Vanaf <strong>1 oktober 2016<\/strong> kan voor werknemers die tewerkgesteld worden in <strong>Brussel <\/strong>niet langer de &apos;doelgroepvermindering oudere werknemers&apos; toegepast worden maar wel de &apos;<a href=\"%{BASE_URL_CURRENT}%\/instructions\/deductions\/structuralreduction_targetgroupreductions\/elderlyworkers_br.html\">doelgroepvermindering oudere werknemers - Brussel<\/a>&apos;. Er zijn geen overgangsmaatregelen voorzien. <\/p> <\/div> <p> <\/p> <p> <\/p> <div class=\"message alert\"> <h3>Waals Gewest (zonder de Duitstalige Gemeenschap): <\/h3> <p>Vanaf <strong>1 juli 2017<\/strong> kan voor werknemers die tewerkgesteld worden in <strong>Walloni\u00eb <\/strong>niet langer de &apos;doelgroepvermindering oudere werknemers&apos; toegepast worden maar wel de &apos;<a href=\"%{BASE_URL_CURRENT}%\/instructions\/deductions\/structuralreduction_targetgroupreductions\/elderlyworkers_wal.html\">doelgroepvermindering oudere werknemers - Walloni\u00eb<\/a>&apos;. Er zijn overgangsmaatregelen voorzien voor 54-jarigen in dienst op 30 juni 2017. <\/p> <\/div> <p> <\/p> <p> <\/p> <h3> <\/h3> <div class=\"message alert\"> <h3>Duitstalige Gemeenschap: <\/h3> <p>Vanaf <strong>1 januari 2019<\/strong> kan voor werknemers die tewerkgesteld worden in het <strong>Duitstalige landsgedeelte <\/strong>niet langer de &apos;doelgroepvermindering oudere werknemers&apos; toegepast worden maar wel de &apos;<a href=\"%{BASE_URL_CURRENT}%\/instructions\/deductions\/structuralreduction_targetgroupreductions\/elderlyworkers_du.html\">doelgroepvermindering oudere werknemers - Duitstalige Gemeenschap<\/a>&apos;. Er zijn <strong>overgangsmaatregelen met een specifieke verminderingscode<\/strong> voorzien voor 54- en 58-jarigen in dienst op 31 december 2018. <\/p> <p> <\/p> <\/div> <br \/>",
+  "institution": "institution:50e98b3835fcd2ca2cf279feebb4d842069ee83a",
+  "introduction": "<p> <br \/> <\/p>",
+  "is_searchable": true,
+  "item_id": "c95f97149d36bbb78289a3aa558e3102087b7c87",
+  "locale": "nl",
+  "title": "Oudere werknemers",
+  "title_short": "Oudere werknemers",
+  "_sha1": "d3af240a76309ca9ecee91294b0bed2a978c5259",
+  "_published_datetime": "2022-03-19T17:12:36+01:00"
+}

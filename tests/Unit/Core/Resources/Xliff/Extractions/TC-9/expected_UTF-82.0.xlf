@@ -43,7 +43,7 @@
       <group id="/html/body/div">
         <unit id="/html/body/div/h3">
           <segment id="/html/body/div/h3">
-            <source> Vlaams Gewest: </source>
+            <source>Vlaams Gewest:</source>
             <target/>
           </segment>
         </unit>
@@ -76,9 +76,7 @@
       <group id="/html/body/div">
         <unit id="/html/body/div/h3">
           <segment id="/html/body/div/h3">
-            <source>&amp;#13;
-        Vlaams Gewest:&amp;#13;
-    </source>
+            <source>Vlaams Gewest:</source>
             <target/>
           </segment>
         </unit>
@@ -113,7 +111,7 @@
       <group id="/html/body/div">
         <unit id="/html/body/div/h3">
           <segment id="/html/body/div/h3">
-            <source> Vlaams Gewest: </source>
+            <source>Vlaams Gewest:</source>
             <target/>
           </segment>
         </unit>

@@ -33,7 +33,7 @@
         </trans-unit>
         <group restype="x-html-div" html:class="message alert" id="/html/body/div">
           <trans-unit restype="x-html-h3" id="/html/body/div/h3">
-            <source xml:lang="en"> Vlaams Gewest: </source>
+            <source xml:lang="en">Vlaams Gewest:</source>
             <target xml:lang="fr" state="new"/>
           </trans-unit>
           <trans-unit restype="x-html-p" id="/html/body/div/p">
@@ -58,9 +58,7 @@
         </trans-unit>
         <group restype="x-html-div" html:class="message alert" id="/html/body/div">
           <trans-unit restype="x-html-h3" id="/html/body/div/h3">
-            <source xml:lang="en">&amp;#13;
-        Vlaams Gewest:&amp;#13;
-    </source>
+            <source xml:lang="en">Vlaams Gewest:</source>
             <target xml:lang="fr" state="new"/>
           </trans-unit>
           <trans-unit restype="x-html-p" id="/html/body/div/p">
@@ -87,7 +85,7 @@
         </trans-unit>
         <group restype="x-html-div" html:class="message alert" id="/html/body/div">
           <trans-unit restype="x-html-h3" id="/html/body/div/h3">
-            <source xml:lang="en"> Vlaams Gewest: </source>
+            <source xml:lang="en">Vlaams Gewest:</source>
             <target xml:lang="fr" state="new"/>
           </trans-unit>
           <trans-unit restype="x-html-p" id="/html/body/div/p">

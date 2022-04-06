@@ -73,10 +73,11 @@ class User extends BaseUser implements UserInterface, EntityInterface
     private $wysiwygOptions;
 
     /**
+     * @var array<mixed>|null
      *
      * @ORM\Column(name="settings", type="text", nullable=true)
      */
-    private ?array $settings;
+    private ?array $settings = null;
 
     /**
      * @var bool

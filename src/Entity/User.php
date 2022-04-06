@@ -73,7 +73,6 @@ class User extends BaseUser implements UserInterface, EntityInterface
     private $wysiwygOptions;
 
     /**
-     *
      * @ORM\Column(name="settings", type="text", nullable=true)
      */
     private string $settings;
@@ -387,9 +386,6 @@ class User extends BaseUser implements UserInterface, EntityInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSettings(): string
     {
         return $this->settings;

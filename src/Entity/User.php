@@ -73,6 +73,12 @@ class User extends BaseUser implements UserInterface, EntityInterface
     private $wysiwygOptions;
 
     /**
+     *
+     * @ORM\Column(name="settings", type="text", nullable=true)
+     */
+    private ?array $settings;
+
+    /**
      * @var bool
      *
      * @ORM\Column(name="layout_boxed", type="boolean")
@@ -372,6 +378,24 @@ class User extends BaseUser implements UserInterface, EntityInterface
     public function getWysiwygOptions(): ?string
     {
         return $this->wysiwygOptions;
+    }
+
+    /**
+     * @param array<mixed> $settings
+     */
+    public function setSettings(array $settings): self
+    {
+        $this->settings = $settings;
+
+        return $this;
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function getSettings(): ?array
+    {
+        return $this->settings;
     }
 
     /**

@@ -73,11 +73,10 @@ class User extends BaseUser implements UserInterface, EntityInterface
     private $wysiwygOptions;
 
     /**
-     * @var array<mixed>|null
      *
      * @ORM\Column(name="settings", type="text", nullable=true)
      */
-    private ?array $settings = null;
+    private string $settings;
 
     /**
      * @var bool
@@ -381,10 +380,7 @@ class User extends BaseUser implements UserInterface, EntityInterface
         return $this->wysiwygOptions;
     }
 
-    /**
-     * @param array<mixed> $settings
-     */
-    public function setSettings(array $settings): self
+    public function setSettings(string $settings): self
     {
         $this->settings = $settings;
 
@@ -392,9 +388,9 @@ class User extends BaseUser implements UserInterface, EntityInterface
     }
 
     /**
-     * @return array<mixed>
+     * @return string
      */
-    public function getSettings(): ?array
+    public function getSettings(): string
     {
         return $this->settings;
     }

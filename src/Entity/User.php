@@ -75,7 +75,7 @@ class User extends BaseUser implements UserInterface, EntityInterface
     /**
      * @ORM\Column(name="settings", type="text", nullable=true)
      */
-    private string $settings;
+    private ?string $settings = null;
 
     /**
      * @var bool
@@ -379,14 +379,14 @@ class User extends BaseUser implements UserInterface, EntityInterface
         return $this->wysiwygOptions;
     }
 
-    public function setSettings(string $settings): self
+    public function setSettings(?string $settings): self
     {
         $this->settings = $settings;
 
         return $this;
     }
 
-    public function getSettings(): string
+    public function getSettings(): ?string
     {
         return $this->settings;
     }

@@ -96,7 +96,7 @@ final class UserType extends AbstractType
                 'attr' => ['class' => 'wysiwyg-profile-options'],
             ])
             ->add('settings', CodeEditorType::class, [
-                'label' => 'user.settings',
+                'label' => 'Settings',
                 'required' => false,
                 'language' => 'ace/mode/json',
                 'attr' => ['class' => 'settings-profile'],

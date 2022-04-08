@@ -22,7 +22,7 @@ services:
     app.twig_extension_user: '@EMS\CoreBundle\Twig\UserRuntime'
     EMS\CoreBundle\Twig\UserRuntime:
         arguments:
-            - '@EMS\CoreBundle\Repository\UserRepository'
+            - '@ems.repository.user'
         tags:
             - { name: twig.runtime, priority: -2000 }
     app.twig.extension.stringloader:

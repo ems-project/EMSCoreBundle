@@ -95,6 +95,12 @@ final class UserType extends AbstractType
                 'language' => 'ace/mode/json',
                 'attr' => ['class' => 'wysiwyg-profile-options'],
             ])
+            ->add('settings', CodeEditorType::class, [
+                'label' => 'Settings',
+                'required' => false,
+                'language' => 'ace/mode/json',
+                'attr' => ['class' => 'settings-profile'],
+            ])
             ->add('roles', ChoiceType::class, [
                 'choices' => $this->userService->getExistingRoles(),
                 'label' => 'Roles',

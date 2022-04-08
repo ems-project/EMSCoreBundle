@@ -26,6 +26,7 @@
             {% include "@EMSCore/user/wysiwygOptions.html.twig" with {
 				form: form
 			} %}
+			{{ form_row(form.settings) }}
     	</div>
     	<div class="col-md-6">
 	    	{{ form_row(form.roles) }}

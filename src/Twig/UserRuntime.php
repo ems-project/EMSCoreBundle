@@ -10,8 +10,7 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 final class UserRuntime implements RuntimeExtensionInterface
 {
-    /** @var UserRepository */
-    private $userRepository;
+    private UserRepository $userRepository;
 
     public function __construct(UserRepository $userRepository)
     {

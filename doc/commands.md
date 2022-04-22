@@ -154,18 +154,20 @@ Arguments:
   environment
 
 Options:
-      --task=TASK                    {\"title\":\"title\",\"assignee\":\"username\",\"description\":\"optional\"}
-      --field-assignee=FIELDASSIGNEE  assignee field in es document
-      --field-deadline=FIELDDEADLINE  deadline field in es document
-      --default-owner=DEFAULTOWNER    default owner username
-      --not-published=NOTPUBLISHED    only for revisions not published in this environment
-      --scroll-size=SCROLLSIZE        Size of the elasticsearch scroll request
-      --scroll-timeout=SCROLLTIMEOUT  Time to migrate "scrollSize" items i.e. 30s or 2m
-      --searchQuery[=SEARCHQUERY]    Query used to find elasticsearch records to import [default: "{}"]
+      --task=TASK                      {\"title\":\"title\",\"assignee\":\"username\",\"description\":\"optional\"}
+      --field-owner=FIELD-OWNER        owner field in es document
+      --field-assignee=FIELD-ASSIGNEE  assignee field in es document
+      --field-deadline=FIELD-DEADLINE  deadline field in es document
+      --default-owner=DEFAULT-OWNER    default owner username
+      --not-published=NOT-PUBLISHED    only for revisions not published in this environment
+      --scroll-size=SCROLL-SIZE        Size of the elasticsearch scroll request
+      --scroll-timeout=SCROLL-TIMEOUT  Time to migrate "scrollSize" items i.e. 30s or 2m
+      --searchQuery[=SEARCH-QUERY]     Query used to find elasticsearch records to import [default: "{}"]
 ```
 
 * **environment** : name of the environment for running the es query
 * **--task**: json escaped string for task definition  
+* **--field-owner**: use document value for owner, fallback default-owner (will search username, displayName, email)
 * **--field-assignee**: use document value for assignee (will search username, displayName, email)
 * **--field-deadline**: use document value for deadline
 * **--default-owner**: if the revision has no owner, this username will be used  

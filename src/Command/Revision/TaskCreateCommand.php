@@ -155,14 +155,15 @@ final class TaskCreateCommand extends AbstractCommand
         $taskDTO->assignee = $this->task['assignee'];
         $taskDTO->description = $this->task['description'] ?? null;
 
-        if ($this->fieldAssignee && $document->has($this->fieldAssignee)) {
+        if (null !== $this->fieldAssignee && $document->has($this->fieldAssignee)) {
             $assignee = $document->get($this->fieldAssignee);
-            if ($user = $this->userService->searchUser($assignee)) {
+            $user = $this->userService->searchUser($assignee);
+            if (null !== $user) {
                 $taskDTO->assignee = $user->getUsername();
             }
         }
 
-        if ($this->fieldDeadline && $document->has($this->fieldDeadline)) {
+        if (null !== $this->fieldDeadline && $document->has($this->fieldDeadline)) {
             $deadline = DateTime::create($document->get($this->fieldDeadline));
             $taskDTO->deadline = $deadline->format('d/m/Y');
         }
@@ -178,9 +179,10 @@ final class TaskCreateCommand extends AbstractCommand
             return $revision->getOwner();
         }
 
-        if ($this->fieldOwner && $document->has($this->fieldOwner)) {
+        if (null !== $this->fieldOwner && $document->has($this->fieldOwner)) {
             $ownerFieldValue = $document->get($this->fieldOwner);
-            if ($user = $this->userService->searchUser($ownerFieldValue)) {
+            $user = $this->userService->searchUser($ownerFieldValue)
+            if (null !== $user) {
                 return $user->getUsername();
             }
         }

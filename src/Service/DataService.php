@@ -1086,7 +1086,7 @@ class DataService
         $revision->setLockUntil(new \DateTime($this->lockTime));
 
         $ownerRole = $contentType->getOwnerRole();
-        if ($ownerRole && $this->userService->isGrantedRole($ownerRole)) {
+        if (null !== $ownerRole && $this->userService->isGrantedRole($ownerRole)) {
             $revision->setOwner($currentUser->getUsername());
         }
 

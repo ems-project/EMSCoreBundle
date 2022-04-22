@@ -181,7 +181,7 @@ final class TaskCreateCommand extends AbstractCommand
 
         if (null !== $this->fieldOwner && $document->has($this->fieldOwner)) {
             $ownerFieldValue = $document->get($this->fieldOwner);
-            $user = $this->userService->searchUser($ownerFieldValue)
+            $user = $this->userService->searchUser($ownerFieldValue);
             if (null !== $user) {
                 return $user->getUsername();
             }

@@ -34,6 +34,7 @@ final class TaskCreateCommand extends AbstractCommand
     private string $searchQuery;
 
     private string $defaultOwner;
+    private ?string $fieldOwner = null;
     private ?string $fieldAssignee = null;
     private ?string $fieldDeadline = null;
     private ?string $notPublished = null;
@@ -42,6 +43,7 @@ final class TaskCreateCommand extends AbstractCommand
 
     public const ARGUMENT_ENVIRONMENT = 'environment';
     public const OPTION_TASK = 'task';
+    public const OPTION_FIELD_OWNER = 'field-owner';
     public const OPTION_FIELD_ASSIGNEE = 'field-assignee';
     public const OPTION_FIELD_DEADLINE = 'field-deadline';
     public const OPTION_DEFAULT_OWNER = 'default-owner';
@@ -70,6 +72,7 @@ final class TaskCreateCommand extends AbstractCommand
         $this
             ->addArgument(self::ARGUMENT_ENVIRONMENT, InputArgument::REQUIRED)
             ->addOption(self::OPTION_TASK, null, InputOption::VALUE_REQUIRED, '{\"title\":\"title\",\"assignee\":\"username\",\"description\":\"optional\"}')
+            ->addOption(self::OPTION_FIELD_OWNER, null, InputOption::VALUE_REQUIRED, 'owner field in es document')
             ->addOption(self::OPTION_FIELD_ASSIGNEE, null, InputOption::VALUE_REQUIRED, 'assignee field in es document')
             ->addOption(self::OPTION_FIELD_DEADLINE, null, InputOption::VALUE_REQUIRED, 'deadline field in es document')
             ->addOption(self::OPTION_DEFAULT_OWNER, null, InputOption::VALUE_REQUIRED, 'default owner username')
@@ -91,6 +94,7 @@ final class TaskCreateCommand extends AbstractCommand
 
         $this->task = Json::decode($this->getOptionString(self::OPTION_TASK));
         $this->defaultOwner = $this->getOptionString(self::OPTION_DEFAULT_OWNER);
+        $this->fieldOwner = $this->getOptionStringNull(self::OPTION_FIELD_OWNER);
         $this->fieldAssignee = $this->getOptionStringNull(self::OPTION_FIELD_ASSIGNEE);
         $this->fieldDeadline = $this->getOptionStringNull(self::OPTION_FIELD_DEADLINE);
         $this->notPublished = $this->getOptionStringNull(self::OPTION_NOT_PUBLISHED);
@@ -146,25 +150,43 @@ final class TaskCreateCommand extends AbstractCommand
             return;
         }
 
-        $owner = $revision->hasOwner() ? $revision->getOwner() : $this->defaultOwner;
-
         $taskDTO = new TaskDTO();
         $taskDTO->title = $this->task['title'];
         $taskDTO->assignee = $this->task['assignee'];
         $taskDTO->description = $this->task['description'] ?? null;
 
-        if ($this->fieldAssignee && $document->has($this->fieldAssignee)) {
+        if (null !== $this->fieldAssignee && $document->has($this->fieldAssignee)) {
             $assignee = $document->get($this->fieldAssignee);
-            if ($user = $this->userService->searchUser($assignee)) {
+            $user = $this->userService->searchUser($assignee);
+            if (null !== $user) {
                 $taskDTO->assignee = $user->getUsername();
             }
         }
 
-        if ($this->fieldDeadline && $document->has($this->fieldDeadline)) {
+        if (null !== $this->fieldDeadline && $document->has($this->fieldDeadline)) {
             $deadline = DateTime::create($document->get($this->fieldDeadline));
             $taskDTO->deadline = $deadline->format('d/m/Y');
         }
 
+        $owner = $this->getOwner($revision, $document);
+
         $this->taskManager->taskCreateFromRevision($taskDTO, $revision, $owner);
+    }
+
+    private function getOwner(Revision $revision, Document $document): string
+    {
+        if ($revision->hasOwner()) {
+            return $revision->getOwner();
+        }
+
+        if (null !== $this->fieldOwner && $document->has($this->fieldOwner)) {
+            $ownerFieldValue = $document->get($this->fieldOwner);
+            $user = $this->userService->searchUser($ownerFieldValue);
+            if (null !== $user) {
+                return $user->getUsername();
+            }
+        }
+
+        return $this->defaultOwner;
     }
 }

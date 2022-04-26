@@ -4,32 +4,27 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Revision;
 
-use EMS\CommonBundle\Command\CommandInterface;
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Common\Standard\DateTime;
-use EMS\CoreBundle\Command\LockCommand;
 use EMS\CoreBundle\Commands;
+use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class ArchiveCommand extends Command implements CommandInterface
+final class ArchiveCommand extends AbstractCommand
 {
-    private SymfonyStyle $style;
-    private ContentTypeService $contentTypeService;
     private RevisionService $revisionService;
+    private RevisionSearcher $revisionSearcher;
+    private ContentTypeService $contentTypeService;
 
     private ContentType $contentType;
-    /** @var array<mixed> */
-    private array $search = [];
-    private int $batchSize;
+    private string $searchQuery;
+    private ?\DateTimeInterface $modifiedBefore = null;
 
     protected static $defaultName = Commands::REVISION_ARCHIVE;
     private const USER = 'SYSTEM_ARCHIVE';
@@ -38,98 +33,90 @@ final class ArchiveCommand extends Command implements CommandInterface
     public const OPTION_FORCE = 'force';
     public const OPTION_MODIFIED_BEFORE = 'modified-before';
     public const OPTION_BATCH_SIZE = 'batch-size';
+    public const OPTION_SCROLL_SIZE = 'scroll-size';
+    public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
+    public const OPTION_SEARCH_QUERY = 'search-query';
 
-    public function __construct(ContentTypeService $contentTypeService, RevisionService $revisionService, int $defaultBulkSize)
-    {
+    public function __construct(
+        RevisionSearcher $revisionSearcher,
+        RevisionService $revisionService,
+        ContentTypeService $contentTypeService
+    ) {
         parent::__construct();
-        $this->contentTypeService = $contentTypeService;
+        $this->revisionSearcher = $revisionSearcher;
         $this->revisionService = $revisionService;
-        $this->batchSize = $defaultBulkSize;
+        $this->contentTypeService = $contentTypeService;
     }
 
     protected function configure(): void
     {
         $this
             ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'ContentType name')
-            ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
-            ->addOption(self::OPTION_MODIFIED_BEFORE, '', InputOption::VALUE_REQUIRED, 'Y-m-dTH:i:s (2019-07-15T11:38:16)')
-            ->addOption(self::OPTION_BATCH_SIZE, '', InputOption::VALUE_REQUIRED, 'db records batch size', 'default_bulk_size')
-        ;
+            ->addOption(self::OPTION_MODIFIED_BEFORE, null, InputOption::VALUE_REQUIRED, 'Y-m-dTH:i:s (2019-07-15T11:38:16)')
+            ->addOption(self::OPTION_SCROLL_SIZE, null, InputOption::VALUE_REQUIRED, 'Size of the elasticsearch scroll request')
+            ->addOption(self::OPTION_SCROLL_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Time to migrate "scrollSize" items i.e. 30s or 2m')
+            ->addOption(self::OPTION_SEARCH_QUERY, null, InputOption::VALUE_OPTIONAL, 'Query used to find elasticsearch records to import', '{}')
+         ;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->style = new SymfonyStyle($input, $output);
-        $this->style->title('EMS - Revision - Archive');
+        parent::initialize($input, $output);
+        $this->io->title('EMS - Revision - Archive');
 
-        $batchSize = \intval($input->getOption('batch-size'));
-        if ($batchSize > 0) {
-            $this->batchSize = $batchSize;
+        if ($scrollSize = $this->getOptionIntNull(self::OPTION_SCROLL_SIZE)) {
+            $this->revisionSearcher->setSize($scrollSize);
+        }
+        if ($scrollTimeout = $this->getOptionStringNull(self::OPTION_SCROLL_TIMEOUT)) {
+            $this->revisionSearcher->setTimeout($scrollTimeout);
         }
 
-        $contentTypeName = \strval($input->getArgument('content-type'));
+        $contentTypeName = $this->getArgumentString(self::ARGUMENT_CONTENT_TYPE);
         $this->contentType = $this->contentTypeService->giveByName($contentTypeName);
+        $this->searchQuery = $this->getOptionString(self::OPTION_SEARCH_QUERY);
 
-        $modifiedBefore = $input->getOption('modified-before');
-
-        $this->search = \array_filter([
-            'lockBy' => self::USER,
-            'archived' => false,
-            'contentType' => $this->contentType,
-            'modifiedBefore' => $modifiedBefore ? DateTime::create(\strval($modifiedBefore)) : null,
-        ], fn ($value) => null !== $value);
+        $modifiedBefore = $this->getOptionStringNull(self::OPTION_MODIFIED_BEFORE);
+        if ($modifiedBefore) {
+            $this->modifiedBefore = DateTime::create($modifiedBefore);
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $progress = $this->style->createProgressBar();
+        $environment = $this->contentType->giveEnvironment();
+        $search = $this->revisionSearcher->create($environment, $this->searchQuery, [], true);
 
-        $lock = $this->lock($output, $this->contentType, \boolval($input->getOption('force')));
-        if (LockCommand::RESULT_SUCCESS !== $lock) {
-            return 0;
-        }
+        $this->io->comment(\sprintf('Found %s hits', $search->getTotal()));
+        $this->io->progressStart($search->getTotal());
 
-        $countArchived = 0;
-        $revisions = $this->revisionService->search($this->search);
-        $revisions->setBatchSize($this->batchSize);
+        $counterNotModifiedBefore = $counterSuccess = 0;
 
-        $revisions->batch(function (Revision $revision) use ($progress, &$countArchived) {
-            $lockedBy = $revision->getLockBy();
-            if (self::USER !== $lockedBy) {
-                throw new \RuntimeException(\sprintf('Unexpected revision not locked by %s', self::USER));
-            }
-            $this->revisionService->archive($revision, $lockedBy, false);
-            $progress->advance();
-            ++$countArchived;
-        });
+        foreach ($this->revisionSearcher->search($environment, $search) as $revisions) {
+            $this->revisionSearcher->lock($revisions, self::USER);
 
-        $progress->finish();
+            foreach ($revisions->transaction() as $revision) {
+                $revisionModified = $revision->getModified()->getTimestamp();
+                if ($this->modifiedBefore && $revisionModified > $this->modifiedBefore->getTimestamp()) {
+                    ++$counterNotModifiedBefore;
+                    continue;
+                }
 
-        $this->style->success(\sprintf('Archived %d revisions', $countArchived));
+                $this->revisionService->archive($revision, self::USER, false);
+                ++$counterSuccess;
 
-        return 1;
-    }
-
-    private function lock(OutputInterface $output, ContentType $contentType, bool $force): int
-    {
-        try {
-            if (null === $application = $this->getApplication()) {
-                throw new \RuntimeException('could not find application');
+                $this->io->progressAdvance();
             }
 
-            return $application->find('ems:contenttype:lock')->run(
-                new ArrayInput([
-                    'contentType' => $contentType->getName(),
-                    'time' => '+1day',
-                    '--user' => self::USER,
-                    '--force' => $force,
-                ]),
-                $output
-            );
-        } catch (\Throwable $e) {
-            $this->style->error(\sprintf('Lock failed! (%s)', $e->getMessage()));
-
-            return 0;
+            $this->revisionSearcher->unlock($revisions);
         }
+
+        $this->io->progressFinish();
+
+        if (null !== $this->modifiedBefore) {
+            $this->io->comment(\sprintf('%d revisions not modified before', $counterNotModifiedBefore));
+        }
+        $this->io->success(\sprintf('%d revisions archived', $counterSuccess));
+
+        return self::EXECUTE_SUCCESS;
     }
 }

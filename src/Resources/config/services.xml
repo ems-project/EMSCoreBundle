@@ -170,5 +170,11 @@
         <service id="emsco.helper.entities" class="EMS\CoreBundle\Core\Entity\EntitiesHelper">
             <argument type="tagged_iterator" tag="emsco.entity.service"/>
         </service>
+
+        <service id="ems_core.core_metric.core_metric_collector" class="EMS\CoreBundle\Core\Metric\CoreMetricCollector">
+            <argument type="service" id="ems.service.environment"/>
+            <tag name="ems.metric_collector"/>
+        </service>
+
     </services>
 </container>

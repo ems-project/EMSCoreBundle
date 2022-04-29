@@ -69,7 +69,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.asset_config', $config['asset_config']);
         $container->setParameter('ems_core.tika_server', $config['tika_server']);
         $container->setParameter('ems_core.pre_generated_ouuids', $config['pre_generated_ouuids']);
-        $container->setParameter('ems_core.version', $this->getCoreVersion(Type::string($container->getParameter('kernel.root_dir'))));
         $container->setParameter('ems_core.private_key', $config['private_key']);
         $container->setParameter('ems_core.public_key', $config['public_key']);
         $container->setParameter('ems_core.health_check_allow_origin', $config['health_check_allow_origin']);
@@ -82,34 +81,10 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $this->loadLdap($container, $yamlLoader, $config['ldap'] ?? []);
     }
 
-    public static function getCoreVersion(string $rootDir): string
-    {
-        $out = false;
-        //try to identify the ems core version
-        if (\file_exists($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')) {
-            $lockInfo = \json_decode(\file_get_contents($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock'), true);
-
-            if (!empty($lockInfo['packages'])) {
-                foreach ($lockInfo['packages'] as $package) {
-                    if (!empty($package['name']) && 'elasticms/core-bundle' === $package['name']) {
-                        if (!empty($package['version'])) {
-                            $out = $package['version'];
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-
-        return $out;
-    }
-
     public function prepend(ContainerBuilder $container)
     {
         // get all bundles
         $bundles = $container->getParameter('kernel.bundles');
-
-        $coreVersion = $this->getCoreVersion(Type::string($container->getParameter('kernel.root_dir')));
 
         $configs = $container->getExtensionConfig($this->getAlias());
 
@@ -117,7 +92,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'theme_color' => $configs[0]['theme_color'] ?? Configuration::THEME_COLOR,
             'ems_name' => $configs[0]['name'] ?? Configuration::NAME,
             'ems_shortname' => $configs[0]['shortname'] ?? Configuration::SHORTNAME,
-            'ems_core_version' => $coreVersion,
             'paging_size' => $configs[0]['paging_size'] ?? Configuration::PAGING_SIZE,
             'circles_object' => $configs[0]['circles_object'] ?? Configuration::CIRCLES_OBJECT,
             'datepicker_daysofweek_highlighted' => $configs[0]['datepicker_daysofweek_highlighted'] ?? Configuration::DATEPICKER_DAYSOFWEEK_HIGHLIGHTED,

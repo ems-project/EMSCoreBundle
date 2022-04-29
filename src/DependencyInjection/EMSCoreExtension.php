@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\DependencyInjection;
 
-use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CoreBundle\Routes;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Symfony\Component\Config\FileLocator;

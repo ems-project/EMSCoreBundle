@@ -53,7 +53,7 @@ final class RevisionSearcher
     /**
      * @param string[] $contentTypes
      */
-    public function create(Environment $environment, string $query, array $contentTypes = [], bool $docs = false): RevisionSearch
+    public function initScrollSearch(Environment $environment, string $query, array $contentTypes = [], bool $docs = false): ScrollSearch
     {
         $search = $this->elasticaService->convertElasticsearchBody(
             [$environment->getAlias()],
@@ -68,23 +68,23 @@ final class RevisionSearcher
         $scroll = $this->elasticaService->scroll($search, $this->timeout);
         $total = $this->elasticaService->count($search);
 
-        return new RevisionSearch($scroll, $total);
+        return new ScrollSearch($scroll, $environment, $total);
     }
 
     /**
      * @return iterable|Revisions[]
      */
-    public function search(Environment $environment, RevisionSearch $search, ?string $lockBy = null, string $until = '+5 minutes'): iterable
+    public function scrollSearch(ScrollSearch $search): iterable
     {
         $config = $this->entityManager->getConnection()->getConfiguration();
         $logger = $config->getSQLLogger();
         $config->setSQLLogger(null);
 
-        foreach ($search->getScroll() as $resultSet) {
+        foreach ($search->scroll as $resultSet) {
             $documents = $resultSet->getDocuments();
             /** @var string[] $ouuids */
             $ouuids = \array_map(fn (Document $doc) => $doc->getId(), $documents);
-            $qb = $this->revisionRepository->searchByEnvironmentOuuids($environment, $ouuids);
+            $qb = $this->revisionRepository->searchByEnvironmentOuuids($search->environment, $ouuids);
 
             yield new Revisions($qb, $resultSet, $this->size);
         }

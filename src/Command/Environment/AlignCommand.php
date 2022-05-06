@@ -107,17 +107,17 @@ class AlignCommand extends AbstractCommand
             return self::EXECUTE_ERROR;
         }
 
-        $search = $this->revisionSearcher->create($this->source, $this->searchQuery);
+        $search = $this->revisionSearcher->initScrollSearch($this->source, $this->searchQuery);
         $bulkSize = $this->revisionSearcher->getSize();
 
-        $this->io->note(\sprintf('The source environment contains %s elements, start aligning environments...', $search->getTotal()));
+        $this->io->note(\sprintf('The source environment contains %s elements, start aligning environments...', $search->total));
 
         $deletedRevision = 0;
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];
 
-        $this->io->progressStart($search->getTotal());
-        foreach ($this->revisionSearcher->search($this->source, $search) as $revisions) {
+        $this->io->progressStart($search->total);
+        foreach ($this->revisionSearcher->scrollSearch($search) as $revisions) {
             $this->revisionSearcher->lock($revisions, $this->user);
             $this->publishService->bulkPublishStart($bulkSize);
 

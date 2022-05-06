@@ -111,12 +111,12 @@ final class TaskCreateCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $search = $this->revisionSearcher->create($this->environment, $this->searchQuery, [], true);
+        $search = $this->revisionSearcher->initScrollSearch($this->environment, $this->searchQuery, [], true);
 
-        $this->io->comment(\sprintf('Found %s hits', $search->getTotal()));
-        $this->io->progressStart($search->getTotal());
+        $this->io->comment(\sprintf('Found %s hits', $search->total));
+        $this->io->progressStart($search->total);
 
-        foreach ($this->revisionSearcher->search($this->environment, $search) as $revisions) {
+        foreach ($this->revisionSearcher->scrollSearch($search) as $revisions) {
             $this->revisionSearcher->lock($revisions, self::USER);
 
             foreach ($revisions->transaction() as $revision) {

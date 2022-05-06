@@ -84,14 +84,14 @@ final class ArchiveCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $environment = $this->contentType->giveEnvironment();
-        $search = $this->revisionSearcher->create($environment, $this->searchQuery, [$this->contentType->getName()], true);
+        $search = $this->revisionSearcher->initScrollSearch($environment, $this->searchQuery, [$this->contentType->getName()], true);
 
-        $this->io->comment(\sprintf('Found %s hits', $search->getTotal()));
-        $this->io->progressStart($search->getTotal());
+        $this->io->comment(\sprintf('Found %s hits', $search->total));
+        $this->io->progressStart($search->total);
 
         $counterNotModifiedBefore = $counterSuccess = 0;
 
-        foreach ($this->revisionSearcher->search($environment, $search) as $revisions) {
+        foreach ($this->revisionSearcher->scrollSearch($search) as $revisions) {
             $this->revisionSearcher->lock($revisions, self::USER);
 
             foreach ($revisions->transaction() as $revision) {
@@ -101,7 +101,7 @@ final class ArchiveCommand extends AbstractCommand
                     continue;
                 }
 
-                $this->revisionService->archive($revision, self::USER, true);
+                $this->revisionService->archive($revision, self::USER);
                 ++$counterSuccess;
 
                 $this->io->progressAdvance();

@@ -96,12 +96,12 @@ final class TransformCommand extends AbstractCommand
         }
 
         $environment = $this->contentType->giveEnvironment();
-        $search = $this->revisionSearcher->create($environment, $this->searchQuery, [$this->contentType->getName()]);
-        $this->io->progressStart($search->getTotal());
+        $search = $this->revisionSearcher->initScrollSearch($environment, $this->searchQuery, [$this->contentType->getName()]);
+        $this->io->progressStart($search->total);
 
         $transformed = 0;
 
-        foreach ($this->revisionSearcher->search($environment, $search) as $revisions) {
+        foreach ($this->revisionSearcher->scrollSearch($search) as $revisions) {
             foreach ($revisions->transaction() as $revision) {
                 $result = $this->contentTransformer->transform($revision, $transformerDefinitions, $this->user, $dryRun);
                 if ($result) {

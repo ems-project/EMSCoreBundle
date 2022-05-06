@@ -35,6 +35,9 @@
             <argument type="service" id="ems.service.contenttype"/>
             <tag name="console.command"/>
         </service>
+        <service id="ems.command.revision.delete" class="EMS\CoreBundle\Command\Revision\DeleteCommand">
+            <tag name="console.command"/>
+        </service>
         <service id="ems.command.revision.time_machine" class="EMS\CoreBundle\Command\Revision\TimeMachineCommand">
             <argument type="service" id="ems.service.revision"/>
             <argument type="service" id="ems.service.data"/>

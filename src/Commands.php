@@ -12,6 +12,8 @@ final class Commands
 
     public const REVISION_ARCHIVE = 'emsco:revision:archive';
 
+    public const REVISION_DELETE = 'emsco:revision:delete';
+
     public const RELEASE_PUBLISH = 'emsco:release:publish';
 
     public const RELEASE_CREATE = 'emsco:release:create';

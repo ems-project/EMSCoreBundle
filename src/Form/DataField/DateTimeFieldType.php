@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Exception\DataFormatException;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -145,7 +144,10 @@ class DateTimeFieldType extends DataFieldType
         $dateTime = \DateTimeImmutable::createFromFormat(\DateTimeImmutable::ATOM, $value);
 
         if (false === $dateTime) {
-            throw new DataFormatException(\sprintf('Invalid parse format %s or ATOM for date string: %s', $parseFormat, $value));
+            $dataField = parent::reverseViewTransform($value, $fieldType);
+            $dataField->addMessage(\sprintf('Invalid parse format %s or ATOM for date string: %s', $parseFormat, $value));
+
+            return $dataField;
         }
 
         return parent::reverseViewTransform($dateTime->format(\DateTimeImmutable::ATOM), $fieldType);

@@ -169,5 +169,12 @@
         <service id="emsco.helper.entities" class="EMS\CoreBundle\Core\Entity\EntitiesHelper">
             <argument type="tagged_iterator" tag="emsco.entity.service"/>
         </service>
+
+        <service id="ems_core.core_revision.live_edit_manager" class="EMS\CoreBundle\Core\Revision\LiveEditManager">
+            <argument type="service" id="security.authorization_checker"/>
+            <argument type="service" id="ems.service.revision"/>
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.user" />
+        </service>
     </services>
 </container>

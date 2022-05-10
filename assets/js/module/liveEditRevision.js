@@ -2,37 +2,35 @@ import {observeDom} from "../helper/observeDom";
 import {ajaxJsonGet, ajaxJsonPost, ajaxJsonSubmit} from "./../helper/ajax";
 
 export default class LiveEditRevision {
+
     constructor(target) {
-        const buttons = target.querySelectorAll('button[data-emsco-edit-revision]');
         const self = this;
-        this.loadOnClick(buttons);
-        observeDom(target.documentElement, function(mutations) {
-            self.observeDom(mutations);
+        this.target = target;
+        this.revision = this.target.getAttribute('data-emsco-edit-revision');
+        this.url = this.target.getAttribute('data-emsco-edit-revision-url');
+
+        target.addEventListener('click', function (event) {
+            self.onClick(this);
         });
     }
 
-    loadOnClick(buttons) {
-        const self = this;
-        [].forEach.call(buttons, function(button) {
-            //  @TODO something => EventListener are duplicate
-            button.addEventListener('click', function(event) {
-                self.onClick(button);
-            });
+   onClick(button) {
+        var parent = button.closest('html');
+        const tagFields = parent.querySelectorAll('div[data-emsco-edit-emslink="' + this.revision +'"]');
+        var fields = [];
+        [].forEach.call(tagFields, function(tagField) {
+            fields.push(tagField.getAttribute('data-emsco-edit-field'));
         });
-    }
 
-    onClick(button) {
-        // @TODO => take TR parent and see data-emsco-edit-field exist ....
-    }
+        ajaxJsonPost(this.url, JSON.stringify({'_data': { emsLink: this.revision, fields: fields}}), (json, request) => {
+            if (200 === request.status) {
+                console.log(json);
+                // @TODO Json if editable = true => replace <div> by corresponding <form>
 
-    observeDom(mutationList) {
-        const self = this;
-        [].forEach.call(mutationList, function(mutation) {
-            if(mutation.addedNodes.length < 1) {
-                return;
             }
-            const buttons = mutation.target.querySelectorAll('button[data-emsco-edit-revision]');
-            self.loadOnClick(buttons);
         });
     }
+
+
+
 }

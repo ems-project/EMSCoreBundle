@@ -7,6 +7,7 @@
 import EmsListeners from "./EmsListeners";
 import JsonMenu from "./module/jsonMenu";
 import JsonMenuNested from "./module/jsonMenuNested";
+import LiveEditRevision from "./module/liveEditRevision";
 
 (function(factory) {
     "use strict";
@@ -198,6 +199,13 @@ import JsonMenuNested from "./module/jsonMenuNested";
         window.jsonMenuNested = jsonMenuNestedList;
     }
 
+    function initEditRevision(target) {
+        const buttons = target.querySelectorAll('button[data-emsco-edit-revision]');
+        [].forEach.call(buttons, function() {
+            new liveEditRevision(this);
+        });
+    }
+
     function initAjaxFormSave() {
         $('button[data-ajax-save-url]').each(function(){
             const button = $(this);
@@ -258,6 +266,7 @@ import JsonMenuNested from "./module/jsonMenuNested";
         startPendingJob();
         initAjaxFormSave();
         initJsonMenu();
+        initEditRevision(document);
 
         //cron to update the cluster status
         window.setInterval(function(){

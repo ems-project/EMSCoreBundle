@@ -30,8 +30,6 @@ class EmsCollectionType extends CollectionType
         $fieldType = clone $builder->getOptions()['metadata'];
         $options['metadata'] = $fieldType;
 
-        $entryOptions = $fieldType->getDisplayOptions();
-
         $disabled = false;
         $sapiName = \php_sapi_name();
         if ($sapiName && 0 !== \strcmp('cli', $sapiName)) {
@@ -46,6 +44,7 @@ class EmsCollectionType extends CollectionType
                     'migration' => $options['migration'],
                     'with_warning' => $options['with_warning'],
                     'raw_data' => $options['raw_data'],
+                    'referrer-ems-id' => $options['referrer-ems-id'],
                 ],
                 'allow_add' => true,
                 'allow_delete' => true,

@@ -108,7 +108,7 @@ function editRevisionEventListeners(target, onChangeCallback = null){
             ckconfig.language = language;
         }
 
-
+        ckconfig.referrerEmsId = $( this ).attr('data-referrer-ems-id');
 
         let tableDefaultCss = $( this ).attr('data-table-default-css');
         if(typeof tableDefaultCss == 'undefined'){

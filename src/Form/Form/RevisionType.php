@@ -40,7 +40,7 @@ class RevisionType extends AbstractType
                 'with_warning' => $options['with_warning'],
                 'raw_data' => $options['raw_data'],
                 'disabled_fields' => $contentType->getDisabledDataFields(),
-                'referrer-ems-id' => $revision ? $revision->getEmsId() : null,
+                'referrer-ems-id' => $revision && $revision->hasOuuid() ? $revision->getEmsId() : null,
         ]);
 
         if ($revision && null === $revision->getEndTime()) {

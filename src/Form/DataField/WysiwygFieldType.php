@@ -104,6 +104,7 @@ class WysiwygFieldType extends DataFieldType
             $attr['data-lang'] = \array_shift($splitLanguage);
         }
 
+        $attr['data-referrer-ems-id'] = $options['referrer-ems-id'] ?? false;
         $attr['data-height'] = $options['height'];
         $attr['data-format-tags'] = $formatTags;
         $attr['data-styles-set'] = $styleSetName;

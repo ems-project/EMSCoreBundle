@@ -68,6 +68,7 @@ class TabsFieldType extends DataFieldType
                         'with_warning' => $options['with_warning'],
                         'raw_data' => $options['raw_data'],
                         'disabled_fields' => $options['disabled_fields'],
+                        'referrer-ems-id' => $options['referrer-ems-id'],
                 ], $fieldType->getDisplayOptions());
 
                 $builder->add($fieldType->getName(), $fieldType->getType(), $options);

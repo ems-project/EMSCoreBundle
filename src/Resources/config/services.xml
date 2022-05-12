@@ -44,6 +44,11 @@
             <argument type="service" id="ems_common.storage.manager"/>
             <argument type="service" id="ems.service.environment"/>
         </service>
+        <service id="ems_core.core_document.data_links_factory" class="EMS\CoreBundle\Core\Document\DataLinksFactory">
+            <argument type="service" id="ems.service.search"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.content_type.view_types" />
+        </service>
         <service id="ems_core.core_content_type_transformer.content_transformer" class="EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformer">
             <argument type="service" id="ems_core.core_content_type_transformer.content_transformers"/>
             <argument type="service" id="ems.service.data"/>

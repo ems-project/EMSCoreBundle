@@ -586,6 +586,7 @@ export default class EmsListeners {
             const dynamicLoading = selectItem.data('dynamic-loading');
             const sortable = selectItem.data('sortable');
             const locale = selectItem.data('locale');
+            const referrerEmsId = selectItem.data('referrer-ems-id');
 
             const params = {
                 escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
@@ -617,6 +618,9 @@ export default class EmsListeners {
 
                         if (locale !== undefined) {
                             data.locale = locale;
+                        }
+                        if (referrerEmsId !== undefined) {
+                            data.referrerEmsId = referrerEmsId;
                         }
 
                         if (circleOnly !== undefined) {

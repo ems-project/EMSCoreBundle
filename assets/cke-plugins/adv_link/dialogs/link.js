@@ -174,12 +174,18 @@
 							    	dataType: 'json',
 							    	delay: 250,
 							    	data: function (params) {
-							    		return {
-								        q: params.term, // search term
-								        page: params.page,
-								        type: typeFilter.val(),
-										locale: editor.config.language
-								      };
+										const data = {
+											q: params.term, // search term
+											page: params.page,
+											type: typeFilter.val(),
+											locale: editor.config.language
+										}
+
+										if (editor.config.referrerEmsId !== undefined) {
+											data.referrerEmsId = editor.config.referrerEmsId; //for custom datalink views
+										}
+
+							    		return data;
 								    },
 									processResults: function (data, params) {
 										// parse the results into the format expected by Select2

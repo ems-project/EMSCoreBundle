@@ -59,6 +59,7 @@ class ObjectPickerType extends Select2Type
             'searchId' => null,
             'circle-only' => false,
             'querySearch' => null,
+            'referrer-ems-id' => null,
         ]);
     }
 
@@ -83,6 +84,7 @@ class ObjectPickerType extends Select2Type
         $view->vars['attr']['data-dynamic-loading'] = $options['dynamicLoading'];
         $view->vars['attr']['data-sortable'] = $options['sortable'];
         $view->vars['attr']['data-query-search'] = $options['querySearch'];
+        $view->vars['attr']['data-referrer-ems-id'] = $options['ouuid'] ?? false;
     }
 
     /**

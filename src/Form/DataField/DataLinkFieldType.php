@@ -170,6 +170,7 @@ class DataLinkFieldType extends DataFieldType
             'type' => $options['type'],
             'querySearch' => $options['querySearch'],
             'searchId' => $options['searchId'],
+            'referrer-ems-id' => $options['referrer-ems-id'] ?? null,
             'dynamicLoading' => $options['dynamicLoading'],
             'sortable' => $options['sortable'],
             'with_warning' => $options['with_warning'],

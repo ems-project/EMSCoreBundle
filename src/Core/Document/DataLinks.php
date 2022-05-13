@@ -148,6 +148,11 @@ final class DataLinks
         return self::SIZE;
     }
 
+    public function hasItems(): bool
+    {
+        return \count($this->items) > 0;
+    }
+
     public function hasReferrerDocument(): bool
     {
         return null !== $this->referrerDocument;

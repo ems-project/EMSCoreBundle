@@ -175,6 +175,9 @@
             <argument type="service" id="ems.service.revision"/>
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems.service.user" />
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <tag name="emsco.entity.service"/>
         </service>
     </services>
 </container>

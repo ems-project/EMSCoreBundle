@@ -5,13 +5,20 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Revision;
 
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
 //use EMS\CoreBundle\Form\DataField\CheckboxFieldType;
 //use EMS\CoreBundle\Form\DataField\TextStringFieldType;
+use EMS\CoreBundle\Form\DataField\TextStringFieldType;
+use EMS\CoreBundle\Form\Form\LiveEditFieldType;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\UserService;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class LiveEditManager
@@ -20,31 +27,39 @@ final class LiveEditManager
     private RevisionService $revisionService;
     private DataService $dataService;
     private UserService $userService;
+    protected FormFactoryInterface $formFactory;
+    private ContentTypeService $contentTypeService;
 
     //const TYPES = [ TextStringFieldType::class, CheckboxFieldType::class ]; @TODO needed or not (maybe not)
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, RevisionService $revisionService, DataService $dataService, UserService $userService)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, RevisionService $revisionService, DataService $dataService, UserService $userService, FormFactoryInterface $formFactory, ContentTypeService $contentTypeService)
     {
         $this->authorizationChecker = $authorizationChecker;
         $this->revisionService = $revisionService;
         $this->dataService = $dataService;
         $this->userService = $userService;
+        $this->formFactory = $formFactory;
+        $this->contentTypeService = $contentTypeService;
     }
 
     /**
+     * @param array<string> $rawdata
      * @param array<string> $fields
      */
-    public function isEditableByUser(FieldType $fieldType, array $fields): bool
+    public function isEditableByUser(ContentType $contentType, array $rawdata, array $fields): bool
     {
-        if ($this->authorizationChecker->isGranted($fieldType->getFieldsRoles())) {
+        if (null === $contentType->getFieldType()) {
+            throw new \RuntimeException('Field type is unset!');
+        }
+
+        if ($this->authorizationChecker->isGranted($contentType->getFieldType()->getFieldsRoles())) {
             return true;
         }
 
         foreach ($fields as $field) {
-            $matches = [];
-            \preg_match_all('/\[(.*?)\]/m', $field, $matches, PREG_PATTERN_ORDER);
-            $child = $fieldType->findChildByName($matches[1][\count($matches[1]) - 1]);
-            if (null !== $child && $this->authorizationChecker->isGranted($child->getFieldsRoles())) {
+
+            $fieldType = $this->contentTypeService->getFieldTypeByRawPath($contentType->getFieldType(), $this->getRawPath($rawdata, $field));
+            if (null !== $fieldType && $this->authorizationChecker->isGranted($fieldType->getFieldsRoles())) {
                 return true;
             }
         }
@@ -53,22 +68,45 @@ final class LiveEditManager
     }
 
     /**
+     * @param array<string> $rawdata
      * @param array<string> $fields
      * @return array<string>
      */
-    public function getFormsFields(FieldType $fieldType, array $fields): array
+    public function getFormsFields(ContentType $contentType, array $rawdata, array $fields): array
     {
+        if (null === $contentType->getFieldType()) {
+            throw new \RuntimeException('Field type is unset!');
+        }
+
         $forms = [];
         foreach ($fields as $field) {
-            $matches = [];
-            \preg_match_all('/\[(.*?)\]/m', $field, $matches, PREG_PATTERN_ORDER);
-            $child= $fieldType->findChildByName($matches[1][\count($matches[1]) - 1]);
-            if (null !== $child && $this->authorizationChecker->isGranted($fieldType->getFieldsRoles())) {
-                //@TODO create Form for each field
-                $forms[$field] = "";
+            $rawPath = $this->getRawPath($rawdata, $field);
+            if (\count($rawPath) > 0) {
+                $fieldType = $this->contentTypeService->getFieldTypeByRawPath($contentType->getFieldType(), $rawPath);
+
+                if (null !== $fieldType && $this->authorizationChecker->isGranted($fieldType->getFieldsRoles())) {
+                    //@TODO add default value of field into form
+                    $options = \array_merge(['metadata' => $fieldType]);
+                    $form = $this->formFactory->createBuilder()
+                        ->add($fieldType->getName(), $fieldType->getType(), $options)->getForm();
+                    $forms[$field] = $form;
+                }
             }
         }
         return $forms;
+    }
+
+    /**
+     * @param array<string> $rawdata
+     * @return array<string>
+     */
+    private function getRawPath(array $rawdata, string $field): array
+    {
+        $path = [];
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $propertyAccessor->setValue($path, $field, $propertyAccessor->getValue($rawdata,$field));
+
+        return $path;
     }
 
     public function createNewDraft(Revision $revision): Revision

@@ -9,14 +9,17 @@ use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Core\UI\MenuEntry;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
+use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -25,6 +28,7 @@ use EMS\CoreBundle\Repository\ViewRepository;
 use EMS\CoreBundle\Routes;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -698,5 +702,56 @@ class ContentTypeService implements EntityServiceInterface
         $contentTypeRepository->delete($contentType);
 
         return \strval($id);
+    }
+
+    public function getFieldTypeByRawPath(FieldType $fieldType, array $path, FieldType $out = null): ?FieldType
+    {
+        foreach ($fieldType->getChildren() as $child) {
+            if (!$child->getDeleted()) {
+                /** @var DataField $type */
+                $type = $child->getType();
+                if ($type::isVirtual($child->getOptions())) {
+                    if ($type::isContainer()) {
+                        $jsonNames = $type::getJsonNames($child);
+                        if (0 === \count($jsonNames)) {
+                            $out = self::getFieldTypeByRawPath($child, $path, $out);
+                        } else {
+                            foreach ($jsonNames as $name) {
+                                if (isset($path[$name])) {
+                                    if (\is_array($path[$name])) {
+                                        $out = self::getFieldTypeByRawPath($child, $path[$name], $out);
+                                    } else {
+                                        $out = $child;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        $out = $child;
+                    }
+                } else {
+                    if ($type::isContainer()) {
+                        if (isset($path[$child->getName()])) {
+                            if ($type::isCollection()) {
+                                if (\is_array($path[$child->getName()])) {
+                                    foreach ($path[$child->getName()] as $idx => $item) {
+                                        $out = self::getFieldTypeByRawPath($child, $item, $out);
+                                    }
+                                }
+                            } elseif (\is_array($path[$child->getName()])) {
+                                $out = self::getFieldTypeByRawPath($child, $path[$child->getName()], $out);
+                            } else {
+                                $out = $child;
+                            }
+                        }
+                    } else {
+                        if (isset($path[$child->getName()]) && null !== $path[$child->getName()]) {
+                            $out = $child;
+                        }
+                    }
+                }
+            }
+        }
+        return $out;
     }
 }

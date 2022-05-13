@@ -353,8 +353,13 @@ class ElasticsearchController extends AbstractController
 
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
-        $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
-        $search = $searchRepository->findOneBy(['id' => $searchId]);
+
+        $search = null;
+        if ($searchId) {
+            $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
+            $search = $searchRepository->findOneBy(['id' => $searchId]);
+        }
+
         if (!$search instanceof Search) {
             $search = $this->searchService->getDefaultSearch($contentTypes);
         }

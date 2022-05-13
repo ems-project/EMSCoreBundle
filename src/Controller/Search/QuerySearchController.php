@@ -33,8 +33,7 @@ final class QuerySearchController extends AbstractController
 
         if ($dataLinks->isQuerySearch()) {
             $this->querySearchService->querySearchDataLinks($dataLinks);
-        }
-        if ($dataLinks->isSearch()) {
+        } elseif (!$dataLinks->hasItems()) {
             $this->elasticsearchController->deprecatedSearchApiAction($request, $dataLinks);
         }
 

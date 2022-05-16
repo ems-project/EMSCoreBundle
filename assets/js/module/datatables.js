@@ -14,7 +14,6 @@ export default class datatables {
             var table = jquery(datatable).DataTable(JSON.parse(datatable.dataset.datatable));
             table.on('draw', function () {
                     const buttons = this.querySelectorAll('button[data-emsco-edit-revision]');
-                    console.log(buttons);
                     [].forEach.call(buttons, function(button) {
                         new LiveEditRevision(button);
                     });

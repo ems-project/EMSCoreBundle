@@ -6,17 +6,12 @@ namespace EMS\CoreBundle\Core\Revision;
 
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
-//use EMS\CoreBundle\Form\DataField\CheckboxFieldType;
-//use EMS\CoreBundle\Form\DataField\TextStringFieldType;
-use EMS\CoreBundle\Form\DataField\TextStringFieldType;
 use EMS\CoreBundle\Form\Form\LiveEditFieldType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\UserService;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -29,8 +24,6 @@ final class LiveEditManager
     private UserService $userService;
     protected FormFactoryInterface $formFactory;
     private ContentTypeService $contentTypeService;
-
-    //const TYPES = [ TextStringFieldType::class, CheckboxFieldType::class ]; @TODO needed or not (maybe not)
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, RevisionService $revisionService, DataService $dataService, UserService $userService, FormFactoryInterface $formFactory, ContentTypeService $contentTypeService)
     {
@@ -80,13 +73,13 @@ final class LiveEditManager
 
         $forms = [];
         foreach ($fields as $field) {
+            $propertyAccessor = PropertyAccess::createPropertyAccessor();
             $rawPath = $this->getRawPath($rawdata, $field);
             if (\count($rawPath) > 0) {
                 $fieldType = $this->contentTypeService->getFieldTypeByRawPath($contentType->getFieldType(), $rawPath);
 
                 if (null !== $fieldType && $this->authorizationChecker->isGranted($fieldType->getFieldsRoles())) {
-                    //@TODO add default value of field into form
-                    $options = \array_merge(['metadata' => $fieldType]);
+                    $options = \array_merge(['metadata' => $fieldType, 'data'  => $propertyAccessor->getValue($rawPath, $field)]);
                     $form = $this->formFactory->createBuilder()
                         ->add($fieldType->getName(), $fieldType->getType(), $options)->getForm();
                     $forms[$field] = $form;

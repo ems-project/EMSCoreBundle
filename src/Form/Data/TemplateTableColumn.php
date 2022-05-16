@@ -94,7 +94,7 @@ class TemplateTableColumn extends TableColumn
             return $attributes;
         }
         if ($this->isEditableField()) {
-            $attributes = ['data-emsco-edit-field' => $this->getEditableField(), 'data-emsco-edit-emslink' => $objectOrArray->getEmsId()];
+            $attributes = ['data-emsco-edit-field' => $this->getEditableField(), 'data-emsco-edit-emsid' => $objectOrArray->getEmsId()];
         }
 
         return $attributes;

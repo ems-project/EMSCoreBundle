@@ -31,14 +31,14 @@ class LiveEditController extends AbstractController
         $decoded = \is_string($requestContent) && \strlen($requestContent) > 0 ? Json::decode($requestContent) : [];
         $data = $decoded['_data'] ?? [];
 
-        $emsLink = EMSLink::fromText($data['emsLink']);
+        $emsLink = EMSLink::fromText($data['emsId']);
         $revision = $this->liveEditManager->getRevision($emsLink);
 
         if (!$revision instanceof Revision) {
-            throw new \RuntimeException(\sprintf('Revision with emslink "%s" not found', $emsLink));
+            throw new \RuntimeException(\sprintf('Revision with emsId "%s" not found', $data['emsId']));
         }
         if (null == $revision->getContentType()->getFieldType() || $revision->getContentType()->getEnvironment()->getManaged()) {
-            new JsonResponse([ 'data' => Json::encode([ 'editable' => false ]) ]);
+            new JsonResponse([ 'data' => Json::encode([ 'isEditable' => false ]) ]);
         }
 
         if ($this->liveEditManager->isEditableByUser($revision->getContentType(), $revision->getRawData(), $data['fields']) ) {
@@ -49,7 +49,7 @@ class LiveEditController extends AbstractController
                 /** @var Form $form */
                 foreach ($forms as $key => $form) {
                     $formsRendered[$key] = $this->render(
-                        '@EMSCore/form/liveEditField.html.twig' ,
+                        '@EMSCore/live-edit/field.html.twig' ,
                         ['form' => $form->createView() ]
                     )->getContent();
                 }
@@ -57,14 +57,21 @@ class LiveEditController extends AbstractController
                 $draft = $this->liveEditManager->createNewDraft($revision);
                 return new JsonResponse([
                     'data' => Json::encode([
-                        'editable' => true,
+                        'isEditable' => true,
+                        'emsId' => $emsLink->getEmsId(),
                         'forms' => $formsRendered,
-                        'draft' => $draft
+                        'buttons' => $this->render(
+                        '@EMSCore/live-edit/buttons.html.twig',
+                            [
+                                'emsId' => $emsLink->getEmsId(),
+                                'draftRevision' => $draft->getId()
+                            ])
+                        ->getContent()
                     ])
                 ]);
             }
         }
 
-        return new JsonResponse([ 'data' => Json::encode([ 'editable' => false ]) ]);
+        return new JsonResponse([ 'data' => Json::encode([ 'isEditable' => false ]) ]);
     }
 }

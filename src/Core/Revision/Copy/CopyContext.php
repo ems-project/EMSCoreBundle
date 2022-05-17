@@ -9,9 +9,8 @@ use EMS\CommonBundle\Search\Search;
 final class CopyContext
 {
     /** @var array<mixed> */
-    private $merge;
-    /** @var Search */
-    private $search;
+    private array $merge;
+    private Search $search;
 
     public function __construct(Search $searchQuery)
     {
@@ -19,6 +18,9 @@ final class CopyContext
         $this->merge = [];
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getMerge(): array
     {
         return $this->merge;
@@ -29,6 +31,9 @@ final class CopyContext
         return $this->search;
     }
 
+    /**
+     * @param array<mixed> $merge
+     */
     public function setMerge(array $merge): void
     {
         $this->merge = $merge;

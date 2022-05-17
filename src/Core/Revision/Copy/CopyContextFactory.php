@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Copy;
 
+use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\EnvironmentService;
 
 final class CopyContextFactory
 {
-    /** @var EnvironmentService */
-    private $environmentService;
-    /** @var ElasticaService */
-    private $elasticaService;
+    private EnvironmentService $environmentService;
+    private ElasticaService $elasticaService;
 
     public function __construct(EnvironmentService $environmentService, ElasticaService $elasticaService)
     {
@@ -23,11 +22,11 @@ final class CopyContextFactory
 
     public function fromJSON(string $environmentName, string $searchJSON, string $mergeJSON = ''): CopyContext
     {
-        $search = $this->elasticaService->convertElasticsearchBody([$this->getEnvironment($environmentName)->getAlias()], [], $this->jsonDecode($searchJSON));
+        $search = $this->elasticaService->convertElasticsearchBody([$this->getEnvironment($environmentName)->getAlias()], [], Json::decode($searchJSON));
         $copyRequest = new CopyContext($search);
 
         if ('' !== $mergeJSON) {
-            $copyRequest->setMerge($this->jsonDecode($mergeJSON));
+            $copyRequest->setMerge(Json::decode($mergeJSON));
         }
 
         return $copyRequest;
@@ -42,16 +41,5 @@ final class CopyContextFactory
         }
 
         return $environment;
-    }
-
-    private function jsonDecode(string $json): array
-    {
-        $decoded = \json_decode($json, true);
-
-        if (null === $decoded || JSON_ERROR_NONE !== \json_last_error()) {
-            throw new \InvalidArgumentException(\sprintf('Invalid JSON %s (%s)', $json, \json_last_error_msg()));
-        }
-
-        return $decoded;
     }
 }

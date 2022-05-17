@@ -13,10 +13,8 @@ use EMS\CoreBundle\Service\Revision\RevisionService;
 
 final class CopyService
 {
-    /** @var DataService */
-    private $dataService;
-    /** @var RevisionService */
-    private $revisionService;
+    private DataService $dataService;
+    private RevisionService $revisionService;
 
     public function __construct(DataService $dataService, RevisionService $revisionService)
     {

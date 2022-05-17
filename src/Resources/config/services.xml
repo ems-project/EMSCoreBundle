@@ -86,15 +86,6 @@
             <argument type="service" id="translator" />
         </service>
 
-        <service id="ems_core.core.revision.copy_context_factory" class="EMS\CoreBundle\Core\Revision\Copy\CopyContextFactory">
-            <argument type="service" id="ems.service.environment" />
-            <argument type="service" id="ems_common.service.elastica" />
-        </service>
-        <service id="ems_core.core.revision.copy_service" class="EMS\CoreBundle\Core\Revision\Copy\CopyService">
-            <argument type="service" id="ems.service.data" />
-            <argument type="service" id="ems.service.revision" />
-        </service>
-
         <service id="ems_core.core_revision_search.revision_searcher" class="EMS\CoreBundle\Core\Revision\Search\RevisionSearcher">
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>

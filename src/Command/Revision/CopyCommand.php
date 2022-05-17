@@ -4,140 +4,90 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Revision;
 
-use Elastica\Scroll;
-use EMS\CommonBundle\Command\CommandInterface;
-use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle\Core\Revision\Copy\CopyContext;
-use EMS\CoreBundle\Core\Revision\Copy\CopyContextFactory;
-use EMS\CoreBundle\Core\Revision\Copy\CopyService;
-use EMS\CoreBundle\Entity\Revision;
-use Symfony\Component\Console\Command\Command;
+use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CommonBundle\Common\Standard\Json;
+use EMS\CoreBundle\Commands;
+use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class CopyCommand extends Command implements CommandInterface
+final class CopyCommand extends AbstractCommand
 {
-    /** @var CopyContextFactory */
-    private $copyContextFactory;
-    /** @var CopyService */
-    private $copyService;
-    /** @var ElasticaService */
-    private $elasticaService;
-    /** @var SymfonyStyle */
-    private $io;
-    /** @var Revision[] */
-    private $copies = [];
+    private EnvironmentService $environmentService;
+    private RevisionSearcher $revisionSearcher;
+    private RevisionService $revisionService;
 
-    protected static $defaultName = 'ems:revision:copy';
+    private Environment $environment;
+    private string $searchQuery;
+    /** @var ?array<mixed> */
+    private ?array $mergeRawData = null;
 
-    private const ARG_ENVIRONMENT_NAME = 'environment';
-    private const ARG_JSON_SEARCH_QUERY = 'json_search_query';
-    private const ARG_JSON_MERGE = 'json_merge';
-    private const OPTION_BULK_SIZE = 'bulk-size';
+    private const ARGUMENT_ENVIRONMENT = 'environment';
+    private const ARGUMENT_SEARCH_QUERY = 'search-query';
+    private const ARGUMENT_MERGE_RAW_DATA = 'merge-raw-data';
+    public const OPTION_SCROLL_SIZE = 'scroll-size';
+    public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
+
+    protected static $defaultName = Commands::REVISION_COPY;
 
     public function __construct(
-        CopyContextFactory $copyRequestFactory,
-        CopyService $copyService,
-        ElasticaService $elasticaService
+        RevisionSearcher $revisionSearcher,
+        EnvironmentService $environmentService,
+        RevisionService $revisionService
     ) {
         parent::__construct();
-        $this->copyContextFactory = $copyRequestFactory;
-        $this->copyService = $copyService;
-        $this->elasticaService = $elasticaService;
+        $this->revisionSearcher = $revisionSearcher;
+        $this->environmentService = $environmentService;
+        $this->revisionService = $revisionService;
     }
 
     protected function configure(): void
     {
         $this
             ->setDescription('Copy revisions from search query')
-            ->addArgument(
-                self::ARG_ENVIRONMENT_NAME,
-                InputArgument::REQUIRED,
-                'environment name'
-            )
-            ->addArgument(
-                self::ARG_JSON_SEARCH_QUERY,
-                InputArgument::REQUIRED,
-                'JSON search query (escaped)'
-            )
-            ->addArgument(
-                self::ARG_JSON_MERGE,
-                InputArgument::OPTIONAL,
-                'JSON merge for copied revisions'
-            )
-            ->addOption(
-                self::OPTION_BULK_SIZE,
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Bulk size',
-                '25'
-            );
+            ->addArgument(self::ARGUMENT_ENVIRONMENT, InputArgument::REQUIRED, 'environment name')
+            ->addArgument(self::ARGUMENT_SEARCH_QUERY, InputArgument::REQUIRED, 'search query')
+            ->addArgument(self::ARGUMENT_MERGE_RAW_DATA, InputArgument::OPTIONAL, 'json merge raw data')
+            ->addOption(self::OPTION_SCROLL_SIZE, null, InputOption::VALUE_REQUIRED, 'Size of the elasticsearch scroll request')
+            ->addOption(self::OPTION_SCROLL_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Timeout "scrollSize" items i.e. 30s or 2m')
+        ;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->io = new SymfonyStyle($input, $output);
-        $this->io->title('Copy revisions');
+        parent::initialize($input, $output);
+
+        $this->io->title('EMS - Revision - Copy');
+
+        $environmentName = $this->getArgumentString(self::ARGUMENT_ENVIRONMENT);
+        $this->environment = $this->environmentService->giveByName($environmentName);
+        $this->searchQuery = $this->getArgumentString(self::ARGUMENT_SEARCH_QUERY);
+
+        $mergeString = $this->getArgumentStringNull(self::ARGUMENT_MERGE_RAW_DATA);
+        $this->mergeRawData = $mergeString ? Json::decode($mergeString) : null;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $environmentName = $input->getArgument(self::ARG_ENVIRONMENT_NAME);
-        $searchQuery = $input->getArgument(self::ARG_JSON_SEARCH_QUERY);
-        $jsonMerge = $input->getArgument(self::ARG_JSON_MERGE) ?? '';
+        $search = $this->revisionSearcher->create($this->environment, $this->searchQuery, [], true);
 
-        if (!\is_string($environmentName)) {
-            throw new \RuntimeException('Unexpected environment name');
-        }
-        if (!\is_string($searchQuery)) {
-            throw new \RuntimeException('Unexpected search query');
-        }
-        if (!\is_string($jsonMerge)) {
-            throw new \RuntimeException('Unexpected JSON merge');
-        }
+        $this->io->comment(\sprintf('Found %s hits', $search->getTotal()));
+        $this->io->progressStart($search->getTotal());
 
-        $copyContext = $this->copyContextFactory->fromJSON(
-            $environmentName,
-            $searchQuery,
-            $jsonMerge
-        );
-
-        $search = $copyContext->getSearch();
-        $size = \intval($input->getOption(self::OPTION_BULK_SIZE));
-        if (0 === $size) {
-            throw new \RuntimeException('Unexpected bulk size argument');
-        }
-        $search->setSize($size);
-        $scroll = $this->elasticaService->scroll($search);
-        $total = $this->elasticaService->count($search);
-        $this->io->note(\sprintf('Found %d documents', $total));
-        $this->copy($copyContext, $scroll, $total);
-
-        $countCopies = \count($this->copies);
-        $this->io->newLine();
-        $this->io->success(\sprintf('Created %d copies', $countCopies));
-
-        return $countCopies;
-    }
-
-    private function copy(CopyContext $copyContext, Scroll $scroll, int $total): void
-    {
-        $progressBar = $this->io->createProgressBar($total);
-
-        foreach ($scroll as $resultSet) {
-            foreach ($resultSet as $result) {
-                if (false === $result) {
-                    continue;
-                }
-                $this->copies[] = $this->copyService->copyFromResult($copyContext, $result);
-                $progressBar->advance();
+        foreach ($this->revisionSearcher->search($this->environment, $search) as $revisions) {
+            foreach ($revisions->transaction() as $revision) {
+                $this->revisionService->copy($revision, $this->mergeRawData);
+                $this->io->progressAdvance();
             }
         }
 
-        $progressBar->finish();
-        $this->io->newLine();
+        $this->io->progressFinish();
+
+        return self::EXECUTE_SUCCESS;
     }
 }

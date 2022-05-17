@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Service\Revision\Copy;
+namespace EMS\CoreBundle\Core\Revision\Copy;
 
 use Elastica\Result;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;

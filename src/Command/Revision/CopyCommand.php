@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Command;
+namespace EMS\CoreBundle\Command\Revision;
 
 use Elastica\Scroll;
 use EMS\CommonBundle\Command\CommandInterface;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\Revision\Copy\CopyContext;
+use EMS\CoreBundle\Core\Revision\Copy\CopyContextFactory;
+use EMS\CoreBundle\Core\Revision\Copy\CopyService;
 use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Service\ElasticsearchService;
-use EMS\CoreBundle\Service\Revision\Copy\CopyContext;
-use EMS\CoreBundle\Service\Revision\Copy\CopyContextFactory;
-use EMS\CoreBundle\Service\Revision\Copy\CopyService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

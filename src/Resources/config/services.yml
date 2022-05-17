@@ -520,14 +520,6 @@ services:
         arguments: ['@ems.repository.form_verification']
 
 ### command services ###
-    ems.factory.revision_copy_context:
-        class: EMS\CoreBundle\Service\Revision\Copy\CopyContextFactory
-        arguments: ['@ems.service.environment', '@ems_common.service.elastica']
-    ems.service.revision_copy:
-        class: EMS\CoreBundle\Service\Revision\Copy\CopyService
-        arguments:
-            - '@EMS\CoreBundle\Service\DataService'
-            - '@ems.service.revision'
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
         arguments: ['@ems.service.revision', '@doctrine', '@ems_common.service.elastica', '@ems.service.document']

@@ -35,9 +35,9 @@
             <argument type="service" id="ems.service.contenttype"/>
             <tag name="console.command"/>
         </service>
-        <service id="ems.command.revision.copy" class="EMS\CoreBundle\Command\CopyCommand" >
-            <argument type="service" id="ems.factory.revision_copy_context" />
-            <argument type="service" id="ems.service.revision_copy" />
+        <service id="ems.command.revision.copy" class="EMS\CoreBundle\Command\Revision\CopyCommand" >
+            <argument type="service" id="ems_core.core.revision.copy_context_factory" />
+            <argument type="service" id="ems_core.core.revision.copy_service" />
             <argument type="service" id="ems_common.service.elastica" />
             <tag name="console.command"/>
         </service>

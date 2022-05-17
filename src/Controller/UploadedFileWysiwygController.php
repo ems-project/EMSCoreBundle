@@ -74,7 +74,7 @@ final class UploadedFileWysiwygController extends AbstractController
     }
 
     /**
-     * Changing the access modifier from protected to public on the generateUrl
+     * Changing the access modifier from protected to public on the generateUrl.
      *
      * @param array<string, mixed> $parameters
      */

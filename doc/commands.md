@@ -139,6 +139,29 @@ Options:
 
 ## Revision
 
+### Copy
+> Copy revisions from search query
+
+```bash
+Usage:
+  emsco:revision:copy [options] [--] <environment> <search-query> [<merge>]
+
+Arguments:
+  environment                          environment name
+  search-query                         search query
+  merge-raw-data                       json merge raw data
+
+Options:
+      --scroll-size=SCROLL-SIZE        Size of the elasticsearch scroll request
+      --scroll-timeout=SCROLL-TIMEOUT  Timeout "scrollSize" items i.e. 30s or 2m
+```
+
+* **environment** : name of the environment for running the es query
+* **search-query**: json escaped string with es query
+* **merge-raw-data**: json raw data will be merged in the copied revision
+* **--scroll-size**: Size of the elasticsearch scroll request
+* **--scroll-timeout**: Time to migrate "scrollSize" items i.e. 30s or 2m
+
 ### Task create
 > Create revision task based on ES query
 

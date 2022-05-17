@@ -22,6 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class UploadedFileWysiwygController extends AbstractController
 {
@@ -70,6 +71,14 @@ final class UploadedFileWysiwygController extends AbstractController
                 'form' => $form->createView(),
             ])
             ->getResponse();
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    public function generateUrl(string $route, array $parameters = [], int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH): string
+    {
+        return parent::generateUrl($route, $parameters, $referenceType);
     }
 
     private function initTable(): EntityTable

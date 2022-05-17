@@ -1331,11 +1331,6 @@ parameters:
 			path: src/DependencyInjection/EMSCoreExtension.php
 
 		-
-			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/DependencyInjection/EMSCoreExtension.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\EMSCoreBundle\\:\\:build\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/EMSCoreBundle.php
@@ -7654,21 +7649,6 @@ parameters:
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$session type has no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
 			count: 1
 			path: src/Service/PublishService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\Copy\\\\CopyContext\\:\\:getMerge\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/Revision/Copy/CopyContext.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\Copy\\\\CopyContext\\:\\:setMerge\\(\\) has parameter \\$merge with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/Revision/Copy/CopyContext.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\Copy\\\\CopyContextFactory\\:\\:jsonDecode\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/Revision/Copy/CopyContextFactory.php
 
 		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"

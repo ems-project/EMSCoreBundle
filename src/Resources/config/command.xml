@@ -35,6 +35,13 @@
             <argument type="service" id="ems.service.contenttype"/>
             <tag name="console.command"/>
         </service>
+        <service id="ems.command.revision.copy" class="EMS\CoreBundle\Command\CopyCommand" >
+            <argument type="service" id="ems.factory.revision_copy_context" />
+            <argument type="service" id="ems.service.revision_copy" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <tag name="console.command"/>
+        </service>
         <service id="ems.command.revision.time_machine" class="EMS\CoreBundle\Command\Revision\TimeMachineCommand">
             <argument type="service" id="ems.service.revision"/>
             <argument type="service" id="ems.service.data"/>

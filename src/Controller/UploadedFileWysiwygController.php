@@ -74,6 +74,8 @@ final class UploadedFileWysiwygController extends AbstractController
     }
 
     /**
+     * Changing the access modifier from protected to public on the generateUrl
+     *
      * @param array<string, mixed> $parameters
      */
     public function generateUrl(string $route, array $parameters = [], int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH): string

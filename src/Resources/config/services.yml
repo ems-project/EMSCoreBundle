@@ -521,7 +521,7 @@ services:
 
 ### command services ###
     ems.command.revision.copy:
-        class: EMS\CoreBundle\Command\Revision\RevisionCopyCommand
+        class: EMS\CoreBundle\Command\Revision\CopyCommand
         arguments:
             - '@ems.factory.revision_copy_context'
             - '@ems.service.revision_copy'

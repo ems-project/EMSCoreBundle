@@ -19,7 +19,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class RevisionCopyCommand extends Command implements CommandInterface
+final class CopyCommand extends Command implements CommandInterface
 {
     /** @var CopyContextFactory */
     private $copyContextFactory;

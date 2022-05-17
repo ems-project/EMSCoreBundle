@@ -23,7 +23,7 @@ final class CopyContextFactory
 
     public function fromJSON(string $environmentName, string $searchJSON, string $mergeJSON = ''): CopyContext
     {
-        $search = $this->elasticaService->convertElasticsearchBody([$this->getEnvironment($environmentName)->getName()], [], $this->jsonDecode($searchJSON));
+        $search = $this->elasticaService->convertElasticsearchBody([$this->getEnvironment($environmentName)->getAlias()], [], $this->jsonDecode($searchJSON));
         $copyRequest = new CopyContext($search);
 
         if ('' !== $mergeJSON) {

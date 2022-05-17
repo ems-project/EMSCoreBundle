@@ -30,7 +30,7 @@ final class CopyService
         if (!\is_string($contentTypeName)) {
             throw new \RuntimeException('Unexpected not string content type');
         }
-        $revision = $this->revisionService->getCurrentRevisionByOuuidAndContentType($contentTypeName, $document->getId());
+        $revision = $this->revisionService->getCurrentRevisionByOuuidAndContentType($document->getId(), $contentTypeName);
         if (null === $revision) {
             throw new NotFoundException($document->getId());
         }

@@ -25,8 +25,6 @@ final class CopyCommand extends Command implements CommandInterface
     private $copyContextFactory;
     /** @var CopyService */
     private $copyService;
-    /** @var ElasticsearchService */
-    private $elasticsearchService;
     /** @var ElasticaService */
     private $elasticaService;
     /** @var SymfonyStyle */
@@ -44,13 +42,11 @@ final class CopyCommand extends Command implements CommandInterface
     public function __construct(
         CopyContextFactory $copyRequestFactory,
         CopyService $copyService,
-        ElasticsearchService $elasticsearchService,
         ElasticaService $elasticaService
     ) {
         parent::__construct();
         $this->copyContextFactory = $copyRequestFactory;
         $this->copyService = $copyService;
-        $this->elasticsearchService = $elasticsearchService;
         $this->elasticaService = $elasticaService;
     }
 

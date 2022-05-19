@@ -6,8 +6,7 @@
 
     <import resource="@EMSCoreBundle/Resources/config/routing/data.xml"
             prefix="/data" />
-    <import resource="@EMSCoreBundle/Resources/config/routing/public.xml"
-            prefix="/public" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/public.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/dashboard.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/action.xml"
             prefix="/action" />

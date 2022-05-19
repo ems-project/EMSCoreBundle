@@ -60,14 +60,6 @@ class ResettingController extends Controller
     }
 
     /**
-     * Request reset user password: show form.
-     */
-    public function requestAction(): Response
-    {
-        return $this->render('@FOSUser/Resetting/request.html.twig');
-    }
-
-    /**
      * Request reset user password: submit form and send email.
      *
      * @return Response
@@ -130,7 +122,7 @@ class ResettingController extends Controller
 
         if (empty($username)) {
             // the user does not come from the sendEmail action
-            return new RedirectResponse($this->generateUrl('fos_user_resetting_request'));
+            return new RedirectResponse($this->generateUrl('emsco_user_resetting_request'));
         }
 
         return $this->render('@FOSUser/Resetting/check_email.html.twig', [

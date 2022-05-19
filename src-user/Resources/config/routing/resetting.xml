@@ -4,10 +4,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="fos_user_resetting_request" path="/request" methods="GET">
-        <default key="_controller">fos_user.resetting.controller:requestAction</default>
-    </route>
-
     <route id="fos_user_resetting_send_email" path="/send-email" methods="POST">
         <default key="_controller">fos_user.resetting.controller:sendEmailAction</default>
     </route>

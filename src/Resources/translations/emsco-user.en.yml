@@ -1,0 +1,8 @@
+user:
+    management:
+        title: User management
+    profile:
+        title: Your profile
+    resetting:
+        title: Reset password
+        username_email: Username or email address

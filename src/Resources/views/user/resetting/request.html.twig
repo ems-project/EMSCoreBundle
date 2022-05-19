@@ -1,0 +1,29 @@
+{%- trans_default_domain 'emsco-user' -%}
+{% extends '@EMSCore/layout.html.twig' %}
+
+{% block title %}{{ 'user.management.title'|trans }}{% endblock %}
+{% block pagetitle %}{% endblock %}
+{% block subtitle %}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <form action="{{ path('fos_user_resetting_send_email') }}" method="POST">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{ 'user.resetting.title'|trans }}</h3>
+                </div>
+                <div class="box-body">
+                    <div>
+                        <label for="username">{{ 'user.resetting.username_email'|trans }}</label>
+                        <input type="text" id="username" name="username" required="required" />
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <input type="submit" class="btn btn-primary" value="{{ 'user.resetting.title'|trans }}" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -17,33 +17,6 @@ namespace FOS\UserBundle;
 final class FOSUserEvents
 {
     /**
-     * The CHANGE_PASSWORD_INITIALIZE event occurs when the change password process is initialized.
-     *
-     * This event allows you to modify the default values of the user before binding the form.
-     *
-     * @Event("FOS\UserBundle\Event\GetResponseUserEvent")
-     */
-    public const CHANGE_PASSWORD_INITIALIZE = 'fos_user.change_password.edit.initialize';
-
-    /**
-     * The CHANGE_PASSWORD_SUCCESS event occurs when the change password form is submitted successfully.
-     *
-     * This event allows you to set the response instead of using the default one.
-     *
-     * @Event("FOS\UserBundle\Event\FormEvent")
-     */
-    public const CHANGE_PASSWORD_SUCCESS = 'fos_user.change_password.edit.success';
-
-    /**
-     * The CHANGE_PASSWORD_COMPLETED event occurs after saving the user in the change password process.
-     *
-     * This event allows you to access the response which will be sent.
-     *
-     * @Event("FOS\UserBundle\Event\FilterUserResponseEvent")
-     */
-    public const CHANGE_PASSWORD_COMPLETED = 'fos_user.change_password.edit.completed';
-
-    /**
      * The RESETTING_RESET_REQUEST event occurs when a user requests a password reset of the account.
      *
      * This event allows you to check if a user is locked out before requesting a password.

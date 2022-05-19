@@ -23,7 +23,6 @@ class FlashListener implements EventSubscriberInterface
      * @var string[]
      */
     private static $successMessages = [
-        FOSUserEvents::CHANGE_PASSWORD_COMPLETED => 'change_password.flash.success',
         FOSUserEvents::RESETTING_RESET_COMPLETED => 'resetting.flash.success',
     ];
 
@@ -52,7 +51,6 @@ class FlashListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            FOSUserEvents::CHANGE_PASSWORD_COMPLETED => 'addSuccessFlash',
             FOSUserEvents::RESETTING_RESET_COMPLETED => 'addSuccessFlash',
         ];
     }

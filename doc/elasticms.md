@@ -38,8 +38,11 @@ php bin/console ems:env:rebuild preview
 For enabling the task feature you have to specify the **owner role** on a content type.
 
 #### Owners
-Users that have the owner role for a content type can become owner for documents of this content type.
-Important you can only become the owner if there are no tasks defined for the document and you create the first one.
+You can become a document owner:
+- On revision creation, if the user is granted with the owner role, he becomes the owner.
+- On ownerless documents, if the user creates the first task, he becomes the owner.
+- The task manager changes ownership on the dashboard
+
 Document owners will see the tasks tab and can create, update, delete, reorder, approve or reject tasks.
 If the tasks is assigned to the owner he can only finish the task.
 

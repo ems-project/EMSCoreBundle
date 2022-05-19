@@ -313,10 +313,8 @@
   <footer class="main-footer no-print">
     <!-- To the right -->
     <div class="pull-right">
-    	{% if ems_core_version %}
-    		{{ 'Core %version%'|trans({'%version%': ems_core_version }) }}
-    	{% endif %}
-      	{{ 'with Symfony %version%'|trans({'%version%':constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }) }}
+        {{ 'Core %version%'|trans({'%version%': ems_version('core') }) }}
+      	{{ 'with Symfony %version%'|trans({'%version%': ems_version('symfony') }) }}
     </div>
     <!-- Default to the left -->
     <a href="http://www.elasticms.eu/">elastic<b>ms</b></a>

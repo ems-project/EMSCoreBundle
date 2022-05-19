@@ -61,7 +61,7 @@ class FOSUserExtension extends Extension
             $definition->setFactory([new Reference('fos_user.doctrine_registry'), 'getManager']);
         }
 
-        foreach (['validator', 'security', 'util', 'mailer', 'listeners'] as $basename) {
+        foreach (['validator', 'security', 'util', 'listeners'] as $basename) {
             $loader->load(\sprintf('%s.xml', $basename));
         }
 
@@ -76,7 +76,6 @@ class FOSUserExtension extends Extension
 
         $container->setAlias('fos_user.util.email_canonicalizer', $config['service']['email_canonicalizer']);
         $container->setAlias('fos_user.util.username_canonicalizer', $config['service']['username_canonicalizer']);
-        $container->setAlias('fos_user.util.token_generator', $config['service']['token_generator']);
         $container->setAlias('fos_user.user_manager', new Alias($config['service']['user_manager'], true));
 
         if ($config['use_listener'] && isset(self::$doctrineDrivers[$config['db_driver']])) {
@@ -102,10 +101,6 @@ class FOSUserExtension extends Extension
 
         if (!empty($config['resetting'])) {
             $this->loadResetting($config['resetting'], $container, $loader, $config['from_email']);
-        }
-
-        if ($this->mailerNeeded) {
-            $container->setAlias('fos_user.mailer', $config['service']['mailer']);
         }
 
         if ($this->sessionNeeded) {

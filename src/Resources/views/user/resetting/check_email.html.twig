@@ -9,21 +9,12 @@
 <div class="row">
     <div class="col-md-12">
         <div class="box box-info">
-            {{ form_start(form) }}
             <div class="box-header with-border">
                 <h3 class="box-title">{{ 'user.resetting.title'|trans }}</h3>
             </div>
             <div class="box-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        {{ form_row(form.username_email) }}
-                    </div>
-                </div>
+                <p>{{ 'user.resetting.check_email'|trans({'%tokenLifetime%': (tokenLifetime / 3600) })|nl2br }}</p>
             </div>
-            <div class="box-footer">
-                {{ form_row(form.submit, {'attr': { 'class': 'btn btn-primary'} }) }}
-            </div>
-            {{ form_end(form) }}
         </div>
     </div>
 </div>

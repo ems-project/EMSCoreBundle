@@ -165,14 +165,7 @@ interface UserInterface extends SymfonyUserInterface, \Serializable
      */
     public function setPasswordRequestedAt(\DateTime $date = null);
 
-    /**
-     * Checks whether the password reset request has expired.
-     *
-     * @param int $ttl Requests older than this many seconds will be considered expired
-     *
-     * @return bool
-     */
-    public function isPasswordRequestNonExpired($ttl);
+    public function isPasswordRequestNonExpired(int $ttl): bool;
 
     /**
      * Sets the last login time.
@@ -221,16 +214,4 @@ interface UserInterface extends SymfonyUserInterface, \Serializable
      * @return static
      */
     public function removeRole($role);
-
-    /**
-     * Checks whether the user is locked.
-     *
-     * Internally, if this method returns false, the authentication system
-     * will throw a LockedException and prevent login.
-     *
-     * @return bool true if the user is not locked, false otherwise
-     *
-     * @see LockedException
-     */
-    public function isAccountNonLocked(): bool;
 }

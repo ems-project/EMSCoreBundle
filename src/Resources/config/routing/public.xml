@@ -17,8 +17,11 @@
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::downloadFileAction</default>
     </route>
 
-    <route id="emsco_user_resetting_request" path="/resetting/request" methods="GET">
+    <route id="emsco_user_resetting_request" path="/resetting/request" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\User\ResettingController::request</default>
+    </route>
+    <route id="emsco_user_resetting_check_email" path="/resetting/check_email" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\User\ResettingController::checkEmail</default>
     </route>
 
 

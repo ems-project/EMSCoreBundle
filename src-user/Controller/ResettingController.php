@@ -14,13 +14,10 @@ namespace FOS\UserBundle\Controller;
 use EMS\CoreBundle\Routes;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
-use FOS\UserBundle\Event\GetResponseNullableUserEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
 use FOS\UserBundle\Form\Factory\FactoryInterface;
 use FOS\UserBundle\FOSUserEvents;
-use FOS\UserBundle\Mailer\MailerInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
-use FOS\UserBundle\Util\TokenGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -38,8 +35,6 @@ class ResettingController extends Controller
     private $eventDispatcher;
     private $formFactory;
     private $userManager;
-    private $tokenGenerator;
-    private $mailer;
 
     /**
      * @var int
@@ -49,85 +44,12 @@ class ResettingController extends Controller
     /**
      * @param int $retryTtl
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, FactoryInterface $formFactory, UserManagerInterface $userManager, TokenGeneratorInterface $tokenGenerator, MailerInterface $mailer, $retryTtl)
+    public function __construct(EventDispatcherInterface $eventDispatcher, FactoryInterface $formFactory, UserManagerInterface $userManager, $retryTtl)
     {
         $this->eventDispatcher = $eventDispatcher;
         $this->formFactory = $formFactory;
         $this->userManager = $userManager;
-        $this->tokenGenerator = $tokenGenerator;
-        $this->mailer = $mailer;
         $this->retryTtl = $retryTtl;
-    }
-
-    /**
-     * Request reset user password: submit form and send email.
-     *
-     * @return Response
-     */
-    public function sendEmailAction(Request $request)
-    {
-        $username = $request->request->get('username');
-
-        $user = $this->userManager->findUserByUsernameOrEmail($username);
-
-        $event = new GetResponseNullableUserEvent($user, $request);
-        $this->eventDispatcher->dispatch(FOSUserEvents::RESETTING_SEND_EMAIL_INITIALIZE, $event);
-
-        if (null !== $event->getResponse()) {
-            return $event->getResponse();
-        }
-
-        if (null !== $user && !$user->isPasswordRequestNonExpired($this->retryTtl)) {
-            $event = new GetResponseUserEvent($user, $request);
-            $this->eventDispatcher->dispatch(FOSUserEvents::RESETTING_RESET_REQUEST, $event);
-
-            if (null !== $event->getResponse()) {
-                return $event->getResponse();
-            }
-
-            if (null === $user->getConfirmationToken()) {
-                $user->setConfirmationToken($this->tokenGenerator->generateToken());
-            }
-
-            $event = new GetResponseUserEvent($user, $request);
-            $this->eventDispatcher->dispatch(FOSUserEvents::RESETTING_SEND_EMAIL_CONFIRM, $event);
-
-            if (null !== $event->getResponse()) {
-                return $event->getResponse();
-            }
-
-            $this->mailer->sendResettingEmailMessage($user);
-            $user->setPasswordRequestedAt(new \DateTime());
-            $this->userManager->updateUser($user);
-
-            $event = new GetResponseUserEvent($user, $request);
-            $this->eventDispatcher->dispatch(FOSUserEvents::RESETTING_SEND_EMAIL_COMPLETED, $event);
-
-            if (null !== $event->getResponse()) {
-                return $event->getResponse();
-            }
-        }
-
-        return new RedirectResponse($this->generateUrl('fos_user_resetting_check_email', ['username' => $username]));
-    }
-
-    /**
-     * Tell the user to check his email provider.
-     *
-     * @return Response
-     */
-    public function checkEmailAction(Request $request)
-    {
-        $username = $request->query->get('username');
-
-        if (empty($username)) {
-            // the user does not come from the sendEmail action
-            return new RedirectResponse($this->generateUrl('emsco_user_resetting_request'));
-        }
-
-        return $this->render('@FOSUser/Resetting/check_email.html.twig', [
-            'tokenLifetime' => \ceil($this->retryTtl / 3600),
-        ]);
     }
 
     /**

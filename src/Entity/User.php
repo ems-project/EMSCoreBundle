@@ -504,4 +504,13 @@ class User extends BaseUser implements UserInterface, EntityInterface
     {
         return $this->getDisplayName();
     }
+
+    public function isPasswordRequestNonExpired(int $ttl): bool
+    {
+        if (null === $this->passwordRequestedAt) {
+            return false;
+        }
+
+        return ($this->passwordRequestedAt->getTimestamp() + $ttl) > \time();
+    }
 }

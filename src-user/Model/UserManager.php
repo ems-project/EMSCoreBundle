@@ -11,7 +11,7 @@
 
 namespace FOS\UserBundle\Model;
 
-use FOS\UserBundle\Util\CanonicalFieldsUpdater;
+use EMS\CoreBundle\Core\Security\Canonicalizer;
 use FOS\UserBundle\Util\PasswordUpdaterInterface;
 
 /**
@@ -23,12 +23,10 @@ use FOS\UserBundle\Util\PasswordUpdaterInterface;
 abstract class UserManager implements UserManagerInterface
 {
     private $passwordUpdater;
-    private $canonicalFieldsUpdater;
 
-    public function __construct(PasswordUpdaterInterface $passwordUpdater, CanonicalFieldsUpdater $canonicalFieldsUpdater)
+    public function __construct(PasswordUpdaterInterface $passwordUpdater)
     {
         $this->passwordUpdater = $passwordUpdater;
-        $this->canonicalFieldsUpdater = $canonicalFieldsUpdater;
     }
 
     /**
@@ -47,7 +45,7 @@ abstract class UserManager implements UserManagerInterface
      */
     public function findUserByEmail($email)
     {
-        return $this->findUserBy(['emailCanonical' => $this->canonicalFieldsUpdater->canonicalizeEmail($email)]);
+        return $this->findUserBy(['emailCanonical' => Canonicalizer::canonicalize($email)]);
     }
 
     /**
@@ -55,7 +53,7 @@ abstract class UserManager implements UserManagerInterface
      */
     public function findUserByUsername($username)
     {
-        return $this->findUserBy(['usernameCanonical' => $this->canonicalFieldsUpdater->canonicalizeUsername($username)]);
+        return $this->findUserBy(['usernameCanonical' => Canonicalizer::canonicalize($username)]);
     }
 
     /**
@@ -76,17 +74,10 @@ abstract class UserManager implements UserManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function findUserByConfirmationToken($token)
-    {
-        return $this->findUserBy(['confirmationToken' => $token]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function updateCanonicalFields(UserInterface $user)
     {
-        $this->canonicalFieldsUpdater->updateCanonicalFields($user);
+        $user->setUsernameCanonical(Canonicalizer::canonicalize($user->getUsername()));
+        $user->setEmailCanonical(Canonicalizer::canonicalize($user->getEmail()));
     }
 
     /**
@@ -103,13 +94,5 @@ abstract class UserManager implements UserManagerInterface
     protected function getPasswordUpdater()
     {
         return $this->passwordUpdater;
-    }
-
-    /**
-     * @return CanonicalFieldsUpdater
-     */
-    protected function getCanonicalFieldsUpdater()
-    {
-        return $this->canonicalFieldsUpdater;
     }
 }

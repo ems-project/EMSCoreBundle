@@ -61,22 +61,10 @@ class FOSUserExtension extends Extension
             $definition->setFactory([new Reference('fos_user.doctrine_registry'), 'getManager']);
         }
 
-        foreach (['validator', 'security', 'util', 'mailer', 'listeners'] as $basename) {
+        foreach (['validator', 'security', 'util'] as $basename) {
             $loader->load(\sprintf('%s.xml', $basename));
         }
 
-        if (!$config['use_authentication_listener']) {
-            $container->removeDefinition('fos_user.listener.authentication');
-        }
-
-        if ($config['use_flash_notifications']) {
-            $this->sessionNeeded = true;
-            $loader->load('flash_notifications.xml');
-        }
-
-        $container->setAlias('fos_user.util.email_canonicalizer', $config['service']['email_canonicalizer']);
-        $container->setAlias('fos_user.util.username_canonicalizer', $config['service']['username_canonicalizer']);
-        $container->setAlias('fos_user.util.token_generator', $config['service']['token_generator']);
         $container->setAlias('fos_user.user_manager', new Alias($config['service']['user_manager'], true));
 
         if ($config['use_listener'] && isset(self::$doctrineDrivers[$config['db_driver']])) {
@@ -99,14 +87,6 @@ class FOSUserExtension extends Extension
                 'user_class' => 'fos_user.model.user.class',
             ],
         ]);
-
-        if (!empty($config['resetting'])) {
-            $this->loadResetting($config['resetting'], $container, $loader, $config['from_email']);
-        }
-
-        if ($this->mailerNeeded) {
-            $container->setAlias('fos_user.mailer', $config['service']['mailer']);
-        }
 
         if ($this->sessionNeeded) {
             // Use a private alias rather than a parameter, to avoid leaking it at runtime (the private alias will be removed)
@@ -150,27 +130,5 @@ class FOSUserExtension extends Extension
                 }
             }
         }
-    }
-
-    private function loadResetting(array $config, ContainerBuilder $container, XmlFileLoader $loader, array $fromEmail)
-    {
-        $this->mailerNeeded = true;
-        $loader->load('resetting.xml');
-
-        if (isset($config['email']['from_email'])) {
-            // overwrite the global one
-            $fromEmail = $config['email']['from_email'];
-            unset($config['email']['from_email']);
-        }
-        $container->setParameter('fos_user.resetting.email.from_email', [$fromEmail['address'] => $fromEmail['sender_name']]);
-
-        $this->remapParametersNamespaces($config, $container, [
-            '' => [
-                'retry_ttl' => 'fos_user.resetting.retry_ttl',
-                'token_ttl' => 'fos_user.resetting.token_ttl',
-            ],
-            'email' => 'fos_user.resetting.email.%s',
-            'form' => 'fos_user.resetting.form.%s',
-        ]);
     }
 }

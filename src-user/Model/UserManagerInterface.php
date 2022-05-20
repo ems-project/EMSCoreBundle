@@ -73,15 +73,6 @@ interface UserManagerInterface
     public function findUserByUsernameOrEmail($usernameOrEmail);
 
     /**
-     * Finds a user by its confirmationToken.
-     *
-     * @param string $token
-     *
-     * @return UserInterface|null
-     */
-    public function findUserByConfirmationToken($token);
-
-    /**
      * Returns a collection with all user instances.
      *
      * @return \Traversable

@@ -51,9 +51,4 @@ class ChangePasswordType extends AbstractType
             'validation_groups' => ['ChangePassword', 'Default'],
         ]);
     }
-
-    public function getBlockPrefix(): string
-    {
-        return 'emsco_change_password';
-    }
 }

@@ -283,21 +283,6 @@ abstract class User implements UserInterface
         return \in_array(\strtoupper($role), $this->getRoles(), true);
     }
 
-    public function isAccountNonExpired(): bool
-    {
-        return true;
-    }
-
-    public function isAccountNonLocked(): bool
-    {
-        return true;
-    }
-
-    public function isCredentialsNonExpired(): bool
-    {
-        return true;
-    }
-
     public function isEnabled(): bool
     {
         return $this->enabled;
@@ -456,15 +441,6 @@ abstract class User implements UserInterface
     public function getPasswordRequestedAt()
     {
         return $this->passwordRequestedAt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isPasswordRequestNonExpired($ttl)
-    {
-        return $this->getPasswordRequestedAt() instanceof \DateTime &&
-               $this->getPasswordRequestedAt()->getTimestamp() + $ttl > \time();
     }
 
     /**

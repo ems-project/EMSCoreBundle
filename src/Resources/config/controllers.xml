@@ -310,6 +310,9 @@
             <argument type="service" id="ems.service.file" />
         </service>
 
+        <service id="EMS\CoreBundle\Controller\User\ResettingController" public="true">
+            <argument type="service" id="emsco.manager.user" />
+        </service>
         <service id="EMS\CoreBundle\Controller\User\ProfileController" public="true">
             <argument type="service" id="emsco.manager.user" />
             <argument type="service" id="ems.logger" />

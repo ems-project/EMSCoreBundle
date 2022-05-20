@@ -11,7 +11,6 @@
 
 namespace FOS\UserBundle\DependencyInjection;
 
-use FOS\UserBundle\Form\Type;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -76,49 +75,9 @@ class Configuration implements ConfigurationInterface
                 ->thenInvalid('You need to specify your own group manager service when using the "custom" driver.')
             ->end();
 
-        $this->addResettingSection($rootNode);
         $this->addServiceSection($rootNode);
 
         return $treeBuilder;
-    }
-
-    private function addResettingSection(ArrayNodeDefinition $node)
-    {
-        $node
-            ->children()
-                ->arrayNode('resetting')
-                    ->addDefaultsIfNotSet()
-                    ->canBeUnset()
-                    ->children()
-                        ->scalarNode('retry_ttl')->defaultValue(7200)->end()
-                        ->scalarNode('token_ttl')->defaultValue(86400)->end()
-                        ->arrayNode('email')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('template')->defaultValue('@FOSUser/Resetting/email.txt.twig')->end()
-                                ->arrayNode('from_email')
-                                    ->canBeUnset()
-                                    ->children()
-                                        ->scalarNode('address')->isRequired()->cannotBeEmpty()->end()
-                                        ->scalarNode('sender_name')->isRequired()->cannotBeEmpty()->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                        ->end()
-                        ->arrayNode('form')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('type')->defaultValue(Type\ResettingFormType::class)->end()
-                                ->scalarNode('name')->defaultValue('fos_user_resetting_form')->end()
-                                ->arrayNode('validation_groups')
-                                    ->prototype('scalar')->end()
-                                    ->defaultValue(['ResetPassword', 'Default'])
-                                ->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end();
     }
 
     private function addServiceSection(ArrayNodeDefinition $node)
@@ -129,10 +88,6 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('service')
                     ->addDefaultsIfNotSet()
                         ->children()
-                            ->scalarNode('mailer')->defaultValue('fos_user.mailer.default')->end()
-                            ->scalarNode('email_canonicalizer')->defaultValue('fos_user.util.canonicalizer.default')->end()
-                            ->scalarNode('token_generator')->defaultValue('fos_user.util.token_generator.default')->end()
-                            ->scalarNode('username_canonicalizer')->defaultValue('fos_user.util.canonicalizer.default')->end()
                             ->scalarNode('user_manager')->defaultValue('fos_user.user_manager.default')->end()
                         ->end()
                     ->end()

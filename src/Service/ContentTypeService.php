@@ -706,6 +706,9 @@ class ContentTypeService implements EntityServiceInterface
 
     public function getFieldTypeByRawPath(FieldType $fieldType, array $path, FieldType $out = null): ?FieldType
     {
+        if ($out != null) {
+            return $out;
+        }
         foreach ($fieldType->getChildren() as $child) {
             if (!$child->getDeleted()) {
                 /** @var DataField $type */
@@ -717,7 +720,7 @@ class ContentTypeService implements EntityServiceInterface
                             $out = self::getFieldTypeByRawPath($child, $path, $out);
                         } else {
                             foreach ($jsonNames as $name) {
-                                if (isset($path[$name])) {
+                                if (\array_key_exists($name, $path)) {
                                     if (\is_array($path[$name])) {
                                         $out = self::getFieldTypeByRawPath($child, $path[$name], $out);
                                     } else {
@@ -745,7 +748,7 @@ class ContentTypeService implements EntityServiceInterface
                             }
                         }
                     } else {
-                        if (isset($path[$child->getName()]) && null !== $path[$child->getName()]) {
+                        if (\array_key_exists($child->getName(), $path)) {
                             $out = $child;
                         }
                     }

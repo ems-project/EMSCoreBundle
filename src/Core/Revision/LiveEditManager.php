@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Core\Revision;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Form\DataField\CheckboxFieldType;
 use EMS\CoreBundle\Form\Form\LiveEditFieldType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -77,9 +78,14 @@ final class LiveEditManager
             $rawPath = $this->getRawPath($rawdata, $field);
             if (\count($rawPath) > 0) {
                 $fieldType = $this->contentTypeService->getFieldTypeByRawPath($contentType->getFieldType(), $rawPath);
-
                 if (null !== $fieldType && $this->authorizationChecker->isGranted($fieldType->getFieldsRoles())) {
-                    $options = \array_merge(['metadata' => $fieldType, 'data'  => $propertyAccessor->getValue($rawPath, $field)]);
+                    $options = \array_merge(['metadata' => $fieldType]);
+                    if ($fieldType->getType() === CheckboxFieldType::class) {
+                        $options = $propertyAccessor->getValue($rawPath, $field) == true ? \array_merge($options, [ 'data' => $rawPath, 'attr' => ['checked' => true]]) : $options;
+                    } else {
+                        $options = \array_merge($options, ['data'  => $propertyAccessor->getValue($rawPath, $field) ]);
+                    }
+
                     $form = $this->formFactory->createBuilder()
                         ->add($fieldType->getName(), $fieldType->getType(), $options)->getForm();
                     $forms[$field] = $form;

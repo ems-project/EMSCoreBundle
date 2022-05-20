@@ -6,7 +6,7 @@
         data: line.data,
         column: column,
         row_context: row_context|default({}),
-    }) -}}{% if loop.last and table.editable and line.data.emsId|emsco_document_info.editable|default(false) %}<button type="button" class="btn btn-default btn-sm" data-emsco-edit-revision="{{ line.data.emsId }}" data-emsco-edit-revision-url="{{ path('emsco_live_edit_revision', { revisionId : line.data.id }) }}">
+    }) -}}{% if loop.last and table.editable and line.data.emsId|emsco_document_info.editable|default(false) %}<button type="button" class="btn btn-default btn-sm edit-revision" data-emsco-edit-revision="{{ line.data.emsId }}" data-emsco-edit-revision-url="{{ path('emsco_live_edit_revision', { revisionId : line.data.id }) }}">
     {{ 'data.row.edit'|trans }}</button>{% endif %}</div>
 {% endblock emsco_form_table_column_data_value_template %}
 

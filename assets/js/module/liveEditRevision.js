@@ -1,5 +1,4 @@
-import {observeDom} from "../helper/observeDom";
-import {ajaxJsonGet, ajaxJsonPost, ajaxJsonSubmit} from "./../helper/ajax";
+import {ajaxJsonPost} from "./../helper/ajax";
 
 export default class LiveEditRevision {
 
@@ -15,6 +14,7 @@ export default class LiveEditRevision {
     }
 
    onClick(button) {
+        const self = this;
         var parent = button.closest('html');
         const tagFields = parent.querySelectorAll('div[data-emsco-edit-emsid="' + this.revision +'"]');
         var fields = [];
@@ -36,16 +36,76 @@ export default class LiveEditRevision {
                             });
                         }
                     });
-                    // @TODO Json if editable = true => replace <button> by corresponding buttons
+                    button.classList.add('hidden');
+                    button.insertAdjacentHTML('afterend', obj.buttons);
+
+                    const cancelButtons = parent.querySelectorAll('button[data-emsco-edit-revision-cancel-url][data-emsco-edit-revision="' + obj.emsId +'"]');
+                    [].forEach.call(cancelButtons, function(cancel) {
+                        cancel.addEventListener('click', function (event) {
+                            self.onClickDiscardDraft(cancel);
+                        });
+                    });
+
+                    const saveButtons = parent.querySelectorAll('button[data-emsco-edit-revision-save-url][data-emsco-edit-revision="' + obj.emsId +'"]');
+                    [].forEach.call(saveButtons, function(cancel) {
+                        cancel.addEventListener('click', function (event) {
+                            self.onClickSaveDraft(cancel);
+                        });
+                    });
+
                 } else {
                     alert('No fields are editable for this node');
                 }
-
-
             }
         });
     }
 
+    onClickDiscardDraft(button) {
+        var parent = button.closest('html');
+        const tagFields = parent.querySelectorAll('div[data-emsco-edit-emsid="' + button.getAttribute('data-emsco-edit-revision') +'"]');
+        [].forEach.call(tagFields, function(tagField) {
+            tagField.innerHTML = tagField.getAttribute('data-emsco-value');
+        });
 
+        const buttons = parent.querySelectorAll('button[data-emsco-edit-revision="' + button.getAttribute('data-emsco-edit-revision') +'"]');
+        [].forEach.call(buttons, function(item) {
+            if(item.classList.contains('edit-revision') && item.classList.contains('hidden')) {
+                item.classList.remove('hidden');
+            }
+            if(item.classList.contains('js-save-row') || item.classList.contains('js-cancel-row')) {
+                item.remove();
+            }
+        });
 
+        const httpRequest = new XMLHttpRequest();
+        httpRequest.open('POST', button.getAttribute('data-emsco-edit-revision-cancel-url'), true);
+        httpRequest.send();
+    }
+
+    onClickSaveDraft(button) {
+        var parent = button.closest('html');
+        const tagFields = parent.querySelectorAll('div[data-emsco-edit-emsid="' + button.getAttribute('data-emsco-edit-revision') +'"][data-emsco-value]');
+        var fields = new Map();
+        [].forEach.call(tagFields, function(tagField) {
+            if (tagField.querySelector('input').type == 'checkbox'){
+                fields.set( tagField.getAttribute('data-emsco-edit-field'), tagField.querySelector('input').checked ? true : false);
+            } else {
+                fields.set( tagField.getAttribute('data-emsco-edit-field'), tagField.querySelector('input').value);
+            }
+        });
+        console.log(fields);
+        const buttons = parent.querySelectorAll('button[data-emsco-edit-revision="' + button.getAttribute('data-emsco-edit-revision') +'"]');
+     /*   [].forEach.call(buttons, function(item) {
+            if(item.classList.contains('edit-revision') && item.classList.contains('hidden')) {
+                item.classList.remove('hidden');
+            }
+            if(item.classList.contains('js-save-row') || item.classList.contains('js-cancel-row')) {
+                item.remove();
+            }
+        });*/
+
+        /*ajaxJsonPost( button.getAttribute('data-emsco-edit-revision-save-url'), JSON.stringify({'_data': { emsId: this.revision, fields: fields}}), (json, request) => {
+
+        });*/
+    }
 }

@@ -60,6 +60,7 @@ class LiveEditController extends AbstractController
                         'isEditable' => true,
                         'emsId' => $emsLink->getEmsId(),
                         'forms' => $formsRendered,
+                        'draftRevision' => $draft->getId(),
                         'buttons' => $this->render(
                         '@EMSCore/live-edit/buttons.html.twig',
                             [

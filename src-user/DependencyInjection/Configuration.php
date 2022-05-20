@@ -88,6 +88,8 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('service')
                     ->addDefaultsIfNotSet()
                         ->children()
+                            ->scalarNode('email_canonicalizer')->end()
+                            ->scalarNode('username_canonicalizer')->end()
                             ->scalarNode('user_manager')->defaultValue('fos_user.user_manager.default')->end()
                         ->end()
                     ->end()

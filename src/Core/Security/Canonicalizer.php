@@ -6,12 +6,8 @@ namespace EMS\CoreBundle\Core\Security;
 
 final class Canonicalizer
 {
-    public static function canonicalize(?string $string): ?string
+    public static function canonicalize(string $string): string
     {
-        if (null === $string) {
-            return null;
-        }
-
         $encoding = \mb_detect_encoding($string);
         $result = $encoding
             ? \mb_convert_case($string, MB_CASE_LOWER, $encoding)

@@ -23,6 +23,9 @@
     <route id="emsco_user_resetting_check_email" path="/resetting/check_email" methods="GET">
         <default key="_controller">EMS\CoreBundle\Controller\User\ResettingController::checkEmail</default>
     </route>
+    <route id="emsco_user_resetting_reset" path="/resetting/reset/{token}" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\User\ResettingController::reset</default>
+    </route>
 
 
     <!--- Deprecated routes -->

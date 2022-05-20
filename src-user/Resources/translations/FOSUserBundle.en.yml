@@ -5,24 +5,6 @@ security:
         remember_me: 'Remember me'
         submit: 'Log in'
 
-resetting:
-    request:
-        username: 'Username or email address'
-        submit: 'Reset password'
-    reset:
-        submit: 'Change password'
-    flash:
-        success: 'The password has been reset successfully.'
-    email:
-        subject: 'Reset Password'
-        message: |
-            Hello %username%!
-
-            To reset your password - please visit %confirmationUrl%
-
-            Regards,
-            the Team.
-
 # Global strings
 layout:
     logout: 'Log out'

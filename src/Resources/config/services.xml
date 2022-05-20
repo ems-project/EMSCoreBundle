@@ -179,7 +179,9 @@
         <service id="emsco.manager.user" class="EMS\CoreBundle\Core\User\UserManager">
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="fos_user.user_manager" />
+            <argument type="service" id="FOS\UserBundle\Security\LoginManagerInterface" />
             <argument type="service" id="ems_core.core_mail.mailer_service" />
+            <argument type="service" id="ems.repository.user" />
         </service>
     </services>
 </container>

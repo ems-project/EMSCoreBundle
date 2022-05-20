@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\User;
 
 use EMS\CoreBundle\Core\User\UserManager;
-use EMS\CoreBundle\Form\User\ResettingType;
+use EMS\CoreBundle\Form\User\ResettingRequestType;
+use EMS\CoreBundle\Form\User\ResettingResetType;
+use EMS\CoreBundle\Routes;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,15 +16,17 @@ use Symfony\Component\HttpFoundation\Response;
 class ResettingController extends AbstractController
 {
     private UserManager $userManager;
+    private LoggerInterface $logger;
 
-    public function __construct(UserManager $userManager)
+    public function __construct(UserManager $userManager, LoggerInterface $logger)
     {
         $this->userManager = $userManager;
+        $this->logger = $logger;
     }
 
     public function request(Request $request): Response
     {
-        $form = $this->createForm(ResettingType::class, []);
+        $form = $this->createForm(ResettingRequestType::class, []);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -50,6 +55,32 @@ class ResettingController extends AbstractController
 
         return $this->render('@EMSCore/user/resetting/check_email.html.twig', [
             'tokenLifetime' => UserManager::PASSWORD_RETRY_TTL,
+        ]);
+    }
+
+    public function reset(Request $request, string $token): Response
+    {
+        if (null === $user = $this->userManager->getUserByConfirmationToken($token)) {
+            return $this->redirectToRoute('fos_user_security_login');
+        }
+
+        if (!$user->isPasswordRequestNonExpired(UserManager::PASSWORD_RETRY_TTL)) {
+            return $this->redirectToRoute('emsco_user_resetting_request');
+        }
+
+        $form = $this->createForm(ResettingResetType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->userManager->resetPassword($user);
+
+            $this->logger->notice('log.user.password_resetted');
+
+            return $this->redirectToRoute(Routes::USER_PROFILE);
+        }
+
+        return $this->render('@EMSCore/user/resetting/reset.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 }

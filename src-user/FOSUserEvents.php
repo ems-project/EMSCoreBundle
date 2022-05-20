@@ -17,62 +17,6 @@ namespace FOS\UserBundle;
 final class FOSUserEvents
 {
     /**
-     * The RESETTING_RESET_REQUEST event occurs when a user requests a password reset of the account.
-     *
-     * This event allows you to check if a user is locked out before requesting a password.
-     * The event listener method receives a FOS\UserBundle\Event\GetResponseUserEvent instance.
-     *
-     * @Event("FOS\UserBundle\Event\GetResponseUserEvent")
-     */
-    public const RESETTING_RESET_REQUEST = 'fos_user.resetting.reset.request';
-
-    /**
-     * The RESETTING_RESET_INITIALIZE event occurs when the resetting process is initialized.
-     *
-     * This event allows you to set the response to bypass the processing.
-     *
-     * @Event("FOS\UserBundle\Event\GetResponseUserEvent")
-     */
-    public const RESETTING_RESET_INITIALIZE = 'fos_user.resetting.reset.initialize';
-
-    /**
-     * The RESETTING_RESET_SUCCESS event occurs when the resetting form is submitted successfully.
-     *
-     * This event allows you to set the response instead of using the default one.
-     *
-     * @Event("FOS\UserBundle\Event\FormEvent ")
-     */
-    public const RESETTING_RESET_SUCCESS = 'fos_user.resetting.reset.success';
-
-    /**
-     * The RESETTING_RESET_COMPLETED event occurs after saving the user in the resetting process.
-     *
-     * This event allows you to access the response which will be sent.
-     *
-     * @Event("FOS\UserBundle\Event\FilterUserResponseEvent")
-     */
-    public const RESETTING_RESET_COMPLETED = 'fos_user.resetting.reset.completed';
-
-    /**
-     * The SECURITY_IMPLICIT_LOGIN event occurs when the user is logged in programmatically.
-     *
-     * This event allows you to access the response which will be sent.
-     *
-     * @Event("FOS\UserBundle\Event\UserEvent")
-     */
-    public const SECURITY_IMPLICIT_LOGIN = 'fos_user.security.implicit_login';
-
-    /**
-     * The RESETTING_SEND_EMAIL_INITIALIZE event occurs when the send email process is initialized.
-     *
-     * This event allows you to set the response to bypass the email confirmation processing.
-     * The event listener method receives a FOS\UserBundle\Event\GetResponseNullableUserEvent instance.
-     *
-     * @Event("FOS\UserBundle\Event\GetResponseNullableUserEvent")
-     */
-    public const RESETTING_SEND_EMAIL_INITIALIZE = 'fos_user.resetting.send_email.initialize';
-
-    /**
      * The USER_CREATED event occurs when the user is created with UserManipulator.
      *
      * This event allows you to access the created user and to add some behaviour after the creation.

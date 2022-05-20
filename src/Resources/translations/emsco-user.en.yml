@@ -1,4 +1,6 @@
 user:
+    new_password: New password
+    new_password_confirmation: Repeat new password
     management:
         title: User management
     profile:

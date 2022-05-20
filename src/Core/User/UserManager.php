@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\User;
 
 use EMS\CoreBundle\Core\Mail\MailerService;
+use EMS\CoreBundle\Core\Security\Token;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\UserRepository;
@@ -72,7 +73,7 @@ final class UserManager
         }
 
         if (null === $user->getConfirmationToken()) {
-            $user->setConfirmationToken($this->generateToken());
+            $user->setConfirmationToken(Token::generate());
         }
 
         $mailTemplate = $this->mailerService->makeMailTemplate(self::MAIL_TEMPLATE);
@@ -115,10 +116,5 @@ final class UserManager
         }
 
         return $token;
-    }
-
-    private function generateToken(): string
-    {
-        return \rtrim(\strtr(\base64_encode(\random_bytes(32)), '+/', '-_'), '=');
     }
 }

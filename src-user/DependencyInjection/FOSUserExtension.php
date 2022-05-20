@@ -65,8 +65,6 @@ class FOSUserExtension extends Extension
             $loader->load(\sprintf('%s.xml', $basename));
         }
 
-        $container->setAlias('fos_user.util.email_canonicalizer', $config['service']['email_canonicalizer']);
-        $container->setAlias('fos_user.util.username_canonicalizer', $config['service']['username_canonicalizer']);
         $container->setAlias('fos_user.user_manager', new Alias($config['service']['user_manager'], true));
 
         if ($config['use_listener'] && isset(self::$doctrineDrivers[$config['db_driver']])) {

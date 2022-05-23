@@ -463,8 +463,10 @@ class DataController extends AbstractController
         $referrerResultSet = $this->elasticaService->search($esSearch);
         $referrerResponse = CommonResponse::fromResultSet($referrerResultSet);
 
-        if ($contentType->hasVersionTags() && null !== $revision->getVersionDate('to')) {
-            $latestVersion = $repository->findLatestVersion($contentType, $revision->getVersionUuid());
+        if ($contentType->hasVersionTags()
+            && (null !== $versionOuuid = $revision->getVersionUuid())
+            && null !== $revision->getVersionDate('to')) {
+            $latestVersion = $repository->findLatestVersion($contentType, $versionOuuid);
         }
 
         return $this->render('@EMSCore/data/revisions-data.html.twig', [

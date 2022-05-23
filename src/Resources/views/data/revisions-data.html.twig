@@ -233,7 +233,7 @@
 			</h3>
 			{% if revision.hasVersionTag and revision.versionDate('to') != null %}
 				<div class="box-tools pull-right">
-					<a href="{{ path('emsco_view_revisions', {'type': latestVersion.contentTypeName, 'ouuid': latestVersion.ouuid }) }}" class="btn btn-info btn-sm">
+					<a href="{{ path('emsco_view_revisions', {'type': latestVersion.contentTypeName, 'ouuid': latestVersion.ouuid }) }}" class="btn btn-default bg-{{ revision.contentType.color  }} btn-sm">
 						<i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %}"></i>
 						current version
 					</a>

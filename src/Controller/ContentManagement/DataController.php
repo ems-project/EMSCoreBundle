@@ -344,11 +344,12 @@ class DataController extends AbstractController
         }
 
         if (!$revision instanceof Revision && $contentType->hasVersionTags()) {
-            $latestVersionRevision = $repository->findLatestVersion($contentType, $ouuid);
-            if ($latestVersionRevision && $latestVersionRevision->getOuuid() !== $ouuid) {
+            //using version ouuid as ouuid should redirect to latest
+            $searchLatestVersion = $repository->findLatestVersion($contentType, $ouuid);
+            if ($searchLatestVersion && $searchLatestVersion->getOuuid() !== $ouuid) {
                 return $this->redirectToRoute('emsco_view_revisions', [
                    'type' => $contentType->getName(),
-                   'ouuid' => $latestVersionRevision->getOuuid(),
+                   'ouuid' => $searchLatestVersion->getOuuid(),
                 ]);
             }
         }
@@ -462,9 +463,16 @@ class DataController extends AbstractController
         $referrerResultSet = $this->elasticaService->search($esSearch);
         $referrerResponse = CommonResponse::fromResultSet($referrerResultSet);
 
+        if ($contentType->hasVersionTags()
+            && (null !== $versionOuuid = $revision->getVersionUuid())
+            && null !== $revision->getVersionDate('to')) {
+            $latestVersion = $repository->findLatestVersion($contentType, $versionOuuid);
+        }
+
         return $this->render('@EMSCore/data/revisions-data.html.twig', [
             'revision' => $revision,
             'revisionsSummary' => $revisionsSummary,
+            'latestVersion' => $latestVersion ?? null,
             'availableEnv' => $availableEnv,
             'object' => $revision->getObject($objectArray),
             'referrerResponse' => $referrerResponse,

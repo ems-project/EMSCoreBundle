@@ -1,2 +1,2 @@
-<button class="js-save-row | btn btn-success" data-emsco-edit-revision-save-url="" data-emsco-edit-revision="{{ emsId }}"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+<button class="js-save-row | btn btn-success" data-emsco-edit-revision-save-url="{{ path('emsco_save_live_edit_revision', { revisionId: draftRevision }) }}" data-emsco-edit-revision="{{ emsId }}"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
 <button class="js-cancel-row | btn btn-danger" data-emsco-edit-revision-cancel-url="{{ path('revision.discard', { revisionId: draftRevision }) }}" data-emsco-edit-revision="{{ emsId }}"><i class="fa fa-ban" aria-hidden="true"></i></button>

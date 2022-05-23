@@ -9,17 +9,15 @@ use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Core\UI\MenuEntry;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
-use EMS\CoreBundle\Form\DataField\DateFieldType;
+use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -28,7 +26,6 @@ use EMS\CoreBundle\Repository\ViewRepository;
 use EMS\CoreBundle\Routes;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -704,14 +701,17 @@ class ContentTypeService implements EntityServiceInterface
         return \strval($id);
     }
 
-    public function getFieldTypeByRawPath(FieldType $fieldType, array $path, FieldType $out = null): ?FieldType
+    /**
+     * @param array<string, mixed> $path
+     */
+    public function getFieldTypeByRawPath(FieldType $fieldType, array $path, ?FieldType $out = null): ?FieldType
     {
-        if ($out != null) {
+        if (null != $out) {
             return $out;
         }
         foreach ($fieldType->getChildren() as $child) {
             if (!$child->getDeleted()) {
-                /** @var DataField $type */
+                /** @var DataFieldType $type */
                 $type = $child->getType();
                 if ($type::isVirtual($child->getOptions())) {
                     if ($type::isContainer()) {
@@ -755,6 +755,7 @@ class ContentTypeService implements EntityServiceInterface
                 }
             }
         }
+
         return $out;
     }
 }

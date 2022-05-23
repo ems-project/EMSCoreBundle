@@ -177,6 +177,7 @@
             <argument type="service" id="ems.service.user" />
             <argument type="service" id="form.factory"/>
             <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="logger"/>
             <tag name="emsco.entity.service"/>
         </service>
     </services>

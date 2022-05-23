@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Revision;
 
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\DataField\CheckboxFieldType;
-use EMS\CoreBundle\Form\Form\LiveEditFieldType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\UserService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -23,10 +25,11 @@ final class LiveEditManager
     private RevisionService $revisionService;
     private DataService $dataService;
     private UserService $userService;
-    protected FormFactoryInterface $formFactory;
+    private FormFactoryInterface $formFactory;
     private ContentTypeService $contentTypeService;
+    private LoggerInterface $logger;
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, RevisionService $revisionService, DataService $dataService, UserService $userService, FormFactoryInterface $formFactory, ContentTypeService $contentTypeService)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, RevisionService $revisionService, DataService $dataService, UserService $userService, FormFactoryInterface $formFactory, ContentTypeService $contentTypeService, LoggerInterface $logger)
     {
         $this->authorizationChecker = $authorizationChecker;
         $this->revisionService = $revisionService;
@@ -34,6 +37,7 @@ final class LiveEditManager
         $this->userService = $userService;
         $this->formFactory = $formFactory;
         $this->contentTypeService = $contentTypeService;
+        $this->logger = $logger;
     }
 
     /**
@@ -42,7 +46,7 @@ final class LiveEditManager
      */
     public function isEditableByUser(ContentType $contentType, array $rawdata, array $fields): bool
     {
-        if (null === $contentType->getFieldType()) {
+        if (null == $contentType->getFieldType()) {
             throw new \RuntimeException('Field type is unset!');
         }
 
@@ -51,7 +55,6 @@ final class LiveEditManager
         }
 
         foreach ($fields as $field) {
-
             $fieldType = $this->contentTypeService->getFieldTypeByRawPath($contentType->getFieldType(), $this->getRawPath($rawdata, $field));
             if (null !== $fieldType && $this->authorizationChecker->isGranted($fieldType->getFieldsRoles())) {
                 return true;
@@ -64,11 +67,12 @@ final class LiveEditManager
     /**
      * @param array<string> $rawdata
      * @param array<string> $fields
-     * @return array<string>
+     *
+     * @return array<string, FormInterface>
      */
     public function getFormsFields(ContentType $contentType, array $rawdata, array $fields): array
     {
-        if (null === $contentType->getFieldType()) {
+        if (null == $contentType->getFieldType()) {
             throw new \RuntimeException('Field type is unset!');
         }
 
@@ -80,10 +84,10 @@ final class LiveEditManager
                 $fieldType = $this->contentTypeService->getFieldTypeByRawPath($contentType->getFieldType(), $rawPath);
                 if (null !== $fieldType && $this->authorizationChecker->isGranted($fieldType->getFieldsRoles())) {
                     $options = \array_merge(['metadata' => $fieldType]);
-                    if ($fieldType->getType() === CheckboxFieldType::class) {
-                        $options = $propertyAccessor->getValue($rawPath, $field) == true ? \array_merge($options, [ 'data' => $rawPath, 'attr' => ['checked' => true]]) : $options;
+                    if (CheckboxFieldType::class === $fieldType->getType()) {
+                        $options = true == $propertyAccessor->getValue($rawPath, $field) ? \array_merge($options, ['data' => $rawPath, 'attr' => ['checked' => true]]) : $options;
                     } else {
-                        $options = \array_merge($options, ['data'  => $propertyAccessor->getValue($rawPath, $field) ]);
+                        $options = \array_merge($options, ['data' => $propertyAccessor->getValue($rawPath, $field)]);
                     }
 
                     $form = $this->formFactory->createBuilder()
@@ -92,29 +96,57 @@ final class LiveEditManager
                 }
             }
         }
+
         return $forms;
     }
 
     /**
      * @param array<string> $rawdata
+     *
      * @return array<string>
      */
     private function getRawPath(array $rawdata, string $field): array
     {
         $path = [];
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        $propertyAccessor->setValue($path, $field, $propertyAccessor->getValue($rawdata,$field));
+        $propertyAccessor->setValue($path, $field, $propertyAccessor->getValue($rawdata, $field));
 
         return $path;
     }
 
-    public function createNewDraft(Revision $revision): Revision
+    public function createNewDraft(Revision $revision): ?Revision
     {
-        return $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->getOuuid(), null, $this->userService->getCurrentUser());
+        $draft = null;
+        try {
+            $draft = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->getOuuid(), null, $this->userService->getCurrentUser()->getUsername());
+        } catch (\Exception $e) {
+            $this->logger->error('log.error', [
+            EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
+        }
+
+        return $draft;
     }
 
     public function getRevision(EMSLink $EMSLink): ?Revision
     {
         return $this->revisionService->getByEmsLink($EMSLink);
+    }
+
+    /**
+     * @param array<string,mixed> $data
+     */
+    public function saveFields(Revision $revision, array $data): void
+    {
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $fields = $revision->getRawData();
+        foreach ($data as $item) {
+            $propertyAccessor->setValue($fields, $item['key'], $item['value']);
+        }
+        $revision->setRawData($fields);
+
+        $form = null;
+        $this->dataService->finalizeDraft($revision, $form, $this->userService->getCurrentUser()->getUsername());
     }
 }

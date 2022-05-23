@@ -8,5 +8,9 @@
         <default key="_controller">EMS\CoreBundle\Controller\Revision\LiveEditController::liveEditRevision</default>
     </route>
 
+    <route id="emsco_save_live_edit_revision" path="/live/edit/save/{revisionId}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\LiveEditController::saveLiveEditRevision</default>
+    </route>
+
 
 </routes>

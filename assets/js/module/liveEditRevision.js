@@ -85,15 +85,15 @@ export default class LiveEditRevision {
     onClickSaveDraft(button) {
         var parent = button.closest('html');
         const tagFields = parent.querySelectorAll('div[data-emsco-edit-emsid="' + button.getAttribute('data-emsco-edit-revision') +'"][data-emsco-value]');
-        var fields = new Map();
+        var fields = [];
         [].forEach.call(tagFields, function(tagField) {
             if (tagField.querySelector('input').type == 'checkbox'){
-                fields.set( tagField.getAttribute('data-emsco-edit-field'), tagField.querySelector('input').checked ? true : false);
+                fields.push({ key: tagField.getAttribute('data-emsco-edit-field'), value: tagField.querySelector('input').checked ? true : false});
             } else {
-                fields.set( tagField.getAttribute('data-emsco-edit-field'), tagField.querySelector('input').value);
+                fields.push({ key: tagField.getAttribute('data-emsco-edit-field'),  value: tagField.querySelector('input').value});
             }
         });
-        console.log(fields);
+
         const buttons = parent.querySelectorAll('button[data-emsco-edit-revision="' + button.getAttribute('data-emsco-edit-revision') +'"]');
      /*   [].forEach.call(buttons, function(item) {
             if(item.classList.contains('edit-revision') && item.classList.contains('hidden')) {
@@ -104,8 +104,8 @@ export default class LiveEditRevision {
             }
         });*/
 
-        /*ajaxJsonPost( button.getAttribute('data-emsco-edit-revision-save-url'), JSON.stringify({'_data': { emsId: this.revision, fields: fields}}), (json, request) => {
+        ajaxJsonPost( button.getAttribute('data-emsco-edit-revision-save-url'), JSON.stringify({'_data': { emsId: this.revision, fields: fields}}), (json, request) => {
 
-        });*/
+        });
     }
 }

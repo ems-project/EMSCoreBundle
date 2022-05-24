@@ -40,6 +40,8 @@ abstract class TableAbstract implements TableInterface
     /** @var array<mixed> */
     private array $extraFrontendOption = [];
 
+    private bool $buildAll = false;
+
     private string $exportSheetName = 'table';
     private string $exportFileName = 'table';
     private string $exportDisposition = 'attachment';
@@ -367,5 +369,15 @@ abstract class TableAbstract implements TableInterface
     public function setRowActionsClass(string $rowActionsClass): void
     {
         $this->rowActionsClass = $rowActionsClass;
+    }
+
+    public function isBuildAll(): bool
+    {
+        return true === $this->buildAll;
+    }
+
+    public function setBuildAll(bool $buildAll): void
+    {
+        $this->buildAll = $buildAll;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Data;
 
+use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Elasticsearch\Response\Response;
 use EMS\CommonBundle\Search\Search;
@@ -74,6 +75,23 @@ class ElasticaTable extends TableAbstract
         $datatable->setExtraFrontendOption($options[self::FRONTEND_OPTIONS]);
 
         return $datatable;
+    }
+
+    /**
+     * @return \Generator<string, ElasticaRow>
+     */
+    public function scroll(): \Generator
+    {
+        $search = $this->getSearch($this->getSearchValue());
+        $search->setSize(100);
+        $scroll = $this->elasticaService->scroll($search);
+
+        foreach ($scroll as $resultSet) {
+            foreach ($resultSet->getResults() as $result) {
+                $emsDocument = Document::fromResult($result);
+                yield $emsDocument->getEmsId() => new ElasticaRow($emsDocument);
+            }
+        }
     }
 
     public function getIterator()

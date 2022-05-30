@@ -46,8 +46,7 @@
         {% if item is defined and item.children|default([])|length > 0 %}
             <ol class="json-menu-nested-list collapse" data-list="{{ item.id }}">
                 {%- for childItem in item.children|default([]) -%}
-                    {%- set level = level + 1 -%}
-                    {%- with { 'item': childItem } -%}{{ block('renderItem') }}{% endwith %}
+                    {%- with { 'item': childItem, 'level': (level + 1) } -%}{{ block('renderItem') }}{% endwith %}
                 {% endfor %}
             </ol>
         {% endif %}

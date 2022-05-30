@@ -930,6 +930,7 @@ orientation.pdf_orientation: 'PDF Orientation'
 orientation.orientation: Orientation
 orientation.portrait: Portrait
 orientation.landscape: Landscape
+ems.view.data_link: 'Custom data link'
 ems.view.report: 'Report view'
 ems.view.hierarchical: 'Hierarchical view'
 ems.view.sorter: 'Sorter view'
@@ -939,3 +940,5 @@ schedule.command: Command
 schedule.create: Create
 schedule.save: Save
 schedule.saveAndClose: 'Save and Close'
+user.locale: 'Language UI'
+user.locale_preferred: 'Language preferred'

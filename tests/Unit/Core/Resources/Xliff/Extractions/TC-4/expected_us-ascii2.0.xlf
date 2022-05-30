@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="fr">
+  <file id="contentType:ouuid_1:revisionId_1">
+    <unit id="[title_%locale%]">
+      <segment>
+        <source>Foo</source>
+        <target>Bar</target>
+      </segment>
+    </unit>
+  </file>
+  <file id="contentType:ouuid_2:revisionId_2">
+    <unit id="[title_%locale%]">
+      <segment>
+        <source>Hello</source>
+        <target>Bonjour</target>
+      </segment>
+    </unit>
+    <unit id="[keywords_%locale%]">
+      <segment>
+        <source>test xliff</source>
+        <target/>
+      </segment>
+    </unit>
+    <unit id="[empty]">
+      <segment>
+        <source/>
+        <target/>
+      </segment>
+    </unit>
+    <group id="[%locale%][body]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source>Hello Mathieu, please visits<g ctype="x-html-a" html:href="https://elasticms.eu/path%20with%20space?a1=value1&amp;a2=value2#anchor"> <g ctype="italic" html:class="elasticms"/>The elastic<g ctype="bold">ms</g> web site</g></source>
+          <target>Bonjour Mathieu<g ctype="x-html-a" html:href="https://elasticms.eu/path%20with%20space?a1=value1&amp;a2=value2#anchor">Le site d&#180;elasticms</g></target>
+        </segment>
+      </unit>
+    </group>
+    <group id="[%locale%][body2]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source>Hello Mathieu, please visits&lt;a href="https://elasticms.eu/path%20with%20space?a1=value1&amp;amp;a2=value2#anchor"&gt; &lt;i class="elasticms"/&gt;The elastic&lt;b&gt;ms&lt;/b&gt; web site&lt;/a&gt;</source>
+          <target>Bonjour Mathieu&lt;a href="https://elasticms.eu/path%20with%20space?a1=value1&amp;amp;a2=value2#anchor"&gt;Le site d&#180;elasticms&lt;/a&gt;</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="[%locale%][body3]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source>Hello Mathieu, please visits<g ctype="x-html-a" html:href="https://elasticms.eu/path%20with%20space?a1=value1&amp;a2=value2#anchor"> <g ctype="italic" html:class="elasticms"/>The elastic<g ctype="bold">ms</g> web site</g></source>
+          <target>Bonjour Mathieu<g ctype="x-html-a" html:href="https://elasticms.eu/path%20with%20space?a1=value1&amp;a2=value2#anchor">Le site d&#180;elasticms</g></target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>

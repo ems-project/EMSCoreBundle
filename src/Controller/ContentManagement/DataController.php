@@ -10,7 +10,6 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Service\Pdf\Pdf;
 use EMS\CommonBundle\Service\Pdf\PdfPrinterInterface;
 use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
@@ -27,6 +26,7 @@ use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Form\RevisionType;
+use EMS\CoreBundle\Helper\EmsCoreResponse;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -38,9 +38,9 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\PublishService;
+use EMS\CoreBundle\Service\Revision\LoggingContext;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
@@ -258,12 +258,17 @@ class DataController extends AbstractController
         ]);
     }
 
-    /**
-     * @ParamConverter("contentType", options={"mapping": {"type" = "name", "deleted" = "deleted"}})
-     * @ParamConverter("environment", options={"mapping": {"environment" = "name"}})
-     */
-    public function revisionInEnvironmentDataAction(ContentType $contentType, string $ouuid, Environment $environment): RedirectResponse
+    public function revisionInEnvironmentDataAction(string $type, string $ouuid, string $environment): RedirectResponse
     {
+        $contentType = $this->contentTypeService->getByName($type);
+        if (!$contentType instanceof ContentType || $contentType->getDeleted()) {
+            throw new NotFoundHttpException(\sprintf('Content type %s not found', $type));
+        }
+        $environment = $this->environmentService->getByName($environment);
+        if (!$environment instanceof Environment) {
+            throw new NotFoundHttpException('Environment not found');
+        }
+
         try {
             $revision = $this->dataService->getRevisionByEnvironment($ouuid, $contentType, $environment);
 
@@ -339,11 +344,12 @@ class DataController extends AbstractController
         }
 
         if (!$revision instanceof Revision && $contentType->hasVersionTags()) {
-            $latestVersionRevision = $repository->findLatestVersion($contentType, $ouuid);
-            if ($latestVersionRevision && $latestVersionRevision->getOuuid() !== $ouuid) {
+            //using version ouuid as ouuid should redirect to latest
+            $searchLatestVersion = $repository->findLatestVersion($contentType, $ouuid);
+            if ($searchLatestVersion && $searchLatestVersion->getOuuid() !== $ouuid) {
                 return $this->redirectToRoute('emsco_view_revisions', [
                    'type' => $contentType->getName(),
-                   'ouuid' => $latestVersionRevision->getOuuid(),
+                   'ouuid' => $searchLatestVersion->getOuuid(),
                 ]);
             }
         }
@@ -457,9 +463,16 @@ class DataController extends AbstractController
         $referrerResultSet = $this->elasticaService->search($esSearch);
         $referrerResponse = CommonResponse::fromResultSet($referrerResultSet);
 
+        if ($contentType->hasVersionTags()
+            && (null !== $versionOuuid = $revision->getVersionUuid())
+            && null !== $revision->getVersionDate('to')) {
+            $latestVersion = $repository->findLatestVersion($contentType, $versionOuuid);
+        }
+
         return $this->render('@EMSCore/data/revisions-data.html.twig', [
             'revision' => $revision,
             'revisionsSummary' => $revisionsSummary,
+            'latestVersion' => $latestVersion ?? null,
             'availableEnv' => $availableEnv,
             'object' => $revision->getObject($objectArray),
             'referrerResponse' => $referrerResponse,
@@ -571,13 +584,10 @@ class DataController extends AbstractController
             if ($environment !== $revision->giveContentType()->giveEnvironment()) {
                 try {
                     $sibling = $this->dataService->getRevisionByEnvironment($ouuid, $revision->giveContentType(), $environment);
-                    $this->logger->warning('log.data.revision.cant_delete_has_published', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        'published_in' => $environment->getName(),
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                        EmsFields::LOG_REVISION_ID_FIELD => $sibling->getId(),
-                    ]);
+                    $this->logger->warning(
+                        'log.data.revision.cant_delete_has_published',
+                        LoggingContext::publish($sibling, $environment)
+                    );
                     $found = true;
                 } catch (NoResultException $e) {
                 }
@@ -703,35 +713,19 @@ class DataController extends AbstractController
             foreach ($revision->getEnvironments() as $environment) {
                 if (!$defaultOnly || $environment === $revision->giveContentType()->getEnvironment()) {
                     if ($this->indexService->indexRevision($revision, $environment)) {
-                        $this->logger->notice('log.data.revision.reindex', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                            EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        ]);
+                        $this->logger->notice('log.data.revision.reindex', LoggingContext::update($revision));
                     } else {
-                        $this->logger->warning('log.data.revision.reindex_failed_in', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                            EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        ]);
+                        $this->logger->warning('log.data.revision.reindex_failed_in', LoggingContext::update($revision));
                     }
                 }
             }
             $em->persist($revision);
             $em->flush();
         } catch (\Throwable $e) {
-            $this->logger->warning('log.data.revision.reindex_failed', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+            $this->logger->warning('log.data.revision.reindex_failed', \array_merge(LoggingContext::update($revision), [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
-            ]);
+            ]));
         }
 
         return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
@@ -907,10 +901,10 @@ class DataController extends AbstractController
                 'template_id' => $template->getId(),
                 'job_id' => $job->getId(),
                 'template_name' => $template->getName(),
-                'environment' => $env->getName(),
+                'environment' => $env->getLabel(),
             ]);
 
-            return AppController::jsonResponse($request, true, [
+            return EmsCoreResponse::createJsonResponse($request, true, [
                 'jobId' => $job->getId(),
                 'jobUrl' => $this->generateUrl('emsco_job_start', ['job' => $job->getId()], UrlGeneratorInterface::ABSOLUTE_PATH),
                 'url' => $this->generateUrl('emsco_job_status', ['job' => $job->getId()], UrlGeneratorInterface::ABSOLUTE_PATH),
@@ -921,6 +915,8 @@ class DataController extends AbstractController
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
+                'template_name' => $template->getName(),
+                'environment' => $env->getLabel(),
             ]);
         }
 

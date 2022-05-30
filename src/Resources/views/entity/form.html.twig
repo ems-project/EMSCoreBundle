@@ -22,15 +22,9 @@
 			<!-- form start -->
 			{{ form_start(form) }}
 				<div class="box-body">
-					{% for formItem in form.children if formItem.vars.name not in ['save', 'remove'] %}	
+					{% for formItem in form.children|filter(formItem => formItem.vars.name not in ['save', 'remove']) %}
                         {{ form_row(formItem) }}
 					{% endfor %}
-			
-{# 					{{ form_row(form.name) }}#}
-					
-{# 					{{ form_rest(form.config, {'render_rest': false}) }}#}
-					
-
 				</div>
 				<!-- /.box-body -->
 				<div class="box-footer">

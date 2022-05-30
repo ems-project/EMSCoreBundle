@@ -21,5 +21,10 @@
             <argument type="service" id="service_container"/>
             <tag name="form.type"/>
         </service>
+        <service id="ems_core.form.user_type" class="EMS\CoreBundle\Form\Form\UserType">
+            <argument type="service" id="ems.service.user" />
+            <argument>%ems_core.circles_object%</argument>
+            <tag name="form.type"/>
+        </service>
     </services>
 </container>

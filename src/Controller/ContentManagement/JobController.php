@@ -3,38 +3,47 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\Text\Encoder;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Form\JobType;
+use EMS\CoreBundle\Helper\EmsCoreResponse;
 use EMS\CoreBundle\Service\JobService;
 use Psr\Log\LoggerInterface;
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 use SensioLabs\AnsiConverter\Theme\Theme;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse as SymfonyJsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
-class JobController extends AppController
+class JobController extends AbstractController
 {
-    /**
-     * @Route("/admin/job", name="job.index")
-     */
-    public function indexAction(Request $request, JobService $jobService): Response
-    {
-        $size = $this->getParameter('ems_core.paging_size');
+    private JobService $jobService;
+    private LoggerInterface $logger;
+    private int $pagingSize;
+    private bool $triggerJobFromWeb;
 
+    public function __construct(LoggerInterface $logger, JobService $jobService, int $pagingSize, bool $triggerJobFromWeb)
+    {
+        $this->logger = $logger;
+        $this->jobService = $jobService;
+        $this->pagingSize = $pagingSize;
+        $this->triggerJobFromWeb = $triggerJobFromWeb;
+    }
+
+    public function index(Request $request): Response
+    {
+        $size = $this->pagingSize;
         $page = $request->query->get('page', 1);
         $from = ($page - 1) * $size;
-        $total = $jobService->count();
+        $total = $this->jobService->count();
         $lastPage = \ceil($total / $size);
 
         return $this->render('@EMSCore/job/index.html.twig', [
-            'jobs' => $jobService->scroll($size, $from),
+            'jobs' => $this->jobService->scroll($size, $from),
             'page' => $page,
             'size' => $size,
             'from' => $from,
@@ -43,12 +52,9 @@ class JobController extends AppController
         ]);
     }
 
-    /**
-     * @Route("/job/status/{job}", name="job.status")
-     * @Route("/job/status/{job}", name="emsco_job_status")
-     */
-    public function jobStatusAction(Job $job, Encoder $encoder): Response
+    public function jobStatus(Job $job): Response
     {
+        $encoder = new Encoder();
         $theme = new Theme();
         $converter = new AnsiToHtmlConverter($theme);
 
@@ -56,14 +62,11 @@ class JobController extends AppController
             'job' => $job,
             'status' => $encoder->encodeUrl($job->getStatus()),
             'output' => $encoder->encodeUrl($converter->convert($job->getOutput())),
-            'launchJob' => true === $this->getParameter('ems_core.trigger_job_from_web') && false === $job->getStarted(),
+            'launchJob' => true === $this->triggerJobFromWeb && false === $job->getStarted(),
         ]);
     }
 
-    /**
-     * @Route("/admin/job/add", name="job.add")
-     */
-    public function createAction(Request $request, JobService $jobService): Response
+    public function create(Request $request): Response
     {
         $form = $this->createForm(JobType::class, []);
         $form->handleRequest($request);
@@ -75,7 +78,7 @@ class JobController extends AppController
             }
 
             $command = $form->get('command')->getData();
-            $job = $jobService->createCommand($user, $command);
+            $job = $this->jobService->createCommand($user, $command);
 
             return $this->redirectToRoute('job.status', [
                 'job' => $job->getId(),
@@ -87,31 +90,21 @@ class JobController extends AppController
         ]);
     }
 
-    /**
-     * @Route("/admin/job/delete/{job}", name="job.delete", methods={"POST"})
-     */
-    public function deleteAction(Job $job, JobService $jobService): RedirectResponse
+    public function delete(Job $job): RedirectResponse
     {
-        $jobService->delete($job);
+        $this->jobService->delete($job);
 
         return $this->redirectToRoute('job.index');
     }
 
-    /**
-     * @Route("/admin/job/clean", name="job.clean", methods={"POST"})
-     */
-    public function cleanAction(JobService $jobService): RedirectResponse
+    public function clean(): RedirectResponse
     {
-        $jobService->clean();
+        $this->jobService->clean();
 
         return $this->redirectToRoute('job.index');
     }
 
-    /**
-     * @Route("/admin/job/start/{job}", name="job.start", methods={"POST"})
-     * @Route("/job/start/{job}", name="emsco_job_start", methods={"POST"})
-     */
-    public function startJobAction(Job $job, Request $request, JobService $jobService, LoggerInterface $logger): Response
+    public function startJob(Job $job, Request $request): Response
     {
         $user = $this->getUser();
         if (!$user instanceof UserInterface) {
@@ -123,11 +116,11 @@ class JobController extends AppController
         }
 
         if ($job->getStarted() && $job->getDone()) {
-            return new JsonResponse('job already done');
+            return new SymfonyJsonResponse('job already done');
         }
 
-        if (false === $this->getParameter('ems_core.trigger_job_from_web')) {
-            return $this->returnJsonResponse($request, true, [
+        if (false === $this->triggerJobFromWeb) {
+            return EmsCoreResponse::createJsonResponse($request, true, [
                 'message' => 'job is scheduled',
                 'job_id' => $job->getId(),
             ]);
@@ -135,12 +128,12 @@ class JobController extends AppController
 
         $request->getSession()->save();
         \set_time_limit(0);
-        $jobService->run($job);
-        $logger->notice('log.data.job.done', [
+        $this->jobService->run($job);
+        $this->logger->notice('log.data.job.done', [
             'job_id' => $job->getId(),
         ]);
 
-        return $this->returnJsonResponse($request, true, [
+        return EmsCoreResponse::createJsonResponse($request, true, [
             'message' => 'job started',
             'job_id' => $job->getId(),
         ]);

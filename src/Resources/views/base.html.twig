@@ -38,7 +38,7 @@
 {%- set type_filters = [] -%}
 {%- set all_types = false %}
 {%- if get_content_types()|length > 0 -%}
-    {%- for contentType in get_content_types() if contentType.webContent -%}
+    {%- for contentType in get_content_types()|filter(contentType => contentType.webContent) -%}
         {%- if all_types  -%}
             {% set all_types = all_types~','~contentType.name -%}
         {%- else %}
@@ -214,7 +214,7 @@
     <section class="content-header">
       <h1>
         {% block pagetitle %}<strong>elastic</strong>MS{% endblock %}
-        {% block subtitle %}<small>Your content management system in an elastic world wide web</small>{% endblock %}
+        {% block subtitle %}{% endblock %}
       </h1>
 
       	{% block breadcrumb %}{% endblock %}
@@ -313,10 +313,8 @@
   <footer class="main-footer no-print">
     <!-- To the right -->
     <div class="pull-right">
-    	{% if ems_core_version %}
-    		{{ 'Core %version%'|trans({'%version%': ems_core_version }) }}
-    	{% endif %}
-      	{{ 'with Symfony %version%'|trans({'%version%':constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }) }}
+        {{ 'Core %version%'|trans({'%version%': ems_version('core') }) }}
+      	{{ 'with Symfony %version%'|trans({'%version%': ems_version('symfony') }) }}
     </div>
     <!-- Default to the left -->
     <a href="http://www.elasticms.eu/">elastic<b>ms</b></a>

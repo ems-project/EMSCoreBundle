@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Service;
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
-use EMS\CommonBundle\Elasticsearch\Response\ResponseInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Document\DataLinks;
@@ -17,8 +16,6 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Repository\QuerySearchRepository;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 final class QuerySearchService implements EntityServiceInterface
 {
@@ -144,21 +141,11 @@ final class QuerySearchService implements EntityServiceInterface
         return $this->querySearchRepository->counter();
     }
 
-    public function searchAndGetDatalinks(Request $request, string $querySearchName): JsonResponse
+    public function querySearchDataLinks(DataLinks $dataLinks): void
     {
-        $dataLinks = new DataLinks($request);
-        $commonSearchResponse = $this->commonSearch($querySearchName, $dataLinks);
-
-        $dataLinks->addSearchResponse($commonSearchResponse);
-
-        return new JsonResponse($dataLinks->toArray());
-    }
-
-    private function commonSearch(string $querySearchName, DataLinks $dataLinks): ResponseInterface
-    {
-        $querySearch = $this->getOneByName($querySearchName);
+        $querySearch = $this->getOneByName($dataLinks->getQuerySearchName());
         if (!$querySearch instanceof QuerySearch) {
-            throw new \RuntimeException(\sprintf('QuerySearch %s not found', $querySearchName));
+            throw new \RuntimeException(\sprintf('QuerySearch %s not found', $dataLinks->getQuerySearchName()));
         }
 
         $query = $querySearch->getOptions()['query'] ?? null;
@@ -189,10 +176,10 @@ final class QuerySearchService implements EntityServiceInterface
                 continue;
             }
 
-            $dataLinks->addContentType($contentType);
+            $dataLinks->addContentTypes($contentType);
         }
 
-        return CommonResponse::fromResultSet($resultSet);
+        $dataLinks->addSearchResponse(CommonResponse::fromResultSet($resultSet));
     }
 
     /**

@@ -6,12 +6,12 @@ use Doctrine\ORM\EntityManager;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\Document\DataLinks;
 use EMS\CoreBundle\Entity\ContentType;
@@ -23,7 +23,6 @@ use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\ExportDocumentsType;
 use EMS\CoreBundle\Form\Form\SearchFormType;
-use EMS\CoreBundle\Form\View\DataLinkViewType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Routes;
@@ -41,14 +40,11 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Throwable;
 
 class ElasticsearchController extends AbstractController
 {
@@ -59,14 +55,20 @@ class ElasticsearchController extends AbstractController
     private AssetExtractorService $assetExtractorService;
     private ContentTypeService $contentTypeService;
     private EnvironmentService $environmentService;
-    private ViewTypes $viewTypes;
     private AuthorizationCheckerInterface $authorizationChecker;
     private SearchService $searchService;
     private JobService $jobService;
     private SortOptionService $sortOptionService;
     private AggregateOptionService $aggregateOptionService;
     private DashboardManager $dashboardManager;
+    private int $pagingSize;
+    private ?string $healthCheckAllowOrigin;
+    /** @var string[] */
+    private array $elasticsearchCluster;
 
+    /**
+     * @param string[] $elasticsearchCluster
+     */
     public function __construct(
         LoggerInterface $logger,
         IndexService $indexService,
@@ -77,11 +79,13 @@ class ElasticsearchController extends AbstractController
         ContentTypeService $contentTypeService,
         SearchService $searchService,
         AuthorizationCheckerInterface $authorizationChecker,
-        ViewTypes $viewTypes,
         JobService $jobService,
         AggregateOptionService $aggregateOptionService,
         SortOptionService $sortOptionService,
-        DashboardManager $dashboardManager)
+        DashboardManager $dashboardManager,
+        int $pagingSize,
+        ?string $healthCheckAllowOrigin,
+        array $elasticsearchCluster)
     {
         $this->logger = $logger;
         $this->indexService = $indexService;
@@ -92,20 +96,16 @@ class ElasticsearchController extends AbstractController
         $this->contentTypeService = $contentTypeService;
         $this->searchService = $searchService;
         $this->authorizationChecker = $authorizationChecker;
-        $this->viewTypes = $viewTypes;
         $this->jobService = $jobService;
         $this->aggregateOptionService = $aggregateOptionService;
         $this->sortOptionService = $sortOptionService;
         $this->dashboardManager = $dashboardManager;
+        $this->pagingSize = $pagingSize;
+        $this->healthCheckAllowOrigin = $healthCheckAllowOrigin;
+        $this->elasticsearchCluster = $elasticsearchCluster;
     }
 
-    /**
-     * Create an alias for an index.
-     *
-     * @return RedirectResponse|Response
-     * @Route("/elasticsearch/alias/add/{name}", name="elasticsearch.alias.add")
-     */
-    public function addAliasAction(string $name, Request $request)
+    public function addAliasAction(string $name, Request $request): Response
     {
         $form = $this->createFormBuilder([])->add('name', IconTextType::class, [
             'icon' => 'fa fa-key',
@@ -137,9 +137,6 @@ class ElasticsearchController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/health_check.{_format}", defaults={"_format"="html"}, name="health-check")
-     */
     public function healthCheckAction(string $_format): Response
     {
         try {
@@ -150,7 +147,7 @@ class ElasticsearchController extends AbstractController
                 'globalStatus' => $health['status'] ?? 'red',
             ]);
 
-            $allowOrigin = $this->getParameter('ems_core.health_check_allow_origin');
+            $allowOrigin = $this->healthCheckAllowOrigin;
             if (\is_string($allowOrigin) && \strlen($allowOrigin) > 0) {
                 $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
             }
@@ -161,9 +158,6 @@ class ElasticsearchController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/status.{_format}", defaults={"_format"="html"}, name="elasticsearch.status")
-     */
     public function statusAction(string $_format): Response
     {
         try {
@@ -204,19 +198,15 @@ class ElasticsearchController extends AbstractController
             ]);
         } catch (NoNodesAvailableException $e) {
             return $this->render('@EMSCore/elasticsearch/no-nodes-available.'.$_format.'.twig', [
-                'cluster' => $this->getParameter('ems_core.elasticsearch_cluster'),
+                'cluster' => $this->elasticsearchCluster,
             ]);
         }
     }
 
     /**
      * @param int $id
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/elasticsearch/delete-search/{id}", name="elasticsearch.search.delete")
      */
-    public function deleteSearchAction($id)
+    public function deleteSearchAction($id): Response
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
@@ -232,12 +222,7 @@ class ElasticsearchController extends AbstractController
         return $this->redirectToRoute('elasticsearch.search');
     }
 
-    /**
-     * @return Response
-     *
-     * @Route("/quick-search", name="ems_quick_search", methods={"GET"})
-     */
-    public function quickSearchAction(Request $request)
+    public function quickSearchAction(Request $request): Response
     {
         $dashboard = $this->dashboardManager->getQuickSearch();
         if (null !== $dashboard) {
@@ -280,12 +265,8 @@ class ElasticsearchController extends AbstractController
     /**
      * @param int    $id
      * @param string $contentType
-     *
-     * @return RedirectResponse
-     *
-     * @Route("/elasticsearch/set-default-search/{id}/{contentType}", defaults={"contentType"=false}, name="ems_search_set_default_search_from", methods={"POST"})
      */
-    public function setDefaultSearchAction($id, $contentType)
+    public function setDefaultSearchAction($id, $contentType): Response
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
@@ -328,9 +309,6 @@ class ElasticsearchController extends AbstractController
         return $this->redirectToRoute('elasticsearch.search', ['searchId' => $id]);
     }
 
-    /**
-     * @Route("/elasticsearch/index/delete/{name}", name="elasticsearch.index.delete")
-     */
     public function deleteIndexAction(string $name): RedirectResponse
     {
         try {
@@ -349,15 +327,12 @@ class ElasticsearchController extends AbstractController
 
     /**
      * @deprecated
-     *
-     * @return JsonResponse
      */
-    public function deprecatedSearchApiAction(Request $request)
+    public function deprecatedSearchApiAction(Request $request, DataLinks $dataLinks): void
     {
         @\trigger_error('QuerySearch not defined, you should refer to one', E_USER_DEPRECATED);
         $environments = $request->query->get('environment', null);
-        $requestSearchId = $request->query->get('searchId', '');
-        $searchId = '' !== $requestSearchId ? \intval($requestSearchId) : null;
+        $searchId = $dataLinks->getSearchId();
         $category = $request->query->get('category', null);
         $assetName = $request->query->get('asset_name', false);
         $circleOnly = $request->query->get('circle', false);
@@ -365,50 +340,37 @@ class ElasticsearchController extends AbstractController
 
         if (\is_string($dataLink)) {
             $emsLink = EMSLink::fromText($dataLink);
-            $contentType = $this->contentTypeService->getByName($emsLink->getContentType());
-            if (!$contentType instanceof ContentType) {
-                throw new \RuntimeException(\sprintf('Content type %s not found', $emsLink->getContentType()));
-            }
+            $contentType = $this->contentTypeService->giveByName($emsLink->getContentType());
             $document = $this->searchService->getDocument($contentType, $emsLink->getOuuid());
-            $dataLinks = new DataLinks($request, $contentType);
-            $dataLinks->addDocument($document);
 
-            return new JsonResponse($dataLinks->toArray());
+            $dataLinks->addDocument($document);
+            $dataLinks->addContentTypes($contentType);
+
+            return;
         }
+
+        $contentTypes = $dataLinks->getContentTypeNames();
 
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
-        /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
-
-        $allContentTypes = $contentTypeRepository->findAll();
-        $dataLinks = new DataLinks($request, ...$allContentTypes);
-
-        $contentTypes = $dataLinks->getTypes();
-
-        if (1 === \count($contentTypes) && null !== $contentType = $contentTypeRepository->findByName($contentTypes[0])) {
-            /** @var DataLinkViewType $viewType */
-            $viewType = $this->viewTypes->get('ems.view.data_link');
-            if (null !== $view = $contentType->getFirstViewByType('ems.view.data_link')) {
-                $viewType->render($view, $dataLinks);
-
-                return new JsonResponse($dataLinks->toArray());
-            }
-        }
 
         $search = null;
-        if (\is_int($searchId)) {
+        if ($searchId) {
             $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
-            $search = $searchRepository->findOneBy([
-                'id' => $searchId,
-            ]);
+            $search = $searchRepository->findOneBy(['id' => $searchId]);
         }
 
         if (!$search instanceof Search) {
             $search = $this->searchService->getDefaultSearch($contentTypes);
         }
 
+        $searchContentTypes = $search->getContentTypes();
+        foreach ($searchContentTypes as $searchContentType) {
+            $dataLinks->addContentTypes($this->contentTypeService->giveByName($searchContentType));
+        }
+
         if ($assetName) {
+            $allContentTypes = $this->contentTypeService->getAll();
             // For search only in contentType with Asset field == $assetName.
             $contentTypes = [];
             foreach ($allContentTypes as $contentType) {
@@ -474,15 +436,9 @@ class ElasticsearchController extends AbstractController
         $commonSearch->setSize($dataLinks->getSize());
         $response = CommonResponse::fromResultSet($this->elasticaService->search($commonSearch));
         $dataLinks->addSearchResponse($response);
-
-        return new JsonResponse($dataLinks->toArray());
     }
 
-    /**
-     * @return RedirectResponse
-     * @Route("/search/export/{contentType}", name="emsco_search_export", methods={"POST"})
-     */
-    public function exportAction(Request $request, ContentType $contentType)
+    public function exportAction(Request $request, ContentType $contentType): Response
     {
         $exportDocuments = new ExportDocuments($contentType, $this->generateUrl('emsco_search_export', ['contentType' => $contentType]), '{}');
         $form = $this->createForm(ExportDocumentsType::class, $exportDocuments);
@@ -511,21 +467,12 @@ class ElasticsearchController extends AbstractController
         ]);
     }
 
-    /**
-     * @return RedirectResponse|Response
-     *
-     * @throws Throwable
-     * @Route("/search", name="ems_search")
-     * @Route("/search", name="elasticsearch.search")
-     */
-    public function searchAction(Request $request)
+    public function searchAction(Request $request): Response
     {
         try {
             $search = new Search();
 
-            //Save the form (uses POST method)
             if ('POST' == $request->getMethod()) {
-//                 $request->query->get('search_form')['name'] = $request->request->get('form')['name'];
                 $request->request->set('search_form', $request->query->get('search_form'));
 
                 $form = $this->createForm(SearchFormType::class, $search);
@@ -621,8 +568,8 @@ class ElasticsearchController extends AbstractController
             $environments = $environmentRepository->findAllAsAssociativeArray('alias');
 
             $esSearch = $this->searchService->generateSearch($search);
-            $esSearch->setFrom(($page - 1) * $this->getParameter('ems_core.paging_size'));
-            $esSearch->setSize($this->getParameter('ems_core.paging_size'));
+            $esSearch->setFrom(($page - 1) * $this->pagingSize);
+            $esSearch->setSize(Type::integer($this->pagingSize));
 
             $esSearch->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, $this->aggregateOptionService->getContentTypeField(), 15);
             $esSearch->addTermsAggregation(AggregateOptionService::INDEXES_AGGREGATION, '_index', 15);
@@ -635,9 +582,9 @@ class ElasticsearchController extends AbstractController
                         'total' => $response->getTotal(),
                         'paging' => '50.000',
                     ]);
-                    $lastPage = \ceil(50000 / $this->getParameter('ems_core.paging_size'));
+                    $lastPage = \ceil(50000 / $this->pagingSize);
                 } else {
-                    $lastPage = \ceil($response->getTotal() / $this->getParameter('ems_core.paging_size'));
+                    $lastPage = \ceil($response->getTotal() / $this->pagingSize);
                 }
             } catch (ElasticsearchException $e) {
                 $this->logger->warning('log.error', [

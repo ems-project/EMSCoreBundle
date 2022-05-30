@@ -24,7 +24,6 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
 use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
@@ -1074,6 +1073,8 @@ class DataService
             }
         }
 
+        $currentUser = $this->userService->getCurrentUser();
+
         $now = new \DateTime('now');
         $revision->setContentType($contentType);
         $revision->setDraft(true);
@@ -1081,8 +1082,13 @@ class DataService
         $revision->setDeleted(false);
         $revision->setStartTime($now);
         $revision->setEndTime(null);
-        $revision->setLockBy($this->userService->getCurrentUser()->getUsername());
+        $revision->setLockBy($currentUser->getUsername());
         $revision->setLockUntil(new \DateTime($this->lockTime));
+
+        $ownerRole = $contentType->getOwnerRole();
+        if (null !== $ownerRole && $this->userService->isGrantedRole($ownerRole)) {
+            $revision->setOwner($currentUser->getUsername());
+        }
 
         if ($contentType->getCirclesField()) {
             if (isset($revision->getRawData()[$contentType->getCirclesField()])) {
@@ -1094,17 +1100,15 @@ class DataService
             } else {
                 $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
                 if ($fieldType) {
-                    /** @var UserInterface $user */
-                    $user = $this->userService->getCurrentUser();
                     $options = $fieldType->getDisplayOptions();
                     if (isset($options['multiple']) && $options['multiple']) {
-                        $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $user->getCircles()]));
-                        $revision->setCircles($user->getCircles());
+                        $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $currentUser->getCircles()]));
+                        $revision->setCircles($currentUser->getCircles());
                     } else {
                         //set first of my circles
-                        if (!empty($user->getCircles())) {
-                            $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $user->getCircles()[0]]));
-                            $revision->setCircles([$user->getCircles()[0]]);
+                        if (!empty($currentUser->getCircles())) {
+                            $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $currentUser->getCircles()[0]]));
+                            $revision->setCircles([$currentUser->getCircles()[0]]);
                         }
                     }
                 }
@@ -1804,6 +1808,8 @@ class DataService
 
                 return $revision;
             }
+
+            $this->setMetaFields($newDraft);
 
             $newDraft->setStartTime($now);
             $revision->setEndTime($now);

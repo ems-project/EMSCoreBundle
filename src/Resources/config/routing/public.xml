@@ -13,6 +13,9 @@
         <default key="public">1</default>
         <default key="_download">0</default>
     </route>
+    <route id="ems_file_download_public" path="/file/{sha1}" methods="GET HEAD">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::downloadFileAction</default>
+    </route>
 
 
     <!--- Deprecated routes -->

@@ -195,6 +195,22 @@ class RevisionService implements RevisionServiceInterface
     }
 
     /**
+     * @param ?array<mixed> $mergeRawData
+     */
+    public function copy(Revision $revision, ?array $mergeRawData = null): void
+    {
+        $copiedRevision = $revision->clone();
+
+        if ($mergeRawData) {
+            $copiedRevision->setRawData(\array_merge($copiedRevision->getRawData(), $mergeRawData));
+        }
+
+        $form = null;
+
+        $this->dataService->finalizeDraft($copiedRevision, $form, 'system_copy');
+    }
+
+    /**
      * @param array<mixed> $rawData
      */
     public function updateRawData(Revision $revision, array $rawData, ?string $username = null, bool $merge = true): Revision

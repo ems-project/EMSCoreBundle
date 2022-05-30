@@ -134,7 +134,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      *
      * @ORM\Column(name="dirty", type="boolean")
      */
-    protected $dirty;
+    protected $dirty = true;
 
     /**
      * @var string
@@ -303,6 +303,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected ?string $deleteRole = null;
 
     /**
+     * @ORM\Column(name="archive_role", type="string", length=100, nullable=true)
+     */
+    protected ?string $archiveRole = null;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="trash_role", type="string", length=100, nullable=true)
@@ -319,7 +324,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
-    protected $orderKey;
+    protected $orderKey = 0;
 
     /**
      * @var bool
@@ -354,7 +359,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      *
      * @ORM\Column(name="active", type="boolean")
      */
-    protected $active;
+    protected $active = false;
 
     /**
      * @var Environment|null
@@ -1643,6 +1648,23 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this;
     }
 
+    public function hasArchiveRole(): bool
+    {
+        return null !== $this->archiveRole;
+    }
+
+    public function getArchiveRole(): ?string
+    {
+        return $this->archiveRole;
+    }
+
+    public function setArchiveRole(?string $archiveRole): ContentType
+    {
+        $this->archiveRole = $archiveRole;
+
+        return $this;
+    }
+
     /**
      * Set trashRole.
      *
@@ -1740,7 +1762,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->setActive(false);
         $this->setDirty(true);
         $this->getFieldType()->updateAncestorReferences($this, null);
-        $this->setOrderKey($nextOrderKey);
+        if ($this->getOrderKey() < 1) {
+            $this->setOrderKey($nextOrderKey);
+        }
     }
 
     /**
@@ -1762,6 +1786,8 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         $json->removeProperty('environment');
         $json->removeProperty('created');
         $json->removeProperty('modified');
+        $json->removeProperty('dirty');
+        $json->removeProperty('active');
         $json->handlePersistentCollections('templates', 'views');
 
         return $json;

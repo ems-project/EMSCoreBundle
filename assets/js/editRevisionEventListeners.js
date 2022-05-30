@@ -45,7 +45,7 @@ function editRevisionEventListeners(target, onChangeCallback = null){
     });
 
     if (onChangeCallback) {
-        target.find("input").not(".ignore-ems-update").on('input', onChangeCallback);
+        target.find("input").not(".ignore-ems-update,.datetime-picker,datetime-picker").on('input', onChangeCallback);
         target.find("select").not(".ignore-ems-update").on('change', onChangeCallback);
         target.find("textarea").not(".ignore-ems-update").on('input', onChangeCallback);
     }
@@ -108,7 +108,7 @@ function editRevisionEventListeners(target, onChangeCallback = null){
             ckconfig.language = language;
         }
 
-
+        ckconfig.referrerEmsId = $( this ).attr('data-referrer-ems-id');
 
         let tableDefaultCss = $( this ).attr('data-table-default-css');
         if(typeof tableDefaultCss == 'undefined'){
@@ -214,7 +214,7 @@ function editRevisionEventListeners(target, onChangeCallback = null){
         $(this).datepicker(params);
 
         if (onChangeCallback) {
-            $(this).not(".ignore-ems-update").on('change', onChangeCallback);
+            $(this).not(".ignore-ems-update").on('dp.change', onChangeCallback);
         }
     });
 
@@ -226,7 +226,7 @@ function editRevisionEventListeners(target, onChangeCallback = null){
             extraFormats: [moment.ISO_8601]
         });
         if (onChangeCallback) {
-            $element.not(".ignore-ems-update").on('change', onChangeCallback);
+            $element.not(".ignore-ems-update").on('dp.change', onChangeCallback);
         }
     });
 

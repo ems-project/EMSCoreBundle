@@ -17,56 +17,46 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
 class FileController extends AbstractController
 {
-    /**
-     * @Route("/data/file/view/{sha1}" , name="ems.file.view", methods={"GET","HEAD"})
-     * @Route("/data/file/view/{sha1}" , name="ems_file_view", methods={"GET","HEAD"})
-     * @Route("/api/file/view/{sha1}" , name="ems.api.file.view", methods={"GET","HEAD"})
-     */
-    public function viewFileAction(string $sha1, Request $request, FileService $fileService): Response
+    private FileService $fileService;
+    private AssetExtractorService $assetExtractorService;
+    private LoggerInterface $logger;
+
+    public function __construct(FileService $fileService, AssetExtractorService $assetExtractorService, LoggerInterface $logger)
     {
-        return $fileService->getStreamResponse($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
+        $this->fileService = $fileService;
+        $this->assetExtractorService = $assetExtractorService;
+        $this->logger = $logger;
     }
 
-    /**
-     * @Route("/public/file/{sha1}" , name="ems_file_download_public", methods={"GET","HEAD"})
-     * @Route("/data/file/{sha1}" , name="file.download", methods={"GET","HEAD"})
-     * @Route("/data/file/{sha1}" , name="ems_file_download", methods={"GET","HEAD"})
-     * @Route("/api/file/{sha1}" , name="file.api.download", methods={"GET","HEAD"})
-     */
-    public function downloadFileAction(string $sha1, Request $request, FileService $fileService): Response
+    public function viewFileAction(string $sha1, Request $request): Response
     {
-        return $fileService->getStreamResponse($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
+        return $this->fileService->getStreamResponse($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
     }
 
-    /**
-     * @Route("/admin/file/{id}/delete" , name="ems_file_soft_delete", methods={"POST","HEAD"})
-     */
-    public function softDeleteFileAction(Request $request, string $id, FileService $fileService): Response
+    public function downloadFileAction(string $sha1, Request $request): Response
+    {
+        return $this->fileService->getStreamResponse($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
+    }
+
+    public function softDeleteFileAction(Request $request, string $id): Response
     {
         if (!$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException($request->getPathInfo());
         }
-        $fileService->removeSingleFileEntity([$id]);
+        $this->fileService->removeSingleFileEntity([$id]);
 
         return $this->redirectToRoute('ems_core_uploaded_file_logs');
     }
 
-    /**
-     * @Route("/data/file/extract/forced/{sha1}.{_format}" , name="ems_file_extract_forced", defaults={"_format" = "json"}, methods={"GET","HEAD"})
-     */
-    public function extractFileContentForced(AssetExtractorService $assetExtractorService, Request $request, string $sha1): Response
+    public function extractFileContentForced(Request $request, string $sha1): Response
     {
-        return $this->extractFileContent($assetExtractorService, $request, $sha1, true);
+        return $this->extractFileContent($request, $sha1, true);
     }
 
-    /**
-     * @Route("/data/file/extract/{sha1}.{_format}" , name="ems_file_extract", defaults={"_format" = "json"}, methods={"GET","HEAD"})
-     */
-    public function extractFileContent(AssetExtractorService $assetExtractorService, Request $request, string $sha1, bool $forced = false): Response
+    public function extractFileContent(Request $request, string $sha1, bool $forced = false): Response
     {
         if ($request->hasSession()) {
             $session = $request->getSession();
@@ -77,7 +67,7 @@ class FileController extends AbstractController
         }
 
         try {
-            $data = $assetExtractorService->extractData($sha1, null, $forced);
+            $data = $this->assetExtractorService->extractData($sha1, null, $forced);
         } catch (NotFoundException $e) {
             throw new NotFoundHttpException(\sprintf('Asset %s not found', $sha1));
         }
@@ -92,17 +82,9 @@ class FileController extends AbstractController
     }
 
     /**
-     * @param string $sha1
-     * @param int    $size
-     *
-     * @return Response
-     *
-     * @Route("/data/file/init-upload/{sha1}/{size}" , name="file.init-upload", defaults={"_format" = "json", "apiRoute"=false}, methods={"POST"})
-     * @Route("/api/file/init-upload/{sha1}/{size}" , name="file.api.init-upload", defaults={"_format" = "json", "apiRoute"=true}, methods={"POST"})
-     * @Route("/data/file/init-upload" , name="emsco_file_data_init_upload", defaults={"_format" = "json", "sha1" = null, "size" = null, "apiRoute"=false}, methods={"POST"})
-     * @Route("/api/file/init-upload" , name="emsco_file_api_init_upload", defaults={"_format" = "json", "sha1" = null, "size" = null, "apiRoute"=true}, methods={"POST"})
+     * @param int $size
      */
-    public function initUploadFileAction($sha1, $size, bool $apiRoute, Request $request, FileService $fileService, LoggerInterface $logger)
+    public function initUploadFileAction(?string $sha1, $size, bool $apiRoute, Request $request): Response
     {
         if ($sha1 || $size) {
             @\trigger_error('You should use the routes emsco_file_data_init_upload or emsco_file_api_init_upload which doesn\'t require url parameters', E_USER_DEPRECATED);
@@ -127,9 +109,9 @@ class FileController extends AbstractController
         }
 
         try {
-            $uploadedAsset = $fileService->initUploadFile($hash, $size, $name, $type, $user, $algo);
+            $uploadedAsset = $this->fileService->initUploadFile($hash, $size, $name, $type, $user, $algo);
         } catch (\Exception $e) {
-            $logger->error('log.error', [
+            $this->logger->error('log.error', [
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
@@ -146,23 +128,14 @@ class FileController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string $sha1
-     * @param string $hash
-     * @param bool   $apiRoute
-     *
-     * @return Response
-     *
-     * @Route("/data/file/upload-chunk/{sha1}", name="file.uploadchunk", defaults={"_format" = "json", "hash" = null, "apiRoute"=false}, methods={"POST"})
-     * @Route("/api/file/upload-chunk/{sha1}", name="file.api.uploadchunk", defaults={"_format" = "json", "hash" = null, "apiRoute"=true}, methods={"POST"})
-     * @Route("/data/file/chunk/{hash}", name="emsco_file_data_chunk_upload", defaults={"_format" = "json", "sha1" = null, "apiRoute"=false}, methods={"POST"})
-     * @Route("/api/file/chunk/{hash}", name="emsco_file_api_chunk_upload", defaults={"_format" = "json", "sha1" = null, "apiRoute"=true}, methods={"POST"})
-     */
-    public function uploadChunkAction($sha1, $hash, $apiRoute, Request $request, FileService $fileService, LoggerInterface $logger)
+    public function uploadChunkAction(?string $sha1, ?string $hash, bool $apiRoute, Request $request): Response
     {
-        if ($sha1) {
+        if (null !== $sha1) {
             $hash = $sha1;
             @\trigger_error('You should use the routes emsco_file_data_chunk_upload or emsco_file_api_chunk_upload which use a hash parameter', E_USER_DEPRECATED);
+        }
+        if (null === $hash) {
+            throw new \RuntimeException('Unexpected null hash');
         }
 
         $chunk = $request->getContent();
@@ -174,9 +147,9 @@ class FileController extends AbstractController
         $user = $this->getUsername();
 
         try {
-            $uploadedAsset = $fileService->addChunk($hash, $chunk, $user);
+            $uploadedAsset = $this->fileService->addChunk($hash, $chunk, $user);
         } catch (\Exception $e) {
-            $logger->error('log.error', [
+            $this->logger->error('log.error', [
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
@@ -193,28 +166,16 @@ class FileController extends AbstractController
         ]);
     }
 
-    /**
-     * @return Response
-     *
-     * @Route("/images/index", name="ems_images_index", defaults={"_format"="json"}, methods={"GET", "HEAD"})
-     * @Route("/api/images", name="ems_api_images_index", defaults={"_format"="json"}, methods={"GET", "HEAD"})
-     */
-    public function indexImagesAction(FileService $fileService)
+    public function indexImagesAction(): Response
     {
-        $images = $fileService->getImages();
+        $images = $this->fileService->getImages();
 
         return $this->render('@EMSCore/ajax/images.json.twig', [
             'images' => $images,
         ]);
     }
 
-    /**
-     * @return Response
-     *
-     * @Route("/file/upload", name="ems_image_upload_url", defaults={"_format"="json"}, methods={"POST"})
-     * @Route("/api/file", name="ems_api_image_upload_url", defaults={"_format"="json"}, methods={"POST"})
-     */
-    public function uploadFileAction(Request $request, FileService $fileService, LoggerInterface $logger)
+    public function uploadFileAction(Request $request): Response
     {
         /** @var UploadedFile $file */
         $file = $request->files->get('upload');
@@ -234,9 +195,9 @@ class FileController extends AbstractController
             $user = $this->getUsername();
 
             try {
-                $uploadedAsset = $fileService->uploadFile($name, $type, $file->getRealPath(), $user);
+                $uploadedAsset = $this->fileService->uploadFile($name, $type, $file->getRealPath(), $user);
             } catch (\Exception $e) {
-                $logger->error('log.error', [
+                $this->logger->error('log.error', [
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 ]);
@@ -251,7 +212,7 @@ class FileController extends AbstractController
                 'asset' => $uploadedAsset,
             ]);
         } elseif ($file->getError()) {
-            $logger->warning('log.file.upload_error', [
+            $this->logger->warning('log.file.upload_error', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $file->getError(),
             ]);
             $this->render('@EMSCore/ajax/notification.json.twig', [

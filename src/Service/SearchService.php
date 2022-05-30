@@ -8,6 +8,7 @@ use Elastica\Query\BoolQuery;
 use Elastica\Query\Exists;
 use Elastica\Query\Terms;
 use EMS\CommonBundle\Common\Document;
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\Document as ElasticsearchDocument;
 use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -137,6 +138,13 @@ class SearchService
         }
 
         return $this->elasticaService->getDocument($index, $contentType->getName(), $ouuid, [], [], $searchQuery);
+    }
+
+    public function getDocumentByEmsLink(EMSLink $emsLink): ElasticsearchDocument
+    {
+        $contentType = $this->contentTypeService->giveByName($emsLink->getContentType());
+
+        return $this->getDocument($contentType, $emsLink->getOuuid());
     }
 
     public function get(Environment $environment, ContentType $contentType, string $ouuid): Document

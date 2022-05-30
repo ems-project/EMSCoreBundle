@@ -92,6 +92,12 @@ class ReindexCommand extends EmsCommand
                 'The content won\'t be (re)signed during the reindexing process'
             )
             ->addOption(
+                'reload-data',
+                null,
+                InputOption::VALUE_NONE,
+                'Reload the data'
+            )
+            ->addOption(
                 'bulk-size',
                 null,
                 InputOption::VALUE_OPTIONAL,
@@ -106,6 +112,7 @@ class ReindexCommand extends EmsCommand
         $name = $input->getArgument('name');
         $index = $input->getArgument('index');
         $signData = true === $input->getOption('sign-data');
+        $reloadData = true === $input->getOption('reload-data');
 
         if (!\is_string($name)) {
             throw new \RuntimeException('Unexpected environment name');
@@ -134,13 +141,13 @@ class ReindexCommand extends EmsCommand
 
         /** @var ContentType $contentType */
         foreach ($contentTypes as $contentType) {
-            $this->reindex($name, $contentType, $index, $output, $signData, $bulkSize);
+            $this->reindex($name, $contentType, $index, $output, $signData, $bulkSize, $reloadData);
         }
 
         return 0;
     }
 
-    public function reindex(string $name, ContentType $contentType, ?string $index, OutputInterface $output, bool $signData = true, int $bulkSize = 1000): void
+    public function reindex(string $name, ContentType $contentType, ?string $index, OutputInterface $output, bool $signData = true, int $bulkSize = 1000, bool $reloadData = false): void
     {
         $this->logger->notice('command.reindex.start', [
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
@@ -187,6 +194,10 @@ class ReindexCommand extends EmsCommand
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         ]);
                     } else {
+                        if ($reloadData) {
+                            $this->dataService->reloadData($revision);
+                        }
+
                         $rawData = $revision->getRawData();
                         $this->bulker->index($contentType->getName(), $revision->getOuuid(), $index, $rawData);
                     }

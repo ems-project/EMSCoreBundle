@@ -1,5 +1,5 @@
 {% trans_default_domain 'EMSCoreBundle' %}
-{% for child in parent.children if not child.deleted %}
+{% for child in parent.children|filter(child => not child.deleted) %}
 
        	<li id="{{ child.id }}" class="{% if not (child.type~'::isContainer')|call_user_func %}mjs-nestedSortable-no-nesting{% endif %}">
         		<div class="box-header">

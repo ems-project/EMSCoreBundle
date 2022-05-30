@@ -40,7 +40,6 @@ require('flot');
 require('fullcalendar');
 require('inputmask');
 require('ion-rangeslider');
-require('jquery');
 require('jquery-knob');
 require('jquery-sparkline');
 require('jquery-ui');

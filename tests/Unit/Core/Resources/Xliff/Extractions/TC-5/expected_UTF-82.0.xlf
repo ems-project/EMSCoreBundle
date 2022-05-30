@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="fr">
+  <file id="contentType:ouuid_1:revisionId_1">
+    <unit id="[title_%locale%]">
+      <segment>
+        <source>Foo</source>
+        <target>Bar</target>
+      </segment>
+    </unit>
+  </file>
+  <file id="contentType:ouuid_2:revisionId_2">
+    <unit id="[title_%locale%]">
+      <segment>
+        <source>Hello</source>
+        <target>Bonjour</target>
+      </segment>
+    </unit>
+    <unit id="[keywords_%locale%]">
+      <segment>
+        <source>test xliff</source>
+        <target/>
+      </segment>
+    </unit>
+    <unit id="[empty]">
+      <segment>
+        <source/>
+        <target/>
+      </segment>
+    </unit>
+    <group id="[%locale%][body]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source> This is Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood with its snow-covered top"/> </source>
+          <target> Ceci est Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood avec son sommet enneigé"/> </target>
+        </segment>
+      </unit>
+    </group>
+    <group id="[%locale%][body2]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source>
+    This
+
+
+    is
+
+    Mount Hood:
+    &lt;img src="mthood.jpg" alt="Mount Hood with its snow-covered top"/&gt;
+</source>
+          <target>
+    Ceci
+    est
+    Mount
+    Hood: &lt;img src="mthood.jpg" alt="Mount Hood avec son sommet enneig&amp;#xE9;"/&gt;
+</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="[%locale%][body3]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source> This is Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood with its snow-covered top"/> </source>
+          <target> Ceci est Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood avec son sommet enneigé"/> </target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>

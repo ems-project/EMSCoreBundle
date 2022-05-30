@@ -68,37 +68,16 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.asset_config', $config['asset_config']);
         $container->setParameter('ems_core.tika_server', $config['tika_server']);
         $container->setParameter('ems_core.pre_generated_ouuids', $config['pre_generated_ouuids']);
-        $container->setParameter('ems_core.version', $this->getCoreVersion($container->getParameter('kernel.root_dir')));
         $container->setParameter('ems_core.private_key', $config['private_key']);
         $container->setParameter('ems_core.public_key', $config['public_key']);
         $container->setParameter('ems_core.health_check_allow_origin', $config['health_check_allow_origin']);
         $container->setParameter('ems_core.tika_download_url', $config['tika_download_url']);
         $container->setParameter('ems_core.default_bulk_size', $config['default_bulk_size']);
         $container->setParameter('ems_core.clean_jobs_time_string', $config['clean_jobs_time_string']);
+        $container->setParameter('ems_core.fallback_locale', $config['fallback_locale']);
+        $container->setParameter('ems_core.url_user', $config['url_user']);
 
         $this->loadLdap($container, $yamlLoader, $config['ldap'] ?? []);
-    }
-
-    public static function getCoreVersion(string $rootDir): string
-    {
-        $out = false;
-        //try to identify the ems core version
-        if (\file_exists($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')) {
-            $lockInfo = \json_decode(\file_get_contents($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock'), true);
-
-            if (!empty($lockInfo['packages'])) {
-                foreach ($lockInfo['packages'] as $package) {
-                    if (!empty($package['name']) && 'elasticms/core-bundle' === $package['name']) {
-                        if (!empty($package['version'])) {
-                            $out = $package['version'];
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-
-        return $out;
     }
 
     public function prepend(ContainerBuilder $container)
@@ -106,15 +85,12 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         // get all bundles
         $bundles = $container->getParameter('kernel.bundles');
 
-        $coreVersion = $this->getCoreVersion($container->getParameter('kernel.root_dir'));
-
         $configs = $container->getExtensionConfig($this->getAlias());
 
         $globals = [
             'theme_color' => $configs[0]['theme_color'] ?? Configuration::THEME_COLOR,
             'ems_name' => $configs[0]['name'] ?? Configuration::NAME,
             'ems_shortname' => $configs[0]['shortname'] ?? Configuration::SHORTNAME,
-            'ems_core_version' => $coreVersion,
             'paging_size' => $configs[0]['paging_size'] ?? Configuration::PAGING_SIZE,
             'circles_object' => $configs[0]['circles_object'] ?? Configuration::CIRCLES_OBJECT,
             'datepicker_daysofweek_highlighted' => $configs[0]['datepicker_daysofweek_highlighted'] ?? Configuration::DATEPICKER_DAYSOFWEEK_HIGHLIGHTED,
@@ -136,7 +112,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             $globals = \array_merge($globals, $configs[0]['template_options']);
         }
 
-        if (isset($bundles['TwigBundle'])) {
+        if (\is_array($bundles) && isset($bundles['TwigBundle'])) {
             $container->prependExtensionConfig('twig', [
                 'globals' => $globals,
                 'form_themes' => [
@@ -145,7 +121,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             ]);
         }
 
-        if (isset($bundles['DoctrineBundle'])) {
+        if (\is_array($bundles) && isset($bundles['DoctrineBundle'])) {
             $container->prependExtensionConfig('doctrine', [
                 'dbal' => [
                     'types' => [

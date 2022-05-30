@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Controller;
 
 use Doctrine\Persistence\ManagerRegistry;
+use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -21,23 +22,20 @@ use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\ClickableInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class NotificationController extends AbstractController
 {
     private PublishService $publishService;
     private EnvironmentService $environmentService;
     private NotificationService $notificationService;
-    private AuthorizationCheckerInterface $authorizationChecker;
     private ManagerRegistry $doctrine;
     private LoggerInterface $logger;
     private DashboardManager $dashboardManager;
+    private int $pagingSize;
 
     public function __construct(
         LoggerInterface $logger,
@@ -45,21 +43,18 @@ class NotificationController extends AbstractController
         EnvironmentService $environmentService,
         ManagerRegistry $doctrine,
         NotificationService $notificationService,
-        AuthorizationCheckerInterface $authorizationChecker,
-        DashboardManager $dashboardManager)
+        DashboardManager $dashboardManager,
+        int $pagingSize)
     {
         $this->logger = $logger;
         $this->environmentService = $environmentService;
         $this->notificationService = $notificationService;
         $this->publishService = $publishService;
-        $this->authorizationChecker = $authorizationChecker;
         $this->doctrine = $doctrine;
         $this->dashboardManager = $dashboardManager;
+        $this->pagingSize = $pagingSize;
     }
 
-    /**
-     * @Route("/notification/add/{objectId}.json", name="notification.ajaxnotification", methods={"POST"})
-     */
     public function ajaxNotificationAction(Request $request): Response
     {
         $em = $this->doctrine->getManager();
@@ -102,36 +97,21 @@ class NotificationController extends AbstractController
         ]);
     }
 
-    /**
-     * @return RedirectResponse
-     *
-     * @Route("/notification/cancel/{notification}", name="notification.cancel", methods={"POST"})
-     */
-    public function cancelNotificationsAction(Notification $notification)
+    public function cancelNotificationsAction(Notification $notification): Response
     {
         $this->notificationService->setStatus($notification, 'cancelled');
 
         return $this->redirectToRoute('notifications.sent');
     }
 
-    /**
-     * @return RedirectResponse
-     *
-     * @Route("/notification/acknowledge/{notification}", name="notification.acknowledge", methods={"POST"})
-     */
-    public function acknowledgeNotificationsAction(Notification $notification)
+    public function acknowledgeNotificationsAction(Notification $notification): Response
     {
         $this->notificationService->setStatus($notification, 'acknowledged');
 
         return $this->redirectToRoute('notifications.inbox');
     }
 
-    /**
-     * @return RedirectResponse
-     *
-     * @Route("/notification/treat", name="notification.treat", methods={"POST"})
-     */
-    public function treatNotificationsAction(Request $request)
+    public function treatNotificationsAction(Request $request): Response
     {
         $treatNotification = new TreatNotifications();
         $form = $this->createForm(TreatNotificationsType::class, $treatNotification, [
@@ -179,12 +159,7 @@ class NotificationController extends AbstractController
         return $this->redirectToRoute('notifications.inbox');
     }
 
-    /**
-     * @return Response
-     *
-     * @Route("/notification/menu", name="notification.menu")
-     */
-    public function menuNotificationAction()
+    public function menuNotificationAction(): Response
     {
         return $this->render('@EMSCore/notification/menu.html.twig', [
             'counter' => $this->notificationService->menuNotification(),
@@ -192,16 +167,7 @@ class NotificationController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string $folder
-     *
-     * @return Response
-     *
-     * @Route("/notifications/list", name="notifications.list", defaults={"folder"="inbox"})
-     * @Route("/notifications/inbox", name="notifications.inbox", defaults={"folder"="inbox"})
-     * @Route("/notifications/sent", name="notifications.sent", defaults={"folder"="sent"})
-     */
-    public function listNotificationsAction($folder, Request $request)
+    public function listNotificationsAction(string $folder, Request $request): Response
     {
         $filters = $request->query->get('notification_form');
 
@@ -223,7 +189,7 @@ class NotificationController extends AbstractController
         $count = $countRejected + $countPending;
 
         // for pagination
-        $paging_size = $this->getParameter('ems_core.paging_size');
+        $paging_size = Type::integer($this->pagingSize);
         if (null != $request->query->get('page')) {
             $page = $request->query->get('page');
         } else {

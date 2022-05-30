@@ -20,7 +20,6 @@ use EMS\CoreBundle\Core\Revision\Wysiwyg\WysiwygRuntime;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
@@ -29,7 +28,6 @@ use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
-use EMS\CoreBundle\Repository\I18nRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\SequenceRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -151,6 +149,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_revision_merge', [RevisionRuntime::class, 'mergeRevision']),
             new TwigFunction('emsco_json_menu_nested', [JsonMenuRenderer::class, 'generateNested'], ['is_safe' => ['html']]),
             new TwigFunction('emsco_wysiwyg_info', [WysiwygRuntime::class, 'getInfo']),
+            new TwigFunction('emsco_i18n_all', [I18nRuntime::class, 'findAll']),
         ];
     }
 
@@ -185,7 +184,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('groupedObjectLoader', [$this, 'groupedObjectLoader']),
             new TwigFilter('propertyPath', [$this, 'propertyPath']),
             new TwigFilter('is_super', [$this, 'isSuper']),
-            new TwigFilter('i18n', [$this, 'i18n']),
+            new TwigFilter('i18n', [I18nRuntime::class, 'i18n']),
             new TwigFilter('internal_links', [$this, 'internalLinks']),
             new TwigFilter('src_path', [$this, 'srcPath']),
             new TwigFilter('get_user', [$this, 'getUser']),
@@ -322,9 +321,6 @@ class AppExtension extends AbstractExtension
             if (null !== $a) {
                 $textLabel = ($escape ? \htmlentities($a) : $this->internalLinks($a));
             } else {
-//                $textClass = 'text-gray';
-//                $textLabel = '[not defined]';
-//                $tag = 'span';
                 return '<span class="text-gray">[not defined]</span>';
             }
         }
@@ -840,24 +836,6 @@ class AppExtension extends AbstractExtension
         }
 
         return $this->srcPath($out, $fileName);
-    }
-
-    public function i18n(string $key, string $locale = null): string
-    {
-        if (empty($locale)) {
-            $locale = $this->router->getContext()->getParameter('_locale');
-        }
-        /** @var I18nRepository $repo */
-        $repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:I18n');
-        $result = $repo->findOneBy([
-            'identifier' => $key,
-        ]);
-
-        if ($result instanceof I18n) {
-            return $result->getContentTextforLocale($locale);
-        }
-
-        return $key;
     }
 
     public function isSuper(): bool

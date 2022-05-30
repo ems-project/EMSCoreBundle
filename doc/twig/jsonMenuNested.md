@@ -7,6 +7,8 @@ Every rendering allways checks the **premissions**. On the json_menu_nested fiel
 
 Loading the page with the request parameter **item** and value a item id, will select and focus on the requested item.
 
+
+
 ## Options
 
 ### Required
@@ -33,7 +35,7 @@ Loading the page with the request parameter **item** and value a item id, will s
 
 ### Actions
 
-Possible actions: **add** | **edit** | **delete** | **move** | **copy** | **paste** | **view**.
+Possible actions: **add** | **edit** | **delete** | **move** | **copy** | **paste** | **preview**.
 > Foreach action you can define an array with **allow** or **deny** types.
 > Disabling or enabling **root** add, copy, paste you can use **root** as type
 
@@ -50,7 +52,7 @@ Possible actions: **add** | **edit** | **delete** | **move** | **copy** | **past
         'move': { 'deny': ['all'] },
         'copy': { 'deny': ['all'] },
         'paste': { 'deny': ['all'] },
-        'view': { 'deny': ['all'] },
+        'preview': { 'deny': ['all'] },
      }
  }) }}
 ```
@@ -65,9 +67,22 @@ Possible actions: **add** | **edit** | **delete** | **move** | **copy** | **past
      'actions': {
         'copy': { 'allow': ['page'] },
         'move': { 'allow': ['page'] },
-        'view': { 'allow': ['page'] },
+        'preview': { 'allow': ['page'] },
      }
  }) }}
+```
+
+### Default data
+
+If the current request contains a param **defaultData** you can prefill the add modal.
+The **defaultData** should be a valid json and base64 decoded.
+
+Example create a link to the dashboard that contains a jsonMenuNested structure.
+If on the page you add a new item that has the field 'page', it will be prefilled with 'page:#{source._version_uuid}'.
+
+```twig
+{% set defaultData = {'page': "page:#{source._version_uuid}"}|json_encode|ems_base64_encode %}
+<a href="{{ path('emsco_dashboard', { 'name': 'page', 'defaultData': defaultData })  }} ">Page structure</a>
 ```
 
 ### Blocks

@@ -44,6 +44,11 @@
             <argument type="service" id="ems_common.storage.manager"/>
             <argument type="service" id="ems.service.environment"/>
         </service>
+        <service id="ems_core.core_document.data_links_factory" class="EMS\CoreBundle\Core\Document\DataLinksFactory">
+            <argument type="service" id="ems.service.search"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.content_type.view_types" />
+        </service>
         <service id="ems_core.core_content_type_transformer.content_transformer" class="EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformer">
             <argument type="service" id="ems_core.core_content_type_transformer.content_transformers"/>
             <argument type="service" id="ems.service.data"/>
@@ -104,6 +109,7 @@
             <argument type="service" id="ems.repository.task"/>
             <argument type="service" id="ems_core.core_mail.mailer_service"/>
             <argument type="service" id="ems.service.user"/>
+            <argument>%ems_core.url_user%</argument>
             <tag name="kernel.event_subscriber" />
         </service>
 
@@ -118,6 +124,7 @@
         <service id="ems_core.core_data_table.table_renderer" class="EMS\CoreBundle\Core\DataTable\TableRenderer">
             <argument type="service" id="twig"/>
             <argument type="service" id="translator"/>
+            <argument type="service" id="ems_common.elasticsearch.elastica_logger" />
         </service>
         <service id="ems_core.core_data_table.table_exporter" class="EMS\CoreBundle\Core\DataTable\TableExporter">
             <argument type="service" id="ems_core.core_data_table.table_renderer"/>

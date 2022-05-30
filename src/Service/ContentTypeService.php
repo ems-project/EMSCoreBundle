@@ -157,7 +157,7 @@ class ContentTypeService implements EntityServiceInterface
             if (\array_key_exists('key_'.$item['id'], $ids)) {
                 $fieldType->getChildren()->add($ids['key_'.$item['id']]);
                 $ids['key_'.$item['id']]->setParent($fieldType);
-                $ids['key_'.$item['id']]->setOrderKey($key);
+                $ids['key_'.$item['id']]->setOrderKey($key + 1);
                 $this->reorderFieldsRecu($ids['key_'.$item['id']], isset($item['children']) ? $item['children'] : [], $ids);
             } else {
                 $this->logger->warning('service.contenttype.field_not_found', [
@@ -523,7 +523,7 @@ class ContentTypeService implements EntityServiceInterface
             if ($contentType->getDeleted() || !$contentType->getActive() || (null !== $role && !$this->authorizationChecker->isGranted($role)) && !$contentType->getRootContentType()) {
                 continue;
             }
-            $menuEntry = $menu->addChild($contentType->getPluralName(), $contentType->getIcon() ?? 'fa fa-book', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()], $contentType->getColor());
+            $menuEntry = new MenuEntry($contentType->getPluralName(), $contentType->getIcon() ?? 'fa fa-book', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()], $contentType->getColor());
             if (isset($counters[$contentType->getId()])) {
                 $menuEntry->setBadge(\strval($counters[$contentType->getId()]));
             }
@@ -539,6 +539,9 @@ class ContentTypeService implements EntityServiceInterface
             if ($this->authorizationChecker->isGranted($contentType->getTrashRole())) {
                 $trashLink = $menuEntry->addChild('sidebar_menu.content_type.trash', 'fa fa-trash', Routes::DATA_TRASH, ['contentType' => $contentType->getId()]);
                 $trashLink->setTranslation([]);
+            }
+            if ($menuEntry->hasChildren()) {
+                $menu->addMenuEntry($menuEntry);
             }
         }
 

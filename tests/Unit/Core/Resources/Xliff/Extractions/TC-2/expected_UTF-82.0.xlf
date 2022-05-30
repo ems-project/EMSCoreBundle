@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="fr">
+  <file id="contentType:ouuid_1:revisionId_1">
+    <unit id="[title_%locale%]">
+      <segment>
+        <source>Foo</source>
+        <target>Bar</target>
+      </segment>
+    </unit>
+  </file>
+  <file id="contentType:ouuid_2:revisionId_2">
+    <unit id="[title_%locale%]">
+      <segment>
+        <source>Hello</source>
+        <target>Bonjour</target>
+      </segment>
+    </unit>
+    <unit id="[keywords_%locale%]">
+      <segment>
+        <source>test xliff</source>
+        <target/>
+      </segment>
+    </unit>
+    <unit id="[empty]">
+      <segment>
+        <source/>
+        <target/>
+      </segment>
+    </unit>
+    <group id="[%locale%][body]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source>Hello</source>
+          <target>Bonjour</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="[%locale%][body2]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source>Hello</source>
+          <target>Bonjour</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="[%locale%][body3]">
+      <unit id="/html/body/p">
+        <segment id="/html/body/p">
+          <source>Hello</source>
+          <target>Bonjour</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>

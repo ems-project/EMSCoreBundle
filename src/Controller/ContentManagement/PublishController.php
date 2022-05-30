@@ -22,21 +22,37 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
 class PublishController extends AbstractController
 {
-    /**
-     * @Route("/publish/to/{revisionId}/{envId}", name="revision.publish_to")
-     */
-    public function publishToAction(Revision $revisionId, Environment $envId, PublishService $publishService): Response
+    private PublishService $publishService;
+    private JobService $jobService;
+    private EnvironmentService $environmentService;
+    private ContentTypeService $contentTypeService;
+    private SearchService $searchService;
+    private ElasticaService $elasticaService;
+
+    public function __construct(PublishService $publishService, JobService $jobService, EnvironmentService $environmentService, ContentTypeService $contentTypeService, SearchService $searchService, ElasticaService $elasticaService)
     {
+        $this->publishService = $publishService;
+        $this->jobService = $jobService;
+        $this->environmentService = $environmentService;
+        $this->contentTypeService = $contentTypeService;
+        $this->searchService = $searchService;
+        $this->elasticaService = $elasticaService;
+    }
+
+    public function publishToAction(Revision $revisionId, Environment $envId): Response
+    {
+        $revision = $revisionId;
+        $environment = $envId;
+
         $contentType = $revisionId->getContentType();
         if (null === $contentType) {
             throw new \RuntimeException('Content type not found');
@@ -46,22 +62,23 @@ class PublishController extends AbstractController
         }
 
         try {
-            $publishService->publish($revisionId, $envId);
+            if ($revisionId->hasVersionTag()) {
+                $this->publishService->publishAndAlignVersions($revision, $environment);
+            } else {
+                $this->publishService->publish($revision, $environment);
+            }
         } catch (NonUniqueResultException $e) {
             throw new NotFoundHttpException('Revision not found');
         }
 
         return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
-            'ouuid' => $revisionId->getOuuid(),
+            'ouuid' => $revision->getOuuid(),
             'type' => $contentType->getName(),
-            'revisionId' => $revisionId->getId(),
+            'revisionId' => $revision->getId(),
         ]);
     }
 
-    /**
-     * @Route("/revision/unpublish/{revisionId}/{envId}", name="revision.unpublish")
-     */
-    public function unPublishAction(Revision $revisionId, Environment $envId, PublishService $publishService): RedirectResponse
+    public function unPublishAction(Revision $revisionId, Environment $envId): RedirectResponse
     {
         $contentType = $revisionId->getContentType();
         if (null === $contentType) {
@@ -71,7 +88,7 @@ class PublishController extends AbstractController
             throw new \RuntimeException('Content type deleted');
         }
 
-        $publishService->unpublish($revisionId, $envId);
+        $this->publishService->unpublish($revisionId, $envId);
 
         return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
             'ouuid' => $revisionId->getOuuid(),
@@ -80,12 +97,11 @@ class PublishController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/publish/search-result", name="search.publish", defaults={"deleted"=0, "managed"=1})
-     * @Security("has_role('ROLE_PUBLISHER')")
-     */
-    public function publishSearchResult(Request $request, JobService $jobService, EnvironmentService $environmentService, ContentTypeService $contentTypeService, SearchService $searchService, ElasticaService $elasticaService): Response
+    public function publishSearchResult(Request $request): Response
     {
+        if (!$this->isGranted('ROLE_PUBLISHER')) {
+            throw new AccessDeniedHttpException();
+        }
         $search = new Search();
         $searchForm = $this->createForm(SearchFormType::class, $search, [
             'method' => 'GET',
@@ -102,8 +118,8 @@ class PublishController extends AbstractController
             throw new NotFoundHttpException('Content type not found');
         }
 
-        $environment = $environmentService->getAliasByName($search->getEnvironments()[0]);
-        $contentType = $contentTypeService->getByName($search->getContentTypes()[0]);
+        $environment = $this->environmentService->getAliasByName($search->getEnvironments()[0]);
+        $contentType = $this->contentTypeService->getByName($search->getContentTypes()[0]);
 
         if (!$environment instanceof Environment) {
             throw new NotFoundHttpException('Environment not found');
@@ -128,8 +144,8 @@ class PublishController extends AbstractController
         $form->handleRequest($request);
         $search->setEnvironments([$environment->getName()]);
         $search->setContentTypes([$contentType->getName()]);
-        $emsSearch = $searchService->generateSearch($search);
-        $total = $elasticaService->count($emsSearch);
+        $emsSearch = $this->searchService->generateSearch($search);
+        $total = $this->elasticaService->count($emsSearch);
         $query = $emsSearch->getQuery();
 
         if ($form->isSubmitted()) {
@@ -148,7 +164,7 @@ class PublishController extends AbstractController
                 \sprintf('--%s=%s', AlignCommand::OPTION_SEARCH_QUERY, $query),
             ];
 
-            $job = $jobService->createCommand($user, \implode(' ', $command));
+            $job = $this->jobService->createCommand($user, \implode(' ', $command));
 
             return $this->redirectToRoute('job.status', [
                 'job' => $job->getId(),

@@ -32,18 +32,30 @@ class ExtractorTest extends KernelTestCase
                 $document = $xliffParser->addDocument('contentType', 'ouuid_2', 'revisionId_2');
                 $xliffParser->addSimpleField($document, '[title_%locale%]', 'Hello', 'Bonjour');
                 $xliffParser->addSimpleField($document, '[keywords_%locale%]', 'test xliff');
+                $xliffParser->addSimpleField($document, '[empty]', '', null, true);
                 $xliffParser->addHtmlField($document, '[%locale%][body]', $htmlSource, $htmlTarget ?: null);
+                $xliffParser->addHtmlField($document, '[%locale%][body2]', $htmlSource, $htmlTarget ?: null, false, true);
+                $xliffParser->addHtmlField($document, '[%locale%][body3]', $htmlSource, $htmlTarget ?: null, true);
 
-                $expectedFilename = $absoluteFilePath.DIRECTORY_SEPARATOR.'expected_'.$version.'.xlf';
-                if (!\file_exists($expectedFilename)) {
-                    $xliffParser->saveXML($expectedFilename);
-                }
-
-                $expected = new \SimpleXMLElement($expectedFilename, 0, true);
-                $actual = new \SimpleXMLElement($xliffParser->asXML()->saveXML());
-
-                $this->assertEquals($expected, $actual, \sprintf('testXliffExtractions: %s', $fileNameWithExtension));
+                $this->saveAndCompare($absoluteFilePath, $version, $xliffParser, $fileNameWithExtension, 'UTF-8');
+                $this->saveAndCompare($absoluteFilePath, $version, $xliffParser, $fileNameWithExtension, 'us-ascii');
             }
         }
+    }
+
+    public function saveAndCompare(string $absoluteFilePath, string $version, Extractor $xliffParser, string $fileNameWithExtension, string $encoding): void
+    {
+        $expectedFilename = $absoluteFilePath.DIRECTORY_SEPARATOR.'expected_'.$encoding.$version.'.xlf';
+        if (!\file_exists($expectedFilename)) {
+            $xliffParser->saveXML($expectedFilename, $encoding);
+        }
+
+        $temp_file = \tempnam(\sys_get_temp_dir(), 'TC-');
+        $xliffParser->saveXML($temp_file, $encoding);
+
+        $expected = \file_get_contents($expectedFilename);
+        $actual = \file_get_contents($temp_file);
+
+        $this->assertEquals($expected, $actual, \sprintf('testXliffExtractions: %s', $fileNameWithExtension));
     }
 }

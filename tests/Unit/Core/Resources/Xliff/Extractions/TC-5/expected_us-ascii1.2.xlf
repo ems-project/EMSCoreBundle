@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file source-language="en" original="contentType:ouuid_1:revisionId_1" datatype="database" target-language="fr">
+    <body>
+      <trans-unit id="[title_%locale%]">
+        <source xml:lang="en">Foo</source>
+        <target xml:lang="fr" state="needs-translation">Bar</target>
+      </trans-unit>
+    </body>
+  </file>
+  <file source-language="en" original="contentType:ouuid_2:revisionId_2" datatype="database" target-language="fr">
+    <body>
+      <trans-unit id="[title_%locale%]">
+        <source xml:lang="en">Hello</source>
+        <target xml:lang="fr" state="needs-translation">Bonjour</target>
+      </trans-unit>
+      <trans-unit id="[keywords_%locale%]">
+        <source xml:lang="en">test xliff</source>
+        <target xml:lang="fr" state="new"/>
+      </trans-unit>
+      <trans-unit id="[empty]">
+        <source xml:lang="en"/>
+        <target xml:lang="fr" state="final"/>
+      </trans-unit>
+      <group id="[%locale%][body]">
+        <trans-unit id="/html/body/p">
+          <source xml:lang="en"> This is Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood with its snow-covered top"/> </source>
+          <target xml:lang="fr" state="needs-translation"> Ceci est Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood avec son sommet enneig&#233;"/> </target>
+        </trans-unit>
+      </group>
+      <group id="[%locale%][body2]">
+        <trans-unit id="/html/body/p">
+          <source xml:lang="en">
+    This
+
+
+    is
+
+    Mount Hood:
+    &lt;img src="mthood.jpg" alt="Mount Hood with its snow-covered top"/&gt;
+</source>
+          <target xml:lang="fr" state="needs-translation">
+    Ceci
+    est
+    Mount
+    Hood: &lt;img src="mthood.jpg" alt="Mount Hood avec son sommet enneig&amp;#xE9;"/&gt;
+</target>
+        </trans-unit>
+      </group>
+      <group id="[%locale%][body3]">
+        <trans-unit id="/html/body/p">
+          <source xml:lang="en"> This is Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood with its snow-covered top"/> </source>
+          <target xml:lang="fr" state="final"> Ceci est Mount Hood: <g ctype="image" html:src="mthood.jpg" html:alt="Mount Hood avec son sommet enneig&#233;"/> </target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

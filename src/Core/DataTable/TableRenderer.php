@@ -4,20 +4,27 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\DataTable;
 
+use EMS\CommonBundle\Common\Standard\Json;
+use EMS\CommonBundle\Elasticsearch\ElasticaLogger;
+use EMS\CoreBundle\Form\Data\ElasticaTable;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableInterface;
+use EMS\CoreBundle\Form\Data\TableRowInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
+use Twig\TemplateWrapper;
 
 final class TableRenderer
 {
     private Environment $twig;
     private TranslatorInterface $translator;
+    private ElasticaLogger $elasticaLogger;
 
-    public function __construct(Environment $twig, TranslatorInterface $translator)
+    public function __construct(Environment $twig, TranslatorInterface $translator, ElasticaLogger $elasticaLogger)
     {
         $this->twig = $twig;
         $this->translator = $translator;
+        $this->elasticaLogger = $elasticaLogger;
     }
 
     /**
@@ -43,6 +50,10 @@ final class TableRenderer
      */
     public function buildAllRows(TableInterface $table): array
     {
+        if ($table instanceof ElasticaTable) {
+            return $this->buildAllRowsElastica($table);
+        }
+
         $rows = [];
         $table->setSize(0);
 
@@ -62,17 +73,40 @@ final class TableRenderer
         $template = $this->twig->createTemplate($table->getRowTemplate());
 
         foreach ($table as $line) {
-            $row = \json_decode($template->render([
-                'table' => $table,
-                'line' => $line,
-                'export' => true,
-            ]));
-            if (!\is_array($row)) {
-                throw new \RuntimeException('Unexpected non array object');
-            }
-            $rows[] = $row;
+            $rows[] = $this->lineToRow($template, $table, $line);
         }
 
         return $rows;
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    private function buildAllRowsElastica(ElasticaTable $table): array
+    {
+        $this->elasticaLogger->disable();
+
+        $rows = [];
+        $template = $this->twig->createTemplate($table->getRowTemplate());
+
+        foreach ($table->scroll() as $line) {
+            $rows[] = $this->lineToRow($template, $table, $line);
+        }
+
+        $this->elasticaLogger->enable();
+
+        return $rows;
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    private function lineToRow(TemplateWrapper $template, TableInterface $table, TableRowInterface $line): array
+    {
+        return Json::decode($template->render([
+            'table' => $table,
+            'line' => $line,
+            'export' => true,
+        ]));
     }
 }

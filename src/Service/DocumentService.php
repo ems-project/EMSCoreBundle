@@ -95,7 +95,10 @@ class DocumentService
         unset($revisionType);
     }
 
-    public function importDocument(DocumentImportContext $documentImportContext, string $ouuid, array $rawData)
+    /**
+     * @param array{'creation_date'?: ?\DateTime, 'start_time'?: ?\DateTime} $options
+     */
+    public function importDocument(DocumentImportContext $documentImportContext, string $ouuid, array $rawData, array $options = [])
     {
         $newRevision = $this->dataService->getEmptyRevision($documentImportContext->getContentType(), $documentImportContext->getLockUser());
         if (!$documentImportContext->shouldFinalize()) {
@@ -103,6 +106,8 @@ class DocumentService
         }
         $newRevision->setOuuid($ouuid);
         $newRevision->setRawData($rawData);
+        $newRevision->setCreated($options['creation_date'] ?? $newRevision->getCreated());
+        $newRevision->setStartTime($options['start_time'] ?? $newRevision->getStartTime());
 
         $currentRevision = $this->revisionRepository->getCurrentRevision($documentImportContext->getContentType(), $ouuid);
 
@@ -117,6 +122,7 @@ class DocumentService
         }
         if (!$documentImportContext->shouldRawImport()) {
             $this->submitData($documentImportContext, $newRevision, $currentRevision ?? $this->dataService->getEmptyRevision($documentImportContext->getContentType(), $documentImportContext->getLockUser()));
+            $this->dataService->sign($newRevision);
         }
 
         if ($currentRevision) {

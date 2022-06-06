@@ -70,6 +70,7 @@ class NestedFieldType extends DataFieldType
                         'with_warning' => $options['with_warning'],
                         'label' => false,
                         'disabled_fields' => $options['disabled_fields'],
+                        'referrer-ems-id' => $options['referrer-ems-id'],
                 ], $fieldType->getDisplayOptions());
                 $builder->add($fieldType->getName(), $fieldType->getType(), $options);
 

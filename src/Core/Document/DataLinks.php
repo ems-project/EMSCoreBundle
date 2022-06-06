@@ -4,42 +4,31 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Document;
 
+use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Elasticsearch\Response\ResponseInterface;
 use EMS\CoreBundle\Entity\ContentType;
-use Symfony\Component\HttpFoundation\Request;
 
 final class DataLinks
 {
+    private const SIZE = 30;
+
     /** @var ContentType[] */
     private array $contentTypes = [];
     /** @var array<mixed> */
     private array $items = [];
-    private int $total = 0;
-
+    private ?string $locale = null;
     private int $page;
     private string $pattern;
-    private ?string $locale;
-    /** @var string[] */
-    private array $types = [];
+    private ?string $querySearchName = null;
+    private ?Document $referrerDocument = null;
+    private ?int $searchId = null;
+    private int $total = 0;
 
-    private const SIZE = 30;
-
-    public function __construct(Request $request, ContentType ...$contentTypes)
+    public function __construct(int $page, string $pattern)
     {
-        $query = $request->query;
-
-        $this->page = \intval($query->get('page', 1));
-        $this->pattern = \strval($query->get('q', ''));
-        $this->locale = $query->has('locale') ? \strval($query->get('locale')) : null;
-
-        if (null !== $types = $query->get('type', null)) {
-            $this->types = \explode(',', $types);
-        }
-
-        foreach ($contentTypes as $contentType) {
-            $this->addContentType($contentType);
-        }
+        $this->page = $page;
+        $this->pattern = $pattern;
     }
 
     public function add(string $id, string $text): self
@@ -49,41 +38,11 @@ final class DataLinks
         return $this;
     }
 
-    public function addSearchResponse(ResponseInterface $response): void
+    public function addContentTypes(ContentType ...$contentTypes): void
     {
-        $this->total = $response->getTotal();
-
-        foreach ($response->getDocuments() as $document) {
-            $this->addDocument($document);
+        foreach ($contentTypes as $contentType) {
+            $this->contentTypes[$contentType->getName()] = $contentType;
         }
-    }
-
-    public function getFrom(): int
-    {
-        return ($this->page - 1) * self::SIZE;
-    }
-
-    public function getLocale(): ?string
-    {
-        return $this->locale;
-    }
-
-    public function getPattern(): string
-    {
-        return $this->pattern;
-    }
-
-    public function getSize(): int
-    {
-        return self::SIZE;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getTypes(): array
-    {
-        return $this->types;
     }
 
     public function addDocument(DocumentInterface $document): void
@@ -121,6 +80,118 @@ final class DataLinks
         $this->items[] = $item;
     }
 
+    public function addSearchResponse(ResponseInterface $response): void
+    {
+        $this->total = $response->getTotal();
+
+        foreach ($response->getDocuments() as $document) {
+            $this->addDocument($document);
+        }
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getContentTypeNames(): array
+    {
+        return \array_map(fn (ContentType $contentType) => $contentType->getName(), $this->contentTypes);
+    }
+
+    /**
+     * @return ContentType[]
+     */
+    public function getContentTypes(): array
+    {
+        return $this->contentTypes;
+    }
+
+    public function getFrom(): int
+    {
+        return ($this->page - 1) * self::SIZE;
+    }
+
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
+    public function getPattern(): string
+    {
+        return $this->pattern;
+    }
+
+    public function getQuerySearchName(): string
+    {
+        if (null == $this->querySearchName) {
+            throw new \RuntimeException('DataLink has no query search name');
+        }
+
+        return $this->querySearchName;
+    }
+
+    public function getReferrerDocument(): Document
+    {
+        if (null === $this->referrerDocument) {
+            throw new \RuntimeException('No referrer document');
+        }
+
+        return $this->referrerDocument;
+    }
+
+    public function getSearchId(): ?int
+    {
+        return $this->searchId;
+    }
+
+    public function getSize(): int
+    {
+        return self::SIZE;
+    }
+
+    public function hasItems(): bool
+    {
+        return \count($this->items) > 0;
+    }
+
+    public function hasReferrerDocument(): bool
+    {
+        return null !== $this->referrerDocument;
+    }
+
+    public function isQuerySearch(): bool
+    {
+        return null !== $this->querySearchName;
+    }
+
+    public function isSearch(): bool
+    {
+        return null !== $this->searchId;
+    }
+
+    public function setLocale(?string $locale): void
+    {
+        $this->locale = $locale;
+    }
+
+    public function setQuerySearchName(?string $querySearchName): void
+    {
+        if ('' === $querySearchName) {
+            return;
+        }
+
+        $this->querySearchName = $querySearchName;
+    }
+
+    public function setReferrerDocument(?Document $referrerDocument): void
+    {
+        $this->referrerDocument = $referrerDocument;
+    }
+
+    public function setSearchId(?int $searchId): void
+    {
+        $this->searchId = (0 !== $searchId ? $searchId : null);
+    }
+
     /**
      * @return array{total_count: int, incomplete_results: bool, items: array<mixed>}
      */
@@ -131,10 +202,5 @@ final class DataLinks
             'incomplete_results' => $this->total !== \count($this->items),
             'items' => $this->items,
         ];
-    }
-
-    public function addContentType(ContentType $contentType): void
-    {
-        $this->contentTypes[$contentType->getName()] = $contentType;
     }
 }

@@ -18,7 +18,7 @@ export default class PickFileFromServer {
 
             const addClickCallbacks = function(linkList){
                 for (let i = 0; i < linkList.length; i++) {
-                    linkList[i].addEventListener('click', function(event) {
+                    linkList[i].onclick = (event) => {
                         if (event.target.parentNode === undefined || event.target.parentNode.dataset.json === undefined) {
                             return;
                         }
@@ -27,7 +27,7 @@ export default class PickFileFromServer {
                         const row = button.closest('.file-uploader-row');
                         row.dispatchEvent(new CustomEvent('updateAssetData', {detail: data}));
                         ajaxModal.close();
-                    });
+                    };
                 }
             }
 

@@ -269,6 +269,7 @@ abstract class DataFieldType extends AbstractType
                 'raw_data' => [],
                 'helptext' => null,
                 'disabled_fields' => [],
+                'referrer-ems-id' => null,
         ]);
     }
 

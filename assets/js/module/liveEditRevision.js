@@ -25,7 +25,6 @@ export default class LiveEditRevision {
         ajaxJsonPost(this.url, JSON.stringify({'_data': { emsId: this.revision, fields: fields}}), (json, request) => {
             if (200 === request.status) {
                 const obj = JSON.parse(json.data);
-                console.log(obj);
                 if (obj.isEditable) {
                     [].forEach.call(fields, function(field) {
                         if (obj.forms[field] != undefined) {
@@ -94,18 +93,25 @@ export default class LiveEditRevision {
             }
         });
 
-        const buttons = parent.querySelectorAll('button[data-emsco-edit-revision="' + button.getAttribute('data-emsco-edit-revision') +'"]');
-     /*   [].forEach.call(buttons, function(item) {
-            if(item.classList.contains('edit-revision') && item.classList.contains('hidden')) {
-                item.classList.remove('hidden');
-            }
-            if(item.classList.contains('js-save-row') || item.classList.contains('js-cancel-row')) {
-                item.remove();
-            }
-        });*/
-
         ajaxJsonPost( button.getAttribute('data-emsco-edit-revision-save-url'), JSON.stringify({'_data': { emsId: this.revision, fields: fields}}), (json, request) => {
-
+            if (200 === request.status) {
+                [].forEach.call(tagFields, function(tagField) {
+                    if (tagField.querySelector('input').type == 'checkbox'){
+                        tagField.innerHTML = tagField.querySelector('input').checked ? 1 : '' ;
+                    } else {
+                        tagField.innerHTML = tagField.querySelector('input').value;
+                    }
+                });
+                const buttons = parent.querySelectorAll('button[data-emsco-edit-revision="' + button.getAttribute('data-emsco-edit-revision') +'"]');
+                [].forEach.call(buttons, function(item) {
+                    if(item.classList.contains('edit-revision') && item.classList.contains('hidden')) {
+                        item.classList.remove('hidden');
+                    }
+                    if(item.classList.contains('js-save-row') || item.classList.contains('js-cancel-row')) {
+                        item.remove();
+                    }
+                });
+            }
         });
     }
 }

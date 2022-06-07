@@ -6156,11 +6156,6 @@ parameters:
 			path: src/Helper/PagingTool.php
 
 		-
-			message: "#^Parameter \\#1 \\$prefix of method DOMNode\\:\\:lookupNamespaceURI\\(\\) expects string, null given\\.$#"
-			count: 1
-			path: src/Helper/Xliff/InsertionRevision.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\AggregateOptionRepository\\:\\:findAll\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Repository/AggregateOptionRepository.php

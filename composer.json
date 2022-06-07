@@ -33,6 +33,7 @@
 		"doctrine/persistence": "^1.3",
 		"dragonmantank/cron-expression": "^3.1",
 		"elasticms/submission-bundle": "^2.1",
+		"elasticms/xliff": "^1.0",
 		"guzzlehttp/guzzle": "^6.3",
 		"ocramius/doctrine-batch-utils": "2.1",
 		"psr/cache": "^1.0",

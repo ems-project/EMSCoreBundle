@@ -1,7 +1,0 @@
-{
-  "title_en": "Hello",
-  "keywords_en": "test xliff",
-  "en": {
-    "body": "<h1 class=\"title\">Report</h1>\n<table border=\"1\" width=\"100%\">\n    <tr>\n        <td valign=\"top\">Text in cell r1-c1</td>\n        <td valign=\"top\">Text in cell r1-c2</td>\n    </tr>\n    <tr>\n        <td bgcolor=\"#C0C0C0\">Text in cell r2-c1</td>\n        <td>Text in cell r2-c2</td>\n    </tr>\n</table>\n<p>All rights reserved (c) Gandalf Inc.</p>"
-  }
-}

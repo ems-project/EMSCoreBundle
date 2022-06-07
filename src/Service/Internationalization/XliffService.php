@@ -13,9 +13,9 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Helper\Xliff\Extractor;
-use EMS\CoreBundle\Helper\Xliff\InsertionRevision;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use EMS\Xliff\Xliff\Extractor;
+use EMS\Xliff\Xliff\InsertionRevision;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 

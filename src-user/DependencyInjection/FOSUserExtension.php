@@ -75,10 +75,6 @@ class FOSUserExtension extends Extension
             }
         }
 
-        if ($config['use_username_form_type']) {
-            $loader->load('username_form_type.xml');
-        }
-
         $this->remapParametersNamespaces($config, $container, [
             '' => [
                 'db_driver' => 'fos_user.storage',

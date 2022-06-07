@@ -11,12 +11,8 @@
 
 namespace FOS\UserBundle\Util;
 
-use FOS\UserBundle\Event\UserEvent;
-use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Executes some manipulations on the users.
@@ -34,23 +30,11 @@ class UserManipulator
     private $userManager;
 
     /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
      * UserManipulator constructor.
      */
-    public function __construct(UserManagerInterface $userManager, EventDispatcherInterface $dispatcher, RequestStack $requestStack)
+    public function __construct(UserManagerInterface $userManager)
     {
         $this->userManager = $userManager;
-        $this->dispatcher = $dispatcher;
-        $this->requestStack = $requestStack;
     }
 
     /**
@@ -74,9 +58,6 @@ class UserManipulator
         $user->setSuperAdmin((bool) $superadmin);
         $this->userManager->updateUser($user);
 
-        $event = new UserEvent($user, $this->getRequest());
-        $this->dispatcher->dispatch(FOSUserEvents::USER_CREATED, $event);
-
         return $user;
     }
 
@@ -90,9 +71,6 @@ class UserManipulator
         $user = $this->findUserByUsernameOrThrowException($username);
         $user->setEnabled(true);
         $this->userManager->updateUser($user);
-
-        $event = new UserEvent($user, $this->getRequest());
-        $this->dispatcher->dispatch(FOSUserEvents::USER_ACTIVATED, $event);
     }
 
     /**
@@ -105,9 +83,6 @@ class UserManipulator
         $user = $this->findUserByUsernameOrThrowException($username);
         $user->setEnabled(false);
         $this->userManager->updateUser($user);
-
-        $event = new UserEvent($user, $this->getRequest());
-        $this->dispatcher->dispatch(FOSUserEvents::USER_DEACTIVATED, $event);
     }
 
     /**
@@ -121,9 +96,6 @@ class UserManipulator
         $user = $this->findUserByUsernameOrThrowException($username);
         $user->setPlainPassword($password);
         $this->userManager->updateUser($user);
-
-        $event = new UserEvent($user, $this->getRequest());
-        $this->dispatcher->dispatch(FOSUserEvents::USER_PASSWORD_CHANGED, $event);
     }
 
     /**
@@ -136,9 +108,6 @@ class UserManipulator
         $user = $this->findUserByUsernameOrThrowException($username);
         $user->setSuperAdmin(true);
         $this->userManager->updateUser($user);
-
-        $event = new UserEvent($user, $this->getRequest());
-        $this->dispatcher->dispatch(FOSUserEvents::USER_PROMOTED, $event);
     }
 
     /**
@@ -151,9 +120,6 @@ class UserManipulator
         $user = $this->findUserByUsernameOrThrowException($username);
         $user->setSuperAdmin(false);
         $this->userManager->updateUser($user);
-
-        $event = new UserEvent($user, $this->getRequest());
-        $this->dispatcher->dispatch(FOSUserEvents::USER_DEMOTED, $event);
     }
 
     /**
@@ -214,13 +180,5 @@ class UserManipulator
         }
 
         return $user;
-    }
-
-    /**
-     * @return Request
-     */
-    private function getRequest()
-    {
-        return $this->requestStack->getCurrentRequest();
     }
 }

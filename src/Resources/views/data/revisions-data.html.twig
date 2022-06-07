@@ -3,6 +3,16 @@
 {% import "@EMSCore/macros/data-field-type.html.twig" as macros %}
 
 {% set title = revision.ouuid %}
+{% set revisionColor = revision.contentType.color %}
+
+{% if revision.hasVersionTag %}
+	{%- set versionFrom = revision.versionDate('from').format(date_format) -%}
+	{%- set versionTo = revision.versionDate('to') ? revision.versionDate('to').format(date_format) : 'now' -%}
+	{%- set revisionVersionTitle = "#{revision.versionTag} version (#{versionFrom} - #{versionTo})" -%}
+	{%- if versionTo != 'now' -%}{%- set revisionColor = 'gray' -%}{%- endif -%}
+{% endif %}
+
+
 {% if revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) is defined %}
 	{% set title = attribute(revision.rawData, revision.contentType.labelField) %}
 {% endif %}
@@ -21,6 +31,9 @@
 		{% if revision.draft %}
 			<i class="fa fa-fire"></i>
 			{{ 'views.data.revisions-data-html.revision-draft-in-progress'|trans }}
+		{% elseif revision.hasVersionTag %}
+			<i class="fa fa-clock-o"></i>
+			{{ revisionVersionTitle }}
 		{% elseif not revision.endTime %}
 			<i class="fa fa-thumbs-up"></i>
 			{{ 'views.data.revisions-data-html.revision-current'|trans }}
@@ -203,11 +216,13 @@
 
 {% block revisionBody %}
 	<div class="box revision-view">
-		<div class="box-header with-border bg-{{ revision.contentType.color }} color-palette">
+		<div class="box-header with-border bg-{{ revisionColor }} color-palette">
 			<h3 class="box-title">
 				{% if revision.draft %}
 					<i class="fa fa-fire"></i>
 					{{ 'views.data.revisions-data-html.draft-in-progress'|trans }}
+				{% elseif revision.hasVersionTag %}
+					{{ revisionVersionTitle }}
 				{% elseif not revision.endTime %}
 					<i class="fa fa-thumbs-up"></i>
 					{{ 'views.data.revisions-data-html.current-revision'|trans }}
@@ -215,10 +230,15 @@
 					<i class="fa fa-clock-o"></i>
 					{{ 'views.data.revisions-data-html.previous-revision'|trans({'%timestamp%': revision.created|date(date_time_format)}) }}
 				{% endif %}
-				{% if revision.hasVersionTag %}
-					<span> - {{ revision.versionTag }}</span>
-				{% endif %}
 			</h3>
+			{% if revision.hasVersionTag and revision.versionDate('to') != null %}
+				<div class="box-tools pull-right">
+					<a href="{{ path('emsco_view_revisions', {'type': latestVersion.contentTypeName, 'ouuid': latestVersion.ouuid }) }}" class="btn btn-default bg-{{ revision.contentType.color  }} btn-sm">
+						<i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %}"></i>
+						current version
+					</a>
+				</div>
+			{% endif %}
 		</div>
 		<div class="box-body">
 			{% set compare = compareData?true:false %}

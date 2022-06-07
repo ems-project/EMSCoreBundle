@@ -124,6 +124,7 @@
         <service id="ems_core.core_data_table.table_renderer" class="EMS\CoreBundle\Core\DataTable\TableRenderer">
             <argument type="service" id="twig"/>
             <argument type="service" id="translator"/>
+            <argument type="service" id="ems_common.elasticsearch.elastica_logger" />
         </service>
         <service id="ems_core.core_data_table.table_exporter" class="EMS\CoreBundle\Core\DataTable\TableExporter">
             <argument type="service" id="ems_core.core_data_table.table_renderer"/>

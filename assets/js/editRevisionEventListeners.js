@@ -129,7 +129,7 @@ function editRevisionEventListeners(target, onChangeCallback = null){
             CKEDITOR.replace(this, ckconfig).on('key', onChangeCallback );
         }
         else {
-            CKEDITOR.replace( $( this ).attr('id'), ckconfig);
+            CKEDITOR.replace(this, ckconfig);
         }
 
 

@@ -40,6 +40,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $xmlLoader->load('controllers.xml');
         $xmlLoader->load('services.xml');
         $xmlLoader->load('runtime.xml');
+        $xmlLoader->load('security.xml');
 
         $container->setParameter('ems_core.from_email', $config['from_email']);
         $container->setParameter('ems_core.instance_id', $config['instance_id']);
@@ -71,6 +72,9 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.clean_jobs_time_string', $config['clean_jobs_time_string']);
         $container->setParameter('ems_core.fallback_locale', $config['fallback_locale']);
         $container->setParameter('ems_core.url_user', $config['url_user']);
+
+        $container->setParameter('ems_core.security.firewall.core', $config['security']['firewall']['core']);
+        $container->setParameter('ems_core.security.firewall.api', $config['security']['firewall']['api']);
 
         $this->loadLdap($container, $yamlLoader, $config['ldap'] ?? []);
     }
@@ -154,7 +158,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             $container->prependExtensionConfig('fos_user', [
                 'db_driver' => 'orm',
                 'from_email' => $fromEmail,
-                'firewall_name' => 'main',
                 'user_class' => 'EMS\CoreBundle\Entity\User',
             ]);
         }

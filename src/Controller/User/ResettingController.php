@@ -72,11 +72,13 @@ class ResettingController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->userManager->resetPassword($user);
+            $response = $this->redirectToRoute(Routes::USER_PROFILE);
+
+            $this->userManager->resetPassword($user, $response);
 
             $this->logger->notice('log.user.password_resetted');
 
-            return $this->redirectToRoute(Routes::USER_PROFILE);
+            return $response;
         }
 
         return $this->render('@EMSCore/user/resetting/reset.html.twig', [

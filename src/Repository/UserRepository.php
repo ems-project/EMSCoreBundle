@@ -7,14 +7,34 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use EMS\CoreBundle\Core\Security\Canonicalizer;
 use EMS\CoreBundle\Core\User\UserList;
 use EMS\CoreBundle\Entity\User;
 
+/**
+ * @method User|null find($id, $lockMode = null, $lockVersion = null)
+ * @method User|null findOneBy(array $criteria, array $orderBy = null)
+ * @method User[]    findAll()
+ * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 final class UserRepository extends ServiceEntityRepository implements UserRepositoryInterface
 {
     public function __construct(Registry $registry)
     {
         parent::__construct($registry, User::class);
+    }
+
+    public function findUserByUsernameOrEmail(string $usernameOrEmail): ?User
+    {
+        if (\preg_match('/^.+\@\S+\.\S+$/', $usernameOrEmail)) {
+            $user = $this->findOneBy(['emailCanonical' => Canonicalizer::canonicalize($usernameOrEmail)]);
+
+            if (null !== $user) {
+                return $user;
+            }
+        }
+
+        return $this->findOneBy(['usernameCanonical' => Canonicalizer::canonicalize($usernameOrEmail)]);
     }
 
     public function search(string $search): ?User

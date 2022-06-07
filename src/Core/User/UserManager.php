@@ -9,8 +9,9 @@ use EMS\CoreBundle\Core\Security\Token;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\UserRepository;
+use EMS\CoreBundle\Security\LoginManager;
 use FOS\UserBundle\Model\UserManagerInterface as FosUserManager;
-use FOS\UserBundle\Security\LoginManager as FosLoginManager;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
@@ -18,25 +19,24 @@ final class UserManager
 {
     private TokenStorageInterface $tokenStorage;
     private FosUserManager $fosUserManager;
-    private FosLoginManager $fosLoginManager;
+    private LoginManager $loginManager;
     private MailerService $mailerService;
     private UserRepository $userRepository;
 
     public const PASSWORD_RETRY_TTL = 7200;
     public const CONFIRMATION_TOKEN_TTL = 86400;
-    private const FIREWALL = 'main';
     private const MAIL_TEMPLATE = '@EMSCore/user/mail.twig';
 
     public function __construct(
         TokenStorageInterface $tokenStorage,
         FosUserManager $fosUserManager,
-        FosLoginManager $loginManager,
+        LoginManager $loginManager,
         MailerService $mailerService,
         UserRepository $userRepository
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->fosUserManager = $fosUserManager;
-        $this->fosLoginManager = $loginManager;
+        $this->loginManager = $loginManager;
         $this->mailerService = $mailerService;
         $this->userRepository = $userRepository;
     }
@@ -62,7 +62,7 @@ final class UserManager
 
     public function requestResetPassword(string $usernameOrEmail): ?User
     {
-        $user = $this->fosUserManager->findUserByUsernameOrEmail($usernameOrEmail);
+        $user = $this->userRepository->findUserByUsernameOrEmail($usernameOrEmail);
 
         if (!$user instanceof User) {
             return null;
@@ -91,14 +91,14 @@ final class UserManager
         return $user;
     }
 
-    public function resetPassword(User $user): void
+    public function resetPassword(User $user, Response $response): void
     {
         $user->setConfirmationToken(null);
         $user->setPasswordRequestedAt(null);
         $user->setEnabled(true);
         $this->update($user);
 
-        $this->fosLoginManager->logInUser(self::FIREWALL, $user);
+        $this->loginManager->logInUser($user, $response);
 
         $user->setLastLogin(new \DateTime());
         $this->update($user);

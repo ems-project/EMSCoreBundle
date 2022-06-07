@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -102,6 +103,28 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->end();
 
+        $this->addSecuritySection($rootNode);
+
         return $treeBuilder;
+    }
+
+    private function addSecuritySection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('security')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('firewall')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('core')->defaultValue('ems_core')->cannotBeEmpty()->end()
+                                ->scalarNode('api')->defaultValue('ems_core_api')->cannotBeEmpty()->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
     }
 }

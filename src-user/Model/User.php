@@ -263,9 +263,9 @@ abstract class User implements UserInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
-    public function getRoles()
+    public function getRoles(): array
     {
         $roles = $this->roles;
 

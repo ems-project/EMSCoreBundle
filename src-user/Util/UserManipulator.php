@@ -61,17 +61,7 @@ class UserManipulator
         return $user;
     }
 
-    /**
-     * Activates the given user.
-     *
-     * @param string $username
-     */
-    public function activate($username)
-    {
-        $user = $this->findUserByUsernameOrThrowException($username);
-        $user->setEnabled(true);
-        $this->userManager->updateUser($user);
-    }
+
 
     /**
      * Deactivates the given user.

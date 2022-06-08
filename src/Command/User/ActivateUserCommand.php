@@ -12,18 +12,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-class ActivateUserCommand extends Command
+class ActivateUserCommand extends AbstractUserCommand
 {
     protected static $defaultName = Commands::USER_ACTIVATE;
-
-    private UserManipulator $userManipulator;
-
-    public function __construct(UserManipulator $userManipulator)
-    {
-        parent::__construct();
-
-        $this->userManipulator = $userManipulator;
-    }
 
     protected function configure(): void
     {
@@ -44,11 +35,15 @@ EOT
     {
         $username = \strval($input->getArgument('username'));
 
-        $this->userManipulator->activate($username);
+        try {
+            $this->userManager->activate($username);
+            $this->io->success(\sprintf('User "%s" has been activated.', $username));
 
-        $output->writeln(\sprintf('User "%s" has been activated.', $username));
-
-        return 1;
+            return self::EXECUTE_SUCCESS;
+        } catch (\Throwable $e) {
+            $this->io->error($e->getMessage());
+            return self::EXECUTE_ERROR;
+        }
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): ?string

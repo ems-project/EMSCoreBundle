@@ -95,8 +95,10 @@
             <tag name="console.command"/>
         </service>
 
-        <service id="ems.command.activate_user" class="EMS\CoreBundle\Command\User\ActivateUserCommand">
-            <argument type="service" id="fos_user.util.user_manipulator" />
+        <service id="ems_core.command_user.abstract_user_command" class="EMS\CoreBundle\Command\User\AbstractUserCommand" abstract="true">
+            <argument type="service" id="emsco.manager.user" />
+        </service>
+        <service id="ems.command.activate_user" class="EMS\CoreBundle\Command\User\ActivateUserCommand" parent="ems_core.command_user.abstract_user_command">
             <tag name="console.command"/>
             <tag name="console.command" command="fos:user:activate" />
         </service>

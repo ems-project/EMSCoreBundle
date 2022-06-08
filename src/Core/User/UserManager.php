@@ -41,6 +41,13 @@ final class UserManager
         $this->userRepository = $userRepository;
     }
 
+    public function activate(string $username): void
+    {
+        $user = $this->userRepository->findUserByUsernameOrThrowException($username);
+        $user->setEnabled(true);
+        $this->update($user);
+    }
+
     public function getAuthenticatedUser(): User
     {
         $token = $this->getToken();

@@ -24,6 +24,17 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
         parent::__construct($registry, User::class);
     }
 
+    public function findUserByUsernameOrThrowException(string $username): User
+    {
+        $user = $this->findOneBy(['usernameCanonical' => Canonicalizer::canonicalize($username)]);
+
+        if (!$user) {
+            throw new \InvalidArgumentException(\sprintf('User identified by "%s" username does not exist.', $username));
+        }
+
+        return $user;
+    }
+
     public function findUserByUsernameOrEmail(string $usernameOrEmail): ?User
     {
         if (\preg_match('/^.+\@\S+\.\S+$/', $usernameOrEmail)) {

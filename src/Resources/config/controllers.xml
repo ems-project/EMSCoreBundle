@@ -7,8 +7,15 @@
     <services>
         <defaults autowire="true"/>
 
-        <service id="EMS\CoreBundle\Controller\SecurityController" public="true">
+        <service id="EMS\CoreBundle\Controller\LoginController" public="true">
             <argument type="service" id="security.csrf.token_manager" on-invalid="null" />
+        </service>
+        <service id="EMS\CoreBundle\Controller\User\ResettingController" public="true">
+            <argument type="service" id="emsco.manager.user" />
+        </service>
+        <service id="EMS\CoreBundle\Controller\User\ProfileController" public="true">
+            <argument type="service" id="emsco.manager.user" />
+            <argument type="service" id="ems.logger" />
         </service>
 
         <service id="EMS\CoreBundle\Controller\DashboardController" public="true">
@@ -314,16 +321,5 @@
             <argument type="service" id="ems.service.file" />
         </service>
 
-        <service id="EMS\CoreBundle\Controller\User\ResettingController" public="true">
-            <argument type="service" id="emsco.manager.user" />
-        </service>
-        <service id="EMS\CoreBundle\Controller\User\ProfileController" public="true">
-            <argument type="service" id="emsco.manager.user" />
-            <argument type="service" id="ems.logger" />
-        </service>
-        <service id="EMS\CoreBundle\Controller\User\ChangePasswordController" public="true">
-            <argument type="service" id="emsco.manager.user" />
-            <argument type="service" id="ems.logger" />
-        </service>
     </services>
 </container>

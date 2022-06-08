@@ -258,14 +258,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @return array<string, string>
-     */
-    private function getExistingRoles(): array
-    {
-        return $this->userService->getExistingRoles();
-    }
-
     private function userExist(User $user, string $action, UserManagerInterface $userManager): bool
     {
         $exists = ['email' => $userManager->findUserByEmail($user->getEmail()), 'username' => $userManager->findUserByUsername($user->getUsername())];

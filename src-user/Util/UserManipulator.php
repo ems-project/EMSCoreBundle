@@ -62,19 +62,6 @@ class UserManipulator
     }
 
     /**
-     * Changes the password for the given user.
-     *
-     * @param string $username
-     * @param string $password
-     */
-    public function changePassword($username, $password)
-    {
-        $user = $this->findUserByUsernameOrThrowException($username);
-        $user->setPlainPassword($password);
-        $this->userManager->updateUser($user);
-    }
-
-    /**
      * Promotes the given user.
      *
      * @param string $username

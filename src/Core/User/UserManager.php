@@ -116,6 +116,13 @@ final class UserManager
         $this->update($user);
     }
 
+    public function updatePassword(string $username, string $plainPassword): void
+    {
+        $user = $this->userRepository->findUserByUsernameOrThrowException($username);
+        $user->setPlainPassword($plainPassword);
+        $this->update($user);
+    }
+
     private function getToken(): TokenInterface
     {
         if (null === $token = $this->tokenStorage->getToken()) {

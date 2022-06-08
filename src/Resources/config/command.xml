@@ -102,7 +102,7 @@
             <tag name="console.command"/>
             <tag name="console.command" command="fos:user:activate" />
         </service>
-        <service id="ems.command.change_password" class="EMS\CoreBundle\Command\User\ChangePasswordCommand">
+        <service id="ems.command.change_password" class="EMS\CoreBundle\Command\User\ChangePasswordCommand" parent="ems_core.command_user.abstract_user_command">
             <argument type="service" id="fos_user.util.user_manipulator" />
             <tag name="console.command"/>
             <tag name="console.command" command="fos:user:change-password" />

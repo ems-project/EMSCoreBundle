@@ -27,7 +27,6 @@ class FOSUserBundle extends Bundle
     {
         parent::build($container);
         $container->addCompilerPass(new ValidationPass());
-        $container->addCompilerPass(new CheckForSessionPass());
 
         $this->addRegisterMappingsPass($container);
     }

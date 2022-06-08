@@ -17,6 +17,18 @@
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::downloadFileAction</default>
     </route>
 
+    <route id="fos_user_security_login" path="/login" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\SecurityController::login</default>
+    </route>
+
+    <route id="fos_user_security_check" path="/login_check" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\SecurityController::check</default>
+    </route>
+
+    <route id="fos_user_security_logout" path="/logout" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\SecurityController::logout</default>
+    </route>
+
     <route id="emsco_user_resetting_request" path="/resetting/request" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\User\ResettingController::request</default>
     </route>

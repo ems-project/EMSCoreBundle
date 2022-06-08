@@ -7,7 +7,7 @@
     <services>
         <defaults autowire="true"/>
 
-        <service id="EMS\CoreBundle\Controller\LoginController" public="true">
+        <service id="EMS\CoreBundle\Controller\User\LoginController" public="true">
             <argument type="service" id="security.csrf.token_manager" on-invalid="null" />
         </service>
         <service id="EMS\CoreBundle\Controller\User\ResettingController" public="true">

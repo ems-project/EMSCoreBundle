@@ -98,7 +98,7 @@ class RequestListener
                 $event->setResponse($response);
             }
             if ($exception instanceof AccessDeniedHttpException && null === $event->getRequest()->getUser()) {
-                $response = new RedirectResponse($this->router->generate('fos_user_security_login', [
+                $response = new RedirectResponse($this->router->generate(Routes::USER_LOGIN, [
                     '_target_path' => $event->getRequest()->getRequestUri(),
                 ]));
                 $event->setResponse($response);

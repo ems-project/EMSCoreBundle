@@ -120,6 +120,40 @@ final class UserManager
     {
         $user = $this->userRepository->findUserByUsernameOrThrowException($username);
         $user->setPlainPassword($plainPassword);
+    }
+
+    public function updateRoleAdd(string $username, string $role): bool
+    {
+        $user = $this->userRepository->findUserByUsernameOrThrowException($username);
+
+        if ($user->hasRole($role)) {
+            return false;
+        }
+
+        $user->addRole($role);
+        $this->update($user);
+
+        return true;
+    }
+
+    public function updateRoleRemove(string $username, string $role): bool
+    {
+        $user = $this->userRepository->findUserByUsernameOrThrowException($username);
+
+        if (!$user->hasRole($role)) {
+            return false;
+        }
+
+        $user->removeRole($role);
+        $this->update($user);
+
+        return true;
+    }
+
+    public function updateSuperAdmin(string $username, bool $superAdmin): void
+    {
+        $user = $this->userRepository->findUserByUsernameOrThrowException($username);
+        $user->setSuperAdmin($superAdmin);
         $this->update($user);
     }
 

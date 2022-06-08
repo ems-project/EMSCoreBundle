@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\User;
 
 use EMS\CoreBundle\Commands;
-use FOS\UserBundle\Util\UserManipulator;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class DemoteUserCommand extends RoleCommand
 {
@@ -27,16 +25,16 @@ EOT
             );
     }
 
-    protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, string $username, bool $super, string $role): void
+    protected function executeRoleCommand(string $username, bool $super, string $role): void
     {
         if ($super) {
-            $manipulator->demote($username);
-            $output->writeln(\sprintf('User "%s" has been demoted as a simple user. This change will not apply until the user logs out and back in again.', $username));
+            $this->userManager->updateSuperAdmin($username, false);
+            $this->io->success(\sprintf('User "%s" has been demoted as a simple user. This change will not apply until the user logs out and back in again.', $username));
         } else {
-            if ($manipulator->removeRole($username, $role)) {
-                $output->writeln(\sprintf('Role "%s" has been removed from user "%s". This change will not apply until the user logs out and back in again.', $role, $username));
+            if ($this->userManager->updateRoleRemove($username, $role)) {
+                $this->io->success(\sprintf('Role "%s" has been removed from user "%s". This change will not apply until the user logs out and back in again.', $role, $username));
             } else {
-                $output->writeln(\sprintf('User "%s" did not have "%s" role.', $username, $role));
+                $this->io->warning(\sprintf('User "%s" did not have "%s" role.', $username, $role));
             }
         }
     }

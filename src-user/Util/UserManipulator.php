@@ -11,7 +11,6 @@
 
 namespace FOS\UserBundle\Util;
 
-use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
 
 /**
@@ -57,90 +56,6 @@ class UserManipulator
         $user->setEnabled((bool) $active);
         $user->setSuperAdmin((bool) $superadmin);
         $this->userManager->updateUser($user);
-
-        return $user;
-    }
-
-    /**
-     * Promotes the given user.
-     *
-     * @param string $username
-     */
-    public function promote($username)
-    {
-        $user = $this->findUserByUsernameOrThrowException($username);
-        $user->setSuperAdmin(true);
-        $this->userManager->updateUser($user);
-    }
-
-    /**
-     * Demotes the given user.
-     *
-     * @param string $username
-     */
-    public function demote($username)
-    {
-        $user = $this->findUserByUsernameOrThrowException($username);
-        $user->setSuperAdmin(false);
-        $this->userManager->updateUser($user);
-    }
-
-    /**
-     * Adds role to the given user.
-     *
-     * @param string $username
-     * @param string $role
-     *
-     * @return bool true if role was added, false if user already had the role
-     */
-    public function addRole($username, $role)
-    {
-        $user = $this->findUserByUsernameOrThrowException($username);
-        if ($user->hasRole($role)) {
-            return false;
-        }
-        $user->addRole($role);
-        $this->userManager->updateUser($user);
-
-        return true;
-    }
-
-    /**
-     * Removes role from the given user.
-     *
-     * @param string $username
-     * @param string $role
-     *
-     * @return bool true if role was removed, false if user didn't have the role
-     */
-    public function removeRole($username, $role)
-    {
-        $user = $this->findUserByUsernameOrThrowException($username);
-        if (!$user->hasRole($role)) {
-            return false;
-        }
-        $user->removeRole($role);
-        $this->userManager->updateUser($user);
-
-        return true;
-    }
-
-    /**
-     * Finds a user by his username and throws an exception if we can't find it.
-     *
-     * @param string $username
-     *
-     * @throws \InvalidArgumentException When user does not exist
-     *
-     * @return UserInterface
-     */
-    private function findUserByUsernameOrThrowException($username)
-    {
-        $user = $this->userManager->findUserByUsername($username);
-
-        if (!$user) {
-            throw new \InvalidArgumentException(\sprintf('User identified by "%s" username does not exist.', $username));
-        }
 
         return $user;
     }

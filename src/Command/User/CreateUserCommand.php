@@ -61,7 +61,7 @@ EOT
                 !$this->getOptionBool('inactive'),
                 $this->getOptionBool('super-admin'),
             );
-            $this->io->success(\sprintf('Created user <comment>%s</comment>', $username));
+            $this->io->success(\sprintf('Created user "%s"', $username));
 
             return self::EXECUTE_SUCCESS;
         } catch (\Throwable $e) {

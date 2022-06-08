@@ -44,7 +44,7 @@ EOT
             $password = $this->getArgumentString('password');
 
             $this->userManager->updatePassword($username, $password);
-            $this->io->success(\sprintf('Changed password for user <comment>%s</comment>', $username));
+            $this->io->success(\sprintf('Changed password for user "%s"', $username));
 
             return self::EXECUTE_SUCCESS;
         } catch (\Throwable $e) {

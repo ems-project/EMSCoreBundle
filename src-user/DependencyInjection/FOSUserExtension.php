@@ -54,7 +54,7 @@ class FOSUserExtension extends Extension
             $container->setParameter($this->getAlias().'.backend_type_'.$config['db_driver'], true);
         }
 
-        foreach (['validator', 'security'] as $basename) {
+        foreach (['validator'] as $basename) {
             $loader->load(\sprintf('%s.xml', $basename));
         }
 

@@ -41,6 +41,19 @@ final class UserManager
         $this->userRepository = $userRepository;
     }
 
+    public function create(string $username, string $password, string $email, bool $active, bool $superAdmin): User
+    {
+        $user = new User();
+        $user->setUsername($username);
+        $user->setEmail($email);
+        $user->setPlainPassword($password);
+        $user->setEnabled($active);
+        $user->setSuperAdmin($superAdmin);
+        $this->update($user);
+
+        return $user;
+    }
+
     public function getAuthenticatedUser(): User
     {
         $token = $this->getToken();

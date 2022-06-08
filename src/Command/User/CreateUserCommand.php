@@ -5,26 +5,15 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\User;
 
 use EMS\CoreBundle\Commands;
-use FOS\UserBundle\Util\UserManipulator;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-class CreateUserCommand extends Command
+class CreateUserCommand extends AbstractUserCommand
 {
     protected static $defaultName = Commands::USER_CREATE;
-
-    private UserManipulator $userManipulator;
-
-    public function __construct(UserManipulator $userManipulator)
-    {
-        parent::__construct();
-
-        $this->userManipulator = $userManipulator;
-    }
 
     protected function configure(): void
     {
@@ -62,21 +51,24 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $username = \strval($input->getArgument('username'));
-        $email = \strval($input->getArgument('email'));
-        $password = \strval($input->getArgument('password'));
-        $inactive = $input->getOption('inactive');
-        $superAdmin = $input->getOption('super-admin');
+        try {
+            $username = $this->getArgumentString('username');
 
-        if (!\is_bool($superAdmin)) {
-            throw new \RuntimeException('Super-admin option must be a boolean');
+            $this->userManager->create(
+                $username,
+                $this->getArgumentString('password'),
+                $this->getArgumentString('email'),
+                !$this->getOptionBool('inactive'),
+                $this->getOptionBool('super-admin'),
+            );
+            $this->io->success(\sprintf('Created user <comment>%s</comment>', $username));
+
+            return self::EXECUTE_SUCCESS;
+        } catch (\Throwable $e) {
+            $this->io->error($e->getMessage());
+
+            return self::EXECUTE_ERROR;
         }
-
-        $this->userManipulator->create($username, $password, $email, !$inactive, $superAdmin);
-
-        $output->writeln(\sprintf('Created user <comment>%s</comment>', $username));
-
-        return 1;
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void

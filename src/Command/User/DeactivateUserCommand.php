@@ -31,9 +31,9 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $username = \strval($input->getArgument('username'));
-
         try {
+            $username = $this->getArgumentString('username');
+
             $this->userManager->updateEnabled($username, false);
             $this->io->success(\sprintf('User "%s" has been deactivated.', $username));
 

@@ -39,10 +39,10 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $username = $this->getArgumentString('username');
-        $password = $this->getArgumentString('password');
-
         try {
+            $username = $this->getArgumentString('username');
+            $password = $this->getArgumentString('password');
+
             $this->userManager->updatePassword($username, $password);
             $this->io->success(\sprintf('Changed password for user <comment>%s</comment>', $username));
 

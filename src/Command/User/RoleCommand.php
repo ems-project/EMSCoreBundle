@@ -24,19 +24,19 @@ abstract class RoleCommand extends AbstractUserCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $username = $this->getArgumentString('username');
-        $role = $this->getArgumentString('role');
-        $super = $this->getOptionBool('super');
-
-        if ($super && $role) {
-            throw new \InvalidArgumentException('You can pass either the role or the --super option (but not both simultaneously).');
-        }
-
-        if (!$super && !$role) {
-            throw new \RuntimeException('Not enough arguments.');
-        }
-
         try {
+            $username = $this->getArgumentString('username');
+            $role = $this->getArgumentString('role');
+            $super = $this->getOptionBool('super');
+
+            if ($super && $role) {
+                throw new \InvalidArgumentException('You can pass either the role or the --super option (but not both simultaneously).');
+            }
+
+            if (!$super && !$role) {
+                throw new \RuntimeException('Not enough arguments.');
+            }
+
             $this->executeRoleCommand($username, $super, $role);
 
             return self::EXECUTE_SUCCESS;

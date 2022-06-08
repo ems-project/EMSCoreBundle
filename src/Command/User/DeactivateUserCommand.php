@@ -34,7 +34,7 @@ EOT
         $username = \strval($input->getArgument('username'));
 
         try {
-            $this->userManager->deactivate($username);
+            $this->userManager->updateEnabled($username, false);
             $this->io->success(\sprintf('User "%s" has been deactivated.', $username));
 
             return self::EXECUTE_SUCCESS;

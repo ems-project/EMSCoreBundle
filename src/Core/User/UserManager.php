@@ -41,20 +41,6 @@ final class UserManager
         $this->userRepository = $userRepository;
     }
 
-    public function activate(string $username): void
-    {
-        $user = $this->userRepository->findUserByUsernameOrThrowException($username);
-        $user->setEnabled(true);
-        $this->update($user);
-    }
-
-    public function deactivate(string $username): void
-    {
-        $user = $this->userRepository->findUserByUsernameOrThrowException($username);
-        $user->setEnabled(false);
-        $this->update($user);
-    }
-
     public function getAuthenticatedUser(): User
     {
         $token = $this->getToken();
@@ -121,6 +107,13 @@ final class UserManager
     public function update(User $user): void
     {
         $this->fosUserManager->updateUser($user);
+    }
+
+    public function updateEnabled(string $username, bool $enabled): void
+    {
+        $user = $this->userRepository->findUserByUsernameOrThrowException($username);
+        $user->setEnabled($enabled);
+        $this->update($user);
     }
 
     private function getToken(): TokenInterface

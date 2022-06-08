@@ -34,7 +34,7 @@ EOT
         $username = \strval($input->getArgument('username'));
 
         try {
-            $this->userManager->activate($username);
+            $this->userManager->updateEnabled($username, true);
             $this->io->success(\sprintf('User "%s" has been activated.', $username));
 
             return self::EXECUTE_SUCCESS;

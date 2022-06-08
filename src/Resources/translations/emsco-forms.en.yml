@@ -948,6 +948,7 @@ user.email_notification: 'Email notification'
 user.current_password: 'Current password'
 user.password: Password
 user.password_confirmation: 'Repeat password'
+user.password.mismatch: 'The entered passwords don''t match.'
 user.new_password: 'New password'
 user.new_password_confirmation: 'Repeat new password'
 user.layout_boxed: 'Layout boxed'

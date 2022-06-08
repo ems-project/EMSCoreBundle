@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\User;
 
 use EMS\CoreBundle\Core\Mail\MailerService;
+use EMS\CoreBundle\Core\Security\Canonicalizer;
 use EMS\CoreBundle\Core\Security\Token;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\User;
@@ -66,11 +67,19 @@ final class UserManager
         return $user;
     }
 
+    public function getUserByEmail(string $email): ?User
+    {
+        return $this->userRepository->findOneBy(['emailCanonical' => Canonicalizer::canonicalize($email)]);
+    }
+
+    public function getUserByUsername(string $username): ?User
+    {
+        return $this->userRepository->findOneBy(['usernameCanonical' => Canonicalizer::canonicalize($username)]);
+    }
+
     public function getUserByConfirmationToken(string $token): ?User
     {
-        $user = $this->userRepository->findOneBy(['confirmationToken' => $token]);
-
-        return $user instanceof User ? $user : null;
+        return $this->userRepository->findOneBy(['confirmationToken' => $token]);
     }
 
     public function requestResetPassword(string $usernameOrEmail): ?User

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\User;
 
 use EMS\CoreBundle\Commands;
-use FOS\UserBundle\Util\UserManipulator;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -42,6 +40,7 @@ EOT
             return self::EXECUTE_SUCCESS;
         } catch (\Throwable $e) {
             $this->io->error($e->getMessage());
+
             return self::EXECUTE_ERROR;
         }
     }

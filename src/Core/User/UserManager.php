@@ -48,6 +48,13 @@ final class UserManager
         $this->update($user);
     }
 
+    public function deactivate(string $username): void
+    {
+        $user = $this->userRepository->findUserByUsernameOrThrowException($username);
+        $user->setEnabled(false);
+        $this->update($user);
+    }
+
     public function getAuthenticatedUser(): User
     {
         $token = $this->getToken();

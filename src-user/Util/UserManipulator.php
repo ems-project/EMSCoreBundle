@@ -61,20 +61,6 @@ class UserManipulator
         return $user;
     }
 
-
-
-    /**
-     * Deactivates the given user.
-     *
-     * @param string $username
-     */
-    public function deactivate($username)
-    {
-        $user = $this->findUserByUsernameOrThrowException($username);
-        $user->setEnabled(false);
-        $this->userManager->updateUser($user);
-    }
-
     /**
      * Changes the password for the given user.
      *

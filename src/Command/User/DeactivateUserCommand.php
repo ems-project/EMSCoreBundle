@@ -5,25 +5,14 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\User;
 
 use EMS\CoreBundle\Commands;
-use FOS\UserBundle\Util\UserManipulator;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-class DeactivateUserCommand extends Command
+class DeactivateUserCommand extends AbstractUserCommand
 {
     protected static $defaultName = Commands::USER_DEACTIVATE;
-
-    private UserManipulator $userManipulator;
-
-    public function __construct(UserManipulator $userManipulator)
-    {
-        parent::__construct();
-
-        $this->userManipulator = $userManipulator;
-    }
 
     protected function configure(): void
     {
@@ -44,11 +33,16 @@ EOT
     {
         $username = \strval($input->getArgument('username'));
 
-        $this->userManipulator->deactivate($username);
+        try {
+            $this->userManager->deactivate($username);
+            $this->io->success(\sprintf('User "%s" has been deactivated.', $username));
 
-        $output->writeln(\sprintf('User "%s" has been deactivated.', $username));
+            return self::EXECUTE_SUCCESS;
+        } catch (\Throwable $e) {
+            $this->io->error($e->getMessage());
 
-        return 1;
+            return self::EXECUTE_ERROR;
+        }
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void

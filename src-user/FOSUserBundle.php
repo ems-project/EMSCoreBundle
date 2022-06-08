@@ -12,7 +12,6 @@
 namespace FOS\UserBundle;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
-use FOS\UserBundle\DependencyInjection\Compiler\CheckForSessionPass;
 use FOS\UserBundle\DependencyInjection\Compiler\ValidationPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;

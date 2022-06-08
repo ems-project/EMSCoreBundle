@@ -16,7 +16,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class FOSUserExtension extends Extension
@@ -48,7 +47,6 @@ class FOSUserExtension extends Extension
 
         if ('custom' !== $config['db_driver']) {
             if (isset(self::$doctrineDrivers[$config['db_driver']])) {
-                $loader->load('doctrine.xml');
                 $container->setAlias('fos_user.doctrine_registry', new Alias(self::$doctrineDrivers[$config['db_driver']]['registry'], false));
             } else {
                 $loader->load(\sprintf('%s.xml', $config['db_driver']));
@@ -56,23 +54,8 @@ class FOSUserExtension extends Extension
             $container->setParameter($this->getAlias().'.backend_type_'.$config['db_driver'], true);
         }
 
-        if (isset(self::$doctrineDrivers[$config['db_driver']])) {
-            $definition = $container->getDefinition('fos_user.object_manager');
-            $definition->setFactory([new Reference('fos_user.doctrine_registry'), 'getManager']);
-        }
-
-        foreach (['validator', 'security', 'util'] as $basename) {
+        foreach (['validator', 'security'] as $basename) {
             $loader->load(\sprintf('%s.xml', $basename));
-        }
-
-        $container->setAlias('fos_user.user_manager', new Alias($config['service']['user_manager'], true));
-
-        if ($config['use_listener'] && isset(self::$doctrineDrivers[$config['db_driver']])) {
-            $listenerDefinition = $container->getDefinition('fos_user.user_listener');
-            $listenerDefinition->addTag(self::$doctrineDrivers[$config['db_driver']]['tag']);
-            if (isset(self::$doctrineDrivers[$config['db_driver']]['listener_class'])) {
-                $listenerDefinition->setClass(self::$doctrineDrivers[$config['db_driver']]['listener_class']);
-            }
         }
 
         $this->remapParametersNamespaces($config, $container, [

@@ -11,18 +11,18 @@ use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\UserRepository;
 use EMS\CoreBundle\Security\LoginManager;
-use FOS\UserBundle\Model\UserManagerInterface as FosUserManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 final class UserManager
 {
     private TokenStorageInterface $tokenStorage;
-    private FosUserManager $fosUserManager;
     private LoginManager $loginManager;
     private MailerService $mailerService;
     private UserRepository $userRepository;
+    private UserPasswordEncoderInterface $passwordEncoder;
 
     public const PASSWORD_RETRY_TTL = 7200;
     public const CONFIRMATION_TOKEN_TTL = 86400;
@@ -30,16 +30,16 @@ final class UserManager
 
     public function __construct(
         TokenStorageInterface $tokenStorage,
-        FosUserManager $fosUserManager,
         LoginManager $loginManager,
         MailerService $mailerService,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        UserPasswordEncoderInterface $passwordEncoder
     ) {
         $this->tokenStorage = $tokenStorage;
-        $this->fosUserManager = $fosUserManager;
         $this->loginManager = $loginManager;
         $this->mailerService = $mailerService;
         $this->userRepository = $userRepository;
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     public function create(string $username, string $password, string $email, bool $active, bool $superAdmin): User
@@ -128,7 +128,12 @@ final class UserManager
 
     public function update(User $user): void
     {
-        $this->fosUserManager->updateUser($user);
+        $user->setUsernameCanonical(Canonicalizer::canonicalize($user->getUsername()));
+        $user->setEmailCanonical(Canonicalizer::canonicalize($user->getEmail()));
+
+        $this->hashPassword($user);
+
+        $this->userRepository->save($user);
     }
 
     public function updateEnabled(string $username, bool $enabled): void
@@ -142,6 +147,7 @@ final class UserManager
     {
         $user = $this->userRepository->findUserByUsernameOrThrowException($username);
         $user->setPlainPassword($plainPassword);
+        $this->update($user);
     }
 
     public function updateRoleAdd(string $username, string $role): bool
@@ -177,6 +183,19 @@ final class UserManager
         $user = $this->userRepository->findUserByUsernameOrThrowException($username);
         $user->setSuperAdmin($superAdmin);
         $this->update($user);
+    }
+
+    private function hashPassword(User $user): void
+    {
+        if (null === $plainPassword = $user->getPlainPassword()) {
+            return;
+        }
+
+        $user->setSalt(Token::generate());
+        $hashedPassword = $this->passwordEncoder->encodePassword($user, $plainPassword);
+
+        $user->setPassword($hashedPassword);
+        $user->eraseCredentials();
     }
 
     private function getToken(): TokenInterface

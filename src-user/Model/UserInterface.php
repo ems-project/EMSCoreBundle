@@ -97,7 +97,7 @@ interface UserInterface extends SymfonyUserInterface, \Serializable
     /**
      * Gets the plain password.
      *
-     * @return string
+     * @return ?string
      */
     public function getPlainPassword();
 

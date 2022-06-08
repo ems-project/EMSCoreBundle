@@ -239,7 +239,7 @@ abstract class User implements UserInterface
     /**
      * {@inheritdoc}
      */
-    public function getPlainPassword()
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }

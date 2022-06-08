@@ -7,6 +7,10 @@
         <defaults public="false" />
 
         <!-- event listeners -->
+        <service id="ems_core.event_listener.login_listener" class="EMS\CoreBundle\EventListener\LoginListener">
+            <argument type="service" id="emsco.manager.user" />
+            <tag name="kernel.event_subscriber" />
+        </service>
         <service id="ems.event_listener.request_listener" class="EMS\CoreBundle\EventListener\RequestListener">
             <argument type="service" id="ems.service.channel.register"/>
             <argument type="service" id="twig"/>

@@ -46,33 +46,6 @@ interface UserManagerInterface
     public function findUserBy(array $criteria);
 
     /**
-     * Find a user by its username.
-     *
-     * @param string $username
-     *
-     * @return UserInterface|null
-     */
-    public function findUserByUsername($username);
-
-    /**
-     * Finds a user by its email.
-     *
-     * @param string $email
-     *
-     * @return UserInterface|null
-     */
-    public function findUserByEmail($email);
-
-    /**
-     * Finds a user by its username or email.
-     *
-     * @param string $usernameOrEmail
-     *
-     * @return UserInterface|null
-     */
-    public function findUserByUsernameOrEmail($usernameOrEmail);
-
-    /**
      * Returns a collection with all user instances.
      *
      * @return \Traversable

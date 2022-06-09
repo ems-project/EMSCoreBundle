@@ -23,7 +23,7 @@ class ChangePasswordCommand extends AbstractUserCommand
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
             ])
             ->setHelp(<<<'EOT'
-The <info>fos:user:change-password</info> command changes the password of a user:
+The <info>emsco:user:change-password</info> command changes the password of a user:
 
   <info>php %command.full_name% matthieu</info>
 

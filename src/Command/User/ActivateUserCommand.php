@@ -22,7 +22,7 @@ class ActivateUserCommand extends AbstractUserCommand
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
             ])
             ->setHelp(<<<'EOT'
-The <info>fos:user:activate</info> command activates a user (so they will be able to log in):
+The <info>emsco:user:activate</info> command activates a user (so they will be able to log in):
 
   <info>php %command.full_name% matthieu</info>
 EOT

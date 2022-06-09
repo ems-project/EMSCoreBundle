@@ -27,7 +27,7 @@ class CreateUserCommand extends AbstractUserCommand
                 new InputOption('inactive', null, InputOption::VALUE_NONE, 'Set the user as inactive'),
             ])
             ->setHelp(<<<'EOT'
-The <info>fos:user:create</info> command creates a user:
+The <info>emsco:user:create</info> command creates a user:
 
   <info>php %command.full_name% matthieu</info>
 

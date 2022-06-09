@@ -17,7 +17,7 @@ class DemoteUserCommand extends RoleCommand
         $this
             ->setDescription('Demote a user by removing a role')
             ->setHelp(<<<'EOT'
-The <info>fos:user:demote</info> command demotes a user by removing a role
+The <info>emsco:user:demote</info> command demotes a user by removing a role
 
   <info>php %command.full_name% matthieu ROLE_CUSTOM</info>
   <info>php %command.full_name% --super matthieu</info>

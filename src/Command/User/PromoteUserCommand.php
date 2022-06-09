@@ -17,7 +17,7 @@ class PromoteUserCommand extends RoleCommand
         $this
             ->setDescription('Promotes a user by adding a role')
             ->setHelp(<<<'EOT'
-The <info>fos:user:promote</info> command promotes a user by adding a role
+The <info>emsco:user:promote</info> command promotes a user by adding a role
 
   <info>php %command.full_name% matthieu ROLE_CUSTOM</info>
   <info>php %command.full_name% --super matthieu</info>

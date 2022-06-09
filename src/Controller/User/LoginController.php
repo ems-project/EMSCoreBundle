@@ -50,7 +50,7 @@ class LoginController extends AbstractController
             ? $this->tokenManager->getToken('authenticate')->getValue()
             : null;
 
-        return $this->render('@EMSCore/login.html.twig', [
+        return $this->render('@EMSCore/user/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
             'csrf_token' => $csrfToken,

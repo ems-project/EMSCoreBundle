@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Internationalization;
 
-use Elastica\Query\Terms;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
 use EMS\CommonBundle\Search\Search;
@@ -135,13 +134,23 @@ class XliffService
     private function getCurrentTranslation(Environment $targetEnvironment, string $translationField, string $translationId, string $localeField, string $targetLocale): ?Document
     {
         $boolQuery = $this->elasticaService->getBoolQuery();
-        $boolQuery->addMust(new Terms($translationField, [$translationId]));
-        $boolQuery->addMust(new Terms($localeField, [$targetLocale]));
+        $boolQuery->addMust($this->elasticaService->getTermsQuery($translationField, [$translationId]));
+        $boolQuery->addMust($this->elasticaService->getTermsQuery($localeField, [$targetLocale]));
         $search = new Search([$targetEnvironment->getAlias()], $boolQuery);
-        $this->elasticaService->getTermsQuery($translationField, [$translationId]);
         try {
             return $this->elasticaService->singleSearch($search);
         } catch (NotSingleResultException $e) {
+            if ($e->getTotal() > 1) {
+                $this->logger->warning('log.service.xliff.to-many-current-translations', [
+                    'counter' => $e->getTotal(),
+                    'environment' => $targetEnvironment->getName(),
+                    'translationField' => $translationField,
+                    'translationId' => $translationId,
+                    'localeField' => $localeField,
+                    'targetLocale' => $targetLocale,
+                ]);
+            }
+
             return null;
         }
     }

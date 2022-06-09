@@ -353,6 +353,7 @@ log.service.release.not.environments.defined: 'Environments source or/and target
 log.service.release.not.ready: 'Status of Release %name% is not ready'
 log.service.release_revision.preceding.revision.in.release: 'Has a previous revision related to Release %name%'
 log.service.query_search.delete: 'The QuerySearch %name% has been deleted'
+log.service.xliff.to-many-current-translations: 'The are %counter% translation documents when only one is expected for the translation id %translationId% and the target locale %targetLocale% in the environment %environment%'
 log.user.api_key: 'New API key for the user %user_display_name%: %api_key%'
 log.user.deleted: 'The user %user_display_name% has been deleted'
 log.user.disabled: 'The user %user_display_name% has been disabled'

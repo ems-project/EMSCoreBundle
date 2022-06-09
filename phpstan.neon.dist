@@ -4,7 +4,6 @@ includes:
 parameters:
     paths:
         - %currentWorkingDirectory%/src
-        - %currentWorkingDirectory%/src-user
     excludes_analyse:
         - %currentWorkingDirectory%/src/DependencyInjection/Configuration.php
         - %currentWorkingDirectory%/src/Resources/DoctrineMigrations

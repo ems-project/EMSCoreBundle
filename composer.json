@@ -68,8 +68,7 @@
 	},
 	"autoload" : {
 		"psr-4" : {
-			"EMS\\CoreBundle\\" : "src/",
-			"FOS\\UserBundle\\" : "src-user/"
+			"EMS\\CoreBundle\\" : "src/"
 		},
 		"exclude-from-classmap" : [
 			"tests/"

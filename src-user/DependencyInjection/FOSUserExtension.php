@@ -54,10 +54,6 @@ class FOSUserExtension extends Extension
             $container->setParameter($this->getAlias().'.backend_type_'.$config['db_driver'], true);
         }
 
-        foreach (['validator'] as $basename) {
-            $loader->load(\sprintf('%s.xml', $basename));
-        }
-
         $this->remapParametersNamespaces($config, $container, [
             '' => [
                 'db_driver' => 'fos_user.storage',

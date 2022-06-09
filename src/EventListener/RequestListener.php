@@ -50,13 +50,6 @@ class RequestListener
         if ($event->isMasterRequest()) {
             $this->channelRegistrar->register($event->getRequest());
         }
-
-        // TODO: move the next block to the FOS controller:
-//        if ($request->get('_route') === $this->userRegistrationRoute && !$this->allowUserRegistration) {
-//            $response = new RedirectResponse($this->router->generate($this->userLoginRoute, [], UrlGeneratorInterface::RELATIVE_PATH));
-//            $event->setResponse($response);
-//        }
-//
     }
 
     public function onKernelResponse(ResponseEvent $event): void

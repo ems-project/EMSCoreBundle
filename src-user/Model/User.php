@@ -19,7 +19,7 @@ use EMS\CoreBundle\Roles;
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-abstract class User implements UserInterface
+abstract class User
 {
     /**
      * @var mixed

@@ -63,7 +63,7 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute(Routes::USER_PROFILE);
         }
 
-        return $this->render('@EMSCore/user/change_password.html.twig', [
+        return $this->render('@EMSCore/user/profile/change_password.html.twig', [
             'form' => $form->createView(),
         ]);
     }

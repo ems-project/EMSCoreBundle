@@ -5,15 +5,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ ems_name|striptags }}</title>
-
-    <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
     <link rel="stylesheet" href="{{ asset('app.css', 'emscore') }}">
     <link rel="stylesheet" href="{{ asset('blue.css', 'emscore') }}">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -29,15 +25,12 @@
             <img alt="elasticms's logo" src="{{ asset('images/logo.png', 'emscore') }}" width="360">
         </a>
     </div>
-    <!-- /.login-logo -->
     <div class="login-box-body">
         <p class="login-box-msg">Sign in to start your session</p>
         {% if error %}
-
             <div class="callout callout-warning">
                 <p>{{ error.messageKey|trans(error.messageData, 'security') }}</p>
             </div>
-
         {% endif %}
 
         <form action="{{ path('emsco_user_login_check') }}" method="post">
@@ -59,7 +52,6 @@
                         </label>
                     </div>
                 </div>
-                <!-- /.col -->
                 <div class="col-xs-4">
                     {% set target = app.request.get('_target_path')|default(null) %}
                     {% if target %}
@@ -67,18 +59,11 @@
                     {% endif %}
                     <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}"  class="btn btn-primary btn-block btn-flat"/>
                 </div>
-                <!-- /.col -->
             </div>
-
         </form>
-
-        <!-- /.social-auth-links -->
-
         <a href="{{ path('emsco_user_resetting_request') }}">I forgot my password</a><br>
     </div>
-    <!-- /.login-box-body -->
 </div>
-<!-- /.login-box -->
 
 <script src="{{ asset('app.js', 'emscore') }}"></script>
 </body>

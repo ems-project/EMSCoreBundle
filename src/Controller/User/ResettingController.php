@@ -61,7 +61,7 @@ class ResettingController extends AbstractController
     public function reset(Request $request, string $token): Response
     {
         if (null === $user = $this->userManager->getUserByConfirmationToken($token)) {
-            return $this->redirectToRoute('fos_user_security_login');
+            return $this->redirectToRoute(Routes::USER_LOGIN);
         }
 
         if (!$user->isPasswordRequestNonExpired(UserManager::PASSWORD_RETRY_TTL)) {

@@ -7,6 +7,10 @@
         <defaults public="false" />
 
         <!-- event listeners -->
+        <service id="ems_core.event_listener.login_listener" class="EMS\CoreBundle\EventListener\LoginListener">
+            <argument type="service" id="emsco.manager.user" />
+            <tag name="kernel.event_subscriber" />
+        </service>
         <service id="ems.event_listener.request_listener" class="EMS\CoreBundle\EventListener\RequestListener">
             <argument type="service" id="ems.service.channel.register"/>
             <argument type="service" id="twig"/>
@@ -179,10 +183,10 @@
 
         <service id="emsco.manager.user" class="EMS\CoreBundle\Core\User\UserManager">
             <argument type="service" id="security.token_storage" />
-            <argument type="service" id="fos_user.user_manager" />
             <argument type="service" id="ems_core.security.login_manager" />
             <argument type="service" id="ems_core.core_mail.mailer_service" />
             <argument type="service" id="ems.repository.user" />
+            <argument type="service" id="security.password_encoder" />
         </service>
     </services>
 </container>

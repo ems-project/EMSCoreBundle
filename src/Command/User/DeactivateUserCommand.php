@@ -5,25 +5,14 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\User;
 
 use EMS\CoreBundle\Commands;
-use FOS\UserBundle\Util\UserManipulator;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-class DeactivateUserCommand extends Command
+class DeactivateUserCommand extends AbstractUserCommand
 {
     protected static $defaultName = Commands::USER_DEACTIVATE;
-
-    private UserManipulator $userManipulator;
-
-    public function __construct(UserManipulator $userManipulator)
-    {
-        parent::__construct();
-
-        $this->userManipulator = $userManipulator;
-    }
 
     protected function configure(): void
     {
@@ -33,7 +22,7 @@ class DeactivateUserCommand extends Command
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
             ])
             ->setHelp(<<<'EOT'
-The <info>fos:user:deactivate</info> command deactivates a user (will not be able to log in)
+The <info>emsco:user:deactivate</info> command deactivates a user (will not be able to log in)
 
   <info>php %command.full_name% matthieu</info>
 EOT
@@ -42,13 +31,18 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $username = \strval($input->getArgument('username'));
+        try {
+            $username = $this->getArgumentString('username');
 
-        $this->userManipulator->deactivate($username);
+            $this->userManager->updateEnabled($username, false);
+            $this->io->success(\sprintf('User "%s" has been deactivated.', $username));
 
-        $output->writeln(\sprintf('User "%s" has been deactivated.', $username));
+            return self::EXECUTE_SUCCESS;
+        } catch (\Throwable $e) {
+            $this->io->error($e->getMessage());
 
-        return 1;
+            return self::EXECUTE_ERROR;
+        }
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void

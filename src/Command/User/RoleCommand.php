@@ -4,25 +4,14 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\User;
 
-use FOS\UserBundle\Util\UserManipulator;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-abstract class RoleCommand extends Command
+abstract class RoleCommand extends AbstractUserCommand
 {
-    private UserManipulator $userManipulator;
-
-    public function __construct(UserManipulator $userManipulator)
-    {
-        parent::__construct();
-
-        $this->userManipulator = $userManipulator;
-    }
-
     protected function configure(): void
     {
         $this
@@ -35,25 +24,30 @@ abstract class RoleCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $username = \strval($input->getArgument('username'));
-        $role = \strval($input->getArgument('role'));
-        $super = (true === $input->getOption('super'));
+        try {
+            $username = $this->getArgumentString('username');
+            $role = $this->getArgumentString('role');
+            $super = $this->getOptionBool('super');
 
-        if ($super && $role) {
-            throw new \InvalidArgumentException('You can pass either the role or the --super option (but not both simultaneously).');
+            if ($super && $role) {
+                throw new \InvalidArgumentException('You can pass either the role or the --super option (but not both simultaneously).');
+            }
+
+            if (!$super && !$role) {
+                throw new \RuntimeException('Not enough arguments.');
+            }
+
+            $this->executeRoleCommand($username, $super, $role);
+
+            return self::EXECUTE_SUCCESS;
+        } catch (\Throwable $e) {
+            $this->io->error($e->getMessage());
+
+            return self::EXECUTE_ERROR;
         }
-
-        if (!$super && !$role) {
-            throw new \RuntimeException('Not enough arguments.');
-        }
-
-        $manipulator = $this->userManipulator;
-        $this->executeRoleCommand($manipulator, $output, $username, $super, $role);
-
-        return 1;
     }
 
-    abstract protected function executeRoleCommand(UserManipulator $manipulator, OutputInterface $output, string $username, bool $super, string $role): void;
+    abstract protected function executeRoleCommand(string $username, bool $super, string $role): void;
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {

@@ -153,14 +153,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         if (isset($configs[0]['from_email'])) {
             $fromEmail = $configs[0]['from_email'];
         }
-
-        if (isset($bundles['FOSUserBundle'])) {
-            $container->prependExtensionConfig('fos_user', [
-                'db_driver' => 'orm',
-                'from_email' => $fromEmail,
-                'user_class' => 'EMS\CoreBundle\Entity\User',
-            ]);
-        }
     }
 
     /**

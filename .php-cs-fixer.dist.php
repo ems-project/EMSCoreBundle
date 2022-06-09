@@ -6,7 +6,6 @@ if (!file_exists(__DIR__.'/src')) {
 
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__.'/src')
-    ->in(__DIR__.'/src-user')
     ->in(__DIR__.'/tests')
     ->exclude('tests/tmp')
 ;

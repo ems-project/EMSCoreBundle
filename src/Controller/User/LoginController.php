@@ -1,17 +1,10 @@
 <?php
 
-/*
- * This file is part of the FOSUserBundle package.
- *
- * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+declare(strict_types=1);
 
-namespace FOS\UserBundle\Controller;
+namespace EMS\CoreBundle\Controller\User;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -19,25 +12,16 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
-/**
- * Controller managing security.
- *
- * @author Thibault Duplessis <thibault.duplessis@gmail.com>
- * @author Christophe Coevoet <stof@notk.org>
- */
-class SecurityController extends Controller
+class LoginController extends AbstractController
 {
-    private $tokenManager;
+    private ?CsrfTokenManagerInterface $tokenManager;
 
     public function __construct(CsrfTokenManagerInterface $tokenManager = null)
     {
         $this->tokenManager = $tokenManager;
     }
 
-    /**
-     * @return Response
-     */
-    public function loginAction(Request $request)
+    public function login(Request $request): Response
     {
         /** @var SessionInterface $session */
         $session = $request->getSession();
@@ -66,33 +50,20 @@ class SecurityController extends Controller
             ? $this->tokenManager->getToken('authenticate')->getValue()
             : null;
 
-        return $this->renderLogin([
+        return $this->render('@EMSCore/user/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
             'csrf_token' => $csrfToken,
         ]);
     }
 
-    public function checkAction(): void
+    public function check(): void
     {
         throw new \RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
     }
 
-    public function logoutAction(): void
+    public function logout(): void
     {
         throw new \RuntimeException('You must activate the logout in your security firewall configuration.');
-    }
-
-    /**
-     * Renders the login template with the given parameters. Overwrite this function in
-     * an extended controller to provide additional data for the login template.
-     *
-     * @param array<string, mixed> $data
-     *
-     * @return Response
-     */
-    protected function renderLogin(array $data)
-    {
-        return $this->render('@FOSUser/Security/login.html.twig', $data);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\User;
 
 use EMS\CoreBundle\Core\User\UserManager;
+use EMS\CoreBundle\Form\User\ChangePasswordType;
 use EMS\CoreBundle\Form\User\UserProfileType;
 use EMS\CoreBundle\Routes;
 use Psr\Log\LoggerInterface;
@@ -44,6 +45,25 @@ class ProfileController extends AbstractController
         }
 
         return $this->render('@EMSCore/user/profile/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    public function changePassword(Request $request): Response
+    {
+        $user = $this->userManager->getAuthenticatedUser();
+
+        $form = $this->createForm(ChangePasswordType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->userManager->update($user);
+            $this->logger->notice('log.user.password_updated');
+
+            return $this->redirectToRoute(Routes::USER_PROFILE);
+        }
+
+        return $this->render('@EMSCore/user/profile/change_password.html.twig', [
             'form' => $form->createView(),
         ]);
     }

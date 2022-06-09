@@ -6,6 +6,24 @@
 
     <class name="EMS\CoreBundle\Entity\User">
 
+        <constraint name="Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity">
+            <option name="fields">usernameCanonical</option>
+            <option name="errorPath">username</option>
+            <option name="message">fos_user.username.already_used</option>
+            <option name="groups">
+                <value>Profile</value>
+            </option>
+        </constraint>
+
+        <constraint name="Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity">
+            <option name="fields">emailCanonical</option>
+            <option name="errorPath">email</option>
+            <option name="message">fos_user.email.already_used</option>
+            <option name="groups">
+                <value>Profile</value>
+            </option>
+        </constraint>
+
         <constraint name="EMS\CoreBundle\Validator\Constraints\IsDifferentPassword">
             <option name="message">Password has to be different from the previous one.</option>
             <option name="groups">

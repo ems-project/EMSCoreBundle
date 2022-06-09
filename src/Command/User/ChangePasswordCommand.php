@@ -5,25 +5,14 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\User;
 
 use EMS\CoreBundle\Commands;
-use FOS\UserBundle\Util\UserManipulator;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-class ChangePasswordCommand extends Command
+class ChangePasswordCommand extends AbstractUserCommand
 {
     protected static $defaultName = Commands::USER_CHANGE_PASSWORD;
-
-    private UserManipulator $userManipulator;
-
-    public function __construct(UserManipulator $userManipulator)
-    {
-        parent::__construct();
-
-        $this->userManipulator = $userManipulator;
-    }
 
     protected function configure(): void
     {
@@ -34,7 +23,7 @@ class ChangePasswordCommand extends Command
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
             ])
             ->setHelp(<<<'EOT'
-The <info>fos:user:change-password</info> command changes the password of a user:
+The <info>emsco:user:change-password</info> command changes the password of a user:
 
   <info>php %command.full_name% matthieu</info>
 
@@ -50,14 +39,19 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $username = \strval($input->getArgument('username'));
-        $password = \strval($input->getArgument('password'));
+        try {
+            $username = $this->getArgumentString('username');
+            $password = $this->getArgumentString('password');
 
-        $this->userManipulator->changePassword($username, $password);
+            $this->userManager->updatePassword($username, $password);
+            $this->io->success(\sprintf('Changed password for user "%s"', $username));
 
-        $output->writeln(\sprintf('Changed password for user <comment>%s</comment>', $username));
+            return self::EXECUTE_SUCCESS;
+        } catch (\Throwable $e) {
+            $this->io->error($e->getMessage());
 
-        return 1;
+            return self::EXECUTE_ERROR;
+        }
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void

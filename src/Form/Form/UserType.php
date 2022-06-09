@@ -55,10 +55,13 @@ final class UserType extends AbstractType
         if (self::MODE_CREATE === $mode) {
             $builder->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'options' => ['translation_domain' => 'FOSUserBundle'],
-                'first_options' => ['label' => 'form.password'],
-                'second_options' => ['label' => 'form.password_confirmation'],
-                'invalid_message' => 'fos_user.password.mismatch',
+                'options' => [
+                    'attr' => ['autocomplete' => 'new-password'],
+                    'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+                ],
+                'first_options' => ['label' => 'user.password'],
+                'second_options' => ['label' => 'user.password_confirmation'],
+                'invalid_message' => 'user.password.mismatch',
             ]);
         }
 

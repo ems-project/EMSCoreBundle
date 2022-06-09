@@ -11,6 +11,8 @@
 
 namespace FOS\UserBundle\Model;
 
+use EMS\CoreBundle\Roles;
+
 /**
  * Storage agnostic user object.
  *
@@ -115,7 +117,7 @@ abstract class User implements UserInterface
     public function addRole($role)
     {
         $role = \strtoupper($role);
-        if ($role === static::ROLE_DEFAULT) {
+        if (Roles::ROLE_USER === $role) {
             return $this;
         }
 
@@ -270,7 +272,7 @@ abstract class User implements UserInterface
         $roles = $this->roles;
 
         // we need to make sure to have at least one role
-        $roles[] = static::ROLE_DEFAULT;
+        $roles[] = Roles::ROLE_USER;
 
         return \array_unique($roles);
     }
@@ -293,7 +295,7 @@ abstract class User implements UserInterface
      */
     public function isSuperAdmin()
     {
-        return $this->hasRole(static::ROLE_SUPER_ADMIN);
+        return $this->hasRole(Roles::ROLE_SUPER_ADMIN);
     }
 
     /**
@@ -385,9 +387,9 @@ abstract class User implements UserInterface
     public function setSuperAdmin($boolean)
     {
         if (true === $boolean) {
-            $this->addRole(static::ROLE_SUPER_ADMIN);
+            $this->addRole(Roles::ROLE_SUPER_ADMIN);
         } else {
-            $this->removeRole(static::ROLE_SUPER_ADMIN);
+            $this->removeRole(Roles::ROLE_SUPER_ADMIN);
         }
 
         return $this;

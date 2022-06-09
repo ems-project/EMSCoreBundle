@@ -19,10 +19,6 @@ use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
  */
 interface UserInterface extends SymfonyUserInterface, \Serializable
 {
-    public const ROLE_DEFAULT = 'ROLE_USER';
-
-    public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
-
     /**
      * Returns the user unique id.
      *

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Internationalization;
 
+use Doctrine\ORM\UnexpectedResultException;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
 use EMS\CommonBundle\Search\Search;
@@ -41,8 +42,12 @@ class XliffService
         $sourceRevision = $this->revisionService->getCurrentRevisionForEnvironment($source->getId(), $contentType, $sourceEnvironment);
         $currentData = [];
         if (null !== $targetEnvironment) {
-            $currentRevision = $this->revisionService->getCurrentRevisionForEnvironment($source->getId(), $contentType, $targetEnvironment);
-            $currentData = null === $currentRevision ? [] : $currentRevision->getRawData();
+            try {
+                $currentRevision = $this->revisionService->getCurrentRevisionForEnvironment($source->getId(), $contentType, $targetEnvironment);
+                $currentData = null === $currentRevision ? [] : $currentRevision->getRawData();
+            } catch (UnexpectedResultException $e) {
+                $currentData = [];
+            }
         }
 
         if (null === $sourceRevision) {

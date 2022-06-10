@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle;
 
 class Routes
@@ -54,6 +56,11 @@ class Routes
     public const USER_ENABLING = 'emsco_user_enabling';
     public const USER_API_KEY = 'emsco_user_api_key';
     public const USER_DELETE = 'emsco_user_delete';
+    public const USER_PROFILE = 'emsco_user_profile';
+    public const USER_PROFILE_EDIT = 'emsco_user_profile_edit';
+    public const USER_CHANGE_PASSWORD = 'emsco_user_change_password';
+    public const USER_LOGOUT = 'emsco_user_logout';
+    public const USER_LOGIN = 'emsco_user_login';
     public const LOG_INDEX = 'emsco_log_index';
     public const LOG_DELETE = 'emsco_log_delete';
     public const LOG_VIEW = 'emsco_log_view';

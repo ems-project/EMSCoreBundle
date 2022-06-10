@@ -1,0 +1,10 @@
+{% block resetPassword %}
+{%- trans_default_domain 'emsco-user' -%}
+{%- set confirmationUrl = path('emsco_user_resetting_reset', {'token': user.confirmationToken}) -%}
+{% autoescape false %}
+{{ 'user.resetting.email.message'|trans({
+    '%username%': user.username,
+    '%confirmationUrl%': absolute_url(confirmationUrl)
+}) }}
+{% endautoescape %}
+{% endblock %}

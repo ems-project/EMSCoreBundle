@@ -51,14 +51,14 @@ class MailerService
         $this->mailer->send($message);
     }
 
-    public function sendMailTemplate(MailTemplate $template): void
+    public function sendMailTemplate(MailTemplate $template, string $contentType = 'text/html'): void
     {
         $message = (new \Swift_Message());
         $message
             ->setSubject($template->getSubject())
             ->setFrom($this->sender['address'], $this->sender['sender_name'])
             ->setTo($template->getTo())
-            ->setBody($template->getBody(), 'text/html');
+            ->setBody($template->getBody(), $contentType);
 
         $this->mailer->send($message);
     }

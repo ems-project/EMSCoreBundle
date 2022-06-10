@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Data\BoolTableColumn;
@@ -20,7 +21,6 @@ use EMS\CoreBundle\Repository\WysiwygProfileRepository;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\UserService;
-use FOS\UserBundle\Model\UserManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,11 +31,11 @@ class UserController extends AbstractController
 {
     private ?string $circleObject;
     private UserService $userService;
-    private UserManagerInterface $userManager;
+    private UserManager $userManager;
     private LoggerInterface $logger;
     private SpreadsheetGeneratorServiceInterface $spreadsheetGenerator;
 
-    public function __construct(LoggerInterface $logger, ?string $circleObject, UserService $userService, UserManagerInterface $userManager, SpreadsheetGeneratorServiceInterface $spreadsheetGenerator)
+    public function __construct(LoggerInterface $logger, ?string $circleObject, UserService $userService, UserManager $userManager, SpreadsheetGeneratorServiceInterface $spreadsheetGenerator)
     {
         $this->circleObject = $circleObject;
         $this->logger = $logger;
@@ -86,15 +86,12 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $continue = $this->userExist($user, 'add', $this->userManager);
+            $continue = $this->userExist($user, 'add');
 
             if ($continue) {
                 $user->setEnabled(true);
-                $this->userManager->updateUser($user);
-                $this->addFlash(
-                    'notice',
-                    'User created!'
-                );
+                $this->userManager->update($user);
+                $this->addFlash('notice', 'User created!');
 
                 return $this->redirectToRoute(Routes::USER_INDEX);
             }
@@ -258,25 +255,17 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @return array<string, string>
-     */
-    private function getExistingRoles(): array
+    private function userExist(User $user, string $action): bool
     {
-        return $this->userService->getExistingRoles();
-    }
-
-    private function userExist(User $user, string $action, UserManagerInterface $userManager): bool
-    {
-        $exists = ['email' => $userManager->findUserByEmail($user->getEmail()), 'username' => $userManager->findUserByUsername($user->getUsername())];
+        $exists = [
+            'email' => $this->userManager->getUserByEmail($user->getEmail()),
+            'username' => $this->userManager->getUserByUsername($user->getUsername()),
+        ];
         $messages = ['email' => 'User email already exist!', 'username' => 'Username already exist!'];
         foreach ($exists as $key => $value) {
             if ($value instanceof User) {
                 if ('add' === $action || ('edit' === $action && $value->getId() !== $user->getId())) {
-                    $this->addFlash(
-                        'error',
-                        $messages[$key]
-                    );
+                    $this->addFlash('error', $messages[$key]);
 
                     return false;
                 }

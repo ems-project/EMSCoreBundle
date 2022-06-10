@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Mail;
 
+use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\TemplateWrapper;
 
@@ -58,9 +59,9 @@ final class MailTemplate
     /**
      * @param array<mixed> $parameters
      */
-    public function setSubject(string $key, array $parameters = []): self
+    public function setSubject(string $key, array $parameters = [], string $domain = EMSCoreBundle::TRANS_DOMAIN): self
     {
-        $this->subject = $this->translator->trans($key, $parameters, 'EMSCoreBundle');
+        $this->subject = $this->translator->trans($key, $parameters, $domain);
 
         return $this;
     }

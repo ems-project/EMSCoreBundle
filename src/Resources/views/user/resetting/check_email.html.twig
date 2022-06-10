@@ -1,0 +1,21 @@
+{%- trans_default_domain 'emsco-user' -%}
+{% extends '@EMSCore/layout.html.twig' %}
+
+{% block title %}{{ 'user.resetting.title'|trans }}{% endblock %}
+{% block pagetitle %}{% endblock %}
+{% block subtitle %}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">{{ 'user.resetting.title'|trans }}</h3>
+            </div>
+            <div class="box-body">
+                <p>{{ 'user.resetting.check_email'|trans({'%tokenLifetime%': (tokenLifetime / 3600) })|nl2br }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

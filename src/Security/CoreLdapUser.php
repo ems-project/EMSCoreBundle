@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Security;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Entity\WysiwygProfile;
-use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
+use EMS\CoreBundle\Roles;
 use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Ldap\Security\LdapUser as SymfonyLdapUser;
 use Symfony\Component\Security\Core\Role\Role;
@@ -182,7 +182,7 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
 
     public function isSuperAdmin(): bool
     {
-        return $this->hasRole(FOSUserInterface::ROLE_SUPER_ADMIN);
+        return $this->hasRole(Roles::ROLE_SUPER_ADMIN);
     }
 
     /**

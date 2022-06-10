@@ -639,13 +639,6 @@ services:
         class:  EMS\CoreBundle\Security\ApiKeyAuthenticator
         public: false
 
-#### UserProfile from LocalUserBundle
-    ems.form.userprofile:
-        class: EMS\CoreBundle\Form\UserProfileType
-        arguments: ['@security.token_storage']
-        tags:
-            - { name: form.type }
-
 #### aliases
     EMS\CoreBundle\Elasticsearch\Bulker: '@ems.elasticsearch.bulker'
     EMS\CoreBundle\Elasticsearch\Indexer: '@ems.elasticsearch.indexer'

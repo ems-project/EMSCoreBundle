@@ -6,8 +6,7 @@
 
     <import resource="@EMSCoreBundle/Resources/config/routing/data.xml"
             prefix="/data" />
-    <import resource="@EMSCoreBundle/Resources/config/routing/public.xml"
-            prefix="/public" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/public.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/dashboard.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/action.xml"
             prefix="/action" />
@@ -59,8 +58,7 @@
             prefix="/wysiwyg" />
     <import resource="@EMSCoreBundle/Resources/config/routing/wysiwyg-options.xml"
             prefix="/wysiwyg-options" />
-    <import resource="@EMSCoreBundle/Resources/config/routing/user.xml"
-            prefix="/user" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/user/user.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/profile.xml"
             prefix="/profile" />
     <import resource="@EMSCoreBundle/Resources/config/routing/log.xml"

@@ -40,6 +40,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $xmlLoader->load('controllers.xml');
         $xmlLoader->load('services.xml');
         $xmlLoader->load('runtime.xml');
+        $xmlLoader->load('security.xml');
 
         $container->setParameter('ems_core.from_email', $config['from_email']);
         $container->setParameter('ems_core.instance_id', $config['instance_id']);
@@ -60,11 +61,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.trigger_job_from_web', $config['trigger_job_from_web']);
         $container->setParameter('ems_core.lock_time', $config['lock_time']);
         $container->setParameter('ems_core.template_options', $config['template_options']);
-        $container->setParameter('ems_core.user_login_route', $config['user_login_route']);
-        $container->setParameter('ems_core.user_logout_route', $config['user_logout_route']);
-        $container->setParameter('ems_core.user_profile_route', $config['user_profile_route']);
-        $container->setParameter('ems_core.user_registration_route', $config['user_registration_route']);
-        $container->setParameter('ems_core.add_user_route', $config['add_user_route']);
         $container->setParameter('ems_core.asset_config', $config['asset_config']);
         $container->setParameter('ems_core.tika_server', $config['tika_server']);
         $container->setParameter('ems_core.pre_generated_ouuids', $config['pre_generated_ouuids']);
@@ -76,6 +72,9 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.clean_jobs_time_string', $config['clean_jobs_time_string']);
         $container->setParameter('ems_core.fallback_locale', $config['fallback_locale']);
         $container->setParameter('ems_core.url_user', $config['url_user']);
+
+        $container->setParameter('ems_core.security.firewall.core', $config['security']['firewall']['core']);
+        $container->setParameter('ems_core.security.firewall.api', $config['security']['firewall']['api']);
 
         $this->loadLdap($container, $yamlLoader, $config['ldap'] ?? []);
     }
@@ -101,11 +100,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'time_format' => $configs[0]['time_format'] ?? Configuration::TIME_FORMAT,
             'allow_user_registration' => $configs[0]['allow_user_registration'] ?? Configuration::ALLOW_USER_REGISTRATION,
             'trigger_job_from_web' => $configs[0]['trigger_job_from_web'] ?? Configuration::TRIGGER_JOB_FROM_WEB,
-            'user_login_route' => $configs[0]['user_login_route'] ?? Configuration::USER_LOGIN_ROUTE,
-            'user_logout_route' => $configs[0]['user_logout_route'] ?? Configuration::USER_LOGOUT_ROUTE,
-            'user_profile_route' => $configs[0]['user_profile_route'] ?? Configuration::USER_PROFILE_ROUTE,
-            'user_registration_route' => $configs[0]['user_registration_route'] ?? Configuration::USER_REGISTRATION_ROUTE,
-            'add_user_route' => $configs[0]['add_user_route'] ?? Routes::USER_ADD,
+            'routes' => (new \ReflectionClass(Routes::class))->getConstants(),
         ];
 
         if (!empty($configs[0]['template_options'])) {
@@ -157,20 +152,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
 
         if (isset($configs[0]['from_email'])) {
             $fromEmail = $configs[0]['from_email'];
-        }
-
-        if (isset($bundles['FOSUserBundle'])) {
-            $container->prependExtensionConfig('fos_user', [
-                'db_driver' => 'orm',
-                'from_email' => $fromEmail,
-                'firewall_name' => 'main',
-                'user_class' => 'EMS\CoreBundle\Entity\User',
-                'profile' => [
-                    'form' => [
-                        'type' => 'EMS\CoreBundle\Form\UserProfileType',
-                    ],
-                ],
-            ]);
         }
     }
 

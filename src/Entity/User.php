@@ -118,9 +118,11 @@ class User implements UserInterface, EntityInterface
     private ?string $localePreferred = null;
 
     /**
+     * @var string
+     *
      * @ORM\Column(name="username", type="string", length=180)
      */
-    private string $username = '';
+    private $username;
 
     /**
      * @ORM\Column(name="username_canonical", type="string", length=180, unique=true)
@@ -128,9 +130,11 @@ class User implements UserInterface, EntityInterface
     private ?string $usernameCanonical = null;
 
     /**
+     * @var string
+     *
      * @ORM\Column(name="email", type="string", length=180)
      */
-    private string $email = '';
+    private $email;
 
     /**
      * @ORM\Column(name="email_canonical", type="string", length=180, unique=true)
@@ -640,7 +644,7 @@ class User implements UserInterface, EntityInterface
         return Type::integer($this->id);
     }
 
-    public function getUsername(): string
+    public function getUsername()
     {
         return $this->username;
     }
@@ -655,7 +659,7 @@ class User implements UserInterface, EntityInterface
         return $this->salt;
     }
 
-    public function getEmail(): string
+    public function getEmail()
     {
         return $this->email;
     }
@@ -716,7 +720,7 @@ class User implements UserInterface, EntityInterface
         }
     }
 
-    public function setUsername(string $username): void
+    public function setUsername($username): void
     {
         $this->username = $username;
     }
@@ -731,7 +735,7 @@ class User implements UserInterface, EntityInterface
         $this->salt = $salt;
     }
 
-    public function setEmail(string $email): void
+    public function setEmail($email): void
     {
         $this->email = $email;
     }

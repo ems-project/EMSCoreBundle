@@ -14,6 +14,7 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use EMS\Helpers\Html\Html;
 use EMS\Xliff\Xliff\Extractor;
 use EMS\Xliff\Xliff\InsertionRevision;
 use Psr\Log\LoggerInterface;
@@ -73,8 +74,8 @@ class XliffService
             $translation = $propertyAccessor->getValue($currentTranslationData, $propertyPath);
             $isFinal = (null !== $targetEnvironment && $contentType->giveEnvironment()->getName() !== $targetEnvironment->getName() && $currentValue === $value && null !== $translation);
 
-            if ($this->isHtml($value)) {
-                $extractor->addHtmlField($xliffDoc, $fieldPath, $value, $translation, $isFinal, $encodeHtml);
+            if (Html::isHtml($value)) {
+                $extractor->addHtmlField($xliffDoc, $fieldPath, Html::prettyPrint($value), $translation, $isFinal, $encodeHtml);
             } else {
                 $extractor->addSimpleField($xliffDoc, $fieldPath, $value, $translation, $isFinal);
             }
@@ -119,11 +120,6 @@ class XliffService
         }
 
         return $this->getCurrentTranslation($environment, $translationField, $translationId, $localeField, $targetLocale);
-    }
-
-    private function isHtml(string $value): bool
-    {
-        return 1 === \preg_match('/^<([A-Za-z][A-Za-z0-9]*)\b[^>]*>(.*?)<(\/[A-Za-z][A-Za-z0-9]*\s*|[A-Za-z][A-Za-z0-9]*\s*\/)>$/', \trim($value));
     }
 
     /**

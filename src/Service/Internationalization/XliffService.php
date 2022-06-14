@@ -75,7 +75,7 @@ class XliffService
             $isFinal = (null !== $targetEnvironment && $contentType->giveEnvironment()->getName() !== $targetEnvironment->getName() && $currentValue === $value && null !== $translation);
 
             if (Html::isHtml($value)) {
-                $extractor->addHtmlField($xliffDoc, $fieldPath, Html::prettyPrint($value), $translation, $isFinal, $encodeHtml);
+                $extractor->addHtmlField($xliffDoc, $fieldPath, $value, $translation, $isFinal, $encodeHtml);
             } else {
                 $extractor->addSimpleField($xliffDoc, $fieldPath, $value, $translation, $isFinal);
             }

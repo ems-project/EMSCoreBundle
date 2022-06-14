@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="emsco_api_start_job" path="/start-job/{job}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\JobController:startJobAction</default>
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\JobController:startJob</default>
     </route>
     <route id="emsco_api_job_status" path="/job-status/{job}" methods="GET">
         <default key="_format">json</default>

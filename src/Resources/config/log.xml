@@ -7,7 +7,7 @@
     <services>
         <defaults public="false" autoconfigure="false" autowire="false" />
 
-        <service id="ems.logger" class="EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface">
+        <service id="emsco.logger" class="EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface">
             <factory service="EMS\CommonBundle\Contracts\Log\LocalizedLoggerFactoryInterface" />
             <argument type="service" id="logger" />
             <argument>ems_logger</argument>

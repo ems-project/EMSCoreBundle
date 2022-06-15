@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller\Revision;
 
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Storage\NotFoundException;
+use EMS\CoreBundle\Core\Log\LoggingContext;
 use EMS\CoreBundle\Core\Revision\DraftInProgress;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
@@ -20,7 +21,6 @@ use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
-use EMS\CoreBundle\Service\Revision\LoggingContext;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

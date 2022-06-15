@@ -7,11 +7,11 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Entity\EntityInterface;
+use EMS\CoreBundle\Core\Log\LoggingContext;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\ReleaseRepository;
-use EMS\CoreBundle\Service\Revision\LoggingContext;
 use Psr\Log\LoggerInterface;
 
 final class ReleaseService implements EntityServiceInterface

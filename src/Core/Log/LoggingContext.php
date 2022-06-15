@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Service\Revision;
+namespace EMS\CoreBundle\Core\Log;
 
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\Environment;

@@ -4,13 +4,13 @@ namespace EMS\CoreBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Core\Log\LoggingContext;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\Channel\ChannelRegistrar;
-use EMS\CoreBundle\Service\Revision\LoggingContext;
 use Exception;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\RedirectResponse;

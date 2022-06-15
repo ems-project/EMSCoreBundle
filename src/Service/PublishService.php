@@ -38,6 +38,7 @@ class PublishService
     private UserService $userService;
     private EventDispatcherInterface $dispatcher;
     private LoggerInterface $logger;
+    private LoggerInterface $auditLogger;
     private IndexService $indexService;
     private Bulker $bulker;
 
@@ -55,6 +56,7 @@ class PublishService
         UserService $userService,
         EventDispatcherInterface $dispatcher,
         LoggerInterface $logger,
+        LoggerInterface $auditLogger,
         Bulker $bulker
     ) {
         $this->doctrine = $doctrine;
@@ -71,6 +73,7 @@ class PublishService
         $this->userService = $userService;
         $this->dispatcher = $dispatcher;
         $this->logger = $logger;
+        $this->auditLogger = $auditLogger;
         $this->bulker = $bulker;
     }
 
@@ -222,16 +225,12 @@ class PublishService
             $this->revRepository->addEnvironment($revision, $environment);
 
             if (!$command) {
-                $this->logger->notice('service.publish.published', $logContext);
+                $this->auditLogger->notice('log.publication.success', \array_merge([
+                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
+                ], $logContext));
             }
 
             $this->dispatcher->dispatch(RevisionPublishEvent::NAME, new RevisionPublishEvent($revision, $environment));
-        }
-
-        if (!$command) {
-            $this->logger->info('log.data.revision.publish', \array_merge([
-                EmsFields::LOG_OPERATION_FIELD => $already ? EmsFields::LOG_OPERATION_UPDATE : EmsFields::LOG_OPERATION_CREATE,
-            ], $logContext));
         }
 
         return $already ? 0 : 1;

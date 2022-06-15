@@ -1,3 +1,7 @@
+log:
+  publication:
+    success: 'The document "%label%" has been published in %environment%'
+
 service.contenttype.mappings_error: 'Mappings update for %contenttype% in %environments% failed : %elasticsearch_dump%'
 service.contenttype.mappings_updated: 'Mappings successfully updated for content type %contenttype% in %environments%'
 log.data.revision.finalized: 'The document "%label%" has been published in %environment%'

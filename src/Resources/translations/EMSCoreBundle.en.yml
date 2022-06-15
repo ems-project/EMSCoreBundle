@@ -477,7 +477,6 @@ service.publish.not_in_circles: 'You can not (un)publish the content type %conte
 service.publish.not_in_default_environment: 'You can not (un)publish in the default environment %environment% of the document "%label%"'
 service.publish.publish_failed: 'The publication of the document "%label%" failed!'
 service.publish.publish_draft_error: 'A draft of the document "%label%" can''t be published in %environment% : %error_message%'
-service.publish.published: 'The document "%label%" has been published in %environment%'
 service.publish.revision_not_found_in_source: 'Missing revision in the environment %environment% for the document "%label%"'
 service.publish.unpublished: 'The document "%label%" has been unpublished from %environment%'
 service.wysiwyg_profile.deleted: 'Profile %profile_name% has been deleted'

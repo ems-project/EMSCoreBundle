@@ -11,6 +11,7 @@ use EMS\CommonBundle\Service\Pdf\Pdf;
 use EMS\CommonBundle\Service\Pdf\PdfPrinterInterface;
 use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
 use EMS\CoreBundle\Core\ContentType\ViewTypes;
+use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -38,7 +39,6 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\PublishService;
-use EMS\CoreBundle\Service\Revision\LoggingContext;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -586,7 +586,7 @@ class DataController extends AbstractController
                     $sibling = $this->dataService->getRevisionByEnvironment($ouuid, $revision->giveContentType(), $environment);
                     $this->logger->warning(
                         'log.data.revision.cant_delete_has_published',
-                        LoggingContext::publish($sibling, $environment)
+                        LogRevisionContext::publish($sibling, $environment)
                     );
                     $found = true;
                 } catch (NoResultException $e) {
@@ -713,16 +713,16 @@ class DataController extends AbstractController
             foreach ($revision->getEnvironments() as $environment) {
                 if (!$defaultOnly || $environment === $revision->giveContentType()->getEnvironment()) {
                     if ($this->indexService->indexRevision($revision, $environment)) {
-                        $this->logger->notice('log.data.revision.reindex', LoggingContext::update($revision));
+                        $this->logger->notice('log.data.revision.reindex', LogRevisionContext::update($revision));
                     } else {
-                        $this->logger->warning('log.data.revision.reindex_failed_in', LoggingContext::update($revision));
+                        $this->logger->warning('log.data.revision.reindex_failed_in', LogRevisionContext::update($revision));
                     }
                 }
             }
             $em->persist($revision);
             $em->flush();
         } catch (\Throwable $e) {
-            $this->logger->warning('log.data.revision.reindex_failed', \array_merge(LoggingContext::update($revision), [
+            $this->logger->warning('log.data.revision.reindex_failed', \array_merge(LogRevisionContext::update($revision), [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
             ]));

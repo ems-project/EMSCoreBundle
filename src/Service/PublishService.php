@@ -7,6 +7,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Statement;
 use Doctrine\ORM\NonUniqueResultException;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -14,7 +15,6 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Service\Revision\LoggingContext;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -143,7 +143,7 @@ class PublishService
             throw new \RuntimeException('Draft revision passed to bulk publish!');
         }
 
-        $logContext = LoggingContext::publish($revision, $environment);
+        $logContext = LogRevisionContext::publish($revision, $environment);
         if ($revision->giveContentType()->giveEnvironment() === $environment && !$revision->hasEndTime()) {
             $this->logger->warning('service.publish.not_in_default_environment', $logContext);
 
@@ -186,7 +186,7 @@ class PublishService
      */
     public function publish(Revision $revision, Environment $environment, $command = false)
     {
-        $logContext = LoggingContext::publish($revision, $environment);
+        $logContext = LogRevisionContext::publish($revision, $environment);
         if (!$command && !$this->canPublish($revision, $environment)) {
             return 0;
         }
@@ -307,22 +307,22 @@ class PublishService
 
         try {
             $this->indexService->delete($revision, $environment);
-            $this->logger->notice('service.publish.unpublished', LoggingContext::publish($revision, $environment));
+            $this->logger->notice('service.publish.unpublished', LogRevisionContext::publish($revision, $environment));
 
             $this->dispatcher->dispatch(RevisionUnpublishEvent::NAME, new RevisionUnpublishEvent($revision, $environment));
         } catch (\Throwable $e) {
             if (!$revision->getDeleted()) {
-                $this->logger->warning('service.publish.already_unpublished', LoggingContext::publish($revision, $environment));
+                $this->logger->warning('service.publish.already_unpublished', LogRevisionContext::publish($revision, $environment));
             }
         }
         if (!$command) {
-            $this->logger->info('log.data.revision.unpublish', LoggingContext::delete($revision));
+            $this->logger->info('log.data.revision.unpublish', LogRevisionContext::delete($revision));
         }
     }
 
     private function canPublish(Revision $revision, Environment $environment): bool
     {
-        $logContext = LoggingContext::publish($revision, $environment);
+        $logContext = LogRevisionContext::publish($revision, $environment);
 
         $user = $this->userService->getCurrentUser();
         if (!empty($environment->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(\array_intersect($environment->getCircles(), $user->getCircles()))) {

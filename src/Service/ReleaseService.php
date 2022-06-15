@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Entity\EntityInterface;
-use EMS\CoreBundle\Core\Log\LoggingContext;
+use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Entity\Revision;
@@ -56,7 +56,7 @@ final class ReleaseService implements EntityServiceInterface
     public function addRevision(Release $release, Revision $revision): void
     {
         if ($revision->getDraft()) {
-            $this->logger->error('log.data.revision.can_not_add_draft_in_release', \array_merge(['release' => $release->getName()], LoggingContext::read($revision)));
+            $this->logger->error('log.data.revision.can_not_add_draft_in_release', \array_merge(['release' => $release->getName()], LogRevisionContext::read($revision)));
 
             return;
         }
@@ -65,13 +65,13 @@ final class ReleaseService implements EntityServiceInterface
                 continue;
             }
             if ($releaseRevision->getRevision() === $revision) {
-                $this->logger->notice('log.data.revision.already_in_release', \array_merge(['release' => $release->getName()], LoggingContext::read($revision)));
+                $this->logger->notice('log.data.revision.already_in_release', \array_merge(['release' => $release->getName()], LogRevisionContext::read($revision)));
 
                 return;
             }
             $releaseRevision->setRevision($revision);
             $this->releaseRepository->create($release);
-            $this->logger->notice('log.data.revision.document_already_in_release_but_updated', \array_merge(['release' => $release->getName()], LoggingContext::read($revision)));
+            $this->logger->notice('log.data.revision.document_already_in_release_but_updated', \array_merge(['release' => $release->getName()], LogRevisionContext::read($revision)));
 
             return;
         }
@@ -82,7 +82,7 @@ final class ReleaseService implements EntityServiceInterface
         $releaseRevision->setRevision($revision);
         $release->addRevision($releaseRevision);
         $this->releaseRepository->create($release);
-        $this->logger->notice('log.data.revision.added_to_release', \array_merge(['release' => $release->getName()], LoggingContext::read($revision)));
+        $this->logger->notice('log.data.revision.added_to_release', \array_merge(['release' => $release->getName()], LogRevisionContext::read($revision)));
     }
 
     /**

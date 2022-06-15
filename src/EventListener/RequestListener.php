@@ -4,7 +4,7 @@ namespace EMS\CoreBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle\Core\Log\LoggingContext;
+use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
@@ -75,7 +75,7 @@ class RequestListener
 
         try {
             if ($exception instanceof LockedException || $exception instanceof PrivilegeException) {
-                $this->logger->error(($exception instanceof LockedException ? 'log.locked_exception_error' : 'log.privilege_exception_error'), \array_merge(['username' => $exception->getRevision()->getLockBy()], LoggingContext::read($exception->getRevision())));
+                $this->logger->error(($exception instanceof LockedException ? 'log.locked_exception_error' : 'log.privilege_exception_error'), \array_merge(['username' => $exception->getRevision()->getLockBy()], LogRevisionContext::read($exception->getRevision())));
                 if (null == $exception->getRevision()->getOuuid()) {
                     $response = new RedirectResponse($this->router->generate('data.draft_in_progress', [
                             'contentTypeId' => $exception->getRevision()->giveContentType()->getId(),

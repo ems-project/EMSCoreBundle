@@ -8,7 +8,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 
-final class LoggingContext
+final class LogRevisionContext
 {
     /**
      * @return array<string, int|string|null>

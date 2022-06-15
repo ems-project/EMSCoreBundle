@@ -6,7 +6,7 @@ namespace EMS\CoreBundle\Controller\Revision;
 
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Storage\NotFoundException;
-use EMS\CoreBundle\Core\Log\LoggingContext;
+use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Core\Revision\DraftInProgress;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
@@ -65,13 +65,13 @@ class EditController extends AbstractController
             throw new AccessDeniedException($request->getPathInfo());
         }
         if (!$revision->getDraft()) {
-            throw new ElasticmsException($this->translator->trans('log.data.revision.only_draft_can_be_json_edited', LoggingContext::read($revision), EMSCoreBundle::TRANS_DOMAIN));
+            throw new ElasticmsException($this->translator->trans('log.data.revision.only_draft_can_be_json_edited', LogRevisionContext::read($revision), EMSCoreBundle::TRANS_DOMAIN));
         }
 
         $this->dataService->lockRevision($revision);
         if ($request->isMethod('GET') && null != $revision->getAutoSave()) {
             $data = $revision->getAutoSave();
-            $this->logger->notice('log.data.revision.load_from_auto_save', LoggingContext::read($revision));
+            $this->logger->notice('log.data.revision.load_from_auto_save', LogRevisionContext::read($revision));
         } else {
             $data = $revision->getRawData();
         }
@@ -111,12 +111,12 @@ class EditController extends AbstractController
         }
 
         if ($revision->getEndTime() && !$this->isGranted(Roles::ROLE_SUPER)) {
-            throw new ElasticmsException($this->translator->trans('log.data.revision.only_super_can_finalize_an_archive', LoggingContext::read($revision), EMSCoreBundle::TRANS_DOMAIN));
+            throw new ElasticmsException($this->translator->trans('log.data.revision.only_super_can_finalize_an_archive', LogRevisionContext::read($revision), EMSCoreBundle::TRANS_DOMAIN));
         }
 
         if ($request->isMethod('GET') && null != $revision->getAutoSave()) {
             $revision->setRawData($revision->getAutoSave());
-            $this->logger->notice('log.data.revision.load_from_auto_save', LoggingContext::read($revision));
+            $this->logger->notice('log.data.revision.load_from_auto_save', LogRevisionContext::read($revision));
         }
 
         $form = $this->createForm(RevisionType::class, $revision, [
@@ -140,7 +140,7 @@ class EditController extends AbstractController
         if ($form->isSubmitted()) {//Save, Finalize or Discard
             $allFieldsAreThere = $requestRevision['allFieldsAreThere'] ?? false;
             if (empty($requestRevision) || !$allFieldsAreThere) {
-                $this->logger->error('log.data.revision.not_completed_request', LoggingContext::read($revision));
+                $this->logger->error('log.data.revision.not_completed_request', LogRevisionContext::read($revision));
 
                 return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
                     'ouuid' => $revision->getOuuid(),
@@ -159,14 +159,14 @@ class EditController extends AbstractController
                 $this->logger->debug('Revision extracted from the form');
 
                 if (isset($requestRevision['paste'])) {
-                    $this->logger->notice('log.data.revision.paste', LoggingContext::update($revision));
+                    $this->logger->notice('log.data.revision.paste', LogRevisionContext::update($revision));
                     $objectArray = \array_merge($objectArray, $request->getSession()->get('ems_clipboard', []));
                     $this->logger->debug('Paste data have been merged');
                 }
 
                 if (isset($requestRevision['copy'])) {
                     $request->getSession()->set('ems_clipboard', $objectArray);
-                    $this->logger->notice('log.data.document.copy', LoggingContext::update($revision));
+                    $this->logger->notice('log.data.document.copy', LogRevisionContext::update($revision));
                 }
 
                 $user = $this->getUser();
@@ -231,21 +231,21 @@ class EditController extends AbstractController
             $objectArray = $revision->getRawData();
             $isValid = $this->dataService->isValid($form, null, $objectArray);
             if (!$isValid) {
-                $this->logger->warning('log.data.revision.can_finalized', LoggingContext::update($revision));
+                $this->logger->warning('log.data.revision.can_finalized', LogRevisionContext::update($revision));
             }
         }
 
         if ($contentType->isAutoPublish()) {
-            $this->logger->warning('log.data.revision.auto_save_off_with_auto_publish', LoggingContext::update($revision));
+            $this->logger->warning('log.data.revision.auto_save_off_with_auto_publish', LogRevisionContext::update($revision));
         }
 
         $objectArray = $revision->getRawData();
         $this->dataService->propagateDataToComputedField($form->get('data'), $objectArray, $contentType, $contentType->getName(), $revision->getOuuid(), false, false);
 
         if ($revision->getOuuid()) {
-            $this->logger->info('log.data.revision.start_edit', LoggingContext::read($revision));
+            $this->logger->info('log.data.revision.start_edit', LogRevisionContext::read($revision));
         } else {
-            $this->logger->info('log.data.revision.start_edit_new_document', LoggingContext::read($revision));
+            $this->logger->info('log.data.revision.start_edit_new_document', LogRevisionContext::read($revision));
         }
 
         if (!$revision->getDraft()) {

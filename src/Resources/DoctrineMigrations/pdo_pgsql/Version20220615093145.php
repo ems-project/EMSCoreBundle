@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Application\Migrations;
 
@@ -7,9 +9,9 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20220615093145 extends AbstractMigration
 {
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('ALTER TABLE log_message ADD ouuid UUID DEFAULT NULL');
         $this->addSql('ALTER TABLE log_message ALTER context TYPE JSON USING context::json');
@@ -21,9 +23,9 @@ final class Version20220615093145 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN log_message.extra IS NULL');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('ALTER TABLE log_message DROP ouuid');
         $this->addSql('ALTER TABLE log_message ALTER context TYPE TEXT USING context::text');

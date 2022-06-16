@@ -38,6 +38,17 @@
             <argument type="service" id="logger" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Revision\DetailController" public="true">
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository" />
+            <argument type="service" id="EMS\CoreBundle\Repository\EnvironmentRepository" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="ems.service.search" />
+            <argument type="service" id="logger" />
+            <tag name="controller.service_arguments"/>
+        </service>
         <service id="EMS\CoreBundle\Controller\Revision\EditController" public="true">
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems_core.core_revision.draft_in_progress" />

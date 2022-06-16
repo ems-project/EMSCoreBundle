@@ -6,9 +6,11 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CommonBundle\Entity\Log;
+use EMS\CoreBundle\Core\Log\LogEntityTableContext;
 
 class LogRepository extends ServiceEntityRepository
 {
@@ -17,11 +19,11 @@ class LogRepository extends ServiceEntityRepository
         parent::__construct($registry, Log::class);
     }
 
-    public function counter(string $searchValue = ''): int
+    public function counter(LogEntityTableContext $context): int
     {
         $qb = $this->createQueryBuilder('log');
         $qb->select('count(log.id)');
-        $this->addSearchFilters($qb, $searchValue);
+        $this->addSearchFilters($qb, $context);
 
         try {
             return \intval($qb->getQuery()->getSingleScalarResult());
@@ -69,32 +71,42 @@ class LogRepository extends ServiceEntityRepository
     /**
      * @return Log[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    public function get(LogEntityTableContext $context): array
     {
         $qb = $this->createQueryBuilder('log')
-            ->setFirstResult($from)
-            ->setMaxResults($size);
-        $this->addSearchFilters($qb, $searchValue);
+            ->setFirstResult($context->from)
+            ->setMaxResults($context->size);
+        $this->addSearchFilters($qb, $context);
 
-        if (\in_array($orderField, ['created', 'message', 'level', 'level_name', 'channel', 'formatted', 'username'])) {
-            $qb->orderBy(\sprintf('log.%s', $orderField), $orderDirection);
-        } else {
-            $qb->orderBy('log.orderKey', $orderDirection);
+        if (\in_array($context->orderField, ['created', 'message', 'level', 'level_name', 'channel', 'formatted', 'username'])) {
+            $qb->orderBy(\sprintf('log.%s', $context->orderField), $context->orderDirection);
         }
 
         return $qb->getQuery()->execute();
     }
 
-    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    private function addSearchFilters(QueryBuilder $qb, LogEntityTableContext $context): void
     {
-        if (\strlen($searchValue) > 0) {
-            $or = $qb->expr()->orX(
-                $qb->expr()->like('log.message', ':term'),
-                $qb->expr()->like('log.level_name', ':term'),
-                $qb->expr()->like('log.username', ':term')
-            );
-            $qb->andWhere($or)
-                ->setParameter(':term', '%'.$searchValue.'%');
+        if (\strlen($context->searchValue) > 0) {
+            $qb
+                ->andWhere($qb->expr()->orX(
+                    $qb->expr()->like('log.message', ':term'),
+                    $qb->expr()->like('log.level_name', ':term'),
+                    $qb->expr()->like('log.username', ':term')
+                ))
+                ->setParameter(':term', '%'.$context->searchValue.'%');
+        }
+
+        if (null !== $revision = $context->revision) {
+            $qb
+                ->andWhere($qb->expr()->eq('log.ouuid', ':ouuid'))
+                ->setParameter('ouuid', $revision->giveOuuid());
+        }
+
+        if (\count($context->channels) > 0) {
+            $qb
+                ->andWhere($qb->expr()->in('log.channel', ':channels'))
+                ->setParameter('channels', $context->channels, Types::SIMPLE_ARRAY);
         }
     }
 }

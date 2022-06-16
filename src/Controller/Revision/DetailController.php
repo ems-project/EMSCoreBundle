@@ -4,21 +4,31 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Revision;
 
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\Log\LogEntityTableContext;
+use EMS\CoreBundle\Core\Log\LogManager;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
+use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Form\Form\RevisionType;
+use EMS\CoreBundle\Form\Form\TableType;
+use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -32,6 +42,7 @@ class DetailController extends AbstractController
     private RevisionRepository $revisionRepository;
     private ElasticaService $elasticaService;
     private SearchService $searchService;
+    private LogManager $logManager;
     private LoggerInterface $logger;
 
     public function __construct(
@@ -42,6 +53,7 @@ class DetailController extends AbstractController
         RevisionRepository $revisionRepository,
         ElasticaService $elasticaService,
         SearchService $searchService,
+        LogManager $logManager,
         LoggerInterface $logger
     ) {
         $this->contentTypeService = $contentTypeService;
@@ -51,6 +63,7 @@ class DetailController extends AbstractController
         $this->revisionRepository = $revisionRepository;
         $this->elasticaService = $elasticaService;
         $this->searchService = $searchService;
+        $this->logManager = $logManager;
         $this->logger = $logger;
     }
 
@@ -67,18 +80,11 @@ class DetailController extends AbstractController
             ]);
         }
 
-        if (0 === $revisionId) {
-            $revision = $this->revisionRepository->findOneBy([
-                'endTime' => null,
-                'ouuid' => $ouuid,
-                'deleted' => false,
-                'contentType' => $contentType,
-            ]);
-        } else {
-            $revision = $this->revisionRepository->findOneById($revisionId);
+        if (null === $revision = $this->revisionService->findByIdOrOuuid($contentType, $revisionId, $ouuid)) {
+            throw new NotFoundHttpException('Revision not found');
         }
 
-        if (!$revision instanceof Revision && $contentType->hasVersionTags()) {
+        if ($contentType->hasVersionTags()) {
             //using version ouuid as ouuid should redirect to latest
             $searchLatestVersion = $this->revisionRepository->findLatestVersion($contentType, $ouuid);
             if ($searchLatestVersion && $searchLatestVersion->getOuuid() !== $ouuid) {
@@ -89,15 +95,7 @@ class DetailController extends AbstractController
             }
         }
 
-        if (!$revision instanceof Revision) {
-            throw new \RuntimeException('Unexpected revision object');
-        }
-
         $compareData = (0 !== $compareId ? $this->revisionService->compare($revision, $compareId) : null);
-
-        if ($revision->getOuuid() != $ouuid || $revision->getContentType() !== $contentType || $revision->getDeleted()) {
-            throw new NotFoundHttpException('Revision not found');
-        }
 
         $this->dataService->testIntegrityInIndexes($revision);
 
@@ -165,6 +163,11 @@ class DetailController extends AbstractController
             $latestVersion = $this->revisionRepository->findLatestVersion($contentType, $versionOuuid->toString());
         }
 
+        $table = $this->initAuditTable($revision);
+
+        $auditTableForm = $this->createForm(TableType::class, $table);
+        $auditTableForm->handleRequest($request);
+
         return $this->render('@EMSCore/data/revisions-data.html.twig', [
             'revision' => $revision,
             'revisionsSummary' => $revisionsSummary,
@@ -180,6 +183,46 @@ class DetailController extends AbstractController
             'compareData' => $compareData,
             'compareId' => $compareId,
             'referrersForm' => $searchForm,
+            'auditTable' => $auditTableForm->createView(),
+            'auditCount' => $table->count(),
         ]);
+    }
+
+    public function ajaxAuditDataTable(Request $request, string $type, string $ouuid): Response
+    {
+        if (null === $revision = $this->revisionService->getByEmsLink(EMSLink::fromContentTypeOuuid($type, $ouuid))) {
+            throw new NotFoundHttpException('Revision not found');
+        }
+
+        $table = $this->initAuditTable($revision);
+        $dataTableRequest = DataTableRequest::fromRequest($request);
+        $table->resetIterator($dataTableRequest);
+
+        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+            'dataTableRequest' => $dataTableRequest,
+            'table' => $table,
+        ], new JsonResponse());
+    }
+
+    private function initAuditTable(Revision $revision): EntityTable
+    {
+        $ajaxUrl = $this->generateUrl(Routes::VIEW_REVISIONS_AUDIT, [
+            'type' => $revision->giveContentType()->getName(),
+            'ouuid' => $revision->giveOuuid(),
+            '_format' => 'json'
+        ]);
+
+        $context = new LogEntityTableContext();
+        $context->revision = $revision;
+        $context->channels = ['audit'];
+
+        $table = new EntityTable($this->logManager, $ajaxUrl, $context);
+        $table->addColumnDefinition(new DatetimeTableColumn('log.index.column.created', 'created'));
+        $table->addColumn('log.index.column.level_name', 'levelName');
+        $table->addColumn('log.index.column.message', 'message');
+        $table->addColumnDefinition(new UserTableColumn('log.index.column.username', 'username'));
+        $table->setDefaultOrder('created', 'desc');
+
+        return $table;
     }
 }

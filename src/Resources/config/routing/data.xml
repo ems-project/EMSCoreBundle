@@ -28,6 +28,9 @@
         <default key="revisionId">0</default>
         <default key="compareId">0</default>
     </route>
+    <route id="emsco_view_revisions_table_audit" path="/revisions/{type}:{ouuid}/audit.json" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\Revision\DetailController::ajaxAuditDataTable</default>
+    </route>
     <route id="emsco_duplicate_revision" path="/duplicate/{environment}/{type}/{ouuid}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:duplicateAction</default>
     </route>

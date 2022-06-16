@@ -46,6 +46,7 @@
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
             <argument type="service" id="ems_common.service.elastica" />
             <argument type="service" id="ems.service.search" />
+            <argument type="service" id="ems.log.manager"/>
             <argument type="service" id="logger" />
             <tag name="controller.service_arguments"/>
         </service>

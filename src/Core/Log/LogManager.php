@@ -52,11 +52,17 @@ class LogManager implements EntityServiceInterface
 
     public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
-        if (null !== $context) {
+        if (!$context instanceof LogEntityTableContext) {
             throw new \RuntimeException('Unexpected context');
         }
 
-        return $this->logRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
+        $context->from = $from;
+        $context->size = $size;
+        $context->orderField = $orderField;
+        $context->orderDirection = $orderDirection;
+        $context->searchValue = $searchValue;
+
+        return $this->logRepository->get($context);
     }
 
     public function getEntityName(): string
@@ -74,11 +80,13 @@ class LogManager implements EntityServiceInterface
 
     public function count(string $searchValue = '', $context = null): int
     {
-        if (null !== $context) {
-            throw new \RuntimeException('Unexpected non-null object');
+        if (!$context instanceof LogEntityTableContext) {
+            throw new \RuntimeException('Unexpected context');
         }
 
-        return $this->logRepository->counter($searchValue);
+        $context->searchValue = $searchValue;
+
+        return $this->logRepository->counter($context);
     }
 
     public function getByItemName(string $name): ?EntityInterface

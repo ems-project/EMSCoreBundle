@@ -16,6 +16,9 @@ use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\Revision;
 use Ramsey\Uuid\UuidInterface;
 
+/**
+ * @method Revision|null findOneBy(array $criteria, array $orderBy = null)
+ */
 class RevisionRepository extends EntityRepository
 {
     public function findRevision(string $ouuid, string $contentTypeName, ?\DateTimeInterface $dateTime = null): ?Revision

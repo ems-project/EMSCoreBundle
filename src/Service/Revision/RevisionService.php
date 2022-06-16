@@ -98,6 +98,24 @@ class RevisionService implements RevisionServiceInterface
         return $revision instanceof Revision ? $revision : null;
     }
 
+    public function findByIdOrOuuid(ContentType $contentType, int $revisionId, string $ouuid): ?Revision
+    {
+        if ($revisionId > 0) {
+            return $this->revisionRepository->findOneBy([
+                'id' => $revisionId,
+                'ouuid' => $ouuid,
+                'deleted' => false,
+            ]);
+        }
+
+        return $this->revisionRepository->findOneBy([
+            'endTime' => null,
+            'ouuid' => $ouuid,
+            'deleted' => false,
+            'contentType' => $contentType,
+        ]);
+    }
+
     /**
      * @return iterable|Revision[]
      */

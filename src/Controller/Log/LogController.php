@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Log;
 
 use EMS\CommonBundle\Entity\Log;
+use EMS\CoreBundle\Core\Log\LogEntityTableContext;
 use EMS\CoreBundle\Core\Log\LogManager;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
@@ -84,7 +85,11 @@ class LogController extends AbstractController
 
     private function initTable(): EntityTable
     {
-        $table = new EntityTable($this->logManager, $this->generateUrl(Routes::LOG_INDEX, ['_format' => 'json']));
+        $table = new EntityTable(
+            $this->logManager,
+            $this->generateUrl(Routes::LOG_INDEX, ['_format' => 'json']),
+            new LogEntityTableContext()
+        );
         $table->setLabelAttribute('id');
         $table->addColumnDefinition(new DatetimeTableColumn('log.index.column.created', 'created'));
         $table->addColumn('log.index.column.channel', 'channel');

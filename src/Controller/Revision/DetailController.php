@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Revision;
 
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
-use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Revision;
@@ -54,7 +54,7 @@ class DetailController extends AbstractController
         $this->logger = $logger;
     }
 
-    public function detailRevision(string $type, string $ouuid, int $revisionId, int $compareId, Request $request): Response
+    public function detailRevision(Request $request, string $type, string $ouuid, int $revisionId, int $compareId): Response
     {
         $contentType = $this->contentTypeService->giveByName($type);
         $defaultEnvironment = $contentType->giveEnvironment();
@@ -101,7 +101,10 @@ class DetailController extends AbstractController
 
         $this->dataService->testIntegrityInIndexes($revision);
 
-        $this->loadAutoSavedVersion($revision);
+        if (null != $revision->getAutoSave()) {
+            $revision->setRawData($revision->getAutoSave());
+            $this->logger->notice('log.data.revision.load_from_auto_save', LogRevisionContext::read($revision));
+        }
 
         $page = $request->query->get('page', 1);
 
@@ -178,18 +181,5 @@ class DetailController extends AbstractController
             'compareId' => $compareId,
             'referrersForm' => $searchForm,
         ]);
-    }
-
-    private function loadAutoSavedVersion(Revision $revision): void
-    {
-        if (null != $revision->getAutoSave()) {
-            $revision->setRawData($revision->getAutoSave());
-            $this->logger->notice('log.data.revision.load_from_auto_save', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-            ]);
-        }
     }
 }

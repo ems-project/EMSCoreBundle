@@ -15,6 +15,7 @@ use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,6 +28,7 @@ class DetailController extends AbstractController
     private ContentTypeService $contentTypeService;
     private EnvironmentRepository $environmentRepository;
     private DataService $dataService;
+    private RevisionService $revisionService;
     private RevisionRepository $revisionRepository;
     private ElasticaService $elasticaService;
     private SearchService $searchService;
@@ -36,6 +38,7 @@ class DetailController extends AbstractController
         ContentTypeService $contentTypeService,
         EnvironmentRepository $environmentRepository,
         DataService $dataService,
+        RevisionService $revisionService,
         RevisionRepository $revisionRepository,
         ElasticaService $elasticaService,
         SearchService $searchService,
@@ -44,6 +47,7 @@ class DetailController extends AbstractController
         $this->contentTypeService = $contentTypeService;
         $this->environmentRepository = $environmentRepository;
         $this->dataService = $dataService;
+        $this->revisionService = $revisionService;
         $this->revisionRepository = $revisionRepository;
         $this->elasticaService = $elasticaService;
         $this->searchService = $searchService;
@@ -89,46 +93,7 @@ class DetailController extends AbstractController
             throw new \RuntimeException('Unexpected revision object');
         }
 
-        $compareData = false;
-        if (0 !== $compareId) {
-            try {
-                $compareRevision = $this->revisionRepository->findOneById($compareId);
-                $compareData = $compareRevision->getRawData();
-                if ($revision->giveContentType() === $compareRevision->giveContentType() && $revision->getOuuid() == $compareRevision->getOuuid()) {
-                    if ($compareRevision->getCreated() <= $revision->getCreated()) {
-                        $this->logger->notice('log.data.revision.compare', [
-                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                            'compare_revision_id' => $compareRevision->getId(),
-                        ]);
-                    } else {
-                        $this->logger->warning('log.data.revision.compare_more_recent', [
-                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                            'compare_revision_id' => $compareRevision->getId(),
-                        ]);
-                    }
-                } else {
-                    $this->logger->notice('log.data.document.compare', [
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        'compare_contenttype' => $compareRevision->giveContentType()->getName(),
-                        'compare_ouuid' => $compareRevision->getOuuid(),
-                        'compare_revision_id' => $compareRevision->getId(),
-                    ]);
-                }
-            } catch (\Throwable $e) {
-                $this->logger->warning('log.data.revision.compare_revision_not_found', [
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    'compare_revision_id' => $compareId,
-                ]);
-            }
-        }
+        $compareData = (0 !== $compareId ? $this->revisionService->compare($revision, $compareId) : null);
 
         if ($revision->getOuuid() != $ouuid || $revision->getContentType() !== $contentType || $revision->getDeleted()) {
             throw new NotFoundHttpException('Revision not found');

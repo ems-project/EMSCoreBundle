@@ -241,7 +241,7 @@
 			{% endif %}
 		</div>
 		<div class="box-body">
-			{% set compare = compareData?true:false %}
+			{% set compare = compareData != null ? true : false %}
 			{{ macros.renderDataField(dataFields, revision.rawData, compare, compareData) }}
 		</div>
 		<div class="box-footer">

@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Service\Revision;
 
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Contracts\Revision\RevisionServiceInterface;
 use EMS\CoreBundle\Core\Revision\Revisions;
@@ -51,6 +52,54 @@ class RevisionService implements RevisionServiceInterface
         }
 
         return true;
+    }
+
+    /**
+     * @return ?array<mixed>
+     */
+    public function compare(Revision $revision, int $compareRevisionId): ?array
+    {
+        try {
+            $compareRevision = $this->revisionRepository->findOneById($compareRevisionId);
+
+            if ($revision->giveContentType() === $compareRevision->giveContentType() && $revision->getOuuid() == $compareRevision->getOuuid()) {
+                if ($compareRevision->getCreated() <= $revision->getCreated()) {
+                    $this->logger->notice('log.data.revision.compare', [
+                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
+                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                        'compare_revision_id' => $compareRevision->getId(),
+                    ]);
+                } else {
+                    $this->logger->warning('log.data.revision.compare_more_recent', [
+                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
+                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                        'compare_revision_id' => $compareRevision->getId(),
+                    ]);
+                }
+            } else {
+                $this->logger->notice('log.data.document.compare', [
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                    'compare_contenttype' => $compareRevision->giveContentType()->getName(),
+                    'compare_ouuid' => $compareRevision->getOuuid(),
+                    'compare_revision_id' => $compareRevision->getId(),
+                ]);
+            }
+
+            return $compareRevision->getRawData();
+        } catch (\Throwable $e) {
+            $this->logger->warning('log.data.revision.compare_revision_not_found', [
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                'compare_revision_id' => $compareRevisionId,
+            ]);
+
+            return null;
+        }
     }
 
     public function find(int $revisionId): ?Revision

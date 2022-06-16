@@ -42,6 +42,7 @@
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="EMS\CoreBundle\Repository\EnvironmentRepository" />
             <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.revision" />
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
             <argument type="service" id="ems_common.service.elastica" />
             <argument type="service" id="ems.service.search" />

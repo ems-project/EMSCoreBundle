@@ -7,12 +7,10 @@ namespace EMS\CoreBundle\Controller\Revision;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\RevisionType;
-use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -27,7 +25,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class DetailController extends AbstractController
 {
     private ContentTypeService $contentTypeService;
-    private ContentTypeRepository $contentTypeRepository;
     private EnvironmentRepository $environmentRepository;
     private DataService $dataService;
     private RevisionRepository $revisionRepository;
@@ -37,7 +34,6 @@ class DetailController extends AbstractController
 
     public function __construct(
         ContentTypeService $contentTypeService,
-        ContentTypeRepository $contentTypeRepository,
         EnvironmentRepository $environmentRepository,
         DataService $dataService,
         RevisionRepository $revisionRepository,
@@ -46,7 +42,6 @@ class DetailController extends AbstractController
         LoggerInterface $logger
     ) {
         $this->contentTypeService = $contentTypeService;
-        $this->contentTypeRepository = $contentTypeRepository;
         $this->environmentRepository = $environmentRepository;
         $this->dataService = $dataService;
         $this->revisionRepository = $revisionRepository;
@@ -57,20 +52,8 @@ class DetailController extends AbstractController
 
     public function detailRevision(string $type, string $ouuid, int $revisionId, int $compareId, Request $request): Response
     {
-        $contentTypes = $this->contentTypeRepository->findBy([
-            'deleted' => false,
-            'name' => $type,
-        ]);
-        if (!$contentTypes || 1 != \count($contentTypes)) {
-            throw new NotFoundHttpException('Content Type not found');
-        }
-        /** @var ContentType $contentType */
-        $contentType = $contentTypes[0];
-
-        $defaultEnvironment = $contentType->getEnvironment();
-        if (null === $defaultEnvironment) {
-            throw new \RuntimeException('Unexpected nul environment');
-        }
+        $contentType = $this->contentTypeService->giveByName($type);
+        $defaultEnvironment = $contentType->giveEnvironment();
 
         if (!$defaultEnvironment->getManaged()) {
             return $this->redirectToRoute('data.view', [
@@ -111,7 +94,7 @@ class DetailController extends AbstractController
             try {
                 $compareRevision = $this->revisionRepository->findOneById($compareId);
                 $compareData = $compareRevision->getRawData();
-                if ($revision->getContentType() === $compareRevision->getContentType() && $revision->getOuuid() == $compareRevision->getOuuid()) {
+                if ($revision->giveContentType() === $compareRevision->giveContentType() && $revision->getOuuid() == $compareRevision->getOuuid()) {
                     if ($compareRevision->getCreated() <= $revision->getCreated()) {
                         $this->logger->notice('log.data.revision.compare', [
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),

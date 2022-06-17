@@ -18,6 +18,7 @@ use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\StorageManager;
+use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Environment;
@@ -117,6 +118,8 @@ class DataService
     protected $userService;
 
     protected LoggerInterface $logger;
+    private LoggerInterface $auditLogger;
+
     /** @var StorageManager */
     private $storageManager;
     /** @var EnvironmentService */
@@ -146,6 +149,7 @@ class DataService
         ContentTypeService $contentTypeService,
         string $privateKey,
         LoggerInterface $logger,
+        LoggerInterface $auditLogger,
         StorageManager $storageManager,
         Twig_Environment $twig,
         AppExtension $appExtension,
@@ -159,6 +163,7 @@ class DataService
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
+        $this->auditLogger = $auditLogger;
         $this->authorizationChecker = $authorizationChecker;
         $this->tokenStorage = $tokenStorage;
         $this->lockTime = $lockTime;
@@ -873,14 +878,7 @@ class DataService
             $this->unlockRevision($revision, $username);
             $this->dispatcher->dispatch(RevisionFinalizeDraftEvent::NAME, new RevisionFinalizeDraftEvent($revision));
 
-            $this->logger->notice('log.data.revision.finalized', [
-                'label' => $revision->getLabel(),
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $revision->giveContentType()->giveEnvironment()->getLabel(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-            ]);
+            $this->auditLogger->notice('log.revision.finalized', LogRevisionContext::update($revision));
 
             try {
                 $this->postFinalizeTreatment($revision->giveContentType()->getName(), $revision->getOuuid(), $form->get('data'), $previousObjectArray);
@@ -1240,6 +1238,8 @@ class DataService
             $em->persist($newDraft);
             $em->flush();
 
+            $this->auditLogger->info('log.revision.draft.created', LogRevisionContext::update($revision));
+
             $this->dispatcher->dispatch(RevisionNewDraftEvent::NAME, new RevisionNewDraftEvent($newDraft));
 
             return $newDraft;
@@ -1302,6 +1302,8 @@ class DataService
 
         $em->flush();
 
+        $this->auditLogger->info('log.revision.draft.deleted', LogRevisionContext::update($revision));
+
         return $hasPreviousRevision;
     }
 
@@ -1341,14 +1343,7 @@ class DataService
             foreach ($revision->getEnvironments() as $environment) {
                 try {
                     $this->indexService->delete($revision, $environment);
-                    $this->logger->notice('service.data.unpublished', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
-                        EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                        'label' => $revision->getLabel(),
-                    ]);
+                    $this->auditLogger->notice('log.unpublished.success', LogRevisionContext::unpublish($revision, $environment));
                 } catch (NotFoundException $e) {
                     if (!$revision->getDeleted()) {
                         $this->logger->warning('service.data.already_unpublished', [
@@ -1366,13 +1361,13 @@ class DataService
             }
             $revision->setDeleted(true);
             $revision->setDeletedBy($this->tokenStorage->getToken()->getUsername());
+
+            if (null === $revision->getEndTime()) {
+                $this->auditLogger->notice('log.revision.deleted', LogRevisionContext::delete($revision));
+            }
+
             $em->persist($revision);
         }
-        $this->logger->notice('service.data.deleted', [
-            EmsFields::LOG_CONTENTTYPE_FIELD => $type,
-            EmsFields::LOG_OUUID_FIELD => $ouuid,
-            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
-        ]);
         $em->flush();
     }
 
@@ -1439,6 +1434,7 @@ class DataService
             if (null === $revision->getEndTime()) {
                 $revision->setDraft(true);
                 $out = $revision->getId();
+                $this->auditLogger->notice('log.revision.restored', LogRevisionContext::update($revision));
             }
             $em->persist($revision);
         }

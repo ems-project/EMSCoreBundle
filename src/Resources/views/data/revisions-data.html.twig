@@ -261,19 +261,28 @@
 
 {% block revisionFooterTabs %}
 	<div class="nav-tabs-custom">
-			<ul class="nav nav-tabs">
-				<li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true">{{ 'views.data.revisions-data-html.linked-documents-in'|trans({'%environment%': revision.contentType.environment.label, '%length%': referrerResponse.documents|length, '%total%': referrerResponse.formattedTotal }) }}</a></li>
-				<li class=""><a href="#tab_revisions" data-toggle="tab" aria-expanded="false">Revisions <small>{{ revisionsSummary|length }}/{{ counter }}</small></a></li>
-			</ul>
-			<div class="tab-content">
-				<div class="tab-pane active" id="tab_referrers">
-					{{ block('tabReferrers') }}
-				</div>
-				<div class="tab-pane" id="tab_revisions">
-					{{ block('tabRevisions') }}
-				</div>
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true">{{ 'views.data.revisions-data-html.linked-documents-in'|trans({'%environment%': revision.contentType.environment.label, '%length%': referrerResponse.documents|length, '%total%': referrerResponse.formattedTotal }) }}</a></li>
+			<li class=""><a href="#tab_revisions" data-toggle="tab" aria-expanded="false">Revisions <small>{{ revisionsSummary|length }}/{{ counter }}</small></a></li>
+			{% if auditTable|default(false) %}
+				<li class=""><a href="#tab_audit" data-toggle="tab" aria-expanded="false">Audit <small>({{ auditCount }})</small></a></li>
+			{% endif %}
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" id="tab_referrers">
+				{{ block('tabReferrers') }}
 			</div>
+			<div class="tab-pane" id="tab_revisions">
+				{{ block('tabRevisions') }}
+			</div>
+			{% if auditTable|default(false) %}
+				<div class="tab-pane" id="tab_audit">
+					{% form_theme auditTable '@EMSCore/form/forms.html.twig' %}
+					{{ form(auditTable) }}
+				</div>
+			{% endif %}
 		</div>
+	</div>
 {% endblock %}
 
 {% block tabReferrers %}

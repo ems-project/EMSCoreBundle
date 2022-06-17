@@ -1001,12 +1001,6 @@ class DataController extends AbstractController
         }
 
         $revertedRevision = $this->dataService->initNewDraft($type, $ouuid, $revision);
-        $this->logger->notice('log.data.revision.new_draft_from_revision', [
-            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-        ]);
 
         return $this->redirectToRoute(Routes::EDIT_REVISION, [
             'revisionId' => $revertedRevision->getId(),

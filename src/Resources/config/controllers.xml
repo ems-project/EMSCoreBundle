@@ -54,6 +54,7 @@
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems_core.core_revision.draft_in_progress" />
             <argument type="service" id="logger" />
+            <argument type="service" id="emsco.logger.audit" />
             <argument type="service" id="ems.service.publish" />
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="translator" />

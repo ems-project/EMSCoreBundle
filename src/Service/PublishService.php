@@ -225,7 +225,7 @@ class PublishService
             $this->revRepository->addEnvironment($revision, $environment);
 
             if (!$command) {
-                $this->auditLogger->notice('log.publication.success', \array_merge([
+                $this->auditLogger->notice('log.publish.success', \array_merge([
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
                 ], $logContext));
             }
@@ -306,16 +306,13 @@ class PublishService
 
         try {
             $this->indexService->delete($revision, $environment);
-            $this->logger->notice('service.publish.unpublished', LogRevisionContext::publish($revision, $environment));
+            $this->auditLogger->notice('log.unpublish.success', LogRevisionContext::unpublish($revision, $environment));
 
             $this->dispatcher->dispatch(RevisionUnpublishEvent::NAME, new RevisionUnpublishEvent($revision, $environment));
         } catch (\Throwable $e) {
             if (!$revision->getDeleted()) {
                 $this->logger->warning('service.publish.already_unpublished', LogRevisionContext::publish($revision, $environment));
             }
-        }
-        if (!$command) {
-            $this->logger->info('log.data.revision.unpublish', LogRevisionContext::delete($revision));
         }
     }
 

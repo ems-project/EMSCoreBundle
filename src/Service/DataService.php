@@ -18,6 +18,7 @@ use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\StorageManager;
+use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Environment;
@@ -117,6 +118,8 @@ class DataService
     protected $userService;
 
     protected LoggerInterface $logger;
+    private LoggerInterface $auditLogger;
+
     /** @var StorageManager */
     private $storageManager;
     /** @var EnvironmentService */
@@ -146,6 +149,7 @@ class DataService
         ContentTypeService $contentTypeService,
         string $privateKey,
         LoggerInterface $logger,
+        LoggerInterface $auditLogger,
         StorageManager $storageManager,
         Twig_Environment $twig,
         AppExtension $appExtension,
@@ -159,6 +163,7 @@ class DataService
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
+        $this->auditLogger = $auditLogger;
         $this->authorizationChecker = $authorizationChecker;
         $this->tokenStorage = $tokenStorage;
         $this->lockTime = $lockTime;
@@ -1341,14 +1346,7 @@ class DataService
             foreach ($revision->getEnvironments() as $environment) {
                 try {
                     $this->indexService->delete($revision, $environment);
-                    $this->logger->notice('service.data.unpublished', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
-                        EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                        'label' => $revision->getLabel(),
-                    ]);
+                    $this->auditLogger->notice('log.unpublish.success', LogRevisionContext::unpublish($revision, $environment));
                 } catch (NotFoundException $e) {
                     if (!$revision->getDeleted()) {
                         $this->logger->warning('service.data.already_unpublished', [

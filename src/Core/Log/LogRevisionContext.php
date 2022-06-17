@@ -57,6 +57,18 @@ final class LogRevisionContext
     /**
      * @return array<string, int|string|null>
      */
+    public static function unpublish(Revision $revision, Environment $environment): array
+    {
+        $context = self::context($revision);
+        $context[EmsFields::LOG_OPERATION_FIELD] = EmsFields::LOG_OPERATION_DELETE;
+        $context[EmsFields::LOG_ENVIRONMENT_FIELD] = $environment->getName();
+
+        return $context;
+    }
+
+    /**
+     * @return array<string, int|string|null>
+     */
     private static function context(Revision $revision): array
     {
         $context = [

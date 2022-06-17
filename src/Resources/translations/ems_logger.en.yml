@@ -1,6 +1,8 @@
 log:
-  publication:
+  publish:
     success: 'The document "%label%" has been published in %environment%'
+  unpublish:
+    success: 'The document "%label%" has been unpublished from %environment%'
 
 service.contenttype.mappings_error: 'Mappings update for %contenttype% in %environments% failed : %elasticsearch_dump%'
 service.contenttype.mappings_updated: 'Mappings successfully updated for content type %contenttype% in %environments%'
@@ -27,7 +29,6 @@ service.data.post_finalize_failed: 'Error while finalize the post processing of 
 service.data.revision_not_signed: 'Revision not signed in %environment% for document "%label%"'
 service.data.template_parse_error: 'Error to parse the computed field %computed_field_name%: %error_message%'
 service.data.unknown_update_type: 'The document "%label%" has not been replaced or replaced as the update type "%update_type%" is unknown'
-service.data.unpublished: 'The document "%label%" has been unpublished from %environment%'
 service.data.update_referrers_error: 'It was impossible to update document''s referrers'
 service.data.unlock_revisions_error: 'Unexpected unlock exception'
 api.admin.entities.create: 'An %entity% has been created with id %id%'

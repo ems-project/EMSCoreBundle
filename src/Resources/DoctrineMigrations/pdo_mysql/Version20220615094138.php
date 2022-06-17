@@ -13,7 +13,7 @@ final class Version20220615094138 extends AbstractMigration
     {
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE log_message ADD ouuid CHAR(36) DEFAULT NULL COMMENT \'(DC2Type:uuid)\', CHANGE context context LONGTEXT NOT NULL COMMENT \'(DC2Type:json)\', CHANGE extra extra LONGTEXT NOT NULL COMMENT \'(DC2Type:json)\'');
+        $this->addSql('ALTER TABLE log_message ADD ouuid VARCHAR(100) DEFAULT NULL, CHANGE context context LONGTEXT NOT NULL COMMENT \'(DC2Type:json)\', CHANGE extra extra LONGTEXT NOT NULL COMMENT \'(DC2Type:json)\'');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8E7008E82D7B983B ON log_message (ouuid)');
     }
 

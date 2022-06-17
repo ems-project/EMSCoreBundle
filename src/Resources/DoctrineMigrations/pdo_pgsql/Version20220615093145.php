@@ -13,12 +13,11 @@ final class Version20220615093145 extends AbstractMigration
     {
         $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('ALTER TABLE log_message ADD ouuid UUID DEFAULT NULL');
+        $this->addSql('ALTER TABLE log_message ADD ouuid VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE log_message ALTER context TYPE JSON USING context::json');
         $this->addSql('ALTER TABLE log_message ALTER context DROP DEFAULT');
         $this->addSql('ALTER TABLE log_message ALTER extra TYPE JSON USING extra::json');
         $this->addSql('ALTER TABLE log_message ALTER extra DROP DEFAULT');
-        $this->addSql('COMMENT ON COLUMN log_message.ouuid IS \'(DC2Type:uuid)\'');
         $this->addSql('COMMENT ON COLUMN log_message.context IS NULL');
         $this->addSql('COMMENT ON COLUMN log_message.extra IS NULL');
     }

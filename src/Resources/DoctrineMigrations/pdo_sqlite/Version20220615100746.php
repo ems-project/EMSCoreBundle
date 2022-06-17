@@ -21,7 +21,7 @@ final class Version20220615100746 extends AbstractMigration
         $this->addSql('CREATE TABLE log_message (id CHAR(36) NOT NULL COLLATE BINARY --(DC2Type:uuid)
         , created DATETIME NOT NULL, modified DATETIME NOT NULL, message CLOB NOT NULL COLLATE BINARY, level SMALLINT NOT NULL, level_name VARCHAR(50) NOT NULL COLLATE BINARY, channel VARCHAR(255) NOT NULL COLLATE BINARY, formatted CLOB NOT NULL COLLATE BINARY, username VARCHAR(255) DEFAULT NULL COLLATE BINARY, impersonator VARCHAR(255) DEFAULT NULL COLLATE BINARY, context CLOB NOT NULL --(DC2Type:json)
         , extra CLOB NOT NULL --(DC2Type:json)
-        , ouuid CHAR(36) DEFAULT NULL --(DC2Type:uuid)
+        , ouuid VARCHAR(255) DEFAULT NULL
         , PRIMARY KEY(id))');
         $this->addSql('INSERT INTO log_message (id, created, modified, message, context, level, level_name, channel, extra, formatted, username, impersonator) SELECT id, created, modified, message, context, level, level_name, channel, extra, formatted, username, impersonator FROM __temp__log_message');
         $this->addSql('DROP TABLE __temp__log_message');

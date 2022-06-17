@@ -210,7 +210,7 @@ class DetailController extends AbstractController
         $ajaxUrl = $this->generateUrl(Routes::VIEW_REVISIONS_AUDIT, [
             'type' => $revision->giveContentType()->getName(),
             'ouuid' => $revision->giveOuuid(),
-            '_format' => 'json'
+            '_format' => 'json',
         ]);
 
         $context = new LogEntityTableContext();

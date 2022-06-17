@@ -22,6 +22,7 @@ use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -164,10 +165,10 @@ class DetailController extends AbstractController
             $latestVersion = $this->revisionRepository->findLatestVersion($contentType, $versionOuuid->toString());
         }
 
-        $table = $this->initAuditTable($revision);
-
-        $auditTableForm = $this->createForm(TableType::class, $table);
-        $auditTableForm->handleRequest($request);
+        if ($auditTable = $this->initAuditTable($revision)) {
+            $auditTableForm = $this->createForm(TableType::class, $auditTable);
+            $auditTableForm->handleRequest($request);
+        }
 
         return $this->render('@EMSCore/data/revisions-data.html.twig', [
             'revision' => $revision,
@@ -184,8 +185,8 @@ class DetailController extends AbstractController
             'compareData' => $compareData,
             'compareId' => $compareId,
             'referrersForm' => $searchForm,
-            'auditTable' => $auditTableForm->createView(),
-            'auditCount' => $table->count(),
+            'auditCount' => $auditTable ? $auditTable->count() : false,
+            'auditTable' => isset($auditTableForm) ? $auditTableForm->createView() : null,
         ]);
     }
 
@@ -195,7 +196,10 @@ class DetailController extends AbstractController
             throw new NotFoundHttpException('Revision not found');
         }
 
-        $table = $this->initAuditTable($revision);
+        if (null === $table = $this->initAuditTable($revision)) {
+            throw new NotFoundHttpException('Audit table not granted');
+        }
+
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
@@ -205,8 +209,12 @@ class DetailController extends AbstractController
         ], new JsonResponse());
     }
 
-    private function initAuditTable(Revision $revision): EntityTable
+    private function initAuditTable(Revision $revision): ?EntityTable
     {
+        if (!$this->isGranted(Roles::ROLE_AUDITOR) && !$this->isGranted(Roles::ROLE_ADMIN)) {
+            return null;
+        }
+
         $ajaxUrl = $this->generateUrl(Routes::VIEW_REVISIONS_AUDIT, [
             'type' => $revision->giveContentType()->getName(),
             'ouuid' => $revision->giveOuuid(),

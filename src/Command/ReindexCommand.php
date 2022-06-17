@@ -66,7 +66,6 @@ class ReindexCommand extends EmsCommand
 
     protected function configure(): void
     {
-        $this->logger->info('Configure the ReindexCommand');
         $this
             ->setName('ems:environment:reindex')
             ->setDescription('Reindex an environment in it\'s existing index')

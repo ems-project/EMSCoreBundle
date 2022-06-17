@@ -15,6 +15,7 @@ use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\TableColumn;
 use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Form\Form\TableType;
@@ -217,10 +218,17 @@ class DetailController extends AbstractController
         $context->channels = ['audit'];
 
         $table = new EntityTable($this->logManager, $ajaxUrl, $context);
-        $table->addColumnDefinition(new DatetimeTableColumn('log.index.column.created', 'created'));
-        $table->addColumn('log.index.column.level_name', 'levelName');
-        $table->addColumn('log.index.column.message', 'message');
-        $table->addColumnDefinition(new UserTableColumn('log.index.column.username', 'username'));
+        $table
+            ->addColumnDefinition(new DatetimeTableColumn('log.index.column.created', 'created'))
+            ->setCellClass('col-sm');
+        $table
+            ->addColumnDefinition(new TableColumn('log.index.column.level_name', 'levelName'))
+            ->setCellClass('text-center col-xs');
+        $table
+            ->addColumnDefinition(new TableColumn('log.index.column.message', 'message'));
+        $table
+            ->addColumnDefinition(new UserTableColumn('log.index.column.username', 'username'))
+            ->setCellClass('col-sm');
         $table->setDefaultOrder('created', 'desc');
 
         return $table;

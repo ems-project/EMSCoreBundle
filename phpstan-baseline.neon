@@ -1,16 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Cannot call method getId\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false\\.$#"
-			count: 5
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:findOneById\\(\\) expects int, string given\\.$#"
-			count: 4
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/FileController.php

@@ -39,7 +39,7 @@ class ProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->userManager->update($user);
-            $this->logger->notice('log.user.profile_updated');
+            $this->logger->notice('log.user.profile.updated');
 
             return $this->redirectToRoute(Routes::USER_PROFILE);
         }
@@ -58,7 +58,7 @@ class ProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->userManager->update($user);
-            $this->logger->notice('log.user.password_updated');
+            $this->logger->notice('log.user.profile.changed_password');
 
             return $this->redirectToRoute(Routes::USER_PROFILE);
         }

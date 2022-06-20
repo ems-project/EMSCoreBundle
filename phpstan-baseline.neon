@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Form\\\\FormError\\|Symfony\\\\Component\\\\Form\\\\FormErrorIterator\\:\\:getMessage\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ActionController.php
-
-		-
 			message: "#^Cannot call method getManaged\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 6
 			path: src/Controller/ContentManagement/CrudController.php

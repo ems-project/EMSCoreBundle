@@ -20,6 +20,7 @@ use EMS\CoreBundle\Service\ActionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -200,9 +201,9 @@ final class ActionController extends AbstractController
 
         if ('json' === $_format) {
             foreach ($form->getErrors() as $error) {
-                $this->logger->error('log.error', [
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $error->getMessage(),
-                ]);
+                if ($error instanceof FormError) {
+                    $this->logger->error('log.error', [EmsFields::LOG_ERROR_MESSAGE_FIELD => $error->getMessage()]);
+                }
             }
 
             return $this->render('@EMSCore/ajax/notification.json.twig', [

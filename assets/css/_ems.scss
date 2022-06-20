@@ -20,6 +20,13 @@ div.table-responsive {
 	padding-bottom: 20px;
 }
 
+table td {
+  &.col-xs { width: 10%; }
+  &.col-sm { width: 15%; }
+  &.col-md { width: 25%; }
+  &.col-lg { width: 35%; }
+}
+
 .nowrap  {
 	white-space: nowrap;
 }

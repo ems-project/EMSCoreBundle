@@ -6,8 +6,10 @@ namespace EMS\CoreBundle\Service\Revision;
 
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Contracts\Revision\RevisionServiceInterface;
+use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -23,17 +25,20 @@ class RevisionService implements RevisionServiceInterface
 {
     private DataService $dataService;
     private LoggerInterface $logger;
+    private LoggerInterface $auditLogger;
     private RevisionRepository $revisionRepository;
     private PublishService $publishService;
 
     public function __construct(
         DataService $dataService,
         LoggerInterface $logger,
+        LoggerInterface $auditLogger,
         RevisionRepository $revisionRepository,
         PublishService $publishService
     ) {
         $this->dataService = $dataService;
         $this->logger = $logger;
+        $this->auditLogger = $auditLogger;
         $this->revisionRepository = $revisionRepository;
         $this->publishService = $publishService;
     }
@@ -53,11 +58,66 @@ class RevisionService implements RevisionServiceInterface
         return true;
     }
 
+    /**
+     * @return ?array<mixed>
+     */
+    public function compare(Revision $revision, int $compareRevisionId): ?array
+    {
+        $logContext = [
+            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
+            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+            'compare_revision_id' => $compareRevisionId,
+        ];
+
+        try {
+            $compareRevision = $this->revisionRepository->findOneById($compareRevisionId);
+        } catch (\Throwable $e) {
+            $this->logger->warning('log.data.revision.compare_revision_not_found', $logContext);
+
+            return null;
+        }
+
+        if ($revision->giveContentType() === $compareRevision->giveContentType()
+            && $revision->getOuuid() == $compareRevision->getOuuid()) {
+            if ($compareRevision->getCreated() <= $revision->getCreated()) {
+                $this->logger->notice('log.data.revision.compare', $logContext);
+            } else {
+                $this->logger->warning('log.data.revision.compare_more_recent', $logContext);
+            }
+        } else {
+            $this->logger->notice('log.data.document.compare', \array_merge($logContext, [
+                'compare_contenttype' => $compareRevision->giveContentType()->getName(),
+                'compare_ouuid' => $compareRevision->getOuuid(),
+            ]));
+        }
+
+        return $compareRevision->getRawData();
+    }
+
     public function find(int $revisionId): ?Revision
     {
         $revision = $this->revisionRepository->find($revisionId);
 
         return $revision instanceof Revision ? $revision : null;
+    }
+
+    public function findByIdOrOuuid(ContentType $contentType, int $revisionId, string $ouuid): ?Revision
+    {
+        if ($revisionId > 0) {
+            return $this->revisionRepository->findOneBy([
+                'id' => $revisionId,
+                'ouuid' => $ouuid,
+                'deleted' => false,
+            ]);
+        }
+
+        return $this->revisionRepository->findOneBy([
+            'endTime' => null,
+            'ouuid' => $ouuid,
+            'deleted' => false,
+            'contentType' => $contentType,
+        ]);
     }
 
     /**
@@ -116,6 +176,9 @@ class RevisionService implements RevisionServiceInterface
 
         $this->logger->debug('Revision before persist');
         $this->revisionRepository->save($revision);
+
+        $this->auditLogger->info('log.revision.draft.updated', LogRevisionContext::update($revision));
+
         $this->logger->debug('Revision after persist flush');
     }
 

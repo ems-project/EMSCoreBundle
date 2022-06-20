@@ -378,18 +378,18 @@ services:
 ### regular services
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping
-        arguments: ['@ems.logger', '@ems_common.elastica.client', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '@ems_common.service.elastica', '%ems_core.instance_id%']
+        arguments: ['@emsco.logger', '@ems_common.elastica.client', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '@ems_common.service.elastica', '%ems_core.instance_id%']
     EMS\CoreBundle\Service\DataService:
         class: EMS\CoreBundle\Service\DataService
-        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@ems_common.service.elastica', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@ems.logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment', '@ems.service.search', '@ems.service.index', '%ems_core.pre_generated_ouuids%', '@ems.service.revision.post_processing']
+        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@ems_common.service.elastica', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@emsco.logger', '@emsco.logger.audit', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment', '@ems.service.search', '@ems.service.index', '%ems_core.pre_generated_ouuids%', '@ems.service.revision.post_processing']
         tags:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
     ems.service.revision.post_processing:
         class: EMS\CoreBundle\Service\Revision\PostProcessingService
-        arguments: ['@twig', '@form.factory', '@ems.logger']
+        arguments: ['@twig', '@form.factory', '@emsco.logger']
     ems.service.revision:
         class: EMS\CoreBundle\Service\Revision\RevisionService
-        arguments: ['@ems.service.data', '@logger', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.publish', '@ems_common.service.elastica']
+        arguments: ['@ems.service.data', '@logger', '@emsco.logger.audit', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.publish', '@ems_common.service.elastica']
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@logger', '@ems_common.elastica.client', '@EMS\CoreBundle\Repository\EnvironmentRepository', '@EMS\CoreBundle\Repository\ManagedAliasRepository', '@ems_common.service.elastica']
@@ -449,7 +449,7 @@ services:
         arguments: ['@logger', '@ems.service.contenttype', '@security.authorization_checker', '@security.token_storage', '@ems_common.service.elastica']
     ems.service.publish:
         class: EMS\CoreBundle\Service\PublishService
-        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '@ems.service.index', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.data', '@ems.service.user', '@event_dispatcher', '@logger', '@ems.elasticsearch.bulker']
+        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '@ems.service.index', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.data', '@ems.service.user', '@event_dispatcher', '@emsco.logger', '@emsco.logger.audit', '@ems.elasticsearch.bulker']
     ems.service.notification:
         class: EMS\CoreBundle\Service\NotificationService
         arguments: ['@doctrine', '@ems.repository.template', '@ems.service.user', '@logger', '@session', '@service_container', '@ems.service.data', '%ems_core.from_email%', '@twig']

@@ -16,6 +16,7 @@ dashboard.index.reorder: Reorder
 ROLE_SUPER_WEBMASTER: 'Super Webmaster'
 ROLE_TASK_MANAGER: 'Task Manager'
 ROLE_TRADUCTOR: Traductor
+ROLE_AUDITOR: Auditor
 ROLE_USER: User
 ROLE_USER_MANAGEMENT: 'User Management'
 ROLE_USER_READ: 'User read'
@@ -286,7 +287,6 @@ log.data.revision.compare_more_recent: 'Compare the revision %revision_id% of th
 log.data.revision.compare_revision_not_found: 'Impossible to compare the revision %revision_id% of the document %contenttype%:%ouuid% with the revision id %compare_revision_id% as this revision does not exists'
 log.data.revision.init_document_from_array: 'It was not possible to initiate a new %contenttype% document due to an internal error'
 log.data.revision.load_from_auto_save: 'Data were loaded from an auto-saved version'
-log.data.revision.new_draft_from_revision: 'A new draft has been initiated for the document "%label%"'
 log.data.revision.not_completed_request: 'Incomplete request! It''s not possible to save the document "%label%". Please check your PHP/Web configuration (i.e.: max_input_vars in php.ini)'
 log.data.revision.not_found_in_environment: 'It''s impossible to identify a revision for the document "%label%" in the environment %environment%'
 log.data.revision.only_super_can_finalize_an_archive: 'Only a super user can finalize an archived revision'
@@ -480,7 +480,6 @@ service.publish.not_in_circles: 'You can not (un)publish the content type %conte
 service.publish.not_in_default_environment: 'You can not (un)publish in the default environment %environment% of the document "%label%"'
 service.publish.publish_failed: 'The publication of the document "%label%" failed!'
 service.publish.publish_draft_error: 'A draft of the document "%label%" can''t be published in %environment% : %error_message%'
-service.publish.published: 'The document "%label%" has been published in %environment%'
 service.publish.revision_not_found_in_source: 'Missing revision in the environment %environment% for the document "%label%"'
 service.publish.unpublished: 'The document "%label%" has been unpublished from %environment%'
 service.wysiwyg_profile.deleted: 'Profile %profile_name% has been deleted'

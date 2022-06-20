@@ -110,7 +110,7 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
         $qb->select('count(user.id)');
         $this->addSearchFilters($qb, $searchValue);
 
-        return $qb->getQuery()->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**

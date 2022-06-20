@@ -143,7 +143,7 @@ class DataLinkFieldType extends DataFieldType
             $data = $event->getForm()->getNormData();
             $rawData = $data->getRawData();
 
-            if (!empty($rawData)) {
+            if (!empty($rawData) && \is_array($rawData)) {
                 \usort($rawData, function ($a, $b) use ($event) {
                     if (!empty($event->getData()['value'])) {
                         $indexA = \array_search($a, $event->getData()['value']);

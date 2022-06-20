@@ -9,6 +9,8 @@ use EMS\CoreBundle\Exception\DataStateException;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\UserService;
+use EMS\Helpers\Standard\Json;
+use EMS\Helpers\Standard\Type;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,11 +39,11 @@ class CrudController extends AbstractController
     public function createAction(string $ouuid, string $name, Request $request): Response
     {
         $contentType = $this->giveContentType($name);
-        if (!$contentType->getEnvironment()->getManaged()) {
+        if (!$contentType->giveEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not create content for a managed content type');
         }
 
-        $rawdata = \json_decode($request->getContent(), true);
+        $rawdata = Json::decode(Type::string($request->getContent()));
         if (empty($rawdata)) {
             throw new BadRequestHttpException('Not a valid JSON message');
         }
@@ -110,7 +112,7 @@ class CrudController extends AbstractController
     public function finalizeAction($id, string $name): Response
     {
         $contentType = $this->giveContentType($name);
-        if (!$contentType->getEnvironment()->getManaged()) {
+        if (!$contentType->giveEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not finalize content for a managed content type');
         }
 
@@ -144,7 +146,7 @@ class CrudController extends AbstractController
     public function discardAction($id, string $name): Response
     {
         $contentType = $this->giveContentType($name);
-        if (!$contentType->getEnvironment()->getManaged()) {
+        if (!$contentType->giveEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not discard content for a managed content type');
         }
 
@@ -182,7 +184,7 @@ class CrudController extends AbstractController
     {
         $contentType = $this->giveContentType($name);
         $isDeleted = false;
-        if (!$contentType->getEnvironment()->getManaged()) {
+        if (!$contentType->giveEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not delete content for a managed content type');
         }
 
@@ -216,11 +218,11 @@ class CrudController extends AbstractController
     public function replaceAction(string $ouuid, string $name, Request $request): Response
     {
         $contentType = $this->giveContentType($name);
-        if (!$contentType->getEnvironment()->getManaged()) {
+        if (!$contentType->giveEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not replace content for a managed content type');
         }
 
-        $rawdata = \json_decode($request->getContent(), true);
+        $rawdata = Json::decode(Type::string($request->getContent()));
         if (empty($rawdata)) {
             throw new BadRequestHttpException('Not a valid JSON message');
         }
@@ -260,11 +262,11 @@ class CrudController extends AbstractController
     public function mergeAction(string $ouuid, string $name, Request $request): Response
     {
         $contentType = $this->giveContentType($name);
-        if (!$contentType->getEnvironment()->getManaged()) {
+        if (!$contentType->giveEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not merge content for a managed content type');
         }
 
-        $rawdata = \json_decode($request->getContent(), true);
+        $rawdata = Json::decode(Type::string($request->getContent()));
         if (empty($rawdata)) {
             throw new BadRequestHttpException('Not a valid JSON message for revision '.$ouuid.' and contenttype '.$contentType->getName());
         }

@@ -11,6 +11,12 @@ log:
     success: 'The document "%label%" has been published in %environment%'
   unpublished:
     success: 'The document "%label%" has been unpublished from %environment%'
+  user:
+    profile:
+      updated: 'The profile has been updated.'
+      changed_password: 'The password has been changed.'
+    resetting:
+      success: 'The password has been reset successfully.'
 
 service.contenttype.mappings_error: 'Mappings update for %contenttype% in %environments% failed : %elasticsearch_dump%'
 service.contenttype.mappings_updated: 'Mappings successfully updated for content type %contenttype% in %environments%'

@@ -76,7 +76,7 @@ class ResettingController extends AbstractController
 
             $this->userManager->resetPassword($user, $response);
 
-            $this->logger->notice('log.user.password_resetted');
+            $this->logger->notice('log.user.resetting.success');
 
             return $response;
         }

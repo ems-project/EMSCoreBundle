@@ -1,16 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Left side of && is always true\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/FileController.php
-
-		-
-			message: "#^Parameter \\#3 \\$filename of method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:uploadFile\\(\\) expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/FileController.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ManagedAliasController\\:\\:getIndexActions\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/ManagedAliasController.php

@@ -626,6 +626,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      * @throws \Exception
      *
      * @return FieldType|null
+     *
+     * @deprecated Use FieldType->get($key)
      */
     public function __get($key)
     {
@@ -642,6 +644,15 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         }
 
         return null;
+    }
+
+    public function get(string $key): FieldType
+    {
+        if (null === $fieldType = $this->__get($key)) {
+            throw new \RuntimeException(\sprintf('Field type for key "%s" not found', $key));
+        }
+
+        return $fieldType;
     }
 
     /**

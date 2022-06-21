@@ -1,21 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 1
-			path: src/Controller/Views/CalendarController.php
-
-		-
-			message: "#^Cannot call method getMappingOptions\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 8
-			path: src/Controller/Views/CalendarController.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 5
-			path: src/Controller/Views/CalendarController.php
-
-		-
 			message: "#^Argument of an invalid type array\\<int, string\\>\\|false supplied for foreach, only iterables are supported\\.$#"
 			count: 1
 			path: src/Controller/Views/CriteriaController.php

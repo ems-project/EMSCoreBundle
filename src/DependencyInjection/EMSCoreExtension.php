@@ -20,9 +20,9 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
     public const TRANS_DOMAIN = 'EMSCoreBundle';
 
     /**
-     * {@inheritdoc}
+     * @param array<mixed> $configs
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -80,7 +80,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $this->loadLdap($container, $yamlLoader, $config['ldap'] ?? []);
     }
 
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         // get all bundles
         $bundles = $container->getParameter('kernel.bundles');

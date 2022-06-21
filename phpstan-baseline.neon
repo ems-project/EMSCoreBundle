@@ -1,31 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\Compiler\\\\DataFieldTypeCompilerPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/DependencyInjection/Compiler/DataFieldTypeCompilerPass.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\Compiler\\\\StorageServiceCompilerPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/DependencyInjection/Compiler/StorageServiceCompilerPass.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:load\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/DependencyInjection/EMSCoreExtension.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:load\\(\\) has parameter \\$configs with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/DependencyInjection/EMSCoreExtension.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:prepend\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/DependencyInjection/EMSCoreExtension.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\EMSCoreBundle\\:\\:build\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/EMSCoreBundle.php

@@ -39,6 +39,7 @@
             <argument type="service" id="EMS\ClientHelperBundle\Contracts\Environment\EnvironmentHelperInterface"/>
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.index"/>
+            <argument>%ems_core.security.firewall.core%</argument>
         </service>
         <service id="ems.service.datatable" alias="EMS\CoreBundle\Service\DatatableService"/>
         <service id="EMS\CoreBundle\Service\DatatableService">

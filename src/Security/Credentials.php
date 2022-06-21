@@ -7,8 +7,6 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class Credentials
 {
-    public const DEFAULT_PROVIDER_KEY = 'main';
-
     private function __construct()
     {
     }

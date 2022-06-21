@@ -98,6 +98,7 @@
         <service id="EMS\CoreBundle\Controller\AuthTokenController" public="true">
             <argument type="service" id="ems.security.authenticator" />
             <argument type="service" id="twig" />
+            <argument>%ems_core.security.firewall.core%</argument>
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Form\SubmissionController" public="true">

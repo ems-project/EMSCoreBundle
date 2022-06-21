@@ -15,26 +15,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DateRangeFieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Date range field';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-calendar-o';
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {
@@ -55,22 +47,17 @@ class DateRangeFieldType extends DataFieldType
         return ['value' => ''];
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+     * @param array<mixed> $data
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
         $input = $data['value'];
@@ -108,11 +95,9 @@ class DateRangeFieldType extends DataFieldType
     }
 
     /**
-     * @throws \Exception
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public static function filterSubField(array $data, array $option)
+    public static function filterSubField(array $data, array $option): array
     {
         if (!$option['mappingOptions']['nested']) {
             $range = [];
@@ -132,9 +117,9 @@ class DateRangeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public static function isVirtual(array $option = [])
+    public static function isVirtual(array $option = []): bool
     {
         if (!isset($option['mappingOptions'])) {
             return false;
@@ -144,9 +129,9 @@ class DateRangeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
@@ -172,10 +157,7 @@ class DateRangeFieldType extends DataFieldType
         return [$dataField->getFieldType()->getName()];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -188,9 +170,10 @@ class DateRangeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
@@ -208,9 +191,9 @@ class DateRangeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getDefaultOptions($name)
+    public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
 
@@ -244,7 +227,7 @@ class DateRangeFieldType extends DataFieldType
         return $dateFormat;
     }
 
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         $out = [
             $current->getMappingOptions()['fromDateMachineName'] => [
@@ -275,9 +258,9 @@ class DateRangeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->getFieldType()->getDeleted()) {
             if ($data->getFieldType()->getMappingOptions()['nested']) {
@@ -294,9 +277,9 @@ class DateRangeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');

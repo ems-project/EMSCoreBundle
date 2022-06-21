@@ -11,26 +11,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CheckboxFieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Checkbox field';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'glyphicon glyphicon-check';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
@@ -41,9 +35,10 @@ class CheckboxFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
@@ -56,9 +51,9 @@ class CheckboxFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function modelTransform($data, FieldType $fieldType)
+    public function modelTransform($data, FieldType $fieldType): DataField
     {
         $dataField = new DataField();
         $dataField->setRawData(\boolval($data));
@@ -68,9 +63,7 @@ class CheckboxFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {
@@ -79,12 +72,7 @@ class CheckboxFieldType extends DataFieldType
         return ['value' => ((null !== $out && !empty($out) && $out) ? true : false)];
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::configureOptions()
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
         $resolver->setDefaults([
@@ -93,11 +81,11 @@ class CheckboxFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+     * @param array<mixed> $data
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $out = parent::reverseViewTransform($data, $fieldType);
         $value = false;
@@ -110,9 +98,9 @@ class CheckboxFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->getFieldType()->getDeleted()) {
             /*
@@ -124,9 +112,9 @@ class CheckboxFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         return [
                 $current->getName() => $this->elasticsearchService->updateMapping(\array_merge(['type' => 'boolean'], \array_filter($current->getMappingOptions()))),
@@ -134,9 +122,9 @@ class CheckboxFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');

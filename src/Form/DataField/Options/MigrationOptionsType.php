@@ -25,7 +25,8 @@ class MigrationOptionsType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

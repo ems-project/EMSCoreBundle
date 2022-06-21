@@ -13,18 +13,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ComputedFieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Computed from the raw-data';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
             try {
@@ -39,18 +36,15 @@ class ComputedFieldType extends DataFieldType
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-gears';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->getFieldType()->getDeleted()) {
             /*
@@ -62,9 +56,9 @@ class ComputedFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -95,14 +89,11 @@ class ComputedFieldType extends DataFieldType
         $optionsForm->remove('migrationOptions');
     }
 
-//    public function getBlockPrefix() {
-//        return  'empty';
-//    }
-
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('value', HiddenType::class, [
             'required' => false,
@@ -110,9 +101,7 @@ class ComputedFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {
@@ -122,11 +111,11 @@ class ComputedFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+     * @param array<mixed> $data
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
         try {
@@ -140,10 +129,7 @@ class ComputedFieldType extends DataFieldType
         return $dataField;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);

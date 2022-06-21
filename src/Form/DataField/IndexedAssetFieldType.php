@@ -28,7 +28,7 @@ class IndexedAssetFieldType extends DataFieldType
     private $fileService;
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService)
     {
@@ -36,36 +36,25 @@ class IndexedAssetFieldType extends DataFieldType
         $this->fileService = $fileService;
     }
 
-    /**
-     * Get a icon to visually identify a FieldType.
-     *
-     * @return string
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-file-text-o';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Indexed file field';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
+    public function getParent(): string
     {
         return FileType::class;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -87,10 +76,7 @@ class IndexedAssetFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -99,9 +85,9 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         $mapping = parent::generateMapping($current);
 
@@ -120,11 +106,9 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+     * {@inheritDoc}
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
         $this->testDataField($dataField);
@@ -150,9 +134,7 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {
@@ -166,11 +148,9 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
+     * {@inheritDoc}
      */
-    public function modelTransform($data, FieldType $fieldType)
+    public function modelTransform($data, FieldType $fieldType): DataField
     {
         if (\is_array($data)) {
             foreach ($data as $id => $content) {

@@ -41,7 +41,7 @@ class DateTimeFieldType extends DataFieldType
 
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<mixed>                               $options
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -62,7 +62,7 @@ class DateTimeFieldType extends DataFieldType
     }
 
     /**
-     * @return array<string, array<mixed>>
+     * {@inheritDoc}
      */
     public function generateMapping(FieldType $current): array
     {
@@ -75,8 +75,7 @@ class DateTimeFieldType extends DataFieldType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<mixed>                               $options
+     * {@inheritDoc}
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
@@ -104,11 +103,9 @@ class DateTimeFieldType extends DataFieldType
     }
 
     /**
-     * @param DataField<DataField> $dataField
-     *
-     * @return array{'value': string|null}
+     * {@inheritDoc}
      */
-    public function viewTransform(DataField $dataField): array
+    public function viewTransform(DataField $dataField)
     {
         $data = parent::viewTransform($dataField);
         $value = null;
@@ -122,9 +119,9 @@ class DateTimeFieldType extends DataFieldType
     }
 
     /**
-     * @param array{'value': null|string} $data
+     * {@inheritDoc}
      *
-     * @return DataField<DataField>
+     * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {

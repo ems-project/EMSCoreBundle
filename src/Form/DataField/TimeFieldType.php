@@ -23,26 +23,20 @@ class TimeFieldType extends DataFieldType
     public const STOREFORMAT = 'H:i:s';
     public const INDEXFORMAT = 'HH:mm:ss';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Time field';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-clock-o';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
@@ -63,11 +57,9 @@ class TimeFieldType extends DataFieldType
     /**
      * Convert options into PHP date format string.
      *
-     * @param array $options
-     *
-     * @return string
+     * @param array<string, mixed> $options
      */
-    public static function getFormat($options)
+    public static function getFormat(array $options): string
     {
         if ($options['displayOptions']['showMeridian']) {
             $format = 'g:i';
@@ -87,17 +79,17 @@ class TimeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function viewTransform(DataField $data)
+    public function viewTransform(DataField $dataField)
     {
-        $out = parent::viewTransform($data);
+        $out = parent::viewTransform($dataField);
 
         if (\is_array($out) && 0 === \count($out)) {
             return ''; //empty array means null/empty
         }
 
-        $format = $this->getFormat($data->getFieldType()->getOptions());
+        $format = $this->getFormat($dataField->getFieldType()->getOptions());
 
         /** @var \DateTime $converted */
         $dateTime = \DateTime::createFromFormat(TimeFieldType::STOREFORMAT, \strval($out));
@@ -109,9 +101,9 @@ class TimeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $format = $this->getFormat($fieldType->getOptions());
         $converted = \DateTime::createFromFormat($format, \strval($data));
@@ -125,9 +117,9 @@ class TimeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         return [
                 $current->getName() => \array_merge([
@@ -137,10 +129,7 @@ class TimeFieldType extends DataFieldType
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -153,9 +142,10 @@ class TimeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /*get options for twig context*/
         parent::buildView($view, $form, $options);
@@ -178,18 +168,15 @@ class TimeFieldType extends DataFieldType
         $view->vars['attr'] = $attr;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
+    public function getParent(): string
     {
         return IconTextType::class;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');

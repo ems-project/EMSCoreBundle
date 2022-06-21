@@ -12,23 +12,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DateFieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Date field';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-calendar';
     }
 
-    public function modelTransform($data, FieldType $fieldType)
+    /**
+     * {@inheritDoc}
+     */
+    public function modelTransform($data, FieldType $fieldType): DataField
     {
         if (empty($data)) {
             return parent::modelTransform([], $fieldType);
@@ -89,6 +86,9 @@ class DateFieldType extends DataFieldType
         return $out;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function viewTransform(DataField $dataField)
     {
         $data = parent::viewTransform($dataField);
@@ -106,7 +106,12 @@ class DateFieldType extends DataFieldType
         return $temp;
     }
 
-    public function reverseViewTransform($data, FieldType $fieldType)
+    /**
+     * {@inheritDoc}
+     *
+     * @param array<mixed> $data
+     */
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dates = [];
         $format = DateFieldType::convertJavascriptDateFormat($fieldType->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
@@ -120,18 +125,15 @@ class DateFieldType extends DataFieldType
         return $dataField;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'datefieldtype';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
@@ -159,10 +161,7 @@ class DateFieldType extends DataFieldType
         return [$dataField->getFieldType()->getName()];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -175,9 +174,10 @@ class DateFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
@@ -198,7 +198,7 @@ class DateFieldType extends DataFieldType
         ]);
     }
 
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         return [
                 $current->getName() => \array_merge([
@@ -209,9 +209,9 @@ class DateFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->getFieldType()->getDeleted()) {
             $format = $data->getFieldType()->getMappingOptions()['format'];
@@ -281,9 +281,9 @@ class DateFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');

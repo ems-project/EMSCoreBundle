@@ -29,7 +29,7 @@ class AssetFieldType extends DataFieldType
     private $fileService;
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService)
     {
@@ -37,36 +37,25 @@ class AssetFieldType extends DataFieldType
         $this->fileService = $fileService;
     }
 
-    /**
-     * Get a icon to visually identify a FieldType.
-     *
-     * @return string
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-file-o';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'File field';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
+    public function getParent(): string
     {
         return AssetType::class;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -85,10 +74,7 @@ class AssetFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -98,8 +84,8 @@ class AssetFieldType extends DataFieldType
     }
 
     /**
-     * @param FormInterface<mixed> $form
-     * @param array<string, mixed> $options
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
      */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
@@ -108,9 +94,9 @@ class AssetFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         return [
             $current->getName() => \array_merge([
@@ -126,11 +112,9 @@ class AssetFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+     * {@inheritDoc}
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
         $this->testDataField($dataField);
@@ -187,9 +171,7 @@ class AssetFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {
@@ -207,11 +189,9 @@ class AssetFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
+     * {@inheritDoc}
      */
-    public function modelTransform($data, FieldType $fieldType)
+    public function modelTransform($data, FieldType $fieldType): DataField
     {
         $out = parent::reverseViewTransform($data, $fieldType);
         if (true === $fieldType->getDisplayOption('multiple')) {

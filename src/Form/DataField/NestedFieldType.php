@@ -20,26 +20,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class NestedFieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Nested object';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'glyphicon glyphicon-modal-window';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
@@ -52,9 +46,10 @@ class NestedFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /* get the metadata associate */
         /** @var FieldType $fieldType */
@@ -81,15 +76,16 @@ class NestedFieldType extends DataFieldType
         }
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'container_field_type';
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /* give options for twig context */
         parent::buildView($view, $form, $options);
@@ -97,10 +93,7 @@ class NestedFieldType extends DataFieldType
         $view->vars['multiple'] = $options['multiple'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -110,9 +103,9 @@ class NestedFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
         if (null == $data->getFieldType()) {
             $tmp = [];
@@ -129,24 +122,24 @@ class NestedFieldType extends DataFieldType
         }
     }
 
-    public static function isNested()
+    public static function isNested(): bool
     {
         return true;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public static function isContainer()
+    public static function isContainer(): bool
     {
         /* this kind of compound field may contain children */
         return true;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -159,9 +152,9 @@ class NestedFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         return [
             $current->getName() => [

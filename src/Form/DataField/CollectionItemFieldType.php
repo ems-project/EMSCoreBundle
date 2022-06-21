@@ -19,33 +19,28 @@ use Symfony\Component\Form\FormBuilderInterface;
 class CollectionItemFieldType extends DataFieldType
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Collection item object (this message should neve seen anywhere)';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-question';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'collectionitemtype';
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /* get the metadata associate */
         /** @var FieldType $fieldType */
@@ -95,9 +90,9 @@ class CollectionItemFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
         if (null == $data->getFieldType()) {
             $tmp = [];
@@ -114,24 +109,24 @@ class CollectionItemFieldType extends DataFieldType
         }
     }
 
-    public static function isNested()
+    public static function isNested(): bool
     {
         return true;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public static function isContainer()
+    public static function isContainer(): bool
     {
         /* this kind of compound field may contain children */
         return true;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         return [
             $current->getName() => [
@@ -140,7 +135,12 @@ class CollectionItemFieldType extends DataFieldType
             ], ];
     }
 
-    public function reverseViewTransform($data, FieldType $fieldType)
+    /**
+     * {@inheritDoc}
+     *
+     * @param array<mixed> $data
+     */
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         //Just an info to say to the parent collection that this rec has been updated by the submit
         $data['_ems_item_reverseViewTransform'] = true;

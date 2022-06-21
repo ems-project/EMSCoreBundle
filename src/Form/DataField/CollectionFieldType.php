@@ -39,17 +39,20 @@ class CollectionFieldType extends DataFieldType
         $this->logger = $logger;
     }
 
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Collection (manage array of children types)';
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-plus fa-rotate';
     }
 
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    /**
+     * {@inheritDoc}
+     */
+    public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
@@ -91,12 +94,16 @@ class CollectionFieldType extends DataFieldType
         return [$dataField->getFieldType()->getName()];
     }
 
-    public function getParent()
+    public function getParent(): string
     {
         return EmsCollectionType::class;
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    /**
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /* give options for twig context */
         parent::buildView($view, $form, $options);
@@ -108,7 +115,7 @@ class CollectionFieldType extends DataFieldType
         $view->vars['labelField'] = $options['labelField'];
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -121,18 +128,21 @@ class CollectionFieldType extends DataFieldType
         $resolver->setDefault('labelField', null);
     }
 
-    public static function isContainer()
+    public static function isContainer(): bool
     {
         /* this kind of compound field may contain children */
         return true;
     }
 
-    public static function isCollection()
+    public static function isCollection(): bool
     {
         return true;
     }
 
-    public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null)
+    /**
+     * {@inheritDoc}
+     */
+    public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
             return true;
@@ -163,7 +173,10 @@ class CollectionFieldType extends DataFieldType
         return $isValid;
     }
 
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    /**
+     * {@inheritDoc}
+     */
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -202,27 +215,30 @@ class CollectionFieldType extends DataFieldType
         $optionsForm->get('restrictionOptions')->remove('mandatory_if');
     }
 
-    public function buildObjectArray(DataField $data, array &$out)
+    /**
+     * {@inheritDoc}
+     */
+    public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->getFieldType()->getDeleted()) {
             $out[$data->getFieldType()->getName()] = [];
         }
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'collectionfieldtype';
     }
 
     /**
-     * @return string[]
+     * {@inheritDoc}
      */
     public static function getJsonNames(FieldType $current): array
     {
         return [$current->getName()];
     }
 
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         return [$current->getName() => [
                 'type' => 'nested',
@@ -230,7 +246,12 @@ class CollectionFieldType extends DataFieldType
         ]];
     }
 
-    public function reverseViewTransform($data, FieldType $fieldType)
+    /**
+     * {@inheritDoc}
+     *
+     * @param array<mixed> $data
+     */
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $cleaned = [];
         foreach ($data as $idx => $item) {
@@ -255,11 +276,9 @@ class CollectionFieldType extends DataFieldType
     }
 
     /**
-     * @param string $name
-     *
-     * @return array<string, mixed>
+     * {@inheritDoc}
      */
-    public function getDefaultOptions($name): array
+    public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
         $out['mappingOptions']['renumbering'] = true;

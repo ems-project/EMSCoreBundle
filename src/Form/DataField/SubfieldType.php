@@ -11,36 +11,28 @@ use Symfony\Component\Form\FormBuilderInterface;
 //TODO:Refact Class name "SubfieldType" to "SubfieldFieldType"
 class SubfieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Virtual subfield (used to define alternatives analyzers)';
     }
 
-    /**
-     * Get a icon to visually identify a FieldType.
-     *
-     * @return string
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-sitemap';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
         //do nothing as it's a virtual field
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -54,9 +46,9 @@ class SubfieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         $options = $this->elasticsearchService->updateMapping(\array_merge(['type' => 'string'], \array_filter($current->getMappingOptions())));
 
@@ -66,9 +58,9 @@ class SubfieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
         //do nothing as it's a virtual field
     }

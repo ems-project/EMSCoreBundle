@@ -16,9 +16,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class OptionsType extends AbstractType
 {
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $options['field_type'];
@@ -42,10 +43,7 @@ class OptionsType extends AbstractType
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'data_field_options';
     }

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\ColorPickerFullType;
 
@@ -13,28 +14,20 @@ use EMS\CoreBundle\Form\Field\ColorPickerFullType;
  */
 class ColorPickerFieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Color picker field';
     }
 
-    /**
-     * Get a icon to visually identify a FieldType.
-     *
-     * @return string
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-paint-brush';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getDefaultOptions($name)
+    public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
 
@@ -43,12 +36,15 @@ class ColorPickerFieldType extends DataFieldType
         return $out;
     }
 
-    public function getParent()
+    public function getParent(): string
     {
         return ColorPickerFullType::class;
     }
 
-    public function modelTransform($data, FieldType $fieldType)
+    /**
+     * {@inheritDoc}
+     */
+    public function modelTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::modelTransform($data, $fieldType);
         if (null !== $data && !\is_string($data)) {

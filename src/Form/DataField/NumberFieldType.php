@@ -9,25 +9,19 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class NumberFieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Number field';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'glyphicon glyphicon-sort-by-order';
     }
 
 //     /**
 //      *
-//      * {@inheritdoc}
+//      * {@inheritDoc}
 //      *
 //      */
 //     public function importData(DataField $dataField, $sourceArray, $isMigration) {
@@ -39,9 +33,10 @@ class NumberFieldType extends DataFieldType
 //     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
@@ -54,9 +49,9 @@ class NumberFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null)
+    public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
             return true;
@@ -74,9 +69,9 @@ class NumberFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->getFieldType()->getDeleted()) {
             /*
@@ -88,9 +83,9 @@ class NumberFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         return [
                 $current->getName() => \array_merge(['type' => 'double'], \array_filter($current->getMappingOptions())),
@@ -98,9 +93,9 @@ class NumberFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -116,20 +111,13 @@ class NumberFieldType extends DataFieldType
 //         $optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {
@@ -139,11 +127,11 @@ class NumberFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+     * @param array<mixed> $data
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $temp = $data['value'];
 

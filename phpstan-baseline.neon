@@ -1,41 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Cannot call method getUsername\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Cannot call method setContentType\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Cannot call method setDefault\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Parameter \\#1 \\$object of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:persist\\(\\) expects object, object\\|null given\\.$#"
-			count: 2
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Parameter \\#1 \\$object of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:remove\\(\\) expects object, object\\|null given\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Parameter \\#3 \\$query of class EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\ExportDocuments constructor expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
 			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 1
 			path: src/Controller/Views/CalendarController.php

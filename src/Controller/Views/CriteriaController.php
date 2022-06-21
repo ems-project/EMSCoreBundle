@@ -207,7 +207,7 @@ class CriteriaController extends AbstractController
         return $this->forward('EMSCoreBundle:Views\Criteria:generateCriteriaTable', ['view' => $view]);
     }
 
-    private function isAuthorized(FieldType $criteriaField, AuthorizationCheckerInterface $security)
+    private function isAuthorized(FieldType $criteriaField, AuthorizationCheckerInterface $security): bool
     {
         $authorized = empty($criteriaField->getMinimumRole()) || $security->isGranted($criteriaField->getMinimumRole());
         if ($authorized) {
@@ -278,7 +278,7 @@ class CriteriaController extends AbstractController
 
         $criteriaField = $view->getContentType()->getFieldType();
         if ('internal' == $view->getOptions()['criteriaMode']) {
-            $criteriaField = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['criteriaField']);
+            $criteriaField = $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['criteriaField']);
         } elseif ('another' == $view->getOptions()['criteriaMode']) {
         } else {
             throw new Exception('Should never happen');
@@ -287,11 +287,12 @@ class CriteriaController extends AbstractController
         $columnField = null;
         $rowField = null;
         $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
+        $fieldPaths = \is_array($fieldPaths) ? $fieldPaths : [];
 
         $authorized = $this->isAuthorized($criteriaField, $this->authorizationChecker) && $this->authorizationChecker->isGranted($view->getContentType()->getEditRole());
 
         foreach ($fieldPaths as $path) {
-            /** @var FieldType $child */
+            /** @var false|FieldType $child */
             $child = $criteriaField->getChildByPath($path);
             if ($child) {
                 if ($child->getName() == $criteriaUpdateConfig->getColumnCriteria()) {
@@ -327,14 +328,14 @@ class CriteriaController extends AbstractController
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      *
      * @throws ContentTypeStructureException
      * @throws ElasticmsException
      * @throws PerformanceException
      * @throws Exception
      */
-    public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig)
+    public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig): array
     {
         $contentType = $view->getContentType();
 
@@ -358,13 +359,14 @@ class CriteriaController extends AbstractController
         $categoryChoiceList = false;
         if (null !== $criteriaUpdateConfig->getCategory()) {
             $dataField = $criteriaUpdateConfig->getCategory();
-            if ($dataField->getRawData() && \strlen($dataField->getTextValue()) > 0) {
-                $categoryFieldTypeName = $dataField->getFieldType()->getType();
+
+            if ($dataField->getRawData() && \strlen($dataField->getTextValue() ?? '') > 0) {
+                $categoryFieldTypeName = $dataField->giveFieldType()->getType();
                 /** @var DataFieldType $categoryFieldType */
                 $categoryFieldType = $this->getDataFieldType($categoryFieldTypeName);
 
                 $body['query']['bool']['must'][] = $categoryFieldType->getElasticsearchQuery($dataField);
-                $categoryChoiceList = $categoryFieldType->getChoiceList($dataField->getFieldType(), [$dataField->getRawData()]);
+                $categoryChoiceList = $categoryFieldType->getChoiceList($dataField->giveFieldType(), [$dataField->getRawData()]);
             }
         }
 
@@ -372,18 +374,27 @@ class CriteriaController extends AbstractController
         $criteriaChoiceLists = [];
         /** @var DataField $criteria */
         foreach ($criteriaUpdateConfig->getCriterion() as $criteria) {
-            $fieldTypeName = $criteria->getFieldType()->getType();
+            if (null === $fieldType = $criteria->getFieldType()) {
+                continue;
+            }
+
+            $fieldTypeName = $fieldType->getType();
             /** @var DataFieldType $dataFieldType */
             $dataFieldType = $this->getDataFieldType($fieldTypeName);
-            if (\count($criteria->getRawData()) > 0) {
+            $rawData = $criteria->getRawData();
+            if (!\is_array($rawData)) {
+                continue;
+            }
+
+            if (\count($rawData) > 0) {
                 if ($criteriaFieldName) {
                     $criteriaFilters[] = $dataFieldType->getElasticsearchQuery($criteria, ['nested' => $criteriaFieldName]);
                 } else {
                     $body['query']['bool']['must'][] = $dataFieldType->getElasticsearchQuery($criteria, []);
                 }
             }
-            $choicesList = $dataFieldType->getChoiceList($criteria->getFieldType(), $criteria->getRawData());
-            $criteriaChoiceLists[$criteria->getFieldType()->getName()] = $choicesList;
+            $choicesList = $dataFieldType->getChoiceList($fieldType, $rawData);
+            $criteriaChoiceLists[$fieldType->getName()] = $choicesList;
         }
 
         if ($criteriaFieldName) {
@@ -569,13 +580,12 @@ class CriteriaController extends AbstractController
     }
 
     /**
-     * @param string|null $targetFieldName
-     *
-     * @return bool|Revision|mixed|null
+     * @param array<mixed> $rawData
+     * @param array<mixed> $loadedRevision
      *
      * @throws DataStateException
      */
-    public function addCriteriaRevision(View $view, array $rawData, $targetFieldName, array $loadedRevision = [])
+    public function addCriteriaRevision(View $view, array $rawData, ?string $targetFieldName, array $loadedRevision = []): ?Revision
     {
         $multipleField = $this->getMultipleField($view->getContentType()->getFieldType());
 
@@ -702,20 +712,19 @@ class CriteriaController extends AbstractController
     }
 
     /**
-     * @param array  $filters
-     * @param string $criteriaField
+     * @param array<mixed> $filters
      *
-     * @return bool|Revision
+     * @return false|Revision
      *
      * @throws Exception
      */
-    public function addCriteria($filters, Revision $revision, $criteriaField)
+    public function addCriteria(array $filters, Revision $revision, string $criteriaField)
     {
         $rawData = $revision->getRawData();
         if (!isset($rawData[$criteriaField])) {
             $rawData[$criteriaField] = [];
         }
-        $multipleField = $this->getMultipleField($revision->giveContentType()->getFieldType()->__get('ems_'.$criteriaField));
+        $multipleField = $this->getMultipleField($revision->giveContentType()->getFieldType()->get('ems_'.$criteriaField));
 
         $found = false;
         foreach ($rawData[$criteriaField] as &$criteriaSet) {
@@ -852,13 +861,14 @@ class CriteriaController extends AbstractController
     }
 
     /**
-     * @param ?string $targetFieldName
+     * @param array<mixed> $rawData
+     * @param array<mixed> $loadedRevision
      *
      * @return Revision|mixed|null
      *
      * @throws Exception
      */
-    public function removeCriteriaRevision(View $view, array $rawData, $targetFieldName, array $loadedRevision = [])
+    public function removeCriteriaRevision(View $view, array $rawData, ?string $targetFieldName, array $loadedRevision = [])
     {
         $multipleField = $this->getMultipleField($view->getContentType()->getFieldType());
 
@@ -883,7 +893,7 @@ class CriteriaController extends AbstractController
 
         $search = $this->elasticaService->convertElasticsearchSearch([
                 'body' => $body,
-                'index' => $view->getContentType()->getEnvironment()->getAlias(),
+                'index' => $view->getContentType()->giveEnvironment()->getAlias(),
                 'type' => $view->getContentType()->getName(),
         ]);
         $response = EmsResponse::fromResultSet($this->elasticaService->search($search));
@@ -961,20 +971,19 @@ class CriteriaController extends AbstractController
     }
 
     /**
-     * @param array  $filters
-     * @param string $criteriaField
+     * @param array<mixed> $filters
      *
-     * @return bool|Revision
+     * @return false|Revision
      *
      * @throws Exception
      */
-    public function removeCriteria($filters, Revision $revision, $criteriaField)
+    public function removeCriteria(array $filters, Revision $revision, string $criteriaField)
     {
         $rawData = $revision->getRawData();
         if (!isset($rawData[$criteriaField])) {
             $rawData[$criteriaField] = [];
         }
-        $criteriaFieldType = $revision->giveContentType()->getFieldType()->__get('ems_'.$criteriaField);
+        $criteriaFieldType = $revision->giveContentType()->getFieldType()->get('ems_'.$criteriaField);
         $multipleField = $this->getMultipleField($criteriaFieldType);
 
         $found = false;
@@ -1047,7 +1056,14 @@ class CriteriaController extends AbstractController
         return false;
     }
 
-    private function addToTable(ObjectChoiceListItem &$choice, array &$table, array &$criterion, array $criteriaNames, array &$criteriaChoiceLists, CriteriaUpdateConfig &$config, array $context = [])
+    /**
+     * @param array<mixed> $table
+     * @param array<mixed> $criterion
+     * @param array<mixed> $criteriaNames
+     * @param array<mixed> $criteriaChoiceLists
+     * @param array<mixed> $context
+     */
+    private function addToTable(ObjectChoiceListItem &$choice, array &$table, array &$criterion, array $criteriaNames, array &$criteriaChoiceLists, CriteriaUpdateConfig &$config, array $context = []): void
     {
         $criteriaName = \array_pop($criteriaNames);
         $criterionList = $criterion[$criteriaName];
@@ -1071,6 +1087,9 @@ class CriteriaController extends AbstractController
         }
     }
 
+    /**
+     * @return false|string
+     */
     private function getMultipleField(FieldType $criteriaFieldType)
     {
         /** @var FieldType $criteria */

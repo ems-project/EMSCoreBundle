@@ -45,6 +45,9 @@ class Bulker
         return !empty($this->errors);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getErrors(): array
     {
         return $this->errors;
@@ -78,6 +81,9 @@ class Bulker
         return $this;
     }
 
+    /**
+     * @param array<mixed> $body
+     */
     public function index(string $contentType, string $ouuid, string $index, array &$body, bool $upsert = false): bool
     {
         if ($this->sign) {

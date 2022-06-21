@@ -48,10 +48,7 @@ class ManagedAliasController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string $id
-     */
-    public function editAction(Request $request, $id): Response
+    public function editAction(Request $request, int $id): Response
     {
         $managedAlias = $this->aliasService->getManagedAlias($id);
 
@@ -77,10 +74,7 @@ class ManagedAliasController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string $id
-     */
-    public function removeAction($id): Response
+    public function removeAction(int $id): Response
     {
         $managedAlias = $this->aliasService->getManagedAlias($id);
 
@@ -99,6 +93,9 @@ class ManagedAliasController extends AbstractController
         return $this->redirectToRoute('environment.index');
     }
 
+    /**
+     * @param array<mixed> $actions
+     */
     private function save(ManagedAlias $managedAlias, array $actions): void
     {
         $managedAlias->setAlias($this->instanceId);
@@ -110,6 +107,11 @@ class ManagedAliasController extends AbstractController
         $em->flush();
     }
 
+    /**
+     * @param FormInterface<FormInterface> $form
+     *
+     * @return array<mixed>
+     */
     private function getIndexActions(FormInterface $form): array
     {
         $actions = [];

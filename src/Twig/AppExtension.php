@@ -110,11 +110,9 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see Twig_Extension::getFunctions()
+     * {@inheritDoc}
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('get_content_types', [$this, 'getContentTypes']),
@@ -154,11 +152,9 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see Twig_Extension::getFilters()
+     * {@inheritDoc}
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('data', [$this, 'data']),

@@ -581,10 +581,8 @@ class ContentTypeController extends AbstractController
      * Try to find (recursively) if there is a field to remove from the content type.
      *
      * @param array<mixed> $formArray
-     *
-     * @return bool
      */
-    private function removeField(array $formArray, FieldType $fieldType)
+    private function removeField(array $formArray, FieldType $fieldType): bool
     {
         if (\array_key_exists('remove', $formArray)) {
             $fieldType->setDeleted(true);
@@ -610,10 +608,8 @@ class ContentTypeController extends AbstractController
      * Try to find (recursively) if there is a container where subfields must be reordered in the content type.
      *
      * @param array<mixed> $formArray
-     *
-     * @return bool
      */
-    private function reorderFields(array $formArray, FieldType $fieldType)
+    private function reorderFields(array $formArray, FieldType $fieldType): bool
     {
         if (\array_key_exists('reorder', $formArray)) {
             /** @var string[] $keys */

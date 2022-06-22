@@ -110,7 +110,7 @@ final class FormSubmissionService implements EntityServiceInterface
      *
      * @return array<mixed> $config
      */
-    public function generateExportConfig(array $formSubmissionIds)
+    public function generateExportConfig(array $formSubmissionIds): array
     {
         $sheets = [];
 

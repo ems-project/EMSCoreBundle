@@ -1,56 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Environment\\:\\:getContentTypesHavingThisAsDefault\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Environment.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Environment\\:\\:getIndexes\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Environment.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Environment\\:\\:getRevisions\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Environment.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Environment\\:\\:removeContentTypesHavingThisAsDefault\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Environment.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Environment\\:\\:removeRevision\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Environment.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Environment\\:\\:setIndexes\\(\\) has parameter \\$indexes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Environment.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Environment\\:\\:\\$circles type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Environment.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Environment\\:\\:\\$contentTypesHavingThisAsDefault has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Environment.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Environment\\:\\:\\$indexes type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Environment.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Environment\\:\\:\\$revisions has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Environment.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\:\\:__get\\(\\) has parameter \\$key with no typehint specified\\.$#"
 			count: 1
 			path: src/Entity/FieldType.php

@@ -48,22 +48,27 @@ class OptionsType extends AbstractType
         return 'data_field_options';
     }
 
-    public function hasMappingOptions()
+    public function hasMappingOptions(): bool
     {
         return false;
     }
 
-    public function hasMigrationOptions()
+    public function hasMigrationOptions(): bool
     {
         return true;
     }
 
-    public function hasExtraOptions()
+    public function hasExtraOptions(): bool
     {
         return true;
     }
 
-    public function generateMapping(array $options, FieldType $current)
+    /**
+     * @param array<string, mixed> $options
+     *
+     * @return array<mixed>
+     */
+    public function generateMapping(array $options, FieldType $current): array
     {
         return [];
     }

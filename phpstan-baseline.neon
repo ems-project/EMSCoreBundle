@@ -6,11 +6,6 @@ parameters:
 			path: src/Entity/AggregateOption.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\AggregateOption\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/AggregateOption.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Analyzer\\:\\:getOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/Analyzer.php
@@ -21,19 +16,9 @@ parameters:
 			path: src/Entity/Analyzer.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Analyzer\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Analyzer.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Analyzer\\:\\:\\$options type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/Analyzer.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\AuthToken\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/AuthToken.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\CacheAssetExtractor\\:\\:getData\\(\\) return type has no value type specified in iterable type array\\.$#"
@@ -42,11 +27,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\CacheAssetExtractor\\:\\:setData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/CacheAssetExtractor.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\CacheAssetExtractor\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/CacheAssetExtractor.php
 
@@ -67,11 +47,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:removeView\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ContentType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/ContentType.php
 
@@ -346,11 +321,6 @@ parameters:
 			path: src/Entity/Environment.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Environment\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Environment.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Environment\\:\\:\\$circles type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/Environment.php
@@ -501,11 +471,6 @@ parameters:
 			path: src/Entity/FieldType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/FieldType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\:\\:updateOrderKeys\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/FieldType.php
@@ -537,11 +502,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Filter\\:\\:setOptions\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Filter.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Filter\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/Filter.php
 
@@ -891,11 +851,6 @@ parameters:
 			path: src/Entity/I18n.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\I18n\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/I18n.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\I18n\\:\\:\\$content type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/I18n.php
@@ -916,19 +871,9 @@ parameters:
 			path: src/Entity/ManagedAlias.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\ManagedAlias\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ManagedAlias.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ManagedAlias\\:\\:\\$indexes type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/ManagedAlias.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Notification\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Notification.php
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Notification\\:\\:\\$counter has no typehint specified\\.$#"
@@ -1061,11 +1006,6 @@ parameters:
 			path: src/Entity/Revision.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Revision.php
-
-		-
 			message: "#^Parameter \\#1 \\$environment of method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:removeEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null given\\.$#"
 			count: 1
 			path: src/Entity/Revision.php
@@ -1111,11 +1051,6 @@ parameters:
 			path: src/Entity/SearchFieldOption.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\SearchFieldOption\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/SearchFieldOption.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\SearchFieldOption\\:\\:\\$contentTypes \\(array\\) does not accept array\\|null\\.$#"
 			count: 1
 			path: src/Entity/SearchFieldOption.php
@@ -1141,16 +1076,6 @@ parameters:
 			path: src/Entity/Sequence.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Sequence\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Sequence.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\SortOption\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/SortOption.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:getCirclesTo\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/Template.php
@@ -1172,11 +1097,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:setCirclesTo\\(\\) has parameter \\$circlesTo with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Template.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/Template.php
 
@@ -1236,11 +1156,6 @@ parameters:
 			path: src/Entity/User.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/User.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:\\$circles type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/User.php
@@ -1264,16 +1179,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\UserInterface\\:\\:setCircles\\(\\) has parameter \\$circles with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/UserInterface.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\WysiwygProfile\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/WysiwygProfile.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\WysiwygStylesSet\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/WysiwygStylesSet.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:onKernelException\\(\\) has no return typehint specified\\.$#"

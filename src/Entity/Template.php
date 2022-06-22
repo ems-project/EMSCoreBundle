@@ -215,7 +215,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {

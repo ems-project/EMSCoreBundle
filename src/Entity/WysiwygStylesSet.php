@@ -101,7 +101,7 @@ class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, En
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {

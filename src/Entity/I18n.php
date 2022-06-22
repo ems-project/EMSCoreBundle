@@ -57,7 +57,7 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {

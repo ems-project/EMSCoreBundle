@@ -42,9 +42,9 @@ class Configuration implements ConfigurationInterface
     public const FALLBACK_LOCALE = 'en';
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('ems_core');
         $rootNode = $treeBuilder->getRootNode();

@@ -45,11 +45,11 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
     protected $label;
 
     /**
-     * @var array
+     * @var array<mixed>
      *
      * @ORM\Column(name="options", type="json_array")
      */
-    protected $options;
+    protected array $options;
 
     /**
      * @var \DateTime
@@ -113,13 +113,9 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
     }
 
     /**
-     * Set options.
-     *
-     * @param array $options
-     *
-     * @return Filter
+     * @param array<mixed> $options
      */
-    public function setOptions($options)
+    public function setOptions(array $options): self
     {
         $this->options = $options;
 
@@ -135,11 +131,9 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
     }
 
     /**
-     * Get options.
-     *
-     * @return array
+     * @return array<mixed>
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }

@@ -1,21 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Filter\\:\\:getOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Filter.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Filter\\:\\:setOptions\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Filter.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Filter\\:\\:\\$options type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Filter.php
-
-		-
 			message: "#^Argument of an invalid type array\\<int, string\\>\\|false supplied for foreach, only iterables are supported\\.$#"
 			count: 1
 			path: src/Entity/Form/CriteriaUpdateConfig.php

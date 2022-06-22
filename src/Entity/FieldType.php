@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
@@ -736,11 +737,9 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get children.
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return Collection<int, FieldType>
      */
-    public function getChildren()
+    public function getChildren(): Collection
     {
         return $this->children;
     }

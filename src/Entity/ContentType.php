@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
@@ -264,11 +265,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $sortBy;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="sort_order", type="string", length=4, nullable=true, options={"default" : "asc"})
      */
-    protected $sortOrder;
+    protected ?string $sortOrder = null;
 
     /**
      * @var string
@@ -372,7 +371,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @ORM\OneToMany(targetEntity="Template", mappedBy="contentType", cascade={"persist", "remove"})
      * @ORM\OrderBy({"orderKey" = "ASC"})
      *
-     * @var ArrayCollection<int, Template>
+     * @var Collection<int, Template>
      */
     protected $templates;
 
@@ -380,7 +379,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @ORM\OneToMany(targetEntity="View", mappedBy="contentType", cascade={"persist", "remove"})
      * @ORM\OrderBy({"orderKey" = "ASC"})
      *
-     * @var ArrayCollection<int, View>
+     * @var Collection<int, View>
      */
     protected $views;
 
@@ -398,11 +397,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $translationField;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="localeField", type="string", length=100, nullable=true)
      */
-    protected $localeField;
+    protected ?string $localeField = null;
 
     /**
      * @var string
@@ -1290,20 +1287,15 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this;
     }
 
-    /**
-     * Remove template.
-     */
-    public function removeTemplate(Template $template)
+    public function removeTemplate(Template $template): void
     {
         $this->templates->removeElement($template);
     }
 
     /**
-     * Get templates.
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection<int, Template>
      */
-    public function getTemplates()
+    public function getTemplates(): Collection
     {
         return $this->templates;
     }
@@ -1320,18 +1312,15 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this;
     }
 
-    /**
-     * Remove view.
-     */
-    public function removeView(View $view)
+    public function removeView(View $view): void
     {
         $this->views->removeElement($view);
     }
 
     /**
-     * @return ArrayCollection<int, View>
+     * @return Collection<int, View>
      */
-    public function getViews()
+    public function getViews(): Collection
     {
         return $this->views;
     }

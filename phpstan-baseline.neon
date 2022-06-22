@@ -1341,11 +1341,6 @@ parameters:
 			path: src/EventListener/RequestListener.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Exception\\\\HasNotCircleException\\:\\:getEnvironment\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Exception/HasNotCircleException.php
-
-		-
 			message: "#^Cannot access offset 'sha1' on array\\|float\\|int\\|string\\|null\\.$#"
 			count: 1
 			path: src/Form/DataField/AssetFieldType.php

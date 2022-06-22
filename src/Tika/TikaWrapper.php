@@ -11,8 +11,7 @@ use Symfony\Component\Process\Process;
  */
 class TikaWrapper
 {
-    /** @var string */
-    private $tikaJar;
+    private string $tikaJar;
 
     public function __construct(string $tikaJar)
     {
@@ -20,14 +19,9 @@ class TikaWrapper
     }
 
     /**
-     * @param string $option
-     * @param string $fileName
-     *
-     * @return string
-     *
      * @throws \RuntimeException
      */
-    protected function run($option, $fileName)
+    protected function run(string $option, string $fileName): string
     {
         $file = new SplFileInfo($fileName);
 
@@ -45,106 +39,52 @@ class TikaWrapper
         return $process->getOutput();
     }
 
-    /**
-     * @param string $fileName
-     *
-     * @return int
-     */
-    public function getWordCount($fileName)
+    public function getWordCount(string $fileName): int
     {
         return \str_word_count($this->getText($fileName));
     }
 
-    /**
-     * Options.
-     */
-
-    /**
-     * @param string $filename
-     *
-     * @return string
-     */
-    public function getXHTML($filename)
+    public function getXHTML(string $filename): string
     {
         return $this->run('--xml', $filename);
     }
 
-    /**
-     * @param string $filename
-     *
-     * @return string
-     */
-    public function getHTML($filename)
+    public function getHTML(string $filename): string
     {
         return $this->run('--html', $filename);
     }
 
-    /**
-     * @param string $filename
-     *
-     * @return string
-     */
-    public function getText($filename)
+    public function getText(string $filename): string
     {
         return $this->run('--text', $filename);
     }
 
-    /**
-     * @param string $filename
-     *
-     * @return string
-     */
-    public function getTextMain($filename)
+    public function getTextMain(string $filename): string
     {
         return $this->run('--text-main', $filename);
     }
 
-    /**
-     * @param string $filename
-     *
-     * @return string
-     */
-    public function getMetadata($filename)
+    public function getMetadata(string $filename): string
     {
         return $this->run('--metadata', $filename);
     }
 
-    /**
-     * @param string $filename
-     *
-     * @return string
-     */
-    public function getJson($filename)
+    public function getJson(string $filename): string
     {
         return $this->run('--json', $filename);
     }
 
-    /**
-     * @param string $filename
-     *
-     * @return string
-     */
-    public function getXmp($filename)
+    public function getXmp(string $filename): string
     {
         return $this->run('--xmp', $filename);
     }
 
-    /**
-     * @param string $filename
-     *
-     * @return string
-     */
-    public function getLanguage($filename)
+    public function getLanguage(string $filename): string
     {
         return $this->run('--language', $filename);
     }
 
-    /**
-     * @param string $filename
-     *
-     * @return string
-     */
-    public function getDocumentType($filename)
+    public function getDocumentType(string $filename): string
     {
         return $this->run('--detect', $filename);
     }

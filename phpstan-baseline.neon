@@ -1,41 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Argument of an invalid type array\\<int, string\\>\\|false supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: src/Entity/Form/CriteriaUpdateConfig.php
-
-		-
-			message: "#^Cannot call method getChildByPath\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 1
-			path: src/Entity/Form/CriteriaUpdateConfig.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 3
-			path: src/Entity/Form/CriteriaUpdateConfig.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\CriteriaUpdateConfig\\:\\:getCategory\\(\\) should return EMS\\\\CoreBundle\\\\Entity\\\\DataField but returns EMS\\\\CoreBundle\\\\Entity\\\\DataField\\|null\\.$#"
-			count: 1
-			path: src/Entity/Form/CriteriaUpdateConfig.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\CriteriaUpdateConfig\\:\\:getCriterion\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Form/CriteriaUpdateConfig.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\CriteriaUpdateConfig\\:\\:getCriterion\\(\\) should return Doctrine\\\\Common\\\\Collections\\\\Collection but returns array\\.$#"
-			count: 1
-			path: src/Entity/Form/CriteriaUpdateConfig.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\CriteriaUpdateConfig\\:\\:removeCriterion\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Form/CriteriaUpdateConfig.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:getContentTypes\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/Form/Search.php

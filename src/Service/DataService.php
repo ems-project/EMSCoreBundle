@@ -1096,7 +1096,11 @@ class DataService
                     $revision->setCircles([$revision->getRawData()[$contentType->getCirclesField()]]);
                 }
             } else {
-                $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
+                $fieldType = null;
+                if (null !== $contentTypeCircleField = $contentType->getCirclesField()) {
+                    $fieldType = $contentType->getFieldType()->getChildByPath($contentTypeCircleField);
+                }
+
                 if ($fieldType) {
                     $options = $fieldType->getDisplayOptions();
                     if (isset($options['multiple']) && $options['multiple']) {

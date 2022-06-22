@@ -1276,61 +1276,6 @@ parameters:
 			path: src/Entity/WysiwygStylesSet.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:getRevision\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Event/RevisionEvent.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:\\$revision has no typehint specified\\.$#"
-			count: 1
-			path: src/Event/RevisionEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\RevisionPublishEvent\\:\\:getEnvironment\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Event/RevisionPublishEvent.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionPublishEvent\\:\\:\\$environment has no typehint specified\\.$#"
-			count: 1
-			path: src/Event/RevisionPublishEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:__construct\\(\\) has parameter \\$toCleanOuuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:__construct\\(\\) has parameter \\$toCreateOuuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getRefererOuuid\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getToCleanOuuids\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getToCreateOuuids\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:\\$toClean type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:\\$toCreate type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:onKernelException\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/EventListener/RequestListener.php
@@ -4176,6 +4121,11 @@ parameters:
 			path: src/Service/Mapping.php
 
 		-
+			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
+			count: 2
+			path: src/Service/NotificationService.php
+
+		-
 			message: "#^Cannot call method send\\(\\) on object\\|null\\.$#"
 			count: 1
 			path: src/Service/NotificationService.php
@@ -4341,6 +4291,11 @@ parameters:
 			path: src/Service/NotificationService.php
 
 		-
+			message: "#^Parameter \\#2 \\$environment of method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByRevionsionOuuidAndEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null given\\.$#"
+			count: 2
+			path: src/Service/NotificationService.php
+
+		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:\\$output \\(Symfony\\\\Component\\\\Console\\\\Output\\\\OutputInterface\\) does not accept null\\.$#"
 			count: 1
 			path: src/Service/NotificationService.php
@@ -4409,6 +4364,11 @@ parameters:
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$session type has no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
 			count: 1
 			path: src/Service/PublishService.php
+
+		-
+			message: "#^Parameter \\#2 \\$contentType of method EMS\\\\CoreBundle\\\\Repository\\\\ReleaseRevisionRepository\\:\\:getRevisionsLinkedToReleasesByOuuid\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
+			count: 1
+			path: src/Service/ReleaseRevisionService.php
 
 		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"

@@ -17,10 +17,7 @@ class ContentTypeFieldPickerType extends SelectPickerType
         parent::__construct($factory);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);

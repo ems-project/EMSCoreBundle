@@ -42,19 +42,18 @@ class AnalyzerOptionsType extends AbstractType
         ],
     ];
 
-    /** @var Registry */
-    private $doctrine;
+    private Registry $doctrine;
 
     public function __construct(Registry $doctrine)
     {
-        //'@doctrine'
         $this->doctrine = $doctrine;
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('type', ChoiceType::class, [
             'choices' => [

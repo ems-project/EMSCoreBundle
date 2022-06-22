@@ -1836,51 +1836,6 @@ parameters:
 			path: src/Form/Factory/ObjectChoiceListFactory.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\AlignIndexesType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/AlignIndexesType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\AnalyzerOptionsType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/AnalyzerOptionsType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\AnalyzerPickerType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/AnalyzerPickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\AssetType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/AssetType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\CodeEditorType\\:\\:buildView\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/CodeEditorType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\CodeEditorType\\:\\:buildView\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Form/Field/CodeEditorType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\CodeEditorType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/CodeEditorType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ColorPickerType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ColorPickerType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ColorPickerType\\:\\:\\$choices has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ColorPickerType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ContentTypeFieldChoiceList\\:\\:__construct\\(\\) has parameter \\$firstLevelOnly with no typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/ContentTypeFieldChoiceList.php
@@ -2026,47 +1981,12 @@ parameters:
 			path: src/Form/Field/ContentTypeFieldPickerType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ContentTypeFieldPickerType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ContentTypeFieldPickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ContentTypePickerType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ContentTypePickerType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ContentTypePickerType\\:\\:\\$choices has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ContentTypePickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\EnvironmentPickerType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/EnvironmentPickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\EnvironmentPickerType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/EnvironmentPickerType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\Field\\\\EnvironmentPickerType\\:\\:\\$choices has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/EnvironmentPickerType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\FieldTypePickerType\\:\\:addDataFieldType\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/FieldTypePickerType.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\FieldTypePickerType\\:\\:addDataFieldType\\(\\) has parameter \\$dataField with no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/FieldTypePickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\FieldTypePickerType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/FieldTypePickerType.php
 
@@ -2079,51 +1999,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\FieldTypePickerType\\:\\:getDataFieldType\\(\\) has parameter \\$dataFieldTypeId with no typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/FieldTypePickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\FileType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/FileType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\FileType\\:\\:buildView\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/FileType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\FileType\\:\\:buildView\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Form/Field/FileType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\FileType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/FileType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\FilterOptionsType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/FilterOptionsType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\I18nContentType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/I18nContentType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\IconTextType\\:\\:buildView\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/IconTextType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\IconTextType\\:\\:buildView\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Form/Field/IconTextType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\IconTextType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/IconTextType.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceList\\:\\:__construct\\(\\) has parameter \\$types with no typehint specified\\.$#"
@@ -2206,39 +2081,9 @@ parameters:
 			path: src/Form/Field/ObjectPickerType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectPickerType\\:\\:buildView\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ObjectPickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectPickerType\\:\\:buildView\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Form/Field/ObjectPickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectPickerType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ObjectPickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\RenderOptionType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/RenderOptionType.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\Field\\\\RenderOptionType\\:\\:\\$choices has no typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/RenderOptionType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\SelectPickerType\\:\\:humanize\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/SelectPickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\SelectPickerType\\:\\:humanize\\(\\) has parameter \\$str with no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/SelectPickerType.php
 
 		-
 			message: "#^Parameter \\#2 \\$str of function explode expects string, string\\|null given\\.$#"
@@ -2249,36 +2094,6 @@ parameters:
 			message: "#^Parameter \\#3 \\$subject of function preg_replace expects array\\|string, string\\|null given\\.$#"
 			count: 3
 			path: src/Form/Field/SelectPickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\SubmitEmsType\\:\\:buildView\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/SubmitEmsType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\SubmitEmsType\\:\\:buildView\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Form/Field/SubmitEmsType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\SubmitEmsType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/SubmitEmsType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ViewTypePickerType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ViewTypePickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\WysiwygStylesSetPickerType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/WysiwygStylesSetPickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\WysiwygStylesSetPickerType\\:\\:getExistingStylesSets\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/WysiwygStylesSetPickerType.php
 
 		-
 			message: "#^Cannot call method getDeleted\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"

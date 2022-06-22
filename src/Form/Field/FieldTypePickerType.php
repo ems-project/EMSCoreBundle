@@ -6,7 +6,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FieldTypePickerType extends SelectPickerType
 {
-    private $dataFieldTypes;
+    /** @var array<mixed> */
+    private array $dataFieldTypes;
 
     public function __construct()
     {
@@ -24,7 +25,7 @@ class FieldTypePickerType extends SelectPickerType
         return $this->dataFieldTypes[$dataFieldTypeId];
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'choices' => \array_keys($this->dataFieldTypes),

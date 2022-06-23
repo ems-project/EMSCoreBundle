@@ -1,56 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method object\\:\\:addChild\\(\\)\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonNormalizer.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:addTemplate\\(\\)\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonNormalizer.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:addView\\(\\)\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonNormalizer.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:setContentType\\(\\)\\.$#"
-			count: 2
-			path: src/Entity/Helper/JsonNormalizer.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:setFieldType\\(\\)\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonNormalizer.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:setOptions\\(\\)\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonNormalizer.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonNormalizer.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonNormalizer\\:\\:normalize\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonNormalizer.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonNormalizer\\:\\:normalize\\(\\) return type with generic class ArrayObject does not specify its types\\: TKey, TValue$#"
-			count: 1
-			path: src/Entity/Helper/JsonNormalizer.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonNormalizer\\:\\:\\$toSkip has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonNormalizer.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\I18n\\:\\:getContent\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/I18n.php

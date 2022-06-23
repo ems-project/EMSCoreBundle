@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Sequence\\:\\:__construct\\(\\) has parameter \\$name with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Sequence.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:getCirclesTo\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/Template.php

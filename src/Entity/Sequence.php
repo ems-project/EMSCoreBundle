@@ -5,8 +5,6 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Analyzer.
- *
  * @ORM\Table(name="sequence")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SequenceRepository")
  * @ORM\HasLifecycleCallbacks()
@@ -23,11 +21,9 @@ class Sequence
     private $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    private $name;
+    private string $name;
 
     /**
      * @var \DateTime
@@ -57,7 +53,7 @@ class Sequence
      */
     private $version;
 
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->value = 1;
         $this->version = 0;

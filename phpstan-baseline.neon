@@ -1,26 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Notification\\:\\:\\$counter has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Notification.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Notification\\:\\:\\$environment has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Notification.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Notification\\:\\:\\$revision has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Notification.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Notification\\:\\:\\$template has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Notification.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:buildObject\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/Revision.php
@@ -1806,16 +1786,6 @@ parameters:
 			path: src/Repository/NotificationRepository.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:countNotificationByUuidAndContentType\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:countNotificationByUuidAndContentType\\(\\) has parameter \\$ouuid with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:countPendingByUserRoleAndCircle\\(\\) has parameter \\$contentTypes with no typehint specified\\.$#"
 			count: 1
 			path: src/Repository/NotificationRepository.php
@@ -3118,11 +3088,6 @@ parameters:
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:usersToEmailAddresses\\(\\) has parameter \\$users with no typehint specified\\.$#"
 			count: 1
-			path: src/Service/NotificationService.php
-
-		-
-			message: "#^Parameter \\#2 \\$contentType of method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:countNotificationByUuidAndContentType\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
-			count: 2
 			path: src/Service/NotificationService.php
 
 		-

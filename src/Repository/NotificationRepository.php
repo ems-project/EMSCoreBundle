@@ -101,7 +101,7 @@ class NotificationRepository extends ServiceEntityRepository
         return $result;
     }
 
-    public function countNotificationByUuidAndContentType($ouuid, ContentType $contentType)
+    public function countNotificationByUuidAndContentType(string $ouuid, ContentType $contentType): int
     {
         $qb = $this->createQueryBuilder('n')
         ->select('count(n)')
@@ -120,7 +120,7 @@ class NotificationRepository extends ServiceEntityRepository
 
         $results = $query->getResult();
 
-        return $results[0][1];
+        return (int) $results[0][1];
     }
 
     /**

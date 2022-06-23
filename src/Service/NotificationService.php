@@ -406,7 +406,7 @@ class NotificationService
 
         /** @var Notification $notification */
         foreach ($notifications as $notification) {
-            $result = $repository->countNotificationByUuidAndContentType($notification->getRevision()->getOuuid(), $notification->getRevision()->getContentType());
+            $result = $repository->countNotificationByUuidAndContentType($notification->getRevision()->giveOuuid(), $notification->getRevision()->giveContentType());
 
             $notification->setCounter($result);
         }
@@ -446,7 +446,7 @@ class NotificationService
 
         /** @var Notification $notification */
         foreach ($notifications as $notification) {
-            $result = $repository->countNotificationByUuidAndContentType($notification->getRevision()->getOuuid(), $notification->getRevision()->getContentType());
+            $result = $repository->countNotificationByUuidAndContentType($notification->getRevision()->giveOuuid(), $notification->getRevision()->giveContentType());
 
             $notification->setCounter($result);
         }

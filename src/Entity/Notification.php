@@ -42,7 +42,7 @@ class Notification
      * @ORM\ManyToOne(targetEntity="Template")
      * @ORM\JoinColumn(name="template_id", referencedColumnName="id")
      */
-    private $template;
+    private ?Template $template = null;
 
     /**
      * @var string
@@ -88,13 +88,13 @@ class Notification
      * @ORM\ManyToOne(targetEntity="Revision", inversedBy="notifications")
      * @ORM\JoinColumn(name="revision_id", referencedColumnName="id")
      */
-    private $revision;
+    private ?Revision $revision = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Environment")
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
-    private $environment;
+    private ?Environment $environment = null;
 
     /**
      * @var \DateTime
@@ -110,7 +110,7 @@ class Notification
      */
     private $responseEmailed;
 
-    private $counter;
+    private int $counter = 0;
 
     public function __toString()
     {
@@ -192,20 +192,19 @@ class Notification
      *
      * @return Notification
      */
-    public function setTemplate(Template $template)
+    public function setTemplate(?Template $template): self
     {
         $this->template = $template;
 
         return $this;
     }
 
-    /**
-     * Get template.
-     *
-     * @return \EMS\CoreBundle\Entity\Template
-     */
-    public function getTemplate()
+    public function getTemplate(): Template
     {
+        if (null === $this->template) {
+            throw new \RuntimeException('Missing template');
+        }
+
         return $this->template;
     }
 
@@ -273,22 +272,13 @@ class Notification
 
     /**
      * Get counter.
-     *
-     * @return int
      */
-    public function getCounter()
+    public function getCounter(): int
     {
         return $this->counter;
     }
 
-    /**
-     * Set counter.
-     *
-     * @param int $counter
-     *
-     * @return Notification
-     */
-    public function setCounter($counter)
+    public function setCounter(int $counter): self
     {
         $this->counter = $counter;
 
@@ -341,37 +331,35 @@ class Notification
         return $this->responseTimestamp;
     }
 
-    public function setRevision(Revision $revision): Notification
+    public function setRevision(?Revision $revision): self
     {
         $this->revision = $revision;
 
         return $this;
     }
 
-    /**
-     * Get revision.
-     *
-     * @return \EMS\CoreBundle\Entity\Revision
-     */
-    public function getRevision()
+    public function getRevision(): Revision
     {
+        if (null === $this->revision) {
+            throw new \RuntimeException('Missing revision');
+        }
+
         return $this->revision;
     }
 
-    public function setEnvironment(Environment $environment): Notification
+    public function setEnvironment(?Environment $environment): self
     {
         $this->environment = $environment;
 
         return $this;
     }
 
-    /**
-     * Get environment.
-     *
-     * @return \EMS\CoreBundle\Entity\Environment
-     */
-    public function getEnvironment()
+    public function getEnvironment(): Environment
     {
+        if (null === $this->environment) {
+            throw new \RuntimeException('Missing revision');
+        }
+
         return $this->environment;
     }
 

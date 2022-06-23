@@ -1,46 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:getContentTypes\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Form/Search.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:removeFilter\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Form/Search.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:setContentTypes\\(\\) has parameter \\$contentTypes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Form/Search.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:setEnvironments\\(\\) has parameter \\$environments with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Form/Search.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:\\$contentType has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Form/Search.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:\\$contentTypes type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Form/Search.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:\\$environments type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Form/Search.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:\\$filters type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Form/Search.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\SearchFilter\\:\\:generateEsFilter\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/Form/SearchFilter.php

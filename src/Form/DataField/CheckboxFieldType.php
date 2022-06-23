@@ -26,12 +26,12 @@ class CheckboxFieldType extends DataFieldType
      */
     public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
-        $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
+        $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
             $dataField->setBooleanValue($sourceArray ? true : false);
         }
 
-        return [$dataField->getFieldType()->getName()];
+        return [$dataField->giveFieldType()->getName()];
     }
 
     /**
@@ -102,12 +102,12 @@ class CheckboxFieldType extends DataFieldType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
+        if (!$data->giveFieldType()->getDeleted()) {
             /*
              * by default it serialize the text value.
              * It can be overrided.
              */
-            $out[$data->getFieldType()->getName()] = $data->getBooleanValue();
+            $out[$data->giveFieldType()->getName()] = $data->getBooleanValue();
         }
     }
 

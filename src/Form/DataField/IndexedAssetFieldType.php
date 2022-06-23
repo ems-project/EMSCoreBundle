@@ -24,14 +24,14 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class IndexedAssetFieldType extends DataFieldType
 {
-    /** @var FileService */
-    private $fileService;
+    private FileService $fileService;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService)
-    {
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        FormRegistryInterface $formRegistry,
+        ElasticsearchService $elasticsearchService,
+        FileService $fileService
+    ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
         $this->fileService = $fileService;
     }
@@ -116,12 +116,14 @@ class IndexedAssetFieldType extends DataFieldType
         return $dataField;
     }
 
-    private function testDataField(DataField $dataField)
+    private function testDataField(DataField $dataField): void
     {
         $raw = $dataField->getRawData();
 
         if (!\is_array($raw) || empty($raw) || empty($raw['sha1'])) {
-            if (isset($dataField->getFieldType()->getRestrictionOptions()['mandatory']) && $dataField->getFieldType()->getRestrictionOptions()['mandatory']) {
+            $restrictionOptions = $dataField->giveFieldType()->getRestrictionOptions();
+
+            if (isset($restrictionOptions['mandatory']) && $restrictionOptions['mandatory']) {
                 $dataField->addMessage('This entry is required');
             }
             $dataField->setRawData(null);
@@ -140,7 +142,7 @@ class IndexedAssetFieldType extends DataFieldType
     {
         $out = parent::viewTransform($dataField);
 
-        if (empty($out['sha1'])) {
+        if (\is_array($out) && empty($out['sha1'])) {
             $out = null;
         }
 

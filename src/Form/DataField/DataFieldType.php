@@ -10,6 +10,7 @@ use EMS\CoreBundle\Form\Field\SelectPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\FormView;
@@ -23,12 +24,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 abstract class DataFieldType extends AbstractType
 {
-    /** @var AuthorizationCheckerInterface */
-    protected $authorizationChecker;
-    /** @var FormRegistryInterface */
-    protected $formRegistry;
-    /** @var ElasticsearchService */
-    protected $elasticsearchService;
+    protected AuthorizationCheckerInterface $authorizationChecker;
+    protected FormRegistryInterface $formRegistry;
+    protected ElasticsearchService $elasticsearchService;
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService)
     {
@@ -81,13 +79,13 @@ abstract class DataFieldType extends AbstractType
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
      *
-     * @param array<mixed>|string|int|float|null $data
+     * @param array<mixed>|string|int|float|bool|null $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $out = new DataField();
 
-        if ((\is_string($data) && '' === $data) || (\is_array($data) && 0 === \count($data))) {
+        if ('' === $data || (\is_array($data) && 0 === \count($data))) {
             $out->setRawData(null);
         } else {
             $out->setRawData($data);
@@ -102,7 +100,7 @@ abstract class DataFieldType extends AbstractType
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
      *
-     * @return array<mixed>|string|int|float|null
+     * @return array<mixed>|string|int|float|bool|null
      */
     public function viewTransform(DataField $dataField)
     {
@@ -114,7 +112,7 @@ abstract class DataFieldType extends AbstractType
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
      *
-     * @return array<mixed>|string|int|float|null
+     * @return array<mixed>|string|int|float|bool|null
      */
     public function reverseModelTransform(DataField $dataField)
     {
@@ -126,7 +124,7 @@ abstract class DataFieldType extends AbstractType
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
      *
-     * @param array<mixed>|string|int|float|null $data
+     * @param array<mixed>|string|int|float|bool|null $data
      */
     public function modelTransform($data, FieldType $fieldType): DataField
     {
@@ -214,8 +212,10 @@ abstract class DataFieldType extends AbstractType
 
     /**
      * get the data value(s), as string, for the symfony form) in the context of this field.
+     *
+     * @param array<mixed> $options
      */
-    public function getDataValue(DataField &$dataValues, array $options)
+    public function getDataValue(DataField &$dataValues, array $options): void
     {
         //TODO: should be abstract ??
         throw new \Exception('This function should never be called');
@@ -223,8 +223,11 @@ abstract class DataFieldType extends AbstractType
 
     /**
      * set the data value(s) from a string recieved from the symfony form) in the context of this field.
+     *
+     * @param mixed        $input
+     * @param array<mixed> $options
      */
-    public function setDataValue($input, DataField &$dataValues, array $options)
+    public function setDataValue($input, DataField &$dataValues, array $options): void
     {
         //TODO: should be abstract ??
         throw new \Exception('This function should never be called');
@@ -270,6 +273,8 @@ abstract class DataFieldType extends AbstractType
     /**
      * See if we can asume that we should find this field directly or if its a more complex type such as file or date range.
      *
+     * @param array<mixed> $option
+     *
      * @deprecated
      */
     public static function isVirtualField(array $option): bool
@@ -286,12 +291,12 @@ abstract class DataFieldType extends AbstractType
      */
     public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
-        $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
+        $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
             $dataField->setRawData($sourceArray);
         }
 
-        return [$dataField->getFieldType()->getName()];
+        return [$dataField->giveFieldType()->getName()];
     }
 
     /**
@@ -311,7 +316,9 @@ abstract class DataFieldType extends AbstractType
         $dataFieldType = $form->getConfig()->getType()->getInnerType();
         if ($form->getErrors()->count() > 0 && !$dataFieldType->isContainer() && $form->has('value')) {
             foreach ($form->getErrors() as $error) {
-                $form->get('value')->addError($error);
+                if ($error instanceof FormError) {
+                    $form->get('value')->addError($error);
+                }
             }
         }
     }
@@ -324,12 +331,12 @@ abstract class DataFieldType extends AbstractType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
+        if (!$data->giveFieldType()->getDeleted()) {
             /*
              * by default it serialize the text value.
              * It can be overrided.
              */
-            $out[$data->getFieldType()->getName()] = $data->getTextValue();
+            $out[$data->giveFieldType()->getName()] = $data->getTextValue();
         }
     }
 
@@ -384,9 +391,14 @@ abstract class DataFieldType extends AbstractType
     {
         $isValidMandatory = true;
         //Get FieldType mandatory option
-        $restrictionOptions = $dataField->getFieldType()->getRestrictionOptions();
+        $restrictionOptions = $dataField->giveFieldType()->getRestrictionOptions();
         if (isset($restrictionOptions['mandatory']) && true == $restrictionOptions['mandatory']) {
-            if (null === $parent || !isset($restrictionOptions['mandatory_if']) || null === $parent->getRawData() || !empty($this->resolve($masterRawData ?? [], $parent->getRawData(), $restrictionOptions['mandatory_if']))) {
+            $parentRawData = $parent ? $parent->getRawData() : [];
+            $parentRawDataArray = \is_array($parentRawData) ? $parentRawData : [];
+
+            if (null === $parent || !isset($restrictionOptions['mandatory_if'])
+                || null === $parent->getRawData()
+                || !empty($this->resolve($masterRawData ?? [], $parentRawDataArray, $restrictionOptions['mandatory_if']))) {
                 //Get rawData
                 $rawData = $dataField->getRawData();
                 if (null === $rawData || (\is_string($rawData) && '' === $rawData) || (\is_array($rawData) && 0 === \count($rawData))) {
@@ -427,11 +439,14 @@ abstract class DataFieldType extends AbstractType
         if (!$parent) {
             return false;
         }
-        if (isset($parent->getRawData()['_ems_internal_deleted']) && 'deleted' == $parent->getRawData()['_ems_internal_deleted']) {
+
+        $parentRawData = $parent->getRawData();
+
+        if (\is_array($parentRawData) && isset($parentRawData['_ems_internal_deleted']) && 'deleted' == $parentRawData['_ems_internal_deleted']) {
             return true;
         }
 
-        return $parent->getParent() ? $this->hasDeletedParent($parent->getParent()) : false;
+        return $parent->getParent() && $this->hasDeletedParent($parent->getParent());
     }
 
     /**

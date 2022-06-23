@@ -35,14 +35,14 @@ class NestedFieldType extends DataFieldType
      */
     public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
-        $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
+        $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
             foreach ($dataField->getChildren() as $child) {
                 $child->updateDataValue($sourceArray);
             }
         }
 
-        return [$dataField->getFieldType()->getName()];
+        return [$dataField->giveFieldType()->getName()];
     }
 
     /**
@@ -107,18 +107,21 @@ class NestedFieldType extends DataFieldType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (null == $data->getFieldType()) {
+        if (null == $data->giveFieldType()) {
             $tmp = [];
             /** @var DataField $child */
             foreach ($data->getChildren() as $child) {
 //                 $className = $child->getFieldType()->getType();
 //                 $class = new $className;
-                $class = $this->formRegistry->getType($child->getFieldType()->getType());
-                $class->buildObjectArray($child, $tmp);
+                $class = $this->formRegistry->getType($child->giveFieldType()->getType());
+
+                if (\method_exists($class, 'buildObjectArray')) {
+                    $class->buildObjectArray($child, $tmp);
+                }
             }
             $out[] = $tmp;
-        } elseif (!$data->getFieldType()->getDeleted()) {
-            $out[$data->getFieldType()->getName()] = [];
+        } elseif (!$data->giveFieldType()->getDeleted()) {
+            $out[$data->giveFieldType()->getName()] = [];
         }
     }
 

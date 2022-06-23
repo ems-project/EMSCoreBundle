@@ -29,8 +29,7 @@ class PasswordFieldType extends DataFieldType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * {@inheritDoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -133,13 +132,13 @@ class PasswordFieldType extends DataFieldType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            switch ($data->getFieldType()->getDisplayOptions()['encryption']) {
+        if (!$data->giveFieldType()->getDeleted()) {
+            switch ($data->giveFieldType()->getDisplayOptions()['encryption']) {
                 case 'md5':
-                    $out[$data->getFieldType()->getName()] = \md5($data->getTextValue());
+                    $out[$data->giveFieldType()->getName()] = \md5($data->getTextValue());
                     break;
                 default:
-                    $out[$data->getFieldType()->getName()] = \sha1($data->getTextValue());
+                    $out[$data->giveFieldType()->getName()] = \sha1($data->getTextValue());
                     break;
             }
         }

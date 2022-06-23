@@ -16,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChoiceFieldType extends DataFieldType
 {
-    private $fakeIndex = false;
+    private ?int $fakeIndex = null;
 
     public function getLabel(): string
     {
@@ -33,9 +33,9 @@ class ChoiceFieldType extends DataFieldType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            if ($data->getFieldType()->getDisplayOptions()['multiple']) {
-                $out[$data->getFieldType()->getName()] = $data->getArrayTextValue();
+        if (!$data->giveFieldType()->getDeleted()) {
+            if ($data->giveFieldType()->getDisplayOptions()['multiple']) {
+                $out[$data->giveFieldType()->getName()] = $data->getArrayTextValue();
             } else {
                 parent::buildObjectArray($data, $out);
             }
@@ -52,7 +52,7 @@ class ChoiceFieldType extends DataFieldType
     public function choiceAttr($choiceValue, $key, $value): array
     {
         $out = [];
-        if (false !== $this->fakeIndex && \is_int($choiceValue) && $choiceValue >= $this->fakeIndex) {
+        if (null !== $this->fakeIndex && \is_int($choiceValue) && $choiceValue >= $this->fakeIndex) {
             $out['class'] = 'input-to-hide';
         }
 
@@ -213,7 +213,7 @@ class ChoiceFieldType extends DataFieldType
     {
         $temp = parent::viewTransform($dataField);
         $out = [];
-        if ($dataField->getFieldType()->getDisplayOptions()['multiple']) {
+        if ($dataField->giveFieldType()->getDisplayOptions()['multiple']) {
             if (empty($temp)) {
                 $out = [];
             } elseif (\is_string($temp)) {

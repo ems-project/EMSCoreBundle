@@ -38,20 +38,20 @@ class TimeFieldType extends DataFieldType
      */
     public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
-        $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
+        $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
-            $format = $dataField->getFieldType()->getMappingOptions()['format'];
+            $format = $dataField->giveFieldType()->getMappingOptions()['format'];
             $format = DateFieldType::convertJavaDateFormat($format);
 
             $timeObject = \DateTime::createFromFormat($format, \strval($sourceArray));
             if ($timeObject) {
-                $dataField->setRawData($timeObject->format(\DateTime::ISO8601));
+                $dataField->setRawData($timeObject->format(\DateTimeInterface::ISO8601));
             } else {
                 $dataField->addMessage('Not able to parse the date');
             }
         }
 
-        return [$dataField->getFieldType()->getName()];
+        return [$dataField->giveFieldType()->getName()];
     }
 
     /**
@@ -89,9 +89,8 @@ class TimeFieldType extends DataFieldType
             return ''; //empty array means null/empty
         }
 
-        $format = $this->getFormat($dataField->getFieldType()->getOptions());
+        $format = $this->getFormat($dataField->giveFieldType()->getOptions());
 
-        /** @var \DateTime $converted */
         $dateTime = \DateTime::createFromFormat(TimeFieldType::STOREFORMAT, \strval($out));
         if ($dateTime) {
             return $dateTime->format($format);

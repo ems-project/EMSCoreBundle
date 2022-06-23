@@ -25,8 +25,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class AssetFieldType extends DataFieldType
 {
-    /** @var FileService */
-    private $fileService;
+    private FileService $fileService;
 
     /**
      * {@inheritDoc}
@@ -141,7 +140,7 @@ class AssetFieldType extends DataFieldType
             $data = [$rawData];
         }
 
-        if (empty($data) && $dataField->getFieldType()->getRestrictionOptions()['mandatory'] ?? false) {
+        if (empty($data) && $dataField->giveFieldType()->getRestrictionOptions()['mandatory'] ?? false) {
             $dataField->addMessage('This entry is required');
             $dataField->setRawData(null);
         }
@@ -181,7 +180,7 @@ class AssetFieldType extends DataFieldType
         }
 
         $out = parent::viewTransform($dataField);
-        if (true !== $fieldType->getDisplayOption('multiple') && empty($out['sha1'])) {
+        if (true !== $fieldType->getDisplayOption('multiple') && \is_array($out) && empty($out['sha1'])) {
             $out = null;
         }
 

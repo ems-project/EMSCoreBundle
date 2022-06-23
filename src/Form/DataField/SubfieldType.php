@@ -26,7 +26,7 @@ class SubfieldType extends DataFieldType
      */
     public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
-        //do nothing as it's a virtual field
+        return [];
     }
 
     /**

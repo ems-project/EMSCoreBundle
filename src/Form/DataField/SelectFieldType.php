@@ -24,8 +24,7 @@ class SelectFieldType extends DataFieldType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * {@inheritDoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -68,9 +67,9 @@ class SelectFieldType extends DataFieldType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            if ($data->getFieldType()->getDisplayOptions()['multiple']) {
-                $out[$data->getFieldType()->getName()] = $data->getArrayTextValue();
+        if (!$data->giveFieldType()->getDeleted()) {
+            if ($data->giveFieldType()->getDisplayOptions()['multiple']) {
+                $out[$data->giveFieldType()->getName()] = $data->getArrayTextValue();
             } else {
                 parent::buildObjectArray($data, $out);
             }
@@ -128,9 +127,8 @@ class SelectFieldType extends DataFieldType
         if (isset($data['value'])) {
             $value = $data['value'];
         }
-        $out = parent::reverseViewTransform($value, $fieldType);
 
-        return $out;
+        return parent::reverseViewTransform($value, $fieldType);
     }
 
     /**
@@ -139,7 +137,7 @@ class SelectFieldType extends DataFieldType
     public function viewTransform(DataField $dataField)
     {
         $temp = parent::viewTransform($dataField);
-        if ($dataField->getFieldType()->getDisplayOptions()['multiple']) {
+        if ($dataField->giveFieldType()->getDisplayOptions()['multiple']) {
             if (empty($temp)) {
                 $out = [];
             } elseif (\is_string($temp)) {

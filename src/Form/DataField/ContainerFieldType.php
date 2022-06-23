@@ -65,7 +65,6 @@ class ContainerFieldType extends DataFieldType
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
 
-        /** @var FieldType $fieldType */
         foreach ($fieldType->getChildren() as $child) {
             if (!$child->getDeleted()) {
                 /* merge the default options with the ones specified by the user */

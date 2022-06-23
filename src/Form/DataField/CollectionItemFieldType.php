@@ -100,12 +100,14 @@ class CollectionItemFieldType extends DataFieldType
             foreach ($data->getChildren() as $child) {
 //                 $className = $child->getFieldType()->getType();
 //                 $class = new $className;
-                $class = $this->formRegistry->getType($child->getFieldType()->getType());
-                $class->buildObjectArray($child, $tmp);
+                $class = $this->formRegistry->getType($child->giveFieldType()->getType());
+                if (\method_exists($class, 'buildObjectArray')) {
+                    $class->buildObjectArray($child, $tmp);
+                }
             }
             $out[] = $tmp;
-        } elseif (!$data->getFieldType()->getDeleted()) {
-            $out[$data->getFieldType()->getName()] = [];
+        } elseif (!$data->giveFieldType()->getDeleted()) {
+            $out[$data->giveFieldType()->getName()] = [];
         }
     }
 

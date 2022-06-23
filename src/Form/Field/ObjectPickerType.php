@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
-use Symfony\Component\Form\ChoiceList\Factory\ChoiceListFactoryInterface;
+use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
@@ -10,10 +10,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ObjectPickerType extends Select2Type
 {
-    /** @var ChoiceListFactoryInterface */
-    private $choiceListFactory;
+    private ObjectChoiceListFactory $choiceListFactory;
 
-    public function __construct(ChoiceListFactoryInterface $factory)
+    public function __construct(ObjectChoiceListFactory $factory)
     {
         $this->choiceListFactory = $factory;
         parent::__construct($factory);
@@ -60,12 +59,7 @@ class ObjectPickerType extends Select2Type
         ]);
     }
 
-    /**
-     * Returns the choice list factory (getter function).
-     *
-     * @return ChoiceListFactoryInterface
-     */
-    public function getChoiceListFactory()
+    public function getChoiceListFactory(): ObjectChoiceListFactory
     {
         return $this->choiceListFactory;
     }

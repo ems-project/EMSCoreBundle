@@ -1858,7 +1858,7 @@ class DataService
      * @throws PrivilegeException
      * @throws Throwable
      */
-    public function updateReferers(UpdateRevisionReferersEvent $event)
+    public function updateReferers(UpdateRevisionReferersEvent $event): void
     {
         $form = null;
         foreach ($event->getToCleanOuuids() as $ouuid) {

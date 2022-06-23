@@ -23,12 +23,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class JsonMenuLinkFieldType extends DataFieldType
 {
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var Decoder */
-    private $decoder;
-    /** @var ElasticaService */
-    private $elasticaService;
+    private ContentTypeService $contentTypeService;
+    private Decoder $decoder;
+    private ElasticaService $elasticaService;
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, ContentTypeService $contentTypeService, ElasticaService $elasticaService, Decoder $decoder)
     {
@@ -53,8 +50,8 @@ class JsonMenuLinkFieldType extends DataFieldType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            $out[$data->getFieldType()->getName()] = $data->getArrayTextValue();
+        if (!$data->giveFieldType()->getDeleted()) {
+            $out[$data->giveFieldType()->getName()] = $data->getArrayTextValue();
         }
     }
 
@@ -109,7 +106,7 @@ class JsonMenuLinkFieldType extends DataFieldType
         }
 
         $builder->add('value', ChoiceType::class, [
-                'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
+                'label' => ($options['label'] ?? $fieldType->getName()),
                 'required' => false,
                 'disabled' => $this->isDisabled($options),
                 'choices' => $choices,

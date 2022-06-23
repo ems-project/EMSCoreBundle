@@ -699,7 +699,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set rawData.
      *
-     * @param array<mixed>|string|int|float|null $rawData
+     * @param array<mixed>|string|int|float|bool|null $rawData
      *
      * @return DataField
      */
@@ -713,7 +713,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get rawData.
      *
-     * @return array<mixed>|string|int|float|null
+     * @return array<mixed>|string|int|float|bool|null
      */
     public function getRawData()
     {

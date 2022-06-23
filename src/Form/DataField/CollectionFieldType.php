@@ -27,12 +27,15 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class CollectionFieldType extends DataFieldType
 {
-    /** @var DataService */
-    private $dataService;
-    /** @var LoggerInterface */
-    private $logger;
+    private DataService $dataService;
+    private LoggerInterface $logger;
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, DataService $dataService, LoggerInterface $logger)
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        FormRegistryInterface $formRegistry,
+        ElasticsearchService $elasticsearchService,
+        DataService $dataService,
+        LoggerInterface $logger)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
         $this->dataService = $dataService;
@@ -54,7 +57,7 @@ class CollectionFieldType extends DataFieldType
      */
     public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
-        $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
+        $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
             if (!\is_array($sourceArray)) {
                 $sourceArray = [$sourceArray];
@@ -65,7 +68,7 @@ class CollectionFieldType extends DataFieldType
                 $colItem = new DataField();
                 $colItem->setOrderKey($idx);
                 $colItem->setFieldType(null); // it's a collection item
-                foreach ($dataField->getFieldType()->getChildren() as $grandChildKey => $childFieldType) {
+                foreach ($dataField->giveFieldType()->getChildren() as $grandChildKey => $childFieldType) {
                     /** @var FieldType $childFieldType */
                     if (!$childFieldType->getDeleted()) {
                         $grandChild = new DataField();
@@ -78,7 +81,7 @@ class CollectionFieldType extends DataFieldType
                         } else {
                             $this->logger->warning('form.data_field.collection.import_not_an_array', [
                                 'import_data' => $item,
-                                'field_name' => $dataField->getFieldType()->getName(),
+                                'field_name' => $dataField->giveFieldType()->getName(),
                             ]);
                         }
 
@@ -91,7 +94,7 @@ class CollectionFieldType extends DataFieldType
             }
         }
 
-        return [$dataField->getFieldType()->getName()];
+        return [$dataField->giveFieldType()->getName()];
     }
 
     public function getParent(): string
@@ -152,9 +155,10 @@ class CollectionFieldType extends DataFieldType
         //Madatory Validation
         //$isValid = $isValid && $this->isMandatory($dataField);
 
-        $restrictionOptions = $dataField->getFieldType()->getRestrictionOptions();
+        $restrictionOptions = $dataField->giveFieldType()->getRestrictionOptions();
+        $rawData = $dataField->getRawData();
 
-        if (!empty($restrictionOptions['min']) && (null === $dataField->getRawData() ? 0 : \count($dataField->getRawData())) < $restrictionOptions['min']) {
+        if (!empty($restrictionOptions['min']) && (!\is_array($rawData) ? 0 : \count($rawData)) < $restrictionOptions['min']) {
             if (1 == $restrictionOptions['min']) {
                 $dataField->addMessage('At least 1 item is required');
             } else {
@@ -220,8 +224,8 @@ class CollectionFieldType extends DataFieldType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            $out[$data->getFieldType()->getName()] = [];
+        if (!$data->giveFieldType()->getDeleted()) {
+            $out[$data->giveFieldType()->getName()] = [];
         }
     }
 

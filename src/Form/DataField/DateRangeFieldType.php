@@ -30,17 +30,17 @@ class DateRangeFieldType extends DataFieldType
      */
     public function viewTransform(DataField $dataField)
     {
-        $options = $dataField->getFieldType()->getOptions();
-        if (!empty($dataField->getRawData())) {
-            $temp = $dataField->getRawData();
+        $options = $dataField->giveFieldType()->getOptions();
+        $rawData = $dataField->getRawData();
 
-            $dateFrom = \DateTime::createFromFormat(\DateTime::ISO8601, $temp[$options['mappingOptions']['fromDateMachineName']]);
-            $dateTo = \DateTime::createFromFormat(\DateTime::ISO8601, $temp[$options['mappingOptions']['toDateMachineName']]);
+        if (\is_array($rawData) && !empty($dataField->getRawData())) {
+            $dateFrom = \DateTime::createFromFormat(\DateTimeInterface::ISO8601, $rawData[$options['mappingOptions']['fromDateMachineName']]);
+            $dateTo = \DateTime::createFromFormat(\DateTimeInterface::ISO8601, $rawData[$options['mappingOptions']['toDateMachineName']]);
 
             if ($dateFrom && $dateTo) {
-                $displayformat = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
+                $displayFormat = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
 
-                return ['value' => $dateFrom->format($displayformat).' - '.$dateTo->format($displayformat)];
+                return ['value' => $dateFrom->format($displayFormat).' - '.$dateTo->format($displayFormat)];
             }
         }
 
@@ -133,18 +133,20 @@ class DateRangeFieldType extends DataFieldType
      */
     public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
-        $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
+        $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
-            if (!$dataField->getFieldType()->getMappingOptions()['nested']) {
+            $mappingOptions = $dataField->giveFieldType()->getMappingOptions();
+
+            if (!$mappingOptions['nested']) {
                 $out = [];
                 $in = [];
-                if (isset($sourceArray[$dataField->getFieldType()->getMappingOptions()['fromDateMachineName']])) {
-                    $out[] = $dataField->getFieldType()->getMappingOptions()['fromDateMachineName'];
-                    $in[$dataField->getFieldType()->getMappingOptions()['fromDateMachineName']] = $sourceArray[$dataField->getFieldType()->getMappingOptions()['fromDateMachineName']];
+                if (isset($sourceArray[$mappingOptions['fromDateMachineName']])) {
+                    $out[] = $mappingOptions['fromDateMachineName'];
+                    $in[$mappingOptions['fromDateMachineName']] = $sourceArray[$mappingOptions['fromDateMachineName']];
                 }
-                if (isset($sourceArray[$dataField->getFieldType()->getMappingOptions()['toDateMachineName']])) {
-                    $out[] = $dataField->getFieldType()->getMappingOptions()['toDateMachineName'];
-                    $in[$dataField->getFieldType()->getMappingOptions()['toDateMachineName']] = $sourceArray[$dataField->getFieldType()->getMappingOptions()['toDateMachineName']];
+                if (isset($sourceArray[$mappingOptions['toDateMachineName']])) {
+                    $out[] = $mappingOptions['toDateMachineName'];
+                    $in[$mappingOptions['toDateMachineName']] = $sourceArray[$mappingOptions['toDateMachineName']];
                 }
                 $dataField->setRawData($in);
 
@@ -154,7 +156,7 @@ class DateRangeFieldType extends DataFieldType
             }
         }
 
-        return [$dataField->getFieldType()->getName()];
+        return [$dataField->giveFieldType()->getName()];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -210,7 +212,7 @@ class DateRangeFieldType extends DataFieldType
         return $out;
     }
 
-    public static function convertJavascriptDateRangeFormat($format)
+    public static function convertJavascriptDateRangeFormat(string $format): string
     {
         $dateFormat = $format;
         //see http://www.daterangepicker.com/#examples
@@ -227,6 +229,9 @@ class DateRangeFieldType extends DataFieldType
         return $dateFormat;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function generateMapping(FieldType $current): array
     {
         $out = [
@@ -262,9 +267,9 @@ class DateRangeFieldType extends DataFieldType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            if ($data->getFieldType()->getMappingOptions()['nested']) {
-                $out[$data->getFieldType()->getName()] = $data->getRawData();
+        if (!$data->giveFieldType()->getDeleted()) {
+            if ($data->giveFieldType()->getMappingOptions()['nested']) {
+                $out[$data->giveFieldType()->getName()] = $data->getRawData();
             } else {
                 $rawData = $data->getRawData();
                 if (!\is_array($rawData) || empty($rawData)) {

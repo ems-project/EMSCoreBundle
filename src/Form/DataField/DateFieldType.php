@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\Helpers\Standard\DateTime;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -93,7 +94,7 @@ class DateFieldType extends DataFieldType
     {
         $data = parent::viewTransform($dataField);
         $out = [];
-        $format = DateFieldType::convertJavascriptDateFormat($dataField->getFieldType()->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
+        $format = DateFieldType::convertJavascriptDateFormat($dataField->giveFieldType()->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
         if (\is_iterable($data) && !empty($data)) {
             foreach ($data as $date) {
                 if ($date) {
@@ -135,9 +136,9 @@ class DateFieldType extends DataFieldType
      */
     public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
-        $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
+        $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
-            $format = $dataField->getFieldType()->getMappingOptions()['format'];
+            $format = $dataField->giveFieldType()->getMappingOptions()['format'];
             $format = DateFieldType::convertJavaDateFormat($format);
 
             if (null == $sourceArray) {
@@ -158,7 +159,7 @@ class DateFieldType extends DataFieldType
             $dataField->setRawData($data);
         }
 
-        return [$dataField->getFieldType()->getName()];
+        return [$dataField->giveFieldType()->getName()];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -183,7 +184,7 @@ class DateFieldType extends DataFieldType
         $fieldType = $builder->getOptions()['metadata'];
 
         $builder->add('value', TextType::class, [
-                'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
+                'label' => ($options['label'] ?? $fieldType->getName()),
                 'required' => false,
                 'disabled' => $this->isDisabled($options),
                 'attr' => [
@@ -213,26 +214,25 @@ class DateFieldType extends DataFieldType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            $format = $data->getFieldType()->getMappingOptions()['format'];
-            $multidate = $data->getFieldType()->getDisplayOptions()['multidate'];
+        if (!$data->giveFieldType()->getDeleted()) {
+            $format = $data->giveFieldType()->getMappingOptions()['format'];
+            $multidate = $data->giveFieldType()->getDisplayOptions()['multidate'];
 
             $format = DateFieldType::convertJavaDateFormat($format);
+            $dataRawData = $data->getRawData();
 
             if ($multidate) {
                 $dates = [];
-                if (null !== $data->getRawData()) {
-                    foreach ($data->getRawData() as $dataValue) {
-                        /** @var \DateTime $converted */
-                        $dateTime = \DateTime::createFromFormat(\DateTime::ISO8601, $dataValue);
+                if (\is_array($dataRawData)) {
+                    foreach ($dataRawData as $dataValue) {
+                        $dateTime = DateTime::createFromFormat($dataValue, \DateTimeInterface::ISO8601);
                         $dates[] = $dateTime->format($format);
                     }
                 }
             } else {
                 $dates = null;
-                if (null !== $data->getRawData() && \count($data->getRawData()) >= 1) {
-                    /** @var \DateTime $converted */
-                    $dateTime = \DateTime::createFromFormat(\DateTime::ISO8601, $data->getRawData()[0]);
+                if (\is_array($dataRawData) && (\count($dataRawData) >= 1)) {
+                    $dateTime = \DateTime::createFromFormat(\DateTimeInterface::ISO8601, $dataRawData[0]);
                     if ($dateTime) {
                         $dates = $dateTime->format($format);
                     } else {
@@ -242,11 +242,11 @@ class DateFieldType extends DataFieldType
                 }
             }
 
-            $out[$data->getFieldType()->getName()] = $dates;
+            $out[$data->giveFieldType()->getName()] = $dates;
         }
     }
 
-    public static function convertJavaDateFormat($format)
+    public static function convertJavaDateFormat(string $format): string
     {
         $dateFormat = $format;
         //TODO: naive approch....find a way to comvert java date format into php
@@ -262,7 +262,7 @@ class DateFieldType extends DataFieldType
         return $dateFormat;
     }
 
-    public static function convertJavascriptDateFormat($format)
+    public static function convertJavascriptDateFormat(string $format): string
     {
         $dateFormat = $format;
         //see https://bootstrap-datepicker.readthedocs.io/en/latest/options.html#format

@@ -6,7 +6,6 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
-use EMS\CoreBundle\Form\Field\ObjectChoiceLoader;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\QuerySearchPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
@@ -28,14 +27,14 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class DataLinkFieldType extends DataFieldType
 {
-    /** @var EventDispatcherInterface */
-    protected $dispatcher;
+    protected EventDispatcherInterface $dispatcher;
 
-    /**
-     * Contructor.
-     */
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, EventDispatcherInterface $dispatcher)
-    {
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        FormRegistryInterface $formRegistry,
+        ElasticsearchService $elasticsearchService,
+        EventDispatcherInterface $dispatcher
+    ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
         $this->dispatcher = $dispatcher;
     }
@@ -45,18 +44,19 @@ class DataLinkFieldType extends DataFieldType
      */
     public function postFinalizeTreatment(string $type, string $id, DataField $dataField, ?array $previousData): ?array
     {
-        if (!empty($dataField->getFieldType()->getExtraOptions()['updateReferersField'])) {
-            $referersToAdd = [];
-            $referersToRemove = [];
+        $name = $dataField->giveFieldType()->getName();
 
-            if (!empty($previousData[$dataField->getFieldType()->getName()])) {
-                $referersToRemove = $previousData[$dataField->getFieldType()->getName()];
-            }
-            if (!empty($dataField->getRawData())) {
-                $referersToAdd = $dataField->getRawData();
-            }
+        if (!empty($dataField->giveFieldType()->getExtraOptions()['updateReferersField'])) {
+            $rawData = $dataField->getRawData();
 
-            $this->dispatcher->dispatch(UpdateRevisionReferersEvent::NAME, new UpdateRevisionReferersEvent($type, $id, $dataField->getFieldType()->getExtraOptions()['updateReferersField'], $referersToRemove, $referersToAdd));
+            $referersToRemove = $previousData[$name] ?? [];
+            $referersToAdd = \is_array($rawData) ? $rawData[$name] : $rawData;
+
+            $referersToRemove = !\is_array($referersToRemove) ? [$referersToRemove] : $referersToRemove;
+            $referersToAdd = !\is_array($referersToAdd) ? [$referersToAdd] : $referersToAdd;
+
+            $event = new UpdateRevisionReferersEvent($type, $id, $dataField->giveFieldType()->getExtraOptions()['updateReferersField'], $referersToRemove, $referersToAdd);
+            $this->dispatcher->dispatch($event);
         }
 
         return parent::postFinalizeTreatment($type, $id, $dataField, $previousData);
@@ -84,13 +84,13 @@ class DataLinkFieldType extends DataFieldType
         if (\is_array($data)) {
             $out = [
                 'terms' => [
-                        $opt['nested'].$dataField->getFieldType()->getName() => $data,
+                        $opt['nested'].$dataField->giveFieldType()->getName() => $data,
                 ],
             ];
         } else {
             $out = [
                     'term' => [
-                            $opt['nested'].$dataField->getFieldType()->getName() => $data,
+                            $opt['nested'].$dataField->giveFieldType()->getName() => $data,
                     ],
             ];
         }
@@ -108,10 +108,10 @@ class DataLinkFieldType extends DataFieldType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            $options = $data->getFieldType()->getDisplayOptions();
+        if (!$data->giveFieldType()->getDeleted()) {
+            $options = $data->giveFieldType()->getDisplayOptions();
             if (isset($options['multiple']) && $options['multiple']) {
-                $out[$data->getFieldType()->getName()] = $data->getArrayTextValue();
+                $out[$data->giveFieldType()->getName()] = $data->getArrayTextValue();
             } else {
                 parent::buildObjectArray($data, $out);
             }
@@ -213,7 +213,6 @@ class DataLinkFieldType extends DataFieldType
         /** @var ObjectPickerType $objectPickerType */
         $objectPickerType = $this->formRegistry->getType(ObjectPickerType::class)->getInnerType();
 
-        /** @var ObjectChoiceLoader $loader */
         $loader = $objectPickerType->getChoiceListFactory()->createLoader($fieldType->getDisplayOptions()['type'], true /*count($choices) == 0 || !$fieldType->getDisplayOptions()['dynamicLoading']*/);
         $all = $loader->loadAll();
         if (\count($choices) > 0) {

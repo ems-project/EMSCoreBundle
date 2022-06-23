@@ -73,12 +73,12 @@ class NumberFieldType extends DataFieldType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
+        if (!$data->giveFieldType()->getDeleted()) {
             /*
              * by default it serialize the text value.
              * It must be overrided.
              */
-            $out[$data->getFieldType()->getName()] = $data->getRawData();
+            $out[$data->giveFieldType()->getName()] = $data->getRawData();
         }
     }
 

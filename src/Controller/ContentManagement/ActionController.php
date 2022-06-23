@@ -195,7 +195,7 @@ final class ActionController extends AbstractController
             }
 
             return $this->redirectToRoute('ems_core_action_index', [
-                    'contentType' => $action->getContentType()->getId(),
+                    'contentType' => $action->giveContentType()->getId(),
             ]);
         }
 
@@ -214,7 +214,7 @@ final class ActionController extends AbstractController
         return $this->render('@EMSCore/action/edit.html.twig', [
             'form' => $form->createView(),
             'action' => $action,
-            'contentType' => $action->getContentType(),
+            'contentType' => $action->giveContentType(),
         ]);
     }
 
@@ -244,7 +244,7 @@ final class ActionController extends AbstractController
         ]);
 
         return $this->redirectToRoute('ems_core_action_index', [
-            'contentType' => $action->getContentType()->getId(),
+            'contentType' => $action->giveContentType()->getId(),
         ]);
     }
 

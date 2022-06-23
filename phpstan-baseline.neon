@@ -1,51 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:getCirclesTo\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Template.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:getEnvironments\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Template.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:isEnvironmentExist\\(\\) has parameter \\$name with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Template.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:removeEnvironment\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Template.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:setCirclesTo\\(\\) has parameter \\$circlesTo with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Template.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:\\$circlesTo type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Template.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:\\$contentType has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Template.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:\\$environments has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Template.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:\\$preview has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Template.php
-
-		-
 			message: "#^Access to an undefined property EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:\\$expiresAt\\.$#"
 			count: 1
 			path: src/Entity/User.php

@@ -1,56 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method object\\:\\:deserialize\\(\\)\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonClass.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonClass\\:\\:__construct\\(\\) has parameter \\$constructorArguments with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonClass.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonClass\\:\\:__construct\\(\\) has parameter \\$properties with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonClass.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonClass\\:\\:fromJsonString\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonClass.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonClass\\:\\:handlePersistentCollections\\(\\) has parameter \\$properties with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonClass.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonClass\\:\\:jsonDeserialize\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonClass.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonClass\\:\\:updateProperty\\(\\) has parameter \\$value with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonClass.php
-
-		-
-			message: "#^Parameter \\#1 \\$argument of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonClass.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonClass\\:\\:\\$constructorArguments type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonClass.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonClass\\:\\:\\$properties type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonClass.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonDeserializer\\:\\:convertToDateTime\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/Helper/JsonDeserializer.php

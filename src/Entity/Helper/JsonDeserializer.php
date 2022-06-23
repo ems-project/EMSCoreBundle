@@ -55,7 +55,7 @@ abstract class JsonDeserializer
             return false;
         }
 
-        $keys = [JsonClass::CLASS_INDEX, JsonClass::CONSTRUCTOR_ARGUMNETS_INDEX, JsonClass::PROPERTIES_INDEX];
+        $keys = [JsonClass::CLASS_INDEX, JsonClass::CONSTRUCTOR_ARGUMENTS_INDEX, JsonClass::PROPERTIES_INDEX];
 
         foreach ($keys as $key) {
             if (!\array_key_exists($key, $array)) {

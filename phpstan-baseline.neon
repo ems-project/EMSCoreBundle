@@ -1,66 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Access to an undefined property EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:\\$expiresAt\\.$#"
-			count: 1
-			path: src/Entity/User.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:getAuthTokens\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/User.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:getCircles\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/User.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:removeAuthToken\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/User.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:setCircles\\(\\) has parameter \\$circles with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/User.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:setEmail\\(\\) has parameter \\$email with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/User.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:setUsername\\(\\) has parameter \\$username with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/User.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:\\$circles type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/User.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\UserInterface\\:\\:getAuthTokens\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/UserInterface.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\UserInterface\\:\\:getCircles\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/UserInterface.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\UserInterface\\:\\:removeAuthToken\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/UserInterface.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\UserInterface\\:\\:setCircles\\(\\) has parameter \\$circles with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/UserInterface.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:onKernelException\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/EventListener/RequestListener.php
@@ -2407,11 +2347,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$key of function openssl_pkey_get_private expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Parameter \\#1 \\$ouuid of method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:setOuuid\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Service/DataService.php
 

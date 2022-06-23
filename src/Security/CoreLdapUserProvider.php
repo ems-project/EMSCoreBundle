@@ -48,7 +48,7 @@ class CoreLdapUserProvider extends LdapUserProvider
             return $dbUser;
         }
 
-        $ldapUser = CoreLdapUser::fromLdap($authenticatedUser, $this->extraFields);
+        $ldapUser = new CoreLdapUser($authenticatedUser, $this->extraFields);
         $ldapUser->randomizePassword();
         $newUser = User::fromCoreLdap($ldapUser);
 
@@ -71,7 +71,7 @@ class CoreLdapUserProvider extends LdapUserProvider
     public function refreshUser(SymfonyUserInterface $user): SymfonyUserInterface
     {
         if ($user instanceof CoreLdapUser) {
-            return CoreLdapUser::fromLdap(new SymfonyLdapUser($user->getEntry(), $user->getUsername(), $user->getPassword(), $user->getRoles()), $this->extraFields);
+            return new CoreLdapUser(new SymfonyLdapUser($user->getEntry(), $user->getUsername(), $user->getPassword(), $user->getRoles()), $this->extraFields);
         }
 
         if (!$user instanceof UserInterface) {

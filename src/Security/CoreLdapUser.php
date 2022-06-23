@@ -4,77 +4,58 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Security;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Roles;
 use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Ldap\Security\LdapUser as SymfonyLdapUser;
-use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 final class CoreLdapUser implements SymfonyUserInterface, UserInterface
 {
-    /** @var \DateTime */
-    private $created;
-    /** @var array<string> */
-    private $circles;
-    /** @var string */
-    private $displayName;
-    /** @var string */
-    private $email;
-    /** @var bool */
-    private $enabled;
-    /** @var Entry */
-    private $entry;
-    /** @var string */
-    private $givenName;
-    /** @var string */
-    private $lastName;
-    /** @var \DateTime */
-    private $modified;
-    /** @var string|null */
-    private $password;
-    /** @var array<Role|string> */
-    private $roles;
-    /** @var string|null */
-    private $salt;
-    /** @var string */
-    private $username;
+    private \DateTime $created;
+    private string $displayName;
+    private string $email;
+    private Entry $entry;
+    private string $givenName;
+    private string $lastName;
+    private \DateTime $modified;
+    private ?string $password = null;
+    /** @var string[] */
+    private array $roles;
+    private ?string $salt;
+    private string $username;
 
-    private function __construct()
-    {
-    }
-
-    public function __toString(): string
-    {
-        return (string) $this->getUsername();
-    }
-
-    public static function fromLdap(SymfonyUserInterface $ldapUser, LdapExtraFields $extraFields): CoreLdapUser
+    public function __construct(SymfonyUserInterface $ldapUser, LdapExtraFields $extraFields)
     {
         if (!$ldapUser instanceof SymfonyLdapUser) {
             throw new \RuntimeException(\sprintf('Could not create ldap user. Instance should be of type %s', SymfonyLdapUser::class));
         }
 
         $now = new \DateTime('now');
+        $this->created = $now;
+        $this->modified = $now;
 
-        $user = new static();
-        $user->circles = [];
-        $user->created = $now;
-        $user->displayName = $extraFields->getDisplayName($ldapUser);
-        $user->enabled = true;
-        $user->email = $extraFields->getEmail($ldapUser);
-        $user->entry = $ldapUser->getEntry();
-        $user->modified = $now;
-        $user->givenName = $extraFields->getGivenName($ldapUser);
-        $user->lastName = $extraFields->getLastName($ldapUser);
-        $user->password = $ldapUser->getPassword();
-        $user->roles = $ldapUser->getRoles();
-        $user->salt = $ldapUser->getSalt();
-        $user->username = $ldapUser->getUsername();
+        /** @var string[] $ldapRoles */
+        $ldapRoles = $ldapUser->getRoles();
 
-        return $user;
+        $this->displayName = $extraFields->getDisplayName($ldapUser);
+        $this->email = $extraFields->getEmail($ldapUser);
+        $this->entry = $ldapUser->getEntry();
+        $this->givenName = $extraFields->getGivenName($ldapUser);
+        $this->lastName = $extraFields->getLastName($ldapUser);
+        $this->password = $ldapUser->getPassword();
+        $this->roles = $ldapRoles;
+        $this->salt = $ldapUser->getSalt();
+        $this->username = $ldapUser->getUsername();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getUsername();
     }
 
     public function randomizePassword(): void
@@ -137,7 +118,7 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
 
     public function getModified(): \DateTime
     {
-        return $this->getCreated();
+        return $this->modified;
     }
 
     public function getPassword(): ?string
@@ -145,6 +126,9 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
         return $this->password;
     }
 
+    /**
+     * @return string[]
+     */
     public function getRoles(): array
     {
         return $this->roles;
@@ -186,24 +170,24 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
     }
 
     /**
-     * @param array<string> $circles
+     * {@inheritDoc}
      */
-    public function setCircles($circles): self
+    public function setCircles(array $circles): self
     {
         return $this;
     }
 
-    public function setDisplayName($displayName): self
+    public function setDisplayName(string $displayName): self
     {
         return $this;
     }
 
-    public function setAllowedToConfigureWysiwyg($allowedToConfigureWysiwyg): self
+    public function setAllowedToConfigureWysiwyg(bool $allowedToConfigureWysiwyg): self
     {
         return $this;
     }
 
-    public function getAllowedToConfigureWysiwyg(): bool
+    public function getAllowedToConfigureWysiwyg(): ?bool
     {
         return false;
     }
@@ -218,7 +202,7 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
         return new WysiwygProfile();
     }
 
-    public function setWysiwygOptions($wysiwygOptions): self
+    public function setWysiwygOptions(?string $wysiwygOptions): self
     {
         return $this;
     }
@@ -228,17 +212,17 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
         return '';
     }
 
-    public function setLayoutBoxed($layoutBoxed): self
+    public function setLayoutBoxed(bool $layoutBoxed): self
     {
         return $this;
     }
 
-    public function setSidebarMini($sidebarMini): self
+    public function setSidebarMini(bool $sidebarMini): self
     {
         return $this;
     }
 
-    public function setEmailNotification($emailNotification): self
+    public function setEmailNotification(bool $emailNotification): self
     {
         return $this;
     }
@@ -248,7 +232,7 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
         return false;
     }
 
-    public function setSidebarCollapse($sidebarCollapse): self
+    public function setSidebarCollapse(bool $sidebarCollapse): self
     {
         return $this;
     }
@@ -258,38 +242,28 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
         return $this;
     }
 
-    public function removeAuthToken(AuthToken $authToken): self
+    public function removeAuthToken(AuthToken $authToken): void
     {
-        return $this;
     }
 
     /**
-     * @return iterable<AuthToken>
+     * {@inheritDoc}
      */
-    public function getAuthTokens(): iterable
+    public function getAuthTokens(): Collection
     {
-        return [];
+        return new ArrayCollection();
     }
 
     /**
-     * @return array{id: int|string, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}
+     * {@inheritDoc}
      */
     public function toArray(): array
     {
-        $roles = [];
-        foreach ($this->getRoles() as $role) {
-            if ($role instanceof Role) {
-                $roles[] = $role->getRole();
-            } else {
-                $roles[] = $role;
-            }
-        }
-
         return [
             'id' => \sha1($this->getEntry()->getDn()),
             'username' => $this->getUsername(),
             'displayName' => $this->getDisplayName(),
-            'roles' => $roles,
+            'roles' => $this->getRoles(),
             'email' => $this->getEmail(),
             'circles' => $this->getCircles(),
             'lastLogin' => $this->getLastLogin()->format('c'),

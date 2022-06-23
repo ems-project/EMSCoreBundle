@@ -1,26 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\SearchFilter\\:\\:generateEsFilter\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Form/SearchFilter.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\SearchFilter\\:\\:setBoost\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Form/SearchFilter.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\SearchFilter\\:\\:setOperator\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Form/SearchFilter.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\SearchFilter\\:\\:\\$search has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Form/SearchFilter.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\TreatNotifications\\:\\:getAccept\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/Form/TreatNotifications.php

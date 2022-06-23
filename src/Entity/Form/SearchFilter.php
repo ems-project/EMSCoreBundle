@@ -26,7 +26,7 @@ class SearchFilter implements JsonSerializable
      * @ORM\ManyToOne(targetEntity="Search", inversedBy="filters")
      * @ORM\JoinColumn(name="search_id", referencedColumnName="id")
      */
-    private $search;
+    private ?Search $search = null;
 
     /**
      * @var string
@@ -69,6 +69,9 @@ class SearchFilter implements JsonSerializable
         $this->booleanClause = 'must';
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function jsonSerialize()
     {
         return [
@@ -80,9 +83,12 @@ class SearchFilter implements JsonSerializable
         ];
     }
 
-    public function generateEsFilter()
+    /**
+     * @return array<mixed>
+     */
+    public function generateEsFilter(): ?array
     {
-        $out = false;
+        $out = null;
         if ($this->field || $this->pattern) {
             $field = $this->field;
 
@@ -269,7 +275,7 @@ class SearchFilter implements JsonSerializable
      *
      * @param string $operator
      */
-    public function setOperator($operator)
+    public function setOperator($operator): self
     {
         $this->operator = $operator;
 
@@ -291,7 +297,7 @@ class SearchFilter implements JsonSerializable
      *
      * @param float $boost
      */
-    public function setBoost($boost)
+    public function setBoost($boost): self
     {
         $this->boost = $boost;
 
@@ -308,26 +314,14 @@ class SearchFilter implements JsonSerializable
         return $this->id;
     }
 
-    /**
-     * Set search.
-     *
-     * @param \EMS\CoreBundle\Entity\Form\Search $search
-     *
-     * @return SearchFilter
-     */
-    public function setSearch(Search $search = null)
+    public function setSearch(?Search $search = null): self
     {
         $this->search = $search;
 
         return $this;
     }
 
-    /**
-     * Get search.
-     *
-     * @return \EMS\CoreBundle\Entity\Form\Search
-     */
-    public function getSearch()
+    public function getSearch(): ?Search
     {
         return $this->search;
     }

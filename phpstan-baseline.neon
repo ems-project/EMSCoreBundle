@@ -1,21 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\I18n\\:\\:getContent\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/I18n.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\I18n\\:\\:setContent\\(\\) has parameter \\$content with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/I18n.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\I18n\\:\\:\\$content type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/I18n.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\ManagedAlias\\:\\:getIndexes\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/ManagedAlias.php

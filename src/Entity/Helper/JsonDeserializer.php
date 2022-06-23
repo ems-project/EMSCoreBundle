@@ -2,13 +2,17 @@
 
 namespace EMS\CoreBundle\Entity\Helper;
 
+use EMS\Helpers\Standard\Json;
+
 abstract class JsonDeserializer
 {
-    public function deserialize(string $name, $value)
+    /**
+     * @param mixed $value
+     */
+    public function deserialize(string $name, $value): void
     {
         if ($this->isJsonClassArray($value)) {
-            /** @var JsonClass $subJson */
-            $subJson = JsonClass::fromJsonString(\json_encode($value));
+            $subJson = JsonClass::fromJsonString(Json::encode($value));
             $value = $subJson->jsonDeserialize();
         }
 
@@ -29,6 +33,9 @@ abstract class JsonDeserializer
         $this->{$name} = $value;
     }
 
+    /**
+     * @param array{'date': string, 'timezone': string} $value
+     */
     protected function convertToDateTime(array $value): \DateTime
     {
         $time = $value['date'];
@@ -37,18 +44,26 @@ abstract class JsonDeserializer
         return new \DateTime($time, $zone);
     }
 
+    /**
+     * @param array<mixed> $value
+     *
+     * @return array<mixed>
+     */
     protected function deserializeArray(array $value): array
     {
         $deserialized = [];
 
         foreach ($value as $item) {
-            $json = JsonClass::fromJsonString(\json_encode($item));
+            $json = JsonClass::fromJsonString(Json::encode($item));
             $deserialized[] = $json->jsonDeserialize();
         }
 
         return $deserialized;
     }
 
+    /**
+     * @param mixed $array
+     */
     private function isJsonClassArray($array): bool
     {
         if (!\is_array($array)) {

@@ -65,18 +65,18 @@ class SearchFieldOption
     private $icon;
 
     /**
-     * @var array
+     * @var string[]
      *
      * @ORM\Column(name="contentTypes", type="json_array")
      */
-    public $contentTypes;
+    public array $contentTypes = [];
 
     /**
-     * @var array
+     * @var string[]
      *
      * @ORM\Column(name="operators", type="json_array")
      */
-    public $operators;
+    public array $operators;
 
     /**
      * @ORM\PrePersist
@@ -92,12 +92,6 @@ class SearchFieldOption
             $this->orderKey = 0;
         }
     }
-
-    /******************************************************************
-     *
-     * Generated functions
-     *
-     *******************************************************************/
 
     /**
      * Get id.
@@ -254,41 +248,37 @@ class SearchFieldOption
     }
 
     /**
-     * @return array|null
+     * @return string[]
      */
-    public function getContentTypes()
+    public function getContentTypes(): array
     {
         return $this->contentTypes;
     }
 
     /**
-     * @param array|null $contentTypes
-     *
-     * @return SearchFieldOption
+     * @param ?string[] $contentTypes
      */
-    public function setContentTypes($contentTypes)
+    public function setContentTypes(?array $contentTypes): self
     {
-        $this->contentTypes = $contentTypes;
+        $this->contentTypes = $contentTypes ?? [];
 
         return $this;
     }
 
     /**
-     * @return array
+     * @return string[]
      */
-    public function getOperators()
+    public function getOperators(): array
     {
         return $this->operators;
     }
 
     /**
-     * @param array|null $operators
-     *
-     * @return SearchFieldOption
+     * @param ?string[] $operators
      */
-    public function setOperators($operators)
+    public function setOperators(?array $operators): self
     {
-        $this->operators = $operators;
+        $this->operators = $operators ?? [];
 
         return $this;
     }

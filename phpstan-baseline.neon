@@ -1,46 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\SearchFieldOption\\:\\:getContentTypes\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/SearchFieldOption.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\SearchFieldOption\\:\\:getOperators\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/SearchFieldOption.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\SearchFieldOption\\:\\:setContentTypes\\(\\) has parameter \\$contentTypes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/SearchFieldOption.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\SearchFieldOption\\:\\:setOperators\\(\\) has parameter \\$operators with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/SearchFieldOption.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\SearchFieldOption\\:\\:\\$contentTypes \\(array\\) does not accept array\\|null\\.$#"
-			count: 1
-			path: src/Entity/SearchFieldOption.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\SearchFieldOption\\:\\:\\$contentTypes type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/SearchFieldOption.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\SearchFieldOption\\:\\:\\$operators \\(array\\) does not accept array\\|null\\.$#"
-			count: 1
-			path: src/Entity/SearchFieldOption.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\SearchFieldOption\\:\\:\\$operators type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/SearchFieldOption.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Sequence\\:\\:__construct\\(\\) has parameter \\$name with no typehint specified\\.$#"
 			count: 1
 			path: src/Entity/Sequence.php

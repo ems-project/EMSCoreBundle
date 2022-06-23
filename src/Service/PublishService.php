@@ -251,7 +251,7 @@ class PublishService
         $revisions = $this->revRepository->findAllByVersionUuid($versionUuid, $defaultEnvironment);
 
         foreach ($revisions as $revision) {
-            $this->runAlignRevision($revision->getOuuid(), $contentType, $defaultEnvironment, $environment);
+            $this->runAlignRevision($revision->giveOuuid(), $contentType, $defaultEnvironment, $environment);
         }
     }
 
@@ -267,7 +267,7 @@ class PublishService
             if (!empty($environment->getCircles() && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(\array_intersect($environment->getCircles(), $user->getCircles())))) {
                 $this->logger->warning('service.publish.not_in_circles', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                     EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                 ]);
 
@@ -277,7 +277,7 @@ class PublishService
             if (!$this->authorizationChecker->isGranted($revision->giveContentType()->getPublishRole())) {
                 $this->logger->warning('service.publish.not_authorized', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                     EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                     EmsFields::LOG_REVISION_ID_FIELD => $environment->getId(),
                 ]);

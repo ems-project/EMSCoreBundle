@@ -78,7 +78,7 @@ final class ReleaseService implements EntityServiceInterface
         $releaseRevision = new ReleaseRevision();
         $releaseRevision->setRelease($release);
         $releaseRevision->setContentType($revision->giveContentType());
-        $releaseRevision->setRevisionOuuid($revision->getOuuid());
+        $releaseRevision->setRevisionOuuid($revision->giveOuuid());
         $releaseRevision->setRevision($revision);
         $release->addRevision($releaseRevision);
         $this->releaseRepository->create($release);

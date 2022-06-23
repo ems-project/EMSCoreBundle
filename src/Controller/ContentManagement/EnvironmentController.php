@@ -134,7 +134,7 @@ class EnvironmentController extends AbstractController
                             $this->logger->warning('log.environment.cant_align_default_environment', [
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $env,
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
-                                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                                EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             ]);
                             $continue = false;
@@ -145,7 +145,7 @@ class EnvironmentController extends AbstractController
                             $this->logger->warning('log.environment.dont_have_publish_role', [
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $env,
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
-                                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                                EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             ]);
                             $continue = false;
@@ -157,7 +157,7 @@ class EnvironmentController extends AbstractController
                         foreach ($alignTo as $env) {
                             $firstEnvironment = $revision->getEnvironments()->first();
                             if (false !== $firstEnvironment) {
-                                $this->publishService->alignRevision($revision->giveContentType()->getName(), $revision->getOuuid(), $firstEnvironment->getName(), $env);
+                                $this->publishService->alignRevision($revision->giveContentType()->getName(), $revision->giveOuuid(), $firstEnvironment->getName(), $env);
                             }
                         }
                     }

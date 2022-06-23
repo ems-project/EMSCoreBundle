@@ -670,7 +670,7 @@ class DataService
 
         foreach ($revision->getEnvironments() as $environment) {
             try {
-                $document = $this->searchService->getDocument($contentType, $revision->getOuuid(), $environment);
+                $document = $this->searchService->getDocument($contentType, $revision->giveOuuid(), $environment);
                 $indexedItem = $document->getSource();
 
                 ArrayTool::normalizeArray($indexedItem);
@@ -685,7 +685,7 @@ class DataService
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                             EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                            EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                             'index_hash' => $indexedItem[Mapping::HASH_FIELD],
                             'db_hash' => $revision->getSha1(),
                             'label' => $revision->getLabel(),
@@ -705,14 +705,14 @@ class DataService
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getLabel(),
-                                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                                EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                                 'label' => $revision->getLabel(),
                             ]);
                         } elseif (1 !== $ok) { //1 means signature is ok
                             $this->logger->info('service.data.error_check_signature', [
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                                EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                                 EmsFields::LOG_ERROR_MESSAGE_FIELD => \openssl_error_string(),
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                                 'label' => $revision->getLabel(),
@@ -724,7 +724,7 @@ class DataService
                             $this->logger->info('service.data.revision_not_signed', [
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                                EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                                 'label' => $revision->getLabel(),
                             ]);
@@ -737,7 +737,7 @@ class DataService
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                             EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                            EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                             'computed_hash' => $computedHash,
                             'db_hash' => $revision->getSha1(),
                             'label' => $revision->getLabel(),
@@ -748,7 +748,7 @@ class DataService
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                         EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                         'label' => $revision->getLabel(),
                     ]);
                 }
@@ -757,7 +757,7 @@ class DataService
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     'label' => $revision->getLabel(),
@@ -881,13 +881,13 @@ class DataService
             $this->auditLogger->notice('log.revision.finalized', LogRevisionContext::update($revision));
 
             try {
-                $this->postFinalizeTreatment($revision->giveContentType()->getName(), $revision->getOuuid(), $form->get('data'), $previousObjectArray);
+                $this->postFinalizeTreatment($revision->giveContentType()->getName(), $revision->giveOuuid(), $form->get('data'), $previousObjectArray);
             } catch (Exception $e) {
                 $this->logger->warning('service.data.post_finalize_failed', [
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_ENVIRONMENT_FIELD => $revision->giveContentType()->giveEnvironment()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     'label' => $revision->getLabel(),
@@ -1214,7 +1214,7 @@ class DataService
         $revision = $this->getNewestRevision($type, $ouuid);
         $revision->setDeleted(false);
         if (null !== $revision->getDataField()) {
-            $revision->getDataField()->propagateOuuid($revision->getOuuid());
+            $revision->getDataField()->propagateOuuid($revision->giveOuuid());
         }
 
         $this->setMetaFields($revision);
@@ -1545,7 +1545,7 @@ class DataService
         $data->setOrderKey($revision->giveContentType()->getFieldType()->getOrderKey());
         $data->setRawData($revision->getRawData());
         $revision->setDataField($data);
-        $this->updateDataStructure($revision->giveContentType()->getFieldType(), $revision->getDataField());
+        $this->updateDataStructure($revision->giveContentType()->getFieldType(), $data);
         //$revision->getDataField()->updateDataStructure($this->formRegistry, $revision->getContentType()->getFieldType());
         $object = $revision->getRawData();
         $this->updateDataValue($data, $object);

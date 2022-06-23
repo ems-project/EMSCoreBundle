@@ -739,12 +739,12 @@ class CriteriaController extends AbstractController
                 if ($multipleField && false === \array_search($filters[$multipleField], $criteriaSet[$multipleField])) {
                     $criteriaSet[$multipleField][] = $filters[$multipleField];
                     if (!$revision->getDraft()) {
-                        $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->getOuuid(), $revision);
+                        $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->giveOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
                     $this->logger->notice('log.view.criteria.added', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         'field_name' => $multipleField,
                         'field_data' => $filters[$multipleField],
@@ -754,7 +754,7 @@ class CriteriaController extends AbstractController
                 } else {
                     $this->logger->notice('log.view.criteria.already_exists', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         'field_name' => $multipleField,
                         'field_data' => $filters[$multipleField],
@@ -775,7 +775,7 @@ class CriteriaController extends AbstractController
             }
             $rawData[$criteriaField][] = $newCriterion;
             if (!$revision->getDraft()) {
-                $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->getOuuid(), $revision);
+                $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->giveOuuid(), $revision);
             }
             $revision->setRawData($rawData);
 
@@ -1011,12 +1011,12 @@ class CriteriaController extends AbstractController
                         }
 
                         if (!$revision->getDraft()) {
-                            $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->getOuuid(), $revision);
+                            $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->giveOuuid(), $revision);
                         }
                         $revision->setRawData($rawData);
                         $this->logger->notice('log.view.criteria.removed', [
                             EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                            EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             'field_name' => $multipleField,
                             'field_data' => $filters[$multipleField],
@@ -1029,12 +1029,12 @@ class CriteriaController extends AbstractController
                     $rawData[$criteriaField][$index] = \array_values($rawData[$criteriaField][$index]);
 
                     if (!$revision->getDraft()) {
-                        $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->getOuuid(), $revision);
+                        $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->giveOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
                     $this->logger->notice('log.view.criteria.removed', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         'field_name' => $multipleField,
                     ]);
@@ -1049,7 +1049,7 @@ class CriteriaController extends AbstractController
             $this->logger->notice('log.view.criteria.document_key_not_found', [
                 'document_reference' => $criteriaField,
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
             ]);
         }
 

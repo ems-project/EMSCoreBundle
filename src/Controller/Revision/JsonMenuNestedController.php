@@ -156,7 +156,7 @@ final class JsonMenuNestedController extends AbstractController
     public function silentPublish(Request $request, Revision $revision, FieldType $fieldType, string $field): JsonResponse
     {
         $currentRevision = $this->revisionService->getCurrentRevisionByOuuidAndContentType(
-            $revision->getOuuid(),
+            $revision->giveOuuid(),
             $revision->giveContentType()->getName()
         );
 

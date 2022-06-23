@@ -127,7 +127,7 @@ class DocumentService
 
         if ($currentRevision) {
             $currentRevision->setLockBy($documentImportContext->getLockUser());
-            $currentRevision->setLockUntil($newRevision->getLockUntil());
+            $currentRevision->setLockUntil((new \DateTime('now'))->add(new \DateInterval('PT5M')));
 
             if ($documentImportContext->shouldOnlyChanged() && $currentRevision->getHash() === $newRevision->getHash()) {
                 $this->entityManager->persist($currentRevision); // updateModified

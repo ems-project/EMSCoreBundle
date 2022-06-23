@@ -215,7 +215,7 @@ class RevisionService implements RevisionServiceInterface
 
         $this->dataService->discardDraft($revision); //discard draft changes previous revision
 
-        $previousVersion = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->getOuuid());
+        $previousVersion = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->giveOuuid());
         $previousVersion->clearTasks();
         $previousVersion->setVersionDate('to', $now);
         $this->dataService->finalizeDraft($previousVersion);

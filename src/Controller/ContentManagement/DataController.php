@@ -993,7 +993,7 @@ class DataController extends AbstractController
     public function revertRevisionAction(Revision $revision): Response
     {
         $type = $revision->giveContentType()->getName();
-        $ouuid = $revision->getOuuid();
+        $ouuid = $revision->giveOuuid();
 
         $newestRevision = $this->dataService->getNewestRevision($type, $ouuid);
         if ($newestRevision->getDraft()) {

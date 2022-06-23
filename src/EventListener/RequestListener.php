@@ -61,7 +61,7 @@ class RequestListener
         }
     }
 
-    public function onKernelException(ExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event): void
     {
         //hide all errors to unauthenticated users
         $exception = $event->getThrowable();
@@ -104,7 +104,7 @@ class RequestListener
         }
     }
 
-    public function provideTemplateTwigObjects(ControllerEvent $event)
+    public function provideTemplateTwigObjects(ControllerEvent $event): void
     {
         //TODO: move to twig appextension?
         $repository = $this->doctrine->getRepository('EMSCoreBundle:ContentType');

@@ -66,11 +66,9 @@ class Notification
     private $sentTimestamp;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="response_text", type="text", nullable=true)
      */
-    private $responseText;
+    private ?string $responseText;
 
     /**
      * @var \DateTime
@@ -307,26 +305,14 @@ class Notification
         return $this->sentTimestamp;
     }
 
-    /**
-     * Set responseText.
-     *
-     * @param string $responseText
-     *
-     * @return Notification
-     */
-    public function setResponseText($responseText)
+    public function setResponseText(?string $responseText): self
     {
         $this->responseText = $responseText;
 
         return $this;
     }
 
-    /**
-     * Get responseText.
-     *
-     * @return string
-     */
-    public function getResponseText()
+    public function getResponseText(): ?string
     {
         return $this->responseText;
     }

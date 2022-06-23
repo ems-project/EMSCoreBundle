@@ -1,26 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\ManagedAlias\\:\\:getIndexes\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/ManagedAlias.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\ManagedAlias\\:\\:setAlias\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ManagedAlias.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\ManagedAlias\\:\\:setIndexes\\(\\) has parameter \\$indexes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/ManagedAlias.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ManagedAlias\\:\\:\\$indexes type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/ManagedAlias.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Notification\\:\\:\\$counter has no typehint specified\\.$#"
 			count: 1
 			path: src/Entity/Notification.php

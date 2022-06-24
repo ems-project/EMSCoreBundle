@@ -29,27 +29,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$key of function openssl_pkey_get_private expects string, resource given\\.$#"
 			count: 2
 			path: src/Service/DataService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DocumentService\\:\\:flushAndSend\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/DocumentService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DocumentService\\:\\:importDocument\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/DocumentService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DocumentService\\:\\:importDocument\\(\\) has parameter \\$rawData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/DocumentService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DocumentService\\:\\:submitData\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/DocumentService.php
-
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ElasticsearchService\\:\\:convertMapping\\(\\) has parameter \\$in with no value type specified in iterable type array\\.$#"
 			count: 1

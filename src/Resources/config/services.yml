@@ -493,7 +493,7 @@ services:
             - { name: emsco.entity.service }
     ems.service.document:
         class: EMS\CoreBundle\Service\DocumentService
-        arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '%ems_core.instance_id%']
+        arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '@EMS\CoreBundle\Repository\RevisionRepository']
     EMS\CoreBundle\Service\ActionService: '@ems.service.action'
     ems.service.action:
         class: EMS\CoreBundle\Service\ActionService

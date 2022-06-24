@@ -1,16 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\AggregateOptionRepository\\:\\:findAll\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Repository/AggregateOptionRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\AnalyzerRepository\\:\\:findByName\\(\\) has parameter \\$name with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/AnalyzerRepository.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\EnvironmentRepository\\:\\:countRevisionPerEnvironment\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Repository/EnvironmentRepository.php

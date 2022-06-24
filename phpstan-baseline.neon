@@ -31,71 +31,6 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
-			message: "#^Cannot call method setOrderKey\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\SortOption\\|null\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:create\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:create\\(\\) has parameter \\$entity with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:getEntityName\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:getRepositoryIdentifier\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:remove\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:remove\\(\\) has parameter \\$entity with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:reorder\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:reorder\\(\\) has parameter \\$reorderForm with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:save\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:save\\(\\) has parameter \\$entity with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:update\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:update\\(\\) has parameter \\$entity with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EnvironmentService\\:\\:__construct\\(\\) has parameter \\$session with no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
 			count: 1
 			path: src/Service/EnvironmentService.php
@@ -409,26 +344,6 @@ parameters:
 			message: "#^PHPDoc tag @var for variable \\$child has no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
 			count: 1
 			path: src/Service/Revision/PostProcessingService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchFieldOptionService\\:\\:getEntityName\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/SearchFieldOptionService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchFieldOptionService\\:\\:getRepositoryIdentifier\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/SearchFieldOptionService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SortOptionService\\:\\:getEntityName\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/SortOptionService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SortOptionService\\:\\:getRepositoryIdentifier\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/SortOptionService.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\TemplateService\\:\\:addNested\\(\\) has no return typehint specified\\.$#"

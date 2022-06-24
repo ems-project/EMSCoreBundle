@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Entity\SearchFieldOption;
 use EMS\CoreBundle\Entity\SortOption;
 use EMS\CoreBundle\Form\Field\ContentTypePickerType;
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
@@ -23,12 +24,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SearchFormType extends AbstractType
 {
-    /** @var AuthorizationCheckerInterface */
-    private $authorizationChecker;
-    /** @var SortOptionService */
-    private $sortOptionService;
-    /** @var SearchFieldOptionService */
-    private $searchFieldOptionService;
+    private AuthorizationCheckerInterface $authorizationChecker;
+    private SortOptionService $sortOptionService;
+    private SearchFieldOptionService $searchFieldOptionService;
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, SortOptionService $sortOptionService, SearchFieldOptionService $searchFieldOptionService)
     {
@@ -47,8 +45,10 @@ class SearchFormType extends AbstractType
 
         $searchFields = [];
         $searchFieldsData = [];
-        /* @var SortOption $sortOption */
-        foreach ($this->searchFieldOptionService->getAll() as $searchFieldOption) {
+
+        /** @var SearchFieldOption[] $searchFieldOptions */
+        $searchFieldOptions = $this->searchFieldOptionService->getAll();
+        foreach ($searchFieldOptions as $searchFieldOption) {
             $searchFieldsData[$searchFieldOption->getName()] = $searchFieldOption->getField();
             $searchFields[$searchFieldOption->getName()] = $searchFieldOption;
         }
@@ -70,6 +70,7 @@ class SearchFormType extends AbstractType
                 'icon' => 'fa fa-check',
             ]);
         } else {
+            /** @var SortOption[] $sortOptions */
             $sortOptions = $this->sortOptionService->getAll();
             if ($isSuper || empty($sortOptions)) {
                 $builder->add('sortBy', TextType::class, [
@@ -78,7 +79,6 @@ class SearchFormType extends AbstractType
             } else {
                 $sortFields = [];
                 $sortFieldIcons = [];
-                /** @var SortOption $sortOption */
                 foreach ($sortOptions as $sortOption) {
                     $sortFields[$sortOption->getName()] = $sortOption->getField();
                     $sortFieldIcons[$sortOption->getField()] = $sortOption->getIcon();

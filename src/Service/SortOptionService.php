@@ -4,12 +4,12 @@ namespace EMS\CoreBundle\Service;
 
 class SortOptionService extends EntityService
 {
-    protected function getRepositoryIdentifier()
+    protected function getRepositoryIdentifier(): string
     {
         return 'EMSCoreBundle:SortOption';
     }
 
-    protected function getEntityName()
+    protected function getEntityName(): string
     {
         return 'Sort Option';
     }

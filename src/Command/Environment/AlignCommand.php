@@ -93,8 +93,8 @@ class AlignCommand extends AbstractCommand
         $this->choiceArgumentString(self::ARGUMENT_SOURCE, 'Select an existing environment as source', $environmentNames);
         $this->choiceArgumentString(self::ARGUMENT_TARGET, 'Select an existing environment as target', $environmentNames);
 
-        $this->source = $this->environmentService->findByName($this->getArgumentString(self::ARGUMENT_SOURCE));
-        $this->target = $this->environmentService->findByName($this->getArgumentString(self::ARGUMENT_TARGET));
+        $this->source = $this->environmentService->giveByName($this->getArgumentString(self::ARGUMENT_SOURCE));
+        $this->target = $this->environmentService->giveByName($this->getArgumentString(self::ARGUMENT_TARGET));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -146,7 +146,7 @@ class AlignCommand extends AbstractCommand
         $this->io->progressFinish();
 
         if ($input->getOption(self::OPTION_SNAPSHOT)) {
-            $snapShot = $this->environmentService->findByName($this->target->getName());
+            $snapShot = $this->environmentService->giveByName($this->target->getName());
             $this->environmentService->setSnapshotTag($snapShot);
             $this->io->note(\sprintf('The target environment "%s" was tagged as a snapshot', $snapShot->getName()));
         }

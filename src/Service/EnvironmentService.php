@@ -243,22 +243,15 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
-     * @param string $name
-     *
      * @return Environment|false
      */
-    public function getByName($name)
+    public function getByName(string $name)
     {
         if (isset($this->getEnvironments()[$name])) {
             return $this->getEnvironments()[$name];
         }
 
         return false;
-    }
-
-    public function findByName(string $name): Environment
-    {
-        return $this->environmentRepository->findOneByName($name);
     }
 
     public function giveByName(string $name): Environment

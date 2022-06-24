@@ -3,18 +3,13 @@
 namespace EMS\CoreBundle\Service;
 
 use EMS\CommonBundle\Service\ElasticaService;
-use Psr\Log\LoggerInterface;
 
 class ElasticsearchService
 {
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var ElasticaService */
-    private $elasticaService;
+    private ElasticaService $elasticaService;
 
-    public function __construct(LoggerInterface $logger, ElasticaService $elasticaService)
+    public function __construct(ElasticaService $elasticaService)
     {
-        $this->logger = $logger;
         $this->elasticaService = $elasticaService;
     }
 
@@ -26,11 +21,9 @@ class ElasticsearchService
     /**
      * Compare the parameter specified version with a string.
      *
-     * @param string $version
-     *
      * @return mixed
      */
-    public function compare($version)
+    public function compare(string $version)
     {
         return \version_compare($this->getVersion(), $version);
     }
@@ -38,9 +31,9 @@ class ElasticsearchService
     /**
      * Return a keyword mapping (not analyzed).
      *
-     * @return string[]
+     * @return array<string, string>
      */
-    public function getKeywordMapping()
+    public function getKeywordMapping(): array
     {
         if (\version_compare($this->getVersion(), '5') > 0) {
             return [
@@ -55,11 +48,11 @@ class ElasticsearchService
     }
 
     /**
-     * Convert mapping.
+     * @param array<mixed> $in
      *
      * @return string[]
      */
-    public function convertMapping(array $in)
+    public function convertMapping(array $in): array
     {
         $out = $in;
         if (\version_compare($this->getVersion(), '5') > 0) {
@@ -88,9 +81,11 @@ class ElasticsearchService
     /**
      * Return a keyword mapping (not analyzed).
      *
-     * @return string[]
+     * @param array<mixed> $mapping
+     *
+     * @return array<mixed>
      */
-    public function updateMapping($mapping)
+    public function updateMapping(array $mapping): array
     {
         if (isset($mapping['copy_to']) && !empty($mapping['copy_to']) && \is_string($mapping['copy_to'])) {
             $mapping['copy_to'] = \explode(',', $mapping['copy_to']);
@@ -118,11 +113,9 @@ class ElasticsearchService
     }
 
     /**
-     * Return a datetime mapping.
-     *
-     * @return string[]
+     * @return array<string, string>
      */
-    public function getDateTimeMapping()
+    public function getDateTimeMapping(): array
     {
         return [
             'type' => 'date',
@@ -131,11 +124,9 @@ class ElasticsearchService
     }
 
     /**
-     * Return a not indexed text mapping.
-     *
-     * @return array
+     * @return array<string, string|bool>
      */
-    public function getNotIndexedStringMapping()
+    public function getNotIndexedStringMapping(): array
     {
         if (\version_compare($this->getVersion(), '5') > 0) {
             return [
@@ -151,11 +142,9 @@ class ElasticsearchService
     }
 
     /**
-     * Return a indexed text mapping.
-     *
-     * @return array
+     * @return array<string, string|bool>
      */
-    public function getIndexedStringMapping()
+    public function getIndexedStringMapping(): array
     {
         if (\version_compare($this->getVersion(), '5') > 0) {
             return [
@@ -171,17 +160,18 @@ class ElasticsearchService
     }
 
     /**
-     * Return a indexed text mapping.
-     *
-     * @return string[]
+     * @return array<string, string>
      */
-    public function getLongMapping()
+    public function getLongMapping(): array
     {
         return [
             'type' => 'long',
         ];
     }
 
+    /**
+     * @return mixed
+     */
     public function withAllMapping()
     {
         return \version_compare($this->getVersion(), '5.6') < 0;

@@ -29,30 +29,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$key of function openssl_pkey_get_private expects string, resource given\\.$#"
 			count: 2
 			path: src/Service/DataService.php
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ElasticsearchService\\:\\:convertMapping\\(\\) has parameter \\$in with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/ElasticsearchService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ElasticsearchService\\:\\:getIndexedStringMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/ElasticsearchService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ElasticsearchService\\:\\:getNotIndexedStringMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/ElasticsearchService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ElasticsearchService\\:\\:updateMapping\\(\\) has parameter \\$mapping with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/ElasticsearchService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ElasticsearchService\\:\\:withAllMapping\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/ElasticsearchService.php
 
 		-
 			message: "#^Cannot call method setOrderKey\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\SortOption\\|null\\.$#"

@@ -32,21 +32,17 @@ class EnvironmentPickerType extends ChoiceType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $keys = [];
-        $environments = null;
 
         if ($options['inMyCircle']) {
             $environments = $this->service->getAllInMyCircle();
         } else {
-            $environments = $this->service->getAll();
+            $environments = $this->service->getEnvironments();
         }
 
-        $this->service->getAllInMyCircle();
-
-        /** @var Environment $choice */
-        foreach ($environments as $key => $choice) {
-            if (($choice->getManaged() || !$options['managedOnly']) && !\in_array($choice->getName(), $options['ignore'])) {
-                $keys[] = $choice->getName();
-                $this->choices[$choice->getName()] = $choice;
+        foreach ($environments as $env) {
+            if (($env->getManaged() || !$options['managedOnly']) && !\in_array($env->getName(), $options['ignore'])) {
+                $keys[] = $env->getName();
+                $this->choices[$env->getName()] = $env;
             }
         }
         $options['choices'] = $keys;

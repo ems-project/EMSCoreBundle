@@ -413,7 +413,7 @@ services:
             - '@ems.service.alias'
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:
-        arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '@logger', '@ems_common.service.elastica', '%ems_core.instance_id%']
+        arguments: ['@doctrine',  '@ems.service.user', '@security.authorization_checker', '@logger', '@ems_common.service.elastica', '%ems_core.instance_id%']
         tags:
             - { name: emsco.entity.service }
     ems.service.contenttype: '@EMS\CoreBundle\Service\ContentTypeService'

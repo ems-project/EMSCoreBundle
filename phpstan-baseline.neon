@@ -1,51 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Security\\\\ApiKeyAuthenticator\\:\\:authenticateToken\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Security/ApiKeyAuthenticator.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Security\\\\ApiKeyAuthenticator\\:\\:authenticateToken\\(\\) has parameter \\$providerKey with no typehint specified\\.$#"
-			count: 1
-			path: src/Security/ApiKeyAuthenticator.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Security\\\\ApiKeyAuthenticator\\:\\:createToken\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Security/ApiKeyAuthenticator.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Security\\\\ApiKeyAuthenticator\\:\\:createToken\\(\\) has parameter \\$providerKey with no typehint specified\\.$#"
-			count: 1
-			path: src/Security/ApiKeyAuthenticator.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Security\\\\ApiKeyAuthenticator\\:\\:onAuthenticationFailure\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Security/ApiKeyAuthenticator.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Security\\\\ApiKeyAuthenticator\\:\\:supportsToken\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Security/ApiKeyAuthenticator.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Security\\\\ApiKeyAuthenticator\\:\\:supportsToken\\(\\) has parameter \\$providerKey with no typehint specified\\.$#"
-			count: 1
-			path: src/Security/ApiKeyAuthenticator.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Security\\\\ApiKeyUserProvider\\:\\:getUsernameForApiKey\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Security/ApiKeyUserProvider.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Security\\\\ApiKeyUserProvider\\:\\:getUsernameForApiKey\\(\\) has parameter \\$apiKey with no typehint specified\\.$#"
-			count: 1
-			path: src/Security/ApiKeyUserProvider.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\AggregateOptionService\\:\\:getEntityName\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/AggregateOptionService.php
@@ -1067,16 +1022,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:findUserByEmail\\(\\) has parameter \\$email with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/UserService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:findUsernameByApikey\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/UserService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:findUsernameByApikey\\(\\) has parameter \\$apiKey with no typehint specified\\.$#"
 			count: 1
 			path: src/Service/UserService.php
 

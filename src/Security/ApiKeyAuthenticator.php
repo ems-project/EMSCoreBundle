@@ -14,7 +14,10 @@ use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterfa
 
 class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 {
-    public function createToken(Request $request, $providerKey)
+    /**
+     * @param string $providerKey
+     */
+    public function createToken(Request $request, $providerKey): PreAuthenticatedToken
     {
         // look for an apikey header value
         $apiKey = $request->headers->get('X-Auth-Token');
@@ -35,12 +38,18 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
         );
     }
 
-    public function supportsToken(TokenInterface $token, $providerKey)
+    /**
+     * @param string $providerKey
+     */
+    public function supportsToken(TokenInterface $token, $providerKey): bool
     {
         return $token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey;
     }
 
-    public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
+    /**
+     * @param string $providerKey
+     */
+    public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey): PreAuthenticatedToken
     {
         if (!$userProvider instanceof ApiKeyUserProvider) {
             throw new \InvalidArgumentException(\sprintf('The user provider must be an instance of ApiKeyUserProvider (%s was given).', \get_class($userProvider)));
@@ -65,7 +74,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
         );
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         return new Response(
             // this contains information about *why* authentication failed

@@ -59,7 +59,7 @@ class UserService implements EntityServiceInterface
         return $user;
     }
 
-    public function findUsernameByApikey($apiKey)
+    public function findUsernameByApikey(string $apiKey): ?string
     {
         $em = $this->doctrine->getManager();
         /** @var \Doctrine\ORM\EntityRepository */

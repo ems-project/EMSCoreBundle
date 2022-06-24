@@ -31,26 +31,6 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Mapping\\:\\:dataFieldToArray\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/Mapping.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Mapping\\:\\:generateMapping\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/Mapping.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Mapping\\:\\:getMapping\\(\\) has parameter \\$environmentNames with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/Mapping.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Mapping\\:\\:getMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/Mapping.php
-
-		-
 			message: "#^Cannot call method send\\(\\) on object\\|null\\.$#"
 			count: 1
 			path: src/Service/NotificationService.php

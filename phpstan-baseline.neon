@@ -444,24 +444,3 @@ parameters:
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:\\$securityRoles has no typehint specified\\.$#"
 			count: 1
 			path: src/Service/UserService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\WysiwygProfileService\\:\\:remove\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/WysiwygProfileService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\WysiwygProfileService\\:\\:saveProfile\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/WysiwygProfileService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\WysiwygStylesSetService\\:\\:remove\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/WysiwygStylesSetService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\WysiwygStylesSetService\\:\\:save\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/WysiwygStylesSetService.php
-

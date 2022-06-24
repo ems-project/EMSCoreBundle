@@ -326,10 +326,7 @@ class ContentTypeService implements EntityServiceInterface
         return $out;
     }
 
-    /**
-     * @return string
-     */
-    public function getAllTypes()
+    public function getAllTypes(): string
     {
         $this->loadEnvironment();
 

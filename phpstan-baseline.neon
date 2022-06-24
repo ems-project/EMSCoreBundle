@@ -1,56 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Factory\\\\ContentTypeFieldChoiceListFactory\\:\\:createLoader\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Factory/ContentTypeFieldChoiceListFactory.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Factory\\\\ContentTypeFieldChoiceListFactory\\:\\:createLoader\\(\\) has parameter \\$firstLevelOnly with no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Factory/ContentTypeFieldChoiceListFactory.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Factory\\\\ContentTypeFieldChoiceListFactory\\:\\:createLoader\\(\\) has parameter \\$mapping with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/Factory/ContentTypeFieldChoiceListFactory.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Factory\\\\ContentTypeFieldChoiceListFactory\\:\\:createLoader\\(\\) has parameter \\$types with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/Factory/ContentTypeFieldChoiceListFactory.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Factory\\\\ObjectChoiceListFactory\\:\\:createLoader\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Factory/ObjectChoiceListFactory.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Factory\\\\ObjectChoiceListFactory\\:\\:createLoader\\(\\) has parameter \\$circleOnly with no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Factory/ObjectChoiceListFactory.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Factory\\\\ObjectChoiceListFactory\\:\\:createLoader\\(\\) has parameter \\$loadAll with no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Factory/ObjectChoiceListFactory.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Factory\\\\ObjectChoiceListFactory\\:\\:createLoader\\(\\) has parameter \\$types with no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Factory/ObjectChoiceListFactory.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\Factory\\\\ObjectChoiceListFactory\\:\\:\\$client has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Factory/ObjectChoiceListFactory.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\Factory\\\\ObjectChoiceListFactory\\:\\:\\$session type has no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
-			count: 1
-			path: src/Form/Factory/ObjectChoiceListFactory.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ContentTypeFieldChoiceList\\:\\:__construct\\(\\) has parameter \\$firstLevelOnly with no typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/ContentTypeFieldChoiceList.php

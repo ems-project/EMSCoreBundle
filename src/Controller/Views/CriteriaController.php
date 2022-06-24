@@ -449,7 +449,7 @@ class CriteriaController extends AbstractController
             }
         }
 
-        $loader = $this->objectChoiceListFactory->createLoader($loaderTypes, false);
+        $loader = $this->objectChoiceListFactory->createLoader($loaderTypes);
 
         /** @var Document $document */
         foreach ($response->getDocuments() as $document) {

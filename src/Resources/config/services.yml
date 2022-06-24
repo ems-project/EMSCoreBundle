@@ -273,7 +273,6 @@ services:
         arguments: ['@ems.service.contenttype', '@ems.service.objectchoicecache']
     ems.form.factories.contentTypeFieldChoiceListFactory:
         class: EMS\CoreBundle\Form\Factory\ContentTypeFieldChoiceListFactory
-        arguments: ['@ems.service.contenttype']
     ems.form.field.objectpickertype:
         class: EMS\CoreBundle\Form\Field\ObjectPickerType
         arguments: ['@ems.form.factories.objectChoiceListFactory', '@ems.service.contenttype']

@@ -2,24 +2,22 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
-use Symfony\Component\Form\ChoiceList\Factory\ChoiceListFactoryInterface;
+use EMS\CoreBundle\Form\Factory\ContentTypeFieldChoiceListFactory;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentTypeFieldPickerType extends SelectPickerType
 {
-    /** @var ChoiceListFactoryInterface */
-    private $choiceListFactory;
+    private ContentTypeFieldChoiceListFactory $choiceListFactory;
 
-    public function __construct(ChoiceListFactoryInterface $factory)
+    public function __construct(ContentTypeFieldChoiceListFactory $factory)
     {
-        $this->choiceListFactory = $factory;
         parent::__construct($factory);
+        $this->choiceListFactory = $factory;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
         $resolver->setDefaults([
             'firstLevelOnly' => false,

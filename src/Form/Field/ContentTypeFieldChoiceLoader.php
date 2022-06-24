@@ -6,10 +6,13 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
 {
-    /** @var ContentTypeFieldChoiceList */
-    private $contentTypeFieldChoiceList;
+    private ContentTypeFieldChoiceList $contentTypeFieldChoiceList;
 
-    public function __construct(array $mapping, array $types, $firstLevelOnly)
+    /**
+     * @param array<mixed> $mapping
+     * @param array<mixed> $types
+     */
+    public function __construct(array $mapping, array $types, bool $firstLevelOnly)
     {
         $this->contentTypeFieldChoiceList = new ContentTypeFieldChoiceList($mapping, $types, $firstLevelOnly);
     }
@@ -17,23 +20,28 @@ class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function loadChoiceList($value = null)
+    public function loadChoiceList($value = null): ContentTypeFieldChoiceList
     {
         return $this->contentTypeFieldChoiceList;
     }
 
     /**
-     * {@inheritdoc}
+     *
+     * @return array<mixed>
      */
-    public function loadAll()
+    public function loadAll(): array
     {
         return $this->contentTypeFieldChoiceList->loadAll();
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param array<mixed> $values
+     *
+     * @return array<mixed>
      */
-    public function loadChoicesForValues(array $values, $value = null)
+    public function loadChoicesForValues(array $values, $value = null): array
     {
         $this->contentTypeFieldChoiceList->loadChoices($values);
 
@@ -42,8 +50,12 @@ class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param array<mixed> $choices
+     *
+     * @return array<mixed>
      */
-    public function loadValuesForChoices(array $choices, $value = null)
+    public function loadValuesForChoices(array $choices, $value = null): array
     {
         $this->contentTypeFieldChoiceList->loadChoices($choices);
 

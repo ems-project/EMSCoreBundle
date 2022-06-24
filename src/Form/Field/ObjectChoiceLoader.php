@@ -38,6 +38,8 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
     /**
      * {@inheritdoc}
      *
+     * @param array<mixed> $values
+     *
      * @return array<mixed>
      */
     public function loadChoicesForValues(array $values, $value = null): array
@@ -49,6 +51,8 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param array<mixed> $choices
      *
      * @return array<mixed>
      */

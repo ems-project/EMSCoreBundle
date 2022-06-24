@@ -15,7 +15,8 @@ class RenderOptionType extends ChoiceType
     public const JOB = 'job';
     public const PDF = 'pdf';
 
-    private $choices = [
+    /** @var array<string, string> */
+    private array $choices = [
         'Embed' => self::EMBED,
         'Export' => self::EXPORT,
         'External link' => self::EXTERNALLINK,

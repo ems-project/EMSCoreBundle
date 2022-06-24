@@ -9,7 +9,7 @@ use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\SubfieldType;
 use EMS\CoreBundle\Form\Field\FieldTypePickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -21,21 +21,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FieldTypeType extends AbstractType
 {
-    /** @var FieldTypePickerType */
-    private $fieldTypePickerType;
-    /** @var FormRegistryInterface */
-    private $formRegistry;
-    /** @var Logger */
-    private $logger;
+    private FieldTypePickerType $fieldTypePickerType;
+    private FormRegistryInterface $formRegistry;
+    private LoggerInterface $logger;
 
-    public function __construct(FieldTypePickerType $fieldTypePickerType, FormRegistryInterface $formRegistry, Logger $logger)
+    public function __construct(FieldTypePickerType $fieldTypePickerType, FormRegistryInterface $formRegistry, LoggerInterface $logger)
     {
         $this->fieldTypePickerType = $fieldTypePickerType;
         $this->formRegistry = $formRegistry;
         $this->logger = $logger;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<mixed>                               $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $options['data'];
@@ -111,7 +112,7 @@ class FieldTypeType extends AbstractType
             ]);
         }
 
-        if (null !== $fieldType && null != $fieldType->getChildren() && $fieldType->getChildren()->count() > 0) {
+        if (null != $fieldType->getChildren() && $fieldType->getChildren()->count() > 0) {
             $childFound = false;
             /** @var FieldType $field */
             foreach ($fieldType->getChildren() as $idx => $field) {
@@ -135,7 +136,7 @@ class FieldTypeType extends AbstractType
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => 'EMS\CoreBundle\Entity\FieldType',
@@ -147,33 +148,39 @@ class FieldTypeType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormView<FormView>           $view
+     * @param FormInterface<FormInterface> $form
+     * @param array<mixed>                 $options
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /*get options for twig context*/
         parent::buildView($view, $form, $options);
         $view->vars['editSubfields'] = $options['editSubfields'];
     }
 
-    public function dataFieldToArray(DataField $dataField)
+    /**
+     * @return array<mixed>
+     */
+    public function dataFieldToArray(DataField $dataField): array
     {
         $out = [];
 
-        $this->logger->debug('dataFieldToArray for a type', [$dataField->getFieldType()->getType()]);
+        $this->logger->debug('dataFieldToArray for a type', [$dataField->giveFieldType()->getType()]);
 
-//         $dataFieldType = new CollectionItemFieldType();
-
-        /** @var DataFieldType $dataFieldType */
-        if (null != $dataField->getFieldType()) {
-            $this->logger->debug('Instanciate the FieldType', [$dataField->getFieldType()->getType()]);
-            $dataFieldType = $this->fieldTypePickerType->getDataFieldType($dataField->getFieldType()->getType());
+        if (null !== $fieldType = $dataField->getFieldType()) {
+            $this->logger->debug('Instanciate the FieldType', [$fieldType->getType()]);
+            $dataFieldType = $this->fieldTypePickerType->getDataFieldType($fieldType->getType());
         } else {
             $this->logger->debug('Field Type not found shoud be a collectionn item');
             $dataFieldType = $this->formRegistry->getType(CollectionItemFieldType::class)->getInnerType();
         }
 
         $this->logger->debug('build object array 2', [\get_class($dataFieldType)]);
+
+        if (!$dataFieldType instanceof DataFieldType) {
+            throw new \Exception('Invalid dataFieldType');
+        }
 
         $dataFieldType->buildObjectArray($dataField, $out);
 
@@ -190,13 +197,13 @@ class FieldTypeType extends AbstractType
                 foreach ($child->getChildren() as $grandchild) {
                     $subOut = \array_merge($subOut, $this->dataFieldToArray($grandchild));
                 }
-                foreach ($dataFieldType->getJsonNames($dataField->getFieldType()) as $jsonName) {
+                foreach ($dataFieldType->getJsonNames($dataField->giveFieldType()) as $jsonName) {
                     $out[$jsonName][] = $subOut;
                 }
-            } elseif (!$child->getFieldType()->getDeleted()) {
+            } elseif (!$child->giveFieldType()->getDeleted()) {
                 $this->logger->debug('not deleted');
                 if ($dataFieldType->isNested()) {
-                    foreach ($dataFieldType->getJsonNames($dataField->getFieldType()) as $jsonName) {
+                    foreach ($dataFieldType->getJsonNames($dataField->giveFieldType()) as $jsonName) {
                         $out[$jsonName] = \array_merge($out[$jsonName], $this->dataFieldToArray($child));
                     }
                 } else {
@@ -210,7 +217,10 @@ class FieldTypeType extends AbstractType
         return $out;
     }
 
-    public function generateMapping(FieldType $fieldType)
+    /**
+     * @return array<mixed>
+     */
+    public function generateMapping(FieldType $fieldType): array
     {
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($fieldType->getType())->getInnerType();
@@ -249,10 +259,7 @@ class FieldTypeType extends AbstractType
         return $mapping;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'fieldTypeType';
     }

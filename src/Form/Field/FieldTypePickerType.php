@@ -2,11 +2,12 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
+use EMS\CoreBundle\Form\DataField\DataFieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FieldTypePickerType extends SelectPickerType
 {
-    /** @var array<mixed> */
+    /** @var array<string, DataFieldType> */
     private array $dataFieldTypes;
 
     public function __construct()
@@ -15,12 +16,12 @@ class FieldTypePickerType extends SelectPickerType
         $this->dataFieldTypes = [];
     }
 
-    public function addDataFieldType($dataField)
+    public function addDataFieldType(DataFieldType $dataField): void
     {
         $this->dataFieldTypes[\get_class($dataField)] = $dataField;
     }
 
-    public function getDataFieldType($dataFieldTypeId)
+    public function getDataFieldType(string $dataFieldTypeId): DataFieldType
     {
         return $this->dataFieldTypes[$dataFieldTypeId];
     }
@@ -33,11 +34,10 @@ class FieldTypePickerType extends SelectPickerType
                     'data-live-search' => true,
             ],
             'choice_attr' => function ($category, $key, $index) {
-                /** @var \EMS\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
                 $dataFieldType = $this->dataFieldTypes[$index];
 
                 return [
-                        'data-content' => '<div class="text-'.$category.'"><i class="'.$dataFieldType->getIcon().'"></i>&nbsp;&nbsp;'.$dataFieldType->getLabel().'</div>',
+                    'data-content' => '<div class="text-'.$category.'"><i class="'.$dataFieldType->getIcon().'"></i>&nbsp;&nbsp;'.$dataFieldType->getLabel().'</div>',
                 ];
             },
             'choice_value' => function ($value) {

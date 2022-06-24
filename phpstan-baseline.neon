@@ -1,96 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Helper\\\\Archive\\:\\:getWorkingDirectory\\(\\) should return string but returns string\\|false\\.$#"
-			count: 1
-			path: src/Helper/Archive.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Helper\\\\Archive\\:\\:guessMimeType\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: src/Helper/Archive.php
-
-		-
-			message: "#^Parameter \\#1 \\$dirs of method Symfony\\\\Component\\\\Filesystem\\\\Filesystem\\:\\:mkdir\\(\\) expects iterable\\|string, string\\|false given\\.$#"
-			count: 1
-			path: src/Helper/Archive.php
-
-		-
-			message: "#^Parameter \\#1 \\$files of method Symfony\\\\Component\\\\Filesystem\\\\Filesystem\\:\\:remove\\(\\) expects iterable\\|string, string\\|false given\\.$#"
-			count: 1
-			path: src/Helper/Archive.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: src/Helper/Archive.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Helper\\\\PagingTool\\:\\:__construct\\(\\) has parameter \\$defaultOrderField with no typehint specified\\.$#"
-			count: 1
-			path: src/Helper/PagingTool.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Helper\\\\PagingTool\\:\\:__construct\\(\\) has parameter \\$pageSize with no typehint specified\\.$#"
-			count: 1
-			path: src/Helper/PagingTool.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Helper\\\\PagingTool\\:\\:__construct\\(\\) has parameter \\$paginationPath with no typehint specified\\.$#"
-			count: 1
-			path: src/Helper/PagingTool.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Helper\\\\PagingTool\\:\\:getData\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Helper/PagingTool.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Helper\\\\PagingTool\\:\\:getLastPage\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Helper/PagingTool.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Helper\\\\PagingTool\\:\\:getOrderDirection\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Helper/PagingTool.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Helper\\\\PagingTool\\:\\:getOrderField\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Helper/PagingTool.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Helper\\\\PagingTool\\:\\:getPage\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Helper/PagingTool.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Helper\\\\PagingTool\\:\\:getPageSize\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Helper/PagingTool.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Helper\\\\PagingTool\\:\\:getPaginationPath\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Helper/PagingTool.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Helper\\\\PagingTool\\:\\:\\$data type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Helper/PagingTool.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Helper\\\\PagingTool\\:\\:\\$pageSize has no typehint specified\\.$#"
-			count: 1
-			path: src/Helper/PagingTool.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Helper\\\\PagingTool\\:\\:\\$paginationPath has no typehint specified\\.$#"
-			count: 1
-			path: src/Helper/PagingTool.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\AggregateOptionRepository\\:\\:findAll\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Repository/AggregateOptionRepository.php
@@ -1261,46 +1171,6 @@ parameters:
 			path: src/Service/EnvironmentService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\HelperService\\:\\:__construct\\(\\) has parameter \\$pagingSize with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/HelperService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\HelperService\\:\\:getPagingTool\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/HelperService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\HelperService\\:\\:getPagingTool\\(\\) has parameter \\$defaultOrderField with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/HelperService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\HelperService\\:\\:getPagingTool\\(\\) has parameter \\$entityName with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/HelperService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\HelperService\\:\\:getPagingTool\\(\\) has parameter \\$route with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/HelperService.php
-
-		-
-			message: "#^Parameter \\#1 \\$request of class EMS\\\\CoreBundle\\\\Helper\\\\PagingTool constructor expects Symfony\\\\Component\\\\HttpFoundation\\\\Request, Symfony\\\\Component\\\\HttpFoundation\\\\Request\\|null given\\.$#"
-			count: 1
-			path: src/Service/HelperService.php
-
-		-
-			message: "#^Parameter \\#2 \\$repository of class EMS\\\\CoreBundle\\\\Helper\\\\PagingTool constructor expects Doctrine\\\\ORM\\\\EntityRepository, Doctrine\\\\Persistence\\\\ObjectRepository given\\.$#"
-			count: 1
-			path: src/Service/HelperService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\HelperService\\:\\:\\$pagingSize has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/HelperService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Mapping\\:\\:dataFieldToArray\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/Mapping.php
@@ -1724,14 +1594,4 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\WysiwygStylesSetService\\:\\:save\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/WysiwygStylesSetService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Validator\\\\Constraints\\\\AliasName\\:\\:\\$invalid has no typehint specified\\.$#"
-			count: 1
-			path: src/Validator/Constraints/AliasName.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Validator\\\\Constraints\\\\AliasNameValidator\\:\\:validate\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Validator/Constraints/AliasNameValidator.php
 

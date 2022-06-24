@@ -50,11 +50,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     protected ?string $label;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="alias", type="string", length=255)
      */
-    protected $alias;
+    protected string $alias = '';
 
     /**
      * @var array<mixed>
@@ -421,33 +419,16 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->color;
     }
 
-    /**
-     * Set alias.
-     *
-     * @param string $alias
-     *
-     * @return Environment
-     */
-    public function setAlias($alias)
+    public function setAlias(string $alias): self
     {
         $this->alias = $alias;
 
         return $this;
     }
 
-    /**
-     * Get alias.
-     *
-     * @return string
-     */
-    public function getAlias()
+    public function getAlias(): string
     {
         return $this->alias;
-    }
-
-    public function hasAlias(): bool
-    {
-        return null !== $this->alias;
     }
 
     public function getNewIndexName(): string

@@ -8,16 +8,13 @@ use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\Entity\SortOption;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class EntityService
 {
-    /** @var Registry */
-    protected $doctrine;
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var TranslatorInterface */
-    protected $translator;
+    protected Registry $doctrine;
+    protected LoggerInterface $logger;
+    protected TranslatorInterface $translator;
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator)
     {

@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -68,11 +67,14 @@ class RevisionRepository extends EntityRepository
         }
     }
 
-    public function findByContentType(ContentType $contentType, $orderBy = null, $limit = null, $offset = null)
+    /**
+     * @param string[] $orderBy
+     *
+     * @return Revision[]
+     */
+    public function findByContentType(ContentType $contentType, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
-        return $this->findBy([
-                'contentType' => $contentType,
-            ], $orderBy, $limit, $offset);
+        return $this->findBy(['contentType' => $contentType], $orderBy, $limit, $offset);
     }
 
     /**
@@ -161,13 +163,10 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param int $page
-     *
-     * @return Paginator
+     * @return Paginator<Revision>
      */
-    public function getRevisionsPaginatorPerEnvironment(Environment $env, $page = 0)
+    public function getRevisionsPaginatorPerEnvironment(Environment $env, int $page = 0): Paginator
     {
-        /** @var QueryBuilder $qb */
         $qb = $this->createQueryBuilder('r');
         $qb->join('r.environments', 'e')
         ->where('e.id = :eid')
@@ -177,15 +176,9 @@ class RevisionRepository extends EntityRepository
         ->orderBy('r.id', 'asc')
         ->setParameters(['eid' => $env->getId()]);
 
-        $paginator = new Paginator($qb->getQuery());
-
-        return $paginator;
+        return new Paginator($qb->getQuery());
     }
 
-    /**
-     * @throws NoResultException
-     * @throws NonUniqueResultException
-     */
     public function findOneById(int $id): Revision
     {
         $qb = $this->createQueryBuilder('r')
@@ -195,14 +188,7 @@ class RevisionRepository extends EntityRepository
         return $qb->getQuery()->getSingleResult();
     }
 
-    /**
-     * @param string $hash
-     *
-     * @return int
-     *
-     * @throws DBALException
-     */
-    public function hashReferenced($hash)
+    public function hashReferenced(string $hash): int
     {
         if ('postgresql' === $this->getEntityManager()->getConnection()->getDatabasePlatform()->getName()) {
             $result = $this->getEntityManager()->getConnection()->fetchAll("select count(*) as counter FROM public.revision where raw_data::text like '%$hash%'");
@@ -224,13 +210,10 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param int $page
-     *
-     * @return Paginator
+     * @return Paginator<Revision>
      */
-    public function getRevisionsPaginatorPerEnvironmentAndContentType(Environment $env, ContentType $contentType, $page = 0)
+    public function getRevisionsPaginatorPerEnvironmentAndContentType(Environment $env, ContentType $contentType, int $page = 0): Paginator
     {
-        /** @var QueryBuilder $qb */
         $qb = $this->createQueryBuilder('r');
         $qb->join('r.environments', 'e')
         ->where('e.id = :eid')
@@ -240,20 +223,10 @@ class RevisionRepository extends EntityRepository
         ->orderBy('r.id', 'asc')
         ->setParameters(['eid' => $env->getId(), 'ct' => $contentType]);
 
-        $paginator = new Paginator($qb->getQuery());
-
-        return $paginator;
+        return new Paginator($qb->getQuery());
     }
 
-    /**
-     * @param string $ouuid
-     *
-     * @return Revision
-     *
-     * @throws NonUniqueResultException
-     * @throws NoResultException
-     */
-    public function findByEnvironment($ouuid, ContentType $contentType, Environment $environment)
+    public function findByEnvironment(string $ouuid, ContentType $contentType, Environment $environment): Revision
     {
         $qb = $this->createQueryBuilder('r')
             ->join('r.environments', 'e')
@@ -267,7 +240,12 @@ class RevisionRepository extends EntityRepository
         return $qb->getQuery()->getSingleResult();
     }
 
-    public function draftCounterGroupedByContentType($circles, $isAdmin)
+    /**
+     * @param string[] $circles
+     *
+     * @return array<array{content_type_id: int, counter: int}>
+     */
+    public function draftCounterGroupedByContentType(array $circles, bool $isAdmin): array
     {
         $qb = $this->createQueryBuilder('r');
         $qb->join('r.contentType', 'c');
@@ -305,12 +283,17 @@ class RevisionRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findInProgresByContentType($contentType, $circles, $isAdmin)
+    /**
+     * @param string[] $circles
+     *
+     * @return Revision[]
+     */
+    public function findInProgresByContentType(ContentType $contentType, array $circles, bool $isAdmin): array
     {
         $parameters = [
-                'contentType' => $contentType,
-                'false' => false,
-                'true' => true,
+            'contentType' => $contentType,
+            'false' => false,
+            'true' => true,
         ];
 
         $qb = $this->createQueryBuilder('r');
@@ -365,15 +348,9 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param int   $source
-     * @param int   $target
-     * @param array $contentTypes
-     *
-     * @return mixed
-     *
-     * @throws NonUniqueResultException
+     * @param string[] $contentTypes
      */
-    public function countDifferencesBetweenEnvironment($source, $target, $contentTypes = [])
+    public function countDifferencesBetweenEnvironment(int $source, int $target, array $contentTypes = []): int
     {
         $sqb = $this->getCompareQueryBuilder($source, $target, $contentTypes);
         $sqb->select('max(r.id)');
@@ -386,18 +363,14 @@ class RevisionRepository extends EntityRepository
                 'target' => $target,
         ]);
 
-        return $qb->getQuery()->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
-     * @param int      $source
-     * @param int      $target
-     * @param array    $contentTypes
+     * @param string[] $contentTypes
      * @param string[] $ouuids
-     *
-     * @return QueryBuilder
      */
-    private function getCompareQueryBuilder($source, $target, $contentTypes, array $ouuids = [], string $searchValue = '')
+    private function getCompareQueryBuilder(int $source, int $target, array $contentTypes, array $ouuids = [], string $searchValue = ''): QueryBuilder
     {
         $qb = $this->createQueryBuilder('r');
         $qb->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.singularName content_type_singular_name', 'c.icon', 'r.ouuid', "CONCAT(c.name, ':', r.ouuid) AS emsLink", 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created, \'/\', r.finalizedBy)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created, \'/\', r.finalizedBy)) maxrevid', 'max(r.id) lastRevId')
@@ -437,17 +410,11 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param int    $source
-     * @param int    $target
-     * @param array  $contentTypes
-     * @param int    $from
-     * @param int    $limit
-     * @param string $orderField
-     * @param string $orderDirection
+     * @param string[] $contentTypes
      *
-     * @return mixed
+     * @return array<mixed>
      */
-    public function compareEnvironment($source, $target, $contentTypes, $from, $limit, $orderField = 'contenttype', $orderDirection = 'ASC')
+    public function compareEnvironment(int $source, int $target, array $contentTypes, int $from, int $limit, string $orderField = 'contenttype', string $orderDirection = 'ASC'): array
     {
         switch ($orderField) {
             case 'label':
@@ -466,14 +433,9 @@ class RevisionRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    /**
-     * @return mixed
-     *
-     * @throws NonUniqueResultException
-     */
-    public function countByContentType(ContentType $contentType)
+    public function countByContentType(ContentType $contentType): int
     {
-        return $this->createQueryBuilder('a')
+        return (int) $this->createQueryBuilder('a')
         ->select('COUNT(a)')
         ->where('a.contentType = :contentType')
         ->setParameter('contentType', $contentType)
@@ -481,14 +443,7 @@ class RevisionRepository extends EntityRepository
         ->getSingleScalarResult();
     }
 
-    /**
-     * @param string $ouuid
-     *
-     * @return mixed
-     *
-     * @throws NonUniqueResultException
-     */
-    public function countRevisions($ouuid, ContentType $contentType)
+    public function countRevisions(string $ouuid, ContentType $contentType): int
     {
         $qb = $this->createQueryBuilder('r')
             ->select('COUNT(r)');
@@ -497,38 +452,23 @@ class RevisionRepository extends EntityRepository
         $qb->setParameter('ouuid', $ouuid);
         $qb->setParameter('contentType', $contentType);
 
-        return $qb->getQuery()->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    /**
-     * @param string $ouuid
-     *
-     * @return float|int
-     *
-     * @throws NonUniqueResultException
-     */
-    public function revisionsLastPage($ouuid, ContentType $contentType)
+    public function revisionsLastPage(string $ouuid, ContentType $contentType): int
     {
-        return \floor($this->countRevisions($ouuid, $contentType) / 5.0) + 1;
+        return (int) \floor($this->countRevisions($ouuid, $contentType) / 5.0) + 1;
     }
 
-    /**
-     * @param int $page
-     *
-     * @return float|int
-     */
-    public function firstElemOfPage($page)
+    public function firstElemOfPage(int $page): int
     {
         return ($page - 1) * 5;
     }
 
     /**
-     * @param string $ouuid
-     * @param int    $page
-     *
-     * @return mixed
+     * @return Revision[]
      */
-    public function getAllRevisionsSummary($ouuid, ContentType $contentType, $page = 1)
+    public function getAllRevisionsSummary(string $ouuid, ContentType $contentType, int $page = 1): array
     {
         $qb = $this->createQueryBuilder('r');
         $qb->select('r', 'e');
@@ -544,24 +484,14 @@ class RevisionRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    /**
-     * @return Revision|null
-     *
-     * @throws NonUniqueResultException
-     */
-    public function findByOuuidContentTypeAndEnvironment(Revision $revision, Environment $env = null)
+    public function findByOuuidContentTypeAndEnvironment(Revision $revision, Environment $env = null): ?Revision
     {
-        if (!$env) {
-            $env = $revision->giveContentType()->getEnvironment();
-        }
+        $env = $env ?? $revision->giveContentType()->giveEnvironment();
 
         return $this->findByOuuidAndContentTypeAndEnvironment($revision->giveContentType(), $revision->giveOuuid(), $env);
     }
 
-    /**
-     * @throws NonUniqueResultException
-     */
-    public function findByOuuidAndContentTypeAndEnvironment(ContentType $contentType, $ouuid, Environment $env): ?Revision
+    public function findByOuuidAndContentTypeAndEnvironment(ContentType $contentType, string $ouuid, Environment $env): ?Revision
     {
         $qb = $this->createQueryBuilder('r');
         $qb
@@ -589,7 +519,7 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @throws NonUniqueResultException
+     * @return ?Revision[]
      */
     public function findIdByOuuidAndContentTypeAndEnvironment(string $ouuid, int $contentType, int $env): ?array
     {
@@ -610,12 +540,7 @@ class RevisionRepository extends EntityRepository
         return $out[0] ?? null;
     }
 
-    /**
-     * @param int $revisionId
-     *
-     * @return mixed
-     */
-    public function unlockRevision($revisionId)
+    public function unlockRevision(int $revisionId): int
     {
         $qb = $this->createQueryBuilder('r')->update()
             ->set('r.lockBy', '?1')
@@ -625,16 +550,10 @@ class RevisionRepository extends EntityRepository
             ->setParameter(2, null)
             ->setParameter(3, $revisionId);
 
-        return $qb->getQuery()->execute();
+        return (int) $qb->getQuery()->execute();
     }
 
-    /**
-     * @param int    $revisionId
-     * @param string $username
-     *
-     * @return mixed
-     */
-    public function lockRevision($revisionId, $username, \DateTimeInterface $lockUntil)
+    public function lockRevision(int $revisionId, string $username, \DateTimeInterface $lockUntil): int
     {
         $qb = $this->createQueryBuilder('r')->update()
             ->set('r.lockBy', '?1')
@@ -644,15 +563,10 @@ class RevisionRepository extends EntityRepository
             ->setParameter(2, $lockUntil, Type::DATETIME)
             ->setParameter(3, $revisionId);
 
-        return $qb->getQuery()->execute();
+        return (int) $qb->getQuery()->execute();
     }
 
-    /**
-     * @param string $ouuid
-     *
-     * @return mixed
-     */
-    public function finaliseRevision(ContentType $contentType, $ouuid, \DateTime $now, string $lockUser)
+    public function finaliseRevision(ContentType $contentType, string $ouuid, \DateTime $now, string $lockUser): int
     {
         $qb = $this->createQueryBuilder('r')->update()
             ->set('r.endTime', '?1')
@@ -665,15 +579,10 @@ class RevisionRepository extends EntityRepository
             ->setParameter(3, $ouuid)
             ->setParameter(4, $lockUser);
 
-        return $qb->getQuery()->execute();
+        return (int) $qb->getQuery()->execute();
     }
 
-    /**
-     * @param string $ouuid
-     *
-     * @return Revision|null
-     */
-    public function getCurrentRevision(ContentType $contentType, $ouuid)
+    public function getCurrentRevision(ContentType $contentType, string $ouuid): ?Revision
     {
         $qb = $this->createQueryBuilder('r')->select()
             ->where('r.contentType = ?2')
@@ -691,7 +600,7 @@ class RevisionRepository extends EntityRepository
         }
     }
 
-    public function publishRevision(Revision $revision, bool $draft = false)
+    public function publishRevision(Revision $revision, bool $draft = false): int
     {
         $qb = $this->createQueryBuilder('r')->update()
         ->set('r.draft', ':draft')
@@ -704,26 +613,20 @@ class RevisionRepository extends EntityRepository
                 'id' => $revision->getId(),
             ]);
 
-        return $qb->getQuery()->execute();
+        return (int) $qb->getQuery()->execute();
     }
 
-    /**
-     * @return mixed
-     */
-    public function deleteRevision(Revision $revision)
+    public function deleteRevision(Revision $revision): int
     {
         $qb = $this->createQueryBuilder('r')->update()
         ->set('r.delete', true)
         ->where('r.id = ?1')
         ->setParameter(1, $revision->getId());
 
-        return $qb->getQuery()->execute();
+        return (int) $qb->getQuery()->execute();
     }
 
-    /**
-     * @return mixed
-     */
-    public function deleteRevisions(ContentType $contentType = null)
+    public function deleteRevisions(ContentType $contentType = null): int
     {
         if (null == $contentType) {
             $qb = $this->createQueryBuilder('r');
@@ -733,7 +636,7 @@ class RevisionRepository extends EntityRepository
                         'true' => true,
                 ]);
 
-            return $qb->getQuery()->execute();
+            return (int) $qb->getQuery()->execute();
         } else {
             $qb = $this->createQueryBuilder('r')->update();
             $qb->set('r.delete', ':true')
@@ -743,11 +646,11 @@ class RevisionRepository extends EntityRepository
                     'contentTypeId' => $contentType->getId(),
                 ]);
 
-            return $qb->getQuery()->execute();
+            return (int) $qb->getQuery()->execute();
         }
     }
 
-    public function lockRevisions(?ContentType $contentType, \DateTime $until, $by, $force = false, ?string $ouuid = null): int
+    public function lockRevisions(?ContentType $contentType, \DateTime $until, string $by, bool $force = false, ?string $ouuid = null): int
     {
         $qbSelect = $this->createQueryBuilder('s');
         $qbSelect
@@ -784,7 +687,7 @@ class RevisionRepository extends EntityRepository
 
         $qbUpdate->andWhere($qbUpdate->expr()->in('r.id', $qbSelect->getDQL()));
 
-        return $qbUpdate->getQuery()->execute();
+        return (int) $qbUpdate->getQuery()->execute();
     }
 
     /**
@@ -858,9 +761,11 @@ class RevisionRepository extends EntityRepository
         return $this->unlockRevisions(null, $by);
     }
 
+    /**
+     * @return Paginator<Revision>
+     */
     public function findAllLockedRevisions(ContentType $contentType, string $lockBy, int $page = 0, int $limit = 50): Paginator
     {
-        /** @var QueryBuilder $qb */
         $qb = $this->createQueryBuilder('r');
         $qb
             ->andWhere($qb->expr()->eq('r.contentType', ':content_type'))
@@ -904,6 +809,9 @@ class RevisionRepository extends EntityRepository
         return $qb->getQuery()->execute();
     }
 
+    /**
+     * @return Revision[]
+     */
     public function findDraftsByContentType(ContentType $contentType): array
     {
         $qbSelect = $this->createQueryBuilder('s');
@@ -919,6 +827,9 @@ class RevisionRepository extends EntityRepository
         return $qbSelect->getQuery()->execute();
     }
 
+    /**
+     * @return Revision[]
+     */
     public function findAllDrafts(): array
     {
         $qbSelect = $this->createQueryBuilder('s');

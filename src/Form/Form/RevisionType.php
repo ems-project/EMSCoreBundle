@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
@@ -25,13 +26,18 @@ class RevisionType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var Revision|null $revision */
         $revision = $builder->getData();
-        $contentType = $options['content_type'] ? $options['content_type'] : $revision->getContentType();
+        $contentType = $revision ? $revision->giveContentType() : $options['content_type'];
+
+        if (!$contentType instanceof ContentType) {
+            throw new \RuntimeException('Missing content type');
+        }
 
         $builder->add('data', $contentType->getFieldType()->getType(), [
                 'metadata' => $contentType->getFieldType(),
@@ -127,10 +133,7 @@ class RevisionType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
                 'compound' => true,
@@ -146,10 +149,7 @@ class RevisionType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'revision';
     }

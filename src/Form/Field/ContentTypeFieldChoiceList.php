@@ -28,7 +28,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return array<mixed>
      */
@@ -40,7 +40,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return array<mixed>
      */
@@ -63,7 +63,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return array<mixed>
      */
@@ -73,7 +73,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @param array<mixed> $choices
      *
@@ -85,7 +85,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @param array<mixed> $choices
      *

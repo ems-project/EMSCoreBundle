@@ -16,7 +16,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EditEnvironmentType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var Revision $revision */
         $revision = $builder->getData();
@@ -59,10 +63,7 @@ class EditEnvironmentType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);

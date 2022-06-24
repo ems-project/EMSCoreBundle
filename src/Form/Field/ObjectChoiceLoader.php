@@ -20,7 +20,7 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function loadChoiceList($value = null): ObjectChoiceList
     {
@@ -36,7 +36,7 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @param array<mixed> $values
      *
@@ -50,7 +50,7 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @param array<mixed> $choices
      *

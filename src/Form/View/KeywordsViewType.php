@@ -15,8 +15,7 @@ use Twig\Environment;
 
 class KeywordsViewType extends ViewType
 {
-    /** @var ElasticaService */
-    private $elasticaService;
+    private ElasticaService $elasticaService;
 
     public function __construct(FormFactory $formFactory, Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger)
     {
@@ -34,6 +33,10 @@ class KeywordsViewType extends ViewType
         return 'Keywords';
     }
 
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -54,10 +57,13 @@ class KeywordsViewType extends ViewType
         return 'keywords_view';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         $searchQuery = [
-            'index' => $view->getContentType()->getEnvironment()->getAlias(),
+            'index' => $view->getContentType()->giveEnvironment()->getAlias(),
             'type' => $view->getContentType()->getName(),
             'body' => $view->getOptions()['aggsQuery'],
         ];
@@ -85,7 +91,7 @@ class KeywordsViewType extends ViewType
             'keywords' => $keywords,
             'view' => $view,
             'contentType' => $view->getContentType(),
-            'environment' => $view->getContentType()->getEnvironment(),
+            'environment' => $view->getContentType()->giveEnvironment(),
         ];
     }
 }

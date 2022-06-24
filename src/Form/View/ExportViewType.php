@@ -45,6 +45,10 @@ class ExportViewType extends ViewType
         return 'Export';
     }
 
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -146,20 +150,23 @@ class ExportViewType extends ViewType
         return $response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         try {
             $renderQuery = $this->twig->createTemplate($view->getOptions()['body'])->render([
                     'view' => $view,
                     'contentType' => $view->getContentType(),
-                    'environment' => $view->getContentType()->getEnvironment(),
+                    'environment' => $view->getContentType()->giveEnvironment(),
             ]);
         } catch (\Throwable $e) {
             $renderQuery = '{}';
         }
 
         $searchQuery = [
-                'index' => $view->getContentType()->getEnvironment()->getAlias(),
+                'index' => $view->getContentType()->giveEnvironment()->getAlias(),
                 'type' => $view->getContentType()->getName(),
                 'body' => $renderQuery,
         ];
@@ -175,7 +182,7 @@ class ExportViewType extends ViewType
             $render = $this->twig->createTemplate($view->getOptions()['template'])->render([
                     'view' => $view,
                     'contentType' => $view->getContentType(),
-                    'environment' => $view->getContentType()->getEnvironment(),
+                    'environment' => $view->getContentType()->giveEnvironment(),
                     'result' => $resultSet->getResponse()->getData(),
             ]);
         } catch (\Throwable $e) {
@@ -186,7 +193,7 @@ class ExportViewType extends ViewType
             $filename = $this->twig->createTemplate($view->getOptions()['filename'])->render([
                     'view' => $view,
                     'contentType' => $view->getContentType(),
-                    'environment' => $view->getContentType()->getEnvironment(),
+                    'environment' => $view->getContentType()->giveEnvironment(),
                     'result' => $resultSet->getResponse()->getData(),
             ]);
         } catch (\Throwable $e) {
@@ -200,7 +207,7 @@ class ExportViewType extends ViewType
                 'allow_origin' => empty($view->getOptions()['allow_origin']) ? null : $view->getOptions()['allow_origin'],
                 'view' => $view,
                 'contentType' => $view->getContentType(),
-                'environment' => $view->getContentType()->getEnvironment(),
+                'environment' => $view->getContentType()->giveEnvironment(),
         ];
     }
 }

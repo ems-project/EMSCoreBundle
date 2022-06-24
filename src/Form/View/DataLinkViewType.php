@@ -37,7 +37,7 @@ class DataLinkViewType extends ViewType
 
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<mixed>                               $options
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -65,7 +65,7 @@ class DataLinkViewType extends ViewType
     }
 
     /**
-     * @return array<string, mixed>
+     * {@inheritDoc}
      */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {

@@ -18,7 +18,7 @@ class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function loadChoiceList($value = null): ContentTypeFieldChoiceList
     {
@@ -26,7 +26,6 @@ class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
     }
 
     /**
-     *
      * @return array<mixed>
      */
     public function loadAll(): array
@@ -35,7 +34,7 @@ class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @param array<mixed> $values
      *
@@ -49,7 +48,7 @@ class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @param array<mixed> $choices
      *

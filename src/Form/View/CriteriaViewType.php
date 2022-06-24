@@ -37,6 +37,10 @@ class CriteriaViewType extends ViewType
         return 'Criteria';
     }
 
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -69,6 +73,9 @@ class CriteriaViewType extends ViewType
         return 'criteria_view';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->logger);

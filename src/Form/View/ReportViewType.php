@@ -16,8 +16,7 @@ use Twig\Environment;
 
 class ReportViewType extends ViewType
 {
-    /** @var ElasticaService */
-    private $elasticaService;
+    private ElasticaService $elasticaService;
 
     public function __construct(FormFactory $formFactory, Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger)
     {
@@ -35,6 +34,10 @@ class ReportViewType extends ViewType
         return 'Report';
     }
 
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -71,6 +74,9 @@ class ReportViewType extends ViewType
         return 'report_view';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         try {
@@ -84,7 +90,7 @@ class ReportViewType extends ViewType
         }
 
         $searchQuery = [
-            'index' => $view->getContentType()->getEnvironment()->getAlias(),
+            'index' => $view->getContentType()->giveEnvironment()->getAlias(),
             'type' => $view->getContentType()->getName(),
             'body' => $renderQuery,
         ];

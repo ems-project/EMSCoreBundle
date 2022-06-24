@@ -37,7 +37,7 @@ class ObjectChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return array<mixed>
      */
@@ -49,7 +49,7 @@ class ObjectChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return array<mixed>
      */
@@ -72,7 +72,7 @@ class ObjectChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return array<mixed>
      */
@@ -82,7 +82,7 @@ class ObjectChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @param array<mixed> $choices
      *
@@ -96,7 +96,7 @@ class ObjectChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @param array<mixed> $choices
      *

@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Form\Nature;
 
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\DataField\DataLinkFieldType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -15,7 +16,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ReorganizeType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('structure', HiddenType::class, [
             'attr' => [
@@ -33,38 +38,41 @@ class ReorganizeType extends AbstractType
         $view = $options['view'];
         if ($view instanceof View) {
             $fieldType = $view->getContentType()->getFieldType()->getChildByPath($view->getOptions()['field']);
-            $builder->add('addItem', DataLinkFieldType::class, [
+
+            if ($fieldType instanceof FieldType) {
+                $builder->add('addItem', DataLinkFieldType::class, [
                     'metadata' => $fieldType,
                     'label' => 'Add item',
                     'required' => false,
                     'type' => $fieldType->getDisplayOption('type', null),
-            ]);
+                ]);
 
-            $builder->get('addItem')->addModelTransformer(new CallbackTransformer(
-                function ($raw) {
-                    $dataField = new DataField();
+                $builder->get('addItem')->addModelTransformer(new CallbackTransformer(
+                    function ($raw) {
+                        $dataField = new DataField();
 
-                    return $dataField;
-                },
-                function (DataField $tagsAsString) {
-                    // transform the string back to an array
-                    return null;
-                }
-            ))->addViewTransformer(new CallbackTransformer(
-                function (DataField $tagsAsString) {
-                    // transform the string back to an array
-                    return null;
-                },
-                function ($raw) {
-                    $dataField = new DataField();
+                        return $dataField;
+                    },
+                    function (DataField $tagsAsString) {
+                        // transform the string back to an array
+                        return null;
+                    }
+                ))->addViewTransformer(new CallbackTransformer(
+                    function (DataField $tagsAsString) {
+                        // transform the string back to an array
+                        return null;
+                    },
+                    function ($raw) {
+                        $dataField = new DataField();
 
-                    return $dataField;
-                }
-            ));
+                        return $dataField;
+                    }
+                ));
+            }
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'view' => null,

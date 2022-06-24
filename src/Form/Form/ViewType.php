@@ -24,6 +24,10 @@ class ViewType extends AbstractType
         $this->container = $container;
     }
 
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $view = $builder->getData();

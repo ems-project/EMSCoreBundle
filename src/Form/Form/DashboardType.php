@@ -27,8 +27,8 @@ final class DashboardType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface<AbstractType> $builder
-     * @param array<string, mixed>               $options
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

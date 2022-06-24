@@ -36,7 +36,7 @@ class ObjectChoiceListFactory extends DefaultChoiceListFactory
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function createListFromLoader(ChoiceLoaderInterface $loader, $value = null): ChoiceListInterface
     {

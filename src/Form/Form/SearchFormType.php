@@ -38,9 +38,10 @@ class SearchFormType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $isSuper = $this->authorizationChecker->isGranted('ROLE_SUPER');
 
@@ -150,7 +151,7 @@ class SearchFormType extends AbstractType
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => 'EMS\CoreBundle\Entity\Form\Search',
@@ -162,11 +163,12 @@ class SearchFormType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormView<FormView>           $view
+     * @param FormInterface<FormInterface> $form
+     * @param array<mixed>                 $options
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        /* give options for twig context */
         parent::buildView($view, $form, $options);
     }
 }

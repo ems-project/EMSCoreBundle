@@ -7,11 +7,14 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\FieldType\FieldTypeType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EditFieldTypeType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var EditFieldType $editFieldType */
         $editFieldType = $builder->getData();
@@ -33,15 +36,5 @@ class EditFieldTypeType extends AbstractType
             ],
             'icon' => 'fa fa-save',
         ]);
-
-        return parent::buildForm($builder, $options);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-//         $resolver->setDefault ( 'twigWithWysiwyg', true );
     }
 }

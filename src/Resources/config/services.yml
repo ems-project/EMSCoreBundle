@@ -330,7 +330,7 @@ services:
             - { name: form.type }
     ems.form.form.notificationtype:
         class: EMS\CoreBundle\Form\Form\NotificationFormType
-        arguments: ['%ems_core.circles_object%', '@ems.service.environment']
+        arguments: ['@ems.service.environment']
         tags:
             - { name: form.type }
     ems.form.form.revisiontype:

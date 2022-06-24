@@ -14,9 +14,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class SearchFilterType extends AbstractType
 {
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if ($options['is_super'] || empty($options['searchFields'])) {
             $builder->add('field', TextType::class, [
@@ -73,7 +74,7 @@ class SearchFilterType extends AbstractType
         ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => 'EMS\CoreBundle\Entity\Form\SearchFilter',
@@ -83,10 +84,7 @@ class SearchFilterType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'search_filter';
     }

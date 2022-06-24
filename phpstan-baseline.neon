@@ -1,186 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\FilterRepository\\:\\:findByName\\(\\) has parameter \\$name with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/FilterRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\ManagedAliasRepository\\:\\:findAllAliases\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Repository/ManagedAliasRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:countForSent\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:countPendingByUserRoleAndCircle\\(\\) has parameter \\$contentTypes with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:countPendingByUserRoleAndCircle\\(\\) has parameter \\$environments with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:countPendingByUserRoleAndCircle\\(\\) has parameter \\$templates with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:countRejectedForUser\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:countRejectedForUser\\(\\) has parameter \\$contentTypes with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:countRejectedForUser\\(\\) has parameter \\$environments with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:countRejectedForUser\\(\\) has parameter \\$templates with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByPendingAndRoleAndCircleForUserSent\\(\\) has parameter \\$contentTypes with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByPendingAndRoleAndCircleForUserSent\\(\\) has parameter \\$environments with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByPendingAndRoleAndCircleForUserSent\\(\\) has parameter \\$from with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByPendingAndRoleAndCircleForUserSent\\(\\) has parameter \\$limit with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByPendingAndRoleAndCircleForUserSent\\(\\) has parameter \\$templates with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByPendingAndRoleAndCircleForUserSent\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByPendingAndUserRoleAndCircle\\(\\) has parameter \\$contentTypes with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByPendingAndUserRoleAndCircle\\(\\) has parameter \\$environments with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByPendingAndUserRoleAndCircle\\(\\) has parameter \\$from with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByPendingAndUserRoleAndCircle\\(\\) has parameter \\$limit with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByPendingAndUserRoleAndCircle\\(\\) has parameter \\$templates with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByPendingAndUserRoleAndCircle\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByRevionsionOuuidAndEnvironment\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findRejectedForUser\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findRejectedForUser\\(\\) has parameter \\$contentTypes with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findRejectedForUser\\(\\) has parameter \\$environments with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findRejectedForUser\\(\\) has parameter \\$from with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findRejectedForUser\\(\\) has parameter \\$limit with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findRejectedForUser\\(\\) has parameter \\$templates with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findReminders\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findResponses\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:getTemplatesIdsForUser\\(\\) has parameter \\$contentTypes with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:getTemplatesIdsForUser\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:getTemplatesIdsForUserFrom\\(\\) has parameter \\$contentTypes with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:getTemplatesIdsForUserFrom\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:setAuthorizationChecker\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:compareEnvironment\\(\\) has parameter \\$contentTypes with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Repository/RevisionRepository.php
@@ -314,11 +134,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\SortOptionRepository\\:\\:findAll\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Repository/SortOptionRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\TemplateRepository\\:\\:findByRenderOptionAndContentType\\(\\) has parameter \\$contentTypes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Repository/TemplateRepository.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Security\\\\ApiKeyAuthenticator\\:\\:authenticateToken\\(\\) has no return typehint specified\\.$#"
@@ -1101,11 +916,6 @@ parameters:
 			path: src/Service/Mapping.php
 
 		-
-			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 2
-			path: src/Service/NotificationService.php
-
-		-
 			message: "#^Cannot call method send\\(\\) on object\\|null\\.$#"
 			count: 1
 			path: src/Service/NotificationService.php
@@ -1141,11 +951,6 @@ parameters:
 			path: src/Service/NotificationService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:finalizeDraftEvent\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/NotificationService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:listArchivesNotifications\\(\\) has parameter \\$filters with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Service/NotificationService.php
@@ -1176,17 +981,7 @@ parameters:
 			path: src/Service/NotificationService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:listSentNotifications\\(\\) has parameter \\$filters with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/NotificationService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:menuNotification\\(\\) has parameter \\$filters with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/NotificationService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:newDraftEvent\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/NotificationService.php
 
@@ -1251,11 +1046,6 @@ parameters:
 			path: src/Service/NotificationService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:unpublishEvent\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/NotificationService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:usersToEmailAddresses\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/NotificationService.php
@@ -1263,11 +1053,6 @@ parameters:
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:usersToEmailAddresses\\(\\) has parameter \\$users with no typehint specified\\.$#"
 			count: 1
-			path: src/Service/NotificationService.php
-
-		-
-			message: "#^Parameter \\#2 \\$environment of method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:findByRevionsionOuuidAndEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null given\\.$#"
-			count: 2
 			path: src/Service/NotificationService.php
 
 		-

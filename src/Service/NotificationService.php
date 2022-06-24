@@ -92,7 +92,7 @@ class NotificationService
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Notification');
-        $notifications = $repository->findByRevionsionOuuidAndEnvironment($event->getRevision(), $event->getEnvironment());
+        $notifications = $repository->findByRevisionOuuidAndEnvironment($event->getRevision(), $event->getEnvironment());
 
         /** @var Notification $notification */
         foreach ($notifications as $notification) {
@@ -102,27 +102,25 @@ class NotificationService
         }
     }
 
-    public function unpublishEvent(RevisionUnpublishEvent $event)
+    public function unpublishEvent(RevisionUnpublishEvent $event): void
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Notification');
-        $notifications = $repository->findByRevionsionOuuidAndEnvironment($event->getRevision(), $event->getEnvironment());
+        $notifications = $repository->findByRevisionOuuidAndEnvironment($event->getRevision(), $event->getEnvironment());
 
-        /** @var Notification $notification */
         foreach ($notifications as $notification) {
             $this->setStatus($notification, 'aborted', 'warning');
         }
     }
 
-    public function finalizeDraftEvent(RevisionFinalizeDraftEvent $event)
+    public function finalizeDraftEvent(RevisionFinalizeDraftEvent $event): void
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Notification');
-        $notifications = $repository->findByRevionsionOuuidAndEnvironment($event->getRevision(), $event->getRevision()->getContentType()->getEnvironment());
+        $notifications = $repository->findByRevisionOuuidAndEnvironment($event->getRevision(), $event->getRevision()->giveContentType()->giveEnvironment());
 
-        /** @var Notification $notification */
         foreach ($notifications as $notification) {
             if ($notification->getRevision() !== $event->getRevision()) {
                 $this->setStatus($notification, 'aborted', 'warning');
@@ -130,14 +128,13 @@ class NotificationService
         }
     }
 
-    public function newDraftEvent(RevisionNewDraftEvent $event)
+    public function newDraftEvent(RevisionNewDraftEvent $event): void
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Notification');
-        $notifications = $repository->findByRevionsionOuuidAndEnvironment($event->getRevision(), $event->getRevision()->getContentType()->getEnvironment());
+        $notifications = $repository->findByRevisionOuuidAndEnvironment($event->getRevision(), $event->getRevision()->giveContentType()->giveEnvironment());
 
-        /** @var Notification $notification */
         foreach ($notifications as $notification) {
             $this->logger->warning('service.notification.notification_will_be_lost_finalize', [
                 'notification_name' => $notification->getTemplate()->getName(),
@@ -455,15 +452,11 @@ class NotificationService
     }
 
     /**
-     * Call to generate list of notifications.
-     *
-     * @param int    $from
-     * @param int    $limit
-     * @param ?array $filters
+     * @param ?array<mixed> $filters
      *
      * @return Notification[]
      */
-    public function listSentNotifications($from, $limit, $filters = null)
+    public function listSentNotifications(int $from, int $limit, array $filters = null): array
     {
         $contentTypes = null;
         $environments = null;

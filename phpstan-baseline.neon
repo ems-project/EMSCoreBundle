@@ -346,31 +346,6 @@ parameters:
 			path: src/Service/Revision/PostProcessingService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\TemplateService\\:\\:addNested\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/TemplateService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\TemplateService\\:\\:addNested\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/TemplateService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\TemplateService\\:\\:addNested\\(\\) has parameter \\$rawData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/TemplateService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\TemplateService\\:\\:getXml\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/TemplateService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\TemplateService\\:\\:getXml\\(\\) has parameter \\$source with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/TemplateService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:__construct\\(\\) has parameter \\$securityRoles with no typehint specified\\.$#"
 			count: 1
 			path: src/Service/UserService.php
@@ -444,3 +419,4 @@ parameters:
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:\\$securityRoles has no typehint specified\\.$#"
 			count: 1
 			path: src/Service/UserService.php
+

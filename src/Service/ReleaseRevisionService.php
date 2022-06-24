@@ -90,7 +90,7 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
     public function finalizeDraftEvent(RevisionFinalizeDraftEvent $event): void
     {
         $revision = $event->getRevision();
-        $releaseRevisions = $this->releaseRevisionRepository->getRevisionsLinkedToReleasesByOuuid($revision->giveOuuid(), $revision->getContentType());
+        $releaseRevisions = $this->releaseRevisionRepository->getRevisionsLinkedToReleasesByOuuid($revision->giveOuuid(), $revision->giveContentType());
         foreach ($releaseRevisions as $releaseRevision) {
             $this->logger->warning('log.service.release_revision.preceding.revision.in.release', [
                 'name' => $releaseRevision->getRelease()->getName(),

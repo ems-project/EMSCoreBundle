@@ -331,21 +331,6 @@ parameters:
 			path: src/Service/PublishService.php
 
 		-
-			message: "#^Parameter \\#2 \\$contentType of method EMS\\\\CoreBundle\\\\Repository\\\\ReleaseRevisionRepository\\:\\:getRevisionsLinkedToReleasesByOuuid\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
-			count: 1
-			path: src/Service/ReleaseRevisionService.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 2
-			path: src/Service/Revision/PostProcessingService.php
-
-		-
-			message: "#^PHPDoc tag @var for variable \\$child has no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Service/Revision/PostProcessingService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:__construct\\(\\) has parameter \\$securityRoles with no typehint specified\\.$#"
 			count: 1
 			path: src/Service/UserService.php

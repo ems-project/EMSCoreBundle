@@ -31,58 +31,13 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:prepare\\(\\)\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:__construct\\(\\) has parameter \\$instanceId with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:__construct\\(\\) has parameter \\$session with no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:alignRevision\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:silentPublish\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:unpublish\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
 			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
 			count: 2
 			path: src/Service/PublishService.php
 
 		-
-			message: "#^PHPDoc tag @var for variable \\$statement has no value type specified in iterable type Doctrine\\\\DBAL\\\\Statement\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
 			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
 			count: 2
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$revRepository \\(EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\) does not accept Doctrine\\\\Persistence\\\\ObjectRepository\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$session type has no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
-			count: 1
 			path: src/Service/PublishService.php
 
 		-

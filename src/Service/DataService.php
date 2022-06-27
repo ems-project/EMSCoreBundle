@@ -68,10 +68,9 @@ class DataService
     public const ALGO = OPENSSL_ALGO_SHA1;
     protected const SCROLL_TIMEOUT = '1m';
 
-    /** @var resource|false|null */
+    /** @var false|resource|null */
     private $private_key;
-    /** @var string|null */
-    private $public_key;
+    private ?string $public_key;
 
     protected string $lockTime;
     protected string $instanceId;
@@ -614,29 +613,34 @@ class DataService
         return $objectArray;
     }
 
-    public function getPublicKey()
+    public function getPublicKey(): ?string
     {
         if ($this->private_key && empty($this->public_key)) {
-            $certificate = \openssl_pkey_get_private($this->private_key);
+            $certificate = \openssl_pkey_get_private($this->private_key); /* @phpstan-ignore-line */
             if (false === $certificate) {
                 throw new \RuntimeException('Private key not found');
             }
             $details = \openssl_pkey_get_details($certificate);
-            $this->public_key = $details['key'];
+            $this->public_key = $details ? ($details['key'] ?? null) : null;
         }
 
         return $this->public_key;
     }
 
-    public function getCertificateInfo()
+    /**
+     * @return ?array<mixed>
+     */
+    public function getCertificateInfo(): ?array
     {
         if ($this->private_key) {
-            $certificate = \openssl_pkey_get_private($this->private_key);
+            $certificate = \openssl_pkey_get_private($this->private_key); /* @phpstan-ignore-line */
             if (false === $certificate) {
                 throw new \RuntimeException('Private key not found');
             }
 
-            return \openssl_pkey_get_details($certificate);
+            $details = \openssl_pkey_get_details($certificate);
+
+            return $details ?: null;
         }
 
         return null;
@@ -685,7 +689,12 @@ class DataService
                         $data = Json::encode($indexedItem);
 
                         // Check signature
-                        $ok = \openssl_verify($data, $binary_signature, $this->getPublicKey(), self::ALGO);
+
+                        $ok = 0;
+                        if (null !== $publicKey = $this->getPublicKey()) {
+                            $ok = \openssl_verify($data, $binary_signature, $publicKey, self::ALGO);
+                        }
+
                         if (0 === $ok) {
                             $this->logger->info('service.data.check_signature_failed', [
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),

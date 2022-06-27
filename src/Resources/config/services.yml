@@ -451,7 +451,7 @@ services:
         arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '@ems.service.index', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.data', '@ems.service.user', '@event_dispatcher', '@emsco.logger', '@emsco.logger.audit', '@ems.elasticsearch.bulker']
     ems.service.notification:
         class: EMS\CoreBundle\Service\NotificationService
-        arguments: ['@doctrine', '@ems.repository.template', '@ems.service.user', '@logger', '@session', '@service_container', '@ems.service.data', '%ems_core.from_email%', '@twig']
+        arguments: ['@doctrine', '@ems.repository.template', '@ems.service.user', '@logger', '@service_container', '@ems.service.data', '%ems_core.from_email%', '@twig']
         tags:
             - { name: kernel.event_listener, event: revision.new_draft, method: newDraftEvent, priority: 0 }
             - { name: kernel.event_listener, event: revision.finalize_draft, method: finalizeDraftEvent, priority: 0 }

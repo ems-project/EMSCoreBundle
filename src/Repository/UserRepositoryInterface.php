@@ -8,12 +8,11 @@ use EMS\CoreBundle\Entity\User;
 interface UserRepositoryInterface
 {
     /**
-     * @param string        $role
      * @param array<string> $circles
      *
-     * @return array <User>
+     * @return User[]
      */
-    public function findForRoleAndCircles($role, $circles): array;
+    public function findForRoleAndCircles(string $role, array $circles): array;
 
     public function getUsersEnabled(): UserList;
 }

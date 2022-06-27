@@ -73,7 +73,10 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
         return isset($result[0]) && $result[0] instanceof User ? $result[0] : null;
     }
 
-    public function findForRoleAndCircles($role, $circles): array
+    /**
+     * {@inheritDoc}
+     */
+    public function findForRoleAndCircles(string $role, array $circles): array
     {
         $resultSet = $this->createQueryBuilder('u')
             ->where('u.roles like :role')

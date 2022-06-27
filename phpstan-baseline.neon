@@ -16,27 +16,7 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
-			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 2
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
-			count: 2
-			path: src/Service/DataService.php
-
-		-
 			message: "#^Parameter \\#1 \\$key of function openssl_pkey_get_private expects string, resource given\\.$#"
 			count: 2
 			path: src/Service/DataService.php
-
-		-
-			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 2
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
-			count: 2
-			path: src/Service/PublishService.php
 

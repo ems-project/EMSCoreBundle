@@ -215,7 +215,7 @@ class PublishService
                 ], $logContext));
             }
 
-            $this->dispatcher->dispatch(RevisionPublishEvent::NAME, new RevisionPublishEvent($revision, $environment));
+            $this->dispatcher->dispatch(new RevisionPublishEvent($revision, $environment));
         }
 
         return $already ? 0 : 1;
@@ -291,7 +291,7 @@ class PublishService
             $this->indexService->delete($revision, $environment);
             $this->auditLogger->notice('log.unpublished.success', LogRevisionContext::unpublish($revision, $environment));
 
-            $this->dispatcher->dispatch(RevisionUnpublishEvent::NAME, new RevisionUnpublishEvent($revision, $environment));
+            $this->dispatcher->dispatch(new RevisionUnpublishEvent($revision, $environment));
         } catch (\Throwable $e) {
             if (!$revision->getDeleted()) {
                 $this->logger->warning('service.publish.already_unpublished', LogRevisionContext::publish($revision, $environment));

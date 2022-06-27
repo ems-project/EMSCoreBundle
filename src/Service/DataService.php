@@ -856,7 +856,7 @@ class DataService
             $em->flush();
 
             $this->unlockRevision($revision, $username);
-            $this->dispatcher->dispatch(RevisionFinalizeDraftEvent::NAME, new RevisionFinalizeDraftEvent($revision));
+            $this->dispatcher->dispatch(new RevisionFinalizeDraftEvent($revision));
 
             $this->auditLogger->notice('log.revision.finalized', LogRevisionContext::update($revision));
 
@@ -1212,7 +1212,7 @@ class DataService
 
             $this->auditLogger->info('log.revision.draft.created', LogRevisionContext::update($revision));
 
-            $this->dispatcher->dispatch(RevisionNewDraftEvent::NAME, new RevisionNewDraftEvent($newDraft));
+            $this->dispatcher->dispatch(new RevisionNewDraftEvent($newDraft));
 
             return $newDraft;
         }

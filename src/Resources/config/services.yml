@@ -453,10 +453,10 @@ services:
         class: EMS\CoreBundle\Service\NotificationService
         arguments: ['@doctrine', '@ems.repository.template', '@ems.service.user', '@logger', '@service_container', '@ems.service.data', '%ems_core.from_email%', '@twig']
         tags:
-            - { name: kernel.event_listener, event: revision.new_draft, method: newDraftEvent, priority: 0 }
-            - { name: kernel.event_listener, event: revision.finalize_draft, method: finalizeDraftEvent, priority: 0 }
-            - { name: kernel.event_listener, event: revision.publish, method: publishEvent, priority: 0 }
-            - { name: kernel.event_listener, event: revision.unpublish, method: unpublishEvent, priority: 0 }
+            - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionNewDraftEvent, method: newDraftEvent, priority: 0 }
+            - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionFinalizeDraftEvent, method: finalizeDraftEvent, priority: 0 }
+            - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionPublishEvent, method: publishEvent, priority: 0 }
+            - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionUnpublishEvent, method: unpublishEvent, priority: 0 }
     ems.service.i18n: '@EMS\CoreBundle\Service\I18nService'
     EMS\CoreBundle\Service\I18nService:
         class: EMS\CoreBundle\Service\I18nService
@@ -507,7 +507,7 @@ services:
         class: EMS\CoreBundle\Service\ReleaseRevisionService
         arguments: ['@ems.repository.release_revision', '@EMS\CoreBundle\Repository\RevisionRepository', '@logger', '@ems.service.contenttype', '@ems.service.user']
         tags:
-          - { name: kernel.event_listener, event: revision.finalize_draft, method: finalizeDraftEvent, priority: 0 }
+          - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionFinalizeDraftEvent, method: finalizeDraftEvent, priority: 0 }
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']

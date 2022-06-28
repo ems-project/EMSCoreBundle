@@ -4,54 +4,27 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Environment;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
-use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
 use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Service\EnvironmentService;
-use EMS\CoreBundle\Service\PublishService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class AlignCommand extends AbstractCommand
+class AlignCommand extends AbstractEnvironmentCommand
 {
-    private RevisionSearcher $revisionSearcher;
-    private LoggerInterface $logger;
-    private EnvironmentService $environmentService;
-    private PublishService $publishService;
-
     private Environment $source;
     private Environment $target;
     private string $user = 'SYSTEM_ALIGN';
 
-    private string $searchQuery;
-
     public const ARGUMENT_SOURCE = 'source';
     public const ARGUMENT_TARGET = 'target';
-    public const OPTION_SCROLL_SIZE = 'scroll-size';
-    public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
     public const OPTION_FORCE = 'force';
-    public const OPTION_SEARCH_QUERY = 'search-query';
+
     public const OPTION_SNAPSHOT = 'snapshot';
     public const OPTION_USER = 'user';
 
     protected static $defaultName = Commands::ENVIRONMENT_ALIGN;
-
-    public function __construct(
-        RevisionSearcher $revisionSearcher,
-        LoggerInterface $logger,
-        EnvironmentService $environmentService,
-        PublishService $publishService
-    ) {
-        parent::__construct();
-        $this->revisionSearcher = $revisionSearcher;
-        $this->logger = $logger;
-        $this->environmentService = $environmentService;
-        $this->publishService = $publishService;
-    }
 
     protected function configure(): void
     {
@@ -59,13 +32,12 @@ class AlignCommand extends AbstractCommand
             ->setDescription('Align an environment from another one')
             ->addArgument(self::ARGUMENT_SOURCE, InputArgument::REQUIRED, 'Environment source name')
             ->addArgument(self::ARGUMENT_TARGET, InputArgument::REQUIRED, 'Environment target name')
-            ->addOption(self::OPTION_SCROLL_SIZE, null, InputOption::VALUE_REQUIRED, 'Size of the elasticsearch scroll request')
-            ->addOption(self::OPTION_SCROLL_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Time to migrate "scrollSize" items i.e. 30s or 2m')
-            ->addOption(self::OPTION_SEARCH_QUERY, null, InputOption::VALUE_OPTIONAL, 'Query used to find elasticsearch records to import', '{}')
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'If set, the task will be performed (protection)')
             ->addOption(self::OPTION_SNAPSHOT, null, InputOption::VALUE_NONE, 'If set, the target environment will be tagged as a snapshot after the alignment')
             ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'Lock user', $this->user)
         ;
+
+        $this->configureRevisionSearcher();
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -73,34 +45,19 @@ class AlignCommand extends AbstractCommand
         parent::initialize($input, $output);
         $this->io->title('EMS - Environment - Align');
 
-        if ($scrollSize = $this->getOptionIntNull(self::OPTION_SCROLL_SIZE)) {
-            $this->revisionSearcher->setSize($scrollSize);
-        }
-        if ($scrollTimeout = $this->getOptionStringNull(self::OPTION_SCROLL_TIMEOUT)) {
-            $this->revisionSearcher->setTimeout($scrollTimeout);
-        }
+        $this->initializeRevisionSearcher();
 
         $this->user = $this->getOptionString(self::OPTION_USER, $this->user);
-        $this->searchQuery = $this->getOptionString(self::OPTION_SEARCH_QUERY);
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        $this->logger->info('Interact with AlignCommand');
-
-        $environmentNames = $this->environmentService->getEnvironmentNames();
-
-        $this->choiceArgumentString(self::ARGUMENT_SOURCE, 'Select an existing environment as source', $environmentNames);
-        $this->choiceArgumentString(self::ARGUMENT_TARGET, 'Select an existing environment as target', $environmentNames);
-
-        $this->source = $this->environmentService->findByName($this->getArgumentString(self::ARGUMENT_SOURCE));
-        $this->target = $this->environmentService->findByName($this->getArgumentString(self::ARGUMENT_TARGET));
+        $this->source = $this->choiceEnvironment(self::ARGUMENT_SOURCE, 'Select an existing environment as source');
+        $this->target = $this->choiceEnvironment(self::ARGUMENT_TARGET, 'Select an existing environment as target');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->io->section('Execute');
-
         if (!$input->getOption(self::OPTION_FORCE)) {
             $this->io->error('Has protection, the force option is mandatory.');
 

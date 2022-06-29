@@ -177,10 +177,16 @@ class PublishService
         $contentType = $revision->giveContentType();
 
         if ($contentType->giveEnvironment() === $environment) {
-            throw new \LogicException('Unpublish failed from default environment');
+            throw new \LogicException('Unpublish failed: is default environment');
         }
 
-        $revision->getEnvironments()->removeElement($environment);
+        $environments = $revision->getEnvironments();
+
+        if (1 === $environments->count()) {
+            throw new \LogicException('Unpublish failed: requires 1 environment');
+        }
+
+        $environments->removeElement($environment);
         $this->bulker->delete($contentType->getName(), $environment->getAlias(), $revision->getOuuid());
     }
 

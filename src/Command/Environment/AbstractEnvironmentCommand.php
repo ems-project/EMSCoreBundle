@@ -24,12 +24,14 @@ abstract class AbstractEnvironmentCommand extends AbstractCommand
 
     protected string $searchQuery = '{}';
     protected string $lockUser = 'SYSTEM_ALIGN';
+    protected bool $dryRun = false;
 
     public const OPTION_SCROLL_SIZE = 'scroll-size';
     public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
     public const OPTION_SEARCH_QUERY = 'search-query';
     public const OPTION_USER = 'user';
     public const OPTION_FORCE = 'force';
+    public const OPTION_DRY_RUN = 'dry-run';
 
     public function __construct(
         RevisionSearcher $revisionSearcher,
@@ -54,6 +56,7 @@ abstract class AbstractEnvironmentCommand extends AbstractCommand
             ->addOption(self::OPTION_SCROLL_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Time to migrate "scrollSize" items i.e. 30s or 2m')
             ->addOption(self::OPTION_SEARCH_QUERY, null, InputOption::VALUE_OPTIONAL, 'Query used to find elasticsearch records to import', '{}')
             ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'Lock user', $this->lockUser)
+            ->addOption(self::OPTION_DRY_RUN, '', InputOption::VALUE_NONE, 'Dry run')
         ;
     }
 
@@ -74,6 +77,7 @@ abstract class AbstractEnvironmentCommand extends AbstractCommand
 
         $this->searchQuery = $this->getOptionString(self::OPTION_SEARCH_QUERY);
         $this->lockUser = $this->getOptionString(self::OPTION_USER, $lockUser);
+        $this->dryRun = $this->getOptionBool(self::OPTION_DRY_RUN);
     }
 
     protected function choiceEnvironment(string $argument, string $question): Environment

@@ -62,6 +62,12 @@ class AlignCommand extends AbstractEnvironmentCommand
 
         $this->io->note(\sprintf('The source environment contains %s elements, start aligning environments...', $search->getTotal()));
 
+        if ($this->dryRun) {
+            $this->io->success('Dry run finished');
+
+            return self::EXECUTE_SUCCESS;
+        }
+
         $deletedRevision = 0;
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];

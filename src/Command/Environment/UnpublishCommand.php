@@ -58,6 +58,12 @@ final class UnpublishCommand extends AbstractEnvironmentCommand
 
         $this->io->note(\sprintf('Found "%d" revisions in "%s" environment', $search->getTotal(), $this->environment));
 
+        if ($this->dryRun) {
+            $this->io->success('Dry run finished');
+
+            return self::EXECUTE_SUCCESS;
+        }
+
         $this->io->progressStart($search->getTotal());
         foreach ($this->revisionSearcher->search($this->environment, $search) as $revisions) {
             $this->revisionSearcher->lock($revisions, $this->lockUser);

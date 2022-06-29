@@ -133,10 +133,10 @@ class PublishService
         }
     }
 
-    public function bulkPublishStart(int $bulkSize): void
+    public function bulkStart(int $bulkSize, ?LoggerInterface $logger = null): void
     {
         $this->bulker->setSize($bulkSize);
-        $this->bulker->setLogger(new NullLogger());
+        $this->bulker->setLogger($logger ?? new NullLogger());
         $this->bulker->setSign(false);
     }
 
@@ -172,7 +172,19 @@ class PublishService
         return $already ? 0 : 1;
     }
 
-    public function bulkPublishFinished(): void
+    public function bulkUnpublish(Revision $revision, Environment $environment): void
+    {
+        $contentType = $revision->giveContentType();
+
+        if ($contentType->giveEnvironment() === $environment) {
+            throw new \LogicException('Unpublish failed from default environment');
+        }
+
+        $revision->getEnvironments()->removeElement($environment);
+        $this->bulker->delete($contentType->getName(), $environment->getAlias(), $revision->getOuuid());
+    }
+
+    public function bulkFinished(): void
     {
         $this->bulker->send(true);
         $this->bulker->setLogger($this->logger);

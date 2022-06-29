@@ -15,14 +15,12 @@ class AlignCommand extends AbstractEnvironmentCommand
 {
     private Environment $source;
     private Environment $target;
-    private string $user = 'SYSTEM_ALIGN';
 
     public const ARGUMENT_SOURCE = 'source';
     public const ARGUMENT_TARGET = 'target';
-    public const OPTION_FORCE = 'force';
-
     public const OPTION_SNAPSHOT = 'snapshot';
-    public const OPTION_USER = 'user';
+
+    private const LOCK_USER = 'SYSTEM_ALIGN';
 
     protected static $defaultName = Commands::ENVIRONMENT_ALIGN;
 
@@ -32,11 +30,10 @@ class AlignCommand extends AbstractEnvironmentCommand
             ->setDescription('Align an environment from another one')
             ->addArgument(self::ARGUMENT_SOURCE, InputArgument::REQUIRED, 'Environment source name')
             ->addArgument(self::ARGUMENT_TARGET, InputArgument::REQUIRED, 'Environment target name')
-            ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'If set, the task will be performed (protection)')
             ->addOption(self::OPTION_SNAPSHOT, null, InputOption::VALUE_NONE, 'If set, the target environment will be tagged as a snapshot after the alignment')
-            ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'Lock user', $this->user)
         ;
 
+        $this->configureForceProtection();
         $this->configureRevisionSearcher();
     }
 
@@ -45,9 +42,7 @@ class AlignCommand extends AbstractEnvironmentCommand
         parent::initialize($input, $output);
         $this->io->title('EMS - Environment - Align');
 
-        $this->initializeRevisionSearcher();
-
-        $this->user = $this->getOptionString(self::OPTION_USER, $this->user);
+        $this->initializeRevisionSearcher(self::LOCK_USER);
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void
@@ -58,9 +53,7 @@ class AlignCommand extends AbstractEnvironmentCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!$input->getOption(self::OPTION_FORCE)) {
-            $this->io->error('Has protection, the force option is mandatory.');
-
+        if (!$this->forceProtection($input)) {
             return self::EXECUTE_ERROR;
         }
 
@@ -75,8 +68,8 @@ class AlignCommand extends AbstractEnvironmentCommand
 
         $this->io->progressStart($search->getTotal());
         foreach ($this->revisionSearcher->search($this->source, $search) as $revisions) {
-            $this->revisionSearcher->lock($revisions, $this->user);
-            $this->publishService->bulkPublishStart($bulkSize);
+            $this->revisionSearcher->lock($revisions, $this->lockUser);
+            $this->publishService->bulkStart($bulkSize, $this->logger);
 
             foreach ($revisions->transaction() as $revision) {
                 $contentType = $revision->giveContentType();
@@ -97,7 +90,7 @@ class AlignCommand extends AbstractEnvironmentCommand
                 $this->io->progressAdvance();
             }
 
-            $this->publishService->bulkPublishFinished();
+            $this->publishService->bulkFinished();
             $this->revisionSearcher->unlock($revisions);
         }
         $this->io->progressFinish();

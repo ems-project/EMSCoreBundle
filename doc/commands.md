@@ -121,20 +121,49 @@ Options:
 ### Align
 
 ```bash
-Usage:
-  emsco:environment:align [options] [--] <source> <target>
-
-Arguments:
-  source                               Environment source name
-  target                               Environment target name
-
-Options:
+Description:
+  Align an environment from another one                                                                               
+                                                                                                                      
+Usage:                                                                                                                
+  emsco:environment:align [options] [--] <source> <target>                                                            
+                                                                                                                      
+Arguments:                                                                                                            
+  source                               Environment source name                                                        
+  target                               Environment target name                                                        
+                                                                                                                      
+Options:                                                                                                              
+      --snapshot                       If set, the target environment will be tagged as a snapshot after the alignment
+      --force                          If set, the task will be performed (protection)
       --scroll-size=SCROLL-SIZE        Size of the elasticsearch scroll request
       --scroll-timeout=SCROLL-TIMEOUT  Time to migrate "scrollSize" items i.e. 30s or 2m
       --search-query[=SEARCH-QUERY]    Query used to find elasticsearch records to import [default: "{}"]
-      --force                          If set, the task will be performed (protection)
-      --snapshot                       If set, the target environment will be tagged as a snapshot after the alignment
       --user=USER                      Lock user [default: "SYSTEM_ALIGN"]
+      --dry-run                        Dry run
+```
+
+### Unpublish
+
+You can not unpublish:
+- revisions from their default environment, you should use '**emsco:revision:archive**' for this.
+- revision if it's the only environment. This can happen when the revision is archived in the default environment.
+
+```bash
+Description:
+  Unpublish revision from an environment
+
+Usage:
+  emsco:environment:unpublish [options] [--] <environment>
+
+Arguments:
+  environment                          Environment name
+
+Options:
+      --force                          If set, the task will be performed (protection)
+      --scroll-size=SCROLL-SIZE        Size of the elasticsearch scroll request
+      --scroll-timeout=SCROLL-TIMEOUT  Time to migrate "scrollSize" items i.e. 30s or 2m
+      --search-query[=SEARCH-QUERY]    Query used to find elasticsearch records to import [default: "{}"]
+      --user=USER                      Lock user [default: "SYSTEM_ALIGN"]
+      --dry-run                        Dry run
 ```
 
 ## Revision

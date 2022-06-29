@@ -74,7 +74,7 @@ final class RevisionSearcher
     /**
      * @return iterable|Revisions[]
      */
-    public function search(Environment $environment, RevisionSearch $search, ?string $lockBy = null, string $until = '+5 minutes'): iterable
+    public function search(Environment $environment, RevisionSearch $search): iterable
     {
         $config = $this->entityManager->getConnection()->getConfiguration();
         $logger = $config->getSQLLogger();

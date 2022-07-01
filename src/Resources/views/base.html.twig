@@ -121,6 +121,7 @@
 {#           <!-- /.messages-menu -->#}
 
 		{% if app.user %}
+		  {{ render(controller('EMS\\CoreBundle\\Controller\\ChannelController::menu')) }}
 		  {{ render(controller('EMS\\CoreBundle\\Controller\\NotificationController::menuNotificationAction')) }}
         {% endif %}
 
@@ -150,7 +151,7 @@
                 {% include '@EMSCore/elements/user-image.html.twig' with {
 					'class': 'img-circle'
 				} %}
-                
+
                 <p>
                   {{ 'Logged in as'|trans({'%username%': app.user.username}) }}
                   <small>Member since {{ app.user.created|date(date_time_format) }}</small>
@@ -201,14 +202,14 @@
       </div>
     </nav>
   </header>
-  
+
 		{% if app.user %}
 		  	{{ render(controller('EMS\\CoreBundle\\Controller\\TwigElementsController::sideMenuAction')) }}
 		{% else %}
             {% include '@EMSCore/elements/side-menu.html.twig' with {
 				'contentTypes': get_content_types()
 			} %}
-        {% endif %} 
+        {% endif %}
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -235,8 +236,8 @@
 					    </div>
 					{% endfor %}
 	            </div>
-			{% endif %}    	
-			
+			{% endif %}
+
 			{% set warning = app.session.flashbag.get('warning')  %}
 			{% if warning %}
 				<div class="alert alert-warning alert-dismissible">
@@ -249,7 +250,7 @@
 					{% endfor %}
 	            </div>
 			{% endif %}
-			
+
 			{% set error = app.session.flashbag.get('error')  %}
 			{% if error %}
 				<div class="alert alert-danger alert-dismissible">
@@ -273,7 +274,7 @@
 		      <div class="modal-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		        <h4 class="modal-title" id="myModalOutOfSync">
-							<strong>Out of sync</strong>	
+							<strong>Out of sync</strong>
 				</h4>
 		      </div>
 		      <div class="modal-body">
@@ -286,7 +287,7 @@
 		      </div>
 		    </div>
 		  </div>
-		</div>	
+		</div>
 
 		<div class="modal fade" id="modal-notifications" tabindex="-1" role="dialog" aria-labelledby="myModalNotifications">
 		  <div class="modal-dialog" role="document">
@@ -294,7 +295,7 @@
 		      <div class="modal-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		        <h4 class="modal-title" id="myModalNotifications">
-							<strong>Notifications</strong>	
+							<strong>Notifications</strong>
 				</h4>
 		      </div>
 		      <div class="modal-body">
@@ -304,7 +305,7 @@
 			  </div>
 		    </div>
 		  </div>
-		</div>	
+		</div>
     </section>
     <!-- /.content -->
   </div>
@@ -357,7 +358,7 @@
   <!-- Add the sidebar's background. This div must be placed
        immediately after the control sidebar -->
   <div class="control-sidebar-bg"></div>
-  
+
   <div class="modal fade" id="waitingModal" tabindex="-1" role="dialog" aria-labelledby="waitingModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -374,8 +375,8 @@
     </div>
   </div>
 </div>
-  
-  
+
+
 </div>
 <!-- ./wrapper -->
     {% embed '@EMSCore/core/modal.html.twig' with {'id': 'ajax-modal'} %}{% endembed %}

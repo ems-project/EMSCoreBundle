@@ -107,7 +107,7 @@ final class ChannelController extends AbstractController
     public function menu(): Response
     {
         return $this->render('@EMSCore/channel/menu.html.twig', [
-            'channels' => $this->channelService->getAll()
+            'channels' => $this->channelService->getAll(),
         ]);
     }
 

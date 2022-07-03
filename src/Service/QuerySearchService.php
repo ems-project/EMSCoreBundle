@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service;
 
 use EMS\CommonBundle\Common\Standard\Json;
+use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Entity\EntityInterface;
@@ -140,6 +141,29 @@ final class QuerySearchService implements EntityServiceInterface
         }
 
         return $this->querySearchRepository->counter();
+    }
+
+    /**
+     * @return \Generator<Document>
+     */
+    public function querySearchIterator(string $querySearchName): \Generator
+    {
+        $querySearch = $this->getOneByName($querySearchName);
+        if (!$querySearch instanceof QuerySearch) {
+            throw new \RuntimeException(\sprintf('QuerySearch %s not found', $querySearchName));
+        }
+
+        $commonSearch = $this->buildSearch($querySearch, '*');
+
+        $scroll = $this->elasticaService->scroll($commonSearch);
+
+        foreach ($scroll as $resultSet) {
+            foreach ($resultSet as $result) {
+                if ($result) {
+                    yield Document::fromResult($result);
+                }
+            }
+        }
     }
 
     public function querySearchDataLinks(DataLinks $dataLinks): void

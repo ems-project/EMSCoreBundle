@@ -34,16 +34,16 @@ class ObjectChoiceListFactory extends DefaultChoiceListFactory
     /**
      * instanciate a ObjectChoiceLoader (with the required services).
      */
-    public function createLoader($types = null, $loadAll = false, $circleOnly = false, bool $withWarning = true)
+    public function createLoader($types = null, $loadAll = false, $circleOnly = false, bool $withWarning = true, ?string $querySearchName = null)
     {
         if (null === $types || '' === $loadAll) {
-            if ($loadAll) {
+            if ($loadAll && null === $querySearchName) {
                 throw new PerformanceException('Try to load all objects of all content types');
             }
             $types = $this->contentTypes->getAllTypes();
         }
 
-        return new ObjectChoiceLoader($this->objectChoiceCacheService, $types, $loadAll, $circleOnly, $withWarning);
+        return new ObjectChoiceLoader($this->objectChoiceCacheService, $types, $loadAll, $circleOnly, $withWarning, $querySearchName);
     }
 
     /**

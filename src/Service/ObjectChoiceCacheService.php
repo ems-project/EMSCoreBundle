@@ -46,6 +46,7 @@ class ObjectChoiceCacheService
 
         $this->fullyLoaded = [];
         $this->cache = [];
+        $this->cachedQuerySearches = [];
     }
 
     /**

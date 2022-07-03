@@ -33,7 +33,7 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
      */
     public function loadAll()
     {
-        return $this->objectChoiceList->loadAll($this->objectChoiceList->getTypes());
+        return $this->objectChoiceList->loadAll();
     }
 
     /**

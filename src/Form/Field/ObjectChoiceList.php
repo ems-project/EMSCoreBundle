@@ -44,7 +44,7 @@ class ObjectChoiceList implements ChoiceListInterface
      */
     public function getChoices()
     {
-        $this->loadAll($this->types);
+        $this->loadAll();
 
         return $this->choices;
     }
@@ -98,10 +98,10 @@ class ObjectChoiceList implements ChoiceListInterface
         return \array_keys($this->choices);
     }
 
-    public function loadAll($types)
+    public function loadAll()
     {
         if ($this->loadAll) {
-            $this->objectChoiceCacheService->loadAll($this->choices, $types, $this->circleOnly, $this->withWarning);
+            $this->objectChoiceCacheService->loadAll($this->choices, $this->types, $this->circleOnly, $this->withWarning);
         }
 
         return $this->choices;

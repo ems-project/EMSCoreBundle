@@ -32,6 +32,8 @@ class ObjectChoiceCacheService
     /** @var array<ObjectChoiceListItem[]> */
     private $cache;
     private QuerySearchService $querySearchName;
+    /** @var ObjectChoiceListItem[][] */
+    private array $cachedQuerySearches;
 
     public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage, ElasticaService $elasticaService, QuerySearchService $querySearchName)
     {
@@ -242,6 +244,13 @@ class ObjectChoiceCacheService
      */
     private function loadAllFromQuerySearch(array &$choices, string $querySearchName): void
     {
+        if (isset($this->cachedQuerySearches[$querySearchName])) {
+            foreach ($this->cachedQuerySearches[$querySearchName] as $id => $item) {
+                $choices[$id] = $item;
+            }
+
+            return;
+        }
         foreach ($this->querySearchName->querySearchIterator($querySearchName) as $document) {
             $contentType = $this->contentTypeService->getByName($document->getContentType());
             if (false === $contentType) {
@@ -249,6 +258,7 @@ class ObjectChoiceCacheService
             }
             $listItem = new ObjectChoiceListItem($document, $contentType);
             $this->cache[$document->getContentType()][$document->getId()] = $listItem;
+            $this->cachedQuerySearches[$querySearchName][$document->getEmsId()] = $listItem;
             $choices[$document->getEmsId()] = $listItem;
             $this->cache[$document->getContentType()][$document->getId()] = $listItem;
         }

@@ -56,6 +56,7 @@ class ObjectChoiceCacheService
 
             return;
         }
+        @\trigger_error('Using types and/or searchId in DataLink field is deprecated use a QuerySearch instead', E_USER_DEPRECATED);
 
         $token = $this->tokenStorage->getToken();
         if (!$token instanceof TokenInterface) {

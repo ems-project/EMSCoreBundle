@@ -81,6 +81,17 @@ class Bulker
         return $this;
     }
 
+    public function delete(string $contentType, string $index, string $ouuid): bool
+    {
+        $action = $this->createAction($contentType, $index, $ouuid);
+        $action->setOpType(Action::OP_TYPE_DELETE);
+
+        $this->bulk->addAction($action);
+        ++$this->counter;
+
+        return $this->send();
+    }
+
     /**
      * @param array<mixed> $body
      */
@@ -96,13 +107,7 @@ class Bulker
             $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTimeInterface::ATOM);
         }
 
-        $action = new Action();
-        $action->setIndex($index);
-        $action->setId($ouuid);
-        $typePath = $this->mapping->getTypePath($contentType);
-        if ('.' !== $typePath) {
-            $action->setType($typePath);
-        }
+        $action = $this->createAction($contentType, $index, $ouuid);
 
         //@todo check this with a elastica 7
         $source = JSON::stringify($body, JSON_UNESCAPED_UNICODE); //elastica actions do not support fields named 'doc' or 'doc_as_upsert'
@@ -176,6 +181,19 @@ class Bulker
         }
 
         return true;
+    }
+
+    private function createAction(string $contentType, string $index, string $ouuid): Action
+    {
+        $action = new Action();
+        $action->setIndex($index);
+        $action->setId($ouuid);
+        $typePath = $this->mapping->getTypePath($contentType);
+        if ('.' !== $typePath) {
+            $action->setType($typePath);
+        }
+
+        return $action;
     }
 
     private function logResponse(ResponseSet $response): void

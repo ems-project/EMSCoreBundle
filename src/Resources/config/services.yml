@@ -445,7 +445,7 @@ services:
             - { name: emsco.entity.service }
     ems.service.objectchoicecache:
         class: EMS\CoreBundle\Service\ObjectChoiceCacheService
-        arguments: ['@logger', '@ems.service.contenttype', '@security.authorization_checker', '@security.token_storage', '@ems_common.service.elastica']
+        arguments: ['@logger', '@ems.service.contenttype', '@security.authorization_checker', '@security.token_storage', '@ems_common.service.elastica', '@ems.service.query_search']
     ems.service.publish:
         class: EMS\CoreBundle\Service\PublishService
         arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.index', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.data', '@ems.service.user', '@event_dispatcher', '@emsco.logger', '@emsco.logger.audit', '@ems.elasticsearch.bulker']

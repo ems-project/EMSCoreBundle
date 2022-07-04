@@ -31,24 +31,36 @@ class ObjectChoiceCacheService
     private $fullyLoaded;
     /** @var array<ObjectChoiceListItem[]> */
     private $cache;
+    private QuerySearchService $querySearchName;
+    /** @var ObjectChoiceListItem[][] */
+    private array $cachedQuerySearches;
 
-    public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage, ElasticaService $elasticaService)
+    public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage, ElasticaService $elasticaService, QuerySearchService $querySearchName)
     {
         $this->logger = $logger;
         $this->contentTypeService = $contentTypeService;
         $this->authorizationChecker = $authorizationChecker;
         $this->tokenStorage = $tokenStorage;
         $this->elasticaService = $elasticaService;
+        $this->querySearchName = $querySearchName;
 
         $this->fullyLoaded = [];
         $this->cache = [];
+        $this->cachedQuerySearches = [];
     }
 
     /**
      * @param ObjectChoiceListItem[] $choices
      */
-    public function loadAll(array &$choices, string $types, bool $circleOnly = false, bool $withWarning = true): void
+    public function loadAll(array &$choices, string $types, bool $circleOnly = false, bool $withWarning = true, ?string $querySearchName = null): void
     {
+        if (null !== $querySearchName) {
+            $this->loadAllFromQuerySearch($choices, $querySearchName);
+
+            return;
+        }
+        @\trigger_error('Using types and/or searchId in DataLink field is deprecated use a QuerySearch instead', E_USER_DEPRECATED);
+
         $token = $this->tokenStorage->getToken();
         if (!$token instanceof TokenInterface) {
             throw new \RuntimeException('Unexpected security token object');
@@ -226,5 +238,30 @@ class ObjectChoiceCacheService
         }
 
         return $choices;
+    }
+
+    /**
+     * @param ObjectChoiceListItem[] $choices
+     */
+    private function loadAllFromQuerySearch(array &$choices, string $querySearchName): void
+    {
+        if (isset($this->cachedQuerySearches[$querySearchName])) {
+            foreach ($this->cachedQuerySearches[$querySearchName] as $id => $item) {
+                $choices[$id] = $item;
+            }
+
+            return;
+        }
+        foreach ($this->querySearchName->querySearchIterator($querySearchName) as $document) {
+            $contentType = $this->contentTypeService->getByName($document->getContentType());
+            if (false === $contentType) {
+                continue;
+            }
+            $listItem = new ObjectChoiceListItem($document, $contentType);
+            $this->cache[$document->getContentType()][$document->getId()] = $listItem;
+            $this->cachedQuerySearches[$querySearchName][$document->getEmsId()] = $listItem;
+            $choices[$document->getEmsId()] = $listItem;
+            $this->cache[$document->getContentType()][$document->getId()] = $listItem;
+        }
     }
 }

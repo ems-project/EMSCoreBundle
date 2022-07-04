@@ -31,8 +31,12 @@ class ObjectPickerType extends Select2Type
                 $loadAll = $options->offsetGet('dynamicLoading') ? false : true;
                 $circleOnly = $options->offsetGet('circle-only');
                 $withWarning = $options->offsetGet('with_warning');
+                $querySearch = $options->offsetGet('querySearch');
+                if (!\is_string($querySearch) || 0 === \strlen($querySearch)) {
+                    $querySearch = null;
+                }
 
-                return $this->choiceListFactory->createLoader($options->offsetGet('type'), $loadAll, $circleOnly, $withWarning);
+                return $this->choiceListFactory->createLoader($options->offsetGet('type'), $loadAll, $circleOnly, $withWarning, $querySearch);
             },
             'choice_label' => function ($value, $key, $index) {
                 return $value->getLabel();

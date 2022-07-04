@@ -14,9 +14,10 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
         string $types,
         bool $loadAll,
         bool $circleOnly,
-        bool $withWarning
+        bool $withWarning,
+        ?string $querySearchName
     ) {
-        $this->objectChoiceList = new ObjectChoiceList($objectChoiceCacheService, $types, $loadAll, $circleOnly, $withWarning);
+        $this->objectChoiceList = new ObjectChoiceList($objectChoiceCacheService, $types, $loadAll, $circleOnly, $withWarning, $querySearchName);
     }
 
     /**
@@ -32,7 +33,7 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
      */
     public function loadAll(): array
     {
-        return $this->objectChoiceList->loadAll($this->objectChoiceList->getTypes());
+        return $this->objectChoiceList->loadAll();
     }
 
     /**

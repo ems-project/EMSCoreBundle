@@ -112,7 +112,7 @@ class FieldTypeType extends AbstractType
             ]);
         }
 
-        if (null != $fieldType->getChildren() && $fieldType->getChildren()->count() > 0) {
+        if ($fieldType->getChildren()->count() > 0) {
             $childFound = false;
             /** @var FieldType $field */
             foreach ($fieldType->getChildren() as $idx => $field) {

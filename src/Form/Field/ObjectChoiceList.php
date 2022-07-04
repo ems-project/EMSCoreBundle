@@ -112,7 +112,10 @@ class ObjectChoiceList implements ChoiceListInterface
         return \array_keys($this->choices);
     }
 
-    public function loadAll()
+    /**
+     * @return array<mixed>
+     */
+    public function loadAll(): array
     {
         if ($this->loadAll) {
             $this->objectChoiceCacheService->loadAll($this->choices, $this->types, $this->circleOnly, $this->withWarning, $this->querySearchName);

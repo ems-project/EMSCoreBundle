@@ -104,6 +104,13 @@ final class ChannelController extends AbstractController
         return $this->redirectToRoute('ems_core_channel_index');
     }
 
+    public function menu(): Response
+    {
+        return $this->render('@EMSCore/channel/menu.html.twig', [
+            'channels' => $this->channelService->getAll(),
+        ]);
+    }
+
     private function initTable(): EntityTable
     {
         $table = new EntityTable($this->channelService, $this->generateUrl('ems_core_channel_ajax_data_table'));

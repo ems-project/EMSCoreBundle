@@ -9,29 +9,26 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class ApiKeyUserProvider implements UserProviderInterface
 {
-    /** @var UserService */
-    private $userService;
+    private UserService $userService;
 
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
     }
 
-    public function getUsernameForApiKey($apiKey)
+    public function getUsernameForApiKey(string $apiKey): ?string
     {
         // Look up the username based on the token in the database, via
         // an API call, or do something entirely different
-        $username = $this->userService->findUsernameByApikey($apiKey);
-
-        return $username;
+        return $this->userService->findUsernameByApikey($apiKey);
     }
 
-    public function loadUserByUsername($username)
+    public function loadUserByUsername($username): UserInterface
     {
         return $this->userService->giveUser($username, false);
     }
 
-    public function refreshUser(UserInterface $user)
+    public function refreshUser(UserInterface $user): UserInterface
     {
         // this is used for storing authentication in the session
         // but in this example, the token is sent in each request,
@@ -40,7 +37,7 @@ class ApiKeyUserProvider implements UserProviderInterface
         throw new UnsupportedUserException();
     }
 
-    public function supportsClass($class)
+    public function supportsClass($class): bool
     {
         return 'Symfony\Component\Security\Core\User\User' === $class;
     }

@@ -8,22 +8,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AlignIndexesType extends SelectPickerType
 {
-    /**
-     * @var AliasService
-     */
-    private $aliasService;
+    private AliasService $aliasService;
 
     public function __construct(AliasService $aliasService)
     {
         parent::__construct();
-
         $this->aliasService = $aliasService;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $managedAliases = $this->aliasService->getManagedAliases();
         $choices = [];

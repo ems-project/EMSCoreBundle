@@ -47,17 +47,17 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     protected $identifier;
 
     /**
-     * @var array
+     * @var array<array{locale: string, text: string}>
      *
      * @ORM\Column(name="content", type="json_array")
      */
-    protected $content;
+    protected array $content = [];
 
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {
@@ -124,8 +124,7 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     }
 
     /**
-     * Set content.
-     * array<locale: string, text: string> $content.
+     * @param array<array{locale: string, text: string}> $content
      */
     public function setContent(array $content): I18n
     {
@@ -135,7 +134,7 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     }
 
     /**
-     * Get content.
+     * @return array<array{locale: string, text: string}>
      */
     public function getContent(): array
     {

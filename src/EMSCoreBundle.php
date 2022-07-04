@@ -19,7 +19,7 @@ class EMSCoreBundle extends Bundle
     public const TRANS_USER_DOMAIN = 'emsco-user';
     public const FONTAWESOME_VERSION = '4';
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
         $container->addCompilerPass(new SecurityCompilerPass());

@@ -73,14 +73,9 @@ class ContentTypeService implements EntityServiceInterface
     }
 
     /**
-     * Get child by path.
-     *
-     * @param string $path
-     * @param bool   $skipVirtualFields
-     *
      * @return FieldType|false
      */
-    public function getChildByPath(FieldType $fieldType, $path, $skipVirtualFields = false)
+    public function getChildByPath(FieldType $fieldType, string $path, bool $skipVirtualFields = false)
     {
         $elem = \explode('.', $path);
         if (!empty($elem)) {
@@ -110,7 +105,7 @@ class ContentTypeService implements EntityServiceInterface
         return false;
     }
 
-    private function loadEnvironment()
+    private function loadEnvironment(): void
     {
         if ([] === $this->orderedContentTypes) {
             /** @var ContentTypeRepository $contentTypeRepository */
@@ -124,21 +119,24 @@ class ContentTypeService implements EntityServiceInterface
         }
     }
 
-    public function persist(ContentType $contentType)
+    public function persist(ContentType $contentType): void
     {
         $em = $this->doctrine->getManager();
         $em->persist($contentType);
         $em->flush();
     }
 
-    public function persistField(FieldType $fieldType)
+    public function persistField(FieldType $fieldType): void
     {
         $em = $this->doctrine->getManager();
         $em->persist($fieldType);
         $em->flush();
     }
 
-    private function listAllFields(FieldType $fieldType)
+    /**
+     * @return array<string, FieldType>
+     */
+    private function listAllFields(FieldType $fieldType): array
     {
         $out = [];
         foreach ($fieldType->getChildren() as $child) {
@@ -149,7 +147,11 @@ class ContentTypeService implements EntityServiceInterface
         return $out;
     }
 
-    private function reorderFieldsRecu(FieldType $fieldType, array $newStructure, array $ids)
+    /**
+     * @param array<mixed> $newStructure
+     * @param array<mixed> $ids
+     */
+    private function reorderFieldsRecu(FieldType $fieldType, array $newStructure, array $ids): void
     {
         $fieldType->getChildren()->clear();
         foreach ($newStructure as $key => $item) {
@@ -157,7 +159,7 @@ class ContentTypeService implements EntityServiceInterface
                 $fieldType->getChildren()->add($ids['key_'.$item['id']]);
                 $ids['key_'.$item['id']]->setParent($fieldType);
                 $ids['key_'.$item['id']]->setOrderKey($key + 1);
-                $this->reorderFieldsRecu($ids['key_'.$item['id']], isset($item['children']) ? $item['children'] : [], $ids);
+                $this->reorderFieldsRecu($ids['key_'.$item['id']], $item['children'] ?? [], $ids);
             } else {
                 $this->logger->warning('service.contenttype.field_not_found', [
                     'field_id' => $item['id'],
@@ -166,7 +168,10 @@ class ContentTypeService implements EntityServiceInterface
         }
     }
 
-    public function reorderFields(ContentType $contentType, array $newStructure)
+    /**
+     * @param array<mixed> $newStructure
+     */
+    public function reorderFields(ContentType $contentType, array $newStructure): void
     {
         $em = $this->doctrine->getManager();
 
@@ -183,18 +188,16 @@ class ContentTypeService implements EntityServiceInterface
 
     public function getIndex(ContentType $contentType, Environment $environment = null): string
     {
-        if (!$environment) {
-            $environment = $contentType->getEnvironment();
-        }
+        $environment = $environment ?? $contentType->giveEnvironment();
 
         return $environment->getAlias();
     }
 
-    public function updateMapping(ContentType $contentType, $envs = false)
+    public function updateMapping(ContentType $contentType, ?string $envs = null): void
     {
         try {
             $body = $this->environmentService->getIndexAnalysisConfiguration();
-            if (!$envs) {
+            if (null === $envs) {
                 $envs = \array_reduce($this->environmentService->getManagedEnvironement(), function ($envs, $item) use ($contentType, $body) {
                     /* @var Environment $item */
                     $index = $this->getIndex($contentType, $item);
@@ -250,11 +253,9 @@ class ContentTypeService implements EntityServiceInterface
     }
 
     /**
-     * @param string $name
-     *
      * @return ContentType|false
      */
-    public function getByName($name)
+    public function getByName(string $name)
     {
         $this->loadEnvironment();
 
@@ -262,59 +263,69 @@ class ContentTypeService implements EntityServiceInterface
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      */
-    public function getAllByAliases()
+    public function getAllByAliases(): array
     {
         $this->loadEnvironment();
         $contentTypeAliases = [];
-        /** @var ContentType $contentType */
+
         foreach ($this->orderedContentTypes as $contentType) {
-            if (!isset($contentTypeAliases[$contentType->getEnvironment()->getAlias()])) {
-                $contentTypeAliases[$contentType->getEnvironment()->getAlias()] = [];
+            $environmentAlias = $contentType->giveEnvironment()->getAlias();
+
+            if (!isset($contentTypeAliases[$environmentAlias])) {
+                $contentTypeAliases[$environmentAlias] = [];
             }
-            $contentTypeAliases[$contentType->getEnvironment()->getAlias()][$contentType->getName()] = $contentType;
+            $contentTypeAliases[$environmentAlias][$contentType->getName()] = $contentType;
         }
 
         return $contentTypeAliases;
     }
 
-    public function getAllDefaultEnvironmentNames()
+    /**
+     * @return string[]
+     */
+    public function getAllDefaultEnvironmentNames(): array
     {
         $this->loadEnvironment();
         $out = [];
-        /** @var ContentType $contentType */
         foreach ($this->orderedContentTypes as $contentType) {
-            if (!isset($out[$contentType->getEnvironment()->getAlias()])) {
-                $out[$contentType->getEnvironment()->getName()] = $contentType->getEnvironment()->getName();
+            if (!isset($out[$contentType->giveEnvironment()->getAlias()])) {
+                $out[$contentType->giveEnvironment()->getName()] = $contentType->giveEnvironment()->getName();
             }
         }
 
         return \array_keys($out);
     }
 
-    public function getAllAliases()
+    public function getAllAliases(): string
     {
         $this->loadEnvironment();
         $out = [];
-        /** @var ContentType $contentType */
+
         foreach ($this->orderedContentTypes as $contentType) {
-            if (!isset($out[$contentType->getEnvironment()->getAlias()])) {
-                $out[$contentType->getEnvironment()->getAlias()] = $contentType->getEnvironment()->getAlias();
+            if (!isset($out[$contentType->giveEnvironment()->getAlias()])) {
+                $out[$contentType->giveEnvironment()->getAlias()] = $contentType->giveEnvironment()->getAlias();
             }
         }
 
         return \implode(',', $out);
     }
 
-    public function getAll()
+    /**
+     * @return ContentType[]
+     */
+    public function getAll(): array
     {
         $this->loadEnvironment();
 
         return $this->orderedContentTypes;
     }
 
-    public function getAllNames()
+    /**
+     * @return string[]
+     */
+    public function getAllNames(): array
     {
         $this->loadEnvironment();
         $out = [];
@@ -326,10 +337,7 @@ class ContentTypeService implements EntityServiceInterface
         return $out;
     }
 
-    /**
-     * @return string
-     */
-    public function getAllTypes()
+    public function getAllTypes(): string
     {
         $this->loadEnvironment();
 

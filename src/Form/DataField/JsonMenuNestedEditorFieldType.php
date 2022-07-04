@@ -76,7 +76,7 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
     }
 
     /**
-     * @return array<string, array{type: string}>
+     * {@inheritDoc}
      */
     public function generateMapping(FieldType $current): array
     {
@@ -84,8 +84,7 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<mixed>                               $options
+     * {@inheritDoc}
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
@@ -104,7 +103,7 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
 
     /**
      * @param FormInterface<FormInterface> $form
-     * @param array<mixed>                 $options
+     * @param array<string, mixed>         $options
      */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {

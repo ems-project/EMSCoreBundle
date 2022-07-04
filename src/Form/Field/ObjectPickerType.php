@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
-use Symfony\Component\Form\ChoiceList\Factory\ChoiceListFactoryInterface;
+use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
@@ -10,19 +10,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ObjectPickerType extends Select2Type
 {
-    /** @var ChoiceListFactoryInterface */
-    private $choiceListFactory;
+    private ObjectChoiceListFactory $choiceListFactory;
 
-    public function __construct(ChoiceListFactoryInterface $factory)
+    public function __construct(ObjectChoiceListFactory $factory)
     {
         $this->choiceListFactory = $factory;
         parent::__construct($factory);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -63,20 +59,16 @@ class ObjectPickerType extends Select2Type
         ]);
     }
 
-    /**
-     * Returns the choice list factory (getter function).
-     *
-     * @return ChoiceListFactoryInterface
-     */
-    public function getChoiceListFactory()
+    public function getChoiceListFactory(): ObjectChoiceListFactory
     {
         return $this->choiceListFactory;
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['attr']['data-type'] = $options['type'];
         $view->vars['attr']['data-search-id'] = $options['searchId'];
@@ -87,10 +79,7 @@ class ObjectPickerType extends Select2Type
         $view->vars['attr']['data-referrer-ems-id'] = $options['referrer-ems-id'] ?? false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'objectpicker';
     }

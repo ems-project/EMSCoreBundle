@@ -9,10 +9,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentTypePickerType extends ChoiceType
 {
-    private $choices;
-
-    /** @var ContentTypeService */
-    private $service;
+    /** @var array<mixed> */
+    private array $choices = [];
+    private ContentTypeService $service;
 
     public function __construct(ContentTypeService $service)
     {
@@ -20,15 +19,12 @@ class ContentTypePickerType extends ChoiceType
         $this->service = $service;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'selectpicker';
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $this->choices = [];
         $keys = [];

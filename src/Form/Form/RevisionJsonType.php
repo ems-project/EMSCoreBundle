@@ -11,6 +11,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class RevisionJsonType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

@@ -8,25 +8,26 @@ use EMS\CoreBundle\Entity\EntityInterface;
 
 class JsonClass implements \JsonSerializable
 {
-    /** @var string */
-    private $class;
+    /** @var class-string */
+    private string $class;
 
-    /** @var array */
-    private $constructorArguments;
-
-    /** @var array */
-    private $properties;
-
+    /** @var array<mixed> */
+    private array $constructorArguments;
+    /** @var array<string, mixed> */
+    private array $properties;
     /** @var string[] */
     private array $replacedFields;
 
     public const CLASS_INDEX = 'class';
-    public const CONSTRUCTOR_ARGUMNETS_INDEX = 'arguments';
+    public const CONSTRUCTOR_ARGUMENTS_INDEX = 'arguments';
     public const PROPERTIES_INDEX = 'properties';
     public const REPLACED_FIELDS = 'replaced';
 
     /**
-     * @param string[] $replacedFields
+     * @param array<string, mixed> $properties
+     * @param class-string         $class
+     * @param array<mixed>         $constructorArguments
+     * @param string[]             $replacedFields
      */
     public function __construct(array $properties, string $class, array $constructorArguments = [], array $replacedFields = [])
     {
@@ -36,14 +37,14 @@ class JsonClass implements \JsonSerializable
         $this->replacedFields = $replacedFields;
     }
 
-    public static function fromJsonString(string $jsonString)
+    public static function fromJsonString(string $jsonString): self
     {
         $arguments = \json_decode($jsonString, true);
 
         return new self(
             $arguments[self::PROPERTIES_INDEX],
             $arguments[self::CLASS_INDEX],
-            $arguments[self::CONSTRUCTOR_ARGUMNETS_INDEX],
+            $arguments[self::CONSTRUCTOR_ARGUMENTS_INDEX],
             $arguments[self::REPLACED_FIELDS] ?? [],
         );
     }
@@ -68,6 +69,9 @@ class JsonClass implements \JsonSerializable
         unset($this->properties[$name]);
     }
 
+    /**
+     * @param mixed $value
+     */
     public function updateProperty(string $name, $value): void
     {
         $this->properties[$name] = $value;
@@ -78,6 +82,9 @@ class JsonClass implements \JsonSerializable
         return \array_key_exists($name, $this->properties);
     }
 
+    /**
+     * @param string $properties
+     */
     public function handlePersistentCollections(...$properties): void
     {
         foreach ($properties as $property) {
@@ -103,13 +110,13 @@ class JsonClass implements \JsonSerializable
     {
         return [
             self::CLASS_INDEX => $this->class,
-            self::CONSTRUCTOR_ARGUMNETS_INDEX => $this->constructorArguments,
+            self::CONSTRUCTOR_ARGUMENTS_INDEX => $this->constructorArguments,
             self::PROPERTIES_INDEX => $this->properties,
             self::REPLACED_FIELDS => $this->replacedFields,
         ];
     }
 
-    public function jsonDeserialize(object $object = null)
+    public function jsonDeserialize(object $object = null): ?object
     {
         $reflectionClass = new \ReflectionClass($this->class);
         $instance = $object;
@@ -125,7 +132,9 @@ class JsonClass implements \JsonSerializable
                 continue;
             }
 
-            $instance->deserialize($name, $value);
+            if (\method_exists($instance, 'deserialize')) {
+                $instance->deserialize($name, $value);
+            }
         }
 
         return $instance;

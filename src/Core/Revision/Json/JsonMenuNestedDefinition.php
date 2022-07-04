@@ -333,7 +333,7 @@ final class JsonMenuNestedDefinition
     }
 
     /**
-     * @param Collection<string, FieldType> $children
+     * @param Collection<int, FieldType> $children
      */
     private function isGrantedForAllDescendant(Collection $children): bool
     {

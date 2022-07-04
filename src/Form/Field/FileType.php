@@ -14,9 +14,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class FileType extends AbstractType
 {
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('sha1', HiddenType::class, [
             'attr' => [
@@ -72,23 +73,24 @@ class FileType extends AbstractType
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'meta_fields' => true,
         ]);
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    /**
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
         $view->vars['meta_fields'] = $options['meta_fields'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'filetype';
     }

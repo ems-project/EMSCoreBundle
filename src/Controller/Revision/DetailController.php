@@ -113,7 +113,7 @@ class DetailController extends AbstractController
         $counter = $this->revisionRepository->countRevisions($ouuid, $contentType);
         $firstElemOfPage = $this->revisionRepository->firstElemOfPage($page);
 
-        $availableEnv = $this->environmentRepository->findAvailableEnvironements(
+        $availableEnv = $this->environmentRepository->findAvailableEnvironments(
             $revision->giveContentType()->giveEnvironment()
         );
 

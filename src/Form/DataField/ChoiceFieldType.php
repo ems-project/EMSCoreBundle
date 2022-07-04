@@ -16,42 +16,43 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChoiceFieldType extends DataFieldType
 {
-    private $fakeIndex = false;
+    private ?int $fakeIndex = null;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Choice field';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'glyphicon glyphicon-check';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            if ($data->getFieldType()->getDisplayOptions()['multiple']) {
-                $out[$data->getFieldType()->getName()] = $data->getArrayTextValue();
+        if (!$data->giveFieldType()->getDeleted()) {
+            if ($data->giveFieldType()->getDisplayOptions()['multiple']) {
+                $out[$data->giveFieldType()->getName()] = $data->getArrayTextValue();
             } else {
                 parent::buildObjectArray($data, $out);
             }
         }
     }
 
-    public function choiceAttr($choiceValue, $key, $value)
+    /**
+     * @param mixed $choiceValue
+     * @param mixed $key
+     * @param mixed $value
+     *
+     * @return array<string, string>
+     */
+    public function choiceAttr($choiceValue, $key, $value): array
     {
         $out = [];
-        if (false !== $this->fakeIndex && \is_int($choiceValue) && $choiceValue >= $this->fakeIndex) {
+        if (null !== $this->fakeIndex && \is_int($choiceValue) && $choiceValue >= $this->fakeIndex) {
             $out['class'] = 'input-to-hide';
         }
 
@@ -59,9 +60,10 @@ class ChoiceFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
@@ -108,7 +110,11 @@ class ChoiceFieldType extends DataFieldType
         ]);
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    /**
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
         $view->vars['attr'] = [
@@ -120,10 +126,7 @@ class ChoiceFieldType extends DataFieldType
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -137,9 +140,9 @@ class ChoiceFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -171,9 +174,9 @@ class ChoiceFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getDefaultOptions($name)
+    public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
 
@@ -182,22 +185,17 @@ class ChoiceFieldType extends DataFieldType
         return $out;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ems_choice';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+     * @param array<mixed> $data
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $value = null;
         if (isset($data['value'])) {
@@ -209,15 +207,13 @@ class ChoiceFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {
         $temp = parent::viewTransform($dataField);
         $out = [];
-        if ($dataField->getFieldType()->getDisplayOptions()['multiple']) {
+        if ($dataField->giveFieldType()->getDisplayOptions()['multiple']) {
             if (empty($temp)) {
                 $out = [];
             } elseif (\is_string($temp)) {

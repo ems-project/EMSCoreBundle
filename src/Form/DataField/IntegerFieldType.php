@@ -20,6 +20,8 @@ class IntegerFieldType extends DataFieldType
     }
 
     /**
+     * {@inheritDoc}
+     *
      * @param array<mixed>|null $masterRawData
      */
     public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null): bool
@@ -40,7 +42,8 @@ class IntegerFieldType extends DataFieldType
     }
 
     /**
-     * @param array<mixed> $options
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -58,7 +61,7 @@ class IntegerFieldType extends DataFieldType
     }
 
     /**
-     * @param array<mixed> $out
+     * {@inheritDoc}
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
@@ -68,7 +71,7 @@ class IntegerFieldType extends DataFieldType
     }
 
     /**
-     * @return array<mixed>
+     * {@inheritDoc}
      */
     public function generateMapping(FieldType $current): array
     {
@@ -78,7 +81,7 @@ class IntegerFieldType extends DataFieldType
     }
 
     /**
-     * @param array<mixed> $options
+     * {@inheritDoc}
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
@@ -98,9 +101,9 @@ class IntegerFieldType extends DataFieldType
     }
 
     /**
-     * @return array<mixed>
+     * {@inheritDoc}
      */
-    public function viewTransform(DataField $dataField): array
+    public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
 
@@ -108,6 +111,8 @@ class IntegerFieldType extends DataFieldType
     }
 
     /**
+     * {@inheritDoc}
+     *
      * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField

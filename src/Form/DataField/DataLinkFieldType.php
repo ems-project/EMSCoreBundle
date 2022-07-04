@@ -6,7 +6,6 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
-use EMS\CoreBundle\Form\Field\ObjectChoiceLoader;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\QuerySearchPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
@@ -28,56 +27,50 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class DataLinkFieldType extends DataFieldType
 {
-    /** @var EventDispatcherInterface */
-    protected $dispatcher;
+    protected EventDispatcherInterface $dispatcher;
 
-    /**
-     * Contructor.
-     */
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, EventDispatcherInterface $dispatcher)
-    {
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        FormRegistryInterface $formRegistry,
+        ElasticsearchService $elasticsearchService,
+        EventDispatcherInterface $dispatcher
+    ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
         $this->dispatcher = $dispatcher;
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::postFinalizeTreatment()
+     * {@inheritDoc}
      */
-    public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData)
+    public function postFinalizeTreatment(string $type, string $id, DataField $dataField, ?array $previousData): ?array
     {
-        if (!empty($dataField->getFieldType()->getExtraOptions()['updateReferersField'])) {
-            $referersToAdd = [];
-            $referersToRemove = [];
+        $name = $dataField->giveFieldType()->getName();
 
-            if (!empty($previousData[$dataField->getFieldType()->getName()])) {
-                $referersToRemove = $previousData[$dataField->getFieldType()->getName()];
-            }
-            if (!empty($dataField->getRawData())) {
-                $referersToAdd = $dataField->getRawData();
-            }
+        if (!empty($dataField->giveFieldType()->getExtraOptions()['updateReferersField'])) {
+            $rawData = $dataField->getRawData();
 
-            $this->dispatcher->dispatch(UpdateRevisionReferersEvent::NAME, new UpdateRevisionReferersEvent($type, $id, $dataField->getFieldType()->getExtraOptions()['updateReferersField'], $referersToRemove, $referersToAdd));
+            $referersToRemove = $previousData[$name] ?? [];
+            $referersToAdd = \is_array($rawData) ? $rawData[$name] : $rawData;
+
+            $referersToRemove = !\is_array($referersToRemove) ? [$referersToRemove] : $referersToRemove;
+            $referersToAdd = !\is_array($referersToAdd) ? [$referersToAdd] : $referersToAdd;
+
+            $event = new UpdateRevisionReferersEvent($type, $id, $dataField->giveFieldType()->getExtraOptions()['updateReferersField'], $referersToRemove, $referersToAdd);
+            $this->dispatcher->dispatch($event);
         }
 
         return parent::postFinalizeTreatment($type, $id, $dataField, $previousData);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Link to data object(s)';
     }
 
     /**
-     * Get Elasticsearch subquery.
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function getElasticsearchQuery(DataField $dataField, array $options = [])
+    public function getElasticsearchQuery(DataField $dataField, array $options = []): array
     {
         $opt = \array_merge([
                 'nested' => '',
@@ -91,13 +84,13 @@ class DataLinkFieldType extends DataFieldType
         if (\is_array($data)) {
             $out = [
                 'terms' => [
-                        $opt['nested'].$dataField->getFieldType()->getName() => $data,
+                        $opt['nested'].$dataField->giveFieldType()->getName() => $data,
                 ],
             ];
         } else {
             $out = [
                     'term' => [
-                            $opt['nested'].$dataField->getFieldType()->getName() => $data,
+                            $opt['nested'].$dataField->giveFieldType()->getName() => $data,
                     ],
             ];
         }
@@ -105,25 +98,20 @@ class DataLinkFieldType extends DataFieldType
         return $out;
     }
 
-    /**
-     * Get a icon to visually identify a FieldType.
-     *
-     * @return string
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-sitemap';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            $options = $data->getFieldType()->getDisplayOptions();
+        if (!$data->giveFieldType()->getDeleted()) {
+            $options = $data->giveFieldType()->getDisplayOptions();
             if (isset($options['multiple']) && $options['multiple']) {
-                $out[$data->getFieldType()->getName()] = $data->getArrayTextValue();
+                $out[$data->giveFieldType()->getName()] = $data->getArrayTextValue();
             } else {
                 parent::buildObjectArray($data, $out);
             }
@@ -131,9 +119,10 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $options['metadata'];
@@ -182,10 +171,7 @@ class DataLinkFieldType extends DataFieldType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -201,9 +187,9 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getDefaultOptions($name)
+    public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
 
@@ -214,25 +200,19 @@ class DataLinkFieldType extends DataFieldType
         return $out;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getChoiceList(FieldType $fieldType, array $choices)
+    public function getChoiceList(FieldType $fieldType, array $choices): array
     {
         /** @var ObjectPickerType $objectPickerType */
         $objectPickerType = $this->formRegistry->getType(ObjectPickerType::class)->getInnerType();
 
-        /** @var ObjectChoiceLoader $loader */
         $loader = $objectPickerType->getChoiceListFactory()->createLoader($fieldType->getDisplayOptions()['type'], true /*count($choices) == 0 || !$fieldType->getDisplayOptions()['dynamicLoading']*/);
         $all = $loader->loadAll();
         if (\count($choices) > 0) {
@@ -248,9 +228,9 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -284,11 +264,9 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
+     * {@inheritDoc}
      */
-    public function modelTransform($data, FieldType $fieldType)
+    public function modelTransform($data, FieldType $fieldType): DataField
     {
         $out = parent::modelTransform($data, $fieldType);
         if ($fieldType->getDisplayOption('multiple', false)) {
@@ -339,9 +317,7 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {
@@ -351,11 +327,11 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+     * @param ?array<mixed> $data
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $data = (null !== $data && isset($data['value'])) ? $data['value'] : null;
         if (\is_array($data)) {

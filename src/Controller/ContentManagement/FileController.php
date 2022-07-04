@@ -7,6 +7,7 @@ use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\FileService;
+use EMS\Helpers\Standard\Type;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -181,7 +182,7 @@ class FileController extends AbstractController
         $file = $request->files->get('upload');
         $type = $request->get('type', false);
 
-        if ($file && !$file->getError()) {
+        if (\UPLOAD_ERR_OK === $file->getError()) {
             $name = $file->getClientOriginalName();
 
             if (false === $type) {
@@ -195,7 +196,7 @@ class FileController extends AbstractController
             $user = $this->getUsername();
 
             try {
-                $uploadedAsset = $this->fileService->uploadFile($name, $type, $file->getRealPath(), $user);
+                $uploadedAsset = $this->fileService->uploadFile($name, $type, Type::string($file->getRealPath()), $user);
             } catch (\Exception $e) {
                 $this->logger->error('log.error', [
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -211,7 +212,7 @@ class FileController extends AbstractController
                 'success' => true,
                 'asset' => $uploadedAsset,
             ]);
-        } elseif ($file->getError()) {
+        } else {
             $this->logger->warning('log.file.upload_error', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $file->getError(),
             ]);

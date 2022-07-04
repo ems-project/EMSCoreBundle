@@ -11,19 +11,14 @@ use Psr\Log\LoggerInterface;
  */
 class CriteriaUpdateConfig
 {
-    /** @var string */
-    private $columnCriteria;
+    private ?string $columnCriteria;
+    private ?string $rowCriteria;
+    private ?DataField $category;
 
-    /** @var string */
-    private $rowCriteria;
+    /** @var array<mixed> */
+    private array $criterion;
 
-    /** @var DataField|null */
-    private $category;
-
-    private $criterion;
-
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
     public function __construct(View $view, LoggerInterface $logger)
     {
@@ -42,7 +37,7 @@ class CriteriaUpdateConfig
         $criteriaField = $rootFieldType;
 
         if ('internal' == $view->getOptions()['criteriaMode']) {
-            $criteriaField = $rootFieldType->__get('ems_'.$view->getOptions()['criteriaField']);
+            $criteriaField = $rootFieldType->get('ems_'.$view->getOptions()['criteriaField']);
         } elseif ('another' == $view->getOptions()['criteriaMode']) {
         } else {
             throw new \Exception('Should never happen');
@@ -50,120 +45,76 @@ class CriteriaUpdateConfig
 
         $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
 
-        foreach ($fieldPaths as $path) {
-            $child = $criteriaField->getChildByPath($path);
-            if ($child) {
-                $dataField = new DataField();
-                $dataField->setFieldType($child);
-                $this->criterion[$child->getName()] = $dataField;
-            } else {
-                $this->logger->warning('log.view.criteria.field_not_found', [
-                    'field_path' => $path,
-                ]);
+        if (\is_array($fieldPaths)) {
+            foreach ($fieldPaths as $path) {
+                $child = $criteriaField->getChildByPath($path);
+                if ($child) {
+                    $dataField = new DataField();
+                    $dataField->setFieldType($child);
+                    $this->criterion[$child->getName()] = $dataField;
+                } else {
+                    $this->logger->warning('log.view.criteria.field_not_found', [
+                        'field_path' => $path,
+                    ]);
+                }
             }
         }
     }
 
-    /**
-     * Set the column criteria field name.
-     *
-     * @param string $columnCriteria
-     *
-     * @return CriteriaUpdateConfig
-     */
-    public function setColumnCriteria($columnCriteria)
+    public function setColumnCriteria(?string $columnCriteria): self
     {
         $this->columnCriteria = $columnCriteria;
 
         return $this;
     }
 
-    /**
-     * Get the column criteria field name.
-     *
-     * @return string
-     */
-    public function getColumnCriteria()
+    public function getColumnCriteria(): ?string
     {
         return $this->columnCriteria;
     }
 
-    /**
-     * Set the row criteria field name.
-     *
-     * @param string $rowCriteria
-     *
-     * @return CriteriaUpdateConfig
-     */
-    public function setRowCriteria($rowCriteria)
+    public function setRowCriteria(?string $rowCriteria): self
     {
         $this->rowCriteria = $rowCriteria;
 
         return $this;
     }
 
-    /**
-     * Get the row criteria field name.
-     *
-     * @return string
-     */
-    public function getRowCriteria()
+    public function getRowCriteria(): ?string
     {
         return $this->rowCriteria;
     }
 
-    /**
-     * Set the category field type.
-     *
-     * @param DataField $category
-     *
-     * @return CriteriaUpdateConfig
-     */
-    public function setCategory($category)
+    public function setCategory(?DataField $category): self
     {
         $this->category = $category;
 
         return $this;
     }
 
-    /**
-     * Get the category field.
-     *
-     * @return DataField
-     */
-    public function getCategory()
+    public function getCategory(): ?DataField
     {
         return $this->category;
     }
 
-    /**
-     * Add criterion.
-     *
-     * @return CriteriaUpdateConfig
-     */
-    public function addCriterion(DataField $criterion)
+    public function addCriterion(DataField $criterion): self
     {
-        $this->criterion[$criterion->getFieldType()->getName()] = $criterion;
+        $this->criterion[$criterion->giveFieldType()->getName()] = $criterion;
 
         return $this;
     }
 
-    /**
-     * Remove criterion.
-     */
-    public function removeCriterion(DataField $criterion)
+    public function removeCriterion(DataField $criterion): void
     {
-        if (isset($this->criterion[$criterion->getFieldType()->getName()])) {
-            unset($this->criterion[$criterion->getFieldType()->getName()]);
+        if (isset($this->criterion[$criterion->giveFieldType()->getName()])) {
+            unset($this->criterion[$criterion->giveFieldType()->getName()]);
         }
     }
 
     /**
-     * Get filters.
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return array<string, DataField>
      */
-    public function getCriterion()
+    public function getCriterion(): array
     {
         return $this->criterion;
     }

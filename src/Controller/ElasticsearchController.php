@@ -35,6 +35,7 @@ use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\SortOptionService;
+use EMS\Helpers\Standard\Json;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -211,9 +212,10 @@ class ElasticsearchController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
 
+        /** @var ?Search $search */
         $search = $repository->find($id);
-        if (!$search) {
-            $this->createNotFoundException('Preset saved search not found');
+        if (null === $search) {
+            throw $this->createNotFoundException('Preset saved search not found');
         }
 
         $em->remove($search);
@@ -234,7 +236,7 @@ class ElasticsearchController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
 
-        /** @var Search $search */
+        /** @var Search|null $search */
         $search = $repository->findOneBy([
             'default' => true,
         ]);
@@ -283,12 +285,14 @@ class ElasticsearchController extends AbstractController
             }
 
             $search = $repository->find($id);
-            $search->setContentType($contentType);
-            $em->persist($search);
-            $em->flush();
-            $this->logger->notice('log.elasticsearch.default_search_for_content_type', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-            ]);
+            if ($search instanceof Search) {
+                $search->setContentType($contentType);
+                $em->persist($search);
+                $em->flush();
+                $this->logger->notice('log.elasticsearch.default_search_for_content_type', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                ]);
+            }
         } else {
             $searchs = $repository->findBy([
                 'default' => true,
@@ -299,11 +303,13 @@ class ElasticsearchController extends AbstractController
                 $em->persist($search);
             }
             $search = $repository->find($id);
-            $search->setDefault(true);
-            $em->persist($search);
-            $em->flush();
-            $this->logger->notice('log.elasticsearch.default_search', [
-            ]);
+
+            if ($search instanceof Search) {
+                $search->setDefault(true);
+                $em->persist($search);
+                $em->flush();
+                $this->logger->notice('log.elasticsearch.default_search');
+            }
         }
 
         return $this->redirectToRoute('elasticsearch.search', ['searchId' => $id]);
@@ -481,7 +487,12 @@ class ElasticsearchController extends AbstractController
                 /** @var Search $search */
                 $search = $form->getData();
                 $search->setName($request->request->get('form')['name']);
-                $search->setUser($this->getUser()->getUsername());
+
+                $user = $this->getUser();
+                if (!$user instanceof UserInterface) {
+                    throw new \RuntimeException('User not found');
+                }
+                $search->setUser($user->getUsername());
 
                 /** @var SearchFilter $filter */
                 foreach ($search->getFilters() as $filter) {
@@ -614,7 +625,7 @@ class ElasticsearchController extends AbstractController
                     $exportForm = $this->createForm(ExportDocumentsType::class, new ExportDocuments(
                         $contentType,
                         $this->generateUrl('emsco_search_export', ['contentType' => $contentType->getId()]),
-                        \json_encode($this->searchService->generateSearchBody($search))
+                        Json::encode($this->searchService->generateSearchBody($search))
                     ));
 
                     $exportForms[] = $exportForm->createView();

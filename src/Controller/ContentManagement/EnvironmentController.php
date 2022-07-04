@@ -134,7 +134,7 @@ class EnvironmentController extends AbstractController
                             $this->logger->warning('log.environment.cant_align_default_environment', [
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $env,
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
-                                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                                EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             ]);
                             $continue = false;
@@ -145,7 +145,7 @@ class EnvironmentController extends AbstractController
                             $this->logger->warning('log.environment.dont_have_publish_role', [
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $env,
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
-                                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                                EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             ]);
                             $continue = false;
@@ -157,7 +157,7 @@ class EnvironmentController extends AbstractController
                         foreach ($alignTo as $env) {
                             $firstEnvironment = $revision->getEnvironments()->first();
                             if (false !== $firstEnvironment) {
-                                $this->publishService->alignRevision($revision->giveContentType()->getName(), $revision->getOuuid(), $firstEnvironment->getName(), $env);
+                                $this->publishService->alignRevision($revision->giveContentType()->getName(), $revision->giveOuuid(), $firstEnvironment->getName(), $env);
                             }
                         }
                     }
@@ -236,8 +236,8 @@ class EnvironmentController extends AbstractController
             /** @var RevisionRepository $repository */
             $repository = $em->getRepository('EMSCoreBundle:Revision');
 
-            $env = $this->environmentService->getAliasByName($environment);
-            $withEnvi = $this->environmentService->getAliasByName($withEnvironment);
+            $env = $this->environmentService->giveByName($environment);
+            $withEnvi = $this->environmentService->giveByName($withEnvironment);
 
             $total = $repository->countDifferencesBetweenEnvironment($env->getId(), $withEnvi->getId(), $contentTypes);
             if ($total) {
@@ -260,26 +260,22 @@ class EnvironmentController extends AbstractController
 //TODO: is it the better options? to concatenate and split things?
                     $minrevid = \explode('/', $results[$index]['minrevid']); //1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
                     $maxrevid = \explode('/', $results[$index]['maxrevid']);
-                    if ($minrevid[0] == $env->getId()) {
-                        $results[$index]['revisionEnvironment'] = $repository->findOneById($minrevid[1]);
-                        $results[$index]['revisionWithEnvironment'] = $repository->findOneById($maxrevid[1]);
-                    } else {
-                        $results[$index]['revisionEnvironment'] = $repository->findOneById($maxrevid[1]);
-                        $results[$index]['revisionWithEnvironment'] = $repository->findOneById($minrevid[1]);
-                    }
+
+                    $results[$index]['revisionEnvironment'] = $repository->findOneById((int) $minrevid[1]);
+                    $results[$index]['revisionWithEnvironment'] = $repository->findOneById((int) $maxrevid[1]);
 
                     $contentType = $results[$index]['contentType'];
                     if (false === $contentType) {
                         throw new \RuntimeException(\sprintf('Content type %s not found', $results[$index]['contentType']));
                     }
                     try {
-                        $document = $this->searchService->getDocument($contentType, $results[$index]['ouuid'], $env ? $env : null);
+                        $document = $this->searchService->getDocument($contentType, $results[$index]['ouuid'], $env);
                         $results[$index]['objectEnvironment'] = $document->getRaw();
                     } catch (NotFoundException $e) {
                         $results[$index]['objectEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.
                     }
                     try {
-                        $document = $this->searchService->getDocument($contentType, $results[$index]['ouuid'], $withEnvi ? $withEnvi : null);
+                        $document = $this->searchService->getDocument($contentType, $results[$index]['ouuid'], $withEnvi);
                         $results[$index]['objectWithEnvironment'] = $document->getRaw();
                     } catch (NotFoundException $e) {
                         $results[$index]['objectWithEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.

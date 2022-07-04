@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class DataFieldTypeCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('ems.form.field.datafieldtypepickertype')) {
             return;

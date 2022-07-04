@@ -273,7 +273,6 @@ services:
         arguments: ['@ems.service.contenttype', '@ems.service.objectchoicecache']
     ems.form.factories.contentTypeFieldChoiceListFactory:
         class: EMS\CoreBundle\Form\Factory\ContentTypeFieldChoiceListFactory
-        arguments: ['@ems.service.contenttype']
     ems.form.field.objectpickertype:
         class: EMS\CoreBundle\Form\Field\ObjectPickerType
         arguments: ['@ems.form.factories.objectChoiceListFactory', '@ems.service.contenttype']
@@ -331,7 +330,7 @@ services:
             - { name: form.type }
     ems.form.form.notificationtype:
         class: EMS\CoreBundle\Form\Form\NotificationFormType
-        arguments: ['%ems_core.circles_object%', '@ems.service.environment']
+        arguments: ['@ems.service.environment']
         tags:
             - { name: form.type }
     ems.form.form.revisiontype:
@@ -383,7 +382,7 @@ services:
         class: EMS\CoreBundle\Service\DataService
         arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@ems_common.service.elastica', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@emsco.logger', '@emsco.logger.audit', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment', '@ems.service.search', '@ems.service.index', '%ems_core.pre_generated_ouuids%', '@ems.service.revision.post_processing']
         tags:
-            - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
+            - { name: kernel.event_listener, event: EMS\CoreBundle\Event\UpdateRevisionReferersEvent, method: updateReferers, priority: 0 }
     ems.service.revision.post_processing:
         class: EMS\CoreBundle\Service\Revision\PostProcessingService
         arguments: ['@twig', '@form.factory', '@emsco.logger']
@@ -414,7 +413,7 @@ services:
             - '@ems.service.alias'
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:
-        arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '@logger', '@ems_common.service.elastica', '%ems_core.instance_id%']
+        arguments: ['@doctrine',  '@ems.service.user', '@security.authorization_checker', '@logger', '@ems_common.service.elastica', '%ems_core.instance_id%']
         tags:
             - { name: emsco.entity.service }
     ems.service.contenttype: '@EMS\CoreBundle\Service\ContentTypeService'
@@ -449,15 +448,15 @@ services:
         arguments: ['@logger', '@ems.service.contenttype', '@security.authorization_checker', '@security.token_storage', '@ems_common.service.elastica']
     ems.service.publish:
         class: EMS\CoreBundle\Service\PublishService
-        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '@ems.service.index', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.data', '@ems.service.user', '@event_dispatcher', '@emsco.logger', '@emsco.logger.audit', '@ems.elasticsearch.bulker']
+        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.index', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.data', '@ems.service.user', '@event_dispatcher', '@emsco.logger', '@emsco.logger.audit', '@ems.elasticsearch.bulker']
     ems.service.notification:
         class: EMS\CoreBundle\Service\NotificationService
-        arguments: ['@doctrine', '@ems.repository.template', '@ems.service.user', '@logger', '@session', '@service_container', '@ems.service.data', '%ems_core.from_email%', '@twig']
+        arguments: ['@doctrine', '@ems.repository.template', '@ems.service.user', '@logger', '@service_container', '@ems.service.data', '%ems_core.from_email%', '@twig']
         tags:
-            - { name: kernel.event_listener, event: revision.new_draft, method: newDraftEvent, priority: 0 }
-            - { name: kernel.event_listener, event: revision.finalize_draft, method: finalizeDraftEvent, priority: 0 }
-            - { name: kernel.event_listener, event: revision.publish, method: publishEvent, priority: 0 }
-            - { name: kernel.event_listener, event: revision.unpublish, method: unpublishEvent, priority: 0 }
+            - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionNewDraftEvent, method: newDraftEvent, priority: 0 }
+            - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionFinalizeDraftEvent, method: finalizeDraftEvent, priority: 0 }
+            - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionPublishEvent, method: publishEvent, priority: 0 }
+            - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionUnpublishEvent, method: unpublishEvent, priority: 0 }
     ems.service.i18n: '@EMS\CoreBundle\Service\I18nService'
     EMS\CoreBundle\Service\I18nService:
         class: EMS\CoreBundle\Service\I18nService
@@ -482,7 +481,7 @@ services:
         arguments: ['@doctrine', '@request_stack', '%ems_core.paging_size%']
     ems.service.elasticsearch:
         class: EMS\CoreBundle\Service\ElasticsearchService
-        arguments: ['@logger', '@ems_common.service.elastica']
+        arguments: [ '@ems_common.service.elastica']
     ems.service.template:
         class: EMS\CoreBundle\Service\TemplateService
         arguments: ['@doctrine', '@logger', '@twig']
@@ -494,7 +493,7 @@ services:
             - { name: emsco.entity.service }
     ems.service.document:
         class: EMS\CoreBundle\Service\DocumentService
-        arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '%ems_core.instance_id%']
+        arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '@EMS\CoreBundle\Repository\RevisionRepository']
     EMS\CoreBundle\Service\ActionService: '@ems.service.action'
     ems.service.action:
         class: EMS\CoreBundle\Service\ActionService
@@ -508,7 +507,7 @@ services:
         class: EMS\CoreBundle\Service\ReleaseRevisionService
         arguments: ['@ems.repository.release_revision', '@EMS\CoreBundle\Repository\RevisionRepository', '@logger', '@ems.service.contenttype', '@ems.service.user']
         tags:
-          - { name: kernel.event_listener, event: revision.finalize_draft, method: finalizeDraftEvent, priority: 0 }
+          - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionFinalizeDraftEvent, method: finalizeDraftEvent, priority: 0 }
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']

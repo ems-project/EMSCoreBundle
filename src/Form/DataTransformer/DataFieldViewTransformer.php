@@ -10,10 +10,8 @@ use Symfony\Component\Form\FormRegistryInterface;
 
 class DataFieldViewTransformer implements DataTransformerInterface
 {
-    /** @var FieldType */
-    private $fieldType;
-    /** @var FormRegistryInterface */
-    private $formRegistry;
+    private FieldType $fieldType;
+    private FormRegistryInterface $formRegistry;
 
     public function __construct(FieldType $fieldType, FormRegistryInterface $formRegistry)
     {
@@ -26,7 +24,7 @@ class DataFieldViewTransformer implements DataTransformerInterface
      *
      * @param DataField $data
      *
-     * @return string|array
+     * @return array<mixed>|string|int|float|bool|null
      */
     public function transform($data)
     {
@@ -39,11 +37,9 @@ class DataFieldViewTransformer implements DataTransformerInterface
     /**
      * Transforms from View to Norm (array to DataField).
      *
-     * @param array|string|int|float|null $data from the Form
-     *
-     * @return DataField
+     * @param array<mixed>|string|int|float|bool|null $data from the Form
      */
-    public function reverseTransform($data)
+    public function reverseTransform($data): DataField
     {
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($this->fieldType->getType())->getInnerType();

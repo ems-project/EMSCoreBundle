@@ -64,7 +64,7 @@ class SearchService
         $boolQuery = $this->elasticaService->getBoolQuery();
 
         foreach ($search->getFilters() as $filter) {
-            if (!$esFilter = $filter->generateEsFilter()) {
+            if (null === $esFilter = $filter->generateEsFilter()) {
                 continue;
             }
 
@@ -84,7 +84,7 @@ class SearchService
                     $boolQuery->addMustNot($esFilter);
                     break;
                 case 'filter':
-                    $boolQuery->addFilter($esFilter);
+                    $boolQuery->addFilter((new BoolQuery())->addMust($esFilter));
                     break;
                 default:
                     throw new \RuntimeException(\sprintf('Unexpected %s boolean clause', $filter->getBooleanClause()));

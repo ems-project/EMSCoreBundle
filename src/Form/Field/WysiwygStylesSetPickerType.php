@@ -7,10 +7,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class WysiwygStylesSetPickerType extends SelectPickerType
 {
-    /**
-     * @var WysiwygStylesSetService
-     */
-    private $stylesSetService;
+    private WysiwygStylesSetService $stylesSetService;
 
     public function __construct(WysiwygStylesSetService $stylesSetService)
     {
@@ -18,7 +15,7 @@ class WysiwygStylesSetPickerType extends SelectPickerType
         $this->stylesSetService = $stylesSetService;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $choices = $this->getExistingStylesSets();
 
@@ -40,13 +37,15 @@ class WysiwygStylesSetPickerType extends SelectPickerType
         ]);
     }
 
-    private function getExistingStylesSets()
+    /**
+     * @return array<string, string>
+     */
+    private function getExistingStylesSets(): array
     {
         $stylesSets = $this->stylesSetService->getStylesSets();
 
         $out['default'] = 'Default';
 
-        /** @var \EMS\CoreBundle\Entity\WysiwygStylesSet $stylesSet */
         foreach ($stylesSets as $stylesSet) {
             $out[$stylesSet->getName()] = $stylesSet->getName();
         }

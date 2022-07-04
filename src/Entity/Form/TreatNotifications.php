@@ -2,90 +2,76 @@
 
 namespace EMS\CoreBundle\Entity\Form;
 
-/**
- * TreatNotifications.
- */
 class TreatNotifications
 {
-    private $reject;
+    private bool $reject = false;
+    private bool $accept = false;
 
-    private $accept;
+    private ?string $response = null;
+    private ?string $publishTo = null;
+    /** @var int[] */
+    private array $notifications = [];
 
-    private $response;
-
-//     private $unpublishFrom;
-
-    private $publishTo;
-
-    private $notifications;
-
-    public function __construct()
-    {
-    }
-
-//     public function getUnpublishFrom() {
-//         return $this->unpublishFrom;
-//     }
-
-    public function getPublishTo()
+    public function getPublishTo(): ?string
     {
         return $this->publishTo;
     }
 
-    public function getReject()
+    public function getReject(): bool
     {
         return $this->reject;
     }
 
-    public function getAccept()
+    public function getAccept(): bool
     {
         return $this->accept;
     }
 
-    public function getResponse()
+    public function getResponse(): ?string
     {
         return $this->response;
     }
 
-    public function getNotifications()
+    /**
+     * @return int[]
+     */
+    public function getNotifications(): array
     {
         return $this->notifications;
     }
 
-//     public function setUnpublishFrom($unpublishFrom) {
-//         $this->unpublishFrom = $unpublishFrom;
-//         return $this;
-//     }
-
-    public function setPublishTo($publishTo)
+    public function setPublishTo(?string $publishTo): self
     {
         $this->publishTo = $publishTo;
 
         return $this;
     }
 
-    public function setReject($reject)
+    public function setReject(?bool $reject): self
     {
-        $this->reject = $reject;
+        $this->reject = $reject ?? false;
 
         return $this;
     }
 
-    public function setAccept($accept)
+    public function setAccept(?bool $accept): self
     {
-        $this->accept = $accept;
+        $this->accept = $accept ?? false;
 
         return $this;
     }
 
-    public function setResponse($response)
+    public function setResponse(?string $response): self
     {
         $this->response = $response;
 
         return $this;
     }
 
-    public function setNotifications($notifications)
+    /**
+     * @param int[] $notifications
+     */
+    public function setNotifications(array $notifications): self
     {
         $this->notifications = $notifications;
 

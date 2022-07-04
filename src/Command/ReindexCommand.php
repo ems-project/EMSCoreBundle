@@ -198,7 +198,7 @@ class ReindexCommand extends EmsCommand
                         }
 
                         $rawData = $revision->getRawData();
-                        $this->bulker->index($contentType->getName(), $revision->getOuuid(), $index, $rawData);
+                        $this->bulker->index($contentType->getName(), $revision->giveOuuid(), $index, $rawData);
                     }
 
                     $progress->advance();

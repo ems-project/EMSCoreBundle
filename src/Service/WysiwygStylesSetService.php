@@ -27,9 +27,8 @@ class WysiwygStylesSetService implements EntityServiceInterface
         if (null !== $stylesSets) {
             return $stylesSets;
         }
-        $stylesSets = $this->wysiwygStylesSetRepository->findAll();
 
-        return $stylesSets;
+        return $this->wysiwygStylesSetRepository->findAll();
     }
 
     public function getByName(?string $name): ?WysiwygStylesSet
@@ -50,7 +49,7 @@ class WysiwygStylesSetService implements EntityServiceInterface
         return $this->wysiwygStylesSetRepository->findById($id);
     }
 
-    public function save(WysiwygStylesSet $stylesSet)
+    public function save(WysiwygStylesSet $stylesSet): void
     {
         $this->wysiwygStylesSetRepository->update($stylesSet);
         $this->logger->notice('service.wysiwyg_styles_set.updated', [
@@ -58,7 +57,7 @@ class WysiwygStylesSetService implements EntityServiceInterface
         ]);
     }
 
-    public function remove(WysiwygStylesSet $stylesSet)
+    public function remove(WysiwygStylesSet $stylesSet): void
     {
         $name = $stylesSet->getName();
         $this->wysiwygStylesSetRepository->delete($stylesSet);

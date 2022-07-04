@@ -1,27 +1,44 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\Helper\PagingTool;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class HelperService
 {
-    /** @var Registry */
-    protected $doctrine;
-    private $pagingSize;
-    private $requestStack;
+    private Registry $doctrine;
+    private int $pagingSize;
+    private RequestStack $requestStack;
 
-    public function __construct(Registry $doctrine, RequestStack $requestStack, $pagingSize)
+    public function __construct(Registry $doctrine, RequestStack $requestStack, int $pagingSize)
     {
         $this->doctrine = $doctrine;
         $this->pagingSize = $pagingSize;
         $this->requestStack = $requestStack;
     }
 
-    public function getPagingTool($entityName, $route, $defaultOrderField)
+    public function getPagingTool(string $entityName, string $route, string $defaultOrderField): PagingTool
     {
-        return new PagingTool($this->requestStack->getCurrentRequest(), $this->doctrine->getRepository($entityName), $route, $defaultOrderField, $this->pagingSize);
+        if (null === $request = $this->requestStack->getCurrentRequest()) {
+            throw new \RuntimeException('No current request');
+        }
+
+        $repository = $this->doctrine->getRepository($entityName);
+        if (!$repository instanceof EntityRepository) {
+            throw new \RuntimeException('Invalid repository');
+        }
+
+        return new PagingTool(
+            $request,
+            $repository,
+            $route,
+            $defaultOrderField,
+            $this->pagingSize
+        );
     }
 }

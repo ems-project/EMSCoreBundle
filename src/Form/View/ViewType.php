@@ -14,12 +14,9 @@ use Twig\Environment;
 
 abstract class ViewType extends AbstractType
 {
-    /** @var Environment */
-    protected $twig;
-    /** @var FormFactory */
-    protected $formFactory;
-    /** @var LoggerInterface */
-    protected $logger;
+    protected Environment $twig;
+    protected FormFactory $formFactory;
+    protected LoggerInterface $logger;
 
     public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger)
     {
@@ -32,6 +29,9 @@ abstract class ViewType extends AbstractType
 
     abstract public function getName(): string;
 
+    /**
+     * @return array<mixed>
+     */
     abstract public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array;
 
     public function configureOptions(OptionsResolver $resolver): void

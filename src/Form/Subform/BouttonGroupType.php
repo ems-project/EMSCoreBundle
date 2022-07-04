@@ -9,10 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class BouttonGroupType extends TextType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
                 'compound' => false,
@@ -21,25 +18,21 @@ class BouttonGroupType extends TextType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormView<FormView>           $view
+     * @param FormInterface<FormInterface> $form
+     * @param array<mixed>                 $options
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['buttons'] = $options['buttons'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
+    public function getParent(): string
     {
         return TextType::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'bouttongroup';
     }

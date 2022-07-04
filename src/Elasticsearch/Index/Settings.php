@@ -18,6 +18,9 @@ class Settings
         return empty($this->filters) && empty($this->analyzers);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function toArray(): array
     {
         return [
@@ -28,6 +31,9 @@ class Settings
         ];
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getLanguageAnalyzers(): array
     {
         return $this->languageAnalyzers;
@@ -35,7 +41,7 @@ class Settings
 
     public function addAnalyzerHtmlStrip(): Settings
     {
-        $this->analyzers['html_strip'] = $this->createCustomAnalyzer('standard');
+        $this->analyzers['html_strip'] = $this->createCustomAnalyzer(['standard']);
 
         return $this;
     }
@@ -100,6 +106,11 @@ class Settings
         return $this;
     }
 
+    /**
+     * @param array<mixed> $filters
+     *
+     * @return array<mixed>
+     */
     private function createCustomAnalyzer(array $filters): array
     {
         return [
@@ -110,16 +121,27 @@ class Settings
         ];
     }
 
+    /**
+     * @param array<mixed> $articles
+     *
+     * @return array<mixed>
+     */
     private function getFilterElision(array $articles = ['']): array
     {
         return ['type' => 'elision', 'articles' => $articles, 'articles_case' => 'false'];
     }
 
+    /**
+     * @return array<mixed>
+     */
     private function getFilterStemmer(string $name): array
     {
         return ['name' => $name, 'type' => 'stemmer'];
     }
 
+    /**
+     * @return array<mixed>
+     */
     private function getFilterStop(string $stopWords): array
     {
         return ['ignore_case' => 'false', 'remove_trailing' => 'true', 'type' => 'stop', 'stopwords' => $stopWords];

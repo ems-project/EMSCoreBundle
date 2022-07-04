@@ -23,12 +23,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class JsonMenuLinkFieldType extends DataFieldType
 {
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var Decoder */
-    private $decoder;
-    /** @var ElasticaService */
-    private $elasticaService;
+    private ContentTypeService $contentTypeService;
+    private Decoder $decoder;
+    private ElasticaService $elasticaService;
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, ContentTypeService $contentTypeService, ElasticaService $elasticaService, Decoder $decoder)
     {
@@ -38,24 +35,31 @@ class JsonMenuLinkFieldType extends DataFieldType
         $this->decoder = $decoder;
     }
 
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'JSON menu link field';
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-link';
     }
 
-    public function buildObjectArray(DataField $data, array &$out)
+    /**
+     * {@inheritDoc}
+     */
+    public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            $out[$data->getFieldType()->getName()] = $data->getArrayTextValue();
+        if (!$data->giveFieldType()->getDeleted()) {
+            $out[$data->giveFieldType()->getName()] = $data->getArrayTextValue();
         }
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
@@ -102,7 +106,7 @@ class JsonMenuLinkFieldType extends DataFieldType
         }
 
         $builder->add('value', ChoiceType::class, [
-                'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
+                'label' => ($options['label'] ?? $fieldType->getName()),
                 'required' => false,
                 'disabled' => $this->isDisabled($options),
                 'choices' => $choices,
@@ -112,7 +116,11 @@ class JsonMenuLinkFieldType extends DataFieldType
         ]);
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    /**
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
         $view->vars['attr'] = [
@@ -122,7 +130,7 @@ class JsonMenuLinkFieldType extends DataFieldType
         ];
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -133,7 +141,10 @@ class JsonMenuLinkFieldType extends DataFieldType
         $resolver->setDefault('query', false);
     }
 
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    /**
+     * {@inheritDoc}
+     */
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -160,7 +171,10 @@ class JsonMenuLinkFieldType extends DataFieldType
         }
     }
 
-    public function getDefaultOptions($name)
+    /**
+     * {@inheritDoc}
+     */
+    public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
         $out['mappingOptions']['index'] = 'not_analyzed';
@@ -168,12 +182,17 @@ class JsonMenuLinkFieldType extends DataFieldType
         return $out;
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ems_choice';
     }
 
-    public function reverseViewTransform($data, FieldType $fieldType)
+    /**
+     * {@inheritDoc}
+     *
+     * @param array<mixed> $data
+     */
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $value = null;
         if (isset($data['value'])) {
@@ -183,6 +202,9 @@ class JsonMenuLinkFieldType extends DataFieldType
         return parent::reverseViewTransform($value, $fieldType);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function viewTransform(DataField $dataField)
     {
         $temp = parent::viewTransform($dataField);
@@ -213,7 +235,12 @@ class JsonMenuLinkFieldType extends DataFieldType
         return ['value' => []];
     }
 
-    private function collectAlreadyAssignedJsonMenuUids(FieldType $fieldType, array $rawData)
+    /**
+     * @param array<mixed> $rawData
+     *
+     * @return array<mixed>
+     */
+    private function collectAlreadyAssignedJsonMenuUids(FieldType $fieldType, array $rawData): array
     {
         $search = $this->elasticaService->convertElasticsearchSearch([
             'size' => 500,

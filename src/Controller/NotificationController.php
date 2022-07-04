@@ -131,7 +131,10 @@ class NotificationController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
 
-        $publishIn = $this->environmentService->getAliasByName($treatNotification->getPublishTo());
+        $publishIn = null;
+        if (null !== $publishTo = $treatNotification->getPublishTo()) {
+            $publishIn = $this->environmentService->getAliasByName($publishTo);
+        }
 
         foreach ($treatNotification->getNotifications() as $notificationId => $true) {
             /** @var Notification $notification */
@@ -143,7 +146,7 @@ class NotificationController extends AbstractController
                 continue;
             }
 
-            if (!empty($publishIn)) {
+            if ($publishIn) {
                 $this->publishService->publish($notification->getRevision(), $publishIn);
             }
 

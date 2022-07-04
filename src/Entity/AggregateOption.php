@@ -124,7 +124,7 @@ class AggregateOption
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {
@@ -275,6 +275,8 @@ class AggregateOption
      * Decode config.
      *
      * @see https://github.com/elastic/elasticsearch-php/issues/660
+     *
+     * @return array<mixed>
      */
     public function getConfigDecoded(): array
     {

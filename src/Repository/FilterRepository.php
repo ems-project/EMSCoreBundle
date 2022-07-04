@@ -14,7 +14,7 @@ class FilterRepository extends ServiceEntityRepository
         parent::__construct($registry, Filter::class);
     }
 
-    public function findByName($name): ?Filter
+    public function findByName(string $name): ?Filter
     {
         $filter = $this->findOneBy([
             'name' => $name,

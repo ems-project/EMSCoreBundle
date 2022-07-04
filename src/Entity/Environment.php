@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
@@ -49,21 +50,16 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     protected ?string $label;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="alias", type="string", length=255)
      */
-    protected $alias;
+    protected string $alias = '';
 
     /**
-     * @var array
+     * @var array<mixed>
      */
-    protected $indexes;
+    protected array $indexes = [];
 
-    /**
-     * @var int
-     */
-    protected $total;
+    protected int $total = 0;
 
     /**
      * @var int
@@ -104,16 +100,18 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $snapshot = false;
 
     /**
+     * @var Collection<int, Revision>
+     *
      * @ORM\ManyToMany(targetEntity="Revision", mappedBy="environments")
      */
-    protected $revisions;
+    protected Collection $revisions;
 
     /**
-     * @var array
+     * @var string[]
      *
      * @ORM\Column(name="circles", type="json_array", nullable=true)
      */
-    protected $circles;
+    protected array $circles;
 
     /**
      * @var bool
@@ -130,9 +128,11 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $extra;
 
     /**
+     * @var Collection<int, ContentType>
+     *
      * @ORM\OneToMany(targetEntity="ContentType", mappedBy="environment", cascade={"remove"})
      */
-    protected $contentTypesHavingThisAsDefault;
+    protected Collection $contentTypesHavingThisAsDefault;
 
     /**
      * @var int
@@ -150,7 +150,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {
@@ -164,6 +164,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     public function __construct()
     {
         $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->contentTypesHavingThisAsDefault = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -252,11 +253,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     }
 
     /**
-     * Set index.
-     *
-     * @return Environment
+     * @param array<mixed> $indexes
      */
-    public function setIndexes(array $indexes)
+    public function setIndexes(array $indexes): self
     {
         $this->indexes = $indexes;
 
@@ -266,33 +265,21 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * Get indexes.
      *
-     * @return array
+     * @return array<mixed>
      */
-    public function getIndexes()
+    public function getIndexes(): array
     {
         return $this->indexes;
     }
 
-    /**
-     * Set total.
-     *
-     * @param int $total
-     *
-     * @return Environment
-     */
-    public function setTotal($total)
+    public function setTotal(int $total): self
     {
         $this->total = $total;
 
         return $this;
     }
 
-    /**
-     * Get total.
-     *
-     * @return int
-     */
-    public function getTotal()
+    public function getTotal(): int
     {
         return $this->total;
     }
@@ -345,32 +332,22 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this;
     }
 
-    /**
-     * Add revision.
-     *
-     * @return Environment
-     */
-    public function addRevision(Revision $revision)
+    public function addRevision(Revision $revision): self
     {
         $this->revisions[] = $revision;
 
         return $this;
     }
 
-    /**
-     * Remove revision.
-     */
-    public function removeRevision(Revision $revision)
+    public function removeRevision(Revision $revision): void
     {
         $this->revisions->removeElement($revision);
     }
 
     /**
-     * Get revisions.
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection<int, Revision>
      */
-    public function getRevisions()
+    public function getRevisions(): Collection
     {
         return $this->revisions;
     }
@@ -442,33 +419,16 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->color;
     }
 
-    /**
-     * Set alias.
-     *
-     * @param string $alias
-     *
-     * @return Environment
-     */
-    public function setAlias($alias)
+    public function setAlias(string $alias): self
     {
         $this->alias = $alias;
 
         return $this;
     }
 
-    /**
-     * Get alias.
-     *
-     * @return string
-     */
-    public function getAlias()
+    public function getAlias(): string
     {
         return $this->alias;
-    }
-
-    public function hasAlias(): bool
-    {
-        return null !== $this->alias;
     }
 
     public function getNewIndexName(): string
@@ -566,32 +526,22 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->extra;
     }
 
-    /**
-     * Add contentTypesHavingThisAsDefault.
-     *
-     * @return Environment
-     */
-    public function addContentTypesHavingThisAsDefault(ContentType $contentTypesHavingThisAsDefault)
+    public function addContentTypesHavingThisAsDefault(ContentType $contentTypesHavingThisAsDefault): self
     {
         $this->contentTypesHavingThisAsDefault[] = $contentTypesHavingThisAsDefault;
 
         return $this;
     }
 
-    /**
-     * Remove contentTypesHavingThisAsDefault.
-     */
-    public function removeContentTypesHavingThisAsDefault(ContentType $contentTypesHavingThisAsDefault)
+    public function removeContentTypesHavingThisAsDefault(ContentType $contentTypesHavingThisAsDefault): void
     {
         $this->contentTypesHavingThisAsDefault->removeElement($contentTypesHavingThisAsDefault);
     }
 
     /**
-     * Get contentTypesHavingThisAsDefault.
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection<int, ContentType>
      */
-    public function getContentTypesHavingThisAsDefault()
+    public function getContentTypesHavingThisAsDefault(): Collection
     {
         return $this->contentTypesHavingThisAsDefault;
     }

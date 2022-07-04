@@ -6,7 +6,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ColorPickerType extends SelectPickerType
 {
-    private $choices = [
+    /** @var array<string, ?string> */
+    private array $choices = [
          'not-defined' => null,
          'red' => 'red',
          'maroon' => 'maroon',
@@ -26,7 +27,7 @@ class ColorPickerType extends SelectPickerType
          'grey' => 'grey',
     ];
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'choices' => $this->choices,

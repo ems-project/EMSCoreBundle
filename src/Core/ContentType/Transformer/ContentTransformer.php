@@ -73,7 +73,7 @@ final class ContentTransformer
         }
 
         if (!$dryRun) {
-            $revision = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->getOuuid(), null, $user);
+            $revision = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->giveOuuid(), null, $user);
             $revision->setRawData($rawData);
             $this->dataService->finalizeDraft($revision, $revisionType, $user, false);
         }

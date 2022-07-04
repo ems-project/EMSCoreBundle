@@ -61,9 +61,9 @@ class ManagedAlias
     private $modified;
 
     /**
-     * @var array
+     * @var array<mixed>
      */
-    private $indexes = [];
+    private array $indexes = [];
 
     /**
      * @var int
@@ -104,7 +104,7 @@ class ManagedAlias
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
     }
@@ -161,26 +161,23 @@ class ManagedAlias
         return $this->alias;
     }
 
-    /**
-     * @param string $instanceId
-     */
-    public function setAlias($instanceId)
+    public function setAlias(string $instanceId): void
     {
         $this->alias = $instanceId.$this->getName();
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      */
-    public function getIndexes()
+    public function getIndexes(): array
     {
         return $this->indexes;
     }
 
     /**
-     * @return ManagedAlias
+     * @param array<mixed> $indexes
      */
-    public function setIndexes(array $indexes)
+    public function setIndexes(array $indexes): self
     {
         $this->indexes = $indexes;
 

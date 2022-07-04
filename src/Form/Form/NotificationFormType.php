@@ -14,21 +14,18 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class NotificationFormType extends AbstractType
 {
-    private $circleType;
-    //private $choices;
-    private $service;
+    private EnvironmentService $service;
 
-    public function __construct($circleType, EnvironmentService $service)
+    public function __construct(EnvironmentService $service)
     {
         $this->service = $service;
-        $this->circleType = $circleType;
-        //$this->choices = null;
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('template', EntityType::class, [
             'class' => 'EMSCoreBundle:Template',

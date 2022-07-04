@@ -10,8 +10,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EnvironmentPickerType extends ChoiceType
 {
-    private $choices;
-    private $service;
+    /** @var array<mixed> */
+    private array $choices = [];
+    private EnvironmentService $service;
 
     public function __construct(EnvironmentService $service)
     {
@@ -19,39 +20,36 @@ class EnvironmentPickerType extends ChoiceType
         $this->service = $service;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'selectpicker';
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $keys = [];
-        $environments = null;
 
         if ($options['inMyCircle']) {
             $environments = $this->service->getAllInMyCircle();
         } else {
-            $environments = $this->service->getAll();
+            $environments = $this->service->getEnvironments();
         }
 
-        $this->service->getAllInMyCircle();
-
-        /** @var Environment $choice */
-        foreach ($environments as $key => $choice) {
-            if (($choice->getManaged() || !$options['managedOnly']) && !\in_array($choice->getName(), $options['ignore'])) {
-                $keys[] = $choice->getName();
-                $this->choices[$choice->getName()] = $choice;
+        foreach ($environments as $env) {
+            if (($env->getManaged() || !$options['managedOnly']) && !\in_array($env->getName(), $options['ignore'])) {
+                $keys[] = $env->getName();
+                $this->choices[$env->getName()] = $env;
             }
         }
         $options['choices'] = $keys;
         parent::buildForm($builder, $options);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $this->choices = [];
         parent::configureOptions($resolver);

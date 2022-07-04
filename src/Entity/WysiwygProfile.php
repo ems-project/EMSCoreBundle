@@ -61,7 +61,7 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {

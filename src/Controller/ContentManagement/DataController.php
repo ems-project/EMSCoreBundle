@@ -585,7 +585,7 @@ class DataController extends AbstractController
         /** @var Environment $environment */
         $environment = $environment[0];
 
-        $document = $this->searchService->get($environment, $template->getContentType(), $ouuid);
+        $document = $this->searchService->get($environment, $template->giveContentType(), $ouuid);
 
         try {
             $body = $this->twig->createTemplate($template->getBody());
@@ -686,7 +686,7 @@ class DataController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $document = $this->searchService->get($env, $template->getContentType(), $ouuid);
+        $document = $this->searchService->get($env, $template->giveContentType(), $ouuid);
 
         $success = false;
         try {
@@ -705,7 +705,7 @@ class DataController extends AbstractController
 
             $success = true;
             $this->logger->notice('log.data.job.initialized', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $template->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $template->giveContentType()->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 'template_id' => $template->getId(),
@@ -721,7 +721,7 @@ class DataController extends AbstractController
             ]);
         } catch (\Throwable $e) {
             $this->logger->error('log.data.job.initialize_failed', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $template->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $template->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -993,7 +993,7 @@ class DataController extends AbstractController
     public function revertRevisionAction(Revision $revision): Response
     {
         $type = $revision->giveContentType()->getName();
-        $ouuid = $revision->getOuuid();
+        $ouuid = $revision->giveOuuid();
 
         $newestRevision = $this->dataService->getNewestRevision($type, $ouuid);
         if ($newestRevision->getDraft()) {

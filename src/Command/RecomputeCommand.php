@@ -185,7 +185,7 @@ final class RecomputeCommand extends Command
 
                 if ($missingInIndex) {
                     try {
-                        $this->searchService->getDocument($this->contentType, $revision->getOuuid());
+                        $this->searchService->getDocument($this->contentType, $revision->giveOuuid());
                         $this->revisionRepository->unlockRevision($revisionId);
                         $progress->advance();
                         continue;

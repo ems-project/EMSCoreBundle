@@ -3,8 +3,8 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Statement;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\NonUniqueResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
@@ -15,23 +15,17 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class PublishService
 {
     private Registry $doctrine;
     private AuthorizationCheckerInterface $authorizationChecker;
-    private TokenStorageInterface $tokenStorage;
-    private Mapping $mapping;
-    private string $instanceId;
+
     private RevisionRepository $revRepository;
-    private Session $session;
     private ContentTypeService $contentTypeService;
     private EnvironmentService $environmentService;
     private DataService $dataService;
@@ -45,11 +39,7 @@ class PublishService
     public function __construct(
         Registry $doctrine,
         AuthorizationCheckerInterface $authorizationChecker,
-        TokenStorageInterface $tokenStorage,
         IndexService $indexService,
-        Mapping $mapping,
-        $instanceId,
-        Session $session,
         ContentTypeService $contentTypeService,
         EnvironmentService $environmentService,
         DataService $dataService,
@@ -61,12 +51,7 @@ class PublishService
     ) {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
-        $this->tokenStorage = $tokenStorage;
         $this->indexService = $indexService;
-        $this->mapping = $mapping;
-        $this->instanceId = $instanceId;
-        $this->revRepository = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Revision');
-        $this->session = $session;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->dataService = $dataService;
@@ -75,9 +60,13 @@ class PublishService
         $this->logger = $logger;
         $this->auditLogger = $auditLogger;
         $this->bulker = $bulker;
+
+        /** @var RevisionRepository $revRepository */
+        $revRepository = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Revision');
+        $this->revRepository = $revRepository;
     }
 
-    public function alignRevision(string $contentTypeName, string $ouuid, string $environmentSourceName, string $environmentTargetName)
+    public function alignRevision(string $contentTypeName, string $ouuid, string $environmentSourceName, string $environmentTargetName): void
     {
         $contentType = $this->contentTypeService->giveByName($contentTypeName);
         $environmentSourceName = $this->environmentService->giveByName($environmentSourceName);
@@ -86,7 +75,7 @@ class PublishService
         $this->runAlignRevision($ouuid, $contentType, $environmentSourceName, $environmentTargetName);
     }
 
-    public function silentPublish(Revision $revision)
+    public function silentPublish(Revision $revision): void
     {
         try {
             if (empty($revision->getOuuid())) {
@@ -109,7 +98,7 @@ class PublishService
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 ]);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->warning('service.publish.publish_draft_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -180,14 +169,10 @@ class PublishService
     }
 
     /**
-     * @param bool $command
-     *
-     * @return int
-     *
      * @throws NonUniqueResultException
      * @throws DBALException
      */
-    public function publish(Revision $revision, Environment $environment, $command = false)
+    public function publish(Revision $revision, Environment $environment, bool $command = false): int
     {
         $logContext = LogRevisionContext::publish($revision, $environment);
         if (!$command && !$this->canPublish($revision, $environment)) {
@@ -230,7 +215,7 @@ class PublishService
                 ], $logContext));
             }
 
-            $this->dispatcher->dispatch(RevisionPublishEvent::NAME, new RevisionPublishEvent($revision, $environment));
+            $this->dispatcher->dispatch(new RevisionPublishEvent($revision, $environment));
         }
 
         return $already ? 0 : 1;
@@ -251,23 +236,21 @@ class PublishService
         $revisions = $this->revRepository->findAllByVersionUuid($versionUuid, $defaultEnvironment);
 
         foreach ($revisions as $revision) {
-            $this->runAlignRevision($revision->getOuuid(), $contentType, $defaultEnvironment, $environment);
+            $this->runAlignRevision($revision->giveOuuid(), $contentType, $defaultEnvironment, $environment);
         }
     }
 
     /**
-     * @param bool $command
-     *
      * @throws DBALException
      */
-    public function unpublish(Revision $revision, Environment $environment, $command = false)
+    public function unpublish(Revision $revision, Environment $environment, bool $command = false): void
     {
         if (!$command) {
             $user = $this->userService->getCurrentUser();
             if (!empty($environment->getCircles() && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(\array_intersect($environment->getCircles(), $user->getCircles())))) {
                 $this->logger->warning('service.publish.not_in_circles', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                     EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                 ]);
 
@@ -277,7 +260,7 @@ class PublishService
             if (!$this->authorizationChecker->isGranted($revision->giveContentType()->getPublishRole())) {
                 $this->logger->warning('service.publish.not_authorized', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                     EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                     EmsFields::LOG_REVISION_ID_FIELD => $environment->getId(),
                 ]);
@@ -297,8 +280,8 @@ class PublishService
             return;
         }
 
+        /** @var Connection $connection */
         $connection = $this->doctrine->getConnection();
-        /** @var Statement $statement */
         $statement = $connection->prepare('delete from environment_revision where environment_id = :envId and revision_id = :revId');
         $statement->bindValue('envId', $environment->getId());
         $statement->bindValue('revId', $revision->getId());
@@ -308,7 +291,7 @@ class PublishService
             $this->indexService->delete($revision, $environment);
             $this->auditLogger->notice('log.unpublished.success', LogRevisionContext::unpublish($revision, $environment));
 
-            $this->dispatcher->dispatch(RevisionUnpublishEvent::NAME, new RevisionUnpublishEvent($revision, $environment));
+            $this->dispatcher->dispatch(new RevisionUnpublishEvent($revision, $environment));
         } catch (\Throwable $e) {
             if (!$revision->getDeleted()) {
                 $this->logger->warning('service.publish.already_unpublished', LogRevisionContext::publish($revision, $environment));

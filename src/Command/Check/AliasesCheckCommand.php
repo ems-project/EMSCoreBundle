@@ -54,7 +54,7 @@ final class AliasesCheckCommand extends Command
             if (!$environment->getManaged()) {
                 continue;
             }
-            if ($environment->hasAlias() && $this->aliasService->hasAliasInCluster($environment->getAlias())) {
+            if ($this->aliasService->hasAliasInCluster($environment->getAlias())) {
                 $this->io->writeln(\sprintf('Environment\'s alias %s is present', $environment->getName()));
                 continue;
             }

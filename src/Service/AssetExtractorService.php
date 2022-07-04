@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -18,32 +20,24 @@ class AssetExtractorService implements CacheWarmerInterface
     private const HELLO_EP = '/tika';
     private const META_EP = '/meta';
 
-    /** @var ?string */
-    private $tikaServer;
+    private ?string $tikaServer;
+    private string $projectDir;
+    private ?string $tikaDownloadUrl;
+    private RestClientService $rest;
+    private LoggerInterface $logger;
+    private Registry $doctrine;
+    private FileService $fileService;
+    private ?TikaWrapper $wrapper = null;
 
-    /** @var string */
-    private $projectDir;
-
-    /** @var ?string */
-    private $tikaDownloadUrl;
-
-    /** @var RestClientService */
-    private $rest;
-
-    /** @var LoggerInterface */
-    private $logger;
-
-    /** @var Registry */
-    private $doctrine;
-
-    /** @var FileService */
-    private $fileService;
-
-    /** @var ?TikaWrapper */
-    private $wrapper = null;
-
-    public function __construct(RestClientService $rest, LoggerInterface $logger, Registry $doctrine, FileService $fileService, ?string $tikaServer, string $projectDir, ?string $tikaDownloadUrl)
-    {
+    public function __construct(
+        RestClientService $rest,
+        LoggerInterface $logger,
+        Registry $doctrine,
+        FileService $fileService,
+        ?string $tikaServer,
+        string $projectDir,
+        ?string $tikaDownloadUrl
+    ) {
         $this->tikaServer = $tikaServer;
         $this->projectDir = $projectDir;
         $this->rest = $rest;
@@ -114,7 +108,7 @@ class AssetExtractorService implements CacheWarmerInterface
         $manager = $this->doctrine->getManager();
         $repository = $manager->getRepository('EMSCoreBundle:CacheAssetExtractor');
 
-        /** @var CacheAssetExtractor $cacheData */
+        /** @var ?CacheAssetExtractor $cacheData */
         $cacheData = $repository->findOneBy([
             'hash' => $hash,
         ]);
@@ -123,7 +117,7 @@ class AssetExtractorService implements CacheWarmerInterface
             return $cacheData->getData();
         }
 
-        if (null === $file || !\file_exists($file)) {
+        if ((null === $file) || !\file_exists($file)) {
             $file = $this->fileService->getFile($hash);
         }
 
@@ -260,7 +254,7 @@ class AssetExtractorService implements CacheWarmerInterface
         return $metaArray;
     }
 
-    public function isOptional()
+    public function isOptional(): bool
     {
         return false;
     }

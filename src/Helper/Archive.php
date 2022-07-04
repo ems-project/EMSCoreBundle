@@ -7,10 +7,7 @@ use Symfony\Component\Mime\MimeTypes;
 
 class Archive
 {
-    /**
-     * @var MimeTypes
-     */
-    private $mimeTypes;
+    private MimeTypes $mimeTypes;
 
     public function __construct()
     {
@@ -26,7 +23,6 @@ class Archive
         switch ($this->guessMimeType($filename)) {
             case 'application/zip':
                 return $this->unzip($filename);
-                break;
             default:
                 throw new \Exception('Unsupported archive type');
         }
@@ -34,7 +30,7 @@ class Archive
 
     private function guessMimeType(string $filename): string
     {
-        return $this->mimeTypes->guessMimeType($filename);
+        return $this->mimeTypes->guessMimeType($filename) ?? '';
     }
 
     private function unzip(string $filename): string
@@ -53,7 +49,9 @@ class Archive
 
     private function getWorkingDirectory(): string
     {
-        $workingDirectory = \tempnam(\sys_get_temp_dir(), 'ArchiveHelper');
+        if (!$workingDirectory = \tempnam(\sys_get_temp_dir(), 'ArchiveHelper')) {
+            throw new \Exception('Unable to get tempdir');
+        }
         $filesystem = new Filesystem();
         $filesystem->remove($workingDirectory);
         $filesystem->mkdir($workingDirectory);

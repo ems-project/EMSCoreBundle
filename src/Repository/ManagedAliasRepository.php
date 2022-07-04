@@ -5,15 +5,12 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\ORM\EntityRepository;
 
-/**
- * Managed Alias Repository.
- */
 class ManagedAliasRepository extends EntityRepository
 {
     /**
-     * @return array
+     * @return string[]
      */
-    public function findAllAliases()
+    public function findAllAliases(): array
     {
         $conn = $this->getEntityManager()->getConnection();
         $qb = $conn->createQueryBuilder();

@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity\Form;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\ContentType;
 use JsonSerializable;
 
 /**
@@ -23,11 +24,11 @@ class Search implements JsonSerializable
     private $id;
 
     /**
-     * @var array
+     * @var SearchFilter[]
      *
      * @ORM\OneToMany(targetEntity="SearchFilter", mappedBy="search", cascade={"persist", "remove"})
      */
-    public $filters;
+    public array $filters;
 
     /**
      * @var string
@@ -37,18 +38,18 @@ class Search implements JsonSerializable
     private $user;
 
     /**
-     * @var array
+     * @var string[]
      *
      * @ORM\Column(name="environments", type="json_array")
      */
-    public $environments;
+    public array $environments = [];
 
     /**
-     * @var array
+     * @var string[]
      *
      * @ORM\Column(name="contentTypes", type="json_array")
      */
-    public $contentTypes;
+    public array $contentTypes = [];
 
     /**
      * @var string
@@ -68,7 +69,7 @@ class Search implements JsonSerializable
      * @ORM\OneToOne(targetEntity="EMS\CoreBundle\Entity\ContentType", cascade={})
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
-    private $contentType;
+    private ?ContentType $contentType = null;
 
     /**
      * @ORM\Column(name="sort_by", type="string", length=100, nullable=true)
@@ -89,13 +90,15 @@ class Search implements JsonSerializable
 
     public function __construct()
     {
-        $this->filters = [];
         $this->filters[] = new SearchFilter();
         $this->default = false;
         $this->minimumShouldMatch = 1;
     }
 
-    public function jsonSerialize()
+    /**
+     * @return array<mixed>
+     */
+    public function jsonSerialize(): array
     {
         $out = [
             'environments' => $this->environments,
@@ -198,7 +201,7 @@ class Search implements JsonSerializable
     /**
      * Remove filter.
      */
-    public function removeFilter(SearchFilter $filter)
+    public function removeFilter(SearchFilter $filter): void
     {
         $this->filters = \array_diff($this->filters, [$filter]);
     }
@@ -238,13 +241,9 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Set environments.
-     *
-     * @param array $environments
-     *
-     * @return Search
+     * @param string[] $environments
      */
-    public function setEnvironments($environments)
+    public function setEnvironments(array $environments): self
     {
         $this->environments = $environments;
 
@@ -260,13 +259,9 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Set contentTypes.
-     *
-     * @param array $contentTypes
-     *
-     * @return Search
+     * @param string[] $contentTypes
      */
-    public function setContentTypes($contentTypes)
+    public function setContentTypes(array $contentTypes): self
     {
         $this->contentTypes = $contentTypes;
 
@@ -274,11 +269,9 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Get contentTypes.
-     *
-     * @return array
+     * @return string[]
      */
-    public function getContentTypes()
+    public function getContentTypes(): array
     {
         return $this->contentTypes;
     }
@@ -307,20 +300,12 @@ class Search implements JsonSerializable
         return $this->default;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getContentType()
+    public function getContentType(): ?ContentType
     {
         return $this->contentType;
     }
 
-    /**
-     * @param mixed $contentType
-     *
-     * @return Search
-     */
-    public function setContentType($contentType)
+    public function setContentType(?ContentType $contentType): self
     {
         $this->contentType = $contentType;
 

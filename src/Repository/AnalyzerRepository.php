@@ -14,7 +14,7 @@ class AnalyzerRepository extends ServiceEntityRepository
         parent::__construct($registry, Analyzer::class);
     }
 
-    public function findByName($name): ?Analyzer
+    public function findByName(string $name): ?Analyzer
     {
         $analyzer = $this->findOneBy([
             'name' => $name,

@@ -24,61 +24,47 @@ class User implements UserInterface, EntityInterface
     private ?int $id = null;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    private \DateTime $created;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="modified", type="datetime")
      */
-    private $modified;
+    private \DateTime $modified;
 
     /**
-     * @var array
+     * @var string[]
      *
      * @ORM\Column(name="circles", type="json_array", nullable=true)
      */
-    private $circles;
+    private array $circles = [];
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="display_name", type="string", length=255, nullable=true)
      */
-    private $displayName;
+    private ?string $displayName = null;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="allowed_to_configure_wysiwyg", type="boolean", nullable=true)
      */
-    private $allowedToConfigureWysiwyg;
+    private ?bool $allowedToConfigureWysiwyg = null;
 
     /**
-     * @var WysiwygProfile
-     *
      * @ORM\ManyToOne(targetEntity="EMS\CoreBundle\Entity\WysiwygProfile", cascade={})
      * @ORM\JoinColumn(name="wysiwyg_profile_id", referencedColumnName="id")
      */
-    private $wysiwygProfile;
+    private ?WysiwygProfile $wysiwygProfile = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="wysiwyg_options", type="text", nullable=true)
      */
-    private $wysiwygOptions;
+    private ?string $wysiwygOptions = null;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="layout_boxed", type="boolean")
      */
-    private $layoutBoxed;
+    private bool $layoutBoxed = false;
 
     /**
      * @ORM\Column(name="email_notification", type="boolean")
@@ -86,18 +72,14 @@ class User implements UserInterface, EntityInterface
     private bool $emailNotification = true;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="sidebar_mini", type="boolean")
      */
-    private $sidebarMini;
+    private bool $sidebarMini = false;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="sidebar_collapse", type="boolean")
      */
-    private $sidebarCollapse;
+    private bool $sidebarCollapse = false;
 
     /**
      * @var Collection<int,AuthToken>
@@ -118,11 +100,9 @@ class User implements UserInterface, EntityInterface
     private ?string $localePreferred = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="username", type="string", length=180)
      */
-    private $username;
+    private ?string $username = null;
 
     /**
      * @ORM\Column(name="username_canonical", type="string", length=180, unique=true)
@@ -130,11 +110,9 @@ class User implements UserInterface, EntityInterface
     private ?string $usernameCanonical = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="email", type="string", length=180)
      */
-    private $email;
+    private ?string $email = null;
 
     /**
      * @ORM\Column(name="email_canonical", type="string", length=180, unique=true)
@@ -183,13 +161,14 @@ class User implements UserInterface, EntityInterface
 
     public function __construct()
     {
-        $this->layoutBoxed = false;
-        $this->sidebarCollapse = false;
-        $this->sidebarMini = true;
         $this->authTokens = new ArrayCollection();
         $this->enabled = false;
         $this->roles = [];
         $this->locale = self::DEFAULT_LOCALE;
+
+        $now = new \DateTime();
+        $this->created = $now;
+        $this->modified = $now;
     }
 
     public function __clone()
@@ -201,7 +180,7 @@ class User implements UserInterface, EntityInterface
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {
@@ -262,68 +241,32 @@ class User implements UserInterface, EntityInterface
         $this->localePreferred = $localePreferred;
     }
 
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
+    public function getCreated(): \DateTime
     {
         return $this->created;
     }
 
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
+    public function getModified(): \DateTime
     {
         return $this->modified;
     }
 
     /**
-     * Get circles.
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function getCircles()
+    public function getCircles(): array
     {
         return $this->circles;
     }
 
-    /**
-     * Get expiresAt.
-     *
-     * @return \DateTime
-     */
-    public function getExpiresAt()
-    {
-        return $this->expiresAt;
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return User
-     */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created): self
     {
         $this->created = $created;
 
         return $this;
     }
 
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return User
-     */
-    public function setModified($modified)
+    public function setModified(\DateTime $modified): self
     {
         $this->modified = $modified;
 
@@ -331,39 +274,23 @@ class User implements UserInterface, EntityInterface
     }
 
     /**
-     * Set circles.
-     *
-     * @param array $circles
-     *
-     * @return User
+     * {@inheritDoc}
      */
-    public function setCircles($circles)
+    public function setCircles(array $circles): self
     {
         $this->circles = $circles;
 
         return $this;
     }
 
-    /**
-     * Set displayName.
-     *
-     * @param string $displayName
-     *
-     * @return User
-     */
-    public function setDisplayName($displayName)
+    public function setDisplayName(string $displayName): self
     {
         $this->displayName = $displayName;
 
         return $this;
     }
 
-    /**
-     * Get displayName.
-     *
-     * @return string
-     */
-    public function getDisplayName()
+    public function getDisplayName(): string
     {
         if (empty($this->displayName)) {
             return $this->getUsername();
@@ -372,36 +299,19 @@ class User implements UserInterface, EntityInterface
         return $this->displayName;
     }
 
-    /**
-     * Set allowedToConfigureWysiwyg.
-     *
-     * @param bool $allowedToConfigureWysiwyg
-     *
-     * @return User
-     */
-    public function setAllowedToConfigureWysiwyg($allowedToConfigureWysiwyg)
+    public function setAllowedToConfigureWysiwyg(bool $allowedToConfigureWysiwyg): self
     {
         $this->allowedToConfigureWysiwyg = $allowedToConfigureWysiwyg;
 
         return $this;
     }
 
-    /**
-     * Get allowedToConfigureWysiwyg.
-     *
-     * @return bool
-     */
-    public function getAllowedToConfigureWysiwyg()
+    public function getAllowedToConfigureWysiwyg(): ?bool
     {
         return $this->allowedToConfigureWysiwyg;
     }
 
-    /**
-     * Set wysiwygProfile.
-     *
-     * @return User
-     */
-    public function setWysiwygProfile(WysiwygProfile $wysiwygProfile)
+    public function setWysiwygProfile(?WysiwygProfile $wysiwygProfile): self
     {
         $this->wysiwygProfile = $wysiwygProfile;
 
@@ -413,140 +323,75 @@ class User implements UserInterface, EntityInterface
         return $this->wysiwygProfile;
     }
 
-    /**
-     * Set wysiwygOptions.
-     *
-     * @param string $wysiwygOptions
-     *
-     * @return User
-     */
-    public function setWysiwygOptions($wysiwygOptions)
+    public function setWysiwygOptions(?string $wysiwygOptions): self
     {
         $this->wysiwygOptions = $wysiwygOptions;
 
         return $this;
     }
 
-    /**
-     * Get wysiwygOptions.
-     *
-     * @return string
-     */
     public function getWysiwygOptions(): ?string
     {
         return $this->wysiwygOptions;
     }
 
-    /**
-     * Set layoutBoxed.
-     *
-     * @param bool $layoutBoxed
-     *
-     * @return User
-     */
-    public function setLayoutBoxed($layoutBoxed)
+    public function setLayoutBoxed(bool $layoutBoxed): self
     {
         $this->layoutBoxed = $layoutBoxed;
 
         return $this;
     }
 
-    /**
-     * Get layoutBoxed.
-     *
-     * @return bool
-     */
-    public function getLayoutBoxed()
+    public function getLayoutBoxed(): bool
     {
         return $this->layoutBoxed;
     }
 
-    /**
-     * Set sidebarMini.
-     *
-     * @param bool $sidebarMini
-     *
-     * @return User
-     */
-    public function setSidebarMini($sidebarMini)
+    public function setSidebarMini(bool $sidebarMini): self
     {
         $this->sidebarMini = $sidebarMini;
 
         return $this;
     }
 
-    /**
-     * Get sidebarMini.
-     *
-     * @return bool
-     */
-    public function getSidebarMini()
+    public function getSidebarMini(): bool
     {
         return $this->sidebarMini;
     }
 
-    /**
-     * Set sidebarCollapse.
-     *
-     * @param bool $sidebarCollapse
-     *
-     * @return User
-     */
-    public function setSidebarCollapse($sidebarCollapse)
+    public function setSidebarCollapse(bool $sidebarCollapse): self
     {
         $this->sidebarCollapse = $sidebarCollapse;
 
         return $this;
     }
 
-    /**
-     * Get sidebarCollapse.
-     *
-     * @return bool
-     */
-    public function getSidebarCollapse()
+    public function getSidebarCollapse(): bool
     {
         return $this->sidebarCollapse;
     }
 
-    /**
-     * Add authToken.
-     *
-     * @return User
-     */
-    public function addAuthToken(AuthToken $authToken)
+    public function addAuthToken(AuthToken $authToken): self
     {
         $this->authTokens[] = $authToken;
 
         return $this;
     }
 
-    /**
-     * Remove authToken.
-     */
-    public function removeAuthToken(AuthToken $authToken)
+    public function removeAuthToken(AuthToken $authToken): void
     {
         $this->authTokens->removeElement($authToken);
     }
 
     /**
-     * Get authTokens.
-     *
-     * @return Collection
+     * {@inheritDoc}
      */
-    public function getAuthTokens()
+    public function getAuthTokens(): Collection
     {
         return $this->authTokens;
     }
 
-    /**
-     * Set emailNotification.
-     *
-     * @param bool $emailNotification
-     *
-     * @return User
-     */
-    public function setEmailNotification($emailNotification)
+    public function setEmailNotification(bool $emailNotification): self
     {
         $this->emailNotification = $emailNotification;
 
@@ -644,9 +489,9 @@ class User implements UserInterface, EntityInterface
         return Type::integer($this->id);
     }
 
-    public function getUsername()
+    public function getUsername(): string
     {
-        return $this->username;
+        return $this->username ?? '';
     }
 
     public function getUsernameCanonical(): ?string
@@ -659,9 +504,9 @@ class User implements UserInterface, EntityInterface
         return $this->salt;
     }
 
-    public function getEmail()
+    public function getEmail(): string
     {
-        return $this->email;
+        return $this->email ?? '';
     }
 
     public function getEmailCanonical(): ?string
@@ -720,7 +565,7 @@ class User implements UserInterface, EntityInterface
         }
     }
 
-    public function setUsername($username): void
+    public function setUsername(?string $username): void
     {
         $this->username = $username;
     }
@@ -735,7 +580,7 @@ class User implements UserInterface, EntityInterface
         $this->salt = $salt;
     }
 
-    public function setEmail($email): void
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }

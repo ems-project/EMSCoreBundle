@@ -13,9 +13,10 @@ use Symfony\Component\Form\FormEvents;
 class CompareEnvironmentFormType extends AbstractType
 {
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // http://symfony.com/doc/current/cookbook/form/dynamic_form_modification.html#cookbook-dynamic-form-modification-suppressing-form-validation
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {

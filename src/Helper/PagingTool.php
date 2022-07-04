@@ -1,66 +1,78 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Helper;
 
 use Doctrine\ORM\EntityRepository;
+use EMS\Helpers\Standard\Type;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagingTool
 {
-    /** @var EntityRepository */
-    private $repository;
-    private $pageSize;
-    private $lastPage;
-    private $page;
-    private $orderField;
-    private $orderDirection;
-    private $paginationPath;
-    private $data;
+    private EntityRepository $repository;
+    private int $pageSize;
+    private int $lastPage;
+    private int $page;
+    private string $orderField;
+    private string $orderDirection;
+    private string $paginationPath;
 
-    public function __construct(Request $request, EntityRepository $repository, $paginationPath, $defaultOrderField, $pageSize)
-    {
+    /** @var array<mixed> */
+    private array $data;
+
+    public function __construct(
+        Request $request,
+        EntityRepository $repository,
+        string $paginationPath,
+        string $defaultOrderField,
+        int $pageSize
+    ) {
         $this->repository = $repository;
         $this->pageSize = $pageSize;
-        $this->lastPage = \ceil(\count($repository->findAll()) / $pageSize);
-        $this->page = $request->query->get('page', 1);
-        $this->orderField = $request->query->get('orderField', $defaultOrderField);
-        $this->orderDirection = $request->query->get('orderDirection', 'asc');
+        $this->lastPage = (int) \ceil(\count($repository->findAll()) / $pageSize);
+        $this->page = Type::integer($request->query->get('page', 1));
+        $this->orderField = Type::string($request->query->get('orderField', $defaultOrderField));
+        $this->orderDirection = Type::string($request->query->get('orderDirection', 'asc'));
         $this->paginationPath = $paginationPath;
 
         $this->data = $this->repository->findBy([], [$this->orderField => $this->orderDirection], $pageSize, ($this->page - 1) * $this->pageSize);
     }
 
-    public function getData()
+    /**
+     * @return array<mixed>
+     */
+    public function getData(): array
     {
         return $this->data;
     }
 
-    public function getPageSize()
+    public function getPageSize(): int
     {
         return $this->pageSize;
     }
 
-    public function getLastPage()
+    public function getLastPage(): int
     {
         return $this->lastPage;
     }
 
-    public function getPage()
+    public function getPage(): int
     {
         return $this->page;
     }
 
-    public function getOrderDirection()
+    public function getOrderDirection(): string
     {
         return $this->orderDirection;
     }
 
-    public function getOrderField()
+    public function getOrderField(): string
     {
         return $this->orderField;
     }
 
-    public function getPaginationPath()
+    public function getPaginationPath(): string
     {
         return $this->paginationPath;
     }

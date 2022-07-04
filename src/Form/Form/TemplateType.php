@@ -22,24 +22,26 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TemplateType extends AbstractType
 {
-    private $choices;
-    private $service;
-    private $circleType;
+    private EnvironmentService $service;
+    private string $circleType;
 
-    public function __construct($circleType, EnvironmentService $service)
+    public function __construct(string $circleType, EnvironmentService $service)
     {
         $this->service = $service;
         $this->circleType = $circleType;
-        $this->choices = null;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
         $resolver->setDefault('ajax-save-url', null);
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
         ->add('name', IconTextType::class, [
@@ -63,17 +65,13 @@ class TemplateType extends AbstractType
                     'class' => 'select2',
                 ],
                  'multiple' => true,
-                'choices' => $this->service->getAll(),
+                'choices' => $this->service->getEnvironments(),
                 'required' => false,
                 'choice_label' => function (Environment $value) {
                     return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
                 },
                 'choice_value' => function (Environment $value) {
-                    if (null != $value) {
-                        return $value->getId();
-                    }
-
-                    return $value;
+                    return $value->getId();
                 },
         ])
         ->add('role', RolePickerType::class)

@@ -1875,7 +1875,7 @@ class DataService
                 $currentData = $data[$targetField];
 
                 if ('remove' === $type && \in_array($referrerId, $currentData)) {
-                    $data[$targetField] = \array_diff($currentData, [$referrerId]);
+                    $data[$targetField] = \array_values(\array_diff($currentData, [$referrerId]));
                     $revision->setRawData($data);
                     $this->finalizeDraft($revision, $form, null, false);
                 } elseif ('add' === $type && !\in_array($referrerId, $currentData)) {

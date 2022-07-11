@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Event;
 
+use EMS\CommonBundle\Common\EMSLink;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -13,72 +14,63 @@ class UpdateRevisionReferersEvent extends Event
 {
     public const NAME = 'ems_core.revision.update_referers';
 
-    private $targetField;
-    private $id;
-    private $toClean;
-    private $toCreate;
-    private $type;
+    private string $type;
+    private string $id;
+    private string $targetField;
+    /** @var string[] */
+    private array $removeOuuids;
+    /** @var string[] */
+    private array $addOuuids;
 
-    public function __construct(string $type, string $id, string $targetField, array $toCleanOuuids, array $toCreateOuuids)
+    /**
+     * @param string[] $removeOuuids
+     * @param string[] $addOuuids
+     */
+    public function __construct(string $type, string $id, string $targetField, array $removeOuuids, array $addOuuids)
     {
         $this->type = $type;
         $this->id = $id;
         $this->targetField = $targetField;
-        $this->toClean = $toCleanOuuids;
-        $this->toCreate = $toCreateOuuids;
+        $this->removeOuuids = $removeOuuids;
+        $this->addOuuids = $addOuuids;
     }
 
-    /**
-     * Return the name of the computed field where the back link is store.
-     *
-     * @return string
-     */
-    public function getTargetField()
+    public function getTargetField(): string
     {
         return $this->targetField;
     }
 
     /**
-     * List of UUIDs where the back link should be removed.
-     *
-     * @return array
+     * @return EMSLink[]
      */
-    public function getToCleanOuuids()
+    public function getRemoveEmsLinks(): array
     {
-        return \array_diff($this->toClean, $this->toCreate);
+        $removeOuuids = \array_diff($this->removeOuuids, $this->addOuuids);
+
+        return \array_map(fn (string $ouuid) => EMSLink::fromText($ouuid), $removeOuuids);
     }
 
     /**
-     * List of UUIDs where the back link should be added.
-     *
-     * @return array
+     * @return EMSLink[]
      */
-    public function getToCreateOuuids()
+    public function getAddEmsLinks(): array
     {
-        return \array_diff($this->toCreate, $this->toClean);
+        $addOuuids = \array_diff($this->addOuuids, $this->removeOuuids);
+
+        return \array_map(fn (string $ouuid) => EMSLink::fromText($ouuid), $addOuuids);
     }
 
-    /**
-     * Type of the object triggering the event.
-     *
-     * @return string
-     */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * Id of the object triggering the event.
-     *
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    public function getRefererOuuid()
+    public function getRefererOuuid(): string
     {
         return $this->getType().':'.$this->getId();
     }

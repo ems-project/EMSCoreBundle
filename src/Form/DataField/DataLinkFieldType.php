@@ -51,11 +51,14 @@ class DataLinkFieldType extends DataFieldType
             $referersToAdd = [];
             $referersToRemove = [];
 
-            if (!empty($previousData[$dataField->getFieldType()->getName()])) {
-                $referersToRemove = $previousData[$dataField->getFieldType()->getName()];
+            $currentRawData = $dataField->getRawData();
+            $previousRawData = $previousData[$dataField->getFieldType()->getName()] ?? null;
+
+            if ($previousRawData) {
+                $referersToRemove = \is_array($previousRawData) ? $previousRawData : [$previousRawData];
             }
-            if (!empty($dataField->getRawData())) {
-                $referersToAdd = $dataField->getRawData();
+            if ($currentRawData) {
+                $referersToAdd = \is_array($currentRawData) ? $currentRawData : [$currentRawData];
             }
 
             $this->dispatcher->dispatch(UpdateRevisionReferersEvent::NAME, new UpdateRevisionReferersEvent($type, $id, $dataField->getFieldType()->getExtraOptions()['updateReferersField'], $referersToRemove, $referersToAdd));

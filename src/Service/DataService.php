@@ -1862,57 +1862,44 @@ class DataService
      */
     public function updateReferers(UpdateRevisionReferersEvent $event)
     {
-        $form = null;
-        foreach ($event->getToCleanOuuids() as $ouuid) {
-            $key = \explode(':', $ouuid);
+        $callback = function (string $type, string $targetField, string $referrerId, EMSLink $emsLink) {
             try {
-                $revision = $this->initNewDraft($key[0], $key[1]);
+                $form = null;
+                $revision = $this->initNewDraft($emsLink->getContentType(), $emsLink->getOuuid());
                 $data = $revision->getRawData();
-                if (empty($data[$event->getTargetField()])) {
-                    $data[$event->getTargetField()] = [];
-                }
-                if (\in_array($event->getRefererOuuid(), $data[$event->getTargetField()])) {
-                    $data[$event->getTargetField()] = \array_diff($data[$event->getTargetField()], [$event->getRefererOuuid()]);
-                    $revision->setRawData($data);
 
+                if (!isset($data[$targetField])) {
+                    $data[$targetField] = [];
+                }
+
+                $currentData = $data[$targetField];
+
+                if ('remove' === $type && \in_array($referrerId, $currentData)) {
+                    $data[$targetField] = \array_diff($currentData, [$referrerId]);
+                    $revision->setRawData($data);
+                    $this->finalizeDraft($revision, $form, null, false);
+                } elseif ('add' === $type && !\in_array($referrerId, $currentData)) {
+                    $data[$targetField][] = $referrerId;
+                    $revision->setRawData($data);
                     $this->finalizeDraft($revision, $form, null, false);
                 } else {
                     $this->discardDraft($revision);
                 }
             } catch (LockedException $e) {
                 $this->logger->error('service.data.update_referrers_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $key[0],
-                    EmsFields::LOG_OUUID_FIELD => $key[1],
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $emsLink->getContentType(),
+                    EmsFields::LOG_OUUID_FIELD => $emsLink->getOuuid(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 ]);
             }
+        };
+
+        foreach ($event->getRemoveEmsLinks() as $removeEmsLink) {
+            $callback('remove', $event->getTargetField(), $event->getRefererOuuid(), $removeEmsLink);
         }
-
-        foreach ($event->getToCreateOuuids() as $ouuid) {
-            $key = \explode(':', $ouuid);
-            try {
-                $revision = $this->initNewDraft($key[0], $key[1]);
-                $data = $revision->getRawData();
-                if (empty($data[$event->getTargetField()])) {
-                    $data[$event->getTargetField()] = [];
-                }
-                if (!\in_array($event->getRefererOuuid(), $data[$event->getTargetField()])) {
-                    $data[$event->getTargetField()][] = $event->getRefererOuuid();
-                    $revision->setRawData($data);
-
-                    $this->finalizeDraft($revision, $form, null, false);
-                } else {
-                    $this->discardDraft($revision);
-                }
-            } catch (LockedException $e) {
-                $this->logger->error('service.data.update_referrers_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $key[0],
-                    EmsFields::LOG_OUUID_FIELD => $key[1],
-                    EmsFields::LOG_EXCEPTION_FIELD => $e,
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                ]);
-            }
+        foreach ($event->getAddEmsLinks() as $addEmsLink) {
+            $callback('add', $event->getTargetField(), $event->getRefererOuuid(), $addEmsLink);
         }
     }
 

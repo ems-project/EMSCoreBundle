@@ -1041,7 +1041,7 @@ class DataService
                 $defaultValue = $template->render([
                     'environment' => $contentType->getEnvironment(),
                     'contentType' => $contentType,
-                    'currentUser' => $this->userService->isCliSession()? null : $this->userService->getCurrentUser(),
+                    'currentUser' => $this->userService->isCliSession() ? null : $this->userService->getCurrentUser(),
                 ]);
                 try {
                     $revision->setRawData(Json::decode($defaultValue));

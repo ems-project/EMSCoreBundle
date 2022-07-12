@@ -111,6 +111,17 @@ class XliffService
         return $this->revisionService->updateRawData($currentRevision, $data, $username);
     }
 
+    public function testInsert(InsertionRevision $insertionRevision, string $localeField): void
+    {
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $revision = $this->revisionService->getByRevisionId($insertionRevision->getRevisionId());
+        $targetLocale = $insertionRevision->getTargetLocale();
+
+        $data = $revision->getRawData();
+        $propertyAccessor->setValue($data, Document::fieldPathToPropertyPath($localeField), $targetLocale);
+        $insertionRevision->extractTranslations($data, $data);
+    }
+
     private function getTargetDocument(Environment $environment, Revision $revision, string $targetLocale, string $localeField, string $translationField): ?Document
     {
         $propertyAccessor = PropertyAccess::createPropertyAccessor();

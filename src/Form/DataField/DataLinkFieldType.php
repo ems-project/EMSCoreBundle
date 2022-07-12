@@ -47,7 +47,10 @@ class DataLinkFieldType extends DataFieldType
      */
     public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData)
     {
-        if (!empty($dataField->getFieldType()->getExtraOptions()['updateReferersField'])) {
+        $extraOptions = $dataField->giveFieldType()->getExtraOptions() ?? [];
+        $updateReferersField = $extraOptions['updateReferersField'] ?? false;
+
+        if ($updateReferersField) {
             $referersToAdd = [];
             $referersToRemove = [];
 
@@ -61,7 +64,8 @@ class DataLinkFieldType extends DataFieldType
                 $referersToAdd = \is_array($currentRawData) ? $currentRawData : [$currentRawData];
             }
 
-            $this->dispatcher->dispatch(UpdateRevisionReferersEvent::NAME, new UpdateRevisionReferersEvent($type, $id, $dataField->getFieldType()->getExtraOptions()['updateReferersField'], $referersToRemove, $referersToAdd));
+            $event = new UpdateRevisionReferersEvent($type, $id, $updateReferersField, $referersToRemove, $referersToAdd);
+            $this->dispatcher->dispatch($event);
         }
 
         return parent::postFinalizeTreatment($type, $id, $dataField, $previousData);

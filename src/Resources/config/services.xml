@@ -17,6 +17,11 @@
             <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" priority="110" />
             <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" />
         </service>
+        <service id="ems_core.event_listener.revision_listener" class="EMS\CoreBundle\EventListener\RevisionListener">
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="emsco.logger" />
+            <tag name="kernel.event_subscriber" />
+        </service>
 
         <!-- core service -->
         <service id="ems.dashboard.manager" class="EMS\CoreBundle\Core\Dashboard\DashboardManager">

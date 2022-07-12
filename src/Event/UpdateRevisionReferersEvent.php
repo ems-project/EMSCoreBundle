@@ -1,19 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Event;
 
 use EMS\CommonBundle\Common\EMSLink;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
-/**
- * Contains information to update 2 side links between objects.
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- */
 class UpdateRevisionReferersEvent extends Event
 {
-    public const NAME = 'ems_core.revision.update_referers';
-
     private string $type;
     private string $id;
     private string $targetField;

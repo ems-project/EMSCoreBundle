@@ -27,7 +27,6 @@ use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
-use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\DataStateException;
 use EMS\CoreBundle\Exception\DuplicateOuuidException;
@@ -1849,58 +1848,6 @@ class DataService
         }
 
         return $out;
-    }
-
-    /**
-     * Call on UpdateRevisionReferersEvent. Will try to update referers objects.
-     *
-     * @throws DataStateException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PrivilegeException
-     * @throws Throwable
-     */
-    public function updateReferers(UpdateRevisionReferersEvent $event)
-    {
-        $callback = function (string $type, string $targetField, string $referrerId, EMSLink $emsLink) {
-            try {
-                $form = null;
-                $revision = $this->initNewDraft($emsLink->getContentType(), $emsLink->getOuuid());
-                $data = $revision->getRawData();
-
-                if (!isset($data[$targetField])) {
-                    $data[$targetField] = [];
-                }
-
-                $currentData = $data[$targetField];
-
-                if ('remove' === $type && \in_array($referrerId, $currentData)) {
-                    $data[$targetField] = \array_values(\array_diff($currentData, [$referrerId]));
-                    $revision->setRawData($data);
-                    $this->finalizeDraft($revision, $form, null, false);
-                } elseif ('add' === $type && !\in_array($referrerId, $currentData)) {
-                    $data[$targetField][] = $referrerId;
-                    $revision->setRawData($data);
-                    $this->finalizeDraft($revision, $form, null, false);
-                } else {
-                    $this->discardDraft($revision);
-                }
-            } catch (LockedException $e) {
-                $this->logger->error('service.data.update_referrers_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $emsLink->getContentType(),
-                    EmsFields::LOG_OUUID_FIELD => $emsLink->getOuuid(),
-                    EmsFields::LOG_EXCEPTION_FIELD => $e,
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                ]);
-            }
-        };
-
-        foreach ($event->getRemoveEmsLinks() as $removeEmsLink) {
-            $callback('remove', $event->getTargetField(), $event->getRefererOuuid(), $removeEmsLink);
-        }
-        foreach ($event->getAddEmsLinks() as $addEmsLink) {
-            $callback('add', $event->getTargetField(), $event->getRefererOuuid(), $addEmsLink);
-        }
     }
 
     public function createAndMapIndex(Environment $environment): void

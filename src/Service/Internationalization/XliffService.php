@@ -100,7 +100,7 @@ class XliffService
         $insertionRevision->extractTranslations($data, $data);
 
         if (null === $target) {
-            $currentRevision = $this->revisionService->create($revision->giveContentType());
+            $currentRevision = $this->revisionService->create($revision->giveContentType(), null, [], $username);
         } else {
             $currentRevision = $this->revisionService->getCurrentRevisionForDocument($target);
             if (null === $currentRevision) {

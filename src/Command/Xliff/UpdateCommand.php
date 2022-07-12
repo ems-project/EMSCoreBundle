@@ -11,6 +11,7 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Internationalization\XliffService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use EMS\Xliff\Xliff\Entity\InsertReport;
 use EMS\Xliff\Xliff\Inserter;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -91,13 +92,14 @@ final class UpdateCommand extends AbstractCommand
 
         $inserter = Inserter::fromFile($this->xliffFilename);
         $this->io->progressStart($inserter->count());
+        $insertReport = new InsertReport();
         foreach ($inserter->getDocuments() as $document) {
             if ($this->dryRun) {
-                $this->xliffService->testInsert($document, $this->localeField);
+                $this->xliffService->testInsert($insertReport, $document, $this->localeField);
                 $this->io->progressAdvance();
                 continue;
             }
-            $revision = $this->xliffService->insert($document, $this->localeField, $this->translationField, $this->publishTo, self::XLIFF_UPLOAD_COMMAND);
+            $revision = $this->xliffService->insert($insertReport, $document, $this->localeField, $this->translationField, $this->publishTo, self::XLIFF_UPLOAD_COMMAND);
             if (null !== $this->publishTo) {
                 $this->publishService->publish($revision, $this->publishTo, true);
             }
@@ -108,7 +110,8 @@ final class UpdateCommand extends AbstractCommand
         }
         $this->io->progressFinish();
 
-        $output->writeln('');
+
+        $output->writeln(\sprintf('%d documents faced an issue', $insertReport->countErrors()));
 
         return self::EXECUTE_SUCCESS;
     }

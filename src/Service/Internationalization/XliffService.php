@@ -15,6 +15,7 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Html\Html;
+use EMS\Xliff\Xliff\Entity\InsertReport;
 use EMS\Xliff\Xliff\Extractor;
 use EMS\Xliff\Xliff\InsertionRevision;
 use Psr\Log\LoggerInterface;
@@ -82,7 +83,7 @@ class XliffService
         }
     }
 
-    public function insert(InsertionRevision $insertionRevision, string $localeField, string $translationField, ?Environment $publishAndArchive, string $username = null): Revision
+    public function insert(InsertReport $insertReport, InsertionRevision $insertionRevision, string $localeField, string $translationField, ?Environment $publishAndArchive, string $username = null): Revision
     {
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
         $revision = $this->revisionService->getByRevisionId($insertionRevision->getRevisionId());
@@ -97,7 +98,7 @@ class XliffService
 
         $data = $revision->getRawData();
         $propertyAccessor->setValue($data, Document::fieldPathToPropertyPath($localeField), $targetLocale);
-        $insertionRevision->extractTranslations($data, $data);
+        $insertionRevision->extractTranslations($insertReport, $data, $data);
 
         if (null === $target) {
             $currentRevision = $this->revisionService->create($revision->giveContentType(), null, [], $username);
@@ -111,7 +112,7 @@ class XliffService
         return $this->revisionService->updateRawData($currentRevision, $data, $username);
     }
 
-    public function testInsert(InsertionRevision $insertionRevision, string $localeField): void
+    public function testInsert(InsertReport $insertReport, InsertionRevision $insertionRevision, string $localeField): void
     {
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
         $revision = $this->revisionService->getByRevisionId($insertionRevision->getRevisionId());
@@ -119,7 +120,7 @@ class XliffService
 
         $data = $revision->getRawData();
         $propertyAccessor->setValue($data, Document::fieldPathToPropertyPath($localeField), $targetLocale);
-        $insertionRevision->extractTranslations($data, $data);
+        $insertionRevision->extractTranslations($insertReport, $data, $data);
     }
 
     private function getTargetDocument(Environment $environment, Revision $revision, string $targetLocale, string $localeField, string $translationField): ?Document

@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\ObjectChoiceLoader;
@@ -42,10 +43,8 @@ class DataLinkFieldType extends DataFieldType
 
     /**
      * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::postFinalizeTreatment()
      */
-    public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData)
+    public function postFinalizeTreatment(Revision $revision, DataField $dataField, ?array $previousData): ?array
     {
         $extraOptions = $dataField->giveFieldType()->getExtraOptions() ?? [];
         $updateReferersField = $extraOptions['updateReferersField'] ?? false;
@@ -64,11 +63,11 @@ class DataLinkFieldType extends DataFieldType
                 $referersToAdd = \is_array($currentRawData) ? $currentRawData : [$currentRawData];
             }
 
-            $event = new UpdateRevisionReferersEvent($type, $id, $updateReferersField, $referersToRemove, $referersToAdd);
+            $event = new UpdateRevisionReferersEvent($revision, $updateReferersField, $referersToRemove, $referersToAdd);
             $this->dispatcher->dispatch($event);
         }
 
-        return parent::postFinalizeTreatment($type, $id, $dataField, $previousData);
+        return parent::postFinalizeTreatment($revision, $dataField, $previousData);
     }
 
     /**

@@ -880,7 +880,7 @@ class DataService
             $this->auditLogger->notice('log.revision.finalized', LogRevisionContext::update($revision));
 
             try {
-                $this->postFinalizeTreatment($revision->giveContentType()->getName(), $revision->getOuuid(), $form->get('data'), $previousObjectArray);
+                $this->postFinalizeTreatment($revision, $form->get('data'), $previousObjectArray);
             } catch (Exception $e) {
                 $this->logger->warning('service.data.post_finalize_failed', [
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -944,21 +944,16 @@ class DataService
     }
 
     /**
-     * Parcours all fields and call DataFieldsType postFinalizeTreament function.
-     *
-     * @param string     $type
-     * @param string     $id
-     * @param array|null $previousObjectArray
+     * Loop over all fields and call postFinalizeTreatment.
      */
-    public function postFinalizeTreatment($type, $id, FormInterface $form, $previousObjectArray)
+    public function postFinalizeTreatment(Revision $revision, FormInterface $form, ?array $previousObjectArray)
     {
-        /** @var FormInterface $subForm */
         foreach ($form->all() as $subForm) {
             if ($subForm->getNormData() instanceof DataField) {
                 /** @var DataFieldType $dataFieldType */
                 $dataFieldType = $subForm->getConfig()->getType()->getInnerType();
-                $childrenPreviousData = $dataFieldType->postFinalizeTreatment($type, $id, $subForm->getNormData(), $previousObjectArray);
-                $this->postFinalizeTreatment($type, $id, $subForm, $childrenPreviousData);
+                $childrenPreviousData = $dataFieldType->postFinalizeTreatment($revision, $subForm->getNormData(), $previousObjectArray);
+                $this->postFinalizeTreatment($revision, $subForm, $childrenPreviousData);
             }
         }
     }

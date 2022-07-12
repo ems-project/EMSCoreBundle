@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\Field\IconPickerType;
@@ -34,17 +35,13 @@ class ContainerFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::postFinalizeTreatment()
+     * {@inheritDoc}
      */
-    public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData)
+    public function postFinalizeTreatment(Revision $revision, DataField $dataField, ?array $previousData): ?array
     {
-        if (!empty($previousData[$dataField->getFieldType()->getName()])) {
-            return $previousData[$dataField->getFieldType()->getName()];
-        }
+        $previousFieldData = $previousData[$dataField->giveFieldType()->getName()] ?? false;
 
-        return null;
+        return \is_array($previousFieldData) ? $previousFieldData : null;
     }
 
     /**

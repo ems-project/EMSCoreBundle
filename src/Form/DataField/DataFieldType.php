@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\ContentTypeStructureException;
 use EMS\CoreBundle\Form\DataField\Options\OptionsType;
 use EMS\CoreBundle\Form\Field\SelectPickerType;
@@ -66,13 +67,9 @@ abstract class DataFieldType extends AbstractType
     /**
      * Perfom field specfifc post-finalized treatment. It returns the children if it's a container.
      *
-     * @param string $type
-     * @param string $id
-     * @param array  $previousData
-     *
-     * @return array|null
+     * @param ?array<string, mixed> $previousData
      */
-    public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData)
+    public function postFinalizeTreatment(Revision $revision, DataField $dataField, ?array $previousData): ?array
     {
         return $previousData;
     }

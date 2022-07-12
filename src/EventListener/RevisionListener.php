@@ -37,7 +37,7 @@ final class RevisionListener implements EventSubscriberInterface
 
     public function updateReferers(UpdateRevisionReferersEvent $event): void
     {
-        $callback = function (string $type, string $targetField, string $referrerId, EMSLink $emsLink) {
+        $callback = function (string $type, string $targetField, string $referrerEmsId, EMSLink $emsLink) {
             try {
                 $form = null;
                 $revision = $this->dataService->initNewDraft($emsLink->getContentType(), $emsLink->getOuuid());
@@ -49,12 +49,12 @@ final class RevisionListener implements EventSubscriberInterface
 
                 $currentData = $data[$targetField];
 
-                if ('remove' === $type && \in_array($referrerId, $currentData)) {
-                    $data[$targetField] = \array_values(\array_diff($currentData, [$referrerId]));
+                if ('remove' === $type && \in_array($referrerEmsId, $currentData)) {
+                    $data[$targetField] = \array_values(\array_diff($currentData, [$referrerEmsId]));
                     $revision->setRawData($data);
                     $this->dataService->finalizeDraft($revision, $form, null, false);
-                } elseif ('add' === $type && !\in_array($referrerId, $currentData)) {
-                    $data[$targetField][] = $referrerId;
+                } elseif ('add' === $type && !\in_array($referrerEmsId, $currentData)) {
+                    $data[$targetField][] = $referrerEmsId;
                     $revision->setRawData($data);
                     $this->dataService->finalizeDraft($revision, $form, null, false);
                 } else {

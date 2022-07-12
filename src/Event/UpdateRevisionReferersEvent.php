@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Event;
 
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CoreBundle\Entity\Revision;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class UpdateRevisionReferersEvent extends Event
 {
-    private string $type;
-    private string $id;
+    private Revision $revision;
     private string $targetField;
     /** @var string[] */
     private array $removeOuuids;
@@ -21,10 +21,9 @@ class UpdateRevisionReferersEvent extends Event
      * @param string[] $removeOuuids
      * @param string[] $addOuuids
      */
-    public function __construct(string $type, string $id, string $targetField, array $removeOuuids, array $addOuuids)
+    public function __construct(Revision $revision, string $targetField, array $removeOuuids, array $addOuuids)
     {
-        $this->type = $type;
-        $this->id = $id;
+        $this->revision = $revision;
         $this->targetField = $targetField;
         $this->removeOuuids = $removeOuuids;
         $this->addOuuids = $addOuuids;
@@ -55,18 +54,8 @@ class UpdateRevisionReferersEvent extends Event
         return \array_map(fn (string $ouuid) => EMSLink::fromText($ouuid), $addOuuids);
     }
 
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
     public function getRefererOuuid(): string
     {
-        return $this->getType().':'.$this->getId();
+        return $this->revision->getEmsId();
     }
 }

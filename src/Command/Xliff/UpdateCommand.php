@@ -110,8 +110,12 @@ final class UpdateCommand extends AbstractCommand
         }
         $this->io->progressFinish();
 
-
-        $output->writeln(\sprintf('%d documents faced an issue', $insertReport->countErrors()));
+        if ($insertReport->countErrors() > 0) {
+            $output->writeln(\sprintf('%d documents faced an issue', $insertReport->countErrors()));
+            $filename = \tempnam(\sys_get_temp_dir(), 'xliff_update_report_').'.zip';
+            $insertReport->export($filename);
+            $output->writeln(\sprintf('See %s for details', $filename));
+        }
 
         return self::EXECUTE_SUCCESS;
     }

@@ -231,9 +231,9 @@ class RevisionService implements RevisionServiceInterface
     /**
      * @param array<mixed> $rawData
      */
-    public function create(ContentType $contentType, ?UuidInterface $uuid = null, array $rawData = []): Revision
+    public function create(ContentType $contentType, ?UuidInterface $uuid = null, array $rawData = [], ?string $username = null): Revision
     {
-        return $this->dataService->newDocument($contentType, null === $uuid ? null : $uuid->toString(), $rawData);
+        return $this->dataService->newDocument($contentType, null === $uuid ? null : $uuid->toString(), $rawData, $username);
     }
 
     /**
@@ -258,7 +258,11 @@ class RevisionService implements RevisionServiceInterface
     public function updateRawData(Revision $revision, array $rawData, ?string $username = null, bool $merge = true): Revision
     {
         $contentTypeName = $revision->giveContentType()->getName();
-        $draft = $this->dataService->initNewDraft($contentTypeName, $revision->giveOuuid(), null, $username);
+        if ($revision->getDraft()) {
+            $draft = $revision;
+        } else {
+            $draft = $this->dataService->initNewDraft($contentTypeName, $revision->giveOuuid(), null, $username);
+        }
 
         $this->setRawData($draft, $rawData, $merge);
         $form = null;

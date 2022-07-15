@@ -1023,7 +1023,7 @@ class DataService
      * @throws HasNotCircleException
      * @throws Throwable
      */
-    public function newDocument(ContentType $contentType, ?string $ouuid = null, ?array $rawData = null)
+    public function newDocument(ContentType $contentType, ?string $ouuid = null, ?array $rawData = null, ?string $username = null)
     {
         $this->hasCreateRights($contentType);
         /** @var RevisionRepository $revisionRepository */
@@ -1041,7 +1041,7 @@ class DataService
                 $defaultValue = $template->render([
                     'environment' => $contentType->getEnvironment(),
                     'contentType' => $contentType,
-                    'currentUser' => $this->userService->getCurrentUser(),
+                    'currentUser' => $this->userService->isCliSession() ? null : $this->userService->getCurrentUser(),
                 ]);
                 try {
                     $revision->setRawData(Json::decode($defaultValue));
@@ -1071,7 +1071,10 @@ class DataService
             }
         }
 
-        $currentUser = $this->userService->getCurrentUser();
+        if (null === $username) {
+            $username = $this->userService->getCurrentUser()->getUsername();
+        }
+        $currentUser = $this->userService->isCliSession() ? null : $this->userService->getCurrentUser();
 
         $now = new \DateTime('now');
         $revision->setContentType($contentType);
@@ -1080,15 +1083,15 @@ class DataService
         $revision->setDeleted(false);
         $revision->setStartTime($now);
         $revision->setEndTime(null);
-        $revision->setLockBy($currentUser->getUsername());
+        $revision->setLockBy($username);
         $revision->setLockUntil(new \DateTime($this->lockTime));
 
         $ownerRole = $contentType->getOwnerRole();
-        if (null !== $ownerRole && $this->userService->isGrantedRole($ownerRole)) {
+        if (null !== $currentUser && null !== $ownerRole && $this->userService->isGrantedRole($ownerRole)) {
             $revision->setOwner($currentUser->getUsername());
         }
 
-        if ($contentType->getCirclesField()) {
+        if (null !== $currentUser && $contentType->getCirclesField()) {
             if (isset($revision->getRawData()[$contentType->getCirclesField()])) {
                 if (\is_array($revision->getRawData()[$contentType->getCirclesField()])) {
                     $revision->setCircles($revision->getRawData()[$contentType->getCirclesField()]);
@@ -1125,6 +1128,9 @@ class DataService
      */
     public function hasCreateRights(ContentType $contentType)
     {
+        if ($this->userService->isCliSession()) {
+            return;
+        }
         $userCircles = $this->userService->getCurrentUser()->getCircles();
         $environment = $contentType->getEnvironment();
         $environmentCircles = $environment->getCircles();

@@ -18,13 +18,15 @@ class ObjectChoiceList implements ChoiceListInterface
     private $circleOnly;
     /** @var bool */
     private $withWarning;
+    private ?string $querySearchName;
 
     public function __construct(
         ObjectChoiceCacheService $objectChoiceCacheService,
         $types = false,
         bool $loadAll = false,
         bool $circleOnly = false,
-        bool $withWarning = true
+        bool $withWarning = true,
+        ?string $querySearchName = null
     ) {
         $this->objectChoiceCacheService = $objectChoiceCacheService;
         $this->choices = [];
@@ -32,6 +34,7 @@ class ObjectChoiceList implements ChoiceListInterface
         $this->loadAll = $loadAll;
         $this->circleOnly = $circleOnly;
         $this->withWarning = $withWarning;
+        $this->querySearchName = $querySearchName;
     }
 
     public function getTypes()
@@ -44,7 +47,7 @@ class ObjectChoiceList implements ChoiceListInterface
      */
     public function getChoices()
     {
-        $this->loadAll($this->types);
+        $this->loadAll();
 
         return $this->choices;
     }
@@ -98,10 +101,10 @@ class ObjectChoiceList implements ChoiceListInterface
         return \array_keys($this->choices);
     }
 
-    public function loadAll($types)
+    public function loadAll()
     {
         if ($this->loadAll) {
-            $this->objectChoiceCacheService->loadAll($this->choices, $types, $this->circleOnly, $this->withWarning);
+            $this->objectChoiceCacheService->loadAll($this->choices, $this->types, $this->circleOnly, $this->withWarning, $this->querySearchName);
         }
 
         return $this->choices;

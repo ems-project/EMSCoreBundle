@@ -130,7 +130,7 @@ class TwigElementsController extends AbstractController
         }
         $menu->addChild('views.elements.side-menu-html.content-types', 'fa fa-sitemap', 'contenttype.index')->setTranslation([]);
         $menu->addChild('views.elements.side-menu-html.environments', 'fa fa-database', 'environment.index')->setTranslation([]);
-        $menu->addChild('view.elements.side-menu.chanel-admin.index-link', 'fa fa-road', 'ems_core_channel_index')->setTranslation([]);
+        $menu->addChild('view.elements.side-menu.chanel-admin.index-link', 'fa fa-eye', 'ems_core_channel_index')->setTranslation([]);
         $menu->addChild('view.elements.side-menu.dashboard-admin.index-link', 'fa fa-dashboard', Routes::DASHBOARD_ADMIN_INDEX)->setTranslation([]);
         $menu->addChild('view.elements.side-menu.query_search.index-link', 'fa fa-list-alt', 'ems_core_query_search_index')->setTranslation([]);
         $menu->addChild('views.elements.side-menu-html.wysiwyg', 'fa fa-edit', 'ems_wysiwyg_index')->setTranslation([]);

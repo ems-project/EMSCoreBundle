@@ -677,7 +677,7 @@ view.form.fields.asset.browse-server: 'Pick a file from the server'
 view.form.fields.asset.upload-files: 'Upload files'
 view.form.fields.asset.view-button: View
 view.form-submission.index.title: 'Form Submissions Overview'
-view.icon.class.channel: 'fa fa-road'
+view.icon.class.channel: 'fa fa-eye'
 view.icon.class.release: 'fa fa-cube'
 view.icon.class.query_search: 'fa fa-list-alt'
 view.macros.data-field-type.macros.data-field-type.collection_added_items: '{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added'

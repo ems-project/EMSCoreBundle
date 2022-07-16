@@ -116,7 +116,8 @@ class ViewController extends AbstractController
             $this->viewManager->update($view);
 
             $this->logger->notice('log.view.created', [
-                'view_name' => $view->getLabel(),
+                'view_name' => $view->getName(),
+                'view_label' => $view->getLabel(),
             ]);
 
             return $this->redirectToRoute(Routes::VIEW_EDIT, [
@@ -153,7 +154,8 @@ class ViewController extends AbstractController
             $this->viewManager->update($view);
 
             $this->logger->notice('log.view.updated', [
-                'view_name' => $view->getLabel(),
+                'view_name' => $view->getName(),
+                'view_label' => $view->getLabel(),
             ]);
 
             if ('json' === $_format) {
@@ -194,12 +196,14 @@ class ViewController extends AbstractController
 
     public function delete(View $view): Response
     {
-        $name = $view->getLabel();
+        $name = $view->getName();
+        $label = $view->getLabel();
         $contentType = $view->getContentType();
 
         $this->viewManager->delete($view);
         $this->logger->notice('log.view.deleted', [
             'view_name' => $name,
+            'view_label' => $label,
         ]);
 
         return $this->redirectToRoute(Routes::VIEW_INDEX, [

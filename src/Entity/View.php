@@ -47,7 +47,7 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
      *
      * @ORM\Column(name="label", type="string", length=255)
      */
-    protected $label;
+    protected $label = '';
 
     /**
      * @ORM\Column(name="icon", type="string", length=255, nullable=true)

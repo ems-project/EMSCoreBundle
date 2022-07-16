@@ -1299,9 +1299,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     }
 
     /**
-     * Get templates.
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection<int, Template>
      */
     public function getTemplates()
     {

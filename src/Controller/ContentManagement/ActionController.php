@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Form\Data\BoolTableColumn;
@@ -139,6 +140,7 @@ final class ActionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $action->setOrderKey($this->actionService->count('', $contentType) + 1);
+            $action->setName(Encoder::webalize($action->getName()) ?? '');
 
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();

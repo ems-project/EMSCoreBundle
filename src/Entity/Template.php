@@ -974,6 +974,4 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     {
         $this->label = $label;
     }
-
-
 }

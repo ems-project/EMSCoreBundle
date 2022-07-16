@@ -252,5 +252,4 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     {
         $this->label = $label;
     }
-
 }

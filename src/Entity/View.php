@@ -43,6 +43,13 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     protected string $type;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="label", type="string", length=255)
+     */
+    protected $label;
+
+    /**
      * @ORM\Column(name="icon", type="string", length=255, nullable=true)
      */
     protected ?string $icon;
@@ -235,4 +242,15 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
 
         return $json;
     }
+
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    public function setLabel(string $label): void
+    {
+        $this->label = $label;
+    }
+
 }

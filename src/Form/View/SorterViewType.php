@@ -173,7 +173,7 @@ class SorterViewType extends ViewType
             }
             $this->logger->notice('form.view.hierarchical.ordered', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $view->getContentType()->getName(),
-                'view_name' => $view->getName(),
+                'view_name' => $view->getLabel(),
             ]);
 
             return new RedirectResponse($this->router->generate('data.draft_in_progress', [

@@ -94,7 +94,7 @@ class ViewManager implements EntityServiceInterface
 
     public function delete(View $view): void
     {
-        $name = $view->getName();
+        $name = $view->getLabel();
         $this->viewRepository->delete($view);
         $this->logger->warning('log.service.view.delete', [
             'name' => $name,

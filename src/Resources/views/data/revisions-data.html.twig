@@ -195,7 +195,7 @@
 			{% set notificationFound = false %}
 			{% for notification in revision.notifications %}
 				{% if notification.status == 'pending'  %}
-					<span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.name }}</span>
+					<span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.label }}</span>
 					{% set notificationFound = true %}
 				{% endif %}
 			{% endfor %}
@@ -364,7 +364,7 @@
 							<td>
 								{% for notification in rev.notifications %}
 									{% if notification.status == 'pending'  %}
-										<span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.name }}</span>
+										<span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.label }}</span>
 									{% endif %}
 								{% endfor %}
 

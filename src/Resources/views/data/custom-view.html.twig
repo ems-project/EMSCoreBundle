@@ -5,7 +5,7 @@
 	{% set label = attribute(object.source, contentType.labelField) %}
 {% endif %}
 
-{% block title %}{{ 'data.custom-view.pagetitle'|trans({ '%name%':template.name, '%contentType%': contentType.singularName, '%label%': label, '%environment%': environment.label  }) }}{% endblock %}
+{% block title %}{{ 'data.custom-view.pagetitle'|trans({ '%name%':template.label, '%contentType%': contentType.singularName, '%label%': label, '%environment%': environment.label  }) }}{% endblock %}
 {% block pagetitle %}
 	<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
 	{{ block('title') }}
@@ -33,7 +33,7 @@
 	<div class="col-xs-12">
 		<div class="box">
 			<div class="box-header no-print">
-				<h3 class="box-title">View {{ template.name }}</h3>
+				<h3 class="box-title">View {{ template.label }}</h3>
 			</div>
 			<div class="box-body">
 				{%  if template.body and (template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EMBED') or template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT') or template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::PDF')) %}

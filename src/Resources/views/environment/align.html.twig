@@ -145,7 +145,7 @@
               }%}
               {% for notification in item.revisionEnvironment.notifications %}
                 {% if notification.status == 'pending'  %}
-                          <span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.name }}</span>
+                          <span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.label }}</span>
                       {% endif %}
               {% endfor %}
               {% endif %} 
@@ -177,7 +177,7 @@
                   }%}
                   {% for notification in item.revisionEnvironment.notifications %}
                       {% if notification.status == 'pending'  %}
-                      	<span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.name }}</span>
+                      	<span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.label }}</span>
                       {% endif %}
                   {% endfor %}
                 {% endif %}

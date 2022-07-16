@@ -48,7 +48,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
      *
      * @ORM\Column(name="label", type="string", length=255)
      */
-    protected $label;
+    protected $label = '';
 
     /**
      * @var string

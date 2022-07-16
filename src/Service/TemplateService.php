@@ -41,23 +41,9 @@ class TemplateService
 
     public function init(string $actionName, ContentType $contentType): TemplateService
     {
-        if (\is_numeric($actionName)) {
-            \trigger_error('Using template ID is deprecated, use the action name instead', E_USER_DEPRECATED);
-        }
-        $em = $this->doctrine->getManager();
-        $template = null;
-        foreach ($contentType->getTemplates() as $item) {
-            if ($actionName === $item->getName()) {
-                $template = $item;
-                break;
-            }
-        }
-
+        $template = $contentType->getActionByName($actionName);
         if (null === $template) {
-            $template = $em->getRepository(Template::class)->find($actionName);
-        }
-        if (!$template instanceof Template) {
-            throw new \RuntimeException('Unexpected Template object');
+            throw new \RuntimeException('Unexpected null action');
         }
         $this->template = $template;
 

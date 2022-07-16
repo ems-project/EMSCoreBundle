@@ -27,6 +27,7 @@ action.actions.delete_selected: 'Delete selected'
 action.actions.delete_selected_confirm: 'Delete all selected actions?'
 action.actions.edit: Edit
 action.index.column.name: Name
+action.index.column.label: Label
 action.index.column.public: Public
 action.index.column.type: Type
 action.index.reorder: Reorder
@@ -858,6 +859,7 @@ release.revision.table.rollback.confirm: 'Do you confirm ?'
 release.revision.index.column.compare: Compare
 view.index.reorder: 'Reorder views'
 view.index.column.name: Name
+view.index.column.label: Label
 view.actions.edit: Edit
 view.actions.duplicate: Duplicate
 view.actions.duplicate_confirm: 'Do you confirm?'

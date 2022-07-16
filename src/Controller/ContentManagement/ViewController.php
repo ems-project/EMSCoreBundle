@@ -215,7 +215,8 @@ class ViewController extends AbstractController
         ]), $contentType);
         $table->addColumn('table.index.column.loop_count', 'orderKey');
         $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.public', 'public', '@EMSCore/view/columns.html.twig'));
-        $table->addColumn('view.index.column.name', 'name')->setItemIconCallback(function (View $view) {
+        $table->addColumn('view.index.column.name', 'name');
+        $table->addColumn('view.index.column.label', 'label')->setItemIconCallback(function (View $view) {
             return $view->getIcon() ?? '';
         });
         $table->addColumnDefinition(new TranslationTableColumn('dashboard.index.column.type', 'type', EMSCoreBundle::TRANS_FORM_DOMAIN));

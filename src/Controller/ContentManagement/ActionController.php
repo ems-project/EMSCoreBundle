@@ -252,7 +252,8 @@ final class ActionController extends AbstractController
         $table = new EntityTable($this->actionService, $this->generateUrl('ems_core_action_datatable_ajax', ['contentType' => $contentType->getId()]), $contentType);
         $table->addColumn('table.index.column.loop_count', 'orderKey');
         $table->addColumnDefinition(new BoolTableColumn('action.index.column.public', 'public'));
-        $table->addColumn('action.index.column.name', 'name')
+        $table->addColumn('action.index.column.name', 'name');
+        $table->addColumn('action.index.column.label', 'label')
             ->setItemIconCallback(function (Template $action) {
                 return $action->getIcon();
             });

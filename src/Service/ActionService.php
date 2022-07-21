@@ -37,9 +37,11 @@ final class ActionService implements EntityServiceInterface
     public function delete(Template $template): void
     {
         $name = $template->getName();
+        $label = $template->getLabel();
         $this->templateRepository->delete($template);
         $this->logger->warning('log.service.action.delete', [
             'name' => $name,
+            'label' => $label,
         ]);
     }
 

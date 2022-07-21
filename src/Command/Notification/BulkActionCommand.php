@@ -8,6 +8,7 @@ use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
@@ -20,21 +21,25 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class BulkActionCommand extends Command
 {
+    private const CONTENT_TYPE_NAME = 'contentTypeName';
     private NotificationService $notificationService;
     private EnvironmentService $environmentService;
     private ElasticaService $elasticaService;
     private RevisionService $revisionService;
     private SymfonyStyle $io;
+    private ContentTypeService $contentTypeService;
 
     public function __construct(
         NotificationService $notificationService,
         EnvironmentService $environmentService,
+        ContentTypeService $contentTypeService,
         ElasticaService $elasticaService,
         RevisionService $revisionService
     ) {
         parent::__construct();
         $this->notificationService = $notificationService;
         $this->environmentService = $environmentService;
+        $this->contentTypeService = $contentTypeService;
         $this->elasticaService = $elasticaService;
         $this->revisionService = $revisionService;
     }
@@ -44,7 +49,8 @@ final class BulkActionCommand extends Command
         $this
             ->setName('ems:notification:bulk-action')
             ->setDescription('Bulk all notifications actions for the passed query')
-            ->addArgument('actionId', InputArgument::REQUIRED, 'Notification action id')
+            ->addArgument(self::CONTENT_TYPE_NAME, InputArgument::REQUIRED, 'Content type name')
+            ->addArgument('actionName', InputArgument::REQUIRED, 'Notification action name')
             ->addArgument('query', InputArgument::REQUIRED, 'ES query')
             ->addOption('username', null, InputOption::VALUE_REQUIRED, 'notification user', 'ems')
             ->addOption('environment', null, InputOption::VALUE_REQUIRED, 'EMS environment')
@@ -59,9 +65,12 @@ final class BulkActionCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $actionId = \intval($input->getArgument('actionId'));
-        if (null === $action = $this->notificationService->getAction($actionId)) {
-            throw new \Exception(\sprintf('No notification action found with id %d', $actionId));
+        $contentTypeName = \strval($input->getArgument(self::CONTENT_TYPE_NAME));
+        $contentType = $this->contentTypeService->giveByName($contentTypeName);
+        $actionName = \strval($input->getArgument('actionName'));
+        $action = $contentType->getActionByName($actionName);
+        if (null === $action) {
+            throw new \Exception(\sprintf('No notification action found with name %d', $actionName));
         }
 
         $rawQuery = \strval($input->getArgument('query'));
@@ -75,7 +84,7 @@ final class BulkActionCommand extends Command
         if (null !== $environmentName) {
             $environment = $this->environmentService->giveByName($environmentName);
         } else {
-            $environment = $action->giveContentType()->giveEnvironment();
+            $environment = $contentType->giveEnvironment();
         }
 
         $search = $this->elasticaService->convertElasticsearchSearch([
@@ -83,6 +92,7 @@ final class BulkActionCommand extends Command
             '_source' => false,
             'body' => $query,
         ]);
+        $search->setContentTypes([$contentTypeName]);
 
         $countDocuments = $this->elasticaService->count($search);
         $this->io->block(\vsprintf('Found %s documents for notification action "%s" in %s', [
@@ -107,8 +117,11 @@ final class BulkActionCommand extends Command
                 $this->io->warning(\sprintf('Could not find revision for ouuid "%s"', $document->getId()));
                 continue;
             }
-
-            $added = $this->notificationService->addNotification($actionId, $revision, $environment, $username);
+            $action = $revision->giveContentType()->getActionByName($actionName);
+            if (null === $action) {
+                throw new \RuntimeException(\sprintf('Action %s not found for content type %s', $actionName, $revision->giveContentType()->getSingularName()));
+            }
+            $added = $this->notificationService->addNotification($action, $revision, $environment, $username);
 
             if ($added) {
                 ++$countSend;

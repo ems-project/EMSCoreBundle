@@ -90,7 +90,7 @@ class NotificationController extends AbstractController
             throw new NotFoundHttpException('Unknown revision');
         }
 
-        $success = $this->notificationService->addNotification(\intval($templateId), $revision, $env);
+        $success = $this->notificationService->addNotification($ct->getActionById(\intval($templateId)), $revision, $env);
 
         return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => $success,

@@ -24,7 +24,7 @@ class ExportDocumentsType extends AbstractType
         /** @var Template $template */
         foreach ($data->getContentType()->getTemplates() as $template) {
             if (RenderOptionType::EXPORT == $template->getRenderOption() && $template->getBody()) {
-                $formatChoices[$template->getName()] = $template->getId();
+                $formatChoices[$template->getLabel()] = $template->getName();
             }
         }
 

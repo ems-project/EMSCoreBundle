@@ -181,6 +181,7 @@ form.form.release.name: Name
 form.form.revision-type.copy-label: Copy
 form.form.revision-type.paste-label: Paste
 form.form.revision-type.save-draft-label: 'Save as draft'
+form.form.revision-type.save-label: 'Save'
 form.form.revision-type.publish-label: 'Save and publish in %environment%'
 form.form.revision-type.publish-version-tags-label: 'Save, tag and publish in %environment%'
 form.form_field.wysiwyg.content_css.label: 'Content CSS (override styles sets''s config)'

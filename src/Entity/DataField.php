@@ -267,10 +267,12 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         throw new \Exception('Deprecated method');
     }
 
-    public function linkFieldType(PersistentCollection $fieldTypes)
+    /**
+     * @param Collection<int, FieldType> $fieldTypes
+     */
+    public function linkFieldType(Collection $fieldTypes)
     {
         $index = 0;
-        /** @var FieldType $fieldType */
         foreach ($fieldTypes as $fieldType) {
             if (!$fieldType->getDeleted()) {
                 /** @var DataField $child */

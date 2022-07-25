@@ -846,7 +846,7 @@ class DataService
             $form->addError(new FormError($e->getMessage()));
         }
 
-        $previousObjectArray = null;
+        $previousData = null;
 
         $revision->setRawDataFinalizedBy($username);
 
@@ -859,7 +859,7 @@ class DataService
                 $item = $repository->findByOuuidContentTypeAndEnvironment($revision);
                 if ($item) {
                     $this->lockRevision($item, null, false, $username);
-                    $previousObjectArray = $item->getRawData();
+                    $previousData = $item->getData();
                     $item->removeEnvironment($revision->giveContentType()->giveEnvironment());
                     $em->persist($item);
                     $this->unlockRevision($item, $username);
@@ -880,7 +880,7 @@ class DataService
             $this->auditLogger->notice('log.revision.finalized', LogRevisionContext::update($revision));
 
             try {
-                $this->postFinalizeTreatment($revision, $form->get('data'), $previousObjectArray);
+                $this->postFinalizeTreatment($revision, $form->get('data'), $previousData);
             } catch (Exception $e) {
                 $this->logger->warning('service.data.post_finalize_failed', [
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -945,14 +945,16 @@ class DataService
 
     /**
      * Loop over all fields and call postFinalizeTreatment.
+     *
+     * @param ?array<string, mixed> $previousData
      */
-    public function postFinalizeTreatment(Revision $revision, FormInterface $form, ?array $previousObjectArray)
+    public function postFinalizeTreatment(Revision $revision, FormInterface $form, ?array $previousData)
     {
         foreach ($form->all() as $subForm) {
             if ($subForm->getNormData() instanceof DataField) {
                 /** @var DataFieldType $dataFieldType */
                 $dataFieldType = $subForm->getConfig()->getType()->getInnerType();
-                $childrenPreviousData = $dataFieldType->postFinalizeTreatment($revision, $subForm->getNormData(), $previousObjectArray);
+                $childrenPreviousData = $dataFieldType->postFinalizeTreatment($revision, $subForm->getNormData(), $previousData);
                 $this->postFinalizeTreatment($revision, $subForm, $childrenPreviousData);
             }
         }

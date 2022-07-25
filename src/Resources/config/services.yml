@@ -110,7 +110,7 @@ services:
             - { name: form.type }
     ems.fieldtype.json_menu_nested_editor:
         class: EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType
-        arguments: ['@form.factory', '@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@router']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@event_dispatcher']
         tags:
             - { name: ems.form.datafieldtype, alias: json_menu_nested }
             - { name: form.type }

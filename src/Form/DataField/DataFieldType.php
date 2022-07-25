@@ -68,6 +68,8 @@ abstract class DataFieldType extends AbstractType
      * Perfom field specfifc post-finalized treatment. It returns the children if it's a container.
      *
      * @param ?array<string, mixed> $previousData
+     *
+     * @return ?array<string, mixed>
      */
     public function postFinalizeTreatment(Revision $revision, DataField $dataField, ?array $previousData): ?array
     {

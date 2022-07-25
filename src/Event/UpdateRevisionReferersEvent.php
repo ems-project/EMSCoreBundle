@@ -49,9 +49,7 @@ class UpdateRevisionReferersEvent extends Event
      */
     public function getAddEmsLinks(): array
     {
-        $addOuuids = \array_diff($this->addOuuids, $this->removeOuuids);
-
-        return \array_map(fn (string $ouuid) => EMSLink::fromText($ouuid), $addOuuids);
+        return \array_map(fn (string $ouuid) => EMSLink::fromText($ouuid), $this->addOuuids);
     }
 
     public function getRefererOuuid(): string

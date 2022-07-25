@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
@@ -100,7 +101,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     protected $parent;
 
     /**
-     * @var ArrayCollection|FieldType[]
+     * @var Collection<int, FieldType>
      * @ORM\OneToMany(targetEntity="FieldType", mappedBy="parent", cascade={"persist", "remove"})
      * @ORM\OrderBy({"orderKey" = "ASC"})
      */
@@ -461,6 +462,16 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return [];
     }
 
+    /**
+     * @param mixed $default
+     *
+     * @return mixed
+     */
+    public function getExtraOption(string $key, $default = null)
+    {
+        return $this->getExtraOptions()[$key] ?? $default;
+    }
+
     public function getMinimumRole()
     {
         $options = $this->getOptions();
@@ -725,12 +736,14 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get children.
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return Collection<int, FieldType>
      */
-    public function getChildren()
+    public function getChildren(bool $all = false): Collection
     {
+        if ($all) {
+            return new ArrayCollection(\iterator_to_array($this->loopChildren()));
+        }
+
         return $this->children;
     }
 

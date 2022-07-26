@@ -179,7 +179,7 @@ class ExportViewType extends ViewType
                     'result' => $resultSet->getResponse()->getData(),
             ]);
         } catch (\Throwable $e) {
-            $render = 'Something went wrong with the template of the view '.$view->getName().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
+            $render = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
         }
 
         try {
@@ -190,7 +190,7 @@ class ExportViewType extends ViewType
                     'result' => $resultSet->getResponse()->getData(),
             ]);
         } catch (\Throwable $e) {
-            $filename = 'Something went wrong with the template of the view '.$view->getName().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
+            $filename = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
         }
 
         return [

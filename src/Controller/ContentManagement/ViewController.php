@@ -117,6 +117,7 @@ class ViewController extends AbstractController
 
             $this->logger->notice('log.view.created', [
                 'view_name' => $view->getName(),
+                'view_label' => $view->getLabel(),
             ]);
 
             return $this->redirectToRoute(Routes::VIEW_EDIT, [
@@ -154,6 +155,7 @@ class ViewController extends AbstractController
 
             $this->logger->notice('log.view.updated', [
                 'view_name' => $view->getName(),
+                'view_label' => $view->getLabel(),
             ]);
 
             if ('json' === $_format) {
@@ -195,11 +197,13 @@ class ViewController extends AbstractController
     public function delete(View $view): Response
     {
         $name = $view->getName();
+        $label = $view->getLabel();
         $contentType = $view->getContentType();
 
         $this->viewManager->delete($view);
         $this->logger->notice('log.view.deleted', [
             'view_name' => $name,
+            'view_label' => $label,
         ]);
 
         return $this->redirectToRoute(Routes::VIEW_INDEX, [
@@ -215,7 +219,8 @@ class ViewController extends AbstractController
         ]), $contentType);
         $table->addColumn('table.index.column.loop_count', 'orderKey');
         $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.public', 'public', '@EMSCore/view/columns.html.twig'));
-        $table->addColumn('view.index.column.name', 'name')->setItemIconCallback(function (View $view) {
+        $table->addColumn('view.index.column.name', 'name');
+        $table->addColumn('view.index.column.label', 'label')->setItemIconCallback(function (View $view) {
             return $view->getIcon() ?? '';
         });
         $table->addColumnDefinition(new TranslationTableColumn('dashboard.index.column.type', 'type', EMSCoreBundle::TRANS_FORM_DOMAIN));

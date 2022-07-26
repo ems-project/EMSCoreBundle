@@ -46,6 +46,13 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     /**
      * @var string
      *
+     * @ORM\Column(name="label", type="string", length=255)
+     */
+    protected $label = '';
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="icon", type="string", length=255, nullable=true)
      */
     protected $icon;
@@ -956,5 +963,15 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
             default:
                 parent::deserializeProperty($name, $value);
         }
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    public function setLabel(string $label): void
+    {
+        $this->label = $label;
     }
 }

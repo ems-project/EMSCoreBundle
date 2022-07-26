@@ -1278,6 +1278,32 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $sourceFields;
     }
 
+    public function getActionByName(string $actionName): ?Template
+    {
+        foreach ($this->getTemplates() as $item) {
+            if ($actionName === $item->getName()) {
+                return $item;
+            }
+        }
+        if (\is_numeric($actionName)) {
+            \trigger_error('Using template ID is deprecated, use the action name instead', E_USER_DEPRECATED);
+
+            return $this->getActionById(\intval($actionName));
+        }
+
+        return null;
+    }
+
+    public function getActionById(int $actionId): Template
+    {
+        foreach ($this->getTemplates() as $item) {
+            if ($actionId === $item->getId()) {
+                return $item;
+            }
+        }
+        throw new \RuntimeException(\sprintf('Action id %d not found for content type %s', $actionId, $this->getSingularName()));
+    }
+
     /**
      * Add template.
      *
@@ -1299,9 +1325,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     }
 
     /**
-     * Get templates.
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection<int, Template>
      */
     public function getTemplates()
     {

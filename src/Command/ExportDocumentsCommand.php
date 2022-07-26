@@ -67,7 +67,7 @@ class ExportDocumentsCommand extends EmsCommand
             ->addArgument(
                 'format',
                 InputArgument::OPTIONAL,
-                \sprintf('The format of the output: %s or the id of the content type\' template', \implode(', ', TemplateService::EXPORT_FORMATS)),
+                \sprintf('The format of the output: %s or the name of the content type\'s action', \implode(', ', TemplateService::EXPORT_FORMATS)),
                 'json'
             )
             ->addArgument(
@@ -198,7 +198,7 @@ class ExportDocumentsCommand extends EmsCommand
         $zip->open($outZipPath, ZIPARCHIVE::CREATE);
         $extension = '';
         if (!\in_array($format, TemplateService::EXPORT_FORMATS)) {
-            $this->templateService->init($format);
+            $this->templateService->init($format, $contentType);
             $useTemplate = true;
             $accumulateInOneFile = $this->templateService->getTemplate()->getAccumulateInOneFile();
             if (null !== $this->templateService->getTemplate()->getExtension()) {
@@ -258,7 +258,7 @@ class ExportDocumentsCommand extends EmsCommand
                         $this->logger->error('log.command.export.template_error', [
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                             EmsFields::LOG_EXCEPTION_FIELD => $e,
-                            'template_id' => $format,
+                            'format' => $format,
                         ]);
                         $errorList[] = 'Error in rendering template for: '.$filename;
                         continue;

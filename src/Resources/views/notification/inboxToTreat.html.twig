@@ -25,13 +25,9 @@
 					<td class="" nowrap="nowrap">
 						<label id="treat_notifications_notifications_{{ notification.id }}_label">
 							&nbsp;&nbsp;&nbsp;<input class="item-to-treat" type="checkbox" id="treat_notifications_notifications_{{ notification.id }}" name="treat_notifications[notifications][{{ notification.id }}]" label="treat_notifications_notifications_{{ notification.id }}_label" value="{{ notification.id }}">
-							&nbsp;&nbsp;&nbsp;<i class="{{notification.template.icon}}"></i> {{ notification.template.name }}
+							&nbsp;&nbsp;&nbsp;<i class="{{notification.template.icon}}"></i> {{ notification.template.label }}
 						</label>
-					
-					
-{# 								{{ form_widget(attribute(treatform.notifications, notification.id)) }}#}
 					</td>
-{# 							<td><i class="{{notification.template.icon}}"></i> {{ notification.template.name }}</td>#}
 					<td>{{ notification.username|displayname }}</td>
 					<td>{{ notification.created|date|date(date_time_format) }}</td>
 					<td>

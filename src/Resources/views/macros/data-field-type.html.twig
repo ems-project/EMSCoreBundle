@@ -738,7 +738,7 @@
 						<button href="#" type="button" title="{{ 'field_type.json_menu_editor.collapse_button'|trans }}" aria-expanded="{{  defaultClose ? 'true' : 'false' }}" class="btn btn-default button-collapse"></button>
 						&nbsp;
 					{% endif %}
-					{% if item.contentType is defined %}<i class="{{ item.contentType|get_content_type.icon }}"></i>{% endif %}
+					{% if item.contentType is defined %}<i class="{{ item.contentType|get_content_type.icon|default('') }}"></i>{% endif %}
 					{% if nestedIcons is defined and attribute(nestedIcons, item.type) is defined %}
 						<i class="{{ attribute(nestedIcons, item.type) }}"></i>
 					{% endif %}

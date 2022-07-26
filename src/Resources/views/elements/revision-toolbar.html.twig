@@ -125,7 +125,7 @@
 										'label': 'views.elements.revision-toolbar-html.add-to-release'|trans(),
 										'icon': 'glyphicon glyphicon-pushpin' }%}</li>
 							{% endif %}
-							{% if instance.contentType.fieldType.fieldsRoles|one_granted(true) %}
+							{% if is_granted('ROLE_SUPER') and instance.contentType.environment not in environments %}
 								<li>{% include '@EMSCore/elements/get-button.html.twig' with {
 									'url': path('emsco_edit_revision', {'revisionId': revisionId}),
 									'btnClass': ' ',

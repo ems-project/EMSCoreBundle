@@ -113,8 +113,12 @@ class EditController extends AbstractController
             throw new NotFoundException('ContentType not found!');
         }
 
-        if ($revision->getEndTime() && !$this->isGranted(Roles::ROLE_SUPER)) {
+        if ($revision->hasEndTime() && !$this->isGranted(Roles::ROLE_SUPER)) {
             throw new ElasticmsException($this->translator->trans('log.data.revision.only_super_can_finalize_an_archive', LogRevisionContext::read($revision), EMSCoreBundle::TRANS_DOMAIN));
+        }
+
+        if (!$revision->getDraft() && $revision->isPublished($contentType->giveEnvironment()->getName())) {
+            throw new \RuntimeException('Only a draft is allowed for editing the revision!');
         }
 
         if ($request->isMethod('GET') && null != $revision->getAutoSave()) {

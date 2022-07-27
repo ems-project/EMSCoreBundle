@@ -8,8 +8,8 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CoreBundle\Core\Entity\Paginator;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Release;
@@ -224,26 +224,17 @@ class RevisionRepository extends EntityRepository
         }
     }
 
-    /**
-     * @param int $page
-     *
-     * @return Paginator
-     */
-    public function getRevisionsPaginatorPerEnvironmentAndContentType(Environment $env, ContentType $contentType, $page = 0)
+    public function paginateByEnvironmentContentType(Environment $env, ContentType $contentType, int $size): Paginator
     {
-        /** @var QueryBuilder $qb */
         $qb = $this->createQueryBuilder('r');
-        $qb->join('r.environments', 'e')
-        ->where('e.id = :eid')
-        ->andWhere('r.contentType = :ct')
-        ->setMaxResults(50)
-        ->setFirstResult($page * 50)
-        ->orderBy('r.id', 'asc')
-        ->setParameters(['eid' => $env->getId(), 'ct' => $contentType]);
+        $qb
+            ->join('r.environments', 'e')
+            ->andWhere('e.id = :eid')
+            ->andWhere('r.contentType = :ct')
+            ->orderBy('r.id', 'asc')
+            ->setParameters(['eid' => $env->getId(), 'ct' => $contentType]);
 
-        $paginator = new Paginator($qb->getQuery());
-
-        return $paginator;
+        return new Paginator($qb, $size);
     }
 
     /**

@@ -565,11 +565,6 @@ services:
         arguments: ['@doctrine', '@logger', '@ems.service.data']
         tags:
             -  { name: console.command }
-    ems.environment.reindex:
-        class: EMS\CoreBundle\Command\ReindexCommand
-        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@ems.service.data', '@ems.elasticsearch.bulker', '%ems_core.default_bulk_size%']
-        tags:
-            -  { name: console.command }
     ems.contenttype.delete:
         class: EMS\CoreBundle\Command\DeleteCommand
         arguments: ['@doctrine', '@logger', '@ems.service.index', '@ems.service.mapping', '@service_container', '@ems.service.contenttype', '@ems.service.environment']

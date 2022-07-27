@@ -28,6 +28,15 @@
         <service id="ems_core.command_environment.align_command" class="EMS\CoreBundle\Command\Environment\AlignCommand" parent="ems_core.command_environment.abstract_environment_command">
             <tag name="console.command"/>
         </service>
+        <service id="ems_core.command_environment.reindex_command" class="EMS\CoreBundle\Command\Environment\ReindexCommand">
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="ems.elasticsearch.bulker"/>
+            <argument>%ems_core.default_bulk_size%%</argument>
+            <tag name="console.command"/>
+        </service>
         <service id="ems_core.command_environment.unpublish_command" class="EMS\CoreBundle\Command\Environment\UnpublishCommand" parent="ems_core.command_environment.abstract_environment_command">
             <tag name="console.command"/>
         </service>

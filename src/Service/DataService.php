@@ -1613,7 +1613,8 @@ class DataService
 
         $this->lockRevision($revision, null, false, 'SYSTEM_RELOAD');
         $this->em->persist($revision);
-        $this->em->flush();
+
+        if ($flush) { $this->em->flush(); }
 
         return 1;
     }

@@ -1576,8 +1576,10 @@ class DataService
      *
      * @throws Throwable
      */
-    public function reloadData(Revision $revision)
+    public function reloadData(Revision $revision, bool $flush = true): int
     {
+        $revisionHash = $revision->getHash();
+
         $finalizedBy = false;
         $finalizationDate = false;
         $objectArray = $revision->getRawData();
@@ -1603,8 +1605,17 @@ class DataService
         }
 
         $revision->setRawData($objectArray);
+        $this->sign($revision);
 
-        return $objectArray;
+        if ($revision->getHash() === $revisionHash) {
+            return 0;
+        }
+
+        $this->lockRevision($revision, null, false, 'SYSTEM_RELOAD');
+        $this->em->persist($revision);
+        $this->em->flush();
+
+        return 1;
     }
 
     public function getSubmitData(FormInterface $form)

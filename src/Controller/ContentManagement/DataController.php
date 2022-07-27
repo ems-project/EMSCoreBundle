@@ -517,7 +517,6 @@ class DataController extends AbstractController
 
         try {
             $this->dataService->reloadData($revision);
-            $this->dataService->sign($revision);
 
             /** @var Environment $environment */
             foreach ($revision->getEnvironments() as $environment) {
@@ -529,8 +528,6 @@ class DataController extends AbstractController
                     }
                 }
             }
-            $em->persist($revision);
-            $em->flush();
         } catch (\Throwable $e) {
             $this->logger->warning('log.data.revision.reindex_failed', \array_merge(LogRevisionContext::update($revision), [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),

@@ -57,6 +57,11 @@ class Bulker
         return $this;
     }
 
+    public function getSize(): int
+    {
+        return $this->size;
+    }
+
     public function setSize(int $size): Bulker
     {
         $this->size = $size;
@@ -190,9 +195,9 @@ class Bulker
         return $action;
     }
 
-    private function logResponse(ResponseSet $response): void
+    private function logResponse(ResponseSet $responseSet): void
     {
-        foreach ($response as $item) {
+        foreach ($responseSet as $item) {
             if (!$item instanceof Response) {
                 continue;
             }
@@ -207,8 +212,8 @@ class Bulker
         }
 
         $this->logger->notice('bulked {count} items in {took}ms', [
-            'count' => $response,
-            'took' => $response->getQueryTime(),
+            'count' => $responseSet->count(),
+            'took' => $responseSet->getEngineTime(),
         ]);
     }
 }

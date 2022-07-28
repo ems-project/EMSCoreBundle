@@ -575,7 +575,7 @@ class ContentTypeService implements EntityServiceInterface
             if ('ems.view.data_link' === $view->getType()) {
                 continue;
             }
-            $menuEntry->addChild($view->getName(), $view->getIcon() ?? '', $view->isPublic() ? Routes::DATA_PUBLIC_VIEW : Routes::DATA_PRIVATE_VIEW, ['viewId' => $view->getId()]);
+            $menuEntry->addChild($view->getLabel(), $view->getIcon() ?? '', $view->isPublic() ? Routes::DATA_PUBLIC_VIEW : Routes::DATA_PRIVATE_VIEW, ['viewId' => $view->getId()]);
         }
     }
 

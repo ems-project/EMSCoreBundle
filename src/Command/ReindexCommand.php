@@ -188,8 +188,7 @@ class ReindexCommand extends EmsCommand
                         ]);
                     } else {
                         if ($reloadData) {
-                            $reloadedResult = $this->dataService->reloadData($revision, false);
-                            $this->reloaded += $reloadedResult;
+                            $this->reloaded += $this->dataService->reloadData($revision, false);
                         }
 
                         $rawData = $revision->getRawData();

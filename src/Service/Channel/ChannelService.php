@@ -37,9 +37,6 @@ final class ChannelService implements EntityServiceInterface
         }
         $encoder = new Encoder();
         $webalized = $encoder->webalize($channel->getName());
-        if (null === $webalized) {
-            throw new \RuntimeException('Unexpected null webalized name');
-        }
         $channel->setName($webalized);
         $this->channelRepository->create($channel);
     }

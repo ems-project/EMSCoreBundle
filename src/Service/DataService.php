@@ -509,20 +509,19 @@ class DataService
     }
 
     /**
-     * @param string $ouuid
-     * @param bool   $byARealUser
-     *
      * @return Revision
      *
      * @throws Exception
      */
-    public function createData($ouuid, array $rawdata, ContentType $contentType, $byARealUser = true)
+    public function createData(?string $ouuid, array $rawdata, ContentType $contentType, bool $byARealUser = true)
     {
         $now = new \DateTime();
         $until = $now->add(new \DateInterval($byARealUser ? 'PT5M' : 'PT1M')); //+5 minutes
         $newRevision = new Revision();
         $newRevision->setContentType($contentType);
-        $newRevision->setOuuid($ouuid);
+        if (null !== $ouuid) {
+            $newRevision->setOuuid($ouuid);
+        }
         $newRevision->setStartTime($now);
         $newRevision->setEndTime(null);
         $newRevision->setDeleted(false);
@@ -1079,7 +1078,9 @@ class DataService
         $now = new \DateTime('now');
         $revision->setContentType($contentType);
         $revision->setDraft(true);
-        $revision->setOuuid($ouuid);
+        if (null !== $ouuid) {
+            $revision->setOuuid($ouuid);
+        }
         $revision->setDeleted(false);
         $revision->setStartTime($now);
         $revision->setEndTime(null);

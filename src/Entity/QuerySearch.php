@@ -126,9 +126,6 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
     public function setName(string $name): void
     {
         $webalizedName = Encoder::webalize($name);
-        if (null === $webalizedName) {
-            throw new \RuntimeException('Unexpected null webalized name');
-        }
         $this->name = $webalizedName;
     }
 

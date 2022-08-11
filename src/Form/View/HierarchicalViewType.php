@@ -193,6 +193,7 @@ class HierarchicalViewType extends ViewType
             $this->logger->notice('form.view.hierarchical.reorganized', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $view->getContentType()->getName(),
                 'view_name' => $view->getName(),
+                'view_label' => $view->getLabel(),
             ]);
 
             return new RedirectResponse($this->router->generate('data.draft_in_progress', [

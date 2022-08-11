@@ -27,7 +27,7 @@ form_submissions.title: 'Form Submissions'
 view.elements.side-menu.chanel-admin.index-link: Channels
 view.elements.side-menu.release-admin.index-link: Releases
 view.elements.side-menu.query_search.index-link: QuerySearch
-view.icon.class.channel: 'fa fa-road'
+view.icon.class.channel: 'fa fa-eye'
 view.icon.class.release: 'fa fa-cube'
 view.icon.class.query_search: 'fa fa-list-alt'
 views.elements.side-menu-html.anonymous-user: 'Anonymous user'

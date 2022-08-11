@@ -41,6 +41,12 @@ class ViewType extends AbstractType
                 'class' => 'col-md-8',
             ],
         ])
+        ->add('label', IconTextType::class, [
+            'icon' => 'fa fa-header',
+            'row_attr' => [
+                'class' => 'col-md-8',
+            ],
+        ])
         ->add('icon', IconPickerType::class, [
             'required' => false,
             'row_attr' => [

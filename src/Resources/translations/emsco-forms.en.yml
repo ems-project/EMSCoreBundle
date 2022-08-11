@@ -19,6 +19,7 @@ dashboard.template.header: Header
 dashboard.template.footer: Footer
 dashboard.export.mimetype: Mime-Type
 view.name: Name
+view.label: Label
 view.role: Role
 view.icon: Icon
 view.create: Create

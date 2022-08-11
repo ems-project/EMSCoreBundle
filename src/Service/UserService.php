@@ -342,4 +342,9 @@ class UserService implements EntityServiceInterface
     {
         throw new \RuntimeException('deleteByItemName method not yet implemented');
     }
+
+    public function isCliSession(): bool
+    {
+        return 'cli' === \php_sapi_name();
+    }
 }

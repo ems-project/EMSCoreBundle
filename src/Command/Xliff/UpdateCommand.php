@@ -11,6 +11,7 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Internationalization\XliffService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use EMS\Xliff\Xliff\Entity\InsertReport;
 use EMS\Xliff\Xliff\Inserter;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,6 +27,7 @@ final class UpdateCommand extends AbstractCommand
     public const OPTION_ARCHIVE = 'archive';
     public const OPTION_TRANSLATION_FIELD = 'translation-field';
     public const OPTION_LOCALE_FIELD = 'locale-field';
+    public const OPTION_DRY_RUN = 'dry-run';
 
     private EnvironmentService $environmentService;
     private XliffService $xliffService;
@@ -37,6 +39,7 @@ final class UpdateCommand extends AbstractCommand
     private bool $archive = false;
     private string $translationField;
     private string $localeField;
+    private bool $dryRun = false;
 
     public function __construct(
         EnvironmentService $environmentService,
@@ -58,7 +61,8 @@ final class UpdateCommand extends AbstractCommand
             ->addOption(self::OPTION_PUBLISH_TO, null, InputOption::VALUE_OPTIONAL, 'If defined the revision will be published in the defined environment')
             ->addOption(self::OPTION_ARCHIVE, null, InputOption::VALUE_NONE, 'If set another revision will be flagged as archived')
             ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', 'locale')
-            ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', 'translation_id');
+            ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', 'translation_id')
+            ->addOption(self::OPTION_DRY_RUN, null, InputOption::VALUE_NONE, 'If set nothing is saved in the database');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -73,6 +77,7 @@ final class UpdateCommand extends AbstractCommand
         $this->archive = $this->getOptionBool(self::OPTION_ARCHIVE);
         $this->translationField = $this->getOptionString(self::OPTION_TRANSLATION_FIELD);
         $this->localeField = $this->getOptionString(self::OPTION_LOCALE_FIELD);
+        $this->dryRun = $this->getOptionBool(self::OPTION_DRY_RUN);
 
         if ($this->archive && null === $this->publishTo) {
             throw new \RuntimeException(\sprintf('The %s option can be activate only if the %s option is DEFINED', self::OPTION_ARCHIVE, self::OPTION_PUBLISH_TO));
@@ -87,8 +92,14 @@ final class UpdateCommand extends AbstractCommand
 
         $inserter = Inserter::fromFile($this->xliffFilename);
         $this->io->progressStart($inserter->count());
+        $insertReport = new InsertReport();
         foreach ($inserter->getDocuments() as $document) {
-            $revision = $this->xliffService->insert($document, $this->localeField, $this->translationField, $this->publishTo, self::XLIFF_UPLOAD_COMMAND);
+            if ($this->dryRun) {
+                $this->xliffService->testInsert($insertReport, $document, $this->localeField);
+                $this->io->progressAdvance();
+                continue;
+            }
+            $revision = $this->xliffService->insert($insertReport, $document, $this->localeField, $this->translationField, $this->publishTo, self::XLIFF_UPLOAD_COMMAND);
             if (null !== $this->publishTo) {
                 $this->publishService->publish($revision, $this->publishTo, true);
             }
@@ -99,7 +110,12 @@ final class UpdateCommand extends AbstractCommand
         }
         $this->io->progressFinish();
 
-        $output->writeln('');
+        if ($insertReport->countErrors() > 0) {
+            $output->writeln(\sprintf('%d documents faced an issue', $insertReport->countErrors()));
+            $filename = \tempnam(\sys_get_temp_dir(), 'xliff_update_report_').'.zip';
+            $insertReport->export($filename);
+            $output->writeln(\sprintf('See %s for details', $filename));
+        }
 
         return self::EXECUTE_SUCCESS;
     }

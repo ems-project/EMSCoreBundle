@@ -8,8 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Common\ArrayHelper\RecursiveMapper;
 use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
+use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Service\Mapping;
+use EMS\Helpers\Standard\DateTime;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -214,6 +216,17 @@ class Revision implements EntityInterface
      */
     private Collection $releases;
 
+    private bool $selfUpdate = false;
+
+    public function enableSelfUpdate(): void
+    {
+        if ($this->getDraft()) {
+            throw new LockedException($this);
+        }
+
+        $this->selfUpdate = true;
+    }
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -225,7 +238,11 @@ class Revision implements EntityInterface
             $this->created = $this->modified;
         }
 
-        if (null == $this->lockBy || null == $this->lockUntil || new \DateTime() > $this->lockUntil) {
+        if ($this->selfUpdate && $this->isLocked()) {
+            throw new LockedException($this);
+        }
+
+        if (!$this->selfUpdate && !$this->isLockedBy()) {
             throw new NotLockedException($this);
         }
     }
@@ -544,11 +561,14 @@ class Revision implements EntityInterface
         return $this->getLockBy() !== $username && $this->isLocked();
     }
 
+    public function isLockedBy(): bool
+    {
+        return null !== $this->lockBy && null !== $this->lockUntil && $this->isLocked();
+    }
+
     public function isLocked(): bool
     {
-        $now = new \DateTime();
-
-        return $now < $this->getLockUntil();
+        return DateTime::create('now') < $this->getLockUntil();
     }
 
     public function setRawDataFinalizedBy(string $finalizedBy): self

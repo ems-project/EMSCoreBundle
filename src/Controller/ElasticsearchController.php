@@ -349,8 +349,8 @@ class ElasticsearchController extends AbstractController
             $contentType = $this->contentTypeService->giveByName($emsLink->getContentType());
             $document = $this->searchService->getDocument($contentType, $emsLink->getOuuid());
 
-            $dataLinks->addDocument($document);
             $dataLinks->addContentTypes($contentType);
+            $dataLinks->addDocument($document);
 
             return;
         }

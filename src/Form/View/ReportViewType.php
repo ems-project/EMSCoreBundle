@@ -110,7 +110,7 @@ class ReportViewType extends ViewType
                 'result' => $resultSet->getResponse()->getData(),
             ]);
         } catch (Exception $e) {
-            $render = 'Something went wrong with the template of the view '.$view->getName().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
+            $render = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
         }
         try {
             $javascript = $this->twig->createTemplate($view->getOptions()['javascript'])->render([

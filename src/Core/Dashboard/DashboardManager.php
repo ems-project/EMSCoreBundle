@@ -76,9 +76,6 @@ class DashboardManager implements EntityServiceInterface
         $encoder = new Encoder();
         $name = $dashboard->getName();
         $webalized = $encoder->webalize($name);
-        if (null === $webalized) {
-            throw new \RuntimeException('Unexpected null webalized name');
-        }
         $dashboard->setName($webalized);
         $this->dashboardRepository->create($dashboard);
     }

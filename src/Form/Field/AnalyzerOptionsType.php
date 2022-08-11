@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Form\Field;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\Filter;
+use EMS\CoreBundle\Form\DataTransformer\ArrayValuesTransformer;
 use EMS\CoreBundle\Repository\FilterRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
@@ -43,10 +44,12 @@ class AnalyzerOptionsType extends AbstractType
     ];
 
     private Registry $doctrine;
+    private ArrayValuesTransformer $arrayValuesTransformer;
 
     public function __construct(Registry $doctrine)
     {
         $this->doctrine = $doctrine;
+        $this->arrayValuesTransformer = new ArrayValuesTransformer();
     }
 
     /**
@@ -206,5 +209,8 @@ class AnalyzerOptionsType extends AbstractType
             'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-custom'],
             'required' => false,
         ]);
+        $builder->get('flags')->addModelTransformer($this->arrayValuesTransformer);
+        $builder->get('char_filter')->addModelTransformer($this->arrayValuesTransformer);
+        $builder->get('filter')->addModelTransformer($this->arrayValuesTransformer);
     }
 }

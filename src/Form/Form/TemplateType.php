@@ -47,6 +47,9 @@ class TemplateType extends AbstractType
         ->add('name', IconTextType::class, [
             'icon' => 'fa fa-tag',
         ])
+        ->add('label', IconTextType::class, [
+            'icon' => 'fa fa-header',
+        ])
         ->add('icon', IconPickerType::class, [
             'required' => false,
         ])

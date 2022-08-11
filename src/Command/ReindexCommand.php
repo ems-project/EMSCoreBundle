@@ -36,12 +36,10 @@ class ReindexCommand extends EmsCommand
     protected $dataService;
     /** @var string */
     private $instanceId;
-    /** @var int */
-    private $count;
-    /** @var int */
-    private $deleted;
-    /** @var int */
-    private $error;
+    private int $count = 0;
+    private int $deleted = 0;
+    private int $reloaded = 0;
+    private int $error = 0;
     /** @var Bulker */
     private $bulker;
     /** @var string */
@@ -58,10 +56,6 @@ class ReindexCommand extends EmsCommand
         $this->bulker = $bulker;
         $this->defaultBulkSize = $defaultBulkSize;
         parent::__construct();
-
-        $this->count = 0;
-        $this->deleted = 0;
-        $this->error = 0;
     }
 
     protected function configure(): void
@@ -194,7 +188,7 @@ class ReindexCommand extends EmsCommand
                         ]);
                     } else {
                         if ($reloadData) {
-                            $this->dataService->reloadData($revision);
+                            $this->reloaded += $this->dataService->reloadData($revision, false);
                         }
 
                         $rawData = $revision->getRawData();
@@ -204,7 +198,8 @@ class ReindexCommand extends EmsCommand
                     $progress->advance();
                 }
 
-                $em->clear(Revision::class);
+                $em->flush();
+                $em->clear();
 
                 ++$page;
                 $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
@@ -216,6 +211,10 @@ class ReindexCommand extends EmsCommand
             $output->writeln('');
 
             $output->writeln(' '.$this->count.' objects are re-indexed in '.$index.' ('.$this->deleted.' not indexed as deleted, '.$this->error.' with indexing error)');
+
+            if ($this->reloaded > 0) {
+                $output->writeln(\sprintf('%d documents are reloaded', $this->reloaded));
+            }
 
             $this->logger->notice('command.reindex.end', [
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,

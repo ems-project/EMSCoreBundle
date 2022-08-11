@@ -499,13 +499,15 @@ class DataService
      *
      * @throws Exception
      */
-    public function createData(string $ouuid, array $rawdata, ContentType $contentType, bool $byARealUser = true): Revision
+    public function createData(?string $ouuid, array $rawdata, ContentType $contentType, bool $byARealUser = true): Revision
     {
         $now = new \DateTime();
         $until = $now->add(new \DateInterval($byARealUser ? 'PT5M' : 'PT1M')); //+5 minutes
         $newRevision = new Revision();
         $newRevision->setContentType($contentType);
-        $newRevision->setOuuid($ouuid);
+        if (null !== $ouuid) {
+            $newRevision->setOuuid($ouuid);
+        }
         $newRevision->setStartTime($now);
         $newRevision->setEndTime(null);
         $newRevision->setDeleted(false);
@@ -1007,7 +1009,7 @@ class DataService
      * @throws HasNotCircleException
      * @throws Throwable
      */
-    public function newDocument(ContentType $contentType, ?string $ouuid = null, ?array $rawData = null): Revision
+    public function newDocument(ContentType $contentType, ?string $ouuid = null, ?array $rawData = null, ?string $username = null): Revision
     {
         $this->hasCreateRights($contentType);
         /** @var RevisionRepository $revisionRepository */
@@ -1025,7 +1027,7 @@ class DataService
                 $defaultValue = $template->render([
                     'environment' => $contentType->getEnvironment(),
                     'contentType' => $contentType,
-                    'currentUser' => $this->userService->getCurrentUser(),
+                    'currentUser' => $this->userService->isCliSession() ? null : $this->userService->getCurrentUser(),
                 ]);
                 try {
                     $revision->setRawData(Json::decode($defaultValue));
@@ -1055,24 +1057,29 @@ class DataService
             }
         }
 
-        $currentUser = $this->userService->getCurrentUser();
+        if (null === $username) {
+            $username = $this->userService->getCurrentUser()->getUsername();
+        }
+        $currentUser = $this->userService->isCliSession() ? null : $this->userService->getCurrentUser();
 
         $now = new \DateTime('now');
         $revision->setContentType($contentType);
         $revision->setDraft(true);
-        $revision->setOuuid($ouuid);
+        if (null !== $ouuid) {
+            $revision->setOuuid($ouuid);
+        }
         $revision->setDeleted(false);
         $revision->setStartTime($now);
         $revision->setEndTime(null);
-        $revision->setLockBy($currentUser->getUsername());
+        $revision->setLockBy($username);
         $revision->setLockUntil(new \DateTime($this->lockTime));
 
         $ownerRole = $contentType->getOwnerRole();
-        if (null !== $ownerRole && $this->userService->isGrantedRole($ownerRole)) {
+        if (null !== $currentUser && null !== $ownerRole && $this->userService->isGrantedRole($ownerRole)) {
             $revision->setOwner($currentUser->getUsername());
         }
 
-        if ($contentType->getCirclesField()) {
+        if (null !== $currentUser && $contentType->getCirclesField()) {
             if (isset($revision->getRawData()[$contentType->getCirclesField()])) {
                 if (\is_array($revision->getRawData()[$contentType->getCirclesField()])) {
                     $revision->setCircles($revision->getRawData()[$contentType->getCirclesField()]);
@@ -1113,6 +1120,9 @@ class DataService
      */
     public function hasCreateRights(ContentType $contentType): void
     {
+        if ($this->userService->isCliSession()) {
+            return;
+        }
         $userCircles = $this->userService->getCurrentUser()->getCircles();
         $environment = $contentType->giveEnvironment();
         $environmentCircles = $environment->getCircles();
@@ -1535,16 +1545,14 @@ class DataService
         }
     }
 
-    /**
-     * @return array<mixed>
-     *
-     * @throws Throwable
-     */
-    public function reloadData(Revision $revision): array
+    public function reloadData(Revision $revision, bool $flush = true): int
     {
+        $revisionHash = $revision->getHash();
+        $reloadRevision = clone $revision;
+
         $finalizedBy = false;
         $finalizationDate = false;
-        $objectArray = $revision->getRawData();
+        $objectArray = $reloadRevision->getRawData();
         if (isset($objectArray[Mapping::FINALIZED_BY_FIELD])) {
             $finalizedBy = $objectArray[Mapping::FINALIZED_BY_FIELD];
         }
@@ -1552,12 +1560,12 @@ class DataService
             $finalizationDate = $objectArray[Mapping::FINALIZATION_DATETIME_FIELD];
         }
 
-        $builder = $this->formFactory->createBuilder(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
+        $builder = $this->formFactory->createBuilder(RevisionType::class, $reloadRevision, ['raw_data' => $reloadRevision->getRawData()]);
         $form = $builder->getForm();
 
-        $objectArray = $revision->getRawData();
-        $this->updateDataStructure($revision->giveContentType()->getFieldType(), $form->get('data')->getNormData());
-        $this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->giveContentType(), $revision->giveContentType()->getName(), $revision->getOuuid());
+        $objectArray = $reloadRevision->getRawData();
+        $this->updateDataStructure($reloadRevision->giveContentType()->getFieldType(), $form->get('data')->getNormData());
+        $this->propagateDataToComputedField($form->get('data'), $objectArray, $reloadRevision->giveContentType(), $reloadRevision->giveContentType()->getName(), $reloadRevision->getOuuid(), false, false);
 
         if (false !== $finalizedBy) {
             $objectArray[Mapping::FINALIZED_BY_FIELD] = $finalizedBy;
@@ -1566,9 +1574,24 @@ class DataService
             $objectArray[Mapping::FINALIZATION_DATETIME_FIELD] = $finalizationDate;
         }
 
-        $revision->setRawData($objectArray);
+        $reloadRevision->setRawData($objectArray);
+        $this->sign($reloadRevision);
 
-        return $objectArray;
+        if ($reloadRevision->getHash() === $revisionHash) {
+            return 0;
+        }
+
+        $revision->setRawData($objectArray);
+        $this->sign($revision);
+
+        $revision->enableSelfUpdate();
+        $this->em->persist($revision);
+
+        if ($flush) {
+            $this->em->flush();
+        }
+
+        return 1;
     }
 
     /**

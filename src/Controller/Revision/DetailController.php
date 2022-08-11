@@ -29,6 +29,7 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -82,11 +83,9 @@ class DetailController extends AbstractController
             ]);
         }
 
-        if (null === $revision = $this->revisionService->findByIdOrOuuid($contentType, $revisionId, $ouuid)) {
-            throw new NotFoundHttpException('Revision not found');
-        }
+        $revision = $this->revisionService->findByIdOrOuuid($contentType, $revisionId, $ouuid);
 
-        if ($contentType->hasVersionTags()) {
+        if (null === $revision && $contentType->hasVersionTags() && Uuid::isValid($ouuid)) {
             //using version ouuid as ouuid should redirect to latest
             $searchLatestVersion = $this->revisionRepository->findLatestVersion($contentType, $ouuid);
             if ($searchLatestVersion && $searchLatestVersion->getOuuid() !== $ouuid) {
@@ -95,6 +94,10 @@ class DetailController extends AbstractController
                     'ouuid' => $searchLatestVersion->getOuuid(),
                 ]);
             }
+        }
+
+        if (null === $revision) {
+            throw new NotFoundHttpException('Revision not found');
         }
 
         $compareData = (0 !== $compareId ? $this->revisionService->compare($revision, $compareId) : null);

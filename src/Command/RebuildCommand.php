@@ -120,7 +120,7 @@ class RebuildCommand extends EmsCommand
             throw new \RuntimeException('Unexpected content type name');
         }
 
-        $envRepo = $em->getRepository('EMSCoreBundle:Environment');
+        $envRepo = $em->getRepository(Environment::class);
         if (!$envRepo instanceof EnvironmentRepository) {
             throw new \RuntimeException('Unexpected environment repository');
         }
@@ -142,7 +142,7 @@ class RebuildCommand extends EmsCommand
         }
 
         /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepository = $em->getRepository(ContentType::class);
         $contentTypes = $contentTypeRepository->findAll();
 
         $body = $this->environmentService->getIndexAnalysisConfiguration();

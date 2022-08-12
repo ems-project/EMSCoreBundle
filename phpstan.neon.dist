@@ -1,13 +1,11 @@
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+
 parameters:
     paths:
         - %currentWorkingDirectory%/src
-    excludes_analyse:
-        - %currentWorkingDirectory%/src/DependencyInjection/Configuration.php
-        - %currentWorkingDirectory%/src/Resources/DoctrineMigrations
-        - %currentWorkingDirectory%/src/Resources/public/js
-    ignoreErrors:
-        - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneByName().#'
+    excludePaths:
+        - %currentWorkingDirectory%/src/Resources/*
     level: 8
-    inferPrivatePropertyTypeFromConstructor: true
-    parallel:
-        maximumNumberOfProcesses: 2

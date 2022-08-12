@@ -21,6 +21,7 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\Sequence;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Form\Data\Condition\InMyCircles;
@@ -245,6 +246,8 @@ class AppExtension extends AbstractExtension
     }
 
     /**
+     * @param int<1,512> $depth
+     *
      * @return mixed
      */
     public function jsonDecode(string $json, bool $assoc = true, int $depth = 512, int $options = 0)
@@ -650,7 +653,7 @@ class AppExtension extends AbstractExtension
     public function getSequenceNextValue(string $name): int
     {
         $em = $this->doctrine->getManager();
-        $repo = $em->getRepository('EMSCoreBundle:Sequence');
+        $repo = $em->getRepository(Sequence::class);
         if (!$repo instanceof SequenceRepository) {
             throw new \RuntimeException('Unexpected repository');
         }
@@ -778,13 +781,10 @@ class AppExtension extends AbstractExtension
 
     public function displayName(string $username): string
     {
-        /** @var UserInterface $user */
+        /** @var ?UserInterface $user */
         $user = $this->userService->getUser($username);
-        if (!empty($user)) {
-            return $user->getDisplayName();
-        }
 
-        return $username;
+        return $user ? $user->getDisplayName() : $username;
     }
 
     public function srcPath(string $input, string $fileName = null): ?string
@@ -796,7 +796,7 @@ class AppExtension extends AbstractExtension
             '/(ems:\/\/asset:)(?P<hash>[^\n\r"\'\?]*)(?:\?(?P<query>(?:[^\n\r"|\']*)))?/i',
             function ($matches) use ($path, $fileName) {
                 if ($fileName) {
-                    return $this->fileService->getFile($matches['hash']);
+                    return $this->fileService->getFile($matches['hash']) ?? $path.$matches['hash'];
                 }
 
                 $parameters = [];
@@ -1145,8 +1145,8 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param mixed                                                        $wsdl
-     * @param array{function: string, options?: array, parameters?: mixed} $arguments
+     * @param mixed                                                               $wsdl
+     * @param array{function: string, options?: array<mixed>, parameters?: mixed} $arguments
      *
      * @return mixed
      */

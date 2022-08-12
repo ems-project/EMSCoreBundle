@@ -3,9 +3,10 @@
 namespace EMS\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use EMS\CoreBundle\Entity\Session;
 
 /**
- * SequenceRepository.
+ * @extends EntityRepository<Session>
  */
 class SessionRepository extends EntityRepository
 {

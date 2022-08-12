@@ -136,7 +136,7 @@ class EnvironmentService implements EntityServiceInterface
             return $this->notSnapshotEnvironments;
         }
 
-        $environments = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment')->findBy(['snapshot' => false]);
+        $environments = $this->doctrine->getManager()->getRepository(Environment::class)->findBy(['snapshot' => false]);
 
         /** @var Environment $environment */
         foreach ($environments as $environment) {
@@ -165,7 +165,7 @@ class EnvironmentService implements EntityServiceInterface
             return $this->environmentsById;
         }
 
-        $environments = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment')->findAll();
+        $environments = $this->doctrine->getManager()->getRepository(Environment::class)->findAll();
         /** @var Environment $environment */
         foreach ($environments as $environment) {
             $this->environmentsById[$environment->getId()] = $environment;
@@ -183,7 +183,7 @@ class EnvironmentService implements EntityServiceInterface
         $filters = [];
 
         /** @var FilterRepository $filterRepository */
-        $filterRepository = $this->doctrine->getRepository('EMSCoreBundle:Filter');
+        $filterRepository = $this->doctrine->getRepository(Filter::class);
         /** @var Filter $filter */
         foreach ($filterRepository->findAll() as $filter) {
             $filters[$filter->getName()] = $filter->getOptions();
@@ -192,7 +192,7 @@ class EnvironmentService implements EntityServiceInterface
         $analyzers = [];
 
         /** @var AnalyzerRepository $analyzerRepository */
-        $analyzerRepository = $this->doctrine->getRepository('EMSCoreBundle:Analyzer');
+        $analyzerRepository = $this->doctrine->getRepository(Analyzer::class);
         /** @var Analyzer $analyzer */
         foreach ($analyzerRepository->findAll() as $analyzer) {
             $analyzers[$analyzer->getName()] = $analyzer->getOptions($esVersion);
@@ -217,7 +217,7 @@ class EnvironmentService implements EntityServiceInterface
     public function getEnvironmentsStats(): array
     {
         /** @var EnvironmentRepository $repo */
-        $repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment');
+        $repo = $this->doctrine->getManager()->getRepository(Environment::class);
         $stats = $repo->getEnvironmentsStats();
 
         foreach ($stats as &$item) {

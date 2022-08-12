@@ -9,6 +9,11 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Release;
 
+/**
+ * @extends ServiceEntityRepository<Release>
+ *
+ * @method Release[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 final class ReleaseRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)

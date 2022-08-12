@@ -15,6 +15,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\Document\DataLinks;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
@@ -210,7 +211,7 @@ class ElasticsearchController extends AbstractController
     public function deleteSearchAction($id): Response
     {
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('EMSCoreBundle:Form\Search');
+        $repository = $em->getRepository(Search::class);
 
         /** @var ?Search $search */
         $search = $repository->find($id);
@@ -234,7 +235,7 @@ class ElasticsearchController extends AbstractController
         $query = $request->query->get('q', false);
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('EMSCoreBundle:Form\Search');
+        $repository = $em->getRepository(Search::class);
 
         /** @var Search|null $search */
         $search = $repository->findOneBy([
@@ -271,7 +272,7 @@ class ElasticsearchController extends AbstractController
     public function setDefaultSearchAction($id, $contentType): Response
     {
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('EMSCoreBundle:Form\Search');
+        $repository = $em->getRepository(Search::class);
 
         if ($contentType) {
             $contentType = $this->contentTypeService->giveByName($contentType);
@@ -362,7 +363,7 @@ class ElasticsearchController extends AbstractController
 
         $search = null;
         if ($searchId) {
-            $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
+            $searchRepository = $em->getRepository(Search::class);
             $search = $searchRepository->findOneBy(['id' => $searchId]);
         }
 
@@ -518,7 +519,7 @@ class ElasticsearchController extends AbstractController
             $searchId = $request->query->get('searchId');
             if (null != $searchId) {
                 $em = $this->getDoctrine()->getManager();
-                $repository = $em->getRepository('EMSCoreBundle:Form\Search');
+                $repository = $em->getRepository(Search::class);
                 $search = $repository->find($request->query->get('searchId'));
                 if (!$search) {
                     $this->createNotFoundException('Preset search not found');
@@ -569,12 +570,12 @@ class ElasticsearchController extends AbstractController
             $em = $this->getDoctrine()->getManager();
 
             /** @var ContentTypeRepository $contentTypeRepository */
-            $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+            $contentTypeRepository = $em->getRepository(ContentType::class);
 
             $types = $contentTypeRepository->findAllAsAssociativeArray();
 
             /** @var EnvironmentRepository $environmentRepository */
-            $environmentRepository = $em->getRepository('EMSCoreBundle:Environment');
+            $environmentRepository = $em->getRepository(Environment::class);
 
             $environments = $environmentRepository->findAllAsAssociativeArray('alias');
 

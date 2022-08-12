@@ -6,9 +6,9 @@ use Doctrine\Common\Collections\Collection;
 
 interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterface
 {
-    public function getCreated(): \DateTime;
+    public function getCreated(): \DateTimeInterface;
 
-    public function getModified(): \DateTime;
+    public function getModified(): \DateTimeInterface;
 
     /** @return string[] */
     public function getCircles(): array;

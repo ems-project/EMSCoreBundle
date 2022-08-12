@@ -9,6 +9,7 @@ use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
+use EMS\CoreBundle\Repository\AuthTokenRepository;
 use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Repository\UserRepository;
 use EMS\CoreBundle\Security\CoreLdapUser;
@@ -68,18 +69,13 @@ class UserService implements EntityServiceInterface
     public function findUsernameByApikey(string $apiKey): ?string
     {
         $em = $this->doctrine->getManager();
-        /** @var \Doctrine\ORM\EntityRepository */
-        $repository = $em->getRepository('EMSCoreBundle:AuthToken');
+        /** @var AuthTokenRepository */
+        $repository = $em->getRepository(AuthToken::class);
 
-        /** @var AuthToken $token */
-        $token = $repository->findOneBy([
-                'value' => $apiKey,
-        ]);
-        if (empty($token)) {
-            return null;
-        }
+        /** @var ?AuthToken $token */
+        $token = $repository->findOneBy(['value' => $apiKey]);
 
-        return $token->getUser()->getUsername();
+        return $token ? $token->getUser()->getUsername() : null;
     }
 
     public function getUserById(int $id): ?User

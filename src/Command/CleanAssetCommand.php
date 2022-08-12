@@ -4,6 +4,8 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\FileService;
@@ -41,9 +43,9 @@ class CleanAssetCommand extends EmsCommand
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
+        $repository = $em->getRepository(UploadedAsset::class);
         /** @var RevisionRepository $revRepo */
-        $revRepo = $em->getRepository('EMSCoreBundle:Revision');
+        $revRepo = $em->getRepository(Revision::class);
 
         $this->formatStyles($output);
 

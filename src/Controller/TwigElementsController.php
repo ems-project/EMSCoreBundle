@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\UI\Menu;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\AssetExtractorService;
@@ -40,7 +41,7 @@ class TwigElementsController extends AbstractController
         $draftCounterGroupedByContentType = [];
 
         /** @var RevisionRepository $revisionRepository */
-        $revisionRepository = $this->getDoctrine()->getRepository('EMSCoreBundle:Revision');
+        $revisionRepository = $this->getDoctrine()->getRepository(Revision::class);
         $user = $this->userService->getCurrentUser();
 
         $temp = $revisionRepository->draftCounterGroupedByContentType($user->getCircles(), $this->isGranted('ROLE_USER_MANAGEMENT'));

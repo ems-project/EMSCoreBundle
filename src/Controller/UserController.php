@@ -8,6 +8,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\Condition\Terms;
 use EMS\CoreBundle\Form\Data\DataLinksTableColumn;
@@ -76,7 +77,7 @@ class UserController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var WysiwygProfileRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:WysiwygProfile');
+        $repository = $em->getRepository(WysiwygProfile::class);
         $result = $repository->findBy([], ['orderKey' => 'asc'], 1);
         if (\count($result) > 0) {
             $user->setWysiwygProfile($result[0]);

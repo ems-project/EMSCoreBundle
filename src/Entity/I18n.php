@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * I18n.
@@ -15,6 +16,7 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
  */
 class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -23,20 +25,6 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
 
     /**
      * @var string
@@ -53,16 +41,10 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
      */
     protected array $content = [];
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
+    public function __construct()
     {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     /**
@@ -73,54 +55,6 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return I18n
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return I18n
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**

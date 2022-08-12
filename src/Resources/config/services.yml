@@ -110,7 +110,7 @@ services:
             - { name: form.type }
     ems.fieldtype.json_menu_nested_editor:
         class: EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType
-        arguments: ['@form.factory', '@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@router']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch']
         tags:
             - { name: ems.form.datafieldtype, alias: json_menu_nested }
             - { name: form.type }
@@ -451,7 +451,7 @@ services:
         arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.index', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.data', '@ems.service.user', '@event_dispatcher', '@emsco.logger', '@emsco.logger.audit', '@ems.elasticsearch.bulker']
     ems.service.notification:
         class: EMS\CoreBundle\Service\NotificationService
-        arguments: ['@doctrine', '@ems.repository.template', '@ems.service.user', '@logger', '@service_container', '@ems.service.data', '%ems_core.from_email%', '@twig']
+        arguments: ['@doctrine', '@ems.service.user', '@logger', '@service_container', '@ems.service.data', '%ems_core.from_email%', '@twig']
         tags:
             - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionNewDraftEvent, method: newDraftEvent, priority: 0 }
             - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionFinalizeDraftEvent, method: finalizeDraftEvent, priority: 0 }
@@ -484,7 +484,7 @@ services:
         arguments: [ '@ems_common.service.elastica']
     ems.service.template:
         class: EMS\CoreBundle\Service\TemplateService
-        arguments: ['@doctrine', '@logger', '@twig']
+        arguments: ['@twig']
     ems.service.job: '@EMS\CoreBundle\Service\JobService'
     EMS\CoreBundle\Service\JobService:
         class: EMS\CoreBundle\Service\JobService
@@ -510,10 +510,10 @@ services:
           - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionFinalizeDraftEvent, method: finalizeDraftEvent, priority: 0 }
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
-        arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']
+        arguments: [ '@security.authentication.manager', '@doctrine']
     ems.form_submission:
         class: EMS\CoreBundle\Service\Form\Submission\FormSubmissionService
-        arguments: ['@ems.repository.form_submission', '@ems.service.template', '@twig', '@session', '@translator']
+        arguments: ['@ems.repository.form_submission', '@twig', '@session', '@translator']
     ems.form_verification:
         class: EMS\CoreBundle\Service\Form\Verification\FormVerificationService
         arguments: ['@ems.repository.form_verification']
@@ -521,7 +521,7 @@ services:
 ### command services ###
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
-        arguments: ['@ems.service.revision', '@doctrine', '@ems_common.service.elastica', '@ems.service.document']
+        arguments: ['@doctrine', '@ems_common.service.elastica', '@ems.service.document']
         tags:
             -  { name: console.command }
     ems.make.document:
@@ -566,12 +566,12 @@ services:
             -  { name: console.command }
     ems.environment.reindex:
         class: EMS\CoreBundle\Command\ReindexCommand
-        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@ems.service.data', '@ems.elasticsearch.bulker', '%ems_core.default_bulk_size%']
+        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@service_container', '@ems.service.data', '@ems.elasticsearch.bulker', '%ems_core.default_bulk_size%']
         tags:
             -  { name: console.command }
     ems.contenttype.delete:
         class: EMS\CoreBundle\Command\DeleteCommand
-        arguments: ['@doctrine', '@logger', '@ems.service.index', '@ems.service.mapping', '@service_container', '@ems.service.contenttype', '@ems.service.environment']
+        arguments: ['@doctrine', '@logger', '@ems.service.index', '@ems.service.mapping', '@service_container']
         tags:
             -  { name: console.command }
 

@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Validator\Constraints as EMSAssert;
+use EMS\Helpers\Standard\DateTime;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -17,6 +18,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class ManagedAlias
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -47,20 +49,6 @@ class ManagedAlias
     private $alias;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
-
-    /**
      * @var array<mixed>
      */
     private array $indexes = [];
@@ -84,12 +72,10 @@ class ManagedAlias
      */
     private $extra;
 
-    /**
-     * Managed Alias.
-     */
     public function __construct()
     {
-        $this->created = new \DateTime();
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     /**
@@ -101,36 +87,11 @@ class ManagedAlias
     }
 
     /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
-    {
-        $this->modified = new \DateTime();
-    }
-
-    /**
      * @return int
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**

@@ -25,7 +25,7 @@ class ContentTypeFieldPickerType extends SelectPickerType
             'mapping' => [],
 
             'choice_loader' => function (Options $options) {
-                return $this->choiceListFactory->createLoader($options->offsetGet('mapping'), $options->offsetGet('types'), $options->offsetGet('firstLevelOnly'));
+                return $this->choiceListFactory->createLoader($options['mapping'], $options['types'], $options['firstLevelOnly']);
             },
             'choice_label' => function ($value, $key, $index) {
                 return $value->getLabel();

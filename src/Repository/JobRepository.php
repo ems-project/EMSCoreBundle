@@ -8,13 +8,16 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Job;
 
+/**
+ * @extends EntityRepository<Job>
+ *
+ * @method Job|null findOneBy(array $criteria, array $orderBy = null)
+ */
 class JobRepository extends EntityRepository
 {
     public function findById(int $jobId): Job
     {
-        $job = $this->findOneBy(['id' => $jobId]);
-
-        if (!$job instanceof Job) {
+        if (null === $job = $this->findOneBy(['id' => $jobId])) {
             throw new \RuntimeException('Job not found');
         }
 

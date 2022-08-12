@@ -125,7 +125,9 @@ class DateRangeFieldType extends DataFieldType
             return false;
         }
 
-        return !$option['mappingOptions']['nested'] ?? false;
+        $nested = $option['mappingOptions']['nested'] ?? false;
+
+        return !$nested;
     }
 
     /**

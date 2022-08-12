@@ -24,7 +24,7 @@ class TableColumn
     private string $pathTarget = '';
     /** @var ConditionInterface[] */
     private array $conditions = [];
-    private $orderField;
+    private string $orderField;
     /** @var array<string, mixed> */
     private array $transLabelOptions = [];
 

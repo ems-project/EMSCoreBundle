@@ -115,7 +115,7 @@ class EnvironmentController extends AbstractController
                     /** @var EntityManager $em */
                     $em = $this->getDoctrine()->getManager();
 
-                    $repository = $em->getRepository('EMSCoreBundle:Revision');
+                    $repository = $em->getRepository(Revision::class);
 
                     /** @var Revision $revision */
                     $revision = $repository->findOneBy([
@@ -234,7 +234,7 @@ class EnvironmentController extends AbstractController
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
             /** @var RevisionRepository $repository */
-            $repository = $em->getRepository('EMSCoreBundle:Revision');
+            $repository = $em->getRepository(Revision::class);
 
             $env = $this->environmentService->giveByName($environment);
             $withEnvi = $this->environmentService->giveByName($withEnvironment);
@@ -329,7 +329,7 @@ class EnvironmentController extends AbstractController
                 /** @var EntityManager $em */
                 $em = $this->getDoctrine()->getManager();
 
-                $environmentRepository = $em->getRepository('EMSCoreBundle:Environment');
+                $environmentRepository = $em->getRepository(Environment::class);
                 $anotherObject = $environmentRepository->findBy([
                         'name' => $name,
                 ]);
@@ -382,7 +382,7 @@ class EnvironmentController extends AbstractController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var EnvironmentRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Environment');
+        $repository = $em->getRepository(Environment::class);
         /** @var Environment $environment */
         $environment = $repository->find($id);
 
@@ -473,7 +473,7 @@ class EnvironmentController extends AbstractController
                 /** @var EntityManager $em */
                 $em = $this->getDoctrine()->getManager();
 
-                $environmentRepository = $em->getRepository('EMSCoreBundle:Environment');
+                $environmentRepository = $em->getRepository(Environment::class);
                 $anotherObject = $environmentRepository->findBy([
                         'name' => $environment->getName(),
                 ]);
@@ -517,7 +517,7 @@ class EnvironmentController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var EnvironmentRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Environment');
+        $repository = $em->getRepository(Environment::class);
 
         /** @var Environment|null $environment */
         $environment = $repository->find($id);
@@ -557,7 +557,7 @@ class EnvironmentController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var EnvironmentRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Environment');
+        $repository = $em->getRepository(Environment::class);
 
         /** @var Environment|null $environment */
         $environment = $repository->find($id);
@@ -589,7 +589,7 @@ class EnvironmentController extends AbstractController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var EnvironmentRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Environment');
+        $repository = $em->getRepository(Environment::class);
 
         /** @var Environment|null $environment */
         $environment = $repository->find($id);

@@ -19,7 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class QuerySearchType extends AbstractType
 {
-    private $service;
+    private EnvironmentService $service;
 
     public function __construct(EnvironmentService $service)
     {

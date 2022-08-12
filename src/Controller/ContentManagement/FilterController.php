@@ -27,7 +27,7 @@ class FilterController extends AbstractController
     public function indexAction(): Response
     {
         return $this->render('@EMSCore/filter/index.html.twig', [
-                'paging' => $this->helperService->getPagingTool('EMSCoreBundle:Filter', 'ems_filter_index', 'name'),
+                'paging' => $this->helperService->getPagingTool(Filter::class, 'ems_filter_index', 'name'),
         ]);
     }
 

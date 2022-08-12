@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\Field\AnalyzerOptionsType;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * Analyzer.
@@ -16,6 +17,7 @@ use EMS\CoreBundle\Form\Field\AnalyzerOptionsType;
  */
 class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -49,21 +51,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
      *
      * @ORM\Column(name="options", type="json_array")
      */
-    protected $options;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    protected $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    protected $modified;
+    protected array $options;
 
     /**
      * @var int
@@ -76,18 +64,9 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
     {
         $this->options = [];
         $this->dirty = true;
-    }
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
-    {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     /**
@@ -139,7 +118,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
      */
     public function getOptions(?string $esVersion = null): array
     {
-        $options = $this->options ?? [];
+        $options = $this->options;
 
         if (null === $esVersion) {
             return $options;
@@ -152,54 +131,6 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
         }
 
         return \array_filter($options);
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return Analyzer
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return Analyzer
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**

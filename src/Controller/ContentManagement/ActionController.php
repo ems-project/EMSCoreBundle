@@ -59,7 +59,7 @@ final class ActionController extends AbstractController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepository = $em->getRepository(ContentType::class);
 
         $contentTypes = $contentTypeRepository->findBy([
             'deleted' => false,
@@ -116,7 +116,7 @@ final class ActionController extends AbstractController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepository = $em->getRepository(ContentType::class);
 
         $contentTypes = $contentTypeRepository->findBy([
             'deleted' => false,
@@ -141,7 +141,7 @@ final class ActionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $action->setOrderKey($this->actionService->count('', $contentType) + 1);
-            $action->setName(Encoder::webalize($action->getName()) ?? '');
+            $action->setName(Encoder::webalize($action->getName()));
 
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
@@ -227,7 +227,7 @@ final class ActionController extends AbstractController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var TemplateRepository $templateRepository */
-        $templateRepository = $em->getRepository('EMSCoreBundle:Template');
+        $templateRepository = $em->getRepository(Template::class);
 
         $action = $templateRepository->find($id);
 

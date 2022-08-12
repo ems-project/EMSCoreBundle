@@ -227,7 +227,7 @@ class CriteriaController extends AbstractController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var RevisionRepository $revisionRep */
-        $revisionRep = $em->getRepository('EMSCoreBundle:Revision');
+        $revisionRep = $em->getRepository(Revision::class);
         $counters = $revisionRep->draftCounterGroupedByContentType([], true);
 
         foreach ($counters as $counter) {
@@ -254,7 +254,9 @@ class CriteriaController extends AbstractController
 
         $contentType = $view->getContentType();
         $valid = true;
-        if (!empty($view->getOptions()['categoryFieldPath']) && empty($criteriaUpdateConfig->getCategory()->getTextValue())) {
+        $category = $criteriaUpdateConfig->getCategory();
+
+        if (!empty($view->getOptions()['categoryFieldPath']) && $category && empty($category->getTextValue())) {
             $valid = false;
             $form->get('category')->addError(new FormError('Category is mandatory'));
         }
@@ -1114,7 +1116,7 @@ class CriteriaController extends AbstractController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:FieldType');
+        $repository = $em->getRepository(FieldType::class);
 
         /** @var FieldType $field */
         $field = $repository->find($request->query->get('targetField'));

@@ -75,7 +75,7 @@ final class SendAllCommand extends Command
         $this->notificationService->setDryRun((bool) $input->getOption('dry-run'));
 
         $em = $this->doctrine->getManager();
-        $notificationRepository = $em->getRepository('EMSCoreBundle:Notification');
+        $notificationRepository = $em->getRepository(Notification::class);
         if (!$notificationRepository instanceof NotificationRepository) {
             throw new \RuntimeException('Unexpected repository');
         }

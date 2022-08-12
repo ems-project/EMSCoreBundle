@@ -7,6 +7,12 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 
+/**
+ * @extends ServiceEntityRepository<WysiwygProfile>
+ *
+ * @method WysiwygProfile|null find($id)
+ * @method WysiwygProfile|null findOneBy(array $criteria, array $orderBy = null)
+ */
 class WysiwygProfileRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
@@ -36,22 +42,12 @@ class WysiwygProfileRepository extends ServiceEntityRepository
 
     public function findById(int $id): ?WysiwygProfile
     {
-        $wysiwygProfile = $this->find($id);
-        if (null !== $wysiwygProfile && !$wysiwygProfile instanceof WysiwygProfile) {
-            throw new \RuntimeException('Unexpected wysiwyg profile type');
-        }
-
-        return $wysiwygProfile;
+        return $this->find($id);
     }
 
     public function getByName(string $name): ?WysiwygProfile
     {
-        $profile = $this->findOneBy(['name' => $name]);
-        if (null !== $profile && !$profile instanceof WysiwygProfile) {
-            throw new \RuntimeException('Unexpected profile type');
-        }
-
-        return $profile;
+        return $this->findOneBy(['name' => $name]);
     }
 
     /**

@@ -28,15 +28,15 @@ class ObjectPickerType extends Select2Type
             'sortable' => false,
             'with_warning' => true,
             'choice_loader' => function (Options $options) {
-                $loadAll = $options->offsetGet('dynamicLoading') ? false : true;
-                $circleOnly = $options->offsetGet('circle-only');
-                $withWarning = $options->offsetGet('with_warning');
-                $querySearch = $options->offsetGet('querySearch');
+                $loadAll = $options['dynamicLoading'];
+                $circleOnly = $options['circle-only'];
+                $withWarning = $options['with_warning'];
+                $querySearch = $options['querySearch'];
                 if (!\is_string($querySearch) || 0 === \strlen($querySearch)) {
                     $querySearch = null;
                 }
 
-                return $this->choiceListFactory->createLoader($options->offsetGet('type'), $loadAll, $circleOnly, $withWarning, $querySearch);
+                return $this->choiceListFactory->createLoader($options['type'], $loadAll, $circleOnly, $withWarning, $querySearch);
             },
             'choice_label' => function ($value, $key, $index) {
                 return $value->getLabel();

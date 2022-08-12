@@ -23,6 +23,9 @@ abstract class EntityService
         $this->translator = $translator;
     }
 
+    /**
+     * @return class-string
+     */
     abstract protected function getRepositoryIdentifier(): string;
 
     abstract protected function getEntityName(): string;
@@ -52,6 +55,9 @@ abstract class EntityService
         return $this->getRepository()->findAll();
     }
 
+    /**
+     * @return EntityRepository<object>
+     */
     private function getRepository(): ObjectRepository
     {
         $em = $this->doctrine->getManager();
@@ -66,7 +72,6 @@ abstract class EntityService
 
     public function create(object $entity): void
     {
-        /** @var EntityRepository $repository */
         $repository = $this->getRepository();
         $count = $repository->createQueryBuilder('a')
             ->select('COUNT(a)')

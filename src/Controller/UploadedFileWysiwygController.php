@@ -17,7 +17,6 @@ use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\FileService;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,13 +25,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class UploadedFileWysiwygController extends AbstractController
 {
-    private LoggerInterface $logger;
     private FileService $fileService;
     private AjaxService $ajax;
 
-    public function __construct(LoggerInterface $logger, FileService $fileService, AjaxService $ajax)
+    public function __construct(FileService $fileService, AjaxService $ajax)
     {
-        $this->logger = $logger;
         $this->fileService = $fileService;
         $this->ajax = $ajax;
     }

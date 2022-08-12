@@ -20,7 +20,6 @@
         </service>
 
         <service id="EMS\CoreBundle\Controller\DashboardController" public="true">
-            <argument type="service" id="ems_core.core_revision_task.task_manager" />
             <argument type="service" id="ems.dashboard.manager" />
             <argument type="service" id="ems_core.dashboard.dashboards" />
             <tag name="controller.service_arguments"/>
@@ -29,7 +28,6 @@
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems.service.search" />
-            <argument type="service" id="ems_common.service.elastica" />
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.environment" />
             <argument type="service" id="ems.service.index" />
@@ -66,7 +64,6 @@
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems_core.core_revision.draft_in_progress" />
             <argument type="service" id="logger" />
-            <argument type="service" id="emsco.logger.audit" />
             <argument type="service" id="ems.service.publish" />
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="translator" />
@@ -103,7 +100,6 @@
         </service>
         <service id="EMS\CoreBundle\Controller\Form\SubmissionController" public="true">
             <argument type="service" id="ems.form_submission" />
-            <argument type="service" id="translator" />
             <argument type="service" id="logger" />
             <tag name="controller.service_arguments"/>
         </service>
@@ -213,7 +209,6 @@
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\UploadedFileWysiwygController" public="true">
-            <argument type="service" id="logger" />
             <argument type="service" id="ems.service.file" />
             <argument type="service" id="ems_core.core_ui.ajax_service" />
             <tag name="controller.service_arguments"/>
@@ -255,7 +250,6 @@
             <argument type="service" id="form.registry" />
         </service>
         <service id="EMS\CoreBundle\Controller\Views\HierarchicalController" public="true">
-            <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.search" />
         </service>

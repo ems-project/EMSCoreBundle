@@ -15,7 +15,9 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Entity\UserInterface;
+use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
@@ -78,26 +80,25 @@ class ContentTypeService implements EntityServiceInterface
     public function getChildByPath(FieldType $fieldType, string $path, bool $skipVirtualFields = false)
     {
         $elem = \explode('.', $path);
-        if (!empty($elem)) {
-            /** @var FieldType $child */
-            foreach ($fieldType->getChildren() as $child) {
-                if (!$child->getDeleted()) {
-                    $type = $child->getType();
-                    if ($skipVirtualFields && $type::isVirtual($child->getOptions())) {
-                        $fieldTypeByPath = $this->getChildByPath($child, $path, $skipVirtualFields);
+
+        /** @var FieldType $child */
+        foreach ($fieldType->getChildren() as $child) {
+            if (!$child->getDeleted()) {
+                $type = $child->getType();
+                if ($skipVirtualFields && $type::isVirtual($child->getOptions())) {
+                    $fieldTypeByPath = $this->getChildByPath($child, $path, $skipVirtualFields);
+                    if ($fieldTypeByPath) {
+                        return $fieldTypeByPath;
+                    }
+                } elseif ($child->getName() == $elem[0]) {
+                    if (\strpos($path, '.')) {
+                        $fieldTypeByPath = $this->getChildByPath($fieldType, \substr($path, \strpos($path, '.') + 1), $skipVirtualFields);
                         if ($fieldTypeByPath) {
                             return $fieldTypeByPath;
                         }
-                    } elseif ($child->getName() == $elem[0]) {
-                        if (\strpos($path, '.')) {
-                            $fieldTypeByPath = $this->getChildByPath($fieldType, \substr($path, \strpos($path, '.') + 1), $skipVirtualFields);
-                            if ($fieldTypeByPath) {
-                                return $fieldTypeByPath;
-                            }
-                        }
-
-                        return $child;
                     }
+
+                    return $child;
                 }
             }
         }
@@ -109,8 +110,10 @@ class ContentTypeService implements EntityServiceInterface
     {
         if ([] === $this->orderedContentTypes) {
             /** @var ContentTypeRepository $contentTypeRepository */
-            $contentTypeRepository = $this->doctrine->getManager()->getRepository('EMSCoreBundle:ContentType');
-            $this->orderedContentTypes = $contentTypeRepository->findBy(['deleted' => false], ['orderKey' => 'ASC']);
+            $contentTypeRepository = $this->doctrine->getManager()->getRepository(ContentType::class);
+            /** @var ContentType[] $orderedContentTypes */
+            $orderedContentTypes = $contentTypeRepository->findBy(['deleted' => false], ['orderKey' => 'ASC']);
+            $this->orderedContentTypes = $orderedContentTypes;
             $this->contentTypeArrayByName = [];
             /** @var ContentType $contentType */
             foreach ($this->orderedContentTypes as $contentType) {
@@ -381,7 +384,7 @@ class ContentTypeService implements EntityServiceInterface
         $em = $this->doctrine->getManager();
         $contentType->unsetFieldType();
         /** @var FieldTypeRepository $fieldRepo */
-        $fieldRepo = $em->getRepository('EMSCoreBundle:FieldType');
+        $fieldRepo = $em->getRepository(FieldType::class);
         $fields = $fieldRepo->findBy([
             'contentType' => $contentType,
         ]);
@@ -398,7 +401,7 @@ class ContentTypeService implements EntityServiceInterface
             $contentType->removeTemplate($template);
         }
         /** @var TemplateRepository $templateRepo */
-        $templateRepo = $em->getRepository('EMSCoreBundle:Template');
+        $templateRepo = $em->getRepository(Template::class);
         $templates = $templateRepo->findBy([
             'contentType' => $contentType,
         ]);
@@ -416,7 +419,7 @@ class ContentTypeService implements EntityServiceInterface
             $contentType->removeView($view);
         }
         /** @var ViewRepository $viewRepo */
-        $viewRepo = $em->getRepository('EMSCoreBundle:View');
+        $viewRepo = $em->getRepository(View::class);
         $views = $viewRepo->findBy([
             'contentType' => $contentType,
         ]);
@@ -431,7 +434,7 @@ class ContentTypeService implements EntityServiceInterface
     {
         $em = $this->doctrine->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepository = $em->getRepository(ContentType::class);
 
         $previousContentType = $this->getByName($contentType->getName());
         if ($previousContentType instanceof ContentType && $previousContentType->getId() !== $contentType->getId()) {
@@ -494,7 +497,7 @@ class ContentTypeService implements EntityServiceInterface
     {
         $em = $this->doctrine->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepository = $em->getRepository(ContentType::class);
         if ($mustBeReset) {
             $contentType->reset($contentTypeRepository->nextOrderKey());
         }
@@ -687,7 +690,7 @@ class ContentTypeService implements EntityServiceInterface
     protected function getContentTypeRepository(): ContentTypeRepository
     {
         $em = $this->doctrine->getManager();
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepository = $em->getRepository(ContentType::class);
         if (!$contentTypeRepository instanceof ContentTypeRepository) {
             throw new \RuntimeException('Unexpected non ContentTypeRepository object');
         }

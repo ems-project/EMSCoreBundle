@@ -15,6 +15,7 @@ use EMS\CoreBundle\Form\Form\NotificationFormType;
 use EMS\CoreBundle\Form\Form\TreatNotificationsType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\NotificationService;
@@ -65,7 +66,7 @@ class NotificationController extends AbstractController
         $ouuid = $request->request->get('ouuid');
 
         /** @var EnvironmentRepository $repositoryEnv */
-        $repositoryEnv = $em->getRepository('EMSCoreBundle:Environment');
+        $repositoryEnv = $em->getRepository(Environment::class);
         /** @var Environment|null $env */
         $env = $repositoryEnv->findOneByName($environmentName);
 
@@ -74,7 +75,7 @@ class NotificationController extends AbstractController
         }
 
         /** @var ContentTypeRepository $repositoryCt */
-        $repositoryCt = $em->getRepository('EMSCoreBundle:ContentType');
+        $repositoryCt = $em->getRepository(ContentType::class);
         /** @var ContentType|null $ct */
         $ct = $repositoryCt->findById($ctId);
 
@@ -83,7 +84,7 @@ class NotificationController extends AbstractController
         }
 
         /** @var RevisionRepository $repositoryRev */
-        $repositoryRev = $em->getRepository('EMSCoreBundle:Revision');
+        $repositoryRev = $em->getRepository(Revision::class);
         /** @var Revision|null $revision */
         $revision = $repositoryRev->findByOuuidAndContentTypeAndEnvironment($ct, $ouuid, $env);
         if (null === $revision) {
@@ -129,7 +130,8 @@ class NotificationController extends AbstractController
         }
 
         $em = $this->getDoctrine()->getManager();
-        $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
+        /** @var NotificationRepository $repositoryNotification */
+        $repositoryNotification = $em->getRepository(Notification::class);
 
         $publishIn = null;
         if (null !== $publishTo = $treatNotification->getPublishTo()) {
@@ -137,9 +139,7 @@ class NotificationController extends AbstractController
         }
 
         foreach ($treatNotification->getNotifications() as $notificationId => $true) {
-            /** @var Notification $notification */
-            $notification = $repositoryNotification->find($notificationId);
-            if (empty($notification)) {
+            if (null === $notification = $repositoryNotification->find($notificationId)) {
                 $this->logger->error('log.notification.notification_not_found', [
                     'notification_id' => $notificationId,
                 ]);

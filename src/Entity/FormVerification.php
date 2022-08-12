@@ -41,18 +41,14 @@ class FormVerification
     private $code;
 
     /**
-     * @var \DateTimeImmutable
-     *
      * @ORM\Column(name="created", type="datetime_immutable")
      */
-    private $created;
+    private \DateTimeImmutable $created;
 
     /**
-     * @var \DateTimeImmutable
-     *
      * @ORM\Column(name="expiration_date", type="datetime_immutable")
      */
-    private $expirationDate;
+    private \DateTimeImmutable $expirationDate;
 
     private const EXPIRATION_TIME = '+3 hours';
 
@@ -87,5 +83,15 @@ class FormVerification
     {
         $now = new \DateTimeImmutable();
         $this->expirationDate = $now->modify(self::EXPIRATION_TIME);
+    }
+
+    public function getCreated(): \DateTimeImmutable
+    {
+        return $this->created;
+    }
+
+    public function getExpirationDate(): \DateTimeImmutable
+    {
+        return $this->expirationDate;
     }
 }

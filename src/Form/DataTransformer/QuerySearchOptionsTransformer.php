@@ -7,6 +7,9 @@ namespace EMS\CoreBundle\Form\DataTransformer;
 use EMS\CommonBundle\Common\Standard\Json;
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * @implements DataTransformerInterface<mixed, mixed>
+ */
 final class QuerySearchOptionsTransformer implements DataTransformerInterface
 {
     /** @return array<string, mixed> */

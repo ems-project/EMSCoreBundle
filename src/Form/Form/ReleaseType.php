@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class ReleaseType extends AbstractType
 {
-    private $environmentService;
+    private EnvironmentService $environmentService;
 
     public function __construct(EnvironmentService $environmentService)
     {

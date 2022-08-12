@@ -39,7 +39,7 @@ class AggregateOptionService extends EntityService
 
     protected function getRepositoryIdentifier(): string
     {
-        return 'EMSCoreBundle:AggregateOption';
+        return AggregateOption::class;
     }
 
     protected function getEntityName(): string

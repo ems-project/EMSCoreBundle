@@ -12,6 +12,8 @@ use EMS\CoreBundle\Core\User\UserList;
 use EMS\CoreBundle\Entity\User;
 
 /**
+ * @extends ServiceEntityRepository<User>
+ *
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
  * @method User|null findOneBy(array $criteria, array $orderBy = null)
  * @method User[]    findAll()

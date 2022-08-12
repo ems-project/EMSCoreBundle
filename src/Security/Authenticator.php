@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Security;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\UserInterface;
-use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -16,14 +15,11 @@ class Authenticator
     private $authenticationManager;
     /** @var Registry */
     private $doctrine;
-    /** @var UserService */
-    private $userService;
 
-    public function __construct(AuthenticationManagerInterface $authenticationManager, Registry $doctrine, UserService $userService)
+    public function __construct(AuthenticationManagerInterface $authenticationManager, Registry $doctrine)
     {
         $this->authenticationManager = $authenticationManager;
         $this->doctrine = $doctrine;
-        $this->userService = $userService;
     }
 
     public function authenticate(TokenInterface $token): TokenInterface

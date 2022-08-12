@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * DataField.
@@ -13,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SearchFieldOption
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -21,20 +23,6 @@ class SearchFieldOption
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
 
     /**
      * @var string
@@ -51,11 +39,9 @@ class SearchFieldOption
     private $field;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="orderKey", type="integer")
      */
-    private $orderKey;
+    private int $orderKey = 0;
 
     /**
      * @var string
@@ -78,19 +64,10 @@ class SearchFieldOption
      */
     public array $operators;
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
+    public function __construct()
     {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
-        if (!isset($this->orderKey)) {
-            $this->orderKey = 0;
-        }
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     /**
@@ -101,54 +78,6 @@ class SearchFieldOption
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return SearchFieldOption
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return SearchFieldOption
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**

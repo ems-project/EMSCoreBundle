@@ -9,7 +9,7 @@ class Mappings
     /** @var array<mixed> */
     private $mappings = [];
 
-    /** @var array<array> */
+    /** @var array<array<mixed>> */
     private $defaultProperties = [];
 
     /**

@@ -38,7 +38,6 @@ class EditController extends AbstractController
 {
     private DataService $dataService;
     private LoggerInterface $logger;
-    private LoggerInterface $auditLogger;
     private PublishService $publishService;
     private RevisionService $revisionService;
     private TranslatorInterface $translator;
@@ -48,14 +47,12 @@ class EditController extends AbstractController
         DataService $dataService,
         DraftInProgress $draftInProgress,
         LoggerInterface $logger,
-        LoggerInterface $auditLogger,
         PublishService $publishService,
         RevisionService $revisionService,
         TranslatorInterface $translator
     ) {
         $this->dataService = $dataService;
         $this->logger = $logger;
-        $this->auditLogger = $auditLogger;
         $this->publishService = $publishService;
         $this->revisionService = $revisionService;
         $this->translator = $translator;

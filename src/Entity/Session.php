@@ -5,8 +5,6 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Sessions.
- *
  * @ORM\Table(name="session")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SessionRepository")
  */

@@ -94,17 +94,12 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    /**
-     * @param int|string $id
-     */
-    public function removeAction($id): RedirectResponse
+    public function removeAction(int $id): RedirectResponse
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:ContentType');
-
-        /** @var ContentType|null $contentType */
+        $repository = $em->getRepository(ContentType::class);
         $contentType = $repository->findById($id);
 
         if (null === $contentType) {
@@ -171,7 +166,7 @@ class ContentTypeController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var EnvironmentRepository $environmetRepository */
-        $environmetRepository = $em->getRepository('EMSCoreBundle:Environment');
+        $environmetRepository = $em->getRepository(Environment::class);
 
         $environments = $environmetRepository->findBy([
             'managed' => true,
@@ -207,7 +202,7 @@ class ContentTypeController extends AbstractController
             /** @var ContentType $contentTypeAdded */
             $contentTypeAdded = $form->getData();
             /** @var ContentTypeRepository $contentTypeRepository */
-            $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+            $contentTypeRepository = $em->getRepository(ContentType::class);
 
             $contentTypes = $contentTypeRepository->findBy([
                 'name' => $contentTypeAdded->getName(),
@@ -222,52 +217,50 @@ class ContentTypeController extends AbstractController
                 $form->get('name')->addError(new FormError('The content type name is malformed (format: [a-z][a-z0-9_-]*)'));
             }
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $normData = $form->get('import')->getNormData();
-                if ($normData) {
-                    $name = $contentTypeAdded->getName();
-                    $pluralName = $contentTypeAdded->getPluralName();
-                    $singularName = $contentTypeAdded->getSingularName();
-                    $environment = $contentTypeAdded->getEnvironment();
-                    /** @var UploadedFile $file */
-                    $file = $request->files->get('form')['import'];
-                    $realPath = $file->getRealPath();
-                    $json = $realPath ? \file_get_contents($realPath) : false;
+            $normData = $form->get('import')->getNormData();
+            if ($normData) {
+                $name = $contentTypeAdded->getName();
+                $pluralName = $contentTypeAdded->getPluralName();
+                $singularName = $contentTypeAdded->getSingularName();
+                $environment = $contentTypeAdded->getEnvironment();
+                /** @var UploadedFile $file */
+                $file = $request->files->get('form')['import'];
+                $realPath = $file->getRealPath();
+                $json = $realPath ? \file_get_contents($realPath) : false;
 
-                    if (!\is_string($json)) {
-                        throw new NotFoundHttpException('JSON file not found');
-                    }
-                    if (!$environment instanceof Environment) {
-                        throw new NotFoundHttpException('Environment not found');
-                    }
-                    $contentType = $this->contentTypeService->contentTypeFromJson($json, $environment);
-                    $contentType->setName($name);
-                    $contentType->setSingularName($singularName);
-                    $contentType->setPluralName($pluralName);
-                    $contentType = $this->contentTypeService->importContentType($contentType);
-                } else {
-                    $contentType = $contentTypeAdded;
-                    $contentType->setAskForOuuid(false);
-                    $contentType->setViewRole('ROLE_AUTHOR');
-                    $contentType->setEditRole('ROLE_AUTHOR');
-                    $contentType->setCreateRole('ROLE_AUTHOR');
-                    $contentType->setOrderKey($contentTypeRepository->nextOrderKey());
-                    $em->persist($contentType);
+                if (!\is_string($json)) {
+                    throw new NotFoundHttpException('JSON file not found');
                 }
-                $em->flush();
-
-                $this->logger->notice('log.contenttype.created', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
-                ]);
-
-                return $this->redirectToRoute('contenttype.edit', [
-                    'id' => $contentType->getId(),
-                ]);
+                if (!$environment instanceof Environment) {
+                    throw new NotFoundHttpException('Environment not found');
+                }
+                $contentType = $this->contentTypeService->contentTypeFromJson($json, $environment);
+                $contentType->setName($name);
+                $contentType->setSingularName($singularName);
+                $contentType->setPluralName($pluralName);
+                $contentType = $this->contentTypeService->importContentType($contentType);
             } else {
-                $this->logger->error('log.contenttype.created_failed', [
-                ]);
+                $contentType = $contentTypeAdded;
+                $contentType->setAskForOuuid(false);
+                $contentType->setViewRole('ROLE_AUTHOR');
+                $contentType->setEditRole('ROLE_AUTHOR');
+                $contentType->setCreateRole('ROLE_AUTHOR');
+                $contentType->setOrderKey($contentTypeRepository->nextOrderKey());
+                $em->persist($contentType);
             }
+            $em->flush();
+
+            $this->logger->notice('log.contenttype.created', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
+            ]);
+
+            return $this->redirectToRoute('contenttype.edit', [
+                'id' => $contentType->getId(),
+            ]);
+        } else {
+            $this->logger->error('log.contenttype.created_failed', [
+            ]);
         }
 
         return $this->render('@EMSCore/contenttype/add.html.twig', [
@@ -281,7 +274,7 @@ class ContentTypeController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepository = $em->getRepository(ContentType::class);
 
         $contentTypes = $contentTypeRepository->findAll();
 
@@ -344,9 +337,9 @@ class ContentTypeController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var EnvironmentRepository $environmetRepository */
-        $environmetRepository = $em->getRepository('EMSCoreBundle:Environment');
+        $environmetRepository = $em->getRepository(Environment::class);
         /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepository = $em->getRepository(ContentType::class);
 
         if ($request->isMethod('POST')) {
             if (null != $request->get('envId') && null != $request->get('name')) {
@@ -664,17 +657,12 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    /**
-     * @param int|string $id
-     */
-    public function editAction($id, Request $request): Response
+    public function editAction(int $id, Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:ContentType');
-
-        /** @var ContentType|null $contentType */
+        $repository = $em->getRepository(ContentType::class);
         $contentType = $repository->findById($id);
 
         if (null === $contentType) {
@@ -755,17 +743,12 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string|int $id
-     */
-    public function editStructureAction($id, Request $request): Response
+    public function editStructureAction(int $id, Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:ContentType');
-
-        /** @var ContentType|null $contentType */
+        $repository = $em->getRepository(ContentType::class);
         $contentType = $repository->findById($id);
 
         if (null === $contentType) {

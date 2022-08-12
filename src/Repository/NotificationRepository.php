@@ -8,9 +8,15 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Entity\UserInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
+/**
+ * @extends ServiceEntityRepository<Notification>
+ *
+ * @method Notification|null find($id, $lockMode = null, $lockVersion = null)
+ */
 class NotificationRepository extends ServiceEntityRepository
 {
     private AuthorizationCheckerInterface $authorizationChecker;
@@ -284,7 +290,7 @@ class NotificationRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
 
         /** @var TemplateRepository $templateRepository */
-        $templateRepository = $em->getRepository('EMSCoreBundle:Template');
+        $templateRepository = $em->getRepository(Template::class);
 
         $results = $templateRepository->findByRenderOptionAndContentType('notification', $contentTypes);
 
@@ -316,7 +322,7 @@ class NotificationRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
 
         /** @var TemplateRepository $templateRepoitory */
-        $templateRepoitory = $em->getRepository('EMSCoreBundle:Template');
+        $templateRepoitory = $em->getRepository(Template::class);
 
         $results = $templateRepoitory->findByRenderOptionAndContentType('notification', $contentTypes);
 

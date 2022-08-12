@@ -9,6 +9,11 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EMS\SubmissionBundle\Entity\FormSubmission;
 
+/**
+ * @extends ServiceEntityRepository<FormSubmission>
+ *
+ * @method FormSubmission|null findOneBy(array $criteria, array $orderBy = null)
+ */
 class FormSubmissionRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)

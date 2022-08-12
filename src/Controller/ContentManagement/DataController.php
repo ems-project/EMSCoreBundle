@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Service\Pdf\Pdf;
 use EMS\CommonBundle\Service\Pdf\PdfPrinterInterface;
 use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
@@ -61,7 +60,6 @@ class DataController extends AbstractController
     private LoggerInterface $logger;
     private DataService $dataService;
     private SearchService $searchService;
-    private ElasticaService $elasticaService;
     private ContentTypeService $contentTypeService;
     private EnvironmentService $environmentService;
     private IndexService $indexService;
@@ -75,7 +73,6 @@ class DataController extends AbstractController
         LoggerInterface $logger,
         DataService $dataService,
         SearchService $searchService,
-        ElasticaService $elasticaService,
         ContentTypeService $contentTypeService,
         EnvironmentService $environmentService,
         IndexService $indexService,
@@ -88,7 +85,6 @@ class DataController extends AbstractController
         $this->logger = $logger;
         $this->dataService = $dataService;
         $this->searchService = $searchService;
-        $this->elasticaService = $elasticaService;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->indexService = $indexService;
@@ -105,7 +101,7 @@ class DataController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:ContentType');
+        $repository = $em->getRepository(ContentType::class);
         $contentType = $repository->findOneBy([
             'name' => $name,
             'deleted' => false,
@@ -115,7 +111,7 @@ class DataController extends AbstractController
             throw new NotFoundHttpException('Content type '.$name.' not found');
         }
 
-        $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
+        $searchRepository = $em->getRepository(Search::class);
         $searches = $searchRepository->findBy([
             'contentType' => $contentType->getId(),
         ]);
@@ -153,7 +149,7 @@ class DataController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:ContentType');
+        $repository = $em->getRepository(ContentType::class);
         $contentType = $repository->findOneBy([
             'name' => $name,
             'deleted' => false,
@@ -429,7 +425,7 @@ class DataController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
+        $repository = $em->getRepository(Revision::class);
         /** @var Revision|null $revision */
         $revision = $repository->find($revisionId);
 
@@ -505,7 +501,7 @@ class DataController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
+        $repository = $em->getRepository(Revision::class);
         /** @var Revision|null $revision */
         $revision = $repository->find($revisionId);
 
@@ -557,7 +553,7 @@ class DataController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var TemplateRepository $templateRepository */
-        $templateRepository = $em->getRepository('EMSCoreBundle:Template');
+        $templateRepository = $em->getRepository(Template::class);
 
         /** @var Template|null $template * */
         $template = $templateRepository->find($templateId);
@@ -567,7 +563,7 @@ class DataController extends AbstractController
         }
 
         /** @var EnvironmentRepository $environmentRepository */
-        $environmentRepository = $em->getRepository('EMSCoreBundle:Environment');
+        $environmentRepository = $em->getRepository(Environment::class);
 
         $environment = $environmentRepository->findBy([
             'name' => $environmentName,
@@ -743,7 +739,7 @@ class DataController extends AbstractController
         $formErrors = [];
 
         /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
+        $repository = $em->getRepository(Revision::class);
         /** @var Revision|null $revision */
         $revision = $repository->find($revisionId);
 
@@ -1022,7 +1018,7 @@ class DataController extends AbstractController
             $em = $this->getDoctrine()->getManager();
 
             /** @var RevisionRepository $repository */
-            $repository = $em->getRepository('EMSCoreBundle:Revision');
+            $repository = $em->getRepository(Revision::class);
 
             $contentType = $ctService->getByName($type);
 

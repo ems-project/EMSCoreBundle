@@ -40,9 +40,16 @@ final class DataTableRequest
         $orderDirection = \strval($order[0]['dir'] ?? 'asc');
         $orderColumn = \intval($order[0]['column'] ?? 0);
         $orderField = null;
-        if (isset($columns[$orderColumn]['name']) && 'true' === $columns[$orderColumn]['orderable'] ?? null) {
-            $orderField = \strval($columns[$orderColumn]['name']);
+
+        /** @var array{name?: ?string, orderable?: string} $columnOrder */
+        $columnOrder = $columns[$orderColumn] ?? null;
+        $columnOrderName = $columnOrder['name'] ?? null;
+        $columnOrderOrderable = $columnOrder['orderable'] ?? null;
+
+        if ($columnOrderName && $columnOrderOrderable) {
+            $orderField = \strval($columnOrderName);
         }
+
         $search = $request->get('search', []);
         if (!\is_array($search)) {
             throw new \RuntimeException('Unexpected non array request parameter');

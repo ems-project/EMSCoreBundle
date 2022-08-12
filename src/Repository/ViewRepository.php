@@ -10,6 +10,12 @@ use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\View;
 
+/**
+ * @extends ServiceEntityRepository<View>
+ *
+ * @method View|null find($id)
+ * @method View|null findOneBy(array $criteria, array $orderBy = null)
+ */
 class ViewRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
@@ -69,7 +75,8 @@ class ViewRepository extends ServiceEntityRepository
     public function getById(string $id): View
     {
         $view = $this->find($id);
-        if (!$view instanceof View) {
+
+        if (null === $view) {
             throw new \RuntimeException('Unexpected view type');
         }
 

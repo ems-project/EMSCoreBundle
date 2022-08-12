@@ -7,6 +7,11 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Filter;
 
+/**
+ * @extends ServiceEntityRepository<Filter>
+ *
+ * @method Filter|null findOneBy(array $criteria, array $orderBy = null)
+ */
 class FilterRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
@@ -16,10 +21,7 @@ class FilterRepository extends ServiceEntityRepository
 
     public function findByName(string $name): ?Filter
     {
-        $filter = $this->findOneBy([
-            'name' => $name,
-        ]);
-        if (null !== $filter && !$filter instanceof Filter) {
+        if (null === $filter = $this->findOneBy(['name' => $name])) {
             throw new \RuntimeException('Unexpected filter type');
         }
 

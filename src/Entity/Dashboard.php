@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
+use EMS\Helpers\Standard\DateTime;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -18,6 +19,7 @@ use Ramsey\Uuid\UuidInterface;
  */
 class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
@@ -25,16 +27,6 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
     private UuidInterface $id;
-
-    /**
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private \Datetime $created;
-
-    /**
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private \Datetime $modified;
 
     /**
      * @ORM\Column(name="name", type="string", length=255, unique=true)
@@ -103,23 +95,14 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
         $now = new \DateTime();
 
         $this->id = Uuid::uuid4();
-        $this->created = $now;
-        $this->modified = $now;
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
         $this->options = [];
     }
 
     public function getId(): string
     {
         return $this->id->toString();
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
-    {
-        $this->modified = new \DateTime();
     }
 
     public function getName(): string
@@ -140,16 +123,6 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
     public function setLabel(string $label): void
     {
         $this->label = $label;
-    }
-
-    public function getCreated(): \Datetime
-    {
-        return $this->created;
-    }
-
-    public function getModified(): \Datetime
-    {
-        return $this->modified;
     }
 
     /**

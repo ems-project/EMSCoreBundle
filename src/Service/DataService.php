@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -86,7 +85,7 @@ class DataService
     protected TokenStorageInterface $tokenStorage;
     protected ElasticaService $elasticaService;
     protected Mapping $mapping;
-    protected ObjectManager $em;
+    protected EntityManager $em;
     protected RevisionRepository $revRepository;
     protected SessionInterface $session;
     protected FormFactoryInterface $formFactory;
@@ -145,7 +144,9 @@ class DataService
         $this->elasticaService = $elasticaService;
         $this->mapping = $mapping;
         $this->instanceId = $instanceId;
-        $this->em = $this->doctrine->getManager();
+        /** @var EntityManager $em */
+        $em = $this->doctrine->getManager();
+        $this->em = $em;
         $this->revRepository = $revisionRepository;
         $this->session = $session;
         $this->formFactory = $formFactory;
@@ -261,13 +262,16 @@ class DataService
      */
     public function getAllDeleted(ContentType $contentType): array
     {
-        return $this->revRepository->findBy([
+        /** @var Revision[] $revisions */
+        $revisions = $this->revRepository->findBy([
             'deleted' => true,
             'contentType' => $contentType,
             'endTime' => null,
         ], [
             'modified' => 'asc',
         ]);
+
+        return $revisions;
     }
 
     /**
@@ -447,7 +451,7 @@ class DataService
                     } else {
                         $subOptions = [];
                     }
-                    if (!$childType->isVirtual($subOptions ?? [])) {
+                    if (!$childType->isVirtual($subOptions)) {
                         $childData = $rawData[$child->getName()] ?? null;
                     }
                     $output = \array_merge($output, $this->walkRecursive($child, $childData, $callback));
@@ -526,7 +530,7 @@ class DataService
 
         $em = $this->doctrine->getManager();
         if (!empty($ouuid)) {
-            $revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
+            $revisionRepository = $em->getRepository(Revision::class);
             $anotherObject = $revisionRepository->findOneBy([
                     'contentType' => $contentType,
                     'ouuid' => $newRevision->getOuuid(),
@@ -815,7 +819,7 @@ class DataService
         $em = $this->doctrine->getManager();
 
         /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
+        $repository = $em->getRepository(Revision::class);
 
         //TODO: test if draft and last version publish in
 
@@ -844,7 +848,7 @@ class DataService
 
         $objectArray = $this->sign($revision);
 
-        if (empty($form) || $this->isValid($form, null, $objectArray)) {
+        if ($this->isValid($form, null, $objectArray)) {
             $ouuid = $revision->getOuuid();
             $this->indexService->indexRevision($revision);
             if (null !== $ouuid) {
@@ -968,7 +972,7 @@ class DataService
         $em = $this->doctrine->getManager();
 
         /** @var ContentTypeRepository $contentTypeRepo */
-        $contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepo = $em->getRepository(ContentType::class);
         $contentTypes = $contentTypeRepo->findBy([
                 'name' => $type,
                 'deleted' => false,
@@ -980,8 +984,8 @@ class DataService
         $contentType = $contentTypes[0];
 
         /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
-
+        $repository = $em->getRepository(Revision::class);
+        /** @var Revision[] $revisions */
         $revisions = $repository->findBy([
                 'ouuid' => $ouuid,
                 'endTime' => null,
@@ -990,10 +994,12 @@ class DataService
         ]);
 
         if (1 == \count($revisions)) {
-            if ($revisions[0] instanceof Revision && null == $revisions[0]->getEndTime()) {
+            $endTime = $revisions[0]->getEndTime();
+
+            if (null === $endTime) {
                 return $revisions[0];
             } else {
-                throw new NotFoundHttpException('Revision for ouuid '.$ouuid.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime());
+                throw new NotFoundHttpException('Revision for ouuid '.$ouuid.' and contenttype '.$type.' with end time '.$endTime->format(\DateTimeInterface::ATOM));
             }
         } elseif (0 == \count($revisions)) {
             throw new NotFoundHttpException('Revision not found for ouuid '.$ouuid.' and contenttype '.$type);
@@ -1013,7 +1019,7 @@ class DataService
     {
         $this->hasCreateRights($contentType);
         /** @var RevisionRepository $revisionRepository */
-        $revisionRepository = $this->em->getRepository('EMSCoreBundle:Revision');
+        $revisionRepository = $this->em->getRepository(Revision::class);
 
         $revision = new Revision();
 
@@ -1187,7 +1193,7 @@ class DataService
         $em = $this->doctrine->getManager();
 
         /** @var ContentTypeRepository $contentTypeRepo */
-        $contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepo = $em->getRepository(ContentType::class);
         /** @var ContentType|null $contentType */
         $contentType = $contentTypeRepo->findOneBy([
                 'name' => $type,
@@ -1253,7 +1259,7 @@ class DataService
         $em = $this->doctrine->getManager();
 
         /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
+        $repository = $em->getRepository(Revision::class);
 
         if (!$revision->getDraft() || null != $revision->getEndTime()) {
             throw new BadRequestHttpException('Only authorized on a draft');
@@ -1303,7 +1309,7 @@ class DataService
         $em = $this->doctrine->getManager();
 
         /** @var ContentTypeRepository $contentTypeRepo */
-        $contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepo = $em->getRepository(ContentType::class);
 
         $contentTypes = $contentTypeRepo->findBy([
                 'deleted' => false,
@@ -1314,7 +1320,7 @@ class DataService
         }
 
         /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
+        $repository = $em->getRepository(Revision::class);
 
         $revisions = $repository->findBy([
                 'ouuid' => $ouuid,
@@ -1369,7 +1375,7 @@ class DataService
         $em = $this->doctrine->getManager();
 
         /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
+        $repository = $em->getRepository(Revision::class);
 
         $revisions = $repository->findBy([
                 'ouuid' => $ouuid,
@@ -1397,7 +1403,7 @@ class DataService
         $em = $this->doctrine->getManager();
 
         /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
+        $repository = $em->getRepository(Revision::class);
 
         $revisions = $repository->findBy([
                 'ouuid' => $ouuid,
@@ -1724,7 +1730,7 @@ class DataService
         $em = $this->doctrine->getManager();
 
         /** @var ContentTypeRepository $contentTypeRepo */
-        $contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepo = $em->getRepository(ContentType::class);
         $contentTypes = $contentTypeRepo->findBy([
                 'name' => $type->getName(),
                 'deleted' => false,
@@ -1735,7 +1741,8 @@ class DataService
         }
         $contentType = $contentTypes[0];
         /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
+        $repository = $em->getRepository(Revision::class);
+        /** @var Revision[] $revisions */
         $revisions = $repository->findBy([
                 'id' => $id,
                 'endTime' => null,
@@ -1744,12 +1751,12 @@ class DataService
         ]);
 
         if (1 == \count($revisions)) {
-            if ($revisions[0] instanceof Revision && null == $revisions[0]->getEndTime()) {
-                $revision = $revisions[0];
+            $endTime = $revisions[0]->getEndTime();
 
-                return $revision;
+            if (null === $endTime) {
+                return $revisions[0];
             } else {
-                throw new Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime());
+                throw new Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$endTime->format(\DateTimeInterface::ATOM));
             }
         } elseif (0 == \count($revisions)) {
             throw new NotFoundHttpException('Revision not found for id '.$id.' and contenttype '.$type);

@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * ContentType.
@@ -18,6 +19,7 @@ use EMS\CoreBundle\Form\DataField\ContainerFieldType;
  */
 class ContentType extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -26,20 +28,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    protected $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    protected $modified;
 
     /**
      * @ORM\Column(name="name", type="string", length=100)
@@ -117,11 +105,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $businessIdField;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="deleted", type="boolean")
      */
-    protected $deleted;
+    protected bool $deleted = false;
 
     /**
      * @var bool
@@ -319,18 +305,14 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected ?string $ownerRole = null;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="orderKey", type="integer")
      */
-    protected $orderKey = 0;
+    protected int $orderKey = 0;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="rootContentType", type="boolean")
      */
-    protected $rootContentType;
+    protected bool $rootContentType = true;
 
     /**
      * @var bool
@@ -354,11 +336,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $autoPublish;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="active", type="boolean")
      */
-    protected $active = false;
+    protected bool $active = false;
 
     /**
      * @var Environment|null
@@ -452,35 +432,14 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         $fieldType->setContentType($this);
         $this->setFieldType($fieldType);
         $this->setAskForOuuid(true);
+
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     public function __toString()
     {
         return $this->name;
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
-    {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
-        if (!isset($this->deleted)) {
-            $this->deleted = false;
-        }
-        if (!isset($this->orderKey)) {
-            $this->orderKey = 0;
-        }
-        if (!isset($this->rootContentType)) {
-            $this->rootContentType = true;
-        }
-        if (!isset($this->active)) {
-            $this->active = false;
-        }
     }
 
     /**
@@ -491,54 +450,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return ContentType
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return ContentType
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**

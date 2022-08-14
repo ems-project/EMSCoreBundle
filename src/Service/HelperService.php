@@ -22,6 +22,9 @@ class HelperService
         $this->requestStack = $requestStack;
     }
 
+    /**
+     * @param class-string $entityName
+     */
     public function getPagingTool(string $entityName, string $route, string $defaultOrderField): PagingTool
     {
         if (null === $request = $this->requestStack->getCurrentRequest()) {

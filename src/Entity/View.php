@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * @ORM\Table(name="view")
@@ -15,22 +16,13 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
  */
 class View extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected int $id;
-
-    /**
-     * @ORM\Column(name="created", type="datetime")
-     */
-    protected \DateTime $created;
-
-    /**
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    protected \DateTime $modified;
 
     /**
      * @ORM\Column(name="name", type="string", length=255)
@@ -81,55 +73,24 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
      */
     protected ?string $role;
 
+    public function __construct()
+    {
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
+    }
+
     public function __clone()
     {
         if ($this->id) {
-            $now = new \DateTime('now');
-            $this->created = $now;
-            $this->modified = $now;
+            $this->created = DateTime::create('now');
+            $this->modified = DateTime::create('now');
             $this->orderKey = 0;
-        }
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
-    {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
         }
     }
 
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function setCreated(\DateTime $created): View
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    public function getCreated(): \DateTime
-    {
-        return $this->created;
-    }
-
-    public function setModified(\DateTime $modified): View
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    public function getModified(): \DateTime
-    {
-        return $this->modified;
     }
 
     public function setName(string $name): View

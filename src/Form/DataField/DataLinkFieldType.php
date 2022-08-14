@@ -299,9 +299,7 @@ class DataLinkFieldType extends DataFieldType
             }
 
             if (\is_array($data)) {
-                if (0 == \count($data)) {
-                    $out->setRawData(null);
-                } elseif (\is_string($data[0])) {
+                if (\is_string($data[0])) {
                     $out->setRawData($data[0]);
                     if (\count($data) > 1) {
                         $out->addMessage('Data converted into string, some data might have been lost');

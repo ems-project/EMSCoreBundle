@@ -2,11 +2,13 @@
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CoreBundle\Entity\SortOption;
+
 class SortOptionService extends EntityService
 {
     protected function getRepositoryIdentifier(): string
     {
-        return 'EMSCoreBundle:SortOption';
+        return SortOption::class;
     }
 
     protected function getEntityName(): string

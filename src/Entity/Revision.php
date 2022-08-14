@@ -26,6 +26,8 @@ class Revision implements EntityInterface
 {
     use RevisionTaskTrait;
 
+    use CreatedModifiedTrait;
+
     /**
      * @var int|null
      *
@@ -34,16 +36,6 @@ class Revision implements EntityInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private \DateTime $created;
-
-    /**
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private \DateTime $modified;
 
     /**
      * @ORM\Column(name="auto_save_at", type="datetime", nullable=true)
@@ -231,13 +223,8 @@ class Revision implements EntityInterface
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified(): void
+    public function checkLock(): void
     {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
-
         if ($this->selfUpdate && $this->isLocked()) {
             throw new LockedException($this);
         }
@@ -288,8 +275,8 @@ class Revision implements EntityInterface
         $this->environments = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->releases = new ArrayCollection();
-        $this->created = new \DateTime('now');
-        $this->modified = new \DateTime('now');
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
         $this->startTime = new \DateTime('now');
 
         $a = \func_get_args();
@@ -409,7 +396,7 @@ class Revision implements EntityInterface
 
     public function setAllFieldsAreThere(bool $allFieldsAreThere): self
     {
-        $this->allFieldsAreThere = $allFieldsAreThere ?? false;
+        $this->allFieldsAreThere = $allFieldsAreThere;
 
         return $this;
     }
@@ -417,30 +404,6 @@ class Revision implements EntityInterface
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setCreated(\DateTime $created): self
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    public function getCreated(): \DateTime
-    {
-        return $this->created;
-    }
-
-    public function setModified(\DateTime $modified): self
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    public function getModified(): \DateTime
-    {
-        return $this->modified;
     }
 
     public function isArchived(): bool
@@ -1003,7 +966,7 @@ class Revision implements EntityInterface
 
         if (null === $this->getVersionDate('from') && null === $this->getVersionDate('to')) {
             if ($this->hasOuuid()) {
-                $this->setVersionDate('from', \DateTimeImmutable::createFromMutable($this->created)); //migration existing docs
+                $this->setVersionDate('from', $this->created); //migration existing docs
             } else {
                 $this->setVersionDate('from', new \DateTimeImmutable('now'));
             }
@@ -1035,18 +998,18 @@ class Revision implements EntityInterface
         }
     }
 
-    public function setVersionDate(string $field, \DateTimeImmutable $date): void
+    public function setVersionDate(string $field, \DateTimeInterface $date): void
     {
         if (null === $contentType = $this->contentType) {
             throw new \RuntimeException(\sprintf('ContentType not found for revision %d', $this->getId()));
         }
 
         if ('from' === $field && null !== $dateFromField = $contentType->getVersionDateFromField()) {
-            $this->rawData[$dateFromField] = $date->format(\DateTimeImmutable::ATOM);
+            $this->rawData[$dateFromField] = $date->format(\DateTimeInterface::ATOM);
         }
 
         if ('to' === $field && null !== $dateToField = $contentType->getVersionDateToField()) {
-            $this->rawData[$dateToField] = $date->format(\DateTimeImmutable::ATOM);
+            $this->rawData[$dateToField] = $date->format(\DateTimeInterface::ATOM);
         }
     }
 

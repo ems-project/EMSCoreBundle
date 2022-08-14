@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * DataField.
@@ -15,6 +16,7 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
  */
 class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -23,20 +25,6 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
 
     /**
      * @ORM\Column(name="name", type="string", length=255)
@@ -51,25 +39,14 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
     protected $config;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="orderKey", type="integer")
      */
-    protected $orderKey;
+    protected int $orderKey = 0;
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
+    public function __construct()
     {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
-        if (!isset($this->orderKey)) {
-            $this->orderKey = 0;
-        }
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     /******************************************************************
@@ -86,54 +63,6 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return WysiwygProfile
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return WysiwygProfile
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     public function setName(string $name): WysiwygProfile

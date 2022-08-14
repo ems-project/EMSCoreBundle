@@ -10,6 +10,11 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
 
+/**
+ * @extends ServiceEntityRepository<ReleaseRevision>
+ *
+ * @method ReleaseRevision[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 final class ReleaseRevisionRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
@@ -18,7 +23,7 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Release[]
+     * @return ReleaseRevision[]
      */
     public function getAll(): array
     {

@@ -128,7 +128,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
                 $filename = $file->getName();
                 $pathinfo = \pathinfo($filename);
                 while (\in_array($filename, $filenames, true)) {
-                    $filename = \sprintf('%s-%s.%s', $pathinfo['filename'] ?? $filename, \bin2hex(\random_bytes(3)), $pathinfo['extension'] ?? '');
+                    $filename = \sprintf('%s-%s.%s', $pathinfo['filename'], \bin2hex(\random_bytes(3)), $pathinfo['extension'] ?? '');
                 }
                 $filenames[] = $filename;
                 try {
@@ -168,7 +168,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
+        $repository = $em->getRepository(UploadedAsset::class);
 
         $qb = $repository
             ->createQueryBuilder('a')->where('a.type like :image')
@@ -210,7 +210,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
+        $repository = $em->getRepository(UploadedAsset::class);
 
         /** @var UploadedAsset|null $uploadedAsset */
         $uploadedAsset = $repository->findOneBy([
@@ -220,7 +220,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
         ]);
 
         if (null === $uploadedAsset) {
-            $uploadedAsset = new UploadedAsset($this->storageManager);
+            $uploadedAsset = new UploadedAsset();
             $uploadedAsset->setSha1($hash);
             $uploadedAsset->setUser($user);
             $uploadedAsset->setSize($size);
@@ -294,7 +294,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
+        $repository = $em->getRepository(UploadedAsset::class);
 
         $uploadedAsset = $repository->getInProgress($hash, $user);
 

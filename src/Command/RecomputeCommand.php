@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CoreBundle\Entity\ContentType;
@@ -35,7 +34,7 @@ final class RecomputeCommand extends Command
     private bool $forceFlag;
     private bool $cronFlag;
     private ?string $ouuid;
-    private ObjectManager $em;
+    private EntityManager $em;
     private DataService $dataService;
     private FormFactoryInterface $formFactory;
     private PublishService $publishService;
@@ -79,7 +78,9 @@ final class RecomputeCommand extends Command
         $this->publishService = $publishService;
         $this->contentTypeService = $contentTypeService;
 
-        $this->em = $doctrine->getManager();
+        /** @var EntityManager $em */
+        $em = $doctrine->getManager();
+        $this->em = $em;
         $this->contentTypeRepository = $contentTypeRepository;
         $this->revisionRepository = $revisionRepository;
         $this->indexService = $indexService;

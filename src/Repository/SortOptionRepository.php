@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\Entity\SortOption;
 
-class SortOptionRepository extends \Doctrine\ORM\EntityRepository
+/**
+ * @extends EntityRepository<SortOption>
+ *
+ * @method SortOption[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class SortOptionRepository extends EntityRepository
 {
     /**
      * @return SortOption[]

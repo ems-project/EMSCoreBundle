@@ -8,6 +8,9 @@ use EMS\CoreBundle\Form\DataField\DataFieldType;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 
+/**
+ * @implements DataTransformerInterface<mixed, mixed>
+ */
 class DataFieldViewTransformer implements DataTransformerInterface
 {
     private FieldType $fieldType;

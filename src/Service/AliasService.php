@@ -22,7 +22,7 @@ class AliasService
     private $envRepo;
     /** @var ManagedAliasRepository */
     private $managedAliasRepo;
-    /** @var array<string, array{name: string, total: int, indexes: array, environment: string, managed: bool}> */
+    /** @var array<string, array{name: string, total: int, indexes: array<mixed>, environment: string, managed: bool}> */
     private $aliases = [];
     /** @var array<array{name: string, count: int}> */
     private $orphanIndexes = [];
@@ -98,7 +98,7 @@ class AliasService
     }
 
     /**
-     * @return array{name: string, total: int, indexes: array, environment: string, managed: bool}
+     * @return array{name: string, total: int, indexes: array<mixed>, environment: string, managed: bool}
      */
     public function getAlias(string $name): array
     {
@@ -110,7 +110,7 @@ class AliasService
     }
 
     /**
-     * @return array<string, array{name: string, total: int, indexes: array, environment: null|string, managed: bool}>
+     * @return array<string, array{name: string, total: int, indexes: array<mixed>, environment: null|string, managed: bool}>
      */
     public function getAliases(): array
     {
@@ -162,10 +162,10 @@ class AliasService
      */
     public function getManagedAliases(): array
     {
+        /** @var ManagedAlias[] $managedAliases */
         $managedAliases = $this->managedAliasRepo->findAll();
 
         foreach ($managedAliases as $managedAlias) {
-            /* @var $managedAlias ManagedAlias */
             if (!$this->hasAlias($managedAlias->getAlias())) {
                 continue;
             }
@@ -217,7 +217,7 @@ class AliasService
     }
 
     /**
-     * @return array<string, array{name: string, total: int, indexes: array, environment: string, managed: bool}>
+     * @return array<string, array{name: string, total: int, indexes: array<mixed>, environment: string, managed: bool}>
      */
     private function getReferrers(string $indexName): array
     {
@@ -279,7 +279,7 @@ class AliasService
         foreach ($aggregation['buckets'] ?? [] as $bucket) {
             $index = $bucket['key'] ?? '';
             if (\is_string($index) && $this->validIndexName($index)) {
-                $this->counterIndexes[$bucket['key']] = $bucket['doc_count'];
+                $this->counterIndexes[(string) $bucket['key']] = (int) $bucket['doc_count'];
             }
         }
 
@@ -289,7 +289,7 @@ class AliasService
                 if (\is_string($alias) && !isset($this->counterIndexes[$alias])) {
                     $this->counterIndexes[$alias] = 0;
                 }
-                $this->counterIndexes[$alias] += $this->counterIndexes[$index] ?? 0;
+                $this->counterIndexes[(string) $alias] += $this->counterIndexes[$index] ?? 0;
             }
         }
 

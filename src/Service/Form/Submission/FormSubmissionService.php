@@ -8,7 +8,6 @@ use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\FormSubmissionRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
-use EMS\CoreBundle\Service\TemplateService;
 use EMS\SubmissionBundle\Entity\FormSubmission;
 use EMS\SubmissionBundle\Request\DatabaseRequest;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -22,8 +21,6 @@ final class FormSubmissionService implements EntityServiceInterface
 {
     private FormSubmissionRepository $formSubmissionRepository;
 
-    private TemplateService $templateService;
-
     private Environment $twig;
 
     /** @var Session<mixed> */
@@ -36,10 +33,9 @@ final class FormSubmissionService implements EntityServiceInterface
      *
      * @param Session<mixed> $session
      */
-    public function __construct(FormSubmissionRepository $formSubmissionRepository, TemplateService $templateService, Environment $twig, Session $session, TranslatorInterface $translator)
+    public function __construct(FormSubmissionRepository $formSubmissionRepository, Environment $twig, Session $session, TranslatorInterface $translator)
     {
         $this->formSubmissionRepository = $formSubmissionRepository;
-        $this->templateService = $templateService;
         $this->twig = $twig;
         $this->session = $session;
         $this->translator = $translator;

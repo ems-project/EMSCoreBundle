@@ -7,6 +7,11 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\I18n;
 
+/**
+ * @extends ServiceEntityRepository<I18n>
+ *
+ * @method I18n|null findOneBy(array $criteria, array $orderBy = null)
+ */
 class I18nRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
@@ -62,8 +67,7 @@ class I18nRepository extends ServiceEntityRepository
 
     public function findByIdentifier(string $id): ?I18n
     {
-        $styleSet = $this->findOneBy(['identifier' => $id]);
-        if (null !== $styleSet && !$styleSet instanceof I18n) {
+        if (null === $styleSet = $this->findOneBy(['identifier' => $id])) {
             throw new \RuntimeException('Unexpected wysiwyg style set type');
         }
 

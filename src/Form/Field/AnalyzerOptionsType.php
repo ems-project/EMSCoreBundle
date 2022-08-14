@@ -155,7 +155,7 @@ class AnalyzerOptionsType extends AbstractType
                 ];
 
                 /** @var FilterRepository $repository */
-                $repository = $this->doctrine->getRepository('EMSCoreBundle:Filter');
+                $repository = $this->doctrine->getRepository(Filter::class);
                 /** @var Filter $filter */
                 foreach ($repository->findAll() as $filter) {
                     $out['Customized'][$filter->getLabel()] = $filter->getName();

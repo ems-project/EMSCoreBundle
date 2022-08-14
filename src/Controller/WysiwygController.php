@@ -149,7 +149,7 @@ class WysiwygController extends AbstractController
                 return $this->redirectToRoute('ems_wysiwyg_index');
             }
 
-            if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isValid()) {
                 \json_decode($stylesSet->getConfig(), true);
                 if (\json_last_error()) {
                     $form->get('config')->addError(new FormError($this->translator->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], 'EMSCoreBundle')));
@@ -179,7 +179,7 @@ class WysiwygController extends AbstractController
                 return $this->redirectToRoute('ems_wysiwyg_index');
             }
 
-            if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isValid()) {
                 \json_decode($profile->getConfig(), true);
                 if (\json_last_error()) {
                     $form->get('config')->addError(new FormError($this->translator->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], 'EMSCoreBundle')));

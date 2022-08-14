@@ -214,7 +214,7 @@ class SearchService
      */
     public function getDefaultSearch(array $contentTypes = []): Search
     {
-        $searchRepository = $this->doctrine->getRepository('EMSCoreBundle:Form\Search');
+        $searchRepository = $this->doctrine->getRepository(Search::class);
 
         $search = null;
         if (1 === \sizeof($contentTypes)) {

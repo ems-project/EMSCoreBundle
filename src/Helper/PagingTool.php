@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PagingTool
 {
+    /** @var EntityRepository<object> */
     private EntityRepository $repository;
     private int $pageSize;
     private int $lastPage;
@@ -21,6 +22,9 @@ class PagingTool
     /** @var array<mixed> */
     private array $data;
 
+    /**
+     * @param EntityRepository<object> $repository
+     */
     public function __construct(
         Request $request,
         EntityRepository $repository,

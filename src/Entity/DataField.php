@@ -104,6 +104,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     /**
      * @param mixed $offset
+     *
+     * @return mixed
      */
     public function offsetGet($offset)
     {

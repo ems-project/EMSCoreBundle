@@ -22,23 +22,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class SubmissionController extends AbstractController
 {
     private FormSubmissionService $formSubmissionService;
-    private TranslatorInterface $translator;
     private LoggerInterface $logger;
     private SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService;
 
     public function __construct(
         FormSubmissionService $formSubmissionService,
-        TranslatorInterface $translator,
         LoggerInterface $logger,
         SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService
     ) {
         $this->formSubmissionService = $formSubmissionService;
-        $this->translator = $translator;
         $this->logger = $logger;
         $this->spreadsheetGeneratorService = $spreadsheetGeneratorService;
     }

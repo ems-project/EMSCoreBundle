@@ -8,37 +8,14 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
-use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class JsonMenuNestedEditorFieldType extends DataFieldType
 {
-    /** @var FormFactoryInterface */
-    private $formFactory;
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
-
-    public function __construct(
-        FormFactoryInterface $formFactory,
-        AuthorizationCheckerInterface $authorizationChecker,
-        FormRegistryInterface $formRegistry,
-        ElasticsearchService $elasticsearchService,
-        UrlGeneratorInterface $urlGenerator
-    ) {
-        parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-
-        $this->formFactory = $formFactory;
-        $this->urlGenerator = $urlGenerator;
-    }
-
     public function getLabel(): string
     {
         return 'JSON menu nested editor field';

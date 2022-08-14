@@ -106,7 +106,7 @@ class AssetExtractorService implements CacheWarmerInterface
     public function extractData(string $hash, string $file = null, bool $forced = false)
     {
         $manager = $this->doctrine->getManager();
-        $repository = $manager->getRepository('EMSCoreBundle:CacheAssetExtractor');
+        $repository = $manager->getRepository(CacheAssetExtractor::class);
 
         /** @var ?CacheAssetExtractor $cacheData */
         $cacheData = $repository->findOneBy([

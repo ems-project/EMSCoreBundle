@@ -34,8 +34,6 @@ class ReindexCommand extends EmsCommand
     protected $container;
     /** @var DataService */
     protected $dataService;
-    /** @var string */
-    private $instanceId;
     private int $count = 0;
     private int $deleted = 0;
     private int $reloaded = 0;
@@ -45,13 +43,12 @@ class ReindexCommand extends EmsCommand
     /** @var string */
     private $defaultBulkSize;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container, string $instanceId, DataService $dataService, Bulker $bulker, string $defaultBulkSize)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container, DataService $dataService, Bulker $bulker, string $defaultBulkSize)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->mapping = $mapping;
         $this->container = $container;
-        $this->instanceId = $instanceId;
         $this->dataService = $dataService;
         $this->bulker = $bulker;
         $this->defaultBulkSize = $defaultBulkSize;
@@ -118,7 +115,7 @@ class ReindexCommand extends EmsCommand
         $em = $this->doctrine->getManager();
 
         /** @var ContentTypeRepository $ctRepo */
-        $ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
+        $ctRepo = $em->getRepository(ContentType::class);
 
         $contentTypeName = $input->getArgument('content-type');
         if (\is_string($contentTypeName)) {
@@ -154,9 +151,9 @@ class ReindexCommand extends EmsCommand
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
         /** @var EnvironmentRepository $envRepo */
-        $envRepo = $em->getRepository('EMSCoreBundle:Environment');
+        $envRepo = $em->getRepository(Environment::class);
         /** @var RevisionRepository $revRepo */
-        $revRepo = $em->getRepository('EMSCoreBundle:Revision');
+        $revRepo = $em->getRepository(Revision::class);
         $environment = $envRepo->findBy(['name' => $name, 'managed' => true]);
 
         if ($environment && 1 == \count($environment)) {

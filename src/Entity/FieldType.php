@@ -9,6 +9,7 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType;
+use EMS\Helpers\Standard\DateTime;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -20,6 +21,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class FieldType extends JsonDeserializer implements \JsonSerializable
 {
+    use CreatedModifiedTrait;
     public const DISPLAY_OPTIONS = 'displayOptions';
     /**
      * @var int
@@ -29,20 +31,6 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    protected $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    protected $modified;
 
     /**
      * @var string
@@ -108,16 +96,14 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      */
     protected Collection $children;
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
+    public function __construct()
     {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
+        $this->children = new ArrayCollection();
+        $this->deleted = false;
+        $this->orderKey = 0;
+
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     /**
@@ -141,20 +127,6 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return FieldType
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
     }
 
     public function updateOrderKeys(): void
@@ -218,40 +190,6 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function getDataValue(DataField &$dataField): void
     {
         throw new \Exception('Deprecated method');
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return FieldType
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**
@@ -600,16 +538,6 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $parent->contentType;
     }
 
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        $this->children = new ArrayCollection();
-        $this->deleted = false;
-        $this->orderKey = 0;
-    }
-
 //     /**
 //      * Cette focntion clone casse le CollectionFieldType => impossible d'ajouter un record
 //      */
@@ -775,16 +703,15 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function getChildByPath(string $path)
     {
         $elem = \explode('.', $path);
-        if (!empty($elem)) {
-            /** @var FieldType $child */
-            foreach ($this->children as $child) {
-                if (!$child->getDeleted() && $child->getName() == $elem[0]) {
-                    if (\strpos($path, '.')) {
-                        return $child->getChildByPath(\substr($path, \strpos($path, '.') + 1));
-                    }
 
-                    return $child;
+        /** @var FieldType $child */
+        foreach ($this->children as $child) {
+            if (!$child->getDeleted() && $child->getName() == $elem[0]) {
+                if (\strpos($path, '.')) {
+                    return $child->getChildByPath(\substr($path, \strpos($path, '.') + 1));
                 }
+
+                return $child;
             }
         }
 

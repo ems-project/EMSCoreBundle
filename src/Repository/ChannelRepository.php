@@ -11,6 +11,13 @@ use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Exception\NotFoundException;
 
+/**
+ * @extends ServiceEntityRepository<Channel>
+ *
+ * @method Channel|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Channel|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Channel[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 final class ChannelRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
@@ -82,8 +89,7 @@ final class ChannelRepository extends ServiceEntityRepository
 
     public function getById(string $id): Channel
     {
-        $channel = $this->find($id);
-        if (!$channel instanceof Channel) {
+        if (null === $channel = $this->find($id)) {
             throw new \RuntimeException('Unexpected channel type');
         }
 
@@ -124,8 +130,7 @@ final class ChannelRepository extends ServiceEntityRepository
 
     public function getByName(string $name): ?Channel
     {
-        $channel = $this->findOneBy(['name' => $name]);
-        if (null !== $channel && !$channel instanceof Channel) {
+        if (null === $channel = $this->findOneBy(['name' => $name])) {
             throw new \RuntimeException('Unexpected channel type');
         }
 

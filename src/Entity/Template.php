@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
+use EMS\Helpers\Standard\DateTime;
 use EMS\Helpers\Standard\Type;
 
 /**
@@ -15,22 +16,13 @@ use EMS\Helpers\Standard\Type;
  */
 class Template extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected ?int $id = null;
-
-    /**
-     * @ORM\Column(name="created", type="datetime")
-     */
-    protected \DateTime $created;
-
-    /**
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    protected \DateTime $modified;
 
     /**
      * @ORM\Column(name="name", type="string", length=255)
@@ -183,9 +175,8 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         $this->environments = new \Doctrine\Common\Collections\ArrayCollection();
         $this->public = false;
 
-        $now = new \DateTime();
-        $this->created = $now;
-        $this->modified = $now;
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
         $this->role = 'not-defined';
         $this->roleCc = 'not-defined';
         $this->roleTo = 'not-defined';
@@ -195,12 +186,8 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified(): void
+    public function updateOrder(): void
     {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
         if (!isset($this->orderKey)) {
             $this->orderKey = 0;
         }
@@ -209,30 +196,6 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     public function getId(): int
     {
         return Type::integer($this->id);
-    }
-
-    public function setCreated(\DateTime $created): self
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    public function getCreated(): \DateTime
-    {
-        return $this->created;
-    }
-
-    public function setModified(\DateTime $modified): self
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    public function getModified(): \DateTime
-    {
-        return $this->modified;
     }
 
     public function setName(?string $name): self

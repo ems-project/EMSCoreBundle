@@ -22,6 +22,11 @@ final class DocumentInfo
         $this->revisions = $revisions;
     }
 
+    public function getId(): EMSLink
+    {
+        return $this->id;
+    }
+
     public function getRevision(string $environmentName): ?Revision
     {
         foreach ($this->revisions as $revision) {

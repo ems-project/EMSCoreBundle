@@ -14,7 +14,7 @@ class QueryTable extends TableAbstract
      */
     private $context;
     private QueryServiceInterface $service;
-    private $queryName;
+    private string $queryName;
     private bool $massAction = true;
     private string $idField = 'id';
 

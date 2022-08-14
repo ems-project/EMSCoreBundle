@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Security\CoreLdapUser;
+use EMS\Helpers\Standard\DateTime;
 use EMS\Helpers\Standard\Type;
 
 /**
@@ -16,22 +17,13 @@ use EMS\Helpers\Standard\Type;
  */
 class User implements UserInterface, EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private ?int $id = null;
-
-    /**
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private \DateTime $created;
-
-    /**
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private \DateTime $modified;
 
     /**
      * @var string[]
@@ -166,26 +158,13 @@ class User implements UserInterface, EntityInterface
         $this->roles = [];
         $this->locale = self::DEFAULT_LOCALE;
 
-        $now = new \DateTime();
-        $this->created = $now;
-        $this->modified = $now;
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     public function __clone()
     {
         $this->authTokens = new ArrayCollection();
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
-    {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
     }
 
     public static function fromCoreLdap(CoreLdapUser $ldapUser): self
@@ -241,36 +220,12 @@ class User implements UserInterface, EntityInterface
         $this->localePreferred = $localePreferred;
     }
 
-    public function getCreated(): \DateTime
-    {
-        return $this->created;
-    }
-
-    public function getModified(): \DateTime
-    {
-        return $this->modified;
-    }
-
     /**
      * {@inheritDoc}
      */
     public function getCircles(): array
     {
         return $this->circles;
-    }
-
-    public function setCreated(\DateTime $created): self
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    public function setModified(\DateTime $modified): self
-    {
-        $this->modified = $modified;
-
-        return $this;
     }
 
     /**

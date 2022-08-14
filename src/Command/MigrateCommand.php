@@ -14,7 +14,6 @@ use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Service\DocumentService;
-use EMS\CoreBundle\Service\Revision\RevisionService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,7 +23,6 @@ class MigrateCommand extends AbstractCommand
 {
     protected static $defaultName = 'ems:contenttype:migrate';
 
-    private RevisionService $revisionService;
     private ElasticaService $elasticaService;
     protected Registry $doctrine;
     private DocumentService $documentService;
@@ -55,18 +53,16 @@ class MigrateCommand extends AbstractCommand
     private const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
 
     public function __construct(
-        RevisionService $revisionService,
         Registry $doctrine,
         ElasticaService $elasticaService,
         DocumentService $documentService)
     {
-        $this->revisionService = $revisionService;
         $this->doctrine = $doctrine;
         $this->elasticaService = $elasticaService;
         $this->documentService = $documentService;
 
         $em = $this->doctrine->getManager();
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepository = $em->getRepository(ContentType::class);
         if (!$contentTypeRepository instanceof ContentTypeRepository) {
             throw new \Exception('Wrong ContentTypeRepository repository instance');
         }
@@ -192,8 +188,13 @@ class MigrateCommand extends AbstractCommand
         }
         $this->scrollTimeout = $scrollTimeout;
 
-        $options = \array_values($input->getOptions());
-        list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->dontFinalize, $this->onlyChanged) = $options;
+        $this->bulkSize = (int) $input->getOption('bulkSize');
+        $this->forceImport = (bool) $input->getOption('forceImport');
+        $this->rawImport = (bool) $input->getOption('rawImport');
+        $this->signData = (bool) $input->getOption('signData');
+        $this->searchQuery = $input->getOption('searchQuery');
+        $this->dontFinalize = (bool) $input->getOption('dontFinalize');
+        $this->onlyChanged = (bool) $input->getOption('onlyChanged');
 
         $contentTypeTo = $this->contentTypeRepository->findByName($this->contentTypeNameTo);
         if (null === $contentTypeTo || !$contentTypeTo instanceof ContentType) {

@@ -9,6 +9,13 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Dashboard;
 
+/**
+ * @extends ServiceEntityRepository<Dashboard>
+ *
+ * @method Dashboard|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Dashboard|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Dashboard[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 final class DashboardRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
@@ -85,8 +92,7 @@ final class DashboardRepository extends ServiceEntityRepository
 
     public function getById(string $id): Dashboard
     {
-        $dashboard = $this->find($id);
-        if (!$dashboard instanceof Dashboard) {
+        if (null === $dashboard = $this->find($id)) {
             throw new \RuntimeException('Unexpected dashboard type');
         }
 
@@ -126,8 +132,7 @@ final class DashboardRepository extends ServiceEntityRepository
 
     public function getByName(string $name): ?Dashboard
     {
-        $dashboard = $this->findOneBy(['name' => $name]);
-        if (null !== $dashboard && !$dashboard instanceof Dashboard) {
+        if (null === $dashboard = $this->findOneBy(['name' => $name])) {
             throw new \RuntimeException('Unexpected dashboard type');
         }
 
@@ -136,8 +141,7 @@ final class DashboardRepository extends ServiceEntityRepository
 
     public function getQuickSearch(): ?Dashboard
     {
-        $dashboard = $this->findOneBy(['quickSearch' => true]);
-        if (null !== $dashboard && !$dashboard instanceof Dashboard) {
+        if (null === $dashboard = $this->findOneBy(['quickSearch' => true])) {
             throw new \RuntimeException('Unexpected dashboard type');
         }
 
@@ -146,8 +150,7 @@ final class DashboardRepository extends ServiceEntityRepository
 
     public function getLandingPage(): ?Dashboard
     {
-        $dashboard = $this->findOneBy(['landingPage' => true]);
-        if (null !== $dashboard && !$dashboard instanceof Dashboard) {
+        if (null === $dashboard = $this->findOneBy(['landingPage' => true])) {
             throw new \RuntimeException('Unexpected dashboard type');
         }
 

@@ -2,12 +2,10 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Common\Document;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
 use EMS\Helpers\Standard\Type;
-use Psr\Log\LoggerInterface;
 use Twig\Environment;
 use Twig\TemplateWrapper;
 
@@ -20,19 +18,15 @@ class TemplateService
     public const MERGED_XML_FORMAT = 'merged-xml';
     public const EXPORT_FORMATS = [self::JSON_FORMAT, self::XML_FORMAT, self::MERGED_JSON_FORMAT, self::MERGED_XML_FORMAT];
 
-    private LoggerInterface $logger;
-    private Registry $doctrine;
     private Environment $twig;
     private Template $template;
 
     private ?TemplateWrapper $twigTemplate = null;
     private ?TemplateWrapper $filenameTwigTemplate = null;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Environment $twig)
+    public function __construct(Environment $twig)
     {
         $this->twig = $twig;
-        $this->doctrine = $doctrine;
-        $this->logger = $logger;
     }
 
     public function getTemplate(): Template

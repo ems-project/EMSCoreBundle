@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\AuthTokenRepository")
@@ -13,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AuthToken
 {
+    use CreatedModifiedTrait;
     /**
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
@@ -30,20 +32,6 @@ class AuthToken
     protected $value;
 
     /**
-     * @ORM\Column(name="created", type="datetime")
-     *
-     * @var \DateTime
-     */
-    protected $created;
-
-    /**
-     * @ORM\Column(name="modified", type="datetime")
-     *
-     * @var \DateTime
-     */
-    protected $modified;
-
-    /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="authTokens")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *
@@ -58,18 +46,9 @@ class AuthToken
     {
         $this->value = \base64_encode(\random_bytes(50));
         $this->user = $user;
-    }
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
-    {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     /**
@@ -104,54 +83,6 @@ class AuthToken
     public function getValue()
     {
         return $this->value;
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return AuthToken
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return AuthToken
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**

@@ -4,10 +4,10 @@ namespace EMS\CoreBundle\Elasticsearch\Index;
 
 class Settings
 {
-    /** @var array<array> */
+    /** @var array<array<mixed>> */
     private $filters = [];
 
-    /** @var array<array> */
+    /** @var array<array<mixed>> */
     private $analyzers = [];
 
     /** @var array<string> */

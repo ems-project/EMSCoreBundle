@@ -9,6 +9,11 @@ use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
 
+/**
+ * @extends ServiceEntityRepository<Template>
+ *
+ * @method Template[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class TemplateRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)

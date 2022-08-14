@@ -8,6 +8,9 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use EMS\CoreBundle\Entity\FormVerification;
 
+/**
+ * @extends ServiceEntityRepository<FormVerification>
+ */
 class FormVerificationRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)

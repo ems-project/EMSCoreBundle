@@ -151,7 +151,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
         $object = $reflectionClass->newInstanceArgs($constructorArguments);
 
         unset($data['__jsonclass__']);
-        $options = [];
+
         foreach ($data as $property => $value) {
             if ('fieldType' == $property && \method_exists($object, 'setFieldType')) {
                 $object->setFieldType($this->denormalize($value, $class, $format, $context));
@@ -183,9 +183,6 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                     $object->$setter($value);
                 }
             }
-        }
-        if (!empty($options) && \method_exists($object, 'setOptions')) {
-            $object->setOptions($options);
         }
 
         return $object;

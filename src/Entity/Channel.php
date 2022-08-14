@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
+use EMS\Helpers\Standard\DateTime;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -18,6 +19,7 @@ use Ramsey\Uuid\UuidInterface;
  */
 class Channel extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @var UuidInterface
      *
@@ -27,20 +29,6 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
     private $id;
-
-    /**
-     * @var \Datetime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \Datetime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
 
     /**
      * @ORM\Column(name="name", type="string", length=255, unique=true)
@@ -69,26 +57,22 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
     protected $label;
 
     /**
-     * @var array<string, mixed>
+     * @var ?array<string, mixed>
      *
      * @ORM\Column(name="options", type="json", nullable=true)
      */
-    protected $options;
+    protected ?array $options = null;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="order_key", type="integer")
      */
-    protected $orderKey;
+    protected int $orderKey = 0;
 
     public function __construct()
     {
-        $now = new \DateTime();
-
         $this->id = Uuid::uuid4();
-        $this->created = $now;
-        $this->modified = $now;
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
         $this->public = false;
         $this->options = [
             'translationContentType' => 'label',
@@ -112,15 +96,6 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
     public function getId(): string
     {
         return $this->id->toString();
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
-    {
-        $this->modified = new \DateTime();
     }
 
     public function getName(): string
@@ -163,16 +138,6 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
         $this->public = $public;
     }
 
-    public function getCreated(): \Datetime
-    {
-        return $this->created;
-    }
-
-    public function getModified(): \Datetime
-    {
-        return $this->modified;
-    }
-
     /**
      * @return array<string, mixed>
      */
@@ -184,14 +149,14 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
     /**
      * @param array<string, mixed> $options
      */
-    public function setOptions(array $options): void
+    public function setOptions(?array $options = null): void
     {
         $this->options = $options;
     }
 
     public function getOrderKey(): int
     {
-        return $this->orderKey ?? 0;
+        return $this->orderKey;
     }
 
     public function setOrderKey(int $orderKey): void
@@ -201,7 +166,7 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
 
     public function getEntryPath(): ?string
     {
-        $entryPath = $this->options['entryPath'];
+        $entryPath = $this->getOptions()['entryPath'];
 
         if (!\is_string($entryPath) || 0 === \strlen($entryPath)) {
             return null;

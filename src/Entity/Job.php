@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * DataField.
@@ -15,6 +16,7 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
  */
 class Job extends JsonDeserializer implements \JsonSerializable, \EMS\CommonBundle\Entity\EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -23,20 +25,6 @@ class Job extends JsonDeserializer implements \JsonSerializable, \EMS\CommonBund
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
 
     /**
      * @var string
@@ -87,16 +75,10 @@ class Job extends JsonDeserializer implements \JsonSerializable, \EMS\CommonBund
      */
     protected $command;
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
+    public function __construct()
     {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     public function getId(): int
@@ -104,33 +86,9 @@ class Job extends JsonDeserializer implements \JsonSerializable, \EMS\CommonBund
         return $this->id;
     }
 
-    public function setCreated(\DateTime $created): Job
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    public function getCreated(): \DateTime
-    {
-        return $this->created;
-    }
-
     public function getStarted(): bool
     {
         return $this->started;
-    }
-
-    public function setModified(\DateTime $modified): Job
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    public function getModified(): \DateTime
-    {
-        return $this->modified;
     }
 
     public function setUser(string $user): Job

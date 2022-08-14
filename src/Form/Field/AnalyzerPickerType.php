@@ -71,7 +71,7 @@ class AnalyzerPickerType extends SelectPickerType
         ];
 
         /** @var AnalyzerRepository $repository */
-        $repository = $this->doctrine->getRepository('EMSCoreBundle:Analyzer');
+        $repository = $this->doctrine->getRepository(Analyzer::class);
         /** @var Analyzer $analyzer */
         foreach ($repository->findAll() as $analyzer) {
             $choices['Customized'][$analyzer->getLabel()] = $analyzer->getName();

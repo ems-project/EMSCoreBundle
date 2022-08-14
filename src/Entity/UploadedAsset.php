@@ -4,7 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CommonBundle\Storage\StorageManager;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * DataField.
@@ -15,6 +15,7 @@ use EMS\CommonBundle\Storage\StorageManager;
  */
 class UploadedAsset implements EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -23,20 +24,6 @@ class UploadedAsset implements EntityInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
 
     /**
      * @var string
@@ -116,23 +103,10 @@ class UploadedAsset implements EntityInterface
      */
     private ?array $headIn;
 
-    private StorageManager $storageManager;
-
-    public function __construct(StorageManager $storageManager)
+    public function __construct()
     {
-        $this->storageManager = $storageManager;
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
-    {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     /**
@@ -160,54 +134,6 @@ class UploadedAsset implements EntityInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return UploadedAsset
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return UploadedAsset
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**

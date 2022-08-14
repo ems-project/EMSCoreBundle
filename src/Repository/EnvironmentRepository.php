@@ -9,6 +9,8 @@ use EMS\CoreBundle\Entity\Environment;
 use Throwable;
 
 /**
+ * @extends EntityRepository<Environment>
+ *
  * @method Environment|null find($id, $lockMode = null, $lockVersion = null)
  * @method Environment|null findOneBy(array $criteria, array $orderBy = null)
  */

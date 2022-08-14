@@ -13,6 +13,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -80,6 +81,7 @@ class IndexFileCommand extends EmsCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Please do a backup of your DB first!');
+        /** @var QuestionHelper $helper */
         $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion('Continue?', false);
 
@@ -109,7 +111,7 @@ class IndexFileCommand extends EmsCommand
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var RevisionRepository $revisionRepository */
-        $revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
+        $revisionRepository = $em->getRepository(Revision::class);
 
         $total = $revisionRepository->countByContentType($contentType);
 
@@ -211,7 +213,7 @@ class IndexFileCommand extends EmsCommand
                 if (null === $file && isset($rawData['content'])) {
                     $fileContent = \base64_decode($rawData['content']);
 
-                    if (\sha1($fileContent) === $rawData[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null) {
+                    if (\sha1($fileContent) === $rawData[EmsFields::CONTENT_FILE_HASH_FIELD]) {
                         $file = $this->fileService->temporaryFilename($rawData[EmsFields::CONTENT_FILE_HASH_FIELD]);
                         \file_put_contents($file, $fileContent);
                         try {

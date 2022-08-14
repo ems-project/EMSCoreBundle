@@ -62,7 +62,7 @@ class PublishService
         $this->bulker = $bulker;
 
         /** @var RevisionRepository $revRepository */
-        $revRepository = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Revision');
+        $revRepository = $this->doctrine->getManager()->getRepository(Revision::class);
         $this->revRepository = $revRepository;
     }
 

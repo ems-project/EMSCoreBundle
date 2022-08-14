@@ -8,6 +8,11 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use EMS\CoreBundle\Entity\Form\Search;
 
+/**
+ * @extends ServiceEntityRepository<Search>
+ *
+ * @method Search[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class SearchRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)

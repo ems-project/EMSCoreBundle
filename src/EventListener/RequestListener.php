@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
@@ -107,7 +108,7 @@ class RequestListener
     public function provideTemplateTwigObjects(ControllerEvent $event): void
     {
         //TODO: move to twig appextension?
-        $repository = $this->doctrine->getRepository('EMSCoreBundle:ContentType');
+        $repository = $this->doctrine->getRepository(ContentType::class);
         $contentTypes = $repository->findBy([
                 'deleted' => false,
 //                 'rootContentType' => true,
@@ -117,7 +118,7 @@ class RequestListener
 
         $this->twig->addGlobal('contentTypes', $contentTypes);
 
-        $envRepository = $this->doctrine->getRepository('EMSCoreBundle:Environment');
+        $envRepository = $this->doctrine->getRepository(Environment::class);
         $contentTypes = $envRepository->findBy([
                 'inDefaultSearch' => true,
         ]);

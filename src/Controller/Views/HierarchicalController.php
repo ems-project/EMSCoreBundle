@@ -6,7 +6,6 @@ use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\SearchService;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -14,12 +13,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class HierarchicalController extends AbstractController
 {
     private ContentTypeService $contentTypeService;
-    private LoggerInterface $logger;
     private SearchService $searchService;
 
-    public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, SearchService $searchService)
+    public function __construct(ContentTypeService $contentTypeService, SearchService $searchService)
     {
-        $this->logger = $logger;
         $this->contentTypeService = $contentTypeService;
         $this->searchService = $searchService;
     }

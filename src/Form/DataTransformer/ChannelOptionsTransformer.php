@@ -6,6 +6,9 @@ namespace EMS\CoreBundle\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * @implements DataTransformerInterface<mixed, mixed>
+ */
 final class ChannelOptionsTransformer implements DataTransformerInterface
 {
     public function transform($value)
@@ -38,7 +41,7 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
         if (null === $formatted) {
             $formatted = $value[$attribute] ?? '';
         } else {
-            $formatted = \json_encode($formatted ?? '', JSON_PRETTY_PRINT);
+            $formatted = \json_encode($formatted, JSON_PRETTY_PRINT);
         }
 
         return $formatted;

@@ -313,8 +313,7 @@ final class TaskController extends AbstractController
 
     public function ajaxReorder(Request $request, int $revisionId): JsonResponse
     {
-        $content = $request->getContent();
-        $data = \is_string($content) ? Json::decode($content) : [];
+        $data = Json::decode($request->getContent());
         $taskIds = $data['taskIds'] ?? [];
 
         try {

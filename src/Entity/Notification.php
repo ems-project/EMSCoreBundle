@@ -3,16 +3,16 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\Helpers\Standard\DateTime;
 
 /**
- * Notification.
- *
  * @ORM\Table(name="notification")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\NotificationRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Notification
 {
+    use CreatedModifiedTrait;
     public const PENDING = 'pending';
 
     /**
@@ -23,20 +23,6 @@ class Notification
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
 
     /**
      * @ORM\ManyToOne(targetEntity="Template")
@@ -112,21 +98,15 @@ class Notification
 
     private int $counter = 0;
 
+    public function __construct()
+    {
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
+    }
+
     public function __toString()
     {
         return $this->getTemplate()->getName().'#'.$this->id;
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified(): void
-    {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
     }
 
     /**
@@ -137,54 +117,6 @@ class Notification
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return Notification
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return Notification
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**

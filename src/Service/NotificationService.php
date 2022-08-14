@@ -17,7 +17,6 @@ use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Repository\NotificationRepository;
-use EMS\CoreBundle\Repository\TemplateRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Swift_Message;
@@ -39,14 +38,12 @@ class NotificationService
     private TwigEnvironment $twig;
 
     private bool $dryRun;
-    private TemplateRepository $actionRepository;
 
     /**
      * @param array{address: string, sender_name: string} $sender
      */
     public function __construct(
         Registry $doctrine,
-        TemplateRepository $actionRepository,
         UserService $userService,
         LoggerInterface $logger,
         Container $container,
@@ -55,7 +52,6 @@ class NotificationService
         TwigEnvironment $twig
     ) {
         $this->doctrine = $doctrine;
-        $this->actionRepository = $actionRepository;
         $this->userService = $userService;
         $this->dataService = $dataService;
         $this->logger = $logger;
@@ -69,7 +65,7 @@ class NotificationService
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
         $notifications = $repository->findByRevisionOuuidAndEnvironment($event->getRevision(), $event->getEnvironment());
 
         foreach ($notifications as $notification) {
@@ -83,7 +79,7 @@ class NotificationService
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
         $notifications = $repository->findByRevisionOuuidAndEnvironment($event->getRevision(), $event->getEnvironment());
 
         foreach ($notifications as $notification) {
@@ -95,7 +91,7 @@ class NotificationService
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
         $notifications = $repository->findByRevisionOuuidAndEnvironment($event->getRevision(), $event->getRevision()->giveContentType()->giveEnvironment());
 
         foreach ($notifications as $notification) {
@@ -109,7 +105,7 @@ class NotificationService
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
         $notifications = $repository->findByRevisionOuuidAndEnvironment($event->getRevision(), $event->getRevision()->giveContentType()->giveEnvironment());
 
         foreach ($notifications as $notification) {
@@ -185,7 +181,7 @@ class NotificationService
 
             $em = $this->doctrine->getManager();
             /** @var NotificationRepository $repository */
-            $repository = $em->getRepository('EMSCoreBundle:Notification');
+            $repository = $em->getRepository(Notification::class);
 
             $alreadyPending = $repository->findBy([
                     'template' => $template,
@@ -277,7 +273,7 @@ class NotificationService
 
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
 
         $count = $repository->countPendingByUserRoleAndCircle($this->userService->getCurrentUser(), $contentTypes, $environments, $templates);
         $count += $repository->countRejectedForUser($this->userService->getCurrentUser());
@@ -289,7 +285,7 @@ class NotificationService
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
 
         return $repository->countPendingByUserRoleAndCircle($this->userService->getCurrentUser());
     }
@@ -298,7 +294,7 @@ class NotificationService
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
 
         return $repository->countForSent($this->userService->getCurrentUser());
     }
@@ -307,7 +303,7 @@ class NotificationService
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
 
         return $repository->countRejectedForUser($this->userService->getCurrentUser());
     }
@@ -335,7 +331,7 @@ class NotificationService
 
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
 
         return $repository->findRejectedForUser($this->userService->getCurrentUser(), $from, $limit, $contentTypes, $environments, $templates);
     }
@@ -365,7 +361,7 @@ class NotificationService
 
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
         $notifications = $repository->findByPendingAndUserRoleAndCircle($this->userService->getCurrentUser(), $from, $limit, $contentTypes, $environments, $templates);
 
         foreach ($notifications as $notification) {
@@ -402,7 +398,7 @@ class NotificationService
 
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
         $notifications = $repository->findByPendingAndUserRoleAndCircle($this->userService->getCurrentUser(), $from, $limit, $contentTypes, $environments, $templates);
 
         foreach ($notifications as $notification) {
@@ -437,7 +433,7 @@ class NotificationService
 
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
         $notifications = $repository->findByPendingAndRoleAndCircleForUserSent($this->userService->getCurrentUser(), $from, $limit, $contentTypes, $environments, $templates);
 
 //         /**@var Notification $notification*/

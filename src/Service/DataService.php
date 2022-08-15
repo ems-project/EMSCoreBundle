@@ -238,14 +238,13 @@ class DataService
 
         $twigExtension = $this->container->get('app.twig_extension');
 
-        if (!$username && $twigExtension instanceof AppExtension && $twigExtension->oneGranted($revision->giveContentType()->getFieldType()->getFieldsRoles(), $super)) {
+        if (!$username && $twigExtension instanceof AppExtension && !$twigExtension->oneGranted($revision->giveContentType()->getFieldType()->getFieldsRoles(), $super)) {
             throw new PrivilegeException($revision);
         }
         //TODO: test circles
 
-        $this->revRepository->lockRevision(Type::integer($revision->getId()), $lockerUsername, new \DateTime($this->lockTime));
-
         $revision->setLockBy($lockerUsername);
+
         if ($username) {
             //lock by a console script
             $revision->setLockUntil(new \DateTime('+30 seconds'));

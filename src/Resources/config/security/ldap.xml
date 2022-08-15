@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <defaults public="false" />
+        <service id="ems.ldap_user_provider" class="EMS\CoreBundle\Security\CoreLdapUserProvider">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="EMS\CoreBundle\Security\LdapExtraFields"/>
+            <argument type="service" id="ems.service.user"/>
+            <argument type="service" id="Symfony\Component\Ldap\Ldap"/>
+            <argument key="$baseDn">%ems_core.ldap.base_dn%</argument>
+            <argument key="$searchDn">%ems_core.ldap.search_dn%</argument>
+            <argument key="$searchPassword">%ems_core.ldap.search_password%</argument>
+            <argument key="$defaultRoles">%ems_core.ldap.default_roles%</argument>
+            <argument key="$uidKey">%ems_core.ldap.uid_key%</argument>
+            <argument key="$filter">%ems_core.ldap.filter%</argument>
+            <argument key="$passwordAttribute">%ems_core.ldap.password_attribute%</argument>
+            <argument key="$extraFields">%ems_core.ldap.extra_fields%</argument>
+        </service>
+        <service id="EMS\CoreBundle\Security\LdapExtraFields">
+            <argument key="$email">%ems_core.ldap.email_field%</argument>
+            <argument key="$displayName">%ems_core.ldap.display_name_field%</argument>
+            <argument key="$givenName">%ems_core.ldap.given_name_field%</argument>
+            <argument key="$lastName">%ems_core.ldap.last_name_field%</argument>
+        </service>
+    </services>
+</container>

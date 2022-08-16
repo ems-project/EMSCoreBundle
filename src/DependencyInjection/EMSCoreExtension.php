@@ -27,7 +27,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $yamlLoader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $xmlLoader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $xmlLoader->load('command.xml');
         $xmlLoader->load('contracts.xml');
@@ -37,7 +36,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $xmlLoader->load('repositories.xml');
         $xmlLoader->load('view_types.xml');
         $xmlLoader->load('dashboards.xml');
-        $yamlLoader->load('services.yml');
         $xmlLoader->load('controllers.xml');
         $xmlLoader->load('services.xml');
         $xmlLoader->load('twig.xml');

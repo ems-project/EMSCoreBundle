@@ -14,9 +14,13 @@
             <argument type="service" id="request_stack"/>
             <argument>null</argument> <!-- remember_me service -->
         </service>
-
         <service id="ems_core.security.core_user_provider" class="EMS\CoreBundle\Security\CoreUserProvider">
             <argument type="service" id="ems.repository.user"/>
         </service>
+
+        <service id="api_key_user_provider" class="EMS\CoreBundle\Security\ApiKeyUserProvider">
+            <argument type="service" id="ems.service.user" />
+        </service>
+        <service id="apikey_authenticator" class="EMS\CoreBundle\Security\ApiKeyAuthenticator" />
     </services>
 </container>

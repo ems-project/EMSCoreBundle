@@ -27,7 +27,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $yamlLoader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $xmlLoader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $xmlLoader->load('command.xml');
         $xmlLoader->load('contracts.xml');
@@ -37,11 +36,10 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $xmlLoader->load('repositories.xml');
         $xmlLoader->load('view_types.xml');
         $xmlLoader->load('dashboards.xml');
-        $yamlLoader->load('services.yml');
         $xmlLoader->load('controllers.xml');
         $xmlLoader->load('services.xml');
-        $xmlLoader->load('runtime.xml');
-        $xmlLoader->load('security.xml');
+        $xmlLoader->load('twig.xml');
+        $xmlLoader->load('security/security.xml');
 
         $container->setParameter('ems_core.from_email', $config['from_email']);
         $container->setParameter('ems_core.instance_id', $config['instance_id']);
@@ -77,7 +75,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.security.firewall.core', $config['security']['firewall']['core']);
         $container->setParameter('ems_core.security.firewall.api', $config['security']['firewall']['api']);
 
-        $this->loadLdap($container, $yamlLoader, $config['ldap'] ?? []);
+        $this->loadLdap($container, $xmlLoader, $config['ldap'] ?? []);
     }
 
     public function prepend(ContainerBuilder $container): void
@@ -159,13 +157,13 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
     /**
      * @param array<string, mixed> $ldapConfig
      */
-    private function loadLdap(ContainerBuilder $container, Loader\YamlFileLoader $loader, array $ldapConfig): void
+    private function loadLdap(ContainerBuilder $container, Loader\XmlFileLoader $loader, array $ldapConfig): void
     {
         if ([] === $ldapConfig) {
             return;
         }
 
-        $loader->load('ldap.yml');
+        $loader->load('security/ldap.xml');
         foreach ($ldapConfig as $name => $value) {
             $reference = \sprintf('ems_core.ldap.%s', $name);
             $container->setParameter($reference, $value);

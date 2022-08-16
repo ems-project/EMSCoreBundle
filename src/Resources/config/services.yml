@@ -24,11 +24,11 @@ services:
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@logger', '@ems_common.elastica.client', '@EMS\CoreBundle\Repository\EnvironmentRepository', '@EMS\CoreBundle\Repository\ManagedAliasRepository', '@ems_common.service.elastica']
-    EMS\CoreBundle\Service\AliasService: '@ems.service.alias'
+
     ems.service.index:
         class: EMS\CoreBundle\Service\IndexService
         arguments: ['@ems.service.alias', '@ems_common.elastica.client', '@ems.service.contenttype', '@logger', '@ems.service.mapping']
-    EMS\CoreBundle\Service\IndexService: '@ems.service.index'
+
     ems.elasticsearch.bulker:
         class: EMS\CoreBundle\Elasticsearch\Bulker
         arguments:
@@ -43,12 +43,12 @@ services:
             - '@logger'
             - '@ems.service.mapping'
             - '@ems.service.alias'
-    ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
+
     EMS\CoreBundle\Service\EnvironmentService:
         arguments: ['@doctrine',  '@ems.service.user', '@security.authorization_checker', '@logger', '@ems_common.service.elastica', '%ems_core.instance_id%']
         tags:
             - { name: emsco.entity.service }
-    ems.service.contenttype: '@EMS\CoreBundle\Service\ContentTypeService'
+
     EMS\CoreBundle\Service\ContentTypeService:
         arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@ems_common.service.elastica', '@ems.service.environment', '@security.authorization_checker', '@EMS\CoreBundle\Repository\RevisionRepository', '@security.token_storage', '%ems_core.circles_object%']
         tags:
@@ -89,7 +89,7 @@ services:
             - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionFinalizeDraftEvent, method: finalizeDraftEvent, priority: 0 }
             - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionPublishEvent, method: publishEvent, priority: 0 }
             - { name: kernel.event_listener, event: EMS\CoreBundle\Event\RevisionUnpublishEvent, method: unpublishEvent, priority: 0 }
-    ems.service.i18n: '@EMS\CoreBundle\Service\I18nService'
+
     EMS\CoreBundle\Service\I18nService:
         class: EMS\CoreBundle\Service\I18nService
         arguments: ['@ems.repository.i18n']
@@ -117,7 +117,7 @@ services:
     ems.service.template:
         class: EMS\CoreBundle\Service\TemplateService
         arguments: ['@twig']
-    ems.service.job: '@EMS\CoreBundle\Service\JobService'
+
     EMS\CoreBundle\Service\JobService:
         class: EMS\CoreBundle\Service\JobService
         arguments: ['@doctrine', '@kernel', '@logger', '@EMS\CoreBundle\Repository\JobRepository', '@security.token_storage']
@@ -126,15 +126,15 @@ services:
     ems.service.document:
         class: EMS\CoreBundle\Service\DocumentService
         arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '@EMS\CoreBundle\Repository\RevisionRepository']
-    EMS\CoreBundle\Service\ActionService: '@ems.service.action'
+
     ems.service.action:
         class: EMS\CoreBundle\Service\ActionService
         arguments: ['@ems.repository.template', '@logger']
-    EMS\CoreBundle\Service\ReleaseService: '@ems.service.release'
+
     ems.service.release:
         class: EMS\CoreBundle\Service\ReleaseService
         arguments: ['@ems.repository.release', '@ems.service.contenttype' ,'@ems.service.data', '@ems.service.release_revision', '@ems.service.publish','@logger']
-    EMS\CoreBundle\Service\ReleaseRevisionService: '@ems.service.release_revision'
+
     ems.service.release_revision:
         class: EMS\CoreBundle\Service\ReleaseRevisionService
         arguments: ['@ems.repository.release_revision', '@EMS\CoreBundle\Repository\RevisionRepository', '@logger', '@ems.service.contenttype', '@ems.service.user']
@@ -149,31 +149,3 @@ services:
     ems.form_verification:
         class: EMS\CoreBundle\Service\Form\Verification\FormVerificationService
         arguments: ['@ems.repository.form_verification']
-
-
-#### aliases
-    EMS\CoreBundle\Elasticsearch\Bulker: '@ems.elasticsearch.bulker'
-    EMS\CoreBundle\Elasticsearch\Indexer: '@ems.elasticsearch.indexer'
-    EMS\CoreBundle\Service\FileService: '@ems.service.file'
-    EMS\CoreBundle\Service\ElasticsearchService: '@ems.service.elasticsearch'
-    EMS\CoreBundle\Service\AssetExtractorService: '@ems.service.asset_extractor'
-    EMS\CoreBundle\Service\UserService: '@ems.service.user'
-    EMS\CommonBundle\Helper\Text\Encoder: '@ems_common.text.encoder'
-    EMS\CoreBundle\Service\SearchService: '@ems.service.search'
-    EMS\CoreBundle\Service\PublishService: '@ems.service.publish'
-    EMS\CoreBundle\Service\AggregateOptionService: '@ems.service.aggregate_option'
-    EMS\CoreBundle\Service\Mapping: '@ems.service.mapping'
-    EMS\CoreBundle\Service\SortOptionService: '@ems.service.sort_option'
-    EMS\CoreBundle\Service\WysiwygProfileService: '@ems.service.wysiwyg_profile'
-    EMS\CoreBundle\Service\SearchFieldOptionService: '@ems.service.search_field_option'
-    EMS\CoreBundle\Service\WysiwygStylesSetService: '@ems.service.wysiwyg_styles_set'
-    EMS\CoreBundle\Service\NotificationService: '@ems.service.notification'
-    EMS\CoreBundle\Service\HelperService: '@ems.service.helper'
-    EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory: '@ems.form.factories.objectChoiceListFactory'
-    EMS\CoreBundle\Core\Revision\Task\TaskManager: '@ems_core.core_revision_task.task_manager'
-
-
-#### Will be mark as deprecated soon
-    ems.service.data:
-        alias: 'EMS\CoreBundle\Service\DataService'
-        public: true

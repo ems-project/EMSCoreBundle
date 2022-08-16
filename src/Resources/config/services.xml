@@ -189,5 +189,37 @@
             <argument type="service" id="ems.repository.user" />
             <argument type="service" id="security.password_encoder" />
         </service>
+
+        <!-- Aliases -->
+        <service id="ems.service.data" alias="EMS\CoreBundle\Service\DataService" public="true"/>
+        <service id="ems.service.environment" alias="EMS\CoreBundle\Service\EnvironmentService" />
+        <service id="ems.service.contenttype" alias="EMS\CoreBundle\Service\ContentTypeService" />
+        <service id="ems.service.i18n" alias="EMS\CoreBundle\Service\I18nService" />
+        <service id="ems.service.job" alias="EMS\CoreBundle\Service\JobService" />
+
+        <service id="EMS\CoreBundle\Service\AliasService" alias="ems.service.alias" />
+        <service id="EMS\CoreBundle\Service\IndexService" alias="ems.service.index" />
+        <service id="EMS\CoreBundle\Service\ActionService" alias="ems.service.action" />
+        <service id="EMS\CoreBundle\Service\ReleaseService" alias="ems.service.release" />
+        <service id="EMS\CoreBundle\Service\ReleaseRevisionService" alias="ems.service.release_revision" />
+        <service id="EMS\CoreBundle\Elasticsearch\Bulker" alias="ems.elasticsearch.bulker" />
+        <service id="EMS\CoreBundle\Elasticsearch\Indexer" alias="ems.elasticsearch.indexer" />
+        <service id="EMS\CoreBundle\Service\FileService" alias="ems.service.file" />
+        <service id="EMS\CoreBundle\Service\ElasticsearchService" alias="ems.service.elasticsearch" />
+        <service id="EMS\CoreBundle\Service\AssetExtractorService" alias="ems.service.asset_extractor" />
+        <service id="EMS\CoreBundle\Service\UserService" alias="ems.service.user" />
+        <service id="EMS\CommonBundle\Helper\Text\Encoder" alias="ems_common.text.encoder" />
+        <service id="EMS\CoreBundle\Service\SearchService" alias="ems.service.search" />
+        <service id="EMS\CoreBundle\Service\PublishService" alias="ems.service.publish" />
+        <service id="EMS\CoreBundle\Service\AggregateOptionService" alias="ems.service.aggregate_option" />
+        <service id="EMS\CoreBundle\Service\Mapping" alias="ems.service.mapping" />
+        <service id="EMS\CoreBundle\Service\SortOptionService" alias="ems.service.sort_option" />
+        <service id="EMS\CoreBundle\Service\WysiwygProfileService" alias="ems.service.wysiwyg_profile" />
+        <service id="EMS\CoreBundle\Service\SearchFieldOptionService" alias="ems.service.search_field_option" />
+        <service id="EMS\CoreBundle\Service\WysiwygStylesSetService" alias="ems.service.wysiwyg_styles_set" />
+        <service id="EMS\CoreBundle\Service\NotificationService" alias="ems.service.notification" />
+        <service id="EMS\CoreBundle\Service\HelperService" alias="ems.service.helper" />
+        <service id="EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory" alias="ems.form.factories.objectChoiceListFactory" />
+        <service id="EMS\CoreBundle\Core\Revision\Task\TaskManager" alias="ems_core.core_revision_task.task_manager" />
     </services>
 </container>

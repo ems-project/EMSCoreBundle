@@ -40,7 +40,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $yamlLoader->load('services.yml');
         $xmlLoader->load('controllers.xml');
         $xmlLoader->load('services.xml');
-        $xmlLoader->load('runtime.xml');
+        $xmlLoader->load('twig.xml');
         $xmlLoader->load('security/security.xml');
 
         $container->setParameter('ems_core.from_email', $config['from_email']);

@@ -6,32 +6,6 @@ services:
     _defaults:
         public: true
 
-    app.twig_extension: '@EMS\CoreBundle\Twig\AppExtension'
-    EMS\CoreBundle\Twig\AppExtension:
-        #class: EMS\CoreBundle\Twig\AppExtension
-        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory', '@ems.service.file' , '@ems_common.twig.runtime.request', '@mailer', '@ems_common.service.elastica', '@ems.service.search', '@EMS\CommonBundle\Twig\AssetRuntime', '%ems_core.asset_config%']
-        #public: false
-        tags:
-            - { name: twig.extension, priority: -2000 }
-    app.twig_extension_revision: '@EMS\CoreBundle\Twig\RevisionRuntime'
-    EMS\CoreBundle\Twig\RevisionRuntime:
-        arguments:
-            - '@ems.service.revision'
-        tags:
-            - { name: twig.runtime, priority: -2000 }
-    app.twig_extension_user: '@EMS\CoreBundle\Twig\UserRuntime'
-    EMS\CoreBundle\Twig\UserRuntime:
-        arguments:
-            - '@ems.repository.user'
-        tags:
-            - { name: twig.runtime, priority: -2000 }
-    app.twig.extension.stringloader:
-        class: Twig_Extension_StringLoader
-        tags:
-             - { name: 'twig.extension' }
-
-#### Begin list of extended symfony types for ems field type needs###
-
 ### regular services
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping

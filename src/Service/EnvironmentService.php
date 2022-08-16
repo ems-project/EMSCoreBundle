@@ -291,20 +291,6 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
-     * @deprecated use getEnvironments directly!
-     *
-     * @return false|Environment[]
-     */
-    public function getAll()
-    {
-        if ([] === $this->getEnvironments()) {
-            return false;
-        }
-
-        return $this->getEnvironments();
-    }
-
-    /**
      * @return Environment[]
      */
     public function getAllInMyCircle(): array

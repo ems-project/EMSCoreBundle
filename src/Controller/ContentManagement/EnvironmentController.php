@@ -312,7 +312,7 @@ class EnvironmentController extends AbstractController
             'withEnv' => $withEnvi,
             'environment' => $environment,
             'withEnvironment' => $withEnvironment,
-            'environments' => $this->environmentService->getAll(),
+            'environments' => $this->environmentService->getEnvironments(),
             'orderField' => $orderField,
             'orderDirection' => $orderDirection,
             'contentTypes' => $this->contentTypeService->getAll(),

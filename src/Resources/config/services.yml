@@ -630,13 +630,6 @@ services:
         arguments: ['@ems.service.job', '@ems.schedule.manager', '%ems_core.date_time_format%', '%ems_core.clean_jobs_time_string%']
         tags:
             - { name: console.command }
-#### security services
-    api_key_user_provider:
-        class: EMS\CoreBundle\Security\ApiKeyUserProvider
-        arguments: ['@ems.service.user']
-    apikey_authenticator:
-        class:  EMS\CoreBundle\Security\ApiKeyAuthenticator
-        public: false
 
 #### aliases
     EMS\CoreBundle\Elasticsearch\Bulker: '@ems.elasticsearch.bulker'

@@ -37,7 +37,7 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     /**
      * @var array<array{locale: string, text: string}>
      *
-     * @ORM\Column(name="content", type="json_array")
+     * @ORM\Column(name="content", type="json")
      */
     protected array $content = [];
 

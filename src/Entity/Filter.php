@@ -49,7 +49,7 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
     /**
      * @var array<mixed>
      *
-     * @ORM\Column(name="options", type="json_array")
+     * @ORM\Column(name="options", type="json")
      */
     protected array $options;
 

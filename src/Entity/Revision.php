@@ -152,14 +152,14 @@ class Revision implements EntityInterface
     /**
      * @var ?array<mixed>
      *
-     * @ORM\Column(name="raw_data", type="json_array", nullable=true)
+     * @ORM\Column(name="raw_data", type="json", nullable=true)
      */
     private ?array $rawData = null;
 
     /**
      * @var ?array<mixed>
      *
-     * @ORM\Column(name="auto_save", type="json_array", nullable=true)
+     * @ORM\Column(name="auto_save", type="json", nullable=true)
      */
     private ?array $autoSave = null;
 

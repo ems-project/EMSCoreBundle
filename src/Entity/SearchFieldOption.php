@@ -53,14 +53,14 @@ class SearchFieldOption
     /**
      * @var string[]
      *
-     * @ORM\Column(name="contentTypes", type="json_array")
+     * @ORM\Column(name="contentTypes", type="json")
      */
     public array $contentTypes = [];
 
     /**
      * @var string[]
      *
-     * @ORM\Column(name="operators", type="json_array")
+     * @ORM\Column(name="operators", type="json")
      */
     public array $operators;
 

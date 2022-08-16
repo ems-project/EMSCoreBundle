@@ -40,14 +40,14 @@ class Search implements JsonSerializable
     /**
      * @var string[]
      *
-     * @ORM\Column(name="environments", type="json_array")
+     * @ORM\Column(name="environments", type="json")
      */
     public array $environments = [];
 
     /**
      * @var string[]
      *
-     * @ORM\Column(name="contentTypes", type="json_array")
+     * @ORM\Column(name="contentTypes", type="json")
      */
     public array $contentTypes = [];
 

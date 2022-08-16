@@ -398,7 +398,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string[]
      *
-     * @ORM\Column(name="version_tags", type="json_array", nullable=true)
+     * @ORM\Column(name="version_tags", type="json", nullable=true)
      */
     protected $versionTags = [];
 

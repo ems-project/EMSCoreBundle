@@ -131,7 +131,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     /**
      * @var ?string[]
      *
-     * @ORM\Column(name="circles_to", type="json_array", nullable=true)
+     * @ORM\Column(name="circles_to", type="json", nullable=true)
      */
     protected ?array $circlesTo = null;
 

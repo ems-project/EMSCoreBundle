@@ -557,19 +557,6 @@ class RevisionRepository extends EntityRepository
         return (int) $qb->getQuery()->execute();
     }
 
-    public function lockRevision(int $revisionId, string $username, \DateTimeInterface $lockUntil): int
-    {
-        $qb = $this->createQueryBuilder('r')->update()
-            ->set('r.lockBy', '?1')
-            ->set('r.lockUntil', '?2')
-            ->where('r.id = ?3')
-            ->setParameter(1, $username)
-            ->setParameter(2, $lockUntil, Type::DATETIME)
-            ->setParameter(3, $revisionId);
-
-        return (int) $qb->getQuery()->execute();
-    }
-
     public function finaliseRevision(ContentType $contentType, string $ouuid, \DateTime $now, string $lockUser): int
     {
         $qb = $this->createQueryBuilder('r')->update()

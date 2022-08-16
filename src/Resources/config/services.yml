@@ -31,32 +31,6 @@ services:
              - { name: 'twig.extension' }
 
 #### Begin list of extended symfony types for ems field type needs###
-    ems.exteneded.collectiontype:
-        class: EMS\CoreBundle\Form\Form\EmsCollectionType
-        arguments: ['@security.authorization_checker']
-        tags:
-            - { name: form.type }
-    EMS\CoreBundle\Form\Submission\ProcessType:
-        arguments: ['@router']
-        tags:
-            - { name: form.type }
-
-    EMS\CoreBundle\Form\Form\SearchFormType:
-        arguments: ['@security.authorization_checker', '@ems.service.sort_option', '@ems.service.search_field_option']
-        tags:
-            - { name: form.type }
-
-#### End list available ems views ###
-    ems.form.factories.objectChoiceListFactory:
-        class: EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory
-        arguments: ['@ems.service.contenttype', '@ems.service.objectchoicecache']
-    ems.form.factories.contentTypeFieldChoiceListFactory:
-        class: EMS\CoreBundle\Form\Factory\ContentTypeFieldChoiceListFactory
-    ems.form.field.objectpickertype:
-        class: EMS\CoreBundle\Form\Field\ObjectPickerType
-        arguments: ['@ems.form.factories.objectChoiceListFactory', '@ems.service.contenttype']
-        tags:
-            - { name: form.type }
 
 ### regular services
     ems.service.mapping:

@@ -6,6 +6,12 @@
     <services>
         <defaults public="false" />
 
+        <service id="ems.form.factories.objectChoiceListFactory" class="EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory">
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.objectchoicecache" />
+        </service>
+        <service id="ems.form.factories.contentTypeFieldChoiceListFactory" class="EMS\CoreBundle\Form\Factory\ContentTypeFieldChoiceListFactory" />
+
         <!-- DataFields -->
         <service id="ems_core.form_data_field_options.migration_options_type" class="EMS\CoreBundle\Form\DataField\Options\MigrationOptionsType">
             <argument type="service" id="ems_core.core_content_type_transformer.content_transformers"/>
@@ -285,6 +291,24 @@
         </service>
 
         <!-- Form types -->
+        <service id="ems.exteneded.collectiontype" class="EMS\CoreBundle\Form\Form\EmsCollectionType">
+            <argument type="service" id="security.authorization_checker" />
+            <tag name="form.type"/>
+        </service>
+        <service id="EMS\CoreBundle\Form\Submission\ProcessType">
+            <argument type="service" id="router" />
+            <tag name="form.type"/>
+        </service>
+        <service id="EMS\CoreBundle\Form\Form\SearchFormType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="ems.service.sort_option" />
+            <argument type="service" id="ems.service.search_field_option" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.objectpickertype" class="EMS\CoreBundle\Form\Field\ObjectPickerType">
+            <argument type="service" id="ems.form.factories.objectChoiceListFactory" />
+            <tag name="form.type"/>
+        </service>
         <service id="ems_core.form.dashboard_type" class="EMS\CoreBundle\Form\Form\DashboardType">
             <argument type="service" id="ems_core.dashboard.dashboards"/>
             <tag name="form.type"/>

@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Result;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\Revision;
@@ -281,16 +282,16 @@ class IndexFileCommand extends EmsCommand
         }
         $dbName = $connection->getDatabase();
 
-        if (\in_array($connection->getDriver()->getName(), ['pdo_pgsql'])) {
+        if (\in_array($connection->getDriver()->getDatabasePlatform()->getName(), ['postgresql'])) {
             $query = "SELECT pg_size_pretty(pg_database_size('$dbName')) AS size";
-        } elseif (\in_array($connection->getDriver()->getName(), ['pdo_mysql'])) {
+        } elseif (\in_array($connection->getDriver()->getDatabasePlatform()->getName(), ['mysql'])) {
             $query = "SELECT SUM(data_length + index_length)/1024/1024 AS size FROM information_schema.TABLES WHERE table_schema='$dbName' GROUP BY table_schema";
         } else {
             throw new \RuntimeException('Not supported driver');
         }
         $stmt = $em->getConnection()->prepare($query);
-        $stmt->execute();
-        $size = $stmt->fetchAll();
+        $result = $stmt->executeQuery();
+        $size = $result->fetchAllAssociative();
 
         if (\is_array($size) && isset($size[0]['size'])) {
             $row = "The database size is {$size[0]['size']} MB";

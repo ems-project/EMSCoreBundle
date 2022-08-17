@@ -28,7 +28,7 @@ class User implements UserInterface, EntityInterface
     /**
      * @var string[]
      *
-     * @ORM\Column(name="circles", type="json_array", nullable=true)
+     * @ORM\Column(name="circles", type="json", nullable=true)
      */
     private array $circles = [];
 

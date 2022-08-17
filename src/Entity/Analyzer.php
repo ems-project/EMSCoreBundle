@@ -49,7 +49,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
     /**
      * @var array<mixed>
      *
-     * @ORM\Column(name="options", type="json_array")
+     * @ORM\Column(name="options", type="json")
      */
     protected array $options;
 

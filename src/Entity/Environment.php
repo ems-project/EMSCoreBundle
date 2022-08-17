@@ -97,7 +97,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string[]
      *
-     * @ORM\Column(name="circles", type="json_array", nullable=true)
+     * @ORM\Column(name="circles", type="json", nullable=true)
      */
     protected array $circles;
 

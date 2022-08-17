@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Contains information to update 2 side links between objects.

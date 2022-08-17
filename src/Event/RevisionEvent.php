@@ -3,7 +3,7 @@
 namespace EMS\CoreBundle\Event;
 
 use EMS\CoreBundle\Entity\Revision;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class RevisionEvent extends Event
 {

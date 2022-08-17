@@ -57,7 +57,7 @@ final class ReleaseType extends AbstractType
                 'attr' => [
                     'class' => 'select2',
                 ],
-                'choices' => $this->environmentService->getAll(),
+                'choices' => $this->environmentService->getEnvironments(),
                 'required' => true,
                 'choice_label' => function (Environment $value) {
                     return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getLabel();
@@ -77,7 +77,7 @@ final class ReleaseType extends AbstractType
                 'attr' => [
                     'class' => 'select2',
                 ],
-                'choices' => $this->environmentService->getAll(),
+                'choices' => $this->environmentService->getEnvironments(),
                 'required' => true,
                 'choice_label' => function (Environment $value) {
                     return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getLabel();

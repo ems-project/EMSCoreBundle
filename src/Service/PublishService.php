@@ -303,7 +303,7 @@ class PublishService
         $statement = $connection->prepare('delete from environment_revision where environment_id = :envId and revision_id = :revId');
         $statement->bindValue('envId', $environment->getId());
         $statement->bindValue('revId', $revision->getId());
-        $statement->execute();
+        $statement->executeStatement();
 
         try {
             $this->indexService->delete($revision, $environment);

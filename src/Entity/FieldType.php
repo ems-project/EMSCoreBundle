@@ -69,7 +69,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     /**
      * @var array<mixed>
      *
-     * @ORM\Column(name="options", type="json_array", nullable=true)
+     * @ORM\Column(name="options", type="json", nullable=true)
      */
     protected array $options = [];
 

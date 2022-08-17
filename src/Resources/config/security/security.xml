@@ -18,9 +18,9 @@
             <argument type="service" id="ems.repository.user"/>
         </service>
 
-        <service id="api_key_user_provider" class="EMS\CoreBundle\Security\ApiKeyUserProvider">
+        <service id="emsco.security.api.user_provider" class="EMS\CoreBundle\Security\Api\ApiUserProvider">
             <argument type="service" id="ems.service.user" />
         </service>
-        <service id="apikey_authenticator" class="EMS\CoreBundle\Security\ApiKeyAuthenticator" />
+        <service id="emsco.security.api.authenticator" class="EMS\CoreBundle\Security\Api\ApiAuthenticator" />
     </services>
 </container>

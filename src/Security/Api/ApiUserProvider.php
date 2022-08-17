@@ -1,13 +1,13 @@
 <?php
 
-namespace EMS\CoreBundle\Security;
+namespace EMS\CoreBundle\Security\Api;
 
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class ApiKeyUserProvider implements UserProviderInterface
+class ApiUserProvider implements UserProviderInterface
 {
     private UserService $userService;
 

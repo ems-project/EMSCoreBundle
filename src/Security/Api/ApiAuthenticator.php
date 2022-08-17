@@ -1,6 +1,6 @@
 <?php
 
-namespace EMS\CoreBundle\Security;
+namespace EMS\CoreBundle\Security\Api;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
 
-class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
+class ApiAuthenticator implements SimplePreAuthenticatorInterface
 {
     /**
      * @param string $providerKey
@@ -51,7 +51,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
      */
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey): PreAuthenticatedToken
     {
-        if (!$userProvider instanceof ApiKeyUserProvider) {
+        if (!$userProvider instanceof ApiUserProvider) {
             throw new \InvalidArgumentException(\sprintf('The user provider must be an instance of ApiKeyUserProvider (%s was given).', \get_class($userProvider)));
         }
 

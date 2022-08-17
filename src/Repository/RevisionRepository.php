@@ -194,8 +194,10 @@ class RevisionRepository extends EntityRepository
 
     public function hashReferenced(string $hash): int
     {
-        if ('postgresql' === $this->getEntityManager()->getConnection()->getDatabasePlatform()->getName()) {
-            $result = $this->getEntityManager()->getConnection()->fetchAll("select count(*) as counter FROM public.revision where raw_data::text like '%$hash%'");
+        $connection = $this->getEntityManager()->getConnection();
+
+        if ('postgresql' === $connection->getDatabasePlatform()->getName()) {
+            $result = $this->getEntityManager()->getConnection()->fetchAllAssociative("select count(*) as counter FROM public.revision where raw_data::text like '%$hash%'");
 
             return \intval($result[0]['counter']);
         }

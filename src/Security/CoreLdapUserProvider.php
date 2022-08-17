@@ -52,7 +52,7 @@ class CoreLdapUserProvider extends LdapUserProvider
         $ldapUser->randomizePassword();
         $newUser = User::fromCoreLdap($ldapUser);
 
-        $em = $this->doctrine->getEntityManager();
+        $em = $this->doctrine->getManager();
         $em->persist($newUser);
         $em->flush();
 

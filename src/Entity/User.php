@@ -26,11 +26,11 @@ class User implements UserInterface, EntityInterface
     private ?int $id = null;
 
     /**
-     * @var string[]
+     * @var ?string[]
      *
      * @ORM\Column(name="circles", type="json", nullable=true)
      */
-    private array $circles = [];
+    private ?array $circles;
 
     /**
      * @ORM\Column(name="display_name", type="string", length=255, nullable=true)
@@ -156,6 +156,7 @@ class User implements UserInterface, EntityInterface
         $this->authTokens = new ArrayCollection();
         $this->enabled = false;
         $this->roles = [];
+        $this->circles = [];
         $this->locale = self::DEFAULT_LOCALE;
 
         $this->created = DateTime::create('now');
@@ -225,7 +226,7 @@ class User implements UserInterface, EntityInterface
      */
     public function getCircles(): array
     {
-        return $this->circles;
+        return $this->circles ?? [];
     }
 
     /**

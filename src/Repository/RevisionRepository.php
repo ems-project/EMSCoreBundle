@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -567,7 +567,7 @@ class RevisionRepository extends EntityRepository
             ->andWhere('r.ouuid = ?3')
             ->andWhere('r.endTime is null')
             ->andWhere('r.lockBy  <> ?4 OR r.lockBy is null')
-            ->setParameter(1, $now, Type::DATETIME)
+            ->setParameter(1, $now, Types::DATETIME_MUTABLE)
             ->setParameter(2, $contentType)
             ->setParameter(3, $ouuid)
             ->setParameter(4, $lockUser);

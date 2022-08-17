@@ -57,7 +57,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Throwable;
-use Twig_Environment;
+use Twig\Environment as TwigEnvironment;
 
 /**
  * @todo Move Revision related logic to RevisionService
@@ -79,7 +79,7 @@ class DataService
     /** @var array<mixed> */
     private array $cacheOuuids = [];
 
-    protected Twig_Environment $twig;
+    protected TwigEnvironment $twig;
     protected Registry $doctrine;
     protected AuthorizationCheckerInterface $authorizationChecker;
     protected TokenStorageInterface $tokenStorage;
@@ -125,7 +125,7 @@ class DataService
         LoggerInterface $logger,
         LoggerInterface $auditLogger,
         StorageManager $storageManager,
-        Twig_Environment $twig,
+        TwigEnvironment $twig,
         AppExtension $appExtension,
         UserService $userService,
         RevisionRepository $revisionRepository,

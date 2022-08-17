@@ -243,7 +243,7 @@ final class RecomputeCommand extends Command
             if ($transactionActive) {
                 $this->em->commit();
             }
-            $this->em->clear(Revision::class);
+            $this->em->clear();
             $paginator = $this->revisionRepository->findAllLockedRevisions($this->contentType, self::LOCK_BY, $page, $limit);
             $iterator = $paginator->getIterator();
         } while ($iterator instanceof \ArrayIterator && $iterator->count());

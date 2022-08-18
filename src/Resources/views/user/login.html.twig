@@ -33,7 +33,7 @@
             </div>
         {% endif %}
 
-        <form action="{{ path('emsco_user_login_check') }}" method="post">
+        <form  method="post">
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
             <div class="form-group has-feedback">

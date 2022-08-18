@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Security;
+namespace EMS\CoreBundle\Security\Core;
 
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\UserRepository;

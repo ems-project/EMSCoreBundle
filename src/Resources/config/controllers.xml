@@ -5,9 +5,12 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <defaults autowire="true"/>
+        <defaults autowire="true" public="true"/>
 
-        <service id="EMS\CoreBundle\Controller\Security\LoginController" public="true" />
+        <service id="EMS\CoreBundle\Controller\User\LoginController">
+            <argument type="service" id="twig"/>
+            <tag name="controller.service_arguments"/>
+        </service>
         <service id="EMS\CoreBundle\Controller\User\ResettingController" public="true">
             <argument type="service" id="emsco.manager.user" />
             <argument type="service" id="emsco.logger" />
@@ -90,7 +93,7 @@
             <argument type="service" id="ems_core.core_data_table.table_exporter" />
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\Security\ApiAuthTokenController" public="true">
+        <service id="EMS\CoreBundle\Controller\Api\AuthTokenController" public="true">
             <argument type="service" id="ems.security.authenticator" />
             <argument type="service" id="twig" />
             <argument>%ems_core.security.firewall.core%</argument>

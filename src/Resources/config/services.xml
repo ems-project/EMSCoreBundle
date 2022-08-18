@@ -428,10 +428,6 @@
             <argument type="service" id="ems.service.user"/>
             <tag name="kernel.event_listener" event="EMS\CoreBundle\Event\RevisionFinalizeDraftEvent" method="finalizeDraftEvent" priority="0" />
         </service>
-        <service id="ems.security.authenticator" class="EMS\CoreBundle\Security\Authenticator">
-            <argument type="service" id="security.authentication.manager"/>
-            <argument type="service" id="doctrine"/>
-        </service>
         <service id="ems.form_submission" class="EMS\CoreBundle\Service\Form\Submission\FormSubmissionService">
             <argument type="service" id="ems.repository.form_submission"/>
             <argument type="service" id="twig"/>

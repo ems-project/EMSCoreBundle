@@ -87,7 +87,7 @@
         <requirement key="interface">api|json</requirement>
     </route>
     <route id="auth-token" path="/auth-token" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\AuthTokenController::postAuthTokensAction</default>
+        <default key="_controller">EMS\CoreBundle\Controller\Api\AuthTokenController::postAuthTokensAction</default>
         <default key="_format">json</default>
     </route>
     <route id="emsco_api_forms_submissions" path="/api/forms/submissions" methods="POST">

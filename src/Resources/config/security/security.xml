@@ -14,13 +14,26 @@
             <argument type="service" id="request_stack"/>
             <argument>null</argument> <!-- remember_me service -->
         </service>
-        <service id="ems_core.security.core_user_provider" class="EMS\CoreBundle\Security\CoreUserProvider">
+
+
+
+        <service id="emsco.security.core.user_provider" class="EMS\CoreBundle\Security\Core\CoreUserProvider">
             <argument type="service" id="ems.repository.user"/>
+        </service>
+        <service id="emsco.security.core.authenticator" class="EMS\CoreBundle\Security\Core\CoreAuthenticator">
+            <argument type="service" id="security.csrf.token_manager"/>
+            <argument type="service" id="security.password_encoder"/>
+            <argument type="service" id="router"/>
         </service>
 
         <service id="emsco.security.api.user_provider" class="EMS\CoreBundle\Security\Api\ApiUserProvider">
             <argument type="service" id="ems.service.user" />
         </service>
         <service id="emsco.security.api.authenticator" class="EMS\CoreBundle\Security\Api\ApiAuthenticator" />
+
+        <service id="ems.security.authenticator" class="EMS\CoreBundle\Security\Authenticator">
+            <argument type="service" id="security.authentication.manager"/>
+            <argument type="service" id="doctrine"/>
+        </service>
     </services>
 </container>

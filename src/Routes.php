@@ -20,6 +20,7 @@ class Routes
     public const DASHBOARD_ADMIN_SET_QUICK_SEARCH = 'emsco_dashboard_admin_set_quick_search';
     public const DASHBOARD_ADMIN_SET_LANDING_PAGE = 'emsco_dashboard_admin_set_landing_page';
     public const DASHBOARD = 'emsco_dashboard';
+    public const DASHBOARD_HOME = 'emsco_dashboard_home';
     public const RELEASE_INDEX = 'emsco_release_index';
     public const RELEASE_VIEW = 'emsco_release_view';
     public const RELEASE_ADD = 'emsco_release_add';

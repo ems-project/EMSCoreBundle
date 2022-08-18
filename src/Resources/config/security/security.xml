@@ -6,16 +6,12 @@
     <services>
         <defaults public="false" />
 
-        <service id="ems_core.security.login_manager" class="EMS\CoreBundle\Security\LoginManager">
+        <service id="ems_core.security_core.core_user_authenticator" class="EMS\CoreBundle\Security\Core\CoreUserAuthenticator">
+            <argument type="service" id="emsco.security.core.authenticator" />
+            <argument type="service" id="security.authentication.guard_handler" />
+            <argument type="service" id="request_stack" />
             <argument>%ems_core.security.firewall.core%</argument>
-            <argument type="service" id="security.token_storage"/>
-            <argument type="service" id="security.user_checker"/>
-            <argument type="service" id="security.authentication.session_strategy"/>
-            <argument type="service" id="request_stack"/>
-            <argument>null</argument> <!-- remember_me service -->
         </service>
-
-
 
         <service id="emsco.security.core.user_provider" class="EMS\CoreBundle\Security\Core\CoreUserProvider">
             <argument type="service" id="ems.repository.user"/>

@@ -86,7 +86,7 @@ class CoreAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->urlGenerator->generate(Routes::DASHBOARD));
+        return new RedirectResponse($this->urlGenerator->generate(Routes::DASHBOARD_HOME));
     }
 
     protected function getLoginUrl(): string

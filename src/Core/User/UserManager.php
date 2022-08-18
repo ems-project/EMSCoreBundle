@@ -10,8 +10,6 @@ use EMS\CoreBundle\Core\Security\Token;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\UserRepository;
-use EMS\CoreBundle\Security\LoginManager;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -19,7 +17,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 final class UserManager
 {
     private TokenStorageInterface $tokenStorage;
-    private LoginManager $loginManager;
     private MailerService $mailerService;
     private UserRepository $userRepository;
     private UserPasswordEncoderInterface $passwordEncoder;
@@ -30,13 +27,11 @@ final class UserManager
 
     public function __construct(
         TokenStorageInterface $tokenStorage,
-        LoginManager $loginManager,
         MailerService $mailerService,
         UserRepository $userRepository,
         UserPasswordEncoderInterface $passwordEncoder
     ) {
         $this->tokenStorage = $tokenStorage;
-        $this->loginManager = $loginManager;
         $this->mailerService = $mailerService;
         $this->userRepository = $userRepository;
         $this->passwordEncoder = $passwordEncoder;
@@ -113,14 +108,12 @@ final class UserManager
         return $user;
     }
 
-    public function resetPassword(User $user, Response $response): void
+    public function resetPassword(User $user): void
     {
         $user->setConfirmationToken(null);
         $user->setPasswordRequestedAt(null);
         $user->setEnabled(true);
         $this->update($user);
-
-        $this->loginManager->logInUser($user, $response);
 
         $user->setLastLogin(new \DateTime());
         $this->update($user);

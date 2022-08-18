@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Security\Core;
+namespace EMS\CoreBundle\Security\Authenticator;
 
 use EMS\CoreBundle\Routes;
+use EMS\CoreBundle\Security\Provider\UserProvider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -20,7 +22,7 @@ use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticato
 use Symfony\Component\Security\Guard\PasswordAuthenticatedInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-class CoreAuthenticator extends AbstractFormLoginAuthenticator implements PasswordAuthenticatedInterface
+class FormLoginAuthenticator extends AbstractFormLoginAuthenticator implements PasswordAuthenticatedInterface
 {
     use TargetPathTrait;
     private CsrfTokenManagerInterface $csrfTokenManager;
@@ -43,7 +45,7 @@ class CoreAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
     }
 
     /**
-     * @return array{username: string, password: string, csrf_token: string}
+     * @return array{username: ?string, password: ?string, csrf_token: ?string}
      */
     public function getCredentials(Request $request): array
     {
@@ -58,7 +60,7 @@ class CoreAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
     }
 
     /**
-     * @param CoreUserProvider $userProvider
+     * @param UserProvider $userProvider
      */
     public function getUser($credentials, UserProviderInterface $userProvider): UserInterface
     {
@@ -72,6 +74,10 @@ class CoreAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
 
     public function checkCredentials($credentials, UserInterface $user): bool
     {
+        if (null === $credentials['password'] || null === $credentials['username']) {
+            throw new BadCredentialsException();
+        }
+
         return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
     }
 

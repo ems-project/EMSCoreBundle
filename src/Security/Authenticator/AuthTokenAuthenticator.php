@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Security\Api;
+namespace EMS\CoreBundle\Security\Authenticator;
 
+use EMS\CoreBundle\Security\Provider\UserApiProvider;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +14,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
-final class ApiAuthenticator extends AbstractGuardAuthenticator
+final class AuthTokenAuthenticator extends AbstractGuardAuthenticator
 {
     public function supports(Request $request): bool
     {
@@ -30,7 +31,7 @@ final class ApiAuthenticator extends AbstractGuardAuthenticator
 
     /**
      * @param ?string         $credentials
-     * @param ApiUserProvider $userProvider
+     * @param UserApiProvider $userProvider
      */
     public function getUser($credentials, UserProviderInterface $userProvider): ?UserInterface
     {

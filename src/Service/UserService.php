@@ -6,10 +6,8 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Core\UI\Menu;
-use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
-use EMS\CoreBundle\Repository\AuthTokenRepository;
 use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Repository\UserRepository;
 use EMS\CoreBundle\Security\CoreLdapUser;
@@ -64,18 +62,6 @@ class UserService implements EntityServiceInterface
         $cache[$search] = $user;
 
         return $user;
-    }
-
-    public function findUserByApikey(string $apiKey): ?UserInterface
-    {
-        $em = $this->doctrine->getManager();
-        /** @var AuthTokenRepository */
-        $repository = $em->getRepository(AuthToken::class);
-
-        /** @var ?AuthToken $token */
-        $token = $repository->findOneBy(['value' => $apiKey]);
-
-        return $token ? $token->getUser() : null;
     }
 
     public function getUserById(int $id): ?User

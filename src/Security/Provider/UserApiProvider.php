@@ -2,26 +2,29 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Security\Api;
+namespace EMS\CoreBundle\Security\Provider;
 
-use EMS\CoreBundle\Service\UserService;
+use EMS\CoreBundle\Repository\AuthTokenRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class ApiUserProvider implements UserProviderInterface
+class UserApiProvider implements UserProviderInterface
 {
-    private UserService $userService;
+    private AuthTokenRepository $authTokenRepository;
 
-    public function __construct(UserService $userService)
+    public function __construct(AuthTokenRepository $authTokenRepository)
     {
-        $this->userService = $userService;
+        $this->authTokenRepository = $authTokenRepository;
     }
 
     public function loadUserByUsername($username): UserInterface
     {
-        if (null === $user = $this->userService->findUserByApikey($username)) {
+        $authToken = $this->authTokenRepository->findOneBy(['value' => $username]);
+        $user = $authToken ? $authToken->getUser() : null;
+
+        if (null === $user) {
             throw new UsernameNotFoundException($username);
         }
 

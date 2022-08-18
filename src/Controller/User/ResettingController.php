@@ -8,7 +8,7 @@ use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Form\User\ResettingRequestType;
 use EMS\CoreBundle\Form\User\ResettingResetType;
 use EMS\CoreBundle\Routes;
-use EMS\CoreBundle\Security\Core\CoreUserAuthenticator;
+use EMS\CoreBundle\Security\Authenticator\Authenticator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,16 +17,13 @@ use Symfony\Component\HttpFoundation\Response;
 class ResettingController extends AbstractController
 {
     private UserManager $userManager;
-    private CoreUserAuthenticator $coreUserAuthenticator;
+    private Authenticator $authenticator;
     private LoggerInterface $logger;
 
-    public function __construct(
-        UserManager $userManager,
-        CoreUserAuthenticator $coreUserAuthenticator,
-        LoggerInterface $logger
-    ) {
+    public function __construct(UserManager $userManager, Authenticator $authenticator, LoggerInterface $logger)
+    {
         $this->userManager = $userManager;
-        $this->coreUserAuthenticator = $coreUserAuthenticator;
+        $this->authenticator = $authenticator;
         $this->logger = $logger;
     }
 
@@ -79,7 +76,7 @@ class ResettingController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->userManager->resetPassword($user);
-            $this->coreUserAuthenticator->authenticate($user);
+            $this->authenticator->authenticate($user);
             $this->logger->notice('log.user.resetting.success');
 
             return $this->redirectToRoute(Routes::USER_PROFILE);

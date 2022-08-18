@@ -6,30 +6,31 @@
     <services>
         <defaults public="false" />
 
-        <service id="ems_core.security_core.core_user_authenticator" class="EMS\CoreBundle\Security\Core\CoreUserAuthenticator">
-            <argument type="service" id="emsco.security.core.authenticator" />
-            <argument type="service" id="security.authentication.guard_handler" />
-            <argument type="service" id="request_stack" />
-            <argument>%ems_core.security.firewall.core%</argument>
-        </service>
-
-        <service id="emsco.security.core.user_provider" class="EMS\CoreBundle\Security\Core\CoreUserProvider">
+        <!-- User Provider -->
+        <service id="emsco.security.provider.user" class="EMS\CoreBundle\Security\Provider\UserProvider">
             <argument type="service" id="ems.repository.user"/>
         </service>
-        <service id="emsco.security.core.authenticator" class="EMS\CoreBundle\Security\Core\CoreAuthenticator">
+        <service id="emsco.security.provider.user_api" class="EMS\CoreBundle\Security\Provider\UserApiProvider">
+            <argument type="service" id="ems.repository.auth_token" />
+        </service>
+
+        <!-- Authenticators -->
+        <service id="emsco.security.authenticator.auth_token" class="EMS\CoreBundle\Security\Authenticator\AuthTokenAuthenticator" />
+        <service id="emsco.security.authenticator.auth_token_login" class="EMS\CoreBundle\Security\Authenticator\AuthTokenLoginAuthenticator">
+            <argument type="service" id="ems.repository.auth_token" />
+            <argument type="service" id="security.password_encoder"/>
+        </service>
+        <service id="emsco.security.authenticator.form_login" class="EMS\CoreBundle\Security\Authenticator\FormLoginAuthenticator">
             <argument type="service" id="security.csrf.token_manager"/>
             <argument type="service" id="security.password_encoder"/>
             <argument type="service" id="router"/>
         </service>
 
-        <service id="emsco.security.api.user_provider" class="EMS\CoreBundle\Security\Api\ApiUserProvider">
-            <argument type="service" id="ems.service.user" />
-        </service>
-        <service id="emsco.security.api.authenticator" class="EMS\CoreBundle\Security\Api\ApiAuthenticator" />
-
-        <service id="ems.security.authenticator" class="EMS\CoreBundle\Security\Authenticator">
-            <argument type="service" id="security.authentication.manager"/>
-            <argument type="service" id="doctrine"/>
+        <service id="ems_core.security.authenticator" class="EMS\CoreBundle\Security\Authenticator\Authenticator">
+            <argument type="service" id="emsco.security.authenticator.form_login" />
+            <argument type="service" id="security.authentication.guard_handler" />
+            <argument type="service" id="request_stack" />
+            <argument>%ems_core.security.firewall.core%</argument>
         </service>
     </services>
 </container>

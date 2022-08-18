@@ -2,40 +2,39 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Security\Core;
+namespace EMS\CoreBundle\Security\Authenticator;
 
 use EMS\CoreBundle\Entity\User;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 
-final class CoreUserAuthenticator
+final class Authenticator
 {
-    private CoreAuthenticator $coreAuthenticator;
+    private FormLoginAuthenticator $formLoginAuthenticator;
     private GuardAuthenticatorHandler $guardAuthenticatorHandler;
     private RequestStack $requestStack;
     private string $firewallName;
 
-    public function __construct(CoreAuthenticator $coreAuthenticator, GuardAuthenticatorHandler $guardAuthenticatorHandler, RequestStack $requestStack, string $firewallName)
+    public function __construct(
+        FormLoginAuthenticator $formLoginAuthenticator,
+        GuardAuthenticatorHandler $guardAuthenticatorHandler,
+        RequestStack $requestStack,
+        string $firewallName)
     {
-        $this->coreAuthenticator = $coreAuthenticator;
+        $this->formLoginAuthenticator = $formLoginAuthenticator;
         $this->guardAuthenticatorHandler = $guardAuthenticatorHandler;
         $this->requestStack = $requestStack;
         $this->firewallName = $firewallName;
     }
 
-    public function authenticate(User $user): ?Response
+    public function authenticate(User $user): void
     {
         if (null === $request = $this->requestStack->getCurrentRequest()) {
             throw new AuthenticationException('Missing request');
         }
 
-        return $this->guardAuthenticatorHandler->authenticateUserAndHandleSuccess(
-            $user,
-            $request,
-            $this->coreAuthenticator,
-            $this->firewallName
-        );
+        $token = $this->formLoginAuthenticator->createAuthenticatedToken($user, $this->firewallName);
+        $this->guardAuthenticatorHandler->authenticateWithToken($token, $request, $this->firewallName);
     }
 }

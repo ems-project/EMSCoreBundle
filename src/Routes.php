@@ -6,6 +6,7 @@ namespace EMS\CoreBundle;
 
 class Routes
 {
+    public const AUTH_TOKEN_LOGIN = 'emsco_auth_token_login';
     public const EDIT_REVISION = 'emsco_edit_revision';
     public const VIEW_REVISIONS = 'emsco_view_revisions';
     public const VIEW_REVISIONS_AUDIT = 'emsco_view_revisions_table_audit';

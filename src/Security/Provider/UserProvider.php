@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Security\Core;
+namespace EMS\CoreBundle\Security\Provider;
 
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\UserRepository;
@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class CoreUserProvider implements UserProviderInterface
+class UserProvider implements UserProviderInterface
 {
     private UserRepository $userRepository;
 

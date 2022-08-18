@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Security\Api;
 
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
@@ -16,29 +19,22 @@ class ApiUserProvider implements UserProviderInterface
         $this->userService = $userService;
     }
 
-    public function getUsernameForApiKey(string $apiKey): ?string
-    {
-        // Look up the username based on the token in the database, via
-        // an API call, or do something entirely different
-        return $this->userService->findUsernameByApikey($apiKey);
-    }
-
     public function loadUserByUsername($username): UserInterface
     {
-        return $this->userService->giveUser($username, false);
+        if (null === $user = $this->userService->findUserByApikey($username)) {
+            throw new UsernameNotFoundException($username);
+        }
+
+        return $user;
     }
 
     public function refreshUser(UserInterface $user): UserInterface
     {
-        // this is used for storing authentication in the session
-        // but in this example, the token is sent in each request,
-        // so authentication can be stateless. Throwing this exception
-        // is proper to make things stateless
         throw new UnsupportedUserException();
     }
 
     public function supportsClass($class): bool
     {
-        return 'Symfony\Component\Security\Core\User\User' === $class;
+        return UserInterface::class === $class;
     }
 }

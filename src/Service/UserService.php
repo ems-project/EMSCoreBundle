@@ -66,7 +66,7 @@ class UserService implements EntityServiceInterface
         return $user;
     }
 
-    public function findUsernameByApikey(string $apiKey): ?string
+    public function findUserByApikey(string $apiKey): ?UserInterface
     {
         $em = $this->doctrine->getManager();
         /** @var AuthTokenRepository */
@@ -75,7 +75,7 @@ class UserService implements EntityServiceInterface
         /** @var ?AuthToken $token */
         $token = $repository->findOneBy(['value' => $apiKey]);
 
-        return $token ? $token->getUser()->getUsername() : null;
+        return $token ? $token->getUser() : null;
     }
 
     public function getUserById(int $id): ?User

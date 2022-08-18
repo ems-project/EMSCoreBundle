@@ -34,7 +34,7 @@
         {% endif %}
 
         <form action="{{ path('emsco_user_login_check') }}" method="post">
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
             <div class="form-group has-feedback">
                 <input type="text" id="username" name="_username" value="{{ last_username }}"  class="form-control" placeholder="{{ 'user.login.username'|trans }}" required="required" />

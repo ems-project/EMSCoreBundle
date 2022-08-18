@@ -14,13 +14,6 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class LoginController extends AbstractController
 {
-    private ?CsrfTokenManagerInterface $tokenManager;
-
-    public function __construct(CsrfTokenManagerInterface $tokenManager = null)
-    {
-        $this->tokenManager = $tokenManager;
-    }
-
     public function login(Request $request): Response
     {
         /** @var SessionInterface $session */
@@ -46,14 +39,9 @@ class LoginController extends AbstractController
         // last username entered by the user
         $lastUsername = $session->get($lastUsernameKey);
 
-        $csrfToken = $this->tokenManager
-            ? $this->tokenManager->getToken('authenticate')->getValue()
-            : null;
-
         return $this->render('@EMSCore/user/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
-            'csrf_token' => $csrfToken,
         ]);
     }
 

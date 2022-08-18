@@ -1,6 +1,6 @@
 <?php
 
-namespace EMS\CoreBundle\Controller;
+namespace EMS\CoreBundle\Controller\Security;
 
 use EMS\CoreBundle\Security\Authenticator;
 use EMS\CoreBundle\Security\Credentials;
@@ -8,17 +8,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 
-class AuthTokenController
+class ApiAuthTokenController
 {
     private Authenticator $authenticator;
     private Environment $twig;
     private string $firewallName;
 
-    public function __construct(
-        Authenticator $authenticator,
-        Environment $twig,
-        string $firewallName
-    ) {
+    public function __construct(Authenticator $authenticator, Environment $twig, string $firewallName)
+    {
         $this->authenticator = $authenticator;
         $this->twig = $twig;
         $this->firewallName = $firewallName;

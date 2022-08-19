@@ -98,12 +98,27 @@ In the html string you can access the option **context** and:
 ```twig
     {% set context = { 'title': 'Example' } %}
     {% set pageButtons %}
-        {{ '<button class="btn-test btn btn-sm btn-primary" data-item-id="{{ item.id }}">{{ item }}</button>' }}
-        {{ '{{ buttons.edit|raw }}' }}
-        {{ '{{ buttons.delete|raw }}' }}
+        {% verbatim %}  
+            {{ '<button class="btn-test btn btn-sm btn-primary" data-item-id="{{ item.id }}">{{ item }}</button>' }}
+            {{ '{{ buttons.edit|raw }}' }}
+            {{ '{{ buttons.delete|raw }}' }}
+        {% endverbatim %}  
     {% endset %}
     {% set pageExtra %}
-        {{ '<div class="well p-2 m-2">{{ buttons.view|raw }} {{ title }} : {{ item.object.label }}</div>' }}
+        {% verbatim %} 
+            {{ '<div class="well p-2 m-2">{{ buttons.view|raw }} {{ title }} : {{ item.object.label }}</div>' }}
+        {% endverbatim %}
+    {% endset %}
+    {% set rootButtons %}
+         {% verbatim %}       
+            {% if is_granted('ROLE_PUBLISHER') %}
+                {{ buttons.add|raw }}
+                {{ buttons.more|raw }}
+            {% endif %}
+            <div class="pull-right">
+                <button class="btn btn-sm btn-default">Extra button</button>
+            </div>
+        {% endverbatim %}
     {% endset %}
     
     {{ emsco_json_menu_nested({
@@ -121,6 +136,11 @@ In the html string you can access the option **context** and:
                 'type': 'item_action',
                 'item_type': 'page',
                 'html': (pageButtons)
+            },
+            {
+                'type': 'item_action',
+                'item_type': '_root',
+                'html': (rootButtons)
             }
         ],
     }) }}

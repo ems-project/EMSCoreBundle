@@ -219,6 +219,7 @@ class NotificationService
                 /** @var Notification $alreadyPending */
                 $alreadyPending = $alreadyPending[0];
                 $this->logger->warning('service.notification.another_one_is_pending', [
+                    'label' => $alreadyPending->getRevision()->getLabel(),
                     'notification_name' => $alreadyPending->getTemplate()->getName(),
                     EmsFields::LOG_CONTENTTYPE_FIELD => $alreadyPending->getRevision()->getContentType(),
                     EmsFields::LOG_OUUID_FIELD => $alreadyPending->getRevision()->getOuuid(),
@@ -253,6 +254,7 @@ class NotificationService
             }
 
             $this->logger->notice('service.notification.send', [
+                'label' => $notification->getRevision()->getLabel(),
                 'notification_name' => $notification->getTemplate()->getName(),
                 EmsFields::LOG_CONTENTTYPE_FIELD => $notification->getRevision()->getContentType(),
                 EmsFields::LOG_OUUID_FIELD => $notification->getRevision()->getOuuid(),

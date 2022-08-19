@@ -139,7 +139,7 @@ In the html string you can access the option **context** and:
             },
             {
                 'type': 'item_action',
-                'item_type': 'root',
+                'item_type': '_root',
                 'html': (rootButtons)
             }
         ],

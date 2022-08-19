@@ -207,11 +207,11 @@ final class JsonMenuNestedDefinition
     private function buildNodes(array $optionActions): array
     {
         $nodes = [
-            'root' => [
-                'id' => 'root',
-                'name' => 'root',
+            '_root' => [
+                'id' => '_root',
+                'name' => '_root',
                 'addNodes' => $this->buildAddNodes($this->fieldType),
-                'actions' => $this->buildNodeActions($this->fieldType, 'root', $optionActions),
+                'actions' => $this->buildNodeActions($this->fieldType, '_root', $optionActions),
             ],
         ];
 
@@ -272,11 +272,11 @@ final class JsonMenuNestedDefinition
             $optionActions = \array_filter(['preview' => $optionActions['preview'] ?? null]);
         }
 
-        if ('root' === $nodeType) {
+        if ('_root' === $nodeType) {
             $optionActions = \array_filter([
-                'add' => $optionActions['add'] ?? ['deny' => ['root']],
-                'copy' => $optionActions['copy'] ?? ['deny' => ['root']],
-                'paste' => $optionActions['paste'] ?? ['deny' => ['root']],
+                'add' => $optionActions['add'] ?? ['deny' => ['_root']],
+                'copy' => $optionActions['copy'] ?? ['deny' => ['_root']],
+                'paste' => $optionActions['paste'] ?? ['deny' => ['_root']],
             ]);
         }
 

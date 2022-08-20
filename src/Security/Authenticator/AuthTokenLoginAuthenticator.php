@@ -63,7 +63,7 @@ final class AuthTokenLoginAuthenticator extends AbstractGuardAuthenticator
     public function checkCredentials($credentials, UserInterface $user): bool
     {
         if (null === $credentials['password'] || null === $credentials['username']) {
-            throw new BadCredentialsException();
+            return false;
         }
 
         return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);

@@ -75,7 +75,7 @@ class FormLoginAuthenticator extends AbstractFormLoginAuthenticator implements P
     public function checkCredentials($credentials, UserInterface $user): bool
     {
         if (null === $credentials['password'] || null === $credentials['username']) {
-            throw new BadCredentialsException();
+            return false;
         }
 
         return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);

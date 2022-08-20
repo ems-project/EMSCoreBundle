@@ -6,10 +6,8 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Core\UI\Menu;
-use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
-use EMS\CoreBundle\Repository\AuthTokenRepository;
 use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Repository\UserRepository;
 use EMS\CoreBundle\Security\CoreLdapUser;
@@ -66,18 +64,6 @@ class UserService implements EntityServiceInterface
         return $user;
     }
 
-    public function findUsernameByApikey(string $apiKey): ?string
-    {
-        $em = $this->doctrine->getManager();
-        /** @var AuthTokenRepository */
-        $repository = $em->getRepository(AuthToken::class);
-
-        /** @var ?AuthToken $token */
-        $token = $repository->findOneBy(['value' => $apiKey]);
-
-        return $token ? $token->getUser()->getUsername() : null;
-    }
-
     public function getUserById(int $id): ?User
     {
         return $this->userRepository->findOneBy(['id' => $id]);
@@ -124,7 +110,7 @@ class UserService implements EntityServiceInterface
         }
 
         $clone = clone $user;
-        $em->clear(User::class);
+        $em->clear();
 
         return $clone;
     }

@@ -5,13 +5,15 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <defaults autowire="true"/>
+        <defaults autowire="true" public="true"/>
 
-        <service id="EMS\CoreBundle\Controller\User\LoginController" public="true">
-            <argument type="service" id="security.csrf.token_manager" on-invalid="null" />
+        <service id="EMS\CoreBundle\Controller\User\LoginController">
+            <argument type="service" id="twig"/>
+            <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\User\ResettingController" public="true">
             <argument type="service" id="emsco.manager.user" />
+            <argument type="service" id="ems_core.security.authenticator" />
             <argument type="service" id="emsco.logger" />
         </service>
         <service id="EMS\CoreBundle\Controller\User\ProfileController" public="true">
@@ -92,12 +94,7 @@
             <argument type="service" id="ems_core.core_data_table.table_exporter" />
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\AuthTokenController" public="true">
-            <argument type="service" id="ems.security.authenticator" />
-            <argument type="service" id="twig" />
-            <argument>%ems_core.security.firewall.core%</argument>
-            <tag name="controller.service_arguments"/>
-        </service>
+        <service id="EMS\CoreBundle\Controller\Api\AuthTokenLoginController" public="true"/>
         <service id="EMS\CoreBundle\Controller\Form\SubmissionController" public="true">
             <argument type="service" id="ems.form_submission" />
             <argument type="service" id="logger" />

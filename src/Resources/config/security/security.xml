@@ -6,21 +6,31 @@
     <services>
         <defaults public="false" />
 
-        <service id="ems_core.security.login_manager" class="EMS\CoreBundle\Security\LoginManager">
-            <argument>%ems_core.security.firewall.core%</argument>
-            <argument type="service" id="security.token_storage"/>
-            <argument type="service" id="security.user_checker"/>
-            <argument type="service" id="security.authentication.session_strategy"/>
-            <argument type="service" id="request_stack"/>
-            <argument>null</argument> <!-- remember_me service -->
-        </service>
-        <service id="ems_core.security.core_user_provider" class="EMS\CoreBundle\Security\CoreUserProvider">
+        <!-- User Provider -->
+        <service id="emsco.security.provider.user" class="EMS\CoreBundle\Security\Provider\UserProvider">
             <argument type="service" id="ems.repository.user"/>
         </service>
-
-        <service id="api_key_user_provider" class="EMS\CoreBundle\Security\ApiKeyUserProvider">
-            <argument type="service" id="ems.service.user" />
+        <service id="emsco.security.provider.user_api" class="EMS\CoreBundle\Security\Provider\UserApiProvider">
+            <argument type="service" id="ems.repository.auth_token" />
         </service>
-        <service id="apikey_authenticator" class="EMS\CoreBundle\Security\ApiKeyAuthenticator" />
+
+        <!-- Authenticators -->
+        <service id="emsco.security.authenticator.auth_token" class="EMS\CoreBundle\Security\Authenticator\AuthTokenAuthenticator" />
+        <service id="emsco.security.authenticator.auth_token_login" class="EMS\CoreBundle\Security\Authenticator\AuthTokenLoginAuthenticator">
+            <argument type="service" id="ems.repository.auth_token" />
+            <argument type="service" id="security.password_encoder"/>
+        </service>
+        <service id="emsco.security.authenticator.form_login" class="EMS\CoreBundle\Security\Authenticator\FormLoginAuthenticator">
+            <argument type="service" id="security.csrf.token_manager"/>
+            <argument type="service" id="security.password_encoder"/>
+            <argument type="service" id="router"/>
+        </service>
+
+        <service id="ems_core.security.authenticator" class="EMS\CoreBundle\Security\Authenticator\Authenticator">
+            <argument type="service" id="emsco.security.authenticator.form_login" />
+            <argument type="service" id="security.authentication.guard_handler" />
+            <argument type="service" id="request_stack" />
+            <argument>%ems_core.security.firewall.core%</argument>
+        </service>
     </services>
 </container>

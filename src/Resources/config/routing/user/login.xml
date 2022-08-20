@@ -7,9 +7,6 @@
     <route id="emsco_user_login" path="/login" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\User\LoginController::login</default>
     </route>
-    <route id="emsco_user_login_check" path="/login_check" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\User\LoginController::check</default>
-    </route>
     <route id="emsco_user_logout" path="/logout" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\User\LoginController::logout</default>
     </route>

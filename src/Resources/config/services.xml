@@ -184,7 +184,6 @@
 
         <service id="emsco.manager.user" class="EMS\CoreBundle\Core\User\UserManager">
             <argument type="service" id="security.token_storage" />
-            <argument type="service" id="ems_core.security.login_manager" />
             <argument type="service" id="ems_core.core_mail.mailer_service" />
             <argument type="service" id="ems.repository.user" />
             <argument type="service" id="security.password_encoder" />
@@ -427,10 +426,6 @@
             <argument type="service" id="ems.service.contenttype"/>
             <argument type="service" id="ems.service.user"/>
             <tag name="kernel.event_listener" event="EMS\CoreBundle\Event\RevisionFinalizeDraftEvent" method="finalizeDraftEvent" priority="0" />
-        </service>
-        <service id="ems.security.authenticator" class="EMS\CoreBundle\Security\Authenticator">
-            <argument type="service" id="security.authentication.manager"/>
-            <argument type="service" id="doctrine"/>
         </service>
         <service id="ems.form_submission" class="EMS\CoreBundle\Service\Form\Submission\FormSubmissionService">
             <argument type="service" id="ems.repository.form_submission"/>

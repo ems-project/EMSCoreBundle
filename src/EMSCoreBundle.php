@@ -4,7 +4,6 @@ namespace EMS\CoreBundle;
 
 use EMS\CoreBundle\DependencyInjection\Compiler\DataFieldTypeCompilerPass;
 use EMS\CoreBundle\DependencyInjection\Compiler\RegisterCompilerPass;
-use EMS\CoreBundle\DependencyInjection\Compiler\SecurityCompilerPass;
 use EMS\CoreBundle\DependencyInjection\Compiler\StorageServiceCompilerPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -22,7 +21,6 @@ class EMSCoreBundle extends Bundle
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
-        $container->addCompilerPass(new SecurityCompilerPass());
         $container->addCompilerPass(new DataFieldTypeCompilerPass(), PassConfig::TYPE_OPTIMIZE);
         $container->addCompilerPass(new StorageServiceCompilerPass(), PassConfig::TYPE_OPTIMIZE);
         $container->addCompilerPass(new RegisterCompilerPass());

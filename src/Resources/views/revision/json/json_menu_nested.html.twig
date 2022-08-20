@@ -5,6 +5,7 @@
     {%- set item = def.menu -%}
     {%- set itemJson = { 'id': item.id, 'label': item.label, 'type': item.type, 'object': (item.object|merge({ 'label': item.label }))  } -%}
     {%- set node = def.getNodeByName(item.type) -%}
+
     <div id="json-menu-nested-{{ def.id }}-alerts" class="json-menu-nested-alerts"></div>
     <div id="json-menu-nested-{{ def.id }}"
          class="json-menu-nested json-menu-nested-item {{ def.isSortable ? 'json-menu-nested-sortable' }}"
@@ -20,19 +21,34 @@
         >
         <div class="json-menu-nested-loading"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
         {%- if def.isSilentPublish -%}<input type="hidden" class="json-menu-nested-silent-publish" id="{{ def.id }}" />{%- endif -%}
-        {%- if 'add' in node.actions or 'copy' in node.actions or 'paste' in node.actions -%}
-            <span class="input-group-btn">
-                {% with { 'position': 'root' } %}
-                    {{ block('buttonAdd') }}
-                    {{ block('buttonMore') }}
-                {% endwith %}
-            </span>
-        {%- endif -%}
+
+        {{ block('renderRootActions') }}
+
         <ol class="json-menu-nested-list json-menu-nested-root" data-list="{{ item.id }}">
             {%- set level = level + 1 -%}
             {%- for item in item.children -%}{{ block('renderItem') }}{%- endfor -%}
         </ol>
     </div>
+{% endblock %}
+
+{% block renderRootActions %}
+    {%- if 'add' in node.actions or 'copy' in node.actions or 'paste' in node.actions -%}
+    <span class="input-group-btn">
+        {% with { 'position': 'root' } %}
+            {%- set buttons = {
+                'add': block('buttonAdd'),
+                'more': block('buttonMore'),
+            } -%}
+            {%- set blockRenderContext = { 'item': item, 'node': node, 'buttons': buttons } -%}
+            {%- set rootBlock = def.renderBlocks('item_action', blockRenderContext) -%}
+            {%- if rootBlock|length > 0 -%}
+                {%- for block in rootBlock %}{{ block|raw }}{%- endfor -%}
+            {%- else -%}
+                {%- for button in buttons -%}{{ button|raw }}{%- endfor -%}
+            {%- endif -%}
+        {% endwith %}
+    </span>
+    {%- endif -%}
 {% endblock %}
 
 {% block renderItem %}

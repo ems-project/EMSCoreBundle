@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Json;
 
-use Doctrine\Common\Collections\Collection;
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Json\JsonMenuNested;
 use EMS\CoreBundle\Entity\FieldType;
@@ -208,11 +207,11 @@ final class JsonMenuNestedDefinition
     private function buildNodes(array $optionActions): array
     {
         $nodes = [
-            'root' => [
-                'id' => 'root',
-                'name' => 'root',
+            '_root' => [
+                'id' => '_root',
+                'name' => '_root',
                 'addNodes' => $this->buildAddNodes($this->fieldType),
-                'actions' => $this->buildNodeActions($this->fieldType, 'root', $optionActions),
+                'actions' => $this->buildNodeActions($this->fieldType, '_root', $optionActions),
             ],
         ];
 
@@ -272,13 +271,12 @@ final class JsonMenuNestedDefinition
         if (!$this->isGranted() || !$this->isGrantedFieldType($fieldType)) {
             $optionActions = \array_filter(['preview' => $optionActions['preview'] ?? null]);
         }
-        $isGrantedForAllDescendant = $this->isGrantedForAllDescendant($fieldType->getChildren());
 
-        if ('root' === $nodeType && $isGrantedForAllDescendant) {
+        if ('_root' === $nodeType) {
             $optionActions = \array_filter([
-                'add' => $optionActions['add'] ?? ['deny' => ['root']],
-                'copy' => $optionActions['copy'] ?? ['deny' => ['root']],
-                'paste' => $optionActions['paste'] ?? ['deny' => ['root']],
+                'add' => $optionActions['add'] ?? ['deny' => ['_root']],
+                'copy' => $optionActions['copy'] ?? ['deny' => ['_root']],
+                'paste' => $optionActions['paste'] ?? ['deny' => ['_root']],
             ]);
         }
 
@@ -290,9 +288,6 @@ final class JsonMenuNestedDefinition
                 continue;
             }
             if (!\in_array($actionName, ['copy', 'preview']) && null === $this->revision) {
-                continue;
-            }
-            if (!\in_array($actionName, ['preview', 'move', 'edit']) && !$isGrantedForAllDescendant) {
                 continue;
             }
 
@@ -330,18 +325,5 @@ final class JsonMenuNestedDefinition
         }
 
         return $types;
-    }
-
-    /**
-     * @param Collection<int, FieldType> $children
-     */
-    private function isGrantedForAllDescendant(Collection $children): bool
-    {
-        $isGrantedForAllDescendant = true;
-        foreach ($children as $child) {
-            $isGrantedForAllDescendant = $isGrantedForAllDescendant && $this->isGrantedFieldType($child) && $this->isGrantedForAllDescendant($child->getChildren());
-        }
-
-        return $isGrantedForAllDescendant;
     }
 }

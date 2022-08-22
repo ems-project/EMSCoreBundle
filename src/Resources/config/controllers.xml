@@ -280,6 +280,7 @@
             <argument type="service" id="ems_core.dashboard.dashboards" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\DefaultController"/>
         <service id="EMS\CoreBundle\Controller\ElasticsearchController">
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.index" />

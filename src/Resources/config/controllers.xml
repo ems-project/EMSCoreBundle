@@ -5,8 +5,6 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <defaults autowire="true" public="true"/>
-
         <!-- Api\Admin -->
         <service id="EMS\CoreBundle\Controller\Api\Admin\EntitiesController">
             <argument type="service" id="emsco.helper.entities" />
@@ -25,7 +23,7 @@
         </service>
 
         <!-- Api\Form -->
-        <service id="EMS\CoreBundle\Controller\Api\Form\SubmissionController">
+        <service id="EMS\CoreBundle\Controller\Api\Form\SubmissionController" public="true">
             <argument type="service" id="ems.form_submission" />
             <argument type="service" id="logger" />
             <call method="setContainer">
@@ -34,7 +32,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\Api\Form\VerificationController">
+        <service id="EMS\CoreBundle\Controller\Api\Form\VerificationController" public="true">
             <argument type="service" id="ems.form_verification" />
             <argument type="service" id="logger" />
             <call method="setContainer">
@@ -54,7 +52,7 @@
         <service id="EMS\CoreBundle\Controller\Api\AuthTokenLoginController"/>
 
         <!-- ContentManagement -->
-        <service id="EMS\CoreBundle\Controller\ContentManagement\ActionController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ActionController" public="true">
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.action" />
             <call method="setContainer">
@@ -63,15 +61,16 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController" public="true">
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.helper" />
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
             <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\AssetController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\AssetController" public="true">
             <argument type="service" id="ems_common.storage.processor" />
             <argument type="service" id="ems.repository.channel" />
             <argument>%ems_core.asset_config%</argument>
@@ -81,7 +80,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController" public="true">
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.mapping" />
@@ -90,8 +89,9 @@
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
             <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\CrudController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\CrudController" public="true">
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.user" />
             <argument type="service" id="ems.service.data" />
@@ -101,7 +101,7 @@
             </call>
             <tag name="container.service_subscriber"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\DataController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\DataController" public="true">
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems.service.search" />
@@ -119,7 +119,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\DatatableController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\DatatableController" public="true">
             <argument type="service" id="ems.service.datatable" />
             <argument type="service" id="ems_core.core_data_table.table_renderer" />
             <argument type="service" id="ems_core.core_data_table.table_exporter" />
@@ -129,7 +129,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController" public="true">
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.search" />
             <argument type="service" id="ems.service.environment" />
@@ -148,7 +148,7 @@
             </call>
             <tag name="container.service_subscriber"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\FileController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\FileController" public="true">
             <argument type="service" id="ems.service.file" />
             <argument type="service" id="ems.service.asset_extractor" />
             <argument type="service" id="emsco.logger" />
@@ -157,22 +157,23 @@
             </call>
             <tag name="container.service_subscriber"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\FilterController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\FilterController" public="true">
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.helper" />
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
             <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\IndexController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\IndexController" public="true">
             <argument type="service" id="ems.service.index" />
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
             <tag name="container.service_subscriber"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\JobController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\JobController" public="true">
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.job" />
             <argument>%ems_core.paging_size%</argument>
@@ -183,7 +184,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController" public="true">
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.alias" />
             <argument>%ems_core.instance_id%</argument>
@@ -191,8 +192,9 @@
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
             <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\PublishController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\PublishController" public="true">
             <argument type="service" id="ems.service.publish" />
             <argument type="service" id="ems.service.job" />
             <argument type="service" id="ems.service.environment" />
@@ -203,8 +205,9 @@
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
             <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\ReleaseController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ReleaseController" public="true">
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.release" />
             <argument type="service" id="ems.service.release_revision" />
@@ -214,7 +217,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ContentManagement\ViewController">
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ViewController" public="true">
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.view.manager" />
             <argument type="service" id="logger"/>
@@ -226,7 +229,7 @@
         </service>
 
         <!-- Dashboard -->
-        <service id="EMS\CoreBundle\Controller\Dashboard\DashboardController">
+        <service id="EMS\CoreBundle\Controller\Dashboard\DashboardController" public="true">
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.dashboard.manager" />
             <call method="setContainer">
@@ -237,7 +240,7 @@
         </service>
 
         <!-- Form -->
-        <service id="EMS\CoreBundle\Controller\Form\SubmissionController">
+        <service id="EMS\CoreBundle\Controller\Form\SubmissionController" public="true">
             <argument type="service" id="ems.form_submission" />
             <argument type="service" id="logger" />
             <call method="setContainer">
@@ -248,7 +251,7 @@
         </service>
 
         <!-- Job -->
-        <service id="EMS\CoreBundle\Controller\Job\ScheduleController">
+        <service id="EMS\CoreBundle\Controller\Job\ScheduleController" public="true">
             <argument type="service" id="ems.schedule.manager" />
             <argument type="service" id="logger"/>
             <call method="setContainer">
@@ -259,7 +262,7 @@
         </service>
 
         <!-- Log -->
-        <service id="EMS\CoreBundle\Controller\Log\LogController">
+        <service id="EMS\CoreBundle\Controller\Log\LogController" public="true">
             <argument type="service" id="ems.log.manager" />
             <argument type="service" id="logger" />
             <call method="setContainer">
@@ -270,7 +273,7 @@
         </service>
 
         <!-- Revision -->
-        <service id="EMS\CoreBundle\Controller\Revision\DetailController">
+        <service id="EMS\CoreBundle\Controller\Revision\DetailController" public="true">
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="EMS\CoreBundle\Repository\EnvironmentRepository" />
             <argument type="service" id="ems.service.data" />
@@ -286,7 +289,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\Revision\EditController">
+        <service id="EMS\CoreBundle\Controller\Revision\EditController" public="true">
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems_core.core_revision.draft_in_progress" />
             <argument type="service" id="logger" />
@@ -299,7 +302,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\Revision\JsonMenuNestedController">
+        <service id="EMS\CoreBundle\Controller\Revision\JsonMenuNestedController" public="true">
             <argument type="service" id="ems_core.core_ui.ajax_service" />
             <argument type="service" id="EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer" />
             <argument type="service" id="ems.service.revision" />
@@ -311,7 +314,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\Revision\TaskController">
+        <service id="EMS\CoreBundle\Controller\Revision\TaskController" public="true">
             <argument type="service" id="ems_core.core_revision_task.task_manager" />
             <argument type="service" id="ems_core.core_ui.ajax_service" />
             <argument type="service" id="form.factory" />
@@ -324,7 +327,7 @@
         </service>
 
         <!-- Search -->
-        <service id="EMS\CoreBundle\Controller\Search\QuerySearchController">
+        <service id="EMS\CoreBundle\Controller\Search\QuerySearchController" public="true">
             <argument type="service" id="ems.service.query_search" />
             <argument type="service" id="EMS\CoreBundle\Controller\ElasticsearchController" />
             <argument type="service" id="ems_core.core_document.data_links_factory" />
@@ -340,7 +343,7 @@
             <argument type="service" id="twig"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\User\ProfileController">
+        <service id="EMS\CoreBundle\Controller\User\ProfileController" public="true">
             <argument type="service" id="emsco.manager.user" />
             <argument type="service" id="emsco.logger" />
             <call method="setContainer">
@@ -348,7 +351,7 @@
             </call>
             <tag name="container.service_subscriber"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\User\ResettingController">
+        <service id="EMS\CoreBundle\Controller\User\ResettingController" public="true">
             <argument type="service" id="emsco.manager.user" />
             <argument type="service" id="ems_core.security.authenticator" />
             <argument type="service" id="emsco.logger" />
@@ -359,7 +362,7 @@
         </service>
 
         <!-- Views -->
-        <service id="EMS\CoreBundle\Controller\Views\CalendarController">
+        <service id="EMS\CoreBundle\Controller\Views\CalendarController" public="true">
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems_common.service.elastica" />
             <argument type="service" id="ems.service.data" />
@@ -368,8 +371,9 @@
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
             <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\Views\CriteriaController">
+        <service id="EMS\CoreBundle\Controller\Views\CriteriaController" public="true">
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems_common.service.elastica" />
             <argument type="service" id="ems.service.data" />
@@ -381,18 +385,20 @@
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
             <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\Views\HierarchicalController">
+        <service id="EMS\CoreBundle\Controller\Views\HierarchicalController" public="true">
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.search" />
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
             <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
         </service>
 
         <!-- Wysiwyg -->
-        <service id="EMS\CoreBundle\Controller\Wysiwyg\StylesetController">
+        <service id="EMS\CoreBundle\Controller\Wysiwyg\StylesetController" public="true">
             <argument type="service" id="ems.service.wysiwyg_styles_set" />
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
@@ -402,7 +408,7 @@
         </service>
 
         <!-- Controllers -->
-        <service id="EMS\CoreBundle\Controller\ChannelController">
+        <service id="EMS\CoreBundle\Controller\ChannelController" public="true">
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.channel" />
             <call method="setContainer">
@@ -411,7 +417,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\DashboardController">
+        <service id="EMS\CoreBundle\Controller\DashboardController" public="true">
             <argument type="service" id="ems.dashboard.manager" />
             <argument type="service" id="ems_core.dashboard.dashboards" />
             <call method="setContainer">
@@ -420,13 +426,13 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\DefaultController">
+        <service id="EMS\CoreBundle\Controller\DefaultController" public="true">
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
             <tag name="container.service_subscriber"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\ElasticsearchController">
+        <service id="EMS\CoreBundle\Controller\ElasticsearchController" public="true">
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.index" />
             <argument type="service" id="ems_common.service.elastica"/>
@@ -449,15 +455,16 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\I18nController">
+        <service id="EMS\CoreBundle\Controller\I18nController" public="true">
             <argument type="service" id="ems.service.i18n" />
             <argument>%ems_core.paging_size%</argument>
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
             <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\NotificationController">
+        <service id="EMS\CoreBundle\Controller\NotificationController" public="true">
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.publish"/>
             <argument type="service" id="ems.service.environment"/>
@@ -471,7 +478,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\QuerySearchController">
+        <service id="EMS\CoreBundle\Controller\QuerySearchController" public="true">
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.query_search" />
             <call method="setContainer">
@@ -480,7 +487,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\SearchController">
+        <service id="EMS\CoreBundle\Controller\SearchController" public="true">
             <argument type="service" id="ems.service.sort_option" />
             <argument type="service" id="ems.service.aggregate_option" />
             <argument type="service" id="ems.service.search_field_option" />
@@ -489,8 +496,9 @@
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
             <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\TwigElementsController">
+        <service id="EMS\CoreBundle\Controller\TwigElementsController" public="true">
             <argument type="service" id="ems.service.asset_extractor"/>
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.service.user"/>
@@ -503,7 +511,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\UploadedFileController">
+        <service id="EMS\CoreBundle\Controller\UploadedFileController" public="true">
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.file" />
             <call method="setContainer">
@@ -511,7 +519,7 @@
             </call>
             <tag name="container.service_subscriber"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\UploadedFileWysiwygController">
+        <service id="EMS\CoreBundle\Controller\UploadedFileWysiwygController" public="true">
             <argument type="service" id="ems.service.file" />
             <argument type="service" id="ems_core.core_ui.ajax_service" />
             <call method="setContainer">
@@ -520,7 +528,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\UserController">
+        <service id="EMS\CoreBundle\Controller\UserController" public="true">
             <argument type="service" id="logger" />
             <argument>%ems_core.circles_object%</argument>
             <argument type="service" id="ems.service.user" />
@@ -532,7 +540,7 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="EMS\CoreBundle\Controller\WysiwygController">
+        <service id="EMS\CoreBundle\Controller\WysiwygController" public="true">
             <argument type="service" id="ems.service.wysiwyg_profile" />
             <argument type="service" id="ems.service.wysiwyg_styles_set" />
             <argument type="service" id="translator" />
@@ -540,6 +548,7 @@
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
             <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
         </service>
 
     </services>

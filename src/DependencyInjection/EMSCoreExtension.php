@@ -143,15 +143,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
                 ],
             ]);
         }
-
-        $fromEmail = [
-            'address' => 'noreply@example.com',
-            'sender_name' => 'elasticms',
-        ];
-
-        if (isset($configs[0]['from_email'])) {
-            $fromEmail = $configs[0]['from_email'];
-        }
     }
 
     /**

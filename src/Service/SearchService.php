@@ -244,8 +244,6 @@ class SearchService
 
         if (!$search instanceof Search) {
             $search = new Search();
-        } else {
-            $search->resetFilters();
         }
         $search->setContentTypes($contentTypes);
         if (0 === \count($search->getEnvironments())) {

@@ -2,6 +2,8 @@
 
 namespace EMS\CoreBundle\Entity\Form;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\ContentType;
 use JsonSerializable;
@@ -24,11 +26,11 @@ class Search implements JsonSerializable
     private $id;
 
     /**
-     * @var SearchFilter[]
+     * @var Collection<int, SearchFilter>
      *
      * @ORM\OneToMany(targetEntity="SearchFilter", mappedBy="search", cascade={"persist", "remove"})
      */
-    public array $filters;
+    public Collection $filters;
 
     /**
      * @var string
@@ -90,7 +92,7 @@ class Search implements JsonSerializable
 
     public function __construct()
     {
-        $this->filters[] = new SearchFilter();
+        $this->filters = new ArrayCollection();
         $this->default = false;
         $this->minimumShouldMatch = 1;
     }
@@ -109,7 +111,6 @@ class Search implements JsonSerializable
         ];
 
         $out['filters'] = [];
-        /** @var SearchFilter $filter */
         foreach ($this->filters as $filter) {
             $out['filters'][] = $filter->jsonSerialize();
         }
@@ -175,43 +176,38 @@ class Search implements JsonSerializable
         return $this->name;
     }
 
-    /**
-     * Add filter.
-     *
-     * @return Search
-     */
-    public function addFilter(SearchFilter $filter)
+    public function getFirstFilter(): SearchFilter
     {
-        $this->filters[] = $filter;
+        if (!$firstFilter = $this->filters->first()) {
+            $newFilter = new SearchFilter();
+            $this->addFilter($newFilter);
 
-        return $this;
-    }
-
-    public function resetFilters(): Search
-    {
-        $filters = [];
-        foreach ($this->filters as $filter) {
-            $filters[] = $filter;
+            return $newFilter;
         }
-        $this->filters = $filters;
+
+        return $firstFilter;
+    }
+
+    public function addFilter(SearchFilter $filter): self
+    {
+        if (!$this->filters->contains($filter)) {
+            $this->filters->add($filter);
+        }
 
         return $this;
     }
 
-    /**
-     * Remove filter.
-     */
     public function removeFilter(SearchFilter $filter): void
     {
-        $this->filters = \array_diff($this->filters, [$filter]);
+        if ($this->filters->contains($filter)) {
+            $this->filters->removeElement($filter);
+        }
     }
 
     /**
-     * Get filters.
-     *
-     * @return SearchFilter[]
+     * @return Collection<int, SearchFilter>
      */
-    public function getFilters()
+    public function getFilters(): Collection
     {
         return $this->filters;
     }
@@ -331,8 +327,7 @@ class Search implements JsonSerializable
             $queryString .= '*';
         }
 
-        $filters = [];
-        foreach ($this->getFilters() as &$filter) {
+        foreach ($this->getFilters() as $filter) {
             if (empty($filter->getPattern())) {
                 if (\in_array($filter->getOperator(), ['query_and', 'query_or'])) {
                     $filter->setPattern($queryString);
@@ -340,8 +335,6 @@ class Search implements JsonSerializable
                     $filter->setPattern($pattern);
                 }
             }
-            $filters[] = $filter;
         }
-        $this->filters = $filters;
     }
 }

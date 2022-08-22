@@ -72,8 +72,8 @@ class GalleryViewType extends ViewType
     {
         $search = new Search();
         if (false === $request->query->get('search_form', false)) {
-            $search->getFilters()[0]->setField($view->getOptions()['imageField'].'.sha1');
-            $search->getFilters()[0]->setBooleanClause('must');
+            $search->getFirstFilter()->setField($view->getOptions()['imageField'].'.sha1');
+            $search->getFirstFilter()->setBooleanClause('must');
         }
         $search->setContentTypes([$view->getContentType()->getName()]);
         $environment = $view->getContentType()->getEnvironment();

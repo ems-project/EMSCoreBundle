@@ -242,8 +242,6 @@ class ElasticsearchController extends AbstractController
             'default' => true,
         ]);
         if ($search) {
-            $em->clear();
-            $search->resetFilters();
             /** @var SearchFilter $filter */
             foreach ($search->getFilters() as &$filter) {
                 if (empty($filter->getPattern())) {
@@ -254,7 +252,7 @@ class ElasticsearchController extends AbstractController
             $search = new Search();
             $search->setEnvironments($this->environmentService->getEnvironmentNames());
             if (false !== $query) {
-                $search->getFilters()[0]->setPattern($query)->setBooleanClause('must');
+                $search->getFirstFilter()->setPattern($query)->setBooleanClause('must');
             }
         }
 
@@ -265,11 +263,7 @@ class ElasticsearchController extends AbstractController
         ]);
     }
 
-    /**
-     * @param int    $id
-     * @param string $contentType
-     */
-    public function setDefaultSearchAction($id, $contentType): Response
+    public function setDefaultSearchAction(int $id, ?string $contentType): Response
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository(Search::class);

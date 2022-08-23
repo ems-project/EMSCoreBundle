@@ -130,10 +130,6 @@ final class ChannelRepository extends ServiceEntityRepository
 
     public function getByName(string $name): ?Channel
     {
-        if (null === $channel = $this->findOneBy(['name' => $name])) {
-            throw new \RuntimeException('Unexpected channel type');
-        }
-
-        return $channel;
+        return $this->findOneBy(['name' => $name]);
     }
 }

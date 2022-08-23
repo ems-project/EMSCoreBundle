@@ -67,11 +67,7 @@ class I18nRepository extends ServiceEntityRepository
 
     public function findByIdentifier(string $id): ?I18n
     {
-        if (null === $styleSet = $this->findOneBy(['identifier' => $id])) {
-            throw new \RuntimeException('Unexpected wysiwyg style set type');
-        }
-
-        return $styleSet;
+        return $this->findOneBy(['identifier' => $id]);
     }
 
     /**

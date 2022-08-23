@@ -21,11 +21,7 @@ class AnalyzerRepository extends ServiceEntityRepository
 
     public function findByName(string $name): ?Analyzer
     {
-        if (null === $analyzer = $this->findOneBy(['name' => $name])) {
-            throw new \RuntimeException('Unexpected analyzer type');
-        }
-
-        return $analyzer;
+        return $this->findOneBy(['name' => $name]);
     }
 
     public function update(Analyzer $analyzer): void

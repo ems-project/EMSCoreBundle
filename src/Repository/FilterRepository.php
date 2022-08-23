@@ -21,11 +21,7 @@ class FilterRepository extends ServiceEntityRepository
 
     public function findByName(string $name): ?Filter
     {
-        if (null === $filter = $this->findOneBy(['name' => $name])) {
-            throw new \RuntimeException('Unexpected filter type');
-        }
-
-        return $filter;
+        return $this->findOneBy(['name' => $name]);
     }
 
     public function update(Filter $filter): void

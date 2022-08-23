@@ -318,12 +318,9 @@ final class TaskManager
                 $revision = $this->revisionRepository->findOneById($revisionId);
                 $this->dataService->lockRevision($revision);
 
-                $this->revisionRepository->clear();
-                $revisionLocked = $this->revisionRepository->findOneById($revisionId);
+                $result = $execute($revision);
 
-                $result = $execute($revisionLocked);
-
-                $this->dataService->unlockRevision($revisionLocked);
+                $this->dataService->unlockRevision($revision);
 
                 return $result;
             } catch (\Throwable $e) {

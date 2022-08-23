@@ -132,28 +132,16 @@ final class DashboardRepository extends ServiceEntityRepository
 
     public function getByName(string $name): ?Dashboard
     {
-        if (null === $dashboard = $this->findOneBy(['name' => $name])) {
-            throw new \RuntimeException('Unexpected dashboard type');
-        }
-
-        return $dashboard;
+        return $this->findOneBy(['name' => $name]);
     }
 
     public function getQuickSearch(): ?Dashboard
     {
-        if (null === $dashboard = $this->findOneBy(['quickSearch' => true])) {
-            throw new \RuntimeException('Unexpected dashboard type');
-        }
-
-        return $dashboard;
+        return $this->findOneBy(['quickSearch' => true]);
     }
 
     public function getLandingPage(): ?Dashboard
     {
-        if (null === $dashboard = $this->findOneBy(['landingPage' => true])) {
-            throw new \RuntimeException('Unexpected dashboard type');
-        }
-
-        return $dashboard;
+        return $this->findOneBy(['landingPage' => true]);
     }
 }

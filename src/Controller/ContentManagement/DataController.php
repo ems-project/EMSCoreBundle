@@ -176,7 +176,6 @@ class DataController extends AbstractController
             throw new \RuntimeException('Unexpected empty circle field');
         }
 
-        $searchForm->filters = [];
         $user = $this->getUser();
         if (!$user instanceof UserInterface) {
             throw new \RuntimeException('Unexpected user object');

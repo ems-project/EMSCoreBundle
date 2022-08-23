@@ -6,7 +6,7 @@
     <services>
         <defaults public="false" />
 
-        <service id="app.twig_extension" alias="EMS\CoreBundle\Twig\AppExtension"/>
+        <service id="app.twig_extension" alias="EMS\CoreBundle\Twig\AppExtension" public="true"/>
         <service id="EMS\CoreBundle\Twig\AppExtension">
             <argument type="service" id="doctrine" />
             <argument type="service" id="security.authorization_checker" />

@@ -132,7 +132,7 @@ class DetailController extends AbstractController
         $searchForm->setSortBy('_uid');
         $searchForm->setSortOrder('asc');
 
-        $filter = $searchForm->getFilters()[0];
+        $filter = $searchForm->getFirstFilter();
         $filter->setBooleanClause('should');
         $filter->setField($contentType->getRefererFieldName());
         $filter->setPattern(\sprintf('%s:%s', $type, $ouuid));

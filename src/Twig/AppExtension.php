@@ -15,6 +15,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CommonBundle\Twig\RequestRuntime;
+use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer;
 use EMS\CoreBundle\Core\Revision\Wysiwyg\WysiwygRuntime;
 use EMS\CoreBundle\Entity\ContentType;
@@ -40,6 +41,7 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -64,7 +66,7 @@ class AppExtension extends AbstractExtension
     private ObjectChoiceListFactory $objectChoiceListFactory;
     private EnvironmentService $environmentService;
     private LoggerInterface $logger;
-    private \Swift_Mailer $mailer;
+    private MailerService $mailer;
     private ElasticaService $elasticaService;
     private SearchService $searchService;
     private AssetRuntime $assetRuntime;
@@ -85,7 +87,7 @@ class AppExtension extends AbstractExtension
         FormFactory $formFactory,
         FileService $fileService,
         RequestRuntime $commonRequestRuntime,
-        \Swift_Mailer $mailer,
+        MailerService $mailer,
         ElasticaService $elasticaService,
         SearchService $searchService,
         AssetRuntime $assetRuntime,
@@ -208,14 +210,17 @@ class AppExtension extends AbstractExtension
         ];
     }
 
-    public function generateEmailMessage(string $title): \Swift_Message
+    public function generateEmailMessage(string $title): Email
     {
-        return new \Swift_Message($title);
+        $mail = new Email();
+        $mail->subject($title);
+
+        return $mail;
     }
 
-    public function sendEmail(\Swift_Message $message): void
+    public function sendEmail(Email $email): void
     {
-        $this->mailer->send($message);
+        $this->mailer->sendMail($email);
     }
 
     /**

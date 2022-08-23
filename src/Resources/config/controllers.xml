@@ -522,6 +522,7 @@
         <service id="EMS\CoreBundle\Controller\UploadedFileWysiwygController" public="true">
             <argument type="service" id="ems.service.file" />
             <argument type="service" id="ems_core.core_ui.ajax_service" />
+            <argument type="service" id="router" />
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>

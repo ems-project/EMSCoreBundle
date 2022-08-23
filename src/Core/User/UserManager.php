@@ -100,7 +100,7 @@ final class UserManager
             ->setBodyBlock('resetPassword', ['user' => $user])
         ;
 
-        $this->mailerService->sendMailTemplate($mailTemplate, 'text/plain');
+        $this->mailerService->sendMailTemplate($mailTemplate);
 
         $user->setPasswordRequestedAt(new \DateTime());
         $this->update($user);

@@ -20,7 +20,7 @@
             <argument type="service" id="form.factory" />
             <argument type="service" id="ems.service.file" />
             <argument type="service" id="ems_common.twig.runtime.request" />
-            <argument type="service" id="mailer" />
+            <argument type="service" id="ems_core.core_mail.mailer_service" />
             <argument type="service" id="ems_common.service.elastica" />
             <argument type="service" id="ems.service.search" />
             <argument type="service" id="EMS\CommonBundle\Twig\AssetRuntime" />

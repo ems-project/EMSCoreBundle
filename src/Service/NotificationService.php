@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Service;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\TreatNotifications;
 use EMS\CoreBundle\Entity\Notification;
@@ -19,9 +20,9 @@ use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
-use Swift_Message;
-use Swift_TransportException;
-use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Throwable;
 use Twig\Environment as TwigEnvironment;
 
@@ -30,35 +31,27 @@ class NotificationService
     private Registry $doctrine;
     private UserService $userService;
     private LoggerInterface $logger;
-    private Container $container;
     private DataService $dataService;
-
-    /** @var array{address: string, sender_name: string} */
-    private array $sender;
+    private MailerService $mailerService;
     private TwigEnvironment $twig;
 
     private bool $dryRun;
 
-    /**
-     * @param array{address: string, sender_name: string} $sender
-     */
     public function __construct(
         Registry $doctrine,
         UserService $userService,
         LoggerInterface $logger,
-        Container $container,
         DataService $dataService,
-        array $sender,
+        MailerService $mailerService,
         TwigEnvironment $twig
     ) {
         $this->doctrine = $doctrine;
         $this->userService = $userService;
         $this->dataService = $dataService;
+        $this->mailerService = $mailerService;
         $this->logger = $logger;
-        $this->container = $container;
         $this->twig = $twig;
         $this->dryRun = false;
-        $this->sender = $sender;
     }
 
     public function publishEvent(RevisionPublishEvent $event): void
@@ -469,8 +462,6 @@ class NotificationService
             EmsFields::LOG_ENVIRONMENT_FIELD => $notification->getEnvironment()->getName(),
             'status' => $notification->getStatus(),
         ]);
-
-        $em->clear(); //bulk treat issue
     }
 
     public function accept(Notification $notification, TreatNotifications $treatNotifications): void
@@ -486,15 +477,15 @@ class NotificationService
     /**
      * @param UserInterface[] $users
      *
-     * @return array<string, string>
+     * @return array<string, Address>
      */
-    public static function usersToEmailAddresses(array $users): array
+    private static function usersToEmailAddresses(array $users): array
     {
         $out = [];
 
         foreach ($users as $user) {
             if ($user->getEmailNotification() && $user->isEnabled()) {
-                $out[$user->getEmail()] = $user->getDisplayName();
+                $out[$user->getEmail()] = new Address($user->getEmail(), $user->getDisplayName());
             }
         }
 
@@ -514,32 +505,33 @@ class NotificationService
         $toUsers = $this->usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleTo(), $toCircles));
         $ccUsers = $this->usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleCc(), $toCircles));
 
-        $message = (new Swift_Message());
-
+        $email = new Email();
         $params = [
-                'notification' => $notification,
-                'source' => $notification->getRevision()->getRawData(),
-                'object' => $notification->getRevision()->buildObject(),
-                'status' => $notification->getStatus(),
-                'environment' => $notification->getEnvironment(),
+            'notification' => $notification,
+            'source' => $notification->getRevision()->getRawData(),
+            'object' => $notification->getRevision()->buildObject(),
+            'status' => $notification->getStatus(),
+            'environment' => $notification->getEnvironment(),
         ];
 
         if ('pending' == $notification->getStatus()) {
-            //it's a notification
             try {
                 $body = $this->twig->createTemplate($notification->getTemplate()->getBody())->render($params);
             } catch (Exception $e) {
                 $body = 'Error in body template: '.$e->getMessage();
             }
 
-            $message->setSubject($notification->getTemplate().' for '.$notification->getRevision())
-                ->setFrom($this->sender['address'], $this->sender['sender_name'])
-                ->setTo($toUsers)
-                ->setCc(\array_unique(\array_merge($ccUsers, $fromUser)))
-                ->setBody($body, empty($notification->getTemplate()->getEmailContentType()) ? 'text/html' : $notification->getTemplate()->getEmailContentType());
+            $email
+                ->subject($notification->getTemplate().' for '.$notification->getRevision())
+                ->to(...\array_values($toUsers));
+
+            $cc = \array_merge($ccUsers, $fromUser);
+            if ($cc) {
+                $email->cc(...\array_values($cc));
+            }
+
             $notification->setEmailed(new DateTime());
         } else {
-            //it's a notification
             try {
                 $body = $this->twig->createTemplate($notification->getTemplate()->getResponseTemplate())->render($params);
             } catch (Exception $e) {
@@ -547,23 +539,32 @@ class NotificationService
             }
 
             //it's a reminder
-            $message->setSubject($notification->getTemplate().' for '.$notification->getRevision().' has been '.$notification->getStatus())
-                ->setFrom($this->sender['address'], $this->sender['sender_name'])
-                ->setTo($fromUser)
-                ->setCc(\array_unique(\array_merge($ccUsers, $toUsers)))
-                ->setBody($body, 'text/html');
+            $email
+                ->subject($notification->getTemplate().' for '.$notification->getRevision().' has been '.$notification->getStatus())
+                ->to(...\array_values($fromUser));
+
+            $cc = \array_merge($ccUsers, $toUsers);
+            if ($cc) {
+                $email->cc(...\array_values($cc));
+            }
+
             $notification->setResponseEmailed(new DateTime());
+        }
+
+        $contentType = $notification->getTemplate()->getEmailContentType() ?? 'text/plain';
+        if ('text/html' === $contentType) {
+            $email->html($body);
+        } else {
+            $email->text($body);
         }
 
         if (!$this->dryRun) {
             $em = $this->doctrine->getManager();
             try {
-                /** @var \Swift_Mailer $mailer */
-                $mailer = $this->container->get('mailer');
-                $mailer->send($message);
+                $this->mailerService->sendMail($email);
                 $em->persist($notification);
                 $em->flush();
-            } catch (Swift_TransportException $e) {
+            } catch (TransportExceptionInterface $e) {
             }
         }
     }

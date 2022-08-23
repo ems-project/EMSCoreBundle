@@ -345,9 +345,8 @@
             <argument type="service" id="doctrine"/>
             <argument type="service" id="ems.service.user"/>
             <argument type="service" id="logger"/>
-            <argument type="service" id="service_container"/>
             <argument type="service" id="ems.service.data"/>
-            <argument>%ems_core.from_email%</argument>
+            <argument type="service" id="ems_core.core_mail.mailer_service"/>
             <argument type="service" id="twig"/>
             <tag name="kernel.event_listener" event="EMS\CoreBundle\Event\RevisionNewDraftEvent" method="newDraftEvent" priority="0" />
             <tag name="kernel.event_listener" event="EMS\CoreBundle\Event\RevisionFinalizeDraftEvent" method="finalizeDraftEvent" priority="0" />

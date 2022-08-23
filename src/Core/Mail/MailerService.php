@@ -53,6 +53,15 @@ class MailerService
         $this->mailer->send($email);
     }
 
+    public function sendMail(Email $email): void
+    {
+        if (0 === \count($email->getFrom())) {
+            $email->from($this->from);
+        }
+
+        $this->mailer->send($email);
+    }
+
     public function sendMailTemplate(MailTemplate $template): void
     {
         $email = (new Email())

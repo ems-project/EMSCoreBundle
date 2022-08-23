@@ -119,7 +119,7 @@
         </service>
 
         <service id="ems_core.core_mail.mailer_service" class="EMS\CoreBundle\Core\Mail\MailerService">
-            <argument type="service" id="mailer"/>
+            <argument type="service" id="Symfony\Component\Mailer\MailerInterface"/>
             <argument type="service" id="twig"/>
             <argument type="service" id="translator"/>
             <argument>%ems_core.from_email%</argument>

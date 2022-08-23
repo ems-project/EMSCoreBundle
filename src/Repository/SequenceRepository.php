@@ -35,7 +35,7 @@ class SequenceRepository extends EntityRepository
             $sequence = new Sequence($name);
             $out = $sequence->getValue();
             $this->_em->persist($sequence);
-            $this->_em->flush($sequence);
+            $this->_em->flush();
         } else {
             $item = $result[0];
             $q = $qb->update()

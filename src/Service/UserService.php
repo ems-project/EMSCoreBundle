@@ -95,7 +95,6 @@ class UserService implements EntityServiceInterface
 
     public function getUser(string $username, bool $detachIt = true): ?UserInterface
     {
-        $em = $this->doctrine->getManager();
         $user = $this->userRepository->findOneBy(['username' => $username]);
 
         if (null === $user) {
@@ -109,10 +108,7 @@ class UserService implements EntityServiceInterface
             return $user;
         }
 
-        $clone = clone $user;
-        $em->clear();
-
-        return $clone;
+        return clone $user;
     }
 
     public function getCurrentUser(bool $detach = true): UserInterface

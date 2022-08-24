@@ -287,7 +287,7 @@ final class TaskManager
 
     private function dispatchEvent(TaskEvent $event, string $eventName): void
     {
-        $this->eventDispatcher->dispatch($event, $eventName); /* @phpstan-ignore-line */
+        $this->eventDispatcher->dispatch($event, $eventName);
     }
 
     private function createTaskEvent(Task $task, Revision $revision, ?string $username = null): TaskEvent

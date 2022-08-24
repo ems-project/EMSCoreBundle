@@ -59,7 +59,7 @@ class CoreLdapUserProvider extends LdapUserProvider
         return $newUser;
     }
 
-    public function loadUserByUsername($username)
+    public function loadUserByUsername(string $username)
     {
         try {
             return parent::loadUserByUsername($username);
@@ -81,7 +81,7 @@ class CoreLdapUserProvider extends LdapUserProvider
         return $this->userService->giveUser($user->getUsername(), false);
     }
 
-    public function supportsClass($class): bool
+    public function supportsClass(string $class): bool
     {
         return CoreLdapUser::class === $class;
     }

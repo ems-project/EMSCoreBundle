@@ -77,7 +77,7 @@ final class AuthTokenLoginAuthenticator extends AbstractGuardAuthenticator
         ], Response::HTTP_UNAUTHORIZED);
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): JsonResponse
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): JsonResponse
     {
         $user = $token->getUser();
         if (!$user instanceof CoreUserInterface) {

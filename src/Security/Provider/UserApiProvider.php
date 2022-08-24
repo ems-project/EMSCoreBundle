@@ -19,7 +19,7 @@ class UserApiProvider implements UserProviderInterface
         $this->authTokenRepository = $authTokenRepository;
     }
 
-    public function loadUserByUsername($username): UserInterface
+    public function loadUserByUsername(string $username): UserInterface
     {
         $authToken = $this->authTokenRepository->findOneBy(['value' => $username]);
         $user = $authToken ? $authToken->getUser() : null;
@@ -36,7 +36,7 @@ class UserApiProvider implements UserProviderInterface
         throw new UnsupportedUserException();
     }
 
-    public function supportsClass($class): bool
+    public function supportsClass(string $class): bool
     {
         return UserInterface::class === $class;
     }

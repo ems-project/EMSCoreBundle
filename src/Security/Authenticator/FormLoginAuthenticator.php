@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Security\Authenticator;
 
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Security\Provider\UserProvider;
+use EMS\Helpers\Standard\Type;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -49,9 +50,9 @@ class FormLoginAuthenticator extends AbstractFormLoginAuthenticator implements P
     public function getCredentials(Request $request): array
     {
         $credentials = [
-            'username' => $request->request->get('_username'),
-            'password' => $request->request->get('_password'),
-            'csrf_token' => $request->request->get('_csrf_token'),
+            'username' => Type::string($request->request->get('_username')),
+            'password' => Type::string($request->request->get('_password')),
+            'csrf_token' => Type::string($request->request->get('_csrf_token')),
         ];
         $request->getSession()->set(Security::LAST_USERNAME, $credentials['username']);
 
@@ -85,7 +86,7 @@ class FormLoginAuthenticator extends AbstractFormLoginAuthenticator implements P
         return $credentials['password'];
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): RedirectResponse
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): RedirectResponse
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);

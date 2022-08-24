@@ -20,7 +20,7 @@ class UserProvider implements UserProviderInterface
         $this->userRepository = $userRepository;
     }
 
-    public function loadUserByUsername($username): UserInterface
+    public function loadUserByUsername(string $username): UserInterface
     {
         return $this->findUser($username);
     }
@@ -34,7 +34,7 @@ class UserProvider implements UserProviderInterface
         return $this->findUser($user->getUsername());
     }
 
-    public function supportsClass($class): bool
+    public function supportsClass(string $class): bool
     {
         return User::class === $class;
     }

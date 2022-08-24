@@ -109,7 +109,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     /**
      * Update contentType and parent recursively.
      */
-    //TODO: Unrecursify this method
+    // TODO: Unrecursify this method
     public function updateAncestorReferences(?ContentType $contentType, ?FieldType $parent): void
     {
         $this->setContentType($contentType);

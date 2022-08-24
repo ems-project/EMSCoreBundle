@@ -86,7 +86,7 @@ class DetailController extends AbstractController
         $revision = $this->revisionService->findByIdOrOuuid($contentType, $revisionId, $ouuid);
 
         if (null === $revision && $contentType->hasVersionTags() && Uuid::isValid($ouuid)) {
-            //using version ouuid as ouuid should redirect to latest
+            // using version ouuid as ouuid should redirect to latest
             $searchLatestVersion = $this->revisionRepository->findLatestVersion($contentType, $ouuid);
             if ($searchLatestVersion && $searchLatestVersion->getOuuid() !== $ouuid) {
                 return $this->redirectToRoute('emsco_view_revisions', [

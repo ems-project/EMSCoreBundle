@@ -154,7 +154,7 @@ class FieldTypeType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        /*get options for twig context*/
+        /* get options for twig context */
         parent::buildView($view, $form, $options);
         $view->vars['editSubfields'] = $options['editSubfields'];
     }
@@ -190,7 +190,7 @@ class FieldTypeType extends AbstractType
         foreach ($dataField->getChildren() as $child) {
             $this->logger->debug('build object array for child', [$child->getFieldType()]);
 
-            //its a Collection Item
+            // its a Collection Item
             if (null == $child->getFieldType()) {
                 $this->logger->debug('empty');
                 $subOut = [];

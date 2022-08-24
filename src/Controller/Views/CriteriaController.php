@@ -430,7 +430,7 @@ class CriteriaController extends AbstractController
             'index' => $contentType->giveEnvironment()->getAlias(),
             'type' => $contentType->getName(),
             'body' => $body,
-            'size' => 500, //is it enough?
+            'size' => 500, // is it enough?
         ]);
         $response = EmsResponse::fromResultSet($this->elasticaService->search($search));
 
@@ -498,7 +498,7 @@ class CriteriaController extends AbstractController
         $criteriaField = $request->request->get('criteriaField');
         $category = $request->request->get('category');
 
-        //TODO securtity test
+        // TODO securtity test
 
         if ('internal' == $view->getOptions()['criteriaMode']) {
             $structuredTarget = \explode(':', $target);
@@ -794,7 +794,7 @@ class CriteriaController extends AbstractController
         $criteriaField = $request->request->get('criteriaField');
         $category = $request->request->get('category');
 
-        //TODO securtity test
+        // TODO securtity test
 
         if ('internal' == $view->getOptions()['criteriaMode']) {
             $structuredTarget = \explode(':', $target);
@@ -1076,10 +1076,10 @@ class CriteriaController extends AbstractController
             if (isset($criteriaChoiceLists[$criteriaName][$value])) {
                 $context[$criteriaName] = $value;
                 if (\count($criteriaNames) > 0) {
-                    //let see (recursively) if the other criterion applies to find a matching context
+                    // let see (recursively) if the other criterion applies to find a matching context
                     $this->addToTable($choice, $table, $criterion, $criteriaNames, $criteriaChoiceLists, $config, $context);
                 } else {
-                    //all criterion apply the current choice can be added to the table depending the context
+                    // all criterion apply the current choice can be added to the table depending the context
                     if (!isset($table[$context[$config->getRowCriteria()]][$context[$config->getColumnCriteria()]])) {
                         $table[$context[$config->getRowCriteria()]][$context[$config->getColumnCriteria()]] = [];
                     }

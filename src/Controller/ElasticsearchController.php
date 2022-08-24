@@ -168,7 +168,7 @@ class ElasticsearchController extends AbstractController
 
             $globalStatus = 'green';
             try {
-                $tika = ($this->assetExtractorService->hello());
+                $tika = $this->assetExtractorService->hello();
             } catch (Exception $e) {
                 $globalStatus = 'yellow';
                 $tika = [
@@ -510,7 +510,7 @@ class ElasticsearchController extends AbstractController
                 $page = 1;
             }
 
-            //Use search from a saved form
+            // Use search from a saved form
             $searchId = $request->query->get('searchId');
             if (null != $searchId) {
                 $em = $this->getDoctrine()->getManager();
@@ -535,7 +535,7 @@ class ElasticsearchController extends AbstractController
                 $openSearchForm = $searchButton->isClicked();
             }
 
-            //Form treatment after the "Save" button has been pressed (= ask for a name to save the search preset)
+            // Form treatment after the "Save" button has been pressed (= ask for a name to save the search preset)
             if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('save', $request->query->get('search_form'))) {
                 $form = $this->createFormBuilder($search)
                     ->add('name', TextType::class)
@@ -552,7 +552,7 @@ class ElasticsearchController extends AbstractController
                     'form' => $form->createView(),
                 ]);
             } elseif ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('delete', $request->query->get('search_form'))) {
-                //Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
+                // Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
 
                 $this->logger->notice('log.elasticsearch.search_deleted', [
                 ]);
@@ -611,7 +611,7 @@ class ElasticsearchController extends AbstractController
             $currentFilters = $request->query;
             $currentFilters->remove('search_form[_token]');
 
-            //Form treatment after the "Export results" button has been pressed (= ask for a "content type" <-> "template" mapping)
+            // Form treatment after the "Export results" button has been pressed (= ask for a "content type" <-> "template" mapping)
             if (null !== $response && $form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('exportResults', $request->query->get('search_form'))) {
                 $exportForms = [];
                 $contentTypes = $this->getAllContentType($response);

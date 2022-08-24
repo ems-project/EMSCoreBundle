@@ -182,7 +182,7 @@ class NotificationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            //TODO: what for?
+            // TODO: what for?
             $form->getData();
         }
 

@@ -29,7 +29,7 @@ class ComputedFieldType extends DataFieldType
 
                 return [$current->getName() => $this->elasticsearchService->updateMapping($mapping)];
             } catch (\Exception $e) {
-                //TODO send message to user, mustr move to service first
+                // TODO send message to user, mustr move to service first
             }
         }
 

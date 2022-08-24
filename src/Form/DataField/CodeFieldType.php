@@ -37,7 +37,7 @@ class CodeFieldType extends DataFieldType
     {
         $fieldType = $options['metadata'];
 
-        /*get options for twig context*/
+        /* get options for twig context */
         parent::buildView($view, $form, $options);
         $view->vars['icon'] = $options['icon'];
 
@@ -63,7 +63,7 @@ class CodeFieldType extends DataFieldType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        /*set the default option value for this kind of compound field*/
+        /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
         $resolver->setDefault('icon', null);
         $resolver->setDefault('language', null);

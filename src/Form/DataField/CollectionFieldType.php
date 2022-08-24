@@ -152,8 +152,8 @@ class CollectionFieldType extends DataFieldType
         }
 
         $isValid = true;
-        //Madatory Validation
-        //$isValid = $isValid && $this->isMandatory($dataField);
+        // Madatory Validation
+        // $isValid = $isValid && $this->isMandatory($dataField);
 
         $restrictionOptions = $dataField->giveFieldType()->getRestrictionOptions();
         $rawData = $dataField->getRawData();
@@ -259,11 +259,11 @@ class CollectionFieldType extends DataFieldType
     {
         $cleaned = [];
         foreach ($data as $idx => $item) {
-            //if the item _ems_item_reverseViewTransform is missing it means that this item hasn't been submitted (and it can be deleted)
+            // if the item _ems_item_reverseViewTransform is missing it means that this item hasn't been submitted (and it can be deleted)
             if (!empty($item) && isset($item['_ems_item_reverseViewTransform'])) {
                 unset($item['_ems_item_reverseViewTransform']);
 
-                //now that we know that this has been submited, let's check if it has not been marked to be deleted
+                // now that we know that this has been submited, let's check if it has not been marked to be deleted
                 if (!isset($item['_ems_internal_deleted']) || 'deleted' != $item['_ems_internal_deleted']) {
                     unset($item['_ems_internal_deleted']);
                     if ($fieldType->getMappingOption('renumbering', false)) {

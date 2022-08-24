@@ -113,7 +113,7 @@ class HierarchicalViewType extends ViewType
                 'mapping' => $mapping,
                 'types' => [
                         'keyword',
-                        'text', //TODO: for ES2 support
+                        'text', // TODO: for ES2 support
                 ], ]);
 
         $builder->get('parent')->addModelTransformer(new CallbackTransformer(

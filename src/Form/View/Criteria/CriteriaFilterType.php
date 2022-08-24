@@ -152,7 +152,7 @@ class CriteriaFilterType extends AbstractType
                                 'data-name' => $child->getName(),
                         ];
 
-                    $displayOptions['multiple'] = true; //($child->getName() == $defaultRow || $child->getName() == $defaultColumn);
+                    $displayOptions['multiple'] = true; // ($child->getName() == $defaultRow || $child->getName() == $defaultColumn);
 
                     $criterion->add($child->getName(), $child->getType(), $displayOptions);
                     $criterion->get($child->getName())->addViewTransformer(new CallbackTransformer(

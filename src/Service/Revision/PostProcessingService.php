@@ -55,7 +55,7 @@ final class PostProcessingService
     {
         $migration = isset($context['migration']) && $context['migration'];
         $context = \array_merge($context, [
-            '_source' => &$objectArray, //if update also update the context
+            '_source' => &$objectArray, // if update also update the context
             '_type' => $contentType->getName(),
             'index' => $contentType->giveEnvironment()->getAlias(),
             'alias' => $contentType->giveEnvironment()->getAlias(),

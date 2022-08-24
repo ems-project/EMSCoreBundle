@@ -191,11 +191,11 @@ class RevisionService implements RevisionServiceInterface
     public function saveVersion(Revision $revision, array $rawData, ?string $versionTag = null, ?FormInterface &$form = null): Revision
     {
         if (null !== $versionTag) {
-            $revision->setVersionTag($versionTag); //update version_tag archived versions
+            $revision->setVersionTag($versionTag); // update version_tag archived versions
         }
 
         if (null === $versionTag || null !== $revision->getVersionDate('to') || !$revision->hasOuuid()) {
-            //silent version publish || changing archived version revision || new document draft
+            // silent version publish || changing archived version revision || new document draft
             $this->save($revision, $rawData);
             $this->dataService->finalizeDraft($revision, $form);
 
@@ -204,7 +204,7 @@ class RevisionService implements RevisionServiceInterface
 
         $now = new \DateTimeImmutable();
 
-        $newVersion = $revision->clone(); //create new version revision
+        $newVersion = $revision->clone(); // create new version revision
         $this->dataService->lockRevision($newVersion);
         $newVersion->setVersionDate('from', $now);
         $this->dataService->finalizeDraft($newVersion, $form);
@@ -213,7 +213,7 @@ class RevisionService implements RevisionServiceInterface
             return $revision;
         }
 
-        $this->dataService->discardDraft($revision); //discard draft changes previous revision
+        $this->dataService->discardDraft($revision); // discard draft changes previous revision
 
         $previousVersion = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->giveOuuid());
         $previousVersion->clearTasks();

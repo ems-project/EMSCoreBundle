@@ -777,7 +777,7 @@ class DataController extends AbstractController
             $backup = $revision->getRawData();
             $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
 
-            //If the bag is not empty the user already see its content when opening the edit page
+            // If the bag is not empty the user already see its content when opening the edit page
             $request->getSession()->getBag('flashes')->clear();
 
             /**little trick to reorder collection*/

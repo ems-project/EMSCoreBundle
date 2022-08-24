@@ -241,12 +241,12 @@ class DataService
         if (!$username && $twigExtension instanceof AppExtension && !$twigExtension->oneGranted($revision->giveContentType()->getFieldType()->getFieldsRoles(), $super)) {
             throw new PrivilegeException($revision);
         }
-        //TODO: test circles
+        // TODO: test circles
 
         $revision->setLockBy($lockerUsername);
 
         if ($username) {
-            //lock by a console script
+            // lock by a console script
             $revision->setLockUntil(new \DateTime('+30 seconds'));
         } else {
             $revision->setLockUntil(new \DateTime($this->lockTime));
@@ -505,7 +505,7 @@ class DataService
     public function createData(?string $ouuid, array $rawdata, ContentType $contentType, bool $byARealUser = true): Revision
     {
         $now = new \DateTime();
-        $until = $now->add(new \DateInterval($byARealUser ? 'PT5M' : 'PT1M')); //+5 minutes
+        $until = $now->add(new \DateInterval($byARealUser ? 'PT5M' : 'PT1M')); // +5 minutes
         $newRevision = new Revision();
         $newRevision->setContentType($contentType);
         if (null !== $ouuid) {
@@ -708,7 +708,7 @@ class DataService
                                 EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                                 'label' => $revision->getLabel(),
                             ]);
-                        } elseif (1 !== $ok) { //1 means signature is ok
+                        } elseif (1 !== $ok) { // 1 means signature is ok
                             $this->logger->info('service.data.error_check_signature', [
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
@@ -777,7 +777,7 @@ class DataService
             $this->loadDataStructure($revision);
         }
 
-        //Get the form from Factory
+        // Get the form from Factory
         $builder = $this->formFactory->createBuilder(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
         $form = $builder->getForm();
 
@@ -801,7 +801,7 @@ class DataService
                 $this->loadDataStructure($revision);
             }
 
-            //Get the form from Factory
+            // Get the form from Factory
             $builder = $this->formFactory->createBuilder(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
             $form = $builder->getForm();
         }
@@ -820,7 +820,7 @@ class DataService
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository(Revision::class);
 
-        //TODO: test if draft and last version publish in
+        // TODO: test if draft and last version publish in
 
         if (!empty($revision->getAutoSave())) {
             throw new DataStateException('An auto save is pending, it can not be finalized.');
@@ -1103,7 +1103,7 @@ class DataService
                         $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $currentUser->getCircles()]));
                         $revision->setCircles($currentUser->getCircles());
                     } else {
-                        //set first of my circles
+                        // set first of my circles
                         if (!empty($currentUser->getCircles())) {
                             $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $currentUser->getCircles()[0]]));
                             $revision->setCircles([$currentUser->getCircles()[0]]);
@@ -1433,7 +1433,7 @@ class DataService
      */
     public function updateDataStructure(FieldType $meta, DataField $dataField): void
     {
-        //no need to generate the structure for subfields
+        // no need to generate the structure for subfields
         $isContainer = true;
 
         if (null !== $dataField->getFieldType()) {
@@ -1451,7 +1451,7 @@ class DataService
         if ($isContainer) {
             /** @var FieldType $field */
             foreach ($meta->getChildren() as $key => $field) {
-                //no need to generate the structure for delete field
+                // no need to generate the structure for delete field
                 if (!$field->getDeleted()) {
                     $child = $dataField->__get('ems_'.$field->getName());
                     if (null == $child) {
@@ -1487,7 +1487,7 @@ class DataService
             }
 
             $fieldNames = $dataFieldType->getJsonNames($fieldType);
-            if (0 === \count($fieldNames)) {//Virtual container
+            if (0 === \count($fieldNames)) {// Virtual container
                 /** @var DataField $child */
                 foreach ($dataField->getChildren() as $child) {
                     $this->updateDataValue($child, $elasticIndexDatas, $isMigration);
@@ -1527,7 +1527,7 @@ class DataService
         $data->setRawData($revision->getRawData());
         $revision->setDataField($data);
         $this->updateDataStructure($revision->giveContentType()->getFieldType(), $data);
-        //$revision->getDataField()->updateDataStructure($this->formRegistry, $revision->getContentType()->getFieldType());
+        // $revision->getDataField()->updateDataStructure($this->formRegistry, $revision->getContentType()->getFieldType());
         $object = $revision->getRawData();
         $this->updateDataValue($data, $object);
         unset($object[Mapping::CONTENT_TYPE_FIELD]);
@@ -1626,7 +1626,7 @@ class DataService
     public function getEmptyRevision(ContentType $contentType, ?string $user = null): Revision
     {
         $now = new \DateTime();
-        $until = $now->add(new \DateInterval('PT5M')); //+5 minutes
+        $until = $now->add(new \DateInterval('PT5M')); // +5 minutes
         $newRevision = new Revision();
         $newRevision->setContentType($contentType);
         $newRevision->addEnvironment($contentType->giveEnvironment());
@@ -1697,11 +1697,11 @@ class DataService
             $dataFieldType->isValid($dataField, $parent, $masterRawData);
         }
         $isValid = true;
-        if (null !== $dataFieldType && $dataFieldType->isContainer()) {//If dataField is container or type is null => Container => Recursive
+        if (null !== $dataFieldType && $dataFieldType->isContainer()) {// If dataField is container or type is null => Container => Recursive
             $formChildren = $form->all();
             foreach ($formChildren as $child) {
                 if ($child instanceof FormInterface) {
-                    $tempIsValid = $this->isValid($child, $dataField, $masterRawData); //Recursive
+                    $tempIsValid = $this->isValid($child, $dataField, $masterRawData); // Recursive
                     $isValid = $isValid && $tempIsValid;
                 }
             }

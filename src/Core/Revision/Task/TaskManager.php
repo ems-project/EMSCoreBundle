@@ -68,8 +68,8 @@ final class TaskManager
     {
         return \array_filter([
             self::TAB_USER,
-            ($this->isTaskOwner() ? self::TAB_OWNER : null),
-            ($this->isTaskManager() ? self::TAB_MANAGER : null),
+            $this->isTaskOwner() ? self::TAB_OWNER : null,
+            $this->isTaskManager() ? self::TAB_MANAGER : null,
         ]);
     }
 

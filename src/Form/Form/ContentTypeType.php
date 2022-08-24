@@ -101,7 +101,7 @@ class ContentTypeType extends AbstractType
                             'keyword',
                             'date',
                             'integer',
-                            'string', //TODO: backward compatibility with ES2 To remove?
+                            'string', // TODO: backward compatibility with ES2 To remove?
                     ], ]);
             $builder->add('sortBy', ContentTypeFieldPickerType::class, [
                     'required' => false,
@@ -111,7 +111,7 @@ class ContentTypeType extends AbstractType
                             'keyword',
                             'date',
                             'integer',
-                            'string', //TODO: backward compatibility with ES2 To remove?
+                            'string', // TODO: backward compatibility with ES2 To remove?
                     ], ]);
             $builder->add('sortOrder', ChoiceType::class, [
                     'required' => false,

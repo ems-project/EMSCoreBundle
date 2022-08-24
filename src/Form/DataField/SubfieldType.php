@@ -8,7 +8,7 @@ use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-//TODO:Refact Class name "SubfieldType" to "SubfieldFieldType"
+// TODO:Refact Class name "SubfieldType" to "SubfieldFieldType"
 class SubfieldType extends DataFieldType
 {
     public function getLabel(): string
@@ -62,6 +62,6 @@ class SubfieldType extends DataFieldType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        //do nothing as it's a virtual field
+        // do nothing as it's a virtual field
     }
 }

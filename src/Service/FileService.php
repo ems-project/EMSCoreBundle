@@ -133,7 +133,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
                 $filenames[] = $filename;
                 try {
                     $zip->addFile($filename, $this->storageManager->getContents($file->getSha1()));
-                    //TODO: this should works? $zip->addFileFromPsr7Stream($filename, $this->storageManager->getStream()Contents($file->getSha1()));
+                    // TODO: this should works? $zip->addFileFromPsr7Stream($filename, $this->storageManager->getStream()Contents($file->getSha1()));
                 } catch (NotFoundException $e) {
                 }
             }

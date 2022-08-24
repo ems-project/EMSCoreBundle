@@ -200,9 +200,9 @@ class SearchService
 
             if ('nested' === ($fieldMapping['type'] ?? null)) {
                 $nestedPath[] = $field;
-                $mapping = $fieldMapping['properties'] ?? []; //go to nested properties
+                $mapping = $fieldMapping['properties'] ?? []; // go to nested properties
             } elseif (isset($fieldMapping['fields'])) {
-                $mapping = $fieldMapping['fields']; //go to sub fields
+                $mapping = $fieldMapping['fields']; // go to sub fields
             }
         }
 

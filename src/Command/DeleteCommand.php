@@ -96,7 +96,7 @@ class DeleteCommand extends Command
                         try {
                             $this->indexService->delete($revision, $environment);
                         } catch (\Throwable $e) {
-                            //Deleting something that is not present shouldn't make problem.
+                            // Deleting something that is not present shouldn't make problem.
                         }
                         $revision->removeEnvironment($environment);
                     }

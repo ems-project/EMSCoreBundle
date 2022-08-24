@@ -118,7 +118,7 @@ class NotificationService
 
     public function setStatus(Notification $notification, string $status, string $level = 'notice'): self
     {
-        //TODO: tests rights to do it
+        // TODO: tests rights to do it
         $userName = $this->userService->getCurrentUser()->getUserName();
 
         $notification->setStatus($status);
@@ -538,7 +538,7 @@ class NotificationService
                 $body = 'Error in response template: '.$e->getMessage();
             }
 
-            //it's a reminder
+            // it's a reminder
             $email
                 ->subject($notification->getTemplate().' for '.$notification->getRevision().' has been '.$notification->getStatus())
                 ->to(...\array_values($fromUser));

@@ -40,7 +40,7 @@ class PasswordFieldType extends DataFieldType
                 'disabled' => $this->isDisabled($options),
                 'required' => false,
                 'attr' => [
-                        'autocomplete' => 'new-password', //http://stackoverflow.com/questions/18531437/stop-google-chrome-auto-fill-the-input
+                        'autocomplete' => 'new-password', // http://stackoverflow.com/questions/18531437/stop-google-chrome-auto-fill-the-input
                 ],
         ]);
 
@@ -111,7 +111,7 @@ class PasswordFieldType extends DataFieldType
         if ($data['reset_password_value']) {
             $out = null;
         } elseif (isset($data['password_value'])) {
-            //new password defined?
+            // new password defined?
             switch ($fieldType->getDisplayOptions()['encryption']) {
                 case 'md5':
                     $out = \md5($data['password_value']);

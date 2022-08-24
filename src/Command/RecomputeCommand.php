@@ -101,7 +101,7 @@ final class RecomputeCommand extends Command
             ->addOption(self::OPTION_OUUID, null, InputOption::VALUE_OPTIONAL, 'recompute a specific revision ouuid', null)
             ->addOption(self::OPTION_DEEP, null, InputOption::VALUE_NONE, 'deep recompute form will be submitted and transformers triggered')
             ->addOption(self::OPTION_QUERY, null, InputOption::VALUE_OPTIONAL, 'ES query', '{}')
-            ;
+        ;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -197,16 +197,16 @@ final class RecomputeCommand extends Command
 
                 /** @var Revision $revision */
                 $newRevision = $revision->convertToDraft();
-                $revisionType->setData($newRevision); //bind new revision on form
+                $revisionType->setData($newRevision); // bind new revision on form
 
                 if ($this->optionDeep) {
-                    $viewData = $this->dataService->getSubmitData($revisionType->get('data')); //get view data of new revision
+                    $viewData = $this->dataService->getSubmitData($revisionType->get('data')); // get view data of new revision
                     $revisionType->submit(['data' => $viewData]); // submit new revision (reverse model transformers called
                 }
 
                 $objectArray = $newRevision->getRawData();
 
-                //@todo maybe improve the data binding like the migration?
+                // @todo maybe improve the data binding like the migration?
 
                 $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $this->contentType, $this->contentType->getName(), $newRevision->getOuuid(), true);
                 $newRevision->setRawData($objectArray);

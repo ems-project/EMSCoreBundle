@@ -54,7 +54,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     public function setChildrenFieldType(FieldType $fieldType): void
     {
-        //TODO: test if sub colletion for nested collection
+        // TODO: test if sub colletion for nested collection
         /* @var FieldType $subType */
         $this->children->first();
         foreach ($fieldType->getChildren() as $subType) {
@@ -122,8 +122,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function isDataFieldValid(ExecutionContextInterface $context): void
     {
-        //TODO: why is it not working? See https://stackoverflow.com/a/25265360
-        //Transformed: (but not used??)
+        // TODO: why is it not working? See https://stackoverflow.com/a/25265360
+        // Transformed: (but not used??)
         $context
             ->buildViolation('Haaaaha')
             ->atPath('textValue')
@@ -189,7 +189,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         $this->children = new ArrayCollection();
         $this->messages = [];
 
-        //TODO: should use the clone method
+        // TODO: should use the clone method
         $a = \func_get_args();
         $i = \func_num_args();
         if ($i >= 1 && $a[0] instanceof DataField) {
@@ -309,7 +309,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         $fieldType = $this->getFieldType();
 
         if ($fieldType && 0 == \strcmp($fieldType->getType(), CollectionFieldType::class)) {
-            //Symfony wants iterate on children
+            // Symfony wants iterate on children
             return $this;
         } else {
             /** @var DataField $dataField */
@@ -338,7 +338,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     public function getTextValue()
     {
         if (\is_array($this->rawData) && 0 === \count($this->rawData)) {
-            return null; //empty array means null/empty
+            return null; // empty array means null/empty
         }
 
         if (null !== $this->rawData && !\is_string($this->rawData)) {
@@ -391,7 +391,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     public function getFloatValue(): ?float
     {
         if (\is_array($this->rawData) && 0 === \count($this->rawData)) {
-            return null; //empty array means null/empty
+            return null; // empty array means null/empty
         }
 
         if (null !== $this->rawData && !\is_finite($this->rawData)) {
@@ -486,7 +486,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         if (\is_array($this->rawData)) {
             $this->addMessage('Integer expected array found: '.\print_r($this->rawData, true));
 
-            return \count($this->rawData); //empty array means null/empty
+            return \count($this->rawData); // empty array means null/empty
         }
 
         if (null === $this->rawData || \is_int($this->rawData)) {
@@ -523,7 +523,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     public function getBooleanValue(): ?bool
     {
         if (\is_array($this->rawData) && 0 === \count($this->rawData)) {
-            return null; //empty array means null/empty
+            return null; // empty array means null/empty
         }
 
         if (null !== $this->rawData && !\is_bool($this->rawData)) {

@@ -26,7 +26,7 @@ class WysiwygStylesSetPickerType extends SelectPickerType
                 'class' => 'wysiwyg-profile-picker',
             ],
             'choice_attr' => function ($category, $key, $index) {
-                //TODO: it would be nice to translate the roles
+                // TODO: it would be nice to translate the roles
                 return [
                         'data-content' => "<div class='text-".$category."'><i class='fa fa-css3'></i>&nbsp;&nbsp;".$key.'</div>',
                 ];

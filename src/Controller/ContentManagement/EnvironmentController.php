@@ -257,8 +257,8 @@ class EnvironmentController extends AbstractController
                 for ($index = 0; $index < \count($results); ++$index) {
                     $results[$index]['contentType'] = $this->contentTypeService->getByName($results[$index]['content_type_name']);
 //                     $results[$index]['revisionEnvironment'] = $repository->findOneById($results[$index]['rId']);
-//TODO: is it the better options? to concatenate and split things?
-                    $minrevid = \explode('/', $results[$index]['minrevid']); //1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
+// TODO: is it the better options? to concatenate and split things?
+                    $minrevid = \explode('/', $results[$index]['minrevid']); // 1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
                     $maxrevid = \explode('/', $results[$index]['maxrevid']);
 
                     $results[$index]['revisionEnvironment'] = $repository->findOneById((int) $minrevid[1]);
@@ -272,13 +272,13 @@ class EnvironmentController extends AbstractController
                         $document = $this->searchService->getDocument($contentType, $results[$index]['ouuid'], $env);
                         $results[$index]['objectEnvironment'] = $document->getRaw();
                     } catch (NotFoundException $e) {
-                        $results[$index]['objectEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.
+                        $results[$index]['objectEnvironment'] = null; // This revision doesn't exist in this environment, but it's ok.
                     }
                     try {
                         $document = $this->searchService->getDocument($contentType, $results[$index]['ouuid'], $withEnvi);
                         $results[$index]['objectWithEnvironment'] = $document->getRaw();
                     } catch (NotFoundException $e) {
-                        $results[$index]['objectWithEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.
+                        $results[$index]['objectWithEnvironment'] = null; // This revision doesn't exist in this environment, but it's ok.
                     }
                 }
             } else {
@@ -338,7 +338,7 @@ class EnvironmentController extends AbstractController
                     $environment = new Environment();
                     $environment->setName($name);
                     $environment->setAlias($name);
-                    //TODO: setCircles
+                    // TODO: setCircles
                     $environment->setManaged(false);
 
                     $em->persist($environment);
@@ -479,7 +479,7 @@ class EnvironmentController extends AbstractController
                 ]);
 
                 if (0 != \count($anotherObject)) {
-                    //TODO: test name format
+                    // TODO: test name format
                     $form->get('name')->addError(new FormError('Another environment named '.$environment->getName().' already exists'));
                 } else {
                     $environment->setAlias($this->instanceId.$environment->getName());

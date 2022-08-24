@@ -110,7 +110,7 @@ class AliasService
     }
 
     /**
-     * @return array<string, array{name: string, total: int, indexes: array<mixed>, environment: null|string, managed: bool}>
+     * @return array<string, array{name: string, total: int, indexes: array<mixed>, environment: string|null, managed: bool}>
      */
     public function getAliases(): array
     {

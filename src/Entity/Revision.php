@@ -305,7 +305,7 @@ class Revision implements EntityInterface
                 }
             }
         }
-        //TODO: Refactoring: Dependency injection of the first Datafield in the Revision.
+        // TODO: Refactoring: Dependency injection of the first Datafield in the Revision.
     }
 
     public function __toString()
@@ -372,8 +372,8 @@ class Revision implements EntityInterface
         $clone->finalizedBy = null;
         $clone->finalizedDate = null;
         $clone->startTime = new \DateTime('now');
-        $clone->environments = new ArrayCollection(); //clear publications
-        $clone->notifications = new ArrayCollection(); //clear notifications
+        $clone->environments = new ArrayCollection(); // clear publications
+        $clone->notifications = new ArrayCollection(); // clear notifications
 
         return $clone;
     }
@@ -538,7 +538,7 @@ class Revision implements EntityInterface
     {
         $this->rawData[Mapping::FINALIZED_BY_FIELD] = $finalizedBy;
         $this->tryToFinalizeOn = new \DateTime();
-        $this->rawData[Mapping::FINALIZATION_DATETIME_FIELD] = ($this->tryToFinalizeOn)->format(\DateTime::ISO8601);
+        $this->rawData[Mapping::FINALIZATION_DATETIME_FIELD] = $this->tryToFinalizeOn->format(\DateTime::ISO8601);
 
         return $this;
     }
@@ -788,8 +788,8 @@ class Revision implements EntityInterface
             return \vsprintf('%s - %s (%s%s)', [
                 $this->versionTag,
                 $label,
-                ($from ? $from->format('d/m/Y') : ''),
-                ($toDate ? ' - '.$toDate->format('d/m/Y') : ''),
+                $from ? $from->format('d/m/Y') : '',
+                $toDate ? ' - '.$toDate->format('d/m/Y') : '',
             ]);
         }
 
@@ -966,7 +966,7 @@ class Revision implements EntityInterface
 
         if (null === $this->getVersionDate('from') && null === $this->getVersionDate('to')) {
             if ($this->hasOuuid()) {
-                $this->setVersionDate('from', $this->created); //migration existing docs
+                $this->setVersionDate('from', $this->created); // migration existing docs
             } else {
                 $this->setVersionDate('from', new \DateTimeImmutable('now'));
             }

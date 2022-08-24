@@ -90,8 +90,8 @@ class DocumentService
 
         if ($currentRevision && $currentRevision->getDraft()) {
             if (!$documentImportContext->shouldForce()) {
-                //TODO: activate the newRevision when it's available
-                throw new CantBeFinalizedException('a draft is already in progress for the document', 0, null/*, $newRevision*/);
+                // TODO: activate the newRevision when it's available
+                throw new CantBeFinalizedException('a draft is already in progress for the document', 0, null/* , $newRevision */);
             }
 
             $this->dataService->discardDraft($currentRevision, true, $documentImportContext->getLockUser());

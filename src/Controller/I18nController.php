@@ -92,7 +92,7 @@ class I18nController extends AbstractController
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            //renumber array elements
+            // renumber array elements
             $i18n->setContent(\array_values($i18n->getContent()));
             $em->persist($i18n);
             $em->flush();

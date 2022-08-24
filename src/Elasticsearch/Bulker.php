@@ -109,8 +109,8 @@ class Bulker
 
         $action = $this->createAction($contentType, $index, $ouuid);
 
-        //@todo check this with a elastica 7
-        $source = JSON::stringify($body, JSON_UNESCAPED_UNICODE); //elastica actions do not support fields named 'doc' or 'doc_as_upsert'
+        // @todo check this with a elastica 7
+        $source = JSON::stringify($body, JSON_UNESCAPED_UNICODE); // elastica actions do not support fields named 'doc' or 'doc_as_upsert'
 
         if ($upsert) {
             $action->setOpType(Action::OP_TYPE_UPDATE);
@@ -203,7 +203,7 @@ class Bulker
                 continue;
             }
             if (!$item->hasError()) {
-                continue; //no error
+                continue; // no error
             }
 
             $this->errors[] = $item;

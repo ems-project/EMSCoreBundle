@@ -106,7 +106,7 @@ class ContentTypeController extends AbstractController
             throw new NotFoundHttpException('Content Type not found');
         }
 
-        //TODO test if there something published for this content type
+        // TODO test if there something published for this content type
         $contentType->setActive(false)->setDeleted(true);
         $em->persist($contentType);
         $em->flush();

@@ -148,7 +148,7 @@ final class LockCommand extends Command
         }
 
         $this->io->success(\vsprintf('%s locked %d %s revisions until %s by %s', [
-            ($this->force ? 'FORCE ' : ''),
+            $this->force ? 'FORCE ' : '',
             $revisionCount,
             $this->contentType->getName(),
             $this->until->format('Y-m-d H:i:s'),

@@ -150,7 +150,7 @@ class AssetFieldType extends DataFieldType
 
         $rawData = [];
         foreach ($data as $fileInfo) {
-            if ((empty($fileInfo) || empty($fileInfo['sha1']))) {
+            if (empty($fileInfo) || empty($fileInfo['sha1'])) {
                 $restrictionOptions = $fieldType->getRestrictionOptions();
                 if (isset($restrictionOptions['mandatory']) && $restrictionOptions['mandatory']) {
                     $dataField->addMessage('This entry is required');

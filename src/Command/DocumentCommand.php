@@ -196,9 +196,9 @@ class DocumentCommand extends Command
             if ($replaceBusinessKey) {
                 $dataLink = $this->dataService->getDataLink($this->contentType->getName(), $ouuid);
                 if ($dataLink === $ouuid) {
-                    //TODO: Should test if a document already exist with the business key as ouuid
-                    //TODO: Check that a document doesn't already exist with the hash value (it has to be new)
-                    //TODO: meaby use a UUID generator? Or allow elasticsearch to generate one
+                    // TODO: Should test if a document already exist with the business key as ouuid
+                    // TODO: Check that a document doesn't already exist with the hash value (it has to be new)
+                    // TODO: meaby use a UUID generator? Or allow elasticsearch to generate one
                     $ouuid = \sha1($dataLink);
                 } else {
                     $dataLink = \explode(':', $dataLink);

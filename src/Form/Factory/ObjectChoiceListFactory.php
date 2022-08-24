@@ -35,10 +35,7 @@ class ObjectChoiceListFactory extends DefaultChoiceListFactory
         return new ObjectChoiceLoader($this->objectChoiceCacheService, $types, $loadAll, $circleOnly, $withWarning, $querySearchName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function createListFromLoader(ChoiceLoaderInterface $loader, $value = null): ChoiceListInterface
+    public function createListFromLoader(ChoiceLoaderInterface $loader, callable $value = null): ChoiceListInterface
     {
         return $loader->loadChoiceList($value);
     }

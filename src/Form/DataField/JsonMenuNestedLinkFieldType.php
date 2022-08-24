@@ -94,9 +94,6 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         $scroll = $this->elasticaService->scroll($search);
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
-                if (false === $result) {
-                    continue;
-                }
                 $json = $result->getSource()[$options['json_menu_nested_field']] ?? false;
 
                 if (!$json) {

@@ -367,9 +367,6 @@ class DataService
                 $scroll = $this->elasticaService->scroll($search, self::SCROLL_TIMEOUT);
                 foreach ($scroll as $resultSet) {
                     foreach ($resultSet as $result) {
-                        if (false === $result) {
-                            continue;
-                        }
                         $dataLink = $contentType->getName().':'.$result->getId();
                         $businessKeys[$dataLink] = $result->getSource()[$contentType->getBusinessIdField()] ?? $result->getId();
                         $this->cacheBusinessKey[$dataLink] = $businessKeys[$dataLink];
@@ -1973,9 +1970,6 @@ class DataService
                 $scroll = $this->elasticaService->scroll($search, self::SCROLL_TIMEOUT);
                 foreach ($scroll as $resultSet) {
                     foreach ($resultSet as $result) {
-                        if (false === $result) {
-                            continue;
-                        }
                         $key = \sprintf('%s:%s', $contentType->getName(), $result->getId());
                         $ouuids[$result->getSource()[$contentType->getBusinessIdField()]] = $key;
                         $this->cacheOuuids[$contentTypesCommaList][$contentType->getBusinessIdField()] = $key;

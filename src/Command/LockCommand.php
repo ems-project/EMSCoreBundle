@@ -165,9 +165,7 @@ final class LockCommand extends Command
     {
         foreach ($this->elasticaService->scroll($search) as $resultSet) {
             foreach ($resultSet as $result) {
-                if ($result) {
-                    yield Document::fromResult($result);
-                }
+                yield Document::fromResult($result);
             }
         }
     }

@@ -151,9 +151,6 @@ final class ExtractCommand extends AbstractCommand
 
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
-                if (false === $result) {
-                    continue;
-                }
                 $source = Document::fromResult($result);
                 try {
                     $contentType = $this->contentTypeService->giveByName($source->getContentType());

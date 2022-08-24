@@ -19,10 +19,7 @@ class ManagedAliasRepository extends EntityRepository
         $conn = $this->getEntityManager()->getConnection();
         $qb = $conn->createQueryBuilder();
         $qb->addSelect('alias')->from('managed_alias');
-        $result = $qb->execute();
-        if (!$result instanceof ResultStatement) {
-            throw new \RuntimeException('Unexpected ResultStatement type');
-        }
+        $result = $qb->executeQuery();
 
         return $result->fetchFirstColumn();
     }

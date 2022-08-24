@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\Entity\ManagedAlias;
 

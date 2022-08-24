@@ -337,7 +337,7 @@ class ElasticsearchController extends AbstractController
         $category = $request->query->get('category');
         $assetName = $request->query->get('asset_name');
         $circleOnly = $request->query->get('circle');
-        $dataLink = $request->query->get('dataLink',);
+        $dataLink = $request->query->get('dataLink');
 
         if (\is_string($dataLink)) {
             $emsLink = EMSLink::fromText($dataLink);

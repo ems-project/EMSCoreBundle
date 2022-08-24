@@ -9,6 +9,7 @@ use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\Helpers\Standard\Type;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,21 +33,20 @@ class CalendarController extends AbstractController
     public function update(View $view, Request $request): Response
     {
         try {
-            $ouuid = $request->request->get('ouuid', false);
+            $ouuid = Type::string($request->request->get('ouuid'));
             $type = $view->getContentType()->getName();
             $revision = $this->dataService->initNewDraft($type, $ouuid);
 
             $rawData = $revision->getRawData();
             $field = $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['dateRangeField']);
 
-            /** @var \DateTime $from */
-            $from = new \DateTime($request->request->get('start', false));
+            $from = new \DateTime(Type::string($request->request->get('start')));
             $to = $request->request->get('end', false);
             if (!$to) {
                 $to = clone $from;
                 $to->add(new \DateInterval('PT23H59M'));
             } else {
-                $to = new \DateTime($to);
+                $to = new \DateTime(Type::string($to));
             }
 
             $input = [
@@ -93,10 +93,8 @@ class CalendarController extends AbstractController
 
         $body = $this->searchService->generateSearchBody($search);
 
-        /** @var \DateTime $from */
-        $from = new \DateTime($request->query->get('from'));
-        /** @var \DateTime $to */
-        $to = new \DateTime($request->query->get('to'));
+        $from = new \DateTime(Type::string($request->query->get('from')));
+        $to = new \DateTime(Type::string($request->query->get('to')));
         $field = $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['dateRangeField']);
 
         if (empty($body['query']['bool']['must'])) {

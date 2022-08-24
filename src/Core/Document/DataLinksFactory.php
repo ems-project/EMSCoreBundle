@@ -31,7 +31,7 @@ final class DataLinksFactory
     public function create(Request $request): DataLinks
     {
         $query = $request->query;
-        $page = \intval($query->get('page', 1));
+        $page = $query->getInt('page', 1);
         $pattern = Type::string($query->get('q', ''));
 
         $dataLinks = new DataLinks($page, $pattern);

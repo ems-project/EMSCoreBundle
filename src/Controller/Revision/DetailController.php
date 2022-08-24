@@ -109,7 +109,7 @@ class DetailController extends AbstractController
             $this->logger->notice('log.data.revision.load_from_auto_save', LogRevisionContext::read($revision));
         }
 
-        $page = $request->query->get('page', 1);
+        $page = $request->query->getInt('page', 1);
 
         $revisionsSummary = $this->revisionRepository->getAllRevisionsSummary($ouuid, $contentType, $page);
         $lastPage = $this->revisionRepository->revisionsLastPage($ouuid, $contentType);

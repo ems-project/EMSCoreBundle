@@ -71,7 +71,7 @@ class GalleryViewType extends ViewType
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         $search = new Search();
-        if (false === $request->query->get('search_form', false)) {
+        if (!$request->query->has('search_form')) {
             $search->getFirstFilter()->setField($view->getOptions()['imageField'].'.sha1');
             $search->getFirstFilter()->setBooleanClause('must');
         }

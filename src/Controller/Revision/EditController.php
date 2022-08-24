@@ -131,7 +131,7 @@ class EditController extends AbstractController
         $this->logger->debug('Revision\'s form created');
 
         /** @var array<string, mixed> $requestRevision */
-        $requestRevision = $request->request->get('revision', []);
+        $requestRevision = $request->request->all('revision');
 
         /**little trick to reorder collection*/
         $this->reorderCollection($requestRevision);

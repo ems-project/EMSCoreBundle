@@ -762,8 +762,8 @@ class DataController extends AbstractController
             return $response;
         }
 
-        $revisionInRequest = $request->request->get('revision');
-        if (empty($revisionInRequest) || !isset($revisionInRequest['allFieldsAreThere']) || empty($revisionInRequest['allFieldsAreThere'])) {
+        $revisionInRequest = $request->request->all('revision');
+        if (empty($revisionInRequest['allFieldsAreThere'])) {
             $this->logger->error('log.data.revision.not_completed_request', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),

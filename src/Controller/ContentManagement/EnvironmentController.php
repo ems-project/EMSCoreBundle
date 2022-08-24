@@ -106,11 +106,11 @@ class EnvironmentController extends AbstractController
             if ($data['environment'] == $data['withEnvironment']) {
                 $form->addError(new FormError('Source and target environments must be different'));
             } else {
-                if (\array_key_exists('alignWith', $request->request->get('compare_environment_form'))) {
+                if (\array_key_exists('alignWith', $request->request->all('compare_environment_form'))) {
                     $alignTo = [];
-                    $alignTo[$request->query->get('withEnvironment')] = $request->query->get('withEnvironment');
-                    $alignTo[$request->query->get('environment')] = $request->query->get('environment');
-                    $revid = $request->request->get('compare_environment_form')['alignWith'];
+                    $alignTo[Type::string($request->query->get('withEnvironment'))] = Type::string($request->query->get('withEnvironment'));
+                    $alignTo[Type::string($request->query->get('environment'))] = Type::string($request->query->get('environment'));
+                    $revid = $request->request->all('compare_environment_form')['alignWith'];
 
                     /** @var EntityManager $em */
                     $em = $this->getDoctrine()->getManager();
@@ -161,29 +161,29 @@ class EnvironmentController extends AbstractController
                             }
                         }
                     }
-                } elseif (\array_key_exists('alignLeft', $request->request->get('compare_environment_form'))) {
-                    foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item) {
+                } elseif (\array_key_exists('alignLeft', $request->request->all('compare_environment_form'))) {
+                    foreach ($request->request->all('compare_environment_form')['item_to_align'] as $item) {
                         $exploded = \explode(':', $item);
                         if (2 == \count($exploded)) {
-                            $this->publishService->alignRevision($exploded[0], $exploded[1], $request->query->get('withEnvironment'), $request->query->get('environment'));
+                            $this->publishService->alignRevision($exploded[0], $exploded[1], Type::string($request->query->get('withEnvironment')), Type::string($request->query->get('environment')));
                         } else {
                             $this->logger->warning('log.environment.wrong_ouuid', [
                                 EmsFields::LOG_OUUID_FIELD => $item,
                             ]);
                         }
                     }
-                } elseif (\array_key_exists('alignRight', $request->request->get('compare_environment_form'))) {
-                    foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item) {
+                } elseif (\array_key_exists('alignRight', $request->request->all('compare_environment_form'))) {
+                    foreach ($request->request->all('compare_environment_form')['item_to_align'] as $item) {
                         $exploded = \explode(':', $item);
                         if (2 == \count($exploded)) {
-                            $this->publishService->alignRevision($exploded[0], $exploded[1], $request->query->get('environment'), $request->query->get('withEnvironment'));
+                            $this->publishService->alignRevision($exploded[0], $exploded[1], Type::string($request->query->get('environment')), Type::string($request->query->get('withEnvironment')));
                         } else {
                             $this->logger->warning('log.environment.wrong_ouuid', [
                                 EmsFields::LOG_OUUID_FIELD => $item,
                             ]);
                         }
                     }
-                } elseif (\array_key_exists('compare', $request->request->get('compare_environment_form'))) {
+                } elseif (\array_key_exists('compare', $request->request->all('compare_environment_form'))) {
                     $request->query->set('environment', $data['environment']);
                     $request->query->set('withEnvironment', $data['withEnvironment']);
                     $request->query->set('contentTypes', $data['contentTypes']);
@@ -194,13 +194,9 @@ class EnvironmentController extends AbstractController
             }
         }
 
-        if (null != $request->query->get('page')) {
-            $page = $request->query->get('page');
-        } else {
-            $page = 1;
-        }
+        $page = $request->query->getInt('page', 1);
 
-        $contentTypes = $request->query->get('contentTypes', []);
+        $contentTypes = $request->query->all('contentTypes');
         if (!$form->isSubmitted()) {
             $form->get('contentTypes')->setData($contentTypes);
         }
@@ -249,7 +245,7 @@ class EnvironmentController extends AbstractController
                     $env->getId(),
                     $withEnvi->getId(),
                     $contentTypes,
-                    ($page - 1) * $paging_size,
+                    (int) (($page - 1) * $paging_size),
                     $paging_size,
                     $orderField,
                     $orderDirection

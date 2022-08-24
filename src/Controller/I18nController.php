@@ -25,7 +25,7 @@ class I18nController extends AbstractController
 
     public function indexAction(Request $request): Response
     {
-        $filters = $request->query->get('i18n_form');
+        $filters = $request->query->all('i18n_form');
 
         $i18nFilter = new I18nFilter();
 
@@ -41,7 +41,7 @@ class I18nController extends AbstractController
         $count = $this->i18nService->counter($filters);
         $paging_size = Type::integer($this->pagingSize);
         $lastPage = \ceil($count / $paging_size);
-        $page = $request->query->get('page', 1);
+        $page = $request->query->getInt('page', 1);
 
         $i18ns = $this->i18nService->findAll(($page - 1) * $paging_size, $paging_size, $filters);
 

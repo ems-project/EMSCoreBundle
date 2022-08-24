@@ -25,6 +25,7 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\Mapping;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Button;
@@ -679,7 +680,7 @@ class ContentTypeController extends AbstractController
             throw new \RuntimeException('Unexpected null environment');
         }
 
-        $inputContentType = $request->request->get('content_type');
+        $inputContentType = $request->request->all('content_type');
         try {
             $mapping = $this->mappingService->getMapping([$environment->getName()]);
         } catch (\Throwable $e) {
@@ -760,7 +761,7 @@ class ContentTypeController extends AbstractController
             return $this->redirectToRoute('contenttype.index');
         }
 
-        $inputContentType = $request->request->get('content_type_structure');
+        $inputContentType = $request->request->all('content_type_structure');
 
         $form = $this->createForm(ContentTypeStructureType::class, $contentType, [
         ]);
@@ -941,7 +942,7 @@ class ContentTypeController extends AbstractController
 
     public function exportAction(ContentType $contentType): Response
     {
-        $jsonContent = \json_encode($contentType, JSON_PRETTY_PRINT);
+        $jsonContent = Json::encode($contentType, true);
 
         $response = new Response($jsonContent);
         $disposition = $response->headers->makeDisposition(

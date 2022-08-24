@@ -1,0 +1,2 @@
+emsco:
+  resource: '@EMSCoreBundle/Resources/config/routing/all.xml'

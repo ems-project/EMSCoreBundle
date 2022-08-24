@@ -1,0 +1,45 @@
+parameters:
+  locale: 'en'
+  env(EMSCH_LOCALES): '["fr","nl"]'
+  env(EMSCH_ENVS): '{"preview":{"regex":"/.*/","alias":"test_preview","backend":"https://localhost"}}'
+
+framework:
+  test: true
+  secret: 1621180219f163d89dc399e88cfc1807ab6448cf
+  csrf_protection: ~
+  session:
+    handler_id: ~
+  router:
+    resource: '%kernel.project_dir%/config/routes.yaml'
+    utf8: true
+    strict_requirements: ~
+
+doctrine:
+  dbal:
+    url: 'sqlite:///%kernel.cache_dir%/test.db'
+  orm:
+    auto_generate_proxy_classes: '%kernel.debug%'
+    naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+    auto_mapping: true
+
+twig:
+  debug: true
+  strict_variables: true
+  exception_controller: null
+
+ems_client_helper:
+  locales: '%env(json:EMSCH_LOCALES)%'
+  request_environments: '%env(json:EMSCH_ENVS)%'
+  elasticms:
+    test:
+      api: { "enable": true, "name": "backend" }
+      hosts: '["http://localhost:9200"]'
+
+ems_core:
+  private_key: ''
+  public_key: ''
+  tika_server: '["http://localhost:9998"]'
+
+services:
+  _defaults:
+    public: true

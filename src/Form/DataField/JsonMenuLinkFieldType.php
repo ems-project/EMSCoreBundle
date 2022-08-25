@@ -79,9 +79,6 @@ class JsonMenuLinkFieldType extends DataFieldType
             $scroll = $this->elasticaService->scroll($search);
             foreach ($scroll as $resultSet) {
                 foreach ($resultSet as $result) {
-                    if (false === $result) {
-                        continue;
-                    }
                     $icon = $contentType->getIcon() ?? 'fa fa-file';
                     $label = $result->getId();
                     if (null !== $contentType->getLabelField() && ($result->getSource()[$contentType->getLabelField()] ?? false)) {
@@ -264,9 +261,6 @@ class JsonMenuLinkFieldType extends DataFieldType
         $scroll = $this->elasticaService->scroll($search);
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
-                if (false === $result) {
-                    continue;
-                }
                 $uids = \array_merge($uids, $result->getSource()[$fieldType->getName()] ?? []);
             }
         }

@@ -176,7 +176,7 @@ class PublishService
         }
 
         $environments->removeElement($environment);
-        $this->bulker->delete($contentType->getName(), $environment->getAlias(), $revision->giveOuuid());
+        $this->bulker->delete($environment->getAlias(), $revision->giveOuuid());
     }
 
     public function bulkFinished(): void

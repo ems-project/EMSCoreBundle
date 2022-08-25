@@ -131,7 +131,7 @@ class EditController extends AbstractController
         $this->logger->debug('Revision\'s form created');
 
         /** @var array<string, mixed> $requestRevision */
-        $requestRevision = $request->request->get('revision', []);
+        $requestRevision = $request->request->all('revision');
 
         /**little trick to reorder collection*/
         $this->reorderCollection($requestRevision);
@@ -141,7 +141,7 @@ class EditController extends AbstractController
         $form->handleRequest($request);
         $this->logger->debug('Revision request form handled');
 
-        if ($form->isSubmitted()) {//Save, Finalize or Discard
+        if ($form->isSubmitted()) {// Save, Finalize or Discard
             $allFieldsAreThere = $requestRevision['allFieldsAreThere'] ?? false;
             if (empty($requestRevision) || !$allFieldsAreThere) {
                 $this->logger->error('log.data.revision.not_completed_request', LogRevisionContext::read($revision));
@@ -154,8 +154,8 @@ class EditController extends AbstractController
             }
 
             $revision->setAutoSave(null);
-            if (!isset($requestRevision['discard'])) {//Save, Copy, Paste or Finalize
-                //Save anyway
+            if (!isset($requestRevision['discard'])) {// Save, Copy, Paste or Finalize
+                // Save anyway
                 /** @var Revision $revision */
                 $revision = $form->getData();
                 $objectArray = $revision->getRawData();
@@ -188,7 +188,7 @@ class EditController extends AbstractController
                     }
                 }
 
-                if (isset($requestRevision['publish'])) {//Finalize
+                if (isset($requestRevision['publish'])) {// Finalize
                     $revision = $this->dataService->finalizeDraft($revision, $form);
                 }
 
@@ -211,7 +211,7 @@ class EditController extends AbstractController
                 return $this->redirectToRoute(Routes::EDIT_REVISION, ['revisionId' => $revisionId]);
             }
 
-            //if Save or Discard
+            // if Save or Discard
             if (!isset($requestRevision['publish']) && !isset($requestRevision['publish_version'])) {
                 if (null != $revision->getOuuid()) {
                     if (0 === \count($form->getErrors()) && $contentType->isAutoPublish()) {

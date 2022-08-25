@@ -254,9 +254,6 @@ class MigrateCommand extends AbstractCommand
 
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
-                if (false === $result) {
-                    continue;
-                }
                 try {
                     $this->documentService->importDocument($importerContext, $result->getId(), $result->getSource());
                 } catch (NotLockedException $e) {

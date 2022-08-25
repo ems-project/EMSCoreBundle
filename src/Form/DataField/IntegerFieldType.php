@@ -55,7 +55,7 @@ class IntegerFieldType extends DataFieldType
                 'required' => false,
                 'disabled' => $this->isDisabled($options),
                 'attr' => [
-                        //'class' => 'spinner',
+                        // 'class' => 'spinner',
                 ],
         ]);
     }

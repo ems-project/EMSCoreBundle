@@ -88,7 +88,7 @@ class DateRangeFieldType extends DataFieldType
 
             $dataField->setRawData($convertedDates);
         } else {
-            //TODO: log warnign
+            // TODO: log warnign
         }
 
         return $dataField;
@@ -217,7 +217,7 @@ class DateRangeFieldType extends DataFieldType
     public static function convertJavascriptDateRangeFormat(string $format): string
     {
         $dateFormat = $format;
-        //see http://www.daterangepicker.com/#examples
+        // see http://www.daterangepicker.com/#examples
         $dateFormat = \str_replace('DD', 'd', $dateFormat);
         $dateFormat = \str_replace('MM', 'm', $dateFormat);
         $dateFormat = \str_replace('YYYY', 'Y', $dateFormat);

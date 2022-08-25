@@ -64,12 +64,12 @@ class RequestListener
 
     public function onKernelException(ExceptionEvent $event): void
     {
-        //hide all errors to unauthenticated users
+        // hide all errors to unauthenticated users
         $exception = $event->getThrowable();
 
         try {
             if ($exception instanceof LockedException || $exception instanceof PrivilegeException) {
-                $this->logger->error(($exception instanceof LockedException ? 'log.locked_exception_error' : 'log.privilege_exception_error'), \array_merge(['username' => $exception->getRevision()->getLockBy()], LogRevisionContext::read($exception->getRevision())));
+                $this->logger->error($exception instanceof LockedException ? 'log.locked_exception_error' : 'log.privilege_exception_error', \array_merge(['username' => $exception->getRevision()->getLockBy()], LogRevisionContext::read($exception->getRevision())));
                 if (null == $exception->getRevision()->getOuuid()) {
                     $response = new RedirectResponse($this->router->generate('data.draft_in_progress', [
                             'contentTypeId' => $exception->getRevision()->giveContentType()->getId(),
@@ -107,7 +107,7 @@ class RequestListener
 
     public function provideTemplateTwigObjects(ControllerEvent $event): void
     {
-        //TODO: move to twig appextension?
+        // TODO: move to twig appextension?
         $repository = $this->doctrine->getRepository(ContentType::class);
         $contentTypes = $repository->findBy([
                 'deleted' => false,

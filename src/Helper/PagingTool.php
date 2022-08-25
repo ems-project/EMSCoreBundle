@@ -35,9 +35,9 @@ class PagingTool
         $this->repository = $repository;
         $this->pageSize = $pageSize;
         $this->lastPage = (int) \ceil(\count($repository->findAll()) / $pageSize);
-        $this->page = Type::integer($request->query->get('page', 1));
+        $this->page = $request->query->getInt('page', 1);
         $this->orderField = Type::string($request->query->get('orderField', $defaultOrderField));
-        $this->orderDirection = Type::string($request->query->get('orderDirection', 'asc'));
+        $this->orderDirection = $request->query->getAlpha('orderDirection', 'asc');
         $this->paginationPath = $paginationPath;
 
         $this->data = $this->repository->findBy([], [$this->orderField => $this->orderDirection], $pageSize, ($this->page - 1) * $this->pageSize);

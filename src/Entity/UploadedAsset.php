@@ -284,7 +284,7 @@ class UploadedAsset implements EntityInterface
      */
     public function setSha1($sha1)
     {
-        $this->sha1 = ($sha1);
+        $this->sha1 = $sha1;
 
         return $this;
     }

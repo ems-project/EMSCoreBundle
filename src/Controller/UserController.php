@@ -199,7 +199,7 @@ class UserController extends AbstractController
         $em->persist($authToken);
         $em->flush();
 
-        //TODO: Hide the key in the logs?
+        // TODO: Hide the key in the logs?
         $this->logger->notice('log.user.api_key', [
             'username_managed' => $user->getUsername(),
             'user_display_name' => $user->getDisplayName(),

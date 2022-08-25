@@ -127,7 +127,7 @@ class DataLinkFieldType extends DataFieldType
         /** @var FieldType $fieldType */
         $fieldType = $options['metadata'];
 
-        //Add an event listener in order to sort existing normData before the merge in MergeCollectionListener
+        // Add an event listener in order to sort existing normData before the merge in MergeCollectionListener
         $listener = function (FormEvent $event) {
             $data = $event->getForm()->getNormData();
             $rawData = $data->getRawData();
@@ -213,7 +213,7 @@ class DataLinkFieldType extends DataFieldType
         /** @var ObjectPickerType $objectPickerType */
         $objectPickerType = $this->formRegistry->getType(ObjectPickerType::class)->getInnerType();
 
-        $loader = $objectPickerType->getChoiceListFactory()->createLoader($fieldType->getDisplayOptions()['type'], true /*count($choices) == 0 || !$fieldType->getDisplayOptions()['dynamicLoading']*/);
+        $loader = $objectPickerType->getChoiceListFactory()->createLoader($fieldType->getDisplayOptions()['type'], true /* count($choices) == 0 || !$fieldType->getDisplayOptions()['dynamicLoading'] */);
         $all = $loader->loadAll();
         if (\count($choices) > 0) {
             foreach ($all as $key => $data) {

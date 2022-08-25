@@ -25,7 +25,7 @@ class ResettingRequestType extends AbstractType
                 'label' => 'user.resetting.username_email',
             ])
             ->add('submit', SubmitType::class, ['label' => 'user.resetting.title'])
-       ;
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

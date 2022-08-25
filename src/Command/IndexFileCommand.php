@@ -180,9 +180,9 @@ class IndexFileCommand extends EmsCommand
         foreach ($rawData as $key => $data) {
             if ($key === $field) {
                 if ($onlyMissingContent && isset($rawData[$key]['_content'])) {
-                    //do nothing in this case as a content has been already extracted
+                    // do nothing in this case as a content has been already extracted
                 } elseif ($onlyWithIngestedContent && !isset($rawData[$key]['content'])) {
-                    //do nothing in this case as a there is no ingested (binary) content
+                    // do nothing in this case as a there is no ingested (binary) content
                 } else {
                     return $this->migrate($rawData[$key], $output);
                 }

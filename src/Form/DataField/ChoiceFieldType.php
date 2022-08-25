@@ -231,7 +231,7 @@ class ChoiceFieldType extends DataFieldType
                 $dataField->addMessage('Was not able to import the data : '.\json_encode($out));
                 $out = [];
             }
-        } else { //not mutiple
+        } else { // not mutiple
             if (null === $temp) {
                 $out = null;
             } elseif (\is_string($temp) || \is_integer($temp)) {

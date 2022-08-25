@@ -30,7 +30,7 @@ class ResettingResetType extends AbstractType
                 'invalid_message' => 'user.password.mismatch',
             ])
             ->add('submit', SubmitType::class, ['label' => 'user.resetting.title'])
-       ;
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

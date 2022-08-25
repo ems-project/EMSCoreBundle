@@ -66,7 +66,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                 \get_class($object),
                 [], // constructor arguments
         ];
-        //Parsing all methods of the object
+        // Parsing all methods of the object
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             if ('get' !== \strtolower(\substr($reflectionMethod->getName(), 0, 3)) && 'is' !== \strtolower(\substr($reflectionMethod->getName(), 0, 2))) {
                 continue;
@@ -82,7 +82,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                 break;
             }
             if (null != $value) {
-                //If you want to parse a new object, provide here the way to normalize it.
+                // If you want to parse a new object, provide here the way to normalize it.
                 if ($object instanceof ContentType) {
                     if (\in_array($property, $this->toSkip['ContentType'])) {
                         continue;
@@ -93,14 +93,14 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                     if ('views' == $property) {
                         $arrayValues = [];
                         foreach ($value as $index => $view) {
-                            $arrayValues[$index] = $this->normalize($view, $format, $context); //Recursive
+                            $arrayValues[$index] = $this->normalize($view, $format, $context); // Recursive
                         }
                         $value = $arrayValues;
                     }
                     if ('templates' == $property) {
                         $arrayValues = [];
                         foreach ($value as $index => $template) {
-                            $arrayValues[$index] = $this->normalize($template, $format, $context); //Recursive
+                            $arrayValues[$index] = $this->normalize($template, $format, $context); // Recursive
                         }
                         $value = $arrayValues;
                     }
@@ -110,9 +110,9 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                     }
                     if ('validChildren' == $property) {
                         $arrayValues = [];
-                        foreach ($value as $index => $subElement) {//subElement is always FieldType
+                        foreach ($value as $index => $subElement) {// subElement is always FieldType
                             if (!$subElement->getDeleted()) {
-                                $arrayValues[$index] = $this->normalize($subElement, $format, $context); //Recursive
+                                $arrayValues[$index] = $this->normalize($subElement, $format, $context); // Recursive
                             }
                         }
                         $value = $arrayValues;

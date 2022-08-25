@@ -60,10 +60,10 @@ class NotificationController extends AbstractController
     {
         $em = $this->doctrine->getManager();
 
-        $templateId = $request->request->get('templateId');
-        $environmentName = $request->request->get('environmentName');
-        $ctId = $request->request->get('contentTypeId');
-        $ouuid = $request->request->get('ouuid');
+        $templateId = $request->request->getInt('templateId');
+        $environmentName = Type::string($request->request->get('environmentName'));
+        $ctId = $request->request->getInt('contentTypeId');
+        $ouuid = Type::string($request->request->get('ouuid'));
 
         /** @var EnvironmentRepository $repositoryEnv */
         $repositoryEnv = $em->getRepository(Environment::class);
@@ -172,7 +172,7 @@ class NotificationController extends AbstractController
 
     public function listNotificationsAction(string $folder, Request $request): Response
     {
-        $filters = $request->query->get('notification_form');
+        $filters = $request->query->all('notification_form');
 
         $notificationFilter = new NotificationFilter();
 
@@ -182,7 +182,7 @@ class NotificationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            //TODO: what for?
+            // TODO: what for?
             $form->getData();
         }
 
@@ -193,11 +193,7 @@ class NotificationController extends AbstractController
 
         // for pagination
         $paging_size = Type::integer($this->pagingSize);
-        if (null != $request->query->get('page')) {
-            $page = $request->query->get('page');
-        } else {
-            $page = 1;
-        }
+        $page = $request->query->getInt('page', 1);
 
         $rejectedNotifications = [];
         if ('sent' == $folder) {

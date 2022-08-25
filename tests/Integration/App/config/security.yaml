@@ -1,0 +1,81 @@
+security:
+  encoders:
+    EMS\CoreBundle\Entity\UserInterface: bcrypt
+
+  role_hierarchy:
+    ROLE_AUTHOR:          ROLE_USER
+    ROLE_FORM_CRM:        ROLE_USER
+    ROLE_TASK_MANAGER:    ROLE_USER
+    ROLE_REVIEWER:        ROLE_AUTHOR
+    ROLE_TRADUCTOR:       ROLE_REVIEWER
+    ROLE_AUDITOR:         ROLE_REVIEWER
+    ROLE_PUBLISHER:       ROLE_TRADUCTOR
+    ROLE_WEBMASTER:       ROLE_PUBLISHER
+    ROLE_ADMIN:           [ROLE_WEBMASTER, ROLE_USER_MANAGEMENT]
+    ROLE_SUPER_ADMIN:     ROLE_ADMIN
+
+  providers:
+    emsco_user:
+      id: emsco.security.provider.user
+    emsco_user_api:
+      id: emsco.security.provider.user_api
+
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+    ems_core_api:
+      pattern: ^/api
+      stateless: true
+      provider: emsco_user_api
+      guard:
+        authenticators:
+          - emsco.security.authenticator.auth_token
+    ems_core:
+      anonymous: ~
+      provider: emsco_user
+      guard:
+        entry_point: emsco.security.authenticator.form_login
+        authenticators:
+          - emsco.security.authenticator.form_login
+          - emsco.security.authenticator.auth_token_login
+      logout:
+        path: /logout
+        target: /login
+      remember_me:
+        secret:   '%kernel.secret%'
+        lifetime: 604800 # 1 week in seconds
+        path:     /
+      switch_user: { role: ROLE_ADMIN, provider: emsco_user }
+
+  access_control:
+    - { path: ^/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/metrics$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/public/, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/health_check(\.json)?$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/auth-token$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/public-key$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/go-to-login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/status.json$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/status$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/documentation$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/data/file, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/data/asset, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/channel/, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/bundles, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/api, roles: ROLE_API }
+    - { path: ^/api/admin, roles: ROLE_ADMIN }
+    - { path: ^/i18n-type, roles: ROLE_ADMIN }
+    - { path: ^/action, roles: ROLE_ADMIN }
+    - { path: ^/wysiwyg-profile, roles: ROLE_ADMIN }
+    - { path: ^/content-type, roles: ROLE_ADMIN }
+    - { path: ^/environment, roles: ROLE_ADMIN }
+    - { path: ^/channel-admin, roles: ROLE_ADMIN }
+    - { path: ^/user, roles: ROLE_USER_MANAGEMENT }
+    - { path: ^/elasticsearch/delete-search, roles: ROLE_USER }
+    - { path: ^/elasticsearch, roles: ROLE_ADMIN }
+    - { path: ^/publisher/align, roles: ROLE_PUBLISHER }
+    - { path: ^/form/submissions, roles: ROLE_FORM_CRM }
+    - { path: ^/, roles: ROLE_USER }

@@ -164,7 +164,11 @@ class SorterViewType extends ViewType
 
         if ($form->isSubmitted()) {
             $counter = 1;
-            foreach ($request->request->get('reorder')['items'] as $itemKey => $value) {
+
+            $reorder = $request->request->all('reorder');
+            $items = $reorder['items'];
+
+            foreach ($items as $itemKey => $value) {
                 try {
                     $revision = $this->dataService->initNewDraft($view->getContentType()->getName(), $itemKey);
                     $data = $revision->getRawData();

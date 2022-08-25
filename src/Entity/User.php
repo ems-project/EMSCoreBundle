@@ -432,7 +432,7 @@ class User implements UserInterface, EntityInterface
             $this->id,
             $this->email,
             $this->emailCanonical
-            ) = $data;
+        ) = $data;
     }
 
     public function eraseCredentials(): void

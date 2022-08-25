@@ -31,7 +31,7 @@ final class FlashMessageLogger extends AbstractProcessingHandler
             return;
         }
 
-        //TODO: remove the translator when all logger have been migrated to the localized logger
+        // TODO: remove the translator when all logger have been migrated to the localized logger
         $parameters = [];
         foreach ($record['context'] as $key => &$value) {
             $parameters['%'.$key.'%'] = $value;

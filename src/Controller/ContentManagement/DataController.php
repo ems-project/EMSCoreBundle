@@ -762,8 +762,8 @@ class DataController extends AbstractController
             return $response;
         }
 
-        $revisionInRequest = $request->request->get('revision');
-        if (empty($revisionInRequest) || !isset($revisionInRequest['allFieldsAreThere']) || empty($revisionInRequest['allFieldsAreThere'])) {
+        $revisionInRequest = $request->request->all('revision');
+        if (empty($revisionInRequest['allFieldsAreThere'])) {
             $this->logger->error('log.data.revision.not_completed_request', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -777,7 +777,7 @@ class DataController extends AbstractController
             $backup = $revision->getRawData();
             $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
 
-            //If the bag is not empty the user already see its content when opening the edit page
+            // If the bag is not empty the user already see its content when opening the edit page
             $request->getSession()->getBag('flashes')->clear();
 
             /**little trick to reorder collection*/

@@ -257,7 +257,6 @@
             <argument type="service" id="ems_common.elastica.client" />
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.data" />
-            <argument type="service" id="ems.service.mapping" />
         </service>
         <service id="ems.elasticsearch.indexer" class="EMS\CoreBundle\Elasticsearch\Indexer">
             <argument type="service" id="ems.service.index" />

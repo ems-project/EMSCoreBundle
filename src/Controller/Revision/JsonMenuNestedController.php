@@ -212,7 +212,7 @@ final class JsonMenuNestedController extends AbstractController
 
             $data = $decoded['_data'] ?? [];
         } else {
-            //modal form hidden field
+            // modal form hidden field
             $data = $request->get('_data', null);
             $data = $data ? Json::decode($data) : [];
         }

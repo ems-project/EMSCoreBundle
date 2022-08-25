@@ -36,7 +36,7 @@ class CopyToFieldType extends DataFieldType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        //no inputs as it's just an indexing field
+        // no inputs as it's just an indexing field
     }
 
     /**
@@ -64,6 +64,6 @@ class CopyToFieldType extends DataFieldType
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
-        //do nothing more than a mapping
+        // do nothing more than a mapping
     }
 }

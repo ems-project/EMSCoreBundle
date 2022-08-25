@@ -204,7 +204,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('emsco_log_notice', [CoreRuntime::class, 'logNotice']),
             new TwigFilter('emsco_log_warning', [CoreRuntime::class, 'logWarning']),
             new TwigFilter('emsco_log_error', [CoreRuntime::class, 'logError']),
-            //deprecated
+            // deprecated
             new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
             new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),
         ];
@@ -242,7 +242,7 @@ class AppExtension extends AbstractExtension
         // removes invalid options like _sha1, _finalized_by, ..
         $config = \array_intersect_key($config, Config::getDefaults());
 
-        //_published_datetime can also be removed as it has a sense only if the default config is updated
+        // _published_datetime can also be removed as it has a sense only if the default config is updated
         if (isset($config['_published_datetime'])) {
             unset($config['_published_datetime']);
         }
@@ -812,13 +812,13 @@ class AppExtension extends AbstractExtension
                         EmsFields::CONTENT_FILE_HASH_FIELD => $matches['hash'],
                         EmsFields::CONTENT_FILE_NAME_FIELD => $parameters['name'],
                         EmsFields::CONTENT_MIME_TYPE_FIELD => $parameters['type'],
-                    ],[
+                    ], [
                     ],
-                    'ems_asset',
-                    EmsFields::CONTENT_FILE_HASH_FIELD,
-                    EmsFields::CONTENT_FILE_NAME_FIELD,
-                    EmsFields::CONTENT_MIME_TYPE_FIELD,
-                    UrlGeneratorInterface::ABSOLUTE_PATH);
+                        'ems_asset',
+                        EmsFields::CONTENT_FILE_HASH_FIELD,
+                        EmsFields::CONTENT_FILE_NAME_FIELD,
+                        EmsFields::CONTENT_MIME_TYPE_FIELD,
+                        UrlGeneratorInterface::ABSOLUTE_PATH);
                 }
 
                 return $path.$matches['hash'];
@@ -1022,7 +1022,7 @@ class AppExtension extends AbstractExtension
             if ($v <= 0.03928) {
                 $components[$c] = $v / 12.92;
             } else {
-                $components[$c] = \pow((($v + 0.055) / 1.055), 2.4);
+                $components[$c] = \pow(($v + 0.055) / 1.055, 2.4);
             }
         }
 

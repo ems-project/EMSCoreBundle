@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class HiddenFieldType extends DataFieldType
 {
-    //TODO: deorecated class?
+    // TODO: deorecated class?
 
     public function getLabel(): string
     {

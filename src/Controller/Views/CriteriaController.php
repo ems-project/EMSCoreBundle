@@ -27,11 +27,13 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\Helpers\Standard\Type;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -70,7 +72,7 @@ class CriteriaController extends AbstractController
         $criteriaUpdateConfig = $form->getData();
 
         $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig);
-        $params = \explode(':', $request->request->all()['alignOn']);
+        $params = \explode(':', Type::string($request->request->get('alignOn')));
 
         $isRowAlign = ('row' == $params[0]);
         $key = $params[1].':'.$params[2];
@@ -430,7 +432,7 @@ class CriteriaController extends AbstractController
             'index' => $contentType->giveEnvironment()->getAlias(),
             'type' => $contentType->getName(),
             'body' => $body,
-            'size' => 500, //is it enough?
+            'size' => 500, // is it enough?
         ]);
         $response = EmsResponse::fromResultSet($this->elasticaService->search($search));
 
@@ -493,12 +495,12 @@ class CriteriaController extends AbstractController
 
     public function addCriteriaAction(View $view, Request $request): Response
     {
-        $filters = $request->request->get('filters');
-        $target = $request->request->get('target');
-        $criteriaField = $request->request->get('criteriaField');
-        $category = $request->request->get('category');
+        $filters = $request->request->all('filters');
+        $target = Type::string($request->request->get('target'));
+        $criteriaField = Type::string($request->request->get('criteriaField'));
+        $category = Type::string($request->request->get('category'));
 
-        //TODO securtity test
+        // TODO securtity test
 
         if ('internal' == $view->getOptions()['criteriaMode']) {
             $structuredTarget = \explode(':', $target);
@@ -789,12 +791,12 @@ class CriteriaController extends AbstractController
 
     public function removeCriteriaAction(View $view, Request $request): Response
     {
-        $filters = $request->request->get('filters');
-        $target = $request->request->get('target');
-        $criteriaField = $request->request->get('criteriaField');
-        $category = $request->request->get('category');
+        $filters = $request->request->all('filters');
+        $target = Type::string($request->request->get('target'));
+        $criteriaField = Type::string($request->request->get('criteriaField'));
+        $category = Type::string($request->request->get('category'));
 
-        //TODO securtity test
+        // TODO securtity test
 
         if ('internal' == $view->getOptions()['criteriaMode']) {
             $structuredTarget = \explode(':', $target);
@@ -1076,10 +1078,10 @@ class CriteriaController extends AbstractController
             if (isset($criteriaChoiceLists[$criteriaName][$value])) {
                 $context[$criteriaName] = $value;
                 if (\count($criteriaNames) > 0) {
-                    //let see (recursively) if the other criterion applies to find a matching context
+                    // let see (recursively) if the other criterion applies to find a matching context
                     $this->addToTable($choice, $table, $criterion, $criteriaNames, $criteriaChoiceLists, $config, $context);
                 } else {
-                    //all criterion apply the current choice can be added to the table depending the context
+                    // all criterion apply the current choice can be added to the table depending the context
                     if (!isset($table[$context[$config->getRowCriteria()]][$context[$config->getColumnCriteria()]])) {
                         $table[$context[$config->getRowCriteria()]][$context[$config->getColumnCriteria()]] = [];
                     }
@@ -1111,7 +1113,7 @@ class CriteriaController extends AbstractController
         return false;
     }
 
-    public function fieldFilterAction(Request $request): Response
+    public function fieldFilterAction(Request $request): JsonResponse
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -1136,13 +1138,13 @@ class CriteriaController extends AbstractController
             $label = isset($labels[$idx]) ? $labels[$idx] : $choice;
             if (!$request->query->get('q') || \stristr($choice, $request->query->get('q')) || \stristr($label, $request->query->get('q'))) {
                 $out['items'][] = [
-                        'id' => $choice,
-                        'text' => $label,
+                    'id' => $choice,
+                    'text' => $label,
                 ];
             }
         }
 
-        return new Response(\json_encode($out));
+        return new JsonResponse($out);
     }
 
     protected function getDataFieldType(string $fieldTypeNameOrServiceName): DataFieldType

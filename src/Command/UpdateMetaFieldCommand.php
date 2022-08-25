@@ -81,7 +81,7 @@ class UpdateMetaFieldCommand extends EmsCommand
 
                     $revision->setLockBy('SYSTEM_UPDATE_META');
                     $now = new \DateTime();
-                    $until = $now->add(new \DateInterval('PT5M')); //+5 minutes
+                    $until = $now->add(new \DateInterval('PT5M')); // +5 minutes
                     $revision->setLockUntil($until);
 
                     $em->persist($revision);

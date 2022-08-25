@@ -61,7 +61,7 @@ final class SubmissionController extends AbstractController
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
                 switch ($action->getName()) {
                     case TableAbstract::DELETE_ACTION:
-                            $this->formSubmissionService->processByIds($table->getSelected(), $user);
+                        $this->formSubmissionService->processByIds($table->getSelected(), $user);
                         break;
                     case TableAbstract::DOWNLOAD_ACTION:
                         return $this->downloadMultiple($table->getSelected());

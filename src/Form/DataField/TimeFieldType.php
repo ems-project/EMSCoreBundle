@@ -86,7 +86,7 @@ class TimeFieldType extends DataFieldType
         $out = parent::viewTransform($dataField);
 
         if (\is_array($out) && 0 === \count($out)) {
-            return ''; //empty array means null/empty
+            return ''; // empty array means null/empty
         }
 
         $format = $this->getFormat($dataField->giveFieldType()->getOptions());
@@ -146,7 +146,7 @@ class TimeFieldType extends DataFieldType
      */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        /*get options for twig context*/
+        /* get options for twig context */
         parent::buildView($view, $form, $options);
         $attr = $view->vars['attr'];
         if (empty($attr['class'])) {

@@ -76,7 +76,7 @@ class DateFieldType extends DataFieldType
                 }
             }
         }
-        if (!($dataField->giveFieldType()->getDisplayBoolOption('multidate', false))) {
+        if (!$dataField->giveFieldType()->getDisplayBoolOption('multidate', false)) {
             if (empty($out)) {
                 return null;
             } else {
@@ -236,7 +236,7 @@ class DateFieldType extends DataFieldType
                     if ($dateTime) {
                         $dates = $dateTime->format($format);
                     } else {
-                        //TODO: at least a warning
+                        // TODO: at least a warning
                         $dates = null;
                     }
                 }
@@ -249,7 +249,7 @@ class DateFieldType extends DataFieldType
     public static function convertJavaDateFormat(string $format): string
     {
         $dateFormat = $format;
-        //TODO: naive approch....find a way to comvert java date format into php
+        // TODO: naive approch....find a way to comvert java date format into php
         $dateFormat = \str_replace('dd', 'd', $dateFormat);
         $dateFormat = \str_replace('MM', 'm', $dateFormat);
         $dateFormat = \str_replace('yyyy', 'Y', $dateFormat);
@@ -265,7 +265,7 @@ class DateFieldType extends DataFieldType
     public static function convertJavascriptDateFormat(string $format): string
     {
         $dateFormat = $format;
-        //see https://bootstrap-datepicker.readthedocs.io/en/latest/options.html#format
+        // see https://bootstrap-datepicker.readthedocs.io/en/latest/options.html#format
         $dateFormat = \str_replace('yyyy', 'Y', $dateFormat);
         $dateFormat = \str_replace('yy', 'y', $dateFormat);
         $dateFormat = \str_replace('DD', 'l', $dateFormat);

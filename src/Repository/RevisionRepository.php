@@ -174,7 +174,7 @@ class RevisionRepository extends EntityRepository
         $qb = $this->createQueryBuilder('r');
         $qb->join('r.environments', 'e')
         ->where('e.id = :eid')
-        //->andWhere($qb->expr()->eq('r.deleted', ':false')
+        // ->andWhere($qb->expr()->eq('r.deleted', ':false')
         ->setMaxResults(50)
         ->setFirstResult($page * 50)
         ->orderBy('r.id', 'asc')

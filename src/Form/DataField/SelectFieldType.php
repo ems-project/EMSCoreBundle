@@ -155,7 +155,7 @@ class SelectFieldType extends DataFieldType
                 $dataField->addMessage(\sprintf('Was not able to import the data : %s', \json_encode($temp, JSON_PRETTY_PRINT)));
                 $out = [];
             }
-        } else { //not mutiple
+        } else { // not mutiple
             if (null === $temp) {
                 $out = null;
             } elseif (\is_string($temp)) {

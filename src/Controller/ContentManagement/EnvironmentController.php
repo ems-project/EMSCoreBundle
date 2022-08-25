@@ -106,11 +106,11 @@ class EnvironmentController extends AbstractController
             if ($data['environment'] == $data['withEnvironment']) {
                 $form->addError(new FormError('Source and target environments must be different'));
             } else {
-                if (\array_key_exists('alignWith', $request->request->get('compare_environment_form'))) {
+                if (\array_key_exists('alignWith', $request->request->all('compare_environment_form'))) {
                     $alignTo = [];
-                    $alignTo[$request->query->get('withEnvironment')] = $request->query->get('withEnvironment');
-                    $alignTo[$request->query->get('environment')] = $request->query->get('environment');
-                    $revid = $request->request->get('compare_environment_form')['alignWith'];
+                    $alignTo[Type::string($request->query->get('withEnvironment'))] = Type::string($request->query->get('withEnvironment'));
+                    $alignTo[Type::string($request->query->get('environment'))] = Type::string($request->query->get('environment'));
+                    $revid = $request->request->all('compare_environment_form')['alignWith'];
 
                     /** @var EntityManager $em */
                     $em = $this->getDoctrine()->getManager();
@@ -161,29 +161,29 @@ class EnvironmentController extends AbstractController
                             }
                         }
                     }
-                } elseif (\array_key_exists('alignLeft', $request->request->get('compare_environment_form'))) {
-                    foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item) {
+                } elseif (\array_key_exists('alignLeft', $request->request->all('compare_environment_form'))) {
+                    foreach ($request->request->all('compare_environment_form')['item_to_align'] as $item) {
                         $exploded = \explode(':', $item);
                         if (2 == \count($exploded)) {
-                            $this->publishService->alignRevision($exploded[0], $exploded[1], $request->query->get('withEnvironment'), $request->query->get('environment'));
+                            $this->publishService->alignRevision($exploded[0], $exploded[1], Type::string($request->query->get('withEnvironment')), Type::string($request->query->get('environment')));
                         } else {
                             $this->logger->warning('log.environment.wrong_ouuid', [
                                 EmsFields::LOG_OUUID_FIELD => $item,
                             ]);
                         }
                     }
-                } elseif (\array_key_exists('alignRight', $request->request->get('compare_environment_form'))) {
-                    foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item) {
+                } elseif (\array_key_exists('alignRight', $request->request->all('compare_environment_form'))) {
+                    foreach ($request->request->all('compare_environment_form')['item_to_align'] as $item) {
                         $exploded = \explode(':', $item);
                         if (2 == \count($exploded)) {
-                            $this->publishService->alignRevision($exploded[0], $exploded[1], $request->query->get('environment'), $request->query->get('withEnvironment'));
+                            $this->publishService->alignRevision($exploded[0], $exploded[1], Type::string($request->query->get('environment')), Type::string($request->query->get('withEnvironment')));
                         } else {
                             $this->logger->warning('log.environment.wrong_ouuid', [
                                 EmsFields::LOG_OUUID_FIELD => $item,
                             ]);
                         }
                     }
-                } elseif (\array_key_exists('compare', $request->request->get('compare_environment_form'))) {
+                } elseif (\array_key_exists('compare', $request->request->all('compare_environment_form'))) {
                     $request->query->set('environment', $data['environment']);
                     $request->query->set('withEnvironment', $data['withEnvironment']);
                     $request->query->set('contentTypes', $data['contentTypes']);
@@ -194,13 +194,9 @@ class EnvironmentController extends AbstractController
             }
         }
 
-        if (null != $request->query->get('page')) {
-            $page = $request->query->get('page');
-        } else {
-            $page = 1;
-        }
+        $page = $request->query->getInt('page', 1);
 
-        $contentTypes = $request->query->get('contentTypes', []);
+        $contentTypes = $request->query->all('contentTypes');
         if (!$form->isSubmitted()) {
             $form->get('contentTypes')->setData($contentTypes);
         }
@@ -249,7 +245,7 @@ class EnvironmentController extends AbstractController
                     $env->getId(),
                     $withEnvi->getId(),
                     $contentTypes,
-                    ($page - 1) * $paging_size,
+                    (int) (($page - 1) * $paging_size),
                     $paging_size,
                     $orderField,
                     $orderDirection
@@ -257,8 +253,8 @@ class EnvironmentController extends AbstractController
                 for ($index = 0; $index < \count($results); ++$index) {
                     $results[$index]['contentType'] = $this->contentTypeService->getByName($results[$index]['content_type_name']);
 //                     $results[$index]['revisionEnvironment'] = $repository->findOneById($results[$index]['rId']);
-//TODO: is it the better options? to concatenate and split things?
-                    $minrevid = \explode('/', $results[$index]['minrevid']); //1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
+// TODO: is it the better options? to concatenate and split things?
+                    $minrevid = \explode('/', $results[$index]['minrevid']); // 1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
                     $maxrevid = \explode('/', $results[$index]['maxrevid']);
 
                     $results[$index]['revisionEnvironment'] = $repository->findOneById((int) $minrevid[1]);
@@ -272,13 +268,13 @@ class EnvironmentController extends AbstractController
                         $document = $this->searchService->getDocument($contentType, $results[$index]['ouuid'], $env);
                         $results[$index]['objectEnvironment'] = $document->getRaw();
                     } catch (NotFoundException $e) {
-                        $results[$index]['objectEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.
+                        $results[$index]['objectEnvironment'] = null; // This revision doesn't exist in this environment, but it's ok.
                     }
                     try {
                         $document = $this->searchService->getDocument($contentType, $results[$index]['ouuid'], $withEnvi);
                         $results[$index]['objectWithEnvironment'] = $document->getRaw();
                     } catch (NotFoundException $e) {
-                        $results[$index]['objectWithEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.
+                        $results[$index]['objectWithEnvironment'] = null; // This revision doesn't exist in this environment, but it's ok.
                     }
                 }
             } else {
@@ -338,7 +334,7 @@ class EnvironmentController extends AbstractController
                     $environment = new Environment();
                     $environment->setName($name);
                     $environment->setAlias($name);
-                    //TODO: setCircles
+                    // TODO: setCircles
                     $environment->setManaged(false);
 
                     $em->persist($environment);
@@ -479,7 +475,7 @@ class EnvironmentController extends AbstractController
                 ]);
 
                 if (0 != \count($anotherObject)) {
-                    //TODO: test name format
+                    // TODO: test name format
                     $form->get('name')->addError(new FormError('Another environment named '.$environment->getName().' already exists'));
                 } else {
                     $environment->setAlias($this->instanceId.$environment->getName());

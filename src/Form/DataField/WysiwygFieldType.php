@@ -60,7 +60,7 @@ class WysiwygFieldType extends DataFieldType
      */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        /*get options for twig context*/
+        /* get options for twig context */
         parent::buildView($view, $form, $options);
         $view->vars['icon'] = $options['icon'];
         $attr = $view->vars['attr'];
@@ -103,7 +103,7 @@ class WysiwygFieldType extends DataFieldType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        /*set the default option value for this kind of compound field*/
+        /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
         $resolver->setDefault('icon', null);
         $resolver->setDefault('language', null);

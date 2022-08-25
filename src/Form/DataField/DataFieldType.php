@@ -142,12 +142,12 @@ abstract class DataFieldType extends AbstractType
 
     public function convertInput(DataField $dataField): void
     {
-        //by default do nothing
+        // by default do nothing
     }
 
     public function generateInput(DataField $dataField): void
     {
-        //by default do nothing
+        // by default do nothing
     }
 
     /**
@@ -217,7 +217,7 @@ abstract class DataFieldType extends AbstractType
      */
     public function getDataValue(DataField &$dataValues, array $options): void
     {
-        //TODO: should be abstract ??
+        // TODO: should be abstract ??
         throw new \Exception('This function should never be called');
     }
 
@@ -229,7 +229,7 @@ abstract class DataFieldType extends AbstractType
      */
     public function setDataValue($input, DataField &$dataValues, array $options): void
     {
-        //TODO: should be abstract ??
+        // TODO: should be abstract ??
         throw new \Exception('This function should never be called');
     }
 
@@ -242,7 +242,7 @@ abstract class DataFieldType extends AbstractType
      */
     public function getChoiceList(FieldType $fieldType, array $choices): array
     {
-        //TODO: should be abstract ??
+        // TODO: should be abstract ??
         throw new ContentTypeStructureException('The field '.$fieldType->getName().' of the content type '.$fieldType->giveContentType()->getName().' does not have a limited list of values!');
     }
 
@@ -254,7 +254,7 @@ abstract class DataFieldType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-                //'data_class' => 'EMS\CoreBundle\Entity\DataField',
+                // 'data_class' => 'EMS\CoreBundle\Entity\DataField',
                 'lastOfRow' => false,
                 'class' => null, // used to specify a bootstrap class arround the compoment
                 'metadata' => null, // used to keep a link to the FieldType
@@ -390,7 +390,7 @@ abstract class DataFieldType extends AbstractType
     public function isMandatory(DataField &$dataField, DataField $parent = null, &$masterRawData = null): bool
     {
         $isValidMandatory = true;
-        //Get FieldType mandatory option
+        // Get FieldType mandatory option
         $restrictionOptions = $dataField->giveFieldType()->getRestrictionOptions();
         if (isset($restrictionOptions['mandatory']) && true == $restrictionOptions['mandatory']) {
             $parentRawData = $parent ? $parent->getRawData() : [];
@@ -399,7 +399,7 @@ abstract class DataFieldType extends AbstractType
             if (null === $parent || !isset($restrictionOptions['mandatory_if'])
                 || null === $parent->getRawData()
                 || !empty($this->resolve($masterRawData ?? [], $parentRawDataArray, $restrictionOptions['mandatory_if']))) {
-                //Get rawData
+                // Get rawData
                 $rawData = $dataField->getRawData();
                 if (null === $rawData || (\is_string($rawData) && '' === $rawData) || (\is_array($rawData) && 0 === \count($rawData))) {
                     $isValidMandatory = false;
@@ -476,9 +476,9 @@ abstract class DataFieldType extends AbstractType
      * @param array<mixed> $data
      * @param array<mixed> $option
      *
-     * @throws \Exception
-     *
      * @return array<mixed>
+     *
+     * @throws \Exception
      */
     public static function filterSubField(array $data, array $option): array
     {

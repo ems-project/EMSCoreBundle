@@ -230,10 +230,6 @@ class ExportDocumentsCommand extends EmsCommand
 
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
-                if (false === $result) {
-                    continue;
-                }
-
                 if ($withBusinessId) {
                     $document = $this->dataService->hitToBusinessDocument($contentType, $result->getHit());
                 } else {

@@ -68,8 +68,8 @@ final class TaskManager
     {
         return \array_filter([
             self::TAB_USER,
-            ($this->isTaskOwner() ? self::TAB_OWNER : null),
-            ($this->isTaskManager() ? self::TAB_MANAGER : null),
+            $this->isTaskOwner() ? self::TAB_OWNER : null,
+            $this->isTaskManager() ? self::TAB_MANAGER : null,
         ]);
     }
 
@@ -287,7 +287,7 @@ final class TaskManager
 
     private function dispatchEvent(TaskEvent $event, string $eventName): void
     {
-        $this->eventDispatcher->dispatch($event, $eventName); /* @phpstan-ignore-line */
+        $this->eventDispatcher->dispatch($event, $eventName);
     }
 
     private function createTaskEvent(Task $task, Revision $revision, ?string $username = null): TaskEvent

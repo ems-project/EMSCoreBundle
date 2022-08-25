@@ -10,16 +10,16 @@ use EMS\CoreBundle\Core\Security\Token;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\UserRepository;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 final class UserManager
 {
     private TokenStorageInterface $tokenStorage;
     private MailerService $mailerService;
     private UserRepository $userRepository;
-    private UserPasswordEncoderInterface $passwordEncoder;
+    private UserPasswordHasherInterface $userPasswordHasher;
 
     public const PASSWORD_RETRY_TTL = 7200;
     public const CONFIRMATION_TOKEN_TTL = 86400;
@@ -29,12 +29,12 @@ final class UserManager
         TokenStorageInterface $tokenStorage,
         MailerService $mailerService,
         UserRepository $userRepository,
-        UserPasswordEncoderInterface $passwordEncoder
+        UserPasswordHasherInterface $userPasswordHasher
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->mailerService = $mailerService;
         $this->userRepository = $userRepository;
-        $this->passwordEncoder = $passwordEncoder;
+        $this->userPasswordHasher = $userPasswordHasher;
     }
 
     public function create(string $username, string $password, string $email, bool $active, bool $superAdmin): User
@@ -111,7 +111,7 @@ final class UserManager
     public function resetPassword(User $user): void
     {
         $user->setConfirmationToken(null);
-        $user->setPasswordRequestedAt(null);
+        $user->setPasswordRequestedAt();
         $user->setEnabled(true);
         $this->update($user);
 
@@ -185,7 +185,7 @@ final class UserManager
         }
 
         $user->setSalt(Token::generate());
-        $hashedPassword = $this->passwordEncoder->encodePassword($user, $plainPassword);
+        $hashedPassword = $this->userPasswordHasher->hashPassword($user, $plainPassword);
 
         $user->setPassword($hashedPassword);
         $user->eraseCredentials();

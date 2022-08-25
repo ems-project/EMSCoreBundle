@@ -186,7 +186,7 @@
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="ems_core.core_mail.mailer_service" />
             <argument type="service" id="ems.repository.user" />
-            <argument type="service" id="security.password_encoder" />
+            <argument type="service" id="security.user_password_hasher" />
         </service>
 
         <service id="ems.service.mapping" class="EMS\CoreBundle\Service\Mapping">

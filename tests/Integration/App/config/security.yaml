@@ -1,5 +1,7 @@
 security:
-  encoders:
+  enable_authenticator_manager: true
+
+  password_hashers:
     EMS\CoreBundle\Entity\UserInterface: bcrypt
 
   role_hierarchy:
@@ -28,43 +30,38 @@ security:
       pattern: ^/api
       stateless: true
       provider: emsco_user_api
-      guard:
-        authenticators:
-          - emsco.security.authenticator.auth_token
+      custom_authenticators:
+        - emsco.security.authenticator.auth_token
     ems_core:
-      anonymous: ~
+      lazy: true
       provider: emsco_user
-      guard:
-        entry_point: emsco.security.authenticator.form_login
-        authenticators:
-          - emsco.security.authenticator.form_login
-          - emsco.security.authenticator.auth_token_login
+      custom_authenticators:
+        - emsco.security.authenticator.form_login
+        - emsco.security.authenticator.auth_token_login
       logout:
-        path: /logout
-        target: /login
+        path: emsco_user_logout
       remember_me:
         secret:   '%kernel.secret%'
         lifetime: 604800 # 1 week in seconds
-        path:     /
       switch_user: { role: ROLE_ADMIN, provider: emsco_user }
 
   access_control:
-    - { path: ^/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/metrics$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/public/, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/health_check(\.json)?$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/auth-token$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/public-key$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/go-to-login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/status.json$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/status$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/documentation$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/data/file, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/data/asset, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/channel/, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/bundles, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/$, role: PUBLIC_ACCESS }
+    - { path: ^/metrics$, role: PUBLIC_ACCESS }
+    - { path: ^/public/, role: PUBLIC_ACCESS }
+    - { path: ^/health_check(\.json)?$, role: PUBLIC_ACCESS }
+    - { path: ^/login$, role: PUBLIC_ACCESS }
+    - { path: ^/auth-token$, role: PUBLIC_ACCESS }
+    - { path: ^/public-key$, role: PUBLIC_ACCESS }
+    - { path: ^/go-to-login$, role: PUBLIC_ACCESS }
+    - { path: ^/status.json$, role: PUBLIC_ACCESS }
+    - { path: ^/status$, role: PUBLIC_ACCESS }
+    - { path: ^/documentation$, role: PUBLIC_ACCESS }
+    - { path: ^/resetting, role: PUBLIC_ACCESS }
+    - { path: ^/data/file, role: PUBLIC_ACCESS }
+    - { path: ^/data/asset, role: PUBLIC_ACCESS }
+    - { path: ^/channel/, role: PUBLIC_ACCESS }
+    - { path: ^/bundles, role: PUBLIC_ACCESS }
     - { path: ^/api, roles: ROLE_API }
     - { path: ^/api/admin, roles: ROLE_ADMIN }
     - { path: ^/i18n-type, roles: ROLE_ADMIN }

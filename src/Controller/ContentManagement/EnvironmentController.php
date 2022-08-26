@@ -88,7 +88,7 @@ class EnvironmentController extends AbstractController
 
     public function alignAction(Request $request): Response
     {
-        if (!$this->isGranted(['ROLE_PUBLISHER'])) {
+        if (!$this->isGranted('ROLE_PUBLISHER')) {
             throw new AccessDeniedHttpException();
         }
         $data = [];

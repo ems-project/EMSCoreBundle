@@ -19,7 +19,6 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment as TwigEnvironment;
@@ -89,12 +88,6 @@ class RequestListener
                 ]);
                 $response = new RedirectResponse($this->router->generate('notifications.list', [
                     ]));
-                $event->setResponse($response);
-            }
-            if ($exception instanceof AccessDeniedHttpException && null === $event->getRequest()->getUser()) {
-                $response = new RedirectResponse($this->router->generate(Routes::USER_LOGIN, [
-                    '_target_path' => $event->getRequest()->getRequestUri(),
-                ]));
                 $event->setResponse($response);
             }
         } catch (Exception $e) {

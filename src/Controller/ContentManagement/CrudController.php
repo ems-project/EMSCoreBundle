@@ -335,7 +335,9 @@ class CrudController extends AbstractController
 
     public function getUserProfiles(): JsonResponse
     {
-        if (!$this->isGranted(['ROLE_USER_READ', 'ROLE_USER_MANAGEMENT', 'ROLE_ADMIN'])) {
+        if (!$this->isGranted('ROLE_USER_READ')
+            || !$this->isGranted('ROLE_USER_MANAGEMENT')
+            || !$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedHttpException();
         }
         $users = [];

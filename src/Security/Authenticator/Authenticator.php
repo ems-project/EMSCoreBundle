@@ -7,25 +7,22 @@ namespace EMS\CoreBundle\Security\Authenticator;
 use EMS\CoreBundle\Entity\User;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 final class Authenticator
 {
     private FormLoginAuthenticator $formLoginAuthenticator;
-    private GuardAuthenticatorHandler $guardAuthenticatorHandler;
+    private UserAuthenticatorInterface $userAuthenticator;
     private RequestStack $requestStack;
-    private string $firewallName;
 
     public function __construct(
         FormLoginAuthenticator $formLoginAuthenticator,
-        GuardAuthenticatorHandler $guardAuthenticatorHandler,
-        RequestStack $requestStack,
-        string $firewallName)
-    {
+        UserAuthenticatorInterface $userAuthenticator,
+        RequestStack $requestStack
+    ) {
         $this->formLoginAuthenticator = $formLoginAuthenticator;
-        $this->guardAuthenticatorHandler = $guardAuthenticatorHandler;
+        $this->userAuthenticator = $userAuthenticator;
         $this->requestStack = $requestStack;
-        $this->firewallName = $firewallName;
     }
 
     public function authenticate(User $user): void
@@ -34,7 +31,6 @@ final class Authenticator
             throw new AuthenticationException('Missing request');
         }
 
-        $token = $this->formLoginAuthenticator->createAuthenticatedToken($user, $this->firewallName);
-        $this->guardAuthenticatorHandler->authenticateWithToken($token, $request, $this->firewallName);
+        $this->userAuthenticator->authenticateUser($user, $this->formLoginAuthenticator, $request);
     }
 }

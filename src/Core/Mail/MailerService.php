@@ -62,13 +62,18 @@ class MailerService
         $this->mailer->send($email);
     }
 
-    public function sendMailTemplate(MailTemplate $template): void
+    public function sendMailTemplate(MailTemplate $template, string $type = 'html'): void
     {
         $email = (new Email())
             ->from($this->from)
             ->to(...$template->getTo())
-            ->subject($template->getSubject())
-            ->html($template->getBody());
+            ->subject($template->getSubject());
+
+        if ('html' === $type) {
+            $email->html($template->getBody());
+        } elseif ('text' === $type) {
+            $email->text($template->getBody());
+        }
 
         $this->mailer->send($email);
     }

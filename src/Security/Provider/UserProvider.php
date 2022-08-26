@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Security\Provider;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
@@ -20,9 +20,14 @@ class UserProvider implements UserProviderInterface
         $this->userRepository = $userRepository;
     }
 
+    public function loadUserByIdentifier(string $identifier): UserInterface
+    {
+        return $this->findUser($identifier);
+    }
+
     public function loadUserByUsername(string $username): UserInterface
     {
-        return $this->findUser($username);
+        return $this->loadUserByIdentifier($username);
     }
 
     public function refreshUser(UserInterface $user): UserInterface
@@ -42,7 +47,7 @@ class UserProvider implements UserProviderInterface
     private function findUser(string $usernameOrEmail): User
     {
         if (null === $user = $this->userRepository->findUserByUsernameOrEmail($usernameOrEmail)) {
-            throw new UsernameNotFoundException(\sprintf('Username "%s" does not exists.', $usernameOrEmail));
+            throw new UserNotFoundException(\sprintf('Username "%s" does not exists.', $usernameOrEmail));
         }
 
         return $user;

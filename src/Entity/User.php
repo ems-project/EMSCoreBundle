@@ -9,13 +9,14 @@ use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Security\CoreLdapUser;
 use EMS\Helpers\Standard\DateTime;
 use EMS\Helpers\Standard\Type;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="`user`")
  * @ORM\HasLifecycleCallbacks()
  */
-class User implements UserInterface, EntityInterface
+class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserInterface
 {
     use CreatedModifiedTrait;
     /**

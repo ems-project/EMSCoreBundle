@@ -12,72 +12,42 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
-final class AuthTokenLoginAuthenticator extends AbstractGuardAuthenticator
+final class AuthTokenLoginAuthenticator extends AbstractAuthenticator
 {
     private AuthTokenRepository $authTokenRepository;
-    private UserPasswordEncoderInterface $passwordEncoder;
 
-    public function __construct(AuthTokenRepository $authTokenRepository, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(AuthTokenRepository $authTokenRepository)
     {
         $this->authTokenRepository = $authTokenRepository;
-        $this->passwordEncoder = $passwordEncoder;
     }
 
-    public function supports(Request $request): bool
+    public function supports(Request $request): ?bool
     {
         return Routes::AUTH_TOKEN_LOGIN === $request->attributes->get('_route') && $request->isMethod('POST');
     }
 
-    public function start(Request $request, AuthenticationException $authException = null): JsonResponse
+    public function authenticate(Request $request): Passport
     {
-        $data = ['message' => 'Authentication Required'];
+        $content = $request->getContent();
+        $json = $content ? Json::decode($content) : [];
 
-        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
-    }
+        $username = $json['username'] ?? null;
+        $password = $json['password'] ?? null;
 
-    /**
-     * @return array{username: ?string, password: ?string}
-     */
-    public function getCredentials(Request $request): array
-    {
-        $json = Json::decode($request->getContent());
-
-        return [
-            'username' => $json['username'] ?? null,
-            'password' => $json['password'] ?? null,
-        ];
-    }
-
-    public function getUser($credentials, UserProviderInterface $userProvider): UserInterface
-    {
-        return $userProvider->loadUserByUsername($credentials['username']);
-    }
-
-    public function checkCredentials($credentials, UserInterface $user): bool
-    {
-        if (null === $credentials['password'] || null === $credentials['username']) {
-            return false;
+        if (null === $username || null === $password) {
+            throw new AuthenticationException('Missing credentials');
         }
 
-        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
+        return new Passport(new UserBadge($username), new PasswordCredentials($password));
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
-    {
-        return new JsonResponse([
-            'success' => false,
-            'acknowledged' => true,
-            'error' => ['Unauthorized Error'],
-        ], Response::HTTP_UNAUTHORIZED);
-    }
-
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): JsonResponse
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         $user = $token->getUser();
         if (!$user instanceof CoreUserInterface) {
@@ -91,8 +61,12 @@ final class AuthTokenLoginAuthenticator extends AbstractGuardAuthenticator
         ]);
     }
 
-    public function supportsRememberMe(): bool
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        return false;
+        return new JsonResponse([
+            'success' => false,
+            'acknowledged' => true,
+            'error' => 'Login authentication failed',
+        ], Response::HTTP_UNAUTHORIZED);
     }
 }

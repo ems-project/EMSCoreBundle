@@ -225,7 +225,7 @@ class Mapping
     /**
      * @param array<mixed> $mappings
      */
-    public function updateMapping(string $name, array $mappings, string $type): void
+    public function updateMapping(string $name, array $mappings): void
     {
         $endpoint = new PutMapping();
         $endpoint->setIndex($name);

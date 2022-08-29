@@ -28,15 +28,6 @@ class AggregateOptionService extends EntityService
         $this->elasticaService = $elasticaService;
     }
 
-    public function getContentTypeField(): string
-    {
-        if (\version_compare($this->elasticaService->getVersion(), '6.0') >= 0) {
-            return EMSSource::FIELD_CONTENT_TYPE;
-        }
-
-        return '_type';
-    }
-
     protected function getRepositoryIdentifier(): string
     {
         return AggregateOption::class;

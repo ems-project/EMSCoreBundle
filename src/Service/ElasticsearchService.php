@@ -124,20 +124,13 @@ class ElasticsearchService
     }
 
     /**
-     * @return array<string, string|bool>
+     * @return array{type: 'text', index: false}
      */
     public function getNotIndexedStringMapping(): array
     {
-        if (\version_compare($this->getVersion(), '5') > 0) {
-            return [
-                'type' => 'text',
-                'index' => false,
-            ];
-        }
-
         return [
-            'type' => 'string',
-            'index' => 'no',
+            'type' => 'text',
+            'index' => false,
         ];
     }
 

@@ -3,9 +3,9 @@
 namespace EMS\CoreBundle\Service;
 
 use Elastica\Client;
-use Elasticsearch\Endpoints\Indices\PutAlias;
 use Elasticsearch\Endpoints\Indices\Create;
 use Elasticsearch\Endpoints\Indices\Exists;
+use Elasticsearch\Endpoints\Indices\PutAlias;
 use Elasticsearch\Endpoints\Indices\PutMapping;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;

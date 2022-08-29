@@ -4,29 +4,13 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Elasticsearch\Aggregation\ElasticaAggregation;
-use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
-use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\AggregateOption;
-use Psr\Log\LoggerInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AggregateOptionService extends EntityService
 {
     public const CONTENT_TYPES_AGGREGATION = 'types';
     public const INDEXES_AGGREGATION = 'indexes';
-    private ElasticaService $elasticaService;
-
-    public function __construct(
-        Registry $doctrine,
-        LoggerInterface $logger,
-        TranslatorInterface $translator,
-        ElasticaService $elasticaService
-    ) {
-        parent::__construct($doctrine, $logger, $translator);
-        $this->elasticaService = $elasticaService;
-    }
 
     protected function getRepositoryIdentifier(): string
     {

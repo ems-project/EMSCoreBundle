@@ -4,8 +4,8 @@ namespace EMS\CoreBundle\Service;
 
 use Elastica\Exception\ResponseException;
 use Elasticsearch\Endpoints\Index;
-use Elasticsearch\Endpoints\Indices\GetAlias;
 use Elasticsearch\Endpoints\Indices\Exists;
+use Elasticsearch\Endpoints\Indices\GetAlias;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CoreBundle\Entity\Environment;
@@ -14,24 +14,17 @@ use Psr\Log\LoggerInterface;
 
 final class IndexService
 {
-    /** @var AliasService */
-    private $aliasService;
-    /** @var Client */
-    private $client;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var Mapping */
-    private $mapping;
+    private AliasService $aliasService;
+    private Client $client;
+    private LoggerInterface $logger;
+    private ContentTypeService $contentTypeService;
 
-    public function __construct(AliasService $aliasService, Client $client, ContentTypeService $contentTypeService, LoggerInterface $logger, Mapping $mapping)
+    public function __construct(AliasService $aliasService, Client $client, ContentTypeService $contentTypeService, LoggerInterface $logger)
     {
         $this->aliasService = $aliasService;
         $this->client = $client;
         $this->logger = $logger;
         $this->contentTypeService = $contentTypeService;
-        $this->mapping = $mapping;
     }
 
     public function deleteOrphanIndexes(): void

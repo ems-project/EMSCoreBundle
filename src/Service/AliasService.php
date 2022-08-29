@@ -71,7 +71,7 @@ class AliasService
             }
         }
 
-        $endpoint = new Update();
+        $endpoint = new UpdateAliases();
         $endpoint->setBody(['actions' => $actions]);
         $this->elasticaClient->requestEndpoint($endpoint);
 
@@ -402,7 +402,7 @@ class AliasService
      */
     private function getData(): array
     {
-        $endpoint = new Get();
+        $endpoint = new GetAlias();
         $indexesAliases = $this->elasticaClient->requestEndpoint($endpoint)->getData();
 
         return \array_filter(

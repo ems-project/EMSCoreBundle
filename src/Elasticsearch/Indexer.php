@@ -58,9 +58,9 @@ class Indexer
     /**
      * @param array<mixed> $mappings
      */
-    public function update(string $name, array $mappings, string $type): void
+    public function update(string $name, array $mappings): void
     {
-        $this->mapping->updateMapping($name, $mappings, $type);
+        $this->mapping->updateMapping($name, $mappings);
         $this->logger->info('Update index {index}\'s mapping', ['index' => $name]);
     }
 

@@ -4,7 +4,7 @@ namespace EMS\CoreBundle\Service;
 
 use Elastica\Exception\ResponseException;
 use Elasticsearch\Endpoints\Index;
-use Elasticsearch\Endpoints\Indices\Alias\Get;
+use Elasticsearch\Endpoints\Indices\GetAlias;
 use Elasticsearch\Endpoints\Indices\Exists;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
@@ -174,7 +174,7 @@ final class IndexService
      */
     private function getAliases(?string $indexName): array
     {
-        $endpoint = new Get();
+        $endpoint = new GetAlias();
         if (null !== $indexName) {
             $endpoint->setIndex($indexName);
         }

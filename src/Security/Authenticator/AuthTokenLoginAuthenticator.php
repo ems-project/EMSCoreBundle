@@ -27,7 +27,7 @@ final class AuthTokenLoginAuthenticator extends AbstractAuthenticator
         $this->authTokenRepository = $authTokenRepository;
     }
 
-    public function supports(Request $request): ?bool
+    public function supports(Request $request): bool
     {
         return Routes::AUTH_TOKEN_LOGIN === $request->attributes->get('_route') && $request->isMethod('POST');
     }

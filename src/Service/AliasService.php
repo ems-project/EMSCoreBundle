@@ -4,8 +4,8 @@ namespace EMS\CoreBundle\Service;
 
 use Elastica\Aggregation\Terms;
 use Elasticsearch\Endpoints\Cat\Indices;
-use Elasticsearch\Endpoints\Indices\Alias\Get;
-use Elasticsearch\Endpoints\Indices\Aliases\Update;
+use Elasticsearch\Endpoints\Indices\GetAlias;
+use Elasticsearch\Endpoints\Indices\UpdateAliases;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -71,7 +71,7 @@ class AliasService
             }
         }
 
-        $endpoint = new Update();
+        $endpoint = new UpdateAliases();
         $endpoint->setBody(['actions' => $actions]);
         $this->elasticaClient->requestEndpoint($endpoint);
 
@@ -85,7 +85,7 @@ class AliasService
 
     public function hasAliasInCluster(string $name): bool
     {
-        $endpoint = new Get();
+        $endpoint = new GetAlias();
         $endpoint->setName($name);
         try {
             $this->elasticaClient->requestEndpoint($endpoint)->getData();
@@ -335,7 +335,7 @@ class AliasService
             }
         }
 
-        $endpoint = new Update();
+        $endpoint = new UpdateAliases();
         $endpoint->setBody(['actions' => $json]);
         $this->elasticaClient->requestEndpoint($endpoint);
     }
@@ -402,7 +402,7 @@ class AliasService
      */
     private function getData(): array
     {
-        $endpoint = new Get();
+        $endpoint = new GetAlias();
         $indexesAliases = $this->elasticaClient->requestEndpoint($endpoint)->getData();
 
         return \array_filter(

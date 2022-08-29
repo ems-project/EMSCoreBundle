@@ -3,10 +3,10 @@
 namespace EMS\CoreBundle\Service;
 
 use Elastica\Client;
-use Elasticsearch\Endpoints\Indices\Alias\Put;
 use Elasticsearch\Endpoints\Indices\Create;
 use Elasticsearch\Endpoints\Indices\Exists;
-use Elasticsearch\Endpoints\Indices\Mapping\Put as MappingPut;
+use Elasticsearch\Endpoints\Indices\PutAlias;
+use Elasticsearch\Endpoints\Indices\PutMapping;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
@@ -81,16 +81,8 @@ class Mapping
             $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType());
         }
 
-        if ($this->elasticsearchService->withAllMapping()) {
-            $out['_all'] = [
-                'store' => true,
-                'enabled' => true,
-            ];
-        } elseif (\version_compare($this->elasticaService->getVersion(), '7.0') >= 0) {
-            $this->addCopyToAllField($out['properties']);
-            $out['properties'] = \array_merge(['_all' => ['type' => 'text']], $out['properties']);
-        }
-
+        $this->addCopyToAllField($out['properties']);
+        $out['properties'] = \array_merge(['_all' => ['type' => 'text']], $out['properties']);
         $out['properties'] = \array_merge(
             [
                 Mapping::HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
@@ -114,22 +106,7 @@ class Mapping
             Mapping::INSTANCE_ID_META_FIELD => $this->instanceId,
         ];
 
-        $elasticsearchVersion = $this->elasticaService->getVersion();
-        if (\version_compare($elasticsearchVersion, '7.0') >= 0) {
-            return $out;
-        }
-
-        return [$this->getTypeName($contentType->getName()) => $out];
-    }
-
-    public function getTypeName(string $contentTypeName): string
-    {
-        return $this->elasticaService->getTypeName($contentTypeName);
-    }
-
-    public function getTypePath(string $contentTypeName): string
-    {
-        return $this->elasticaService->getTypePath($contentTypeName);
+        return $out;
     }
 
     /**
@@ -212,7 +189,7 @@ class Mapping
         if (null === $aliasName) {
             return true;
         }
-        $putAliasEndpoint = new Put();
+        $putAliasEndpoint = new PutAlias();
         $putAliasEndpoint->setIndex($indexName);
         $putAliasEndpoint->setName($aliasName);
 
@@ -222,9 +199,8 @@ class Mapping
     public function putMapping(ContentType $contentType, string $indexes): bool
     {
         $body = $this->generateMapping($contentType);
-        $endpoint = new MappingPut();
+        $endpoint = new PutMapping();
         $endpoint->setIndex($indexes);
-        $endpoint->setType($this->getTypePath($contentType->getName()));
         $endpoint->setBody($body);
         $result = $this->elasticaClient->requestEndpoint($endpoint);
 
@@ -249,12 +225,11 @@ class Mapping
     /**
      * @param array<mixed> $mappings
      */
-    public function updateMapping(string $name, array $mappings, string $type): void
+    public function updateMapping(string $name, array $mappings): void
     {
-        $endpoint = new MappingPut();
+        $endpoint = new PutMapping();
         $endpoint->setIndex($name);
         $endpoint->setBody($mappings);
-        $endpoint->setType($this->getTypePath($type));
         $this->elasticaClient->requestEndpoint($endpoint);
     }
 

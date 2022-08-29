@@ -198,10 +198,8 @@ class EnvironmentService implements EntityServiceInterface
             $analyzers[$analyzer->getName()] = $analyzer->getOptions($esVersion);
         }
 
-        $settingsSectionLabel = \version_compare($esVersion, '7.0') >= 0 ? 'settings' : 'index';
-
         return [
-            $settingsSectionLabel => [
+            'settings' => [
                 'max_result_window' => 50000,
                 'analysis' => [
                     'filter' => $filters,

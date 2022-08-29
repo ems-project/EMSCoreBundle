@@ -255,7 +255,6 @@
             <argument type="service" id="ems_common.elastica.client" />
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="logger" />
-            <argument type="service" id="ems.service.mapping" />
         </service>
         <service id="ems.elasticsearch.bulker" class="EMS\CoreBundle\Elasticsearch\Bulker">
             <argument type="service" id="ems_common.elastica.client" />
@@ -306,7 +305,6 @@
             <argument type="service" id="doctrine"/>
             <argument type="service" id="logger"/>
             <argument type="service" id="translator"/>
-            <argument type="service" id="ems_common.service.elastica"/>
         </service>
         <service id="ems.service.sort_option" class="EMS\CoreBundle\Service\SortOptionService">
             <argument type="service" id="doctrine"/>

@@ -3,10 +3,10 @@
 namespace EMS\CoreBundle\Service;
 
 use Elastica\Client;
-use Elasticsearch\Endpoints\Indices\Alias\Put;
+use Elasticsearch\Endpoints\Indices\PutAlias;
 use Elasticsearch\Endpoints\Indices\Create;
 use Elasticsearch\Endpoints\Indices\Exists;
-use Elasticsearch\Endpoints\Indices\Mapping\Put as MappingPut;
+use Elasticsearch\Endpoints\Indices\PutMapping;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
@@ -119,17 +119,7 @@ class Mapping
             return $out;
         }
 
-        return [$this->getTypeName($contentType->getName()) => $out];
-    }
-
-    public function getTypeName(string $contentTypeName): string
-    {
-        return $this->elasticaService->getTypeName($contentTypeName);
-    }
-
-    public function getTypePath(string $contentTypeName): string
-    {
-        return $this->elasticaService->getTypePath($contentTypeName);
+        return ['_doc' => $out];
     }
 
     /**
@@ -212,7 +202,7 @@ class Mapping
         if (null === $aliasName) {
             return true;
         }
-        $putAliasEndpoint = new Put();
+        $putAliasEndpoint = new PutAlias();
         $putAliasEndpoint->setIndex($indexName);
         $putAliasEndpoint->setName($aliasName);
 
@@ -222,9 +212,8 @@ class Mapping
     public function putMapping(ContentType $contentType, string $indexes): bool
     {
         $body = $this->generateMapping($contentType);
-        $endpoint = new MappingPut();
+        $endpoint = new PutMapping();
         $endpoint->setIndex($indexes);
-        $endpoint->setType($this->getTypePath($contentType->getName()));
         $endpoint->setBody($body);
         $result = $this->elasticaClient->requestEndpoint($endpoint);
 
@@ -251,10 +240,9 @@ class Mapping
      */
     public function updateMapping(string $name, array $mappings, string $type): void
     {
-        $endpoint = new MappingPut();
+        $endpoint = new PutMapping();
         $endpoint->setIndex($name);
         $endpoint->setBody($mappings);
-        $endpoint->setType($this->getTypePath($type));
         $this->elasticaClient->requestEndpoint($endpoint);
     }
 

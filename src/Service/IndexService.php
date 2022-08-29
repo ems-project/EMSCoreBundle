@@ -87,7 +87,6 @@ final class IndexService
         $source[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
         $source[EMSSource::FIELD_CONTENT_TYPE] = $contentTypeName;
         $endpoint = new Index();
-        $endpoint->setType($this->mapping->getTypeName($contentTypeName));
         $endpoint->setIndex($index);
         $endpoint->setBody($source);
         if (null !== $ouuid) {
@@ -132,8 +131,7 @@ final class IndexService
             throw new \RuntimeException('Unexpected null environment');
         }
         $index = $this->contentTypeService->getIndex($contentType, $environment);
-        $path = $this->mapping->getTypePath($contentType->getName());
-        $this->client->deleteIds([$revision->getOuuid()], $index, $path);
+        $this->client->deleteIds([$revision->getOuuid()], $index);
     }
 
     public function hasIndex(string $name): bool

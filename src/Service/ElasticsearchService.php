@@ -135,20 +135,13 @@ class ElasticsearchService
     }
 
     /**
-     * @return array<string, string|bool>
+     * @return array{type: 'text', index: true}
      */
     public function getIndexedStringMapping(): array
     {
-        if (\version_compare($this->getVersion(), '5') > 0) {
-            return [
-                'type' => 'text',
-                'index' => true,
-            ];
-        }
-
         return [
-            'type' => 'string',
-            'index' => 'analyzed',
+            'type' => 'text',
+            'index' => true,
         ];
     }
 

@@ -81,16 +81,8 @@ class Mapping
             $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType());
         }
 
-        if ($this->elasticsearchService->withAllMapping()) {
-            $out['_all'] = [
-                'store' => true,
-                'enabled' => true,
-            ];
-        } elseif (\version_compare($this->elasticaService->getVersion(), '7.0') >= 0) {
-            $this->addCopyToAllField($out['properties']);
-            $out['properties'] = \array_merge(['_all' => ['type' => 'text']], $out['properties']);
-        }
-
+        $this->addCopyToAllField($out['properties']);
+        $out['properties'] = \array_merge(['_all' => ['type' => 'text']], $out['properties']);
         $out['properties'] = \array_merge(
             [
                 Mapping::HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
@@ -114,12 +106,7 @@ class Mapping
             Mapping::INSTANCE_ID_META_FIELD => $this->instanceId,
         ];
 
-        $elasticsearchVersion = $this->elasticaService->getVersion();
-        if (\version_compare($elasticsearchVersion, '7.0') >= 0) {
-            return $out;
-        }
-
-        return ['_doc' => $out];
+        return $out;
     }
 
     /**

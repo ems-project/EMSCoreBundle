@@ -7,6 +7,7 @@ use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Common\Standard\Type;
+use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -574,7 +575,7 @@ class ElasticsearchController extends AbstractController
             $esSearch->setFrom(($page - 1) * $this->pagingSize);
             $esSearch->setSize(Type::integer($this->pagingSize));
 
-            $esSearch->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, $this->aggregateOptionService->getContentTypeField(), 15);
+            $esSearch->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, EMSSource::FIELD_CONTENT_TYPE, 15);
             $esSearch->addTermsAggregation(AggregateOptionService::INDEXES_AGGREGATION, '_index', 15);
             $esSearch->addAggregations($this->aggregateOptionService->getAllAggregations());
 

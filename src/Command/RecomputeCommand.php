@@ -251,6 +251,8 @@ final class RecomputeCommand extends Command
         $progress->finish();
         $output->writeln('');
 
+        $this->em->getConnection()->setAutoCommit(true);
+
         return 0;
     }
 

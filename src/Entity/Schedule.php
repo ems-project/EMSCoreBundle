@@ -36,7 +36,6 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
 
     /**
      * @EMSAssert\Cron()
-     *
      * @ORM\Column(name="cron", type="string", length=255)
      */
     protected string $cron = '';

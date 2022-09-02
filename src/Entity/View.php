@@ -48,6 +48,7 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
 
     /**
      * @var array<mixed>
+     *
      * @ORM\Column(name="options", type="json", nullable=true)
      */
     protected array $options;

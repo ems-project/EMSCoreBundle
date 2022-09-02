@@ -16,12 +16,14 @@ trait RevisionTaskTrait
 
     /**
      * @var string[]|null
+     *
      * @ORM\Column(name="task_planned_ids", type="json", nullable=true)
      */
     private ?array $taskPlannedIds = [];
 
     /**
      * @var string[]|null
+     *
      * @ORM\Column(name="task_approved_ids", type="json", nullable=true)
      */
     private ?array $taskApprovedIds = [];

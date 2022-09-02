@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @implements \IteratorAggregate<DataField>
+ *
  * @Assert\Callback({"Vendor\Package\Validator", "validate"})
  *
  * @implements \ArrayAccess<int, DataField>

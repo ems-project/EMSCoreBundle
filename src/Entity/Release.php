@@ -61,6 +61,7 @@ class Release implements EntityInterface
 
     /**
      * @var Collection<int, ReleaseRevision>
+     *
      * @ORM\OneToMany(targetEntity="ReleaseRevision", mappedBy="release", cascade={"persist", "remove"})
      */
     private Collection $revisions;

@@ -121,8 +121,6 @@ class Notification
 
     /**
      * Set template.
-     *
-     * @return Notification
      */
     public function setTemplate(?Template $template): self
     {

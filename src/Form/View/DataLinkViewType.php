@@ -52,7 +52,7 @@ class DataLinkViewType extends ViewType
 
     public function render(View $view, DataLinks $dataLinks): void
     {
-        $this->twig->createTemplate($view->getOptions()['template'])->render([
+        $this->twig->createTemplate($view->getOptions()['template'] ?? '')->render([
             'view' => $view,
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),

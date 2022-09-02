@@ -115,7 +115,7 @@ class SorterViewType extends ViewType
     public function generateResponse(View $view, Request $request): Response
     {
         try {
-            $renderQuery = $this->twig->createTemplate($view->getOptions()['body'])->render([
+            $renderQuery = $this->twig->createTemplate($view->getOptions()['body'] ?? '')->render([
                     'view' => $view,
                     'contentType' => $view->getContentType(),
                     'environment' => $view->getContentType()->giveEnvironment(),

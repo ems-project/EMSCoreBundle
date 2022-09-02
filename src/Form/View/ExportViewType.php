@@ -156,7 +156,7 @@ class ExportViewType extends ViewType
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         try {
-            $renderQuery = $this->twig->createTemplate($view->getOptions()['body'])->render([
+            $renderQuery = $this->twig->createTemplate($view->getOptions()['body'] ?? '')->render([
                     'view' => $view,
                     'contentType' => $view->getContentType(),
                     'environment' => $view->getContentType()->giveEnvironment(),
@@ -179,7 +179,7 @@ class ExportViewType extends ViewType
         $resultSet = $this->elasticaService->search($search);
 
         try {
-            $render = $this->twig->createTemplate($view->getOptions()['template'])->render([
+            $render = $this->twig->createTemplate($view->getOptions()['template'] ?? '')->render([
                     'view' => $view,
                     'contentType' => $view->getContentType(),
                     'environment' => $view->getContentType()->giveEnvironment(),
@@ -190,7 +190,7 @@ class ExportViewType extends ViewType
         }
 
         try {
-            $filename = $this->twig->createTemplate($view->getOptions()['filename'])->render([
+            $filename = $this->twig->createTemplate($view->getOptions()['filename'] ?? '')->render([
                     'view' => $view,
                     'contentType' => $view->getContentType(),
                     'environment' => $view->getContentType()->giveEnvironment(),

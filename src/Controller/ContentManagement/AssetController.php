@@ -57,7 +57,7 @@ class AssetController extends AbstractController
         if (EmsFields::ASSET_CONFIG_TYPE_IMAGE === $assetConfig[EmsFields::ASSET_CONFIG_TYPE] && !isset($assetConfig[EmsFields::ASSET_CONFIG_MIME_TYPE])) {
             $assetConfig[EmsFields::ASSET_CONFIG_MIME_TYPE] = 0 === $quality ? 'image/png' : 'image/jpeg';
         }
-        if (EmsFields::ASSET_CONFIG_TYPE_IMAGE === ($assetConfig[EmsFields::ASSET_CONFIG_TYPE] ?? null)) {
+        if (EmsFields::ASSET_CONFIG_TYPE_IMAGE === $assetConfig[EmsFields::ASSET_CONFIG_TYPE]) {
             $filename .= 0 === $quality ? '.png' : '.jpg';
         }
 

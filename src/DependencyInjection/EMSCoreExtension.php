@@ -54,7 +54,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.datepicker_weekstart', $config['datepicker_weekstart']);
         $container->setParameter('ems_core.datepicker_format', $config['datepicker_format']);
         $container->setParameter('ems_core.notification_pending_timeout', $config['notification_pending_timeout']);
-        $container->setParameter('ems_core.allow_user_registration', $config['allow_user_registration']);
         $container->setParameter('ems_core.trigger_job_from_web', $config['trigger_job_from_web']);
         $container->setParameter('ems_core.lock_time', $config['lock_time']);
         $container->setParameter('ems_core.template_options', $config['template_options']);
@@ -94,7 +93,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'date_time_format' => $configs[0]['date_time_format'] ?? Configuration::DATE_TIME_FORMAT,
             'date_format' => $configs[0]['date_format'] ?? Configuration::DATE_FORMAT,
             'time_format' => $configs[0]['time_format'] ?? Configuration::TIME_FORMAT,
-            'allow_user_registration' => $configs[0]['allow_user_registration'] ?? Configuration::ALLOW_USER_REGISTRATION,
             'trigger_job_from_web' => $configs[0]['trigger_job_from_web'] ?? Configuration::TRIGGER_JOB_FROM_WEB,
             'routes' => (new \ReflectionClass(Routes::class))->getConstants(),
         ];

@@ -13,19 +13,16 @@ final class LdapConfig
     public string $searchDn;
     public string $searchPassword;
 
-    public ?string $passwordAttribute;
-    public ?string $filter;
-
     /** @var string[] */
     public array $defaultRoles;
+    public ?string $uidKey;
+    public ?string $filter;
+    public ?string $passwordAttribute;
+
     /** @var string[] */
     public array $extraFields;
-
     public ?string $emailField;
     public ?string $displayNameField;
-    public ?string $givenNameField;
-    public ?string $lastNameField;
-    public ?string $uidKey;
 
     /**
      * @param array{
@@ -33,15 +30,13 @@ final class LdapConfig
      *     base_dn?: ?string,
      *     search_dn?: ?string,
      *     search_password?: ?string,
-     *     password_attribute?: ?string,
-     *     filter?: ?string,
      *     default_roles?: string[],
+     *     uid_key?: ?string,
+     *     filter?: ?string,
+     *     password_attribute?: ?string,
      *     extra_fields?: string[],
      *     email_field?: ?string,
-     *     display_name_field?: ?string,
-     *     given_name_field?: ?string,
-     *     last_name_field?: ?string,
-     *     uid_key?: ?string
+     *     display_name_field?: ?string
      * } $config
      */
     public function __construct(array $config)
@@ -59,8 +54,6 @@ final class LdapConfig
 
         $this->emailField = $config['email_field'] ?? null;
         $this->displayNameField = $config['display_name_field'] ?? null;
-        $this->givenNameField = $config['given_name_field'] ?? null;
-        $this->lastNameField = $config['last_name_field'] ?? null;
         $this->uidKey = $config['uid_key'] ?? null;
     }
 }

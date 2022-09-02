@@ -780,8 +780,11 @@ class AppExtension extends AbstractExtension
         return $this->userService->getUser($username);
     }
 
-    public function displayName(string $username): string
+    public function displayName(?string $username): string
     {
+        if (null === $username || '' === $username) {
+            return 'N/A';
+        }
         /** @var UserInterface $user */
         $user = $this->userService->getUser($username);
         if (!empty($user)) {

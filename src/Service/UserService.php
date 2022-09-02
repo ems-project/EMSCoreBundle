@@ -10,7 +10,6 @@ use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Repository\UserRepository;
-use EMS\CoreBundle\Security\CoreLdapUser;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -123,11 +122,7 @@ class UserService implements EntityServiceInterface
         }
         $username = $token->getUsername();
         $this->currentUser = $this->getUser($username, $detach);
-        $tokenUser = $token->getUser();
 
-        if (null === $this->currentUser && $tokenUser instanceof CoreLdapUser) {
-            $this->currentUser = $tokenUser;
-        }
         if (null === $this->currentUser) {
             throw new \RuntimeException('Unexpected null user object');
         }

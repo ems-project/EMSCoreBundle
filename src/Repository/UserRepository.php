@@ -45,15 +45,9 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
 
     public function findUserByUsernameOrEmail(string $usernameOrEmail): ?User
     {
-        if (\preg_match('/^.+\@\S+\.\S+$/', $usernameOrEmail)) {
-            $user = $this->findOneBy(['emailCanonical' => Canonicalizer::canonicalize($usernameOrEmail)]);
+        $field = \preg_match('/^.+\@\S+\.\S+$/', $usernameOrEmail) ? 'emailCanonical' : 'usernameCanonical';
 
-            if (null !== $user) {
-                return $user;
-            }
-        }
-
-        return $this->findOneBy(['usernameCanonical' => Canonicalizer::canonicalize($usernameOrEmail)]);
+        return $this->findOneBy([$field => Canonicalizer::canonicalize($usernameOrEmail)]);
     }
 
     public function search(string $search): ?User

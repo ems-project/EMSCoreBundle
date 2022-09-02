@@ -26,7 +26,6 @@ class Configuration implements ConfigurationInterface
     public const DATEPICKER_WEEKSTART = 1;
     public const DATEPICKER_DAYSOFWEEK_HIGHLIGHTED = [0, 6];
     public const NOTIFICATION_PENDING_TIMEOUT = 'P0Y0M15DT0H0M0S';
-    public const ALLOW_USER_REGISTRATION = false;
     public const TRIGGER_JOB_FROM_WEB = true;
     public const LOCK_TIME = '+1 minutes';
     public const PRIVATE_KEY = null;
@@ -66,7 +65,6 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->scalarNode('notification_pending_timeout')->defaultValue(self::NOTIFICATION_PENDING_TIMEOUT)->end()
-                ->scalarNode('allow_user_registration')->defaultValue(self::ALLOW_USER_REGISTRATION)->end()
                 ->scalarNode('trigger_job_from_web')->defaultValue(self::TRIGGER_JOB_FROM_WEB)->end()
                 ->scalarNode('lock_time')->defaultValue(self::LOCK_TIME)->end()
                 ->variableNode('asset_config')->defaultValue(self::ASSET_CONFIG)->end()

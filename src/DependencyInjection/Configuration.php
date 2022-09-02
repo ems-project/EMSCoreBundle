@@ -86,24 +86,10 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('url_user')->defaultValue(null)->end()
             ->scalarNode('clean_jobs_time_string')->defaultValue(self::CLEAN_JOBS_TIME_STRING)->end()
             ->scalarNode('fallback_locale')->defaultValue(self::FALLBACK_LOCALE)->end()
-            ->arrayNode('ldap')
-            ->children()
-            ->scalarNode('base_dn')->end()
-            ->scalarNode('search_dn')->end()
-            ->scalarNode('search_password')->end()
-            ->variableNode('default_roles')->end()
-            ->scalarNode('uid_key')->end()
-            ->scalarNode('filter')->end()
-            ->scalarNode('password_attribute')->end()
-            ->variableNode('extra_fields')->end()
-            ->scalarNode('email_field')->end()
-            ->scalarNode('display_name_field')->end()
-            ->scalarNode('given_name_field')->end()
-            ->scalarNode('last_name_field')->end()
-            ->end()
-            ->end();
+        ;
 
         $this->addSecuritySection($rootNode);
+        $this->addLdapSection($rootNode);
 
         return $treeBuilder;
     }
@@ -122,6 +108,32 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('api')->defaultValue('ems_core_api')->cannotBeEmpty()->end()
                             ->end()
                         ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
+
+    private function addLdapSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('ldap')
+                    ->canBeEnabled()
+                    ->children()
+                        ->scalarNode('dn_string')->end()
+                        ->scalarNode('base_dn')->end()
+                        ->scalarNode('search_dn')->end()
+                        ->scalarNode('search_password')->end()
+                        ->variableNode('default_roles')->end()
+                        ->scalarNode('uid_key')->end()
+                        ->scalarNode('filter')->end()
+                        ->scalarNode('password_attribute')->end()
+                        ->variableNode('extra_fields')->end()
+                        ->scalarNode('email_field')->end()
+                        ->scalarNode('display_name_field')->end()
+                        ->scalarNode('given_name_field')->end()
+                        ->scalarNode('last_name_field')->end()
                     ->end()
                 ->end()
             ->end()

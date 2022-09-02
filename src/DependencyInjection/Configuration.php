@@ -127,8 +127,6 @@ class Configuration implements ConfigurationInterface
                         ->variableNode('extra_fields')->end()
                         ->scalarNode('email_field')->end()
                         ->scalarNode('display_name_field')->end()
-                        ->scalarNode('given_name_field')->end()
-                        ->scalarNode('last_name_field')->end()
                     ->end()
                 ->end()
             ->end()

@@ -6,7 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Roles;
-use EMS\CoreBundle\Security\CoreLdapUser;
 use EMS\Helpers\Standard\DateTime;
 use EMS\Helpers\Standard\Type;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -167,21 +166,6 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     public function __clone()
     {
         $this->authTokens = new ArrayCollection();
-    }
-
-    public static function fromCoreLdap(CoreLdapUser $ldapUser): self
-    {
-        $user = new self();
-        $user->username = $ldapUser->getUsername();
-        $user->roles = $ldapUser->getRoles();
-        $user->created = $user->modified = new \DateTime('now');
-        $user->circles = [];
-        $user->enabled = true;
-        $user->email = $ldapUser->getEmail();
-        $user->displayName = $ldapUser->getDisplayName();
-        $user->password = \sha1(\random_bytes(10));
-
-        return $user;
     }
 
     /**

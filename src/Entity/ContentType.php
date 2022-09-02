@@ -342,6 +342,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     /**
      * @var Environment|null
+     *
      * @ORM\ManyToOne(targetEntity="Environment", inversedBy="contentTypesHavingThisAsDefault")
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
@@ -365,6 +366,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     /**
      * @var string
+     *
      * @ORM\Column(name="default_value", type="text", nullable=true)
      */
     public $defaultValue;

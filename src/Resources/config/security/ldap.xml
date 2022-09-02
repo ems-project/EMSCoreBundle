@@ -5,25 +5,20 @@
         http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <defaults public="false" />
-        <service id="ems.ldap_user_provider" class="EMS\CoreBundle\Security\CoreLdapUserProvider">
-            <argument type="service" id="doctrine"/>
-            <argument type="service" id="EMS\CoreBundle\Security\LdapExtraFields"/>
-            <argument type="service" id="ems.service.user"/>
-            <argument type="service" id="Symfony\Component\Ldap\Ldap"/>
-            <argument key="$baseDn">%ems_core.ldap.base_dn%</argument>
-            <argument key="$searchDn">%ems_core.ldap.search_dn%</argument>
-            <argument key="$searchPassword">%ems_core.ldap.search_password%</argument>
-            <argument key="$defaultRoles">%ems_core.ldap.default_roles%</argument>
-            <argument key="$uidKey">%ems_core.ldap.uid_key%</argument>
-            <argument key="$filter">%ems_core.ldap.filter%</argument>
-            <argument key="$passwordAttribute">%ems_core.ldap.password_attribute%</argument>
-            <argument key="$extraFields">%ems_core.ldap.extra_fields%</argument>
+
+        <service id="ems_core.security.ldap.config" class="EMS\CoreBundle\Security\Ldap\LdapConfig">
+            <argument>%ems_core.security.ldap.config%</argument>
         </service>
-        <service id="EMS\CoreBundle\Security\LdapExtraFields">
-            <argument key="$email">%ems_core.ldap.email_field%</argument>
-            <argument key="$displayName">%ems_core.ldap.display_name_field%</argument>
-            <argument key="$givenName">%ems_core.ldap.given_name_field%</argument>
-            <argument key="$lastName">%ems_core.ldap.last_name_field%</argument>
+
+        <service id="emsco.security.provider.user_ldap" class="EMS\CoreBundle\Security\Ldap\LdapUserProvider">
+            <argument type="service" id="Symfony\Component\Ldap\Ldap"/>
+            <argument type="service" id="ems_core.security.ldap.config" />
+            <argument type="service" id="ems.repository.user"/>
+        </service>
+
+        <service id="emsco.security.authenticator.form_login_ldap" class="EMS\CoreBundle\Security\Ldap\LdapFormLoginAuthenticator">
+            <argument type="service" id="ems_core.security.ldap.config" />
+            <argument type="service" id="router" />
         </service>
     </services>
 </container>

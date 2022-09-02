@@ -14,7 +14,6 @@ class Session
      * @var string
      *
      * @ORM\Column(name="id", type="string", length=128, nullable=false)
-     *
      * @ORM\Id
      */
     private $id;

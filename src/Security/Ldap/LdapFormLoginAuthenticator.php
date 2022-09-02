@@ -2,43 +2,47 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Security\Authenticator;
+namespace EMS\CoreBundle\Security\Ldap;
 
 use EMS\CoreBundle\Routes;
 use EMS\Helpers\Standard\Type;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Ldap\Ldap;
+use Symfony\Component\Ldap\Security\LdapBadge;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
-use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
+use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
-use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-class FormLoginAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface, InteractiveAuthenticatorInterface
+class LdapFormLoginAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
+    private LdapConfig $ldapConfig;
     private UrlGeneratorInterface $urlGenerator;
-    private bool $ldapEnabled;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator, bool $ldapEnabled)
+    public function __construct(LdapConfig $ldapConfig, UrlGeneratorInterface $urlGenerator)
     {
+        $this->ldapConfig = $ldapConfig;
         $this->urlGenerator = $urlGenerator;
-        $this->ldapEnabled = $ldapEnabled;
     }
 
     public function supports(Request $request): bool
     {
         return Routes::USER_LOGIN === $request->attributes->get('_route') && $request->isMethod('POST');
+    }
+
+    protected function getLoginUrl(Request $request): string
+    {
+        return $this->urlGenerator->generate(Routes::USER_LOGIN);
     }
 
     public function authenticate(Request $request): Passport
@@ -55,6 +59,12 @@ class FormLoginAuthenticator extends AbstractAuthenticator implements Authentica
             [
                 new CsrfTokenBadge('authenticate', $csrfToken),
                 new RememberMeBadge(),
+                new LdapBadge(
+                    Ldap::class,
+                    $this->ldapConfig->dnString,
+                    $this->ldapConfig->searchDn,
+                    $this->ldapConfig->searchPassword
+                ),
             ]
         );
     }
@@ -66,28 +76,5 @@ class FormLoginAuthenticator extends AbstractAuthenticator implements Authentica
         }
 
         return new RedirectResponse($this->urlGenerator->generate(Routes::DASHBOARD_HOME));
-    }
-
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
-    {
-        if ($request->hasSession()) {
-            $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
-        }
-
-        if ($this->ldapEnabled) {
-            return null;
-        }
-
-        return new RedirectResponse($this->urlGenerator->generate(Routes::USER_LOGIN));
-    }
-
-    public function start(Request $request, AuthenticationException $authException = null): Response
-    {
-        return new RedirectResponse($this->urlGenerator->generate(Routes::USER_LOGIN));
-    }
-
-    public function isInteractive(): bool
-    {
-        return true;
     }
 }

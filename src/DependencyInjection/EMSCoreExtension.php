@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\DependencyInjection;
 
 use EMS\CoreBundle\Routes;
@@ -10,11 +12,6 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-/**
- * This is the class that loads and manages your bundle configuration.
- *
- * @see http://symfony.com/doc/current/cookbook/bundles/extension.html
- */
 class EMSCoreExtension extends Extension implements PrependExtensionInterface
 {
     public const TRANS_DOMAIN = 'EMSCoreBundle';
@@ -40,6 +37,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $xmlLoader->load('services.xml');
         $xmlLoader->load('twig.xml');
         $xmlLoader->load('security/security.xml');
+        $xmlLoader->load('security/ldap.xml');
 
         $container->setParameter('ems_core.from_email', $config['from_email']);
         $container->setParameter('ems_core.instance_id', $config['instance_id']);
@@ -75,14 +73,13 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.security.firewall.core', $config['security']['firewall']['core']);
         $container->setParameter('ems_core.security.firewall.api', $config['security']['firewall']['api']);
 
-        $this->loadLdap($container, $xmlLoader, $config['ldap'] ?? []);
+        $container->setParameter('ems_core.security.ldap.enabled', $config['ldap']['enabled']);
+        $container->setParameter('ems_core.security.ldap.config', $config['ldap']);
     }
 
     public function prepend(ContainerBuilder $container): void
     {
-        // get all bundles
         $bundles = $container->getParameter('kernel.bundles');
-
         $configs = $container->getExtensionConfig($this->getAlias());
 
         $globals = [
@@ -122,42 +119,12 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
                         'uuid' => UuidType::class,
                     ],
                 ],
-            ]);
-        }
-
-        $this->prependLocalUser($container, $configs, $bundles);
-    }
-
-    /**
-     * @param array<mixed> $configs
-     * @param mixed        $bundles
-     */
-    private function prependLocalUser(ContainerBuilder $container, array $configs, $bundles): void
-    {
-        if (isset($bundles['DoctrineBundle'])) {
-            $container->prependExtensionConfig('doctrine', [
                 'orm' => [
                     'resolve_target_entities' => [
                         'EMS\CoreBundle\Entity\UserInterface' => 'EMS\CoreBundle\Entity\User',
                     ],
                 ],
             ]);
-        }
-    }
-
-    /**
-     * @param array<string, mixed> $ldapConfig
-     */
-    private function loadLdap(ContainerBuilder $container, Loader\XmlFileLoader $loader, array $ldapConfig): void
-    {
-        if ([] === $ldapConfig) {
-            return;
-        }
-
-        $loader->load('security/ldap.xml');
-        foreach ($ldapConfig as $name => $value) {
-            $reference = \sprintf('ems_core.ldap.%s', $name);
-            $container->setParameter($reference, $value);
         }
     }
 }

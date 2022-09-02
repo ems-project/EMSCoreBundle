@@ -21,6 +21,7 @@
         </service>
         <service id="emsco.security.authenticator.form_login" class="EMS\CoreBundle\Security\Authenticator\FormLoginAuthenticator">
             <argument type="service" id="router" />
+            <argument>%ems_core.security.ldap.enabled%</argument>
         </service>
 
         <service id="ems_core.security.authenticator" class="EMS\CoreBundle\Security\Authenticator\Authenticator">

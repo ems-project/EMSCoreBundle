@@ -1377,8 +1377,7 @@
 
 	</h4>
 
-
-    {% if form.name is defined %}
+    {% if form.name is defined and form.name.rendered == false %}
 		{{ form_row(form.name) }}
 	{% endif %}
 

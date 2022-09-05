@@ -69,7 +69,12 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
      */
     public function getOriginalKeys(): array
     {
-        return $this->choices;
+        $values = [];
+        foreach ($this->choices as $key => $choice) {
+            $values[$key] = $key;
+        }
+
+        return $values;
     }
 
     /**

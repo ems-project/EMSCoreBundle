@@ -197,7 +197,13 @@ class AliasService
                 continue;
             }
 
-            $indexes[$name] = ['name' => $name, 'count' => $data['docs.count']];
+            $search = new Search([$name]);
+            $search->setSize(0);
+
+            $indexes[$name] = [
+                'name' => $name,
+                'count' => $this->elasticaService->count($search),
+            ];
         }
 
         \ksort($indexes);

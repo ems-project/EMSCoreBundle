@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
  */
 class Version20170101152117 extends AbstractMigration
 {
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $this->abortIf('mysql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
         $this->addSql('update field_type ft set ft.type = \'EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\UrlAttachmentFieldType\' where  ft.type = \'AppBundle\\\\Form\\\\DataField\\\\UrlAttachmentFieldType\'');
@@ -46,7 +46,7 @@ class Version20170101152117 extends AbstractMigration
         $this->addSql('update field_type ft set ft.type = \'EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\CollectionFieldType\' where  ft.type = \'AppBundle\\\\Form\\\\DataField\\\\CollectionFieldType\'');
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
         $this->abortIf('mysql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
         $this->addSql('update field_type ft set ft.type = \'AppBundle\\\\Form\\\\DataField\\\\UrlAttachmentFieldType\' where  ft.type = \'EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\UrlAttachmentFieldType\'');

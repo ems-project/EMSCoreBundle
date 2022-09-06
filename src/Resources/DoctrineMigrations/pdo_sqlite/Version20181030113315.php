@@ -202,7 +202,8 @@ final class Version20181030113315 extends AbstractMigration
         $this->addSql('DROP INDEX UNIQ_D45083255E237E06');
         $this->addSql('CREATE TEMPORARY TABLE __temp__analyzer AS SELECT id, name, dirty, label, options, created, modified, order_key FROM analyzer');
         $this->addSql('DROP TABLE analyzer');
-        $this->addSql('CREATE TABLE analyzer (id INTEGER NOT NULL, name VARCHAR(255) NOT NULL, dirty BOOLEAN NOT NULL, label VARCHAR(255) NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, order_key INTEGER DEFAULT NULL, options CLOB NOT NULL COLLATE BINARY --(DC2Type:json_array)
+        $this->addSql('CREATE TABLE analyzer (id INTEGER NOT NULL, name VARCHAR(255) NOT NULL, dirty BOOLEAN NOT NULL, label VARCHAR(255) NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, order_key INTEGER DEFAULT NULL, options CLOB NOT NULL COLLATE BINARY --
+(DC2Type:json_array)
         , PRIMARY KEY(id))');
         $this->addSql('INSERT INTO analyzer (id, name, dirty, label, options, created, modified, order_key) SELECT id, name, dirty, label, options, created, modified, order_key FROM __temp__analyzer');
         $this->addSql('DROP TABLE __temp__analyzer');
@@ -219,7 +220,8 @@ final class Version20181030113315 extends AbstractMigration
         $this->addSql('DROP INDEX UNIQ_83D3C2A4D1B862B8');
         $this->addSql('CREATE TEMPORARY TABLE __temp__cache_asset_extractor AS SELECT id, created, modified, hash, data FROM cache_asset_extractor');
         $this->addSql('DROP TABLE cache_asset_extractor');
-        $this->addSql('CREATE TABLE cache_asset_extractor (id INTEGER NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, hash VARCHAR(255) NOT NULL, data CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:json_array)
+        $this->addSql('CREATE TABLE cache_asset_extractor (id INTEGER NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, hash VARCHAR(255) NOT NULL, data CLOB DEFAULT NULL COLLATE BINARY --
+(DC2Type:json_array)
         , PRIMARY KEY(id))');
         $this->addSql('INSERT INTO cache_asset_extractor (id, created, modified, hash, data) SELECT id, created, modified, hash, data FROM __temp__cache_asset_extractor');
         $this->addSql('DROP TABLE __temp__cache_asset_extractor');
@@ -236,7 +238,8 @@ final class Version20181030113315 extends AbstractMigration
         $this->addSql('DROP INDEX UNIQ_4626DE225E237E06');
         $this->addSql('CREATE TEMPORARY TABLE __temp__environment AS SELECT id, created, modified, name, alias, color, baseUrl, managed, circles, in_default_search, extra, order_key FROM environment');
         $this->addSql('DROP TABLE environment');
-        $this->addSql('CREATE TABLE environment (id INTEGER NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, alias VARCHAR(255) NOT NULL, color VARCHAR(50) DEFAULT NULL, baseUrl VARCHAR(1024) DEFAULT NULL, managed BOOLEAN NOT NULL, in_default_search BOOLEAN DEFAULT NULL, extra CLOB DEFAULT NULL, order_key INTEGER DEFAULT NULL, circles CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:json_array)
+        $this->addSql('CREATE TABLE environment (id INTEGER NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, alias VARCHAR(255) NOT NULL, color VARCHAR(50) DEFAULT NULL, baseUrl VARCHAR(1024) DEFAULT NULL, managed BOOLEAN NOT NULL, in_default_search BOOLEAN DEFAULT NULL, extra CLOB DEFAULT NULL, order_key INTEGER DEFAULT NULL, circles CLOB DEFAULT NULL COLLATE BINARY --
+(DC2Type:json_array)
         , PRIMARY KEY(id))');
         $this->addSql('INSERT INTO environment (id, created, modified, name, alias, color, baseUrl, managed, circles, in_default_search, extra, order_key) SELECT id, created, modified, name, alias, color, baseUrl, managed, circles, in_default_search, extra, order_key FROM __temp__environment');
         $this->addSql('DROP TABLE __temp__environment');
@@ -263,7 +266,8 @@ final class Version20181030113315 extends AbstractMigration
         $this->addSql('DROP INDEX IDX_9F123E93727ACA70');
         $this->addSql('CREATE TEMPORARY TABLE __temp__field_type AS SELECT id, content_type_id, parent_id, created, modified, type, name, deleted, description, options, orderKey FROM field_type');
         $this->addSql('DROP TABLE field_type');
-        $this->addSql('CREATE TABLE field_type (id INTEGER NOT NULL, content_type_id BIGINT DEFAULT NULL, parent_id INTEGER DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, type VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, deleted BOOLEAN NOT NULL, description CLOB DEFAULT NULL, orderKey INTEGER NOT NULL, options CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:json_array)
+        $this->addSql('CREATE TABLE field_type (id INTEGER NOT NULL, content_type_id BIGINT DEFAULT NULL, parent_id INTEGER DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, type VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, deleted BOOLEAN NOT NULL, description CLOB DEFAULT NULL, orderKey INTEGER NOT NULL, options CLOB DEFAULT NULL COLLATE BINARY --
+(DC2Type:json_array)
         , PRIMARY KEY(id))');
         $this->addSql('INSERT INTO field_type (id, content_type_id, parent_id, created, modified, type, name, deleted, description, options, orderKey) SELECT id, content_type_id, parent_id, created, modified, type, name, deleted, description, options, orderKey FROM __temp__field_type');
         $this->addSql('DROP TABLE __temp__field_type');
@@ -272,7 +276,8 @@ final class Version20181030113315 extends AbstractMigration
         $this->addSql('DROP INDEX UNIQ_7FC45F1D5E237E06');
         $this->addSql('CREATE TEMPORARY TABLE __temp__filter AS SELECT id, name, dirty, label, options, created, modified, order_key FROM filter');
         $this->addSql('DROP TABLE filter');
-        $this->addSql('CREATE TABLE filter (id INTEGER NOT NULL, name VARCHAR(255) NOT NULL, dirty BOOLEAN NOT NULL, label VARCHAR(255) NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, order_key INTEGER DEFAULT NULL, options CLOB NOT NULL COLLATE BINARY --(DC2Type:json_array)
+        $this->addSql('CREATE TABLE filter (id INTEGER NOT NULL, name VARCHAR(255) NOT NULL, dirty BOOLEAN NOT NULL, label VARCHAR(255) NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, order_key INTEGER DEFAULT NULL, options CLOB NOT NULL COLLATE BINARY --
+(DC2Type:json_array)
         , PRIMARY KEY(id))');
         $this->addSql('INSERT INTO filter (id, name, dirty, label, options, created, modified, order_key) SELECT id, name, dirty, label, options, created, modified, order_key FROM __temp__filter');
         $this->addSql('DROP TABLE __temp__filter');
@@ -280,14 +285,16 @@ final class Version20181030113315 extends AbstractMigration
         $this->addSql('DROP INDEX UNIQ_FF561896772E836A');
         $this->addSql('CREATE TEMPORARY TABLE __temp__i18n AS SELECT id, created, modified, identifier, content FROM i18n');
         $this->addSql('DROP TABLE i18n');
-        $this->addSql('CREATE TABLE i18n (id INTEGER NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, identifier VARCHAR(200) NOT NULL, content CLOB NOT NULL COLLATE BINARY --(DC2Type:json_array)
+        $this->addSql('CREATE TABLE i18n (id INTEGER NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, identifier VARCHAR(200) NOT NULL, content CLOB NOT NULL COLLATE BINARY --
+(DC2Type:json_array)
         , PRIMARY KEY(id))');
         $this->addSql('INSERT INTO i18n (id, created, modified, identifier, content) SELECT id, created, modified, identifier, content FROM __temp__i18n');
         $this->addSql('DROP TABLE __temp__i18n');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_FF561896772E836A ON i18n (identifier)');
         $this->addSql('CREATE TEMPORARY TABLE __temp__job AS SELECT id, created, modified, status, output, done, started, progress, arguments, username, service, command FROM job');
         $this->addSql('DROP TABLE job');
-        $this->addSql('CREATE TABLE job (id INTEGER NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, status CLOB DEFAULT NULL, output CLOB DEFAULT NULL, done BOOLEAN NOT NULL, started BOOLEAN NOT NULL, progress INTEGER NOT NULL, username VARCHAR(255) DEFAULT NULL, service VARCHAR(255) DEFAULT NULL, command VARCHAR(255) DEFAULT NULL, arguments CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:json_array)
+        $this->addSql('CREATE TABLE job (id INTEGER NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, status CLOB DEFAULT NULL, output CLOB DEFAULT NULL, done BOOLEAN NOT NULL, started BOOLEAN NOT NULL, progress INTEGER NOT NULL, username VARCHAR(255) DEFAULT NULL, service VARCHAR(255) DEFAULT NULL, command VARCHAR(255) DEFAULT NULL, arguments CLOB DEFAULT NULL COLLATE BINARY --
+(DC2Type:json_array)
         , PRIMARY KEY(id))');
         $this->addSql('INSERT INTO job (id, created, modified, status, output, done, started, progress, arguments, username, service, command) SELECT id, created, modified, status, output, done, started, progress, arguments, username, service, command FROM __temp__job');
         $this->addSql('DROP TABLE __temp__job');
@@ -306,9 +313,12 @@ final class Version20181030113315 extends AbstractMigration
         $this->addSql('DROP INDEX tuple_index');
         $this->addSql('CREATE TEMPORARY TABLE __temp__revision AS SELECT id, content_type_id, created, modified, auto_save_at, deleted, version, ouuid, start_time, end_time, draft, finalized_by, finalized_date, deleted_by, lock_by, auto_save_by, lock_until, raw_data, auto_save, circles, labelField, sha1 FROM revision');
         $this->addSql('DROP TABLE revision');
-        $this->addSql('CREATE TABLE revision (id INTEGER NOT NULL, content_type_id BIGINT DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, auto_save_at DATETIME DEFAULT NULL, deleted BOOLEAN NOT NULL, version INTEGER DEFAULT 1 NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME DEFAULT NULL, draft BOOLEAN NOT NULL, finalized_by VARCHAR(255) DEFAULT NULL, finalized_date DATETIME DEFAULT NULL, deleted_by VARCHAR(255) DEFAULT NULL, lock_by VARCHAR(255) DEFAULT NULL, auto_save_by VARCHAR(255) DEFAULT NULL, lock_until DATETIME DEFAULT NULL, labelField CLOB DEFAULT NULL, sha1 VARCHAR(255) DEFAULT NULL, ouuid VARCHAR(255) DEFAULT NULL COLLATE BINARY, raw_data CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:json_array)
-        , auto_save CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:json_array)
-        , circles CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:simple_array)
+        $this->addSql('CREATE TABLE revision (id INTEGER NOT NULL, content_type_id BIGINT DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, auto_save_at DATETIME DEFAULT NULL, deleted BOOLEAN NOT NULL, version INTEGER DEFAULT 1 NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME DEFAULT NULL, draft BOOLEAN NOT NULL, finalized_by VARCHAR(255) DEFAULT NULL, finalized_date DATETIME DEFAULT NULL, deleted_by VARCHAR(255) DEFAULT NULL, lock_by VARCHAR(255) DEFAULT NULL, auto_save_by VARCHAR(255) DEFAULT NULL, lock_until DATETIME DEFAULT NULL, labelField CLOB DEFAULT NULL, sha1 VARCHAR(255) DEFAULT NULL, ouuid VARCHAR(255) DEFAULT NULL COLLATE BINARY, raw_data CLOB DEFAULT NULL COLLATE BINARY --
+(DC2Type:json_array)
+        , auto_save CLOB DEFAULT NULL COLLATE BINARY --
+(DC2Type:json_array)
+        , circles CLOB DEFAULT NULL COLLATE BINARY --
+(DC2Type:simple_array)
         , PRIMARY KEY(id))');
         $this->addSql('INSERT INTO revision (id, content_type_id, created, modified, auto_save_at, deleted, version, ouuid, start_time, end_time, draft, finalized_by, finalized_date, deleted_by, lock_by, auto_save_by, lock_until, raw_data, auto_save, circles, labelField, sha1) SELECT id, content_type_id, created, modified, auto_save_at, deleted, version, ouuid, start_time, end_time, draft, finalized_by, finalized_date, deleted_by, lock_by, auto_save_by, lock_until, raw_data, auto_save, circles, labelField, sha1 FROM __temp__revision');
         $this->addSql('DROP TABLE __temp__revision');
@@ -317,8 +327,10 @@ final class Version20181030113315 extends AbstractMigration
         $this->addSql('DROP INDEX UNIQ_B4F0DBA71A445520');
         $this->addSql('CREATE TEMPORARY TABLE __temp__search AS SELECT id, content_type_id, username, environments, contentTypes, name, default_search, sort_by, sort_order FROM search');
         $this->addSql('DROP TABLE search');
-        $this->addSql('CREATE TABLE search (id INTEGER NOT NULL, content_type_id BIGINT DEFAULT NULL, username VARCHAR(100) NOT NULL, contentTypes CLOB NOT NULL COLLATE BINARY --(DC2Type:json_array)
-        , name VARCHAR(100) NOT NULL, default_search BOOLEAN DEFAULT \'0\' NOT NULL, sort_by VARCHAR(100) DEFAULT NULL, sort_order VARCHAR(100) DEFAULT NULL, environments CLOB NOT NULL COLLATE BINARY --(DC2Type:json_array)
+        $this->addSql('CREATE TABLE search (id INTEGER NOT NULL, content_type_id BIGINT DEFAULT NULL, username VARCHAR(100) NOT NULL, contentTypes CLOB NOT NULL COLLATE BINARY --
+(DC2Type:json_array)
+        , name VARCHAR(100) NOT NULL, default_search BOOLEAN DEFAULT \'0\' NOT NULL, sort_by VARCHAR(100) DEFAULT NULL, sort_order VARCHAR(100) DEFAULT NULL, environments CLOB NOT NULL COLLATE BINARY --
+(DC2Type:json_array)
         , PRIMARY KEY(id))');
         $this->addSql('INSERT INTO search (id, content_type_id, username, environments, contentTypes, name, default_search, sort_by, sort_order) SELECT id, content_type_id, username, environments, contentTypes, name, default_search, sort_by, sort_order FROM __temp__search');
         $this->addSql('DROP TABLE __temp__search');
@@ -342,7 +354,8 @@ final class Version20181030113315 extends AbstractMigration
         $this->addSql('DROP INDEX IDX_97601F831A445520');
         $this->addSql('CREATE TEMPORARY TABLE __temp__template AS SELECT id, content_type_id, created, modified, name, icon, body, header, edit_with_wysiwyg, render_option, orderKey, accumulate_in_one_file, preview, mime_type, filename, extension, active, role, role_to, role_cc, circles_to, response_template, email_content_type, allow_origin, disposition, orientation, size, public FROM template');
         $this->addSql('DROP TABLE template');
-        $this->addSql('CREATE TABLE template (id INTEGER NOT NULL, content_type_id BIGINT DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, icon VARCHAR(255) DEFAULT NULL, body CLOB DEFAULT NULL, header CLOB DEFAULT NULL, edit_with_wysiwyg BOOLEAN NOT NULL, render_option VARCHAR(255) NOT NULL, orderKey INTEGER NOT NULL, accumulate_in_one_file BOOLEAN NOT NULL, preview BOOLEAN NOT NULL, mime_type VARCHAR(255) DEFAULT NULL, filename CLOB DEFAULT NULL, extension VARCHAR(255) DEFAULT NULL, active BOOLEAN NOT NULL, role VARCHAR(255) NOT NULL, role_to VARCHAR(255) NOT NULL, role_cc VARCHAR(255) NOT NULL, response_template CLOB DEFAULT NULL, email_content_type VARCHAR(255) DEFAULT NULL, allow_origin VARCHAR(255) DEFAULT NULL, disposition VARCHAR(20) DEFAULT NULL, orientation VARCHAR(20) DEFAULT NULL, size VARCHAR(20) DEFAULT NULL, public BOOLEAN DEFAULT \'0\' NOT NULL, circles_to CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:json_array)
+        $this->addSql('CREATE TABLE template (id INTEGER NOT NULL, content_type_id BIGINT DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, icon VARCHAR(255) DEFAULT NULL, body CLOB DEFAULT NULL, header CLOB DEFAULT NULL, edit_with_wysiwyg BOOLEAN NOT NULL, render_option VARCHAR(255) NOT NULL, orderKey INTEGER NOT NULL, accumulate_in_one_file BOOLEAN NOT NULL, preview BOOLEAN NOT NULL, mime_type VARCHAR(255) DEFAULT NULL, filename CLOB DEFAULT NULL, extension VARCHAR(255) DEFAULT NULL, active BOOLEAN NOT NULL, role VARCHAR(255) NOT NULL, role_to VARCHAR(255) NOT NULL, role_cc VARCHAR(255) NOT NULL, response_template CLOB DEFAULT NULL, email_content_type VARCHAR(255) DEFAULT NULL, allow_origin VARCHAR(255) DEFAULT NULL, disposition VARCHAR(20) DEFAULT NULL, orientation VARCHAR(20) DEFAULT NULL, size VARCHAR(20) DEFAULT NULL, public BOOLEAN DEFAULT \'0\' NOT NULL, circles_to CLOB DEFAULT NULL COLLATE BINARY --
+(DC2Type:json_array)
         , PRIMARY KEY(id))');
         $this->addSql('INSERT INTO template (id, content_type_id, created, modified, name, icon, body, header, edit_with_wysiwyg, render_option, orderKey, accumulate_in_one_file, preview, mime_type, filename, extension, active, role, role_to, role_cc, circles_to, response_template, email_content_type, allow_origin, disposition, orientation, size, public) SELECT id, content_type_id, created, modified, name, icon, body, header, edit_with_wysiwyg, render_option, orderKey, accumulate_in_one_file, preview, mime_type, filename, extension, active, role, role_to, role_cc, circles_to, response_template, email_content_type, allow_origin, disposition, orientation, size, public FROM __temp__template');
         $this->addSql('DROP TABLE __temp__template');
@@ -353,8 +366,10 @@ final class Version20181030113315 extends AbstractMigration
         $this->addSql('DROP INDEX IDX_8D93D649A282F7EA');
         $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, wysiwyg_profile_id, username, username_canonical, email, email_canonical, enabled, salt, password, last_login, confirmation_token, password_requested_at, roles, created, modified, circles, display_name, allowed_to_configure_wysiwyg, wysiwyg_options, layout_boxed, email_notification, sidebar_mini, sidebar_collapse FROM "user"');
         $this->addSql('DROP TABLE "user"');
-        $this->addSql('CREATE TABLE "user" (id INTEGER NOT NULL, wysiwyg_profile_id INTEGER DEFAULT NULL, username VARCHAR(180) NOT NULL, username_canonical VARCHAR(180) NOT NULL, email VARCHAR(180) NOT NULL, email_canonical VARCHAR(180) NOT NULL, enabled BOOLEAN NOT NULL, salt VARCHAR(255) DEFAULT NULL, password VARCHAR(255) NOT NULL, last_login DATETIME DEFAULT NULL, confirmation_token VARCHAR(180) DEFAULT NULL, password_requested_at DATETIME DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, display_name VARCHAR(255) DEFAULT NULL, allowed_to_configure_wysiwyg BOOLEAN DEFAULT NULL, wysiwyg_options CLOB DEFAULT NULL, layout_boxed BOOLEAN NOT NULL, email_notification BOOLEAN NOT NULL, sidebar_mini BOOLEAN NOT NULL, sidebar_collapse BOOLEAN NOT NULL, roles CLOB NOT NULL COLLATE BINARY --(DC2Type:array)
-        , circles CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:json_array)
+        $this->addSql('CREATE TABLE "user" (id INTEGER NOT NULL, wysiwyg_profile_id INTEGER DEFAULT NULL, username VARCHAR(180) NOT NULL, username_canonical VARCHAR(180) NOT NULL, email VARCHAR(180) NOT NULL, email_canonical VARCHAR(180) NOT NULL, enabled BOOLEAN NOT NULL, salt VARCHAR(255) DEFAULT NULL, password VARCHAR(255) NOT NULL, last_login DATETIME DEFAULT NULL, confirmation_token VARCHAR(180) DEFAULT NULL, password_requested_at DATETIME DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, display_name VARCHAR(255) DEFAULT NULL, allowed_to_configure_wysiwyg BOOLEAN DEFAULT NULL, wysiwyg_options CLOB DEFAULT NULL, layout_boxed BOOLEAN NOT NULL, email_notification BOOLEAN NOT NULL, sidebar_mini BOOLEAN NOT NULL, sidebar_collapse BOOLEAN NOT NULL, roles CLOB NOT NULL COLLATE BINARY --
+(DC2Type:array)
+        , circles CLOB DEFAULT NULL COLLATE BINARY --
+(DC2Type:json_array)
         , PRIMARY KEY(id))');
         $this->addSql('INSERT INTO "user" (id, wysiwyg_profile_id, username, username_canonical, email, email_canonical, enabled, salt, password, last_login, confirmation_token, password_requested_at, roles, created, modified, circles, display_name, allowed_to_configure_wysiwyg, wysiwyg_options, layout_boxed, email_notification, sidebar_mini, sidebar_collapse) SELECT id, wysiwyg_profile_id, username, username_canonical, email, email_canonical, enabled, salt, password, last_login, confirmation_token, password_requested_at, roles, created, modified, circles, display_name, allowed_to_configure_wysiwyg, wysiwyg_options, layout_boxed, email_notification, sidebar_mini, sidebar_collapse FROM __temp__user');
         $this->addSql('DROP TABLE __temp__user');
@@ -365,7 +380,8 @@ final class Version20181030113315 extends AbstractMigration
         $this->addSql('DROP INDEX IDX_FEFDAB8E1A445520');
         $this->addSql('CREATE TEMPORARY TABLE __temp__view AS SELECT id, content_type_id, created, modified, name, type, icon, options, orderKey, public FROM "view"');
         $this->addSql('DROP TABLE "view"');
-        $this->addSql('CREATE TABLE "view" (id INTEGER NOT NULL, content_type_id BIGINT DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, icon VARCHAR(255) DEFAULT NULL, orderKey INTEGER NOT NULL, public BOOLEAN DEFAULT \'0\' NOT NULL, options CLOB DEFAULT NULL COLLATE BINARY --(DC2Type:json_array)
+        $this->addSql('CREATE TABLE "view" (id INTEGER NOT NULL, content_type_id BIGINT DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, icon VARCHAR(255) DEFAULT NULL, orderKey INTEGER NOT NULL, public BOOLEAN DEFAULT \'0\' NOT NULL, options CLOB DEFAULT NULL COLLATE BINARY --
+(DC2Type:json_array)
         , PRIMARY KEY(id))');
         $this->addSql('INSERT INTO "view" (id, content_type_id, created, modified, name, type, icon, options, orderKey, public) SELECT id, content_type_id, created, modified, name, type, icon, options, orderKey, public FROM __temp__view');
         $this->addSql('DROP TABLE __temp__view');

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
@@ -99,7 +100,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
      *
      * @ORM\Column(name="circles", type="json", nullable=true)
      */
-    protected array $circles;
+    protected ?array $circles = null;
 
     /**
      * @var bool
@@ -134,22 +135,16 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
      */
     protected bool $updateReferrers = false;
 
-    /**
-     * Constructor.
-     */
     public function __construct()
     {
-        $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->contentTypesHavingThisAsDefault = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->revisions = new ArrayCollection();
+        $this->contentTypesHavingThisAsDefault = new ArrayCollection();
 
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
     }
 
-    /**
-     * ToString.
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name;
     }
@@ -406,7 +401,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
      */
     public function getCircles(): array
     {
-        return $this->circles;
+        return $this->circles ?? [];
     }
 
     /**

@@ -16,7 +16,7 @@ Generate an email and use [emsco_send_email](#emsco_send_email) for sending the 
 {% endset %}
 
 {% set email = emsco_generate_email('test title') %}
-{% do email.to('d.mattei89@gmail.com').html(mailBody|format) %}
+{% do email.to('test@example.com').html(mailBody|format) %}
 {% do emsco_send_email(email) %}
 ```
 
@@ -26,6 +26,6 @@ Default value for from is `ems_core.from_email` and `%ems_core.name%` parameter.
 
 ```twig
 {% set email = emsco_generate_email('example send') %}
-{% do email.to('doc@elasticms.eu').text('Body text') %}
+{% do email.to('test@example.com').text('Body text') %}
 {% do emsco_send_email(email) %}
 ```

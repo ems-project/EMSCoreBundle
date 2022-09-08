@@ -315,8 +315,7 @@
   <footer class="main-footer no-print">
     <!-- To the right -->
     <div class="pull-right">
-        {{ 'Core %version%'|trans({'%version%': ems_version('core') }) }}
-      	{{ 'with Symfony %version%'|trans({'%version%': ems_version('symfony') }) }}
+        {{ 'core.version'|trans({ '%core%': ems_version('core'), '%symfony%': ems_version('symfony') }, 'emsco-core') }}
     </div>
     <!-- Default to the left -->
     <a href="http://www.elasticms.eu/">elastic<b>ms</b></a>

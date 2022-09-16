@@ -47,7 +47,7 @@ class RenderOptionType extends ChoiceType
             'empty_data' => '',
             'placeholder' => null,
             'error_bubbling' => false,
-            'compound' => true,
+            'compound' => false,
             // The view data is always a string, even if the "data" option
             // is manually set to an object.
             // See https://github.com/symfony/symfony/pull/5582

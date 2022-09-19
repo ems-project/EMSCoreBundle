@@ -121,11 +121,6 @@ class TemplateType extends AbstractType
         ])
          ->add('roleCc', RolePickerType::class)
         ->add('roleTo', RolePickerType::class)
-        ->add('circlesTo', ObjectPickerType::class, [
-                'required' => false,
-                'type' => $this->circleType,
-                'multiple' => true,
-        ])
         ->add('responseTemplate', CodeEditorType::class, [
             'required' => false,
             'attr' => [
@@ -163,6 +158,14 @@ class TemplateType extends AbstractType
             ],
             'icon' => 'fa fa-save',
         ]);
+
+        if ('' !== $this->circleType) {
+            $builder->add('circlesTo', ObjectPickerType::class, [
+                'required' => false,
+                'type' => $this->circleType,
+                'multiple' => true,
+            ]);
+        }
 
         if ($options['ajax-save-url']) {
             $builder->add('save', SubmitEmsType::class, [

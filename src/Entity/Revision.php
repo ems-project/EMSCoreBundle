@@ -181,7 +181,7 @@ class Revision implements EntityInterface
     private ?string $sha1 = null;
 
     /**not persisted field to ensure that they are all there after a submit */
-    private bool $allFieldsAreThere = false;
+    private ?bool $allFieldsAreThere = false;
 
     /**
      * @var UuidInterface|null
@@ -390,12 +390,12 @@ class Revision implements EntityInterface
         $this->removeEnvironment($this->giveContentType()->giveEnvironment());
     }
 
-    public function getAllFieldsAreThere(): bool
+    public function getAllFieldsAreThere(): ?bool
     {
         return $this->allFieldsAreThere;
     }
 
-    public function setAllFieldsAreThere(bool $allFieldsAreThere): self
+    public function setAllFieldsAreThere(?bool $allFieldsAreThere): self
     {
         $this->allFieldsAreThere = $allFieldsAreThere;
 

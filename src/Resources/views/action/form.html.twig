@@ -42,7 +42,7 @@
                         {{ form_row(form.roleTo) }}
                         {{ form_row(form.roleCc) }}
                         {{ form_row(form.emailContentType) }}
-                        {{ form_row(form.circlesTo) }}
+                        {% if form.circlesTo is defined %} {{ form_row(form.circlesTo) }}{% endif %}
                         {{ form_row(form.responseTemplate) }}
                     </div>
                     <div class="pdf">

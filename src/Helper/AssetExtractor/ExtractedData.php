@@ -12,7 +12,7 @@ class ExtractedData
     /**
      * @param array<string, mixed> $source
      */
-    private function __construct(array $source)
+    public function __construct(array $source)
     {
         $this->source = $source;
     }
@@ -34,6 +34,11 @@ class ExtractedData
         }
 
         return null;
+    }
+
+    public function setLocale(string $locale): void
+    {
+        $this->source['language'] = $locale;
     }
 
     public function getCreated(): ?\DateTimeImmutable
@@ -66,9 +71,19 @@ class ExtractedData
         return \strval($this->source['title'] ?? $this->source['dc:title'] ?? '');
     }
 
+    public function hasContent(): bool
+    {
+        return isset($this->source['content']);
+    }
+
     public function getContent(): string
     {
         return \strval($this->source['content'] ?? '');
+    }
+
+    public function setContent(string $content): void
+    {
+        $this->source['content'] = $content;
     }
 
     /**

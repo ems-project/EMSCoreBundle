@@ -90,8 +90,8 @@ class AssetExtractorService implements CacheWarmerInterface
             $result = $client->get(self::HELLO_EP);
 
             return [
-                    'code' => $result->getStatusCode(),
-                    'content' => $result->getBody()->__toString(),
+                'code' => $result->getStatusCode(),
+                'content' => $result->getBody()->__toString(),
             ];
         } else {
             $temporaryName = \tempnam(\sys_get_temp_dir(), 'TikaWrapperTest');
@@ -158,18 +158,18 @@ class AssetExtractorService implements CacheWarmerInterface
                 $client = $this->rest->getClient($this->tikaServer, $forced ? 900 : 30);
                 $body = \file_get_contents($file);
                 $result = $client->put(self::META_EP, [
-                        'body' => $body,
-                        'headers' => [
-                            'Accept' => 'application/json',
-                        ],
+                    'body' => $body,
+                    'headers' => [
+                        'Accept' => 'application/json',
+                    ],
                 ]);
                 $out = ExtractedData::fromJsonString($result->getBody()->__toString());
 
                 $result = $client->put(self::CONTENT_EP, [
-                        'body' => $body,
-                        'headers' => [
-                                'Accept' => 'text/plain',
-                        ],
+                    'body' => $body,
+                    'headers' => [
+                        'Accept' => 'text/plain',
+                    ],
                 ]);
                 $out->setContent($result->getBody()->__toString());
             } catch (Exception $e) {

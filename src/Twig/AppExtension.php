@@ -204,6 +204,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('emsco_log_notice', [CoreRuntime::class, 'logNotice']),
             new TwigFilter('emsco_log_warning', [CoreRuntime::class, 'logWarning']),
             new TwigFilter('emsco_log_error', [CoreRuntime::class, 'logError']),
+            new TwigFilter('emsco_guess_locale', [DataExtractorRuntime::class, 'guessLocale']),
             // deprecated
             new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
             new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),

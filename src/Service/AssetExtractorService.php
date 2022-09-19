@@ -9,6 +9,7 @@ use EMS\CommonBundle\Common\Converter;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Entity\CacheAssetExtractor;
+use EMS\CoreBundle\Helper\AssetExtractor\ExtractedData;
 use EMS\CoreBundle\Tika\TikaWrapper;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -172,7 +173,7 @@ class AssetExtractorService implements CacheWarmerInterface
             }
         } else {
             try {
-                $out = AssetExtractorService::convertMetaToArray($this->getTikaWrapper()->getMetadata($file));
+                $out = ExtractedData::fromMetaString($this->getTikaWrapper()->getMetadata($file))->getSource();
                 if (!isset($out['content'])) {
                     $text = $this->getTikaWrapper()->getText($file);
                     if (!\mb_check_encoding($text)) {
@@ -227,33 +228,6 @@ class AssetExtractorService implements CacheWarmerInterface
         return \preg_replace('/\n|\r/', '', $string) ?? '';
     }
 
-    /**
-     * @return array<string, string>
-     */
-    private static function convertMetaToArray(string $data): array
-    {
-        if (!\mb_check_encoding($data)) {
-            $data = \mb_convert_encoding($data, \mb_internal_encoding(), 'ASCII');
-        }
-        $cleaned = \preg_replace("/\r/", '', $data);
-        if (null === $cleaned) {
-            throw new \RuntimeException('It was possible to parse meta information');
-        }
-        $matches = [];
-        \preg_match_all(
-            '/^(.*): (.*)$/m',
-            $cleaned,
-            $matches,
-            PREG_PATTERN_ORDER
-        );
-        $metaArray = \array_combine($matches[1], $matches[2]);
-        if (false === $metaArray) {
-            return [];
-        }
-
-        return $metaArray;
-    }
-
     public function isOptional(): bool
     {
         return false;
@@ -266,5 +240,30 @@ class AssetExtractorService implements CacheWarmerInterface
         }
 
         return [];
+    }
+
+    public function getMetaFromText(string $text): ExtractedData
+    {
+        if (!empty($this->tikaServer)) {
+            $client = $this->rest->getClient($this->tikaServer, 15);
+            $result = $client->put(self::META_EP, [
+                'body' => $text,
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
+            ]);
+            $meta = ExtractedData::fromJsonString($result->getBody()->__toString());
+        } else {
+            $filename = \tempnam(\sys_get_temp_dir(), 'guess_locale');
+            if (false === $filename) {
+                throw new \RuntimeException('Unexpected false temporary filename');
+            }
+            if (false === \file_put_contents($filename, $text)) {
+                throw new \RuntimeException('Unexpected false result on file_put_contents');
+            }
+            $meta = ExtractedData::fromMetaString($this->getTikaWrapper()->getMetadata($filename));
+        }
+
+        return $meta;
     }
 }

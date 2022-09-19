@@ -27,7 +27,7 @@ class ExtractedData
             ->setAllowedTypes(self::FIELD_LANGUAGE, ['string', 'null'])
         ;
 
-        /** @var array{language: null|string} $resolverOptions */
+        /** @var array{language: string|null} $resolverOptions */
         $resolverOptions = $optionsResolver->resolve($source);
 
         $this->locale = $resolverOptions[self::FIELD_LANGUAGE];

@@ -85,6 +85,7 @@ class DocumentService
         $newRevision->setRawData($rawData);
         $newRevision->setCreated($options['creation_date'] ?? $newRevision->getCreated());
         $newRevision->setStartTime($options['start_time'] ?? $newRevision->getStartTime());
+        $newRevision->setVersionMetaFields();
 
         $currentRevision = $this->revisionRepository->getCurrentRevision($documentImportContext->getContentType(), $ouuid);
 

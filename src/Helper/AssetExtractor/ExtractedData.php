@@ -3,12 +3,9 @@
 namespace EMS\CoreBundle\Helper\AssetExtractor;
 
 use EMS\CommonBundle\Common\Standard\Json;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ExtractedData
 {
-    protected const FIELD_LANGUAGE = 'language';
-    private ?string $locale;
     /** @var mixed[] */
     private array $source;
 
@@ -18,19 +15,6 @@ class ExtractedData
     private function __construct(array $source)
     {
         $this->source = $source;
-        $optionsResolver = new OptionsResolver();
-        $optionsResolver->setDefined(\array_keys($source));
-        $optionsResolver
-            ->setDefaults([
-                self::FIELD_LANGUAGE => null,
-            ])
-            ->setAllowedTypes(self::FIELD_LANGUAGE, ['string', 'null'])
-        ;
-
-        /** @var array{language: null|string} $resolverOptions */
-        $resolverOptions = $optionsResolver->resolve($source);
-
-        $this->locale = $resolverOptions[self::FIELD_LANGUAGE];
     }
 
     public static function fromJsonString(string $json): self
@@ -45,7 +29,46 @@ class ExtractedData
 
     public function getLocale(): ?string
     {
-        return $this->locale;
+        if (isset($this->source['language'])) {
+            return \strval($this->source['language']);
+        }
+
+        return null;
+    }
+
+    public function getCreated(): ?\DateTimeImmutable
+    {
+        return $this->parseDate($this->source['created'] ?? $this->source['dcterms:created'] ?? '');
+    }
+
+    public function getModified(): ?\DateTimeImmutable
+    {
+        return $this->parseDate($this->source['modified'] ?? $this->source['dcterms:modified'] ?? '');
+    }
+
+    private function parseDate(string $date): ?\DateTimeImmutable
+    {
+        $parseDate = \strtotime($date);
+        if (false === $parseDate) {
+            return null;
+        }
+
+        return (new \DateTimeImmutable())->setTimestamp($parseDate);
+    }
+
+    public function getAuthor(): string
+    {
+        return \strval($this->source['author'] ?? $this->source['dc:creator'] ?? '');
+    }
+
+    public function getTitle(): string
+    {
+        return \strval($this->source['title'] ?? $this->source['dc:title'] ?? '');
+    }
+
+    public function getContent(): string
+    {
+        return \strval($this->source['content'] ?? '');
     }
 
     /**

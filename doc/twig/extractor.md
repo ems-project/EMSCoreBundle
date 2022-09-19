@@ -7,7 +7,7 @@ This filter returns you a [ExtractedData](../../src/Helper/AssetExtractor/Extrac
 {{ meta.locale }}
 ```
 
-You can also specify a filename and bypass the tika's cache:
+You can also specify a filename and bypass the 3MB protection:
 
 
 ```twig

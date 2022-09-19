@@ -32,5 +32,10 @@
             <tag name="twig.runtime" />
         </service>
 
+        <service id="ems.twig.runtime.i18n" class="EMS\CoreBundle\Twig\DataExtractorRuntime">
+            <argument type="service" id="ems.service.asset_extractor"/>
+            <tag name="twig.runtime" />
+        </service>
+
     </services>
 </container>

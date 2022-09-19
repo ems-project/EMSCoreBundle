@@ -7,9 +7,17 @@ This filter returns you a [ExtractedData](../../src/Helper/AssetExtractor/Extrac
 {{ meta.locale }}
 ```
 
+You can also specify a filename and bypass the tika's cache:
+
+
+```twig
+{% set meta = source.file.sha1|emsco_asset_meta('raport.pdf', true) %}
+{{ meta.locale }}
+```
+
 #emsco_guess_locale
 
-This filter returns you the text's locale guessed by Tika:
+This filter returns you a text's locale guessed by Tika:
 
 ```twig
 {{ 'Hello comment allez-vous?'|emsco_guess_locale }}

@@ -15,19 +15,6 @@ class ExtractedData
     public function __construct(array $source)
     {
         $this->source = $source;
-        $optionsResolver = new OptionsResolver();
-        $optionsResolver->setDefined(\array_keys($source));
-        $optionsResolver
-            ->setDefaults([
-                self::FIELD_LANGUAGE => null,
-            ])
-            ->setAllowedTypes(self::FIELD_LANGUAGE, ['string', 'null'])
-        ;
-
-        /** @var array{language: null|string} $resolverOptions */
-        $resolverOptions = $optionsResolver->resolve($source);
-
-        $this->locale = $resolverOptions[self::FIELD_LANGUAGE];
     }
 
     public static function fromJsonString(string $json): self

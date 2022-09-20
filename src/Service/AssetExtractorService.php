@@ -122,7 +122,7 @@ class AssetExtractorService implements CacheWarmerInterface
         ]);
 
         if ($cacheData instanceof CacheAssetExtractor) {
-            return new ExtractedData($cacheData->getData());
+            return new ExtractedData($cacheData->getData() ?? []);
         }
 
         if ((null === $file) || !\file_exists($file)) {
@@ -184,7 +184,7 @@ class AssetExtractorService implements CacheWarmerInterface
                         $text = \mb_convert_encoding($text, \mb_internal_encoding(), 'ASCII');
                     }
                     $text = \preg_replace('/(\n)(\s*\n)+/', '${1}', $text);
-                    $out->setContent($text);
+                    $out->setContent($text ?? '');
                 }
                 if (!empty($out->getLocale())) {
                     $out->setLocale(AssetExtractorService::cleanString($this->getTikaWrapper()->getLanguage($file)));
@@ -200,7 +200,7 @@ class AssetExtractorService implements CacheWarmerInterface
             }
         }
 
-        if ($canBePersisted) {
+        if ($canBePersisted && isset($out)) {
             try {
                 $cacheData = new CacheAssetExtractor();
                 $cacheData->setHash($hash);
@@ -217,7 +217,7 @@ class AssetExtractorService implements CacheWarmerInterface
             }
         }
 
-        return $out;
+        return $out ?? new ExtractedData([]);
     }
 
     private static function cleanString(string $string): string

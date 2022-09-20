@@ -3,19 +3,16 @@
 namespace EMS\CoreBundle\Helper\AssetExtractor;
 
 use EMS\CommonBundle\Common\Standard\Json;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ExtractedData
 {
-    protected const FIELD_LANGUAGE = 'language';
-    private ?string $locale;
     /** @var mixed[] */
     private array $source;
 
     /**
      * @param array<string, mixed> $source
      */
-    private function __construct(array $source)
+    public function __construct(array $source)
     {
         $this->source = $source;
         $optionsResolver = new OptionsResolver();
@@ -27,7 +24,7 @@ class ExtractedData
             ->setAllowedTypes(self::FIELD_LANGUAGE, ['string', 'null'])
         ;
 
-        /** @var array{language: string|null} $resolverOptions */
+        /** @var array{language: null|string} $resolverOptions */
         $resolverOptions = $optionsResolver->resolve($source);
 
         $this->locale = $resolverOptions[self::FIELD_LANGUAGE];
@@ -45,7 +42,61 @@ class ExtractedData
 
     public function getLocale(): ?string
     {
-        return $this->locale;
+        if (isset($this->source['language'])) {
+            return \strval($this->source['language']);
+        }
+
+        return null;
+    }
+
+    public function setLocale(string $locale): void
+    {
+        $this->source['language'] = $locale;
+    }
+
+    public function getCreated(): ?\DateTimeImmutable
+    {
+        return $this->parseDate($this->source['created'] ?? $this->source['dcterms:created'] ?? '');
+    }
+
+    public function getModified(): ?\DateTimeImmutable
+    {
+        return $this->parseDate($this->source['modified'] ?? $this->source['dcterms:modified'] ?? '');
+    }
+
+    private function parseDate(string $date): ?\DateTimeImmutable
+    {
+        $parseDate = \strtotime($date);
+        if (false === $parseDate) {
+            return null;
+        }
+
+        return (new \DateTimeImmutable())->setTimestamp($parseDate);
+    }
+
+    public function getAuthor(): string
+    {
+        return \strval($this->source['author'] ?? $this->source['dc:creator'] ?? '');
+    }
+
+    public function getTitle(): string
+    {
+        return \strval($this->source['title'] ?? $this->source['dc:title'] ?? '');
+    }
+
+    public function hasContent(): bool
+    {
+        return isset($this->source['content']);
+    }
+
+    public function getContent(): string
+    {
+        return \strval($this->source['content'] ?? '');
+    }
+
+    public function setContent(string $content): void
+    {
+        $this->source['content'] = $content;
     }
 
     /**

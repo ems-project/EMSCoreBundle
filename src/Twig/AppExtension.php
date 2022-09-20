@@ -205,6 +205,8 @@ class AppExtension extends AbstractExtension
             new TwigFilter('emsco_log_notice', [CoreRuntime::class, 'logNotice']),
             new TwigFilter('emsco_log_warning', [CoreRuntime::class, 'logWarning']),
             new TwigFilter('emsco_log_error', [CoreRuntime::class, 'logError']),
+            new TwigFilter('emsco_guess_locale', [DataExtractorRuntime::class, 'guessLocale']),
+            new TwigFilter('emsco_asset_meta', [DataExtractorRuntime::class, 'assetMeta']),
             //deprecated
             new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
             new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),
@@ -780,8 +782,11 @@ class AppExtension extends AbstractExtension
         return $this->userService->getUser($username);
     }
 
-    public function displayName(string $username): string
+    public function displayName(?string $username): string
     {
+        if (null === $username || '' === $username) {
+            return 'N/A';
+        }
         /** @var UserInterface $user */
         $user = $this->userService->getUser($username);
         if (!empty($user)) {

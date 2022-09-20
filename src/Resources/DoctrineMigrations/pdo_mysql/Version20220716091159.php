@@ -16,10 +16,10 @@ final class Version20220716091159 extends AbstractMigration
 
         $this->addSql('ALTER TABLE template ADD label VARCHAR(255)');
         $this->addSql('UPDATE template SET label=name');
-        $this->addSql('ALTER TABLE template ALTER label SET NOT NULL');
+        $this->addSql('ALTER TABLE template MODIFY label VARCHAR(255) NOT NULL');
         $this->addSql('ALTER TABLE view ADD label VARCHAR(255)');
         $this->addSql('UPDATE view SET label=name');
-        $this->addSql('ALTER TABLE view ALTER label SET NOT NULL');
+        $this->addSql('ALTER TABLE view MODIFY label VARCHAR(255) NOT NULL');
 
         $this->webalizeName('view');
         $this->webalizeName('template');

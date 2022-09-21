@@ -11,7 +11,10 @@ class Version20160531151108 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('mysql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE user ADD circles LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\'');
         $this->addSql('ALTER TABLE job ADD command VARCHAR(255) DEFAULT NULL, CHANGE service service VARCHAR(255) DEFAULT NULL');
@@ -23,7 +26,10 @@ class Version20160531151108 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('mysql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE environment_revision DROP FOREIGN KEY FK_895F7B701DFA7C8F');
         $this->addSql('ALTER TABLE environment_revision DROP FOREIGN KEY FK_895F7B70903E3A94');

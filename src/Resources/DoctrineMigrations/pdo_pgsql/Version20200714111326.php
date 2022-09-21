@@ -11,7 +11,10 @@ class Version20200714111326 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('CREATE TABLE form_submission (id UUID NOT NULL, created TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, modified TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, name VARCHAR(255) NOT NULL, instance VARCHAR(255) NOT NULL, locale VARCHAR(2) NOT NULL, data TEXT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN form_submission.id IS \'(DC2Type:uuid)\'');
@@ -24,7 +27,10 @@ class Version20200714111326 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE form_submission_file DROP CONSTRAINT FK_AEFF00A6422B0E0C');
         $this->addSql('DROP TABLE form_submission');

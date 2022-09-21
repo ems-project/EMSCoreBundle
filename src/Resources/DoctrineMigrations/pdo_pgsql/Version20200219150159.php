@@ -11,14 +11,20 @@ class Version20200219150159 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE content_type ADD translationField VARCHAR(100) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE content_type DROP translationField');
     }

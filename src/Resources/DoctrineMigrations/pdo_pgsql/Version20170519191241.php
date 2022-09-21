@@ -11,7 +11,10 @@ class Version20170519191241 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $my_json_var = '[{"locale":"en","text":"<div class=\"box\"><div class=\"box-header with-border\"><h3 class=\"box-title\">Based on Symfony 3, Bootstrap 3 and AdminLTE</h3> </div> <div class=\"box-body\" style=\"display: block;\"><p>Visit <a href=\"http://www.elasticms.eu/\">elasticms.eu</a></p></div></div>"}]';
 
@@ -21,7 +24,10 @@ class Version20170519191241 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('DELETE FROM `i18n` WHERE `identifier` = \'ems.documentation.body\'');
         $this->addSql('DROP INDEX UNIQ_FF561896772E836A');

@@ -12,7 +12,10 @@ class Version20220716091159 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE template ADD label VARCHAR(255)');
         $this->addSql('UPDATE template SET label=name');
@@ -27,7 +30,10 @@ class Version20220716091159 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE view DROP label');
         $this->addSql('ALTER TABLE template DROP label');

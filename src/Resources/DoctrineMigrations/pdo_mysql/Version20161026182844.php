@@ -11,14 +11,20 @@ class Version20161026182844 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('mysql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE environment CHANGE in_default_search in_default_search TINYINT(1) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('mysql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE environment CHANGE in_default_search in_default_search TINYINT(1) NOT NULL');
     }

@@ -11,14 +11,20 @@ class Version20190324000605 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE uploaded_asset ALTER sha1 TYPE VARCHAR(128)');
     }
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE uploaded_asset ALTER sha1 TYPE VARCHAR(40)');
     }

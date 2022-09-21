@@ -11,7 +11,10 @@ class Version20220217151025 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE "user" ADD locale VARCHAR(255) DEFAULT \'en\' NOT NULL');
         $this->addSql('ALTER TABLE "user" ADD locale_preferred VARCHAR(255) DEFAULT NULL');
@@ -19,7 +22,10 @@ class Version20220217151025 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE "user" DROP locale');
         $this->addSql('ALTER TABLE "user" DROP locale_preferred');

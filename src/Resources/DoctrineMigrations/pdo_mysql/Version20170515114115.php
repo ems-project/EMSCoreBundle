@@ -11,7 +11,10 @@ class Version20170515114115 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE search CHANGE user username VARCHAR(100) NOT NULL');
         $this->addSql('ALTER TABLE job CHANGE user username VARCHAR(255) DEFAULT NULL');
@@ -20,7 +23,10 @@ class Version20170515114115 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE job CHANGE username user VARCHAR(255) DEFAULT NULL COLLATE utf8_unicode_ci');
         $this->addSql('ALTER TABLE search CHANGE username user VARCHAR(100) NOT NULL COLLATE utf8_unicode_ci');

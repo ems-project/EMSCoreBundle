@@ -11,7 +11,10 @@ class Version20210809075429 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('CREATE TABLE task (id UUID NOT NULL, title VARCHAR(255) NOT NULL, status VARCHAR(25) NOT NULL, deadline TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, assignee TEXT NOT NULL, description TEXT NOT NULL, logs JSON NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN task.id IS \'(DC2Type:uuid)\'');
@@ -28,7 +31,10 @@ class Version20210809075429 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE revision DROP CONSTRAINT FK_6D6315CCE99931F3');
         $this->addSql('DROP TABLE task');

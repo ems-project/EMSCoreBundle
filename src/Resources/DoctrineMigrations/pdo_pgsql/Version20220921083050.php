@@ -11,6 +11,11 @@ class Version20220921083050 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
+
         $this->addSql('COMMENT ON COLUMN analyzer.options IS \'(DC2Type:json)\'');
         $this->addSql('COMMENT ON COLUMN cache_asset_extractor.data IS \'(DC2Type:json)\'');
         $this->addSql('COMMENT ON COLUMN content_type.version_tags IS \'(DC2Type:json)\'');
@@ -33,6 +38,11 @@ class Version20220921083050 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
+
         $this->addSql('COMMENT ON COLUMN analyzer.options IS \'(DC2Type:json_array)\'');
         $this->addSql('COMMENT ON COLUMN cache_asset_extractor.data IS \'(DC2Type:json_array)\'');
         $this->addSql('COMMENT ON COLUMN content_type.version_tags IS \'(DC2Type:json_array)\'');

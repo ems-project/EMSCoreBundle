@@ -11,7 +11,10 @@ class Version20200224155002 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE content_type ADD searchLinkDisplayRole VARCHAR(255) DEFAULT \'ROLE_USER\' NOT NULL');
         $this->addSql('ALTER TABLE content_type ADD createLinkDisplayRole VARCHAR(255) DEFAULT \'ROLE_USER\' NOT NULL');
@@ -19,7 +22,10 @@ class Version20200224155002 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE content_type DROP searchLinkDisplayRole');
         $this->addSql('ALTER TABLE content_type DROP createLinkDisplayRole');

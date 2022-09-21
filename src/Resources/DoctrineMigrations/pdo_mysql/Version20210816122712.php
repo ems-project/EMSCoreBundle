@@ -11,7 +11,10 @@ class Version20210816122712 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('CREATE TABLE task (id CHAR(36) NOT NULL COMMENT \'(DC2Type:uuid)\', title VARCHAR(255) NOT NULL, status VARCHAR(25) NOT NULL, deadline DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', assignee LONGTEXT NOT NULL, description LONGTEXT NOT NULL, logs JSON NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE revision ADD task_current_id CHAR(36) DEFAULT NULL COMMENT \'(DC2Type:uuid)\', ADD task_planned_ids JSON DEFAULT NULL, ADD task_approved_ids JSON DEFAULT NULL, ADD owner LONGTEXT DEFAULT NULL');
@@ -22,7 +25,10 @@ class Version20210816122712 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE revision DROP FOREIGN KEY FK_6D6315CCE99931F3');
         $this->addSql('DROP TABLE task');

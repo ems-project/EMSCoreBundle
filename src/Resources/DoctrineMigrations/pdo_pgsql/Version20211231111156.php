@@ -7,11 +7,14 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20211231111156 extends AbstractMigration
+class Version20211231111156 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('CREATE TABLE log_message (id UUID NOT NULL, created TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, modified TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, message TEXT NOT NULL, context TEXT NOT NULL, level SMALLINT NOT NULL, level_name VARCHAR(50) NOT NULL, channel VARCHAR(255) NOT NULL, extra TEXT NOT NULL, formatted TEXT NOT NULL, username VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN log_message.id IS \'(DC2Type:uuid)\'');
@@ -22,7 +25,10 @@ final class Version20211231111156 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
+        );
 
         $this->addSql('DROP TABLE log_message');
         $this->addSql('DELETE FROM schedule WHERE id = \'e0e77d35-f8b5-4bbe-a804-e513c404ab5a\'');

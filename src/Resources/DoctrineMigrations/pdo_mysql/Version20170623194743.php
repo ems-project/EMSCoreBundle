@@ -1,19 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Application\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 class Version20170623194743 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('UPDATE wysiwyg_profile SET config = \'{
 "plugins": "adv_link,uploadimage,imagebrowser,a11yhelp,basicstyles,bidi,blockquote,clipboard,colorbutton,colordialog,contextmenu,dialogadvtab,div,elementspath,enterkey,entities,filebrowser,find,floatingspace,format,horizontalrule,htmlwriter,image2,indentlist,indentblock,justify,language,list,liststyle,magicline,maximize,newpage,pastefromword,pastetext,preview,removeformat,resize,save,scayt,selectall,showborders,sourcearea,specialchar,stylescombo,tab,table,tabletools,templates,toolbar,undo,wsc,wysiwygarea",
@@ -141,8 +142,10 @@ class Version20170623194743 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('UPDATE wysiwyg_profile SET config = \'{
 "plugins": "adv_link,uploadimage,imagebrowser,a11yhelp,basicstyles,bidi,blockquote,clipboard,colorbutton,colordialog,contextmenu,dialogadvtab,div,elementspath,enterkey,entities,filebrowser,find,floatingspace,format,horizontalrule,htmlwriter,image2,indentlist,indentblock,justify,language,list,liststyle,magicline,maximize,newpage,pastefromword,pastetext,preview,removeformat,resize,save,scayt,selectall,showborders,sourcearea,specialchar,stylescombo,tab,table,tabletools,templates,toolbar,undo,wsc,wysiwygarea",

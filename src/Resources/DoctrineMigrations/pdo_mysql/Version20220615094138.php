@@ -7,11 +7,14 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20220615094138 extends AbstractMigration
+class Version20220615094138 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE log_message ADD ouuid VARCHAR(100) DEFAULT NULL, CHANGE context context LONGTEXT NOT NULL COMMENT \'(DC2Type:json)\', CHANGE extra extra LONGTEXT NOT NULL COMMENT \'(DC2Type:json)\'');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8E7008E82D7B983B ON log_message (ouuid)');

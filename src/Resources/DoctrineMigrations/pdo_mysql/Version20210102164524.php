@@ -7,14 +7,14 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
-final class Version20210102164524 extends AbstractMigration
+class Version20210102164524 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('CREATE TABLE channel (id CHAR(36) NOT NULL COMMENT \'(DC2Type:uuid)\', created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, public TINYINT(1) DEFAULT \'0\' NOT NULL, label VARCHAR(255) NOT NULL, options LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json)\', order_key INT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE job DROP arguments, DROP service');
@@ -26,7 +26,10 @@ final class Version20210102164524 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('DROP TABLE channel');
         $this->addSql('DROP INDEX UNIQ_37945A62D1B862B8 ON asset_storage');

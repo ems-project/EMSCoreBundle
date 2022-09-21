@@ -89,7 +89,7 @@ class Revision implements EntityInterface
     /**
      * @var string|null
      *
-     * @ORM\Column(name="ouuid", type="string", length=255, nullable=true, options={"collation":"utf8_bin"})
+     * @ORM\Column(name="ouuid", type="string", length=255, nullable=true)
      */
     private $ouuid;
 

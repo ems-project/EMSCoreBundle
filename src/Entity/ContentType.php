@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
@@ -402,7 +403,14 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      *
      * @ORM\Column(name="version_tags", type="json", nullable=true)
      */
-    protected $versionTags = [];
+    protected array $versionTags = [];
+
+    /**
+     * @var ?array<string, bool>
+     *
+     * @ORM\Column(name="version_options", type="json", nullable=true)
+     */
+    protected ?array $versionOptions = [];
 
     /**
      * @var string|null
@@ -1827,6 +1835,16 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->versionTags = $versionTags;
     }
 
+    public function getVersionOptions(): VersionOptions
+    {
+        return new VersionOptions($this->versionOptions ?? []);
+    }
+
+    public function setVersionOptions(VersionOptions $versionOptions): void
+    {
+        $this->versionOptions = $versionOptions->getOptions();
+    }
+
     public function getVersionDateFromField(): ?string
     {
         return $this->versionDateFromField;
@@ -1852,10 +1870,14 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      */
     public function getDisabledDataFields(): array
     {
-        return \array_filter([
-            $this->getVersionDateFromField(),
-            $this->getVersionDateToField(),
-        ]);
+        if ($this->getVersionOptions()[VersionOptions::DATES_READ_ONLY]) {
+            return \array_filter([
+                $this->getVersionDateFromField(),
+                $this->getVersionDateToField(),
+            ]);
+        }
+
+        return [];
     }
 
     public function hasOwnerRole(): bool

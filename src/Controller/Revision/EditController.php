@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Revision;
 
 use EMS\CommonBundle\Common\Standard\Json;
-use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Core\Revision\DraftInProgress;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -105,10 +104,7 @@ class EditController extends AbstractController
         }
 
         $this->dataService->lockRevision($revision);
-
-        if (null === $contentType = $revision->getContentType()) {
-            throw new NotFoundException('ContentType not found!');
-        }
+        $contentType = $revision->giveContentType();
 
         if ($revision->hasEndTime() && !$this->isGranted(Roles::ROLE_SUPER)) {
             throw new ElasticmsException($this->translator->trans('log.data.revision.only_super_can_finalize_an_archive', LogRevisionContext::read($revision), EMSCoreBundle::TRANS_DOMAIN));

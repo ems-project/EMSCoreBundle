@@ -13,6 +13,7 @@ class VersionOptions implements \ArrayAccess
     private array $options = [];
 
     public const DATES_READ_ONLY = 'dates_read_only';
+    public const DATES_INTERVAL_ONE_DAY = 'dates_interval_one_day';
     public const ASK_VERSION_TAG = 'ask_version_tag';
 
     /**
@@ -21,6 +22,7 @@ class VersionOptions implements \ArrayAccess
     public function __construct(array $data)
     {
         $this->options[self::DATES_READ_ONLY] = $data[self::DATES_READ_ONLY] ?? true;
+        $this->options[self::DATES_INTERVAL_ONE_DAY] = $data[self::DATES_INTERVAL_ONE_DAY] ?? false;
         $this->options[self::ASK_VERSION_TAG] = $data[self::ASK_VERSION_TAG] ?? true;
     }
 

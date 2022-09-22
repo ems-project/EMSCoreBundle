@@ -12,7 +12,8 @@ class RevisionRawData extends Constraint
     public ContentType $contentType;
 
     public string $versionFromRequired = 'revision.raw_data.version_from_required';
-    public string $versionToInvalid = 'revision.raw_data.version_to_invalid';
+    public string $versionToGreater = 'revision.raw_data.version_to_greater';
+    public string $versionToGreaterOneDay = 'revision.raw_data.version_to_greater_one_day';
 
     public function getRequiredOptions(): array
     {

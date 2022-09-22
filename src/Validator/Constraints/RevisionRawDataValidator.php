@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Validator\Constraints;
 
+use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\Helpers\Standard\DateTime;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -27,31 +28,49 @@ class RevisionRawDataValidator extends ConstraintValidator
      */
     private function validateVersionDates(Constraint $constraint, array $rawData): void
     {
-        $contentType = $constraint->contentType;
-
-        $fromField = $contentType->getVersionDateFromField();
-        $versionFromDate = $this->getVersionDateFromRawData($rawData, $fromField);
-
-        if (null === $versionFromDate) {
-            $this->context
-                ->buildViolation($constraint->versionFromRequired)
-                ->atPath(\sprintf('[%s]', $fromField))
-                ->addViolation();
+        if (null === $fromField = $constraint->contentType->getVersionDateFromField()) {
+            return;
         }
 
-        $toField = $contentType->getVersionDateToField();
+        if (null === $versionFromDate = $this->getVersionDateFromRawData($rawData, $fromField)) {
+            $this->addViolation($constraint->versionFromRequired, $fromField);
+
+            return;
+        }
+
+        $toField = $constraint->contentType->getVersionDateToField();
         $versionToDate = $this->getVersionDateFromRawData($rawData, $toField);
 
-        if ($fromField && $versionToDate && $versionToDate < $versionFromDate) {
-            $formFieldType = $contentType->getFieldType()->findChildByName($fromField);
-            $formFieldLabel = $formFieldType ? $formFieldType->getDisplayOption('label', $fromField) : $fromField;
-
-            $this->context
-                ->buildViolation($constraint->versionToInvalid)
-                ->setParameter('%fromField%', $formFieldLabel)
-                ->atPath(\sprintf('[%s]', $toField))
-                ->addViolation();
+        if (null === $toField || null === $versionToDate) {
+            return;
         }
+
+        $formFieldType = $constraint->contentType->getFieldType()->findChildByName($fromField);
+        $formFieldLabel = $formFieldType ? $formFieldType->getDisplayOption('label', $fromField) : $fromField;
+
+        if ($versionToDate <= $versionFromDate) {
+            $this->addViolation($constraint->versionToGreater, $toField, ['%fromField%' => $formFieldLabel]);
+        }
+
+        $intervalOneDay = $constraint->contentType->getVersionOptions()[VersionOptions::DATES_INTERVAL_ONE_DAY];
+        $diffDays = $versionFromDate->diff($versionToDate)->days;
+
+        if ($versionToDate > $versionFromDate && $intervalOneDay && 0 === $diffDays) {
+            $this->addViolation($constraint->versionToGreaterOneDay, $toField, ['%fromField%' => $formFieldLabel]);
+        }
+    }
+
+    /**
+     * @param array<string, string> $parameters
+     */
+    private function addViolation(string $message, string $field, array $parameters = []): void
+    {
+        $this->context
+            ->buildViolation($message)
+            ->setParameters($parameters)
+            ->atPath(\sprintf('[%s]', $field))
+            ->addViolation()
+        ;
     }
 
     /**

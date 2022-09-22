@@ -1,3 +1,9 @@
+revision:
+  raw_data:
+    version_from_required: 'This Field is not valid! Empty field'
+    version_to_invalid: 'Should be greater then "%fromField%"'
+
+
 user:
   username:
     already_used: 'The username is already used.'

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
+use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -104,8 +105,9 @@ class RevisionType extends AbstractType
         if (null !== $revision && $revision->getDraft()) {
             $contentType = $revision->getContentType();
             $environment = $contentType ? $contentType->getEnvironment() : null;
+            $askVersionTags = $contentType && $contentType->getVersionOptions()[VersionOptions::ASK_VERSION_TAG];
 
-            if (null !== $environment && null !== $contentType && $contentType->hasVersionTags()) {
+            if (null !== $environment && $askVersionTags) {
                 $builder
                     ->add('publish_version_tags', ChoiceType::class, [
                         'translation_domain' => false,

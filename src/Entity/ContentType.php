@@ -399,11 +399,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $createLinkDisplayRole = 'ROLE_USER';
 
     /**
-     * @var string[]
+     * @var ?string[]
      *
      * @ORM\Column(name="version_tags", type="json", nullable=true)
      */
-    protected array $versionTags = [];
+    protected ?array $versionTags = [];
 
     /**
      * @var ?array<string, bool>
@@ -1816,7 +1816,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     public function hasVersionTags(): bool
     {
-        return \count($this->versionTags) > 0;
+        return \count($this->versionTags ?? []) > 0;
     }
 
     /**
@@ -1824,13 +1824,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      */
     public function getVersionTags(): array
     {
-        return $this->versionTags;
+        return $this->versionTags ?? [];
     }
 
     /**
-     * @param string[] $versionTags
+     * @param ?string[] $versionTags
      */
-    public function setVersionTags(array $versionTags): void
+    public function setVersionTags(?array $versionTags): void
     {
         $this->versionTags = $versionTags;
     }

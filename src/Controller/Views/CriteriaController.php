@@ -206,7 +206,7 @@ class CriteriaController extends AbstractController
         \sleep(2);
         $this->elasticaService->getClusterHealth('green', '20s');
 
-        return $this->forward('EMSCoreBundle:Views\Criteria:generateCriteriaTable', ['view' => $view]);
+        return $this->forward('EMS\CoreBundle\Controller\Views\CriteriaController:generateCriteriaTable', ['view' => $view]);
     }
 
     private function isAuthorized(FieldType $criteriaField, AuthorizationCheckerInterface $security): bool

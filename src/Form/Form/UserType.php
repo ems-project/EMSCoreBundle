@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Form\Form;
 use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -83,7 +84,7 @@ final class UserType extends AbstractType
             ->add('wysiwygProfile', EntityType::class, [
                 'required' => false,
                 'label' => 'WYSIWYG profile',
-                'class' => 'EMSCoreBundle:WysiwygProfile',
+                'class' => WysiwygProfile::class,
                 'choice_label' => 'name',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC');

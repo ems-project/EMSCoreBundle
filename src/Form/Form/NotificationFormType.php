@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Form\Form;
 
 use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Service\EnvironmentService;
@@ -28,7 +29,7 @@ class NotificationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('template', EntityType::class, [
-            'class' => 'EMSCoreBundle:Template',
+            'class' => Template::class,
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             'query_builder' => function (EntityRepository $er) {
                 return $er->createQueryBuilder('t')
@@ -73,7 +74,7 @@ class NotificationFormType extends AbstractType
                 },
         ])
         ->add('contentType', EntityType::class, [
-                'class' => 'EMSCoreBundle:ContentType',
+                'class' => ContentType::class,
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('ct')

@@ -34,7 +34,7 @@ class NotificationRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('n')
             ->select('n')
-            ->join('EMSCoreBundle:Revision', 'r', 'WITH', 'n.revision = r.id')
+            ->join('n.revision', 'r', 'WITH', 'n.revision = r.id')
             ->where('r.ouuid = :ouuid')
             ->andWhere('r.contentType = :contentType')
             ->andwhere('r.deleted = :false')
@@ -100,7 +100,7 @@ class NotificationRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('n')
         ->select('count(n)')
-        ->join('EMSCoreBundle:Revision', 'r', 'WITH', 'n.revision = r.id')
+        ->join('n.revision', 'r', 'WITH', 'n.revision = r.id')
         ->where('n.status = :status')
         ->andWhere('r.contentType = :contentType')
         ->andwhere('r.ouuid = :ouuid');

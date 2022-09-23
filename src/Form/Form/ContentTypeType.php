@@ -150,6 +150,7 @@ class ContentTypeType extends AbstractType
                         'mapping' => $mapping,
                         'types' => ['date'],
                     ])
+                    ->add('versionOptions', ContentTypeVersionOptionsType::class)
                     ->add('versionTags', CollectionType::class, [
                         'entry_type' => TextType::class,
                         'attr' => [

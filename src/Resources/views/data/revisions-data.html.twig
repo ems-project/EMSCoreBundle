@@ -231,7 +231,7 @@
 					{{ 'views.data.revisions-data-html.previous-revision'|trans({'%timestamp%': revision.created|date(date_time_format)}) }}
 				{% endif %}
 			</h3>
-			{% if revision.hasVersionTag and revision.versionDate('to') != null %}
+			{% if revision.hasVersionTag and revision.versionDate('to') != null and latestVersion %}
 				<div class="box-tools pull-right">
 					<a href="{{ path('emsco_view_revisions', {'type': latestVersion.contentTypeName, 'ouuid': latestVersion.ouuid }) }}" class="btn btn-default bg-{{ revision.contentType.color  }} btn-sm">
 						<i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %}"></i>

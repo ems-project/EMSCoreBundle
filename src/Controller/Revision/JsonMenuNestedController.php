@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Revision;
 
-use EMS\CommonBundle\Common\ArrayHelper\RecursiveMapper;
 use EMS\CommonBundle\Common\Standard\Base64;
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Json\JsonMenuNested;
@@ -20,6 +19,7 @@ use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\UserService;
+use EMS\Helpers\ArrayHelper\ArrayHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -169,8 +169,7 @@ final class JsonMenuNestedController extends AbstractController
         $requestData = $this->getRequestData($request);
         $updateJson = $requestData['update'];
 
-        $rawData = $revision->getRawData();
-        RecursiveMapper::mapPropertyValue($rawData, function (string $property, $v) use ($field, $updateJson) {
+        $rawData = ArrayHelper::map($revision->getRawData(), function ($v, $property) use ($field, $updateJson) {
             if ($property !== $field) {
                 return $v;
             }

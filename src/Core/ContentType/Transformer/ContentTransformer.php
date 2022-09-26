@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\ContentType\Transformer;
 
-use EMS\CommonBundle\Common\ArrayHelper\RecursiveMapper;
 use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\DataService;
+use EMS\Helpers\ArrayHelper\ArrayHelper;
 
 final class ContentTransformer
 {
@@ -56,17 +56,13 @@ final class ContentTransformer
      */
     public function transform(Revision $revision, array $transformerDefinitions, string $user, bool $dryRun): bool
     {
-        $rawData = $revision->getRawData();
-        RecursiveMapper::mapPropertyValue(
-            $rawData,
-            function (string $property, $value) use ($transformerDefinitions) {
-                if (\key_exists($property, $transformerDefinitions)) {
-                    return $this->transformValue($value, $transformerDefinitions[$property]);
-                }
-
-                return $value;
+        $rawData = ArrayHelper::map($revision->getRawData(), function ($value, $property) use ($transformerDefinitions) {
+            if (\key_exists($property, $transformerDefinitions)) {
+                return $this->transformValue($value, $transformerDefinitions[$property]);
             }
-        );
+
+            return $value;
+        });
 
         if ($rawData === $revision->getRawData()) {
             return false;

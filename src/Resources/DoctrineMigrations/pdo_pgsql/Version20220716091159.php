@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 use EMS\CommonBundle\Helper\Text\Encoder;
 
-class Version20220716091159 extends AbstractMigration
+final class Version20220716091159 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {

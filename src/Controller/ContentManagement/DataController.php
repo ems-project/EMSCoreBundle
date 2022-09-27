@@ -117,7 +117,7 @@ class DataController extends AbstractController
         ]);
         /** @var Search $search */
         foreach ($searches as $search) {
-            return $this->forward('EMSCoreBundle:Elasticsearch:search', [
+            return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::searchAction', [
                 'query' => null,
             ], [
                 'search_form' => $search->jsonSerialize(),
@@ -194,7 +194,7 @@ class DataController extends AbstractController
             throw new \RuntimeException('Unexpected null json');
         }
 
-        return $this->forward('EMSCoreBundle:Elasticsearch:search', [
+        return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::searchAction', [
             'query' => null,
         ], [
             'search_form' => \json_decode($formEncoded, true),

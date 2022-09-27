@@ -5,12 +5,12 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CommonBundle\Common\ArrayHelper\RecursiveMapper;
 use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Service\Mapping;
+use EMS\Helpers\ArrayHelper\ArrayHelper;
 use EMS\Helpers\Standard\DateTime;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -69,7 +69,7 @@ class Revision implements EntityInterface
     private int $version = 0;
 
     /**
-     * @ORM\Column(name="ouuid", type="string", length=255, nullable=true, options={"collation":"utf8_bin"})
+     * @ORM\Column(name="ouuid", type="string", length=255, nullable=true)
      */
     private ?string $ouuid = null;
 
@@ -181,7 +181,7 @@ class Revision implements EntityInterface
     private ?string $sha1 = null;
 
     /**not persisted field to ensure that they are all there after a submit */
-    private bool $allFieldsAreThere = false;
+    private ?bool $allFieldsAreThere = false;
 
     /**
      * @var UuidInterface|null
@@ -390,12 +390,12 @@ class Revision implements EntityInterface
         $this->removeEnvironment($this->giveContentType()->giveEnvironment());
     }
 
-    public function getAllFieldsAreThere(): bool
+    public function getAllFieldsAreThere(): ?bool
     {
         return $this->allFieldsAreThere;
     }
 
-    public function setAllFieldsAreThere(bool $allFieldsAreThere): self
+    public function setAllFieldsAreThere(?bool $allFieldsAreThere): self
     {
         $this->allFieldsAreThere = $allFieldsAreThere;
 
@@ -714,7 +714,7 @@ class Revision implements EntityInterface
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<int|string, mixed>
      */
     public function getCopyRawData(): array
     {
@@ -722,18 +722,15 @@ class Revision implements EntityInterface
             throw new \RuntimeException('content type not found!');
         }
 
-        $rawData = $this->getRawData();
         $clearProperties = $contentType->getClearOnCopyProperties();
 
-        RecursiveMapper::mapPropertyValue($rawData, function (string $property, $value) use ($clearProperties) {
+        return ArrayHelper::map($this->getRawData(), function ($value, $property) use ($clearProperties) {
             if (\in_array($property, $clearProperties, true)) {
                 return null;
             }
 
             return $value;
         });
-
-        return $rawData;
     }
 
     public function setAutoSaveAt(\DateTime $autoSaveAt): self

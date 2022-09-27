@@ -654,6 +654,16 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $this->children;
     }
 
+    public function getPath(): string
+    {
+        if (null !== $parent = $this->getParent()) {
+            $path = [\sprintf('[%s]', $this->getName())];
+            \array_unshift($path, $parent->getPath());
+        }
+
+        return \implode('', $path ?? []);
+    }
+
     public function findChildByName(string $name): ?FieldType
     {
         foreach ($this->loopChildren() as $child) {

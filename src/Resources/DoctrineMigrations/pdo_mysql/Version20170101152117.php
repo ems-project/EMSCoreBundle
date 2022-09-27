@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Application\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
-class Version20170101152117 extends AbstractMigration
+final class Version20170101152117 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf('mysql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
         $this->addSql('update field_type ft set ft.type = \'EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\UrlAttachmentFieldType\' where  ft.type = \'AppBundle\\\\Form\\\\DataField\\\\UrlAttachmentFieldType\'');
         $this->addSql('update field_type ft set ft.type = \'EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\TimeFieldType\' where  ft.type = \'AppBundle\\\\Form\\\\DataField\\\\TimeFieldType\'');
         $this->addSql('update field_type ft set ft.type = \'EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\TextStringFieldType\' where  ft.type = \'AppBundle\\\\Form\\\\DataField\\\\TextStringFieldType\'');
@@ -48,7 +50,10 @@ class Version20170101152117 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->abortIf('mysql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
         $this->addSql('update field_type ft set ft.type = \'AppBundle\\\\Form\\\\DataField\\\\UrlAttachmentFieldType\' where  ft.type = \'EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\UrlAttachmentFieldType\'');
         $this->addSql('update field_type ft set ft.type = \'AppBundle\\\\Form\\\\DataField\\\\TimeFieldType\' where  ft.type = \'EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\TimeFieldType\'');
         $this->addSql('update field_type ft set ft.type = \'AppBundle\\\\Form\\\\DataField\\\\TextStringFieldType\' where  ft.type = \'EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\TextStringFieldType\'');

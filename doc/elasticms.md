@@ -14,10 +14,10 @@ Finalization is now called "publish in preview" (preview = contentType default e
 A modal will popup on publication of a revision. The author needs to select a version_tag or silent.
 
 If the author selects a version_tag:
-- a new document is created with the same version uuid and changes
-- the from date field is set to now()
-- the current draft is discard
-- new draft is initialized and finalized with to date now()
+- the current document will be updated and the from will be set to now()
+- a new revision (snapshot) will be created from the previous revision with version end date set to now().
+
+Revision bookmarks will not change, and tasks are allways on the latest version.
 
 When the user selects 'silent', the revision will just be finalized. 
 Silent publication is not available for new document, because each revision needs a version_tag.

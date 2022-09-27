@@ -907,6 +907,15 @@ class RevisionRepository extends EntityRepository
         return null;
     }
 
+    public function findPreviousRevision(Revision $revision): ?Revision
+    {
+        return $this->findOneBy([
+            'ouuid' => $revision->getOuuid(),
+            'endTime' => $revision->getStartTime(),
+            'draft' => false,
+        ]);
+    }
+
     private function addSearchValueFilter(QueryBuilder $qb, string $searchValue): void
     {
         if (\strlen($searchValue) > 0) {

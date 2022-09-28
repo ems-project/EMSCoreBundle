@@ -107,7 +107,9 @@ class RevisionType extends AbstractType
         if (null !== $revision && $revision->getDraft()) {
             $contentType = $revision->getContentType();
             $environment = $contentType ? $contentType->getEnvironment() : null;
-            $askVersionTags = $contentType && $contentType->getVersionOptions()[VersionOptions::ASK_VERSION_TAG];
+            $askVersionTags = $contentType
+                && $contentType->hasVersionTags()
+                && $contentType->getVersionOptions()[VersionOptions::ASK_VERSION_TAG];
 
             if (null !== $environment && $askVersionTags) {
                 $builder

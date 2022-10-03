@@ -37,7 +37,7 @@
 								{% endif %}
 								</td>
 								<td>
-									{{ revision.deletedBy|displayname }}
+									{{ revision.deletedBy|default('N/A')|displayname }}
 								</td>
 								<td>
 									{{ revision.modified|date(date_time_format) }}

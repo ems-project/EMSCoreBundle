@@ -43,23 +43,32 @@ class RevisionType extends AbstractType
                 'referrer-ems-id' => $revision && $revision->hasOuuid() ? $revision->getEmsId() : null,
         ]);
 
-        if ($revision && null === $revision->getEndTime()) {
-            $builder->add('save', SubmitEmsType::class, [
-                'label' => 'form.form.revision-type.save-draft-label',
-                'attr' => ['class' => 'btn btn-default btn-sm'],
-                'icon' => 'fa fa-save',
-            ]);
-        } elseif ($revision) {
-            $publishedEnvironmentLabels = $revision->getEnvironments()->map(fn (Environment $e) => $e->getLabel());
-            //update published revision in other environment
-            $builder->add('save', SubmitEmsType::class, [
-                'label' => 'form.form.revision-type.publish-label',
-                'label_translation_parameters' => [
-                    '%environment%' => \implode(', ', $publishedEnvironmentLabels->toArray()),
-                ],
-                'attr' => ['class' => 'btn btn-primary btn-sm'],
-                'icon' => 'glyphicon glyphicon-open',
-            ]);
+        if ($revision) {
+            if ($revision->getDraft()) {
+                $builder->add('save', SubmitEmsType::class, [
+                    'label' => 'form.form.revision-type.save-draft-label',
+                    'attr' => ['class' => 'btn btn-default btn-sm'],
+                    'icon' => 'fa fa-save',
+                ]);
+            } else {
+                $publishedEnvironmentLabels = $revision->getEnvironments()->map(fn (Environment $e) => $e->getLabel());
+                if (\count($publishedEnvironmentLabels) > 0) {
+                    $builder->add('save', SubmitEmsType::class, [
+                        'label' => 'form.form.revision-type.publish-label',
+                        'label_translation_parameters' => [
+                            '%environment%' => \implode(', ', $publishedEnvironmentLabels->toArray()),
+                        ],
+                        'attr' => ['class' => 'btn btn-primary btn-sm'],
+                        'icon' => 'glyphicon glyphicon-open',
+                    ]);
+                } else {
+                    $builder->add('save', SubmitEmsType::class, [
+                        'label' => 'form.form.revision-type.save-label',
+                        'attr' => ['class' => 'btn btn-primary btn-sm'],
+                        'icon' => 'fa fa-save',
+                    ]);
+                }
+            }
         }
 
         $builder->get('data')

@@ -39,12 +39,11 @@ class TemplateService
         return $this->template;
     }
 
-    public function init(string $templateId): TemplateService
+    public function init(string $actionName, ContentType $contentType): TemplateService
     {
-        $em = $this->doctrine->getManager();
-        $template = $em->getRepository(Template::class)->find($templateId);
-        if (!$template instanceof Template) {
-            throw new \RuntimeException('Unexpected Template object');
+        $template = $contentType->getActionByName($actionName);
+        if (null === $template) {
+            throw new \RuntimeException('Unexpected null action');
         }
         $this->template = $template;
 

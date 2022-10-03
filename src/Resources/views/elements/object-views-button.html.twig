@@ -24,7 +24,7 @@
 
     							<li class="{% if not link %}disabled{% endif %}"><a href="{{ link }}" target="_blank">
     								<i class="{{ template.icon|raw }}"></i>
-    								{{ template.name}}
+    								{{ template.label}}
     								<i class="fa fa-external-link pull-right"></i>
     							</a></li>
 
@@ -42,14 +42,14 @@
 							{% if ( is_granted(template.role) and ((attribute(source, contentType.circlesField) is not defined) or (source and attribute(source, contentType.circlesField)|in_my_circles) or (environment.circles|in_my_circles and is_granted('ROLE_PUBLISHER')) ) ) %}
 								<li><a href='#' class="request_notification" onclick="requestNotification(this, {{template.id}}, '{{environment.name}}', '{{contentType.id}}' , '{{ouuid}}'); return false;" href="#" data-url="{{ path('notification.ajaxnotification', {'objectId' : ouuid}) }}">
 									<i class="{{ template.icon|raw }}"></i>
-									{{ template.name }}
+									{{ template.label }}
 								</a></li>
 							{% endif %}
                         {% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::JOB') %}
             				{% if (is_granted(template.role)) or template.role == "not-defined" %}
 								<li><a href="#" class="request_job" data-url="{{ path('ems_job_custom_view', {'environmentName': environment.name, 'templateId': template.id, 'ouuid': ouuid}) }}">
 									<i class="{{ template.icon|raw }}"></i>
-									{{ template.name }}
+									{{ template.label }}
 								</a></li>
 							{% endif %}
 						{% else %}
@@ -58,7 +58,7 @@
 										ouuid: ouuid,
 										templateId: template.id}) }}" >
 								<i class="{{ template.icon|raw }}"></i>
-								{{ template.name }}
+								{{ template.label }}
 							</a></li>
 						{% endif %}						
 							

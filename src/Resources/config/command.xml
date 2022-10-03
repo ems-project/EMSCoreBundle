@@ -77,6 +77,7 @@
         <service id="ems.command.notification.bulk_action" class="EMS\CoreBundle\Command\Notification\BulkActionCommand">
             <argument type="service" id="ems.service.notification"/>
             <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems.service.contenttype"/>
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.service.revision"/>
             <tag name="console.command"/>

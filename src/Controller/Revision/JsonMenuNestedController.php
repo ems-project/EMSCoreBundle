@@ -141,7 +141,7 @@ final class JsonMenuNestedController extends AbstractController
             throw new \RuntimeException('Missing copied data');
         }
 
-        $structure = 'root' === $copied['type'] ? $copied['children'] ?? [] : [$copied];
+        $structure = '_root' === $copied['type'] ? $copied['children'] ?? [] : [$copied];
 
         return new JsonResponse([
             'html' => $this->jsonMenuRenderer->generateNestedPaste($requestData['config'], [
@@ -178,7 +178,7 @@ final class JsonMenuNestedController extends AbstractController
             $currentJsonMenuNested = JsonMenuNested::fromStructure($v);
             $updateJsonMenuNested = new JsonMenuNested(Json::decode($updateJson));
 
-            if ('root' === $updateJsonMenuNested->getId()) {
+            if ('_root' === $updateJsonMenuNested->getId()) {
                 return Json::encode($updateJsonMenuNested->toArrayStructure());
             }
 

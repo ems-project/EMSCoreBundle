@@ -513,11 +513,8 @@ class DataController extends AbstractController
             throw $this->createNotFoundException('Revision not found');
         }
 
-        $this->dataService->lockRevision($revision);
-
         try {
             $this->dataService->reloadData($revision);
-            $this->dataService->sign($revision);
 
             /** @var Environment $environment */
             foreach ($revision->getEnvironments() as $environment) {
@@ -529,8 +526,6 @@ class DataController extends AbstractController
                     }
                 }
             }
-            $em->persist($revision);
-            $em->flush();
         } catch (\Throwable $e) {
             $this->logger->warning('log.data.revision.reindex_failed', \array_merge(LogRevisionContext::update($revision), [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -593,11 +588,13 @@ class DataController extends AbstractController
             $this->logger->error('log.template.twig.error', [
                 'template_id' => $template->getId(),
                 'template_name' => $template->getName(),
+                'template_label' => $template->getLabel(),
                 'error_message' => $e->getMessage(),
             ]);
             $body = $this->twig->createTemplate($this->translator->trans('log.template.twig.error', [
                 '%template_id%' => $template->getId(),
                 '%template_name%' => $template->getName(),
+                '%template_label%' => $template->getLabel(),
                 '%error_message%' => $e->getMessage(),
             ], EMSCoreBundle::TRANS_DOMAIN));
         }
@@ -711,6 +708,7 @@ class DataController extends AbstractController
                 'template_id' => $template->getId(),
                 'job_id' => $job->getId(),
                 'template_name' => $template->getName(),
+                'template_label' => $template->getLabel(),
                 'environment' => $env->getLabel(),
             ]);
 
@@ -726,6 +724,7 @@ class DataController extends AbstractController
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 'template_name' => $template->getName(),
+                'template_label' => $template->getLabel(),
                 'environment' => $env->getLabel(),
             ]);
         }

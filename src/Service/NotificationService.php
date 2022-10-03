@@ -15,6 +15,7 @@ use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
+use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use Exception;
@@ -24,7 +25,6 @@ use Swift_TransportException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 use Twig\Environment as TwigEnvironment;
 
@@ -75,16 +75,6 @@ class NotificationService
         $this->output = null;
         $this->dryRun = false;
         $this->sender = $sender;
-    }
-
-    public function getAction(int $actionId): ?Template
-    {
-        $action = $this->actionRepository->findOneBy([
-            'id' => $actionId,
-            'renderOption' => 'notification',
-        ]);
-
-        return $action instanceof Template ? $action : null;
     }
 
     public function publishEvent(RevisionPublishEvent $event)
@@ -204,21 +194,13 @@ class NotificationService
     /**
      * Call addNotification when click on a request.
      */
-    public function addNotification(int $templateId, Revision $revision, Environment $environment, ?string $username = null): ?bool
+    public function addNotification(Template $template, Revision $revision, Environment $environment, ?string $username = null): ?bool
     {
         $out = false;
         try {
-            $em = $this->doctrine->getManager();
-
-            /** @var TemplateRepository $repository */
-            $repository = $em->getRepository('EMSCoreBundle:Template');
-            /** @var Template|null $template */
-            $template = $repository->findOneById($templateId);
-
-            if (null === $template) {
-                throw new NotFoundHttpException('Unknown template');
+            if (!\in_array($template->getRenderOption(), [RenderOptionType::NOTIFICATION])) {
+                throw new \RuntimeException(\sprintf('Unexpected %s action', $template->getRenderOption()));
             }
-
             $notification = new Notification();
             $notification->setStatus('pending');
 
@@ -237,6 +219,7 @@ class NotificationService
                 /** @var Notification $alreadyPending */
                 $alreadyPending = $alreadyPending[0];
                 $this->logger->warning('service.notification.another_one_is_pending', [
+                    'label' => $alreadyPending->getRevision()->getLabel(),
                     'notification_name' => $alreadyPending->getTemplate()->getName(),
                     EmsFields::LOG_CONTENTTYPE_FIELD => $alreadyPending->getRevision()->getContentType(),
                     EmsFields::LOG_OUUID_FIELD => $alreadyPending->getRevision()->getOuuid(),
@@ -271,6 +254,7 @@ class NotificationService
             }
 
             $this->logger->notice('service.notification.send', [
+                'label' => $notification->getRevision()->getLabel(),
                 'notification_name' => $notification->getTemplate()->getName(),
                 EmsFields::LOG_CONTENTTYPE_FIELD => $notification->getRevision()->getContentType(),
                 EmsFields::LOG_OUUID_FIELD => $notification->getRevision()->getOuuid(),
@@ -280,7 +264,9 @@ class NotificationService
             $out = true;
         } catch (Exception $e) {
             $this->logger->error('service.notification.send_error', [
-                'notification_id' => $templateId,
+                'action_name' => $template->getName(),
+                'action_label' => $template->getLabel(),
+                'contenttype_name' => $revision->giveContentType(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);

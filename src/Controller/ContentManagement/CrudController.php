@@ -34,7 +34,7 @@ class CrudController extends AbstractController
         $this->contentTypeService = $contentTypeService;
     }
 
-    public function createAction(string $ouuid, string $name, Request $request): Response
+    public function createAction(?string $ouuid, string $name, Request $request): Response
     {
         $contentType = $this->giveContentType($name);
         if (!$contentType->getEnvironment()->getManaged()) {

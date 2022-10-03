@@ -7,6 +7,7 @@ use EMS\CommonBundle\Common\Converter;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Entity\CacheAssetExtractor;
+use EMS\CoreBundle\Helper\AssetExtractor\ExtractedData;
 use EMS\CoreBundle\Tika\TikaWrapper;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -89,8 +90,8 @@ class AssetExtractorService implements CacheWarmerInterface
             $result = $client->get(self::HELLO_EP);
 
             return [
-                    'code' => $result->getStatusCode(),
-                    'content' => $result->getBody()->__toString(),
+                'code' => $result->getStatusCode(),
+                'content' => $result->getBody()->__toString(),
             ];
         } else {
             $temporaryName = \tempnam(\sys_get_temp_dir(), 'TikaWrapperTest');
@@ -107,9 +108,16 @@ class AssetExtractorService implements CacheWarmerInterface
     }
 
     /**
-     * @return array|false|mixed
+     * @deprecated
+     *
+     * @return mixed[]
      */
-    public function extractData(string $hash, string $file = null, bool $forced = false)
+    public function extractData(string $hash, string $file = null, bool $forced = false): array
+    {
+        return $this->extractMetaData($hash, $file, $forced)->getSource();
+    }
+
+    public function extractMetaData(string $hash, string $file = null, bool $forced = false): ExtractedData
     {
         $manager = $this->doctrine->getManager();
         $repository = $manager->getRepository('EMSCoreBundle:CacheAssetExtractor');
@@ -120,7 +128,7 @@ class AssetExtractorService implements CacheWarmerInterface
         ]);
 
         if ($cacheData instanceof CacheAssetExtractor) {
-            return $cacheData->getData();
+            return new ExtractedData($cacheData->getData());
         }
 
         if (null === $file || !\file_exists($file)) {
@@ -141,32 +149,29 @@ class AssetExtractorService implements CacheWarmerInterface
                 'max_size' => '3 MB',
             ]);
 
-            return [];
+            return new ExtractedData([]);
         }
 
-        $out = [];
         $canBePersisted = true;
         if (!empty($this->tikaServer)) {
             try {
                 $client = $this->rest->getClient($this->tikaServer, $forced ? 900 : 30);
                 $body = \file_get_contents($file);
                 $result = $client->put(self::META_EP, [
-                        'body' => $body,
-                        'headers' => [
-                            'Accept' => 'application/json',
-                        ],
+                    'body' => $body,
+                    'headers' => [
+                        'Accept' => 'application/json',
+                    ],
                 ]);
-
-                $out = \json_decode($result->getBody()->__toString(), true);
+                $out = ExtractedData::fromJsonString($result->getBody()->__toString());
 
                 $result = $client->put(self::CONTENT_EP, [
-                        'body' => $body,
-                        'headers' => [
-                                'Accept' => 'text/plain',
-                        ],
+                    'body' => $body,
+                    'headers' => [
+                        'Accept' => 'text/plain',
+                    ],
                 ]);
-
-                $out['content'] = $result->getBody()->__toString();
+                $out->setContent($result->getBody()->__toString());
             } catch (Exception $e) {
                 $this->logger->error('service.asset_extractor.extract_error', [
                     'file_hash' => $hash,
@@ -178,17 +183,17 @@ class AssetExtractorService implements CacheWarmerInterface
             }
         } else {
             try {
-                $out = AssetExtractorService::convertMetaToArray($this->getTikaWrapper()->getMetadata($file));
-                if (!isset($out['content'])) {
+                $out = ExtractedData::fromMetaString($this->getTikaWrapper()->getMetadata($file));
+                if (!$out->hasContent()) {
                     $text = $this->getTikaWrapper()->getText($file);
                     if (!\mb_check_encoding($text)) {
                         $text = \mb_convert_encoding($text, \mb_internal_encoding(), 'ASCII');
                     }
                     $text = (\preg_replace('/(\n)(\s*\n)+/', '${1}', $text));
-                    $out['content'] = $text;
+                    $out->setContent($text);
                 }
-                if (!isset($out['language'])) {
-                    $out['language'] = AssetExtractorService::cleanString($this->getTikaWrapper()->getLanguage($file));
+                if (!empty($out->getLocale())) {
+                    $out->setLocale(AssetExtractorService::cleanString($this->getTikaWrapper()->getLanguage($file)));
                 }
             } catch (Exception $e) {
                 $this->logger->error('service.asset_extractor.extract_error', [
@@ -205,7 +210,7 @@ class AssetExtractorService implements CacheWarmerInterface
             try {
                 $cacheData = new CacheAssetExtractor();
                 $cacheData->setHash($hash);
-                $cacheData->setData($out);
+                $cacheData->setData($out->getSource());
                 $manager->persist($cacheData);
                 $manager->flush();
             } catch (Exception $e) {
@@ -233,33 +238,6 @@ class AssetExtractorService implements CacheWarmerInterface
         return \preg_replace('/\n|\r/', '', $string) ?? '';
     }
 
-    /**
-     * @return array<string, string>
-     */
-    private static function convertMetaToArray(string $data): array
-    {
-        if (!\mb_check_encoding($data)) {
-            $data = \mb_convert_encoding($data, \mb_internal_encoding(), 'ASCII');
-        }
-        $cleaned = \preg_replace("/\r/", '', $data);
-        if (null === $cleaned) {
-            throw new \RuntimeException('It was possible to parse meta information');
-        }
-        $matches = [];
-        \preg_match_all(
-            '/^(.*): (.*)$/m',
-            $cleaned,
-            $matches,
-            PREG_PATTERN_ORDER
-        );
-        $metaArray = \array_combine($matches[1], $matches[2]);
-        if (false === $metaArray) {
-            return [];
-        }
-
-        return $metaArray;
-    }
-
     public function isOptional()
     {
         return false;
@@ -270,5 +248,30 @@ class AssetExtractorService implements CacheWarmerInterface
         if (empty($this->tikaServer)) {
             $this->getTikaWrapper();
         }
+    }
+
+    public function getMetaFromText(string $text): ExtractedData
+    {
+        if (!empty($this->tikaServer)) {
+            $client = $this->rest->getClient($this->tikaServer, 15);
+            $result = $client->put(self::META_EP, [
+                'body' => $text,
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
+            ]);
+            $meta = ExtractedData::fromJsonString($result->getBody()->__toString());
+        } else {
+            $filename = \tempnam(\sys_get_temp_dir(), 'guess_locale');
+            if (false === $filename) {
+                throw new \RuntimeException('Unexpected false temporary filename');
+            }
+            if (false === \file_put_contents($filename, $text)) {
+                throw new \RuntimeException('Unexpected false result on file_put_contents');
+            }
+            $meta = ExtractedData::fromMetaString($this->getTikaWrapper()->getMetadata($filename));
+        }
+
+        return $meta;
     }
 }

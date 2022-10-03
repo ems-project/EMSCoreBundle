@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\View;
 
 use EMS\CommonBundle\Entity\EntityInterface;
+use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Repository\ViewRepository;
@@ -66,6 +67,7 @@ class ViewManager implements EntityServiceInterface
         if (0 === $view->getOrderKey()) {
             $view->setOrderKey($this->viewRepository->counter($view->getContentType()) + 1);
         }
+        $view->setName(Encoder::webalize($view->getName()) ?? '');
         $this->viewRepository->create($view);
     }
 
@@ -95,9 +97,11 @@ class ViewManager implements EntityServiceInterface
     public function delete(View $view): void
     {
         $name = $view->getName();
+        $label = $view->getLabel();
         $this->viewRepository->delete($view);
         $this->logger->warning('log.service.view.delete', [
             'name' => $name,
+            'label' => $label,
         ]);
     }
 

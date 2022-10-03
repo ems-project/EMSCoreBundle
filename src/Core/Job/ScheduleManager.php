@@ -39,9 +39,6 @@ class ScheduleManager implements EntityServiceInterface
         }
         $encoder = new Encoder();
         $webalized = $encoder->webalize($schedule->getName());
-        if (null === $webalized) {
-            throw new \RuntimeException('Unexpected null webalized name');
-        }
         $schedule->setName($webalized);
         $this->scheduleRepository->create($schedule);
     }

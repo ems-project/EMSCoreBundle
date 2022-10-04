@@ -1,5 +1,1 @@
-﻿/*
- Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
- For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
-*/
-CKEDITOR.dialog.add("placeholder",function(a){var b=a.lang.placeholder;a=a.lang.common.generalTab;return{title:b.title,minWidth:300,minHeight:80,contents:[{id:"info",label:a,title:a,elements:[{id:"name",type:"text",style:"width: 100%;",label:b.name,"default":"",required:!0,validate:CKEDITOR.dialog.validate.regex(/^[^\[\]<>]+$/,b.invalidName),setup:function(a){this.setValue(a.data.name)},commit:function(a){a.setData("name",this.getValue())}}]}]}});
+CKEDITOR.dialog.add("placeholder",(function(e){var t=e.lang.placeholder;return e=e.lang.common.generalTab,{title:t.title,minWidth:300,minHeight:80,contents:[{id:"info",label:e,title:e,elements:[{id:"name",type:"text",style:"width: 100%;",label:t.name,default:"",required:!0,validate:CKEDITOR.dialog.validate.regex(/^[^\[\]<>]+$/,t.invalidName),setup:function(e){this.setValue(e.data.name)},commit:function(e){e.setData("name",this.getValue())}}]}]}}));

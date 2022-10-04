@@ -1,53 +1,51 @@
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CopyPlugin = require('copy-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
     plugins: [
-        new ManifestPlugin({'publicPath': 'bundles/emscore/'}),
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"
+        }),
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+        }),
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+        }),
+        new WebpackManifestPlugin({'publicPath': 'bundles/emscore/'}),
         new CleanWebpackPlugin({
             cleanOnceBeforeBuildPatterns: ['**/*', '!static/**'],
         }),
-        new CopyPlugin([
-            {
-                from: './assets/images',
-                to: 'images'
-            }, {
-                from: './assets/cke-plugins',
-                to: 'js/cke-plugins'
-            }, {
-                from: './node_modules/ace-builds/src-noconflict',
-                to: 'js/ace',
-            }, {
-                from: '{config.js,contents.css,styles.js,adapters/**/*,lang/**/*,plugins/**/*,skins/**/*,vendor/**/*}',
-                to: 'js/ckeditor',
-                context: './node_modules/ckeditor4',
-            },
-        ], {
-            ignore: [{
-                dots: true,
-                glob: 'samples/**/*'
-            },{
-                dots: true,
-                glob: 'adapters/**/*'
-            },{
-                dots: true,
-                glob: '.github/**/*'
-            },{
-                dots: true,
-                glob: '**/*.php'
-            }]
+        new CopyPlugin({
+            "patterns": [
+                { from: './assets/images', to: 'images'},
+                { from: './assets/cke-plugins', to: 'js/cke-plugins'},
+                { from: './node_modules/ace-builds/src-noconflict', to: 'js/ace'},
+                {
+                    from: '{config.js,contents.css,styles.js,lang/**/*,plugins/**/*,skins/**/*,vendor/**/*}',
+                    to: 'js/ckeditor',
+                    context: './node_modules/ckeditor4',
+                }
+            ]
         }),
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
-            filename: "css/[name].[hash].css",
+            filename: "css/[name].[contenthash].css",
             chunkFilename: "[id].css"
         }),
     ],
+    optimization: {
+        minimizer: [new TerserPlugin({
+            extractComments: false,
+        })],
+    },
     context: path.resolve(__dirname, './'),
     entry: {
         'black': './assets/skins/black.js',
@@ -75,7 +73,14 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, 'src/Resources/public'),
-        filename: 'js/[name].[hash].js',
+        filename: 'js/[name].[contenthash].js',
+    },
+    resolve: {
+        fallback: {
+            "tty": require.resolve("tty-browserify"),
+            "stream": require.resolve("stream-browserify"),
+            "buffer": require.resolve("buffer")
+        }
     },
     module: {
         rules: [
@@ -99,29 +104,21 @@ module.exports = {
             },
             {
                 test: /\.(sa|sc|c)ss$/,
-                use: [{
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            // you can specify a publicPath here
-                            // by default it use publicPath in webpackOptions.output
-                            publicPath: '../'
-                        }
-                    },{
-                        loader: 'css-loader',
-                        options: {
-                            sourceMap: true
-                        }
-                    },
-                    // 'postcss-loader',
-                    'sass-loader',
+                use: [
+                    { loader: MiniCssExtractPlugin.loader, options: { publicPath: '../'} },
+                    { loader: 'css-loader', options: { sourceMap: true }},
+                   'sass-loader',
                 ],
             },
             {
-                test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
-                loader: 'url-loader',
-                options: {
-                    limit: 10000,
-                    name: 'media/[name].[ext]',
+                test: /\.(png|jpg|gif|svg)$/,
+                type: 'asset/inline',
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                type: 'asset/resource',
+                generator: {
+                    filename: 'media/[name][ext]'
                 }
             },
             {
@@ -133,4 +130,4 @@ module.exports = {
             }
         ]
     }
-};
+}

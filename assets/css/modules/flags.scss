@@ -1,5 +1,5 @@
 @mixin size($px) { width: ($px) + px; height: ($px  * 0.75) + px; display: inline-block; }
-@mixin image($locale) { background-image: url('../images/locales/'+ $locale +'.svg'); }
+@mixin image($locale) { background-image: url('../images/locales/' + $locale + '.svg'); }
 
 .ems-flag-xs-nl { @include image('nl'); @include size(15); }
 .ems-flag-xs-fr { @include image('fr'); @include size(15); }

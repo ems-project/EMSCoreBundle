@@ -11,8 +11,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EmsCollectionType extends CollectionType
 {
-    /** @var AuthorizationCheckerInterface */
-    protected $authorizationChecker;
+    protected AuthorizationCheckerInterface $authorizationChecker;
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker)
     {
@@ -20,11 +19,10 @@ class EmsCollectionType extends CollectionType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \Symfony\Component\Form\Extension\Core\Type\CollectionType::buildForm()
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = clone $builder->getOptions()['metadata'];
@@ -57,9 +55,8 @@ class EmsCollectionType extends CollectionType
         parent::buildForm($builder, $options);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
         $resolver->setDefaults([
                 'collapsible' => false,

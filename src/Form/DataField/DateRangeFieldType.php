@@ -15,62 +15,49 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DateRangeFieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Date range field';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-calendar-o';
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {
-        $options = $dataField->getFieldType()->getOptions();
-        if (!empty($dataField->getRawData())) {
-            $temp = $dataField->getRawData();
+        $options = $dataField->giveFieldType()->getOptions();
+        $rawData = $dataField->getRawData();
 
-            $dateFrom = \DateTime::createFromFormat(\DateTime::ISO8601, $temp[$options['mappingOptions']['fromDateMachineName']]);
-            $dateTo = \DateTime::createFromFormat(\DateTime::ISO8601, $temp[$options['mappingOptions']['toDateMachineName']]);
+        if (\is_array($rawData) && !empty($dataField->getRawData())) {
+            $dateFrom = \DateTime::createFromFormat(\DateTimeInterface::ISO8601, $rawData[$options['mappingOptions']['fromDateMachineName']]);
+            $dateTo = \DateTime::createFromFormat(\DateTimeInterface::ISO8601, $rawData[$options['mappingOptions']['toDateMachineName']]);
 
             if ($dateFrom && $dateTo) {
-                $displayformat = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
+                $displayFormat = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
 
-                return ['value' => $dateFrom->format($displayformat).' - '.$dateTo->format($displayformat)];
+                return ['value' => $dateFrom->format($displayFormat).' - '.$dateTo->format($displayFormat)];
             }
         }
 
         return ['value' => ''];
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+     * @param array<mixed> $data
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
         $input = $data['value'];
@@ -101,18 +88,16 @@ class DateRangeFieldType extends DataFieldType
 
             $dataField->setRawData($convertedDates);
         } else {
-            //TODO: log warnign
+            // TODO: log warnign
         }
 
         return $dataField;
     }
 
     /**
-     * @throws \Exception
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public static function filterSubField(array $data, array $option)
+    public static function filterSubField(array $data, array $option): array
     {
         if (!$option['mappingOptions']['nested']) {
             $range = [];
@@ -132,34 +117,38 @@ class DateRangeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public static function isVirtual(array $option = [])
+    public static function isVirtual(array $option = []): bool
     {
         if (!isset($option['mappingOptions'])) {
             return false;
         }
 
-        return !$option['mappingOptions']['nested'] ?? false;
+        $nested = $option['mappingOptions']['nested'] ?? false;
+
+        return !$nested;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
-        $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
+        $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
-            if (!$dataField->getFieldType()->getMappingOptions()['nested']) {
+            $mappingOptions = $dataField->giveFieldType()->getMappingOptions();
+
+            if (!$mappingOptions['nested']) {
                 $out = [];
                 $in = [];
-                if (isset($sourceArray[$dataField->getFieldType()->getMappingOptions()['fromDateMachineName']])) {
-                    $out[] = $dataField->getFieldType()->getMappingOptions()['fromDateMachineName'];
-                    $in[$dataField->getFieldType()->getMappingOptions()['fromDateMachineName']] = $sourceArray[$dataField->getFieldType()->getMappingOptions()['fromDateMachineName']];
+                if (isset($sourceArray[$mappingOptions['fromDateMachineName']])) {
+                    $out[] = $mappingOptions['fromDateMachineName'];
+                    $in[$mappingOptions['fromDateMachineName']] = $sourceArray[$mappingOptions['fromDateMachineName']];
                 }
-                if (isset($sourceArray[$dataField->getFieldType()->getMappingOptions()['toDateMachineName']])) {
-                    $out[] = $dataField->getFieldType()->getMappingOptions()['toDateMachineName'];
-                    $in[$dataField->getFieldType()->getMappingOptions()['toDateMachineName']] = $sourceArray[$dataField->getFieldType()->getMappingOptions()['toDateMachineName']];
+                if (isset($sourceArray[$mappingOptions['toDateMachineName']])) {
+                    $out[] = $mappingOptions['toDateMachineName'];
+                    $in[$mappingOptions['toDateMachineName']] = $sourceArray[$mappingOptions['toDateMachineName']];
                 }
                 $dataField->setRawData($in);
 
@@ -169,13 +158,10 @@ class DateRangeFieldType extends DataFieldType
             }
         }
 
-        return [$dataField->getFieldType()->getName()];
+        return [$dataField->giveFieldType()->getName()];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -188,9 +174,10 @@ class DateRangeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
@@ -208,9 +195,9 @@ class DateRangeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getDefaultOptions($name)
+    public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
 
@@ -227,10 +214,10 @@ class DateRangeFieldType extends DataFieldType
         return $out;
     }
 
-    public static function convertJavascriptDateRangeFormat($format)
+    public static function convertJavascriptDateRangeFormat(string $format): string
     {
         $dateFormat = $format;
-        //see http://www.daterangepicker.com/#examples
+        // see http://www.daterangepicker.com/#examples
         $dateFormat = \str_replace('DD', 'd', $dateFormat);
         $dateFormat = \str_replace('MM', 'm', $dateFormat);
         $dateFormat = \str_replace('YYYY', 'Y', $dateFormat);
@@ -244,7 +231,10 @@ class DateRangeFieldType extends DataFieldType
         return $dateFormat;
     }
 
-    public function generateMapping(FieldType $current)
+    /**
+     * {@inheritDoc}
+     */
+    public function generateMapping(FieldType $current): array
     {
         $out = [
             $current->getMappingOptions()['fromDateMachineName'] => [
@@ -275,13 +265,13 @@ class DateRangeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            if ($data->getFieldType()->getMappingOptions()['nested']) {
-                $out[$data->getFieldType()->getName()] = $data->getRawData();
+        if (!$data->giveFieldType()->getDeleted()) {
+            if ($data->giveFieldType()->getMappingOptions()['nested']) {
+                $out[$data->giveFieldType()->getName()] = $data->getRawData();
             } else {
                 $rawData = $data->getRawData();
                 if (!\is_array($rawData) || empty($rawData)) {
@@ -294,9 +284,9 @@ class DateRangeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');

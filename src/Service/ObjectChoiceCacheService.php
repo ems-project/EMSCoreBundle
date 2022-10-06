@@ -117,9 +117,6 @@ class ObjectChoiceCacheService
                     }
 
                     foreach ($resultSet as $result) {
-                        if (false === $result) {
-                            continue;
-                        }
                         $hitDocument = Document::fromResult($result);
                         if (!isset($choices[$hitDocument->getEmsId()])) {
                             $itemContentType = $this->contentTypeService->getByName($hitDocument->getContentType());
@@ -222,9 +219,6 @@ class ObjectChoiceCacheService
             $scroll = $this->elasticaService->scroll($search);
             foreach ($scroll as $resultSet) {
                 foreach ($resultSet as $result) {
-                    if (false === $result) {
-                        continue;
-                    }
                     $document = Document::fromResult($result);
                     $contentType = $this->contentTypeService->getByName($document->getContentType());
                     if (false === $contentType) {

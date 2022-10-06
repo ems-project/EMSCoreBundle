@@ -7,16 +7,19 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\FieldType\FieldTypeType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentTypeStructureType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var ContentType $contentType */
         $contentType = $builder->getData();
 
-        if ($contentType->getEnvironment()->getManaged()) {
+        if ($contentType->giveEnvironment()->getManaged()) {
             $builder->add('fieldType', FieldTypeType::class, [
                 'data' => $contentType->getFieldType(),
             ]);
@@ -40,15 +43,5 @@ class ContentTypeStructureType extends AbstractType
                 ],
                 'icon' => 'fa fa-reorder',
         ]);
-
-        return parent::buildForm($builder, $options);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-//         $resolver->setDefault ( 'twigWithWysiwyg', true );
     }
 }

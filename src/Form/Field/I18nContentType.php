@@ -10,9 +10,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 class I18nContentType extends AbstractType
 {
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('locale', TextType::class, [
             'required' => true,
@@ -25,10 +26,7 @@ class I18nContentType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'i18n_content';
     }

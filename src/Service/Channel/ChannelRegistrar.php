@@ -18,15 +18,22 @@ final class ChannelRegistrar
     private EnvironmentHelperInterface $environmentHelper;
     private LoggerInterface $logger;
     private IndexService $indexService;
+    private string $firewallName;
 
     public const EMSCO_CHANNEL_PATH_REGEX = '/^(\\/index\\.php)?\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
 
-    public function __construct(ChannelRepository $channelRepository, EnvironmentHelperInterface $environmentHelper, LoggerInterface $logger, IndexService $indexService)
-    {
+    public function __construct(
+        ChannelRepository $channelRepository,
+        EnvironmentHelperInterface $environmentHelper,
+        LoggerInterface $logger,
+        IndexService $indexService,
+        string $firewallName
+    ) {
         $this->channelRepository = $channelRepository;
         $this->environmentHelper = $environmentHelper;
         $this->logger = $logger;
         $this->indexService = $indexService;
+        $this->firewallName = $firewallName;
     }
 
     public function register(Request $request): void
@@ -76,6 +83,6 @@ final class ChannelRegistrar
 
     private function isAnonymousUser(Request $request): bool
     {
-        return null === $request->getSession()->get('_security_main');
+        return null === $request->getSession()->get('_security_'.$this->firewallName);
     }
 }

@@ -3,10 +3,13 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * ContentType.
@@ -17,6 +20,7 @@ use EMS\CoreBundle\Form\DataField\ContainerFieldType;
  */
 class ContentType extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -25,20 +29,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    protected $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    protected $modified;
 
     /**
      * @ORM\Column(name="name", type="string", length=100)
@@ -116,11 +106,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $businessIdField;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="deleted", type="boolean")
      */
-    protected $deleted;
+    protected bool $deleted = false;
 
     /**
      * @var bool
@@ -264,11 +252,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $sortBy;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="sort_order", type="string", length=4, nullable=true, options={"default" : "asc"})
      */
-    protected $sortOrder;
+    protected ?string $sortOrder = null;
 
     /**
      * @var string
@@ -320,18 +306,14 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected ?string $ownerRole = null;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="orderKey", type="integer")
      */
-    protected $orderKey = 0;
+    protected int $orderKey = 0;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="rootContentType", type="boolean")
      */
-    protected $rootContentType;
+    protected bool $rootContentType = true;
 
     /**
      * @var bool
@@ -355,14 +337,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $autoPublish;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="active", type="boolean")
      */
-    protected $active = false;
+    protected bool $active = false;
 
     /**
      * @var Environment|null
+     *
      * @ORM\ManyToOne(targetEntity="Environment", inversedBy="contentTypesHavingThisAsDefault")
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
@@ -372,7 +353,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @ORM\OneToMany(targetEntity="Template", mappedBy="contentType", cascade={"persist", "remove"})
      * @ORM\OrderBy({"orderKey" = "ASC"})
      *
-     * @var ArrayCollection<int, Template>
+     * @var Collection<int, Template>
      */
     protected $templates;
 
@@ -380,12 +361,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @ORM\OneToMany(targetEntity="View", mappedBy="contentType", cascade={"persist", "remove"})
      * @ORM\OrderBy({"orderKey" = "ASC"})
      *
-     * @var ArrayCollection<int, View>
+     * @var Collection<int, View>
      */
     protected $views;
 
     /**
      * @var string
+     *
      * @ORM\Column(name="default_value", type="text", nullable=true)
      */
     public $defaultValue;
@@ -398,11 +380,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $translationField;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="localeField", type="string", length=100, nullable=true)
      */
-    protected $localeField;
+    protected ?string $localeField = null;
 
     /**
      * @var string
@@ -419,11 +399,18 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $createLinkDisplayRole = 'ROLE_USER';
 
     /**
-     * @var string[]
+     * @var ?string[]
      *
-     * @ORM\Column(name="version_tags", type="json_array", nullable=true)
+     * @ORM\Column(name="version_tags", type="json", nullable=true)
      */
-    protected $versionTags = [];
+    protected ?array $versionTags = [];
+
+    /**
+     * @var ?array<string, bool>
+     *
+     * @ORM\Column(name="version_options", type="json", nullable=true)
+     */
+    protected ?array $versionOptions = [];
 
     /**
      * @var string|null
@@ -455,35 +442,14 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         $fieldType->setContentType($this);
         $this->setFieldType($fieldType);
         $this->setAskForOuuid(true);
+
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     public function __toString()
     {
         return $this->name;
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified()
-    {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
-        if (!isset($this->deleted)) {
-            $this->deleted = false;
-        }
-        if (!isset($this->orderKey)) {
-            $this->orderKey = 0;
-        }
-        if (!isset($this->rootContentType)) {
-            $this->rootContentType = true;
-        }
-        if (!isset($this->active)) {
-            $this->active = false;
-        }
     }
 
     /**
@@ -494,54 +460,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return ContentType
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return ContentType
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**
@@ -1316,18 +1234,15 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this;
     }
 
-    /**
-     * Remove template.
-     */
-    public function removeTemplate(Template $template)
+    public function removeTemplate(Template $template): void
     {
         $this->templates->removeElement($template);
     }
 
     /**
-     * @return ArrayCollection<int, Template>
+     * @return Collection<int, Template>
      */
-    public function getTemplates()
+    public function getTemplates(): Collection
     {
         return $this->templates;
     }
@@ -1344,18 +1259,15 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this;
     }
 
-    /**
-     * Remove view.
-     */
-    public function removeView(View $view)
+    public function removeView(View $view): void
     {
         $this->views->removeElement($view);
     }
 
     /**
-     * @return ArrayCollection<int, View>
+     * @return Collection<int, View>
      */
-    public function getViews()
+    public function getViews(): Collection
     {
         return $this->views;
     }
@@ -1904,7 +1816,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     public function hasVersionTags(): bool
     {
-        return \count($this->versionTags) > 0;
+        return \count($this->versionTags ?? []) > 0;
     }
 
     /**
@@ -1912,15 +1824,25 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      */
     public function getVersionTags(): array
     {
-        return $this->versionTags;
+        return $this->versionTags ?? [];
     }
 
     /**
-     * @param string[] $versionTags
+     * @param ?string[] $versionTags
      */
-    public function setVersionTags(array $versionTags): void
+    public function setVersionTags(?array $versionTags): void
     {
         $this->versionTags = $versionTags;
+    }
+
+    public function getVersionOptions(): VersionOptions
+    {
+        return new VersionOptions($this->versionOptions ?? []);
+    }
+
+    public function setVersionOptions(VersionOptions $versionOptions): void
+    {
+        $this->versionOptions = $versionOptions->getOptions();
     }
 
     public function getVersionDateFromField(): ?string
@@ -1948,10 +1870,14 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      */
     public function getDisabledDataFields(): array
     {
-        return \array_filter([
-            $this->getVersionDateFromField(),
-            $this->getVersionDateToField(),
-        ]);
+        if ($this->getVersionOptions()[VersionOptions::DATES_READ_ONLY]) {
+            return \array_filter([
+                $this->getVersionDateFromField(),
+                $this->getVersionDateToField(),
+            ]);
+        }
+
+        return [];
     }
 
     public function hasOwnerRole(): bool

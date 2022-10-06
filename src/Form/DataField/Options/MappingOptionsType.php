@@ -21,7 +21,7 @@ class MappingOptionsType extends AbstractType
 {
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<mixed>                               $options
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

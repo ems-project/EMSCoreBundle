@@ -10,7 +10,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ReorderType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('items', ItemsType::class, [
                 'result' => $options['result'],
@@ -24,7 +28,7 @@ class ReorderType extends AbstractType
         ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'result' => [],

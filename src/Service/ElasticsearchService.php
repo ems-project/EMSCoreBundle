@@ -3,18 +3,13 @@
 namespace EMS\CoreBundle\Service;
 
 use EMS\CommonBundle\Service\ElasticaService;
-use Psr\Log\LoggerInterface;
 
 class ElasticsearchService
 {
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var ElasticaService */
-    private $elasticaService;
+    private ElasticaService $elasticaService;
 
-    public function __construct(LoggerInterface $logger, ElasticaService $elasticaService)
+    public function __construct(ElasticaService $elasticaService)
     {
-        $this->logger = $logger;
         $this->elasticaService = $elasticaService;
     }
 
@@ -24,105 +19,51 @@ class ElasticsearchService
     }
 
     /**
-     * Compare the parameter specified version with a string.
+     * Return a keyword mapping (not analyzed).
      *
-     * @param string $version
-     *
-     * @return mixed
+     * @return array<string, string>
      */
-    public function compare($version)
+    public function getKeywordMapping(): array
     {
-        return \version_compare($this->getVersion(), $version);
+        return ['type' => 'keyword'];
     }
 
     /**
      * Return a keyword mapping (not analyzed).
      *
-     * @return string[]
-     */
-    public function getKeywordMapping()
-    {
-        if (\version_compare($this->getVersion(), '5') > 0) {
-            return [
-                'type' => 'keyword',
-            ];
-        }
-
-        return [
-            'type' => 'string',
-            'index' => 'not_analyzed',
-        ];
-    }
-
-    /**
-     * Convert mapping.
+     * @param array<mixed> $mapping
      *
-     * @return string[]
+     * @return array<mixed>
      */
-    public function convertMapping(array $in)
-    {
-        $out = $in;
-        if (\version_compare($this->getVersion(), '5') > 0) {
-            if (isset($out['analyzer']) && 'keyword' === $out['analyzer']) {
-                $out['type'] = 'keyword';
-                unset($out['analyzer']);
-                unset($out['fielddata']);
-                unset($out['index']);
-            } elseif (isset($out['index']) && 'not_analyzed' === $out['index']) {
-                $out['type'] = 'keyword';
-                unset($out['analyzer']);
-                unset($out['fielddata']);
-                unset($out['index']);
-            } elseif (isset($out['type']) && 'string' === $out['type']) {
-                $out['type'] = 'text';
-            } elseif (isset($out['type']) && 'keyword' === $out['type']) {
-                unset($out['analyzer']);
-                unset($out['fielddata']);
-                unset($out['index']);
-            }
-        }
-
-        return $out;
-    }
-
-    /**
-     * Return a keyword mapping (not analyzed).
-     *
-     * @return string[]
-     */
-    public function updateMapping($mapping)
+    public function updateMapping(array $mapping): array
     {
         if (isset($mapping['copy_to']) && !empty($mapping['copy_to']) && \is_string($mapping['copy_to'])) {
             $mapping['copy_to'] = \explode(',', $mapping['copy_to']);
         }
 
-        if (\version_compare($this->getVersion(), '5') > 0) {
-            if ('string' === $mapping['type']) {
-                if ((isset($mapping['analyzer']) && 'keyword' === $mapping['analyzer']) || (empty($mapping['analyzer']) && isset($mapping['index']) && 'not_analyzed' === $mapping['index'])) {
-                    $mapping['type'] = 'keyword';
-                    unset($mapping['analyzer']);
-                } else {
-                    $mapping['type'] = 'text';
-                }
+        if ('string' === $mapping['type']) {
+            if ((isset($mapping['analyzer']) && 'keyword' === $mapping['analyzer']) || (empty($mapping['analyzer']) && isset($mapping['index']) && 'not_analyzed' === $mapping['index'])) {
+                $mapping['type'] = 'keyword';
+                unset($mapping['analyzer']);
+            } else {
+                $mapping['type'] = 'text';
             }
+        }
 
-            if (isset($mapping['index']) && 'No' === $mapping['index']) {
-                $mapping['index'] = false;
-            }
-            if (isset($mapping['index']) && false !== $mapping['index']) {
-                $mapping['index'] = true;
-            }
+        if (isset($mapping['index']) && 'No' === $mapping['index']) {
+            $mapping['index'] = false;
+        }
+        if (isset($mapping['index']) && false !== $mapping['index']) {
+            $mapping['index'] = true;
         }
 
         return $mapping;
     }
 
     /**
-     * Return a datetime mapping.
-     *
-     * @return string[]
+     * @return array<string, string>
      */
-    public function getDateTimeMapping()
+    public function getDateTimeMapping(): array
     {
         return [
             'type' => 'date',
@@ -131,59 +72,34 @@ class ElasticsearchService
     }
 
     /**
-     * Return a not indexed text mapping.
-     *
-     * @return array
+     * @return array{type: 'text', index: false}
      */
-    public function getNotIndexedStringMapping()
+    public function getNotIndexedStringMapping(): array
     {
-        if (\version_compare($this->getVersion(), '5') > 0) {
-            return [
-                'type' => 'text',
-                'index' => false,
-            ];
-        }
-
         return [
-            'type' => 'string',
-            'index' => 'no',
+            'type' => 'text',
+            'index' => false,
         ];
     }
 
     /**
-     * Return a indexed text mapping.
-     *
-     * @return array
+     * @return array{type: 'text', index: true}
      */
-    public function getIndexedStringMapping()
+    public function getIndexedStringMapping(): array
     {
-        if (\version_compare($this->getVersion(), '5') > 0) {
-            return [
-                'type' => 'text',
-                'index' => true,
-            ];
-        }
-
         return [
-            'type' => 'string',
-            'index' => 'analyzed',
+            'type' => 'text',
+            'index' => true,
         ];
     }
 
     /**
-     * Return a indexed text mapping.
-     *
-     * @return string[]
+     * @return array<string, string>
      */
-    public function getLongMapping()
+    public function getLongMapping(): array
     {
         return [
             'type' => 'long',
         ];
-    }
-
-    public function withAllMapping()
-    {
-        return \version_compare($this->getVersion(), '5.6') < 0;
     }
 }

@@ -15,12 +15,14 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CommonBundle\Twig\RequestRuntime;
+use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer;
 use EMS\CoreBundle\Core\Revision\Wysiwyg\WysiwygRuntime;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\Sequence;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Form\Data\Condition\InMyCircles;
@@ -39,6 +41,7 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -63,7 +66,7 @@ class AppExtension extends AbstractExtension
     private ObjectChoiceListFactory $objectChoiceListFactory;
     private EnvironmentService $environmentService;
     private LoggerInterface $logger;
-    private \Swift_Mailer $mailer;
+    private MailerService $mailer;
     private ElasticaService $elasticaService;
     private SearchService $searchService;
     private AssetRuntime $assetRuntime;
@@ -84,7 +87,7 @@ class AppExtension extends AbstractExtension
         FormFactory $formFactory,
         FileService $fileService,
         RequestRuntime $commonRequestRuntime,
-        \Swift_Mailer $mailer,
+        MailerService $mailer,
         ElasticaService $elasticaService,
         SearchService $searchService,
         AssetRuntime $assetRuntime,
@@ -110,11 +113,9 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see Twig_Extension::getFunctions()
+     * {@inheritDoc}
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('get_content_types', [$this, 'getContentTypes']),
@@ -154,11 +155,9 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see Twig_Extension::getFilters()
+     * {@inheritDoc}
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('data', [$this, 'data']),
@@ -207,20 +206,23 @@ class AppExtension extends AbstractExtension
             new TwigFilter('emsco_log_error', [CoreRuntime::class, 'logError']),
             new TwigFilter('emsco_guess_locale', [DataExtractorRuntime::class, 'guessLocale']),
             new TwigFilter('emsco_asset_meta', [DataExtractorRuntime::class, 'assetMeta']),
-            //deprecated
+            // deprecated
             new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
             new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),
         ];
     }
 
-    public function generateEmailMessage(string $title): \Swift_Message
+    public function generateEmailMessage(string $title): Email
     {
-        return new \Swift_Message($title);
+        $mail = new Email();
+        $mail->subject($title);
+
+        return $mail;
     }
 
-    public function sendEmail(\Swift_Message $message): void
+    public function sendEmail(Email $email): void
     {
-        $this->mailer->send($message);
+        $this->mailer->sendMail($email);
     }
 
     /**
@@ -242,7 +244,7 @@ class AppExtension extends AbstractExtension
         // removes invalid options like _sha1, _finalized_by, ..
         $config = \array_intersect_key($config, Config::getDefaults());
 
-        //_published_datetime can also be removed as it has a sense only if the default config is updated
+        // _published_datetime can also be removed as it has a sense only if the default config is updated
         if (isset($config['_published_datetime'])) {
             unset($config['_published_datetime']);
         }
@@ -251,6 +253,8 @@ class AppExtension extends AbstractExtension
     }
 
     /**
+     * @param int<1,512> $depth
+     *
      * @return mixed
      */
     public function jsonDecode(string $json, bool $assoc = true, int $depth = 512, int $options = 0)
@@ -656,7 +660,7 @@ class AppExtension extends AbstractExtension
     public function getSequenceNextValue(string $name): int
     {
         $em = $this->doctrine->getManager();
-        $repo = $em->getRepository('EMSCoreBundle:Sequence');
+        $repo = $em->getRepository(Sequence::class);
         if (!$repo instanceof SequenceRepository) {
             throw new \RuntimeException('Unexpected repository');
         }
@@ -787,13 +791,10 @@ class AppExtension extends AbstractExtension
         if (null === $username || '' === $username) {
             return 'N/A';
         }
-        /** @var UserInterface $user */
+        /** @var ?UserInterface $user */
         $user = $this->userService->getUser($username);
-        if (!empty($user)) {
-            return $user->getDisplayName();
-        }
 
-        return $username;
+        return $user ? $user->getDisplayName() : $username;
     }
 
     public function srcPath(string $input, string $fileName = null): ?string
@@ -805,7 +806,7 @@ class AppExtension extends AbstractExtension
             '/(ems:\/\/asset:)(?P<hash>[^\n\r"\'\?]*)(?:\?(?P<query>(?:[^\n\r"|\']*)))?/i',
             function ($matches) use ($path, $fileName) {
                 if ($fileName) {
-                    return $this->fileService->getFile($matches['hash']);
+                    return $this->fileService->getFile($matches['hash']) ?? $path.$matches['hash'];
                 }
 
                 $parameters = [];
@@ -816,13 +817,13 @@ class AppExtension extends AbstractExtension
                         EmsFields::CONTENT_FILE_HASH_FIELD => $matches['hash'],
                         EmsFields::CONTENT_FILE_NAME_FIELD => $parameters['name'],
                         EmsFields::CONTENT_MIME_TYPE_FIELD => $parameters['type'],
-                    ],[
+                    ], [
                     ],
-                    'ems_asset',
-                    EmsFields::CONTENT_FILE_HASH_FIELD,
-                    EmsFields::CONTENT_FILE_NAME_FIELD,
-                    EmsFields::CONTENT_MIME_TYPE_FIELD,
-                    UrlGeneratorInterface::ABSOLUTE_PATH);
+                        'ems_asset',
+                        EmsFields::CONTENT_FILE_HASH_FIELD,
+                        EmsFields::CONTENT_FILE_NAME_FIELD,
+                        EmsFields::CONTENT_MIME_TYPE_FIELD,
+                        UrlGeneratorInterface::ABSOLUTE_PATH);
                 }
 
                 return $path.$matches['hash'];
@@ -1026,7 +1027,7 @@ class AppExtension extends AbstractExtension
             if ($v <= 0.03928) {
                 $components[$c] = $v / 12.92;
             } else {
-                $components[$c] = \pow((($v + 0.055) / 1.055), 2.4);
+                $components[$c] = \pow(($v + 0.055) / 1.055, 2.4);
             }
         }
 
@@ -1154,8 +1155,8 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param mixed                                                        $wsdl
-     * @param array{function: string, options?: array, parameters?: mixed} $arguments
+     * @param mixed                                                               $wsdl
+     * @param array{function: string, options?: array<mixed>, parameters?: mixed} $arguments
      *
      * @return mixed
      */

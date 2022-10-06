@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Controller;
 
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\Dashboard\DashboardService;
-use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Routes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -15,13 +14,11 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 final class DashboardController extends AbstractController
 {
-    private TaskManager $taskManager;
     private DashboardManager $dashboardManager;
     private DashboardService $dashboardService;
 
-    public function __construct(TaskManager $taskManager, DashboardManager $dashboardManager, DashboardService $dashboardService)
+    public function __construct(DashboardManager $dashboardManager, DashboardService $dashboardService)
     {
-        $this->taskManager = $taskManager;
         $this->dashboardManager = $dashboardManager;
         $this->dashboardService = $dashboardService;
     }

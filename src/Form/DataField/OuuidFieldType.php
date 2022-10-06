@@ -4,25 +4,17 @@ namespace EMS\CoreBundle\Form\DataField;
 
 class OuuidFieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Copy of the object identifier';
     }
 
-    /**
-     * Get a icon to visually identify a FieldType.
-     *
-     * @return string
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-key';
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'empty';
     }

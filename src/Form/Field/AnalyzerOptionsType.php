@@ -53,9 +53,10 @@ class AnalyzerOptionsType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('type', ChoiceType::class, [
             'choices' => [
@@ -154,7 +155,7 @@ class AnalyzerOptionsType extends AbstractType
                 ];
 
                 /** @var FilterRepository $repository */
-                $repository = $this->doctrine->getRepository('EMSCoreBundle:Filter');
+                $repository = $this->doctrine->getRepository(Filter::class);
                 /** @var Filter $filter */
                 foreach ($repository->findAll() as $filter) {
                     $out['Customized'][$filter->getLabel()] = $filter->getName();

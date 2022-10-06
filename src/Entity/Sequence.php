@@ -3,16 +3,16 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\Helpers\Standard\DateTime;
 
 /**
- * Analyzer.
- *
  * @ORM\Table(name="sequence")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SequenceRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Sequence
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -23,25 +23,9 @@ class Sequence
     private $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    private $name;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
+    private string $name;
 
     /**
      * @var int
@@ -57,24 +41,23 @@ class Sequence
      */
     private $version;
 
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->value = 1;
         $this->version = 0;
         $this->name = $name;
+
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateVersion(): void
     {
-        $this->modified = new \DateTime();
         ++$this->version;
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
     }
 
     /**
@@ -109,54 +92,6 @@ class Sequence
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return Sequence
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return Sequence
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**

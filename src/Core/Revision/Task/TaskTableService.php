@@ -44,7 +44,7 @@ final class TaskTableService implements EntityServiceInterface
 
     public function buildTable(EntityTable $table, TaskTableContext $context): void
     {
-        /** @var array<string, array{type: ?string, column: ?string, label: string}> $columns */
+        /** @var array<string, array{type: ?string, column: ?string, label: string, mapping?: string}> $columns */
         $columns = $this->getColumns($context);
 
         foreach ($columns as $name => $options) {

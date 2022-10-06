@@ -159,9 +159,7 @@ final class QuerySearchService implements EntityServiceInterface
 
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
-                if ($result) {
-                    yield Document::fromResult($result);
-                }
+                yield Document::fromResult($result);
             }
         }
     }

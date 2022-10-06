@@ -9,26 +9,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SubmitEmsType extends SubmitType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
+    public function getParent(): string
     {
         return SubmitType::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'submitems';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
                 'compound' => false,
@@ -38,9 +29,10 @@ class SubmitEmsType extends SubmitType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['icon'] = $options['icon'];
         $view->vars['message'] = $options['message'];

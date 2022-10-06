@@ -191,36 +191,35 @@ class RevisionService implements RevisionServiceInterface
     public function saveVersion(Revision $revision, array $rawData, ?string $versionTag = null, ?FormInterface &$form = null): Revision
     {
         if (null !== $versionTag) {
-            $revision->setVersionTag($versionTag); //update version_tag archived versions
+            $revision->setVersionTag($versionTag); // update version_tag archived versions
         }
 
         if (null === $versionTag || null !== $revision->getVersionDate('to') || !$revision->hasOuuid()) {
-            //silent version publish || changing archived version revision || new document draft
+            // silent version publish || changing archived version revision || new document draft
             $this->save($revision, $rawData);
             $this->dataService->finalizeDraft($revision, $form);
 
             return $revision;
         }
 
-        $now = new \DateTimeImmutable();
+        if (null === $previousRevision = $this->revisionRepository->findPreviousRevision($revision)) {
+            throw new \RuntimeException('Could not find previous revision');
+        }
 
-        $newVersion = $revision->clone(); //create new version revision
-        $this->dataService->lockRevision($newVersion);
-        $newVersion->setVersionDate('from', $now);
-        $this->dataService->finalizeDraft($newVersion, $form);
+        $now = new \DateTimeImmutable();
+        $revision->setVersionDate('from', $now);
+        $this->dataService->finalizeDraft($revision, $form);
 
         if (0 < \count($form->getErrors(true))) {
             return $revision;
         }
 
-        $this->dataService->discardDraft($revision); //discard draft changes previous revision
-
-        $previousVersion = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->getOuuid());
-        $previousVersion->clearTasks();
+        $previousVersion = $previousRevision->clone();
+        $previousVersion->setEndTime(null);
         $previousVersion->setVersionDate('to', $now);
         $this->dataService->finalizeDraft($previousVersion);
 
-        return $newVersion;
+        return $revision;
     }
 
     public function getDocumentInfo(EMSLink $documentLink): DocumentInfo

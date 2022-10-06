@@ -3,21 +3,18 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityRepository;
-use EMS\CoreBundle\Entity\SortOption;
+use Doctrine\Persistence\ObjectRepository;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class EntityService
 {
-    /** @var Registry */
-    protected $doctrine;
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var TranslatorInterface */
-    protected $translator;
+    protected Registry $doctrine;
+    protected LoggerInterface $logger;
+    protected TranslatorInterface $translator;
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator)
     {
@@ -26,97 +23,96 @@ abstract class EntityService
         $this->translator = $translator;
     }
 
-    abstract protected function getRepositoryIdentifier();
+    /**
+     * @return class-string
+     */
+    abstract protected function getRepositoryIdentifier(): string;
 
-    abstract protected function getEntityName();
+    abstract protected function getEntityName(): string;
 
-    public function reorder(FormInterface $reorderForm)
+    /**
+     * @param FormInterface<FormInterface> $reorderForm
+     */
+    public function reorder(FormInterface $reorderForm): void
     {
-        $order = \json_decode($reorderForm->getData()['items'], true);
+        $order = Json::decode($reorderForm->getData()['items']);
         $i = 1;
         foreach ($order as $id) {
             $item = $this->get($id);
-            $item->setOrderKey($i++);
-            $this->save($item);
+
+            if ($item && \method_exists($item, 'setOrderKey')) {
+                $item->setOrderKey($i++);
+                $this->save($item);
+            }
         }
     }
 
     /**
-     * @return array<mixed>
+     * @return object[]
      */
-    public function getAll()
+    public function getAll(): array
     {
-        /** @var SortOption[] $items */
-        $items = $this->getRepository()->findAll();
-
-        return $items;
+        return $this->getRepository()->findAll();
     }
 
     /**
-     * @return ObjectRepository
+     * @return EntityRepository<object>
      */
-    private function getRepository()
+    private function getRepository(): ObjectRepository
     {
         $em = $this->doctrine->getManager();
 
         return $em->getRepository($this->getRepositoryIdentifier());
     }
 
-    /**
-     * @param int $id
-     *
-     * @return SortOption|null
-     */
-    public function get($id)
+    public function get(int $id): ?object
     {
-        /** @var SortOption|null $item */
-        $item = $this->getRepository()->find($id);
-
-        return $item;
+        return $this->getRepository()->find($id);
     }
 
-    public function create($entity)
+    public function create(object $entity): void
     {
-        /** @var EntityRepository $repository */
         $repository = $this->getRepository();
         $count = $repository->createQueryBuilder('a')
             ->select('COUNT(a)')
             ->getQuery()
             ->getSingleScalarResult();
 
-        $entity->setOrderKey(100 + $count);
-        $this->update($entity);
+        if (\method_exists($entity, 'setOrderKey')) {
+            $entity->setOrderKey(100 + $count);
+            $this->update($entity);
 
-        $this->logger->notice('service.entity.created', [
-            'entity_type' => $this->getEntityName(),
-            'entity_name' => $entity->getName(),
-        ]);
+            $this->logger->notice('service.entity.created', [
+                'entity_type' => $this->getEntityName(),
+                'entity_name' => \method_exists($entity, 'getName') ? $entity->getName() : \get_class($entity),
+            ]);
+        }
     }
 
-    public function save($entity)
+    public function save(object $entity): void
     {
         $this->update($entity);
         $this->logger->notice('service.entity.updated', [
             'entity_type' => $this->getEntityName(),
-            'entity_name' => $entity->getName(),
+            'entity_name' => \method_exists($entity, 'getName') ? $entity->getName() : \get_class($entity),
         ]);
     }
 
-    private function update($entity)
+    private function update(object $entity): void
     {
         $em = $this->doctrine->getManager();
         $em->persist($entity);
         $em->flush();
     }
 
-    public function remove($entity)
+    public function remove(object $entity): void
     {
         $em = $this->doctrine->getManager();
         $em->remove($entity);
         $em->flush();
         $this->logger->notice('service.entity.deleted', [
             'entity_type' => $this->getEntityName(),
-            'entity_name' => $entity->getName(),
+            'entity_name' => \method_exists($entity, 'getName') ? $entity->getName() : \get_class($entity),
         ]);
     }
 }

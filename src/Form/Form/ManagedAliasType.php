@@ -16,10 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ManagedAliasType extends AbstractType
 {
-    /**
-     * @var AliasService
-     */
-    private $aliasService;
+    private AliasService $aliasService;
 
     public function __construct(AliasService $aliasService)
     {
@@ -27,9 +24,10 @@ class ManagedAliasType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /* @var $data ManagedAlias */
         $data = $builder->getData();
@@ -65,10 +63,7 @@ class ManagedAliasType extends AbstractType
             ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => ManagedAlias::class,

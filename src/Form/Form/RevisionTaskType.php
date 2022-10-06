@@ -8,7 +8,7 @@ use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type as Type;
+use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,7 +16,7 @@ final class RevisionTaskType extends AbstractType
 {
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<mixed>                               $options
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

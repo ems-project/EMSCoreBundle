@@ -80,7 +80,7 @@ class LogController extends AbstractController
     {
         $this->logManager->delete($log);
 
-        return $this->redirectToRoute(Routes::LOG_INDEX, );
+        return $this->redirectToRoute(Routes::LOG_INDEX);
     }
 
     private function initTable(): EntityTable

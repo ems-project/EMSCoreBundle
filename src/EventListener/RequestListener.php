@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
@@ -18,7 +19,6 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment as TwigEnvironment;
@@ -50,13 +50,6 @@ class RequestListener
         if ($event->isMasterRequest()) {
             $this->channelRegistrar->register($event->getRequest());
         }
-
-        // TODO: move the next block to the FOS controller:
-//        if ($request->get('_route') === $this->userRegistrationRoute && !$this->allowUserRegistration) {
-//            $response = new RedirectResponse($this->router->generate($this->userLoginRoute, [], UrlGeneratorInterface::RELATIVE_PATH));
-//            $event->setResponse($response);
-//        }
-//
     }
 
     public function onKernelResponse(ResponseEvent $event): void
@@ -68,14 +61,14 @@ class RequestListener
         }
     }
 
-    public function onKernelException(ExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event): void
     {
-        //hide all errors to unauthenticated users
+        // hide all errors to unauthenticated users
         $exception = $event->getThrowable();
 
         try {
             if ($exception instanceof LockedException || $exception instanceof PrivilegeException) {
-                $this->logger->error(($exception instanceof LockedException ? 'log.locked_exception_error' : 'log.privilege_exception_error'), \array_merge(['username' => $exception->getRevision()->getLockBy()], LogRevisionContext::read($exception->getRevision())));
+                $this->logger->error($exception instanceof LockedException ? 'log.locked_exception_error' : 'log.privilege_exception_error', \array_merge(['username' => $exception->getRevision()->getLockBy()], LogRevisionContext::read($exception->getRevision())));
                 if (null == $exception->getRevision()->getOuuid()) {
                     $response = new RedirectResponse($this->router->generate('data.draft_in_progress', [
                             'contentTypeId' => $exception->getRevision()->giveContentType()->getId(),
@@ -97,12 +90,6 @@ class RequestListener
                     ]));
                 $event->setResponse($response);
             }
-            if ($exception instanceof AccessDeniedHttpException && null === $event->getRequest()->getUser()) {
-                $response = new RedirectResponse($this->router->generate('fos_user_security_login', [
-                    '_target_path' => $event->getRequest()->getRequestUri(),
-                ]));
-                $event->setResponse($response);
-            }
         } catch (Exception $e) {
             $this->logger->error('log.error', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -111,10 +98,10 @@ class RequestListener
         }
     }
 
-    public function provideTemplateTwigObjects(ControllerEvent $event)
+    public function provideTemplateTwigObjects(ControllerEvent $event): void
     {
-        //TODO: move to twig appextension?
-        $repository = $this->doctrine->getRepository('EMSCoreBundle:ContentType');
+        // TODO: move to twig appextension?
+        $repository = $this->doctrine->getRepository(ContentType::class);
         $contentTypes = $repository->findBy([
                 'deleted' => false,
 //                 'rootContentType' => true,
@@ -124,7 +111,7 @@ class RequestListener
 
         $this->twig->addGlobal('contentTypes', $contentTypes);
 
-        $envRepository = $this->doctrine->getRepository('EMSCoreBundle:Environment');
+        $envRepository = $this->doctrine->getRepository(Environment::class);
         $contentTypes = $envRepository->findBy([
                 'inDefaultSearch' => true,
         ]);

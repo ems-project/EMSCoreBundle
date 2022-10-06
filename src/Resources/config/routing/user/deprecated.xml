@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <!-- Deprecated -->
+    <route id="ems_core_user_ajax_data_table" path="/datatable.json" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\UserController:ajaxDataTableAction</default>
+    </route>
+    <route id="ems.user.index" path="/" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\UserController:indexAction</default>
+    </route>
+    <route id="user.add" path="/add" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\UserController:addUserAction</default>
+    </route>
+    <route id="user.edit" path="/{id}/edit" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\UserController:editUserAction</default>
+    </route>
+    <route id="user.delete" path="/{id}/delete" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\UserController:removeUserAction</default>
+    </route>
+    <route id="user.enabling" path="/{id}/enabling" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\UserController:enablingUserAction</default>
+    </route>
+    <route id="EMS_user_apikey" path="/{username}/apikey" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\UserController:apiKeyAction</default>
+    </route>
+
+
+</routes>

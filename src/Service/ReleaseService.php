@@ -78,7 +78,7 @@ final class ReleaseService implements EntityServiceInterface
         $releaseRevision = new ReleaseRevision();
         $releaseRevision->setRelease($release);
         $releaseRevision->setContentType($revision->giveContentType());
-        $releaseRevision->setRevisionOuuid($revision->getOuuid());
+        $releaseRevision->setRevisionOuuid($revision->giveOuuid());
         $releaseRevision->setRevision($revision);
         $release->addRevision($releaseRevision);
         $this->releaseRepository->create($release);
@@ -100,12 +100,10 @@ final class ReleaseService implements EntityServiceInterface
             $releaseRevision->setContentType($contentType);
             $revision = null;
 
-            if (!empty($release->getEnvironmentSource())) {
-                try {
-                    $revision = $this->dataService->getRevisionByEnvironment($emsLinkObject->getOuuid(), $contentType, $release->getEnvironmentSource());
-                } catch (NoResultException $e) {
-                    $revision = null;
-                }
+            try {
+                $revision = $this->dataService->getRevisionByEnvironment($emsLinkObject->getOuuid(), $contentType, $release->getEnvironmentSource());
+            } catch (NoResultException $e) {
+                $revision = null;
             }
 
             $releaseRevision->setRevision($revision);

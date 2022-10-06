@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -11,7 +13,7 @@ class AliasNameValidator extends ConstraintValidator
      * @param string    $value
      * @param AliasName $constraint
      */
-    public function validate($value, Constraint $constraint)
+    public function validate($value, Constraint $constraint): void
     {
         $regex = '/^[a-z][a-z0-9\-_]*$/';
 
@@ -22,8 +24,6 @@ class AliasNameValidator extends ConstraintValidator
                 ->atPath('name')
                 ->addViolation()
             ;
-
-            return;
         }
     }
 }

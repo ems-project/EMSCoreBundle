@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <defaults public="false" />
+
+        <!-- User Provider -->
+        <service id="emsco.security.provider.user" class="EMS\CoreBundle\Security\Provider\UserProvider">
+            <argument type="service" id="ems.repository.user"/>
+        </service>
+        <service id="emsco.security.provider.user_api" class="EMS\CoreBundle\Security\Provider\UserApiProvider">
+            <argument type="service" id="ems.repository.auth_token" />
+        </service>
+
+        <!-- Authenticators -->
+        <service id="emsco.security.authenticator.auth_token" class="EMS\CoreBundle\Security\Authenticator\AuthTokenAuthenticator" />
+        <service id="emsco.security.authenticator.auth_token_login" class="EMS\CoreBundle\Security\Authenticator\AuthTokenLoginAuthenticator">
+            <argument type="service" id="ems.repository.auth_token" />
+        </service>
+        <service id="emsco.security.authenticator.form_login" class="EMS\CoreBundle\Security\Authenticator\FormLoginAuthenticator">
+            <argument type="service" id="router" />
+            <argument>%ems_core.security.ldap.enabled%</argument>
+        </service>
+
+        <service id="ems_core.security.authenticator" class="EMS\CoreBundle\Security\Authenticator\Authenticator">
+            <argument type="service" id="emsco.security.authenticator.form_login" />
+            <argument type="service" id="security.user_authenticator" />
+            <argument type="service" id="request_stack" />
+        </service>
+    </services>
+</container>

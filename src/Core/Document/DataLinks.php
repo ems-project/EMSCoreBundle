@@ -94,7 +94,7 @@ final class DataLinks
      */
     public function getContentTypeNames(): array
     {
-        return \array_map(fn (ContentType $contentType) => $contentType->getName(), $this->contentTypes);
+        return \array_values(\array_map(fn (ContentType $contentType) => $contentType->getName(), $this->contentTypes));
     }
 
     /**

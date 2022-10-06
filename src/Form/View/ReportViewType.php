@@ -16,8 +16,7 @@ use Twig\Environment;
 
 class ReportViewType extends ViewType
 {
-    /** @var ElasticaService */
-    private $elasticaService;
+    private ElasticaService $elasticaService;
 
     public function __construct(FormFactory $formFactory, Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger)
     {
@@ -35,6 +34,10 @@ class ReportViewType extends ViewType
         return 'Report';
     }
 
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -71,10 +74,13 @@ class ReportViewType extends ViewType
         return 'report_view';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         try {
-            $renderQuery = $this->twig->createTemplate($view->getOptions()['body'])->render([
+            $renderQuery = $this->twig->createTemplate($view->getOptions()['body'] ?? '')->render([
                     'view' => $view,
                     'contentType' => $view->getContentType(),
                     'environment' => $view->getContentType()->getEnvironment(),
@@ -84,7 +90,7 @@ class ReportViewType extends ViewType
         }
 
         $searchQuery = [
-            'index' => $view->getContentType()->getEnvironment()->getAlias(),
+            'index' => $view->getContentType()->giveEnvironment()->getAlias(),
             'type' => $view->getContentType()->getName(),
             'body' => $renderQuery,
         ];
@@ -97,7 +103,7 @@ class ReportViewType extends ViewType
         $resultSet = $this->elasticaService->search($search);
 
         try {
-            $render = $this->twig->createTemplate($view->getOptions()['template'])->render([
+            $render = $this->twig->createTemplate($view->getOptions()['template'] ?? '')->render([
                 'view' => $view,
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),
@@ -107,7 +113,7 @@ class ReportViewType extends ViewType
             $render = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
         }
         try {
-            $javascript = $this->twig->createTemplate($view->getOptions()['javascript'])->render([
+            $javascript = $this->twig->createTemplate($view->getOptions()['javascript'] ?? '')->render([
                 'view' => $view,
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),
@@ -117,7 +123,7 @@ class ReportViewType extends ViewType
             $javascript = '';
         }
         try {
-            $header = $this->twig->createTemplate($view->getOptions()['header'])->render([
+            $header = $this->twig->createTemplate($view->getOptions()['header'] ?? '')->render([
                 'view' => $view,
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),

@@ -27,11 +27,13 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\Helpers\Standard\Type;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -70,7 +72,7 @@ class CriteriaController extends AbstractController
         $criteriaUpdateConfig = $form->getData();
 
         $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig);
-        $params = \explode(':', $request->request->all()['alignOn']);
+        $params = \explode(':', Type::string($request->request->get('alignOn')));
 
         $isRowAlign = ('row' == $params[0]);
         $key = $params[1].':'.$params[2];
@@ -204,10 +206,10 @@ class CriteriaController extends AbstractController
         \sleep(2);
         $this->elasticaService->getClusterHealth('green', '20s');
 
-        return $this->forward('EMSCoreBundle:Views\Criteria:generateCriteriaTable', ['view' => $view]);
+        return $this->forward('EMS\CoreBundle\Controller\Views\CriteriaController:generateCriteriaTable', ['view' => $view]);
     }
 
-    private function isAuthorized(FieldType $criteriaField, AuthorizationCheckerInterface $security)
+    private function isAuthorized(FieldType $criteriaField, AuthorizationCheckerInterface $security): bool
     {
         $authorized = empty($criteriaField->getMinimumRole()) || $security->isGranted($criteriaField->getMinimumRole());
         if ($authorized) {
@@ -227,7 +229,7 @@ class CriteriaController extends AbstractController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var RevisionRepository $revisionRep */
-        $revisionRep = $em->getRepository('EMSCoreBundle:Revision');
+        $revisionRep = $em->getRepository(Revision::class);
         $counters = $revisionRep->draftCounterGroupedByContentType([], true);
 
         foreach ($counters as $counter) {
@@ -254,7 +256,9 @@ class CriteriaController extends AbstractController
 
         $contentType = $view->getContentType();
         $valid = true;
-        if (!empty($view->getOptions()['categoryFieldPath']) && empty($criteriaUpdateConfig->getCategory()->getTextValue())) {
+        $category = $criteriaUpdateConfig->getCategory();
+
+        if (!empty($view->getOptions()['categoryFieldPath']) && $category && empty($category->getTextValue())) {
             $valid = false;
             $form->get('category')->addError(new FormError('Category is mandatory'));
         }
@@ -278,7 +282,7 @@ class CriteriaController extends AbstractController
 
         $criteriaField = $view->getContentType()->getFieldType();
         if ('internal' == $view->getOptions()['criteriaMode']) {
-            $criteriaField = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['criteriaField']);
+            $criteriaField = $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['criteriaField']);
         } elseif ('another' == $view->getOptions()['criteriaMode']) {
         } else {
             throw new Exception('Should never happen');
@@ -287,11 +291,12 @@ class CriteriaController extends AbstractController
         $columnField = null;
         $rowField = null;
         $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
+        $fieldPaths = \is_array($fieldPaths) ? $fieldPaths : [];
 
         $authorized = $this->isAuthorized($criteriaField, $this->authorizationChecker) && $this->authorizationChecker->isGranted($view->getContentType()->getEditRole());
 
         foreach ($fieldPaths as $path) {
-            /** @var FieldType $child */
+            /** @var false|FieldType $child */
             $child = $criteriaField->getChildByPath($path);
             if ($child) {
                 if ($child->getName() == $criteriaUpdateConfig->getColumnCriteria()) {
@@ -327,14 +332,14 @@ class CriteriaController extends AbstractController
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      *
      * @throws ContentTypeStructureException
      * @throws ElasticmsException
      * @throws PerformanceException
      * @throws Exception
      */
-    public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig)
+    public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig): array
     {
         $contentType = $view->getContentType();
 
@@ -358,13 +363,14 @@ class CriteriaController extends AbstractController
         $categoryChoiceList = false;
         if (null !== $criteriaUpdateConfig->getCategory()) {
             $dataField = $criteriaUpdateConfig->getCategory();
-            if ($dataField->getRawData() && \strlen($dataField->getTextValue()) > 0) {
-                $categoryFieldTypeName = $dataField->getFieldType()->getType();
+
+            if ($dataField->getRawData() && \strlen($dataField->getTextValue() ?? '') > 0) {
+                $categoryFieldTypeName = $dataField->giveFieldType()->getType();
                 /** @var DataFieldType $categoryFieldType */
                 $categoryFieldType = $this->getDataFieldType($categoryFieldTypeName);
 
                 $body['query']['bool']['must'][] = $categoryFieldType->getElasticsearchQuery($dataField);
-                $categoryChoiceList = $categoryFieldType->getChoiceList($dataField->getFieldType(), [$dataField->getRawData()]);
+                $categoryChoiceList = $categoryFieldType->getChoiceList($dataField->giveFieldType(), [$dataField->getRawData()]);
             }
         }
 
@@ -372,18 +378,27 @@ class CriteriaController extends AbstractController
         $criteriaChoiceLists = [];
         /** @var DataField $criteria */
         foreach ($criteriaUpdateConfig->getCriterion() as $criteria) {
-            $fieldTypeName = $criteria->getFieldType()->getType();
+            if (null === $fieldType = $criteria->getFieldType()) {
+                continue;
+            }
+
+            $fieldTypeName = $fieldType->getType();
             /** @var DataFieldType $dataFieldType */
             $dataFieldType = $this->getDataFieldType($fieldTypeName);
-            if (\count($criteria->getRawData()) > 0) {
+            $rawData = $criteria->getRawData();
+            if (!\is_array($rawData)) {
+                continue;
+            }
+
+            if (\count($rawData) > 0) {
                 if ($criteriaFieldName) {
                     $criteriaFilters[] = $dataFieldType->getElasticsearchQuery($criteria, ['nested' => $criteriaFieldName]);
                 } else {
                     $body['query']['bool']['must'][] = $dataFieldType->getElasticsearchQuery($criteria, []);
                 }
             }
-            $choicesList = $dataFieldType->getChoiceList($criteria->getFieldType(), $criteria->getRawData());
-            $criteriaChoiceLists[$criteria->getFieldType()->getName()] = $choicesList;
+            $choicesList = $dataFieldType->getChoiceList($fieldType, $rawData);
+            $criteriaChoiceLists[$fieldType->getName()] = $choicesList;
         }
 
         if ($criteriaFieldName) {
@@ -417,7 +432,7 @@ class CriteriaController extends AbstractController
             'index' => $contentType->giveEnvironment()->getAlias(),
             'type' => $contentType->getName(),
             'body' => $body,
-            'size' => 500, //is it enough?
+            'size' => 500, // is it enough?
         ]);
         $response = EmsResponse::fromResultSet($this->elasticaService->search($search));
 
@@ -438,7 +453,7 @@ class CriteriaController extends AbstractController
             }
         }
 
-        $loader = $this->objectChoiceListFactory->createLoader($loaderTypes, false);
+        $loader = $this->objectChoiceListFactory->createLoader($loaderTypes);
 
         /** @var Document $document */
         foreach ($response->getDocuments() as $document) {
@@ -480,12 +495,12 @@ class CriteriaController extends AbstractController
 
     public function addCriteriaAction(View $view, Request $request): Response
     {
-        $filters = $request->request->get('filters');
-        $target = $request->request->get('target');
-        $criteriaField = $request->request->get('criteriaField');
-        $category = $request->request->get('category');
+        $filters = $request->request->all('filters');
+        $target = Type::string($request->request->get('target'));
+        $criteriaField = Type::string($request->request->get('criteriaField'));
+        $category = Type::string($request->request->get('category'));
 
-        //TODO securtity test
+        // TODO securtity test
 
         if ('internal' == $view->getOptions()['criteriaMode']) {
             $structuredTarget = \explode(':', $target);
@@ -569,13 +584,12 @@ class CriteriaController extends AbstractController
     }
 
     /**
-     * @param string|null $targetFieldName
-     *
-     * @return bool|Revision|mixed|null
+     * @param array<mixed> $rawData
+     * @param array<mixed> $loadedRevision
      *
      * @throws DataStateException
      */
-    public function addCriteriaRevision(View $view, array $rawData, $targetFieldName, array $loadedRevision = [])
+    public function addCriteriaRevision(View $view, array $rawData, ?string $targetFieldName, array $loadedRevision = []): ?Revision
     {
         $multipleField = $this->getMultipleField($view->getContentType()->getFieldType());
 
@@ -702,20 +716,19 @@ class CriteriaController extends AbstractController
     }
 
     /**
-     * @param array  $filters
-     * @param string $criteriaField
+     * @param array<mixed> $filters
      *
-     * @return bool|Revision
+     * @return false|Revision
      *
      * @throws Exception
      */
-    public function addCriteria($filters, Revision $revision, $criteriaField)
+    public function addCriteria(array $filters, Revision $revision, string $criteriaField)
     {
         $rawData = $revision->getRawData();
         if (!isset($rawData[$criteriaField])) {
             $rawData[$criteriaField] = [];
         }
-        $multipleField = $this->getMultipleField($revision->giveContentType()->getFieldType()->__get('ems_'.$criteriaField));
+        $multipleField = $this->getMultipleField($revision->giveContentType()->getFieldType()->get('ems_'.$criteriaField));
 
         $found = false;
         foreach ($rawData[$criteriaField] as &$criteriaSet) {
@@ -730,12 +743,12 @@ class CriteriaController extends AbstractController
                 if ($multipleField && false === \array_search($filters[$multipleField], $criteriaSet[$multipleField])) {
                     $criteriaSet[$multipleField][] = $filters[$multipleField];
                     if (!$revision->getDraft()) {
-                        $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->getOuuid(), $revision);
+                        $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->giveOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
                     $this->logger->notice('log.view.criteria.added', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         'field_name' => $multipleField,
                         'field_data' => $filters[$multipleField],
@@ -745,7 +758,7 @@ class CriteriaController extends AbstractController
                 } else {
                     $this->logger->notice('log.view.criteria.already_exists', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         'field_name' => $multipleField,
                         'field_data' => $filters[$multipleField],
@@ -766,7 +779,7 @@ class CriteriaController extends AbstractController
             }
             $rawData[$criteriaField][] = $newCriterion;
             if (!$revision->getDraft()) {
-                $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->getOuuid(), $revision);
+                $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->giveOuuid(), $revision);
             }
             $revision->setRawData($rawData);
 
@@ -778,12 +791,12 @@ class CriteriaController extends AbstractController
 
     public function removeCriteriaAction(View $view, Request $request): Response
     {
-        $filters = $request->request->get('filters');
-        $target = $request->request->get('target');
-        $criteriaField = $request->request->get('criteriaField');
-        $category = $request->request->get('category');
+        $filters = $request->request->all('filters');
+        $target = Type::string($request->request->get('target'));
+        $criteriaField = Type::string($request->request->get('criteriaField'));
+        $category = Type::string($request->request->get('category'));
 
-        //TODO securtity test
+        // TODO securtity test
 
         if ('internal' == $view->getOptions()['criteriaMode']) {
             $structuredTarget = \explode(':', $target);
@@ -852,13 +865,14 @@ class CriteriaController extends AbstractController
     }
 
     /**
-     * @param ?string $targetFieldName
+     * @param array<mixed> $rawData
+     * @param array<mixed> $loadedRevision
      *
      * @return Revision|mixed|null
      *
      * @throws Exception
      */
-    public function removeCriteriaRevision(View $view, array $rawData, $targetFieldName, array $loadedRevision = [])
+    public function removeCriteriaRevision(View $view, array $rawData, ?string $targetFieldName, array $loadedRevision = [])
     {
         $multipleField = $this->getMultipleField($view->getContentType()->getFieldType());
 
@@ -883,7 +897,7 @@ class CriteriaController extends AbstractController
 
         $search = $this->elasticaService->convertElasticsearchSearch([
                 'body' => $body,
-                'index' => $view->getContentType()->getEnvironment()->getAlias(),
+                'index' => $view->getContentType()->giveEnvironment()->getAlias(),
                 'type' => $view->getContentType()->getName(),
         ]);
         $response = EmsResponse::fromResultSet($this->elasticaService->search($search));
@@ -961,20 +975,19 @@ class CriteriaController extends AbstractController
     }
 
     /**
-     * @param array  $filters
-     * @param string $criteriaField
+     * @param array<mixed> $filters
      *
-     * @return bool|Revision
+     * @return false|Revision
      *
      * @throws Exception
      */
-    public function removeCriteria($filters, Revision $revision, $criteriaField)
+    public function removeCriteria(array $filters, Revision $revision, string $criteriaField)
     {
         $rawData = $revision->getRawData();
         if (!isset($rawData[$criteriaField])) {
             $rawData[$criteriaField] = [];
         }
-        $criteriaFieldType = $revision->giveContentType()->getFieldType()->__get('ems_'.$criteriaField);
+        $criteriaFieldType = $revision->giveContentType()->getFieldType()->get('ems_'.$criteriaField);
         $multipleField = $this->getMultipleField($criteriaFieldType);
 
         $found = false;
@@ -1002,12 +1015,12 @@ class CriteriaController extends AbstractController
                         }
 
                         if (!$revision->getDraft()) {
-                            $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->getOuuid(), $revision);
+                            $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->giveOuuid(), $revision);
                         }
                         $revision->setRawData($rawData);
                         $this->logger->notice('log.view.criteria.removed', [
                             EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                            EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                             'field_name' => $multipleField,
                             'field_data' => $filters[$multipleField],
@@ -1020,12 +1033,12 @@ class CriteriaController extends AbstractController
                     $rawData[$criteriaField][$index] = \array_values($rawData[$criteriaField][$index]);
 
                     if (!$revision->getDraft()) {
-                        $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->getOuuid(), $revision);
+                        $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->giveOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
                     $this->logger->notice('log.view.criteria.removed', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         'field_name' => $multipleField,
                     ]);
@@ -1040,14 +1053,21 @@ class CriteriaController extends AbstractController
             $this->logger->notice('log.view.criteria.document_key_not_found', [
                 'document_reference' => $criteriaField,
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
             ]);
         }
 
         return false;
     }
 
-    private function addToTable(ObjectChoiceListItem &$choice, array &$table, array &$criterion, array $criteriaNames, array &$criteriaChoiceLists, CriteriaUpdateConfig &$config, array $context = [])
+    /**
+     * @param array<mixed> $table
+     * @param array<mixed> $criterion
+     * @param array<mixed> $criteriaNames
+     * @param array<mixed> $criteriaChoiceLists
+     * @param array<mixed> $context
+     */
+    private function addToTable(ObjectChoiceListItem &$choice, array &$table, array &$criterion, array $criteriaNames, array &$criteriaChoiceLists, CriteriaUpdateConfig &$config, array $context = []): void
     {
         $criteriaName = \array_pop($criteriaNames);
         $criterionList = $criterion[$criteriaName];
@@ -1058,10 +1078,10 @@ class CriteriaController extends AbstractController
             if (isset($criteriaChoiceLists[$criteriaName][$value])) {
                 $context[$criteriaName] = $value;
                 if (\count($criteriaNames) > 0) {
-                    //let see (recursively) if the other criterion applies to find a matching context
+                    // let see (recursively) if the other criterion applies to find a matching context
                     $this->addToTable($choice, $table, $criterion, $criteriaNames, $criteriaChoiceLists, $config, $context);
                 } else {
-                    //all criterion apply the current choice can be added to the table depending the context
+                    // all criterion apply the current choice can be added to the table depending the context
                     if (!isset($table[$context[$config->getRowCriteria()]][$context[$config->getColumnCriteria()]])) {
                         $table[$context[$config->getRowCriteria()]][$context[$config->getColumnCriteria()]] = [];
                     }
@@ -1071,6 +1091,9 @@ class CriteriaController extends AbstractController
         }
     }
 
+    /**
+     * @return false|string
+     */
     private function getMultipleField(FieldType $criteriaFieldType)
     {
         /** @var FieldType $criteria */
@@ -1090,12 +1113,12 @@ class CriteriaController extends AbstractController
         return false;
     }
 
-    public function fieldFilterAction(Request $request): Response
+    public function fieldFilterAction(Request $request): JsonResponse
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:FieldType');
+        $repository = $em->getRepository(FieldType::class);
 
         /** @var FieldType $field */
         $field = $repository->find($request->query->get('targetField'));
@@ -1115,13 +1138,13 @@ class CriteriaController extends AbstractController
             $label = isset($labels[$idx]) ? $labels[$idx] : $choice;
             if (!$request->query->get('q') || \stristr($choice, $request->query->get('q')) || \stristr($label, $request->query->get('q'))) {
                 $out['items'][] = [
-                        'id' => $choice,
-                        'text' => $label,
+                    'id' => $choice,
+                    'text' => $label,
                 ];
             }
         }
 
-        return new Response(\json_encode($out));
+        return new JsonResponse($out);
     }
 
     protected function getDataFieldType(string $fieldTypeNameOrServiceName): DataFieldType

@@ -9,6 +9,11 @@ use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
 
+/**
+ * @extends ServiceEntityRepository<Template>
+ *
+ * @method Template[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class TemplateRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
@@ -17,31 +22,24 @@ class TemplateRepository extends ServiceEntityRepository
     }
 
     /**
-     * Retrieve all Template by a render_option defined and a ContentType Filter.
+     * @param int[] $contentTypeIds
      *
-     * @param string $option
-     * @param array  $contentTypes
-     *
-     * @return mixed
+     * @return Template[]
      */
-    public function findByRenderOptionAndContentType($option, $contentTypes = null)
+    public function findByRenderOptionAndContentType(string $option, ?array $contentTypeIds = null): array
     {
         $qb = $this->createQueryBuilder('t')
         ->select('t')
         ->where('t.renderOption = :option');
 
-        if (null != $contentTypes) {
+        if (null != $contentTypeIds) {
             $qb->andWhere('t.contentType IN (:cts)')
-            ->setParameters(['option' => $option, 'cts' => $contentTypes]);
+            ->setParameters(['option' => $option, 'cts' => $contentTypeIds]);
         } else {
             $qb->setParameter('option', $option);
         }
 
-        $query = $qb->getQuery();
-
-        $results = $query->getResult();
-
-        return $results;
+        return $qb->getQuery()->getResult();
     }
 
     /**

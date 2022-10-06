@@ -13,55 +13,37 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Repository\AnalyzerRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\FilterRepository;
-use Monolog\Logger;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EnvironmentService implements EntityServiceInterface
 {
-    /** @var Registry */
-    private $doctrine;
+    private Registry $doctrine;
 
-    /** @var Session */
-    private $session;
+    /** @var array<string, Environment> */
+    private array $environments = [];
+    /** @var array<string, Environment> */
+    private array $notSnapshotEnvironments = [];
+    /** @var array<int, Environment> */
+    private array $environmentsById = [];
 
-    /** @var array */
-    private $environments = [];
-
-    /** @var array */
-    private $notSnapshotEnvironments = [];
-
-    /** @var array */
-    private $environmentsById = [];
-
-    /** @var UserService */
-    private $userService;
-
-    /** @var AuthorizationCheckerInterface */
-    private $authorizationChecker;
-
-    /** @var Logger */
-    private $logger;
-
-    /** @var ElasticaService */
-    private $elasticaService;
-
-    /** @var string */
-    private $instanceId;
+    private UserService $userService;
+    private AuthorizationCheckerInterface $authorizationChecker;
+    private LoggerInterface $logger;
+    private ElasticaService $elasticaService;
+    private string $instanceId;
 
     private EnvironmentRepository $environmentRepository;
 
     public function __construct(
         Registry $doctrine,
-        Session $session,
         UserService $userService,
         AuthorizationCheckerInterface $authorizationChecker,
-        Logger $logger,
+        LoggerInterface $logger,
         ElasticaService $elasticaService,
         string $instanceId
     ) {
         $this->doctrine = $doctrine;
-        $this->session = $session;
         $this->userService = $userService;
         $this->authorizationChecker = $authorizationChecker;
         $this->logger = $logger;
@@ -135,6 +117,9 @@ class EnvironmentService implements EntityServiceInterface
         return $this->environments;
     }
 
+    /**
+     * @return string[]
+     */
     public function getEnvironmentNames(): array
     {
         return \array_keys($this->getEnvironments());
@@ -142,6 +127,8 @@ class EnvironmentService implements EntityServiceInterface
 
     /**
      * @deprecated  https://github.com/ems-project/EMSCoreBundle/issues/281
+     *
+     * @return array<string, Environment>
      */
     public function getNotSnapshotEnvironments(): array
     {
@@ -149,7 +136,7 @@ class EnvironmentService implements EntityServiceInterface
             return $this->notSnapshotEnvironments;
         }
 
-        $environments = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment')->findBy(['snapshot' => false]);
+        $environments = $this->doctrine->getManager()->getRepository(Environment::class)->findBy(['snapshot' => false]);
 
         /** @var Environment $environment */
         foreach ($environments as $environment) {
@@ -161,19 +148,24 @@ class EnvironmentService implements EntityServiceInterface
 
     /**
      * @deprecated  https://github.com/ems-project/EMSCoreBundle/issues/281
+     *
+     * @return string[]
      */
     public function getNotSnapshotEnvironmentsNames(): array
     {
         return \array_keys($this->getNotSnapshotEnvironments());
     }
 
+    /**
+     * @return array<int, Environment>
+     */
     public function getEnvironmentsById(): array
     {
         if ([] !== $this->environmentsById) {
             return $this->environmentsById;
         }
 
-        $environments = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment')->findAll();
+        $environments = $this->doctrine->getManager()->getRepository(Environment::class)->findAll();
         /** @var Environment $environment */
         foreach ($environments as $environment) {
             $this->environmentsById[$environment->getId()] = $environment;
@@ -191,7 +183,7 @@ class EnvironmentService implements EntityServiceInterface
         $filters = [];
 
         /** @var FilterRepository $filterRepository */
-        $filterRepository = $this->doctrine->getRepository('EMSCoreBundle:Filter');
+        $filterRepository = $this->doctrine->getRepository(Filter::class);
         /** @var Filter $filter */
         foreach ($filterRepository->findAll() as $filter) {
             $filters[$filter->getName()] = $filter->getOptions();
@@ -200,16 +192,14 @@ class EnvironmentService implements EntityServiceInterface
         $analyzers = [];
 
         /** @var AnalyzerRepository $analyzerRepository */
-        $analyzerRepository = $this->doctrine->getRepository('EMSCoreBundle:Analyzer');
+        $analyzerRepository = $this->doctrine->getRepository(Analyzer::class);
         /** @var Analyzer $analyzer */
         foreach ($analyzerRepository->findAll() as $analyzer) {
             $analyzers[$analyzer->getName()] = $analyzer->getOptions($esVersion);
         }
 
-        $settingsSectionLabel = \version_compare($esVersion, '7.0') >= 0 ? 'settings' : 'index';
-
         return [
-            $settingsSectionLabel => [
+            'settings' => [
                 'max_result_window' => 50000,
                 'analysis' => [
                     'filter' => $filters,
@@ -219,10 +209,13 @@ class EnvironmentService implements EntityServiceInterface
         ];
     }
 
-    public function getEnvironmentsStats()
+    /**
+     * @return array<mixed>
+     */
+    public function getEnvironmentsStats(): array
     {
         /** @var EnvironmentRepository $repo */
-        $repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment');
+        $repo = $this->doctrine->getManager()->getRepository(Environment::class);
         $stats = $repo->getEnvironmentsStats();
 
         foreach ($stats as &$item) {
@@ -233,32 +226,23 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
-     * @param string $name
-     *
      * @return Environment|false
      */
-    public function getAliasByName($name)
+    public function getAliasByName(string $name)
     {
         return $this->getByName($name);
     }
 
     /**
-     * @param string $name
-     *
      * @return Environment|false
      */
-    public function getByName($name)
+    public function getByName(string $name)
     {
         if (isset($this->getEnvironments()[$name])) {
             return $this->getEnvironments()[$name];
         }
 
         return false;
-    }
-
-    public function findByName(string $name): Environment
-    {
-        return $this->environmentRepository->findOneByName($name);
     }
 
     public function giveByName(string $name): Environment
@@ -271,13 +255,11 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
-     * @param string $id
-     *
      * @return Environment|false
      *
      * @deprecated cant find usage of this function, should be removed if proven so!
      */
-    public function getById($id)
+    public function getById(int $id)
     {
         if (isset($this->getEnvironmentsById()[$id])) {
             return $this->getEnvironmentsById()[$id];
@@ -286,7 +268,10 @@ class EnvironmentService implements EntityServiceInterface
         return false;
     }
 
-    public function getManagedEnvironement()
+    /**
+     * @return Environment[]
+     */
+    public function getManagedEnvironement(): array
     {
         return \array_filter($this->getEnvironments(), function (Environment $environment) {
             return $environment->getManaged();
@@ -304,20 +289,9 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
-     * @deprecated use getEnvironments directly!
-     *
-     * @return bool|array
+     * @return Environment[]
      */
-    public function getAll()
-    {
-        if ([] === $this->getEnvironments()) {
-            return false;
-        }
-
-        return $this->getEnvironments();
-    }
-
-    public function getAllInMyCircle()
+    public function getAllInMyCircle(): array
     {
         if ($this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
             return $this->getEnvironments();
@@ -348,7 +322,7 @@ class EnvironmentService implements EntityServiceInterface
     public function updateEnvironment(Environment $environment): void
     {
         $em = $this->doctrine->getManager();
-        if (null === $environment->getAlias()) {
+        if ('' === $environment->getAlias()) {
             $environment->setAlias($this->generateAlias($environment));
         }
         $em->persist($environment);

@@ -9,6 +9,12 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\QuerySearch;
 
+/**
+ * @extends ServiceEntityRepository<QuerySearch>
+ *
+ * @method QuerySearch|null find($id, $lockMode = null, $lockVersion = null)
+ * @method QuerySearch[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 final class QuerySearchRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
@@ -88,8 +94,7 @@ final class QuerySearchRepository extends ServiceEntityRepository
 
     public function getById(string $id): QuerySearch
     {
-        $querySearch = $this->find($id);
-        if (!$querySearch instanceof QuerySearch) {
+        if (null === $querySearch = $this->find($id)) {
             throw new \RuntimeException('Unexpected querySearch type');
         }
 

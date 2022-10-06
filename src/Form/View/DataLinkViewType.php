@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\View;
 
-use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Document\DataLinks;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
@@ -17,12 +16,9 @@ use Twig\Environment;
 
 class DataLinkViewType extends ViewType
 {
-    private ElasticaService $elasticaService;
-
-    public function __construct(FormFactory $formFactory, Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger)
+    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger)
     {
         parent::__construct($formFactory, $twig, $logger);
-        $this->elasticaService = $elasticaService;
     }
 
     public function getLabel(): string
@@ -37,7 +33,7 @@ class DataLinkViewType extends ViewType
 
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<mixed>                               $options
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -56,7 +52,7 @@ class DataLinkViewType extends ViewType
 
     public function render(View $view, DataLinks $dataLinks): void
     {
-        $this->twig->createTemplate($view->getOptions()['template'])->render([
+        $this->twig->createTemplate($view->getOptions()['template'] ?? '')->render([
             'view' => $view,
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),
@@ -65,7 +61,7 @@ class DataLinkViewType extends ViewType
     }
 
     /**
-     * @return array<string, mixed>
+     * {@inheritDoc}
      */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {

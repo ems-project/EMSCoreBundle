@@ -4,16 +4,19 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\PersistentCollection;
 use EMS\CoreBundle\Exception\DataFormatException;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 use EMS\CoreBundle\Form\DataField\OuuidFieldType;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @implements \IteratorAggregate<DataField>
+ *
  * @Assert\Callback({"Vendor\Package\Validator", "validate"})
+ *
+ * @implements \ArrayAccess<int, DataField>
  */
 class DataField implements \ArrayAccess, \IteratorAggregate
 {
@@ -36,7 +39,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     private $parent;
 
-    /** @var Collection */
+    /** @var ArrayCollection<int, DataField> */
     private $children;
 
     /** @var mixed */
@@ -45,15 +48,14 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /** @var mixed */
     private $inputValue;
 
-    /** @var array<string> */
-    private $messages;
+    /** @var string[] */
+    private array $messages = [];
 
-    /** @var bool */
-    private $marked;
+    private bool $marked = false;
 
     public function setChildrenFieldType(FieldType $fieldType): void
     {
-        //TODO: test if sub colletion for nested collection
+        // TODO: test if sub colletion for nested collection
         /* @var FieldType $subType */
         $this->children->first();
         foreach ($fieldType->getChildren() as $subType) {
@@ -103,6 +105,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     /**
      * @param mixed $offset
+     *
+     * @return mixed
      */
     public function offsetGet($offset)
     {
@@ -117,19 +121,21 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * @Assert\Callback
      */
-    public function isDataFieldValid(ExecutionContextInterface $context)
+    public function isDataFieldValid(ExecutionContextInterface $context): void
     {
-        //TODO: why is it not working? See https://stackoverflow.com/a/25265360
-        //Transformed: (but not used??)
+        // TODO: why is it not working? See https://stackoverflow.com/a/25265360
+        // Transformed: (but not used??)
         $context
             ->buildViolation('Haaaaha')
             ->atPath('textValue')
             ->addViolation();
     }
 
-    public function propagateOuuid(string $ouuid)
+    public function propagateOuuid(string $ouuid): void
     {
-        if ($this->getFieldType() && 0 == \strcmp(OuuidFieldType::class, $this->getFieldType()->getType())) {
+        $fieldType = $this->getFieldType();
+
+        if (null !== $fieldType && 0 == \strcmp(OuuidFieldType::class, $fieldType->getType())) {
             $this->setTextValue($ouuid);
         }
         foreach ($this->children as $child) {
@@ -143,17 +149,17 @@ class DataField implements \ArrayAccess, \IteratorAggregate
             return $this->rawData;
         }
 
-        return \json_encode($this->rawData);
+        return Json::encode($this->rawData);
     }
 
-    public function orderChildren()
+    public function orderChildren(): void
     {
         $children = null;
 
-        if (null == $this->getFieldType()) {
-            $children = $this->getParent()->getFieldType()->getChildren();
-        } elseif (0 != \strcmp($this->getFieldType()->getType(), CollectionFieldType::class)) {
-            $children = $this->getFieldType()->getChildren();
+        if (null == $this->getFieldType() && null !== $parent = $this->getParent()) {
+            $children = $parent->giveFieldType()->getChildren();
+        } elseif (0 != \strcmp($this->giveFieldType()->getType(), CollectionFieldType::class)) {
+            $children = $this->giveFieldType()->getChildren();
         }
 
         if ($children) {
@@ -184,7 +190,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         $this->children = new ArrayCollection();
         $this->messages = [];
 
-        //TODO: should use the clone method
+        // TODO: should use the clone method
         $a = \func_get_args();
         $i = \func_num_args();
         if ($i >= 1 && $a[0] instanceof DataField) {
@@ -203,7 +209,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         }
     }
 
-    public function __set($key, $input)
+    /**
+     * @param mixed $input
+     */
+    public function __set(string $key, $input): self
     {
         if (0 !== \strpos($key, 'ems_')) {
             throw new \Exception('unprotected ems set with key '.$key);
@@ -219,16 +228,18 @@ class DataField implements \ArrayAccess, \IteratorAggregate
             }
 
             if (null === $this->getFieldType()) {
-                if (null === $this->getParent()) {
+                if (null === $parent = $this->getParent()) {
                     throw new \Exception('null parent !!!!!! '.$key);
                 } else {
-                    $this->updateDataStructure($this->getParent()->getFieldType());
+                    $this->updateDataStructure($parent->giveFieldType());
                 }
             }
 
             /** @var DataField $dataField */
             foreach ($this->children as &$dataField) {
-                if (null != $dataField->getFieldType() && !$dataField->getFieldType()->getDeleted() && 0 == \strcmp($key, $dataField->getFieldType()->getName())) {
+                $fieldType = $dataField->getFieldType();
+
+                if (null !== $fieldType && !$fieldType->getDeleted() && 0 == \strcmp($key, $fieldType->getName())) {
                     $found = true;
                     $dataField = $input;
                     break;
@@ -249,7 +260,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      *
      * @throws \Exception
      */
-    public function updateDataStructure(FieldType $meta)
+    public function updateDataStructure(FieldType $meta): void
     {
         throw new \Exception('Deprecated method');
     }
@@ -258,16 +269,21 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      * Assign data in dataValues based on the elastic index content.
      *
      * @deprecated
-
+     *
+     * @param array<mixed> $elasticIndexDatas
+     * @param mixed        $isMigration
      *
      * @throws \Exception
      */
-    public function updateDataValue(array &$elasticIndexDatas, $isMigration = false)
+    public function updateDataValue(array &$elasticIndexDatas, $isMigration = false): void
     {
         throw new \Exception('Deprecated method');
     }
 
-    public function linkFieldType(PersistentCollection $fieldTypes)
+    /**
+     * @param Collection<int, FieldType> $fieldTypes
+     */
+    public function linkFieldType(Collection $fieldTypes): void
     {
         $index = 0;
         /** @var FieldType $fieldType */
@@ -283,12 +299,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         }
     }
 
-    /**
-     * get a child.
-     *
-     * @return DataField|null
-     */
-    public function __get($key)
+    public function __get(string $key): ?DataField
     {
         if (0 !== \strpos($key, 'ems_')) {
             throw new \Exception('unprotected ems get with key '.$key);
@@ -296,13 +307,17 @@ class DataField implements \ArrayAccess, \IteratorAggregate
             $key = \substr($key, 4);
         }
 
-        if ($this->getFieldType() && 0 == \strcmp($this->getFieldType()->getType(), CollectionFieldType::class)) {
-            //Symfony wants iterate on children
+        $fieldType = $this->getFieldType();
+
+        if ($fieldType && 0 == \strcmp($fieldType->getType(), CollectionFieldType::class)) {
+            // Symfony wants iterate on children
             return $this;
         } else {
             /** @var DataField $dataField */
             foreach ($this->children as $dataField) {
-                if (null != $dataField->getFieldType() && !$dataField->getFieldType()->getDeleted() && 0 == \strcmp($key, $dataField->getFieldType()->getName())) {
+                $childFieldType = $dataField->getFieldType();
+
+                if (null !== $childFieldType && !$childFieldType->getDeleted() && 0 == \strcmp($key, $childFieldType->getName())) {
                     return $dataField;
                 }
             }
@@ -319,14 +334,12 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Get textValue.
-     *
-     * @return string|null
+     * @return mixed
      */
     public function getTextValue()
     {
         if (\is_array($this->rawData) && 0 === \count($this->rawData)) {
-            return null; //empty array means null/empty
+            return null; // empty array means null/empty
         }
 
         if (null !== $this->rawData && !\is_string($this->rawData)) {
@@ -341,14 +354,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this->rawData;
     }
 
-    /**
-     * Set passwordValue.
-     *
-     * @param string|null $passwordValue
-     *
-     * @return DataField
-     */
-    public function setPasswordValue($passwordValue)
+    public function setPasswordValue(?string $passwordValue): self
     {
         if (null !== $passwordValue) {
             $this->setTextValue($passwordValue);
@@ -357,24 +363,12 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this;
     }
 
-    /**
-     * Get passwordValue.
-     *
-     * @return string
-     */
-    public function getPasswordValue()
+    public function getPasswordValue(): ?string
     {
         return $this->getTextValue();
     }
 
-    /**
-     * Set resetPasswordValue.
-     *
-     * @param string $resetPasswordValue
-     *
-     * @return DataField
-     */
-    public function setResetPasswordValue($resetPasswordValue)
+    public function setResetPasswordValue(?bool $resetPasswordValue): self
     {
         if (null !== $resetPasswordValue && $resetPasswordValue) {
             $this->setTextValue(null);
@@ -383,12 +377,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this;
     }
 
-    /**
-     * Get resetPasswordValue.
-     *
-     * @return bool
-     */
-    public function getResetPasswordValue()
+    public function getResetPasswordValue(): bool
     {
         return false;
     }
@@ -400,15 +389,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this;
     }
 
-    /**
-     * Get floatValue.
-     *
-     * @return float|null
-     */
-    public function getFloatValue()
+    public function getFloatValue(): ?float
     {
         if (\is_array($this->rawData) && 0 === \count($this->rawData)) {
-            return null; //empty array means null/empty
+            return null; // empty array means null/empty
         }
 
         if (null !== $this->rawData && !\is_finite($this->rawData)) {
@@ -421,31 +405,37 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set dataValue, the set of field is delegated to the corresponding fieldType class.
      *
-     * @param \DateTime $inputString
-     *
-     * @return DataField
+     * @param mixed $inputString
      *
      * @throws \Exception
      */
-    public function setDataValue($inputString)
+    public function setDataValue($inputString): self
     {
-        $this->getFieldType()->setDataValue($inputString, $this);
+        if ($fieldType = $this->getFieldType()) {
+            $fieldType->setDataValue($inputString, $this);
+        }
 
         return $this;
     }
 
-    public function getMessages()
+    /**
+     * @return string[]
+     */
+    public function getMessages(): array
     {
         return $this->messages;
     }
 
-    public function addMessage($message)
+    public function addMessage(string $message): void
     {
         if (!\in_array($message, $this->messages)) {
             $this->messages[] = $message;
         }
     }
 
+    /**
+     * @param ?array<mixed> $rawData
+     */
     public function setArrayTextValue(?array $rawData): DataField
     {
         if (null === $rawData) {
@@ -463,11 +453,9 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Get arrayValue.
-     *
-     * @return array|null
+     * @return ?array<mixed>
      */
-    public function getArrayTextValue()
+    public function getArrayTextValue(): ?array
     {
         if (null === $this->rawData) {
             return null;
@@ -492,21 +480,19 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Get integerValue.
-     *
-     * @return int
+     * @return mixed
      */
     public function getIntegerValue()
     {
         if (\is_array($this->rawData)) {
             $this->addMessage('Integer expected array found: '.\print_r($this->rawData, true));
 
-            return \count($this->rawData); //empty array means null/empty
+            return \count($this->rawData); // empty array means null/empty
         }
 
         if (null === $this->rawData || \is_int($this->rawData)) {
             return $this->rawData;
-        } elseif (\intval($this->rawData) || 0 === $this->rawData || '0' === $this->rawData) {
+        } elseif (\intval($this->rawData) || '0' === $this->rawData) {
             return \intval($this->rawData);
 //             return $this->rawData;
 //             throw new DataFormatException('Integer expected: '.print_r($this->rawData, true));
@@ -520,10 +506,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      * Set integerValue.
      *
      * @param string|int|null $rawData
-     *
-     * @return DataField
      */
-    public function setIntegerValue($rawData)
+    public function setIntegerValue($rawData): self
     {
         if (null === $rawData || \is_int($rawData)) {
             $this->rawData = $rawData;
@@ -537,15 +521,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this;
     }
 
-    /**
-     * Get booleanValue.
-     *
-     * @return bool|null
-     */
-    public function getBooleanValue()
+    public function getBooleanValue(): ?bool
     {
         if (\is_array($this->rawData) && 0 === \count($this->rawData)) {
-            return null; //empty array means null/empty
+            return null; // empty array means null/empty
         }
 
         if (null !== $this->rawData && !\is_bool($this->rawData)) {
@@ -555,7 +534,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this->rawData;
     }
 
-    public function getDateValues()
+    /**
+     * @return array<int, \DateTime|false>
+     */
+    public function getDateValues(): array
     {
         $out = [];
         if (null !== $this->rawData) {
@@ -563,7 +545,6 @@ class DataField implements \ArrayAccess, \IteratorAggregate
                 throw new DataFormatException('Array expected: '.\print_r($this->rawData, true));
             }
             foreach ($this->rawData as $item) {
-                /* @var \DateTime $converted */
                 $out[] = \DateTime::createFromFormat(\DateTime::ISO8601, $item);
             }
         }
@@ -578,68 +559,46 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this;
     }
 
-    /**
-     * @return DataField
-     */
-    public function getRootDataField()
+    public function getRootDataField(): self
     {
         $out = $this;
-        while ($out->getParent()) {
-            $out = $out->getParent();
+        while ($out->hasParent()) {
+            $out = $out->giveParent();
         }
 
         return $out;
     }
 
-    public function setMarked($marked)
+    public function setMarked(bool $marked): self
     {
         $this->marked = $marked;
 
         return $this;
     }
 
-    public function isMarked()
+    public function isMarked(): bool
     {
         return $this->marked;
     }
 
-    /****************************
-     * Generated methods
-     ****************************
-     */
-
-    /**
-     * JSON decode the input string and save it has array in rawdata.
-     *
-     * @param string $text
-     *
-     * @return DataField
-     */
-    public function setEncodedText($text)
+    public function setEncodedText(?string $text): self
     {
-        $this->rawData = \json_decode($text, true);
+        $this->rawData = $text ? Json::decode($text) : [];
 
         return $this;
     }
 
-    /**
-     * Get the rawdata in a text encoded form.
-     *
-     * @return string
-     */
-    public function getEncodedText()
+    public function getEncodedText(): string
     {
-        return \json_encode($this->rawData);
+        return Json::encode($this->rawData);
     }
 
     /**
      * Set orderKey.
      *
      * @param int $orderKey
-     *
-     * @return DataField
      */
-    public function setOrderKey($orderKey)
+    public function setOrderKey($orderKey): self
     {
         $this->orderKey = $orderKey;
 
@@ -657,10 +616,6 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Set fieldType.
-     *
-     * @param \EMS\CoreBundle\Entity\FieldType $fieldType
-     *
      * @return DataField
      */
     public function setFieldType(FieldType $fieldType = null)
@@ -698,12 +653,21 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this;
     }
 
-    /**
-     * Get parent.
-     *
-     * @return DataField|null
-     */
-    public function getParent()
+    public function hasParent(): bool
+    {
+        return null !== $this->parent;
+    }
+
+    public function giveParent(): DataField
+    {
+        if (null === $this->parent) {
+            throw new \RuntimeException('No parent!');
+        }
+
+        return $this->parent;
+    }
+
+    public function getParent(): ?DataField
     {
         return $this->parent;
     }
@@ -722,20 +686,15 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this;
     }
 
-    /**
-     * Remove child.
-     */
-    public function removeChild(DataField $child)
+    public function removeChild(DataField $child): void
     {
         $this->children->removeElement($child);
     }
 
     /**
-     * Get children.
-     *
-     * @return Collection
+     * @return Collection<int, DataField>
      */
-    public function getChildren()
+    public function getChildren(): Collection
     {
         return $this->children;
     }
@@ -743,7 +702,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set rawData.
      *
-     * @param array|string|int|float|null $rawData
+     * @param array<mixed>|string|int|float|bool|null $rawData
      *
      * @return DataField
      */
@@ -757,7 +716,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get rawData.
      *
-     * @return array|string|int|float|null
+     * @return array<mixed>|string|int|float|bool|null
      */
     public function getRawData()
     {
@@ -765,7 +724,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * @param object $inputValue
+     * @param mixed $inputValue
      *
      * @return DataField
      */
@@ -779,7 +738,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get rawData.
      *
-     * @return array
+     * @return mixed
      */
     public function getInputValue()
     {

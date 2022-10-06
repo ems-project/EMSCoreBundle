@@ -2,11 +2,11 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Elasticsearch\Endpoints\Indices\Alias\Put;
+use Elastica\Client;
 use Elasticsearch\Endpoints\Indices\Create;
 use Elasticsearch\Endpoints\Indices\Exists;
-use Elasticsearch\Endpoints\Indices\Mapping\Put as MappingPut;
-use EMS\CommonBundle\Elasticsearch\Client;
+use Elasticsearch\Endpoints\Indices\PutAlias;
+use Elasticsearch\Endpoints\Indices\PutMapping;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
@@ -16,22 +16,14 @@ use Psr\Log\LoggerInterface;
 
 class Mapping
 {
-    /** @var string */
     public const FINALIZATION_DATETIME_FIELD = '_finalization_datetime';
-    /** @var string */
     public const FINALIZED_BY_FIELD = '_finalized_by';
-    /** @var string */
     public const HASH_FIELD = '_sha1';
-    /** @var string */
     public const SIGNATURE_FIELD = '_signature';
-    /** @var string */
     public const CONTENT_TYPE_FIELD = '_contenttype';
-    /** @var string */
     public const VERSION_UUID = '_version_uuid';
-    /** @var string */
     public const VERSION_TAG = '_version_tag';
-    /** @var string */
-    /** @var array<string, string> */
+
     public const MAPPING_INTERNAL_FIELDS = [
         Mapping::PUBLISHED_DATETIME_FIELD => Mapping::PUBLISHED_DATETIME_FIELD,
         Mapping::FINALIZATION_DATETIME_FIELD => Mapping::FINALIZATION_DATETIME_FIELD,
@@ -42,39 +34,31 @@ class Mapping
         Mapping::VERSION_UUID => Mapping::VERSION_UUID,
         Mapping::VERSION_TAG => Mapping::VERSION_TAG,
     ];
-    /** @var string */
+
     public const CONTENT_TYPE_META_FIELD = 'content_type';
-    /** @var string */
     public const GENERATOR_META_FIELD = 'generator';
-    /** @var string */
     public const GENERATOR_META_FIELD_VALUE = 'elasticms';
-    /** @var string */
     public const CORE_VERSION_META_FIELD = 'core_version';
-    /** @var string */
     public const INSTANCE_ID_META_FIELD = 'instance_id';
-    /** @var string */
     public const PUBLISHED_DATETIME_FIELD = '_published_datetime';
 
-    /** @var EnvironmentService */
-    private $environmentService;
-    /** @var FieldTypeType */
-    private $fieldTypeType;
-    /** @var ElasticsearchService */
-    private $elasticsearchService;
-    /** @var string */
-    private $instanceId;
-    /** @var ElasticaService */
-    private $elasticaService;
-    /** @var Client */
-    private $elasticaClient;
-    /** @var LoggerInterface */
-    private $logger;
+    private EnvironmentService $environmentService;
+    private FieldTypeType $fieldTypeType;
+    private ElasticsearchService $elasticsearchService;
+    private string $instanceId;
+    private ElasticaService $elasticaService;
+    private Client $elasticaClient;
+    private LoggerInterface $logger;
 
-    /**
-     * Constructor.
-     */
-    public function __construct(LoggerInterface $logger, Client $elasticaClient, EnvironmentService $environmentService, FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, ElasticaService $elasticaService, string $instanceId)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        Client $elasticaClient,
+        EnvironmentService $environmentService,
+        FieldTypeType $fieldTypeType,
+        ElasticsearchService $elasticsearchService,
+        ElasticaService $elasticaService,
+        string $instanceId
+    ) {
         $this->elasticaClient = $elasticaClient;
         $this->environmentService = $environmentService;
         $this->fieldTypeType = $fieldTypeType;
@@ -84,7 +68,10 @@ class Mapping
         $this->logger = $logger;
     }
 
-    public function generateMapping(ContentType $contentType)
+    /**
+     * @return array<mixed>
+     */
+    public function generateMapping(ContentType $contentType): array
     {
         $out = [
             'properties' => [],
@@ -94,16 +81,8 @@ class Mapping
             $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType());
         }
 
-        if ($this->elasticsearchService->withAllMapping()) {
-            $out['_all'] = [
-                'store' => true,
-                'enabled' => true,
-            ];
-        } elseif (\version_compare($this->elasticaService->getVersion(), '7.0') >= 0) {
-            $this->addCopyToAllField($out['properties']);
-            $out['properties'] = \array_merge(['_all' => ['type' => 'text']], $out['properties']);
-        }
-
+        $this->addCopyToAllField($out['properties']);
+        $out['properties'] = \array_merge(['_all' => ['type' => 'text']], $out['properties']);
         $out['properties'] = \array_merge(
             [
                 Mapping::HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
@@ -127,25 +106,13 @@ class Mapping
             Mapping::INSTANCE_ID_META_FIELD => $this->instanceId,
         ];
 
-        $elasticsearchVersion = $this->elasticaService->getVersion();
-        if (\version_compare($elasticsearchVersion, '7.0') >= 0) {
-            return $out;
-        }
-
-        return [$this->getTypeName($contentType->getName()) => $out];
+        return $out;
     }
 
-    public function getTypeName(string $contentTypeName): string
-    {
-        return $this->elasticaService->getTypeName($contentTypeName);
-    }
-
-    public function getTypePath(string $contentTypeName): string
-    {
-        return $this->elasticaService->getTypePath($contentTypeName);
-    }
-
-    public function dataFieldToArray(DataField $dataField)
+    /**
+     * @return array<mixed>
+     */
+    public function dataFieldToArray(DataField $dataField): array
     {
         return $this->fieldTypeType->dataFieldToArray($dataField);
     }
@@ -156,18 +123,23 @@ class Mapping
      *
      * @return array<mixed>
      */
-    private function mergeMappings($mapping1, $mapping2): array
+    private function mergeMappings(array $mapping1, array $mapping2): array
     {
         $mapping = \array_merge($mapping1, $mapping2);
         foreach ($mapping as $name => $fields) {
             if (isset($fields['properties']) && isset($mapping1[$name]) && isset($mapping1[$name]['properties'])) {
-                $mapping[$name]['properties'] = $this->mergeMappings($mapping[$name]['properties'], $mapping1[$name]['properties']);
+                $mapping[$name]['properties'] = $this->mergeMappings($fields['properties'], $mapping1[$name]['properties']);
             }
         }
 
         return $mapping;
     }
 
+    /**
+     * @param string[] $environmentNames
+     *
+     * @return ?array<mixed>
+     */
     public function getMapping(array $environmentNames): ?array
     {
         $mergeMapping = [];
@@ -217,7 +189,7 @@ class Mapping
         if (null === $aliasName) {
             return true;
         }
-        $putAliasEndpoint = new Put();
+        $putAliasEndpoint = new PutAlias();
         $putAliasEndpoint->setIndex($indexName);
         $putAliasEndpoint->setName($aliasName);
 
@@ -227,9 +199,8 @@ class Mapping
     public function putMapping(ContentType $contentType, string $indexes): bool
     {
         $body = $this->generateMapping($contentType);
-        $endpoint = new MappingPut();
+        $endpoint = new PutMapping();
         $endpoint->setIndex($indexes);
-        $endpoint->setType($this->getTypePath($contentType->getName()));
         $endpoint->setBody($body);
         $result = $this->elasticaClient->requestEndpoint($endpoint);
 
@@ -254,20 +225,19 @@ class Mapping
     /**
      * @param array<mixed> $mappings
      */
-    public function updateMapping(string $name, array $mappings, string $type): void
+    public function updateMapping(string $name, array $mappings): void
     {
-        $endpoint = new MappingPut();
+        $endpoint = new PutMapping();
         $endpoint->setIndex($name);
         $endpoint->setBody($mappings);
-        $endpoint->setType($this->getTypePath($type));
         $this->elasticaClient->requestEndpoint($endpoint);
     }
 
     /** @param array<string, array<string, mixed>> $properties */
     private function addCopyToAllField(array &$properties): void
     {
-        foreach ($properties as $name => &$options) {
-            if (\in_array(($options['type'] ?? null), ['text', 'keyword'], true)) {
+        foreach ($properties as &$options) {
+            if (\in_array($options['type'] ?? null, ['text', 'keyword'], true)) {
                 $options['copy_to'] = \array_unique(\array_merge(['_all'], $options['copy_to'] ?? []));
                 continue;
             }

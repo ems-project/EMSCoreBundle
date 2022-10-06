@@ -2,41 +2,27 @@
 
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
+use EMS\Helpers\Standard\DateTime;
+use EMS\Helpers\Standard\Type;
 
 /**
- * DataField.
- *
  * @ORM\Table(name="template")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\TemplateRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Template extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    protected $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    protected $modified;
+    protected ?int $id = null;
 
     /**
      * @ORM\Column(name="name", type="string", length=255)
@@ -51,256 +37,170 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     protected $label = '';
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="icon", type="string", length=255, nullable=true)
      */
-    protected $icon;
+    protected ?string $icon = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="body", type="text", nullable=true)
      */
-    protected $body;
+    protected ?string $body = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="header", type="text", nullable=true)
      */
-    protected $header;
+    protected ?string $header = null;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="edit_with_wysiwyg", type="boolean")
      */
-    protected $editWithWysiwyg;
-
-    /** @var string
-     *
-     * @ORM\Column(name="render_option", type="string")
-     */
-    protected $renderOption;
+    protected bool $editWithWysiwyg = false;
 
     /**
-     * @var int
-     *
+     * @ORM\Column(name="render_option", type="string")
+     */
+    protected string $renderOption = '';
+
+    /**
      * @ORM\Column(name="orderKey", type="integer")
      */
-    protected $orderKey;
+    protected int $orderKey = 0;
 
     /**
      * @ORM\ManyToOne(targetEntity="ContentType", inversedBy="templates")
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
-    protected $contentType;
+    protected ?ContentType $contentType = null;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="accumulate_in_one_file", type="boolean")
      */
-    protected $accumulateInOneFile;
+    protected bool $accumulateInOneFile = false;
 
-    /** @var string
-
-     * @var bool
-     *
+    /**
      * @ORM\Column(name="preview", type="boolean")
      */
-    protected $preview;
+    protected bool $preview = false;
 
-    /** @var string
-     *
+    /**
      * @ORM\Column(name="mime_type", type="string", nullable=true)
      */
-    protected $mimeType;
+    protected ?string $mimeType = null;
 
-    /** @var string
-     *
+    /**
      * @ORM\Column(name="filename", type="text", nullable=true)
      */
-    protected $filename;
+    protected ?string $filename = null;
 
-    /** @var string
-     *
+    /**
      * @ORM\Column(name="extension", type="string", nullable=true)
      */
-    protected $extension;
+    protected ?string $extension = null;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="active", type="boolean")
      */
-    protected $active;
+    protected bool $active = false;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="role", type="string")
      */
-    protected $role;
+    protected string $role;
 
     /**
+     * @var Collection<int, Environment>
+     *
      * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
      * @ORM\JoinTable(name="environment_template",
      *      joinColumns={@ORM\JoinColumn(name="template_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="environment_id", referencedColumnName="id")}
      *      )
      */
-    protected $environments;
+    protected Collection $environments;
 
-    /** @var string
-     *
+    /**
      * @ORM\Column(name="role_to", type="string")
      */
-    protected $roleTo;
+    protected string $roleTo;
 
-    /** @var string
-     *
+    /**
      * @ORM\Column(name="role_cc", type="string")
      */
-    protected $roleCc;
+    protected string $roleCc;
 
     /**
-     * @var array
+     * @var ?string[]
      *
-     * @ORM\Column(name="circles_to", type="json_array", nullable=true)
+     * @ORM\Column(name="circles_to", type="json", nullable=true)
      */
-    protected $circlesTo;
+    protected ?array $circlesTo = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="response_template", type="text", nullable=true)
      */
-    protected $responseTemplate;
+    protected ?string $responseTemplate = null;
 
-    /** @var string
-     *
+    /**
      * @ORM\Column(name="email_content_type", type="string", nullable=true)
      */
-    protected $emailContentType;
+    protected ?string $emailContentType = null;
 
-    /** @var string
-     *
+    /**
      * @ORM\Column(name="allow_origin", type="string", nullable=true)
      */
-    protected $allowOrigin;
+    protected ?string $allowOrigin = null;
 
-    /** @var string
-     *
+    /**
      * @ORM\Column(name="disposition", type="string", length=20, nullable=true)
      */
-    protected $disposition;
+    protected ?string $disposition = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="orientation", type="string", length=20, nullable=true)
      */
-    protected $orientation;
+    protected ?string $orientation = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="size", type="string", length=20, nullable=true)
      */
-    protected $size;
+    protected ?string $size = null;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="public", type="boolean", options={"default" : 0})
      */
-    protected $public;
+    protected bool $public;
+
+    public function __construct()
+    {
+        $this->environments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->public = false;
+
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
+        $this->role = 'not-defined';
+        $this->roleCc = 'not-defined';
+        $this->roleTo = 'not-defined';
+    }
 
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateOrder(): void
     {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
         if (!isset($this->orderKey)) {
             $this->orderKey = 0;
         }
     }
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
-        return $this->id;
+        return Type::integer($this->id);
     }
 
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return Template
-     */
-    public function setCreated($created)
+    public function setName(?string $name): self
     {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return Template
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
-    }
-
-    /**
-     * Set name.
-     *
-     * @param string $name
-     *
-     * @return Template
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
+        $this->name = $name ?? '';
 
         return $this;
     }
@@ -310,206 +210,103 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         return $this->name;
     }
 
-    /**
-     * Set icon.
-     *
-     * @param string $icon
-     *
-     * @return Template
-     */
-    public function setIcon($icon)
+    public function setIcon(?string $icon): self
     {
         $this->icon = $icon;
 
         return $this;
     }
 
-    /**
-     * Get icon.
-     *
-     * @return string
-     */
-    public function getIcon()
+    public function getIcon(): ?string
     {
         return $this->icon;
     }
 
-    /**
-     * Set body.
-     *
-     * @param string $body
-     *
-     * @return Template
-     */
-    public function setBody($body)
+    public function setBody(?string $body): self
     {
         $this->body = $body;
 
         return $this;
     }
 
-    /**
-     * Get body.
-     *
-     * @return string
-     */
-    public function getBody()
+    public function getBody(): string
     {
-        return $this->body;
+        return $this->body ?? '';
     }
 
-    /**
-     * Set editWithWysiwyg.
-     *
-     * @param bool $editWithWysiwyg
-     *
-     * @return Template
-     */
-    public function setEditWithWysiwyg($editWithWysiwyg)
+    public function setEditWithWysiwyg(?bool $editWithWysiwyg): self
     {
-        $this->editWithWysiwyg = $editWithWysiwyg;
+        $this->editWithWysiwyg = $editWithWysiwyg ?? false;
 
         return $this;
     }
 
-    /**
-     * Get editWithWysiwyg.
-     *
-     * @return bool
-     */
-    public function getEditWithWysiwyg()
+    public function getEditWithWysiwyg(): bool
     {
         return $this->editWithWysiwyg;
     }
 
-    /**
-     * Set renderOption.
-     *
-     * @param string $renderOption
-     *
-     * @return Template
-     */
-    public function setRenderOption($renderOption)
+    public function setRenderOption(?string $renderOption): self
     {
-        $this->renderOption = $renderOption;
+        $this->renderOption = $renderOption ?? '';
 
         return $this;
     }
 
-    /**
-     * Get renderOption.
-     *
-     * @return string
-     */
-    public function getRenderOption()
+    public function getRenderOption(): string
     {
         return $this->renderOption;
     }
 
-    /**
-     * Set orderKey.
-     *
-     * @param int $orderKey
-     *
-     * @return Template
-     */
-    public function setOrderKey($orderKey)
+    public function setOrderKey(?int $orderKey): self
     {
-        $this->orderKey = $orderKey;
+        $this->orderKey = $orderKey ?? 0;
 
         return $this;
     }
 
-    /**
-     * Get orderKey.
-     *
-     * @return int
-     */
-    public function getOrderKey()
+    public function getOrderKey(): int
     {
         return $this->orderKey;
     }
 
-    /**
-     * Set accumulateInOneFile.
-     *
-     * @param bool $accumulateInOneFile
-     *
-     * @return Template
-     */
-    public function setAccumulateInOneFile($accumulateInOneFile)
+    public function setAccumulateInOneFile(?bool $accumulateInOneFile): self
     {
-        $this->accumulateInOneFile = $accumulateInOneFile;
+        $this->accumulateInOneFile = $accumulateInOneFile ?? false;
 
         return $this;
     }
 
-    /**
-     * Get accumulateInOneFile.
-     *
-     * @return bool
-     */
-    public function getAccumulateInOneFile()
+    public function getAccumulateInOneFile(): bool
     {
         return $this->accumulateInOneFile;
     }
 
-    /**
-     * Set preview.
-     *
-     * @param bool $preview
-     *
-     * @return Template
-     */
-    public function setPreview($preview)
+    public function setPreview(?bool $preview): self
     {
-        $this->preview = $preview;
+        $this->preview = $preview ?? false;
 
         return $this;
     }
 
-    /**
-     * Get preview.
-     *
-     * @return bool
-     */
-    public function getPreview()
+    public function getPreview(): bool
     {
         return $this->preview;
     }
 
-    /**
-     * Set mimeType.
-     *
-     * @param string $mimeType
-     *
-     * @return Template
-     */
-    public function setMimeType($mimeType)
+    public function setMimeType(?string $mimeType): self
     {
         $this->mimeType = $mimeType;
 
         return $this;
     }
 
-    /**
-     * Get mimeType.
-     *
-     * @return string
-     */
-    public function getMimeType()
+    public function getMimeType(): ?string
     {
         return $this->mimeType;
     }
 
-    /**
-     * Set filename.
-     *
-     * @param string $filename
-     *
-     * @return Template
-     */
-    public function setFilename($filename)
+    public function setFilename(?string $filename): self
     {
         $this->filename = $filename;
 
@@ -521,134 +318,70 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         return $this->filename;
     }
 
-    /**
-     * Set extension.
-     *
-     * @param string $extension
-     *
-     * @return Template
-     */
-    public function setExtension($extension)
+    public function setExtension(?string $extension): self
     {
         $this->extension = $extension;
 
         return $this;
     }
 
-    /**
-     * Get extension.
-     *
-     * @return string
-     */
-    public function getExtension()
+    public function getExtension(): ?string
     {
         return $this->extension;
     }
 
-    /**
-     * Set active.
-     *
-     * @param bool $active
-     *
-     * @return Template
-     */
-    public function setActive($active)
+    public function setActive(?bool $active): self
     {
-        $this->active = $active;
+        $this->active = $active ?? false;
 
         return $this;
     }
 
-    /**
-     * Get active.
-     *
-     * @return bool
-     */
-    public function getActive()
+    public function getActive(): bool
     {
         return $this->active;
     }
 
-    /**
-     * Set role.
-     *
-     * @param string $role
-     *
-     * @return Template
-     */
-    public function setRole($role)
+    public function setRole(string $role): self
     {
         $this->role = $role;
 
         return $this;
     }
 
-    /**
-     * Get role.
-     *
-     * @return string
-     */
-    public function getRole()
+    public function getRole(): string
     {
         return $this->role;
     }
 
-    /**
-     * Set roleTo.
-     *
-     * @param string $roleTo
-     *
-     * @return Template
-     */
-    public function setRoleTo($roleTo)
+    public function setRoleTo(string $roleTo): self
     {
         $this->roleTo = $roleTo;
 
         return $this;
     }
 
-    /**
-     * Get roleTo.
-     *
-     * @return string
-     */
-    public function getRoleTo()
+    public function getRoleTo(): string
     {
         return $this->roleTo;
     }
 
-    /**
-     * Set roleCc.
-     *
-     * @param string $roleCc
-     *
-     * @return Template
-     */
-    public function setRoleCc($roleCc)
+    public function setRoleCc(string $roleCc): self
     {
         $this->roleCc = $roleCc;
 
         return $this;
     }
 
-    /**
-     * Get roleCc.
-     *
-     * @return string
-     */
-    public function getRoleCc()
+    public function getRoleCc(): string
     {
         return $this->roleCc;
     }
 
     /**
-     * Set circlesTo.
-     *
-     * @param array $circlesTo
-     *
-     * @return Template
+     * @param string[] $circlesTo
      */
-    public function setCirclesTo($circlesTo)
+    public function setCirclesTo(array $circlesTo): self
     {
         $this->circlesTo = $circlesTo;
 
@@ -656,59 +389,33 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     }
 
     /**
-     * Get circlesTo.
-     *
-     * @return array
+     * @return string[]
      */
-    public function getCirclesTo()
+    public function getCirclesTo(): array
     {
-        return $this->circlesTo;
+        return $this->circlesTo ?? [];
     }
 
-    /**
-     * Set responseTemplate.
-     *
-     * @param string $responseTemplate
-     *
-     * @return Template
-     */
-    public function setResponseTemplate($responseTemplate)
+    public function setResponseTemplate(?string $responseTemplate): self
     {
         $this->responseTemplate = $responseTemplate;
 
         return $this;
     }
 
-    /**
-     * Get responseTemplate.
-     *
-     * @return string
-     */
-    public function getResponseTemplate()
+    public function getResponseTemplate(): string
     {
-        return $this->responseTemplate;
+        return $this->responseTemplate ?? '';
     }
 
-    /**
-     * Set contentType.
-     *
-     * @param \EMS\CoreBundle\Entity\ContentType $contentType
-     *
-     * @return Template
-     */
-    public function setContentType(ContentType $contentType = null)
+    public function setContentType(?ContentType $contentType): self
     {
         $this->contentType = $contentType;
 
         return $this;
     }
 
-    /**
-     * Get contentType.
-     *
-     * @return \EMS\CoreBundle\Entity\ContentType
-     */
-    public function getContentType()
+    public function getContentType(): ?ContentType
     {
         return $this->contentType;
     }
@@ -722,61 +429,32 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         return $this->contentType;
     }
 
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        $this->environments = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->public = false;
-    }
-
-    /**
-     * ToString.
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name;
     }
 
-    /**
-     * Add environment.
-     *
-     * @return Template
-     */
-    public function addEnvironment(Environment $environment)
+    public function addEnvironment(Environment $environment): self
     {
         $this->environments[] = $environment;
 
         return $this;
     }
 
-    /**
-     * Remove environment.
-     */
-    public function removeEnvironment(Environment $environment)
+    public function removeEnvironment(Environment $environment): void
     {
         $this->environments->removeElement($environment);
     }
 
     /**
-     * Get environments.
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Environment[]
      */
-    public function getEnvironments()
+    public function getEnvironments(): array
     {
         return $this->environments->toArray();
     }
 
-    /**
-     * is Environment Exist.
-     *
-     * Use in twig object-views-button.html.twig
-     *
-     * @return bool
-     */
-    public function isEnvironmentExist($name)
+    public function isEnvironmentExist(string $name): bool
     {
         foreach ($this->environments as $environment) {
             if ($environment->getname() === $name) {
@@ -787,88 +465,48 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         return false;
     }
 
-    /**
-     * Set emailContentType.
-     *
-     * @param string $emailContentType
-     *
-     * @return Template
-     */
-    public function setEmailContentType($emailContentType)
+    public function setEmailContentType(?string $emailContentType): self
     {
         $this->emailContentType = $emailContentType;
 
         return $this;
     }
 
-    /**
-     * Get emailContentType.
-     *
-     * @return string
-     */
-    public function getEmailContentType()
+    public function getEmailContentType(): ?string
     {
         return $this->emailContentType;
     }
 
-    /**
-     * Set header.
-     *
-     * @param string $header
-     *
-     * @return Template
-     */
-    public function setHeader($header)
+    public function setHeader(?string $header): self
     {
         $this->header = $header;
 
         return $this;
     }
 
-    /**
-     * Get header.
-     *
-     * @return string
-     */
-    public function getHeader()
+    public function getHeader(): ?string
     {
         return $this->header;
     }
 
-    /**
-     * @return string
-     */
-    public function getOrientation()
+    public function getOrientation(): ?string
     {
         return $this->orientation;
     }
 
-    /**
-     * @param string $orientation
-     *
-     * @return Template
-     */
-    public function setOrientation($orientation)
+    public function setOrientation(?string $orientation): self
     {
         $this->orientation = $orientation;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getSize()
+    public function getSize(): ?string
     {
         return $this->size;
     }
 
-    /**
-     * @param string $size
-     *
-     * @return Template
-     */
-    public function setSize($size)
+    public function setSize(?string $size): self
     {
         $this->size = $size;
 
@@ -887,40 +525,24 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAllowOrigin()
+    public function getAllowOrigin(): ?string
     {
         return $this->allowOrigin;
     }
 
-    /**
-     * @param string $allowOrigin
-     *
-     * @return Template
-     */
-    public function setAllowOrigin($allowOrigin)
+    public function setAllowOrigin(?string $allowOrigin): self
     {
         $this->allowOrigin = $allowOrigin;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDisposition()
+    public function getDisposition(): ?string
     {
         return $this->disposition;
     }
 
-    /**
-     * @param string $disposition
-     *
-     * @return Template
-     */
-    public function setDisposition($disposition)
+    public function setDisposition(?string $disposition): self
     {
         $this->disposition = $disposition;
 

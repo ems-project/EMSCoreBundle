@@ -20,7 +20,6 @@
         <service id="ems.view.data_link" class="EMS\CoreBundle\Form\View\DataLinkViewType">
             <argument type="service" id="form.factory"/>
             <argument type="service" id="twig"/>
-            <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="logger"/>
             <tag name="ems.form.viewtype" alias="data_link" />
             <tag name="form.type" />

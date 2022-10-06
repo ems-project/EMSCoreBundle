@@ -3,16 +3,16 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\Helpers\Standard\DateTime;
 
 /**
- * Notification.
- *
  * @ORM\Table(name="notification")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\NotificationRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Notification
 {
+    use CreatedModifiedTrait;
     public const PENDING = 'pending';
 
     /**
@@ -25,24 +25,10 @@ class Notification
     private $id;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Template")
      * @ORM\JoinColumn(name="template_id", referencedColumnName="id")
      */
-    private $template;
+    private ?Template $template = null;
 
     /**
      * @var string
@@ -66,11 +52,9 @@ class Notification
     private $sentTimestamp;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="response_text", type="text", nullable=true)
      */
-    private $responseText;
+    private ?string $responseText;
 
     /**
      * @var \DateTime
@@ -90,13 +74,13 @@ class Notification
      * @ORM\ManyToOne(targetEntity="Revision", inversedBy="notifications")
      * @ORM\JoinColumn(name="revision_id", referencedColumnName="id")
      */
-    private $revision;
+    private ?Revision $revision = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Environment")
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
-    private $environment;
+    private ?Environment $environment = null;
 
     /**
      * @var \DateTime
@@ -112,23 +96,17 @@ class Notification
      */
     private $responseEmailed;
 
-    private $counter;
+    private int $counter = 0;
+
+    public function __construct()
+    {
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
+    }
 
     public function __toString()
     {
         return $this->getTemplate()->getName().'#'.$this->id;
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified()
-    {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
     }
 
     /**
@@ -142,72 +120,21 @@ class Notification
     }
 
     /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return Notification
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return Notification
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
-    }
-
-    /**
      * Set template.
-     *
-     * @return Notification
      */
-    public function setTemplate(Template $template)
+    public function setTemplate(?Template $template): self
     {
         $this->template = $template;
 
         return $this;
     }
 
-    /**
-     * Get template.
-     *
-     * @return \EMS\CoreBundle\Entity\Template
-     */
-    public function getTemplate()
+    public function getTemplate(): Template
     {
+        if (null === $this->template) {
+            throw new \RuntimeException('Missing template');
+        }
+
         return $this->template;
     }
 
@@ -275,22 +202,13 @@ class Notification
 
     /**
      * Get counter.
-     *
-     * @return int
      */
-    public function getCounter()
+    public function getCounter(): int
     {
         return $this->counter;
     }
 
-    /**
-     * Set counter.
-     *
-     * @param int $counter
-     *
-     * @return Notification
-     */
-    public function setCounter($counter)
+    public function setCounter(int $counter): self
     {
         $this->counter = $counter;
 
@@ -307,26 +225,14 @@ class Notification
         return $this->sentTimestamp;
     }
 
-    /**
-     * Set responseText.
-     *
-     * @param string $responseText
-     *
-     * @return Notification
-     */
-    public function setResponseText($responseText)
+    public function setResponseText(?string $responseText): self
     {
         $this->responseText = $responseText;
 
         return $this;
     }
 
-    /**
-     * Get responseText.
-     *
-     * @return string
-     */
-    public function getResponseText()
+    public function getResponseText(): ?string
     {
         return $this->responseText;
     }
@@ -355,37 +261,35 @@ class Notification
         return $this->responseTimestamp;
     }
 
-    public function setRevision(Revision $revision): Notification
+    public function setRevision(?Revision $revision): self
     {
         $this->revision = $revision;
 
         return $this;
     }
 
-    /**
-     * Get revision.
-     *
-     * @return \EMS\CoreBundle\Entity\Revision
-     */
-    public function getRevision()
+    public function getRevision(): Revision
     {
+        if (null === $this->revision) {
+            throw new \RuntimeException('Missing revision');
+        }
+
         return $this->revision;
     }
 
-    public function setEnvironment(Environment $environment): Notification
+    public function setEnvironment(?Environment $environment): self
     {
         $this->environment = $environment;
 
         return $this;
     }
 
-    /**
-     * Get environment.
-     *
-     * @return \EMS\CoreBundle\Entity\Environment
-     */
-    public function getEnvironment()
+    public function getEnvironment(): Environment
     {
+        if (null === $this->environment) {
+            throw new \RuntimeException('Missing revision');
+        }
+
         return $this->environment;
     }
 

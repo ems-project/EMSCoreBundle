@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle;
 
 class Routes
 {
+    public const AUTH_TOKEN_LOGIN = 'emsco_auth_token_login';
     public const EDIT_REVISION = 'emsco_edit_revision';
     public const VIEW_REVISIONS = 'emsco_view_revisions';
     public const VIEW_REVISIONS_AUDIT = 'emsco_view_revisions_table_audit';
@@ -18,6 +21,7 @@ class Routes
     public const DASHBOARD_ADMIN_SET_QUICK_SEARCH = 'emsco_dashboard_admin_set_quick_search';
     public const DASHBOARD_ADMIN_SET_LANDING_PAGE = 'emsco_dashboard_admin_set_landing_page';
     public const DASHBOARD = 'emsco_dashboard';
+    public const DASHBOARD_HOME = 'emsco_dashboard_home';
     public const RELEASE_INDEX = 'emsco_release_index';
     public const RELEASE_VIEW = 'emsco_release_view';
     public const RELEASE_ADD = 'emsco_release_add';
@@ -55,6 +59,11 @@ class Routes
     public const USER_ENABLING = 'emsco_user_enabling';
     public const USER_API_KEY = 'emsco_user_api_key';
     public const USER_DELETE = 'emsco_user_delete';
+    public const USER_PROFILE = 'emsco_user_profile';
+    public const USER_PROFILE_EDIT = 'emsco_user_profile_edit';
+    public const USER_CHANGE_PASSWORD = 'emsco_user_change_password';
+    public const USER_LOGOUT = 'emsco_user_logout';
+    public const USER_LOGIN = 'emsco_user_login';
     public const LOG_INDEX = 'emsco_log_index';
     public const LOG_DELETE = 'emsco_log_delete';
     public const LOG_VIEW = 'emsco_log_view';

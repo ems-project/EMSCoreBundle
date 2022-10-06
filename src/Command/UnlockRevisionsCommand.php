@@ -82,7 +82,7 @@ final class UnlockRevisionsCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('Unlock revisions');
-        $this->all = (true === $input->getOption(self::OPTION_ALL)) ?? false;
+        $this->all = (true === $input->getOption(self::OPTION_ALL));
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void

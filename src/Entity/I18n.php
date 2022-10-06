@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * I18n.
@@ -15,6 +16,7 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
  */
 class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -25,20 +27,6 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     private $id;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="identifier", type="string", unique=true, length=200)
@@ -47,22 +35,16 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     protected $identifier;
 
     /**
-     * @var array
+     * @var array<array{locale: string, text: string}>
      *
-     * @ORM\Column(name="content", type="json_array")
+     * @ORM\Column(name="content", type="json")
      */
-    protected $content;
+    protected array $content = [];
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified()
+    public function __construct()
     {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     /**
@@ -76,56 +58,7 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     }
 
     /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return I18n
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return I18n
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
-    }
-
-    /**
-     * Set content.
-     * array<locale: string, text: string> $content.
+     * @param array<array{locale: string, text: string}> $content
      */
     public function setContent(array $content): I18n
     {
@@ -135,7 +68,7 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     }
 
     /**
-     * Get content.
+     * @return array<array{locale: string, text: string}>
      */
     public function getContent(): array
     {

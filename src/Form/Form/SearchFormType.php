@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Entity\SearchFieldOption;
 use EMS\CoreBundle\Entity\SortOption;
 use EMS\CoreBundle\Form\Field\ContentTypePickerType;
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
@@ -23,12 +24,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SearchFormType extends AbstractType
 {
-    /** @var AuthorizationCheckerInterface */
-    private $authorizationChecker;
-    /** @var SortOptionService */
-    private $sortOptionService;
-    /** @var SearchFieldOptionService */
-    private $searchFieldOptionService;
+    private AuthorizationCheckerInterface $authorizationChecker;
+    private SortOptionService $sortOptionService;
+    private SearchFieldOptionService $searchFieldOptionService;
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, SortOptionService $sortOptionService, SearchFieldOptionService $searchFieldOptionService)
     {
@@ -38,16 +36,19 @@ class SearchFormType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $isSuper = $this->authorizationChecker->isGranted('ROLE_SUPER');
 
         $searchFields = [];
         $searchFieldsData = [];
-        /* @var SortOption $sortOption */
-        foreach ($this->searchFieldOptionService->getAll() as $searchFieldOption) {
+
+        /** @var SearchFieldOption[] $searchFieldOptions */
+        $searchFieldOptions = $this->searchFieldOptionService->getAll();
+        foreach ($searchFieldOptions as $searchFieldOption) {
             $searchFieldsData[$searchFieldOption->getName()] = $searchFieldOption->getField();
             $searchFields[$searchFieldOption->getName()] = $searchFieldOption;
         }
@@ -69,6 +70,7 @@ class SearchFormType extends AbstractType
                 'icon' => 'fa fa-check',
             ]);
         } else {
+            /** @var SortOption[] $sortOptions */
             $sortOptions = $this->sortOptionService->getAll();
             if ($isSuper || empty($sortOptions)) {
                 $builder->add('sortBy', TextType::class, [
@@ -77,7 +79,6 @@ class SearchFormType extends AbstractType
             } else {
                 $sortFields = [];
                 $sortFieldIcons = [];
-                /** @var SortOption $sortOption */
                 foreach ($sortOptions as $sortOption) {
                     $sortFields[$sortOption->getName()] = $sortOption->getField();
                     $sortFieldIcons[$sortOption->getField()] = $sortOption->getIcon();
@@ -150,7 +151,7 @@ class SearchFormType extends AbstractType
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => 'EMS\CoreBundle\Entity\Form\Search',
@@ -162,11 +163,12 @@ class SearchFormType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormView<FormView>           $view
+     * @param FormInterface<FormInterface> $form
+     * @param array<mixed>                 $options
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        /* give options for twig context */
         parent::buildView($view, $form, $options);
     }
 }

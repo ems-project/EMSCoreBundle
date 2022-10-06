@@ -112,7 +112,7 @@ class I18nService implements EntityServiceInterface
         }
         $choice = [];
         foreach ($i18n->getContent() as $item) {
-            $choice[\strval($item['locale'] ?? '')] = \strval($item['text'] ?? '');
+            $choice[$item['locale']] = $item['text'];
         }
 
         return $choice;

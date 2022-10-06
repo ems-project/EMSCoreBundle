@@ -1,45 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Service;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Elasticsearch\Aggregation\ElasticaAggregation;
-use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
-use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\AggregateOption;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 class AggregateOptionService extends EntityService
 {
-    /** @var string */
     public const CONTENT_TYPES_AGGREGATION = 'types';
-    /** @var string */
     public const INDEXES_AGGREGATION = 'indexes';
-    /** @var ElasticaService */
-    private $elasticaService;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator, ElasticaService $elasticaService)
+    protected function getRepositoryIdentifier(): string
     {
-        parent::__construct($doctrine, $logger, $translator);
-        $this->elasticaService = $elasticaService;
+        return AggregateOption::class;
     }
 
-    public function getContentTypeField(): string
-    {
-        if (\version_compare($this->elasticaService->getVersion(), '6.0') >= 0) {
-            return EMSSource::FIELD_CONTENT_TYPE;
-        }
-
-        return '_type';
-    }
-
-    protected function getRepositoryIdentifier()
-    {
-        return 'EMSCoreBundle:AggregateOption';
-    }
-
-    protected function getEntityName()
+    protected function getEntityName(): string
     {
         return 'Aggregate Option';
     }

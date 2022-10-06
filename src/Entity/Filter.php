@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\Field\FilterOptionsType;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * Analyzer.
@@ -16,6 +17,7 @@ use EMS\CoreBundle\Form\Field\FilterOptionsType;
  */
 class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -45,25 +47,11 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
     protected $label;
 
     /**
-     * @var array
+     * @var array<mixed>
      *
-     * @ORM\Column(name="options", type="json_array")
+     * @ORM\Column(name="options", type="json")
      */
-    protected $options;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    protected $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    protected $modified;
+    protected array $options;
 
     /**
      * @var int
@@ -74,20 +62,11 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
 
     public function __construct()
     {
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
+
         $this->options = [];
         $this->dirty = true;
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified()
-    {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
     }
 
     /**
@@ -113,13 +92,9 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
     }
 
     /**
-     * Set options.
-     *
-     * @param array $options
-     *
-     * @return Filter
+     * @param array<mixed> $options
      */
-    public function setOptions($options)
+    public function setOptions(array $options): self
     {
         $this->options = $options;
 
@@ -135,61 +110,11 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
     }
 
     /**
-     * Get options.
-     *
-     * @return array
+     * @return array<mixed>
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return Filter
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return Filter
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**

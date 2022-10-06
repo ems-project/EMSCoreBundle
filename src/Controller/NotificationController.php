@@ -15,6 +15,7 @@ use EMS\CoreBundle\Form\Form\NotificationFormType;
 use EMS\CoreBundle\Form\Form\TreatNotificationsType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\NotificationService;
@@ -59,13 +60,13 @@ class NotificationController extends AbstractController
     {
         $em = $this->doctrine->getManager();
 
-        $templateId = $request->request->get('templateId');
-        $environmentName = $request->request->get('environmentName');
-        $ctId = $request->request->get('contentTypeId');
-        $ouuid = $request->request->get('ouuid');
+        $templateId = $request->request->getInt('templateId');
+        $environmentName = Type::string($request->request->get('environmentName'));
+        $ctId = $request->request->getInt('contentTypeId');
+        $ouuid = Type::string($request->request->get('ouuid'));
 
         /** @var EnvironmentRepository $repositoryEnv */
-        $repositoryEnv = $em->getRepository('EMSCoreBundle:Environment');
+        $repositoryEnv = $em->getRepository(Environment::class);
         /** @var Environment|null $env */
         $env = $repositoryEnv->findOneByName($environmentName);
 
@@ -74,7 +75,7 @@ class NotificationController extends AbstractController
         }
 
         /** @var ContentTypeRepository $repositoryCt */
-        $repositoryCt = $em->getRepository('EMSCoreBundle:ContentType');
+        $repositoryCt = $em->getRepository(ContentType::class);
         /** @var ContentType|null $ct */
         $ct = $repositoryCt->findById($ctId);
 
@@ -83,7 +84,7 @@ class NotificationController extends AbstractController
         }
 
         /** @var RevisionRepository $repositoryRev */
-        $repositoryRev = $em->getRepository('EMSCoreBundle:Revision');
+        $repositoryRev = $em->getRepository(Revision::class);
         /** @var Revision|null $revision */
         $revision = $repositoryRev->findByOuuidAndContentTypeAndEnvironment($ct, $ouuid, $env);
         if (null === $revision) {
@@ -129,21 +130,23 @@ class NotificationController extends AbstractController
         }
 
         $em = $this->getDoctrine()->getManager();
-        $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
+        /** @var NotificationRepository $repositoryNotification */
+        $repositoryNotification = $em->getRepository(Notification::class);
 
-        $publishIn = $this->environmentService->getAliasByName($treatNotification->getPublishTo());
+        $publishIn = null;
+        if (null !== $publishTo = $treatNotification->getPublishTo()) {
+            $publishIn = $this->environmentService->getAliasByName($publishTo);
+        }
 
         foreach ($treatNotification->getNotifications() as $notificationId => $true) {
-            /** @var Notification $notification */
-            $notification = $repositoryNotification->find($notificationId);
-            if (empty($notification)) {
+            if (null === $notification = $repositoryNotification->find($notificationId)) {
                 $this->logger->error('log.notification.notification_not_found', [
                     'notification_id' => $notificationId,
                 ]);
                 continue;
             }
 
-            if (!empty($publishIn)) {
+            if ($publishIn) {
                 $this->publishService->publish($notification->getRevision(), $publishIn);
             }
 
@@ -169,7 +172,7 @@ class NotificationController extends AbstractController
 
     public function listNotificationsAction(string $folder, Request $request): Response
     {
-        $filters = $request->query->get('notification_form');
+        $filters = $request->query->all('notification_form');
 
         $notificationFilter = new NotificationFilter();
 
@@ -179,7 +182,7 @@ class NotificationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            //TODO: what for?
+            // TODO: what for?
             $form->getData();
         }
 
@@ -190,11 +193,7 @@ class NotificationController extends AbstractController
 
         // for pagination
         $paging_size = Type::integer($this->pagingSize);
-        if (null != $request->query->get('page')) {
-            $page = $request->query->get('page');
-        } else {
-            $page = 1;
-        }
+        $page = $request->query->getInt('page', 1);
 
         $rejectedNotifications = [];
         if ('sent' == $folder) {

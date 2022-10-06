@@ -4,8 +4,8 @@ namespace EMS\CoreBundle\Service;
 
 use Elastica\Exception\ResponseException;
 use Elasticsearch\Endpoints\Index;
-use Elasticsearch\Endpoints\Indices\Alias\Get;
 use Elasticsearch\Endpoints\Indices\Exists;
+use Elasticsearch\Endpoints\Indices\GetAlias;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CoreBundle\Entity\Environment;
@@ -14,24 +14,17 @@ use Psr\Log\LoggerInterface;
 
 final class IndexService
 {
-    /** @var AliasService */
-    private $aliasService;
-    /** @var Client */
-    private $client;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var Mapping */
-    private $mapping;
+    private AliasService $aliasService;
+    private Client $client;
+    private LoggerInterface $logger;
+    private ContentTypeService $contentTypeService;
 
-    public function __construct(AliasService $aliasService, Client $client, ContentTypeService $contentTypeService, LoggerInterface $logger, Mapping $mapping)
+    public function __construct(AliasService $aliasService, Client $client, ContentTypeService $contentTypeService, LoggerInterface $logger)
     {
         $this->aliasService = $aliasService;
         $this->client = $client;
         $this->logger = $logger;
         $this->contentTypeService = $contentTypeService;
-        $this->mapping = $mapping;
     }
 
     public function deleteOrphanIndexes(): void
@@ -87,7 +80,6 @@ final class IndexService
         $source[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
         $source[EMSSource::FIELD_CONTENT_TYPE] = $contentTypeName;
         $endpoint = new Index();
-        $endpoint->setType($this->mapping->getTypeName($contentTypeName));
         $endpoint->setIndex($index);
         $endpoint->setBody($source);
         if (null !== $ouuid) {
@@ -132,8 +124,7 @@ final class IndexService
             throw new \RuntimeException('Unexpected null environment');
         }
         $index = $this->contentTypeService->getIndex($contentType, $environment);
-        $path = $this->mapping->getTypePath($contentType->getName());
-        $this->client->deleteIds([$revision->getOuuid()], $index, $path);
+        $this->client->deleteIds([$revision->getOuuid()], $index);
     }
 
     public function hasIndex(string $name): bool
@@ -176,7 +167,7 @@ final class IndexService
      */
     private function getAliases(?string $indexName): array
     {
-        $endpoint = new Get();
+        $endpoint = new GetAlias();
         if (null !== $indexName) {
             $endpoint->setIndex($indexName);
         }

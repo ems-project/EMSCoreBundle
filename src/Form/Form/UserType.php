@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Form\Form;
 use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -38,6 +39,7 @@ final class UserType extends AbstractType
 
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -55,10 +57,13 @@ final class UserType extends AbstractType
         if (self::MODE_CREATE === $mode) {
             $builder->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'options' => ['translation_domain' => 'FOSUserBundle'],
-                'first_options' => ['label' => 'form.password'],
-                'second_options' => ['label' => 'form.password_confirmation'],
-                'invalid_message' => 'fos_user.password.mismatch',
+                'options' => [
+                    'attr' => ['autocomplete' => 'new-password'],
+                    'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+                ],
+                'first_options' => ['label' => 'user.password'],
+                'second_options' => ['label' => 'user.password_confirmation'],
+                'invalid_message' => 'user.password.mismatch',
             ]);
         }
 
@@ -79,7 +84,7 @@ final class UserType extends AbstractType
             ->add('wysiwygProfile', EntityType::class, [
                 'required' => false,
                 'label' => 'WYSIWYG profile',
-                'class' => 'EMSCoreBundle:WysiwygProfile',
+                'class' => WysiwygProfile::class,
                 'choice_label' => 'name',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC');

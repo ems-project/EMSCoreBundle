@@ -148,7 +148,7 @@ final class LockCommand extends Command
         }
 
         $this->io->success(\vsprintf('%s locked %d %s revisions until %s by %s', [
-            ($this->force ? 'FORCE ' : ''),
+            $this->force ? 'FORCE ' : '',
             $revisionCount,
             $this->contentType->getName(),
             $this->until->format('Y-m-d H:i:s'),
@@ -165,9 +165,7 @@ final class LockCommand extends Command
     {
         foreach ($this->elasticaService->scroll($search) as $resultSet) {
             foreach ($resultSet as $result) {
-                if ($result) {
-                    yield Document::fromResult($result);
-                }
+                yield Document::fromResult($result);
             }
         }
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -19,32 +21,24 @@ class AssetExtractorService implements CacheWarmerInterface
     private const HELLO_EP = '/tika';
     private const META_EP = '/meta';
 
-    /** @var ?string */
-    private $tikaServer;
+    private ?string $tikaServer;
+    private string $projectDir;
+    private ?string $tikaDownloadUrl;
+    private RestClientService $rest;
+    private LoggerInterface $logger;
+    private Registry $doctrine;
+    private FileService $fileService;
+    private ?TikaWrapper $wrapper = null;
 
-    /** @var string */
-    private $projectDir;
-
-    /** @var ?string */
-    private $tikaDownloadUrl;
-
-    /** @var RestClientService */
-    private $rest;
-
-    /** @var LoggerInterface */
-    private $logger;
-
-    /** @var Registry */
-    private $doctrine;
-
-    /** @var FileService */
-    private $fileService;
-
-    /** @var ?TikaWrapper */
-    private $wrapper = null;
-
-    public function __construct(RestClientService $rest, LoggerInterface $logger, Registry $doctrine, FileService $fileService, ?string $tikaServer, string $projectDir, ?string $tikaDownloadUrl)
-    {
+    public function __construct(
+        RestClientService $rest,
+        LoggerInterface $logger,
+        Registry $doctrine,
+        FileService $fileService,
+        ?string $tikaServer,
+        string $projectDir,
+        ?string $tikaDownloadUrl
+    ) {
         $this->tikaServer = $tikaServer;
         $this->projectDir = $projectDir;
         $this->rest = $rest;
@@ -120,18 +114,18 @@ class AssetExtractorService implements CacheWarmerInterface
     public function extractMetaData(string $hash, string $file = null, bool $forced = false): ExtractedData
     {
         $manager = $this->doctrine->getManager();
-        $repository = $manager->getRepository('EMSCoreBundle:CacheAssetExtractor');
+        $repository = $manager->getRepository(CacheAssetExtractor::class);
 
-        /** @var CacheAssetExtractor $cacheData */
+        /** @var ?CacheAssetExtractor $cacheData */
         $cacheData = $repository->findOneBy([
             'hash' => $hash,
         ]);
 
         if ($cacheData instanceof CacheAssetExtractor) {
-            return new ExtractedData($cacheData->getData());
+            return new ExtractedData($cacheData->getData() ?? []);
         }
 
-        if (null === $file || !\file_exists($file)) {
+        if ((null === $file) || !\file_exists($file)) {
             $file = $this->fileService->getFile($hash);
         }
 
@@ -189,8 +183,8 @@ class AssetExtractorService implements CacheWarmerInterface
                     if (!\mb_check_encoding($text)) {
                         $text = \mb_convert_encoding($text, \mb_internal_encoding(), 'ASCII');
                     }
-                    $text = (\preg_replace('/(\n)(\s*\n)+/', '${1}', $text));
-                    $out->setContent($text);
+                    $text = \preg_replace('/(\n)(\s*\n)+/', '${1}', $text);
+                    $out->setContent($text ?? '');
                 }
                 if (!empty($out->getLocale())) {
                     $out->setLocale(AssetExtractorService::cleanString($this->getTikaWrapper()->getLanguage($file)));
@@ -206,7 +200,7 @@ class AssetExtractorService implements CacheWarmerInterface
             }
         }
 
-        if ($canBePersisted) {
+        if ($canBePersisted && isset($out)) {
             try {
                 $cacheData = new CacheAssetExtractor();
                 $cacheData->setHash($hash);
@@ -223,7 +217,7 @@ class AssetExtractorService implements CacheWarmerInterface
             }
         }
 
-        return $out;
+        return $out ?? new ExtractedData([]);
     }
 
     private static function cleanString(string $string): string
@@ -238,16 +232,18 @@ class AssetExtractorService implements CacheWarmerInterface
         return \preg_replace('/\n|\r/', '', $string) ?? '';
     }
 
-    public function isOptional()
+    public function isOptional(): bool
     {
         return false;
     }
 
-    public function warmUp($cacheDir): void
+    public function warmUp(string $cacheDir): array
     {
         if (empty($this->tikaServer)) {
             $this->getTikaWrapper();
         }
+
+        return [];
     }
 
     public function getMetaFromText(string $text): ExtractedData

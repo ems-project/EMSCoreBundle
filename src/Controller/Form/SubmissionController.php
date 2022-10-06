@@ -22,23 +22,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class SubmissionController extends AbstractController
 {
     private FormSubmissionService $formSubmissionService;
-    private TranslatorInterface $translator;
     private LoggerInterface $logger;
     private SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService;
 
     public function __construct(
         FormSubmissionService $formSubmissionService,
-        TranslatorInterface $translator,
         LoggerInterface $logger,
         SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService
     ) {
         $this->formSubmissionService = $formSubmissionService;
-        $this->translator = $translator;
         $this->logger = $logger;
         $this->spreadsheetGeneratorService = $spreadsheetGeneratorService;
     }
@@ -65,7 +61,7 @@ final class SubmissionController extends AbstractController
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
                 switch ($action->getName()) {
                     case TableAbstract::DELETE_ACTION:
-                            $this->formSubmissionService->processByIds($table->getSelected(), $user);
+                        $this->formSubmissionService->processByIds($table->getSelected(), $user);
                         break;
                     case TableAbstract::DOWNLOAD_ACTION:
                         return $this->downloadMultiple($table->getSelected());

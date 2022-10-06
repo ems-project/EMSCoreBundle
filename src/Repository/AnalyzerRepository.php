@@ -7,6 +7,11 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Analyzer;
 
+/**
+ * @extends ServiceEntityRepository<Analyzer>
+ *
+ * @method Analyzer|null findOneBy(array $criteria, array $orderBy = null)
+ */
 class AnalyzerRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
@@ -14,16 +19,9 @@ class AnalyzerRepository extends ServiceEntityRepository
         parent::__construct($registry, Analyzer::class);
     }
 
-    public function findByName($name): ?Analyzer
+    public function findByName(string $name): ?Analyzer
     {
-        $analyzer = $this->findOneBy([
-            'name' => $name,
-        ]);
-        if (null !== $analyzer && !$analyzer instanceof Analyzer) {
-            throw new \RuntimeException('Unexpected analyzer type');
-        }
-
-        return $analyzer;
+        return $this->findOneBy(['name' => $name]);
     }
 
     public function update(Analyzer $analyzer): void

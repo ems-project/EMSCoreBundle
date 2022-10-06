@@ -10,6 +10,13 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Schedule;
 
+/**
+ * @extends ServiceEntityRepository<Schedule>
+ *
+ * @method Schedule|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Schedule|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Schedule[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class ScheduleRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
@@ -66,8 +73,7 @@ class ScheduleRepository extends ServiceEntityRepository
 
     public function getById(string $id): Schedule
     {
-        $schedule = $this->find($id);
-        if (!$schedule instanceof Schedule) {
+        if (null === $schedule = $this->find($id)) {
             throw new \RuntimeException('Unexpected schedule type');
         }
 
@@ -126,11 +132,6 @@ class ScheduleRepository extends ServiceEntityRepository
 
     public function getByName(string $name): ?Schedule
     {
-        $schedule = $this->findOneBy(['name' => $name]);
-        if (null !== $schedule && !$schedule instanceof Schedule) {
-            throw new \RuntimeException('Unexpected schedule type');
-        }
-
-        return $schedule;
+        return $this->findOneBy(['name' => $name]);
     }
 }

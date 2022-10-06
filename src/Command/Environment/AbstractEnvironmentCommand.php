@@ -86,7 +86,7 @@ abstract class AbstractEnvironmentCommand extends AbstractCommand
 
         $this->choiceArgumentString($argument, $question, $environmentNames);
 
-        return $this->environmentService->findByName($this->getArgumentString($argument));
+        return $this->environmentService->giveByName($this->getArgumentString($argument));
     }
 
     protected function forceProtection(InputInterface $input): bool

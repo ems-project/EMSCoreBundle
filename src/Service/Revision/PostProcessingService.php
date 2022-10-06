@@ -53,9 +53,9 @@ final class PostProcessingService
      */
     public function postProcessing(FormInterface $form, ContentType $contentType, array &$objectArray, array $context = [], ?array &$parent = [], string $path = ''): bool
     {
-        $migration = isset($context['migration']) ? \boolval($context['migration']) : false;
+        $migration = isset($context['migration']) && $context['migration'];
         $context = \array_merge($context, [
-            '_source' => &$objectArray, //if update also update the context
+            '_source' => &$objectArray, // if update also update the context
             '_type' => $contentType->getName(),
             'index' => $contentType->giveEnvironment()->getAlias(),
             'alias' => $contentType->giveEnvironment()->getAlias(),
@@ -105,7 +105,7 @@ final class PostProcessingService
                         $found = true;
                     } else {
                         $this->logger->warning('service.data.json_parse_post_processing_error', [
-                            'field_name' => $dataField->getFieldType()->getName(),
+                            'field_name' => $dataField->giveFieldType()->getName(),
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $out,
                         ]);
                     }
@@ -115,7 +115,7 @@ final class PostProcessingService
                     if (!$migration) {
                         $form->addError(new FormError($e->getPrevious()->getMessage()));
                         $this->logger->warning('service.data.cant_finalize_field', [
-                            'field_name' => $dataField->getFieldType()->getName(),
+                            'field_name' => $dataField->giveFieldType()->getName(),
                             'field_display' => isset($fieldType->getDisplayOptions()['label']) && !empty($fieldType->getDisplayOptions()['label']) ? $fieldType->getDisplayOptions()['label'] : $fieldType->getName(),
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getPrevious()->getMessage(),
                         ]);
@@ -163,7 +163,6 @@ final class PostProcessingService
         }
 
         if ($dataFieldType->isContainer() && $form instanceof \IteratorAggregate) {
-            /** @var FormInterface $child */
             foreach ($form->getIterator() as $child) {
                 /** @var DataFieldType $childType */
                 $childType = $child->getConfig()->getType()->getInnerType();
@@ -201,10 +200,10 @@ final class PostProcessingService
      * @param array<mixed> $objectArray
      * @param array<mixed> $context
      */
-    private function jsonMenuNestedEditor(FieldType $fieldType, ContentType $contentType, array &$objectArray, array $context): bool
+    private function jsonMenuNestedEditor(FieldType $fieldType, ContentType $contentType, array &$objectArray, array $context): void
     {
         if (null === $data = ($objectArray[$fieldType->getName()] ?? null)) {
-            return false;
+            return;
         }
 
         $nestedTypes = [];
@@ -213,7 +212,7 @@ final class PostProcessingService
         }
 
         $jsonMenuNested = JsonMenuNested::fromStructure($data);
-        /** @var JsonMenuNested $item */
+
         foreach ($jsonMenuNested as $item) {
             if (null === $nestedType = ($nestedTypes[$item->getType()] ?? null)) {
                 continue;
@@ -237,7 +236,5 @@ final class PostProcessingService
         }
 
         $objectArray[$fieldType->getName()] = \json_encode($jsonMenuNested->toArrayStructure());
-
-        return true;
     }
 }

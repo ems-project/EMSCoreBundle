@@ -21,6 +21,7 @@ use EMS\CoreBundle\Service\ActionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -58,7 +59,7 @@ final class ActionController extends AbstractController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepository = $em->getRepository(ContentType::class);
 
         $contentTypes = $contentTypeRepository->findBy([
             'deleted' => false,
@@ -115,7 +116,7 @@ final class ActionController extends AbstractController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypeRepository = $em->getRepository(ContentType::class);
 
         $contentTypes = $contentTypeRepository->findBy([
             'deleted' => false,
@@ -140,7 +141,7 @@ final class ActionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $action->setOrderKey($this->actionService->count('', $contentType) + 1);
-            $action->setName(Encoder::webalize($action->getName()) ?? '');
+            $action->setName(Encoder::webalize($action->getName()));
 
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
@@ -196,15 +197,15 @@ final class ActionController extends AbstractController
             }
 
             return $this->redirectToRoute('ems_core_action_index', [
-                    'contentType' => $action->getContentType()->getId(),
+                    'contentType' => $action->giveContentType()->getId(),
             ]);
         }
 
         if ('json' === $_format) {
             foreach ($form->getErrors() as $error) {
-                $this->logger->error('log.error', [
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $error->getMessage(),
-                ]);
+                if ($error instanceof FormError) {
+                    $this->logger->error('log.error', [EmsFields::LOG_ERROR_MESSAGE_FIELD => $error->getMessage()]);
+                }
             }
 
             return $this->render('@EMSCore/ajax/notification.json.twig', [
@@ -215,7 +216,7 @@ final class ActionController extends AbstractController
         return $this->render('@EMSCore/action/edit.html.twig', [
             'form' => $form->createView(),
             'action' => $action,
-            'contentType' => $action->getContentType(),
+            'contentType' => $action->giveContentType(),
         ]);
     }
 
@@ -226,7 +227,7 @@ final class ActionController extends AbstractController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var TemplateRepository $templateRepository */
-        $templateRepository = $em->getRepository('EMSCoreBundle:Template');
+        $templateRepository = $em->getRepository(Template::class);
 
         $action = $templateRepository->find($id);
 
@@ -245,7 +246,7 @@ final class ActionController extends AbstractController
         ]);
 
         return $this->redirectToRoute('ems_core_action_index', [
-            'contentType' => $action->getContentType()->getId(),
+            'contentType' => $action->giveContentType()->getId(),
         ]);
     }
 

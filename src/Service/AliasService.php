@@ -4,8 +4,8 @@ namespace EMS\CoreBundle\Service;
 
 use Elastica\Aggregation\Terms;
 use Elasticsearch\Endpoints\Cat\Indices;
-use Elasticsearch\Endpoints\Indices\Alias\Get;
-use Elasticsearch\Endpoints\Indices\Aliases\Update;
+use Elasticsearch\Endpoints\Indices\GetAlias;
+use Elasticsearch\Endpoints\Indices\UpdateAliases;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -22,7 +22,7 @@ class AliasService
     private $envRepo;
     /** @var ManagedAliasRepository */
     private $managedAliasRepo;
-    /** @var array<string, array{name: string, total: int, indexes: array, environment: string, managed: bool}> */
+    /** @var array<string, array{name: string, total: int, indexes: array<mixed>, environment: string, managed: bool}> */
     private $aliases = [];
     /** @var array<array{name: string, count: int}> */
     private $orphanIndexes = [];
@@ -71,7 +71,7 @@ class AliasService
             }
         }
 
-        $endpoint = new Update();
+        $endpoint = new UpdateAliases();
         $endpoint->setBody(['actions' => $actions]);
         $this->elasticaClient->requestEndpoint($endpoint);
 
@@ -85,7 +85,7 @@ class AliasService
 
     public function hasAliasInCluster(string $name): bool
     {
-        $endpoint = new Get();
+        $endpoint = new GetAlias();
         $endpoint->setName($name);
         try {
             $this->elasticaClient->requestEndpoint($endpoint)->getData();
@@ -98,7 +98,7 @@ class AliasService
     }
 
     /**
-     * @return array{name: string, total: int, indexes: array, environment: string, managed: bool}
+     * @return array{name: string, total: int, indexes: array<mixed>, environment: string, managed: bool}
      */
     public function getAlias(string $name): array
     {
@@ -110,7 +110,7 @@ class AliasService
     }
 
     /**
-     * @return array<string, array{name: string, total: int, indexes: array, environment: null|string, managed: bool}>
+     * @return array<string, array{name: string, total: int, indexes: array<mixed>, environment: string|null, managed: bool}>
      */
     public function getAliases(): array
     {
@@ -162,10 +162,10 @@ class AliasService
      */
     public function getManagedAliases(): array
     {
+        /** @var ManagedAlias[] $managedAliases */
         $managedAliases = $this->managedAliasRepo->findAll();
 
         foreach ($managedAliases as $managedAlias) {
-            /* @var $managedAlias ManagedAlias */
             if (!$this->hasAlias($managedAlias->getAlias())) {
                 continue;
             }
@@ -197,7 +197,13 @@ class AliasService
                 continue;
             }
 
-            $indexes[$name] = ['name' => $name, 'count' => $data['docs.count']];
+            $search = new Search([$name]);
+            $search->setSize(0);
+
+            $indexes[$name] = [
+                'name' => $name,
+                'count' => $this->elasticaService->count($search),
+            ];
         }
 
         \ksort($indexes);
@@ -217,7 +223,7 @@ class AliasService
     }
 
     /**
-     * @return array<string, array{name: string, total: int, indexes: array, environment: string, managed: bool}>
+     * @return array<string, array{name: string, total: int, indexes: array<mixed>, environment: string, managed: bool}>
      */
     private function getReferrers(string $indexName): array
     {
@@ -279,7 +285,7 @@ class AliasService
         foreach ($aggregation['buckets'] ?? [] as $bucket) {
             $index = $bucket['key'] ?? '';
             if (\is_string($index) && $this->validIndexName($index)) {
-                $this->counterIndexes[$bucket['key']] = $bucket['doc_count'];
+                $this->counterIndexes[(string) $bucket['key']] = (int) $bucket['doc_count'];
             }
         }
 
@@ -289,7 +295,7 @@ class AliasService
                 if (\is_string($alias) && !isset($this->counterIndexes[$alias])) {
                     $this->counterIndexes[$alias] = 0;
                 }
-                $this->counterIndexes[$alias] += $this->counterIndexes[$index] ?? 0;
+                $this->counterIndexes[(string) $alias] += $this->counterIndexes[$index] ?? 0;
             }
         }
 
@@ -335,7 +341,7 @@ class AliasService
             }
         }
 
-        $endpoint = new Update();
+        $endpoint = new UpdateAliases();
         $endpoint->setBody(['actions' => $json]);
         $this->elasticaClient->requestEndpoint($endpoint);
     }
@@ -402,7 +408,7 @@ class AliasService
      */
     private function getData(): array
     {
-        $endpoint = new Get();
+        $endpoint = new GetAlias();
         $indexesAliases = $this->elasticaClient->requestEndpoint($endpoint)->getData();
 
         return \array_filter(

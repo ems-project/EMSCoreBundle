@@ -52,6 +52,7 @@ class JobService implements EntityServiceInterface
      */
     public function findByUser(string $user): array
     {
+        /** @var Job[] $doneJobs */
         $doneJobs = $this->repository->findBy([
             'user' => $user,
         ], [
@@ -63,18 +64,12 @@ class JobService implements EntityServiceInterface
 
     public function findNext(): ?Job
     {
-        $job = $this->repository->findOneBy([
+        return $this->repository->findOneBy([
             'started' => false,
             'done' => false,
         ], [
             'created' => 'ASC',
         ]);
-
-        if (null !== $job && !$job instanceof Job) {
-            throw new \RuntimeException('Unexpected Job class object');
-        }
-
-        return $job;
     }
 
     public function count(string $searchValue = '', $context = null): int
@@ -134,7 +129,10 @@ class JobService implements EntityServiceInterface
      */
     public function scroll(int $size, int $from): array
     {
-        return $this->repository->findBy([], ['created' => 'DESC'], $size, $from);
+        /** @var Job[] $jobs */
+        $jobs = $this->repository->findBy([], ['created' => 'DESC'], $size, $from);
+
+        return $jobs;
     }
 
     public function start(Job $job): JobOutput
@@ -143,7 +141,7 @@ class JobService implements EntityServiceInterface
         $this->repository->save($job);
 
         $output = new JobOutput($this->repository, $job->getId());
-        $output->setDecorated(true);
+        $output->setDecorated(false);
         $output->writeln('Job ready to be launch');
 
         return $output;

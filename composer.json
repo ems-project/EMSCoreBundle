@@ -2,78 +2,56 @@
 	"name" : "elasticms/core-bundle",
 	"description" : "The elasticms core bundle",
 	"type" : "symfony-bundle",
-	"authors" : [
-		{
-			"name" : "Mathieu De Keyzer",
-			"email" : "mathieu@dekeyzer.net"
-		},
-		{
-			"name" : "David Meert",
-			"email" : "david.meert@smals.be"
-		}
-	],
 	"keywords" : [
 		"elasticms"
 	],
 	"license" : "MIT",
+	"authors" : [
+		{
+			"name" : "EMS Community",
+			"homepage" : "https://github.com/ems-project/EMSFormBundle/contributors"
+		}
+	],
 	"require" : {
 		"php": "^7.4",
-		"ext-dom": "*",
-		"ext-iconv": "*",
-		"ext-json": "*",
 		"ext-libxml": "*",
 		"ext-openssl": "*",
 		"ext-simplexml": "*",
 		"ext-soap": "*",
-		"ext-zip": "*",
 		"caxy/php-htmldiff": "^0.1",
-		"doctrine/doctrine-bundle": "^1.12",
-		"doctrine/doctrine-migrations-bundle": "^1.3",
-		"doctrine/orm": "^2.7",
-		"doctrine/persistence": "^1.3",
+		"doctrine/doctrine-bundle": "^2.7",
+		"doctrine/doctrine-migrations-bundle": "^3.2",
 		"dragonmantank/cron-expression": "^3.1",
-		"elasticms/submission-bundle": "^2.1",
+		"elasticms/submission-bundle": "^4.0",
 		"elasticms/xliff": "^1.0",
 		"guzzlehttp/guzzle": "^6.3",
 		"ocramius/doctrine-batch-utils": "2.1",
-		"psr/cache": "^1.0",
-		"psr/link": "~1.0.0",
-		"psr/simple-cache": "^1.0",
-		"ramsey/uuid-doctrine": "^1.6",
+		"ramsey/uuid-doctrine": "^1.8",
 		"sensio/framework-extra-bundle": "^6.2",
 		"sensiolabs/ansi-to-html": "^1.1",
-		"symfony/asset": "^4.4",
-		"symfony/cache": "^4.4",
-		"symfony/console": "^4.4",
-		"symfony/expression-language": "^4.4",
-		"symfony/form": "^4.4",
-		"symfony/ldap": "^4.4",
-		"symfony/monolog-bridge": "^4.4",
-		"symfony/process": "^4.4",
-		"symfony/security": "^4.4",
-		"symfony/security-bundle": "^2.8 || ^3.0 || ^4.0",
-		"symfony/serializer-pack": "^1.0",
-		"symfony/swiftmailer-bundle": "^3.4",
-		"symfony/twig-bundle": "^4.4",
-		"symfony/validator": "^4.4",
-		"symfony/web-link": "^4.4",
-		"symfony/webpack-encore-bundle": "^1.0",
-		"symfony/yaml": "^4.4"
+		"symfony/asset": "^5.4",
+		"symfony/cache": "^5.4",
+		"symfony/form": "^5.4",
+		"symfony/ldap": "^5.4",
+		"symfony/mailer": "^5.4",
+		"symfony/monolog-bridge": "^5.4",
+		"symfony/security-bundle": "^5.4",
+		"symfony/twig-bundle": "^5.4",
+		"symfony/validator": "^5.4",
+		"symfony/web-link": "^5.4"
 	},
 	"require-dev" : {
-		"friendsofphp/php-cs-fixer" : "^3.0",
-		"phpstan/phpstan": "^0.12",
-		"phpunit/phpunit" : "^9.5",
-		"symfony/test-pack": "^1.0"
+		"friendsofphp/php-cs-fixer": "^3.0",
+		"phpstan/phpstan": "^1.0",
+		"phpstan/phpstan-doctrine": "^1.3",
+		"phpstan/phpstan-symfony": "^1.2",
+		"symfony/test-pack": "^1.0",
+		"symfony/yaml": "^5.4"
 	},
 	"autoload" : {
 		"psr-4" : {
-			"EMS\\CoreBundle\\" : "src/",
-			"FOS\\UserBundle\\" : "src-user/"
-		},
-		"exclude-from-classmap" : [
-			"tests/"
-		]
+			"EMS\\CoreBundle\\" : "src/"
+		}
 	},
 	"autoload-dev" : {
 		"psr-4" : {
@@ -83,12 +61,6 @@
 	"config": {
 		"lock": false,
 		"sort-packages": true
-	},
-	"extra" : {
-		"branch-alias" : {
-			"dev-master" : "1.8.x-dev",
-			"dev-demo" : "1.9.x-dev"
-		}
 	},
 	"scripts": {
 		"phpcs": "php-cs-fixer fix",

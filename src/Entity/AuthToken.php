@@ -3,16 +3,19 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\Helpers\Standard\DateTime;
 
 /**
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\AuthTokenRepository")
  * @ORM\Table(name="auth_tokens",
  *      uniqueConstraints={@ORM\UniqueConstraint(name="auth_tokens_value_unique", columns={"value"})}
  * )
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
 class AuthToken
 {
+    use CreatedModifiedTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
@@ -20,61 +23,29 @@ class AuthToken
      *
      * @var int
      */
-    protected $id;
+    private $id;
 
     /**
      * @ORM\Column(name="value", type="string")
-     *
-     * @var string
      */
-    protected $value;
-
-    /**
-     * @ORM\Column(name="created", type="datetime")
-     *
-     * @var \DateTime
-     */
-    protected $created;
-
-    /**
-     * @ORM\Column(name="modified", type="datetime")
-     *
-     * @var \DateTime
-     */
-    protected $modified;
+    private string $value;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="authTokens")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     *
-     * @var UserInterface
      */
-    protected $user;
+    private UserInterface $user;
 
-    /**
-     * Constructor: initialize the authentication key.
-     */
     public function __construct(UserInterface $user)
     {
         $this->value = \base64_encode(\random_bytes(50));
         $this->user = $user;
+
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified()
-    {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
-    }
-
-    /**
-     * Get id.
-     *
      * @return int
      */
     public function getId()
@@ -82,96 +53,26 @@ class AuthToken
         return $this->id;
     }
 
-    /**
-     * Set value.
-     *
-     * @param string $value
-     *
-     * @return AuthToken
-     */
-    public function setValue($value)
+    public function setValue(string $value): self
     {
         $this->value = $value;
 
         return $this;
     }
 
-    /**
-     * Get value.
-     *
-     * @return string
-     */
-    public function getValue()
+    public function getValue(): string
     {
         return $this->value;
     }
 
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return AuthToken
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return AuthToken
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
-    }
-
-    /**
-     * Set user.
-     *
-     * @return AuthToken
-     */
-    public function setUser(UserInterface $user)
+    public function setUser(UserInterface $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    /**
-     * Get user.
-     *
-     * @return \EMS\CoreBundle\Entity\UserInterface
-     */
-    public function getUser()
+    public function getUser(): UserInterface
     {
         return $this->user;
     }

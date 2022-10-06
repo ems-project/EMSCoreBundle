@@ -67,7 +67,7 @@ final class SelectUserPropertyType extends AbstractType
             ])
             ->setNormalizer('choices', function (Options $options, $value) {
                 if (true === $options['is_dynamic']) {
-                    return $value; //choices overwitten by allowDynamicChoices method
+                    return $value; // choices overwitten by allowDynamicChoices method
                 }
 
                 $labelProperty = $options['label_property'] ?? $options['user_property'];
@@ -83,7 +83,7 @@ final class SelectUserPropertyType extends AbstractType
                 $allowAdd = \boolval($options['allow_add']) ? true : false;
 
                 if ($allowAdd) {
-                    $value['data-tags'] = true; //select2 allow add tags
+                    $value['data-tags'] = true; // select2 allow add tags
                 }
 
                 return $value;

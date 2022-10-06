@@ -6,6 +6,9 @@ namespace EMS\CoreBundle\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * @implements DataTransformerInterface<mixed, mixed>
+ */
 class ArrayValuesTransformer implements DataTransformerInterface
 {
     /**

@@ -151,9 +151,6 @@ final class ExtractCommand extends AbstractCommand
 
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
-                if (false === $result) {
-                    continue;
-                }
                 $source = Document::fromResult($result);
                 try {
                     $contentType = $this->contentTypeService->giveByName($source->getContentType());
@@ -173,19 +170,19 @@ final class ExtractCommand extends AbstractCommand
 
         if (null !== $this->baseUrl) {
             $this->xliffFilename = $this->baseUrl.$this->assetRuntime->assetPath(
-                    [
-                        EmsFields::CONTENT_FILE_NAME_FIELD_ => 'extract.xlf',
-                        EmsFields::CONTENT_FILE_HASH_FIELD_ => \sha1_file($this->xliffFilename),
-                    ],
-                    [
-                        EmsFields::ASSET_CONFIG_FILE_NAMES => [$this->xliffFilename],
-                    ],
-                    'ems_asset',
-                    EmsFields::CONTENT_FILE_HASH_FIELD,
-                    EmsFields::CONTENT_FILE_NAME_FIELD,
-                    EmsFields::CONTENT_MIME_TYPE_FIELD,
-                    UrlGeneratorInterface::ABSOLUTE_PATH
-                );
+                [
+                    EmsFields::CONTENT_FILE_NAME_FIELD_ => 'extract.xlf',
+                    EmsFields::CONTENT_FILE_HASH_FIELD_ => \sha1_file($this->xliffFilename),
+                ],
+                [
+                    EmsFields::ASSET_CONFIG_FILE_NAMES => [$this->xliffFilename],
+                ],
+                'ems_asset',
+                EmsFields::CONTENT_FILE_HASH_FIELD,
+                EmsFields::CONTENT_FILE_NAME_FIELD,
+                EmsFields::CONTENT_MIME_TYPE_FIELD,
+                UrlGeneratorInterface::ABSOLUTE_PATH
+            );
         }
 
         $output->writeln('');

@@ -6,26 +6,21 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Core\UI\Menu;
-use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Repository\UserRepository;
-use EMS\CoreBundle\Security\CoreLdapUser;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 
 class UserService implements EntityServiceInterface
 {
-    /** @var Registry */
-    private $doctrine;
-    /** @var TokenStorageInterface */
-    private $tokenStorage;
+    private Registry $doctrine;
+    private TokenStorageInterface $tokenStorage;
+    private ?UserInterface $currentUser;
 
-    /** @var UserInterface|null */
-    private $currentUser;
-
-    private $securityRoles;
+    /** @var array<mixed> */
+    private array $securityRoles;
 
     private UserRepository $userRepository;
     private Security $security;
@@ -33,7 +28,16 @@ class UserService implements EntityServiceInterface
     public const DONT_DETACH = false;
     private SearchRepository $searchRepository;
 
-    public function __construct(Registry $doctrine, TokenStorageInterface $tokenStorage, Security $security, UserRepository $userRepository, SearchRepository $searchRepository, $securityRoles)
+    /**
+     * @param array<mixed> $securityRoles
+     */
+    public function __construct(
+        Registry $doctrine,
+        TokenStorageInterface $tokenStorage,
+        Security $security,
+        UserRepository $userRepository,
+        SearchRepository $searchRepository,
+        array $securityRoles)
     {
         $this->doctrine = $doctrine;
         $this->tokenStorage = $tokenStorage;
@@ -59,42 +63,17 @@ class UserService implements EntityServiceInterface
         return $user;
     }
 
-    public function findUsernameByApikey($apiKey)
+    public function getUserById(int $id): ?User
     {
-        $em = $this->doctrine->getManager();
-        /** @var \Doctrine\ORM\EntityRepository */
-        $repository = $em->getRepository('EMSCoreBundle:AuthToken');
-
-        /** @var AuthToken $token */
-        $token = $repository->findOneBy([
-                'value' => $apiKey,
-        ]);
-        if (empty($token)) {
-            return null;
-        }
-
-        return $token->getUser()->getUsername();
+        return $this->userRepository->findOneBy(['id' => $id]);
     }
 
-    public function getUserById($id)
+    public function findUserByEmail(string $email): ?User
     {
-        $user = $this->userRepository->findOneBy([
-                'id' => $id,
-        ]);
-
-        return $user;
+        return $this->userRepository->findOneBy(['email' => $email]);
     }
 
-    public function findUserByEmail($email)
-    {
-        $user = $this->userRepository->findOneBy([
-                'email' => $email,
-        ]);
-
-        return $user;
-    }
-
-    public function updateUser($user)
+    public function updateUser(UserInterface $user): UserInterface
     {
         $em = $this->doctrine->getManager();
         $em->persist($user);
@@ -113,12 +92,10 @@ class UserService implements EntityServiceInterface
         return $user;
     }
 
-    public function getUser($username, $detachIt = true): ?UserInterface
+    public function getUser(string $username, bool $detachIt = true): ?UserInterface
     {
-        $em = $this->doctrine->getManager();
-        $user = $this->userRepository->findOneBy([
-                'username' => $username,
-        ]);
+        $user = $this->userRepository->findOneBy(['username' => $username]);
+
         if (null === $user) {
             return null;
         }
@@ -130,10 +107,7 @@ class UserService implements EntityServiceInterface
             return $user;
         }
 
-        $clone = clone $user;
-        $em->detach($clone);
-
-        return $clone;
+        return clone $user;
     }
 
     public function getCurrentUser(bool $detach = true): UserInterface
@@ -149,9 +123,6 @@ class UserService implements EntityServiceInterface
         $username = $token->getUsername();
         $this->currentUser = $this->getUser($username, $detach);
 
-        if (null === $this->currentUser && $token->getUser() instanceof CoreLdapUser) {
-            $this->currentUser = $token->getUser();
-        }
         if (null === $this->currentUser) {
             throw new \RuntimeException('Unexpected null user object');
         }
@@ -190,12 +161,17 @@ class UserService implements EntityServiceInterface
         return $out;
     }
 
-    public function getUsersForRoleAndCircles($role, $circles)
+    /**
+     * @param string[] $circles
+     *
+     * @return User[]
+     */
+    public function getUsersForRoleAndCircles(string $role, array $circles): array
     {
         return $this->userRepository->findForRoleAndCircles($role, $circles);
     }
 
-    public function deleteUser(UserInterface $user)
+    public function deleteUser(UserInterface $user): void
     {
         /** @var EntityManagerInterface $em */
         $em = $this->doctrine->getManager();
@@ -207,9 +183,7 @@ class UserService implements EntityServiceInterface
      */
     public function getAllUsers(): array
     {
-        return $this->userRepository->findBy([
-                'enabled' => true,
-        ]);
+        return $this->userRepository->findBy(['enabled' => true]);
     }
 
     /**
@@ -218,11 +192,6 @@ class UserService implements EntityServiceInterface
     public function getAll(): array
     {
         return $this->userRepository->findAll();
-    }
-
-    public function getsecurityRoles()
-    {
-        return $this->securityRoles;
     }
 
     /**
@@ -242,7 +211,7 @@ class UserService implements EntityServiceInterface
      */
     public function listUserRoles(): array
     {
-        $roleHierarchy = $this->getsecurityRoles();
+        $roleHierarchy = $this->securityRoles;
         $roles = \array_merge(['ROLE_USER'], \array_keys($roleHierarchy), ['ROLE_API']);
 
         return \array_combine($roles, $roles);

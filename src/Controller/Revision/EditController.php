@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Revision;
 
 use EMS\CommonBundle\Common\Standard\Json;
-use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Core\Revision\DraftInProgress;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -38,7 +37,6 @@ class EditController extends AbstractController
 {
     private DataService $dataService;
     private LoggerInterface $logger;
-    private LoggerInterface $auditLogger;
     private PublishService $publishService;
     private RevisionService $revisionService;
     private TranslatorInterface $translator;
@@ -48,14 +46,12 @@ class EditController extends AbstractController
         DataService $dataService,
         DraftInProgress $draftInProgress,
         LoggerInterface $logger,
-        LoggerInterface $auditLogger,
         PublishService $publishService,
         RevisionService $revisionService,
         TranslatorInterface $translator
     ) {
         $this->dataService = $dataService;
         $this->logger = $logger;
-        $this->auditLogger = $auditLogger;
         $this->publishService = $publishService;
         $this->revisionService = $revisionService;
         $this->translator = $translator;
@@ -108,10 +104,7 @@ class EditController extends AbstractController
         }
 
         $this->dataService->lockRevision($revision);
-
-        if (null === $contentType = $revision->getContentType()) {
-            throw new NotFoundException('ContentType not found!');
-        }
+        $contentType = $revision->giveContentType();
 
         if ($revision->hasEndTime() && !$this->isGranted(Roles::ROLE_SUPER)) {
             throw new ElasticmsException($this->translator->trans('log.data.revision.only_super_can_finalize_an_archive', LogRevisionContext::read($revision), EMSCoreBundle::TRANS_DOMAIN));
@@ -134,7 +127,7 @@ class EditController extends AbstractController
         $this->logger->debug('Revision\'s form created');
 
         /** @var array<string, mixed> $requestRevision */
-        $requestRevision = $request->request->get('revision', []);
+        $requestRevision = $request->request->all('revision');
 
         /**little trick to reorder collection*/
         $this->reorderCollection($requestRevision);
@@ -144,7 +137,7 @@ class EditController extends AbstractController
         $form->handleRequest($request);
         $this->logger->debug('Revision request form handled');
 
-        if ($form->isSubmitted()) {//Save, Finalize or Discard
+        if ($form->isSubmitted()) {// Save, Finalize or Discard
             $allFieldsAreThere = $requestRevision['allFieldsAreThere'] ?? false;
             if (empty($requestRevision) || !$allFieldsAreThere) {
                 $this->logger->error('log.data.revision.not_completed_request', LogRevisionContext::read($revision));
@@ -157,8 +150,8 @@ class EditController extends AbstractController
             }
 
             $revision->setAutoSave(null);
-            if (!isset($requestRevision['discard'])) {//Save, Copy, Paste or Finalize
-                //Save anyway
+            if (!isset($requestRevision['discard'])) {// Save, Copy, Paste or Finalize
+                // Save anyway
                 /** @var Revision $revision */
                 $revision = $form->getData();
                 $objectArray = $revision->getRawData();
@@ -191,7 +184,7 @@ class EditController extends AbstractController
                     }
                 }
 
-                if (isset($requestRevision['publish'])) {//Finalize
+                if (isset($requestRevision['publish'])) {// Finalize
                     $revision = $this->dataService->finalizeDraft($revision, $form);
                 }
 
@@ -214,7 +207,7 @@ class EditController extends AbstractController
                 return $this->redirectToRoute(Routes::EDIT_REVISION, ['revisionId' => $revisionId]);
             }
 
-            //if Save or Discard
+            // if Save or Discard
             if (!isset($requestRevision['publish']) && !isset($requestRevision['publish_version'])) {
                 if (null != $revision->getOuuid()) {
                     if (0 === \count($form->getErrors()) && $contentType->isAutoPublish()) {

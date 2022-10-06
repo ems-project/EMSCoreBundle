@@ -9,6 +9,7 @@ use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\Helpers\Standard\Type;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,26 +33,25 @@ class CalendarController extends AbstractController
     public function update(View $view, Request $request): Response
     {
         try {
-            $ouuid = $request->request->get('ouuid', false);
+            $ouuid = Type::string($request->request->get('ouuid'));
             $type = $view->getContentType()->getName();
             $revision = $this->dataService->initNewDraft($type, $ouuid);
 
             $rawData = $revision->getRawData();
-            $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
+            $field = $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['dateRangeField']);
 
-            /** @var \DateTime $from */
-            $from = new \DateTime($request->request->get('start', false));
+            $from = new \DateTime(Type::string($request->request->get('start')));
             $to = $request->request->get('end', false);
             if (!$to) {
                 $to = clone $from;
                 $to->add(new \DateInterval('PT23H59M'));
             } else {
-                $to = new \DateTime($to);
+                $to = new \DateTime(Type::string($to));
             }
 
             $input = [
-                    $field->getMappingOptions()['fromDateMachineName'] => $from->format('c'),
-                    $field->getMappingOptions()['toDateMachineName'] => $to->format('c'),
+                $field->getMappingOptions()['fromDateMachineName'] => $from->format('c'),
+                $field->getMappingOptions()['toDateMachineName'] => $to->format('c'),
             ];
 
             if ($field->getMappingOptions()['nested']) {
@@ -64,7 +64,7 @@ class CalendarController extends AbstractController
             $this->dataService->finalizeDraft($revision);
 
             return $this->render('@EMSCore/view/custom/calendar_replan.json.twig', [
-                    'success' => true,
+                'success' => true,
             ]);
         } catch (\Exception $e) {
             $this->logger->error('log.error', [
@@ -82,8 +82,8 @@ class CalendarController extends AbstractController
     {
         $search = new Search();
         $form = $this->createForm(SearchFormType::class, $search, [
-                'method' => 'GET',
-                'light' => true,
+            'method' => 'GET',
+            'light' => true,
         ]);
         $form->handleRequest($request);
 
@@ -93,11 +93,9 @@ class CalendarController extends AbstractController
 
         $body = $this->searchService->generateSearchBody($search);
 
-        /** @var \DateTime $from */
-        $from = new \DateTime($request->query->get('from'));
-        /** @var \DateTime $to */
-        $to = new \DateTime($request->query->get('to'));
-        $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
+        $from = new \DateTime(Type::string($request->query->get('from')));
+        $to = new \DateTime(Type::string($request->query->get('to')));
+        $field = $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['dateRangeField']);
 
         if (empty($body['query']['bool']['must'])) {
             $body['query']['bool']['must'] = [];
@@ -108,7 +106,7 @@ class CalendarController extends AbstractController
                     'path' => $field->getName(),
                     'query' => [
                         'range' => [
-                                $field->getName().'.'.$field->getMappingOptions()['fromDateMachineName'] => ['lte' => $to->format('c')],
+                            $field->getName().'.'.$field->getMappingOptions()['fromDateMachineName'] => ['lte' => $to->format('c')],
                         ],
                     ],
                 ],
@@ -118,7 +116,7 @@ class CalendarController extends AbstractController
                     'path' => $field->getName(),
                     'query' => [
                         'range' => [
-                                $field->getName().'.'.$field->getMappingOptions()['toDateMachineName'] => ['gte' => $from->format('c')],
+                            $field->getName().'.'.$field->getMappingOptions()['toDateMachineName'] => ['gte' => $from->format('c')],
                         ],
                     ],
                 ],
@@ -137,21 +135,21 @@ class CalendarController extends AbstractController
         }
 
         $searchQuery = [
-                'index' => $view->getContentType()->getEnvironment()->getAlias(),
-                'type' => $view->getContentType()->getName(),
-                'from' => 0,
-                'size' => 1000,
-                'body' => $body,
+            'index' => $view->getContentType()->giveEnvironment()->getAlias(),
+            'type' => $view->getContentType()->getName(),
+            'from' => 0,
+            'size' => 1000,
+            'body' => $body,
         ];
 
         $search = $this->elasticaService->convertElasticsearchSearch($searchQuery);
 
         return $this->render('@EMSCore/view/custom/calendar_search.json.twig', [
-                'success' => true,
-                'data' => $this->elasticaService->search($search)->getResponse()->getData(),
-                'field' => $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']),
-                'contentType' => $view->getContentType(),
-                'environment' => $view->getContentType()->getEnvironment(),
+            'success' => true,
+            'data' => $this->elasticaService->search($search)->getResponse()->getData(),
+            'field' => $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['dateRangeField']),
+            'contentType' => $view->getContentType(),
+            'environment' => $view->getContentType()->giveEnvironment(),
         ]);
     }
 }

@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Service\Mapping;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * DataField.
@@ -14,6 +15,7 @@ use EMS\CoreBundle\Service\Mapping;
  */
 class AggregateOption
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -22,20 +24,6 @@ class AggregateOption
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
 
     /**
      * @var string
@@ -59,11 +47,9 @@ class AggregateOption
     private $template;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="orderKey", type="integer")
      */
-    private $orderKey;
+    private int $orderKey = 0;
 
     /**
      * @var string
@@ -74,6 +60,9 @@ class AggregateOption
 
     public function __construct()
     {
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
+
         $this->config = '{
     "terms" : { "field" : "'.Mapping::FINALIZED_BY_FIELD.'" }
 }';
@@ -121,27 +110,6 @@ class AggregateOption
     }
 
     /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified()
-    {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
-        if (!isset($this->orderKey)) {
-            $this->orderKey = 0;
-        }
-    }
-
-    /******************************************************************
-     *
-     * Generated functions
-     *
-     *******************************************************************/
-
-    /**
      * Get id.
      *
      * @return int
@@ -149,54 +117,6 @@ class AggregateOption
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set created.
-     *
-     * @param \DateTime $created
-     *
-     * @return AggregateOption
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set modified.
-     *
-     * @param \DateTime $modified
-     *
-     * @return AggregateOption
-     */
-    public function setModified($modified)
-    {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**
@@ -275,6 +195,8 @@ class AggregateOption
      * Decode config.
      *
      * @see https://github.com/elastic/elasticsearch-php/issues/660
+     *
+     * @return array<mixed>
      */
     public function getConfigDecoded(): array
     {

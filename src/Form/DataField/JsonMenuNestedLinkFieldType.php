@@ -51,8 +51,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     }
 
     /**
-     * @param DataField<DataField> $data
-     * @param array<mixed>         $out
+     * {@inheritDoc}
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
@@ -69,7 +68,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
 
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<mixed>                               $options
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -95,9 +94,6 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         $scroll = $this->elasticaService->scroll($search);
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
-                if (false === $result) {
-                    continue;
-                }
                 $json = $result->getSource()[$options['json_menu_nested_field']] ?? false;
 
                 if (!$json) {
@@ -164,8 +160,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<mixed>                               $options
+     * {@inheritDoc}
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
@@ -190,11 +185,9 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     }
 
     /**
-     * @param string $name
-     *
-     * @return array<mixed>
+     * {@inheritDoc}
      */
-    public function getDefaultOptions($name): array
+    public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
         $out['mappingOptions']['index'] = 'not_analyzed';
@@ -208,9 +201,9 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     }
 
     /**
-     * @param array<mixed> $data
+     * {@inheritDoc}
      *
-     * @return DataField<DataField>
+     * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
@@ -223,9 +216,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     }
 
     /**
-     * @param DataField<DataField> $dataField
-     *
-     * @return array<mixed>
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {

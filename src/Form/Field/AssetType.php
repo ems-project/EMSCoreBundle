@@ -12,9 +12,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class AssetType extends AbstractType
 {
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if ($options['multiple'] ?? false) {
             $builder->add('files', CollectionType::class, [
@@ -53,10 +54,7 @@ class AssetType extends AbstractType
         $resolver->setDefault('multiple', false);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'assettype';
     }

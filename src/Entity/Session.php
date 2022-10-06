@@ -5,8 +5,6 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Sessions.
- *
  * @ORM\Table(name="session")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SessionRepository")
  */
@@ -16,7 +14,6 @@ class Session
      * @var string
      *
      * @ORM\Column(name="id", type="string", length=128, nullable=false)
-     *
      * @ORM\Id
      */
     private $id;

@@ -21,26 +21,21 @@ class JSONFieldType extends DataFieldType
 {
     /* to refactor */
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'JSON field';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-code';
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
@@ -55,59 +50,60 @@ class JSONFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {
         return ['value' => \json_encode($dataField->getRawData())];
     }
 
-    public function reverseViewTransform($input, FieldType $fieldType)
+    /**
+     * {@inheritDoc}
+     *
+     * @param ?array<mixed> $data
+     */
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
-        $dataValues = parent::reverseViewTransform($input, $fieldType);
+        $dataValues = parent::reverseViewTransform($data, $fieldType);
         $options = $fieldType->getOptions();
-        if (null === $input) {
+        if (null === $data) {
             $dataValues->setRawData(null);
         } else {
-            $data = @\json_decode($input['value']);
-            if (null === $data
+            $json = @\json_decode($data['value']);
+            if (null === $json
                     && JSON_ERROR_NONE !== \json_last_error()) {
-                $dataValues->setRawData($input['value']);
+                $dataValues->setRawData($data['value']);
             } else {
-                $dataValues->setRawData($data);
+                $dataValues->setRawData($json);
             }
         }
 
         return $dataValues;
     }
 
-    public function buildObjectArray(DataField $data, array &$out)
+    /**
+     * {@inheritDoc}
+     */
+    public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
+        if (!$data->giveFieldType()->getDeleted()) {
             /*
              * by default it serialize the text value.
              * It can be overrided.
              */
-            $out[$data->getFieldType()->getName()] = $data->getRawData();
+            $out[$data->giveFieldType()->getName()] = $data->getRawData();
         }
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null)
+    public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
             return true;
@@ -128,27 +124,28 @@ class JSONFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        /*get options for twig context*/
+        /* get options for twig context */
         parent::buildView($view, $form, $options);
         $view->vars['icon'] = $options['icon'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        /*set the default option value for this kind of compound field*/
+        /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
         $resolver->setDefault('icon', null);
         $resolver->setDefault('rows', null);
     }
 
-    public function generateMapping(FieldType $current)
+    /**
+     * {@inheritDoc}
+     */
+    public function generateMapping(FieldType $current): array
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
             return [$current->getName() => \json_decode($current->getMappingOptions()['mappingOptions'], true)];
@@ -158,9 +155,9 @@ class JSONFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');

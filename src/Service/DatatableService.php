@@ -92,7 +92,7 @@ final class DatatableService
     }
 
     /**
-     * @return array{contentTypes: string[], aliases: string[], config: array}
+     * @return array{contentTypes: string[], aliases: string[], config: array<mixed>}
      */
     private function parsePersistedConfig(string $jsonConfig): array
     {
@@ -112,7 +112,7 @@ final class DatatableService
             ->setAllowedTypes(self::ALIASES, ['array'])
             ->setAllowedTypes(self::CONFIG, ['array'])
         ;
-        /** @var array{contentTypes: string[], aliases: string[], config: array} $resolvedParameter */
+        /** @var array{contentTypes: string[], aliases: string[], config: array<mixed>} $resolvedParameter */
         $resolvedParameter = $resolver->resolve($parameters);
 
         return $resolvedParameter;

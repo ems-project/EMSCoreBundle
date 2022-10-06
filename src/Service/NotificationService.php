@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Service;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\TreatNotifications;
 use EMS\CoreBundle\Entity\Notification;
@@ -17,74 +18,49 @@ use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Repository\NotificationRepository;
-use EMS\CoreBundle\Repository\TemplateRepository;
 use Exception;
-use Monolog\Logger;
-use Swift_Message;
-use Swift_TransportException;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Throwable;
 use Twig\Environment as TwigEnvironment;
 
 class NotificationService
 {
-    /** @var Registry */
-    private $doctrine;
-    /** @var UserService */
-    private $userService;
-    /** @var Logger */
-    private $logger;
-    /** @var Session */
-    private $session;
-    /** @var Container */
-    private $container;
-    /** @var DataService */
-    private $dataService;
-    private $sender;
-    /** @var TwigEnvironment */
-    private $twig;
+    private Registry $doctrine;
+    private UserService $userService;
+    private LoggerInterface $logger;
+    private DataService $dataService;
+    private MailerService $mailerService;
+    private TwigEnvironment $twig;
 
-    //** non-service members **
-    /** @var OutputInterface */
-    private $output;
-    private $dryRun;
-
-    private TemplateRepository $actionRepository;
+    private bool $dryRun;
 
     public function __construct(
         Registry $doctrine,
-        TemplateRepository $actionRepository,
         UserService $userService,
-        Logger $logger,
-        Session $session,
-        Container $container,
+        LoggerInterface $logger,
         DataService $dataService,
-        $sender,
-        TwigEnvironment $twig)
-    {
+        MailerService $mailerService,
+        TwigEnvironment $twig
+    ) {
         $this->doctrine = $doctrine;
-        $this->actionRepository = $actionRepository;
         $this->userService = $userService;
         $this->dataService = $dataService;
+        $this->mailerService = $mailerService;
         $this->logger = $logger;
-        $this->session = $session;
-        $this->container = $container;
         $this->twig = $twig;
-        $this->output = null;
         $this->dryRun = false;
-        $this->sender = $sender;
     }
 
-    public function publishEvent(RevisionPublishEvent $event)
+    public function publishEvent(RevisionPublishEvent $event): void
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
-        $notifications = $repository->findByRevionsionOuuidAndEnvironment($event->getRevision(), $event->getEnvironment());
+        $repository = $em->getRepository(Notification::class);
+        $notifications = $repository->findByRevisionOuuidAndEnvironment($event->getRevision(), $event->getEnvironment());
 
-        /** @var Notification $notification */
         foreach ($notifications as $notification) {
             if ($notification->getRevision() !== $event->getRevision()) {
                 $this->setStatus($notification, 'aborted', 'warning');
@@ -92,27 +68,25 @@ class NotificationService
         }
     }
 
-    public function unpublishEvent(RevisionUnpublishEvent $event)
+    public function unpublishEvent(RevisionUnpublishEvent $event): void
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
-        $notifications = $repository->findByRevionsionOuuidAndEnvironment($event->getRevision(), $event->getEnvironment());
+        $repository = $em->getRepository(Notification::class);
+        $notifications = $repository->findByRevisionOuuidAndEnvironment($event->getRevision(), $event->getEnvironment());
 
-        /** @var Notification $notification */
         foreach ($notifications as $notification) {
             $this->setStatus($notification, 'aborted', 'warning');
         }
     }
 
-    public function finalizeDraftEvent(RevisionFinalizeDraftEvent $event)
+    public function finalizeDraftEvent(RevisionFinalizeDraftEvent $event): void
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
-        $notifications = $repository->findByRevionsionOuuidAndEnvironment($event->getRevision(), $event->getRevision()->getContentType()->getEnvironment());
+        $repository = $em->getRepository(Notification::class);
+        $notifications = $repository->findByRevisionOuuidAndEnvironment($event->getRevision(), $event->getRevision()->giveContentType()->giveEnvironment());
 
-        /** @var Notification $notification */
         foreach ($notifications as $notification) {
             if ($notification->getRevision() !== $event->getRevision()) {
                 $this->setStatus($notification, 'aborted', 'warning');
@@ -120,14 +94,13 @@ class NotificationService
         }
     }
 
-    public function newDraftEvent(RevisionNewDraftEvent $event)
+    public function newDraftEvent(RevisionNewDraftEvent $event): void
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
-        $notifications = $repository->findByRevionsionOuuidAndEnvironment($event->getRevision(), $event->getRevision()->getContentType()->getEnvironment());
+        $repository = $em->getRepository(Notification::class);
+        $notifications = $repository->findByRevisionOuuidAndEnvironment($event->getRevision(), $event->getRevision()->giveContentType()->giveEnvironment());
 
-        /** @var Notification $notification */
         foreach ($notifications as $notification) {
             $this->logger->warning('service.notification.notification_will_be_lost_finalize', [
                 'notification_name' => $notification->getTemplate()->getName(),
@@ -138,19 +111,14 @@ class NotificationService
         }
     }
 
-    public function setOutput($output)
-    {
-        $this->output = $output;
-    }
-
-    public function setDryRun($dryRun)
+    public function setDryRun(bool $dryRun): void
     {
         $this->dryRun = $dryRun;
     }
 
-    public function setStatus(Notification $notification, $status, $level = 'notice')
+    public function setStatus(Notification $notification, string $status, string $level = 'notice'): self
     {
-        //TODO: tests rights to do it
+        // TODO: tests rights to do it
         $userName = $this->userService->getCurrentUser()->getUserName();
 
         $notification->setStatus($status);
@@ -206,7 +174,7 @@ class NotificationService
 
             $em = $this->doctrine->getManager();
             /** @var NotificationRepository $repository */
-            $repository = $em->getRepository('EMSCoreBundle:Notification');
+            $repository = $em->getRepository(Notification::class);
 
             $alreadyPending = $repository->findBy([
                     'template' => $template,
@@ -278,11 +246,9 @@ class NotificationService
     /**
      * Call to display notifications in header menu.
      *
-     * @param ?array $filters
-     *
-     * @return int
+     * @param ?array<mixed> $filters
      */
-    public function menuNotification($filters = null)
+    public function menuNotification(?array $filters = null): int
     {
         $contentTypes = null;
         $environments = null;
@@ -300,7 +266,7 @@ class NotificationService
 
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
 
         $count = $repository->countPendingByUserRoleAndCircle($this->userService->getCurrentUser(), $contentTypes, $environments, $templates);
         $count += $repository->countRejectedForUser($this->userService->getCurrentUser());
@@ -308,34 +274,39 @@ class NotificationService
         return $count;
     }
 
-    public function countPending()
+    public function countPending(): int
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
 
         return $repository->countPendingByUserRoleAndCircle($this->userService->getCurrentUser());
     }
 
-    public function countSent()
+    public function countSent(): int
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
 
         return $repository->countForSent($this->userService->getCurrentUser());
     }
 
-    public function countRejected()
+    public function countRejected(): int
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
 
         return $repository->countRejectedForUser($this->userService->getCurrentUser());
     }
 
-    public function listRejectedNotifications($from, $limit, $filters = null)
+    /**
+     * @param ?array<mixed> $filters
+     *
+     * @return Notification[]
+     */
+    public function listRejectedNotifications(int $from, int $limit, array $filters = null): array
     {
         $contentTypes = null;
         $environments = null;
@@ -353,23 +324,19 @@ class NotificationService
 
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
-        $notifications = $repository->findRejectedForUser($this->userService->getCurrentUser(), $from, $limit, $contentTypes, $environments, $templates);
+        $repository = $em->getRepository(Notification::class);
 
-        return $notifications;
+        return $repository->findRejectedForUser($this->userService->getCurrentUser(), $from, $limit, $contentTypes, $environments, $templates);
     }
 
     /**
      * Call to generate list of notifications.
      *
-     * @param int    $from
-     * @param int    $limit
-     * @param ?array $filters
+     * @param ?array<mixed> $filters
      *
-     * @return array
      * @return Notification[]
      */
-    public function listInboxNotifications($from, $limit, $filters = null)
+    public function listInboxNotifications(int $from, int $limit, array $filters = null): array
     {
         $contentTypes = null;
         $environments = null;
@@ -387,12 +354,11 @@ class NotificationService
 
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
         $notifications = $repository->findByPendingAndUserRoleAndCircle($this->userService->getCurrentUser(), $from, $limit, $contentTypes, $environments, $templates);
 
-        /** @var Notification $notification */
         foreach ($notifications as $notification) {
-            $result = $repository->countNotificationByUuidAndContentType($notification->getRevision()->getOuuid(), $notification->getRevision()->getContentType());
+            $result = $repository->countNotificationByUuidAndContentType($notification->getRevision()->giveOuuid(), $notification->getRevision()->giveContentType());
 
             $notification->setCounter($result);
         }
@@ -403,13 +369,11 @@ class NotificationService
     /**
      * Call to generate list of notifications.
      *
-     * @param int    $from
-     * @param int    $limit
-     * @param ?array $filters
+     * @param ?array<mixed> $filters
      *
      * @return Notification[]
      */
-    public function listArchivesNotifications($from, $limit, $filters = null)
+    public function listArchivesNotifications(int $from, int $limit, array $filters = null): array
     {
         $contentTypes = null;
         $environments = null;
@@ -427,12 +391,11 @@ class NotificationService
 
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
         $notifications = $repository->findByPendingAndUserRoleAndCircle($this->userService->getCurrentUser(), $from, $limit, $contentTypes, $environments, $templates);
 
-        /** @var Notification $notification */
         foreach ($notifications as $notification) {
-            $result = $repository->countNotificationByUuidAndContentType($notification->getRevision()->getOuuid(), $notification->getRevision()->getContentType());
+            $result = $repository->countNotificationByUuidAndContentType($notification->getRevision()->giveOuuid(), $notification->getRevision()->giveContentType());
 
             $notification->setCounter($result);
         }
@@ -441,15 +404,11 @@ class NotificationService
     }
 
     /**
-     * Call to generate list of notifications.
-     *
-     * @param int    $from
-     * @param int    $limit
-     * @param ?array $filters
+     * @param ?array<mixed> $filters
      *
      * @return Notification[]
      */
-    public function listSentNotifications($from, $limit, $filters = null)
+    public function listSentNotifications(int $from, int $limit, array $filters = null): array
     {
         $contentTypes = null;
         $environments = null;
@@ -467,7 +426,7 @@ class NotificationService
 
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository(Notification::class);
         $notifications = $repository->findByPendingAndRoleAndCircleForUserSent($this->userService->getCurrentUser(), $from, $limit, $contentTypes, $environments, $templates);
 
 //         /**@var Notification $notification*/
@@ -480,7 +439,7 @@ class NotificationService
         return $notifications;
     }
 
-    private function response(Notification $notification, TreatNotifications $treatNotifications, $status)
+    private function response(Notification $notification, TreatNotifications $treatNotifications, string $status): void
     {
         $notification->setResponseText($treatNotifications->getResponse());
         $notification->setResponseTimestamp(new DateTime());
@@ -503,27 +462,30 @@ class NotificationService
             EmsFields::LOG_ENVIRONMENT_FIELD => $notification->getEnvironment()->getName(),
             'status' => $notification->getStatus(),
         ]);
-
-        $em->clear(); //bulk treat issue
     }
 
-    public function accept(Notification $notification, TreatNotifications $treatNotifications)
+    public function accept(Notification $notification, TreatNotifications $treatNotifications): void
     {
         $this->response($notification, $treatNotifications, 'accepted');
     }
 
-    public function reject(Notification $notification, TreatNotifications $treatNotifications)
+    public function reject(Notification $notification, TreatNotifications $treatNotifications): void
     {
         $this->response($notification, $treatNotifications, 'rejected');
     }
 
-    public static function usersToEmailAddresses($users)
+    /**
+     * @param UserInterface[] $users
+     *
+     * @return array<string, Address>
+     */
+    private static function usersToEmailAddresses(array $users): array
     {
         $out = [];
-        /** @var UserInterface $user */
+
         foreach ($users as $user) {
             if ($user->getEmailNotification() && $user->isEnabled()) {
-                $out[$user->getEmail()] = $user->getDisplayName();
+                $out[$user->getEmail()] = new Address($user->getEmail(), $user->getDisplayName());
             }
         }
 
@@ -533,66 +495,76 @@ class NotificationService
     /**
      * @throws Throwable
      */
-    public function sendEmail(Notification $notification)
+    public function sendEmail(Notification $notification): void
     {
         $fromCircles = $this->dataService->getDataCircles($notification->getRevision());
 
         $toCircles = \array_unique(\array_merge($fromCircles, $notification->getTemplate()->getCirclesTo()));
 
-        $fromUser = $this->usersToEmailAddresses([$this->userService->getUser($notification->getUsername())]);
+        $fromUser = $this->usersToEmailAddresses(\array_filter([$this->userService->getUser($notification->getUsername())]));
         $toUsers = $this->usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleTo(), $toCircles));
         $ccUsers = $this->usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleCc(), $toCircles));
 
-        $message = (new Swift_Message());
-
+        $email = new Email();
         $params = [
-                'notification' => $notification,
-                'source' => $notification->getRevision()->getRawData(),
-                'object' => $notification->getRevision()->buildObject(),
-                'status' => $notification->getStatus(),
-                'environment' => $notification->getEnvironment(),
+            'notification' => $notification,
+            'source' => $notification->getRevision()->getRawData(),
+            'object' => $notification->getRevision()->buildObject(),
+            'status' => $notification->getStatus(),
+            'environment' => $notification->getEnvironment(),
         ];
 
         if ('pending' == $notification->getStatus()) {
-            //it's a notification
             try {
                 $body = $this->twig->createTemplate($notification->getTemplate()->getBody())->render($params);
             } catch (Exception $e) {
                 $body = 'Error in body template: '.$e->getMessage();
             }
 
-            $message->setSubject($notification->getTemplate().' for '.$notification->getRevision())
-                ->setFrom($this->sender['address'], $this->sender['sender_name'])
-                ->setTo($toUsers)
-                ->setCc(\array_unique(\array_merge($ccUsers, $fromUser)))
-                ->setBody($body, empty($notification->getTemplate()->getEmailContentType()) ? 'text/html' : $notification->getTemplate()->getEmailContentType());
+            $email
+                ->subject($notification->getTemplate().' for '.$notification->getRevision())
+                ->to(...\array_values($toUsers));
+
+            $cc = \array_merge($ccUsers, $fromUser);
+            if ($cc) {
+                $email->cc(...\array_values($cc));
+            }
+
             $notification->setEmailed(new DateTime());
         } else {
-            //it's a notification
             try {
                 $body = $this->twig->createTemplate($notification->getTemplate()->getResponseTemplate())->render($params);
             } catch (Exception $e) {
                 $body = 'Error in response template: '.$e->getMessage();
             }
 
-            //it's a reminder
-            $message->setSubject($notification->getTemplate().' for '.$notification->getRevision().' has been '.$notification->getStatus())
-                ->setFrom($this->sender['address'], $this->sender['sender_name'])
-                ->setTo($fromUser)
-                ->setCc(\array_unique(\array_merge($ccUsers, $toUsers)))
-                ->setBody($body, 'text/html');
+            // it's a reminder
+            $email
+                ->subject($notification->getTemplate().' for '.$notification->getRevision().' has been '.$notification->getStatus())
+                ->to(...\array_values($fromUser));
+
+            $cc = \array_merge($ccUsers, $toUsers);
+            if ($cc) {
+                $email->cc(...\array_values($cc));
+            }
+
             $notification->setResponseEmailed(new DateTime());
+        }
+
+        $contentType = $notification->getTemplate()->getEmailContentType() ?? 'text/plain';
+        if ('text/html' === $contentType) {
+            $email->html($body);
+        } else {
+            $email->text($body);
         }
 
         if (!$this->dryRun) {
             $em = $this->doctrine->getManager();
             try {
-                /**@Swift_Mailer $mailer*/
-                $mailer = $this->container->get('mailer');
-                $mailer->send($message);
+                $this->mailerService->sendMail($email);
                 $em->persist($notification);
                 $em->flush();
-            } catch (Swift_TransportException $e) {
+            } catch (TransportExceptionInterface $e) {
             }
         }
     }

@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\Helpers\Standard\DateTime;
 
 /**
  * Revision.
@@ -13,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CacheAssetExtractor
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -23,20 +25,6 @@ class CacheAssetExtractor
     private $id;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="hash", type="string", nullable=false, unique=true)
@@ -44,22 +32,16 @@ class CacheAssetExtractor
     private $hash;
 
     /**
-     * @var array
+     * @var ?array<mixed>
      *
-     * @ORM\Column(name="data", type="json_array", nullable=true)
+     * @ORM\Column(name="data", type="json", nullable=true)
      */
     private $data;
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified()
+    public function __construct()
     {
-        $this->modified = new \DateTime();
-        if (!isset($this->created)) {
-            $this->created = $this->modified;
-        }
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     /**
@@ -83,22 +65,6 @@ class CacheAssetExtractor
     }
 
     /**
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
-    }
-
-    /**
      * @return string
      */
     public function getHash()
@@ -119,19 +85,19 @@ class CacheAssetExtractor
     }
 
     /**
-     * @return array
+     * @return ?array<mixed>
      */
-    public function getData()
+    public function getData(): ?array
     {
         return $this->data;
     }
 
     /**
-     * @param array $data
+     * @param ?array<mixed> $data
      *
      * @return CacheAssetExtractor
      */
-    public function setData($data)
+    public function setData(?array $data)
     {
         $this->data = $data;
 

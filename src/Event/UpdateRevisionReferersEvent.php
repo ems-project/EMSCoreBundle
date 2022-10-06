@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Contains information to update 2 side links between objects.
@@ -13,12 +13,18 @@ class UpdateRevisionReferersEvent extends Event
 {
     public const NAME = 'ems_core.revision.update_referers';
 
-    private $targetField;
-    private $id;
-    private $toClean;
-    private $toCreate;
-    private $type;
+    private string $targetField;
+    private string $id;
+    /** @var array<mixed> */
+    private array $toClean;
+    /** @var array<mixed> */
+    private array $toCreate;
+    private string $type;
 
+    /**
+     * @param array<mixed> $toCleanOuuids
+     * @param array<mixed> $toCreateOuuids
+     */
     public function __construct(string $type, string $id, string $targetField, array $toCleanOuuids, array $toCreateOuuids)
     {
         $this->type = $type;
@@ -30,10 +36,8 @@ class UpdateRevisionReferersEvent extends Event
 
     /**
      * Return the name of the computed field where the back link is store.
-     *
-     * @return string
      */
-    public function getTargetField()
+    public function getTargetField(): string
     {
         return $this->targetField;
     }
@@ -41,9 +45,9 @@ class UpdateRevisionReferersEvent extends Event
     /**
      * List of UUIDs where the back link should be removed.
      *
-     * @return array
+     * @return array<mixed>
      */
-    public function getToCleanOuuids()
+    public function getToCleanOuuids(): array
     {
         return \array_diff($this->toClean, $this->toCreate);
     }
@@ -51,34 +55,30 @@ class UpdateRevisionReferersEvent extends Event
     /**
      * List of UUIDs where the back link should be added.
      *
-     * @return array
+     * @return array<mixed>
      */
-    public function getToCreateOuuids()
+    public function getToCreateOuuids(): array
     {
         return \array_diff($this->toCreate, $this->toClean);
     }
 
     /**
      * Type of the object triggering the event.
-     *
-     * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
     /**
      * Id of the object triggering the event.
-     *
-     * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    public function getRefererOuuid()
+    public function getRefererOuuid(): string
     {
         return $this->getType().':'.$this->getId();
     }

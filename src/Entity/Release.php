@@ -35,7 +35,7 @@ class Release implements EntityInterface
     /**
      * @ORM\Column(name="execution_date", type="datetime", nullable=true)
      */
-    private ?\Datetime $executionDate;
+    private ?\DateTime $executionDate;
 
     /**
      * @ORM\Column(name="status", type="string", length=20)
@@ -61,6 +61,7 @@ class Release implements EntityInterface
 
     /**
      * @var Collection<int, ReleaseRevision>
+     *
      * @ORM\OneToMany(targetEntity="ReleaseRevision", mappedBy="release", cascade={"persist", "remove"})
      */
     private Collection $revisions;
@@ -100,12 +101,12 @@ class Release implements EntityInterface
         return $this;
     }
 
-    public function getExecutionDate(): ?\Datetime
+    public function getExecutionDate(): ?\DateTime
     {
         return $this->executionDate;
     }
 
-    public function setExecutionDate(?\Datetime $executionDate): Release
+    public function setExecutionDate(?\DateTime $executionDate): Release
     {
         $this->executionDate = $executionDate;
 

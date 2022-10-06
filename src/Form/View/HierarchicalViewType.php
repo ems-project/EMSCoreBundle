@@ -23,7 +23,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -31,23 +31,23 @@ use Twig\Environment;
 
 class HierarchicalViewType extends ViewType
 {
-    /** @var Session */
-    protected $session;
+    protected SessionInterface $session;
+    protected DataService $dataService;
+    protected RouterInterface $router;
+    protected ContentTypeService $contentTypeService;
+    private Mapping $mapping;
+    private SearchService $searchService;
 
-    /** @var DataService */
-    protected $dataService;
-
-    /** @var RouterInterface */
-    protected $router;
-
-    /** @var ContentTypeService */
-    protected $contentTypeService;
-    /** @var Mapping */
-    private $mapping;
-    /** @var SearchService */
-    private $searchService;
-
-    public function __construct(FormFactory $formFactory, Environment $twig, SearchService $searchService, Mapping $mapping, LoggerInterface $logger, Session $session, DataService $dataService, RouterInterface $router, ContentTypeService $contentTypeService)
+    public function __construct(
+        FormFactory $formFactory,
+        Environment $twig,
+        SearchService $searchService,
+        Mapping $mapping,
+        LoggerInterface $logger,
+        SessionInterface $session,
+        DataService $dataService,
+        RouterInterface $router,
+        ContentTypeService $contentTypeService)
     {
         parent::__construct($formFactory, $twig, $logger);
         $this->searchService = $searchService;
@@ -68,17 +68,17 @@ class HierarchicalViewType extends ViewType
         return 'Hierarchical';
     }
 
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
         /** @var View $view */
         $view = $options['view'];
-        $environment = $view->getContentType()->getEnvironment();
-        if (null === $environment) {
-            throw new \RuntimeException('Unexpected null environment');
-        }
-
+        $environment = $view->getContentType()->giveEnvironment();
         $mapping = $this->mapping->getMapping([$environment->getName()]);
 
         $fieldType = new FieldType();
@@ -113,7 +113,7 @@ class HierarchicalViewType extends ViewType
                 'mapping' => $mapping,
                 'types' => [
                         'keyword',
-                        'text', //TODO: for ES2 support
+                        'text', // TODO: for ES2 support
                 ], ]);
 
         $builder->get('parent')->addModelTransformer(new CallbackTransformer(
@@ -145,6 +145,9 @@ class HierarchicalViewType extends ViewType
         return 'hierarchical_view';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         return [];
@@ -161,12 +164,7 @@ class HierarchicalViewType extends ViewType
         }
 
         $contentType = $view->getContentType();
-        $environment = $contentType->getEnvironment();
-        if (null === $environment) {
-            throw new \RuntimeException('Unexpected null environment');
-        }
 
-        $parent = null;
         try {
             $document = $this->searchService->getDocument($contentType, $parentId[1]);
             $parent = $document->getRaw();
@@ -215,7 +213,10 @@ class HierarchicalViewType extends ViewType
         return $response;
     }
 
-    public function reorder($itemKey, View $view, $structure): void
+    /**
+     * @param array<mixed> $structure
+     */
+    public function reorder(string $itemKey, View $view, array $structure): void
     {
         $temp = \explode(':', $itemKey);
         $type = $temp[0];

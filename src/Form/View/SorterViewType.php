@@ -19,7 +19,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Throwable;
@@ -27,21 +27,23 @@ use Twig\Environment;
 
 class SorterViewType extends ViewType
 {
-    /** @var int */
     public const SEARCH_SIZE = 100;
-    /** @var Session */
-    protected $session;
-    /** @var DataService */
-    protected $dataService;
-    /** @var RouterInterface */
-    protected $router;
-    /** @var Mapping */
-    protected $mapping;
-    /** @var ElasticaService */
-    private $elasticaService;
+    protected SessionInterface $session;
+    protected DataService $dataService;
+    protected RouterInterface $router;
+    protected Mapping $mapping;
+    private ElasticaService $elasticaService;
 
-    public function __construct(FormFactory $formFactory, Environment $twig, Mapping $mapping, ElasticaService $elasticaService, LoggerInterface $logger, Session $session, DataService $dataService, RouterInterface $router)
-    {
+    public function __construct(
+        FormFactory $formFactory,
+        Environment $twig,
+        Mapping $mapping,
+        ElasticaService $elasticaService,
+        LoggerInterface $logger,
+        SessionInterface $session,
+        DataService $dataService,
+        RouterInterface $router
+    ) {
         parent::__construct($formFactory, $twig, $logger);
         $this->mapping = $mapping;
         $this->session = $session;
@@ -60,6 +62,10 @@ class SorterViewType extends ViewType
         return 'Sorter';
     }
 
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -98,6 +104,9 @@ class SorterViewType extends ViewType
         return 'sorter_view';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         return [];
@@ -106,10 +115,10 @@ class SorterViewType extends ViewType
     public function generateResponse(View $view, Request $request): Response
     {
         try {
-            $renderQuery = $this->twig->createTemplate($view->getOptions()['body'])->render([
+            $renderQuery = $this->twig->createTemplate($view->getOptions()['body'] ?? '')->render([
                     'view' => $view,
                     'contentType' => $view->getContentType(),
-                    'environment' => $view->getContentType()->getEnvironment(),
+                    'environment' => $view->getContentType()->giveEnvironment(),
             ]);
         } catch (Throwable $e) {
             $renderQuery = '{}';
@@ -125,7 +134,7 @@ class SorterViewType extends ViewType
         ];
 
         $searchQuery = [
-                'index' => $view->getContentType()->getEnvironment()->getAlias(),
+                'index' => $view->getContentType()->giveEnvironment()->getAlias(),
                 'type' => $view->getContentType()->getName(),
                 'body' => $boby,
         ];
@@ -155,7 +164,11 @@ class SorterViewType extends ViewType
 
         if ($form->isSubmitted()) {
             $counter = 1;
-            foreach ($request->request->get('reorder')['items'] as $itemKey => $value) {
+
+            $reorder = $request->request->all('reorder');
+            $items = $reorder['items'];
+
+            foreach ($items as $itemKey => $value) {
                 try {
                     $revision = $this->dataService->initNewDraft($view->getContentType()->getName(), $itemKey);
                     $data = $revision->getRawData();

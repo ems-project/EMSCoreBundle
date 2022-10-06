@@ -102,7 +102,7 @@ class AlignCommand extends AbstractEnvironmentCommand
         $this->io->progressFinish();
 
         if ($input->getOption(self::OPTION_SNAPSHOT)) {
-            $snapShot = $this->environmentService->findByName($this->target->getName());
+            $snapShot = $this->environmentService->giveByName($this->target->getName());
             $this->environmentService->setSnapshotTag($snapShot);
             $this->io->note(\sprintf('The target environment "%s" was tagged as a snapshot', $snapShot->getName()));
         }

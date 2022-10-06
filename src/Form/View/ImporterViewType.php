@@ -49,6 +49,10 @@ class ImporterViewType extends ViewType
         return 'Importer';
     }
 
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -75,6 +79,9 @@ class ImporterViewType extends ViewType
             ]);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         return [];
@@ -104,7 +111,12 @@ class ImporterViewType extends ViewType
                 $view->getOptions()['businessKey'] ?? false ? ' --businessKey' : ''
             );
 
-            $user = $this->security->getToken()->getUser();
+            $token = $this->security->getToken();
+            if (null === $token) {
+                throw new \RuntimeException('Token missing');
+            }
+
+            $user = $token->getUser();
             if (!$user instanceof UserInterface) {
                 throw new \RuntimeException('Unexpected user object');
             }

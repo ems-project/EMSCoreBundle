@@ -18,28 +18,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PasswordFieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Password field';
     }
 
-    /**
-     * Get a icon to visually identify a FieldType.
-     *
-     * @return string
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'glyphicon glyphicon-asterisk';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $options['metadata'];
@@ -48,7 +40,7 @@ class PasswordFieldType extends DataFieldType
                 'disabled' => $this->isDisabled($options),
                 'required' => false,
                 'attr' => [
-                        'autocomplete' => 'new-password', //http://stackoverflow.com/questions/18531437/stop-google-chrome-auto-fill-the-input
+                        'autocomplete' => 'new-password', // http://stackoverflow.com/questions/18531437/stop-google-chrome-auto-fill-the-input
                 ],
         ]);
 
@@ -59,10 +51,7 @@ class PasswordFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -70,9 +59,9 @@ class PasswordFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -98,9 +87,7 @@ class PasswordFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {
@@ -114,17 +101,17 @@ class PasswordFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+     * @param array<mixed> $data
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $out = $data['password_backup'];
         if ($data['reset_password_value']) {
             $out = null;
         } elseif (isset($data['password_value'])) {
-            //new password defined?
+            // new password defined?
             switch ($fieldType->getDisplayOptions()['encryption']) {
                 case 'md5':
                     $out = \md5($data['password_value']);
@@ -141,26 +128,26 @@ class PasswordFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (!$data->getFieldType()->getDeleted()) {
-            switch ($data->getFieldType()->getDisplayOptions()['encryption']) {
+        if (!$data->giveFieldType()->getDeleted()) {
+            switch ($data->giveFieldType()->getDisplayOptions()['encryption']) {
                 case 'md5':
-                    $out[$data->getFieldType()->getName()] = \md5($data->getTextValue());
+                    $out[$data->giveFieldType()->getName()] = \md5($data->getTextValue());
                     break;
                 default:
-                    $out[$data->getFieldType()->getName()] = \sha1($data->getTextValue());
+                    $out[$data->giveFieldType()->getName()] = \sha1($data->getTextValue());
                     break;
             }
         }
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getDefaultOptions($name)
+    public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
 

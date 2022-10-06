@@ -7,6 +7,12 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\WysiwygStylesSet;
 
+/**
+ * @extends ServiceEntityRepository<WysiwygStylesSet>
+ *
+ * @method WysiwygStylesSet|null find($id)
+ * @method WysiwygStylesSet|null findOneBy(array $criteria, array $orderBy = null)
+ */
 class WysiwygStylesSetRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
@@ -36,22 +42,12 @@ class WysiwygStylesSetRepository extends ServiceEntityRepository
 
     public function findById(int $id): ?WysiwygStylesSet
     {
-        $styleSet = $this->find($id);
-        if (null !== $styleSet && !$styleSet instanceof WysiwygStylesSet) {
-            throw new \RuntimeException('Unexpected wysiwyg style set type');
-        }
-
-        return $styleSet;
+        return $this->find($id);
     }
 
     public function getByName(string $name): ?WysiwygStylesSet
     {
-        $styleSet = $this->findOneBy(['name' => $name]);
-        if (null !== $styleSet && !$styleSet instanceof WysiwygStylesSet) {
-            throw new \RuntimeException('Unexpected style set type');
-        }
-
-        return $styleSet;
+        return $this->findOneBy(['name' => $name]);
     }
 
     /**

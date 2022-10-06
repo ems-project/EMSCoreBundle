@@ -12,6 +12,11 @@ use Doctrine\ORM\QueryBuilder;
 use EMS\CommonBundle\Entity\Log;
 use EMS\CoreBundle\Core\Log\LogEntityTableContext;
 
+/**
+ * @extends ServiceEntityRepository<Log>
+ *
+ * @method Log|null find($id, $lockMode = null, $lockVersion = null)
+ */
 class LogRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
@@ -60,8 +65,7 @@ class LogRepository extends ServiceEntityRepository
 
     public function getById(string $id): Log
     {
-        $schedule = $this->find($id);
-        if (!$schedule instanceof Log) {
+        if (null === $schedule = $this->find($id)) {
             throw new \RuntimeException('Unexpected log type');
         }
 

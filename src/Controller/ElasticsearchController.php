@@ -7,6 +7,7 @@ use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Common\Standard\Type;
+use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -15,6 +16,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\Document\DataLinks;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
@@ -35,6 +37,7 @@ use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\SortOptionService;
+use EMS\Helpers\Standard\Json;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -166,7 +169,7 @@ class ElasticsearchController extends AbstractController
 
             $globalStatus = 'green';
             try {
-                $tika = ($this->assetExtractorService->hello());
+                $tika = $this->assetExtractorService->hello();
             } catch (Exception $e) {
                 $globalStatus = 'yellow';
                 $tika = [
@@ -209,11 +212,12 @@ class ElasticsearchController extends AbstractController
     public function deleteSearchAction($id): Response
     {
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('EMSCoreBundle:Form\Search');
+        $repository = $em->getRepository(Search::class);
 
+        /** @var ?Search $search */
         $search = $repository->find($id);
-        if (!$search) {
-            $this->createNotFoundException('Preset saved search not found');
+        if (null === $search) {
+            throw $this->createNotFoundException('Preset saved search not found');
         }
 
         $em->remove($search);
@@ -229,18 +233,16 @@ class ElasticsearchController extends AbstractController
             return $this->redirectToRoute(Routes::DASHBOARD, ['name' => $dashboard->getName(), 'q' => $query = $request->query->get('q', '')]);
         }
 
-        $query = $request->query->get('q', false);
+        $query = $request->query->get('q');
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('EMSCoreBundle:Form\Search');
+        $repository = $em->getRepository(Search::class);
 
-        /** @var Search $search */
+        /** @var Search|null $search */
         $search = $repository->findOneBy([
             'default' => true,
         ]);
         if ($search) {
-            $em->detach($search);
-            $search->resetFilters();
             /** @var SearchFilter $filter */
             foreach ($search->getFilters() as &$filter) {
                 if (empty($filter->getPattern())) {
@@ -251,25 +253,21 @@ class ElasticsearchController extends AbstractController
             $search = new Search();
             $search->setEnvironments($this->environmentService->getEnvironmentNames());
             if (false !== $query) {
-                $search->getFilters()[0]->setPattern($query)->setBooleanClause('must');
+                $search->getFirstFilter()->setPattern($query)->setBooleanClause('must');
             }
         }
 
-        return $this->forward('EMSCoreBundle:Elasticsearch:search', [
+        return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::searchAction', [
             'query' => null,
         ], [
             'search_form' => $search->jsonSerialize(),
         ]);
     }
 
-    /**
-     * @param int    $id
-     * @param string $contentType
-     */
-    public function setDefaultSearchAction($id, $contentType): Response
+    public function setDefaultSearchAction(int $id, ?string $contentType): Response
     {
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('EMSCoreBundle:Form\Search');
+        $repository = $em->getRepository(Search::class);
 
         if ($contentType) {
             $contentType = $this->contentTypeService->giveByName($contentType);
@@ -283,12 +281,14 @@ class ElasticsearchController extends AbstractController
             }
 
             $search = $repository->find($id);
-            $search->setContentType($contentType);
-            $em->persist($search);
-            $em->flush();
-            $this->logger->notice('log.elasticsearch.default_search_for_content_type', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-            ]);
+            if ($search instanceof Search) {
+                $search->setContentType($contentType);
+                $em->persist($search);
+                $em->flush();
+                $this->logger->notice('log.elasticsearch.default_search_for_content_type', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                ]);
+            }
         } else {
             $searchs = $repository->findBy([
                 'default' => true,
@@ -299,11 +299,13 @@ class ElasticsearchController extends AbstractController
                 $em->persist($search);
             }
             $search = $repository->find($id);
-            $search->setDefault(true);
-            $em->persist($search);
-            $em->flush();
-            $this->logger->notice('log.elasticsearch.default_search', [
-            ]);
+
+            if ($search instanceof Search) {
+                $search->setDefault(true);
+                $em->persist($search);
+                $em->flush();
+                $this->logger->notice('log.elasticsearch.default_search');
+            }
         }
 
         return $this->redirectToRoute('elasticsearch.search', ['searchId' => $id]);
@@ -331,12 +333,12 @@ class ElasticsearchController extends AbstractController
     public function deprecatedSearchApiAction(Request $request, DataLinks $dataLinks): void
     {
         @\trigger_error('QuerySearch not defined, you should refer to one', E_USER_DEPRECATED);
-        $environments = $request->query->get('environment', null);
+        $environments = Type::string($request->query->get('environment', ''));
         $searchId = $dataLinks->getSearchId();
-        $category = $request->query->get('category', null);
-        $assetName = $request->query->get('asset_name', false);
-        $circleOnly = $request->query->get('circle', false);
-        $dataLink = $request->query->get('dataLink', null);
+        $category = $request->query->get('category');
+        $assetName = $request->query->get('asset_name');
+        $circleOnly = $request->query->get('circle');
+        $dataLink = $request->query->get('dataLink');
 
         if (\is_string($dataLink)) {
             $emsLink = EMSLink::fromText($dataLink);
@@ -356,7 +358,7 @@ class ElasticsearchController extends AbstractController
 
         $search = null;
         if ($searchId) {
-            $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
+            $searchRepository = $em->getRepository(Search::class);
             $search = $searchRepository->findOneBy(['id' => $searchId]);
         }
 
@@ -426,7 +428,7 @@ class ElasticsearchController extends AbstractController
                         }
                         $query = $boolQuery;
                     }
-                    $query->addMust($this->elasticaService->getTermsQuery($categoryField, $category));
+                    $query->addMust($this->elasticaService->getTermsQuery($categoryField, [$category]));
                     $commonSearch = new CommonSearch($commonSearch->getIndices(), $query);
                 }
             }
@@ -471,6 +473,7 @@ class ElasticsearchController extends AbstractController
     {
         try {
             $search = new Search();
+            $search->setEnvironments($this->environmentService->getEnvironmentNames());
 
             if ('POST' == $request->getMethod()) {
                 $request->request->set('search_form', $request->query->get('search_form'));
@@ -480,8 +483,13 @@ class ElasticsearchController extends AbstractController
                 $form->handleRequest($request);
                 /** @var Search $search */
                 $search = $form->getData();
-                $search->setName($request->request->get('form')['name']);
-                $search->setUser($this->getUser()->getUsername());
+                $search->setName($request->request->all('form')['name']);
+
+                $user = $this->getUser();
+                if (!$user instanceof UserInterface) {
+                    throw new \RuntimeException('User not found');
+                }
+                $search->setUser($user->getUsername());
 
                 /** @var SearchFilter $filter */
                 foreach ($search->getFilters() as $filter) {
@@ -497,17 +505,13 @@ class ElasticsearchController extends AbstractController
                 ]);
             }
 
-            if (null != $request->query->get('page')) {
-                $page = $request->query->get('page');
-            } else {
-                $page = 1;
-            }
+            $page = $request->query->getInt('page', 1);
 
-            //Use search from a saved form
+            // Use search from a saved form
             $searchId = $request->query->get('searchId');
             if (null != $searchId) {
                 $em = $this->getDoctrine()->getManager();
-                $repository = $em->getRepository('EMSCoreBundle:Form\Search');
+                $repository = $em->getRepository(Search::class);
                 $search = $repository->find($request->query->get('searchId'));
                 if (!$search) {
                     $this->createNotFoundException('Preset search not found');
@@ -528,8 +532,8 @@ class ElasticsearchController extends AbstractController
                 $openSearchForm = $searchButton->isClicked();
             }
 
-            //Form treatment after the "Save" button has been pressed (= ask for a name to save the search preset)
-            if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('save', $request->query->get('search_form'))) {
+            // Form treatment after the "Save" button has been pressed (= ask for a name to save the search preset)
+            if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('save', $request->query->all('search_form'))) {
                 $form = $this->createFormBuilder($search)
                     ->add('name', TextType::class)
                     ->add('save_search', SubmitEmsType::class, [
@@ -544,8 +548,8 @@ class ElasticsearchController extends AbstractController
                 return $this->render('@EMSCore/elasticsearch/save-search.html.twig', [
                     'form' => $form->createView(),
                 ]);
-            } elseif ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('delete', $request->query->get('search_form'))) {
-                //Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
+            } elseif ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('delete', $request->query->all('search_form'))) {
+                // Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
 
                 $this->logger->notice('log.elasticsearch.search_deleted', [
                 ]);
@@ -558,12 +562,12 @@ class ElasticsearchController extends AbstractController
             $em = $this->getDoctrine()->getManager();
 
             /** @var ContentTypeRepository $contentTypeRepository */
-            $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+            $contentTypeRepository = $em->getRepository(ContentType::class);
 
             $types = $contentTypeRepository->findAllAsAssociativeArray();
 
             /** @var EnvironmentRepository $environmentRepository */
-            $environmentRepository = $em->getRepository('EMSCoreBundle:Environment');
+            $environmentRepository = $em->getRepository(Environment::class);
 
             $environments = $environmentRepository->findAllAsAssociativeArray('alias');
 
@@ -571,7 +575,7 @@ class ElasticsearchController extends AbstractController
             $esSearch->setFrom(($page - 1) * $this->pagingSize);
             $esSearch->setSize(Type::integer($this->pagingSize));
 
-            $esSearch->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, $this->aggregateOptionService->getContentTypeField(), 15);
+            $esSearch->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, EMSSource::FIELD_CONTENT_TYPE, 15);
             $esSearch->addTermsAggregation(AggregateOptionService::INDEXES_AGGREGATION, '_index', 15);
             $esSearch->addAggregations($this->aggregateOptionService->getAllAggregations());
 
@@ -604,8 +608,8 @@ class ElasticsearchController extends AbstractController
             $currentFilters = $request->query;
             $currentFilters->remove('search_form[_token]');
 
-            //Form treatment after the "Export results" button has been pressed (= ask for a "content type" <-> "template" mapping)
-            if (null !== $response && $form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('exportResults', $request->query->get('search_form'))) {
+            // Form treatment after the "Export results" button has been pressed (= ask for a "content type" <-> "template" mapping)
+            if (null !== $response && $form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('exportResults', $request->query->all('search_form'))) {
                 $exportForms = [];
                 $contentTypes = $this->getAllContentType($response);
                 foreach ($contentTypes as $name) {
@@ -614,7 +618,7 @@ class ElasticsearchController extends AbstractController
                     $exportForm = $this->createForm(ExportDocumentsType::class, new ExportDocuments(
                         $contentType,
                         $this->generateUrl('emsco_search_export', ['contentType' => $contentType->getId()]),
-                        \json_encode($this->searchService->generateSearchBody($search))
+                        Json::encode($this->searchService->generateSearchBody($search))
                     ));
 
                     $exportForms[] = $exportForm->createView();

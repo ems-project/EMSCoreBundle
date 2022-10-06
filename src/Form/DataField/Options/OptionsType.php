@@ -16,9 +16,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class OptionsType extends AbstractType
 {
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $options['field_type'];
@@ -42,30 +43,32 @@ class OptionsType extends AbstractType
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'data_field_options';
     }
 
-    public function hasMappingOptions()
+    public function hasMappingOptions(): bool
     {
         return false;
     }
 
-    public function hasMigrationOptions()
+    public function hasMigrationOptions(): bool
     {
         return true;
     }
 
-    public function hasExtraOptions()
+    public function hasExtraOptions(): bool
     {
         return true;
     }
 
-    public function generateMapping(array $options, FieldType $current)
+    /**
+     * @param array<string, mixed> $options
+     *
+     * @return array<mixed>
+     */
+    public function generateMapping(array $options, FieldType $current): array
     {
         return [];
     }

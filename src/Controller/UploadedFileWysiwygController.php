@@ -17,24 +17,23 @@ use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\FileService;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 final class UploadedFileWysiwygController extends AbstractController
 {
-    private LoggerInterface $logger;
     private FileService $fileService;
     private AjaxService $ajax;
+    private RouterInterface $router;
 
-    public function __construct(LoggerInterface $logger, FileService $fileService, AjaxService $ajax)
+    public function __construct(FileService $fileService, AjaxService $ajax, RouterInterface $router)
     {
-        $this->logger = $logger;
         $this->fileService = $fileService;
         $this->ajax = $ajax;
+        $this->router = $router;
     }
 
     public function ajaxDataTable(Request $request): Response
@@ -73,34 +72,24 @@ final class UploadedFileWysiwygController extends AbstractController
             ->getResponse();
     }
 
-    /**
-     * Changing the access modifier from protected to public on the generateUrl.
-     *
-     * @param array<string, mixed> $parameters
-     */
-    public function generateUrl(string $route, array $parameters = [], int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH): string
-    {
-        return parent::generateUrl($route, $parameters, $referenceType);
-    }
-
     private function initTable(): EntityTable
     {
-        $table = new EntityTable($this->fileService, $this->generateUrl('ems_core_uploaded_file_wysiwyg_ajax'), ['available' => false]);
-        $controller = $this;
+        $table = new EntityTable($this->fileService, $this->router->generate('ems_core_uploaded_file_wysiwyg_ajax'), ['available' => false]);
+        $router = $this->router;
         $table->addColumn('uploaded-file.index.column.name', 'name')
             ->addHtmlAttribute('data-url', function (UploadedAsset $data) {
                 return EMSLink::EMSLINK_ASSET_PREFIX.$data->getSha1().'?name='.$data->getName().'&type='.$data->getType();
             })
-            ->addHtmlAttribute('data-json', function (UploadedAsset $data) use ($controller) {
+            ->addHtmlAttribute('data-json', function (UploadedAsset $data) use ($router) {
                 $json = $data->getData();
                 $json = \array_merge($json, [
-                    'preview_url' => $controller->generateUrl('ems_asset_processor', [
+                    'preview_url' => $router->generate('ems_asset_processor', [
                         'hash' => $data->getSha1(),
                         'processor' => 'preview',
                         'type' => $data->getType(),
                         'name' => $data->getName(),
                     ]),
-                    'view_url' => $controller->generateUrl('ems.file.view', [
+                    'view_url' => $router->generate('ems.file.view', [
                         'sha1' => $data->getSha1(),
                         'type' => $data->getType(),
                         'name' => $data->getName(),

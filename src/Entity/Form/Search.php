@@ -2,7 +2,10 @@
 
 namespace EMS\CoreBundle\Entity\Form;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\ContentType;
 use JsonSerializable;
 
 /**
@@ -23,11 +26,11 @@ class Search implements JsonSerializable
     private $id;
 
     /**
-     * @var array
+     * @var Collection<int, SearchFilter>
      *
      * @ORM\OneToMany(targetEntity="SearchFilter", mappedBy="search", cascade={"persist", "remove"})
      */
-    public $filters;
+    public Collection $filters;
 
     /**
      * @var string
@@ -37,18 +40,18 @@ class Search implements JsonSerializable
     private $user;
 
     /**
-     * @var array
+     * @var string[]
      *
-     * @ORM\Column(name="environments", type="json_array")
+     * @ORM\Column(name="environments", type="json")
      */
-    public $environments;
+    public array $environments = [];
 
     /**
-     * @var array
+     * @var string[]
      *
-     * @ORM\Column(name="contentTypes", type="json_array")
+     * @ORM\Column(name="contentTypes", type="json")
      */
-    public $contentTypes;
+    public array $contentTypes = [];
 
     /**
      * @var string
@@ -68,7 +71,7 @@ class Search implements JsonSerializable
      * @ORM\OneToOne(targetEntity="EMS\CoreBundle\Entity\ContentType", cascade={})
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
-    private $contentType;
+    private ?ContentType $contentType = null;
 
     /**
      * @ORM\Column(name="sort_by", type="string", length=100, nullable=true)
@@ -89,13 +92,15 @@ class Search implements JsonSerializable
 
     public function __construct()
     {
-        $this->filters = [];
-        $this->filters[] = new SearchFilter();
+        $this->filters = new ArrayCollection();
         $this->default = false;
         $this->minimumShouldMatch = 1;
     }
 
-    public function jsonSerialize()
+    /**
+     * @return array<mixed>
+     */
+    public function jsonSerialize(): array
     {
         $out = [
             'environments' => $this->environments,
@@ -106,7 +111,6 @@ class Search implements JsonSerializable
         ];
 
         $out['filters'] = [];
-        /** @var SearchFilter $filter */
         foreach ($this->filters as $filter) {
             $out['filters'][] = $filter->jsonSerialize();
         }
@@ -172,43 +176,38 @@ class Search implements JsonSerializable
         return $this->name;
     }
 
-    /**
-     * Add filter.
-     *
-     * @return Search
-     */
-    public function addFilter(SearchFilter $filter)
+    public function getFirstFilter(): SearchFilter
     {
-        $this->filters[] = $filter;
+        if (!$firstFilter = $this->filters->first()) {
+            $newFilter = new SearchFilter();
+            $this->addFilter($newFilter);
 
-        return $this;
-    }
-
-    public function resetFilters(): Search
-    {
-        $filters = [];
-        foreach ($this->filters as $filter) {
-            $filters[] = $filter;
+            return $newFilter;
         }
-        $this->filters = $filters;
+
+        return $firstFilter;
+    }
+
+    public function addFilter(SearchFilter $filter): self
+    {
+        if (!$this->filters->contains($filter)) {
+            $this->filters->add($filter);
+        }
 
         return $this;
     }
 
-    /**
-     * Remove filter.
-     */
-    public function removeFilter(SearchFilter $filter)
+    public function removeFilter(SearchFilter $filter): void
     {
-        $this->filters = \array_diff($this->filters, [$filter]);
+        if ($this->filters->contains($filter)) {
+            $this->filters->removeElement($filter);
+        }
     }
 
     /**
-     * Get filters.
-     *
-     * @return SearchFilter[]
+     * @return Collection<int, SearchFilter>
      */
-    public function getFilters()
+    public function getFilters(): Collection
     {
         return $this->filters;
     }
@@ -238,13 +237,9 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Set environments.
-     *
-     * @param array $environments
-     *
-     * @return Search
+     * @param string[] $environments
      */
-    public function setEnvironments($environments)
+    public function setEnvironments(array $environments): self
     {
         $this->environments = $environments;
 
@@ -260,13 +255,9 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Set contentTypes.
-     *
-     * @param array $contentTypes
-     *
-     * @return Search
+     * @param string[] $contentTypes
      */
-    public function setContentTypes($contentTypes)
+    public function setContentTypes(array $contentTypes): self
     {
         $this->contentTypes = $contentTypes;
 
@@ -274,11 +265,9 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Get contentTypes.
-     *
-     * @return array
+     * @return string[]
      */
-    public function getContentTypes()
+    public function getContentTypes(): array
     {
         return $this->contentTypes;
     }
@@ -307,20 +296,12 @@ class Search implements JsonSerializable
         return $this->default;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getContentType()
+    public function getContentType(): ?ContentType
     {
         return $this->contentType;
     }
 
-    /**
-     * @param mixed $contentType
-     *
-     * @return Search
-     */
-    public function setContentType($contentType)
+    public function setContentType(?ContentType $contentType): self
     {
         $this->contentType = $contentType;
 
@@ -346,8 +327,7 @@ class Search implements JsonSerializable
             $queryString .= '*';
         }
 
-        $filters = [];
-        foreach ($this->getFilters() as &$filter) {
+        foreach ($this->getFilters() as $filter) {
             if (empty($filter->getPattern())) {
                 if (\in_array($filter->getOperator(), ['query_and', 'query_or'])) {
                     $filter->setPattern($queryString);
@@ -355,8 +335,6 @@ class Search implements JsonSerializable
                     $filter->setPattern($pattern);
                 }
             }
-            $filters[] = $filter;
         }
-        $this->filters = $filters;
     }
 }

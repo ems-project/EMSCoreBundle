@@ -39,40 +39,28 @@ class WysiwygFieldType extends DataFieldType
         $this->assetRuntime = $assetRuntime;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'WYSIWYG field';
     }
 
-    /**
-     * Get a icon to visually identify a FieldType.
-     *
-     * @return string
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-newspaper-o';
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @see \Symfony\Component\Form\AbstractType::getParent()
-     */
-    public function getParent()
+    public function getParent(): string
     {
         return TextareaSymfonyType::class;
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        /*get options for twig context*/
+        /* get options for twig context */
         parent::buildView($view, $form, $options);
         $view->vars['icon'] = $options['icon'];
         $attr = $view->vars['attr'];
@@ -113,12 +101,9 @@ class WysiwygFieldType extends DataFieldType
         $view->vars['attr'] = $attr;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        /*set the default option value for this kind of compound field*/
+        /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
         $resolver->setDefault('icon', null);
         $resolver->setDefault('language', null);
@@ -130,11 +115,11 @@ class WysiwygFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+     * @param array<mixed> $data
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
 
@@ -153,13 +138,11 @@ class WysiwygFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * {@inheritDoc}
      */
-    public function viewTransform(DataField $data)
+    public function viewTransform(DataField $dataField)
     {
-        $out = parent::viewTransform($data);
+        $out = parent::viewTransform($dataField);
 
         if (!\is_string($out)) {
             return '';
@@ -179,9 +162,9 @@ class WysiwygFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getDefaultOptions($name)
+    public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
 
@@ -194,9 +177,9 @@ class WysiwygFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');

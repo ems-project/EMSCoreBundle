@@ -20,14 +20,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentTypeType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var ContentType $contentType */
         $contentType = $builder->getData();
-        $environment = $contentType->getEnvironment();
-        if (null === $environment) {
-            throw new \RuntimeException('Unexpected null environment');
-        }
+        $environment = $contentType->giveEnvironment();
 
         $mapping = $options['mapping'] ?? null;
         if (null !== $mapping) {
@@ -100,7 +101,7 @@ class ContentTypeType extends AbstractType
                             'keyword',
                             'date',
                             'integer',
-                            'string', //TODO: backward compatibility with ES2 To remove?
+                            'string', // TODO: backward compatibility with ES2 To remove?
                     ], ]);
             $builder->add('sortBy', ContentTypeFieldPickerType::class, [
                     'required' => false,
@@ -110,7 +111,7 @@ class ContentTypeType extends AbstractType
                             'keyword',
                             'date',
                             'integer',
-                            'string', //TODO: backward compatibility with ES2 To remove?
+                            'string', // TODO: backward compatibility with ES2 To remove?
                     ], ]);
             $builder->add('sortOrder', ChoiceType::class, [
                     'required' => false,
@@ -149,6 +150,7 @@ class ContentTypeType extends AbstractType
                         'mapping' => $mapping,
                         'types' => ['date'],
                     ])
+                    ->add('versionOptions', ContentTypeVersionOptionsType::class)
                     ->add('versionTags', CollectionType::class, [
                         'entry_type' => TextType::class,
                         'attr' => [
@@ -243,7 +245,7 @@ class ContentTypeType extends AbstractType
         $builder->add('rootContentType');
         $builder->add('viewRole', RolePickerType::class);
 
-        if ($contentType->getEnvironment()->getManaged()) {
+        if ($environment->getManaged()) {
             $builder->add('defaultValue', CodeEditorType::class, [
                 'required' => false,
             ])->add('askForOuuid', CheckboxType::class, [
@@ -279,14 +281,9 @@ class ContentTypeType extends AbstractType
                     'icon' => 'fa fa-reorder',
             ]);
         }
-
-        return parent::buildForm($builder, $options);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefault('twigWithWysiwyg', true);
         $resolver->setDefault('mapping', null);

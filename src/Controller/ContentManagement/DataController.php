@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Service\Pdf\Pdf;
 use EMS\CommonBundle\Service\Pdf\PdfPrinterInterface;
 use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
@@ -61,7 +60,6 @@ class DataController extends AbstractController
     private LoggerInterface $logger;
     private DataService $dataService;
     private SearchService $searchService;
-    private ElasticaService $elasticaService;
     private ContentTypeService $contentTypeService;
     private EnvironmentService $environmentService;
     private IndexService $indexService;
@@ -75,7 +73,6 @@ class DataController extends AbstractController
         LoggerInterface $logger,
         DataService $dataService,
         SearchService $searchService,
-        ElasticaService $elasticaService,
         ContentTypeService $contentTypeService,
         EnvironmentService $environmentService,
         IndexService $indexService,
@@ -88,7 +85,6 @@ class DataController extends AbstractController
         $this->logger = $logger;
         $this->dataService = $dataService;
         $this->searchService = $searchService;
-        $this->elasticaService = $elasticaService;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->indexService = $indexService;
@@ -105,7 +101,7 @@ class DataController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:ContentType');
+        $repository = $em->getRepository(ContentType::class);
         $contentType = $repository->findOneBy([
             'name' => $name,
             'deleted' => false,
@@ -115,13 +111,13 @@ class DataController extends AbstractController
             throw new NotFoundHttpException('Content type '.$name.' not found');
         }
 
-        $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
+        $searchRepository = $em->getRepository(Search::class);
         $searches = $searchRepository->findBy([
             'contentType' => $contentType->getId(),
         ]);
         /** @var Search $search */
         foreach ($searches as $search) {
-            return $this->forward('EMSCoreBundle:Elasticsearch:search', [
+            return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::searchAction', [
                 'query' => null,
             ], [
                 'search_form' => $search->jsonSerialize(),
@@ -153,7 +149,7 @@ class DataController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:ContentType');
+        $repository = $em->getRepository(ContentType::class);
         $contentType = $repository->findOneBy([
             'name' => $name,
             'deleted' => false,
@@ -180,7 +176,6 @@ class DataController extends AbstractController
             throw new \RuntimeException('Unexpected empty circle field');
         }
 
-        $searchForm->filters = [];
         $user = $this->getUser();
         if (!$user instanceof UserInterface) {
             throw new \RuntimeException('Unexpected user object');
@@ -199,7 +194,7 @@ class DataController extends AbstractController
             throw new \RuntimeException('Unexpected null json');
         }
 
-        return $this->forward('EMSCoreBundle:Elasticsearch:search', [
+        return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::searchAction', [
             'query' => null,
         ], [
             'search_form' => \json_decode($formEncoded, true),
@@ -429,7 +424,7 @@ class DataController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
+        $repository = $em->getRepository(Revision::class);
         /** @var Revision|null $revision */
         $revision = $repository->find($revisionId);
 
@@ -505,7 +500,7 @@ class DataController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
+        $repository = $em->getRepository(Revision::class);
         /** @var Revision|null $revision */
         $revision = $repository->find($revisionId);
 
@@ -557,7 +552,7 @@ class DataController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         /** @var TemplateRepository $templateRepository */
-        $templateRepository = $em->getRepository('EMSCoreBundle:Template');
+        $templateRepository = $em->getRepository(Template::class);
 
         /** @var Template|null $template * */
         $template = $templateRepository->find($templateId);
@@ -567,7 +562,7 @@ class DataController extends AbstractController
         }
 
         /** @var EnvironmentRepository $environmentRepository */
-        $environmentRepository = $em->getRepository('EMSCoreBundle:Environment');
+        $environmentRepository = $em->getRepository(Environment::class);
 
         $environment = $environmentRepository->findBy([
             'name' => $environmentName,
@@ -580,7 +575,7 @@ class DataController extends AbstractController
         /** @var Environment $environment */
         $environment = $environment[0];
 
-        $document = $this->searchService->get($environment, $template->getContentType(), $ouuid);
+        $document = $this->searchService->get($environment, $template->giveContentType(), $ouuid);
 
         try {
             $body = $this->twig->createTemplate($template->getBody());
@@ -683,7 +678,7 @@ class DataController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $document = $this->searchService->get($env, $template->getContentType(), $ouuid);
+        $document = $this->searchService->get($env, $template->giveContentType(), $ouuid);
 
         $success = false;
         try {
@@ -702,7 +697,7 @@ class DataController extends AbstractController
 
             $success = true;
             $this->logger->notice('log.data.job.initialized', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $template->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $template->giveContentType()->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 'template_id' => $template->getId(),
@@ -719,7 +714,7 @@ class DataController extends AbstractController
             ]);
         } catch (\Throwable $e) {
             $this->logger->error('log.data.job.initialize_failed', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $template->getContentType()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $template->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -743,7 +738,7 @@ class DataController extends AbstractController
         $formErrors = [];
 
         /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
+        $repository = $em->getRepository(Revision::class);
         /** @var Revision|null $revision */
         $revision = $repository->find($revisionId);
 
@@ -767,8 +762,8 @@ class DataController extends AbstractController
             return $response;
         }
 
-        $revisionInRequest = $request->request->get('revision');
-        if (empty($revisionInRequest) || !isset($revisionInRequest['allFieldsAreThere']) || empty($revisionInRequest['allFieldsAreThere'])) {
+        $revisionInRequest = $request->request->all('revision');
+        if (empty($revisionInRequest['allFieldsAreThere'])) {
             $this->logger->error('log.data.revision.not_completed_request', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -782,7 +777,7 @@ class DataController extends AbstractController
             $backup = $revision->getRawData();
             $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
 
-            //If the bag is not empty the user already see its content when opening the edit page
+            // If the bag is not empty the user already see its content when opening the edit page
             $request->getSession()->getBag('flashes')->clear();
 
             /**little trick to reorder collection*/
@@ -992,7 +987,7 @@ class DataController extends AbstractController
     public function revertRevisionAction(Revision $revision): Response
     {
         $type = $revision->giveContentType()->getName();
-        $ouuid = $revision->getOuuid();
+        $ouuid = $revision->giveOuuid();
 
         $newestRevision = $this->dataService->getNewestRevision($type, $ouuid);
         if ($newestRevision->getDraft()) {
@@ -1022,7 +1017,7 @@ class DataController extends AbstractController
             $em = $this->getDoctrine()->getManager();
 
             /** @var RevisionRepository $repository */
-            $repository = $em->getRepository('EMSCoreBundle:Revision');
+            $repository = $em->getRepository(Revision::class);
 
             $contentType = $ctService->getByName($type);
 

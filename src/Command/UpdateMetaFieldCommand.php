@@ -55,9 +55,9 @@ class UpdateMetaFieldCommand extends EmsCommand
         $em = $this->doctrine->getManager();
 
         /** @var EnvironmentRepository $envRepo */
-        $envRepo = $em->getRepository('EMSCoreBundle:Environment');
+        $envRepo = $em->getRepository(Environment::class);
         /** @var RevisionRepository $revRepo */
-        $revRepo = $em->getRepository('EMSCoreBundle:Revision');
+        $revRepo = $em->getRepository(Revision::class);
         /** @var Environment|null $environment */
         $environment = $envRepo->findOneBy(['name' => $name, 'managed' => true]);
 
@@ -81,7 +81,7 @@ class UpdateMetaFieldCommand extends EmsCommand
 
                     $revision->setLockBy('SYSTEM_UPDATE_META');
                     $now = new \DateTime();
-                    $until = $now->add(new \DateInterval('PT5M')); //+5 minutes
+                    $until = $now->add(new \DateInterval('PT5M')); // +5 minutes
                     $revision->setLockUntil($until);
 
                     $em->persist($revision);

@@ -7,7 +7,7 @@
             </div>
             <div class="pull-left info">
                 {% if app.user %}
-                    <p><a href="{{ path(user_profile_route) }}" class="">{{ app.user.displayName }}</a></p>
+                    <p><a href="{{ path(routes.USER_PROFILE) }}" class="">{{ app.user.displayName }}</a></p>
                     <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-{{ status }}"></i> {{ status }}</a>
                 {% else %}
                     <p>{{ 'views.elements.side-menu-html.anonymous-user'|trans }}</p>

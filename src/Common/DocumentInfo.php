@@ -22,6 +22,11 @@ final class DocumentInfo
         $this->revisions = $revisions;
     }
 
+    public function getId(): EMSLink
+    {
+        return $this->id;
+    }
+
     public function getRevision(string $environmentName): ?Revision
     {
         foreach ($this->revisions as $revision) {
@@ -37,15 +42,19 @@ final class DocumentInfo
 
     public function isAligned(string $environmentName): bool
     {
-        foreach ($this->revisions as $revision) {
-            foreach ($revision->getEnvironments() as $environment) {
-                if ($environmentName === $environment->getName()) {
-                    return null === $revision->getEndTime();
-                }
-            }
+        if (null === $revision = $this->getRevision($environmentName)) {
+            return false;
         }
 
-        return false;
+        $defaultEnvironment = $revision->giveContentType()->giveEnvironment();
+
+        if ($environmentName === $defaultEnvironment->getName() || $revision->isArchived()) {
+            return true;
+        }
+
+        $defaultRevision = $this->getRevision($defaultEnvironment->getName());
+
+        return $defaultRevision && $defaultRevision->getHash() === $revision->getHash();
     }
 
     public function isPublished(string $environmentName): bool

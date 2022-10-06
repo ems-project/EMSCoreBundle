@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class ReleaseType extends AbstractType
 {
-    private $environmentService;
+    private EnvironmentService $environmentService;
 
     public function __construct(EnvironmentService $environmentService)
     {
@@ -26,8 +26,8 @@ final class ReleaseType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface<AbstractType> $builder
-     * @param array<string, mixed>               $options
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -57,7 +57,7 @@ final class ReleaseType extends AbstractType
                 'attr' => [
                     'class' => 'select2',
                 ],
-                'choices' => $this->environmentService->getAll(),
+                'choices' => $this->environmentService->getEnvironments(),
                 'required' => true,
                 'choice_label' => function (Environment $value) {
                     return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getLabel();
@@ -77,7 +77,7 @@ final class ReleaseType extends AbstractType
                 'attr' => [
                     'class' => 'select2',
                 ],
-                'choices' => $this->environmentService->getAll(),
+                'choices' => $this->environmentService->getEnvironments(),
                 'required' => true,
                 'choice_label' => function (Environment $value) {
                     return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getLabel();

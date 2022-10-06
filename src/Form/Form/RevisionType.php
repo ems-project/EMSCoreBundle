@@ -2,12 +2,15 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
+use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Validator\Constraints\RevisionRawData;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -25,22 +28,28 @@ class RevisionType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var Revision|null $revision */
         $revision = $builder->getData();
-        $contentType = $options['content_type'] ? $options['content_type'] : $revision->getContentType();
+        $contentType = $revision ? $revision->giveContentType() : $options['content_type'];
+
+        if (!$contentType instanceof ContentType) {
+            throw new \RuntimeException('Missing content type');
+        }
 
         $builder->add('data', $contentType->getFieldType()->getType(), [
-                'metadata' => $contentType->getFieldType(),
-                'error_bubbling' => false,
-                'migration' => $options['migration'],
-                'with_warning' => $options['with_warning'],
-                'raw_data' => $options['raw_data'],
-                'disabled_fields' => $contentType->getDisabledDataFields(),
-                'referrer-ems-id' => $revision && $revision->hasOuuid() ? $revision->getEmsId() : null,
+            'constraints' => [new RevisionRawData(['contentType' => $contentType])],
+            'metadata' => $contentType->getFieldType(),
+            'error_bubbling' => false,
+            'migration' => $options['migration'],
+            'with_warning' => $options['with_warning'],
+            'raw_data' => $options['raw_data'],
+            'disabled_fields' => $contentType->getDisabledDataFields(),
+            'referrer-ems-id' => $revision && $revision->hasOuuid() ? $revision->getEmsId() : null,
         ]);
 
         if ($revision) {
@@ -98,8 +107,11 @@ class RevisionType extends AbstractType
         if (null !== $revision && $revision->getDraft()) {
             $contentType = $revision->getContentType();
             $environment = $contentType ? $contentType->getEnvironment() : null;
+            $askVersionTags = $contentType
+                && $contentType->hasVersionTags()
+                && $contentType->getVersionOptions()[VersionOptions::ASK_VERSION_TAG];
 
-            if (null !== $environment && null !== $contentType && $contentType->hasVersionTags()) {
+            if (null !== $environment && $askVersionTags) {
                 $builder
                     ->add('publish_version_tags', ChoiceType::class, [
                         'translation_domain' => false,
@@ -136,10 +148,7 @@ class RevisionType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
                 'compound' => true,
@@ -155,10 +164,7 @@ class RevisionType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'revision';
     }

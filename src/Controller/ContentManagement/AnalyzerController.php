@@ -29,7 +29,7 @@ class AnalyzerController extends AbstractController
     public function index(): Response
     {
         return $this->render('@EMSCore/analyzer/index.html.twig', [
-                'paging' => $this->helperService->getPagingTool('EMSCoreBundle:Analyzer', 'ems_analyzer_index', 'name'),
+                'paging' => $this->helperService->getPagingTool(Analyzer::class, 'ems_analyzer_index', 'name'),
         ]);
     }
 

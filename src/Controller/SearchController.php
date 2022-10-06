@@ -145,7 +145,7 @@ class SearchController extends AbstractController
                 return $this->redirectToRoute('ems_search_options_index');
             }
 
-            if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isValid()) {
                 $this->sortOptionService->save($sortOption);
 
                 return $this->redirectToRoute('ems_search_options_index');
@@ -171,7 +171,7 @@ class SearchController extends AbstractController
                 return $this->redirectToRoute('ems_search_options_index');
             }
 
-            if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isValid()) {
                 $this->searchFieldOptionService->save($searchFieldOption);
 
                 return $this->redirectToRoute('ems_search_options_index');
@@ -197,7 +197,7 @@ class SearchController extends AbstractController
                 return $this->redirectToRoute('ems_search_options_index');
             }
 
-            if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isValid()) {
                 $this->aggregateOptionService->save($option);
 
                 return $this->redirectToRoute('ems_search_options_index');

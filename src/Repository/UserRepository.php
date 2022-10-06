@@ -7,14 +7,47 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use EMS\CoreBundle\Core\Security\Canonicalizer;
 use EMS\CoreBundle\Core\User\UserList;
 use EMS\CoreBundle\Entity\User;
 
+/**
+ * @extends ServiceEntityRepository<User>
+ *
+ * @method User|null find($id, $lockMode = null, $lockVersion = null)
+ * @method User|null findOneBy(array $criteria, array $orderBy = null)
+ * @method User[]    findAll()
+ * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 final class UserRepository extends ServiceEntityRepository implements UserRepositoryInterface
 {
     public function __construct(Registry $registry)
     {
         parent::__construct($registry, User::class);
+    }
+
+    public function save(User $user): void
+    {
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+    }
+
+    public function findUserByUsernameOrThrowException(string $username): User
+    {
+        $user = $this->findOneBy(['usernameCanonical' => Canonicalizer::canonicalize($username)]);
+
+        if (!$user) {
+            throw new \InvalidArgumentException(\sprintf('User identified by "%s" username does not exist.', $username));
+        }
+
+        return $user;
+    }
+
+    public function findUserByUsernameOrEmail(string $usernameOrEmail): ?User
+    {
+        $field = \preg_match('/^.+\@\S+\.\S+$/', $usernameOrEmail) ? 'emailCanonical' : 'usernameCanonical';
+
+        return $this->findOneBy([$field => Canonicalizer::canonicalize($usernameOrEmail)]);
     }
 
     public function search(string $search): ?User
@@ -36,7 +69,10 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
         return isset($result[0]) && $result[0] instanceof User ? $result[0] : null;
     }
 
-    public function findForRoleAndCircles($role, $circles): array
+    /**
+     * {@inheritDoc}
+     */
+    public function findForRoleAndCircles(string $role, array $circles): array
     {
         $resultSet = $this->createQueryBuilder('u')
             ->where('u.roles like :role')

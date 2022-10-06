@@ -1,18 +1,16 @@
-{% extends "@FOSUser/layout.html.twig" %}{% trans_default_domain 'EMSCoreBundle' %}
-
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Add a user{% endblock %}
 {% block pagetitle %}New user{% endblock %} 
 
 {% block subtitle %}<small>A new user in town?</small>{% endblock %} 
 
-{% block fos_user_content %}
-{% trans_default_domain 'FOSUserBundle' %}
+{% block body %}
 <div class="box box-primary">
 			<div class="box-header with-border">
 				<h3 class="box-title">Add user</h3>
 			</div>
-{{ form_start(form, {'method': 'post', 'action': path('emsco_user_add'), 'attr': {'class': 'fos_user_registration_register'}}) }}
+{{ form_start(form, {'method': 'post', 'action': path('emsco_user_add') }) }}
     <div class="box-body">
     	<div class="col-md-6">
 	    	{{ form_row(form.username) }}
@@ -45,7 +43,7 @@
 {% include '@EMSCore/app/menu.html.twig' with {
 	'item':  'user-index'
 }%}
-{% endblock fos_user_content %}
+{% endblock body %}
 
 
 {% block frontend_application_css %}

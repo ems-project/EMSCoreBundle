@@ -7,12 +7,11 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class ObjectChoiceLoader implements ChoiceLoaderInterface
 {
-    /** @var ObjectChoiceList */
-    private $objectChoiceList;
+    private ObjectChoiceList $objectChoiceList;
 
     public function __construct(
         ObjectChoiceCacheService $objectChoiceCacheService,
-        $types,
+        string $types,
         bool $loadAll,
         bool $circleOnly,
         bool $withWarning,
@@ -22,25 +21,29 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function loadChoiceList($value = null)
+    public function loadChoiceList($value = null): ObjectChoiceList
     {
         return $this->objectChoiceList;
     }
 
     /**
-     * {@inheritdoc}
+     * @return array<mixed>
      */
-    public function loadAll()
+    public function loadAll(): array
     {
         return $this->objectChoiceList->loadAll();
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @param array<mixed> $values
+     *
+     * @return array<mixed>
      */
-    public function loadChoicesForValues(array $values, $value = null)
+    public function loadChoicesForValues(array $values, $value = null): array
     {
         $this->objectChoiceList->loadChoices($values);
 
@@ -48,9 +51,13 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @param array<mixed> $choices
+     *
+     * @return array<mixed>
      */
-    public function loadValuesForChoices(array $choices, $value = null)
+    public function loadValuesForChoices(array $choices, $value = null): array
     {
         $this->objectChoiceList->loadChoices($choices);
 

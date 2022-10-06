@@ -5,12 +5,11 @@ namespace EMS\CoreBundle\Command;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\Mapping;
 use Psr\Container\ContainerInterface;
@@ -33,20 +32,14 @@ class DeleteCommand extends Command
     protected $logger;
     /** @var ContainerInterface */
     protected $container;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var EnvironmentService */
-    private $environmentService;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, IndexService $indexService, Mapping $mapping, ContainerInterface $container, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, IndexService $indexService, Mapping $mapping, ContainerInterface $container)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->indexService = $indexService;
         $this->mapping = $mapping;
         $this->container = $container;
-        $this->contentTypeService = $contentTypeService;
-        $this->environmentService = $environmentService;
         parent::__construct();
     }
 
@@ -71,7 +64,7 @@ class DeleteCommand extends Command
             throw new \RuntimeException('Unexpected content type name argument');
         }
         /** @var ContentTypeRepository $ctRepo */
-        $ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
+        $ctRepo = $em->getRepository(ContentType::class);
         /** @var ContentType|null $contentType */
         $contentType = $ctRepo->findByName($name);
 
@@ -82,10 +75,10 @@ class DeleteCommand extends Command
         }
 
         /** @var RevisionRepository $revRepo */
-        $revRepo = $em->getRepository('EMSCoreBundle:Revision');
+        $revRepo = $em->getRepository(Revision::class);
 
         /** @var NotificationRepository $notRepo */
-        $notRepo = $em->getRepository('EMSCoreBundle:Notification');
+        $notRepo = $em->getRepository(Notification::class);
 
         $counter = 0;
         $total = $revRepo->countByContentType($contentType);
@@ -103,7 +96,7 @@ class DeleteCommand extends Command
                         try {
                             $this->indexService->delete($revision, $environment);
                         } catch (\Throwable $e) {
-                            //Deleting something that is not present shouldn't make problem.
+                            // Deleting something that is not present shouldn't make problem.
                         }
                         $revision->removeEnvironment($environment);
                     }

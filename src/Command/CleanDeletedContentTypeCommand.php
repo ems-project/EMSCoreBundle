@@ -4,8 +4,11 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -50,15 +53,15 @@ class CleanDeletedContentTypeCommand extends Command
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var ContentTypeRepository $ctRepo */
-        $ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
+        $ctRepo = $em->getRepository(ContentType::class);
         /** @var FieldTypeRepository $fieldRepo */
-        $fieldRepo = $em->getRepository('EMSCoreBundle:FieldType');
+        $fieldRepo = $em->getRepository(FieldType::class);
         /** @var RevisionRepository $revisionRepo */
-        $revisionRepo = $em->getRepository('EMSCoreBundle:Revision');
+        $revisionRepo = $em->getRepository(Revision::class);
         /** @var TemplateRepository $templateRepo */
-        $templateRepo = $em->getRepository('EMSCoreBundle:Template');
+        $templateRepo = $em->getRepository(Template::class);
         /** @var ViewRepository $viewRepo */
-        $viewRepo = $em->getRepository('EMSCoreBundle:View');
+        $viewRepo = $em->getRepository(View::class);
 
         $output->writeln('Cleaning deleted fields');
         $fields = $fieldRepo->findBy(['deleted' => true]);

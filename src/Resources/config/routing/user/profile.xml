@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="emsco_user_profile" path="/profile" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\User\ProfileController::show</default>
+    </route>
+    <route id="emsco_user_profile_edit" path="/profile/edit" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\User\ProfileController::edit</default>
+    </route>
+    <route id="emsco_user_change_password" path="/profile/change-password" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\User\ProfileController::changePassword</default>
+    </route>
+</routes>

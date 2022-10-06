@@ -21,7 +21,6 @@ class Bulker
 {
     private LoggerInterface $logger;
     private DataService $dataService;
-    private Mapping $mapping;
     private int $counter = 0;
     private int $size = 500;
     private bool $sign = true;
@@ -31,12 +30,11 @@ class Bulker
     private Bulk $bulk;
     private Client $client;
 
-    public function __construct(Client $client, LoggerInterface $logger, DataService $dataService, Mapping $mapping)
+    public function __construct(Client $client, LoggerInterface $logger, DataService $dataService)
     {
         $this->client = $client;
         $this->logger = $logger;
         $this->dataService = $dataService;
-        $this->mapping = $mapping;
         $this->bulk = new Bulk($this->client);
     }
 
@@ -45,6 +43,9 @@ class Bulker
         return !empty($this->errors);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getErrors(): array
     {
         return $this->errors;
@@ -78,9 +79,9 @@ class Bulker
         return $this;
     }
 
-    public function delete(string $contentType, string $index, string $ouuid): bool
+    public function delete(string $index, string $ouuid): bool
     {
-        $action = $this->createAction($contentType, $index, $ouuid);
+        $action = $this->createAction($index, $ouuid);
         $action->setOpType(Action::OP_TYPE_DELETE);
 
         $this->bulk->addAction($action);
@@ -89,6 +90,9 @@ class Bulker
         return $this->send();
     }
 
+    /**
+     * @param array<mixed> $body
+     */
     public function index(string $contentType, string $ouuid, string $index, array &$body, bool $upsert = false): bool
     {
         if ($this->sign) {
@@ -101,17 +105,16 @@ class Bulker
             $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTimeInterface::ATOM);
         }
 
-        $action = $this->createAction($contentType, $index, $ouuid);
+        $action = $this->createAction($index, $ouuid);
 
-        //@todo check this with a elastica 7
-        $source = JSON::stringify($body, JSON_UNESCAPED_UNICODE); //elastica actions do not support fields named 'doc' or 'doc_as_upsert'
+        // @todo check this with a elastica 7
+        $source = JSON::stringify($body, JSON_UNESCAPED_UNICODE); // elastica actions do not support fields named 'doc' or 'doc_as_upsert'
 
         if ($upsert) {
             $action->setOpType(Action::OP_TYPE_UPDATE);
             $action->setSource(['doc' => $source, 'doc_as_upsert' => true]);
         } else {
             $action->setOpType(Action::OP_TYPE_INDEX);
-            /* @phpstan-ignore-next-line */
             $action->setSource($source);
         }
         $this->bulk->addAction($action);
@@ -177,15 +180,11 @@ class Bulker
         return true;
     }
 
-    private function createAction(string $contentType, string $index, string $ouuid): Action
+    private function createAction(string $index, string $ouuid): Action
     {
         $action = new Action();
         $action->setIndex($index);
         $action->setId($ouuid);
-        $typePath = $this->mapping->getTypePath($contentType);
-        if ('.' !== $typePath) {
-            $action->setType($typePath);
-        }
 
         return $action;
     }
@@ -197,7 +196,7 @@ class Bulker
                 continue;
             }
             if (!$item->hasError()) {
-                continue; //no error
+                continue; // no error
             }
 
             $this->errors[] = $item;

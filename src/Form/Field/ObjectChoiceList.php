@@ -7,22 +7,19 @@ use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
 
 class ObjectChoiceList implements ChoiceListInterface
 {
-    /** @var ObjectChoiceCacheService */
-    private $objectChoiceCacheService;
+    private ObjectChoiceCacheService $objectChoiceCacheService;
 
-    private $types;
-    private $choices;
-    /** @var bool */
-    private $loadAll;
-    /** @var bool */
-    private $circleOnly;
-    /** @var bool */
-    private $withWarning;
+    private string $types;
+    /** @var array<mixed> */
+    private array $choices;
+    private bool $loadAll;
+    private bool $circleOnly;
+    private bool $withWarning;
     private ?string $querySearchName;
 
     public function __construct(
         ObjectChoiceCacheService $objectChoiceCacheService,
-        $types = false,
+        string $types,
         bool $loadAll = false,
         bool $circleOnly = false,
         bool $withWarning = true,
@@ -37,15 +34,17 @@ class ObjectChoiceList implements ChoiceListInterface
         $this->querySearchName = $querySearchName;
     }
 
-    public function getTypes()
+    public function getTypes(): string
     {
         return $this->types;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @return array<mixed>
      */
-    public function getChoices()
+    public function getChoices(): array
     {
         $this->loadAll();
 
@@ -53,17 +52,19 @@ class ObjectChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @return array<mixed>
      */
-    public function getValues()
+    public function getValues(): array
     {
         return \array_keys($this->choices);
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      */
-    public function getStructuredValues()
+    public function getStructuredValues(): array
     {
         $values = [];
         foreach ($this->choices as $key => $choice) {
@@ -74,17 +75,28 @@ class ObjectChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @return array<mixed>
      */
-    public function getOriginalKeys()
+    public function getOriginalKeys(): array
     {
-        return $this->choices;
+        $values = [];
+        foreach ($this->choices as $key => $choice) {
+            $values[$key] = $key;
+        }
+
+        return $values;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @param array<mixed> $choices
+     *
+     * @return array<mixed>
      */
-    public function getChoicesForValues(array $choices)
+    public function getChoicesForValues(array $choices): array
     {
         $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly, $this->withWarning);
 
@@ -92,16 +104,23 @@ class ObjectChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @param array<mixed> $choices
+     *
+     * @return array<mixed>
      */
-    public function getValuesForChoices(array $choices)
+    public function getValuesForChoices(array $choices): array
     {
         $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly, $this->withWarning);
 
         return \array_keys($this->choices);
     }
 
-    public function loadAll()
+    /**
+     * @return array<mixed>
+     */
+    public function loadAll(): array
     {
         if ($this->loadAll) {
             $this->objectChoiceCacheService->loadAll($this->choices, $this->types, $this->circleOnly, $this->withWarning, $this->querySearchName);
@@ -112,8 +131,12 @@ class ObjectChoiceList implements ChoiceListInterface
 
     /**
      * intiate (or re-initiate) the choices array based on the list of key passed in parameter.
+     *
+     * @param array<mixed> $choices
+     *
+     * @return array<mixed>
      */
-    public function loadChoices(array $choices)
+    public function loadChoices(array $choices): array
     {
         $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly, $this->withWarning);
 

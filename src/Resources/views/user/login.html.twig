@@ -1,0 +1,70 @@
+{%- trans_default_domain 'emsco-user' -%}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ ems_name|striptags }}</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <link rel="stylesheet" href="{{ asset('app.css', 'emscore') }}">
+    <link rel="stylesheet" href="{{ asset('blue.css', 'emscore') }}">
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="icon" sizes="128x128" type="image/png" href="{{ asset('images/fav-icon.png', 'emscore') }}" />
+    <link rel="apple-touch-icon" sizes="128x128" type="image/png" href="{{ asset('images/fav-icon.png', 'emscore') }}">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <a href="{{ path('homepage') }}">
+            <img alt="elasticms's logo" src="{{ asset('images/logo.png', 'emscore') }}" width="360">
+        </a>
+    </div>
+    <div class="login-box-body">
+        <p class="login-box-msg">{{ 'user.login.title'|trans }}</p>
+        {% if error %}
+            <div class="callout callout-warning">
+                <p>{{ error.messageKey|trans(error.messageData) }}</p>
+            </div>
+        {% endif %}
+
+        <form  method="post">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <div class="form-group has-feedback">
+                <input type="text" id="username" name="_username" value="{{ last_username }}"  class="form-control" placeholder="{{ 'user.login.username'|trans }}" required="required" />
+                <span class="fa fa-user-secret form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" id="password" name="_password" class="form-control" placeholder="{{ 'user.login.password'|trans }}" required="required" />
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="row">
+                <div class="col-xs-8">
+                    <div class="form-group checkbox icheck">
+                        <label>
+                            <input type="checkbox" id="remember_me" name="_remember_me" value="on" />{{ 'user.login.remember_me'|trans }}
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    {% set target = app.request.get('_target_path')|default(null) %}
+                    {% if target %}
+                        <input type="hidden" name="_target_path" value="{{ target }}" />
+                    {% endif %}
+                    <input type="submit" id="_submit" name="_submit" value="{{ 'user.login.submit'|trans }}"  class="btn btn-primary btn-block btn-flat"/>
+                </div>
+            </div>
+        </form>
+        <a href="{{ path('emsco_user_resetting_request') }}">{{ 'user.login.forgot'|trans }}</a><br>
+    </div>
+</div>
+
+<script src="{{ asset('app.js', 'emscore') }}"></script>
+</body>
+</html>

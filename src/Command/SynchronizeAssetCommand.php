@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Command;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Storage\NotFoundException;
+use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -53,7 +54,7 @@ class SynchronizeAssetCommand extends EmsCommand
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
+        $repository = $em->getRepository(UploadedAsset::class);
 
         $this->formatStyles($output);
 

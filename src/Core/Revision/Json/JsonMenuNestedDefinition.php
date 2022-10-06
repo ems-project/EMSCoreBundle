@@ -149,14 +149,16 @@ final class JsonMenuNestedDefinition
                 continue;
             }
 
-            $results[] = $this->twig->createTemplate($block['html'])->render($context);
+            if (isset($block['html']) && \is_string($block['html'])) {
+                $results[] = $this->twig->createTemplate($block['html'])->render($context);
+            }
         }
 
         return $results;
     }
 
     /**
-     * @return iterable<array{'html': string, 'type': string, 'item_type': ?string}>
+     * @return iterable<array{'html'?: mixed, 'type': string, 'item_type': ?string}>
      */
     private function getBlocks(string $type): iterable
     {

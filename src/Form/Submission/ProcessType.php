@@ -23,8 +23,8 @@ final class ProcessType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface<mixed> $builder
-     * @param array<mixed>                $options
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

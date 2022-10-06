@@ -4,22 +4,24 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Mail;
 
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 class MailerService
 {
-    private \Swift_Mailer $mailer;
+    private MailerInterface $mailer;
     private Environment $templating;
     private TranslatorInterface $translator;
-    /** @var array{address: string, sender_name:string} */
-    private array $sender;
+    private Address $from;
 
     /**
      * @param array{address: string, sender_name:string} $sender
      */
     public function __construct(
-        \Swift_Mailer $mailer,
+        MailerInterface $mailer,
         Environment $templating,
         TranslatorInterface $translator,
         array $sender
@@ -27,14 +29,14 @@ class MailerService
         $this->mailer = $mailer;
         $this->templating = $templating;
         $this->translator = $translator;
-        $this->sender = $sender;
+        $this->from = new Address($sender['address'], $sender['sender_name']);
     }
 
     public function makeMailTemplate(string $templateName): MailTemplate
     {
         $template = $this->templating->load($templateName);
 
-        return new MailTemplate($template, $this->translator, $this->sender['sender_name']);
+        return new MailTemplate($template, $this->translator, $this->from->getName());
     }
 
     /**
@@ -42,24 +44,37 @@ class MailerService
      */
     public function send(array $emails, string $title, string $body): void
     {
-        $message = (new \Swift_Message());
-        $message->setSubject($title)
-            ->setFrom($this->sender['address'], $this->sender['sender_name'])
-            ->setTo($emails)
-            ->setBody($body, 'text/html');
+        $email = (new Email())
+            ->from($this->from)
+            ->to(...$emails)
+            ->subject($title)
+            ->text($body);
 
-        $this->mailer->send($message);
+        $this->mailer->send($email);
     }
 
-    public function sendMailTemplate(MailTemplate $template): void
+    public function sendMail(Email $email): void
     {
-        $message = (new \Swift_Message());
-        $message
-            ->setSubject($template->getSubject())
-            ->setFrom($this->sender['address'], $this->sender['sender_name'])
-            ->setTo($template->getTo())
-            ->setBody($template->getBody(), 'text/html');
+        if (0 === \count($email->getFrom())) {
+            $email->from($this->from);
+        }
 
-        $this->mailer->send($message);
+        $this->mailer->send($email);
+    }
+
+    public function sendMailTemplate(MailTemplate $template, string $type = 'html'): void
+    {
+        $email = (new Email())
+            ->from($this->from)
+            ->to(...$template->getTo())
+            ->subject($template->getSubject());
+
+        if ('html' === $type) {
+            $email->html($template->getBody());
+        } elseif ('text' === $type) {
+            $email->text($template->getBody());
+        }
+
+        $this->mailer->send($email);
     }
 }

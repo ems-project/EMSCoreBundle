@@ -10,7 +10,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class I18nType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('identifier', null, ['required' => true])
@@ -27,7 +31,7 @@ class I18nType extends AbstractType
             );
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => 'EMS\CoreBundle\Entity\I18n',

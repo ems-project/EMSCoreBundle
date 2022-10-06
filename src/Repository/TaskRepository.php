@@ -14,6 +14,9 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Entity\UserInterface;
 
+/**
+ * @extends ServiceEntityRepository<Task>
+ */
 final class TaskRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)

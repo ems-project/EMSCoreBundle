@@ -20,59 +20,51 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ContainerFieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Visual container (invisible in Elasticsearch)';
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'container_field_type';
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::postFinalizeTreatment()
+     * {@inheritDoc}
      */
-    public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData)
+    public function postFinalizeTreatment(string $type, string $id, DataField $dataField, ?array $previousData): ?array
     {
-        if (!empty($previousData[$dataField->getFieldType()->getName()])) {
-            return $previousData[$dataField->getFieldType()->getName()];
+        if (!empty($previousData[$dataField->giveFieldType()->getName()])) {
+            return $previousData[$dataField->giveFieldType()->getName()];
         }
 
         return null;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
     {
         throw new \Exception('This method should never be called');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'glyphicon glyphicon-modal-window';
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /* get the metadata associate */
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
 
-        /** @var FieldType $fieldType */
         foreach ($fieldType->getChildren() as $child) {
             if (!$child->getDeleted()) {
                 /* merge the default options with the ones specified by the user */
@@ -96,19 +88,17 @@ class ContainerFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /* give options for twig context */
         parent::buildView($view, $form, $options);
         $view->vars['icon'] = $options['icon'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -117,25 +107,25 @@ class ContainerFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out): void
     {
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public static function isContainer()
+    public static function isContainer(): bool
     {
         /* this kind of compound field may contain children */
         return true;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -151,15 +141,15 @@ class ContainerFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public static function isVirtual(array $option = [])
+    public static function isVirtual(array $option = []): bool
     {
         return true;
     }
 
     /**
-     * @return string[]
+     * {@inheritDoc}
      */
     public static function getJsonNames(FieldType $current): array
     {
@@ -167,9 +157,9 @@ class ContainerFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         return [];
     }

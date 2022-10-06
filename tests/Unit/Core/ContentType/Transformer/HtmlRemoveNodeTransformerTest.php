@@ -51,8 +51,7 @@ HTML;
 
         $output = <<<HTML
 <!DOCTYPE html>
-<html lang="en">
-    <body class="page">
+<html lang="en"><body class="page">
         <h1>Test</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
         

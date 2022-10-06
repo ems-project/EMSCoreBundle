@@ -64,7 +64,7 @@ class SearchService
         $boolQuery = $this->elasticaService->getBoolQuery();
 
         foreach ($search->getFilters() as $filter) {
-            if (!$esFilter = $filter->generateEsFilter()) {
+            if (null === $esFilter = $filter->generateEsFilter()) {
                 continue;
             }
 
@@ -84,7 +84,7 @@ class SearchService
                     $boolQuery->addMustNot($esFilter);
                     break;
                 case 'filter':
-                    $boolQuery->addFilter($esFilter);
+                    $boolQuery->addFilter((new BoolQuery())->addMust($esFilter));
                     break;
                 default:
                     throw new \RuntimeException(\sprintf('Unexpected %s boolean clause', $filter->getBooleanClause()));
@@ -200,9 +200,9 @@ class SearchService
 
             if ('nested' === ($fieldMapping['type'] ?? null)) {
                 $nestedPath[] = $field;
-                $mapping = $fieldMapping['properties'] ?? []; //go to nested properties
+                $mapping = $fieldMapping['properties'] ?? []; // go to nested properties
             } elseif (isset($fieldMapping['fields'])) {
-                $mapping = $fieldMapping['fields']; //go to sub fields
+                $mapping = $fieldMapping['fields']; // go to sub fields
             }
         }
 
@@ -214,7 +214,7 @@ class SearchService
      */
     public function getDefaultSearch(array $contentTypes = []): Search
     {
-        $searchRepository = $this->doctrine->getRepository('EMSCoreBundle:Form\Search');
+        $searchRepository = $this->doctrine->getRepository(Search::class);
 
         $search = null;
         if (1 === \sizeof($contentTypes)) {
@@ -244,8 +244,6 @@ class SearchService
 
         if (!$search instanceof Search) {
             $search = new Search();
-        } else {
-            $search->resetFilters();
         }
         $search->setContentTypes($contentTypes);
         if (0 === \count($search->getEnvironments())) {

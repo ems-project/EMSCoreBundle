@@ -39,6 +39,10 @@ class GalleryViewType extends ViewType
         return 'Gallery';
     }
 
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -61,12 +65,15 @@ class GalleryViewType extends ViewType
         return 'gallery_view';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         $search = new Search();
-        if (false === $request->query->get('search_form', false)) {
-            $search->getFilters()[0]->setField($view->getOptions()['imageField'].'.sha1');
-            $search->getFilters()[0]->setBooleanClause('must');
+        if (!$request->query->has('search_form')) {
+            $search->getFirstFilter()->setField($view->getOptions()['imageField'].'.sha1');
+            $search->getFirstFilter()->setBooleanClause('must');
         }
         $search->setContentTypes([$view->getContentType()->getName()]);
         $environment = $view->getContentType()->getEnvironment();

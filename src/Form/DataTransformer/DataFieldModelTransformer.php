@@ -8,12 +8,13 @@ use EMS\CoreBundle\Form\DataField\DataFieldType;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 
+/**
+ * @implements DataTransformerInterface<mixed, mixed>
+ */
 class DataFieldModelTransformer implements DataTransformerInterface
 {
-    /** @var FieldType */
-    private $fieldType;
-    /** @var FormRegistryInterface */
-    private $formRegistry;
+    private FieldType $fieldType;
+    private FormRegistryInterface $formRegistry;
 
     public function __construct(FieldType $fieldType, FormRegistryInterface $formRegistry)
     {
@@ -24,11 +25,9 @@ class DataFieldModelTransformer implements DataTransformerInterface
     /**
      * Transforms from Model to Norm (array to Datafield).
      *
-     * @param array $data
-     *
-     * @return DataField
+     * @param array<mixed>|float|int|string|bool|null $data
      */
-    public function transform($data)
+    public function transform($data): DataField
     {
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($this->fieldType->getType())->getInnerType();
@@ -41,7 +40,7 @@ class DataFieldModelTransformer implements DataTransformerInterface
      *
      * @param DataField $data
      *
-     * @return array|float|int|string|null
+     * @return array<mixed>|float|int|string|bool|null
      */
     public function reverseTransform($data)
     {

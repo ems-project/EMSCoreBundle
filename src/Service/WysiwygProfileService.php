@@ -33,7 +33,7 @@ class WysiwygProfileService implements EntityServiceInterface
         return $this->wysiwygProfileRepository->findById($id);
     }
 
-    public function saveProfile(WysiwygProfile $profile)
+    public function saveProfile(WysiwygProfile $profile): void
     {
         $this->wysiwygProfileRepository->update($profile);
         $this->logger->notice('service.wysiwyg_profile.updated', [
@@ -41,7 +41,7 @@ class WysiwygProfileService implements EntityServiceInterface
         ]);
     }
 
-    public function remove(WysiwygProfile $profile)
+    public function remove(WysiwygProfile $profile): void
     {
         $this->wysiwygProfileRepository->delete($profile);
         $this->logger->notice('service.wysiwyg_profile.deleted', [

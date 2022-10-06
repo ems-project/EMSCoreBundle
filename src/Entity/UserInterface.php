@@ -2,194 +2,66 @@
 
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
+
 interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterface
 {
-    /**
-     * Get created.
-     *
-     * @return \DateTime
-     */
-    public function getCreated();
+    public function getCreated(): \DateTimeInterface;
 
-    /**
-     * Get modified.
-     *
-     * @return \DateTime
-     */
-    public function getModified();
+    public function getModified(): \DateTimeInterface;
 
-    /**
-     * Get circles.
-     *
-     * @return array
-     */
-    public function getCircles();
+    /** @return string[] */
+    public function getCircles(): array;
 
-    /**
-     * Set circles.
-     *
-     * @param array $circles
-     *
-     * @return UserInterface
-     */
-    public function setCircles($circles);
+    /** @param string[] $circles */
+    public function setCircles(array $circles): self;
 
-    /**
-     * Set displayName.
-     *
-     * @param string $displayName
-     *
-     * @return UserInterface
-     */
-    public function setDisplayName($displayName);
+    public function setDisplayName(string $displayName): self;
 
-    /**
-     * Get displayName.
-     *
-     * @return string
-     */
-    public function getDisplayName();
+    public function getDisplayName(): string;
 
-    /**
-     * Set allowedToConfigureWysiwyg.
-     *
-     * @param bool $allowedToConfigureWysiwyg
-     *
-     * @return UserInterface
-     */
-    public function setAllowedToConfigureWysiwyg($allowedToConfigureWysiwyg);
+    public function setAllowedToConfigureWysiwyg(bool $allowedToConfigureWysiwyg): self;
 
-    /**
-     * Get allowedToConfigureWysiwyg.
-     *
-     * @return bool
-     */
-    public function getAllowedToConfigureWysiwyg();
+    public function getAllowedToConfigureWysiwyg(): ?bool;
 
-    /**
-     * Set wysiwygProfile.
-     *
-     * @return UserInterface
-     */
-    public function setWysiwygProfile(WysiwygProfile $wysiwygProfile);
+    public function setWysiwygProfile(?WysiwygProfile $wysiwygProfile): self;
 
     public function getWysiwygProfile(): ?WysiwygProfile;
 
-    /**
-     * Set wysiwygOptions.
-     *
-     * @param string $wysiwygOptions
-     *
-     * @return UserInterface
-     */
-    public function setWysiwygOptions($wysiwygOptions);
+    public function setWysiwygOptions(?string $wysiwygOptions): self;
 
     public function getWysiwygOptions(): ?string;
 
-    /**
-     * Set layoutBoxed.
-     *
-     * @param bool $layoutBoxed
-     *
-     * @return UserInterface
-     */
-    public function setLayoutBoxed($layoutBoxed);
+    public function setLayoutBoxed(bool $layoutBoxed): self;
 
-    /**
-     * Get layoutBoxed.
-     *
-     * @return bool
-     */
-    public function getLayoutBoxed();
+    public function getLayoutBoxed(): bool;
 
-    /**
-     * Set sidebarMini.
-     *
-     * @param bool $sidebarMini
-     *
-     * @return UserInterface
-     */
-    public function setSidebarMini($sidebarMini);
+    public function setSidebarMini(bool $sidebarMini): self;
 
-    /**
-     * Get sidebarMini.
-     *
-     * @return bool
-     */
-    public function getSidebarMini();
+    public function getSidebarMini(): bool;
 
-    /**
-     * Set emailNotification.
-     *
-     * @param bool $emailNotification
-     *
-     * @return UserInterface
-     */
-    public function setEmailNotification($emailNotification);
+    public function setEmailNotification(bool $emailNotification): self;
 
-    /**
-     * Get emailNotification.
-     *
-     * @return bool
-     */
-    public function getEmailNotification();
+    public function getEmailNotification(): bool;
 
-    /**
-     * Set sidebarCollapse.
-     *
-     * @param bool $sidebarCollapse
-     *
-     * @return UserInterface
-     */
-    public function setSidebarCollapse($sidebarCollapse);
+    public function setSidebarCollapse(bool $sidebarCollapse): self;
 
-    /**
-     * Get sidebarCollapse.
-     *
-     * @return bool
-     */
-    public function getSidebarCollapse();
+    public function getSidebarCollapse(): bool;
 
-    /**
-     * Add authToken.
-     *
-     * @return UserInterface
-     */
-    public function addAuthToken(AuthToken $authToken);
+    public function addAuthToken(AuthToken $authToken): self;
 
-    /**
-     * Remove authToken.
-     */
-    public function removeAuthToken(AuthToken $authToken);
+    public function removeAuthToken(AuthToken $authToken): void;
 
-    /**
-     * Get authTokens.
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getAuthTokens();
+    /** @return Collection<int, AuthToken> */
+    public function getAuthTokens(): Collection;
 
-    /**
-     * Is enabled.
-     *
-     * @return bool
-     */
-    public function isEnabled();
+    public function isEnabled(): bool;
 
-    /**
-     * @return string
-     */
-    public function getUsername();
+    public function getUsername(): string;
 
-    /**
-     * @return string
-     */
-    public function getEmail();
+    public function getEmail(): string;
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getLastLogin();
+    public function getLastLogin(): ?\DateTime;
 
     /**
      * @return array{id: int|string, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}

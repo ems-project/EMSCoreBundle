@@ -6,7 +6,7 @@ use EMS\CoreBundle\Entity\Environment;
 
 class HasNotCircleException extends ElasticmsException
 {
-    private $environment;
+    private Environment $environment;
 
     public function __construct(Environment $environment)
     {
@@ -15,7 +15,7 @@ class HasNotCircleException extends ElasticmsException
         parent::__construct($message, 0, null);
     }
 
-    public function getEnvironment()
+    public function getEnvironment(): Environment
     {
         return $this->environment;
     }

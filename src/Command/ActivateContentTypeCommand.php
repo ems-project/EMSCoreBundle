@@ -8,6 +8,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Service\ContentTypeService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -127,6 +128,7 @@ class ActivateContentTypeCommand extends Command
 
     private function chooseTypes(InputInterface $input, OutputInterface $output): void
     {
+        /** @var QuestionHelper $helper */
         $helper = $this->getHelper('question');
         $question = new ChoiceQuestion(
             $this->deactivate ? 'Select the contenttypes you want to deactivate' : 'Select the contenttypes you want to activate',

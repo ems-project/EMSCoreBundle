@@ -98,7 +98,7 @@ final class ScheduleController extends AbstractController
                 ]);
             }
 
-            return $this->redirectToRoute(Routes::SCHEDULE_INDEX, );
+            return $this->redirectToRoute(Routes::SCHEDULE_INDEX);
         }
 
         return $this->render($template, [
@@ -119,7 +119,7 @@ final class ScheduleController extends AbstractController
     {
         $this->scheduleManager->delete($schedule);
 
-        return $this->redirectToRoute(Routes::SCHEDULE_INDEX, );
+        return $this->redirectToRoute(Routes::SCHEDULE_INDEX);
     }
 
     private function initTable(): EntityTable

@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
-use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -15,42 +14,30 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CodeFieldType extends DataFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Code editor field';
     }
 
-    /**
-     * Get a icon to visually identify a FieldType.
-     *
-     * @return string
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-code';
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @see \Symfony\Component\Form\AbstractType::getParent()
-     */
-    public function getParent()
+    public function getParent(): string
     {
         return HiddenType::class;
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $fieldType = $options['metadata'];
 
-        /*get options for twig context*/
+        /* get options for twig context */
         parent::buildView($view, $form, $options);
         $view->vars['icon'] = $options['icon'];
 
@@ -69,20 +56,14 @@ class CodeFieldType extends DataFieldType
         $view->vars['attr'] = $attr;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'codefieldtype';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        /*set the default option value for this kind of compound field*/
+        /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
         $resolver->setDefault('icon', null);
         $resolver->setDefault('language', null);
@@ -93,9 +74,9 @@ class CodeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');

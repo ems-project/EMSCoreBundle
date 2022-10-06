@@ -1,19 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
-class Version20160611000940 extends AbstractMigration
+final class Version20160611000940 extends AbstractMigration
 {
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf('mysql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('ALTER TABLE data_field DROP FOREIGN KEY FK_154A89C7727ACA70');
         $this->addSql('ALTER TABLE revision DROP FOREIGN KEY FK_6D6315CC8EE9CE6C');
@@ -22,10 +23,12 @@ class Version20160611000940 extends AbstractMigration
         $this->addSql('ALTER TABLE revision DROP data_field_id');
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf('mysql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(
+            !$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+        );
 
         $this->addSql('CREATE TABLE data_field (id INT AUTO_INCREMENT NOT NULL, field_type_id INT DEFAULT NULL, parent_id INT DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, revision_id INT DEFAULT NULL, orderKey INT NOT NULL, raw_data LONGTEXT DEFAULT NULL COLLATE utf8_unicode_ci COMMENT \'(DC2Type:json_array)\', INDEX IDX_154A89C72B68A933 (field_type_id), INDEX IDX_154A89C7727ACA70 (parent_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->addSql('ALTER TABLE data_field ADD CONSTRAINT FK_154A89C72B68A933 FOREIGN KEY (field_type_id) REFERENCES field_type (id)');

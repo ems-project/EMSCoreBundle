@@ -24,12 +24,12 @@ class JobOutput extends Output
     /**
      * Do not allow symfony to overwrite the verbosity level.
      */
-    public function setVerbosity($level): void
+    public function setVerbosity(int $level): void
     {
         parent::setVerbosity(self::JOB_VERBOSITY);
     }
 
-    public function doWrite($message, $newline): void
+    public function doWrite(string $message, bool $newline): void
     {
         $job = $this->jobRepository->findById($this->jobId);
         $job->setStatus($message);

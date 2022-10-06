@@ -49,7 +49,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     }
 
     /**
-     * @param array<mixed> $options
+     * {@inheritDoc}
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
@@ -91,7 +91,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     }
 
     /**
-     * @return array<mixed>
+     * {@inheritDoc}
      */
     public function generateMapping(FieldType $current): array
     {
@@ -110,7 +110,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     }
 
     /**
-     * @return string[]
+     * {@inheritDoc}
      */
     public static function getJsonNames(FieldType $current): array
     {
@@ -128,7 +128,8 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     }
 
     /**
-     * @param array<mixed> $options
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -155,7 +156,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     }
 
     /**
-     * @param array<mixed> $option
+     * {@inheritDoc}
      */
     public static function isVirtual(array $option = []): bool
     {
@@ -163,7 +164,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     }
 
     /**
-     * @param array<mixed>|float|int|string|null $data
+     * {@inheritDoc}
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {

@@ -24,48 +24,37 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class IndexedAssetFieldType extends DataFieldType
 {
-    /** @var FileService */
-    private $fileService;
+    private FileService $fileService;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService)
-    {
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        FormRegistryInterface $formRegistry,
+        ElasticsearchService $elasticsearchService,
+        FileService $fileService
+    ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
         $this->fileService = $fileService;
     }
 
-    /**
-     * Get a icon to visually identify a FieldType.
-     *
-     * @return string
-     */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-file-text-o';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Indexed file field';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
+    public function getParent(): string
     {
         return FileType::class;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -87,10 +76,7 @@ class IndexedAssetFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -99,9 +85,9 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function generateMapping(FieldType $current)
+    public function generateMapping(FieldType $current): array
     {
         $mapping = parent::generateMapping($current);
 
@@ -120,11 +106,9 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+     * {@inheritDoc}
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
         $this->testDataField($dataField);
@@ -132,12 +116,14 @@ class IndexedAssetFieldType extends DataFieldType
         return $dataField;
     }
 
-    private function testDataField(DataField $dataField)
+    private function testDataField(DataField $dataField): void
     {
         $raw = $dataField->getRawData();
 
         if (!\is_array($raw) || empty($raw) || empty($raw['sha1'])) {
-            if (isset($dataField->getFieldType()->getRestrictionOptions()['mandatory']) && $dataField->getFieldType()->getRestrictionOptions()['mandatory']) {
+            $restrictionOptions = $dataField->giveFieldType()->getRestrictionOptions();
+
+            if (isset($restrictionOptions['mandatory']) && $restrictionOptions['mandatory']) {
                 $dataField->addMessage('This entry is required');
             }
             $dataField->setRawData(null);
@@ -150,15 +136,13 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
 
-        if (empty($out['sha1'])) {
+        if (\is_array($out) && empty($out['sha1'])) {
             $out = null;
         }
 
@@ -166,11 +150,9 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
+     * {@inheritDoc}
      */
-    public function modelTransform($data, FieldType $fieldType)
+    public function modelTransform($data, FieldType $fieldType): DataField
     {
         if (\is_array($data)) {
             foreach ($data as $id => $content) {

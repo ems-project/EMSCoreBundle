@@ -13,6 +13,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -80,6 +81,7 @@ class IndexFileCommand extends EmsCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Please do a backup of your DB first!');
+        /** @var QuestionHelper $helper */
         $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion('Continue?', false);
 
@@ -109,7 +111,7 @@ class IndexFileCommand extends EmsCommand
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var RevisionRepository $revisionRepository */
-        $revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
+        $revisionRepository = $em->getRepository(Revision::class);
 
         $total = $revisionRepository->countByContentType($contentType);
 
@@ -178,9 +180,9 @@ class IndexFileCommand extends EmsCommand
         foreach ($rawData as $key => $data) {
             if ($key === $field) {
                 if ($onlyMissingContent && isset($rawData[$key]['_content'])) {
-                    //do nothing in this case as a content has been already extracted
+                    // do nothing in this case as a content has been already extracted
                 } elseif ($onlyWithIngestedContent && !isset($rawData[$key]['content'])) {
-                    //do nothing in this case as a there is no ingested (binary) content
+                    // do nothing in this case as a there is no ingested (binary) content
                 } else {
                     return $this->migrate($rawData[$key], $output);
                 }
@@ -211,7 +213,7 @@ class IndexFileCommand extends EmsCommand
                 if (null === $file && isset($rawData['content'])) {
                     $fileContent = \base64_decode($rawData['content']);
 
-                    if (\sha1($fileContent) === $rawData[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null) {
+                    if (\sha1($fileContent) === $rawData[EmsFields::CONTENT_FILE_HASH_FIELD]) {
                         $file = $this->fileService->temporaryFilename($rawData[EmsFields::CONTENT_FILE_HASH_FIELD]);
                         \file_put_contents($file, $fileContent);
                         try {
@@ -279,16 +281,16 @@ class IndexFileCommand extends EmsCommand
         }
         $dbName = $connection->getDatabase();
 
-        if (\in_array($connection->getDriver()->getName(), ['pdo_pgsql'])) {
+        if (\in_array($connection->getDriver()->getDatabasePlatform()->getName(), ['postgresql'])) {
             $query = "SELECT pg_size_pretty(pg_database_size('$dbName')) AS size";
-        } elseif (\in_array($connection->getDriver()->getName(), ['pdo_mysql'])) {
+        } elseif (\in_array($connection->getDriver()->getDatabasePlatform()->getName(), ['mysql'])) {
             $query = "SELECT SUM(data_length + index_length)/1024/1024 AS size FROM information_schema.TABLES WHERE table_schema='$dbName' GROUP BY table_schema";
         } else {
             throw new \RuntimeException('Not supported driver');
         }
         $stmt = $em->getConnection()->prepare($query);
-        $stmt->execute();
-        $size = $stmt->fetchAll();
+        $result = $stmt->executeQuery();
+        $size = $result->fetchAllAssociative();
 
         if (\is_array($size) && isset($size[0]['size'])) {
             $row = "The database size is {$size[0]['size']} MB";

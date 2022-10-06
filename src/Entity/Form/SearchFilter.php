@@ -6,8 +6,6 @@ use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
- * SearchFilter.
- *
  * @ORM\Table(name="search_filter")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SearchFilterRepository")
  */
@@ -26,42 +24,32 @@ class SearchFilter implements JsonSerializable
      * @ORM\ManyToOne(targetEntity="Search", inversedBy="filters")
      * @ORM\JoinColumn(name="search_id", referencedColumnName="id")
      */
-    private $search;
+    private ?Search $search = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="pattern", type="string", length=200, nullable=true)
      */
-    public $pattern;
+    public ?string $pattern = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="field", type="string", length=100, nullable=true)
      */
-    public $field;
+    public ?string $field = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="boolean_clause", type="string", length=20, nullable=true)
      */
-    public $booleanClause;
+    public ?string $booleanClause;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="operator", type="string", length=50)
      */
-    public $operator;
+    public string $operator;
 
     /**
-     * @var float
-     *
      * @ORM\Column(name="boost", type="decimal", scale=2, nullable=true)
      */
-    public $boost;
+    public ?float $boost = null;
 
     public function __construct()
     {
@@ -69,6 +57,9 @@ class SearchFilter implements JsonSerializable
         $this->booleanClause = 'must';
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function jsonSerialize()
     {
         return [
@@ -80,9 +71,12 @@ class SearchFilter implements JsonSerializable
         ];
     }
 
-    public function generateEsFilter()
+    /**
+     * @return array<mixed>
+     */
+    public function generateEsFilter(): ?array
     {
-        $out = false;
+        $out = null;
         if ($this->field || $this->pattern) {
             $field = $this->field;
 
@@ -208,150 +202,79 @@ class SearchFilter implements JsonSerializable
         return $out;
     }
 
-    /**
-     * Get pattern.
-     *
-     * @return string
-     */
-    public function getPattern()
+    public function getPattern(): ?string
     {
         return $this->pattern;
     }
 
-    /**
-     * @param string $pattern
-     *
-     * @return SearchFilter
-     */
-    public function setPattern($pattern)
+    public function setPattern(?string $pattern): self
     {
         $this->pattern = $pattern;
 
         return $this;
     }
 
-    /**
-     * Get field.
-     *
-     * @return string
-     */
-    public function getField()
+    public function getField(): ?string
     {
         return $this->field;
     }
 
-    /**
-     * Set field.
-     *
-     * @param string $field
-     *
-     * @return SearchFilter
-     */
-    public function setField($field)
+    public function setField(?string $field): self
     {
         $this->field = $field;
 
         return $this;
     }
 
-    /**
-     * Get operator.
-     *
-     * @return string
-     */
-    public function getOperator()
+    public function getOperator(): string
     {
         return $this->operator;
     }
 
-    /**
-     * Set operator.
-     *
-     * @param string $operator
-     */
-    public function setOperator($operator)
+    public function setOperator(string $operator): self
     {
         $this->operator = $operator;
 
         return $this;
     }
 
-    /**
-     * Get boost.
-     *
-     * @return float
-     */
-    public function getBoost()
+    public function getBoost(): ?float
     {
         return $this->boost;
     }
 
-    /**
-     * Set boost.
-     *
-     * @param float $boost
-     */
-    public function setBoost($boost)
+    public function setBoost(?float $boost): self
     {
         $this->boost = $boost;
 
         return $this;
     }
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set search.
-     *
-     * @param \EMS\CoreBundle\Entity\Form\Search $search
-     *
-     * @return SearchFilter
-     */
-    public function setSearch(Search $search = null)
+    public function setSearch(?Search $search = null): self
     {
         $this->search = $search;
 
         return $this;
     }
 
-    /**
-     * Get search.
-     *
-     * @return \EMS\CoreBundle\Entity\Form\Search
-     */
-    public function getSearch()
+    public function getSearch(): ?Search
     {
         return $this->search;
     }
 
-    /**
-     * Set booleanClause.
-     *
-     * @param string $booleanClause
-     *
-     * @return SearchFilter
-     */
-    public function setBooleanClause($booleanClause)
+    public function setBooleanClause(?string $booleanClause): self
     {
         $this->booleanClause = $booleanClause;
 
         return $this;
     }
 
-    /**
-     * Get booleanClause.
-     *
-     * @return string
-     */
-    public function getBooleanClause()
+    public function getBooleanClause(): ?string
     {
         return $this->booleanClause;
     }

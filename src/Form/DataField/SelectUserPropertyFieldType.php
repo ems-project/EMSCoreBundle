@@ -88,8 +88,7 @@ final class SelectUserPropertyFieldType extends DataFieldType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * {@inheritDoc}
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
@@ -123,9 +122,7 @@ final class SelectUserPropertyFieldType extends DataFieldType
     }
 
     /**
-     * @param DataField<DataField> $dataField
-     *
-     * @return array<mixed>
+     * {@inheritDoc}
      */
     public function viewTransform(DataField $dataField)
     {
@@ -135,11 +132,11 @@ final class SelectUserPropertyFieldType extends DataFieldType
     }
 
     /**
-     * @param mixed $data
+     * {@inheritDoc}
      *
-     * @return mixed
+     * @param ?array<mixed> $data
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $data = (null !== $data && isset($data['value'])) ? $data['value'] : null;
 

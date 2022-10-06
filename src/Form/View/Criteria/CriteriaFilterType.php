@@ -6,7 +6,6 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
-use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -22,9 +21,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CriteriaFilterType extends AbstractType
 {
     /**
-     * @throws Exception
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
@@ -34,10 +34,10 @@ class CriteriaFilterType extends AbstractType
 
             $criteriaField = $view->getContentType()->getFieldType();
             if ('internal' == $view->getOptions()['criteriaMode']) {
-                $criteriaField = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['criteriaField']);
+                $criteriaField = $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['criteriaField']);
             } elseif ('another' == $view->getOptions()['criteriaMode']) {
             } else {
-                throw new Exception('Should never happen');
+                throw new \Exception('Should never happen');
             }
 
             $choices = [];
@@ -46,10 +46,14 @@ class CriteriaFilterType extends AbstractType
 
             $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
 
+            if (!\is_array($fieldPaths)) {
+                throw new \RuntimeException('Splitting criteriaFieldPaths failed!');
+            }
+
             foreach ($fieldPaths as $path) {
                 /** @var FieldType $child */
                 $child = $criteriaField->getChildByPath($path);
-                if ($child) {
+                if ($child instanceof FieldType) {
                     $label = $child->getDisplayOptions()['label'] ? $child->getDisplayOptions()['label'] : $child->getName();
                     $choices[$label] = $child->getName();
                     $defaultRow = $defaultColumn;
@@ -123,10 +127,14 @@ class CriteriaFilterType extends AbstractType
 
             $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
 
+            if (!\is_array($fieldPaths)) {
+                throw new \RuntimeException('Splitting criteriaFieldPaths failed!');
+            }
+
             foreach ($fieldPaths as $path) {
                 /** @var FieldType $child */
                 $child = $criteriaField->getChildByPath($path);
-                if ($child) {
+                if ($child instanceof FieldType) {
                     $childOptions = $child->getOptions();
                     if (isset($childOptions['restrictionOptions']) && isset($childOptions['restrictionOptions']['minimum_role'])) {
                         $childOptions['restrictionOptions']['minimum_role'] = null;
@@ -144,7 +152,7 @@ class CriteriaFilterType extends AbstractType
                                 'data-name' => $child->getName(),
                         ];
 
-                    $displayOptions['multiple'] = true; //($child->getName() == $defaultRow || $child->getName() == $defaultColumn);
+                    $displayOptions['multiple'] = true; // ($child->getName() == $defaultRow || $child->getName() == $defaultColumn);
 
                     $criterion->add($child->getName(), $child->getType(), $displayOptions);
                     $criterion->get($child->getName())->addViewTransformer(new CallbackTransformer(
@@ -168,10 +176,7 @@ class CriteriaFilterType extends AbstractType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);

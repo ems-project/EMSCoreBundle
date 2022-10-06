@@ -37,7 +37,7 @@ class JobController extends AbstractController
     public function index(Request $request): Response
     {
         $size = $this->pagingSize;
-        $page = $request->query->get('page', 1);
+        $page = $request->query->getInt('page', 1);
         $from = ($page - 1) * $size;
         $total = $this->jobService->count();
         $lastPage = \ceil($total / $size);

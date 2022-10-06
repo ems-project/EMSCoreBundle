@@ -2,11 +2,10 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Common\Document;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
-use Psr\Log\LoggerInterface;
+use EMS\Helpers\Standard\Type;
 use Twig\Environment;
 use Twig\TemplateWrapper;
 
@@ -19,19 +18,15 @@ class TemplateService
     public const MERGED_XML_FORMAT = 'merged-xml';
     public const EXPORT_FORMATS = [self::JSON_FORMAT, self::XML_FORMAT, self::MERGED_JSON_FORMAT, self::MERGED_XML_FORMAT];
 
-    private LoggerInterface $logger;
-    private Registry $doctrine;
     private Environment $twig;
     private Template $template;
 
     private ?TemplateWrapper $twigTemplate = null;
     private ?TemplateWrapper $filenameTwigTemplate = null;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Environment $twig)
+    public function __construct(Environment $twig)
     {
         $this->twig = $twig;
-        $this->doctrine = $doctrine;
-        $this->logger = $logger;
     }
 
     public function getTemplate(): Template
@@ -80,7 +75,10 @@ class TemplateService
         return $this->renderTemplate($extraContext, $environment, $contentType, $document, $this->filenameTwigTemplate);
     }
 
-    public function getXml(ContentType $contentType, array $source, bool $arrayOfDocument, ?string $ouuid = null)
+    /**
+     * @param array<mixed> $source
+     */
+    public function getXml(ContentType $contentType, array $source, bool $arrayOfDocument, ?string $ouuid = null): string
     {
         $xmlDocument = new \DOMDocument();
         if ($arrayOfDocument) {
@@ -94,7 +92,7 @@ class TemplateService
             throw new \Exception('OUUID madatory in cas of simple document');
         }
 
-        return $xmlDocument->saveXML();
+        return Type::string($xmlDocument->saveXML());
     }
 
     public function hasFilenameTemplate(): bool
@@ -102,7 +100,11 @@ class TemplateService
         return null !== $this->filenameTwigTemplate;
     }
 
-    private function addNested(\DOMDocument $xmlDocument, \DOMNode $parent, string $fieldName, array $rawData, array $attributes = [])
+    /**
+     * @param array<mixed> $rawData
+     * @param array<mixed> $attributes
+     */
+    private function addNested(\DOMDocument $xmlDocument, \DOMNode $parent, string $fieldName, array $rawData, array $attributes = []): void
     {
         $child = $parent->appendChild($xmlDocument->createElement($fieldName));
         foreach ($attributes as $name => $value) {

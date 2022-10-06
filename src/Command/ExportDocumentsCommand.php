@@ -11,6 +11,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\TemplateService;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -229,10 +230,6 @@ class ExportDocumentsCommand extends EmsCommand
 
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
-                if (false === $result) {
-                    continue;
-                }
-
                 if ($withBusinessId) {
                     $document = $this->dataService->hitToBusinessDocument($contentType, $result->getHit());
                 } else {
@@ -265,9 +262,9 @@ class ExportDocumentsCommand extends EmsCommand
                     }
                 } else {
                     if ($accumulateInOneFile) {
-                        $content = $document->getSource();
+                        $content = Json::encode($document->getSource());
                     } elseif (false !== \strpos($format, TemplateService::JSON_FORMAT)) {
-                        $content = \json_encode($document->getSource(), JSON_PRETTY_PRINT);
+                        $content = Json::encode($document->getSource(), true);
                     } elseif (false !== \strpos($format, TemplateService::XML_FORMAT)) {
                         $content = $this->templateService->getXml($contentType, $document->getSource(), false, $document->getOuuid());
                     } else {
@@ -296,7 +293,7 @@ class ExportDocumentsCommand extends EmsCommand
             if ($useTemplate) {
                 $accumulatedContent = \implode('', $accumulatedContent);
             } elseif (false !== \strpos($format, TemplateService::JSON_FORMAT)) {
-                $accumulatedContent = \json_encode($accumulatedContent);
+                $accumulatedContent = Json::encode($accumulatedContent);
             } elseif (false !== \strpos($format, TemplateService::XML_FORMAT)) {
                 $accumulatedContent = $this->templateService->getXml($contentType, $accumulatedContent, true);
             } else {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -15,7 +17,8 @@ class RenderOptionType extends ChoiceType
     public const JOB = 'job';
     public const PDF = 'pdf';
 
-    private $choices = [
+    /** @var array<string, string> */
+    private array $choices = [
         'Embed' => self::EMBED,
         'Export' => self::EXPORT,
         'External link' => self::EXTERNALLINK,
@@ -25,8 +28,10 @@ class RenderOptionType extends ChoiceType
         'PDF' => self::PDF,
     ];
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
+        parent::configureOptions($resolver);
+
         $resolver->setDefaults([
             'choices' => $this->choices,
             'multiple' => false,
@@ -35,16 +40,14 @@ class RenderOptionType extends ChoiceType
             'choice_loader' => null,
             'choice_label' => null,
             'choice_name' => null,
-            'choice_value' => function ($value) {
-                return $value;
-            },
+            'choice_value' => fn ($value) => $value,
             'choice_attr' => null,
             'preferred_choices' => [],
             'group_by' => null,
             'empty_data' => '',
             'placeholder' => null,
             'error_bubbling' => false,
-            'compound' => null,
+            'compound' => false,
             // The view data is always a string, even if the "data" option
             // is manually set to an object.
             // See https://github.com/symfony/symfony/pull/5582

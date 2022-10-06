@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use DoctrineBatchUtils\BatchProcessing\SimpleBatchIteratorAggregate;
 use EMS\CoreBundle\Entity\Revision;
@@ -14,13 +13,11 @@ use EMS\CoreBundle\Entity\Revision;
  */
 final class Revisions implements \IteratorAggregate
 {
-    private EntityManager $entityManager;
     private QueryBuilder $qb;
     private int $batchSize;
 
     public function __construct(QueryBuilder $qb, int $batchSize = 50)
     {
-        $this->entityManager = $qb->getEntityManager();
         $this->qb = $qb;
         $this->batchSize = $batchSize;
     }

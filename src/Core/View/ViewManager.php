@@ -67,7 +67,7 @@ class ViewManager implements EntityServiceInterface
         if (0 === $view->getOrderKey()) {
             $view->setOrderKey($this->viewRepository->counter($view->getContentType()) + 1);
         }
-        $view->setName(Encoder::webalize($view->getName()) ?? '');
+        $view->setName(Encoder::webalize($view->getName()));
         $this->viewRepository->create($view);
     }
 

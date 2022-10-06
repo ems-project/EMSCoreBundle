@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Validator\Constraints as EMSAssert;
+use EMS\Helpers\Standard\DateTime;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -12,11 +13,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="managed_alias")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\ManagedAliasRepository")
  * @ORM\HasLifecycleCallbacks()
- *
  * @UniqueEntity(fields={"name"}, message="Name already exists!")
  */
 class ManagedAlias
 {
+    use CreatedModifiedTrait;
     /**
      * @var int
      *
@@ -30,7 +31,6 @@ class ManagedAlias
      * @var string
      *
      * @EMSAssert\AliasName()
-     *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     private $name;
@@ -42,28 +42,15 @@ class ManagedAlias
 
     /**
      * @var string
+     *
      * @ORM\Column(name="alias", type="string", length=255, unique=true)
      */
     private $alias;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
+     * @var array<mixed>
      */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
-
-    /**
-     * @var array
-     */
-    private $indexes = [];
+    private array $indexes = [];
 
     /**
      * @var int
@@ -84,12 +71,10 @@ class ManagedAlias
      */
     private $extra;
 
-    /**
-     * Managed Alias.
-     */
     public function __construct()
     {
-        $this->created = new \DateTime();
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
     }
 
     /**
@@ -101,36 +86,11 @@ class ManagedAlias
     }
 
     /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateModified()
-    {
-        $this->modified = new \DateTime();
-    }
-
-    /**
      * @return int
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getModified()
-    {
-        return $this->modified;
     }
 
     /**
@@ -161,26 +121,23 @@ class ManagedAlias
         return $this->alias;
     }
 
-    /**
-     * @param string $instanceId
-     */
-    public function setAlias($instanceId)
+    public function setAlias(string $instanceId): void
     {
         $this->alias = $instanceId.$this->getName();
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      */
-    public function getIndexes()
+    public function getIndexes(): array
     {
         return $this->indexes;
     }
 
     /**
-     * @return ManagedAlias
+     * @param array<mixed> $indexes
      */
-    public function setIndexes(array $indexes)
+    public function setIndexes(array $indexes): self
     {
         $this->indexes = $indexes;
 

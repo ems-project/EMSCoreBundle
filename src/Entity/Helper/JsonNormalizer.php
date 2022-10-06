@@ -17,10 +17,14 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
 {
-    //If you want to parse a new object, provide here the getXXXX method of the object to be skipped of normalization
-    //[<ObjectName>] => [<XXXX>,...]
-    //TODO: Anotate the object to allow the method normalize to be able get methods of the object to be skipped.
-    private $toSkip = ['ContentType' => ['id',
+    /**
+     * If you want to parse a new object, provide here the getXXXX method of the object to be skipped of normalization
+     * [<ObjectName>] => [<XXXX>,...]
+     * TODO: Anotate the object to allow the method normalize to be able get methods of the object to be skipped.
+     *
+     * @var array<mixed>
+     */
+    private array $toSkip = ['ContentType' => ['id',
                                          'indexAnalysisConfiguration', ],
                        'FieldType' => ['id',
                                           'contentType',
@@ -45,9 +49,14 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
     ];
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @param mixed        $object
+     * @param array<mixed> $context
+     *
+     * @return array<mixed>
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = []): array
     {
         $data = [];
 
@@ -57,7 +66,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                 \get_class($object),
                 [], // constructor arguments
         ];
-        //Parsing all methods of the object
+        // Parsing all methods of the object
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             if ('get' !== \strtolower(\substr($reflectionMethod->getName(), 0, 3)) && 'is' !== \strtolower(\substr($reflectionMethod->getName(), 0, 2))) {
                 continue;
@@ -73,7 +82,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                 break;
             }
             if (null != $value) {
-                //If you want to parse a new object, provide here the way to normalize it.
+                // If you want to parse a new object, provide here the way to normalize it.
                 if ($object instanceof ContentType) {
                     if (\in_array($property, $this->toSkip['ContentType'])) {
                         continue;
@@ -84,14 +93,14 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                     if ('views' == $property) {
                         $arrayValues = [];
                         foreach ($value as $index => $view) {
-                            $arrayValues[$index] = $this->normalize($view, $format, $context); //Recursive
+                            $arrayValues[$index] = $this->normalize($view, $format, $context); // Recursive
                         }
                         $value = $arrayValues;
                     }
                     if ('templates' == $property) {
                         $arrayValues = [];
                         foreach ($value as $index => $template) {
-                            $arrayValues[$index] = $this->normalize($template, $format, $context); //Recursive
+                            $arrayValues[$index] = $this->normalize($template, $format, $context); // Recursive
                         }
                         $value = $arrayValues;
                     }
@@ -101,9 +110,9 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                     }
                     if ('validChildren' == $property) {
                         $arrayValues = [];
-                        foreach ($value as $index => $subElement) {//subElement is always FieldType
+                        foreach ($value as $index => $subElement) {// subElement is always FieldType
                             if (!$subElement->getDeleted()) {
-                                $arrayValues[$index] = $this->normalize($subElement, $format, $context); //Recursive
+                                $arrayValues[$index] = $this->normalize($subElement, $format, $context); // Recursive
                             }
                         }
                         $value = $arrayValues;
@@ -142,31 +151,31 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
         $object = $reflectionClass->newInstanceArgs($constructorArguments);
 
         unset($data['__jsonclass__']);
-        $options = [];
+
         foreach ($data as $property => $value) {
-            if ('fieldType' == $property) {
+            if ('fieldType' == $property && \method_exists($object, 'setFieldType')) {
                 $object->setFieldType($this->denormalize($value, $class, $format, $context));
-            } elseif ('validChildren' == $property) {
+            } elseif ('validChildren' == $property && \method_exists($object, 'addChild')) {
                 foreach ($value as $index => $subElement) {
                     if (!empty($subElement)) {
                         $object->addChild($this->denormalize($subElement, $class, $format, $context));
                     }
                 }
-            } elseif ('views' == $property) {
+            } elseif ('views' == $property && \method_exists($object, 'addView')) {
                 foreach ($value as $index => $view) {
                     if (!empty($view)) {
                         $object->addView($this->denormalize($view, "EMS\CoreBundle\Entity\View", $format, ['contentType' => $object]));
                     }
                 }
-            } elseif ('templates' == $property) {
+            } elseif ('templates' == $property && \method_exists($object, 'addTemplate')) {
                 foreach ($value as $index => $template) {
                     if (!empty($template)) {
                         $object->addTemplate($this->denormalize($template, "EMS\CoreBundle\Entity\Template", $format, ['contentType' => $object]));
                     }
                 }
-            } elseif ("EMS\CoreBundle\Entity\Template" == $class && 'contentType' == $property) {
+            } elseif ("EMS\CoreBundle\Entity\Template" == $class && 'contentType' == $property && \method_exists($object, 'setContentType')) {
                 $object->setContentType($context['contentType']);
-            } elseif ("EMS\CoreBundle\Entity\View" == $class && 'contentType' == $property) {
+            } elseif ("EMS\CoreBundle\Entity\View" == $class && 'contentType' == $property && \method_exists($object, 'setContentType')) {
                 $object->setContentType($context['contentType']);
             } else {
                 $setter = 'set'.\ucfirst($property);
@@ -175,9 +184,6 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                 }
             }
         }
-        if (!empty($options)) {
-            $object->setOptions($options);
-        }
 
         return $object;
     }
@@ -185,7 +191,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function supportsNormalization($data, $format = null)
+    public function supportsNormalization($data, $format = null): bool
     {
         return \is_object($data) && 'json' === $format;
     }
@@ -193,7 +199,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function supportsDenormalization($data, $type, $format = null)
+    public function supportsDenormalization($data, $type, $format = null): bool
     {
         return isset($data['__jsonclass__']) && 'json' === $format;
     }

@@ -86,7 +86,7 @@ class DetailController extends AbstractController
         $revision = $this->revisionService->findByIdOrOuuid($contentType, $revisionId, $ouuid);
 
         if (null === $revision && $contentType->hasVersionTags() && Uuid::isValid($ouuid)) {
-            //using version ouuid as ouuid should redirect to latest
+            // using version ouuid as ouuid should redirect to latest
             $searchLatestVersion = $this->revisionRepository->findLatestVersion($contentType, $ouuid);
             if ($searchLatestVersion && $searchLatestVersion->getOuuid() !== $ouuid) {
                 return $this->redirectToRoute('emsco_view_revisions', [
@@ -109,14 +109,14 @@ class DetailController extends AbstractController
             $this->logger->notice('log.data.revision.load_from_auto_save', LogRevisionContext::read($revision));
         }
 
-        $page = $request->query->get('page', 1);
+        $page = $request->query->getInt('page', 1);
 
         $revisionsSummary = $this->revisionRepository->getAllRevisionsSummary($ouuid, $contentType, $page);
         $lastPage = $this->revisionRepository->revisionsLastPage($ouuid, $contentType);
         $counter = $this->revisionRepository->countRevisions($ouuid, $contentType);
         $firstElemOfPage = $this->revisionRepository->firstElemOfPage($page);
 
-        $availableEnv = $this->environmentRepository->findAvailableEnvironements(
+        $availableEnv = $this->environmentRepository->findAvailableEnvironments(
             $revision->giveContentType()->giveEnvironment()
         );
 
@@ -132,7 +132,7 @@ class DetailController extends AbstractController
         $searchForm->setSortBy('_uid');
         $searchForm->setSortOrder('asc');
 
-        $filter = $searchForm->getFilters()[0];
+        $filter = $searchForm->getFirstFilter();
         $filter->setBooleanClause('should');
         $filter->setField($contentType->getRefererFieldName());
         $filter->setPattern(\sprintf('%s:%s', $type, $ouuid));

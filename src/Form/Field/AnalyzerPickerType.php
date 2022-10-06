@@ -9,17 +9,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AnalyzerPickerType extends SelectPickerType
 {
-    /** @var Registry */
-    private $doctrine;
+    private Registry $doctrine;
 
     public function __construct(Registry $doctrine)
     {
-        //'@doctrine'
         parent::__construct();
         $this->doctrine = $doctrine;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $built_in = [
                 'Standard' => 'standard',
@@ -73,7 +71,7 @@ class AnalyzerPickerType extends SelectPickerType
         ];
 
         /** @var AnalyzerRepository $repository */
-        $repository = $this->doctrine->getRepository('EMSCoreBundle:Analyzer');
+        $repository = $this->doctrine->getRepository(Analyzer::class);
         /** @var Analyzer $analyzer */
         foreach ($repository->findAll() as $analyzer) {
             $choices['Customized'][$analyzer->getLabel()] = $analyzer->getName();

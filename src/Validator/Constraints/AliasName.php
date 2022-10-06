@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -9,5 +11,5 @@ use Symfony\Component\Validator\Constraint;
  */
 class AliasName extends Constraint
 {
-    public $invalid = 'Must respects the following regex {{ regex }}';
+    public string $invalid = 'Must respects the following regex {{ regex }}';
 }

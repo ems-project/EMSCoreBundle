@@ -19,7 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class QuerySearchType extends AbstractType
 {
-    private $service;
+    private EnvironmentService $service;
 
     public function __construct(EnvironmentService $service)
     {
@@ -27,8 +27,8 @@ final class QuerySearchType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface<AbstractType> $builder
-     * @param array<string, mixed>               $options
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

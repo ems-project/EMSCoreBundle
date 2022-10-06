@@ -2,7 +2,7 @@
 
 {%  for dashboard in dashboardMenu.children %}
     <li class="notifications-menu">
-        <a href="{{ dashboard.url }}"{% if dashboard.color %} class="text-{{ dashboard.color }}"{% endif %}>
+        <a href="{{ path(dashboard.route, dashboard.routeParameters) }}"{% if dashboard.color %} class="text-{{ dashboard.color }}"{% endif %}>
             <i class="{{ dashboard.icon }}"></i>
         </a>
     </li>

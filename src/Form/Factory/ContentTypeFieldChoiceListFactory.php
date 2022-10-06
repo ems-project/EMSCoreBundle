@@ -1,38 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Factory;
 
 use EMS\CoreBundle\Form\Field\ContentTypeFieldChoiceLoader;
-use EMS\CoreBundle\Form\Field\ObjectChoiceLoader;
-use EMS\CoreBundle\Service\ContentTypeService;
+use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
 use Symfony\Component\Form\ChoiceList\Factory\DefaultChoiceListFactory;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class ContentTypeFieldChoiceListFactory extends DefaultChoiceListFactory
 {
-    /** @var ContentTypeService */
-    private $contentTypesService;
-
     /**
-     * constructor called by the service mechanisme.
+     * @param array<mixed> $mapping
+     * @param array<mixed> $types
      */
-    public function __construct(ContentTypeService $contentTypesService)
-    {
-        $this->contentTypesService = $contentTypesService;
-    }
-
-    /**
-     * instanciate a ObjectChoiceLoader (with the required services).
-     */
-    public function createLoader(array $mapping, array $types, $firstLevelOnly)
+    public function createLoader(array $mapping, array $types, bool $firstLevelOnly): ContentTypeFieldChoiceLoader
     {
         return new ContentTypeFieldChoiceLoader($mapping, $types, $firstLevelOnly);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createListFromLoader(ChoiceLoaderInterface $loader, $value = null)
+    public function createListFromLoader(ChoiceLoaderInterface $loader, callable $value = null): ChoiceListInterface
     {
         return $loader->loadChoiceList($value);
     }

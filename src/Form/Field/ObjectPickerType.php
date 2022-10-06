@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
-use Symfony\Component\Form\ChoiceList\Factory\ChoiceListFactoryInterface;
+use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
@@ -10,19 +10,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ObjectPickerType extends Select2Type
 {
-    /** @var ChoiceListFactoryInterface */
-    private $choiceListFactory;
+    private ObjectChoiceListFactory $choiceListFactory;
 
-    public function __construct(ChoiceListFactoryInterface $factory)
+    public function __construct(ObjectChoiceListFactory $factory)
     {
         $this->choiceListFactory = $factory;
         parent::__construct($factory);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
@@ -32,15 +28,15 @@ class ObjectPickerType extends Select2Type
             'sortable' => false,
             'with_warning' => true,
             'choice_loader' => function (Options $options) {
-                $loadAll = $options->offsetGet('dynamicLoading') ? false : true;
-                $circleOnly = $options->offsetGet('circle-only');
-                $withWarning = $options->offsetGet('with_warning');
-                $querySearch = $options->offsetGet('querySearch');
+                $loadAll = $options['dynamicLoading'];
+                $circleOnly = $options['circle-only'];
+                $withWarning = $options['with_warning'];
+                $querySearch = $options['querySearch'];
                 if (!\is_string($querySearch) || 0 === \strlen($querySearch)) {
                     $querySearch = null;
                 }
 
-                return $this->choiceListFactory->createLoader($options->offsetGet('type'), $loadAll, $circleOnly, $withWarning, $querySearch);
+                return $this->choiceListFactory->createLoader($options['type'], $loadAll, $circleOnly, $withWarning, $querySearch);
             },
             'choice_label' => function ($value, $key, $index) {
                 return $value->getLabel();
@@ -67,20 +63,16 @@ class ObjectPickerType extends Select2Type
         ]);
     }
 
-    /**
-     * Returns the choice list factory (getter function).
-     *
-     * @return ChoiceListFactoryInterface
-     */
-    public function getChoiceListFactory()
+    public function getChoiceListFactory(): ObjectChoiceListFactory
     {
         return $this->choiceListFactory;
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormInterface<FormInterface> $form
+     * @param array<string, mixed>         $options
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['attr']['data-type'] = $options['type'];
         $view->vars['attr']['data-search-id'] = $options['searchId'];
@@ -91,10 +83,7 @@ class ObjectPickerType extends Select2Type
         $view->vars['attr']['data-referrer-ems-id'] = $options['referrer-ems-id'] ?? false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'objectpicker';
     }

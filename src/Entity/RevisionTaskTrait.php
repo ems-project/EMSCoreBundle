@@ -12,7 +12,7 @@ trait RevisionTaskTrait
      * @ORM\ManyToOne(targetEntity="EMS\CoreBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_current_id", referencedColumnName="id", nullable=true)
      */
-    private ?Task $taskCurrent;
+    private ?Task $taskCurrent = null;
 
     /**
      * @var string[]|null

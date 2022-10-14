@@ -7,18 +7,19 @@ namespace EMS\CoreBundle\Core\UI;
 use EMS\CoreBundle\EMSCoreBundle;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class FlashMessageLogger extends AbstractProcessingHandler
 {
-    private FlashBagInterface $flashBag;
+    private RequestStack $requestStack;
     private TranslatorInterface $translator;
 
-    public function __construct(FlashBagInterface $flashBag, TranslatorInterface $translator)
+    public function __construct(RequestStack $requestStack, TranslatorInterface $translator)
     {
         parent::__construct(Logger::NOTICE);
-        $this->flashBag = $flashBag;
+        $this->requestStack = $requestStack;
         $this->translator = $translator;
     }
 
@@ -27,7 +28,9 @@ final class FlashMessageLogger extends AbstractProcessingHandler
      */
     protected function write(array $record): void
     {
-        if ($record['level'] < Logger::NOTICE) {
+        $currentRequest = $this->requestStack->getCurrentRequest();
+
+        if (null === $currentRequest || $record['level'] < Logger::NOTICE) {
             return;
         }
 
@@ -38,6 +41,9 @@ final class FlashMessageLogger extends AbstractProcessingHandler
         }
 
         $message = $this->translator->trans($record['message'], $parameters, EMSCoreBundle::TRANS_DOMAIN);
-        $this->flashBag->add(\strtolower($record['level_name']), $message);
+
+        /** @var Session $session */
+        $session = $currentRequest->getSession();
+        $session->getFlashBag()->add(\strtolower($record['level_name']), $message);
     }
 }

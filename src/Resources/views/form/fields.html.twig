@@ -1385,7 +1385,7 @@
         {{- form_widget(form.options, {'seed': form.vars.id, 'editSubfields': false} ) -}}
     {% endif %}
 
-	{% if form.vars.data.children is defined and form.vars.data.children|filter(child => not child.deleted)|length > 0 %}
+	{% if form.rendered == false and form.vars.data.children is defined and form.vars.data.children|filter(child => not child.deleted)|length > 0 %}
 		<ul class="list-group" id="{{ form.vars.id }}_list_container">
 			{{- form_widget(form) -}}
 		</ul>

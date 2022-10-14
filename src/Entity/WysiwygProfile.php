@@ -125,7 +125,7 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
         return $this->orderKey;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');

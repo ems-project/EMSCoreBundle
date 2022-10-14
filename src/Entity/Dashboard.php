@@ -231,7 +231,7 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
         $this->quickSearch = $quickSearch;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');

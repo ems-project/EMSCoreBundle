@@ -170,7 +170,7 @@ class Job extends JsonDeserializer implements \JsonSerializable, \EMS\CommonBund
         return $this->command;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');

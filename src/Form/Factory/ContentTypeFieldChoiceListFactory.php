@@ -20,7 +20,7 @@ class ContentTypeFieldChoiceListFactory extends DefaultChoiceListFactory
         return new ContentTypeFieldChoiceLoader($mapping, $types, $firstLevelOnly);
     }
 
-    public function createListFromLoader(ChoiceLoaderInterface $loader, callable $value = null): ChoiceListInterface
+    public function createListFromLoader(ChoiceLoaderInterface $loader, callable $value = null, callable $filter = null): ChoiceListInterface
     {
         return $loader->loadChoiceList($value);
     }

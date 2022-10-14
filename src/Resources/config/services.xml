@@ -150,7 +150,7 @@
         </service>
 
         <service id="ems_core.core_ui.flash_message_logger" class="EMS\CoreBundle\Core\UI\FlashMessageLogger">
-            <argument type="service" id="session.flash_bag" />
+            <argument type="service" id="request_stack" />
             <argument type="service" id="translator" />
         </service>
 

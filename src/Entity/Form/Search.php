@@ -327,7 +327,9 @@ class Search implements JsonSerializable
             $queryString .= '*';
         }
 
-        foreach ($this->getFilters() as $filter) {
+        $filters = $this->getFilters()->isEmpty() ? [$this->getFirstFilter()] : $this->getFilters();
+
+        foreach ($filters as $filter) {
             if (empty($filter->getPattern())) {
                 if (\in_array($filter->getOperator(), ['query_and', 'query_or'])) {
                     $filter->setPattern($queryString);

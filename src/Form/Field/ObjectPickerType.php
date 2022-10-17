@@ -28,7 +28,7 @@ class ObjectPickerType extends Select2Type
             'sortable' => false,
             'with_warning' => true,
             'choice_loader' => function (Options $options) {
-                $loadAll = $options['dynamicLoading'];
+                $loadAll = !$options['dynamicLoading'];
                 $circleOnly = $options['circle-only'];
                 $withWarning = $options['with_warning'];
                 $querySearch = $options['querySearch'];

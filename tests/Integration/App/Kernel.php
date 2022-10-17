@@ -8,6 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use EMS\ClientHelperBundle\EMSClientHelperBundle;
 use EMS\CommonBundle\EMSCommonBundle;
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\TableBundle\EMSTableBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
@@ -42,6 +43,7 @@ final class Kernel extends BaseKernel
             new DoctrineBundle(),
             new EMSCommonBundle(),
             new EMSClientHelperBundle(),
+            new EMSTableBundle(),
             new EMSCoreBundle(),
         ];
     }

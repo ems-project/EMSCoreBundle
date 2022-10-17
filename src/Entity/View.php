@@ -189,7 +189,7 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
         return $this->role;
     }
 
-    public function setRole(string $role): void
+    public function setRole(?string $role): void
     {
         $this->role = $role;
     }

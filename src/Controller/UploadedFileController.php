@@ -40,8 +40,7 @@ class UploadedFileController extends AbstractController
         LoggerInterface $logger,
         FileService $fileService,
         DataTableFactoryInterface $dataTableFactory
-    )
-    {
+    ) {
         $this->logger = $logger;
         $this->fileService = $fileService;
         $this->dataTableFactory = $dataTableFactory;
@@ -74,7 +73,7 @@ class UploadedFileController extends AbstractController
     public function index(Request $request): Response
     {
         $dataTable = $this->dataTableFactory->create(UploadedFilesDataTableType::class, [
-            'test' => 'test'
+            'test' => 'test',
         ]);
 
         $table = $this->initFileTable();

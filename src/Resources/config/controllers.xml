@@ -514,6 +514,7 @@
         <service id="EMS\CoreBundle\Controller\UploadedFileController" public="true">
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.file" />
+            <argument type="service" id="EMS\TableBundle\DataTable\Factory\DataTableFactoryInterface" />
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>

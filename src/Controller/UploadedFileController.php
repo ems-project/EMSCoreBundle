@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Controller;
 
+use EMS\CoreBundle\DataTable\UploadedFilesDataTableType;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\BytesTableColumn;
@@ -14,6 +15,7 @@ use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\FileService;
+use EMS\TableBundle\DataTable\Factory\DataTableFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
@@ -32,11 +34,17 @@ class UploadedFileController extends AbstractController
 
     private LoggerInterface $logger;
     private FileService $fileService;
+    private DataTableFactoryInterface $dataTableFactory;
 
-    public function __construct(LoggerInterface $logger, FileService $fileService)
+    public function __construct(
+        LoggerInterface $logger,
+        FileService $fileService,
+        DataTableFactoryInterface $dataTableFactory
+    )
     {
         $this->logger = $logger;
         $this->fileService = $fileService;
+        $this->dataTableFactory = $dataTableFactory;
     }
 
     public function ajaxDataTable(Request $request): Response
@@ -65,6 +73,10 @@ class UploadedFileController extends AbstractController
 
     public function index(Request $request): Response
     {
+        $dataTable = $this->dataTableFactory->create(UploadedFilesDataTableType::class, [
+            'test' => 'test'
+        ]);
+
         $table = $this->initFileTable();
 
         $form = $this->createForm(TableType::class, $table);
@@ -91,6 +103,7 @@ class UploadedFileController extends AbstractController
 
         return $this->render('@EMSCore/uploaded-file/index.html.twig', [
             'form' => $form->createView(),
+            'dataTable' => $dataTable,
         ]);
     }
 

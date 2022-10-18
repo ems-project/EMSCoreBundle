@@ -245,6 +245,10 @@ class ContentTypeType extends AbstractType
         $builder->add('rootContentType');
         $builder->add('viewRole', RolePickerType::class);
 
+        $builder->add('searchLinkDisplayRole', RolePickerType::class, [
+            'label' => 'Display the search link in main navigation',
+        ]);
+
         if ($environment->getManaged()) {
             $builder->add('defaultValue', CodeEditorType::class, [
                 'required' => false,
@@ -260,9 +264,6 @@ class ContentTypeType extends AbstractType
             $builder->add('trashRole', RolePickerType::class);
             $builder->add('ownerRole', RolePickerType::class);
 
-            $builder->add('searchLinkDisplayRole', RolePickerType::class, [
-                'label' => 'Display the search link in main navigation',
-            ]);
             $builder->add('createLinkDisplayRole', RolePickerType::class, [
                 'label' => 'Display the creation link in main navigation',
             ]);

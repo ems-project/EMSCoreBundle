@@ -430,6 +430,11 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return Type::integer($this->id);
     }
 
+    public function getUserIdentifier(): string
+    {
+        return $this->username ?? '';
+    }
+
     public function getUsername(): string
     {
         return $this->username ?? '';

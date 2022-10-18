@@ -8,6 +8,7 @@
 ( function() {
 	CKEDITOR.dialog.add( 'link', function( editor ) {
 		var plugin = CKEDITOR.plugins.link;
+		let emsConfig = editor.config.hasOwnProperty('ems') ? editor.config.ems : {};
 
 		// Handles the event when the "Target" selection box is changed.
 		var targetChanged = function() {
@@ -107,6 +108,21 @@
 			linkLang = editor.lang.adv_link, // added by @simo - http://blog.xoundboy.com/?p=393
 			anchors;
 
+
+		let urlTypes =  emsConfig.urlTypes !== undefined ? emsConfig.urlTypes : ['url', 'anchor', 'localPage', 'fileLink', 'email'];
+
+		let items = [];
+		if (urlTypes.includes('url')) items.push([ linkLang.toUrl, 'url' ]);
+		if (urlTypes.includes('anchor')) items.push([ linkLang.toAnchor, 'anchor' ]);
+		if (urlTypes.includes('localPage')) items.push([ linkLang.localPages, 'localPage' ]);
+		if (urlTypes.includes('fileLink')) items.push([ linkLang.file, 'fileLink' ]);
+		if (urlTypes.includes('email')) items.push([ linkLang.toEmail, 'email' ]);
+
+		let localContentTypes = ems_wysiwyg_type_filters;
+		if (emsConfig.urlAllContentTypes !== undefined && !emsConfig.urlAllContentTypes) {
+			localContentTypes.shift(); //remove "All contentTypes selection"
+		}
+
 		var advLinkConfig = {
 			title: linkLang.title,
 			minWidth: 350,
@@ -120,13 +136,7 @@
 					type: 'select',
 					label: linkLang.type,
 					'default': 'url',
-					items: [
-						[ linkLang.toUrl, 'url' ],
-						[ linkLang.toAnchor, 'anchor' ],
-						[ linkLang.localPages, 'localPage'],// added by @simo - http://blog.xoundboy.com/?p=393
-						[ linkLang.file, 'fileLink'],
-						[ linkLang.toEmail, 'email' ]
-					],
+					items: items,
 					onChange: linkTypeChanged,
 					setup: function( data ) {
 						this.setValue( data.type || 'url' );
@@ -145,8 +155,8 @@
 						id : 'contentTypeFilter',
 						className : 'adv_link_type_filter',
 						title : linkLang.selectContentTypeTitle,
-						'default': ems_wysiwyg_type_filters[0][1],
-						items : ems_wysiwyg_type_filters,
+						'default': localContentTypes[0][1],
+						items : localContentTypes,
 					    setup: function( data ) {
 					    	if(data.type == 'localPage' &&  data.filter){
 					    		this.setValue( data.filter );

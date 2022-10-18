@@ -119,7 +119,7 @@
 		if (urlTypes.includes('email')) items.push([ linkLang.toEmail, 'email' ]);
 
 		let localContentTypes = ems_wysiwyg_type_filters;
-		if (emsConfig.urlAllContentTypes !== undefined) {
+		if (emsConfig.urlAllContentTypes !== undefined && !emsConfig.urlAllContentTypes) {
 			localContentTypes.shift(); //remove "All contentTypes selection"
 		}
 

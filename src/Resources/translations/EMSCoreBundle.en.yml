@@ -509,6 +509,7 @@ task.dashboard.column.version: Version
 task.dashboard.column.actions: Actions
 task.dashboard.column.assignee: Assignee
 task.dashboard.column.deadline: Deadline
+task.dashboard.column.modified: Last modification
 task.dashboard.column.label: Document
 task.dashboard.column.owner: Owner
 task.dashboard.column.status: Status

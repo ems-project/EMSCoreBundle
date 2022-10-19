@@ -22,6 +22,7 @@ final class TaskTableService implements EntityServiceInterface
     private const COL_ASSIGNEE = 'assignee';
     private const COL_STATUS = 'status';
     private const COL_DEADLINE = 'deadline';
+    private const COL_MODIFIED = 'modified';
     private const COL_ACTIONS = 'actions';
 
     private const TEMPLATE = '@EMSCore/revision/task/columns.twig';
@@ -34,6 +35,7 @@ final class TaskTableService implements EntityServiceInterface
         self::COL_ASSIGNEE => ['type' => 'block', 'column' => 'taskAssignee', 'mapping' => 't.assignee'],
         self::COL_STATUS => ['type' => 'block', 'column' => 'taskStatus', 'mapping' => 't.status'],
         self::COL_DEADLINE => ['type' => 'block', 'column' => 'taskDeadline', 'mapping' => 't.deadline'],
+        self::COL_MODIFIED => ['type' => 'block', 'column' => 'taskModified', 'mapping' => 't.modified'],
         self::COL_ACTIONS => ['type' => 'block'],
     ];
 
@@ -64,6 +66,8 @@ final class TaskTableService implements EntityServiceInterface
                 $table->addColumn($options['label'], $name);
             }
         }
+
+        $table->setDefaultOrder(self::COL_MODIFIED, 'DESC');
     }
 
     public function buildTableExport(EntityTable $table, TaskTableContext $context): void
@@ -78,6 +82,8 @@ final class TaskTableService implements EntityServiceInterface
                 $table->addColumn($options['label'], $options['column']);
             }
         }
+
+        $table->setDefaultOrder(self::COL_MODIFIED, 'DESC');
     }
 
     public function isSortable(): bool

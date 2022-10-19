@@ -741,11 +741,13 @@ export default class EmsListeners {
 
     addDisabledButtonTreatListeners() {
         let treat = document.querySelector('form[name="treat_notifications"] #treat_notifications_publishTo');
-        treat.addEventListener('change', function () {
-            let form = treat.closest('form');
-            let isDisabledAccept = this.value.length == 0 ? true : false;
-            form.elements.treat_notifications_accept.disabled = isDisabledAccept;
-            form.elements.treat_notifications_reject.disabled = !isDisabledAccept;
-        });
+        if (treat) {
+            treat.addEventListener('change', function () {
+                let form = treat.closest('form');
+                let isDisabledAccept = this.value.length == 0 ? true : false;
+                form.elements.treat_notifications_accept.disabled = isDisabledAccept;
+                form.elements.treat_notifications_reject.disabled = !isDisabledAccept;
+            });
+        }
     }
 }

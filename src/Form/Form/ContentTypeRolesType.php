@@ -23,6 +23,7 @@ class ContentTypeRolesType extends AbstractType
         if ($options['managed']) {
             $builder
                 ->add(ContentTypeRoles::DELETE, RolePickerType::class)
+                ->add(ContentTypeRoles::TRASH, RolePickerType::class)
                 ->add(ContentTypeRoles::SHOW_LINK_CREATE, RolePickerType::class)
                 ->add(ContentTypeRoles::ARCHIVE, RolePickerType::class)
             ;

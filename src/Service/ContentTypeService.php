@@ -553,7 +553,7 @@ class ContentTypeService implements EntityServiceInterface
                     '%name%' => $contentType->getSingularName(),
                 ]);
             }
-            if ($this->authorizationChecker->isGranted($contentType->getTrashRole())) {
+            if ($this->authorizationChecker->isGranted($roles[ContentTypeRoles::TRASH])) {
                 $trashLink = $menuEntry->addChild('sidebar_menu.content_type.trash', 'fa fa-trash', Routes::DATA_TRASH, ['contentType' => $contentType->getId()]);
                 $trashLink->setTranslation([]);
             }

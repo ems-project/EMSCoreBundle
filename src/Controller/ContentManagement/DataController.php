@@ -204,6 +204,10 @@ class DataController extends AbstractController
 
     public function trashAction(ContentType $contentType): Response
     {
+        if (!$this->isGranted($contentType->getRoles()[ContentTypeRoles::TRASH])) {
+            throw $this->createAccessDeniedException('Trash not granted!');
+        }
+
         return $this->render('@EMSCore/data/trash.html.twig', [
             'contentType' => $contentType,
             'revisions' => $this->dataService->getAllDeleted($contentType),

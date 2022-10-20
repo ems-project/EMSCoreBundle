@@ -15,7 +15,8 @@ trait ScriptContentTypeRoles
                 'roles' => Json::encode([
                     'archive' => $row['archive_role'] ?? 'not-defined',
                     'view' => $row['view_role'] ?? 'not-defined',
-                    'delete' => $row['delete_role'] ?? null,
+                    'delete' => $row['delete_role'] ?? 'not-defined',
+                    'trash' => $row['trash_role'] ?? 'not-defined',
                     'show_link_create' => $row['createLinkDisplayRole'] ?? 'ROLE_USER',
                     'show_link_search' => $row['searchLinkDisplayRole'] ?? 'ROLE_USER',
                 ]),
@@ -26,6 +27,7 @@ trait ScriptContentTypeRoles
         $migration->addSql('ALTER TABLE content_type DROP archive_role');
         $migration->addSql('ALTER TABLE content_type DROP view_role');
         $migration->addSql('ALTER TABLE content_type DROP delete_role');
+        $migration->addSql('ALTER TABLE content_type DROP trash_role');
         $migration->addSql('ALTER TABLE content_type DROP createLinkDisplayRole');
         $migration->addSql('ALTER TABLE content_type DROP searchLinkDisplayRole');
     }
@@ -35,6 +37,7 @@ trait ScriptContentTypeRoles
         $migration->addSql('ALTER TABLE content_type ADD archive_role VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD view_role VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD delete_role VARCHAR(100) DEFAULT NULL');
+        $migration->addSql('ALTER TABLE content_type ADD trash_role VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD createLinkDisplayRole VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD searchLinkDisplayRole VARCHAR(100) DEFAULT NULL');
 
@@ -42,6 +45,7 @@ trait ScriptContentTypeRoles
             UPDATE content_type SET 
                 view_role = :view_role,
                 delete_role = :delete_role,
+                trash_role = :trash_role,
                 createLinkDisplayRole = :show_link_create,
                 searchLinkDisplayRole = :show_link_search
             WHERE id = :id
@@ -55,6 +59,7 @@ QUERY;
                 'archive_role' => $roles['archive'] ?? 'not-defined',
                 'view_role' => $roles['view'] ?? 'not-defined',
                 'delete_role' => $roles['delete'] ?? 'not-defined',
+                'trash_role' => $roles['trash'] ?? 'not-defined',
                 'show_link_create' => $roles['show_link_create'] ?? 'ROLE_USER',
                 'show_link_search' => $roles['show_link_search'] ?? 'ROLE_USER',
                 'id' => $row['id'],

@@ -279,13 +279,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $publishRole;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="trash_role", type="string", length=100, nullable=true)
-     */
-    protected $trashRole;
-
-    /**
      * @ORM\Column(name="owner_role", type="string", length=100, nullable=true)
      */
     protected ?string $ownerRole = null;
@@ -1524,30 +1517,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getPublishRole()
     {
         return $this->publishRole;
-    }
-
-    /**
-     * Set trashRole.
-     *
-     * @param string $trashRole
-     *
-     * @return ContentType
-     */
-    public function setTrashRole($trashRole)
-    {
-        $this->trashRole = $trashRole;
-
-        return $this;
-    }
-
-    /**
-     * Get trashRole.
-     *
-     * @return string
-     */
-    public function getTrashRole()
-    {
-        return $this->trashRole;
     }
 
     /**

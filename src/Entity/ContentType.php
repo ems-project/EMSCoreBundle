@@ -272,11 +272,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $publishRole;
 
     /**
-     * @ORM\Column(name="owner_role", type="string", length=100, nullable=true)
-     */
-    protected ?string $ownerRole = null;
-
-    /**
      * @ORM\Column(name="orderKey", type="integer")
      */
     protected int $orderKey = 0;
@@ -1707,32 +1702,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         }
 
         return [];
-    }
-
-    public function hasOwnerRole(): bool
-    {
-        return null !== $this->ownerRole;
-    }
-
-    public function giveOwnerRole(): string
-    {
-        $ownerRole = $this->ownerRole;
-
-        if (null === $ownerRole) {
-            throw new \RuntimeException('No owner role specified');
-        }
-
-        return $ownerRole;
-    }
-
-    public function getOwnerRole(): ?string
-    {
-        return $this->ownerRole;
-    }
-
-    public function setOwnerRole(?string $ownerRole): void
-    {
-        $this->ownerRole = $ownerRole;
     }
 
     public function getRoles(): ContentTypeRoles

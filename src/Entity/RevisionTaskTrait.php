@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
+use EMS\CoreBundle\Roles;
 
 trait RevisionTaskTrait
 {
@@ -191,7 +193,7 @@ trait RevisionTaskTrait
 
     public function isTaskEnabled(): bool
     {
-        return $this->giveContentType()->hasOwnerRole();
+        return Roles::NOT_DEFINED !== $this->giveContentType()->getRoles()[ContentTypeRoles::OWNER];
     }
 
     public function setOwner(string $owner): void

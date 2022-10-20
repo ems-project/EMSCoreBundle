@@ -18,6 +18,7 @@ trait ScriptContentTypeRoles
                     'delete' => $row['delete_role'] ?? 'not-defined',
                     'trash' => $row['trash_role'] ?? 'not-defined',
                     'archive' => $row['archive_role'] ?? 'not-defined',
+                    'owner' => $row['owner_role'] ?? 'not-defined',
                     'show_link_create' => $row['createLinkDisplayRole'] ?? 'ROLE_USER',
                     'show_link_search' => $row['searchLinkDisplayRole'] ?? 'ROLE_USER',
                 ]),
@@ -25,22 +26,24 @@ trait ScriptContentTypeRoles
             ]);
         }
 
-        $migration->addSql('ALTER TABLE content_type DROP archive_role');
         $migration->addSql('ALTER TABLE content_type DROP view_role');
         $migration->addSql('ALTER TABLE content_type DROP create_role');
         $migration->addSql('ALTER TABLE content_type DROP delete_role');
         $migration->addSql('ALTER TABLE content_type DROP trash_role');
+        $migration->addSql('ALTER TABLE content_type DROP archive_role');
+        $migration->addSql('ALTER TABLE content_type DROP owner_role');
         $migration->addSql('ALTER TABLE content_type DROP createLinkDisplayRole');
         $migration->addSql('ALTER TABLE content_type DROP searchLinkDisplayRole');
     }
 
     public function scriptDecodeRoles(AbstractMigration $migration): void
     {
-        $migration->addSql('ALTER TABLE content_type ADD archive_role VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD view_role VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD create_role VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD delete_role VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD trash_role VARCHAR(100) DEFAULT NULL');
+        $migration->addSql('ALTER TABLE content_type ADD archive_role VARCHAR(100) DEFAULT NULL');
+        $migration->addSql('ALTER TABLE content_type ADD owner_role VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD createLinkDisplayRole VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD searchLinkDisplayRole VARCHAR(100) DEFAULT NULL');
 
@@ -51,6 +54,7 @@ trait ScriptContentTypeRoles
                 delete_role = :delete_role,
                 trash_role = :trash_role,
                 archive_role = :archive_role,
+                owner_role = :owner_role,
                 createLinkDisplayRole = :show_link_create,
                 searchLinkDisplayRole = :show_link_search
             WHERE id = :id
@@ -66,6 +70,7 @@ QUERY;
                 'delete_role' => $roles['delete'] ?? 'not-defined',
                 'trash_role' => $roles['trash'] ?? 'not-defined',
                 'archive_role' => $roles['archive'] ?? 'not-defined',
+                'owner_role' => $roles['owner'] ?? 'not-defined',
                 'show_link_create' => $roles['show_link_create'] ?? 'ROLE_USER',
                 'show_link_search' => $roles['show_link_search'] ?? 'ROLE_USER',
                 'id' => $row['id'],

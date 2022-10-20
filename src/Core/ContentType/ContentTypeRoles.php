@@ -19,6 +19,7 @@ class ContentTypeRoles implements \ArrayAccess
     public const DELETE = 'delete';
     public const TRASH = 'trash';
     public const ARCHIVE = 'archive';
+    public const OWNER = 'owner';
     public const SHOW_LINK_CREATE = 'show_link_create';
     public const SHOW_LINK_SEARCH = 'show_link_search';
 
@@ -28,6 +29,7 @@ class ContentTypeRoles implements \ArrayAccess
         self::DELETE,
         self::TRASH,
         self::ARCHIVE,
+        self::OWNER,
         self::SHOW_LINK_CREATE,
         self::SHOW_LINK_SEARCH,
     ];

@@ -14,6 +14,7 @@ use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\StorageManager;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
@@ -1076,8 +1077,8 @@ class DataService
         $revision->setLockBy($username);
         $revision->setLockUntil(new \DateTime($this->lockTime));
 
-        $ownerRole = $contentType->getOwnerRole();
-        if (null !== $currentUser && null !== $ownerRole && $this->userService->isGrantedRole($ownerRole)) {
+        if (null !== $currentUser
+            && $this->userService->isGrantedRole((string) $contentType->getRoles()[ContentTypeRoles::OWNER])) {
             $revision->setOwner($currentUser->getUsername());
         }
 

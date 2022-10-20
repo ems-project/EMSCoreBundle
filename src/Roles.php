@@ -6,6 +6,8 @@ namespace EMS\CoreBundle;
 
 class Roles
 {
+    public const NOT_DEFINED = 'not-defined';
+
     public const ROLE_API = 'ROLE_API';
     public const ROLE_USER = 'ROLE_USER';
     public const ROLE_AUTHOR = 'ROLE_AUTHOR';

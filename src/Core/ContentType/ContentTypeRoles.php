@@ -14,12 +14,14 @@ class ContentTypeRoles implements \ArrayAccess
     /** @var array<string, string> */
     private array $roles = [];
 
+    public const ARCHIVE = 'archive';
     public const VIEW = 'view';
     public const DELETE = 'delete';
     public const SHOW_LINK_CREATE = 'show_link_create';
     public const SHOW_LINK_SEARCH = 'show_link_search';
 
     private const TYPES = [
+        self::ARCHIVE,
         self::VIEW,
         self::DELETE,
         self::SHOW_LINK_CREATE,

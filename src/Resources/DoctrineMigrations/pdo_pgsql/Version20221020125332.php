@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Platforms\MySQLPlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 use EMS\Helpers\Standard\Json;
@@ -14,8 +14,8 @@ final class Version20221020125332 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->abortIf(
-            !$this->connection->getDatabasePlatform() instanceof MySQLPlatform,
-            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+            !$this->connection->getDatabasePlatform() instanceof PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
         );
 
         $this->addSql('ALTER TABLE content_type ADD roles JSON DEFAULT NULL');
@@ -24,6 +24,7 @@ final class Version20221020125332 extends AbstractMigration
         while ($row = $result->fetchAssociative()) {
             $this->addSql('UPDATE content_type SET roles = :roles WHERE id = :id', [
                 'roles' => Json::encode([
+                    'archive' => $row['archive_role'] ?? 'not-defined',
                     'view' => $row['view_role'] ?? 'not-defined',
                     'delete' => $row['delete_role'] ?? 'not-defined',
                     'show_link_create' => $row['createLinkDisplayRole'] ?? 'ROLE_USER',
@@ -33,6 +34,7 @@ final class Version20221020125332 extends AbstractMigration
             ]);
         }
 
+        $this->addSql('ALTER TABLE content_type DROP archive_role');
         $this->addSql('ALTER TABLE content_type DROP view_role');
         $this->addSql('ALTER TABLE content_type DROP delete_role');
         $this->addSql('ALTER TABLE content_type DROP createLinkDisplayRole');
@@ -42,10 +44,11 @@ final class Version20221020125332 extends AbstractMigration
     public function down(Schema $schema): void
     {
         $this->abortIf(
-            !$this->connection->getDatabasePlatform() instanceof MySQLPlatform,
-            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
+            !$this->connection->getDatabasePlatform() instanceof PostgreSQLPlatform,
+            "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
         );
 
+        $this->addSql('ALTER TABLE content_type ADD archive_role VARCHAR(100) DEFAULT NULL');
         $this->addSql('ALTER TABLE content_type ADD view_role VARCHAR(100) DEFAULT NULL');
         $this->addSql('ALTER TABLE content_type ADD delete_role VARCHAR(100) DEFAULT NULL');
         $this->addSql('ALTER TABLE content_type ADD createLinkDisplayRole VARCHAR(100) DEFAULT NULL');
@@ -53,6 +56,7 @@ final class Version20221020125332 extends AbstractMigration
 
         $updateQuery = <<<QUERY
             UPDATE content_type SET 
+                archive_role = :archive_role,
                 view_role = :view_role,
                 delete_role = :delete_role,
                 createLinkDisplayRole = :show_link_create,
@@ -65,6 +69,7 @@ QUERY;
             $roles = Json::decode($row['roles']);
 
             $this->addSql($updateQuery, [
+                'archive_role' => $roles['archive'] ?? 'not-defined',
                 'view_role' => $roles['view'] ?? 'not-defined',
                 'delete_role' => $roles['delete'] ?? 'not-defined',
                 'show_link_create' => $roles['show_link_create'] ?? 'ROLE_USER',

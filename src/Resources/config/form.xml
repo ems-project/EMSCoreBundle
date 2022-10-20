@@ -377,6 +377,7 @@
         </service>
         <service id="ems.form.form.revisiontype" class="EMS\CoreBundle\Form\Form\RevisionType">
             <argument type="service" id="form.registry" />
+            <argument type="service" id="emsco.manager.user" />
             <tag name="form.type"/>
         </service>
         <service id="ems.form.revision_json_menu_nested" class="EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType">

@@ -9,6 +9,7 @@ use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
+use EMS\CoreBundle\Form\Form\UserOptionsType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -50,6 +51,7 @@ class UserProfileType extends AbstractType
             ->add('layoutBoxed', null, ['label' => 'user.layout_boxed'])
             ->add('sidebarMini', null, ['label' => 'user.sidebar_mini'])
             ->add('sidebarCollapse', null, ['label' => 'user.sidebar_collapse'])
+            ->add('userOptions', UserOptionsType::class, ['label' => 'user.option.title'])
             ->add('locale', ChoiceType::class, [
                 'label' => 'user.locale',
                 'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
@@ -63,8 +65,7 @@ class UserProfileType extends AbstractType
                 'required' => false,
                 'choices' => \array_flip(Locales::getNames()),
                 'choice_translation_domain' => false,
-            ])
-            ->remove('username');
+            ]);
 
         $builder
             ->add('wysiwygProfile', EntityType::class, [

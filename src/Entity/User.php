@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Core\User\UserOptions;
 use EMS\CoreBundle\Roles;
 use EMS\Helpers\Standard\DateTime;
 use EMS\Helpers\Standard\Type;
@@ -148,6 +149,13 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      * @ORM\Column(name="roles", type="array")
      */
     private array $roles;
+
+    /**
+     * @var ?array<string, bool>
+     *
+     * @ORM\Column(name="user_options", type="json", nullable=true)
+     */
+    protected ?array $userOptions = [];
 
     private const DEFAULT_LOCALE = 'en';
 
@@ -592,5 +600,15 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         }
 
         return $this;
+    }
+
+    public function getUserOptions(): UserOptions
+    {
+        return new UserOptions($this->userOptions ?? []);
+    }
+
+    public function setUserOptions(UserOptions $userOptions): void
+    {
+        $this->userOptions = $userOptions->getOptions();
     }
 }

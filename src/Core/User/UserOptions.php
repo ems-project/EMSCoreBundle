@@ -22,6 +22,11 @@ class UserOptions implements \ArrayAccess
         $this->options[self::SIMPLIFIED_UI] = $data[self::SIMPLIFIED_UI] ?? false;
     }
 
+    public function isEnabled(string $option): bool
+    {
+        return true === $this->options[$option];
+    }
+
     /**
      * @return array<string, bool>
      */

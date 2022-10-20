@@ -8,6 +8,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\Pdf\Pdf;
 use EMS\CommonBundle\Service\Pdf\PdfPrinterInterface;
 use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -377,7 +378,7 @@ class DataController extends AbstractController
     {
         $revision = $this->dataService->getNewestRevision($type, $ouuid);
         $contentType = $revision->giveContentType();
-        $deleteRole = $contentType->getDeleteRole();
+        $deleteRole = $contentType->getRoles()[ContentTypeRoles::DELETE] ?? null;
 
         if ($deleteRole && !$this->isGranted($deleteRole)) {
             throw $this->createAccessDeniedException('Delete not granted!');

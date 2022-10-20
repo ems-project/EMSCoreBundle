@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
@@ -284,11 +285,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $publishRole;
 
     /**
-     * @ORM\Column(name="delete_role", type="string", length=100, nullable=true)
-     */
-    protected ?string $deleteRole = null;
-
-    /**
      * @ORM\Column(name="archive_role", type="string", length=100, nullable=true)
      */
     protected ?string $archiveRole = null;
@@ -425,6 +421,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @ORM\Column(name="version_date_to_field", type="string", length=100, nullable=true)
      */
     protected $versionDateToField;
+
+    /**
+     * @var ?array<string, ?string>
+     *
+     * @ORM\Column(name="roles", type="json", nullable=true)
+     */
+    protected ?array $roles = [];
 
     public function __construct()
     {
@@ -1567,23 +1570,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->publishRole;
     }
 
-    public function hasDeleteRole(): bool
-    {
-        return null !== $this->deleteRole;
-    }
-
-    public function getDeleteRole(): ?string
-    {
-        return $this->deleteRole;
-    }
-
-    public function setDeleteRole(?string $deleteRole): ContentType
-    {
-        $this->deleteRole = $deleteRole;
-
-        return $this;
-    }
-
     public function hasArchiveRole(): bool
     {
         return null !== $this->archiveRole;
@@ -1894,5 +1880,15 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function setOwnerRole(?string $ownerRole): void
     {
         $this->ownerRole = $ownerRole;
+    }
+
+    public function getRoles(): ContentTypeRoles
+    {
+        return new ContentTypeRoles($this->roles ?? []);
+    }
+
+    public function setRoles(ContentTypeRoles $roles): void
+    {
+        $this->roles = $roles->getRoles();
     }
 }

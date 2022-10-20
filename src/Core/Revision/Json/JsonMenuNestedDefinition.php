@@ -149,8 +149,8 @@ final class JsonMenuNestedDefinition
                 continue;
             }
 
-            if (isset($block['html']) && \is_string($block['html'])) {
-                $results[] = $this->twig->createTemplate($block['html'])->render($context);
+            if (isset($block['html'])) {
+                $results[] = $this->twig->createTemplate((string) $block['html'])->render($context);
             }
         }
 

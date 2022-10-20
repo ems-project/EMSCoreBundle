@@ -941,6 +941,10 @@ class DataController extends AbstractController
 
     public function addAction(ContentType $contentType, Request $request): Response
     {
+        if (!$this->isGranted($contentType->getRoles()[ContentTypeRoles::CREATE])) {
+            throw $this->createAccessDeniedException('Create not granted');
+        }
+
         $this->dataService->hasCreateRights($contentType);
 
         $revision = new Revision();

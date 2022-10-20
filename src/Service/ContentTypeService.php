@@ -545,9 +545,8 @@ class ContentTypeService implements EntityServiceInterface
             $this->addMenuViewLinks($contentType, $menuEntry);
             $this->addDraftInProgressLink($contentType, $menuEntry);
 
-            $showCreate = $this->authorizationChecker->isGranted($roles[ContentTypeRoles::SHOW_LINK_CREATE]);
-
-            if ($showCreate && $this->authorizationChecker->isGranted($contentType->getCreateRole())) {
+            if ($this->authorizationChecker->isGranted($roles[ContentTypeRoles::SHOW_LINK_CREATE])
+                && $this->authorizationChecker->isGranted($roles[ContentTypeRoles::CREATE])) {
                 $createLink = $menuEntry->addChild('sidebar_menu.content_type.create', 'fa fa-plus', Routes::DATA_ADD, ['contentType' => $contentType->getId()]);
                 $createLink->setTranslation([
                     '%name%' => $contentType->getSingularName(),

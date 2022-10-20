@@ -204,7 +204,7 @@ class DataController extends AbstractController
 
     public function trashAction(ContentType $contentType): Response
     {
-        if (!$this->isGranted($contentType->getRoles()[ContentTypeRoles::TRASH])) {
+        if (!$this->isGranted($contentType->role(ContentTypeRoles::TRASH))) {
             throw $this->createAccessDeniedException('Trash not granted!');
         }
 
@@ -383,7 +383,7 @@ class DataController extends AbstractController
         $revision = $this->dataService->getNewestRevision($type, $ouuid);
         $contentType = $revision->giveContentType();
 
-        if (!$this->isGranted($contentType->getRoles()[ContentTypeRoles::DELETE])) {
+        if (!$this->isGranted($contentType->role(ContentTypeRoles::DELETE))) {
             throw $this->createAccessDeniedException('Delete not granted!');
         }
 
@@ -941,7 +941,7 @@ class DataController extends AbstractController
 
     public function addAction(ContentType $contentType, Request $request): Response
     {
-        if (!$this->isGranted($contentType->getRoles()[ContentTypeRoles::CREATE])) {
+        if (!$this->isGranted($contentType->role(ContentTypeRoles::CREATE))) {
             throw $this->createAccessDeniedException('Create not granted');
         }
 

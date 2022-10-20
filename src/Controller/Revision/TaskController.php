@@ -259,7 +259,7 @@ final class TaskController extends AbstractController
         ]);
         $form->add('new_owner', SelectUserPropertyType::class, [
             'constraints' => [new NotBlank()],
-            'user_roles' => [$contentType->getRoles()[ContentTypeRoles::OWNER]],
+            'user_roles' => [$contentType->role(ContentTypeRoles::OWNER)],
             'exclude_values' => $revision->hasOwner() ? [$revision->getOwner()] : [],
             'placeholder' => '',
             'label' => 'task.change_owner.change',

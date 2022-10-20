@@ -193,7 +193,7 @@ trait RevisionTaskTrait
 
     public function isTaskEnabled(): bool
     {
-        return Roles::NOT_DEFINED !== $this->giveContentType()->getRoles()[ContentTypeRoles::OWNER];
+        return Roles::NOT_DEFINED !== $this->giveContentType()->role(ContentTypeRoles::OWNER);
     }
 
     public function setOwner(string $owner): void

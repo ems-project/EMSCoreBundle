@@ -10,6 +10,7 @@ use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
+use EMS\CoreBundle\Roles;
 use EMS\Helpers\Standard\DateTime;
 
 /**
@@ -1702,6 +1703,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         }
 
         return [];
+    }
+
+    public function role(string $role): string
+    {
+        return $this->getRoles()[$role] ?? Roles::NOT_DEFINED;
     }
 
     public function getRoles(): ContentTypeRoles

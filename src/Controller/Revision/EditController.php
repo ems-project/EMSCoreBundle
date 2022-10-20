@@ -318,7 +318,7 @@ class EditController extends AbstractController
     {
         $contentType = $revision->giveContentType();
 
-        if (!$this->isGranted($contentType->getRoles()[ContentTypeRoles::ARCHIVE])) {
+        if (!$this->isGranted($contentType->role(ContentTypeRoles::ARCHIVE))) {
             throw $this->createAccessDeniedException('Archive not granted!');
         }
         if ($revision->hasEndTime()) {

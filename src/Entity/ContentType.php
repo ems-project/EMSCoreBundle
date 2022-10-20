@@ -381,20 +381,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected ?string $localeField = null;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="searchLinkDisplayRole", type="string", options={"default" : "ROLE_USER"})
-     */
-    protected $searchLinkDisplayRole = 'ROLE_USER';
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="createLinkDisplayRole", type="string", options={"default" : "ROLE_USER"})
-     */
-    protected $createLinkDisplayRole = 'ROLE_USER';
-
-    /**
      * @var ?string[]
      *
      * @ORM\Column(name="version_tags", type="json", nullable=true)
@@ -423,11 +409,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $versionDateToField;
 
     /**
-     * @var ?array<string, ?string>
+     * @var array<string, string>
      *
      * @ORM\Column(name="roles", type="json", nullable=true)
      */
-    protected ?array $roles = [];
+    protected array $roles = [];
 
     public function __construct()
     {
@@ -1764,30 +1750,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getLocaleField(): ?string
     {
         return $this->localeField;
-    }
-
-    public function setSearchLinkDisplayRole(string $searchLinkDisplayRole): ContentType
-    {
-        $this->searchLinkDisplayRole = $searchLinkDisplayRole;
-
-        return $this;
-    }
-
-    public function getSearchLinkDisplayRole(): string
-    {
-        return $this->searchLinkDisplayRole;
-    }
-
-    public function setCreateLinkDisplayRole(string $createLinkDisplayRole): ContentType
-    {
-        $this->createLinkDisplayRole = $createLinkDisplayRole;
-
-        return $this;
-    }
-
-    public function getCreateLinkDisplayRole(): string
-    {
-        return $this->createLinkDisplayRole;
     }
 
     public function hasVersionTags(): bool

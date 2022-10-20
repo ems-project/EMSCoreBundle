@@ -378,9 +378,8 @@ class DataController extends AbstractController
     {
         $revision = $this->dataService->getNewestRevision($type, $ouuid);
         $contentType = $revision->giveContentType();
-        $deleteRole = $contentType->getRoles()[ContentTypeRoles::DELETE] ?? null;
 
-        if ($deleteRole && !$this->isGranted($deleteRole)) {
+        if (!$this->isGranted($contentType->getRoles()[ContentTypeRoles::DELETE])) {
             throw $this->createAccessDeniedException('Delete not granted!');
         }
 

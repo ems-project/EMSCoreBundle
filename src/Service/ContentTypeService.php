@@ -531,8 +531,10 @@ class ContentTypeService implements EntityServiceInterface
 
         foreach ($this->orderedContentTypes as $contentType) {
             $roles = $contentType->getRoles();
-            $role = $contentType->getViewRole();
-            if ($contentType->getDeleted() || !$contentType->getActive() || (null !== $role && !$this->authorizationChecker->isGranted($role)) && !$contentType->getRootContentType()) {
+
+            if ($contentType->getDeleted()
+                || !$contentType->getActive()
+                || (!$this->authorizationChecker->isGranted($roles[ContentTypeRoles::VIEW])) && !$contentType->getRootContentType()) {
                 continue;
             }
             $menuEntry = new MenuEntry($contentType->getPluralName(), $contentType->getIcon() ?? 'fa fa-book', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()], $contentType->getColor());

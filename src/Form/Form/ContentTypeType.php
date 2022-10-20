@@ -243,7 +243,6 @@ class ContentTypeType extends AbstractType
         ]);
 
         $builder->add('rootContentType');
-        $builder->add('viewRole', RolePickerType::class);
 
         $builder->add('roles', ContentTypeRolesType::class, [
             'managed' => $environment->getManaged(),

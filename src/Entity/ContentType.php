@@ -272,12 +272,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $editRole;
 
     /**
-     * @ORM\Column(name="view_role", type="string", length=100, nullable=true)
-     * @ORM\OrderBy({"orderKey" = "ASC"})
-     */
-    protected ?string $viewRole;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="publish_role", type="string", length=100, nullable=true)
@@ -1511,25 +1505,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getRefererFieldName()
     {
         return $this->refererFieldName;
-    }
-
-    /**
-     * Set viewRole.
-     *
-     * @param string $viewRole
-     *
-     * @return ContentType
-     */
-    public function setViewRole($viewRole)
-    {
-        $this->viewRole = $viewRole;
-
-        return $this;
-    }
-
-    public function getViewRole(): ?string
-    {
-        return $this->viewRole;
     }
 
     /**

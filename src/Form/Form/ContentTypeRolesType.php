@@ -18,6 +18,8 @@ class ContentTypeRolesType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $builder->add(ContentTypeRoles::VIEW, RolePickerType::class);
+
         if ($options['managed']) {
             $builder
                 ->add(ContentTypeRoles::DELETE, RolePickerType::class)

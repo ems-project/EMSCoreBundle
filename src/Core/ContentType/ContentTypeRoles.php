@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\ContentType;
 
+use EMS\CoreBundle\Roles;
+
 /**
  * @implements \ArrayAccess<string, string>
  */
@@ -12,11 +14,13 @@ class ContentTypeRoles implements \ArrayAccess
     /** @var array<string, string> */
     private array $roles = [];
 
+    public const VIEW = 'view';
     public const DELETE = 'delete';
     public const SHOW_LINK_CREATE = 'show_link_create';
     public const SHOW_LINK_SEARCH = 'show_link_search';
 
     private const TYPES = [
+        self::VIEW,
         self::DELETE,
         self::SHOW_LINK_CREATE,
         self::SHOW_LINK_SEARCH,
@@ -28,12 +32,20 @@ class ContentTypeRoles implements \ArrayAccess
     public function __construct(array $data)
     {
         foreach (self::TYPES as $type) {
-            $default = 'not-defined';
-            if (\in_array($type, [self::SHOW_LINK_CREATE, self::SHOW_LINK_SEARCH])) {
-                $default = 'ROLE_USER';
-            }
+            $this->roles[$type] = $data[$type] ?? $this->getDefaultValue($type);
+        }
+    }
 
-            $this->roles[$type] = $data[$type] ?? $default;
+    private function getDefaultValue(string $type): string
+    {
+        switch ($type) {
+            case self::VIEW:
+                return Roles::ROLE_AUTHOR;
+            case self::SHOW_LINK_SEARCH:
+            case self::SHOW_LINK_CREATE:
+                return Roles::ROLE_USER;
+            default:
+                return 'not-defined';
         }
     }
 

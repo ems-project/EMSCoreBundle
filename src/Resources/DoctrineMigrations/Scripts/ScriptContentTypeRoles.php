@@ -13,10 +13,10 @@ trait ScriptContentTypeRoles
         while ($row = $result->fetchAssociative()) {
             $migration->addSql('UPDATE content_type SET roles = :roles WHERE id = :id', [
                 'roles' => Json::encode([
-                    'view' => $row['view_role'] ?? 'not-defined',
-                    'create' => $row['create_role'] ?? 'not-defined',
-                    'edit' => $row['edit_role'] ?? 'not-defined',
-                    'publish' => $row['publish_role'] ?? 'not-defined',
+                    'view' => $row['view_role'] ?? 'ROLE_AUTHOR',
+                    'create' => $row['create_role'] ?? 'ROLE_AUTHOR',
+                    'edit' => $row['edit_role'] ?? 'ROLE_AUTHOR',
+                    'publish' => $row['publish_role'] ?? 'ROLE_PUBLISHER',
                     'delete' => $row['delete_role'] ?? 'not-defined',
                     'trash' => $row['trash_role'] ?? 'not-defined',
                     'archive' => $row['archive_role'] ?? 'not-defined',
@@ -73,10 +73,10 @@ QUERY;
             $roles = Json::decode($row['roles']);
 
             $migration->addSql($updateQuery, [
-                'view_role' => $roles['view'] ?? 'not-defined',
-                'create_role' => $roles['create'] ?? 'not-defined',
-                'edit_role' => $roles['edit'] ?? 'not-defined',
-                'publish_role' => $roles['publish'] ?? 'not-defined',
+                'view_role' => $roles['view'] ?? 'ROLE_AUTHOR',
+                'create_role' => $roles['create'] ?? 'ROLE_AUTHOR',
+                'edit_role' => $roles['edit'] ?? 'ROLE_AUTHOR',
+                'publish_role' => $roles['publish'] ?? 'ROLE_PUBLISHER',
                 'delete_role' => $roles['delete'] ?? 'not-defined',
                 'trash_role' => $roles['trash'] ?? 'not-defined',
                 'archive_role' => $roles['archive'] ?? 'not-defined',

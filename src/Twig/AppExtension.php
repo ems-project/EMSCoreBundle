@@ -15,6 +15,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CommonBundle\Twig\RequestRuntime;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer;
 use EMS\CoreBundle\Core\Revision\Wysiwyg\WysiwygRuntime;
@@ -920,17 +921,22 @@ class AppExtension extends AbstractExtension
 
     public function dataLabel(string $key): string
     {
-        return $this->makeDataLabel($key)['text'];
+        $emsLink = EMSLink::fromText($key);
+        if (!$emsLink->isValid() || !$contentType = $this->contentTypeService->getByName($emsLink->getContentType())) {
+            return $key;
+        }
+
+        return $this->makeDataLabel($contentType, $emsLink)['text'];
     }
 
     public function dataLink(string $key, string $revisionId = null, string $diffMod = null): string
     {
         $emsLink = EMSLink::fromText($key);
-        if (!$emsLink->isValid()) {
+        if (!$emsLink->isValid() || !$contentType = $this->contentTypeService->getByName($emsLink->getContentType())) {
             return $key;
         }
 
-        $label = $this->makeDataLabel($key);
+        $label = $this->makeDataLabel($contentType, $emsLink);
 
         $addAttribute = '';
         $out = $label['text'];
@@ -938,9 +944,14 @@ class AppExtension extends AbstractExtension
         if (isset($label['color'])) {
             $addAttribute = ' style="background-color: '.$label['color'].';border-color: '.$label['color'].';"';
         }
-
         if (null !== $diffMod) {
             $out = '<'.$diffMod.' class="diffmod">'.$out.'<'.$diffMod.'>';
+        }
+
+        if (!$this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::VIEW))) {
+            return isset($label['color']) ?
+                \sprintf('<span style="color: %s">%s</span>', $label['color'], $out) :
+                \sprintf('<span>%s</span>', $out);
         }
 
         return '<a class="btn btn-primary btn-sm" href="'.$this->router->generate('data.revisions', [
@@ -1192,17 +1203,8 @@ class AppExtension extends AbstractExtension
     /**
      * @return array{"text": string, "color"?: string}
      */
-    private function makeDataLabel(string $key): array
+    private function makeDataLabel(ContentType $contentType, EMSLink $emsLink): array
     {
-        $emsLink = EMSLink::fromText($key);
-        if (!$emsLink->isValid()) {
-            return ['text' => $key];
-        }
-
-        if (false === $contentType = $this->contentTypeService->getByName($emsLink->getContentType())) {
-            return ['text' => $key];
-        }
-
         $data = [];
         $out = \sprintf('<i class="%s"></i>&nbsp;&nbsp;', $contentType->getIcon() ?? 'fa fa-book');
 
@@ -1211,10 +1213,10 @@ class AppExtension extends AbstractExtension
             $emsSource = $document->getEMSSource();
 
             if ($contentType->hasLabelField()) {
-                $label = $emsSource->get($contentType->giveLabelField(), $key);
-                $out .= (\strlen($label) > 0 ? $label : $key);
+                $label = $emsSource->get($contentType->giveLabelField(), $emsLink->getEmsId());
+                $out .= (\strlen($label) > 0 ? $label : $emsLink->getEmsId());
             } else {
-                $out .= $key;
+                $out .= $emsLink->getEmsId();
             }
 
             $color = $contentType->hasColorField() ? $emsSource->get($contentType->giveColorField()) : null;
@@ -1227,11 +1229,11 @@ class AppExtension extends AbstractExtension
             /** @var RevisionRepository $revisionRepository */
             $revisionRepository = $this->doctrine->getManager()->getRepository(Revision::class);
             $revision = $revisionRepository->findLatestByOuuid($emsLink->getOuuid());
-            $revisionLabel = $revision ? ($revision->getLabelField() ?? $key) : $key;
+            $revisionLabel = $revision ? ($revision->getLabelField() ?? $emsLink->getEmsId()) : $emsLink->getEmsId();
 
-            $out .= (\strlen($revisionLabel) > 0 ? $revisionLabel : $key);
+            $out .= (\strlen($revisionLabel) > 0 ? $revisionLabel : $emsLink->getEmsId());
         } catch (\Throwable $e) {
-            $this->logger->debug(\sprintf('dataLink failed for : %s', $key), ['e' => $e]);
+            $this->logger->debug(\sprintf('dataLink failed for : %s', $emsLink->getEmsId()), ['e' => $e]);
         }
 
         $data['text'] = $out;

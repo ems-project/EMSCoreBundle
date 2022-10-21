@@ -259,13 +259,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected ?string $sortOrder = null;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="publish_role", type="string", length=100, nullable=true)
-     */
-    protected $publishRole;
-
-    /**
      * @ORM\Column(name="orderKey", type="integer")
      */
     protected int $orderKey = 0;
@@ -1427,30 +1420,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getRefererFieldName()
     {
         return $this->refererFieldName;
-    }
-
-    /**
-     * Set publishRole.
-     *
-     * @param string $publishRole
-     *
-     * @return ContentType
-     */
-    public function setPublishRole($publishRole)
-    {
-        $this->publishRole = $publishRole;
-
-        return $this;
-    }
-
-    /**
-     * Get publishRole.
-     *
-     * @return string
-     */
-    public function getPublishRole()
-    {
-        return $this->publishRole;
     }
 
     /**

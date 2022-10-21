@@ -16,6 +16,7 @@ trait ScriptContentTypeRoles
                     'view' => $row['view_role'] ?? 'not-defined',
                     'create' => $row['create_role'] ?? 'not-defined',
                     'edit' => $row['edit_role'] ?? 'not-defined',
+                    'publish' => $row['publish_role'] ?? 'not-defined',
                     'delete' => $row['delete_role'] ?? 'not-defined',
                     'trash' => $row['trash_role'] ?? 'not-defined',
                     'archive' => $row['archive_role'] ?? 'not-defined',
@@ -30,6 +31,7 @@ trait ScriptContentTypeRoles
         $migration->addSql('ALTER TABLE content_type DROP view_role');
         $migration->addSql('ALTER TABLE content_type DROP create_role');
         $migration->addSql('ALTER TABLE content_type DROP edit_role');
+        $migration->addSql('ALTER TABLE content_type DROP publish_role');
         $migration->addSql('ALTER TABLE content_type DROP delete_role');
         $migration->addSql('ALTER TABLE content_type DROP trash_role');
         $migration->addSql('ALTER TABLE content_type DROP archive_role');
@@ -43,6 +45,7 @@ trait ScriptContentTypeRoles
         $migration->addSql('ALTER TABLE content_type ADD view_role VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD create_role VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD edit_role VARCHAR(100) DEFAULT NULL');
+        $migration->addSql('ALTER TABLE content_type ADD publish_role VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD delete_role VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD trash_role VARCHAR(100) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD archive_role VARCHAR(100) DEFAULT NULL');
@@ -55,6 +58,7 @@ trait ScriptContentTypeRoles
                 view_role = :view_role,
                 create_role = :create_role,
                 edit_role = :edit_role,
+                publish_role = :publish_role,
                 delete_role = :delete_role,
                 trash_role = :trash_role,
                 archive_role = :archive_role,
@@ -72,6 +76,7 @@ QUERY;
                 'view_role' => $roles['view'] ?? 'not-defined',
                 'create_role' => $roles['create'] ?? 'not-defined',
                 'edit_role' => $roles['edit'] ?? 'not-defined',
+                'publish_role' => $roles['publish'] ?? 'not-defined',
                 'delete_role' => $roles['delete'] ?? 'not-defined',
                 'trash_role' => $roles['trash'] ?? 'not-defined',
                 'archive_role' => $roles['archive'] ?? 'not-defined',

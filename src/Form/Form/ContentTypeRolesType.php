@@ -24,6 +24,7 @@ class ContentTypeRolesType extends AbstractType
             $builder
                 ->add(ContentTypeRoles::CREATE, RolePickerType::class)
                 ->add(ContentTypeRoles::EDIT, RolePickerType::class)
+                ->add(ContentTypeRoles::PUBLISH, RolePickerType::class)
                 ->add(ContentTypeRoles::DELETE, RolePickerType::class)
                 ->add(ContentTypeRoles::TRASH, RolePickerType::class)
                 ->add(ContentTypeRoles::ARCHIVE, RolePickerType::class)

@@ -256,8 +256,6 @@ class ContentTypeType extends AbstractType
                 'label' => 'Ask for OUUID',
                 'required' => false,
             ]);
-            $builder->add('publishRole', RolePickerType::class);
-
             $builder->add('orderField');
             $builder->add('saveAndEditStructure', SubmitEmsType::class, [
                     'attr' => [

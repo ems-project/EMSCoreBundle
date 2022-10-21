@@ -203,7 +203,7 @@ class DataService
      */
     public function lockRevision(Revision $revision, Environment $publishEnv = null, bool $super = false, ?string $username = null): string
     {
-        if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->giveContentType()->getPublishRole() ?: 'ROLE_PUBLISHER')) {
+        if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
         }
         if (!empty($publishEnv) && \is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !$this->appTwig->inMyCircles($publishEnv->getCircles())) {

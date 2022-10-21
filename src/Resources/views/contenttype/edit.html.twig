@@ -51,10 +51,6 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-
-                        {% if contentType.environment.managed %}
-                            {{ form_row(form.publishRole) }}
-                        {% endif %}
                         {{ form_row(form.icon) }}
                         {{ form_row(form.color) }}
                         {{ form_row(form.refererFieldName) }}

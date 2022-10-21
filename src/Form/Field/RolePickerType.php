@@ -26,7 +26,7 @@ class RolePickerType extends SelectPickerType
             'attr' => ['data-live-search' => true],
             'choice_attr' => function () {
                 return [
-                    'data-icon' => 'fa fa-square',
+                    'data-icon' => 'fa fa-user-circle',
                 ];
             },
             'choice_value' => function ($value) {

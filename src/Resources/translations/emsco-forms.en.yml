@@ -39,6 +39,7 @@ ROLE_DEFAULT_SEARCH: 'Default search'
 ROLE_FORM_CRM: 'Form CRM'
 ROLE_PUBLISHER: Publisher
 ROLE_REVIEWER: Reviewer
+ROLE_AUDITOR: Auditor
 ROLE_SUPER: 'Super user'
 ROLE_SUPER_ADMIN: 'Super Admin'
 ROLE_SUPER_AUTHOR: 'Super Author'

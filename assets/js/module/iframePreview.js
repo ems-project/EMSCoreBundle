@@ -15,7 +15,8 @@ export default class IframePreview {
     }
 
     loadBody(iframe) {
-        const body = iframe.getAttribute('data-iframe-body');
+        let body = iframe.getAttribute('data-iframe-body');
+        body = this.#changeSelfTargetLinksToParent(body);
         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
         iframeDoc.body.insertAdjacentHTML('afterbegin', body+iframeDoc.body.innerHTML);
         this.adjustHeight(iframe);
@@ -62,5 +63,17 @@ export default class IframePreview {
             const iframes = mutation.target.querySelectorAll('iframe[data-iframe-body]');
             self.loadIframes(iframes)
         });
+    }
+
+    #changeSelfTargetLinksToParent(body) {
+        const parser = new DOMParser()
+        const dom = parser.parseFromString(body, 'text/html')
+        ;[...dom.getElementsByTagName('a')].forEach((link) => {
+            if (!link.getAttribute('target')) {
+                link.setAttribute('target', '_parent')
+            }
+        })
+
+        return dom.documentElement.outerHTML
     }
 }

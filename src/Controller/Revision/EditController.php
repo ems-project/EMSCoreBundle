@@ -61,7 +61,7 @@ class EditController extends AbstractController
 
     public function editJsonRevision(Revision $revision, Request $request): Response
     {
-        if (!$this->isGranted($revision->giveContentType()->getEditRole())) {
+        if (!$this->isGranted($revision->giveContentType()->role(ContentTypeRoles::EDIT))) {
             throw new AccessDeniedException($request->getPathInfo());
         }
         if (!$revision->getDraft()) {

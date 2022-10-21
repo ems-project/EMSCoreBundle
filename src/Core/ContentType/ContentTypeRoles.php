@@ -16,6 +16,7 @@ class ContentTypeRoles implements \ArrayAccess
 
     public const VIEW = 'view';
     public const CREATE = 'create';
+    public const EDIT = 'edit';
     public const DELETE = 'delete';
     public const TRASH = 'trash';
     public const ARCHIVE = 'archive';
@@ -26,6 +27,7 @@ class ContentTypeRoles implements \ArrayAccess
     private const TYPES = [
         self::VIEW,
         self::CREATE,
+        self::EDIT,
         self::DELETE,
         self::TRASH,
         self::ARCHIVE,
@@ -49,6 +51,7 @@ class ContentTypeRoles implements \ArrayAccess
         switch ($type) {
             case self::VIEW:
             case self::CREATE:
+            case self::EDIT:
                 return Roles::ROLE_AUTHOR;
             case self::SHOW_LINK_SEARCH:
             case self::SHOW_LINK_CREATE:

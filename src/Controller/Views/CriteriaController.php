@@ -8,6 +8,7 @@ use EMS\CommonBundle\Elasticsearch\Response\Response as EmsResponse;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Form\CriteriaUpdateConfig;
@@ -293,7 +294,7 @@ class CriteriaController extends AbstractController
         $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
         $fieldPaths = \is_array($fieldPaths) ? $fieldPaths : [];
 
-        $authorized = $this->isAuthorized($criteriaField, $this->authorizationChecker) && $this->authorizationChecker->isGranted($view->getContentType()->getEditRole());
+        $authorized = $this->isAuthorized($criteriaField, $this->authorizationChecker) && $this->authorizationChecker->isGranted($view->getContentType()->role(ContentTypeRoles::EDIT));
 
         foreach ($fieldPaths as $path) {
             /** @var false|FieldType $child */
@@ -513,7 +514,7 @@ class CriteriaController extends AbstractController
                 throw new \RuntimeException('Unexpected revision type');
             }
 
-            $authorized = $this->authorizationChecker->isGranted($view->getContentType()->getEditRole());
+            $authorized = $this->authorizationChecker->isGranted($view->getContentType()->role(ContentTypeRoles::EDIT));
             if (!$authorized) {
                 $this->logger->warning('log.view.criteria.update_privilege_issue', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),

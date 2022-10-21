@@ -243,7 +243,6 @@ class ContentTypeController extends AbstractController
             } else {
                 $contentType = $contentTypeAdded;
                 $contentType->setAskForOuuid(false);
-                $contentType->setEditRole('ROLE_AUTHOR');
                 $contentType->setOrderKey($contentTypeRepository->nextOrderKey());
                 $em->persist($contentType);
             }

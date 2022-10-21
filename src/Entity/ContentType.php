@@ -261,13 +261,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string
      *
-     * @ORM\Column(name="edit_role", type="string", length=100, nullable=true)
-     */
-    protected $editRole;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="publish_role", type="string", length=100, nullable=true)
      */
     protected $publishRole;
@@ -1333,30 +1326,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getEmailField()
     {
         return $this->emailField;
-    }
-
-    /**
-     * Set editRole.
-     *
-     * @param string $editRole
-     *
-     * @return ContentType
-     */
-    public function setEditRole($editRole)
-    {
-        $this->editRole = $editRole;
-
-        return $this;
-    }
-
-    /**
-     * Get editRole.
-     *
-     * @return string
-     */
-    public function getEditRole()
-    {
-        return $this->editRole;
     }
 
     /**

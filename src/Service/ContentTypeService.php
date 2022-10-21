@@ -600,7 +600,7 @@ class ContentTypeService implements EntityServiceInterface
 
     private function addDraftInProgressLink(ContentType $contentType, MenuEntry $menuEntry): void
     {
-        if (!$contentType->giveEnvironment()->getManaged() || !$menuEntry->hasBadge() || !$this->authorizationChecker->isGranted($contentType->getEditRole())) {
+        if (!$contentType->giveEnvironment()->getManaged() || !$menuEntry->hasBadge() || !$this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::EDIT))) {
             return;
         }
 

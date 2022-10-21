@@ -7,6 +7,7 @@ use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -141,7 +142,7 @@ class EnvironmentController extends AbstractController
                             break;
                         }
 
-                        if (!$this->authorizationChecker->isGranted($revision->giveContentType()->getPublishRole())) {
+                        if (!$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
                             $this->logger->warning('log.environment.dont_have_publish_role', [
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $env,
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),

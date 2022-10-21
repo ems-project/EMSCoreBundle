@@ -5,10 +5,12 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
+use EMS\CoreBundle\Roles;
 use EMS\Helpers\Standard\DateTime;
 
 /**
@@ -257,55 +259,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected ?string $sortOrder = null;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="create_role", type="string", length=100, nullable=true)
-     */
-    protected $createRole;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="edit_role", type="string", length=100, nullable=true)
-     */
-    protected $editRole;
-
-    /**
-     * @ORM\Column(name="view_role", type="string", length=100, nullable=true)
-     * @ORM\OrderBy({"orderKey" = "ASC"})
-     */
-    protected ?string $viewRole;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="publish_role", type="string", length=100, nullable=true)
-     */
-    protected $publishRole;
-
-    /**
-     * @ORM\Column(name="delete_role", type="string", length=100, nullable=true)
-     */
-    protected ?string $deleteRole = null;
-
-    /**
-     * @ORM\Column(name="archive_role", type="string", length=100, nullable=true)
-     */
-    protected ?string $archiveRole = null;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="trash_role", type="string", length=100, nullable=true)
-     */
-    protected $trashRole;
-
-    /**
-     * @ORM\Column(name="owner_role", type="string", length=100, nullable=true)
-     */
-    protected ?string $ownerRole = null;
-
-    /**
      * @ORM\Column(name="orderKey", type="integer")
      */
     protected int $orderKey = 0;
@@ -385,20 +338,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected ?string $localeField = null;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="searchLinkDisplayRole", type="string", options={"default" : "ROLE_USER"})
-     */
-    protected $searchLinkDisplayRole = 'ROLE_USER';
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="createLinkDisplayRole", type="string", options={"default" : "ROLE_USER"})
-     */
-    protected $createLinkDisplayRole = 'ROLE_USER';
-
-    /**
      * @var ?string[]
      *
      * @ORM\Column(name="version_tags", type="json", nullable=true)
@@ -425,6 +364,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @ORM\Column(name="version_date_to_field", type="string", length=100, nullable=true)
      */
     protected $versionDateToField;
+
+    /**
+     * @var array<string, string>
+     *
+     * @ORM\Column(name="roles", type="json", nullable=true)
+     */
+    protected array $roles = [];
 
     public function __construct()
     {
@@ -1376,54 +1322,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     }
 
     /**
-     * Set createRole.
-     *
-     * @param string $createRole
-     *
-     * @return ContentType
-     */
-    public function setCreateRole($createRole)
-    {
-        $this->createRole = $createRole;
-
-        return $this;
-    }
-
-    /**
-     * Get createRole.
-     *
-     * @return string
-     */
-    public function getCreateRole()
-    {
-        return $this->createRole;
-    }
-
-    /**
-     * Set editRole.
-     *
-     * @param string $editRole
-     *
-     * @return ContentType
-     */
-    public function setEditRole($editRole)
-    {
-        $this->editRole = $editRole;
-
-        return $this;
-    }
-
-    /**
-     * Get editRole.
-     *
-     * @return string
-     */
-    public function getEditRole()
-    {
-        return $this->editRole;
-    }
-
-    /**
      * Set assetField.
      *
      * @param string $assetField
@@ -1522,107 +1420,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getRefererFieldName()
     {
         return $this->refererFieldName;
-    }
-
-    /**
-     * Set viewRole.
-     *
-     * @param string $viewRole
-     *
-     * @return ContentType
-     */
-    public function setViewRole($viewRole)
-    {
-        $this->viewRole = $viewRole;
-
-        return $this;
-    }
-
-    public function getViewRole(): ?string
-    {
-        return $this->viewRole;
-    }
-
-    /**
-     * Set publishRole.
-     *
-     * @param string $publishRole
-     *
-     * @return ContentType
-     */
-    public function setPublishRole($publishRole)
-    {
-        $this->publishRole = $publishRole;
-
-        return $this;
-    }
-
-    /**
-     * Get publishRole.
-     *
-     * @return string
-     */
-    public function getPublishRole()
-    {
-        return $this->publishRole;
-    }
-
-    public function hasDeleteRole(): bool
-    {
-        return null !== $this->deleteRole;
-    }
-
-    public function getDeleteRole(): ?string
-    {
-        return $this->deleteRole;
-    }
-
-    public function setDeleteRole(?string $deleteRole): ContentType
-    {
-        $this->deleteRole = $deleteRole;
-
-        return $this;
-    }
-
-    public function hasArchiveRole(): bool
-    {
-        return null !== $this->archiveRole;
-    }
-
-    public function getArchiveRole(): ?string
-    {
-        return $this->archiveRole;
-    }
-
-    public function setArchiveRole(?string $archiveRole): ContentType
-    {
-        $this->archiveRole = $archiveRole;
-
-        return $this;
-    }
-
-    /**
-     * Set trashRole.
-     *
-     * @param string $trashRole
-     *
-     * @return ContentType
-     */
-    public function setTrashRole($trashRole)
-    {
-        $this->trashRole = $trashRole;
-
-        return $this;
-    }
-
-    /**
-     * Get trashRole.
-     *
-     * @return string
-     */
-    public function getTrashRole()
-    {
-        return $this->trashRole;
     }
 
     /**
@@ -1780,30 +1577,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->localeField;
     }
 
-    public function setSearchLinkDisplayRole(string $searchLinkDisplayRole): ContentType
-    {
-        $this->searchLinkDisplayRole = $searchLinkDisplayRole;
-
-        return $this;
-    }
-
-    public function getSearchLinkDisplayRole(): string
-    {
-        return $this->searchLinkDisplayRole;
-    }
-
-    public function setCreateLinkDisplayRole(string $createLinkDisplayRole): ContentType
-    {
-        $this->createLinkDisplayRole = $createLinkDisplayRole;
-
-        return $this;
-    }
-
-    public function getCreateLinkDisplayRole(): string
-    {
-        return $this->createLinkDisplayRole;
-    }
-
     public function hasVersionTags(): bool
     {
         return \count($this->versionTags ?? []) > 0;
@@ -1870,29 +1643,18 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return [];
     }
 
-    public function hasOwnerRole(): bool
+    public function role(string $role): string
     {
-        return null !== $this->ownerRole;
+        return $this->getRoles()[$role] ?? Roles::NOT_DEFINED;
     }
 
-    public function giveOwnerRole(): string
+    public function getRoles(): ContentTypeRoles
     {
-        $ownerRole = $this->ownerRole;
-
-        if (null === $ownerRole) {
-            throw new \RuntimeException('No owner role specified');
-        }
-
-        return $ownerRole;
+        return new ContentTypeRoles($this->roles ?? []);
     }
 
-    public function getOwnerRole(): ?string
+    public function setRoles(ContentTypeRoles $roles): void
     {
-        return $this->ownerRole;
-    }
-
-    public function setOwnerRole(?string $ownerRole): void
-    {
-        $this->ownerRole = $ownerRole;
+        $this->roles = $roles->getRoles();
     }
 }

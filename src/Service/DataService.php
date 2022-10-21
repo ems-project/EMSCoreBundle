@@ -14,6 +14,7 @@ use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\StorageManager;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
@@ -202,7 +203,7 @@ class DataService
      */
     public function lockRevision(Revision $revision, Environment $publishEnv = null, bool $super = false, ?string $username = null): string
     {
-        if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->giveContentType()->getPublishRole() ?: 'ROLE_PUBLISHER')) {
+        if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
         }
         if (!empty($publishEnv) && \is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !$this->appTwig->inMyCircles($publishEnv->getCircles())) {
@@ -1076,8 +1077,8 @@ class DataService
         $revision->setLockBy($username);
         $revision->setLockUntil(new \DateTime($this->lockTime));
 
-        $ownerRole = $contentType->getOwnerRole();
-        if (null !== $currentUser && null !== $ownerRole && $this->userService->isGrantedRole($ownerRole)) {
+        if (null !== $currentUser
+            && $this->userService->isGrantedRole($contentType->role(ContentTypeRoles::OWNER))) {
             $revision->setOwner($currentUser->getUsername());
         }
 

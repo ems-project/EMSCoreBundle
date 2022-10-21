@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Revision;
 
 use EMS\CommonBundle\Common\Standard\Json;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\DataTable\TableExporter;
 use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
@@ -258,7 +259,7 @@ final class TaskController extends AbstractController
         ]);
         $form->add('new_owner', SelectUserPropertyType::class, [
             'constraints' => [new NotBlank()],
-            'user_roles' => [$contentType->getOwnerRole()],
+            'user_roles' => [$contentType->role(ContentTypeRoles::OWNER)],
             'exclude_values' => $revision->hasOwner() ? [$revision->getOwner()] : [],
             'placeholder' => '',
             'label' => 'task.change_owner.change',

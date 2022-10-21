@@ -8,6 +8,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\Pdf\Pdf;
 use EMS\CommonBundle\Service\Pdf\PdfPrinterInterface;
 use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -203,6 +204,10 @@ class DataController extends AbstractController
 
     public function trashAction(ContentType $contentType): Response
     {
+        if (!$this->isGranted($contentType->role(ContentTypeRoles::TRASH))) {
+            throw $this->createAccessDeniedException('Trash not granted!');
+        }
+
         return $this->render('@EMSCore/data/trash.html.twig', [
             'contentType' => $contentType,
             'revisions' => $this->dataService->getAllDeleted($contentType),
@@ -377,9 +382,8 @@ class DataController extends AbstractController
     {
         $revision = $this->dataService->getNewestRevision($type, $ouuid);
         $contentType = $revision->giveContentType();
-        $deleteRole = $contentType->getDeleteRole();
 
-        if ($deleteRole && !$this->isGranted($deleteRole)) {
+        if (!$this->isGranted($contentType->role(ContentTypeRoles::DELETE))) {
             throw $this->createAccessDeniedException('Delete not granted!');
         }
 
@@ -937,6 +941,10 @@ class DataController extends AbstractController
 
     public function addAction(ContentType $contentType, Request $request): Response
     {
+        if (!$this->isGranted($contentType->role(ContentTypeRoles::CREATE))) {
+            throw $this->createAccessDeniedException('Create not granted');
+        }
+
         $this->dataService->hasCreateRights($contentType);
 
         $revision = new Revision();

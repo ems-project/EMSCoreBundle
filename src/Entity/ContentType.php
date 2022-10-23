@@ -172,13 +172,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string
      *
-     * @ORM\Column(name="ouuidField", type="string", length=100, nullable=true)
-     */
-    protected $ouuidField;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="imageField", type="string", length=100, nullable=true)
      */
     protected $imageField;
@@ -558,30 +551,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getLabelField(): ?string
     {
         return $this->labelField;
-    }
-
-    /**
-     * Set ouuidField.
-     *
-     * @param string $ouuidField
-     *
-     * @return ContentType
-     */
-    public function setOuuidField($ouuidField)
-    {
-        $this->ouuidField = $ouuidField;
-
-        return $this;
-    }
-
-    /**
-     * Get ouuidField.
-     *
-     * @return string
-     */
-    public function getOuuidField()
-    {
-        return $this->ouuidField;
     }
 
     /**

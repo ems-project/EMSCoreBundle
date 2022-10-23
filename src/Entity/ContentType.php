@@ -158,13 +158,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string
      *
-     * @ORM\Column(name="userField", type="string", length=100, nullable=true)
-     */
-    protected $userField;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="dateField", type="string", length=100, nullable=true)
      */
     protected $dateField;
@@ -833,30 +826,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getStartDateField()
     {
         return $this->startDateField;
-    }
-
-    /**
-     * Set userField.
-     *
-     * @param string $userField
-     *
-     * @return ContentType
-     */
-    public function setUserField($userField)
-    {
-        $this->userField = $userField;
-
-        return $this;
-    }
-
-    /**
-     * Get userField.
-     *
-     * @return string
-     */
-    public function getUserField()
-    {
-        return $this->userField;
     }
 
     /**

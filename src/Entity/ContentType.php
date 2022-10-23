@@ -158,27 +158,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string
      *
-     * @ORM\Column(name="dateField", type="string", length=100, nullable=true)
-     */
-    protected $dateField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="startDateField", type="string", length=100, nullable=true)
-     */
-    protected $startDateField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="endDateField", type="string", length=100, nullable=true)
-     */
-    protected $endDateField;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="locationField", type="string", length=100, nullable=true)
      */
     protected $locationField;
@@ -589,54 +568,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     }
 
     /**
-     * Set dateField.
-     *
-     * @param string $dateField
-     *
-     * @return ContentType
-     */
-    public function setDateField($dateField)
-    {
-        $this->dateField = $dateField;
-
-        return $this;
-    }
-
-    /**
-     * Get dateField.
-     *
-     * @return string
-     */
-    public function getDateField()
-    {
-        return $this->dateField;
-    }
-
-    /**
-     * Set endDateField.
-     *
-     * @param string $endDateField
-     *
-     * @return ContentType
-     */
-    public function setEndDateField($endDateField)
-    {
-        $this->endDateField = $endDateField;
-
-        return $this;
-    }
-
-    /**
-     * Get endDateField.
-     *
-     * @return string
-     */
-    public function getEndDateField()
-    {
-        return $this->endDateField;
-    }
-
-    /**
      * Set locationField.
      *
      * @param string $locationField
@@ -802,30 +733,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getPluralName()
     {
         return $this->pluralName;
-    }
-
-    /**
-     * Set startDateField.
-     *
-     * @param string $startDateField
-     *
-     * @return ContentType
-     */
-    public function setStartDateField($startDateField)
-    {
-        $this->startDateField = $startDateField;
-
-        return $this;
-    }
-
-    /**
-     * Get startDateField.
-     *
-     * @return string
-     */
-    public function getStartDateField()
-    {
-        return $this->startDateField;
     }
 
     /**

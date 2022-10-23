@@ -179,13 +179,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string
      *
-     * @ORM\Column(name="videoField", type="string", length=100, nullable=true)
-     */
-    protected $videoField;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="email_field", type="string", length=100, nullable=true)
      */
     protected $emailField;
@@ -575,30 +568,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getImageField()
     {
         return $this->imageField;
-    }
-
-    /**
-     * Set videoField.
-     *
-     * @param string $videoField
-     *
-     * @return ContentType
-     */
-    public function setVideoField($videoField)
-    {
-        $this->videoField = $videoField;
-
-        return $this;
-    }
-
-    /**
-     * Get videoField.
-     *
-     * @return string
-     */
-    public function getVideoField()
-    {
-        return $this->videoField;
     }
 
     /**

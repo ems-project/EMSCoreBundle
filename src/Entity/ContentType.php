@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
@@ -140,13 +141,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @var ?FieldType
      */
     protected $fieldType;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="labelField", type="string", length=100, nullable=true)
-     */
-    protected $labelField;
 
     /**
      * @var string
@@ -322,6 +316,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @ORM\Column(name="roles", type="json", nullable=true)
      */
     protected array $roles = [];
+
+    /**
+     * @var array<string, ?string>
+     *
+     * @ORM\Column(name="fields", type="json", nullable=true)
+     */
+    protected array $fields = [];
 
     public function __construct()
     {
@@ -517,33 +518,23 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->color;
     }
 
-    /**
-     * Set labelField.
-     *
-     * @param string $labelField
-     *
-     * @return ContentType
-     */
-    public function setLabelField($labelField)
-    {
-        $this->labelField = $labelField;
-
-        return $this;
-    }
-
     public function hasLabelField(): bool
     {
-        return null !== $this->labelField && \strlen($this->labelField) > 0;
+        return null !== $this->field(ContentTypeFields::LABEL);
     }
 
     public function giveLabelField(): string
     {
-        return $this->labelField;
+        if (null === $labelField = $this->field(ContentTypeFields::LABEL)) {
+            throw new \RuntimeException('Label field not defined');
+        }
+
+        return $labelField;
     }
 
     public function getLabelField(): ?string
     {
-        return $this->labelField;
+        return $this->field(ContentTypeFields::LABEL);
     }
 
     /**
@@ -1439,5 +1430,20 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function setRoles(ContentTypeRoles $roles): void
     {
         $this->roles = $roles->getRoles();
+    }
+
+    public function field(string $field): ?string
+    {
+        return $this->getFields()[$field] ?? null;
+    }
+
+    public function getFields(): ContentTypeFields
+    {
+        return new ContentTypeFields($this->fields ?? []);
+    }
+
+    public function setFields(ContentTypeFields $fields): void
+    {
+        $this->fields = $fields->getFields();
     }
 }

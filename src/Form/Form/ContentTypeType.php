@@ -31,17 +31,6 @@ class ContentTypeType extends AbstractType
 
         $mapping = $options['mapping'] ?? null;
         if (null !== $mapping) {
-            $builder->add('labelField', ContentTypeFieldPickerType::class, [
-                'required' => false,
-                'firstLevelOnly' => true,
-                'mapping' => $mapping,
-                'types' => [
-                        'text',
-                        'keyword',
-                        'string',
-                        'integer',
-                ], ]);
-
             $builder->add('colorField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
@@ -247,6 +236,13 @@ class ContentTypeType extends AbstractType
             'managed' => $environment->getManaged(),
             'label' => false,
         ]);
+
+        if (null !== $mapping) {
+            $builder->add('fields', ContentTypeFieldsType::class, [
+                'label' => false,
+                'mapping' => $mapping,
+            ]);
+        }
 
         if ($environment->getManaged()) {
             $builder->add('defaultValue', CodeEditorType::class, [

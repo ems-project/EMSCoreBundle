@@ -54,9 +54,29 @@
                         {{ form_row(form.icon) }}
                         {{ form_row(form.color) }}
                         {{ form_row(form.refererFieldName) }}
-                        {% if form.labelField is defined %}
+
+                        {% if form.fields is defined %}
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Field</th>
+                                        <th>Mapping</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for elementField in form.fields %}
+                                    <tr>
+                                        <td>{{ form_label(elementField) }}</td>
+                                        <td>{{ form_widget(elementField) }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+
+
+                        {% if form.colorField is defined %}
                             {{ form_row(form.circlesField) }}
-                            {{ form_row(form.labelField) }}
                             {{ form_row(form.businessIdField) }}
                             {{ form_row(form.colorField) }}
                             {{ form_row(form.emailField) }}

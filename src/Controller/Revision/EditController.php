@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Revision;
 
 use EMS\CommonBundle\Common\Standard\Json;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Core\Revision\DraftInProgress;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -60,7 +61,7 @@ class EditController extends AbstractController
 
     public function editJsonRevision(Revision $revision, Request $request): Response
     {
-        if (!$this->isGranted($revision->giveContentType()->getEditRole())) {
+        if (!$this->isGranted($revision->giveContentType()->role(ContentTypeRoles::EDIT))) {
             throw new AccessDeniedException($request->getPathInfo());
         }
         if (!$revision->getDraft()) {
@@ -316,8 +317,8 @@ class EditController extends AbstractController
     public function archiveRevision(Revision $revision): Response
     {
         $contentType = $revision->giveContentType();
-        $archiveRole = $contentType->getArchiveRole();
-        if (null === $archiveRole || !$this->isGranted($archiveRole)) {
+
+        if (!$this->isGranted($contentType->role(ContentTypeRoles::ARCHIVE))) {
             throw $this->createAccessDeniedException('Archive not granted!');
         }
         if ($revision->hasEndTime()) {

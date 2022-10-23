@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskLog;
+use EMS\Helpers\Standard\DateTime;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -15,11 +15,11 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Table(name="task")
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
- *
- * @final
  */
 class Task implements EntityInterface
 {
+    use CreatedModifiedTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
@@ -75,6 +75,8 @@ class Task implements EntityInterface
     public function __construct()
     {
         $this->id = Uuid::uuid4();
+        $this->created = DateTime::create('now');
+        $this->modified = DateTime::create('now');
         $this->status = self::STATUS_PLANNED;
     }
 

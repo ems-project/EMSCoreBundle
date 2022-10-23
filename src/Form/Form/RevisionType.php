@@ -3,6 +3,8 @@
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
+use EMS\CoreBundle\Core\User\UserManager;
+use EMS\CoreBundle\Core\User\UserOptions;
 use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -21,10 +23,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class RevisionType extends AbstractType
 {
     private FormRegistryInterface $formRegistry;
+    private UserManager $userManager;
 
-    public function __construct(FormRegistryInterface $formRegistry)
+    public function __construct(FormRegistryInterface $formRegistry, UserManager $userManager)
     {
         $this->formRegistry = $formRegistry;
+        $this->userManager = $userManager;
     }
 
     /**
@@ -35,6 +39,8 @@ class RevisionType extends AbstractType
     {
         /** @var Revision|null $revision */
         $revision = $builder->getData();
+        $user = $this->userManager->getAuthenticatedUser();
+        $simplifiedUI = $user->getUserOptions()->isEnabled(UserOptions::SIMPLIFIED_UI);
         $contentType = $revision ? $revision->giveContentType() : $options['content_type'];
 
         if (!$contentType instanceof ContentType) {
@@ -54,11 +60,13 @@ class RevisionType extends AbstractType
 
         if ($revision) {
             if ($revision->getDraft()) {
-                $builder->add('save', SubmitEmsType::class, [
-                    'label' => 'form.form.revision-type.save-draft-label',
-                    'attr' => ['class' => 'btn btn-default btn-sm'],
-                    'icon' => 'fa fa-save',
-                ]);
+                if (!$simplifiedUI) {
+                    $builder->add('save', SubmitEmsType::class, [
+                        'label' => 'form.form.revision-type.save-draft-label',
+                        'attr' => ['class' => 'btn btn-default btn-sm'],
+                        'icon' => 'fa fa-save',
+                    ]);
+                }
             } else {
                 $publishedEnvironmentLabels = $revision->getEnvironments()->map(fn (Environment $e) => $e->getLabel());
                 if (\count($publishedEnvironmentLabels) > 0) {
@@ -84,24 +92,26 @@ class RevisionType extends AbstractType
         ->addModelTransformer(new DataFieldModelTransformer($contentType->getFieldType(), $this->formRegistry))
         ->addViewTransformer(new DataFieldViewTransformer($contentType->getFieldType(), $this->formRegistry));
 
-        if ($options['has_clipboard']) {
-            $builder->add('paste', SubmitEmsType::class, [
-                'label' => 'form.form.revision-type.paste-label',
-                'attr' => [
-                    'class' => '',
-                ],
-                'icon' => 'fa fa-paste',
-            ]);
-        }
-
-        if ($options['has_copy']) {
-            $builder->add('copy', SubmitEmsType::class, [
-                    'label' => 'form.form.revision-type.copy-label',
+        if (!$simplifiedUI) {
+            if ($options['has_clipboard']) {
+                $builder->add('paste', SubmitEmsType::class, [
+                    'label' => 'form.form.revision-type.paste-label',
                     'attr' => [
                         'class' => '',
                     ],
-                    'icon' => 'fa fa-copy',
-            ]);
+                    'icon' => 'fa fa-paste',
+                ]);
+            }
+
+            if ($options['has_copy']) {
+                $builder->add('copy', SubmitEmsType::class, [
+                        'label' => 'form.form.revision-type.copy-label',
+                        'attr' => [
+                            'class' => '',
+                        ],
+                        'icon' => 'fa fa-copy',
+                ]);
+            }
         }
 
         if (null !== $revision && $revision->getDraft()) {

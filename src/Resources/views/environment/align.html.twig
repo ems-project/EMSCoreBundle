@@ -110,7 +110,7 @@
             <tr>
               <td>{{ loop.index+((page-1)*paging_size) }}.</td>
               <td>
-                  {% if  (is_granted('ROLE_ALLOW_ALIGN') and is_granted(item.contentType.publishRole))  %}
+                  {% if  (is_granted('ROLE_ALLOW_ALIGN') and is_granted(item.contentType.roles.publish))  %}
                     <input class="item-to-align" type="checkbox" name="compare_environment_form[item_to_align][{{ minrev[1] }}]" value="{{ item.content_type_name }}:{{ item.ouuid }}">
                   {% endif %}
               </td>
@@ -183,7 +183,7 @@
                 {% endif %}
               </td>
               <td>
-                {% if is_granted('ROLE_ALLOW_ALIGN') and is_granted(item.contentType.publishRole) %}
+                {% if is_granted('ROLE_ALLOW_ALIGN') and is_granted(item.contentType.roles.publish) %}
                     <div class="btn-group">
 
                             {%  if defaultEnv and withEnv.id != defaultEnv.id  and toInMyCircles %}

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service;
 
 use EMS\CommonBundle\Entity\EntityInterface;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
@@ -138,7 +139,7 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
     {
         $contentTypes = [];
         foreach ($this->contentTypeService->getAll() as $contentType) {
-            if (!$contentType->getDeleted() && null !== $contentType->getPublishRole() && $this->userService->isGrantedRole($contentType->getPublishRole())) {
+            if (!$contentType->getDeleted() && $this->userService->isGrantedRole($contentType->role(ContentTypeRoles::PUBLISH))) {
                 $contentTypes[] = $contentType->getName();
             }
         }

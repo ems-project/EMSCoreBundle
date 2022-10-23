@@ -7,6 +7,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\NonUniqueResultException;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
@@ -275,7 +276,7 @@ class PublishService
                 return;
             }
 
-            if (!$this->authorizationChecker->isGranted($revision->giveContentType()->getPublishRole())) {
+            if (!$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
                 $this->logger->warning('service.publish.not_authorized', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
@@ -328,7 +329,7 @@ class PublishService
             return false;
         }
 
-        if (!$this->authorizationChecker->isGranted($revision->giveContentType()->getPublishRole())) {
+        if (!$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
             $this->logger->warning('service.publish.not_authorized', $logContext);
 
             return false;
@@ -355,7 +356,7 @@ class PublishService
             return;
         }
 
-        if (!$this->authorizationChecker->isGranted($contentType->getPublishRole())) {
+        if (!$this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::PUBLISH))) {
             $this->logger->warning('service.publish.not_authorized', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OUUID_FIELD => $ouuid,

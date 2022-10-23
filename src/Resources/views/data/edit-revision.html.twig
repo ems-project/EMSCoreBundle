@@ -26,59 +26,59 @@
 		</div>
 		<div class="box-footer">
 			{% if revision.draft %}
-				<div class="btn-group">
-					{% if form.publish is defined %}
-						{{ form_widget(form.publish) }}
-					{% endif %}
-					{% if form.publish_version is defined %}
-						<button type="button" id="btn-publish-version" class="btn-primary btn-sm btn"><span class="glyphicon glyphicon-open"></span>&nbsp;
-							{{ form.publish_version.vars.label|trans(form.publish_version.vars.label_translation_parameters|default([]), form.publish_version.vars.translation_domain) }}
-						</button>
-						<div id="publish-version-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="publish-version-modal">
-							<div class="modal-dialog modal-sm" role="document">
-								<div class="modal-content">
-									<div class="modal-header">
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-										<h4 class="modal-title">{{ 'views.data.edit-revision-html.publish-label'|trans({'%environment%': revision.contentType.environment.label}) }}</h4>
-									</div>
-									<div class="modal-body">
-										{{ form_widget(form.publish_version_tags) }}
-									</div>
-									<div class="modal-footer">
-										{{ form_widget(form.publish_version) }}
-										<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-label="{{ 'views.data.edit-revision-html.version-modal.close-label'|trans }}">{{ 'views.data.edit-revision-html.version-modal.close-label'|trans }}</button>
-									</div>
+				{% if form.publish is defined %}
+					{{ form_widget(form.publish) }}
+				{% endif %}
+				{% if form.publish_version is defined %}
+					<button type="button" id="btn-publish-version" class="btn-primary btn-sm btn"><span class="glyphicon glyphicon-open"></span>&nbsp;
+						{{ form.publish_version.vars.label|trans(form.publish_version.vars.label_translation_parameters|default([]), form.publish_version.vars.translation_domain) }}
+					</button>
+					<div id="publish-version-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="publish-version-modal">
+						<div class="modal-dialog modal-sm" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h4 class="modal-title">{{ 'views.data.edit-revision-html.publish-label'|trans({'%environment%': revision.contentType.environment.label}) }}</h4>
+								</div>
+								<div class="modal-body">
+									{{ form_widget(form.publish_version_tags) }}
+								</div>
+								<div class="modal-footer">
+									{{ form_widget(form.publish_version) }}
+									<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-label="{{ 'views.data.edit-revision-html.version-modal.close-label'|trans }}">{{ 'views.data.edit-revision-html.version-modal.close-label'|trans }}</button>
 								</div>
 							</div>
 						</div>
-					{% endif %}
-				</div>
+					</div>
+				{% endif %}
 			{% endif %}
 
-			<div class="btn-group">
-				{{ form_widget(form.save) }}
+			{% if form.save is defined and app.user.userOptions.enabled('simplified_ui') == false %}
 				<div class="btn-group">
-					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-						<span class="fa fa-ellipsis-h"></span>
-					</button>
-					<ul class="dropdown-menu">
-						{% if form.copy is defined %}
-							<li>{{ form_widget(form.copy) }}</li>
-						{% endif %}
-						{% if form.paste is defined %}
-							<li>{{ form_widget(form.paste) }}</li>
-						{% endif %}
-						<li>
-							{% include '@EMSCore/elements/post-button.html.twig' with {
-								'url': path('revision.cancel', {'revision': revision.id}),
-								'btnClass': '',
-								'label': 'views.data.edit-revision-html.cancel-label'|trans,
-								'icon': 'remove'
-							}%}
-						</li>
-					</ul>
+					{{ form_widget(form.save) }}
+					<div class="btn-group">
+						<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+							<span class="fa fa-ellipsis-h"></span>
+						</button>
+						<ul class="dropdown-menu">
+							{% if form.copy is defined %}
+								<li>{{ form_widget(form.copy) }}</li>
+							{% endif %}
+							{% if form.paste is defined %}
+								<li>{{ form_widget(form.paste) }}</li>
+							{% endif %}
+							<li>
+								{% include '@EMSCore/elements/post-button.html.twig' with {
+									'url': path('revision.cancel', {'revision': revision.id}),
+									'btnClass': '',
+									'label': 'views.data.edit-revision-html.cancel-label'|trans,
+									'icon': 'remove'
+								}%}
+							</li>
+						</ul>
+					</div>
 				</div>
-			</div>
+			{% endif %}
 
 			{% if revision.draft %}
 				{% include '@EMSCore/elements/post-button.html.twig' with {

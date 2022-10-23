@@ -12,7 +12,7 @@
 			'icon': 'eye' }%}
 
 	{% endif %}
-	{% if current and not draft %}
+	{% if current and not draft and is_granted(instance.contentType.roles.edit) %}
 		{% include '@EMSCore/elements/post-button.html.twig' with {
 			'url': path('revision.new-draft', {'ouuid': revision.ouuid, 'type':revision.contentType.name, 'item': app.request.get('item') }),
 			'label': 'views.elements.revision-toolbar-html.new-draft-label'|trans,
@@ -20,7 +20,7 @@
 			'icon': 'pencil' }%}
 	{% endif %}
 	{% if draft %} 	
-		{% if is_granted(instance.contentType.editRole) %}
+		{% if is_granted(instance.contentType.roles.edit) %}
 			{% if not  instance.contentType.circlesField or attribute(instance.rawData, instance.contentType.circlesField) is not defined or attribute(instance.rawData, instance.contentType.circlesField)|in_my_circles %}
 				<div class="btn-group">
 					{% include '@EMSCore/elements/get-button.html.twig' with {
@@ -74,7 +74,7 @@
 		{# TODO: better way to determine if there is a environement to publish this revision in ? #}
 		{# twig function ?#}
 		{% set hasEnv = false %}
-		{% if  is_granted(instance.contentType.publishRole) %}
+		{% if is_granted(instance.contentType.roles.publish) %}
 			{% for env in availableEnv %}
 				{% if env not in environments and env.circles|in_my_circles %}
 					{% set hasEnv = true %}
@@ -93,7 +93,7 @@
    		{% endfor %}
 
 
-	   	{% if is_granted(instance.contentType.editRole) %}
+	   	{% if is_granted(instance.contentType.roles.edit) %}
 	   		{% if not  instance.contentType.circlesField or attribute(object._source,instance.contentType.circlesField) is not defined or attribute(object._source,instance.contentType.circlesField)|in_my_circles %}
 
 
@@ -167,7 +167,7 @@
 			
 			</div>
 			<div class="btn-group{% if vertical is defined and vertical %}-vertical{% endif %}">
-			  {% if instance.contentType.publishRole and is_granted(instance.contentType.publishRole) and hasEnv  %}
+			  {% if is_granted(instance.contentType.roles.publish) and hasEnv  %}
 					<div class="btn-group">
 					  <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span class="fa fa-toggle-on"></span>&nbsp;
@@ -187,7 +187,7 @@
 			  {% endif %}
 
 			  {% set unpublishableEnvironments = availableEnv|filter(env => env in environments and env.circles|in_my_circles) %}
-			  {% if unpublishableEnvironments|length > 0 and instance.contentType.publishRole and is_granted(instance.contentType.publishRole) and ((environments|length > 0 and not current) or (environments|length > 1 and current)) %}
+			  {% if unpublishableEnvironments|length > 0 and is_granted(instance.contentType.roles.publish) and ((environments|length > 0 and not current) or (environments|length > 1 and current)) %}
 				<div class="btn-group">
 					  <button type="button" class="btn btn-sm btn-outline-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span class="fa fa-toggle-off"></span>&nbsp;

@@ -34,18 +34,23 @@
                         {{ form_row(form.editTwigWithWysiwyg) }}
                         {{ form_row(form.singularName) }}
                         {{ form_row(form.pluralName) }}
-                        {{ form_row(form.viewRole) }}
-                        {% if contentType.environment.managed %}
-                            {{ form_row(form.createRole) }}
-                            {{ form_row(form.editRole) }}
-                            {{ form_row(form.publishRole) }}
-                            {{ form_row(form.archiveRole) }}
-                            {{ form_row(form.deleteRole) }}
-                            {{ form_row(form.trashRole) }}
-                            {{ form_row(form.ownerRole) }}
-                            {{ form_row(form.searchLinkDisplayRole) }}
-                            {{ form_row(form.createLinkDisplayRole) }}
-                        {% endif %}
+
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Permission</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for elementRole in form.roles %}
+                                    <tr>
+                                        <td>{{ form_label(elementRole) }}</td>
+                                        <td>{{ form_widget(elementRole) }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                         {{ form_row(form.icon) }}
                         {{ form_row(form.color) }}
                         {{ form_row(form.refererFieldName) }}

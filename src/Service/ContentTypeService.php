@@ -9,6 +9,7 @@ use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Core\UI\MenuEntry;
 use EMS\CoreBundle\Entity\ContentType;
@@ -529,8 +530,11 @@ class ContentTypeService implements EntityServiceInterface
         $circleContentType = $this->getCircleContentType();
 
         foreach ($this->orderedContentTypes as $contentType) {
-            $role = $contentType->getViewRole();
-            if ($contentType->getDeleted() || !$contentType->getActive() || (null !== $role && !$this->authorizationChecker->isGranted($role)) && !$contentType->getRootContentType()) {
+            $roles = $contentType->getRoles();
+
+            if ($contentType->getDeleted()
+                || !$contentType->getActive()
+                || (!$this->authorizationChecker->isGranted($roles[ContentTypeRoles::VIEW])) && !$contentType->getRootContentType()) {
                 continue;
             }
             $menuEntry = new MenuEntry($contentType->getPluralName(), $contentType->getIcon() ?? 'fa fa-book', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()], $contentType->getColor());
@@ -540,13 +544,15 @@ class ContentTypeService implements EntityServiceInterface
             $this->addMenuSearchLinks($contentType, $menuEntry, $circleContentType, $user);
             $this->addMenuViewLinks($contentType, $menuEntry);
             $this->addDraftInProgressLink($contentType, $menuEntry);
-            if ($this->authorizationChecker->isGranted($contentType->getCreateRole())) {
+
+            if ($this->authorizationChecker->isGranted($roles[ContentTypeRoles::SHOW_LINK_CREATE])
+                && $this->authorizationChecker->isGranted($roles[ContentTypeRoles::CREATE])) {
                 $createLink = $menuEntry->addChild('sidebar_menu.content_type.create', 'fa fa-plus', Routes::DATA_ADD, ['contentType' => $contentType->getId()]);
                 $createLink->setTranslation([
                     '%name%' => $contentType->getSingularName(),
                 ]);
             }
-            if ($this->authorizationChecker->isGranted($contentType->getTrashRole())) {
+            if ($this->authorizationChecker->isGranted($roles[ContentTypeRoles::TRASH])) {
                 $trashLink = $menuEntry->addChild('sidebar_menu.content_type.trash', 'fa fa-trash', Routes::DATA_TRASH, ['contentType' => $contentType->getId()]);
                 $trashLink->setTranslation([]);
             }
@@ -560,7 +566,9 @@ class ContentTypeService implements EntityServiceInterface
 
     private function addMenuSearchLinks(ContentType $contentType, MenuEntry $menuEntry, ?ContentType $circleContentType, UserInterface $user): void
     {
-        if (!$this->authorizationChecker->isGranted($contentType->getSearchLinkDisplayRole())) {
+        $roles = $contentType->getRoles();
+
+        if (!$this->authorizationChecker->isGranted($roles[ContentTypeRoles::SHOW_LINK_SEARCH])) {
             return;
         }
 
@@ -592,7 +600,7 @@ class ContentTypeService implements EntityServiceInterface
 
     private function addDraftInProgressLink(ContentType $contentType, MenuEntry $menuEntry): void
     {
-        if (!$contentType->giveEnvironment()->getManaged() || !$menuEntry->hasBadge() || !$this->authorizationChecker->isGranted($contentType->getEditRole())) {
+        if (!$contentType->giveEnvironment()->getManaged() || !$menuEntry->hasBadge() || !$this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::EDIT))) {
             return;
         }
 

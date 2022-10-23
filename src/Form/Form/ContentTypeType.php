@@ -7,7 +7,6 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
-use EMS\CoreBundle\Form\Field\RolePickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -243,7 +242,11 @@ class ContentTypeType extends AbstractType
         ]);
 
         $builder->add('rootContentType');
-        $builder->add('viewRole', RolePickerType::class);
+
+        $builder->add('roles', ContentTypeRolesType::class, [
+            'managed' => $environment->getManaged(),
+            'label' => false,
+        ]);
 
         if ($environment->getManaged()) {
             $builder->add('defaultValue', CodeEditorType::class, [
@@ -252,21 +255,6 @@ class ContentTypeType extends AbstractType
                 'label' => 'Ask for OUUID',
                 'required' => false,
             ]);
-            $builder->add('createRole', RolePickerType::class);
-            $builder->add('editRole', RolePickerType::class);
-            $builder->add('publishRole', RolePickerType::class);
-            $builder->add('archiveRole', RolePickerType::class);
-            $builder->add('deleteRole', RolePickerType::class);
-            $builder->add('trashRole', RolePickerType::class);
-            $builder->add('ownerRole', RolePickerType::class);
-
-            $builder->add('searchLinkDisplayRole', RolePickerType::class, [
-                'label' => 'Display the search link in main navigation',
-            ]);
-            $builder->add('createLinkDisplayRole', RolePickerType::class, [
-                'label' => 'Display the creation link in main navigation',
-            ]);
-
             $builder->add('orderField');
             $builder->add('saveAndEditStructure', SubmitEmsType::class, [
                     'attr' => [

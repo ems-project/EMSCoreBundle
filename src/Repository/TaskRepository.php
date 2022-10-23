@@ -116,7 +116,7 @@ final class TaskRepository extends ServiceEntityRepository
             $or = $qb->expr()->orX();
 
             foreach ($context->columns as $col) {
-                if ('t.deadline' !== $col) {
+                if (!\in_array($col, ['t.deadline', 't.modified'])) {
                     $or->add($qb->expr()->like($col, ':term'));
                 }
             }

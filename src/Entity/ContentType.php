@@ -158,13 +158,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string
      *
-     * @ORM\Column(name="locationField", type="string", length=100, nullable=true)
-     */
-    protected $locationField;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="referer_field_name", type="string", length=100, nullable=true)
      */
     protected $refererFieldName;
@@ -565,30 +558,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getLabelField(): ?string
     {
         return $this->labelField;
-    }
-
-    /**
-     * Set locationField.
-     *
-     * @param string $locationField
-     *
-     * @return ContentType
-     */
-    public function setLocationField($locationField)
-    {
-        $this->locationField = $locationField;
-
-        return $this;
-    }
-
-    /**
-     * Get locationField.
-     *
-     * @return string
-     */
-    public function getLocationField()
-    {
-        return $this->locationField;
     }
 
     /**

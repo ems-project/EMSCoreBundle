@@ -136,13 +136,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $refererFieldName;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="order_field", type="string", length=100, nullable=true)
-     */
-    protected $orderField;
-
-    /**
      * @ORM\Column(name="sort_order", type="string", length=4, nullable=true, options={"default" : "asc"})
      */
     protected ?string $sortOrder = null;
@@ -960,30 +953,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getAssetField(): ?string
     {
         return $this->field(ContentTypeFields::ASSET);
-    }
-
-    /**
-     * Set orderField.
-     *
-     * @param string $orderField
-     *
-     * @return ContentType
-     */
-    public function setOrderField($orderField)
-    {
-        $this->orderField = $orderField;
-
-        return $this;
-    }
-
-    /**
-     * Get orderField.
-     *
-     * @return string
-     */
-    public function getOrderField()
-    {
-        return $this->orderField;
     }
 
     public function getSortBy(): ?string

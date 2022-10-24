@@ -181,7 +181,6 @@ class ContentTypeType extends AbstractType
                 'label' => 'Ask for OUUID',
                 'required' => false,
             ]);
-            $builder->add('orderField');
             $builder->add('saveAndEditStructure', SubmitEmsType::class, [
                     'attr' => [
                             'class' => 'btn btn-primary btn-sm ',

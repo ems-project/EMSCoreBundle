@@ -18,12 +18,14 @@ class ContentTypeFields implements \ArrayAccess
     public const CIRCLES = 'circles';
     public const COLOR = 'color';
     public const BUSINESS_ID = 'business_id';
+    public const CATEGORY = 'category';
 
     private const FIELDS = [
         self::LABEL,
         self::CIRCLES,
         self::COLOR,
         self::BUSINESS_ID,
+        self::CATEGORY,
     ];
 
     /**

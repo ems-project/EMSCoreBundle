@@ -75,8 +75,7 @@
                         {% endif %}
 
 
-                        {% if form.categoryField is defined %}
-                            {{ form_row(form.categoryField) }}
+                        {% if form.imageField is defined %}
                             {{ form_row(form.sortBy) }}
                             {{ form_row(form.sortOrder) }}
                             {% if contentType.environment.managed %}

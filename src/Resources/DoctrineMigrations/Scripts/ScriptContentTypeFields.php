@@ -21,30 +21,34 @@ trait ScriptContentTypeFields
                     'circles' => $emptyStringToNull($row['circles_field'] ?? null),
                     'color' => $emptyStringToNull($row['color_field'] ?? null),
                     'business_id' => $emptyStringToNull($row['business_id_field'] ?? null),
+                    'category_field' => $emptyStringToNull($row['category_field'] ?? null),
                 ]),
                 'id' => $row['id'],
             ]);
         }
 
-//        $migration->addSql('ALTER TABLE content_type DROP labelField');
-//        $migration->addSql('ALTER TABLE content_type DROP circles_field');
-//        $migration->addSql('ALTER TABLE content_type DROP business_id_field');
-//        $migration->addSql('ALTER TABLE content_type DROP color_field');
+        $migration->addSql('ALTER TABLE content_type DROP labelField');
+        $migration->addSql('ALTER TABLE content_type DROP circles_field');
+        $migration->addSql('ALTER TABLE content_type DROP business_id_field');
+        $migration->addSql('ALTER TABLE content_type DROP color_field');
+        $migration->addSql('ALTER TABLE content_type DROP category_field');
     }
 
     public function scriptDecodeFields(AbstractMigration $migration): void
     {
-//        $migration->addSql('ALTER TABLE content_type ADD labelField VARCHAR(255) DEFAULT NULL');
-//        $migration->addSql('ALTER TABLE content_type ADD circles_field VARCHAR(255) DEFAULT NULL');
-//        $migration->addSql('ALTER TABLE content_type ADD business_id_field VARCHAR(255) DEFAULT NULL');
-//        $migration->addSql('ALTER TABLE content_type ADD color_field VARCHAR(255) DEFAULT NULL');
+        $migration->addSql('ALTER TABLE content_type ADD labelField VARCHAR(255) DEFAULT NULL');
+        $migration->addSql('ALTER TABLE content_type ADD circles_field VARCHAR(255) DEFAULT NULL');
+        $migration->addSql('ALTER TABLE content_type ADD business_id_field VARCHAR(255) DEFAULT NULL');
+        $migration->addSql('ALTER TABLE content_type ADD color_field VARCHAR(255) DEFAULT NULL');
+        $migration->addSql('ALTER TABLE content_type ADD category_field VARCHAR(255) DEFAULT NULL');
 
         $updateQuery = <<<QUERY
             UPDATE content_type SET
                 labelField = :labelField,
                 circles_field = :circles_field,
                 color_field = :color_field,
-                business_id_field = :business_id_field
+                business_id_field = :business_id_field,
+                category_field = :category_field
             WHERE id = :id
 QUERY;
 
@@ -57,7 +61,7 @@ QUERY;
                 'circles_field' => $fields['circles'] ?? null,
                 'color_field' => $fields['color'] ?? null,
                 'business_id_field' => $fields['business_id'] ?? null,
-                'email_field' => $fields['email'] ?? null,
+                'category_field' => $fields['category'] ?? null,
                 'id' => $row['id'],
             ]);
         }

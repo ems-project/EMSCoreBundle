@@ -138,13 +138,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string
      *
-     * @ORM\Column(name="category_field", type="string", length=100, nullable=true)
-     */
-    protected $categoryField;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="imageField", type="string", length=100, nullable=true)
      */
     protected $imageField;
@@ -768,38 +761,23 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->environment;
     }
 
-    /**
-     * Set categoryField.
-     *
-     * @param string $categoryField
-     *
-     * @return ContentType
-     */
-    public function setCategoryField($categoryField)
-    {
-        $this->categoryField = $categoryField;
-
-        return $this;
-    }
-
     public function hasCategoryField(): bool
     {
-        return null !== $this->categoryField && \strlen($this->categoryField) > 0;
+        return null !== $this->field(ContentTypeFields::CATEGORY);
     }
 
     public function giveCategoryField(): string
     {
-        return $this->categoryField;
+        if (null === $categoryField = $this->field(ContentTypeFields::CATEGORY)) {
+            throw new \RuntimeException('Category field not defined');
+        }
+
+        return $categoryField;
     }
 
-    /**
-     * Get categoryField.
-     *
-     * @return string
-     */
-    public function getCategoryField()
+    public function getCategoryField(): ?string
     {
-        return $this->categoryField;
+        return $this->field(ContentTypeFields::CATEGORY);
     }
 
     /**

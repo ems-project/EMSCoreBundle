@@ -34,6 +34,8 @@
                         {{ form_row(form.editTwigWithWysiwyg) }}
                         {{ form_row(form.singularName) }}
                         {{ form_row(form.pluralName) }}
+                        {{ form_row(form.icon) }}
+                        {{ form_row(form.color) }}
 
                         <table class="table table-hover">
                             <thead>
@@ -51,9 +53,6 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                        {{ form_row(form.icon) }}
-                        {{ form_row(form.color) }}
-                        {{ form_row(form.refererFieldName) }}
 
                         {% if form.fields is defined %}
                             <table class="table table-hover">
@@ -74,12 +73,14 @@
                             </table>
                         {% endif %}
 
-
-                        {% if form.translationField is defined %}
+                        {% if form.sortOrder is defined %}
                             {{ form_row(form.sortOrder) }}
-                            {{ form_row(form.translationField) }}
-                            {{ form_row(form.localeField) }}
                         {% endif %}
+
+                        {{ form_row(form.refererFieldName) }}
+
+                        {% if form.translationField is defined %}{{ form_row(form.translationField) }}{% endif %}
+                        {% if form.localeField is defined %}{{ form_row(form.localeField) }}{% endif %}
                     </div>
 
                     <div class="col-md-8">

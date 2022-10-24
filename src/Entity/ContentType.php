@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
@@ -94,20 +95,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $lockUntil;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="circles_field", type="string", length=100, nullable=true)
-     */
-    protected $circlesField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="business_id_field", type="string", length=100, nullable=true)
-     */
-    protected $businessIdField;
-
-    /**
      * @ORM\Column(name="deleted", type="boolean")
      */
     protected bool $deleted = false;
@@ -144,114 +131,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string
      *
-     * @ORM\Column(name="labelField", type="string", length=100, nullable=true)
-     */
-    protected $labelField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="color_field", type="string", length=100, nullable=true)
-     */
-    protected $colorField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="userField", type="string", length=100, nullable=true)
-     */
-    protected $userField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="dateField", type="string", length=100, nullable=true)
-     */
-    protected $dateField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="startDateField", type="string", length=100, nullable=true)
-     */
-    protected $startDateField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="endDateField", type="string", length=100, nullable=true)
-     */
-    protected $endDateField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="locationField", type="string", length=100, nullable=true)
-     */
-    protected $locationField;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="referer_field_name", type="string", length=100, nullable=true)
      */
     protected $refererFieldName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="category_field", type="string", length=100, nullable=true)
-     */
-    protected $categoryField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="ouuidField", type="string", length=100, nullable=true)
-     */
-    protected $ouuidField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="imageField", type="string", length=100, nullable=true)
-     */
-    protected $imageField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="videoField", type="string", length=100, nullable=true)
-     */
-    protected $videoField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email_field", type="string", length=100, nullable=true)
-     */
-    protected $emailField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="asset_field", type="string", length=100, nullable=true)
-     */
-    protected $assetField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="order_field", type="string", length=100, nullable=true)
-     */
-    protected $orderField;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="sort_by", type="string", length=100, nullable=true)
-     */
-    protected $sortBy;
 
     /**
      * @ORM\Column(name="sort_order", type="string", length=4, nullable=true, options={"default" : "asc"})
@@ -326,18 +208,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public $defaultValue;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="translationField", type="string", length=100, nullable=true)
-     */
-    protected $translationField;
-
-    /**
-     * @ORM\Column(name="localeField", type="string", length=100, nullable=true)
-     */
-    protected ?string $localeField = null;
-
-    /**
      * @var ?string[]
      *
      * @ORM\Column(name="version_tags", type="json", nullable=true)
@@ -371,6 +241,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @ORM\Column(name="roles", type="json", nullable=true)
      */
     protected array $roles = [];
+
+    /**
+     * @var array<string, ?string>
+     *
+     * @ORM\Column(name="fields", type="json", nullable=true)
+     */
+    protected array $fields = [];
 
     public function __construct()
     {
@@ -566,177 +443,23 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->color;
     }
 
-    /**
-     * Set labelField.
-     *
-     * @param string $labelField
-     *
-     * @return ContentType
-     */
-    public function setLabelField($labelField)
-    {
-        $this->labelField = $labelField;
-
-        return $this;
-    }
-
     public function hasLabelField(): bool
     {
-        return null !== $this->labelField && \strlen($this->labelField) > 0;
+        return null !== $this->field(ContentTypeFields::LABEL);
     }
 
     public function giveLabelField(): string
     {
-        return $this->labelField;
+        if (null === $labelField = $this->field(ContentTypeFields::LABEL)) {
+            throw new \RuntimeException('Label field not defined');
+        }
+
+        return $labelField;
     }
 
     public function getLabelField(): ?string
     {
-        return $this->labelField;
-    }
-
-    /**
-     * Set dateField.
-     *
-     * @param string $dateField
-     *
-     * @return ContentType
-     */
-    public function setDateField($dateField)
-    {
-        $this->dateField = $dateField;
-
-        return $this;
-    }
-
-    /**
-     * Get dateField.
-     *
-     * @return string
-     */
-    public function getDateField()
-    {
-        return $this->dateField;
-    }
-
-    /**
-     * Set endDateField.
-     *
-     * @param string $endDateField
-     *
-     * @return ContentType
-     */
-    public function setEndDateField($endDateField)
-    {
-        $this->endDateField = $endDateField;
-
-        return $this;
-    }
-
-    /**
-     * Get endDateField.
-     *
-     * @return string
-     */
-    public function getEndDateField()
-    {
-        return $this->endDateField;
-    }
-
-    /**
-     * Set locationField.
-     *
-     * @param string $locationField
-     *
-     * @return ContentType
-     */
-    public function setLocationField($locationField)
-    {
-        $this->locationField = $locationField;
-
-        return $this;
-    }
-
-    /**
-     * Get locationField.
-     *
-     * @return string
-     */
-    public function getLocationField()
-    {
-        return $this->locationField;
-    }
-
-    /**
-     * Set ouuidField.
-     *
-     * @param string $ouuidField
-     *
-     * @return ContentType
-     */
-    public function setOuuidField($ouuidField)
-    {
-        $this->ouuidField = $ouuidField;
-
-        return $this;
-    }
-
-    /**
-     * Get ouuidField.
-     *
-     * @return string
-     */
-    public function getOuuidField()
-    {
-        return $this->ouuidField;
-    }
-
-    /**
-     * Set imageField.
-     *
-     * @param string $imageField
-     *
-     * @return ContentType
-     */
-    public function setImageField($imageField)
-    {
-        $this->imageField = $imageField;
-
-        return $this;
-    }
-
-    /**
-     * Get imageField.
-     *
-     * @return string
-     */
-    public function getImageField()
-    {
-        return $this->imageField;
-    }
-
-    /**
-     * Set videoField.
-     *
-     * @param string $videoField
-     *
-     * @return ContentType
-     */
-    public function setVideoField($videoField)
-    {
-        $this->videoField = $videoField;
-
-        return $this;
-    }
-
-    /**
-     * Get videoField.
-     *
-     * @return string
-     */
-    public function getVideoField()
-    {
-        return $this->videoField;
+        return $this->field(ContentTypeFields::LABEL);
     }
 
     /**
@@ -809,54 +532,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getPluralName()
     {
         return $this->pluralName;
-    }
-
-    /**
-     * Set startDateField.
-     *
-     * @param string $startDateField
-     *
-     * @return ContentType
-     */
-    public function setStartDateField($startDateField)
-    {
-        $this->startDateField = $startDateField;
-
-        return $this;
-    }
-
-    /**
-     * Get startDateField.
-     *
-     * @return string
-     */
-    public function getStartDateField()
-    {
-        return $this->startDateField;
-    }
-
-    /**
-     * Set userField.
-     *
-     * @param string $userField
-     *
-     * @return ContentType
-     */
-    public function setUserField($userField)
-    {
-        $this->userField = $userField;
-
-        return $this;
-    }
-
-    /**
-     * Get userField.
-     *
-     * @return string
-     */
-    public function getUserField()
-    {
-        return $this->userField;
     }
 
     /**
@@ -1022,38 +697,23 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->environment;
     }
 
-    /**
-     * Set categoryField.
-     *
-     * @param string $categoryField
-     *
-     * @return ContentType
-     */
-    public function setCategoryField($categoryField)
-    {
-        $this->categoryField = $categoryField;
-
-        return $this;
-    }
-
     public function hasCategoryField(): bool
     {
-        return null !== $this->categoryField && \strlen($this->categoryField) > 0;
+        return null !== $this->field(ContentTypeFields::CATEGORY);
     }
 
     public function giveCategoryField(): string
     {
-        return $this->categoryField;
+        if (null === $categoryField = $this->field(ContentTypeFields::CATEGORY)) {
+            throw new \RuntimeException('Category field not defined');
+        }
+
+        return $categoryField;
     }
 
-    /**
-     * Get categoryField.
-     *
-     * @return string
-     */
-    public function getCategoryField()
+    public function getCategoryField(): ?string
     {
-        return $this->categoryField;
+        return $this->field(ContentTypeFields::CATEGORY);
     }
 
     /**
@@ -1249,153 +909,43 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->askForOuuid;
     }
 
-    /**
-     * Set colorField.
-     *
-     * @param string $colorField
-     *
-     * @return ContentType
-     */
-    public function setColorField($colorField)
-    {
-        $this->colorField = $colorField;
-
-        return $this;
-    }
-
     public function hasColorField(): bool
     {
-        return null !== $this->colorField && \strlen($this->colorField) > 0;
+        return null !== $this->field(ContentTypeFields::COLOR);
     }
 
     public function giveColorField(): string
     {
-        return $this->colorField;
+        if (null === $colorField = $this->field(ContentTypeFields::COLOR)) {
+            throw new \RuntimeException('Color field not defined');
+        }
+
+        return $colorField;
     }
 
     public function getColorField(): ?string
     {
-        return $this->colorField;
-    }
-
-    /**
-     * Set circlesField.
-     *
-     * @param string $circlesField
-     *
-     * @return ContentType
-     */
-    public function setCirclesField($circlesField)
-    {
-        $this->circlesField = $circlesField;
-
-        return $this;
+        return $this->field(ContentTypeFields::COLOR);
     }
 
     public function getCirclesField(): ?string
     {
-        return $this->circlesField;
-    }
-
-    /**
-     * Set emailField.
-     *
-     * @param string $emailField
-     *
-     * @return ContentType
-     */
-    public function setEmailField($emailField)
-    {
-        $this->emailField = $emailField;
-
-        return $this;
-    }
-
-    /**
-     * Get emailField.
-     *
-     * @return string
-     */
-    public function getEmailField()
-    {
-        return $this->emailField;
-    }
-
-    /**
-     * Set assetField.
-     *
-     * @param string $assetField
-     *
-     * @return ContentType
-     */
-    public function setAssetField($assetField)
-    {
-        $this->assetField = $assetField;
-
-        return $this;
+        return $this->field(ContentTypeFields::CIRCLES);
     }
 
     public function hasAssetField(): bool
     {
-        return null !== $this->assetField && \strlen($this->assetField) > 0;
+        return null !== $this->field(ContentTypeFields::ASSET);
     }
 
-    /**
-     * Get assetField.
-     *
-     * @return string
-     */
-    public function getAssetField()
+    public function getAssetField(): ?string
     {
-        return $this->assetField;
+        return $this->field(ContentTypeFields::ASSET);
     }
 
-    /**
-     * Set orderField.
-     *
-     * @param string $orderField
-     *
-     * @return ContentType
-     */
-    public function setOrderField($orderField)
+    public function getSortBy(): ?string
     {
-        $this->orderField = $orderField;
-
-        return $this;
-    }
-
-    /**
-     * Get orderField.
-     *
-     * @return string
-     */
-    public function getOrderField()
-    {
-        return $this->orderField;
-    }
-
-    /**
-     * Set sortBy.
-     *
-     * @param string $sortBy
-     *
-     * @return ContentType
-     */
-    public function setSortBy($sortBy)
-    {
-        $this->sortBy = $sortBy;
-
-        return $this;
-    }
-
-    /**
-     * Get sortBy.
-     *
-     * @return string
-     */
-    public function getSortBy()
-    {
-        return $this->sortBy;
+        return $this->field(ContentTypeFields::SORT);
     }
 
     /**
@@ -1543,38 +1093,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     public function getBusinessIdField(): ?string
     {
-        return $this->businessIdField;
-    }
-
-    public function setBusinessIdField(string $businessIdField): ContentType
-    {
-        $this->businessIdField = $businessIdField;
-
-        return $this;
-    }
-
-    public function setTranslationField(string $translationField): ContentType
-    {
-        $this->translationField = $translationField;
-
-        return $this;
-    }
-
-    public function getTranslationField(): ?string
-    {
-        return $this->translationField;
-    }
-
-    public function setLocaleField(?string $localeField): ContentType
-    {
-        $this->localeField = $localeField;
-
-        return $this;
-    }
-
-    public function getLocaleField(): ?string
-    {
-        return $this->localeField;
+        return $this->field(ContentTypeFields::BUSINESS_ID);
     }
 
     public function hasVersionTags(): bool
@@ -1656,5 +1175,20 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function setRoles(ContentTypeRoles $roles): void
     {
         $this->roles = $roles->getRoles();
+    }
+
+    public function field(string $field): ?string
+    {
+        return $this->getFields()[$field] ?? null;
+    }
+
+    public function getFields(): ContentTypeFields
+    {
+        return new ContentTypeFields($this->fields ?? []);
+    }
+
+    public function setFields(ContentTypeFields $fields): void
+    {
+        $this->fields = $fields->getFields();
     }
 }

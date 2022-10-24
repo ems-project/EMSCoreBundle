@@ -31,87 +31,6 @@ class ContentTypeType extends AbstractType
 
         $mapping = $options['mapping'] ?? null;
         if (null !== $mapping) {
-            $builder->add('labelField', ContentTypeFieldPickerType::class, [
-                'required' => false,
-                'firstLevelOnly' => true,
-                'mapping' => $mapping,
-                'types' => [
-                        'text',
-                        'keyword',
-                        'string',
-                        'integer',
-                ], ]);
-
-            $builder->add('colorField', ContentTypeFieldPickerType::class, [
-                'required' => false,
-                'firstLevelOnly' => true,
-                'mapping' => $mapping,
-                'types' => [
-                        'string',
-                        'keyword',
-                        'text',
-                ], ]);
-            $builder->add('circlesField', ContentTypeFieldPickerType::class, [
-                'required' => false,
-                'firstLevelOnly' => true,
-                'mapping' => $mapping,
-                'types' => [
-                        'string',
-                        'keyword',
-                        'text',
-                ], ]);
-            $builder->add('emailField', ContentTypeFieldPickerType::class, [
-                'required' => false,
-                'firstLevelOnly' => true,
-                'mapping' => $mapping,
-                'types' => [
-                        'string',
-                        'keyword',
-                        'text',
-                ], ]);
-            $builder->add('categoryField', ContentTypeFieldPickerType::class, [
-                'required' => false,
-                'firstLevelOnly' => true,
-                'mapping' => $mapping,
-                'types' => [
-                        'string',
-                        'keyword',
-                        'text',
-                ], ]);
-            $builder->add('imageField', ContentTypeFieldPickerType::class, [
-                'required' => false,
-                'firstLevelOnly' => true,
-                'mapping' => $mapping,
-                'types' => [
-                        'nested',
-                ], ]);
-            $builder->add('assetField', ContentTypeFieldPickerType::class, [
-                'required' => false,
-                'firstLevelOnly' => true,
-                'mapping' => $mapping,
-                'types' => [
-                        'nested',
-                ], ]);
-            $builder->add('businessIdField', ContentTypeFieldPickerType::class, [
-                    'required' => false,
-                    'firstLevelOnly' => false,
-                    'mapping' => $mapping,
-                    'types' => [
-                            'keyword',
-                            'date',
-                            'integer',
-                            'string', // TODO: backward compatibility with ES2 To remove?
-                    ], ]);
-            $builder->add('sortBy', ContentTypeFieldPickerType::class, [
-                    'required' => false,
-                    'firstLevelOnly' => false,
-                    'mapping' => $mapping,
-                    'types' => [
-                            'keyword',
-                            'date',
-                            'integer',
-                            'string', // TODO: backward compatibility with ES2 To remove?
-                    ], ]);
             $builder->add('sortOrder', ChoiceType::class, [
                     'required' => false,
                     'label' => 'Default sort order',
@@ -120,18 +39,6 @@ class ContentTypeType extends AbstractType
                         'Descending' => 'desc',
                     ],
             ]);
-            $builder->add('translationField', ContentTypeFieldPickerType::class, [
-                'required' => false,
-                'firstLevelOnly' => true,
-                'mapping' => $mapping,
-                'types' => [
-                    'text',
-                    'keyword',
-                    'string',
-                    'integer',
-                ],
-            ]);
-            $builder->add('localeField');
 
             if ($environment->getManaged()) {
                 $builder
@@ -178,10 +85,14 @@ class ContentTypeType extends AbstractType
             'label' => 'Web content (available in WYSIWYG field as internal link)',
             'required' => false,
         ]);
-        $builder->add('autoPublish', CheckboxType::class, [
-            'label' => 'Silently publish draft and auto-save into the default environment',
-            'required' => false,
-        ]);
+
+        if ($environment->getManaged()) {
+            $builder->add('autoPublish', CheckboxType::class, [
+                'label' => 'Silently publish draft and auto-save into the default environment',
+                'required' => false,
+            ]);
+        }
+
         $builder->add('singularName', TextType::class);
         $builder->add('pluralName', TextType::class);
         $builder->add('icon', IconPickerType::class, [
@@ -248,6 +159,13 @@ class ContentTypeType extends AbstractType
             'label' => false,
         ]);
 
+        if (null !== $mapping) {
+            $builder->add('fields', ContentTypeFieldsType::class, [
+                'label' => false,
+                'mapping' => $mapping,
+            ]);
+        }
+
         if ($environment->getManaged()) {
             $builder->add('defaultValue', CodeEditorType::class, [
                 'required' => false,
@@ -255,7 +173,6 @@ class ContentTypeType extends AbstractType
                 'label' => 'Ask for OUUID',
                 'required' => false,
             ]);
-            $builder->add('orderField');
             $builder->add('saveAndEditStructure', SubmitEmsType::class, [
                     'attr' => [
                             'class' => 'btn btn-primary btn-sm ',

@@ -34,6 +34,8 @@
                         {{ form_row(form.editTwigWithWysiwyg) }}
                         {{ form_row(form.singularName) }}
                         {{ form_row(form.pluralName) }}
+                        {{ form_row(form.icon) }}
+                        {{ form_row(form.color) }}
 
                         <table class="table table-hover">
                             <thead>
@@ -51,34 +53,31 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                        {{ form_row(form.icon) }}
-                        {{ form_row(form.color) }}
-                        {{ form_row(form.refererFieldName) }}
-                        {% if form.labelField is defined %}
-                            {{ form_row(form.circlesField) }}
-                            {{ form_row(form.labelField) }}
-                            {{ form_row(form.businessIdField) }}
-                            {{ form_row(form.colorField) }}
-                            {{ form_row(form.emailField) }}
-                            {{ form_row(form.categoryField) }}
-                            {{ form_row(form.sortBy) }}
-                            {{ form_row(form.sortOrder) }}
-                            {% if contentType.environment.managed %}
-                                {{ form_row(form.orderField) }}
-                            {% endif %}
-                            {# 						{{ form_row(form.categoryField) }}#}
-                            {# 						{{ form_row(form.userField) }}#}
-                            {# 						{{ form_row(form.dateField) }}#}
-                            {# 						{{ form_row(form.startDateField) }}#}
-                            {# 						{{ form_row(form.endDateField) }}#}
-                            {# 						{{ form_row(form.locationField) }}#}
-                            {# 						{{ form_row(form.ouuidField) }}#}
-                            {{ form_row(form.imageField) }}
-                            {{ form_row(form.assetField) }}
-                            {# 						{{ form_row(form.videoField) }}#}
-                            {{ form_row(form.translationField) }}
-                            {{ form_row(form.localeField) }}
+
+                        {% if form.fields is defined %}
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Field</th>
+                                        <th>Mapping</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for elementField in form.fields %}
+                                    <tr>
+                                        <td>{{ form_label(elementField) }}</td>
+                                        <td>{{ form_widget(elementField) }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
                         {% endif %}
+
+                        {% if form.sortOrder is defined %}
+                            {{ form_row(form.sortOrder) }}
+                        {% endif %}
+
+                        {{ form_row(form.refererFieldName) }}
                     </div>
 
                     <div class="col-md-8">

@@ -98,13 +98,6 @@ class ObjectChoiceCacheService
                                 'missing' => '_last',
                             ],
                         ]);
-                    } elseif ($currentType->getOrderField()) {
-                        $search->setSort([
-                            $currentType->getOrderField() => [
-                                'order' => 'asc',
-                                'missing' => '_last',
-                            ],
-                        ]);
                     }
                     $search->setSources($currentType->getRenderingSourceFields());
                     $search->setSize(1000);

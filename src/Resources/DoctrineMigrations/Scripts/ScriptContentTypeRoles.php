@@ -21,8 +21,8 @@ trait ScriptContentTypeRoles
                     'trash' => $row['trash_role'] ?? 'not-defined',
                     'archive' => $row['archive_role'] ?? 'not-defined',
                     'owner' => $row['owner_role'] ?? 'not-defined',
-                    'show_link_create' => $row['createLinkDisplayRole'] ?? 'ROLE_USER',
-                    'show_link_search' => $row['searchLinkDisplayRole'] ?? 'ROLE_USER',
+                    'show_link_create' => $row['createLinkDisplayRole'] ?? ($row['createlinkdisplayrole'] ?? 'ROLE_USER'),
+                    'show_link_search' => $row['searchLinkDisplayRole'] ?? ($row['searchlinkdisplayrole'] ?? 'ROLE_USER'),
                 ]),
                 'id' => $row['id'],
             ]);

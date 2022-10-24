@@ -85,10 +85,14 @@ class ContentTypeType extends AbstractType
             'label' => 'Web content (available in WYSIWYG field as internal link)',
             'required' => false,
         ]);
-        $builder->add('autoPublish', CheckboxType::class, [
-            'label' => 'Silently publish draft and auto-save into the default environment',
-            'required' => false,
-        ]);
+
+        if ($environment->getManaged()) {
+            $builder->add('autoPublish', CheckboxType::class, [
+                'label' => 'Silently publish draft and auto-save into the default environment',
+                'required' => false,
+            ]);
+        }
+
         $builder->add('singularName', TextType::class);
         $builder->add('pluralName', TextType::class);
         $builder->add('icon', IconPickerType::class, [

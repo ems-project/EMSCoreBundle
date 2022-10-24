@@ -208,18 +208,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public $defaultValue;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="translationField", type="string", length=100, nullable=true)
-     */
-    protected $translationField;
-
-    /**
-     * @ORM\Column(name="localeField", type="string", length=100, nullable=true)
-     */
-    protected ?string $localeField = null;
-
-    /**
      * @var ?string[]
      *
      * @ORM\Column(name="version_tags", type="json", nullable=true)
@@ -1106,30 +1094,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getBusinessIdField(): ?string
     {
         return $this->field(ContentTypeFields::BUSINESS_ID);
-    }
-
-    public function setTranslationField(string $translationField): ContentType
-    {
-        $this->translationField = $translationField;
-
-        return $this;
-    }
-
-    public function getTranslationField(): ?string
-    {
-        return $this->translationField;
-    }
-
-    public function setLocaleField(?string $localeField): ContentType
-    {
-        $this->localeField = $localeField;
-
-        return $this;
-    }
-
-    public function getLocaleField(): ?string
-    {
-        return $this->localeField;
     }
 
     public function hasVersionTags(): bool

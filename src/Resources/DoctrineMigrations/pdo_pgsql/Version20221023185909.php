@@ -29,6 +29,8 @@ class Version20221023185909 extends AbstractMigration
         $this->addSql('ALTER TABLE content_type DROP videofield');
         $this->addSql('ALTER TABLE content_type DROP email_field');
         $this->addSql('ALTER TABLE content_type DROP imagefield');
+        $this->addSql('ALTER TABLE content_type DROP translationfield');
+        $this->addSql('ALTER TABLE content_type DROP localefield');
 
         $this->addSql('ALTER TABLE content_type ADD fields JSON DEFAULT NULL');
 
@@ -51,6 +53,8 @@ class Version20221023185909 extends AbstractMigration
         $this->addSql('ALTER TABLE content_type ADD videofield VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE content_type ADD email_field VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE content_type ADD imagefield VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE content_type ADD translationfield VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE content_type ADD localefield VARCHAR(255) DEFAULT NULL');
 
         $this->scriptDecodeFields($this);
     }

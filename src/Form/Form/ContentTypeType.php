@@ -39,18 +39,6 @@ class ContentTypeType extends AbstractType
                         'Descending' => 'desc',
                     ],
             ]);
-            $builder->add('translationField', ContentTypeFieldPickerType::class, [
-                'required' => false,
-                'firstLevelOnly' => true,
-                'mapping' => $mapping,
-                'types' => [
-                    'text',
-                    'keyword',
-                    'string',
-                    'integer',
-                ],
-            ]);
-            $builder->add('localeField');
 
             if ($environment->getManaged()) {
                 $builder

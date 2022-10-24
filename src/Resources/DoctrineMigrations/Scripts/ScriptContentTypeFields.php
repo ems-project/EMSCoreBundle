@@ -26,18 +26,18 @@ trait ScriptContentTypeFields
             ]);
         }
 
-        $migration->addSql('ALTER TABLE content_type DROP labelField');
-        $migration->addSql('ALTER TABLE content_type DROP circles_field');
-        $migration->addSql('ALTER TABLE content_type DROP business_id_field');
-        $migration->addSql('ALTER TABLE content_type DROP color_field');
+//        $migration->addSql('ALTER TABLE content_type DROP labelField');
+//        $migration->addSql('ALTER TABLE content_type DROP circles_field');
+//        $migration->addSql('ALTER TABLE content_type DROP business_id_field');
+//        $migration->addSql('ALTER TABLE content_type DROP color_field');
     }
 
     public function scriptDecodeFields(AbstractMigration $migration): void
     {
-        $migration->addSql('ALTER TABLE content_type ADD labelField VARCHAR(255) DEFAULT NULL');
-        $migration->addSql('ALTER TABLE content_type ADD circles_field VARCHAR(255) DEFAULT NULL');
-        $migration->addSql('ALTER TABLE content_type ADD business_id_field VARCHAR(255) DEFAULT NULL');
-        $migration->addSql('ALTER TABLE content_type ADD color_field VARCHAR(255) DEFAULT NULL');
+//        $migration->addSql('ALTER TABLE content_type ADD labelField VARCHAR(255) DEFAULT NULL');
+//        $migration->addSql('ALTER TABLE content_type ADD circles_field VARCHAR(255) DEFAULT NULL');
+//        $migration->addSql('ALTER TABLE content_type ADD business_id_field VARCHAR(255) DEFAULT NULL');
+//        $migration->addSql('ALTER TABLE content_type ADD color_field VARCHAR(255) DEFAULT NULL');
 
         $updateQuery = <<<QUERY
             UPDATE content_type SET
@@ -57,6 +57,7 @@ QUERY;
                 'circles_field' => $fields['circles'] ?? null,
                 'color_field' => $fields['color'] ?? null,
                 'business_id_field' => $fields['business_id'] ?? null,
+                'email_field' => $fields['email'] ?? null,
                 'id' => $row['id'],
             ]);
         }

@@ -152,13 +152,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string
      *
-     * @ORM\Column(name="email_field", type="string", length=100, nullable=true)
-     */
-    protected $emailField;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="asset_field", type="string", length=100, nullable=true)
      */
     protected $assetField;
@@ -1024,30 +1017,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getCirclesField(): ?string
     {
         return $this->field(ContentTypeFields::CIRCLES);
-    }
-
-    /**
-     * Set emailField.
-     *
-     * @param string $emailField
-     *
-     * @return ContentType
-     */
-    public function setEmailField($emailField)
-    {
-        $this->emailField = $emailField;
-
-        return $this;
-    }
-
-    /**
-     * Get emailField.
-     *
-     * @return string
-     */
-    public function getEmailField()
-    {
-        return $this->emailField;
     }
 
     /**

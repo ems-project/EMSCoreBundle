@@ -31,14 +31,6 @@ class ContentTypeType extends AbstractType
 
         $mapping = $options['mapping'] ?? null;
         if (null !== $mapping) {
-            $builder->add('imageField', ContentTypeFieldPickerType::class, [
-                'required' => false,
-                'firstLevelOnly' => true,
-                'mapping' => $mapping,
-                'types' => [
-                        'nested',
-                ], ]);
-
             $builder->add('sortBy', ContentTypeFieldPickerType::class, [
                     'required' => false,
                     'firstLevelOnly' => false,

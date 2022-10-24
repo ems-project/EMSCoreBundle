@@ -75,13 +75,12 @@
                         {% endif %}
 
 
-                        {% if form.imageField is defined %}
+                        {% if form.sortBy is defined %}
                             {{ form_row(form.sortBy) }}
                             {{ form_row(form.sortOrder) }}
                             {% if contentType.environment.managed %}
                                 {{ form_row(form.orderField) }}
                             {% endif %}
-                            {{ form_row(form.imageField) }}
                             {{ form_row(form.translationField) }}
                             {{ form_row(form.localeField) }}
                         {% endif %}

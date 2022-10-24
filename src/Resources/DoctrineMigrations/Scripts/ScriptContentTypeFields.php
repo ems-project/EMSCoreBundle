@@ -22,6 +22,7 @@ trait ScriptContentTypeFields
                     'color' => $emptyStringToNull($row['color_field'] ?? null),
                     'business_id' => $emptyStringToNull($row['business_id_field'] ?? null),
                     'category_field' => $emptyStringToNull($row['category_field'] ?? null),
+                    'asset_field' => $emptyStringToNull($row['asset_field'] ?? null),
                 ]),
                 'id' => $row['id'],
             ]);
@@ -32,6 +33,7 @@ trait ScriptContentTypeFields
         $migration->addSql('ALTER TABLE content_type DROP business_id_field');
         $migration->addSql('ALTER TABLE content_type DROP color_field');
         $migration->addSql('ALTER TABLE content_type DROP category_field');
+        $migration->addSql('ALTER TABLE content_type DROP asset_field');
     }
 
     public function scriptDecodeFields(AbstractMigration $migration): void
@@ -41,6 +43,7 @@ trait ScriptContentTypeFields
         $migration->addSql('ALTER TABLE content_type ADD business_id_field VARCHAR(255) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD color_field VARCHAR(255) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD category_field VARCHAR(255) DEFAULT NULL');
+        $migration->addSql('ALTER TABLE content_type ADD asset_field VARCHAR(255) DEFAULT NULL');
 
         $updateQuery = <<<QUERY
             UPDATE content_type SET
@@ -48,7 +51,8 @@ trait ScriptContentTypeFields
                 circles_field = :circles_field,
                 color_field = :color_field,
                 business_id_field = :business_id_field,
-                category_field = :category_field
+                category_field = :category_field,
+                asset_field = :asset_field
             WHERE id = :id
 QUERY;
 
@@ -62,6 +66,7 @@ QUERY;
                 'color_field' => $fields['color'] ?? null,
                 'business_id_field' => $fields['business_id'] ?? null,
                 'category_field' => $fields['category'] ?? null,
+                'asset_field' => $fields['asset'] ?? null,
                 'id' => $row['id'],
             ]);
         }

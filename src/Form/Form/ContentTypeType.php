@@ -38,13 +38,6 @@ class ContentTypeType extends AbstractType
                 'types' => [
                         'nested',
                 ], ]);
-            $builder->add('assetField', ContentTypeFieldPickerType::class, [
-                'required' => false,
-                'firstLevelOnly' => true,
-                'mapping' => $mapping,
-                'types' => [
-                        'nested',
-                ], ]);
 
             $builder->add('sortBy', ContentTypeFieldPickerType::class, [
                     'required' => false,

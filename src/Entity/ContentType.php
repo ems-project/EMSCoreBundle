@@ -145,13 +145,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string
      *
-     * @ORM\Column(name="asset_field", type="string", length=100, nullable=true)
-     */
-    protected $assetField;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="order_field", type="string", length=100, nullable=true)
      */
     protected $orderField;
@@ -997,33 +990,14 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->field(ContentTypeFields::CIRCLES);
     }
 
-    /**
-     * Set assetField.
-     *
-     * @param string $assetField
-     *
-     * @return ContentType
-     */
-    public function setAssetField($assetField)
-    {
-        $this->assetField = $assetField;
-
-        return $this;
-    }
-
     public function hasAssetField(): bool
     {
-        return null !== $this->assetField && \strlen($this->assetField) > 0;
+        return null !== $this->field(ContentTypeFields::ASSET);
     }
 
-    /**
-     * Get assetField.
-     *
-     * @return string
-     */
-    public function getAssetField()
+    public function getAssetField(): ?string
     {
-        return $this->assetField;
+        return $this->field(ContentTypeFields::ASSET);
     }
 
     /**

@@ -15,21 +15,23 @@ class ContentTypeFields implements \ArrayAccess
     private array $fields = [];
 
     public const LABEL = 'label';
-    public const CIRCLES = 'circles';
     public const COLOR = 'color';
+    public const SORT = 'sort';
+    public const TOOLTIP = 'tooltip';
+    public const CIRCLES = 'circles';
     public const BUSINESS_ID = 'business_id';
     public const CATEGORY = 'category';
     public const ASSET = 'asset';
-    public const SORT = 'sort';
 
     private const FIELDS = [
         self::LABEL,
-        self::CIRCLES,
         self::COLOR,
+        self::SORT,
+        self::TOOLTIP,
+        self::CIRCLES,
         self::BUSINESS_ID,
         self::CATEGORY,
         self::ASSET,
-        self::SORT,
     ];
 
     /**

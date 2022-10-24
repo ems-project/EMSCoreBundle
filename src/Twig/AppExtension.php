@@ -15,6 +15,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CommonBundle\Twig\RequestRuntime;
+use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer;
@@ -938,27 +939,38 @@ class AppExtension extends AbstractExtension
 
         $label = $this->makeDataLabel($contentType, $emsLink);
 
-        $addAttribute = '';
+        $attributes = [];
         $out = $label['text'];
 
-        if (isset($label['color'])) {
-            $addAttribute = ' style="background-color: '.$label['color'].';border-color: '.$label['color'].';"';
-        }
         if (null !== $diffMod) {
             $out = '<'.$diffMod.' class="diffmod">'.$out.'<'.$diffMod.'>';
         }
-
-        if (!$this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::VIEW))) {
-            return isset($label['color']) ?
-                \sprintf('<span style="color: %s">%s</span>', $label['color'], $out) :
-                \sprintf('<span>%s</span>', $out);
+        if (isset($label['tooltip'])) {
+            $attributes = ['data-toggle="tooltip"', 'data-placement="top"', \sprintf('title="%s"', $label['tooltip'])];
         }
 
-        return '<a class="btn btn-primary btn-sm" href="'.$this->router->generate('data.revisions', [
+        if (!$this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::VIEW))) {
+            if (isset($label['color'])) {
+                $attributes = [...$attributes, \sprintf('style="color: %s"', $label['color'])];
+            }
+
+            return \sprintf('<span %s>%s</span>', \implode(' ', $attributes), $out);
+        }
+
+        if (isset($label['color'])) {
+            $attributes = [...$attributes, 'style="background-color: '.$label['color'].';border-color: '.$label['color'].';"'];
+        }
+
+        $link = $this->router->generate('data.revisions', [
             'type' => $emsLink->getContentType(),
             'ouuid' => $emsLink->getOuuid(),
             'revisionId' => $revisionId,
-        ]).'" '.$addAttribute.' >'.$out.'</a>';
+        ]);
+
+        return \vsprintf(
+            '<a class="ems-data-link btn btn-primary btn-sm" href="%s" %s>%s</a>',
+            [$link, \implode(' ', $attributes), $out]
+        );
     }
 
     public function propertyPath(FormError $error): string
@@ -1201,7 +1213,7 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @return array{"text": string, "color"?: string}
+     * @return array{"text": string, "color"?: string, "tooltip"?: string}
      */
     private function makeDataLabel(ContentType $contentType, EMSLink $emsLink): array
     {
@@ -1224,6 +1236,11 @@ class AppExtension extends AbstractExtension
                 $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
                 $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
                 $data['color'] = $color;
+            }
+
+            $tooltipField = $contentType->field(ContentTypeFields::TOOLTIP);
+            if ($tooltipField && $tooltip = $emsSource->get($tooltipField, false)) {
+                $data['tooltip'] = $tooltip;
             }
         } catch (\Elastica\Exception\NotFoundException $e) {
             /** @var RevisionRepository $revisionRepository */

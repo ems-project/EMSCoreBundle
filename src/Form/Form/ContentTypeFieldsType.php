@@ -27,12 +27,13 @@ class ContentTypeFieldsType extends AbstractType
 
         $builder
             ->add(ContentTypeFields::LABEL, ContentTypeFieldPickerType::class, $defaultOptions)
-            ->add(ContentTypeFields::CIRCLES, ContentTypeFieldPickerType::class, $defaultOptions)
             ->add(ContentTypeFields::COLOR, ContentTypeFieldPickerType::class, $defaultOptions)
+            ->add(ContentTypeFields::SORT, ContentTypeFieldPickerType::class, $defaultOptions)
+            ->add(ContentTypeFields::TOOLTIP, ContentTypeFieldPickerType::class, $defaultOptions)
+            ->add(ContentTypeFields::CIRCLES, ContentTypeFieldPickerType::class, $defaultOptions)
             ->add(ContentTypeFields::BUSINESS_ID, ContentTypeFieldPickerType::class, $defaultOptions)
             ->add(ContentTypeFields::CATEGORY, ContentTypeFieldPickerType::class, $defaultOptions)
             ->add(ContentTypeFields::ASSET, ContentTypeFieldPickerType::class, $defaultOptions)
-            ->add(ContentTypeFields::SORT, ContentTypeFieldPickerType::class, $defaultOptions)
         ;
     }
 

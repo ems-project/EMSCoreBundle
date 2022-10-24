@@ -67,3 +67,12 @@ ul.dropdown-menu li button {
   border-color: $brand-danger;
   color: $brand-danger;
 }
+
+span[data-toggle="tooltip"] {
+  cursor: default;
+}
+
+.tooltip-inner {
+  max-width: 100%;
+  min-width: 150px;
+}

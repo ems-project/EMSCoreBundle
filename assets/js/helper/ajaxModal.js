@@ -1,4 +1,5 @@
 import {editRevisionEventListeners} from "../editRevisionEventListeners";
+import {tooltipDataLinks} from "./tooltip";
 
 import { ajaxJsonGet, ajaxJsonPost, ajaxJsonSubmit } from "./ajax";
 
@@ -156,6 +157,8 @@ class AjaxModal {
                     ajaxModal.submitForm( request.responseURL, callback);
                 });
             }
+
+            tooltipDataLinks(this.modal);
 
             if (typeof callback === 'function') { callback(json, request, this.modal); }
         } else {

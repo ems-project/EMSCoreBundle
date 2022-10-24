@@ -8,6 +8,7 @@ import PickFileFromServer from './module/pickFileFromServer';
 import collapse from './helper/collapse';
 import FileUploader from "@elasticms/file-uploader";
 import Datatables from "./module/datatables";
+import {tooltipDataLinks} from "./helper/tooltip";
 
 
 export default class EmsListeners {
@@ -42,6 +43,7 @@ export default class EmsListeners {
         this.addFileUploaderListerners();
         this.addA2LixLibSfCollection();
         this.addDisabledButtonTreatListeners();
+        tooltipDataLinks(this.target);
     }
 
     addFieldsToDisplayByValue() {

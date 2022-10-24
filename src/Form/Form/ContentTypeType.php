@@ -31,16 +31,6 @@ class ContentTypeType extends AbstractType
 
         $mapping = $options['mapping'] ?? null;
         if (null !== $mapping) {
-            $builder->add('sortBy', ContentTypeFieldPickerType::class, [
-                    'required' => false,
-                    'firstLevelOnly' => false,
-                    'mapping' => $mapping,
-                    'types' => [
-                            'keyword',
-                            'date',
-                            'integer',
-                            'string', // TODO: backward compatibility with ES2 To remove?
-                    ], ]);
             $builder->add('sortOrder', ChoiceType::class, [
                     'required' => false,
                     'label' => 'Default sort order',

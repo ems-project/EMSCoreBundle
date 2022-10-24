@@ -143,13 +143,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $orderField;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="sort_by", type="string", length=100, nullable=true)
-     */
-    protected $sortBy;
-
-    /**
      * @ORM\Column(name="sort_order", type="string", length=4, nullable=true, options={"default" : "asc"})
      */
     protected ?string $sortOrder = null;
@@ -993,28 +986,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->orderField;
     }
 
-    /**
-     * Set sortBy.
-     *
-     * @param string $sortBy
-     *
-     * @return ContentType
-     */
-    public function setSortBy($sortBy)
+    public function getSortBy(): ?string
     {
-        $this->sortBy = $sortBy;
-
-        return $this;
-    }
-
-    /**
-     * Get sortBy.
-     *
-     * @return string
-     */
-    public function getSortBy()
-    {
-        return $this->sortBy;
+        return $this->field(ContentTypeFields::SORT);
     }
 
     /**

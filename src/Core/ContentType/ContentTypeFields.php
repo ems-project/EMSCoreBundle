@@ -20,6 +20,7 @@ class ContentTypeFields implements \ArrayAccess
     public const BUSINESS_ID = 'business_id';
     public const CATEGORY = 'category';
     public const ASSET = 'asset';
+    public const SORT = 'sort';
 
     private const FIELDS = [
         self::LABEL,
@@ -28,6 +29,7 @@ class ContentTypeFields implements \ArrayAccess
         self::BUSINESS_ID,
         self::CATEGORY,
         self::ASSET,
+        self::SORT,
     ];
 
     /**

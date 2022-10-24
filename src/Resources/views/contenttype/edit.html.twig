@@ -75,8 +75,7 @@
                         {% endif %}
 
 
-                        {% if form.sortBy is defined %}
-                            {{ form_row(form.sortBy) }}
+                        {% if form.translationField is defined %}
                             {{ form_row(form.sortOrder) }}
                             {% if contentType.environment.managed %}
                                 {{ form_row(form.orderField) }}

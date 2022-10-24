@@ -95,13 +95,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $lockUntil;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="business_id_field", type="string", length=100, nullable=true)
-     */
-    protected $businessIdField;
-
-    /**
      * @ORM\Column(name="deleted", type="boolean")
      */
     protected bool $deleted = false;
@@ -1296,14 +1289,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     public function getBusinessIdField(): ?string
     {
-        return $this->businessIdField;
-    }
-
-    public function setBusinessIdField(string $businessIdField): ContentType
-    {
-        $this->businessIdField = $businessIdField;
-
-        return $this;
+        return $this->field(ContentTypeFields::BUSINESS_ID);
     }
 
     public function setTranslationField(string $translationField): ContentType

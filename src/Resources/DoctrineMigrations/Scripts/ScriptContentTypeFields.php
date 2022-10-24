@@ -19,6 +19,7 @@ trait ScriptContentTypeFields
                 'fields' => Json::encode([
                     'label' => $emptyStringToNull($row['labelField'] ?? ($row['labelfield'] ?? null)),
                     'circles' => $emptyStringToNull($row['circles_field'] ?? null),
+                    'business_id' => $emptyStringToNull($row['business_id_field'] ?? null),
                 ]),
                 'id' => $row['id'],
             ]);
@@ -26,17 +27,20 @@ trait ScriptContentTypeFields
 
         $migration->addSql('ALTER TABLE content_type DROP labelField');
         $migration->addSql('ALTER TABLE content_type DROP circles_field');
+        $migration->addSql('ALTER TABLE content_type DROP business_id_field');
     }
 
     public function scriptDecodeFields(AbstractMigration $migration): void
     {
         $migration->addSql('ALTER TABLE content_type ADD labelField VARCHAR(255) DEFAULT NULL');
         $migration->addSql('ALTER TABLE content_type ADD circles_field VARCHAR(255) DEFAULT NULL');
+        $migration->addSql('ALTER TABLE content_type ADD business_id_field VARCHAR(255) DEFAULT NULL');
 
         $updateQuery = <<<QUERY
             UPDATE content_type SET
                 labelField = :labelField,
-                circles_field = :circles_field
+                circles_field = :circles_field,
+                business_id_field = :business_id_field
             WHERE id = :id
 QUERY;
 
@@ -47,6 +51,7 @@ QUERY;
             $migration->addSql($updateQuery, [
                 'labelField' => $fields['label'] ?? null,
                 'circles_field' => $fields['circles'] ?? null,
+                'business_id_field' => $fields['business_id'] ?? null,
                 'id' => $row['id'],
             ]);
         }

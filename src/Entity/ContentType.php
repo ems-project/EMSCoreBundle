@@ -131,13 +131,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string
      *
-     * @ORM\Column(name="color_field", type="string", length=100, nullable=true)
-     */
-    protected $colorField;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="referer_field_name", type="string", length=100, nullable=true)
      */
     protected $refererFieldName;
@@ -1009,33 +1002,23 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->askForOuuid;
     }
 
-    /**
-     * Set colorField.
-     *
-     * @param string $colorField
-     *
-     * @return ContentType
-     */
-    public function setColorField($colorField)
-    {
-        $this->colorField = $colorField;
-
-        return $this;
-    }
-
     public function hasColorField(): bool
     {
-        return null !== $this->colorField && \strlen($this->colorField) > 0;
+        return null !== $this->field(ContentTypeFields::COLOR);
     }
 
     public function giveColorField(): string
     {
-        return $this->colorField;
+        if (null === $colorField = $this->field(ContentTypeFields::COLOR)) {
+            throw new \RuntimeException('Color field not defined');
+        }
+
+        return $colorField;
     }
 
     public function getColorField(): ?string
     {
-        return $this->colorField;
+        return $this->field(ContentTypeFields::COLOR);
     }
 
     public function getCirclesField(): ?string

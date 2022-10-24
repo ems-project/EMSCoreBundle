@@ -40,15 +40,6 @@ class ContentTypeType extends AbstractType
                         'keyword',
                         'text',
                 ], ]);
-            $builder->add('circlesField', ContentTypeFieldPickerType::class, [
-                'required' => false,
-                'firstLevelOnly' => true,
-                'mapping' => $mapping,
-                'types' => [
-                        'string',
-                        'keyword',
-                        'text',
-                ], ]);
             $builder->add('emailField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,

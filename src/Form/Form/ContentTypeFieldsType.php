@@ -18,12 +18,17 @@ class ContentTypeFieldsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add(ContentTypeFields::LABEL, ContentTypeFieldPickerType::class, [
+        $defaultOptions = [
             'required' => false,
             'firstLevelOnly' => true,
             'mapping' => $options['mapping'],
             'types' => ['text',  'keyword', 'string', 'integer'],
-        ]);
+        ];
+
+        $builder
+            ->add(ContentTypeFields::LABEL, ContentTypeFieldPickerType::class, $defaultOptions)
+            ->add(ContentTypeFields::CIRCLES, ContentTypeFieldPickerType::class, $defaultOptions)
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

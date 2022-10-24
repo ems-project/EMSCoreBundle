@@ -15,9 +15,11 @@ class ContentTypeFields implements \ArrayAccess
     private array $fields = [];
 
     public const LABEL = 'label';
+    public const CIRCLES = 'circles';
 
     private const FIELDS = [
         self::LABEL,
+        self::CIRCLES,
     ];
 
     /**
@@ -36,7 +38,7 @@ class ContentTypeFields implements \ArrayAccess
     public function getFields(): array
     {
         /** @var array<string, ?string> $cleaned */
-        $cleaned = ArrayHelper::map($this->fields, fn ($v) => (\strlen($v) > 0 ? $v : null));
+        $cleaned = ArrayHelper::map($this->fields, fn (?string $v) => (null !== $v && \strlen($v) > 0 ? $v : null));
 
         return $cleaned;
     }

@@ -97,13 +97,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @var string
      *
-     * @ORM\Column(name="circles_field", type="string", length=100, nullable=true)
-     */
-    protected $circlesField;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="business_id_field", type="string", length=100, nullable=true)
      */
     protected $businessIdField;
@@ -1052,23 +1045,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->colorField;
     }
 
-    /**
-     * Set circlesField.
-     *
-     * @param string $circlesField
-     *
-     * @return ContentType
-     */
-    public function setCirclesField($circlesField)
-    {
-        $this->circlesField = $circlesField;
-
-        return $this;
-    }
-
     public function getCirclesField(): ?string
     {
-        return $this->circlesField;
+        return $this->field(ContentTypeFields::CIRCLES);
     }
 
     /**

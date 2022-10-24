@@ -9,26 +9,34 @@ trait ScriptContentTypeFields
 {
     public function scriptEncodeFields(AbstractMigration $migration): void
     {
+        $emptyStringToNull = function (?string $value): ?string {
+            return $value && \strlen($value) > 0 ? $value : null;
+        };
+
         $result = $migration->connection->executeQuery('select * from content_type');
         while ($row = $result->fetchAssociative()) {
             $migration->addSql('UPDATE content_type SET fields = :fields WHERE id = :id', [
                 'fields' => Json::encode([
-                    'label' => $row['labelField'] ?? ($row['labelfield'] ?? null),
+                    'label' => $emptyStringToNull($row['labelField'] ?? ($row['labelfield'] ?? null)),
+                    'circles' => $emptyStringToNull($row['circles_field'] ?? null),
                 ]),
                 'id' => $row['id'],
             ]);
         }
 
         $migration->addSql('ALTER TABLE content_type DROP labelField');
+        $migration->addSql('ALTER TABLE content_type DROP circles_field');
     }
 
     public function scriptDecodeFields(AbstractMigration $migration): void
     {
         $migration->addSql('ALTER TABLE content_type ADD labelField VARCHAR(255) DEFAULT NULL');
+        $migration->addSql('ALTER TABLE content_type ADD circles_field VARCHAR(255) DEFAULT NULL');
 
         $updateQuery = <<<QUERY
             UPDATE content_type SET
-                labelField = :labelField
+                labelField = :labelField,
+                circles_field = :circles_field
             WHERE id = :id
 QUERY;
 
@@ -38,6 +46,7 @@ QUERY;
 
             $migration->addSql($updateQuery, [
                 'labelField' => $fields['label'] ?? null,
+                'circles_field' => $fields['circles'] ?? null,
                 'id' => $row['id'],
             ]);
         }

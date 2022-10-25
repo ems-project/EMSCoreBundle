@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Core\Revision\Task;
+namespace EMS\CoreBundle\Core\Revision\Task\Table;
 
 use EMS\CommonBundle\Entity\EntityInterface;
+use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Form\Data\DateTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;

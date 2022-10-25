@@ -30,7 +30,7 @@
     </td>
 {%- endblock -%}
 
-{%- block modified -%}{{ data.taskCurrent.modified.format(date_time_format) -}}{%- endblock -%}
+{%- block modified -%}<td data-order="{{ data.taskCurrent.modified.timestamp }}">{{ data.taskCurrent.modified.format(date_time_format) -}}</td>{%- endblock -%}
 
 {%- block actions -%}
     <div class="btn-group">

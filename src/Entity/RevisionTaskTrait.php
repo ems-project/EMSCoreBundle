@@ -105,6 +105,11 @@ trait RevisionTaskTrait
         return $this->getTaskCurrent()->hasDeadline() ? $this->getTaskCurrent()->getDeadline() : null;
     }
 
+    public function getTaskModified(): \DateTimeInterface
+    {
+        return $this->getTaskCurrent()->getModified();
+    }
+
     public function getTaskCurrent(): Task
     {
         if (null === $this->taskCurrent) {

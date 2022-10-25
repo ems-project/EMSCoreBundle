@@ -60,7 +60,7 @@ final class TaskTableService implements EntityServiceInterface
 
             if ('block' === $type) {
                 $def = new TemplateBlockTableColumn($options['label'], $name, self::TEMPLATE, $orderField);
-                $def->setCellRender(self::COL_DEADLINE !== $name);
+                $def->setCellRender(!\in_array($name, [self::COL_DEADLINE, self::COL_MODIFIED]));
                 $table->addColumnDefinition($def)->setCellClass('col-'.$name);
             } else {
                 $table->addColumn($options['label'], $name);
@@ -76,7 +76,7 @@ final class TaskTableService implements EntityServiceInterface
         unset($columns[self::COL_ACTIONS]);
 
         foreach ($columns as $name => $options) {
-            if (self::COL_DEADLINE === $name) {
+            if (\in_array($name, [self::COL_DEADLINE, self::COL_MODIFIED])) {
                 $table->addColumnDefinition(new DateTableColumn($options['label'], $options['column']));
             } else {
                 $table->addColumn($options['label'], $options['column']);

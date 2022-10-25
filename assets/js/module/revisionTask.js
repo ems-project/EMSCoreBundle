@@ -49,6 +49,22 @@ export default class RevisionTask {
                 );
             }
         });
+
+        let formFilters = document.querySelector('form[name="revision-task-filters"]');
+        if (formFilters) {
+            formFilters.querySelector('select').addEventListener('change', function () {
+                submit();
+            });
+
+            function submit() {
+                let formObject = Object.fromEntries(new FormData(formFilters));
+                let url = new URL(window.location.href);
+                Object.entries(formObject).forEach(([key, value]) => {
+                    url.searchParams.set(key, value);
+                });
+                window.location = url.toString();
+            }
+        }
     }
 
     loadTask() {

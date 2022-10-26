@@ -39,8 +39,8 @@ class RevisionType extends AbstractType
     {
         /** @var Revision|null $revision */
         $revision = $builder->getData();
-        $user = $this->userManager->getAuthenticatedUser();
-        $simplifiedUI = $user->getUserOptions()->isEnabled(UserOptions::SIMPLIFIED_UI);
+        $user = $this->userManager->getUser();
+        $simplifiedUI = $user && $user->getUserOptions()->isEnabled(UserOptions::SIMPLIFIED_UI);
         $contentType = $revision ? $revision->giveContentType() : $options['content_type'];
 
         if (!$contentType instanceof ContentType) {

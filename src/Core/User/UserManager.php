@@ -50,6 +50,15 @@ final class UserManager
         return $user;
     }
 
+    public function getUser(): ?User
+    {
+        try {
+            return $this->getAuthenticatedUser();
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
     public function getAuthenticatedUser(): User
     {
         $token = $this->getToken();

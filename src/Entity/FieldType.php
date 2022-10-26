@@ -593,7 +593,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      *
      * @throws \Exception
      */
-    public function __set(string $key, $input): self
+    public function __set(string $key, $input): void
     {
         if (0 !== \strpos($key, 'ems_')) {
             throw new \Exception('unprotected ems set with key '.$key);
@@ -612,8 +612,6 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         if (!$found) {
             $this->children->add($input);
         }
-
-        return $this;
     }
 
     public function setParent(?FieldType $parent = null): self

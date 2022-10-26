@@ -6,6 +6,10 @@
 {% block pagetitle %}{{ 'task.title'|trans }}{% endblock %}
 
 {% block body %}
+{%- set route = app.request.get('_route') -%}
+{%- set requestQuery = app.request.query.all -%}
+{%- set routeParams = app.request.get('_route_params')|merge(requestQuery) -%}
+{%- set showFilters = attribute(requestQuery, 'revision-task-filters')|default([])|length > 0 -%}
 <div id="task-dashboard" class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         {% for tabName in tabs %}
@@ -15,15 +19,31 @@
                 </li>
             {% else %}
                 <li>
-                    <a href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'tab': tabName})) }}">
+                    <a href="{{ path(route, routeParams|merge({'tab': tabName})) }}">
                         {{ "task.dashboard.tab.#{tabName}"|trans }}
                     </a>
                 </li>
             {% endif %}
         {% endfor %}
+        {% if filterForm is defined %}
+            <li class="pull-right">
+                <div>
+                    <a class="btn btn-sm btn-primary" role="button" data-toggle="collapse" href="#filters" aria-expanded="{{ showFilters ? 'true' : 'false' }}" aria-controls="filters">
+                        <i class="fa fa-filter" aria-hidden="true"></i> {{ 'filters'|trans }}
+                    </a>
+                </div>
+            </li>
+        {% endif %}
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="{{ currentTab }}">
+            {% if filterForm is defined %}
+                <div class="collapse {{ showFilters ? 'in' }}" id="filters">
+                    <div class="well">
+                        {{ form(filterForm, { 'attr': { 'class': 'form-inline' } } ) }}
+                    </div>
+                </div>
+            {% endif %}
             {% form_theme formTable '@EMSCore/form/forms.html.twig' %}
             {{ form(formTable) }}
             {% if table.count > 0 %}
@@ -32,8 +52,8 @@
                         Export <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a href="{{ path('ems_core_task_ajax_datatable_excel', {'tab': currentTab}) }}">Excel</a></li>
-                        <li><a href="{{ path('ems_core_task_ajax_datatable_csv', {'tab': currentTab}) }}">CSV</a></li>
+                        <li><a href="{{ path('ems_core_task_ajax_datatable_excel', routeParams|merge({'tab': currentTab}) ) }}">Excel</a></li>
+                        <li><a href="{{ path('ems_core_task_ajax_datatable_csv', routeParams|merge({'tab': currentTab}) ) }}">CSV</a></li>
                     </ul>
                 </div>
             {% endif %}

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Task;
 
+use EMS\CoreBundle\Core\Revision\Task\Table\TaskTableContext;
+use EMS\CoreBundle\Core\Revision\Task\Table\TaskTableFilters;
+use EMS\CoreBundle\Core\Revision\Task\Table\TaskTableService;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Form\Data\EntityTable;
@@ -78,9 +81,9 @@ final class TaskManager
         return $this->revisionRepository->findOneById($revisionId);
     }
 
-    public function getTable(string $ajaxUrl, string $tab, bool $export): EntityTable
+    public function getTable(string $ajaxUrl, string $tab, TaskTableFilters $filters, bool $export): EntityTable
     {
-        $taskTableContext = new TaskTableContext($this->userService->getCurrentUser(), $tab);
+        $taskTableContext = new TaskTableContext($this->userService->getCurrentUser(), $tab, $filters);
         $taskTableContext->showVersionTagColumn = $this->taskRepository->hasVersionedContentType();
 
         $table = new EntityTable($this->taskTableService, $ajaxUrl, $taskTableContext);

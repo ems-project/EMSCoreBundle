@@ -7,8 +7,8 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use EMS\CoreBundle\Core\Revision\Task\Table\TaskTableContext;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
-use EMS\CoreBundle\Core\Revision\Task\TaskTableContext;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
@@ -123,6 +123,12 @@ final class TaskRepository extends ServiceEntityRepository
             if ($or->count() > 0) {
                 $qb->andWhere($or)->setParameter(':term', '%'.$searchValue.'%');
             }
+        }
+
+        if (null !== $context->filters->status) {
+            $qb
+                ->andWhere($qb->expr()->eq('t.status', ':task_status'))
+                ->setParameter('task_status', $context->filters->status);
         }
 
         return $qb;

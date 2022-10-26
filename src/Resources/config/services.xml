@@ -114,7 +114,7 @@
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="logger" />
         </service>
-        <service id="ems_core.core_revision_task.task_table_service" class="EMS\CoreBundle\Core\Revision\Task\TaskTableService">
+        <service id="ems_core.core_revision_task.task_table_service" class="EMS\CoreBundle\Core\Revision\Task\Table\TaskTableService">
             <argument type="service" id="ems.repository.task" />
         </service>
         <service id="ems_core.core_revision_task.task_subscriber" class="EMS\CoreBundle\Core\Revision\Task\TaskEventSubscriber">

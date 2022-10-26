@@ -75,5 +75,6 @@ final class DataLinksFactory
         /** @var DataLinkViewType $viewType */
         $viewType = $this->viewTypes->get('ems.view.data_link');
         $viewType->render($customView, $dataLinks);
+        $dataLinks->customViewRendered();
     }
 }

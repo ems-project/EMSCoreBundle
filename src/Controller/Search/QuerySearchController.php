@@ -31,6 +31,10 @@ final class QuerySearchController extends AbstractController
     {
         $dataLinks = $this->dataLinksFactory->create($request);
 
+        if ($dataLinks->hasCustomViewRendered()) {
+            return new JsonResponse($dataLinks->toArray());
+        }
+
         if ($dataLinks->isQuerySearch()) {
             $this->querySearchService->querySearchDataLinks($dataLinks);
         } elseif (!$dataLinks->hasItems()) {

@@ -25,6 +25,8 @@ final class DataLinks
     private ?int $searchId = null;
     private int $total = 0;
 
+    private bool $customViewRendered = false;
+
     public function __construct(int $page, string $pattern)
     {
         $this->page = $page;
@@ -89,6 +91,11 @@ final class DataLinks
         }
     }
 
+    public function customViewRendered(): void
+    {
+        $this->customViewRendered = true;
+    }
+
     /**
      * @return string[]
      */
@@ -146,6 +153,11 @@ final class DataLinks
     public function getSize(): int
     {
         return self::SIZE;
+    }
+
+    public function hasCustomViewRendered(): bool
+    {
+        return $this->customViewRendered;
     }
 
     public function hasItems(): bool

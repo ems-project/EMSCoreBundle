@@ -566,6 +566,7 @@ task.validation.reject: Reject
 task.validation.send: Send
 task.filters: Filters
 task.filter.status: Statuses
+task.filter.version: Versions
 task.filter.assignee: Assignees
 task.filter.owner: Owners
 task.filter.submit: Search

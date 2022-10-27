@@ -18,7 +18,7 @@ final class TaskTableService implements EntityServiceInterface
 
     private const COL_TITLE = 'title';
     private const COL_DOCUMENT = 'label';
-    private const COL_DOCUMENT_VERSION = 'version';
+    public const COL_DOCUMENT_VERSION = 'version';
     public const COL_OWNER = 'owner';
     public const COL_ASSIGNEE = 'assignee';
     public const COL_STATUS = 'status';

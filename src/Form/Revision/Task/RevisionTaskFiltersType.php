@@ -8,6 +8,7 @@ use EMS\CoreBundle\Core\Revision\Task\Table\TaskTableFilters;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
+use EMS\CoreBundle\Service\ContentTypeService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,7 +17,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RevisionTaskFiltersType extends AbstractType
 {
+    private ContentTypeService $contentTypeService;
+
     public const NAME = 'filters';
+
+    public function __construct(ContentTypeService $contentTypeService)
+    {
+        $this->contentTypeService = $contentTypeService;
+    }
 
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
@@ -33,6 +41,16 @@ class RevisionTaskFiltersType extends AbstractType
                 'Completed' => Task::STATUS_COMPLETED,
             ],
         ]);
+
+        $versionTags = $this->contentTypeService->getAllVersionTags();
+        if (\count($versionTags) > 0) {
+            $builder->add('version', ChoiceType::class, [
+                'required' => false,
+                'multiple' => true,
+                'attr' => ['class' => 'select2'],
+                'choices' => \array_combine($versionTags, $versionTags),
+            ]);
+        }
 
         if (TaskManager::TAB_USER !== $options['tab']) {
             $builder->add('assignee', SelectUserPropertyType::class, [

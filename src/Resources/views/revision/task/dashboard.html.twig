@@ -63,6 +63,9 @@
                 <div class="row">
                     {{ form_start(filterForm) }}
                     {{ form_row(filterForm.status, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.status'|trans }) }}
+                    {% if filterForm.version is defined %}
+                        {{ form_row(filterForm.version, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.version'|trans  }) }}
+                    {% endif %}
                     {% if filterForm.assignee is defined %}
                         {{ form_row(filterForm.assignee, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.assignee'|trans  }) }}
                     {% endif %}

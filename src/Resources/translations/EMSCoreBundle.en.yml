@@ -564,6 +564,12 @@ task.validation.comment: 'Comment for validation'
 task.validation.done: Finish
 task.validation.reject: Reject
 task.validation.send: Send
+task.filters: Filters
+task.filter.status: Statuses
+task.filter.assignee: Assignees
+task.filter.owner: Owners
+task.filter.submit: Search
+task.filter.reset: Clear
 uploaded-file.action.download_selected: 'Download selected'
 uploaded-file.action.hide-show: Hide/Show
 uploaded-file.action.soft-delete: Delete

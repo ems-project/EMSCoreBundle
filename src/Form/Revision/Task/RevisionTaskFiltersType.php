@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\Revision\Task;
 
 use EMS\CoreBundle\Core\Revision\Task\Table\TaskTableFilters;
+use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Entity\Task;
+use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RevisionTaskFiltersType extends AbstractType
 {
-    public const NAME = 'revision-task-filters';
+    public const NAME = 'filters';
 
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
@@ -24,12 +26,32 @@ class RevisionTaskFiltersType extends AbstractType
     {
         $builder->add('status', ChoiceType::class, [
             'required' => false,
-            'placeholder' => 'Select a status',
+            'multiple' => true,
+            'attr' => ['class' => 'select2'],
             'choices' => [
                 'In progress' => Task::STATUS_PROGRESS,
                 'Completed' => Task::STATUS_COMPLETED,
             ],
         ]);
+
+        if (TaskManager::TAB_USER !== $options['tab']) {
+            $builder->add('assignee', SelectUserPropertyType::class, [
+                'required' => false,
+                'allow_add' => false,
+                'multiple' => true,
+                'user_property' => 'username',
+                'label_property' => 'displayName',
+            ]);
+        }
+        if (TaskManager::TAB_OWNER !== $options['tab']) {
+            $builder->add('owner', SelectUserPropertyType::class, [
+                'required' => false,
+                'allow_add' => false,
+                'multiple' => true,
+                'user_property' => 'username',
+                'label_property' => 'displayName',
+            ]);
+        }
     }
 
     public function getBlockPrefix(): string
@@ -39,10 +61,14 @@ class RevisionTaskFiltersType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'method' => Request::METHOD_GET,
-            'data_class' => TaskTableFilters::class,
-            'csrf_protection' => false,
-        ]);
+        $resolver
+            ->setRequired(['tab'])
+            ->setDefaults([
+                'method' => Request::METHOD_GET,
+                'data_class' => TaskTableFilters::class,
+                'csrf_protection' => false,
+                'allow_extra_fields' => true,
+                'translation_domain' => false,
+            ]);
     }
 }

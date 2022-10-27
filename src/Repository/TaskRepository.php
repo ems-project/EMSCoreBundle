@@ -8,6 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Core\Revision\Task\Table\TaskTableContext;
+use EMS\CoreBundle\Core\Revision\Task\Table\TaskTableService;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
@@ -125,10 +126,12 @@ final class TaskRepository extends ServiceEntityRepository
             }
         }
 
-        if (null !== $context->filters->status) {
-            $qb
-                ->andWhere($qb->expr()->eq('t.status', ':task_status'))
-                ->setParameter('task_status', $context->filters->status);
+        foreach ($context->filters->all() as $name => $value) {
+            if (isset(TaskTableService::COLUMNS[$name]['mapping'])) {
+                $qb
+                    ->andWhere($qb->expr()->in(TaskTableService::COLUMNS[$name]['mapping'], ':filter_'.$name))
+                    ->setParameter('filter_'.$name, $value);
+            }
         }
 
         return $qb;

@@ -212,7 +212,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * @param mixed $input
      */
-    public function __set(string $key, $input): self
+    public function __set(string $key, $input): void
     {
         if (0 !== \strpos($key, 'ems_')) {
             throw new \Exception('unprotected ems set with key '.$key);
@@ -251,8 +251,6 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         } else {
             throw new \Exception('__set a DataField wich is not a valid object'.$key);
         }
-
-        return $this;
     }
 
     /**

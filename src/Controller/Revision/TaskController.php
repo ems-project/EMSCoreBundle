@@ -355,7 +355,7 @@ final class TaskController extends AbstractController
     private function getTable(Request $request, string $tab, bool $export = false): EntityTable
     {
         $filters = new TaskTableFilters();
-        $formFilters = $this->formFactory->create(RevisionTaskFiltersType::class, $filters);
+        $formFilters = $this->formFactory->create(RevisionTaskFiltersType::class, $filters, ['tab' => $tab]);
         $formFilters->handleRequest($request);
 
         $tableUrl = $this->generateUrl('ems_core_task_ajax_datatable', ['tab' => $tab]);

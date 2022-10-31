@@ -408,5 +408,9 @@
             <argument type="service" id="ems.service.environment" />
             <tag name="form.type"/>
         </service>
+        <service id="ems_core.form_revision_task.filters" class="EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType">
+            <argument type="service" id="ems.service.contenttype" />
+            <tag name="form.type"/>
+        </service>
     </services>
 </container>

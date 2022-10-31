@@ -18,10 +18,10 @@ final class TaskTableService implements EntityServiceInterface
 
     private const COL_TITLE = 'title';
     private const COL_DOCUMENT = 'label';
-    private const COL_DOCUMENT_VERSION = 'version';
-    private const COL_OWNER = 'owner';
-    private const COL_ASSIGNEE = 'assignee';
-    private const COL_STATUS = 'status';
+    public const COL_DOCUMENT_VERSION = 'version';
+    public const COL_OWNER = 'owner';
+    public const COL_ASSIGNEE = 'assignee';
+    public const COL_STATUS = 'status';
     private const COL_DEADLINE = 'deadline';
     private const COL_MODIFIED = 'modified';
     private const COL_ACTIONS = 'actions';
@@ -50,8 +50,10 @@ final class TaskTableService implements EntityServiceInterface
         /** @var array<string, array{type: ?string, column: ?string, label: string, mapping?: string}> $columns */
         $columns = $this->getColumns($context);
 
+        $disableSorting = [self::COL_ASSIGNEE, self::COL_OWNER, self::COL_DOCUMENT_VERSION, self::COL_ACTIONS];
+
         foreach ($columns as $name => $options) {
-            $orderField = self::COL_ACTIONS !== $name ? $name : null;
+            $orderField = !\in_array($name, $disableSorting) ? $name : null;
 
             if (isset($options['mapping'])) {
                 $context->addColumn($name, $options['mapping']);

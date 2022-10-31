@@ -7,12 +7,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
+use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
 use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
 use EMS\CoreBundle\Roles;
 use EMS\Helpers\Standard\DateTime;
+use EMS\Helpers\Standard\Type;
 
 /**
  * ContentType.
@@ -222,18 +224,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected ?array $versionOptions = [];
 
     /**
-     * @var string|null
+     * @var ?array<string, ?string>
      *
-     * @ORM\Column(name="version_date_from_field", type="string", length=100, nullable=true)
+     * @ORM\Column(name="version_fields", type="json", nullable=true)
      */
-    protected $versionDateFromField;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="version_date_to_field", type="string", length=100, nullable=true)
-     */
-    protected $versionDateToField;
+    protected ?array $versionFields = [];
 
     /**
      * @var array<string, string>
@@ -1127,24 +1122,39 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->versionOptions = $versionOptions->getOptions();
     }
 
-    public function getVersionDateFromField(): ?string
+    public function versionField(string $field): ?string
     {
-        return $this->versionDateFromField;
+        return $this->getVersionFields()[$field] ?? null;
     }
 
-    public function setVersionDateFromField(?string $versionDateFromField): void
+    public function getVersionFields(): VersionFields
     {
-        $this->versionDateFromField = $versionDateFromField;
+        return new VersionFields($this->versionFields ?? []);
+    }
+
+    public function setVersionFields(VersionFields $versionFields): void
+    {
+        $this->versionFields = $versionFields->getFields();
+    }
+
+    public function getVersionDateFromField(): ?string
+    {
+        return $this->versionField(VersionFields::DATE_FROM);
     }
 
     public function getVersionDateToField(): ?string
     {
-        return $this->versionDateToField;
+        return $this->versionField(VersionFields::DATE_TO);
     }
 
-    public function setVersionDateToField(?string $versionDateToField): void
+    public function hasVersionTagField(): bool
     {
-        $this->versionDateToField = $versionDateToField;
+        return null !== $this->versionField(VersionFields::VERSION_TAG);
+    }
+
+    public function getVersionTagField(): string
+    {
+        return Type::string($this->versionField(VersionFields::VERSION_TAG));
     }
 
     /**

@@ -382,10 +382,14 @@ class PublishService
         $contentType = $revision->giveContentType();
         $publishedRevision = $this->revRepository->findLatestVersion($contentType, $versionUuid, $environment);
 
-        $newVersion = $revision->getRawData()['new_version'] ?? null;
+        $selectedVersionTag = null;
+        if ($contentType->hasVersionTagField()) {
+            $selectedVersionTag = $revision->getRawData()[$contentType->getVersionTagField()] ?? null;
+        }
+
         $form = null;
 
-        if ($newVersion && $publishedRevision && null === $revision->getVersionDate('to')) {
+        if ($selectedVersionTag && $publishedRevision && null === $revision->getVersionDate('to')) {
             $now = new \DateTimeImmutable();
 
             $closedVersion = $publishedRevision->clone(); // create a new version
@@ -395,13 +399,11 @@ class PublishService
 
             $this->publish($closedVersion, $environment, $commandUser);
             $revision->setVersionDate('from', $now);
-            $revision->setVersionTag($newVersion); // only update version if already published
+            $revision->setVersionTag($selectedVersionTag); // only update version if already published
         }
 
-        if ($newVersion) {
-            $rawData = $revision->getRawData();
-            unset($rawData['new_version']);
-            $revision->setRawData($rawData);
+        if ($selectedVersionTag) {
+            $revision->removeFromRawData($contentType->getVersionTagField());
         }
 
         $this->dataService->finalizeDraft($revision, $form, $commandUser);

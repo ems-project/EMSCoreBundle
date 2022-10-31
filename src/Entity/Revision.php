@@ -702,6 +702,14 @@ class Revision implements EntityInterface
         return $rawData;
     }
 
+    public function removeFromRawData(string $property): void
+    {
+        $rawData = $this->rawData ?? [];
+        unset($rawData[$property]);
+
+        $this->rawData = $rawData;
+    }
+
     public function getHash(): string
     {
         $hash = $this->rawData[Mapping::HASH_FIELD] ?? null;

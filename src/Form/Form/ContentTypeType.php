@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Form\Form;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
-use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
@@ -42,19 +41,9 @@ class ContentTypeType extends AbstractType
 
             if ($environment->getManaged()) {
                 $builder
-                    ->add('versionDateFromField', ContentTypeFieldPickerType::class, [
-                        'required' => false,
-                        'firstLevelOnly' => false,
-                        'label' => 'From date field',
+                    ->add('versionFields', ContentTypeVersionFieldsType::class, [
+                        'label' => false,
                         'mapping' => $mapping,
-                        'types' => ['date'],
-                    ])
-                    ->add('versionDateToField', ContentTypeFieldPickerType::class, [
-                        'required' => false,
-                        'firstLevelOnly' => false,
-                        'label' => 'To date field',
-                        'mapping' => $mapping,
-                        'types' => ['date'],
                     ])
                     ->add('versionOptions', ContentTypeVersionOptionsType::class)
                     ->add('versionTags', CollectionType::class, [

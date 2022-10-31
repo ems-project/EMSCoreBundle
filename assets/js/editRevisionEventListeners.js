@@ -26,11 +26,6 @@ function editRevisionEventListeners(target, onChangeCallback = null){
     const ckconfig = initCKEditor();
     new EmsListeners(target.get(0), onChangeCallback);
 
-    target.find('button#btn-publish-version').on('click', function(e) {
-        e.preventDefault();
-        $('#publish-version-modal').modal('show');
-    });
-
     target.find('.remove-content-button').on('click', function(e) {
         // prevent the link from creating a "#" on the URL
         e.preventDefault();

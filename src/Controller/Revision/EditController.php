@@ -175,31 +175,28 @@ class EditController extends AbstractController
                     throw new \RuntimeException('Unexpect user object');
                 }
                 $revision->setAutoSaveBy($user->getUsername());
-                if (isset($requestRevision['publish_version'])) {
-                    $versionTag = $form->get('publish_version_tags')->getData();
-                    $revision = $this->revisionService->saveVersion($revision, $objectArray, $versionTag, $form);
-                } else {
+
+                if (isset($requestRevision['save'])) {
                     $this->revisionService->save($revision, $objectArray);
                     foreach ($revision->getEnvironments() as $publishedEnvironment) {
-                        $this->publishService->publish($revision, $publishedEnvironment);
+                        $this->publishService->publish($revision, $publishedEnvironment); // edit revision not default environment
                     }
                 }
 
                 if (isset($requestRevision['publish'])) {// Finalize
                     $revision = $this->dataService->finalizeDraft($revision, $form);
-                }
 
-                if ((isset($requestRevision['publish']) || isset($requestRevision['publish_version']))
-                    && 0 === \count($form->getErrors(true))) {
-                    if ($revision->getOuuid()) {
-                        return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
-                            'ouuid' => $revision->getOuuid(),
-                            'type' => $contentType->getName(),
-                        ]);
-                    } else {
-                        return $this->redirectToRoute(Routes::EDIT_REVISION, [
-                            'revisionId' => $revision->getId(),
-                        ]);
+                    if (0 === \count($form->getErrors(true))) {
+                        if ($revision->getOuuid()) {
+                            return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
+                                'ouuid' => $revision->getOuuid(),
+                                'type' => $contentType->getName(),
+                            ]);
+                        } else {
+                            return $this->redirectToRoute(Routes::EDIT_REVISION, [
+                                'revisionId' => $revision->getId(),
+                            ]);
+                        }
                     }
                 }
             }
@@ -209,7 +206,7 @@ class EditController extends AbstractController
             }
 
             // if Save or Discard
-            if (!isset($requestRevision['publish']) && !isset($requestRevision['publish_version'])) {
+            if (!isset($requestRevision['publish'])) {
                 if (null != $revision->getOuuid()) {
                     if (0 === \count($form->getErrors()) && $contentType->isAutoPublish()) {
                         $this->publishService->silentPublish($revision);

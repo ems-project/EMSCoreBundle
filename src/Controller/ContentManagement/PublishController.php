@@ -53,20 +53,13 @@ class PublishController extends AbstractController
         $revision = $revisionId;
         $environment = $envId;
 
-        $contentType = $revisionId->getContentType();
-        if (null === $contentType) {
-            throw new \RuntimeException('Content type not found');
-        }
+        $contentType = $revisionId->giveContentType();
         if ($contentType->getDeleted()) {
             throw new \RuntimeException('Content type deleted');
         }
 
         try {
-            if ($revisionId->hasVersionTag()) {
-                $this->publishService->publishAndAlignVersions($revision, $environment);
-            } else {
-                $this->publishService->publish($revision, $environment);
-            }
+            $this->publishService->publish($revision, $environment);
         } catch (NonUniqueResultException $e) {
             throw new NotFoundHttpException('Revision not found');
         }

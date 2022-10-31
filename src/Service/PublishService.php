@@ -240,25 +240,6 @@ class PublishService
         return $already ? 0 : 1;
     }
 
-    public function publishAndAlignVersions(Revision $revision, Environment $environment): void
-    {
-        if (!$this->canPublish($revision, $environment)) {
-            return;
-        }
-
-        if (null === $versionUuid = $revision->getVersionUuid()) {
-            throw new \RuntimeException('Revision missing version uuid!');
-        }
-
-        $contentType = $revision->giveContentType();
-        $defaultEnvironment = $contentType->giveEnvironment();
-        $revisions = $this->revRepository->findAllByVersionUuid($versionUuid, $defaultEnvironment);
-
-        foreach ($revisions as $revision) {
-            $this->runAlignRevision($revision->giveOuuid(), $contentType, $defaultEnvironment, $environment);
-        }
-    }
-
     /**
      * @throws DBALException
      */

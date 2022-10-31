@@ -223,7 +223,7 @@ final class ReleaseService implements EntityServiceInterface
             if (null === $revision && null !== $revisionToRemove) {
                 $this->publishService->unpublish($revisionToRemove, $release->getEnvironmentTarget(), $command);
             } elseif (null !== $revision) {
-                $this->publishService->publish($revision, $release->getEnvironmentTarget(), $command);
+                $this->publishService->publish($revision, $release->getEnvironmentTarget(), 'SYSTEM_RELEASE');
             }
         }
 

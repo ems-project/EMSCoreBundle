@@ -226,7 +226,7 @@ final class RecomputeCommand extends Command
                 if (!$input->getOption('no-align')) {
                     foreach ($revision->getEnvironments() as $environment) {
                         $this->logger->info('published to {env}', ['env' => $environment->getName()]);
-                        $this->publishService->publish($newRevision, $environment, true);
+                        $this->publishService->publish($newRevision, $environment, self::LOCK_BY);
                     }
                 }
 

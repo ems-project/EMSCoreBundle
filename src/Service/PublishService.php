@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\NonUniqueResultException;
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
@@ -130,7 +131,7 @@ class PublishService
         $this->bulker->setSign(false);
     }
 
-    public function bulkPublish(Revision $revision, Environment $environment): int
+    public function bulkPublish(Revision $revision, Environment $environment, string $commandUser): int
     {
         if (!$revision->hasOuuid()) {
             throw new \RuntimeException('Draft revision passed to bulk publish!');
@@ -145,6 +146,8 @@ class PublishService
 
         $revisionEnvironment = $this->revRepository->findByOuuidContentTypeAndEnvironment($revision, $environment);
         $already = $revisionEnvironment === $revision;
+
+        $this->publishVersion($revision, $environment, $commandUser);
 
         if (!$already && $revisionEnvironment) {
             $this->revRepository->removeEnvironment($revisionEnvironment, $environment);
@@ -170,13 +173,13 @@ class PublishService
             throw new \LogicException('Unpublish failed: is default environment');
         }
 
-        $environments = $revision->getEnvironments();
+        $publishedRevisions = $this->revRepository->findAllPublishedRevision(EMSLink::fromText($revision->getEmsLink()));
 
-        if (1 === $environments->count()) {
+        if (1 === \count($publishedRevisions)) {
             throw new \LogicException('Unpublish failed: requires 1 environment');
         }
 
-        $environments->removeElement($environment);
+        $revision->getEnvironments()->removeElement($environment);
         $this->bulker->delete($environment->getAlias(), $revision->giveOuuid());
     }
 
@@ -191,14 +194,16 @@ class PublishService
      * @throws NonUniqueResultException
      * @throws DBALException
      */
-    public function publish(Revision $revision, Environment $environment, bool $command = false): int
+    public function publish(Revision $revision, Environment $environment, ?string $commandUser = null): int
     {
         $logContext = LogRevisionContext::publish($revision, $environment);
-        if (!$command && !$this->canPublish($revision, $environment)) {
+        if (null === $commandUser && !$this->canPublish($revision, $environment)) {
             return 0;
         }
 
         $item = $this->revRepository->findByOuuidContentTypeAndEnvironment($revision, $environment);
+
+        $this->publishVersion($revision, $environment, $commandUser);
 
         $already = false;
         if ($item === $revision) {
@@ -208,7 +213,7 @@ class PublishService
             $this->revRepository->removeEnvironment($item, $environment);
         }
 
-        if (!$command) {
+        if (null === $commandUser) {
             $this->dataService->lockRevision($revision, $environment);
         }
 
@@ -221,14 +226,14 @@ class PublishService
             ], $logContext));
         }
 
-        if (!$command) {
+        if (null === $commandUser) {
             $this->dataService->unlockRevision($revision);
         }
 
         if (!$already) {
             $this->revRepository->addEnvironment($revision, $environment);
 
-            if (!$command) {
+            if (null === $commandUser) {
                 $this->auditLogger->notice('log.published.success', \array_merge([
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
                 ], $logContext));
@@ -360,18 +365,45 @@ class PublishService
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget->getName(),
             ]);
         } else {
-            $toClean = $this->revRepository->findByOuuidAndContentTypeAndEnvironment(
-                $contentType,
-                $ouuid,
-                $environmentTarget
-            );
-
-            if ($toClean !== $revision) {
-                if ($toClean) {
-                    $this->unpublish($toClean, $environmentTarget);
-                }
-                $this->publish($revision, $environmentTarget);
-            }
+            $this->publish($revision, $environmentTarget);
         }
+    }
+
+    private function publishVersion(Revision $revision, Environment $environment, ?string $commandUser = null): void
+    {
+        if (!$revision->hasVersionTags()) {
+            return;
+        }
+
+        if (null === $versionUuid = $revision->getVersionUuid()) {
+            throw new \RuntimeException('Revision missing version uuid!');
+        }
+
+        $contentType = $revision->giveContentType();
+        $publishedRevision = $this->revRepository->findLatestVersion($contentType, $versionUuid, $environment);
+
+        $newVersion = $revision->getRawData()['new_version'] ?? null;
+        $form = null;
+
+        if ($newVersion && $publishedRevision && null === $revision->getVersionDate('to')) {
+            $now = new \DateTimeImmutable();
+
+            $closedVersion = $publishedRevision->clone(); // create a new version
+            $closedVersion->setEndTime(null);
+            $closedVersion->setVersionDate('to', $now);
+            $this->dataService->finalizeDraft($closedVersion, $form, $commandUser);
+
+            $this->publish($closedVersion, $environment, $commandUser);
+            $revision->setVersionDate('from', $now);
+            $revision->setVersionTag($newVersion); // only update version if already published
+        }
+
+        if ($newVersion) {
+            $rawData = $revision->getRawData();
+            unset($rawData['new_version']);
+            $revision->setRawData($rawData);
+        }
+
+        $this->dataService->finalizeDraft($revision, $form, $commandUser);
     }
 }

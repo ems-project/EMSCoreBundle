@@ -3,13 +3,12 @@
 namespace EMS\CoreBundle\Entity\Form;
 
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
 
 /**
  * @ORM\Table(name="search_filter")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SearchFilterRepository")
  */
-class SearchFilter implements JsonSerializable
+class SearchFilter implements \JsonSerializable
 {
     /**
      * @var int

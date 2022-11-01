@@ -29,7 +29,6 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\Helpers\Standard\Type;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -286,7 +285,7 @@ class CriteriaController extends AbstractController
             $criteriaField = $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['criteriaField']);
         } elseif ('another' == $view->getOptions()['criteriaMode']) {
         } else {
-            throw new Exception('Should never happen');
+            throw new \Exception('Should never happen');
         }
 
         $columnField = null;
@@ -338,7 +337,7 @@ class CriteriaController extends AbstractController
      * @throws ContentTypeStructureException
      * @throws ElasticmsException
      * @throws PerformanceException
-     * @throws Exception
+     * @throws \Exception
      */
     public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig): array
     {
@@ -475,7 +474,7 @@ class CriteriaController extends AbstractController
                 } elseif ('another' == $view->getOptions()['criteriaMode']) {
                     $this->addToTable($choice, $table, $source, \array_keys($criteriaChoiceLists), $criteriaChoiceLists, $criteriaUpdateConfig);
                 } else {
-                    throw new Exception('Should never happen');
+                    throw new \Exception('Should never happen');
                 }
             } else {
                 $this->logger->warning('log.view.criteria.document_key_not_found', [
@@ -721,7 +720,7 @@ class CriteriaController extends AbstractController
      *
      * @return false|Revision
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function addCriteria(array $filters, Revision $revision, string $criteriaField)
     {
@@ -871,7 +870,7 @@ class CriteriaController extends AbstractController
      *
      * @return Revision|mixed|null
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function removeCriteriaRevision(View $view, array $rawData, ?string $targetFieldName, array $loadedRevision = [])
     {
@@ -980,7 +979,7 @@ class CriteriaController extends AbstractController
      *
      * @return false|Revision
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function removeCriteria(array $filters, Revision $revision, string $criteriaField)
     {

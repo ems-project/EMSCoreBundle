@@ -40,8 +40,6 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\Revision\PostProcessingService;
 use EMS\CoreBundle\Twig\AppExtension;
 use EMS\Helpers\Standard\Type;
-use Exception;
-use IteratorAggregate;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Container;
@@ -57,7 +55,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Throwable;
 use Twig\Environment as TwigEnvironment;
 
 /**
@@ -175,7 +172,7 @@ class DataService
                 }
 
                 $this->private_key = \openssl_pkey_get_private($privateKeyContent);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->warning('service.data.not_able_to_load_the_private_key', [
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -199,7 +196,7 @@ class DataService
      *
      * @throws LockedException
      * @throws PrivilegeException
-     * @throws Exception
+     * @throws \Exception
      */
     public function lockRevision(Revision $revision, Environment $publishEnv = null, bool $super = false, ?string $username = null): string
     {
@@ -303,7 +300,7 @@ class DataService
      * @param FormInterface<FormInterface> $form
      * @param array<mixed>                 $objectArray
      *
-     * @throws Throwable
+     * @throws \Throwable
      */
     public function propagateDataToComputedField(FormInterface $form, array &$objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration = false, bool $finalize = true): bool
     {
@@ -435,7 +432,7 @@ class DataService
         }
 
         $output = [];
-        if ($form instanceof IteratorAggregate) {
+        if ($form instanceof \IteratorAggregate) {
             foreach ($form->getIterator() as $child) {
                 /** @var DataFieldType $childType */
                 $childType = $child->getConfig()->getType()->getInnerType();
@@ -498,7 +495,7 @@ class DataService
     /**
      * @param array<mixed> $rawdata
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function createData(?string $ouuid, array $rawdata, ContentType $contentType, bool $byARealUser = true): Revision
     {
@@ -750,7 +747,7 @@ class DataService
                         'label' => $revision->getLabel(),
                     ]);
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error('service.data.integrity_failed', [
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
@@ -767,7 +764,7 @@ class DataService
     /**
      * @return FormInterface<FormInterface>
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function buildForm(Revision $revision): FormInterface
     {
@@ -786,13 +783,13 @@ class DataService
      * @param ?FormInterface<FormInterface> $form
      *
      * @throws DataStateException
-     * @throws Exception
-     * @throws Throwable
+     * @throws \Exception
+     * @throws \Throwable
      */
     public function finalizeDraft(Revision $revision, ?FormInterface &$form = null, ?string $username = null, bool $computeFields = true): Revision
     {
         if ($revision->getDeleted()) {
-            throw new Exception('Can not finalized a deleted revision');
+            throw new \Exception('Can not finalized a deleted revision');
         }
         if (null == $form) {
             if (null == $revision->getDatafield()) {
@@ -874,7 +871,7 @@ class DataService
 
             try {
                 $this->postFinalizeTreatment($revision->giveContentType()->getName(), $revision->giveOuuid(), $form->get('data'), $previousObjectArray);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->warning('service.data.post_finalize_failed', [
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
@@ -960,7 +957,7 @@ class DataService
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      * @throws NotFoundHttpException
      */
     public function getNewestRevision(string $type, string $ouuid): Revision
@@ -1001,7 +998,7 @@ class DataService
         } elseif (0 == \count($revisions)) {
             throw new NotFoundHttpException('Revision not found for ouuid '.$ouuid.' and contenttype '.$type);
         } else {
-            throw new Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$type);
+            throw new \Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$type);
         }
     }
 
@@ -1010,7 +1007,7 @@ class DataService
      *
      * @throws DuplicateOuuidException
      * @throws HasNotCircleException
-     * @throws Throwable
+     * @throws \Throwable
      */
     public function newDocument(ContentType $contentType, ?string $ouuid = null, ?array $rawData = null, ?string $username = null): Revision
     {
@@ -1182,7 +1179,7 @@ class DataService
      * @throws PrivilegeException
      * @throws ORMException
      * @throws OptimisticLockException
-     * @throws Exception
+     * @throws \Exception
      */
     public function initNewDraft(string $type, string $ouuid, ?Revision $fromRev = null, ?string $username = null): Revision
     {
@@ -1427,7 +1424,7 @@ class DataService
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function updateDataStructure(FieldType $meta, DataField $dataField): void
     {
@@ -1515,7 +1512,7 @@ class DataService
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function loadDataStructure(Revision $revision): void
     {
@@ -1664,7 +1661,7 @@ class DataService
      * @param FormInterface<FormInterface> $form
      * @param ?array<mixed>                $masterRawData
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function isValid(FormInterface &$form, DataField $parent = null, array &$masterRawData = null): bool
     {
@@ -1720,7 +1717,7 @@ class DataService
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getRevisionById(int $id, ContentType $type): Revision
     {
@@ -1753,12 +1750,12 @@ class DataService
             if (null === $endTime) {
                 return $revisions[0];
             } else {
-                throw new Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$endTime->format(\DateTimeInterface::ATOM));
+                throw new \Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$endTime->format(\DateTimeInterface::ATOM));
             }
         } elseif (0 == \count($revisions)) {
             throw new NotFoundHttpException('Revision not found for id '.$id.' and contenttype '.$type);
         } else {
-            throw new Exception('Too much newest revisions available for ouuid '.$id.' and contenttype '.$type);
+            throw new \Exception('Too much newest revisions available for ouuid '.$id.' and contenttype '.$type);
         }
     }
 
@@ -1846,7 +1843,7 @@ class DataService
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PrivilegeException
-     * @throws Throwable
+     * @throws \Throwable
      */
     public function updateReferers(UpdateRevisionReferersEvent $event): void
     {
@@ -2029,7 +2026,7 @@ class DataService
     {
         try {
             return $this->revRepository->lockAllRevisions($until, $by);
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('service.data.lock_revisions_error', [
                 EmsFields::LOG_USERNAME_FIELD => $by,
                 EmsFields::LOG_EXCEPTION_FIELD => $e,

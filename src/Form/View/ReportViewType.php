@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Form\View;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -85,7 +84,7 @@ class ReportViewType extends ViewType
                     'contentType' => $view->getContentType(),
                     'environment' => $view->getContentType()->getEnvironment(),
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $renderQuery = '{}';
         }
 
@@ -109,7 +108,7 @@ class ReportViewType extends ViewType
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $resultSet->getResponse()->getData(),
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $render = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
         }
         try {
@@ -119,7 +118,7 @@ class ReportViewType extends ViewType
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $resultSet->getResponse()->getData(),
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $javascript = '';
         }
         try {
@@ -129,7 +128,7 @@ class ReportViewType extends ViewType
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $resultSet->getResponse()->getData(),
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $header = '';
         }
 

@@ -8,7 +8,6 @@ use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\Helpers\Standard\Type;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
@@ -188,7 +187,7 @@ class FileController extends AbstractController
             if (false === $type) {
                 try {
                     $type = $file->getMimeType();
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $type = 'application/bin';
                 }
             }

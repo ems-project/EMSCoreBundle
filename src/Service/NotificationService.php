@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Service;
 
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\Mail\MailerService;
@@ -18,12 +17,10 @@ use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Repository\NotificationRepository;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
-use Throwable;
 use Twig\Environment as TwigEnvironment;
 
 class NotificationService
@@ -200,7 +197,7 @@ class NotificationService
             }
 
             $notification->setTemplate($template);
-            $sentTimestamp = new DateTime();
+            $sentTimestamp = new \DateTime();
             $notification->setSentTimestamp($sentTimestamp);
 
             $notification->setEnvironment($environment);
@@ -218,7 +215,7 @@ class NotificationService
 
             try {
                 $this->sendEmail($notification);
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
             }
 
             $this->logger->notice('service.notification.send', [
@@ -230,7 +227,7 @@ class NotificationService
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
             ]);
             $out = true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->error('service.notification.send_error', [
                 'action_name' => $template->getName(),
                 'action_label' => $template->getLabel(),
@@ -442,7 +439,7 @@ class NotificationService
     private function response(Notification $notification, TreatNotifications $treatNotifications, string $status): void
     {
         $notification->setResponseText($treatNotifications->getResponse());
-        $notification->setResponseTimestamp(new DateTime());
+        $notification->setResponseTimestamp(new \DateTime());
         $notification->setResponseBy($this->userService->getCurrentUser()->getUsername());
         $notification->setStatus($status);
         $em = $this->doctrine->getManager();
@@ -451,7 +448,7 @@ class NotificationService
 
         try {
             $this->sendEmail($notification);
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
         }
 
         $this->logger->notice('service.notification.treated', [
@@ -493,7 +490,7 @@ class NotificationService
     }
 
     /**
-     * @throws Throwable
+     * @throws \Throwable
      */
     public function sendEmail(Notification $notification): void
     {
@@ -517,7 +514,7 @@ class NotificationService
         if ('pending' == $notification->getStatus()) {
             try {
                 $body = $this->twig->createTemplate($notification->getTemplate()->getBody())->render($params);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $body = 'Error in body template: '.$e->getMessage();
             }
 
@@ -530,11 +527,11 @@ class NotificationService
                 $email->cc(...\array_values($cc));
             }
 
-            $notification->setEmailed(new DateTime());
+            $notification->setEmailed(new \DateTime());
         } else {
             try {
                 $body = $this->twig->createTemplate($notification->getTemplate()->getResponseTemplate())->render($params);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $body = 'Error in response template: '.$e->getMessage();
             }
 
@@ -548,7 +545,7 @@ class NotificationService
                 $email->cc(...\array_values($cc));
             }
 
-            $notification->setResponseEmailed(new DateTime());
+            $notification->setResponseEmailed(new \DateTime());
         }
 
         $contentType = $notification->getTemplate()->getEmailContentType() ?? 'text/plain';

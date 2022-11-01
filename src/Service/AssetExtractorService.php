@@ -11,7 +11,6 @@ use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Entity\CacheAssetExtractor;
 use EMS\CoreBundle\Helper\AssetExtractor\ExtractedData;
 use EMS\CoreBundle\Tika\TikaWrapper;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
@@ -166,7 +165,7 @@ class AssetExtractorService implements CacheWarmerInterface
                     ],
                 ]);
                 $out->setContent($result->getBody()->__toString());
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error('service.asset_extractor.extract_error', [
                     'file_hash' => $hash,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -189,7 +188,7 @@ class AssetExtractorService implements CacheWarmerInterface
                 if (!empty($out->getLocale())) {
                     $out->setLocale(AssetExtractorService::cleanString($this->getTikaWrapper()->getLanguage($file)));
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error('service.asset_extractor.extract_error', [
                     'file_hash' => $hash,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -207,7 +206,7 @@ class AssetExtractorService implements CacheWarmerInterface
                 $cacheData->setData($out->getSource());
                 $manager->persist($cacheData);
                 $manager->flush();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->warning('service.asset_extractor.persist_error', [
                     'file_hash' => $hash,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),

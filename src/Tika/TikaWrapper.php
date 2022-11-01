@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Tika;
 
-use SplFileInfo;
 use Symfony\Component\Process\Process;
 
 /**
@@ -23,7 +22,7 @@ class TikaWrapper
      */
     protected function run(string $option, string $fileName): string
     {
-        $file = new SplFileInfo($fileName);
+        $file = new \SplFileInfo($fileName);
 
         $process = new Process(['java', '-jar', $this->tikaJar, $option, $file->getRealPath()]);
         $process->setWorkingDirectory(__DIR__);

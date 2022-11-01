@@ -928,7 +928,7 @@ class Revision implements EntityInterface
         return $contentType->hasVersionTagField() ? ($this->rawData[$contentType->getVersionTagField()] ?? null) : null;
     }
 
-    public function getVersionDate(string $field): ?\DateTimeImmutable
+    public function getVersionDate(string $field): ?\DateTimeInterface
     {
         $contentType = $this->giveContentType();
 
@@ -940,13 +940,7 @@ class Revision implements EntityInterface
             $dateString = $this->rawData[$dateToField] ?? null;
         }
 
-        if (null === $dateString) {
-            return null;
-        }
-
-        $dateTime = \DateTimeImmutable::createFromFormat(\DateTimeInterface::ATOM, $dateString);
-
-        return $dateTime ?: null;
+        return $dateString ? DateTime::createFromFormat($dateString) : null;
     }
 
     public function hasVersionTag(): bool

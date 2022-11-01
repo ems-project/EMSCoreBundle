@@ -9,7 +9,6 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
-use Throwable;
 
 /**
  * @extends EntityRepository<Environment>
@@ -93,7 +92,7 @@ class EnvironmentRepository extends EntityRepository
 
         try {
             return (int) $qb->getQuery()->getSingleScalarResult();
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             return 0;
         }
     }

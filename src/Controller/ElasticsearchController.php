@@ -38,7 +38,6 @@ use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\SortOptionService;
 use EMS\Helpers\Standard\Json;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\ClickableInterface;
@@ -156,7 +155,7 @@ class ElasticsearchController extends AbstractController
             }
 
             return $response;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ServiceUnavailableHttpException('Due to '.$e->getMessage());
         }
     }
@@ -170,7 +169,7 @@ class ElasticsearchController extends AbstractController
             $globalStatus = 'green';
             try {
                 $tika = $this->assetExtractorService->hello();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $globalStatus = 'yellow';
                 $tika = [
                     'code' => 500,

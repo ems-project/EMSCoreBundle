@@ -12,7 +12,6 @@ use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\Channel\ChannelRegistrar;
-use Exception;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -90,7 +89,7 @@ class RequestListener
                     ]));
                 $event->setResponse($response);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->error('log.error', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,

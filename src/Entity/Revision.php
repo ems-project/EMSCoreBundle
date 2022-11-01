@@ -921,11 +921,16 @@ class Revision implements EntityInterface
         return $this->versionUuid;
     }
 
+    public function getVersionTagField(): ?string
+    {
+        $contentType = $this->giveContentType();
+
+        return $contentType->hasVersionTagField() ? ($this->rawData[$contentType->getVersionTagField()] ?? null) : null;
+    }
+
     public function getVersionDate(string $field): ?\DateTimeImmutable
     {
-        if (null === $contentType = $this->contentType) {
-            throw new \RuntimeException(\sprintf('ContentType not found for revision %d', $this->getId()));
-        }
+        $contentType = $this->giveContentType();
 
         $dateString = null;
         if ('from' === $field && null !== $dateFromField = $contentType->getVersionDateFromField()) {
@@ -939,9 +944,9 @@ class Revision implements EntityInterface
             return null;
         }
 
-        $dateTime = \DateTimeImmutable::createFromFormat(\DateTimeImmutable::ATOM, $dateString);
+        $dateTime = \DateTimeImmutable::createFromFormat(\DateTimeInterface::ATOM, $dateString);
 
-        return $dateTime ? $dateTime : null;
+        return $dateTime ?: null;
     }
 
     public function hasVersionTag(): bool

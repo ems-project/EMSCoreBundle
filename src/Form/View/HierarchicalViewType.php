@@ -13,7 +13,6 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
 use EMS\CoreBundle\Service\SearchService;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -168,7 +167,7 @@ class HierarchicalViewType extends ViewType
         try {
             $document = $this->searchService->getDocument($contentType, $parentId[1]);
             $parent = $document->getRaw();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
         }
 
@@ -233,7 +232,7 @@ class HierarchicalViewType extends ViewType
             }
             $revision->setRawData($data);
             $this->dataService->finalizeDraft($revision);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->warning('form.view.hierarchical.error_with_document', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $type,
                 EmsFields::LOG_OUUID_FIELD => $ouuid,

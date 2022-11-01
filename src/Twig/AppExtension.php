@@ -463,7 +463,7 @@ class AppExtension extends AbstractExtension
                 } elseif ($internalFormat) {
                     $date = \DateTime::createFromFormat($internalFormat, $item);
                 } else {
-                    $date = new DateTime($item);
+                    $date = new \DateTime($item);
                 }
                 if (false === $date) {
                     throw new \RuntimeException('Unexpected date format');

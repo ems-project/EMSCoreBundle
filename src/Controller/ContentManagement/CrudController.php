@@ -11,7 +11,6 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -50,7 +49,7 @@ class CrudController extends AbstractController
 
         try {
             $newRevision = $this->dataService->createData($ouuid, $rawdata, $contentType);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
@@ -80,7 +79,7 @@ class CrudController extends AbstractController
         $contentType = $this->giveContentType($name);
         try {
             $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
@@ -124,7 +123,7 @@ class CrudController extends AbstractController
             $newRevision = $this->dataService->finalizeDraft($revision);
             $out['success'] = !$newRevision->getDraft();
             $out['ouuid'] = $newRevision->getOuuid();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof DataStateException)) {
                 throw $e;
             } else {
@@ -154,7 +153,7 @@ class CrudController extends AbstractController
             $revision = $this->dataService->getRevisionById($id, $contentType);
             $this->dataService->discardDraft($revision);
             $isDiscard = ($revision->getId() != $id) ? true : false;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $isDiscard = false;
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
@@ -195,7 +194,7 @@ class CrudController extends AbstractController
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
             ]);
             $isDeleted = true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (($e instanceof NotFoundHttpException) || ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
@@ -231,7 +230,7 @@ class CrudController extends AbstractController
             $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
             $newDraft = $this->dataService->replaceData($revision, $rawdata);
             $isReplaced = ($revision->getId() != $newDraft->getId()) ? true : false;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $isReplaced = false;
             if ($e instanceof NotFoundHttpException) {
                 throw $e;
@@ -275,7 +274,7 @@ class CrudController extends AbstractController
             $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
             $newDraft = $this->dataService->replaceData($revision, $rawdata, 'merge');
             $isMerged = ($revision->getId() != $newDraft->getId()) ? true : false;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if ($e instanceof NotFoundHttpException) {
                 throw $e;
             } else {

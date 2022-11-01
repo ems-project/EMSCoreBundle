@@ -20,7 +20,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Error\Error;
-use ZipArchive;
 
 class ExportDocumentsCommand extends EmsCommand
 {
@@ -195,8 +194,8 @@ class ExportDocumentsCommand extends EmsCommand
         if (!\is_string($outZipPath)) {
             $outZipPath = \tempnam(\sys_get_temp_dir(), 'emsExport').'.zip';
         }
-        $zip = new ZipArchive();
-        $zip->open($outZipPath, ZIPARCHIVE::CREATE);
+        $zip = new \ZipArchive();
+        $zip->open($outZipPath, \ZipArchive::CREATE);
         $extension = '';
         if (!\in_array($format, TemplateService::EXPORT_FORMATS)) {
             $this->templateService->init($format, $contentType);

@@ -15,7 +15,6 @@ use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CommonBundle\Storage\StorageServiceMissingException;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
-use Exception;
 use Psr\Http\Message\StreamInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -315,7 +314,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
             } catch (\Throwable $e) {
                 $em->remove($uploadedAsset);
                 $em->flush($uploadedAsset);
-                throw new Exception('Was not able to finalize or confirmed the upload in at least one storage service');
+                throw new \Exception('Was not able to finalize or confirmed the upload in at least one storage service');
             }
         }
 

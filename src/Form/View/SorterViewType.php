@@ -22,7 +22,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Throwable;
 use Twig\Environment;
 
 class SorterViewType extends ViewType
@@ -120,7 +119,7 @@ class SorterViewType extends ViewType
                     'contentType' => $view->getContentType(),
                     'environment' => $view->getContentType()->giveEnvironment(),
             ]);
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $renderQuery = '{}';
         }
 
@@ -175,7 +174,7 @@ class SorterViewType extends ViewType
                     $data[$view->getOptions()['field']] = $counter++;
                     $revision->setRawData($data);
                     $this->dataService->finalizeDraft($revision);
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     $this->logger->warning('form.view.sorter.error_with_document', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $view->getContentType()->getName(),
                         EmsFields::LOG_OUUID_FIELD => $itemKey,

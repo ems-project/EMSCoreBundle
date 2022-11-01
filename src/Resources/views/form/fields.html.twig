@@ -1420,6 +1420,12 @@
 	</div>             
 {%- endblock i18n_content_row %}
 
+{%- block ems_version_tag_row -%}
+	{% if form.value is defined %}
+		{{- form_row(form.value) -}}
+	{% endif %}
+{%- endblock ems_version_tag_row -%}
+
 {%- block data_field_migration_transformer_row -%}
 	<div>
 		{{ form_row(form.class) }}

@@ -2,10 +2,13 @@
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Revision;
 use Throwable;
 
 /**
@@ -215,6 +218,33 @@ class EnvironmentRepository extends EntityRepository
     {
         $this->getEntityManager()->remove($environment);
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @return Collection<int, Environment>
+     */
+    public function findByRevision(Revision $revision): Collection
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb
+            ->select('e')
+            ->join('e.revisions', 'r')
+            ->join('r.contentType', 'c')
+            ->andWhere($qb->expr()->eq('c.deleted', $qb->expr()->literal(false)))
+            ->andWhere($qb->expr()->eq('c.active', $qb->expr()->literal(true)))
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)));
+
+        if (null !== $versionOuuid = $revision->getVersionUuid()) {
+            $qb
+                ->andWhere($qb->expr()->eq('r.versionUuid', ':version_ouuid'))
+                ->setParameter('version_ouuid', $versionOuuid);
+        } else {
+            $qb
+                ->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))
+                ->setParameter('ouuid', $revision->getOuuid());
+        }
+
+        return new ArrayCollection($qb->getQuery()->getResult());
     }
 
     private function addSearchFilters(QueryBuilder $qb, string $searchValue): void

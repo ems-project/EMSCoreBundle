@@ -6,7 +6,6 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\NonUniqueResultException;
-use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
@@ -144,10 +143,10 @@ class PublishService
             return 0;
         }
 
+        $this->publishVersion($revision, $environment, $commandUser);
+
         $revisionEnvironment = $this->revRepository->findByOuuidContentTypeAndEnvironment($revision, $environment);
         $already = $revisionEnvironment === $revision;
-
-        $this->publishVersion($revision, $environment, $commandUser);
 
         if (!$already && $revisionEnvironment) {
             $this->revRepository->removeEnvironment($revisionEnvironment, $environment);
@@ -173,9 +172,7 @@ class PublishService
             throw new \LogicException('Unpublish failed: is default environment');
         }
 
-        $publishedRevisions = $this->revRepository->findAllPublishedRevision(EMSLink::fromText($revision->getEmsLink()));
-
-        if (1 === \count($publishedRevisions)) {
+        if (1 === $this->environmentService->findByRevision($revision, true)->count()) {
             throw new \LogicException('Unpublish failed: requires 1 environment');
         }
 
@@ -201,9 +198,9 @@ class PublishService
             return 0;
         }
 
-        $item = $this->revRepository->findByOuuidContentTypeAndEnvironment($revision, $environment);
-
         $this->publishVersion($revision, $environment, $commandUser);
+
+        $item = $this->revRepository->findByOuuidContentTypeAndEnvironment($revision, $environment);
 
         $already = false;
         if ($item === $revision) {
@@ -380,31 +377,34 @@ class PublishService
         }
 
         $contentType = $revision->giveContentType();
-        $publishedRevision = $this->revRepository->findLatestVersion($contentType, $versionUuid, $environment);
 
         $selectedVersionTag = null;
         if ($contentType->hasVersionTagField()) {
             $selectedVersionTag = $revision->getRawData()[$contentType->getVersionTagField()] ?? null;
         }
 
+        if (null === $selectedVersionTag) {
+            return;
+        }
+
+        $publishedRevision = $this->revRepository->findLatestVersion($contentType, $versionUuid, $environment);
+
+        $now = new \DateTimeImmutable();
         $form = null;
 
-        if ($selectedVersionTag && $publishedRevision && null === $revision->getVersionDate('to')) {
-            $now = new \DateTimeImmutable();
-
+        if ($publishedRevision && null === $revision->getVersionDate('to')) {
             $closedVersion = $publishedRevision->clone(); // create a new version
             $closedVersion->setEndTime(null);
             $closedVersion->setVersionDate('to', $now);
             $this->dataService->finalizeDraft($closedVersion, $form, $commandUser);
 
             $this->publish($closedVersion, $environment, $commandUser);
+
             $revision->setVersionDate('from', $now);
-            $revision->setVersionTag($selectedVersionTag); // only update version if already published
         }
 
-        if ($selectedVersionTag) {
-            $revision->removeFromRawData($contentType->getVersionTagField());
-        }
+        $revision->setVersionTag($selectedVersionTag);
+        $revision->removeFromRawData($contentType->getVersionTagField());
 
         $this->dataService->finalizeDraft($revision, $form, $commandUser);
     }

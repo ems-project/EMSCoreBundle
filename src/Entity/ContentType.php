@@ -611,26 +611,19 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $clearPropertyNames;
     }
 
-    /**
-     * Set active.
-     *
-     * @param bool $active
-     *
-     * @return ContentType
-     */
-    public function setActive($active)
+    public function setActive(bool $active): self
     {
         $this->active = $active;
 
         return $this;
     }
 
-    /**
-     * Get active.
-     *
-     * @return bool
-     */
-    public function getActive()
+    public function getActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function isActive(): bool
     {
         return $this->active;
     }

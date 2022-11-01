@@ -34,7 +34,7 @@
         <default key="apiRoute"><bool>true</bool></default>
         <default key="sha1" xsi:nil="true"/>
     </route>
-    <route id="ems_api_image_upload_url" path="/" methods="POST">
+    <route id="ems_api_image_upload_url" path="/upload" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::uploadFileAction</default>
         <default key="_format">json</default>
     </route>

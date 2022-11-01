@@ -52,7 +52,7 @@ final class RevisionTask extends AbstractType implements DashboardInterface
         }
 
         $filters = new TaskTableFilters();
-        $formFilters = $this->formFactory->create(RevisionTaskFiltersType::class, $filters);
+        $formFilters = $this->formFactory->create(RevisionTaskFiltersType::class, $filters, ['tab' => $tab]);
         $formFilters->handleRequest($request);
         $queryFilter = $request->query->all(RevisionTaskFiltersType::NAME);
 

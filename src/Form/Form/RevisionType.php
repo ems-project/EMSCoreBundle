@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Core\User\UserOptions;
 use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
@@ -14,7 +13,6 @@ use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Validator\Constraints\RevisionRawData;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormRegistryInterface;
@@ -117,29 +115,8 @@ class RevisionType extends AbstractType
         if (null !== $revision && $revision->getDraft()) {
             $contentType = $revision->getContentType();
             $environment = $contentType ? $contentType->getEnvironment() : null;
-            $askVersionTags = $contentType
-                && $contentType->hasVersionTags()
-                && $contentType->getVersionOptions()[VersionOptions::ASK_VERSION_TAG];
 
-            if (null !== $environment && $askVersionTags) {
-                $builder
-                    ->add('publish_version_tags', ChoiceType::class, [
-                        'translation_domain' => false,
-                        'placeholder' => $revision->getOuuid() ? 'Silent' : null,
-                        'choices' => \array_combine($contentType->getVersionTags(), $contentType->getVersionTags()),
-                        'mapped' => false,
-                        'required' => false,
-                    ])
-                    ->add('publish_version', SubmitEmsType::class, [
-                        'translation_domain' => EMSCoreExtension::TRANS_DOMAIN,
-                        'attr' => ['class' => 'btn btn-primary btn-sm'],
-                        'icon' => 'glyphicon glyphicon-open',
-                        'label' => 'form.form.revision-type.publish-label',
-                        'label_translation_parameters' => [
-                            '%environment%' => $environment->getLabel(),
-                        ],
-                    ]);
-            } elseif (null !== $environment) {
+            if (null !== $environment) {
                 $builder->add('publish', SubmitEmsType::class, [
                     'translation_domain' => EMSCoreExtension::TRANS_DOMAIN,
                     'label' => 'form.form.revision-type.publish-label',

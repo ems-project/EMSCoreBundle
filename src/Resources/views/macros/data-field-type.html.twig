@@ -1226,3 +1226,19 @@
 	</dl>
 	{{ _self.messages(dataField) }}
 {% endblock %}
+
+{% block EMS_CoreBundle_Form_DataField_VersionTagFieldType %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+			{% else %}
+				{{ dataField.fieldType.name }}
+			{% endif %}
+		</dt>
+		<dd>
+			{{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endblock %}

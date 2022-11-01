@@ -702,6 +702,14 @@ class Revision implements EntityInterface
         return $rawData;
     }
 
+    public function removeFromRawData(string $property): void
+    {
+        $rawData = $this->rawData ?? [];
+        unset($rawData[$property]);
+
+        $this->rawData = $rawData;
+    }
+
     public function getHash(): string
     {
         $hash = $this->rawData[Mapping::HASH_FIELD] ?? null;
@@ -913,11 +921,16 @@ class Revision implements EntityInterface
         return $this->versionUuid;
     }
 
-    public function getVersionDate(string $field): ?\DateTimeImmutable
+    public function getVersionTagField(): ?string
     {
-        if (null === $contentType = $this->contentType) {
-            throw new \RuntimeException(\sprintf('ContentType not found for revision %d', $this->getId()));
-        }
+        $contentType = $this->giveContentType();
+
+        return $contentType->hasVersionTagField() ? ($this->rawData[$contentType->getVersionTagField()] ?? null) : null;
+    }
+
+    public function getVersionDate(string $field): ?\DateTimeInterface
+    {
+        $contentType = $this->giveContentType();
 
         $dateString = null;
         if ('from' === $field && null !== $dateFromField = $contentType->getVersionDateFromField()) {
@@ -927,13 +940,7 @@ class Revision implements EntityInterface
             $dateString = $this->rawData[$dateToField] ?? null;
         }
 
-        if (null === $dateString) {
-            return null;
-        }
-
-        $dateTime = \DateTimeImmutable::createFromFormat(\DateTimeImmutable::ATOM, $dateString);
-
-        return $dateTime ? $dateTime : null;
+        return $dateString ? DateTime::createFromFormat($dateString) : null;
     }
 
     public function hasVersionTag(): bool

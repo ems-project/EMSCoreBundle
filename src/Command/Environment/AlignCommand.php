@@ -88,7 +88,7 @@ class AlignCommand extends AbstractEnvironmentCommand
                     }
                     ++$targetIsPreviewEnvironment[$contentType->getName()];
                 } else {
-                    if (0 == $this->publishService->bulkPublish($revision, $this->target)) {
+                    if (0 == $this->publishService->bulkPublish($revision, $this->target, $this->lockUser)) {
                         ++$alreadyAligned;
                     }
                 }

@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Collections\Collection;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -10,6 +11,7 @@ use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Filter;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\AnalyzerRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\FilterRepository;
@@ -115,6 +117,22 @@ class EnvironmentService implements EntityServiceInterface
         }
 
         return $this->environments;
+    }
+
+    /**
+     * @return Collection<int, Environment>
+     */
+    public function findByRevision(Revision $revision, bool $excludeDefault = false): Collection
+    {
+        $environments = $this->environmentRepository->findByRevision($revision);
+
+        if ($excludeDefault) {
+            $defaultEnvironment = $revision->giveContentType()->giveEnvironment();
+
+            return $environments->filter(fn (Environment $e) => $e->getName() !== $defaultEnvironment->getName());
+        }
+
+        return $environments;
     }
 
     /**

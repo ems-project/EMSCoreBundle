@@ -101,7 +101,7 @@ final class UpdateCommand extends AbstractCommand
             }
             $revision = $this->xliffService->insert($insertReport, $document, $this->localeField, $this->translationField, $this->publishTo, self::XLIFF_UPLOAD_COMMAND);
             if (null !== $this->publishTo) {
-                $this->publishService->publish($revision, $this->publishTo, true);
+                $this->publishService->publish($revision, $this->publishTo, self::XLIFF_UPLOAD_COMMAND);
             }
             if ($this->archive) {
                 $this->revisionService->archive($revision, self::XLIFF_UPLOAD_COMMAND);

@@ -1,4 +1,3 @@
-views.data.edit-revision-html.version-modal.close-label: Close
 views.data.edit-revision-html.discard-draft-message: 'Modifications made in this draft will be lost'
 views.data.edit-revision-html.publish-label: 'Save and publish in %environment%'
 views.data.edit-revision-html.discard-draft-label: 'Delete this draft'

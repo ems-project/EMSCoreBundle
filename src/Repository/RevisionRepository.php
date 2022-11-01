@@ -884,15 +884,23 @@ class RevisionRepository extends EntityRepository
         return $qb->getQuery()->execute();
     }
 
-    public function findLatestVersion(ContentType $contentType, string $versionOuuid): ?Revision
+    public function findLatestVersion(ContentType $contentType, string $versionOuuid, ?Environment $environment = null): ?Revision
     {
         $toField = $contentType->getVersionDateToField();
 
         $qb = $this->createQueryBuilder('r');
         $qb
             ->andWhere($qb->expr()->eq('r.versionUuid', ':version_ouuid'))
-            ->andWhere($qb->expr()->isNull('r.endTime'))
             ->setParameter('version_ouuid', $versionOuuid);
+
+        if ($environment) {
+            $qb
+                ->join('r.environments', 'e')
+                ->andWhere($qb->expr()->eq('e.id', ':environment_id'))
+                ->setParameter('environment_id', $environment->getId());
+        } else {
+            $qb->andWhere($qb->expr()->isNull('r.endTime'));
+        }
 
         /** @var Revision[] $revisions */
         $revisions = $qb->getQuery()->getResult();

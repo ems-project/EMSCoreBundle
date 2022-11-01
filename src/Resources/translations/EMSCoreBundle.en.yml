@@ -183,7 +183,6 @@ form.form.revision-type.paste-label: Paste
 form.form.revision-type.save-draft-label: 'Save as draft'
 form.form.revision-type.save-label: 'Save'
 form.form.revision-type.publish-label: 'Save and publish in %environment%'
-form.form.revision-type.publish-version-tags-label: 'Save, tag and publish in %environment%'
 form.form_field.wysiwyg.content_css.label: 'Content CSS (override styles sets''s config)'
 form.form_field.wysiwyg.format_tags.label: 'Format tags (override styles sets config)'
 form.subform.channel.attributes: 'Request extra attributes'

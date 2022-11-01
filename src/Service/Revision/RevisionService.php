@@ -19,7 +19,6 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidInterface;
-use Symfony\Component\Form\FormInterface;
 
 class RevisionService implements RevisionServiceInterface
 {
@@ -180,46 +179,6 @@ class RevisionService implements RevisionServiceInterface
         $this->auditLogger->info('log.revision.draft.updated', LogRevisionContext::update($revision));
 
         $this->logger->debug('Revision after persist flush');
-    }
-
-    /**
-     * The revision is a draft, version meta fields set in Revision->setVersionMetaFields().
-     *
-     * @param array<mixed>                  $rawData
-     * @param ?FormInterface<FormInterface> $form
-     */
-    public function saveVersion(Revision $revision, array $rawData, ?string $versionTag = null, ?FormInterface &$form = null): Revision
-    {
-        if (null !== $versionTag) {
-            $revision->setVersionTag($versionTag); // update version_tag archived versions
-        }
-
-        if (null === $versionTag || null !== $revision->getVersionDate('to') || !$revision->hasOuuid()) {
-            // silent version publish || changing archived version revision || new document draft
-            $this->save($revision, $rawData);
-            $this->dataService->finalizeDraft($revision, $form);
-
-            return $revision;
-        }
-
-        if (null === $previousRevision = $this->revisionRepository->findPreviousRevision($revision)) {
-            throw new \RuntimeException('Could not find previous revision');
-        }
-
-        $now = new \DateTimeImmutable();
-        $revision->setVersionDate('from', $now);
-        $this->dataService->finalizeDraft($revision, $form);
-
-        if (0 < \count($form->getErrors(true))) {
-            return $revision;
-        }
-
-        $previousVersion = $previousRevision->clone();
-        $previousVersion->setEndTime(null);
-        $previousVersion->setVersionDate('to', $now);
-        $this->dataService->finalizeDraft($previousVersion);
-
-        return $revision;
     }
 
     public function getDocumentInfo(EMSLink $documentLink): DocumentInfo

@@ -8,6 +8,7 @@
 {% if revision.hasVersionTag %}
 	{%- set versionFrom = revision.versionDate('from').format(date_format) -%}
 	{%- set versionTo = revision.versionDate('to') ? revision.versionDate('to').format(date_format) : 'now' -%}
+	{%- set newVersionTag = revision.versionTagField -%}
 	{%- set revisionVersionTitle = "#{revision.versionTag} version (#{versionFrom} - #{versionTo})" -%}
 	{%- if versionTo != 'now' -%}{%- set revisionColor = 'gray' -%}{%- endif -%}
 {% endif %}
@@ -146,7 +147,10 @@
 {% block revisionTabAboutRevision %}
 	{% if revision.hasVersionTags %}
 		<strong><i class="fa fa-tags margin-r-5"></i> Version</strong>
-		<p class="text-muted">{{ revision.versionTag|default('') }}</p>
+		<p class="text-muted">
+			{% if newVersionTag %}<span class="label label-success">New version {{ newVersionTag }}</span>{% endif %}
+			{{ revision.versionTag|default('') }}
+		</p>
 		<hr/>
 	{% endif %}
 	<strong><i class="fa fa-map-signs margin-r-5"></i> {{ 'views.data.revisions-data-html.status'|trans }}</strong>
@@ -219,13 +223,18 @@
 
 {% block revisionBody %}
 	<div class="box revision-view">
+		{% if newVersionTag %}
+		<div class="box-header with-border bg-green color-palette">
+			<h3 class="box-title">New version <strong>{{ newVersionTag }}</strong></h3>
+		</div>
+		{% endif %}
 		<div class="box-header with-border bg-{{ revisionColor }} color-palette">
 			<h3 class="box-title">
 				{% if revision.draft %}
 					<i class="fa fa-fire"></i>
 					{{ 'views.data.revisions-data-html.draft-in-progress'|trans }}
 				{% elseif revision.hasVersionTag %}
-					{{ revisionVersionTitle }}
+					{{ revisionVersionTitle|raw }}
 				{% elseif not revision.endTime %}
 					<i class="fa fa-thumbs-up"></i>
 					{{ 'views.data.revisions-data-html.current-revision'|trans }}
@@ -243,6 +252,7 @@
 				</div>
 			{% endif %}
 		</div>
+
 		<div class="box-body">
 			{% set compare = compareData != null ? true : false %}
 			{{ macros.renderDataField(dataFields, revision.rawData, compare, compareData) }}

@@ -289,6 +289,15 @@
             <tag name="ems.form.datafieldtype" alias="select_user_property" />
             <tag name="form.type"/>
         </service>
+        <service id="ems.fieldtype.version_tag" class="EMS\CoreBundle\Form\DataField\VersionTagFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="ems.service.environment" />
+            <tag name="ems.form.datafieldtype" alias="version_tag" />
+            <tag name="form.type"/>
+        </service>
 
         <!-- Form types -->
         <service id="ems.exteneded.collectiontype" class="EMS\CoreBundle\Form\Form\EmsCollectionType">

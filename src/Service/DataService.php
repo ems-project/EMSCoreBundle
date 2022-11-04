@@ -337,7 +337,7 @@ class DataService
 
         foreach ($items as $contentType => $ouuids) {
             $contentType = $this->contentTypeService->getByName($contentType);
-            if ($contentType instanceof ContentType && $contentType->getBusinessIdField() && \count($ouuids) > 0) {
+            if ($contentType instanceof ContentType && $contentType->getBusinessIdField()) {
                 $search = $this->elasticaService->convertElasticsearchSearch([
                     'index' => $contentType->giveEnvironment()->getAlias(),
                     'body' => [

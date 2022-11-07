@@ -17,7 +17,7 @@
 {% if revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) is defined %}
 	{% set title = attribute(revision.rawData, revision.contentType.labelField) %}
 {% endif %}
-	
+
 {% block title %}
 	{{ 'views.data.revisions-data-html.title'|trans({'%content-type%': revision.contentType.singularName, '%title%': title}) }}
 {% endblock %}
@@ -223,7 +223,7 @@
 
 {% block revisionBody %}
 	<div class="box revision-view">
-		{% if newVersionTag %}
+		{% if revision.hasVersionTags and newVersionTag %}
 		<div class="box-header with-border bg-green color-palette">
 			<h3 class="box-title">New version <strong>{{ newVersionTag }}</strong></h3>
 		</div>

@@ -135,6 +135,11 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
      */
     protected bool $updateReferrers = false;
 
+    /**
+     * @ORM\Column(name="template_publication", type="text", nullable=true)
+     */
+    protected ?string $templatePublication = null;
+
     public function __construct()
     {
         $this->revisions = new ArrayCollection();
@@ -540,5 +545,15 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     public function setLabel(?string $label): void
     {
         $this->label = $label;
+    }
+
+    public function getTemplatePublication(): ?string
+    {
+        return $this->templatePublication;
+    }
+
+    public function setTemplatePublication(?string $templatePublication): void
+    {
+        $this->templatePublication = $templatePublication;
     }
 }

@@ -8,6 +8,7 @@ use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\NonUniqueResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
+use EMS\CoreBundle\Core\Environment\EnvironmentPublisherFactory;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
@@ -29,6 +30,7 @@ class PublishService
     private RevisionRepository $revRepository;
     private ContentTypeService $contentTypeService;
     private EnvironmentService $environmentService;
+    private EnvironmentPublisherFactory $environmentPublisherFactory;
     private DataService $dataService;
     private UserService $userService;
     private EventDispatcherInterface $dispatcher;
@@ -43,6 +45,7 @@ class PublishService
         IndexService $indexService,
         ContentTypeService $contentTypeService,
         EnvironmentService $environmentService,
+        EnvironmentPublisherFactory $environmentPublisherFactory,
         DataService $dataService,
         UserService $userService,
         EventDispatcherInterface $dispatcher,
@@ -55,6 +58,7 @@ class PublishService
         $this->indexService = $indexService;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
+        $this->environmentPublisherFactory = $environmentPublisherFactory;
         $this->dataService = $dataService;
         $this->userService = $userService;
         $this->dispatcher = $dispatcher;
@@ -304,6 +308,15 @@ class PublishService
     private function canPublish(Revision $revision, Environment $environment): bool
     {
         $logContext = LogRevisionContext::publish($revision, $environment);
+
+        $publisher = $this->environmentPublisherFactory->create($environment, $revision);
+        foreach ($publisher->getMessages() as $message) {
+            $this->logger->log($message['level'], $message['message']);
+        }
+
+        if ($publisher->blockPublication()) {
+            return false;
+        }
 
         $user = $this->userService->getCurrentUser();
         if (!empty($environment->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(\array_intersect($environment->getCircles(), $user->getCircles()))) {

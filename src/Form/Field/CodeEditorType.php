@@ -18,10 +18,10 @@ class CodeEditorType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-                'min-lines' => 15,
-                'max-lines' => 15,
-                'language' => 'ace/mode/twig',
-                'slug' => false,
+            'min-lines' => 15,
+            'max-lines' => 15,
+            'language' => 'ace/mode/twig',
+            'slug' => false,
         ]);
     }
 

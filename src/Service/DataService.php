@@ -323,6 +323,7 @@ class DataService
      */
     public function getBusinessIds(array $keys): array
     {
+        /** @var array<string, string[]> $items */
         $items = [];
         $businessKeys = [];
         foreach ($keys as $key) {

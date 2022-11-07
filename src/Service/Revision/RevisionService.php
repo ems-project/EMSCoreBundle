@@ -186,11 +186,6 @@ class RevisionService implements RevisionServiceInterface
         return new DocumentInfo($documentLink, $this->revisionRepository->findAllPublishedRevision($documentLink));
     }
 
-    public function getDocumentInfoByRevision(Revision $revision): DocumentInfo
-    {
-        return $this->getDocumentInfo(EMSLink::fromText($revision->getEmsLink()));
-    }
-
     /**
      * @param array<mixed> $rawData
      */

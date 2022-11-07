@@ -510,31 +510,20 @@ class EnvironmentController extends AbstractController
 
     public function editAction(int $id, Request $request): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var EnvironmentRepository $repository */
-        $repository = $em->getRepository(Environment::class);
-
-        /** @var Environment|null $environment */
-        $environment = $repository->find($id);
-
-        if (null === $environment) {
-            throw new NotFoundHttpException('Unknow environment');
+        try {
+            $environment = $this->environmentService->giveById($id);
+        } catch (\Throwable $e) {
+            throw $this->createNotFoundException($e->getMessage());
         }
 
-        $options = [];
-        if (null !== $this->circlesObject && '' !== $this->circlesObject) {
-            $options['type'] = $this->circlesObject;
-        }
-
-        $form = $this->createForm(EditEnvironmentType::class, $environment, $options);
-
+        $form = $this->createForm(EditEnvironmentType::class, $environment, [
+            'type' => (null !== $this->circlesObject && '' !== $this->circlesObject ? $this->circlesObject : null),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($environment);
-            $em->flush();
+            $this->environmentService->updateEnvironment($environment);
+
             $this->logger->notice('log.environment.updated', [
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
             ]);
@@ -543,8 +532,8 @@ class EnvironmentController extends AbstractController
         }
 
         return $this->render('@EMSCore/environment/edit.html.twig', [
-                'environment' => $environment,
-                'form' => $form->createView(),
+            'environment' => $environment,
+            'form' => $form->createView(),
         ]);
     }
 

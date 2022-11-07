@@ -272,6 +272,17 @@ class EnvironmentService implements EntityServiceInterface
         return $environment;
     }
 
+    public function giveById(int $id): Environment
+    {
+        $environment = $this->getEnvironmentsById()[$id] ?? false;
+
+        if (!$environment) {
+            throw new \RuntimeException(\sprintf('Could not find environment with the id "%d"', $id));
+        }
+
+        return $environment;
+    }
+
     /**
      * @return Environment|false
      *

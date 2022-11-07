@@ -1,66 +1,51 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-environment' %}
 
-{% block title %}Edit the environment {{environment.name}}{% endblock %}
-{% block pagetitle %}Edit the environment {{environment.name}}{% endblock %} 
+{% block title %}{{ 'environment.edit.title'|trans({ '%name%': environment.name }) }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
 {% block breadcrumb %}
 	<ol class="breadcrumb">
-		<li><i class="fa fa-database"></i> Environments</li>
-		<li><a href={{ path('environment.index') }}>List Environments</a></li>
-   		<li class="active">Edit environment</li>
+		<li><i class="fa fa-database"></i> {{ 'environment.plural'|trans }}</li>
+		<li><a href={{ path('environment.index') }}>{{ 'environment.index.title'|trans }}</a></li>
+   		<li class="active">{{ 'environment.edit.short_title'|trans }}</li>
    	</ol>
 {% endblock %}
 
 {% block body %}
 <div class="row">
-	<div class="col-md-6">
-		<div class="box ">
-			<div class="box-header with-border">
-				<i class="fa fa-warning"></i>
-				<h3 class="box-title">Notice</h3>
-			</div>
-			<!-- /.box-header -->
-			<div class="box-body">
-				<p>
-					If you intend to rename the alias, please create a new environment and align it to the one you would like to rename the alias.
-					Then delete the previous one.
-				</p>
-			</div>
-			<!-- /.box-body -->
-		</div>
-	</div>
-	<div class="col-md-6">
+	<div class="col-md-12">
 		<div class="box box-info">
 			<div class="box-header with-border">
-				<h3 class="box-title">Update environement's options</h3>
+				<h3 class="box-title">{{ block('title') }}</h3>
 			</div>
-			<!-- /.box-header -->
-			<!-- form start -->
 			{{ form_start(form) }}
 				<div class="box-body">
-					{{ form_row(form.name) }}
-					{{ form_row(form.label) }}
-					{{ form_row(form.color) }}
-          			{{ form_row(form.inDefaultSearch) }}
-          			{{ form_row(form.updateReferrers) }}
-          			{{ form_row(form.baseUrl) }}
-          			{% if form.circles is defined %}
-	    	    		{{ form_row(form.circles) }}
-	    			{% endif %}
-          			{{ form_row(form.extra) }}
+					<div class="row">
+						<div class="col-md-4">
+							{{ form_row(form.name) }}
+							{{ form_row(form.label) }}
+							{{ form_row(form.color) }}
+							{{ form_row(form.inDefaultSearch) }}
+							{{ form_row(form.updateReferrers) }}
+							{{ form_row(form.baseUrl) }}
+							{% if form.circles is defined %}
+								{{ form_row(form.circles) }}
+							{% endif %}
+						</div>
+						<div class="col-md-8">
+							{{ form_row(form.extra, { 'attr': { 'rows' : 4 } }) }}
+							{{ form_row(form.templatePublication) }}
+						</div>
+					</div>
+
 				</div>
-				<!-- /.box-body -->
 				<div class="box-footer">
-					<div class="btn-group pull-right">
+					<div class="btn-group">
 						{{ form_widget(form.save) }}
 					</div>
 				</div>
-				<!-- /.box-footer -->
-			
 			{{ form_end(form) }}
 		</div>
 	</div>
 </div>
-{% include '@EMSCore/app/menu.html.twig' with {
-	'item':  'environment-list'
-}%}
+{% include '@EMSCore/app/menu.html.twig' with { 'item':  'environment-list'}%}
 {% endblock %}

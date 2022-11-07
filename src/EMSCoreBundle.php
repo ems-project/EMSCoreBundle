@@ -16,6 +16,7 @@ class EMSCoreBundle extends Bundle
     public const TRANS_TWIG_DOMAIN = 'emsco-twigs';
     public const TRANS_DOMAIN_VALIDATORS = 'emsco_validators';
     public const TRANS_USER_DOMAIN = 'emsco-user';
+    public const TRANS_ENVIRONMENT_DOMAIN = 'emsco-environment';
     public const FONTAWESOME_VERSION = '4';
 
     public function build(ContainerBuilder $container): void

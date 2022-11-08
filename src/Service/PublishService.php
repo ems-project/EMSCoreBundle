@@ -195,10 +195,10 @@ class PublishService
      * @throws NonUniqueResultException
      * @throws DBALException
      */
-    public function publish(Revision $revision, Environment $environment, ?string $commandUser = null): int
+    public function publish(Revision $revision, Environment $environment, ?string $commandUser = null, bool $canPublish = false): int
     {
         $logContext = LogRevisionContext::publish($revision, $environment);
-        if (null === $commandUser && !$this->canPublish($revision, $environment)) {
+        if (null === $commandUser && !$canPublish && !$this->canPublish($revision, $environment)) {
             return 0;
         }
 
@@ -310,7 +310,7 @@ class PublishService
         $logContext = LogRevisionContext::publish($revision, $environment);
 
         $publisher = $this->environmentPublisherFactory->create($environment, $revision);
-        foreach ($publisher->getMessages() as $message) {
+        foreach ($publisher->getRevisionMessages() as $message) {
             $this->logger->log($message['level'], $message['message']);
         }
 
@@ -342,26 +342,6 @@ class PublishService
 
     private function runAlignRevision(string $ouuid, ContentType $contentType, Environment $environmentSource, Environment $environmentTarget): void
     {
-        if ($contentType->giveEnvironment()->getName() === $environmentTarget->getName()) {
-            $this->logger->warning('service.publish.not_in_default_environment', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget,
-            ]);
-
-            return;
-        }
-
-        if (!$this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::PUBLISH))) {
-            $this->logger->warning('service.publish.not_authorized', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget->getName(),
-            ]);
-
-            return;
-        }
-
         $revision = $this->revRepository->findByOuuidAndContentTypeAndEnvironment(
             $contentType,
             $ouuid,
@@ -411,7 +391,7 @@ class PublishService
             $closedVersion->setVersionDate('to', $now);
             $this->dataService->finalizeDraft($closedVersion, $form, $commandUser);
 
-            $this->publish($closedVersion, $environment, $commandUser);
+            $this->publish($closedVersion, $environment, $commandUser, true);
 
             $revision->setVersionDate('from', $now);
         }

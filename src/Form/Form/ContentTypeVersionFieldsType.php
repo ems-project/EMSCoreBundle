@@ -18,17 +18,25 @@ class ContentTypeVersionFieldsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $defaultOptions = [
-            'required' => false,
-            'firstLevelOnly' => true,
-            'mapping' => $options['mapping'],
-            'types' => ['text',  'keyword', 'string', 'integer'],
-        ];
-
         $builder
-            ->add(VersionFields::DATE_FROM, ContentTypeFieldPickerType::class, $defaultOptions)
-            ->add(VersionFields::DATE_TO, ContentTypeFieldPickerType::class, $defaultOptions)
-            ->add(VersionFields::VERSION_TAG, ContentTypeFieldPickerType::class, $defaultOptions)
+            ->add(VersionFields::DATE_FROM, ContentTypeFieldPickerType::class, [
+                'required' => false,
+                'firstLevelOnly' => true,
+                'mapping' => $options['mapping'],
+                'types' => ['date'],
+            ])
+            ->add(VersionFields::DATE_TO, ContentTypeFieldPickerType::class, [
+                'required' => false,
+                'firstLevelOnly' => true,
+                'mapping' => $options['mapping'],
+                'types' => ['date'],
+            ])
+            ->add(VersionFields::VERSION_TAG, ContentTypeFieldPickerType::class, [
+                'required' => false,
+                'firstLevelOnly' => true,
+                'mapping' => $options['mapping'],
+                'types' => ['keyword'],
+            ])
         ;
     }
 

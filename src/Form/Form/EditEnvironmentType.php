@@ -10,7 +10,6 @@ use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -49,10 +48,6 @@ class EditEnvironmentType extends AbstractType
             ->add('updateReferrers', CheckboxType::class, [
                 'required' => false,
                 'label' => 'environment.property.option.update_referrers',
-            ])
-            ->add('extra', TextareaType::class, [
-                'required' => false,
-                'label' => 'environment.property.extra',
             ])
             ->add('templatePublication', CodeEditorType::class, [
                 'required' => false,

@@ -15,7 +15,6 @@ environment:
         name: Name
         label: Label
         color: Color
-        extra: Extra
         base_url: 'Base URL'
         template_publication: 'Publication template'
         option:

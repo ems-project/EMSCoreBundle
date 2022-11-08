@@ -8,6 +8,7 @@ use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\NonUniqueResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
+use EMS\CoreBundle\Core\Environment\EnvironmentPublisher;
 use EMS\CoreBundle\Core\Environment\EnvironmentPublisherFactory;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Elasticsearch\Bulker;
@@ -134,7 +135,10 @@ class PublishService
         $this->bulker->setSign(false);
     }
 
-    public function bulkPublish(Revision $revision, Environment $environment, string $commandUser): int
+    /**
+     * @return int 1 = published, 0 = already published, -1 block by template publication
+     */
+    public function bulkPublish(Revision $revision, Environment $environment, string $commandUser, bool $environmentPublisher = false): int
     {
         if (!$revision->hasOuuid()) {
             throw new \RuntimeException('Draft revision passed to bulk publish!');
@@ -145,6 +149,13 @@ class PublishService
             $this->logger->warning('service.publish.not_in_default_environment', $logContext);
 
             return 0;
+        }
+
+        if ($environmentPublisher) {
+            $publisher = $this->environmentPublisherFactory->create($environment, $revision);
+            if ($publisher->blockPublication()) {
+                return -1;
+            }
         }
 
         $this->publishVersion($revision, $environment, $commandUser);
@@ -189,6 +200,11 @@ class PublishService
         $this->bulker->send(true);
         $this->bulker->setLogger($this->logger);
         $this->bulker->setSign(true);
+    }
+
+    public function getEnvironmentPublisher(Environment $environment): EnvironmentPublisher
+    {
+        return $this->environmentPublisherFactory->getPublisher($environment);
     }
 
     /**

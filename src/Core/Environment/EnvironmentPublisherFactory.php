@@ -47,6 +47,11 @@ class EnvironmentPublisherFactory
         return $publisher;
     }
 
+    public function getPublisher(Environment $environment): EnvironmentPublisher
+    {
+        return $this->publishers[$environment->getName()];
+    }
+
     private function getTemplate(Environment $environment): ?TemplateWrapper
     {
         if (isset($this->templates[$environment->getName()])) {

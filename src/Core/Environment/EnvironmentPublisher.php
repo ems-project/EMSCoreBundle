@@ -63,6 +63,32 @@ class EnvironmentPublisher
         $this->addMessage(LogLevel::ERROR, $message);
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAllErrorMessages(): array
+    {
+        return $this->getAllMessagesByLevel(LogLevel::ERROR);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAllWarningMessages(): array
+    {
+        return $this->getAllMessagesByLevel(LogLevel::WARNING);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getAllMessagesByLevel(string $level): array
+    {
+        $messages = \array_filter($this->messages, fn (array $m) => $level === $m['level']);
+
+        return \array_map(fn ($m) => $m['message'], $messages);
+    }
+
     private function addMessage(string $level, string $message): void
     {
         $this->messages[] = [

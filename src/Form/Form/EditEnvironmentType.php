@@ -2,14 +2,14 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,51 +22,58 @@ class EditEnvironmentType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var Revision $revision */
-        $revision = $builder->getData();
-
         $builder
-        ->add('name', IconTextType::class, [
-            'icon' => 'fa fa-tag',
-        ])
-        ->add('label', IconTextType::class, [
-            'required' => false,
-            'icon' => 'fa fa-header',
-        ])
-        ->add('color', ColorPickerType::class, [
+            ->add('name', IconTextType::class, [
+                'icon' => 'fa fa-tag',
+                'label' => 'environment.property.name',
+                'help' => 'environment.edit.notice_rename',
+            ])
+            ->add('label', IconTextType::class, [
                 'required' => false,
-        ]);
+                'icon' => 'fa fa-header',
+                'label' => 'environment.property.label',
+            ])
+            ->add('color', ColorPickerType::class, [
+                'required' => false,
+                'label' => 'environment.property.color',
+            ])
+            ->add('baseUrl', TextType::class, [
+                'required' => false,
+                'label' => 'environment.property.base_url',
+            ])
+            ->add('inDefaultSearch', CheckboxType::class, [
+                'required' => false,
+                'label' => 'environment.property.option.default_search',
+            ])
+            ->add('updateReferrers', CheckboxType::class, [
+                'required' => false,
+                'label' => 'environment.property.option.update_referrers',
+            ])
+            ->add('templatePublication', CodeEditorType::class, [
+                'required' => false,
+                'min-lines' => 10,
+                'label' => 'environment.property.template_publication',
+            ])
+            ->add('save', SubmitEmsType::class, [
+                'attr' => ['class' => 'btn btn-primary btn-sm '],
+                'icon' => 'fa fa-save',
+                'label' => 'environment.edit.save',
+            ]);
+
         if (\array_key_exists('type', $options) && $options['type']) {
             $builder->add('circles', ObjectPickerType::class, [
-                    'required' => false,
-                    'type' => $options['type'],
-                    'multiple' => true,
+                'required' => false,
+                'type' => $options['type'],
+                'multiple' => true,
             ]);
         }
-        $builder->add('baseUrl', TextType::class, [
-                'required' => false,
-        ])->add('inDefaultSearch', CheckboxType::class, [
-            'required' => false,
-        ])->add('updateReferrers', CheckboxType::class, [
-            'required' => false,
-        ])->add('extra', TextareaType::class, [
-            'required' => false,
-            'attr' => [
-                'rows' => '6',
-            ],
-        ])
-        ->add('save', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-save',
-        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        /* set the default option value for this kind of compound field */
-        parent::configureOptions($resolver);
-        $resolver->setDefault('type', null);
+        $resolver->setDefaults([
+            'type' => null,
+            'translation_domain' => EMSCoreBundle::TRANS_ENVIRONMENT_DOMAIN,
+        ]);
     }
 }

@@ -270,6 +270,10 @@
             <argument type="service" id="ems.service.mapping" />
             <argument type="service" id="ems.service.alias" />
         </service>
+        <service id="emsco.environment.publisher_factory" class="EMS\CoreBundle\Core\Environment\EnvironmentPublisherFactory">
+            <argument type="service" id="twig" />
+            <argument type="service" id="ems.service.search" />
+        </service>
         <service id="EMS\CoreBundle\Service\EnvironmentService">
             <argument type="service" id="doctrine" />
             <argument type="service" id="ems.service.user" />
@@ -338,6 +342,7 @@
             <argument type="service" id="ems.service.index"/>
             <argument type="service" id="ems.service.contenttype"/>
             <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="emsco.environment.publisher_factory"/>
             <argument type="service" id="ems.service.data"/>
             <argument type="service" id="ems.service.user"/>
             <argument type="service" id="event_dispatcher"/>

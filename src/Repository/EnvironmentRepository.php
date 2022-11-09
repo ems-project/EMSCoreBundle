@@ -155,20 +155,19 @@ class EnvironmentRepository extends EntityRepository
     public function findAllAsAssociativeArray(string $field): array
     {
         $qb = $this->createQueryBuilder('e');
-        $qb->select('e.'.$field.' key, e.name name, e.label label, e.color color, e.alias alias, e.managed managed, e.baseUrl baseUrl, e.circles circles, e.extra');
+        $qb->select('e.'.$field.' key, e.name name, e.label label, e.color color, e.alias alias, e.managed managed, e.baseUrl baseUrl, e.circles circles');
 
         $out = [];
         $result = $qb->getQuery()->getResult();
         foreach ($result as $record) {
             $out[$record['key']] = [
-                    'color' => $record['color'],
-                    'name' => $record['name'],
-                    'label' => $record['label'] ?? $record['name'],
-                    'alias' => $record['alias'],
-                    'managed' => $record['managed'],
-                    'baseUrl' => $record['baseUrl'],
-                    'circles' => $record['circles'],
-                    'extra' => $record['extra'],
+                'color' => $record['color'],
+                'name' => $record['name'],
+                'label' => $record['label'] ?? $record['name'],
+                'alias' => $record['alias'],
+                'managed' => $record['managed'],
+                'baseUrl' => $record['baseUrl'],
+                'circles' => $record['circles'],
             ];
         }
 

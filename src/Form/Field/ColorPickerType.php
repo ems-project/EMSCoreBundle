@@ -31,6 +31,7 @@ class ColorPickerType extends SelectPickerType
     {
         $resolver->setDefaults([
             'choices' => $this->choices,
+            'choice_translation_domain' => false,
             'attr' => [
                     'data-live-search' => true,
             ],

@@ -110,13 +110,6 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $inDefaultSearch;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="extra", type="text", nullable=true)
-     */
-    protected $extra;
-
-    /**
      * @var Collection<int, ContentType>
      *
      * @ORM\OneToMany(targetEntity="ContentType", mappedBy="environment", cascade={"remove"})
@@ -134,6 +127,11 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
      * @ORM\Column(name="update_referrers", type="boolean", nullable=false, options={"default": false}))
      */
     protected bool $updateReferrers = false;
+
+    /**
+     * @ORM\Column(name="template_publication", type="text", nullable=true)
+     */
+    protected ?string $templatePublication = null;
 
     public function __construct()
     {
@@ -428,30 +426,6 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->inDefaultSearch;
     }
 
-    /**
-     * Set extra.
-     *
-     * @param string $extra
-     *
-     * @return Environment
-     */
-    public function setExtra($extra)
-    {
-        $this->extra = $extra;
-
-        return $this;
-    }
-
-    /**
-     * Get extra.
-     *
-     * @return string
-     */
-    public function getExtra()
-    {
-        return $this->extra;
-    }
-
     public function addContentTypesHavingThisAsDefault(ContentType $contentTypesHavingThisAsDefault): self
     {
         $this->contentTypesHavingThisAsDefault[] = $contentTypesHavingThisAsDefault;
@@ -540,5 +514,15 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     public function setLabel(?string $label): void
     {
         $this->label = $label;
+    }
+
+    public function getTemplatePublication(): ?string
+    {
+        return $this->templatePublication;
+    }
+
+    public function setTemplatePublication(?string $templatePublication): void
+    {
+        $this->templatePublication = $templatePublication;
     }
 }

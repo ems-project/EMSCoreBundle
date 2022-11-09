@@ -8,6 +8,8 @@ use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\NonUniqueResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
+use EMS\CoreBundle\Core\Environment\EnvironmentPublisher;
+use EMS\CoreBundle\Core\Environment\EnvironmentPublisherFactory;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
@@ -29,6 +31,7 @@ class PublishService
     private RevisionRepository $revRepository;
     private ContentTypeService $contentTypeService;
     private EnvironmentService $environmentService;
+    private EnvironmentPublisherFactory $environmentPublisherFactory;
     private DataService $dataService;
     private UserService $userService;
     private EventDispatcherInterface $dispatcher;
@@ -43,6 +46,7 @@ class PublishService
         IndexService $indexService,
         ContentTypeService $contentTypeService,
         EnvironmentService $environmentService,
+        EnvironmentPublisherFactory $environmentPublisherFactory,
         DataService $dataService,
         UserService $userService,
         EventDispatcherInterface $dispatcher,
@@ -55,6 +59,7 @@ class PublishService
         $this->indexService = $indexService;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
+        $this->environmentPublisherFactory = $environmentPublisherFactory;
         $this->dataService = $dataService;
         $this->userService = $userService;
         $this->dispatcher = $dispatcher;
@@ -130,7 +135,10 @@ class PublishService
         $this->bulker->setSign(false);
     }
 
-    public function bulkPublish(Revision $revision, Environment $environment, string $commandUser): int
+    /**
+     * @return int 1 = published, 0 = already published, -1 block by template publication
+     */
+    public function bulkPublish(Revision $revision, Environment $environment, string $commandUser, bool $environmentPublisher = false): int
     {
         if (!$revision->hasOuuid()) {
             throw new \RuntimeException('Draft revision passed to bulk publish!');
@@ -141,6 +149,13 @@ class PublishService
             $this->logger->warning('service.publish.not_in_default_environment', $logContext);
 
             return 0;
+        }
+
+        if ($environmentPublisher) {
+            $publisher = $this->environmentPublisherFactory->create($environment, $revision);
+            if ($publisher->blockPublication()) {
+                return -1;
+            }
         }
 
         $this->publishVersion($revision, $environment, $commandUser);
@@ -187,14 +202,19 @@ class PublishService
         $this->bulker->setSign(true);
     }
 
+    public function getEnvironmentPublisher(Environment $environment): EnvironmentPublisher
+    {
+        return $this->environmentPublisherFactory->getPublisher($environment);
+    }
+
     /**
      * @throws NonUniqueResultException
      * @throws DBALException
      */
-    public function publish(Revision $revision, Environment $environment, ?string $commandUser = null): int
+    public function publish(Revision $revision, Environment $environment, ?string $commandUser = null, bool $canPublish = false): int
     {
         $logContext = LogRevisionContext::publish($revision, $environment);
-        if (null === $commandUser && !$this->canPublish($revision, $environment)) {
+        if (null === $commandUser && !$canPublish && !$this->canPublish($revision, $environment)) {
             return 0;
         }
 
@@ -305,6 +325,15 @@ class PublishService
     {
         $logContext = LogRevisionContext::publish($revision, $environment);
 
+        $publisher = $this->environmentPublisherFactory->create($environment, $revision);
+        foreach ($publisher->getRevisionMessages() as $message) {
+            $this->logger->log($message['level'], $message['message']);
+        }
+
+        if ($publisher->blockPublication()) {
+            return false;
+        }
+
         $user = $this->userService->getCurrentUser();
         if (!empty($environment->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(\array_intersect($environment->getCircles(), $user->getCircles()))) {
             $this->logger->warning('service.publish.not_in_circles', $logContext);
@@ -329,26 +358,6 @@ class PublishService
 
     private function runAlignRevision(string $ouuid, ContentType $contentType, Environment $environmentSource, Environment $environmentTarget): void
     {
-        if ($contentType->giveEnvironment()->getName() === $environmentTarget->getName()) {
-            $this->logger->warning('service.publish.not_in_default_environment', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget,
-            ]);
-
-            return;
-        }
-
-        if (!$this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::PUBLISH))) {
-            $this->logger->warning('service.publish.not_authorized', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environmentTarget->getName(),
-            ]);
-
-            return;
-        }
-
         $revision = $this->revRepository->findByOuuidAndContentTypeAndEnvironment(
             $contentType,
             $ouuid,
@@ -398,7 +407,7 @@ class PublishService
             $closedVersion->setVersionDate('to', $now);
             $this->dataService->finalizeDraft($closedVersion, $form, $commandUser);
 
-            $this->publish($closedVersion, $environment, $commandUser);
+            $this->publish($closedVersion, $environment, $commandUser, true);
 
             $revision->setVersionDate('from', $now);
         }

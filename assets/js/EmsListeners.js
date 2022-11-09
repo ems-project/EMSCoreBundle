@@ -96,10 +96,16 @@ export default class EmsListeners {
                 maxLines = hiddenField.data('max-lines');
             }
 
+            let minLines = 1;
+            if(hiddenField.data('min-lines') && hiddenField.data('min-lines') > 0){
+                minLines = hiddenField.data('min-lines');
+            }
+
             const editor = ace.edit(pre, {
                 mode: language,
                 readOnly: disabled,
                 maxLines: maxLines,
+                minLines: minLines,
                 theme: theme
             });
 

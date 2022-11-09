@@ -117,8 +117,8 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFunction('get_content_types', [$this, 'getContentTypes']),
             new TwigFunction('cant_be_finalized', [$this, 'cantBeFinalized']),
-            new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames']),
-            new TwigFunction('emsco_get_environments', [EnvironmentRuntime::class, 'getEnvironments']),
+//            new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames']),
+
             new TwigFunction('sequence', [$this, 'getSequenceNextValue']),
             new TwigFunction('diff_text', [$this, 'diffText'], ['is_safe' => ['html']]),
             new TwigFunction('diff', [$this, 'diff'], ['is_safe' => ['html']]),
@@ -148,6 +148,10 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_json_menu_nested', [JsonMenuRenderer::class, 'generateNested'], ['is_safe' => ['html']]),
             new TwigFunction('emsco_wysiwyg_info', [WysiwygRuntime::class, 'getInfo']),
             new TwigFunction('emsco_i18n_all', [I18nRuntime::class, 'findAll']),
+            new TwigFunction('emsco_get_environments', [EnvironmentRuntime::class, 'getEnvironments']),
+            new TwigFunction('emsco_get_default_environment_names', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames']),
+            // deprecated
+            new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames'], ['deprecated' => true, 'alternative' => 'emsco_get_default_environment_names']),
         ];
     }
 
@@ -174,7 +178,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('data_link', [$this, 'dataLink'], ['is_safe' => ['html']]),
             new TwigFilter('data_label', [$this, 'dataLabel'], ['is_safe' => ['html']]),
             new TwigFilter('get_content_type', [$this, 'getContentType']),
-            new TwigFilter('get_environment', [EnvironmentRuntime::class, 'getEnvironment']),
+            new TwigFilter('emsco_get_environment', [EnvironmentRuntime::class, 'getEnvironment']),
             new TwigFilter('generate_from_template', [$this, 'generateFromTemplate']),
             new TwigFilter('objectChoiceLoader', [$this, 'objectChoiceLoader']),
             new TwigFilter('groupedObjectLoader', [$this, 'groupedObjectLoader']),
@@ -204,8 +208,9 @@ class AppExtension extends AbstractExtension
             new TwigFilter('emsco_guess_locale', [DataExtractorRuntime::class, 'guessLocale']),
             new TwigFilter('emsco_asset_meta', [DataExtractorRuntime::class, 'assetMeta']),
             // deprecated
-            new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
-            new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),
+            new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true, 'alternative' => 'ems_webalize']),
+            new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true, 'alternative' => 'ems_webalize']),
+            new TwigFilter('get_environment', [EnvironmentRuntime::class, 'getEnvironment'], ['deprecated' => true, 'alternative' => 'emsco_get_environment']),
         ];
     }
 

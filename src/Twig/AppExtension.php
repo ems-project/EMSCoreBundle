@@ -21,7 +21,6 @@ use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer;
 use EMS\CoreBundle\Core\Revision\Wysiwyg\WysiwygRuntime;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Sequence;
@@ -35,7 +34,6 @@ use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\SequenceRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
@@ -66,7 +64,6 @@ class AppExtension extends AbstractExtension
     private RouterInterface $router;
     private TwigEnvironment $twig;
     private ObjectChoiceListFactory $objectChoiceListFactory;
-    private EnvironmentService $environmentService;
     private LoggerInterface $logger;
     private MailerService $mailer;
     private ElasticaService $elasticaService;
@@ -84,7 +81,6 @@ class AppExtension extends AbstractExtension
         RouterInterface $router,
         TwigEnvironment $twig,
         ObjectChoiceListFactory $objectChoiceListFactory,
-        EnvironmentService $environmentService,
         LoggerInterface $logger,
         FormFactory $formFactory,
         FileService $fileService,
@@ -102,7 +98,6 @@ class AppExtension extends AbstractExtension
         $this->router = $router;
         $this->twig = $twig;
         $this->objectChoiceListFactory = $objectChoiceListFactory;
-        $this->environmentService = $environmentService;
         $this->logger = $logger;
         $this->formFactory = $formFactory;
         $this->fileService = $fileService;
@@ -122,8 +117,8 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFunction('get_content_types', [$this, 'getContentTypes']),
             new TwigFunction('cant_be_finalized', [$this, 'cantBeFinalized']),
-            new TwigFunction('get_default_environments', [$this, 'getDefaultEnvironments']),
-            new TwigFunction('emsco_get_environments', [$this, 'getEnvironments']),
+            new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames']),
+            new TwigFunction('emsco_get_environments', [EnvironmentRuntime::class, 'getEnvironments']),
             new TwigFunction('sequence', [$this, 'getSequenceNextValue']),
             new TwigFunction('diff_text', [$this, 'diffText'], ['is_safe' => ['html']]),
             new TwigFunction('diff', [$this, 'diff'], ['is_safe' => ['html']]),
@@ -179,7 +174,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('data_link', [$this, 'dataLink'], ['is_safe' => ['html']]),
             new TwigFilter('data_label', [$this, 'dataLabel'], ['is_safe' => ['html']]),
             new TwigFilter('get_content_type', [$this, 'getContentType']),
-            new TwigFilter('get_environment', [$this, 'getEnvironment']),
+            new TwigFilter('get_environment', [EnvironmentRuntime::class, 'getEnvironment']),
             new TwigFilter('generate_from_template', [$this, 'generateFromTemplate']),
             new TwigFilter('objectChoiceLoader', [$this, 'objectChoiceLoader']),
             new TwigFilter('groupedObjectLoader', [$this, 'groupedObjectLoader']),
@@ -1141,40 +1136,6 @@ class AppExtension extends AbstractExtension
     public function getContentTypes(): array
     {
         return $this->contentTypeService->getAll();
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getDefaultEnvironments(): array
-    {
-        $defaultEnvironments = [];
-        /** @var Environment $environment */
-        foreach ($this->environmentService->getEnvironments() as $environment) {
-            if ($environment->getInDefaultSearch()) {
-                $defaultEnvironments[] = $environment->getName();
-            }
-        }
-
-        return $defaultEnvironments;
-    }
-
-    /**
-     * @return Environment[]
-     */
-    public function getEnvironments(): array
-    {
-        return $this->environmentService->getEnvironments();
-    }
-
-    public function getEnvironment(string $name): ?Environment
-    {
-        $environment = $this->environmentService->getAliasByName($name);
-        if (false !== $environment) {
-            return $environment;
-        }
-
-        return null;
     }
 
     /**

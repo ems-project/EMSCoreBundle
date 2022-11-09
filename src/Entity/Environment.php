@@ -133,6 +133,11 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
      */
     protected ?string $templatePublication = null;
 
+    /**
+     * @ORM\Column(name="role", type="string", length=100, nullable=true)
+     */
+    protected ?string $role = null;
+
     public function __construct()
     {
         $this->revisions = new ArrayCollection();
@@ -524,5 +529,15 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     public function setTemplatePublication(?string $templatePublication): void
     {
         $this->templatePublication = $templatePublication;
+    }
+
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(?string $role): void
+    {
+        $this->role = $role;
     }
 }

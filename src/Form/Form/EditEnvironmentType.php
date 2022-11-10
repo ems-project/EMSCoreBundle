@@ -58,7 +58,7 @@ class EditEnvironmentType extends AbstractType
             ->add('role', RolePickerType::class, [
                 'label' => 'environment.property.role',
                 'translation_domain' => EMSCoreBundle::TRANS_ENVIRONMENT_DOMAIN,
-                'nullable' => true,
+                'required' => false,
             ])
             ->add('save', SubmitEmsType::class, [
                 'attr' => ['class' => 'btn btn-primary btn-sm '],

@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Form\Field;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Service\UserService;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RolePickerType extends SelectPickerType
@@ -38,16 +37,6 @@ class RolePickerType extends SelectPickerType
                 'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
                 'choice_translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
                 'nullable' => false,
-            ])
-            ->setNormalizer('choices', function (Options $options, $value) {
-                if ($options['nullable']) {
-                    unset($value['role.not-defined']);
-                }
-
-                return $value;
-            })
-            ->setNormalizer('required', function (Options $options, $value) {
-                return $options['nullable'] ? false : $value;
-            });
+            ]);
     }
 }

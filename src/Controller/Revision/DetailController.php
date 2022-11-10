@@ -20,7 +20,6 @@ use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
-use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
@@ -39,7 +38,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class DetailController extends AbstractController
 {
     private ContentTypeService $contentTypeService;
-    private EnvironmentRepository $environmentRepository;
     private DataService $dataService;
     private RevisionService $revisionService;
     private RevisionRepository $revisionRepository;
@@ -50,7 +48,6 @@ class DetailController extends AbstractController
 
     public function __construct(
         ContentTypeService $contentTypeService,
-        EnvironmentRepository $environmentRepository,
         DataService $dataService,
         RevisionService $revisionService,
         RevisionRepository $revisionRepository,
@@ -60,7 +57,6 @@ class DetailController extends AbstractController
         LoggerInterface $logger
     ) {
         $this->contentTypeService = $contentTypeService;
-        $this->environmentRepository = $environmentRepository;
         $this->dataService = $dataService;
         $this->revisionService = $revisionService;
         $this->revisionRepository = $revisionRepository;
@@ -115,10 +111,6 @@ class DetailController extends AbstractController
         $lastPage = $this->revisionRepository->revisionsLastPage($ouuid, $contentType);
         $counter = $this->revisionRepository->countRevisions($ouuid, $contentType);
         $firstElemOfPage = $this->revisionRepository->firstElemOfPage($page);
-
-        $availableEnv = $this->environmentRepository->findAvailableEnvironments(
-            $revision->giveContentType()->giveEnvironment()
-        );
 
         $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
 
@@ -177,7 +169,6 @@ class DetailController extends AbstractController
             'revision' => $revision,
             'revisionsSummary' => $revisionsSummary,
             'latestVersion' => $latestVersion ?? null,
-            'availableEnv' => $availableEnv,
             'object' => $revision->getObject($objectArray),
             'referrerResponse' => $referrerResponse,
             'page' => $page,

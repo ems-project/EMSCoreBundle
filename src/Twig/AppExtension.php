@@ -149,6 +149,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_wysiwyg_info', [WysiwygRuntime::class, 'getInfo']),
             new TwigFunction('emsco_i18n_all', [I18nRuntime::class, 'findAll']),
             new TwigFunction('emsco_get_environments', [EnvironmentRuntime::class, 'getEnvironments']),
+            new TwigFunction('emsco_get_environments_revision', [EnvironmentRuntime::class, 'getEnvironmentsRevision']),
             new TwigFunction('emsco_get_default_environment_names', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames']),
             // deprecated
             new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames'], ['deprecated' => true, 'alternative' => 'emsco_get_default_environment_names']),

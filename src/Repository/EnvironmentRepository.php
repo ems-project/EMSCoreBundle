@@ -114,23 +114,6 @@ class EnvironmentRepository extends EntityRepository
     }
 
     /**
-     * @return Environment[]
-     */
-    public function findAvailableEnvironments(Environment $defaultEnv): array
-    {
-        $qb = $this->createQueryBuilder('e');
-        $qb->where($qb->expr()->neq('e.id', ':defaultEnvId'));
-        $qb->andWhere($qb->expr()->neq('e.managed', ':false'));
-        $qb->orderBy('e.orderKey', 'ASC');
-        $qb->setParameters([
-                'false' => false,
-                'defaultEnvId' => $defaultEnv->getId(),
-        ]);
-
-        return $qb->getQuery()->getResult();
-    }
-
-    /**
      * @return array<array{alias: string}>
      */
     public function findManagedIndexes(): array

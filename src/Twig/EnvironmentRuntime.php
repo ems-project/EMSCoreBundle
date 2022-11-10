@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Twig;
 
+use EMS\CoreBundle\Core\Environment\EnvironmentsRevision;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Twig\Extension\RuntimeExtensionInterface;
 
@@ -33,6 +35,11 @@ class EnvironmentRuntime implements RuntimeExtensionInterface
         $environment = $this->environmentService->getAliasByName($name);
 
         return $environment ?: null;
+    }
+
+    public function getEnvironmentsRevision(Revision $revision): EnvironmentsRevision
+    {
+        return $this->environmentService->getEnvironmentsByRevision($revision);
     }
 
     /**

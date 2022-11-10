@@ -73,7 +73,7 @@
 		<div class="box-footer">
 			{% include '@EMSCore/elements/revision-toolbar.html.twig' with {
 				'revisionId' : revision.id,
-				'environments': revision.environments,
+				'environmentsRevision': emsco_get_environments_revision(revision),
 				'draft': revision.draft,
 				'current': not revision.endTime,
 				'autoSave': revision.autoSave,
@@ -260,7 +260,7 @@
 		<div class="box-footer">
 			{% include '@EMSCore/elements/revision-toolbar.html.twig' with {
 				'revisionId' : revision.id,
-				'environments': revision.environments,
+				'environmentsRevision': emsco_get_environments_revision(revision),
 				'draft': revision.draft,
 				'current': not revision.endTime,
 				'autoSave': revision.autoSave,
@@ -385,7 +385,7 @@
 							<td>
 								{% include '@EMSCore/elements/revision-toolbar.html.twig' with {
 									'revisionId' : rev.id,
-									'environments': rev.environments,
+									'environmentsRevision': emsco_get_environments_revision(rev),
 									'draft': rev.draft,
 									'current': not rev.endTime,
 									'autoSave': rev.autoSave,

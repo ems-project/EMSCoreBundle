@@ -3,10 +3,13 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
+use EMS\CoreBundle\Core\Environment\EnvironmentsRevision;
 use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Filter;
@@ -117,6 +120,16 @@ class EnvironmentService implements EntityServiceInterface
         }
 
         return $this->environments;
+    }
+
+    public function getEnvironmentsByRevision(Revision $revision): EnvironmentsRevision
+    {
+        $publishRole = $revision->giveContentType()->role(ContentTypeRoles::PUBLISH);
+
+        $userEnvironments = $this->getAllForCurrentUser();
+        $hasPublishRole = $this->authorizationChecker->isGranted($publishRole);
+
+        return new EnvironmentsRevision($revision, $userEnvironments, $hasPublishRole);
     }
 
     /**
@@ -318,6 +331,20 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
+     * @return Collection<int, Environment>
+     */
+    public function getAllForCurrentUser(): Collection
+    {
+        $environments = new ArrayCollection($this->getAllInMyCircle());
+
+        return $environments->filter(function (Environment $e) {
+            $role = $e->getRole();
+
+            return null === $role || $this->authorizationChecker->isGranted($role);
+        });
+    }
+
+    /**
      * @return Environment[]
      */
     public function getAllInMyCircle(): array
@@ -329,7 +356,6 @@ class EnvironmentService implements EntityServiceInterface
         $user = $this->userService->getCurrentUser();
 
         return \array_filter($this->getEnvironments(), function ($environment) use ($user) {
-            /** @var Environment $environment */
             if (empty($environment->getCircles())) {
                 return true;
             }

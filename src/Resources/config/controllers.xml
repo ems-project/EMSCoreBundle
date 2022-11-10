@@ -275,7 +275,6 @@
         <!-- Revision -->
         <service id="EMS\CoreBundle\Controller\Revision\DetailController" public="true">
             <argument type="service" id="ems.service.contenttype" />
-            <argument type="service" id="EMS\CoreBundle\Repository\EnvironmentRepository" />
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />

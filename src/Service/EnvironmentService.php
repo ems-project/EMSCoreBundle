@@ -124,15 +124,9 @@ class EnvironmentService implements EntityServiceInterface
 
     public function getEnvironmentsByRevision(Revision $revision): EnvironmentsRevision
     {
+        $userPublishEnvironments = $this->getUserPublishEnvironments();
+
         $publishRole = $revision->giveContentType()->role(ContentTypeRoles::PUBLISH);
-
-        $allInMyCircle = new ArrayCollection($this->getAllInMyCircle());
-        $userPublishEnvironments = $allInMyCircle->filter(function (Environment $e) {
-            $role = $e->getRolePublish();
-
-            return null === $role || $this->authorizationChecker->isGranted($role);
-        });
-
         $hasPublishRole = $this->authorizationChecker->isGranted($publishRole);
 
         return new EnvironmentsRevision($revision, $userPublishEnvironments, $hasPublishRole);
@@ -337,22 +331,29 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
-     * @return Environment[]
+     * @return Collection<int, Environment>
      */
-    public function getAllInMyCircle(): array
+    public function getUserPublishEnvironments(): Collection
     {
         if ($this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
-            return $this->getEnvironments();
+            $circleEnvironments = $this->getEnvironments();
+        } else {
+            $user = $this->userService->getCurrentUser();
+            $circleEnvironments = \array_filter($this->getEnvironments(), function ($environment) use ($user) {
+                if (empty($environment->getCircles())) {
+                    return true;
+                }
+
+                return \count(\array_intersect($user->getCircles(), $environment->getCircles())) >= 1;
+            });
         }
 
-        $user = $this->userService->getCurrentUser();
+        $userPublishEnvironments = new ArrayCollection($circleEnvironments);
 
-        return \array_filter($this->getEnvironments(), function ($environment) use ($user) {
-            if (empty($environment->getCircles())) {
-                return true;
-            }
+        return $userPublishEnvironments->filter(function (Environment $e) {
+            $role = $e->getRolePublish();
 
-            return \count(\array_intersect($user->getCircles(), $environment->getCircles())) >= 1;
+            return null === $role || $this->authorizationChecker->isGranted($role);
         });
     }
 

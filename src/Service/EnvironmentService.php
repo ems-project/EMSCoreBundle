@@ -135,9 +135,9 @@ class EnvironmentService implements EntityServiceInterface
     /**
      * @return Collection<int, Environment>
      */
-    public function findByRevision(Revision $revision, bool $excludeDefault = false): Collection
+    public function getPublishedForRevision(Revision $revision, bool $excludeDefault = false): Collection
     {
-        $environments = $this->environmentRepository->findByRevision($revision);
+        $environments = $this->environmentRepository->findAllPublishedForRevision($revision);
 
         if ($excludeDefault) {
             $defaultEnvironment = $revision->giveContentType()->giveEnvironment();

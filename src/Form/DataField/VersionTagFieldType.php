@@ -75,7 +75,7 @@ class VersionTagFieldType extends DataFieldType
 
         if ($emsId) {
             $revision = $this->revisionService->getByEmsLink(EMSLink::fromText($emsId));
-            $countEnvironments = $revision ? $this->environmentService->findByRevision($revision, true)->count() : 0;
+            $countEnvironments = $revision ? $this->environmentService->getPublishedForRevision($revision, true)->count() : 0;
         }
 
         $builder->add('value', ChoiceType::class, [

@@ -19,24 +19,21 @@ class RolePickerType extends SelectPickerType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver
-            ->setDefaults([
-                'choices' => \array_merge(
-                    ['role.not-defined' => Roles::NOT_DEFINED],
-                    $this->userService->listUserRoles()
-                ),
-                'attr' => ['data-live-search' => true],
-                'choice_attr' => function () {
-                    return [
-                        'data-icon' => 'fa fa-user-circle',
-                    ];
-                },
-                'choice_value' => function ($value) {
-                    return $value;
-                },
-                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
-                'choice_translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
-                'nullable' => false,
-            ]);
+        $choices = \array_merge(['role.not-defined' => Roles::NOT_DEFINED], $this->userService->listUserRoles());
+
+        $resolver->setDefaults([
+            'choices' => $choices,
+            'attr' => ['data-live-search' => true],
+            'choice_attr' => function () {
+                return [
+                    'data-icon' => 'fa fa-user-circle',
+                ];
+            },
+            'choice_value' => function ($value) {
+                return $value;
+            },
+            'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+            'choice_translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+        ]);
     }
 }

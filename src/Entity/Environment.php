@@ -134,9 +134,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     protected ?string $templatePublication = null;
 
     /**
-     * @ORM\Column(name="role", type="string", length=100, nullable=true)
+     * @ORM\Column(name="role_publish", type="string", length=100, nullable=true)
      */
-    protected ?string $role = null;
+    protected ?string $rolePublish = null;
 
     public function __construct()
     {
@@ -531,13 +531,13 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->templatePublication = $templatePublication;
     }
 
-    public function getRole(): ?string
+    public function getRolePublish(): ?string
     {
-        return $this->role;
+        return $this->rolePublish;
     }
 
-    public function setRole(?string $role): void
+    public function setRolePublish(?string $rolePublish): void
     {
-        $this->role = $role;
+        $this->rolePublish = $rolePublish;
     }
 }

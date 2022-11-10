@@ -126,10 +126,16 @@ class EnvironmentService implements EntityServiceInterface
     {
         $publishRole = $revision->giveContentType()->role(ContentTypeRoles::PUBLISH);
 
-        $userEnvironments = $this->getAllForCurrentUser();
+        $allInMyCircle = new ArrayCollection($this->getAllInMyCircle());
+        $userPublishEnvironments = $allInMyCircle->filter(function (Environment $e) {
+            $role = $e->getRolePublish();
+
+            return null === $role || $this->authorizationChecker->isGranted($role);
+        });
+
         $hasPublishRole = $this->authorizationChecker->isGranted($publishRole);
 
-        return new EnvironmentsRevision($revision, $userEnvironments, $hasPublishRole);
+        return new EnvironmentsRevision($revision, $userPublishEnvironments, $hasPublishRole);
     }
 
     /**
@@ -327,20 +333,6 @@ class EnvironmentService implements EntityServiceInterface
     {
         return \array_filter($this->getEnvironments(), function (Environment $environment) {
             return !$environment->getManaged();
-        });
-    }
-
-    /**
-     * @return Collection<int, Environment>
-     */
-    public function getAllForCurrentUser(): Collection
-    {
-        $environments = new ArrayCollection($this->getAllInMyCircle());
-
-        return $environments->filter(function (Environment $e) {
-            $role = $e->getRole();
-
-            return null === $role || $this->authorizationChecker->isGranted($role);
         });
     }
 

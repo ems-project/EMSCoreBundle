@@ -55,8 +55,8 @@ class EditEnvironmentType extends AbstractType
                 'min-lines' => 10,
                 'label' => 'environment.property.template_publication',
             ])
-            ->add('role', RolePickerType::class, [
-                'label' => 'environment.property.role',
+            ->add('rolePublish', RolePickerType::class, [
+                'label' => 'environment.property.rolePublish',
                 'translation_domain' => EMSCoreBundle::TRANS_ENVIRONMENT_DOMAIN,
                 'required' => false,
             ])

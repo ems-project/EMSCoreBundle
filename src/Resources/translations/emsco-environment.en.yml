@@ -15,7 +15,7 @@ environment:
         name: Name
         label: Label
         color: Color
-        role: Role
+        rolePublish: Publish role
         base_url: 'Base URL'
         template_publication: 'Publication template'
         option:

@@ -20,9 +20,9 @@ class EnvironmentsRevision
     public Collection $publish;
 
     /**
-     * @param Collection<int, Environment> $userEnvironments
+     * @param Collection<int, Environment> $userPublishEnvironments
      */
-    public function __construct(Revision $revision, Collection $userEnvironments, bool $hasPublishRole)
+    public function __construct(Revision $revision, Collection $userPublishEnvironments, bool $hasPublishRole)
     {
         $environments = $revision->getEnvironments();
 
@@ -32,7 +32,7 @@ class EnvironmentsRevision
         $this->publish = new ArrayCollection();
 
         if ($hasPublishRole) {
-            $publishEnvironments = $userEnvironments->filter(function (Environment $e) {
+            $publishEnvironments = $userPublishEnvironments->filter(function (Environment $e) {
                 return $e->getManaged() && $e !== $this->default;
             });
 

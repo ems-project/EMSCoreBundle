@@ -19,7 +19,7 @@ final class Version20221107105524 extends AbstractMigration
 
         $this->addSql('ALTER TABLE environment ADD template_publication TEXT DEFAULT NULL');
         $this->addSql('ALTER TABLE environment DROP extra');
-        $this->addSql('ALTER TABLE environment ADD role VARCHAR(100) DEFAULT NULL');
+        $this->addSql('ALTER TABLE environment ADD role_publish VARCHAR(100) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
@@ -31,6 +31,6 @@ final class Version20221107105524 extends AbstractMigration
 
         $this->addSql('ALTER TABLE environment DROP template_publication');
         $this->addSql('ALTER TABLE environment ADD extra TEXT DEFAULT NULL');
-        $this->addSql('ALTER TABLE environment DROP role');
+        $this->addSql('ALTER TABLE environment DROP role_publish');
     }
 }

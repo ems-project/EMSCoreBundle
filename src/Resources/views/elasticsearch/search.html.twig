@@ -243,7 +243,7 @@
 			</div>
 		</div>
 	</div>
-		{% if body is defined and form.environments.vars.value|length == 1  and form.contentTypes.vars.value|length == 1  and is_granted(form.contentTypes.vars.value.0|get_content_type.roles.publish) and form.environments.vars.value|first|get_environment.managed and response.total > 1 %}
+		{% if body is defined and form.environments.vars.value|length == 1  and form.contentTypes.vars.value|length == 1  and is_granted(form.contentTypes.vars.value.0|get_content_type.roles.publish) and form.environments.vars.value|first|emsco_get_environment.managed and response.total > 1 %}
 			<div class="col-md-12">
 				<div class="box">
 					<div class="box-footer with-border">

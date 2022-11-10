@@ -15,7 +15,6 @@
             <argument type="service" id="router" />
             <argument type="service" id="twig" />
             <argument type="service" id="ems.form.factories.objectChoiceListFactory" />
-            <argument type="service" id="ems.service.environment" />
             <argument type="service" id="logger" />
             <argument type="service" id="form.factory" />
             <argument type="service" id="ems.service.file" />
@@ -47,6 +46,11 @@
         <service id="EMS\CoreBundle\Twig\DatatableRuntime">
             <argument type="service" id="ems.service.datatable"/>
             <argument type="service" id="twig"/>
+            <tag name="twig.runtime"/>
+        </service>
+
+        <service id="emsco.twig.environment_runtime" class="EMS\CoreBundle\Twig\EnvironmentRuntime">
+            <argument type="service" id="ems.service.environment"/>
             <tag name="twig.runtime"/>
         </service>
 

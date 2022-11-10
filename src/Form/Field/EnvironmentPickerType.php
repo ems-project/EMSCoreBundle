@@ -33,8 +33,8 @@ class EnvironmentPickerType extends ChoiceType
     {
         $keys = [];
 
-        if ($options['inMyCircle']) {
-            $environments = $this->service->getAllInMyCircle();
+        if ($options['userPublishEnvironments']) {
+            $environments = $this->service->getUserPublishEnvironments()->toArray();
         } else {
             $environments = $this->service->getEnvironments();
         }
@@ -72,7 +72,7 @@ class EnvironmentPickerType extends ChoiceType
             },
             'multiple' => false,
             'managedOnly' => true,
-            'inMyCircle' => true,
+            'userPublishEnvironments' => true,
             'ignore' => [],
             'choice_translation_domain' => false,
         ]);

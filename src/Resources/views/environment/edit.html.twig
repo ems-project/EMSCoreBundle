@@ -24,7 +24,8 @@
 							{{ form_row(form.name) }}
 							{{ form_row(form.label) }}
 							{{ form_row(form.color) }}
-							{{ form_row(form.baseUrl) }}
+							{{ form_row(form.rolePublish) }}
+
 							{% if form.circles is defined %}
 								{{ form_row(form.circles) }}
 							{% endif %}
@@ -32,6 +33,7 @@
 						<div class="col-md-8">
 							{{ form_row(form.inDefaultSearch) }}
 							{{ form_row(form.updateReferrers) }}
+							{{ form_row(form.baseUrl) }}
 							{{ form_row(form.templatePublication) }}
 						</div>
 					</div>

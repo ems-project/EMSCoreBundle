@@ -33,6 +33,7 @@ class RolePickerType extends SelectPickerType
                 return $value;
             },
             'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+            'choice_translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
         ]);
     }
 }

@@ -3,10 +3,13 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
+use EMS\CoreBundle\Core\Environment\EnvironmentsRevision;
 use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Filter;
@@ -119,12 +122,22 @@ class EnvironmentService implements EntityServiceInterface
         return $this->environments;
     }
 
+    public function getEnvironmentsByRevision(Revision $revision): EnvironmentsRevision
+    {
+        $userPublishEnvironments = $this->getUserPublishEnvironments();
+
+        $publishRole = $revision->giveContentType()->role(ContentTypeRoles::PUBLISH);
+        $hasPublishRole = $this->authorizationChecker->isGranted($publishRole);
+
+        return new EnvironmentsRevision($revision, $userPublishEnvironments, $hasPublishRole);
+    }
+
     /**
      * @return Collection<int, Environment>
      */
-    public function findByRevision(Revision $revision, bool $excludeDefault = false): Collection
+    public function getPublishedForRevision(Revision $revision, bool $excludeDefault = false): Collection
     {
-        $environments = $this->environmentRepository->findByRevision($revision);
+        $environments = $this->environmentRepository->findAllPublishedForRevision($revision);
 
         if ($excludeDefault) {
             $defaultEnvironment = $revision->giveContentType()->giveEnvironment();
@@ -318,23 +331,29 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
-     * @return Environment[]
+     * @return Collection<int, Environment>
      */
-    public function getAllInMyCircle(): array
+    public function getUserPublishEnvironments(): Collection
     {
         if ($this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
-            return $this->getEnvironments();
+            $circleEnvironments = $this->getEnvironments();
+        } else {
+            $user = $this->userService->getCurrentUser();
+            $circleEnvironments = \array_filter($this->getEnvironments(), function ($environment) use ($user) {
+                if (empty($environment->getCircles())) {
+                    return true;
+                }
+
+                return \count(\array_intersect($user->getCircles(), $environment->getCircles())) >= 1;
+            });
         }
 
-        $user = $this->userService->getCurrentUser();
+        $userPublishEnvironments = new ArrayCollection($circleEnvironments);
 
-        return \array_filter($this->getEnvironments(), function ($environment) use ($user) {
-            /** @var Environment $environment */
-            if (empty($environment->getCircles())) {
-                return true;
-            }
+        return $userPublishEnvironments->filter(function (Environment $e) {
+            $role = $e->getRolePublish();
 
-            return \count(\array_intersect($user->getCircles(), $environment->getCircles())) >= 1;
+            return null === $role || $this->authorizationChecker->isGranted($role);
         });
     }
 

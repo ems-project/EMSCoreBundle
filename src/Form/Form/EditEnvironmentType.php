@@ -7,6 +7,7 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
+use EMS\CoreBundle\Form\Field\RolePickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -53,6 +54,11 @@ class EditEnvironmentType extends AbstractType
                 'required' => false,
                 'min-lines' => 10,
                 'label' => 'environment.property.template_publication',
+            ])
+            ->add('rolePublish', RolePickerType::class, [
+                'label' => 'environment.property.rolePublish',
+                'translation_domain' => EMSCoreBundle::TRANS_ENVIRONMENT_DOMAIN,
+                'required' => false,
             ])
             ->add('save', SubmitEmsType::class, [
                 'attr' => ['class' => 'btn btn-primary btn-sm '],

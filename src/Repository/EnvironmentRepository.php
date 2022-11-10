@@ -114,23 +114,6 @@ class EnvironmentRepository extends EntityRepository
     }
 
     /**
-     * @return Environment[]
-     */
-    public function findAvailableEnvironments(Environment $defaultEnv): array
-    {
-        $qb = $this->createQueryBuilder('e');
-        $qb->where($qb->expr()->neq('e.id', ':defaultEnvId'));
-        $qb->andWhere($qb->expr()->neq('e.managed', ':false'));
-        $qb->orderBy('e.orderKey', 'ASC');
-        $qb->setParameters([
-                'false' => false,
-                'defaultEnvId' => $defaultEnv->getId(),
-        ]);
-
-        return $qb->getQuery()->getResult();
-    }
-
-    /**
      * @return array<array{alias: string}>
      */
     public function findManagedIndexes(): array
@@ -221,16 +204,16 @@ class EnvironmentRepository extends EntityRepository
     /**
      * @return Collection<int, Environment>
      */
-    public function findByRevision(Revision $revision): Collection
+    public function findAllPublishedForRevision(Revision $revision): Collection
     {
         $qb = $this->createQueryBuilder('e');
         $qb
-            ->select('e')
             ->join('e.revisions', 'r')
             ->join('r.contentType', 'c')
             ->andWhere($qb->expr()->eq('c.deleted', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->eq('c.active', $qb->expr()->literal(true)))
-            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)));
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
+            ->orderBy('e.orderKey', 'ASC');
 
         if (null !== $versionOuuid = $revision->getVersionUuid()) {
             $qb

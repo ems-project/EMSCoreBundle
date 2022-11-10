@@ -117,8 +117,6 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFunction('get_content_types', [$this, 'getContentTypes']),
             new TwigFunction('cant_be_finalized', [$this, 'cantBeFinalized']),
-//            new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames']),
-
             new TwigFunction('sequence', [$this, 'getSequenceNextValue']),
             new TwigFunction('diff_text', [$this, 'diffText'], ['is_safe' => ['html']]),
             new TwigFunction('diff', [$this, 'diff'], ['is_safe' => ['html']]),

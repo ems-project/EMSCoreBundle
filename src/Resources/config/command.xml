@@ -45,6 +45,12 @@
             <argument type="service" id="ems.service.revision" />
             <tag name="console.command"/>
         </service>
+        <service id="ems.command.revision.delete" class="EMS\CoreBundle\Command\Revision\DeleteCommand">
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.publish" />
+            <tag name="console.command"/>
+        </service>
         <service id="ems.command.revision.time_machine" class="EMS\CoreBundle\Command\Revision\TimeMachineCommand">
             <argument type="service" id="ems.service.revision"/>
             <argument type="service" id="ems.service.data"/>

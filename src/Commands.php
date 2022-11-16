@@ -16,6 +16,7 @@ final class Commands
 
     public const REVISION_ARCHIVE = 'emsco:revision:archive';
     public const REVISION_COPY = 'emsco:revision:copy';
+    public const REVISION_DELETE = 'emsco:revision:delete';
     public const REVISION_TASK_CREATE = 'emsco:revision:task:create';
     public const REVISION_DISCARD_DRAFT = 'emsco:revision:discard-draft';
 

@@ -195,6 +195,20 @@ class PublishService
         $this->bulker->delete($environment->getAlias(), $revision->giveOuuid());
     }
 
+    public function unpublishByContentTye(ContentType $contentType): void
+    {
+        foreach ($this->environmentService->getEnvironments() as $environment) {
+            $alias = $environment->getAlias();
+            $ouuids = $this->revRepository->findAllOuuidsByContentTypeAndEnvironment($contentType, $environment);
+
+            foreach ($ouuids as $ouuid) {
+                $this->bulker->delete($alias, $ouuid);
+            }
+
+            $this->bulker->send(true);
+        }
+    }
+
     public function bulkFinished(): void
     {
         $this->bulker->send(true);

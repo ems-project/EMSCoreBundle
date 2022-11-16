@@ -610,40 +610,6 @@ class RevisionRepository extends EntityRepository
         return (int) $qb->getQuery()->execute();
     }
 
-    public function deleteRevision(Revision $revision): int
-    {
-        $qb = $this->createQueryBuilder('r')->update()
-        ->set('r.delete', true)
-        ->where('r.id = ?1')
-        ->setParameter(1, $revision->getId());
-
-        return (int) $qb->getQuery()->execute();
-    }
-
-    public function deleteRevisions(ContentType $contentType = null): int
-    {
-        if (null == $contentType) {
-            $qb = $this->createQueryBuilder('r');
-            $qb->update()
-                ->set('r.delete', ':true')
-                ->setParameters([
-                        'true' => true,
-                ]);
-
-            return (int) $qb->getQuery()->execute();
-        } else {
-            $qb = $this->createQueryBuilder('r')->update();
-            $qb->set('r.delete', ':true')
-                ->where('r.contentTypeId = :contentTypeId')
-                ->setParameters([
-                    'true' => true,
-                    'contentTypeId' => $contentType->getId(),
-                ]);
-
-            return (int) $qb->getQuery()->execute();
-        }
-    }
-
     public function deleteOldest(ContentType $contentType): int
     {
         $conn = $this->_em->getConnection();

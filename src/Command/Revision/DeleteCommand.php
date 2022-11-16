@@ -47,7 +47,7 @@ class DeleteCommand extends AbstractCommand
     protected function configure(): void
     {
         $this
-            ->setDescription('Delete revision for contentType or oldest')
+            ->setDescription('Delete all/oldest revisions for content type(s)')
             ->addArgument(self::ARGUMENT_CONTENT_TYPES, InputArgument::IS_ARRAY, 'contentType names or ALL')
             ->addOption(self::OPTION_MODE, null, InputOption::VALUE_REQUIRED, 'mode for deletion', 'all')
         ;

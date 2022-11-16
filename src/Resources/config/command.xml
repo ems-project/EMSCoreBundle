@@ -50,6 +50,7 @@
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.publish" />
             <tag name="console.command"/>
+            <tag name="console.command" command="ems:contenttype:delete" />
         </service>
         <service id="ems.command.revision.time_machine" class="EMS\CoreBundle\Command\Revision\TimeMachineCommand">
             <argument type="service" id="ems.service.revision"/>
@@ -235,14 +236,6 @@
             <argument type="service" id="ems.service.data"/>
             <argument type="service" id="ems.elasticsearch.bulker"/>
             <argument>%ems_core.default_bulk_size%</argument>
-            <tag name="console.command"/>
-        </service>
-        <service id="ems.contenttype.delete" class="EMS\CoreBundle\Command\DeleteCommand">
-            <argument type="service" id="doctrine"/>
-            <argument type="service" id="logger"/>
-            <argument type="service" id="ems.service.index"/>
-            <argument type="service" id="ems.service.mapping"/>
-            <argument type="service" id="service_container"/>
             <tag name="console.command"/>
         </service>
         <service id="ems.contenttype.clean" class="EMS\CoreBundle\Command\CleanDeletedContentTypeCommand">

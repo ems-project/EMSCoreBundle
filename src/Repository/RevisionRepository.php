@@ -72,16 +72,6 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param string[] $orderBy
-     *
-     * @return Revision[]
-     */
-    public function findByContentType(ContentType $contentType, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
-    {
-        return $this->findBy(['contentType' => $contentType], $orderBy, $limit, $offset);
-    }
-
-    /**
      * @param array<mixed> $search
      */
     public function search(array $search): QueryBuilder

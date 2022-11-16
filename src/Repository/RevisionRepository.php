@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\DBAL\Query\QueryBuilder as DBALQueryBuilder;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -68,16 +69,6 @@ class RevisionRepository extends EntityRepository
         } catch (NoResultException $e) {
             return null;
         }
-    }
-
-    /**
-     * @param string[] $orderBy
-     *
-     * @return Revision[]
-     */
-    public function findByContentType(ContentType $contentType, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
-    {
-        return $this->findBy(['contentType' => $contentType], $orderBy, $limit, $offset);
     }
 
     /**
@@ -609,38 +600,40 @@ class RevisionRepository extends EntityRepository
         return (int) $qb->getQuery()->execute();
     }
 
-    public function deleteRevision(Revision $revision): int
+    public function deleteOldest(ContentType $contentType): int
     {
-        $qb = $this->createQueryBuilder('r')->update()
-        ->set('r.delete', true)
-        ->where('r.id = ?1')
-        ->setParameter(1, $revision->getId());
+        $conn = $this->_em->getConnection();
 
-        return (int) $qb->getQuery()->execute();
+        $qbSub = $conn->createQueryBuilder();
+        $qbSub
+            ->select('old.ouuid, min(old.start_time) as minStartTime')
+            ->from('revision', 'old')
+            ->join('old', 'environment_revision', 'er', 'er.revision_id = old.id')
+            ->groupBy('old.ouuid');
+
+        $qbSelect = $conn->createQueryBuilder();
+        $qbSelect
+            ->from('revision', 'r')
+            ->innerJoin('r', \sprintf('(%s)', $qbSub->getSQL()), 'sub', 'sub.ouuid = r.ouuid')
+            ->join('r', 'content_type', 'c', 'r.content_type_id = c.id')
+            ->andWhere($qbSelect->expr()->lt('r.start_time', 'sub.minStartTime'))
+            ->andWhere($qbSelect->expr()->eq('c.id', ':content_type_id'))
+            ->setParameter('content_type_id', $contentType->getId());
+
+        return $this->deleteByQueryBuilder($qbSelect);
     }
 
-    public function deleteRevisions(ContentType $contentType = null): int
+    public function deleteByContentType(ContentType $contentType): int
     {
-        if (null == $contentType) {
-            $qb = $this->createQueryBuilder('r');
-            $qb->update()
-                ->set('r.delete', ':true')
-                ->setParameters([
-                        'true' => true,
-                ]);
+        $conn = $this->_em->getConnection();
+        $qb = $conn->createQueryBuilder();
+        $qb
+            ->from('revision', 'r')
+            ->join('r', 'content_type', 'c', 'r.content_type_id = c.id')
+            ->andWhere($qb->expr()->eq('c.id', ':content_type_id'))
+            ->setParameter('content_type_id', $contentType->getId());
 
-            return (int) $qb->getQuery()->execute();
-        } else {
-            $qb = $this->createQueryBuilder('r')->update();
-            $qb->set('r.delete', ':true')
-                ->where('r.contentTypeId = :contentTypeId')
-                ->setParameters([
-                    'true' => true,
-                    'contentTypeId' => $contentType->getId(),
-                ]);
-
-            return (int) $qb->getQuery()->execute();
-        }
+        return $this->deleteByQueryBuilder($qb);
     }
 
     public function lockRevisions(?ContentType $contentType, \DateTime $until, string $by, bool $force = false, ?string $ouuid = null): int
@@ -800,6 +793,27 @@ class RevisionRepository extends EntityRepository
         ]);
 
         return $qb->getQuery()->execute();
+    }
+
+    /**
+     * @return \Traversable<int, string>
+     */
+    public function findAllOuuidsByContentTypeAndEnvironment(ContentType $contentType, Environment $environment): \Traversable
+    {
+        $connection = $this->_em->getConnection();
+
+        $qb = $connection->createQueryBuilder();
+        $qb->select('r.ouuid')
+            ->from('revision', 'r')
+            ->join('r', 'content_type', 'c', 'r.content_type_id = c.id')
+            ->join('r', 'environment_revision', 'er', 'er.revision_id = r.id')
+            ->andWhere($qb->expr()->eq('er.environment_id', ':environment_id'))
+            ->andWhere($qb->expr()->eq('c.id', ':content_type_id'));
+
+        return $connection->iterateColumn($qb->getSQL(), [
+            'environment_id' => $environment->getId(),
+            'content_type_id' => $contentType->getId(),
+        ]);
     }
 
     /**
@@ -998,5 +1012,27 @@ class RevisionRepository extends EntityRepository
             ]);
 
         return $qb->getQuery()->execute();
+    }
+
+    private function deleteByQueryBuilder(DBALQueryBuilder $queryBuilder): int
+    {
+        $conn = $this->_em->getConnection();
+        $revisionIds = $queryBuilder->addSelect('r.id')->getSQL();
+
+        $qbDeleteNotifications = $conn->createQueryBuilder();
+        $qbDeleteNotifications
+            ->delete('notification')
+            ->andWhere($qbDeleteNotifications->expr()->in('revision_id', $revisionIds))
+            ->setParameters($queryBuilder->getParameters());
+
+        $qbDeleteNotifications->executeStatement();
+
+        $qbDelete = $conn->createQueryBuilder();
+        $qbDelete
+            ->delete('revision')
+            ->andWhere($qbDelete->expr()->in('id', $revisionIds))
+            ->setParameters($queryBuilder->getParameters());
+
+        return $qbDelete->executeStatement();
     }
 }

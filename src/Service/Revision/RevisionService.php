@@ -94,6 +94,16 @@ class RevisionService implements RevisionServiceInterface
         return $compareRevision->getRawData();
     }
 
+    public function deleteByContentType(ContentType $contentType): int
+    {
+        return $this->revisionRepository->deleteByContentType($contentType);
+    }
+
+    public function deleteOldest(ContentType $contentType): int
+    {
+        return $this->revisionRepository->deleteOldest($contentType);
+    }
+
     public function find(int $revisionId): ?Revision
     {
         $revision = $this->revisionRepository->find($revisionId);

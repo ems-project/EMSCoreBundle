@@ -12,6 +12,7 @@
 			"homepage" : "https://github.com/ems-project/EMSFormBundle/contributors"
 		}
 	],
+	"minimum-stability": "RC",
 	"require" : {
 		"php": "^7.4",
 		"ext-libxml": "*",

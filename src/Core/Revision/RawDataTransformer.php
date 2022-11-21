@@ -21,46 +21,47 @@ final class RawDataTransformer
         $out = [];
         /** @var FieldType $child */
         foreach ($fieldType->getChildren() as $child) {
-            if (!$child->getDeleted()) {
-                /** @var DateFieldType $type */
-                $type = $child->getType();
-                if ($type::isVirtual($child->getOptions())) {
-                    if ($type::isContainer()) {
-                        $jsonNames = $type::getJsonNames($child);
-                        if (0 === \count($jsonNames)) {
-                            $out[$child->getName()] = self::transform($child, $data);
-                        } else {
-                            $colectedData = [];
-                            foreach ($jsonNames as $name) {
-                                if (isset($data[$name])) {
-                                    $colectedData[$name] = self::transform($child, $data[$name]);
-                                }
-                            }
-                            $out[$child->getName()] = $colectedData;
-                        }
+            if ($child->getDeleted()) {
+                continue;
+            }
+            /** @var DateFieldType $type */
+            $type = $child->getType();
+            if ($type::isVirtual($child->getOptions())) {
+                if ($type::isContainer()) {
+                    $jsonNames = $type::getJsonNames($child);
+                    if (0 === \count($jsonNames)) {
+                        $out[$child->getName()] = self::transform($child, $data);
                     } else {
-                        $out[$child->getName()] = $type::filterSubField($data, $child->getOptions());
+                        $colectedData = [];
+                        foreach ($jsonNames as $name) {
+                            if (isset($data[$name])) {
+                                $colectedData[$name] = self::transform($child, $data[$name]);
+                            }
+                        }
+                        $out[$child->getName()] = $colectedData;
                     }
                 } else {
-                    if ($type::isContainer()) {
-                        if (isset($data[$child->getName()])) {
-                            if ($type::isCollection()) {
-                                if (\is_array($data[$child->getName()])) {
-                                    $out[$child->getName()] = [];
-                                    foreach ($data[$child->getName()] as $idx => $item) {
-                                        $out[$child->getName()][$idx] = self::transform($child, $item);
-                                    }
+                    $out[$child->getName()] = $type::filterSubField($data, $child->getOptions());
+                }
+            } else {
+                if ($type::isContainer()) {
+                    if (isset($data[$child->getName()])) {
+                        if ($type::isCollection()) {
+                            if (\is_array($data[$child->getName()])) {
+                                $out[$child->getName()] = [];
+                                foreach ($data[$child->getName()] as $idx => $item) {
+                                    $out[$child->getName()][$idx] = self::transform($child, $item);
                                 }
-                            } elseif (\is_array($data[$child->getName()])) {
-                                $out[$child->getName()] = self::transform($child, $data[$child->getName()]);
-                            } else {
-                                $out[$child->getName()] = $data[$child->getName()];
                             }
-                        }
-                    } else {
-                        if (isset($data[$child->getName()]) && null !== $data[$child->getName()]) {
+                        } elseif (\is_array($data[$child->getName()])) {
+                            $out[$child->getName()] = self::transform($child, $data[$child->getName()]);
+                        } else {
                             $out[$child->getName()] = $data[$child->getName()];
                         }
+                    }
+                } else {
+                    if (isset($data[$child->getName()]) && null !== $data[$child->getName()]) {
+                        $out[$child->getName()] = $data[$child->getName()];
                     }
                 }
             }
@@ -81,42 +82,49 @@ final class RawDataTransformer
         $out = [];
         /** @var FieldType $child */
         foreach ($fieldType->getChildren() as $child) {
-            if (!$child->getDeleted()) {
-                /** @var DateFieldType $type */
-                $type = $child->getType();
-                if ($type::isVirtual($child->getOptions())) {
-                    if (isset($data[$child->getName()]) && !empty($data[$child->getName()])) {
-                        if ($type::isContainer()) {
-                            $jsonNames = $type::getJsonNames($child);
-                            if (0 === \count($jsonNames)) {
-                                $out = \array_merge_recursive($out, self::reverseTransform($child, $data[$child->getName()]));
-                            } else {
-                                $out = \array_merge($out, $data[$child->getName()]);
-                            }
-                        } else {
-                            $out = \array_merge_recursive($out, $data[$child->getName()]);
-                        }
-                    }
-                } else {
-                    if ($type::isContainer() && isset($data[$child->getName()]) && \is_array($data[$child->getName()])) {
-                        if (!empty($data[$child->getName()])) {
-                            if ($type::isCollection()) {
-                                $out[$child->getName()] = [];
-                                foreach ($data[$child->getName()] as $itemIdx => $item) {
-                                    $out[$child->getName()][$itemIdx] = self::reverseTransform($child, $item);
-                                }
-                            } else {
-                                $out[$child->getName()] = self::reverseTransform($child, $data[$child->getName()]);
-                            }
+            if ($child->getDeleted()) {
+                continue;
+            }
+            /** @var DateFieldType $type */
+            $type = $child->getType();
 
-                            if (\is_array($out[$child->getName()]) && empty($out[$child->getName()])) {
-                                unset($out[$child->getName()]);
+            if ($type::isVirtual($child->getOptions())) {
+                if (isset($data[$child->getName()]) && !empty($data[$child->getName()])) {
+                    if ($type::isContainer()) {
+                        $jsonNames = $type::getJsonNames($child);
+                        if (0 === \count($jsonNames)) {
+                            $out = \array_merge_recursive($out, self::reverseTransform($child, $data[$child->getName()]));
+                        } else {
+                            foreach ($jsonNames as $name) {
+                                if (!\is_array($data[$child->getName()][$name] ?? null)) {
+                                    continue;
+                                }
+                                $out = \array_merge($out, [$name => self::reverseTransform($child, $data[$child->getName()][$name])]);
                             }
                         }
                     } else {
-                        if (isset($data[$child->getName()]) && null !== $data[$child->getName()]) {
-                            $out[$child->getName()] = $data[$child->getName()];
+                        $out = \array_merge_recursive($out, $data[$child->getName()]);
+                    }
+                }
+            } else {
+                if ($type::isContainer() && isset($data[$child->getName()]) && \is_array($data[$child->getName()])) {
+                    if (!empty($data[$child->getName()])) {
+                        if ($type::isCollection()) {
+                            $out[$child->getName()] = [];
+                            foreach ($data[$child->getName()] as $itemIdx => $item) {
+                                $out[$child->getName()][$itemIdx] = self::reverseTransform($child, $item);
+                            }
+                        } else {
+                            $out[$child->getName()] = self::reverseTransform($child, $data[$child->getName()]);
                         }
+
+                        if (\is_array($out[$child->getName()]) && empty($out[$child->getName()])) {
+                            unset($out[$child->getName()]);
+                        }
+                    }
+                } else {
+                    if (isset($data[$child->getName()]) && null !== $data[$child->getName()]) {
+                        $out[$child->getName()] = $data[$child->getName()];
                     }
                 }
             }

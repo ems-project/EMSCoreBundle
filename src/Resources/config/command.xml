@@ -20,20 +20,20 @@
         </service>
 
         <!-- EMS environment -->
-        <service id="ems_core.command_environment.abstract_environment_command" class="EMS\CoreBundle\Command\Environment\AbstractEnvironmentCommand" abstract="true">
+        <service id="emsco.command.environment.abstract" class="EMS\CoreBundle\Command\Environment\AbstractEnvironmentCommand" abstract="true">
             <argument type="service" id="ems_core.core_revision_search.revision_searcher" />
             <argument type="service" id="ems.service.environment" />
             <argument type="service" id="ems.service.publish" />
         </service>
-        <service id="ems_core.command_environment.align_command" class="EMS\CoreBundle\Command\Environment\AlignCommand" parent="ems_core.command_environment.abstract_environment_command">
+        <service id="emsco.command.environment.align" class="EMS\CoreBundle\Command\Environment\AlignCommand" parent="emsco.command.environment.abstract">
             <tag name="console.command"/>
         </service>
-        <service id="ems.environment.rebuild" class="EMS\CoreBundle\Command\Environment\RebuildCommand">
+        <service id="emsco.command.environment.rebuild" class="EMS\CoreBundle\Command\Environment\RebuildCommand">
             <argument type="service" id="doctrine"/>
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.contenttype"/>
             <argument type="service" id="ems.service.environment"/>
-            <argument type="service" id="ems.environment.reindex"/>
+            <argument type="service" id="emsco.command.environment.reindex"/>
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.service.mapping"/>
             <argument type="service" id="ems.service.alias"/>
@@ -41,7 +41,7 @@
             <argument>%ems_core.default_bulk_size%</argument>
             <tag name="console.command"/>
         </service>
-        <service id="ems.environment.recompute" class="EMS\CoreBundle\Command\Environment\RebuildCommand">
+        <service id="emsco.command.environment.recompute" class="EMS\CoreBundle\Command\Environment\RebuildCommand">
             <argument type="service" id="ems.service.data"/>
             <argument type="service" id="doctrine"/>
             <argument type="service" id="form.factory"/>
@@ -54,7 +54,7 @@
             <argument type="service" id="ems.service.search"/>
             <tag name="console.command"/>
         </service>
-        <service id="ems.environment.reindex" class="EMS\CoreBundle\Command\Environment\ReindexCommand">
+        <service id="emsco.command.environment.reindex" class="EMS\CoreBundle\Command\Environment\ReindexCommand">
             <argument type="service" id="doctrine"/>
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.mapping"/>
@@ -64,7 +64,7 @@
             <argument>%ems_core.default_bulk_size%</argument>
             <tag name="console.command"/>
         </service>
-        <service id="ems_core.command_environment.unpublish_command" class="EMS\CoreBundle\Command\Environment\UnpublishCommand" parent="ems_core.command_environment.abstract_environment_command">
+        <service id="emsco.command.environment.unpublish" class="EMS\CoreBundle\Command\Environment\UnpublishCommand" parent="emsco.command.environment.abstract">
             <tag name="console.command"/>
         </service>
 

@@ -9,6 +9,9 @@ final class Commands
     public const CONTENT_TYPE_TRANSFORM = 'emsco:contenttype:transform';
 
     public const ENVIRONMENT_ALIGN = 'emsco:environment:align';
+    public const ENVIRONMENT_REBUILD = 'emsco:environment:rebuild';
+    public const ENVIRONMENT_RECOMPUTE = 'emsco:environment:recompute';
+    public const ENVIRONMENT_REINDEX = 'emsco:environment:reindex';
     public const ENVIRONMENT_UNPUBLISH = 'emsco:environment:unpublish';
 
     public const RELEASE_PUBLISH = 'emsco:release:publish';

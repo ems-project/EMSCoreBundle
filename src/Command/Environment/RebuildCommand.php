@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Command\Environment;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Command\EmsCommand;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -21,7 +22,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RebuildCommand extends EmsCommand
 {
-    public const COMMAND = 'ems:environment:rebuild';
     /** @var Registry */
     private $doctrine;
     /** @var ContentTypeService */
@@ -43,6 +43,8 @@ class RebuildCommand extends EmsCommand
     /** @var string */
     private $defaultBulkSize;
 
+    protected static $defaultName = Commands::ENVIRONMENT_REBUILD;
+
     public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId, string $defaultBulkSize)
     {
         $this->doctrine = $doctrine;
@@ -61,7 +63,6 @@ class RebuildCommand extends EmsCommand
     protected function configure(): void
     {
         $this
-            ->setName(self::COMMAND)
             ->setDescription('Rebuild an environment in a brand new index')
             ->addArgument(
                 'name',

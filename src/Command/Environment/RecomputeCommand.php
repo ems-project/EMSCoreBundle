@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Command\Environment;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\RevisionType;
@@ -58,6 +59,8 @@ final class RecomputeCommand extends Command
     private const OPTION_QUERY = 'query';
     private const LOCK_BY = 'SYSTEM_RECOMPUTE';
 
+    protected static $defaultName = Commands::ENVIRONMENT_RECOMPUTE;
+
     public function __construct(
         DataService $dataService,
         Registry $doctrine,
@@ -90,7 +93,6 @@ final class RecomputeCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('ems:contenttype:recompute')
             ->setDescription('Recompute a content type')
             ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'content type to recompute')
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'do not check for already locked revisions')

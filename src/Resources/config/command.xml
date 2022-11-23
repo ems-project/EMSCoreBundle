@@ -40,8 +40,9 @@
             <argument>%ems_core.instance_id%</argument>
             <argument>%ems_core.default_bulk_size%</argument>
             <tag name="console.command"/>
+            <tag name="console.command" command="ems:environment:rebuild" />
         </service>
-        <service id="emsco.command.environment.recompute" class="EMS\CoreBundle\Command\Environment\RebuildCommand">
+        <service id="emsco.command.environment.recompute" class="EMS\CoreBundle\Command\Environment\RecomputeCommand">
             <argument type="service" id="ems.service.data"/>
             <argument type="service" id="doctrine"/>
             <argument type="service" id="form.factory"/>
@@ -53,6 +54,7 @@
             <argument type="service" id="ems.service.index"/>
             <argument type="service" id="ems.service.search"/>
             <tag name="console.command"/>
+            <tag name="console.command" command="ems:environment:recompute" />
         </service>
         <service id="emsco.command.environment.reindex" class="EMS\CoreBundle\Command\Environment\ReindexCommand">
             <argument type="service" id="doctrine"/>
@@ -63,6 +65,7 @@
             <argument type="service" id="ems.elasticsearch.bulker"/>
             <argument>%ems_core.default_bulk_size%</argument>
             <tag name="console.command"/>
+            <tag name="console.command" command="ems:environment:reindex"/>
         </service>
         <service id="emsco.command.environment.unpublish" class="EMS\CoreBundle\Command\Environment\UnpublishCommand" parent="emsco.command.environment.abstract">
             <tag name="console.command"/>

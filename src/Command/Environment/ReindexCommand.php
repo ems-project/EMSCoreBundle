@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Command\EmsCommand;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -44,6 +45,8 @@ class ReindexCommand extends EmsCommand
     /** @var string */
     private $defaultBulkSize;
 
+    protected static $defaultName = Commands::ENVIRONMENT_REINDEX;
+
     public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container, DataService $dataService, Bulker $bulker, string $defaultBulkSize)
     {
         $this->doctrine = $doctrine;
@@ -59,7 +62,6 @@ class ReindexCommand extends EmsCommand
     protected function configure(): void
     {
         $this
-            ->setName('ems:environment:reindex')
             ->setDescription('Reindex an environment in it\'s existing index')
             ->addArgument(
                 'name',

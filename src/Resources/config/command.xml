@@ -28,6 +28,19 @@
         <service id="ems_core.command_environment.align_command" class="EMS\CoreBundle\Command\Environment\AlignCommand" parent="ems_core.command_environment.abstract_environment_command">
             <tag name="console.command"/>
         </service>
+        <service id="ems.environment.rebuild" class="EMS\CoreBundle\Command\Environment\RebuildCommand">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems.environment.reindex"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.mapping"/>
+            <argument type="service" id="ems.service.alias"/>
+            <argument>%ems_core.instance_id%</argument>
+            <argument>%ems_core.default_bulk_size%</argument>
+            <tag name="console.command"/>
+        </service>
         <service id="ems.environment.reindex" class="EMS\CoreBundle\Command\Environment\ReindexCommand">
             <argument type="service" id="doctrine"/>
             <argument type="service" id="logger"/>
@@ -189,19 +202,6 @@
             <argument type="service" id="ems_common.twig.runtime.asset"/>
             <argument type="service" id="ems_common.service.elastica"/>
             <argument>%ems_core.instance_id%</argument>
-            <tag name="console.command"/>
-        </service>
-        <service id="ems.environment.rebuild" class="EMS\CoreBundle\Command\RebuildCommand">
-            <argument type="service" id="doctrine"/>
-            <argument type="service" id="logger"/>
-            <argument type="service" id="ems.service.contenttype"/>
-            <argument type="service" id="ems.service.environment"/>
-            <argument type="service" id="ems.environment.reindex"/>
-            <argument type="service" id="ems_common.service.elastica"/>
-            <argument type="service" id="ems.service.mapping"/>
-            <argument type="service" id="ems.service.alias"/>
-            <argument>%ems_core.instance_id%</argument>
-            <argument>%ems_core.default_bulk_size%</argument>
             <tag name="console.command"/>
         </service>
         <service id="ems.delete.orphans" class="EMS\CoreBundle\Command\DeleteOrphanIndexesCommand">

@@ -1,9 +1,10 @@
 <?php
 
-namespace EMS\CoreBundle\Command;
+namespace EMS\CoreBundle\Command\Environment;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Command\EmsCommand;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Repository\ContentTypeRepository;

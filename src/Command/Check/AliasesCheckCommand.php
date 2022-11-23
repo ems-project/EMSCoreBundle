@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Check;
 
-use EMS\CoreBundle\Command\RebuildCommand;
+use EMS\CoreBundle\Command\Environment\RebuildCommand;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\EnvironmentService;

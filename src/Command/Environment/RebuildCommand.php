@@ -22,31 +22,31 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RebuildCommand extends EmsCommand
 {
-    /** @var Registry */
-    private $doctrine;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var EnvironmentService */
-    private $environmentService;
-    /** @var ReindexCommand */
-    private $reindexCommand;
-    /** @var string */
-    private $instanceId;
-    /** @var ElasticaService */
-    private $elasticaService;
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var Mapping */
-    private $mapping;
-    /** @var AliasService */
-    private $aliasService;
-    /** @var string */
-    private $defaultBulkSize;
+    private Registry $doctrine;
+    private ContentTypeService $contentTypeService;
+    private EnvironmentService $environmentService;
+    private ReindexCommand $reindexCommand;
+    private string $instanceId;
+    private ElasticaService $elasticaService;
+    protected LoggerInterface $logger;
+    private Mapping $mapping;
+    private AliasService $aliasService;
+    private string $defaultBulkSize;
 
     protected static $defaultName = Commands::ENVIRONMENT_REBUILD;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId, string $defaultBulkSize)
-    {
+    public function __construct(
+        Registry $doctrine,
+        LoggerInterface $logger,
+        ContentTypeService $contentTypeService,
+        EnvironmentService $environmentService,
+        ReindexCommand $reindexCommand,
+        ElasticaService $elasticaService,
+        Mapping $mapping,
+        AliasService $aliasService,
+        string $instanceId,
+        string $defaultBulkSize
+    ) {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
@@ -64,36 +64,11 @@ class RebuildCommand extends EmsCommand
     {
         $this
             ->setDescription('Rebuild an environment in a brand new index')
-            ->addArgument(
-                'name',
-                InputArgument::REQUIRED,
-                'Environment name'
-            )
-            ->addOption(
-                'yellow-ok',
-                null,
-                InputOption::VALUE_NONE,
-                'Agree to rebuild on a yellow status cluster'
-            )
-            ->addOption(
-                'sign-data',
-                null,
-                InputOption::VALUE_NONE,
-                'Deprecated: the data are signed by default'
-            )
-            ->addOption(
-                'dont-sign',
-                null,
-                InputOption::VALUE_NONE,
-                'Don\'t (re)signed the documents during the rebuilding process'
-            )
-            ->addOption(
-                'bulk-size',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Number of item that will be indexed together during the same elasticsearch operation',
-                $this->defaultBulkSize
-            )
+            ->addArgument('name', InputArgument::REQUIRED, 'Environment name')
+            ->addOption('yellow-ok', null, InputOption::VALUE_NONE, 'Agree to rebuild on a yellow status cluster')
+            ->addOption('sign-data', null, InputOption::VALUE_NONE, 'Deprecated: the data are signed by default')
+            ->addOption('dont-sign', null, InputOption::VALUE_NONE, 'Don\'t (re)signed the documents during the rebuilding process')
+            ->addOption('bulk-size', null, InputOption::VALUE_OPTIONAL, 'Number of item that will be indexed together during the same elasticsearch operation', $this->defaultBulkSize)
         ;
     }
 

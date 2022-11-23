@@ -26,29 +26,30 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ReindexCommand extends EmsCommand
 {
-    /** @var Mapping */
-    protected $mapping;
-    /** @var Registry */
-    protected $doctrine;
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var ContainerInterface */
-    protected $container;
-    /** @var DataService */
-    protected $dataService;
+    protected Mapping $mapping;
+    protected Registry $doctrine;
+    protected LoggerInterface $logger;
+    protected ContainerInterface $container;
+    protected DataService $dataService;
     private int $count = 0;
     private int $deleted = 0;
     private int $reloaded = 0;
     private int $error = 0;
-    /** @var Bulker */
-    private $bulker;
-    /** @var string */
-    private $defaultBulkSize;
+    private Bulker $bulker;
+    private string $defaultBulkSize;
 
     protected static $defaultName = Commands::ENVIRONMENT_REINDEX;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container, DataService $dataService, Bulker $bulker, string $defaultBulkSize)
+    public function __construct(
+        Registry $doctrine,
+        LoggerInterface $logger,
+        Mapping $mapping,
+        ContainerInterface $container,
+        DataService $dataService,
+        Bulker $bulker,
+        string $defaultBulkSize)
     {
+        parent::__construct();
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->mapping = $mapping;
@@ -56,47 +57,19 @@ class ReindexCommand extends EmsCommand
         $this->dataService = $dataService;
         $this->bulker = $bulker;
         $this->defaultBulkSize = $defaultBulkSize;
-        parent::__construct();
     }
 
     protected function configure(): void
     {
         $this
             ->setDescription('Reindex an environment in it\'s existing index')
-            ->addArgument(
-                'name',
-                InputArgument::REQUIRED,
-                'Environment name'
-            )
-            ->addArgument(
-                'content-type',
-                InputArgument::OPTIONAL,
-                'If not defined all content types will be re-indexed'
-            )
-            ->addArgument(
-                'index',
-                InputArgument::OPTIONAL,
-                'Elasticsearch index where to index environment objects'
-            )
-            ->addOption(
-                'sign-data',
-                null,
-                InputOption::VALUE_NONE,
-                'The content won\'t be (re)signed during the reindexing process'
-            )
-            ->addOption(
-                'reload-data',
-                null,
-                InputOption::VALUE_NONE,
-                'Reload the data'
-            )
-            ->addOption(
-                'bulk-size',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Number of item that will be indexed together during the same elasticsearch operation',
-                $this->defaultBulkSize
-            );
+            ->addArgument('name', InputArgument::REQUIRED, 'Environment name')
+            ->addArgument('content-type', InputArgument::OPTIONAL, 'If not defined all content types will be re-indexed')
+            ->addArgument('index', InputArgument::OPTIONAL, 'Elasticsearch index where to index environment objects')
+            ->addOption('sign-data', null, InputOption::VALUE_NONE, 'The content won\'t be (re)signed during the reindexing process')
+            ->addOption('reload-data', null, InputOption::VALUE_NONE, 'Reload the data')
+            ->addOption('bulk-size', null, InputOption::VALUE_OPTIONAL, 'Number of item that will be indexed together during the same elasticsearch operation', $this->defaultBulkSize)
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

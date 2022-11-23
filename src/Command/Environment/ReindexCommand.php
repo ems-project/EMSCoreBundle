@@ -1,10 +1,11 @@
 <?php
 
-namespace EMS\CoreBundle\Command;
+namespace EMS\CoreBundle\Command\Environment;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Command\EmsCommand;
 use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;

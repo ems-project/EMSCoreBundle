@@ -28,6 +28,16 @@
         <service id="ems_core.command_environment.align_command" class="EMS\CoreBundle\Command\Environment\AlignCommand" parent="ems_core.command_environment.abstract_environment_command">
             <tag name="console.command"/>
         </service>
+        <service id="ems.environment.reindex" class="EMS\CoreBundle\Command\Environment\ReindexCommand">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.mapping"/>
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="ems.elasticsearch.bulker"/>
+            <argument>%ems_core.default_bulk_size%</argument>
+            <tag name="console.command"/>
+        </service>
         <service id="ems_core.command_environment.unpublish_command" class="EMS\CoreBundle\Command\Environment\UnpublishCommand" parent="ems_core.command_environment.abstract_environment_command">
             <tag name="console.command"/>
         </service>
@@ -226,16 +236,6 @@
             <argument type="service" id="doctrine"/>
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.data"/>
-            <tag name="console.command"/>
-        </service>
-        <service id="ems.environment.reindex" class="EMS\CoreBundle\Command\ReindexCommand">
-            <argument type="service" id="doctrine"/>
-            <argument type="service" id="logger"/>
-            <argument type="service" id="ems.service.mapping"/>
-            <argument type="service" id="service_container"/>
-            <argument type="service" id="ems.service.data"/>
-            <argument type="service" id="ems.elasticsearch.bulker"/>
-            <argument>%ems_core.default_bulk_size%</argument>
             <tag name="console.command"/>
         </service>
         <service id="ems.contenttype.clean" class="EMS\CoreBundle\Command\CleanDeletedContentTypeCommand">

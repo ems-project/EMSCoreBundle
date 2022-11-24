@@ -1,0 +1,30 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+
+{% block title %}{{ 'An Error Occurred'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'Oops! An Error Occurred'|trans }}{% endblock %} 
+{% block subtitle %}<small>{{ 'We are so sorry' }}</small>{% endblock %} 
+
+{% block breadcrumb %}
+{% endblock %}
+
+
+{% block body %}
+<div class="row">
+	<div class="col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+		<div class="box box box-solid">
+			<div class="box-header with-border bg-danger">
+				<h4 class="box-title">
+						<i class="icon fa fa-danger fa-2x"></i>
+						{{ 'The server returned a %status_code%'|trans({ '%status_code%': status_code }) }}
+				</h4>
+			</div>
+			<div class="box-body ">
+				<p>{{ 'With the message "%status_text%".'|trans({ '%status_text%': status_text }) }}</p>
+			</div>
+		</div>
+
+	</div>
+</div>
+{% endblock %}
+

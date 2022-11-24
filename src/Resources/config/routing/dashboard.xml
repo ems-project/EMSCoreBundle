@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="emsco_dashboard_home" path="/dashboard" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\DashboardController::dashboard</default>
+    </route>
+    <route id="emsco_dashboard" path="/dashboard/{name}" methods="GET,POST">
+        <default key="_controller">EMS\CoreBundle\Controller\DashboardController::dashboard</default>
+    </route>
+    <route id="emsco_dashboard_admin_index" path="/admin/dashboard" methods="GET,POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::index</default>
+    </route>
+    <route id="emsco_dashboard_admin_index_ajax" path="/admin/dashboard/datatable.json" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::datatable</default>
+    </route>
+    <route id="emsco_dashboard_admin_add" path="/admin/dashboard/add" methods="GET,POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::add</default>
+    </route>
+    <route id="emsco_dashboard_admin_edit" path="/admin/dashboard/edit/{dashboard}" methods="GET,POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::edit</default>
+    </route>
+    <route id="emsco_dashboard_admin_delete" path="/admin/dashboard/delete/{dashboard}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::delete</default>
+    </route>
+    <route id="emsco_dashboard_admin_set_landing_page" path="/admin/dashboard/as-landing-page/{dashboard}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::setLandingPage</default>
+    </route>
+    <route id="emsco_dashboard_admin_set_quick_search" path="/admin/dashboard/as-quick-search/{dashboard}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Dashboard\DashboardController::setQuickSearch</default>
+    </route>
+
+    <!-- Deprecated routes -->
+    <route id="ems_core_dashboard" path="/dashboard" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\DashboardController::landing</default>
+    </route>
+</routes>

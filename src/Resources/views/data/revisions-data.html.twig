@@ -1,0 +1,411 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-twigs' %}
+
+{% import "@EMSCore/macros/data-field-type.html.twig" as macros %}
+
+{% set title = revision.ouuid %}
+{% set revisionColor = revision.contentType.color %}
+
+{% if revision.hasVersionTag %}
+	{%- set versionFrom = revision.versionDate('from').format(date_format) -%}
+	{%- set versionTo = revision.versionDate('to') ? revision.versionDate('to').format(date_format) : 'now' -%}
+	{%- set newVersionTag = revision.versionTagField -%}
+	{%- set revisionVersionTitle = "#{revision.versionTag} version (#{versionFrom} - #{versionTo})" -%}
+	{%- if versionTo != 'now' -%}{%- set revisionColor = 'gray' -%}{%- endif -%}
+{% endif %}
+
+
+{% if revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) is defined %}
+	{% set title = attribute(revision.rawData, revision.contentType.labelField) %}
+{% endif %}
+
+{% block title %}
+	{{ 'views.data.revisions-data-html.title'|trans({'%content-type%': revision.contentType.singularName, '%title%': title}) }}
+{% endblock %}
+
+{% block pagetitle %}
+	<i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
+	{{  block('title') }}
+{% endblock %}
+
+{% block subtitle %}
+	<small>
+		{% if revision.draft %}
+			<i class="fa fa-fire"></i>
+			{{ 'views.data.revisions-data-html.revision-draft-in-progress'|trans }}
+		{% elseif revision.hasVersionTag %}
+			<i class="fa fa-clock-o"></i>
+			{{ revisionVersionTitle }}
+		{% elseif not revision.endTime %}
+			<i class="fa fa-thumbs-up"></i>
+			{{ 'views.data.revisions-data-html.revision-current'|trans }}
+		{% else %}
+			<i class="fa fa-clock-o"></i>
+			{{ 'views.data.revisions-data-html.revision-previous'|trans }}
+		{% endif %}
+	</small>
+{% endblock %}
+
+
+{% block body %}
+	<div class="row">
+		<div class="col-md-3">
+			{{ block('revisionSidebar') }}
+		</div>
+		<div class="col-md-9">
+			{{ block('revisionToolbar') }}
+			{{ block('revisionBody') }}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			{{ block('revisionFooterTabs') }}
+		</div>
+	</div>
+{%- if revision.draft -%}
+	{%- include '@EMSCore/app/menu.html.twig' with {'item':  'data-draft-' ~ revision.contentType.id } -%}
+{%- else -%}
+	{%- include '@EMSCore/app/menu.html.twig' with { 'item':  'data-index-' ~ revision.contentType.id } -%}
+{%- endif -%}
+{% endblock %}
+
+{% block revisionToolbar %}
+	<div class="box box-primary">
+		<div class="box-footer">
+			{% include '@EMSCore/elements/revision-toolbar.html.twig' with {
+				'revisionId' : revision.id,
+				'environmentsRevision': emsco_get_environments_revision(revision),
+				'draft': revision.draft,
+				'current': not revision.endTime,
+				'autoSave': revision.autoSave,
+				'instance': revision,
+				'withView': false,
+				'vertical': false,
+			}%}
+			<div class="btn-group pull-right">
+				{% set ctRoles = revision.contentType.roles %}
+
+				{% if not revision.archived and is_granted(ctRoles.archive) and not revision.hasEndTime %}
+					{% include '@EMSCore/elements/post-button.html.twig' with {
+						'url':  path('emsco_revision_archive', {'revision': revision.id} ),
+						'label': 'Archive',
+						'icon': 'archive',
+						'btnType': 'outline-danger',
+						'message': 'Do you confirm?'
+					}%}
+				{% endif %}
+
+				{% if is_granted(ctRoles.delete) %}
+					{% if not  revision.contentType.circlesField or attribute(object._source, revision.contentType.circlesField) is not defined or attribute(object._source, revision.contentType.circlesField)|in_my_circles %}
+						{% include '@EMSCore/elements/post-button.html.twig' with {
+							'url':  path('object.delete', {'type': revision.contentType.name, 'ouuid': revision.ouuid} ),
+							'label': 'Delete all revisions',
+							'icon': 'trash',
+							'btnType': 'outline-danger',
+							'message': 'Do you confirm?'
+						}%}
+					{% endif %}
+				{% endif %}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block revisionSidebar %}
+	{% set tabs = [{name: 'tab_about_revision', label: 'views.data.revisions-data-html.revision'|trans}] %}
+	{% if revision.isTaskEnabled %}
+		{% if (revision.hasOwner and revision.owner == app.user.username) or (revision.hasTasks == false and is_granted(revision.giveContentType.roles.owner) and revision.hasOwner == false) %}
+			{% set tabs = tabs|merge([{ name: 'tab_tasks', label: 'task.tab_tasks'|trans }]) %}
+		{% endif %}
+		{% if revision.hasTaskCurrent and revision.owner != app.user.username %}
+			{% set tabs = tabs|merge([{ name: 'tab_task', label: 'task.tab_task'|trans }]) %}
+		{% endif %}
+	{% endif %}
+	<div id="revision-tabs" class="nav-tabs-custom">
+		<ul class="nav nav-tabs">
+			{% for tab in tabs|reverse %}
+				<li {{ loop.first ? 'class="active"' }}>
+					<a href="#{{ tab.name }}" data-toggle="tab" aria-expanded="{{ loop.first ? 'true' : 'false' }}">{{ tab.label }}</a>
+				</li>
+			{% endfor %}
+		</ul>
+		<div class="tab-content">
+			{% for tab in tabs|reverse %}
+				<div class="tab-pane {{ loop.first ? 'active' }}" id="{{ tab.name }}">
+					{% if tab.name == 'tab_about_revision' %}
+						{{ block('revisionTabAboutRevision') }}
+					{% elseif tab.name == 'tab_tasks' %}
+						{{ block('tasks', '@EMSCore/revision/task/tabs.html.twig') }}
+					{% elseif tab.name == 'tab_task' %}
+						{{ block('task', '@EMSCore/revision/task/tabs.html.twig') }}
+					{% endif %}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}
+
+{% block revisionTabAboutRevision %}
+	{% if revision.hasVersionTags %}
+		<strong><i class="fa fa-tags margin-r-5"></i> Version</strong>
+		<p class="text-muted">
+			{% if newVersionTag|default(false) %}<span class="label label-success">New version {{ newVersionTag }}</span>{% endif %}
+			{{ revision.versionTag|default('') }}
+		</p>
+		<hr/>
+	{% endif %}
+	<strong><i class="fa fa-map-signs margin-r-5"></i> {{ 'views.data.revisions-data-html.status'|trans }}</strong>
+
+	<p class="text-muted">
+		{% if revision.draft %}
+			<i class="fa fa-fire"></i>
+			{{ 'views.data.revisions-data-html.draft-in-progress'|trans }}
+		{% elseif not revision.endTime %}
+			<i class="fa fa-thumbs-up"></i>
+			{{ 'views.data.revisions-data-html.current-revision'|trans }}
+		{% else %}
+			<i class="fa fa-clock-o"></i>
+			{{ 'views.data.revisions-data-html.previous-revision'|trans({'%timestamp%': revision.created|date(date_time_format)}) }}
+		{% endif %}
+	</p>
+
+	{% if revision.hasOwner %}
+		<hr/>
+		<strong><i class="fa fa-user-circle-o margin-r-5"></i> {{ 'views.data.revisions-data-html.owner'|trans }}</strong>
+		<p class="text-muted">{{ revision.owner|displayname }}</p>
+	{% endif %}
+
+	{% if revision.finalizedBy %}
+		<hr>
+		<strong><i class="fa fa-user margin-r-5"></i> {{ 'views.data.revisions-data-html.finalized-by'|trans }}</strong>
+		<p class="text-muted">{{ revision.finalizedBy|displayname }}</p>
+	{% endif %}
+	{% if revision.finalizedDate %}
+		<hr>
+		<strong><i class="glyphicon glyphicon-open margin-r-5"></i> {{ 'views.data.revisions-data-html.finalized-on'|trans }}</strong>
+		<p class="text-muted">{{ revision.finalizedDate|date(date_time_format) }}</p>
+	{% elseif revision.draftSaveDate %}
+		<hr>
+		<strong><i class="fa fa-pencil margin-r-5"></i> {{ 'views.data.revisions-data-html.last-update'|trans }}</strong>
+		<p class="text-muted">{{ revision.draftSaveDate|date(date_time_format) }}</p>
+	{% endif %}
+
+	{% if revision.lockby %}
+		<hr>
+		<strong><i class="fa fa-user margin-r-5"></i> {{ 'views.data.revisions-data-html.modified-by'|trans }}</strong>
+		<p class="text-muted">{{ revision.lockby|displayname }}</p>
+	{% endif %}
+
+	{% if revision.notifications|length > 0 %}
+		<hr>
+		<strong><i class="fa fa-hourglass-end margin-r-5"></i> {{ 'views.data.revisions-data-html.pending'|trans }}</strong>
+		<p class="text-muted">
+			{% set notificationFound = false %}
+			{% for notification in revision.notifications %}
+				{% if notification.status == 'pending'  %}
+					<span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.label }}</span>
+					{% set notificationFound = true %}
+				{% endif %}
+			{% endfor %}
+			{% if not notificationFound %}{{ 'views.data.revisions-data-html.nothing'|trans }}{% endif %}
+		</p>
+	{% endif %}
+	{% if circles_object and revision.circles|length > 0 %}
+		{% set circleContentType = circles_object|get_content_type %}
+		{% if  circleContentType %}
+			<hr>
+			<strong><i class=" {% if circleContentType.icon %}{{ circleContentType.icon }}{% else %}fa fa-circle-o{% endif %} margin-r-5"></i> {{ circleContentType.pluralName }}</strong>
+			<p class="text-muted">
+				{% for circle in revision.circles %}{{ circle|data_link|raw }}{% endfor %}
+			</p>
+		{% endif %}
+	{% endif %}
+{% endblock %}
+
+{% block revisionBody %}
+	<div class="box revision-view">
+		{% if revision.hasVersionTags and newVersionTag|default(false) %}
+		<div class="box-header with-border bg-green color-palette">
+			<h3 class="box-title">New version <strong>{{ newVersionTag }}</strong></h3>
+		</div>
+		{% endif %}
+		<div class="box-header with-border bg-{{ revisionColor }} color-palette">
+			<h3 class="box-title">
+				{% if revision.draft %}
+					<i class="fa fa-fire"></i>
+					{{ 'views.data.revisions-data-html.draft-in-progress'|trans }}
+				{% elseif revision.hasVersionTag %}
+					{{ revisionVersionTitle|raw }}
+				{% elseif not revision.endTime %}
+					<i class="fa fa-thumbs-up"></i>
+					{{ 'views.data.revisions-data-html.current-revision'|trans }}
+				{% else %}
+					<i class="fa fa-clock-o"></i>
+					{{ 'views.data.revisions-data-html.previous-revision'|trans({'%timestamp%': revision.created|date(date_time_format)}) }}
+				{% endif %}
+			</h3>
+			{% if revision.hasVersionTag and revision.versionDate('to') != null and latestVersion %}
+				<div class="box-tools pull-right">
+					<a href="{{ path('emsco_view_revisions', {'type': latestVersion.contentTypeName, 'ouuid': latestVersion.ouuid }) }}" class="btn btn-default bg-{{ revision.contentType.color  }} btn-sm">
+						<i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %}"></i>
+						current version
+					</a>
+				</div>
+			{% endif %}
+		</div>
+
+		<div class="box-body">
+			{% set compare = compareData != null ? true : false %}
+			{{ macros.renderDataField(dataFields, revision.rawData, compare, compareData) }}
+		</div>
+		<div class="box-footer">
+			{% include '@EMSCore/elements/revision-toolbar.html.twig' with {
+				'revisionId' : revision.id,
+				'environmentsRevision': emsco_get_environments_revision(revision),
+				'draft': revision.draft,
+				'current': not revision.endTime,
+				'autoSave': revision.autoSave,
+				'instance': revision,
+				'withView': false,
+			}%}
+
+		</div>
+	</div>
+{% endblock %}
+
+{% block revisionFooterTabs %}
+	<div class="nav-tabs-custom">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true">{{ 'views.data.revisions-data-html.linked-documents-in'|trans({'%environment%': revision.contentType.environment.label, '%length%': referrerResponse.documents|length, '%total%': referrerResponse.formattedTotal }) }}</a></li>
+			<li class=""><a href="#tab_revisions" data-toggle="tab" aria-expanded="false">Revisions <small>{{ revisionsSummary|length }}/{{ counter }}</small></a></li>
+			{% if auditTable|default(false) %}
+				<li class=""><a href="#tab_audit" data-toggle="tab" aria-expanded="false">Audit <small>({{ auditCount }})</small></a></li>
+			{% endif %}
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" id="tab_referrers">
+				{{ block('tabReferrers') }}
+			</div>
+			<div class="tab-pane" id="tab_revisions">
+				{{ block('tabRevisions') }}
+			</div>
+			{% if auditTable|default(false) %}
+				<div class="tab-pane" id="tab_audit">
+					{% form_theme auditTable '@EMSCore/form/forms.html.twig' %}
+					{{ form(auditTable) }}
+				</div>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}
+
+{% block tabReferrers %}
+	<div class="box">
+		<div class="box-body">
+			{% if referrerResponse.total == 0 %}
+				{{ 'views.data.revisions-data-html.no-linked-document'|trans }}
+			{% else %}
+				<div class="btn-group">
+					{% for obj in referrerResponse.getDocuments %}
+						{{ obj.emsId|data_link|raw }}
+					{% endfor %}
+				</div>
+			{% endif %}
+		</div>
+		<div class="box-footer">
+			<div class="btn-group">
+				<a href="{{ path('ems_search', {'search_form': referrersForm} ) }}" class="btn btn-default">
+					<i class="fa fa-search"></i>
+					{{ 'views.data.revisions-data-html.all-linked-documents'|trans }}
+				</a>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block tabRevisions %}
+	<div class="box">
+		<div class="box-body">
+			<div class="table-responsive">
+				<table class="table table-bordered">
+					<tbody>
+					<tr>
+						<th style="width: 10px">{{ 'views.data.revisions-data-html.revisions.th.id'|trans }}</th>
+						<th>{{ 'views.data.revisions-data-html.revisions.th.date'|trans }}</th>
+						<th>{{ 'views.data.revisions-data-html.revisions.th.finalize'|trans }}</th>
+						{% if is_super() %}
+							<th>{{ 'views.data.revisions-data-html.revisions.th.locked'|trans }}</th>
+							<th>{{ 'views.data.revisions-data-html.revisions.th.autosave'|trans }}</th>
+						{% endif %}
+						<th>{{ 'views.data.revisions-data-html.revisions.th.environments'|trans }}</th>
+						<th>{{ 'views.data.revisions-data-html.revisions.th.pendings'|trans }}</th>
+						<th>{{ 'views.data.revisions-data-html.revisions.th.actions'|trans }}</th>
+					</tr>
+					{% for rev in revisionsSummary %}
+						<tr class="{% if rev.id == revision.id %}bg-{{ revision.contentType.color }}{% elseif compareId == rev.id or compareId == revision.id %}bg-gray{% endif %}">
+							<td>{{ loop.index+firstElemOfPage }}.</td>
+							<td>{{ rev.created|date|date(date_time_format) }}</td>
+							<td>
+								{% if rev.finalizedBy %}
+									by {{ rev.finalizedBy|displayname }} <br>
+									{% if rev.finalizedDate %}
+										on {{ rev.finalizedDate|date(date_time_format) }}
+									{% endif %}
+								{% endif %}
+							</td>
+							{% if is_super() %}
+								<td>
+									{% if rev.lockUntil and rev.lockUntil > date('now') %}
+										by {{ rev.lockBy }} <br>
+										until  {{ rev.lockUntil|date(date_time_format) }}
+									{% endif %}
+								</td>
+								<td>
+									{% if rev.autoSave %}
+										by {{ rev.autoSaveBy|displayname  }} <br>
+										on {{ rev.autoSaveAt|date(date_time_format) }}
+									{% endif %}
+								</td>
+							{% endif %}
+							<td>
+								{% for env in rev.environments %}
+									<span class="badge bg-{{ env.color|raw }}">{{ env.label }}</span>
+								{% endfor %}
+								{% if rev.draft %}
+									<span class="badge bg-red">Draft in progress</span>
+								{% endif %}
+							</td>
+							<td>
+								{% for notification in rev.notifications %}
+									{% if notification.status == 'pending'  %}
+										<span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.label }}</span>
+									{% endif %}
+								{% endfor %}
+
+							</td>
+							<td>
+								{% include '@EMSCore/elements/revision-toolbar.html.twig' with {
+									'revisionId' : rev.id,
+									'environmentsRevision': emsco_get_environments_revision(rev),
+									'draft': rev.draft,
+									'current': not rev.endTime,
+									'autoSave': rev.autoSave,
+									'instance': revision
+								}%}
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="box-footer">
+			{% include '@EMSCore/elements/pagination.html.twig' with {
+				'lastPage': lastPage,
+				'currentPage': page,
+				'currentFilters': app.request.query|merge({ type: revision.contentType.name , ouuid: revision.ouuid , revisionId: revision.id, compareId: compareId}),
+				'paginationPath': 'data.revisions',
+				'showAlwaysFirstAndLast': false
+			} %}
+		</div>
+	</div>
+{% endblock %}

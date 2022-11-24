@@ -1,0 +1,106 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% set label = object.ouuid %}
+{% if (contentType.labelField) and (attribute(object.source, contentType.labelField)  is defined ) %}
+	{% set label = attribute(object.source, contentType.labelField) %}
+{% endif %}
+
+{% block title %}{{ 'data.custom-view.pagetitle'|trans({ '%name%':template.label, '%contentType%': contentType.singularName, '%label%': label, '%environment%': environment.label  }) }}{% endblock %}
+{% block pagetitle %}
+	<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
+	{{ block('title') }}
+{% endblock %} 
+
+{% block subtitle %}{% endblock %} 
+
+
+{% block extraheader %}
+	{% if template.header is defined and template.body %}
+		{{ template.header|generate_from_template({
+				environment: environment,
+				contentType: contentType,
+				object: object,
+				source: object.source
+			})|raw }}
+	{% endif %}
+{% endblock %} 
+
+
+
+{% block body %}
+{% import "@EMSCore/macros/data-field-type.html.twig" as macros %}
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header no-print">
+				<h3 class="box-title">View {{ template.label }}</h3>
+			</div>
+			<div class="box-body">
+				{%  if template.body and (template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EMBED') or template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT') or template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::PDF')) %}
+					{{ template.body|generate_from_template({
+						environment: environment,
+						contentType: contentType,
+						object: object,
+						source: object.source,
+						_download: false
+					})|raw }}
+
+				{% else %}
+					{{ 'Template is missing'|trans }}
+
+				{% endif %}
+
+				{% if template.filename and template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT') %}
+					<br/><br/>
+					{{ template.filename|generate_from_template({
+						environment: environment,
+						contentType: contentType,
+						object: object,
+						source: object.source
+					}) }}
+				{% endif %}
+			</div>
+			<!-- /.box-body -->
+			<div class="box-footer no-print">
+                {% include '@EMSCore/elements/object-toolbar.html.twig' with {
+					'object':  object,
+					'contentType': contentType,
+					'recursiveView': true
+				}%}
+				
+				<div class="btn-toolbar pull-right" role="toolbar" >
+					<div class="btn-group">
+						{% if template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::PDF') %}
+                            {% include '@EMSCore/elements/get-button.html.twig' with {
+                                'url':  path(template.public?'ems_data_custom_template_public':'ems_data_custom_template_protected', {
+                                    'environmentName': environment.name ,
+                                    'templateId': template.id,
+                                    'ouuid': object.ouuid,
+                                    '_download': true}),
+                                'label': 'Download PDF',
+                                'icon': 'file-pdf-o',
+                                'target': '_blank'
+                            }%}
+						{% endif %}
+						{% if template.body and template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT') %}
+                            {% include '@EMSCore/elements/get-button.html.twig' with {
+								'url':  path(template.public?'ems_data_custom_template_public':'ems_data_custom_template_protected', {
+										'environmentName': environment.name ,
+										'templateId': template.id,
+										'ouuid': object.ouuid,
+										'_download': true}),
+								'label': 'Download',
+								'icon': 'download',
+								'target': '_blank'
+							}%}
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'data-index-' ~ contentType.id
+}%}
+{% endblock %}	

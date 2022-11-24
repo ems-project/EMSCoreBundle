@@ -1,0 +1,53 @@
+{% trans_default_domain 'EMSCoreBundle' %}{% extends '@EMSCore/base.html.twig' %}
+
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path('ems_wysiwyg_index') }}"><i class="fa fa-language"></i> {{ 'WYSIWYG profiles'|trans }}</a></li>
+		<li>{% block title %}{% endblock %}</li>
+   	</ol>
+{% endblock %}
+
+
+{% block body %}
+
+<div class="row">
+	<div class="col-md-12">
+		<!-- general form elements -->
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">{% block box_title %}{% endblock %}</h3>
+			</div>
+			<!-- /.box-header -->
+			<!-- form start -->
+			{{ form_start(form) }}
+				<div class="box-body">
+					{{ form_row(form.name) }}
+					{{ form_row(form.config) }}
+					
+
+				</div>
+				<!-- /.box-body -->
+				<div class="box-footer">
+					<div class="btn-group">
+					{% block save_buton %}
+					    {{ form_widget(form.save) }}
+                    {% endblock %}
+                    {% if form.remove is defined %}
+					    {{ form_widget(form.remove) }}
+					{% endif %}
+					</div>
+				</div>
+			{{ form_end(form) }}
+
+		</div>
+		<!-- /.box -->
+	</div>
+</div>
+
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'wysiwyg-index'
+}%}
+
+{% endblock %}
+	

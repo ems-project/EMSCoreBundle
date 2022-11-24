@@ -1,0 +1,56 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}Rebuild the environment {{environment.name}}{% endblock %}
+{% block pagetitle %}Rebuild the environment {{environment.name}}{% endblock %} 
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><i class="fa fa-database"></i> Environments</li>
+		<li><a href={{ path('environment.index') }}>List Environments</a></li>
+   		<li class="active">Rebuild index</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+	<div class="col-md-6">
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-warning"></i>
+				<h3 class="box-title">Notice</h3>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				<p>
+					Be cautious, depending of the option selected some content in the search index may be lost.
+				</p>
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="box box-info">
+			<div class="box-header with-border">
+				<h3 class="box-title">Select your options</h3>
+			</div>
+			<!-- /.box-header -->
+			<!-- form start -->
+			{{ form_start(form) }}
+				<div class="box-body">
+					{{ form_row(form.option) }}
+				</div>
+				<!-- /.box-body -->
+				<div class="box-footer">
+					<div class="btn-group pull-right">
+						{{ form_widget(form.rebuild) }}
+					</div>
+				</div>
+				<!-- /.box-footer -->
+			
+			{{ form_end(form) }}
+		</div>
+	</div>
+</div>
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'environment-list'
+}%}
+{% endblock %}	

@@ -1,0 +1,52 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">{{ label|trans }}</h3>
+			</div>
+			{{ form_start(form_release) }}
+				<div class="box-body">
+					<div class="row">
+						{{ form_row(form_release.name) }}
+						<div class="clearfix"></div>
+						{{ form_row(form_release.execution_date) }}
+						<div class="clearfix"></div>
+						{{ form_row(form_release.environmentSource) }}
+						{{ form_row(form_release.environmentTarget) }}
+					</div>
+				</div>
+				<div class="box-footer">
+					<div class="btn-group">
+						{% if form_release.save is defined %}
+							{{ form_widget(form_release.save) }}
+							{{ form_widget(form_release.saveAndClose) }}
+						{% else %}
+							{{ form_widget(form_release.create) }}
+						{% endif %}
+					</div>
+				</div>
+            {{ form_end(form_release) }}
+		</div>
+		{% if release is defined and release.status == 'wip' %}
+			<div class="box-footer">
+				<div class="btn-group">
+					{% include '@EMSCore/elements/get-button.html.twig' with {
+						'url':  path('emsco_release_add_revisions', {'release': release.id} ),
+						'label': 'release.actions.add_revisions'|trans,
+						'icon': 'plus',
+						'btnType': 'primary',
+					}%}
+					{% if release.revisions|length > 0 %}
+						{% include '@EMSCore/elements/post-button.html.twig' with {
+							'url': path('emsco_release_set_status', {'release': release.id, 'status': 'ready'}),
+							'label': 'release.actions.set_status_ready'|trans,
+							'btnType': 'default',
+							'icon': 'play' }%}
+					{% endif %}
+				</div>
+			</div>
+		{% endif %}
+	</div>
+</div>

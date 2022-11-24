@@ -1,0 +1,56 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}Add a user{% endblock %}
+{% block pagetitle %}New user{% endblock %} 
+
+{% block subtitle %}<small>A new user in town?</small>{% endblock %} 
+
+{% block body %}
+<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">Add user</h3>
+			</div>
+{{ form_start(form, {'method': 'post', 'action': path('emsco_user_add') }) }}
+    <div class="box-body">
+    	<div class="col-md-6">
+	    	{{ form_row(form.username) }}
+			{{ form_row(form.displayName) }}
+	    	{{ form_row(form.plainPassword) }}
+			{{ form_row(form.locale) }}
+			{{ form_row(form.localePreferred) }}
+	    	{{ form_row(form.email) }}
+			{{ form_row(form.emailNotification) }}
+			{{ form_row(form.enabled) }}
+	    	{% if form.circles is defined %}
+	    	    {{ form_row(form.circles) }}
+	    	{% endif %}
+	    	{{ form_row(form.allowedToConfigureWysiwyg) }}
+            {% include "@EMSCore/user/wysiwygOptions.html.twig" with {
+				form: form
+			} %}
+{# 	    	{{ form_row(form.expiresAt) }}#}
+    	</div>
+    	<div class="col-md-6">
+	    	{{ form_row(form.userOptions) }}
+	    	{{ form_row(form.roles) }}
+    	</div>
+    </div>
+    <div class="box-footer">
+	    	{{ form_row(form.create) }}
+    </div>
+{{ form_end(form) }}
+</div>
+<!-- /.box -->
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'user-index'
+}%}
+{% endblock body %}
+
+
+{% block frontend_application_css %}
+	<link rel="stylesheet" href="{{ asset('user-profile.css', 'emscore') }}">
+{% endblock %}
+
+{% block frontend_application_js %}
+	<script src="{{ asset('user-profile.js', 'emscore') }}"></script>
+{% endblock %}

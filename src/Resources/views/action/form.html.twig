@@ -1,0 +1,77 @@
+{% extends '@EMSCore/action/action.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{ block('title') }}</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                {{ form_start(form) }}
+
+                <div class="box-body">
+                    {{ form_row(form.name) }}
+                    {{ form_row(form.label) }}
+                    {{ form_row(form.icon) }}
+                    {{ form_row(form.public) }}
+                    {{ form_row(form.environments) }}
+                    {{ form_row(form.body) }}
+                    {{ form_row(form.editWithWysiwyg) }}
+                    {{ form_row(form.active) }}
+                    {{ form_row(form.role) }}
+                    {{ form_row(form.renderOption) }}
+                    <div class="embed">
+                        {{ form_row(form.header) }}
+                    </div>
+                    <div class="export pdf">
+                        {{ form_row(form.preview) }}
+                        {{ form_row(form.disposition) }}
+                        {{ form_row(form.allow_origin) }}
+                        {{ form_row(form.filename) }}
+                    </div>
+                    <div class="export">
+                        {{ form_row(form.accumulateInOneFile) }}
+                        {{ form_row(form.mimeType) }}
+                        {{ form_row(form.extension) }}
+                    </div>
+                    <div class="notification">
+                        {{ form_row(form.roleTo) }}
+                        {{ form_row(form.roleCc) }}
+                        {{ form_row(form.emailContentType) }}
+                        {% if form.circlesTo is defined %} {{ form_row(form.circlesTo) }}{% endif %}
+                        {{ form_row(form.responseTemplate) }}
+                    </div>
+                    <div class="pdf">
+                        {{ form_row(form.orientation) }}
+                        {{ form_row(form.size) }}
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="btn-group">
+                        {%  if form.save is defined %}
+                            {{ form_widget(form.save) }}
+                        {% endif %}
+                        {{ form_widget(form.saveAndClose) }}
+                    </div>
+                </div>
+                {{ form_end(form) }}
+            </div>
+            <!-- /.box -->
+        </div>
+    </div>
+    {{ parent() }}
+
+{% endblock %}
+
+{% block frontend_application_css %}
+    <link rel="stylesheet" href="{{ asset('template.css', 'emscore') }}">
+{% endblock %}
+
+{% block frontend_application_js %}
+    <script src="{{ asset('template.js', 'emscore') }}"></script>
+{% endblock %}

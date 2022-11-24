@@ -1,0 +1,64 @@
+{% trans_default_domain 'EMSCoreBundle' %}{% if counter %}
+
+	<div class="nav-tabs-custom">
+		<ul class="nav nav-tabs">
+			{% if countRejected > 0 %}
+				<li class="active"><a href="#tab_rejected" data-toggle="tab" aria-expanded="true">
+					<i class="fa fa-ban"></i>
+					Rejected
+					<span class="badge badge-primary">{{ countRejected }}</span>
+				</a></li>
+			{% endif %}
+			
+			{% if countPending > 0 %}
+				<li class="{% if countRejected == 0 %}active{% endif %}"><a href="#tab_to_treat" data-toggle="tab" aria-expanded="{% if countRejected == 0 %}true{%else%}false{% endif %}">
+					<i class="fa fa-hourglass-half" aria-hidden="true"></i>
+					{{ 'To be treated '|trans }}
+					<span class="badge badge-primary">{{ countPending }}</span>
+				</a></li>
+			{% endif %}
+			<li class="pull-right">
+                {% include '@EMSCore/elements/pagination.html.twig' with {
+					'lastPage': lastPage,
+					'currentPage': page,
+					'currentFilters': app.request.query,
+					'paginationPath': paginationPath,
+					'showAlwaysFirstAndLast': false
+				} %}
+			</li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane {% if countRejected > 0 %}active{% endif %}" id="tab_rejected">
+                {% include '@EMSCore/notification/inboxRejected.html.twig' %}
+			</div>
+			<!-- /.tab-pane -->
+			<div class="tab-pane{% if countRejected == 0 %}active{% endif %}" id="tab_to_treat">
+                {% include '@EMSCore/notification/inboxToTreat.html.twig' %}
+			</div>
+			<!-- /.tab-pane -->
+		</div>
+		<!-- /.tab-content -->
+	</div>
+	
+	
+	
+	{% else %}
+          <div class="box box-default">
+            <div class="box-header with-border">
+              <i class="fa fa-check"></i>
+
+              <h3 class="box-title">All treated</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+
+              <div class="callout callout-success">
+                <h4>Nothing to treat</h4>
+
+                <p>You are up to date.</p>
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+	{% endif %}

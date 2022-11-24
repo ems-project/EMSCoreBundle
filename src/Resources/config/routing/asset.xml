@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="ems_core_asset_proxy" path="/emsch_assets/{requestPath}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\AssetController:proxyAssetForChannel</default>
+        <requirement key="requestPath">.+</requirement>
+    </route>
+
+    <route id="ems_asset" path="/data/asset/{hash_config}/{hash}/{filename}" methods="GET,HEAD">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\AssetController:assetAction</default>
+    </route>
+
+    <route id="emsco_asset_public" path="/public/asset/{hash_config}/{hash}/{filename}" methods="GET,HEAD">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\AssetController:assetAction</default>
+    </route>
+
+    <route id="ems_asset_processor" path="/asset/{processor}/{hash}" methods="GET,HEAD">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\AssetController:assetProcessorAction</default>
+    </route>
+
+</routes>

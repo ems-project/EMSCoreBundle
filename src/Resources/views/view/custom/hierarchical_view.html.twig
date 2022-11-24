@@ -1,0 +1,60 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ view.name }} of {{ contentType.singularName }}{% endblock %}
+{% block pagetitle %}{{ view.name }} of {{ contentType.singularName }}{% endblock %}
+
+{% block body %}
+    <div class="row" id="hierarchical-row" data-content-type="{{ contentType|e('html_attr') }}" data-hierarchical-item-url="{{ path('views.hierarchical.item', {key: '__key__', view: view.id})|e('html_attr') }}">
+        <div class="col-md-12">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h2 class="box-title">
+                        {{ 'Reorganise: '|trans }}
+                        {{ (parent._source._contenttype~':'~parent._id)|data_link }}
+                    </h2>
+                </div>
+                {{ form_start(form) }}
+                    <div class="box-body no-padding">
+                        <ol class="nested-sortable vertical" id="root-list" data-nested-max-level="{% if view.options.maxDepth is defined and view.options.maxDepth and view.options.maxDepth >= 1 %}{{ view.options.maxDepth }}{% else %}3{% endif %}" data-nested-is-tree="true">
+                            {% include "@EMSCore/view/custom/hierarchical_item.html.twig" with {
+                                parent: parent._source,
+                                view: view,
+                            } %}
+                        </ol>
+                    </div>
+                    <!-- /.box-body -->
+                    <div>
+                        {% if form.addItem is defined %}
+                            <div class="box-footer">
+                                {{ form_row(form.addItem) }}
+                            </div>
+                            <!-- /.box-footer -->
+                        {% endif %}
+                        <div class="box-footer">
+                            <div class="btn-group">
+                                {{ form_widget(form.reorder) }}
+                            </div>
+                        </div>
+                    </div>
+                {{ form_end(form) }}
+                <!-- /.box-footer -->
+            </div>
+        </div>
+    </div>
+
+    {% include '@EMSCore/app/menu.html.twig' with {
+        'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
+    } %}
+
+{% endblock %}
+
+
+
+
+{% block frontend_application_css %}
+    <link rel="stylesheet" href="{{ asset('hierarchical.css', 'emscore') }}">
+{% endblock %}
+
+{% block frontend_application_js %}
+    <script src="{{ asset('hierarchical.js', 'emscore') }}"></script>
+{% endblock %}

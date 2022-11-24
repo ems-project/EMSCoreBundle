@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="emsco_interface_document_create" path="/{interface}/data/{name}/create/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::createAction</default>
+        <default key="ouuid" xsi:nil="true"/>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_document_draft" path="/{interface}/data/{name}/draft/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::createAction</default>
+        <default key="ouuid" xsi:nil="true"/>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_document_get_short" path="/{interface}/data/{name}/{ouuid}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::getAction</default>
+        <default key="ouuid" xsi:nil="true"/>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_document_get" path="/{interface}/data/{name}/get/{ouuid}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::getAction</default>
+        <default key="ouuid" xsi:nil="true"/>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_document_finalize" path="/{interface}/data/{name}/finalize/{id}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::finalizeAction</default>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_document_discard" path="/{interface}/data/{name}/discard/{id}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::discardAction</default>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_document_delete" path="/{interface}/data/{name}/delete/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::deleteAction</default>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_document_replace" path="/{interface}/data/{name}/replace/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::replaceAction</default>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_document_merge" path="/{interface}/data/{name}/merge/{ouuid}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::mergeAction</default>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_test" path="/{interface}/test" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::testAction</default>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_content_type_meta" path="/{interface}/meta/{name}" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::getContentTypeInfo</default>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_user_profile" path="/{interface}/user-profile" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::getUserProfile</default>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_user_profiles" path="/{interface}/user-profiles" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::getUserProfiles</default>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_auth_token_login" path="/auth-token" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Api\AuthTokenLoginController::login</default>
+        <default key="_format">json</default>
+    </route>
+    <route id="emsco_api_forms_submissions" path="/api/forms/submissions" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Form\SubmissionController::submit</default>
+        <default key="_format">json</default>
+    </route>
+    <route id="emsco_api_forms_post_verifications" path="/api/forms/verifications" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Form\VerificationController::createVerification</default>
+        <default key="_format">json</default>
+    </route>
+    <route id="emsco_api_forms_get_verifications" path="/api/forms/verifications" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\Api\Form\VerificationController::getVerification</default>
+        <default key="_format">json</default>
+    </route>
+
+    <!--Deprecated routes -->
+    <route id="api.test" path="/{interface}/test" methods="GET">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\CrudController::testAction</default>
+        <default key="_format">json</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+</routes>

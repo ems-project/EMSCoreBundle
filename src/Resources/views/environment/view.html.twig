@@ -1,0 +1,48 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}View the environment {{environment.name}}{% endblock %}
+{% block pagetitle %}View the environment {{environment.name}}{% endblock %} 
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href={{ path('environment.index') }}><i class="fa fa-database"></i> Environments</a></li>
+   		<li class="active">View environment</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+
+<div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Elasticsearch information</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form role="form">
+              <div class="box-body">
+                  {% if info %}
+                      <pre class="ems-code-editor" data-language="ace/mode/json"
+                           data-theme="ace/theme/chrome" data-max-lines="300">{{ info|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+					{% else %}
+						Elasticsearch index is missing !
+					{% endif %}
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <div class="btn-group pull-right">
+                    {% include '@EMSCore/elements/get-button.html.twig' with {
+						'url': path('environment.index'),
+						'label': 'Close',
+						'icon': 'close'
+					}%}
+                    {% include '@EMSCore/elements/get-button.html.twig' with {
+							'url': path('environment.edit', {'id': environment.id}),
+							'label': 'Edit',
+							'icon': 'pencil'
+						}%}
+				</div>
+              </div>
+            </form>
+          </div>
+
+{% endblock %}

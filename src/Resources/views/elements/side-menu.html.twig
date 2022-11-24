@@ -1,0 +1,42 @@
+{% trans_default_domain 'emsco-twigs' %}
+<aside class="main-sidebar">
+    <section class="sidebar">
+        <div class="user-panel">
+            <div class="pull-left image">
+                {% include '@EMSCore/elements/user-image.html.twig' with { 'class': 'img-circle' } %}
+            </div>
+            <div class="pull-left info">
+                {% if app.user %}
+                    <p><a href="{{ path(routes.USER_PROFILE) }}" class="">{{ app.user.displayName }}</a></p>
+                    <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-{{ status }}"></i> {{ status }}</a>
+                {% else %}
+                    <p>{{ 'views.elements.side-menu-html.anonymous-user'|trans }}</p>
+                    <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-"></i> </a>
+                {% endif %}
+            </div>
+        </div>
+        {% if app.user %}
+            <form action="{{ path('ems_quick_search') }}" method="get" class="sidebar-form">
+                <div class="input-group">
+                    <label for="q" class="sr-only">{{ 'views.elements.side-menu-html.quick-search-label'|trans }}</label>
+                    <input id="q" type="text" name="q" class="form-control" placeholder="{{ 'views.elements.side-menu-html.quick-search-placeholder'|trans }}">
+                    <span class="input-group-btn">
+                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </form>
+        {% endif %}
+
+        {% for item in menu|default([]) %}
+            {% if item.hasChildren %}
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">{{ item.title|trans(item.transParameters) }}</li>
+                    {% for menu in item.children %}
+                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+    </section>
+</aside>

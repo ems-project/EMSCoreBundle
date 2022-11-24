@@ -1,0 +1,35 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
+{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
+
+
+{% block body %}
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box ">
+                {{ form_start(form) }}
+				<div class="box-body">
+					<ul class="list-group sortable ui-sortable"
+						id="content_type_structure_fieldType_modal_reorder_list">
+                        {% for document in response.getDocuments %}
+							{% if document %}
+								<li class="list-group-item ui-sortable-handle">
+									<i class="glyphicon glyphicon-move"></i>
+									{{ document.emsId|data_link }}
+									{{ form_widget(attribute(form.items, document.id)) }}
+								</li>
+							{% endif %}
+                        {% endfor %}
+					</ul>
+				</div>
+				<div class="box-footer">
+					<div class="btn-group">
+                        {{ form_widget(form.reorder) }}
+					</div>
+				</div>
+                {{ form_end(form) }}
+			</div>
+		</div>
+	</div>
+{% endblock %} 

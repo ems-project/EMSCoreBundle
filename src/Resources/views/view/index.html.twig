@@ -1,0 +1,16 @@
+{% extends '@EMSCore/view/abstract.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block title %}{{ 'view.index.title'|trans({'%type%': contentType.singularName}) }}{% endblock %}
+
+{% block body %}
+	{%  set toolbar %}
+		<a class="btn btn-primary" href="{{ path('emsco_view_add', {type: contentType.name}) }}"><i class="fa fa-plus"></i> {{ 'view.index.add_button'|trans }}</a>
+	{%  endset %}
+
+	{% form_theme form '@EMSCore/form/forms.html.twig' %}
+	{{ form(form, {
+		reorder_label: 'view.index.reorder',
+		toolbar: toolbar
+	}) }}
+{% endblock %}

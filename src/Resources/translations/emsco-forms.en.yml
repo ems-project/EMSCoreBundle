@@ -1,0 +1,960 @@
+dashboard.label: Label
+dashboard.icon: Icon
+dashboard.name: Name
+dashboard.save: Save
+dashboard.create: Create
+dashboard.role: Role
+dashboard.color: Color
+dashboard.type: 'Type of dashboard'
+dashboard.sidebarMenu: 'Visible in the sidebar menu'
+dashboard.notificationMenu: 'Visible in the notification menu'
+dashboard.export.none: None
+dashboard.export.attachment: Attachment
+dashboard.export.inline: Inline
+dashboard.export.body: Body
+dashboard.export.filename: Filename
+dashboard.export.fileDisposition: Disposition
+dashboard.template.body: Body
+dashboard.template.header: Header
+dashboard.template.footer: Footer
+dashboard.export.mimetype: Mime-Type
+view.name: Name
+view.label: Label
+view.role: Role
+view.icon: Icon
+view.create: Create
+view.public: 'Publicly available (without authentication)'
+view.type: Type
+view.save: Save
+view.saveAndClose: 'Save and Close'
+view.pdf_orientation: 'PDF Orientation'
+view.pdf_size: 'PDF Size'
+role.not-defined: 'Not defined'
+ROLE_ADMIN: Administrator
+ROLE_ALLOW_ALIGN: 'Align Environment'
+ROLE_API: API
+ROLE_AUTHOR: Author
+ROLE_COPY_PASTE: Copy/Paste
+ROLE_DEFAULT_SEARCH: 'Default search'
+ROLE_FORM_CRM: 'Form CRM'
+ROLE_PUBLISHER: Publisher
+ROLE_REVIEWER: Reviewer
+ROLE_AUDITOR: Auditor
+ROLE_SUPER: 'Super user'
+ROLE_SUPER_ADMIN: 'Super Admin'
+ROLE_SUPER_AUTHOR: 'Super Author'
+ROLE_SUPER_PUBLISHER: 'Super Publisher'
+ROLE_SUPER_USER: 'Super User'
+ROLE_SUPER_WEBMASTER: 'Super Webmaster'
+ROLE_TASK_MANAGER: 'Task Manager'
+ROLE_TRADUCTOR: Traductor
+ROLE_USER: User
+ROLE_USER_MANAGEMENT: 'User Management'
+ROLE_USER_READ: 'User read'
+ROLE_WEBMASTER: Webmaster
+icon.not-defined: 'Not Defined'
+icon.ems-ball: 'Ems Ball'
+icon.500px: 500px
+icon.amazon: Amazon
+icon.battery-0: 'Battery 0'
+icon.battery-1: 'Battery 1'
+icon.battery-2: 'Battery 2'
+icon.battery-3: 'Battery 3'
+icon.battery-4: 'Battery 4'
+icon.battery-empty: 'Battery Empty'
+icon.battery-full: 'Battery Full'
+icon.battery-half: 'Battery Half'
+icon.battery-quarter: 'Battery Quarter'
+icon.battery-three-quarters: 'Battery Three Quarters'
+icon.black-tie: 'Black Tie'
+icon.calendar-check-o: 'Calendar Check O'
+icon.calendar-minus-o: 'Calendar Minus O'
+icon.calendar-plus-o: 'Calendar Plus O'
+icon.calendar-times-o: 'Calendar Times O'
+icon.cc-diners-club: 'Cc Diners Club'
+icon.cc-jcb: 'Cc Jcb'
+icon.chrome: Chrome
+icon.clone: Clone
+icon.commenting: Commenting
+icon.commenting-o: 'Commenting O'
+icon.contao: Contao
+icon.creative-commons: 'Creative Commons'
+icon.expeditedssl: Expeditedssl
+icon.firefox: Firefox
+icon.fonticons: Fonticons
+icon.genderless: Genderless
+icon.get-pocket: 'Get Pocket'
+icon.gg: GG
+icon.gg-circle: 'Gg Circle'
+icon.hand-grab-o: 'Hand Grab O'
+icon.hand-lizard-o: 'Hand Lizard O'
+icon.hand-paper-o: 'Hand Paper O'
+icon.hand-peace-o: 'Hand Peace O'
+icon.hand-pointer-o: 'Hand Pointer O'
+icon.hand-rock-o: 'Hand Rock O'
+icon.hand-scissors-o: 'Hand Scissors O'
+icon.hand-spock-o: 'Hand Spock O'
+icon.hand-stop-o: 'Hand Stop O'
+icon.hourglass: Hourglass
+icon.hourglass-1: 'Hourglass 1'
+icon.hourglass-2: 'Hourglass 2'
+icon.hourglass-3: 'Hourglass 3'
+icon.hourglass-end: 'Hourglass End'
+icon.hourglass-half: 'Hourglass Half'
+icon.hourglass-o: 'Hourglass O'
+icon.hourglass-start: 'Hourglass Start'
+icon.houzz: Houzz
+icon.i-cursor: 'I Cursor'
+icon.industry: Industry
+icon.internet-explorer: 'Internet Explorer'
+icon.map: Map
+icon.map-o: 'Map O'
+icon.map-pin: 'Map Pin'
+icon.map-signs: 'Map Signs'
+icon.mouse-pointer: 'Mouse Pointer'
+icon.object-group: 'Object Group'
+icon.object-ungroup: 'Object Ungroup'
+icon.odnoklassniki: Odnoklassniki
+icon.odnoklassniki-square: 'Odnoklassniki Square'
+icon.opencart: Opencart
+icon.opera: Opera
+icon.optin-monster: 'Optin Monster'
+icon.registered: Registered
+icon.safari: Safari
+icon.sticky-note: 'Sticky Note'
+icon.sticky-note-o: 'Sticky Note O'
+icon.television: Television
+icon.trademark: Trademark
+icon.tripadvisor: Tripadvisor
+icon.tv: Tv
+icon.vimeo: Vimeo
+icon.wikipedia-w: 'Wikipedia W'
+icon.y-combinator: 'Y Combinator'
+icon.yc: Yc
+icon.adjust: Adjust
+icon.anchor: Anchor
+icon.archive: Archive
+icon.area-chart: 'Area Chart'
+icon.arrows: Arrows
+icon.arrows-h: 'Arrows H'
+icon.arrows-v: 'Arrows V'
+icon.asterisk: Asterisk
+icon.at: At
+icon.automobile: Automobile
+icon.balance-scale: 'Balance Scale'
+icon.ban: Ban
+icon.bank: Bank
+icon.bar-chart: 'Bar Chart'
+icon.bar-chart-o: 'Bar Chart O'
+icon.barcode: Barcode
+icon.bars: Bars
+icon.bed: Bed
+icon.beer: Beer
+icon.bell: Bell
+icon.bell-o: 'Bell O'
+icon.bell-slash: 'Bell Slash'
+icon.bell-slash-o: 'Bell Slash O'
+icon.bicycle: Bicycle
+icon.binoculars: Binoculars
+icon.birthday-cake: 'Birthday Cake'
+icon.bolt: Bolt
+icon.bomb: Bomb
+icon.book: Book
+icon.bookmark: Bookmark
+icon.bookmark-o: 'Bookmark O'
+icon.briefcase: Briefcase
+icon.bug: Bug
+icon.building: Building
+icon.building-o: 'Building O'
+icon.bullhorn: Bullhorn
+icon.bullseye: Bullseye
+icon.bus: Bus
+icon.cab: Cab
+icon.calculator: Calculator
+icon.calendar: Calendar
+icon.calendar-o: 'Calendar O'
+icon.camera: Camera
+icon.camera-retro: 'Camera Retro'
+icon.car: Car
+icon.caret-square-o-down: 'Caret Square O Down'
+icon.caret-square-o-left: 'Caret Square O Left'
+icon.caret-square-o-right: 'Caret Square O Right'
+icon.caret-square-o-up: 'Caret Square O Up'
+icon.cart-arrow-down: 'Cart Arrow Down'
+icon.cart-plus: 'Cart Plus'
+icon.cc: Cc
+icon.certificate: Certificate
+icon.check: Check
+icon.check-circle: 'Check Circle'
+icon.check-circle-o: 'Check Circle O'
+icon.check-square: 'Check Square'
+icon.check-square-o: 'Check Square O'
+icon.child: Child
+icon.circle: Circle
+icon.circle-o: 'Circle O'
+icon.circle-o-notch: 'Circle O Notch'
+icon.circle-thin: 'Circle Thin'
+icon.clock-o: 'Clock O'
+icon.close: Close
+icon.cloud: Cloud
+icon.cloud-download: 'Cloud Download'
+icon.cloud-upload: 'Cloud Upload'
+icon.code: Code
+icon.code-fork: 'Code Fork'
+icon.coffee: Coffee
+icon.cog: Cog
+icon.cogs: Cogs
+icon.comment: Comment
+icon.comment-o: 'Comment O'
+icon.comments: Comments
+icon.comments-o: 'Comments O'
+icon.compass: Compass
+icon.copyright: Copyright
+icon.credit-card: 'Credit Card'
+icon.crop: Crop
+icon.crosshairs: Crosshairs
+icon.cube: Cube
+icon.cubes: Cubes
+icon.cutlery: Cutlery
+icon.dashboard: Dashboard
+icon.database: Database
+icon.desktop: Desktop
+icon.diamond: Diamond
+icon.dot-circle-o: 'Dot Circle O'
+icon.download: Download
+icon.edit: Edit
+icon.ellipsis-h: 'Ellipsis H'
+icon.ellipsis-v: 'Ellipsis V'
+icon.envelope: Envelope
+icon.envelope-o: 'Envelope O'
+icon.envelope-square: 'Envelope Square'
+icon.eraser: Eraser
+icon.exchange: Exchange
+icon.exclamation: Exclamation
+icon.exclamation-circle: 'Exclamation Circle'
+icon.exclamation-triangle: 'Exclamation Triangle'
+icon.external-link: 'External Link'
+icon.external-link-square: 'External Link Square'
+icon.eye: Eye
+icon.eye-slash: 'Eye Slash'
+icon.eyedropper: Eyedropper
+icon.fax: Fax
+icon.feed: Feed
+icon.female: Female
+icon.fighter-jet: 'Fighter Jet'
+icon.file-archive-o: 'File Archive O'
+icon.file-audio-o: 'File Audio O'
+icon.file-code-o: 'File Code O'
+icon.file-excel-o: 'File Excel O'
+icon.file-image-o: 'File Image O'
+icon.file-movie-o: 'File Movie O'
+icon.file-pdf-o: 'File Pdf O'
+icon.file-photo-o: 'File Photo O'
+icon.file-picture-o: 'File Picture O'
+icon.file-powerpoint-o: 'File Powerpoint O'
+icon.file-sound-o: 'File Sound O'
+icon.file-video-o: 'File Video O'
+icon.file-word-o: 'File Word O'
+icon.file-zip-o: 'File Zip O'
+icon.film: Film
+icon.filter: Filter
+icon.fire: Fire
+icon.fire-extinguisher: 'Fire Extinguisher'
+icon.flag: Flag
+icon.flag-checkered: 'Flag Checkered'
+icon.flag-o: 'Flag O'
+icon.flash-glyphicon: 'Flash (glyphicon)'
+icon.flask: Flask
+icon.folder: Folder
+icon.folder-o: 'Folder O'
+icon.folder-open: 'Folder Open'
+icon.folder-open-o: 'Folder Open O'
+icon.frown-o: 'Frown O'
+icon.futbol-o: 'Futbol O'
+icon.gamepad: Gamepad
+icon.gavel: Gavel
+icon.gear: Gear
+icon.gears: Gears
+icon.gift: Gift
+icon.glass: Glass
+icon.globe: Globe
+icon.graduation-cap: 'Graduation Cap'
+icon.group: Group
+icon.hdd-o: 'Hdd O'
+icon.headphones: Headphones
+icon.heart: Heart
+icon.heart-o: 'Heart O'
+icon.heartbeat: Heartbeat
+icon.history: History
+icon.home: Home
+icon.hotel: Hotel
+icon.image: Image
+icon.inbox: Inbox
+icon.info: Info
+icon.info-circle: 'Info Circle'
+icon.institution: Institution
+icon.key: Key
+icon.keyboard-o: 'Keyboard O'
+icon.language: Language
+icon.laptop: Laptop
+icon.leaf: Leaf
+icon.legal: Legal
+icon.lemon-o: 'Lemon O'
+icon.level-down: 'Level Down'
+icon.level-up: 'Level Up'
+icon.life-bouy: 'Life Bouy'
+icon.life-buoy: 'Life Buoy'
+icon.life-ring: 'Life Ring'
+icon.life-saver: 'Life Saver'
+icon.lightbulb-o: 'Lightbulb O'
+icon.line-chart: 'Line Chart'
+icon.location-arrow: 'Location Arrow'
+icon.lock: Lock
+icon.magic: Magic
+icon.magnet: Magnet
+icon.mail-forward: 'Mail Forward'
+icon.mail-reply: 'Mail Reply'
+icon.mail-reply-all: 'Mail Reply All'
+icon.male: Male
+icon.map-marker: 'Map Marker'
+icon.meh-o: 'Meh O'
+icon.microphone: Microphone
+icon.microphone-slash: 'Microphone Slash'
+icon.minus: Minus
+icon.minus-circle: 'Minus Circle'
+icon.minus-square: 'Minus Square'
+icon.minus-square-o: 'Minus Square O'
+icon.mobile: Mobile
+icon.mobile-phone: 'Mobile Phone'
+icon.money: Money
+icon.moon-o: 'Moon O'
+icon.mortar-board: 'Mortar Board'
+icon.motorcycle: Motorcycle
+icon.music: Music
+icon.navicon: Navicon
+icon.newspaper-o: 'Newspaper O'
+icon.paint-brush: 'Paint Brush'
+icon.paper-plane: 'Paper Plane'
+icon.paper-plane-o: 'Paper Plane O'
+icon.paw: Paw
+icon.pencil: Pencil
+icon.pencil-square: 'Pencil Square'
+icon.pencil-square-o: 'Pencil Square O'
+icon.phone: Phone
+icon.phone-square: 'Phone Square'
+icon.photo: Photo
+icon.picture-o: 'Picture O'
+icon.pie-chart: 'Pie Chart'
+icon.plane: Plane
+icon.plug: Plug
+icon.plus: Plus
+icon.plus-circle: 'Plus Circle'
+icon.plus-square: 'Plus Square'
+icon.plus-square-o: 'Plus Square O'
+icon.power-off: 'Power Off'
+icon.print: Print
+icon.puzzle-piece: 'Puzzle Piece'
+icon.qrcode: Qrcode
+icon.question: Question
+icon.question-circle: 'Question Circle'
+icon.quote-left: 'Quote Left'
+icon.quote-right: 'Quote Right'
+icon.random: Random
+icon.recycle: Recycle
+icon.refresh: Refresh
+icon.remove: Remove
+icon.reorder: Reorder
+icon.reply: Reply
+icon.reply-all: 'Reply All'
+icon.retweet: Retweet
+icon.road: Road
+icon.rocket: Rocket
+icon.rss: Rss
+icon.rss-square: 'Rss Square'
+icon.search: Search
+icon.search-minus: 'Search Minus'
+icon.search-plus: 'Search Plus'
+icon.send: Send
+icon.send-o: 'Send O'
+icon.server: Server
+icon.share: Share
+icon.share-alt: 'Share Alt'
+icon.share-alt-square: 'Share Alt Square'
+icon.share-square: 'Share Square'
+icon.share-square-o: 'Share Square O'
+icon.shield: Shield
+icon.ship: Ship
+icon.shopping-cart: 'Shopping Cart'
+icon.sign-in: 'Sign In'
+icon.sign-out: 'Sign Out'
+icon.signal: Signal
+icon.sitemap: Sitemap
+icon.sliders: Sliders
+icon.smile-o: 'Smile O'
+icon.soccer-ball-o: 'Soccer Ball O'
+icon.sort: Sort
+icon.sort-alpha-asc: 'Sort Alpha Asc'
+icon.sort-alpha-desc: 'Sort Alpha Desc'
+icon.sort-amount-asc: 'Sort Amount Asc'
+icon.sort-amount-desc: 'Sort Amount Desc'
+icon.sort-asc: 'Sort Asc'
+icon.sort-desc: 'Sort Desc'
+icon.sort-down: 'Sort Down'
+icon.sort-numeric-asc: 'Sort Numeric Asc'
+icon.sort-numeric-desc: 'Sort Numeric Desc'
+icon.sort-up: 'Sort Up'
+icon.space-shuttle: 'Space Shuttle'
+icon.spinner: Spinner
+icon.spoon: Spoon
+icon.square: Square
+icon.square-o: 'Square O'
+icon.star: Star
+icon.star-half: 'Star Half'
+icon.star-half-empty: 'Star Half Empty'
+icon.star-half-full: 'Star Half Full'
+icon.star-half-o: 'Star Half O'
+icon.star-o: 'Star O'
+icon.street-view: 'Street View'
+icon.suitcase: Suitcase
+icon.sun-o: 'Sun O'
+icon.support: Support
+icon.tablet: Tablet
+icon.tachometer: Tachometer
+icon.tag: Tag
+icon.tags: Tags
+icon.tasks: Tasks
+icon.taxi: Taxi
+icon.terminal: Terminal
+icon.thumb-tack: 'Thumb Tack'
+icon.thumbs-down: 'Thumbs Down'
+icon.thumbs-o-down: 'Thumbs O Down'
+icon.thumbs-o-up: 'Thumbs O Up'
+icon.thumbs-up: 'Thumbs Up'
+icon.ticket: Ticket
+icon.times: Times
+icon.times-circle: 'Times Circle'
+icon.times-circle-o: 'Times Circle O'
+icon.tint: Tint
+icon.toggle-down: 'Toggle Down'
+icon.toggle-left: 'Toggle Left'
+icon.toggle-off: 'Toggle Off'
+icon.toggle-on: 'Toggle On'
+icon.toggle-right: 'Toggle Right'
+icon.toggle-up: 'Toggle Up'
+icon.trash: Trash
+icon.trash-o: 'Trash O'
+icon.tree: Tree
+icon.trophy: Trophy
+icon.truck: Truck
+icon.tty: Tty
+icon.umbrella: Umbrella
+icon.university: University
+icon.unlock: Unlock
+icon.unlock-alt: 'Unlock Alt'
+icon.unsorted: Unsorted
+icon.upload: Upload
+icon.user: User
+icon.user-plus: 'User Plus'
+icon.user-secret: 'User Secret'
+icon.user-times: 'User Times'
+icon.users: Users
+icon.video-camera: 'Video Camera'
+icon.volume-down: 'Volume Down'
+icon.volume-off: 'Volume Off'
+icon.volume-up: 'Volume Up'
+icon.warning: Warning
+icon.wheelchair: Wheelchair
+icon.wifi: Wifi
+icon.wrench: Wrench
+icon.hand-o-down: 'Hand O Down'
+icon.hand-o-left: 'Hand O Left'
+icon.hand-o-right: 'Hand O Right'
+icon.hand-o-up: 'Hand O Up'
+icon.ambulance: Ambulance
+icon.subway: Subway
+icon.train: Train
+icon.intersex: Intersex
+icon.mars: Mars
+icon.mars-double: 'Mars Double'
+icon.mars-stroke: 'Mars Stroke'
+icon.mars-stroke-h: 'Mars Stroke H'
+icon.mars-stroke-v: 'Mars Stroke V'
+icon.mercury: Mercury
+icon.neuter: Neuter
+icon.transgender: Transgender
+icon.transgender-alt: 'Transgender Alt'
+icon.venus: Venus
+icon.venus-double: 'Venus Double'
+icon.venus-mars: 'Venus Mars'
+icon.file: File
+icon.file-o: 'File O'
+icon.file-text: 'File Text'
+icon.file-text-o: 'File Text O'
+icon.cc-amex: 'Cc Amex'
+icon.cc-discover: 'Cc Discover'
+icon.cc-mastercard: 'Cc Mastercard'
+icon.cc-paypal: 'Cc Paypal'
+icon.cc-stripe: 'Cc Stripe'
+icon.cc-visa: 'Cc Visa'
+icon.google-wallet: 'Google Wallet'
+icon.paypal: Paypal
+icon.bitcoin: Bitcoin
+icon.btc: Btc
+icon.cny: Cny
+icon.dollar: Dollar
+icon.eur: Eur
+icon.euro: Euro
+icon.gbp: Gbp
+icon.ils: Ils
+icon.inr: Inr
+icon.jpy: Jpy
+icon.krw: Krw
+icon.rmb: Rmb
+icon.rouble: Rouble
+icon.rub: Rub
+icon.ruble: Ruble
+icon.rupee: Rupee
+icon.shekel: Shekel
+icon.sheqel: Sheqel
+icon.try: Try
+icon.turkish-lira: 'Turkish Lira'
+icon.usd: Usd
+icon.won: Won
+icon.yen: Yen
+icon.align-center: 'Align Center'
+icon.align-justify: 'Align Justify'
+icon.align-left: 'Align Left'
+icon.align-right: 'Align Right'
+icon.bold: Bold
+icon.chain: Chain
+icon.chain-broken: 'Chain Broken'
+icon.clipboard: Clipboard
+icon.columns: Columns
+icon.copy: Copy
+icon.cut: Cut
+icon.dedent: Dedent
+icon.files-o: 'Files O'
+icon.floppy-o: 'Floppy O'
+icon.font: Font
+icon.header: Header
+icon.indent: Indent
+icon.italic: Italic
+icon.link: Link
+icon.list: List
+icon.list-alt: 'List Alt'
+icon.list-ol: 'List Ol'
+icon.list-ul: 'List Ul'
+icon.outdent: Outdent
+icon.paperclip: Paperclip
+icon.paragraph: Paragraph
+icon.paste: Paste
+icon.repeat: Repeat
+icon.rotate-left: 'Rotate Left'
+icon.rotate-right: 'Rotate Right'
+icon.save: Save
+icon.scissors: Scissors
+icon.strikethrough: Strikethrough
+icon.subscript: Subscript
+icon.superscript: Superscript
+icon.table: Table
+icon.text-height: 'Text Height'
+icon.text-width: 'Text Width'
+icon.th: Th
+icon.th-large: 'Th Large'
+icon.th-list: 'Th List'
+icon.underline: Underline
+icon.undo: Undo
+icon.unlink: Unlink
+icon.angle-double-down: 'Angle Double Down'
+icon.angle-double-left: 'Angle Double Left'
+icon.angle-double-right: 'Angle Double Right'
+icon.angle-double-up: 'Angle Double Up'
+icon.angle-down: 'Angle Down'
+icon.angle-left: 'Angle Left'
+icon.angle-right: 'Angle Right'
+icon.angle-up: 'Angle Up'
+icon.arrow-circle-down: 'Arrow Circle Down'
+icon.arrow-circle-left: 'Arrow Circle Left'
+icon.arrow-circle-o-down: 'Arrow Circle O Down'
+icon.arrow-circle-o-left: 'Arrow Circle O Left'
+icon.arrow-circle-o-right: 'Arrow Circle O Right'
+icon.arrow-circle-o-up: 'Arrow Circle O Up'
+icon.arrow-circle-right: 'Arrow Circle Right'
+icon.arrow-circle-up: 'Arrow Circle Up'
+icon.arrow-down: 'Arrow Down'
+icon.arrow-left: 'Arrow Left'
+icon.arrow-right: 'Arrow Right'
+icon.arrow-up: 'Arrow Up'
+icon.arrows-alt: 'Arrows Alt'
+icon.caret-down: 'Caret Down'
+icon.caret-left: 'Caret Left'
+icon.caret-right: 'Caret Right'
+icon.caret-up: 'Caret Up'
+icon.chevron-circle-down: 'Chevron Circle Down'
+icon.chevron-circle-left: 'Chevron Circle Left'
+icon.chevron-circle-right: 'Chevron Circle Right'
+icon.chevron-circle-up: 'Chevron Circle Up'
+icon.chevron-down: 'Chevron Down'
+icon.chevron-left: 'Chevron Left'
+icon.chevron-right: 'Chevron Right'
+icon.chevron-up: 'Chevron Up'
+icon.long-arrow-down: 'Long Arrow Down'
+icon.long-arrow-left: 'Long Arrow Left'
+icon.long-arrow-right: 'Long Arrow Right'
+icon.long-arrow-up: 'Long Arrow Up'
+icon.backward: Backward
+icon.compress: Compress
+icon.eject: Eject
+icon.expand: Expand
+icon.fast-backward: 'Fast Backward'
+icon.fast-forward: 'Fast Forward'
+icon.forward: Forward
+icon.pause: Pause
+icon.play: Play
+icon.play-circle: 'Play Circle'
+icon.play-circle-o: 'Play Circle O'
+icon.step-backward: 'Step Backward'
+icon.step-forward: 'Step Forward'
+icon.stop: Stop
+icon.youtube-play: 'Youtube Play'
+icon.adn: Adn
+icon.android: Android
+icon.angellist: Angellist
+icon.apple: Apple
+icon.behance: Behance
+icon.behance-square: 'Behance Square'
+icon.bitbucket: Bitbucket
+icon.bitbucket-square: 'Bitbucket Square'
+icon.buysellads: Buysellads
+icon.codepen: Codepen
+icon.connectdevelop: Connectdevelop
+icon.css3: Css3
+icon.dashcube: Dashcube
+icon.delicious: Delicious
+icon.deviantart: Deviantart
+icon.digg: Digg
+icon.dribbble: Dribbble
+icon.dropbox: Dropbox
+icon.drupal: Drupal
+icon.empire: Empire
+icon.facebook: Facebook
+icon.facebook-f: 'Facebook F'
+icon.facebook-official: 'Facebook Official'
+icon.facebook-square: 'Facebook Square'
+icon.flickr: Flickr
+icon.forumbee: Forumbee
+icon.foursquare: Foursquare
+icon.ge: Ge
+icon.git: Git
+icon.git-square: 'Git Square'
+icon.github: Github
+icon.github-alt: 'Github Alt'
+icon.github-square: 'Github Square'
+icon.gittip: Gittip
+icon.google: Google
+icon.google-plus: 'Google Plus'
+icon.google-plus-square: 'Google Plus Square'
+icon.gratipay: Gratipay
+icon.hacker-news: 'Hacker News'
+icon.html5: Html5
+icon.instagram: Instagram
+icon.ioxhost: Ioxhost
+icon.joomla: Joomla
+icon.jsfiddle: Jsfiddle
+icon.lastfm: Lastfm
+icon.lastfm-square: 'Lastfm Square'
+icon.leanpub: Leanpub
+icon.linkedin: Linkedin
+icon.linkedin-square: 'Linkedin Square'
+icon.linux: Linux
+icon.maxcdn: Maxcdn
+icon.meanpath: Meanpath
+icon.medium: Medium
+icon.openid: Openid
+icon.pagelines: Pagelines
+icon.pied-piper: 'Pied Piper'
+icon.pied-piper-alt: 'Pied Piper Alt'
+icon.pinterest: Pinterest
+icon.pinterest-p: 'Pinterest P'
+icon.pinterest-square: 'Pinterest Square'
+icon.qq: Qq
+icon.ra: Ra
+icon.rebel: Rebel
+icon.reddit: Reddit
+icon.reddit-square: 'Reddit Square'
+icon.renren: Renren
+icon.sellsy: Sellsy
+icon.shirtsinbulk: Shirtsinbulk
+icon.simplybuilt: Simplybuilt
+icon.skyatlas: Skyatlas
+icon.skype: Skype
+icon.slack: Slack
+icon.slideshare: Slideshare
+icon.soundcloud: Soundcloud
+icon.spotify: Spotify
+icon.stack-exchange: 'Stack Exchange'
+icon.stack-overflow: 'Stack Overflow'
+icon.steam: Steam
+icon.steam-square: 'Steam Square'
+icon.stumbleupon: Stumbleupon
+icon.stumbleupon-circle: 'Stumbleupon Circle'
+icon.tencent-weibo: 'Tencent Weibo'
+icon.trello: Trello
+icon.tumblr: Tumblr
+icon.tumblr-square: 'Tumblr Square'
+icon.twitch: Twitch
+icon.twitter: Twitter
+icon.twitter-square: 'Twitter Square'
+icon.viacoin: Viacoin
+icon.vimeo-square: 'Vimeo Square'
+icon.vine: Vine
+icon.vk: Vk
+icon.wechat: Wechat
+icon.weibo: Weibo
+icon.weixin: Weixin
+icon.whatsapp: Whatsapp
+icon.windows: Windows
+icon.wordpress: Wordpress
+icon.xing: Xing
+icon.xing-square: 'Xing Square'
+icon.y-combinator-square: 'Y Combinator Square'
+icon.yahoo: Yahoo
+icon.yc-square: 'Yc Square'
+icon.yelp: Yelp
+icon.youtube: Youtube
+icon.youtube-square: 'Youtube Square'
+icon.h-square: 'H Square'
+icon.hospital-o: 'Hospital O'
+icon.medkit: Medkit
+icon.stethoscope: Stethoscope
+icon.user-md: 'User Md'
+icon.euro-glyphicon: 'Euro (glyphicon)'
+icon.star-empty: 'Star Empty'
+icon.ok: Ok
+icon.zoom-in: 'Zoom In'
+icon.zoom-out: 'Zoom Out'
+icon.off: 'Off'
+icon.time: Time
+icon.download-alt: 'Download Alt'
+icon.indent-left: 'Indent Left'
+icon.indent-right: 'Indent Right'
+icon.facetime-video: 'Facetime Video'
+icon.picture: Picture
+icon.edit-glyphicon: 'Edit (glyphicon)'
+icon.move: Move
+icon.plus-sign: 'Plus Sign'
+icon.minus-sign: 'Minus Sign'
+icon.remove-sign: 'Remove Sign'
+icon.ok-sign: 'Ok Sign'
+icon.question-sign: 'Question Sign'
+icon.info-sign: 'Info Sign'
+icon.screenshot: Screenshot
+icon.remove-circle: 'Remove Circle'
+icon.ok-circle: 'Ok Circle'
+icon.ban-circle: 'Ban Circle'
+icon.resize-full: 'Resize Full'
+icon.resize-small: 'Resize Small'
+icon.exclamation-sign: 'Exclamation Sign'
+icon.eye-open: 'Eye Open'
+icon.eye-close: 'Eye Close'
+icon.warning-sign: 'Warning Sign'
+icon.folder-close: 'Folder Close'
+icon.resize-vertical: 'Resize Vertical'
+icon.resize-horizontal: 'Resize Horizontal'
+icon.hdd: Hdd
+icon.hand-right: 'Hand Right'
+icon.hand-left: 'Hand Left'
+icon.hand-up: 'Hand Up'
+icon.hand-down: 'Hand Down'
+icon.circle-arrow-right: 'Circle Arrow Right'
+icon.circle-arrow-left: 'Circle Arrow Left'
+icon.circle-arrow-up: 'Circle Arrow Up'
+icon.circle-arrow-down: 'Circle Arrow Down'
+icon.fullscreen: Fullscreen
+icon.heart-empty: 'Heart Empty'
+icon.pushpin: Pushpin
+icon.sort-by-alphabet: 'Sort By Alphabet'
+icon.sort-by-alphabet-alt: 'Sort By Alphabet Alt'
+icon.sort-by-order: 'Sort By Order'
+icon.sort-by-order-alt: 'Sort By Order Alt'
+icon.sort-by-attributes: 'Sort By Attributes'
+icon.sort-by-attributes-alt: 'Sort By Attributes Alt'
+icon.unchecked: Unchecked
+icon.collapse-down: 'Collapse Down'
+icon.collapse-up: 'Collapse Up'
+icon.log-in: 'Log In'
+icon.flash: Flash
+icon.log-out: 'Log Out'
+icon.new-window: 'New Window'
+icon.record: Record
+icon.save-glyphicon: Save
+icon.open: Open
+icon.saved: Saved
+icon.import: Import
+icon.export: Export
+icon.send-glyphicon: Send
+icon.floppy-disk: 'Floppy Disk'
+icon.floppy-saved: 'Floppy Saved'
+icon.floppy-remove: 'Floppy Remove'
+icon.floppy-save: 'Floppy Save'
+icon.floppy-open: 'Floppy Open'
+icon.transfer: Transfer
+icon.compressed: Compressed
+icon.earphone: Earphone
+icon.phone-alt: 'Phone Alt'
+icon.tower: Tower
+icon.stats: Stats
+icon.sd-video: 'Sd Video'
+icon.hd-video: 'Hd Video'
+icon.subtitles: Subtitles
+icon.sound-stereo: 'Sound Stereo'
+icon.sound-dolby: 'Sound Dolby'
+icon.sound-5-1: 'Sound 5 1'
+icon.sound-6-1: 'Sound 6 1'
+icon.sound-7-1: 'Sound 7 1'
+icon.copyright-mark: 'Copyright Mark'
+icon.registration-mark: 'Registration Mark'
+icon.tree-conifer: 'Tree Conifer'
+icon.tree-deciduous: 'Tree Deciduous'
+icon.cd: Cd
+icon.save-file: 'Save File'
+icon.open-file: 'Open File'
+icon.copy-glyphicon: Copy
+icon.paste-glyphicon: Paste
+icon.alert: Alert
+icon.equalizer: Equalizer
+icon.king: King
+icon.queen: Queen
+icon.pawn: Pawn
+icon.bishop: Bishop
+icon.knight: Knight
+icon.baby-formula: 'Baby Formula'
+icon.tent: Tent
+icon.blackboard: Blackboard
+icon.erase: Erase
+icon.lamp: Lamp
+icon.duplicate: Duplicate
+icon.piggy-bank: 'Piggy Bank'
+icon.xbt: Xbt
+icon.ruble-glyphicon: Ruble
+icon.scale: Scale
+icon.ice-lolly: 'Ice Lolly'
+icon.ice-lolly-tasted: 'Ice Lolly Tasted'
+icon.education: Education
+icon.option-horizontal: 'Option Horizontal'
+icon.option-vertical: 'Option Vertical'
+icon.menu-hamburger: 'Menu Hamburger'
+icon.modal-window: 'Modal Window'
+icon.oil: Oil
+icon.grain: Grain
+icon.sunglasses: Sunglasses
+icon.text-size: 'Text Size'
+icon.text-color: 'Text Color'
+icon.text-background: 'Text Background'
+icon.object-align-top: 'Object Align Top'
+icon.object-align-bottom: 'Object Align Bottom'
+icon.object-align-horizontal: 'Object Align Horizontal'
+icon.object-align-left: 'Object Align Left'
+icon.object-align-vertical: 'Object Align Vertical'
+icon.object-align-right: 'Object Align Right'
+icon.triangle-right: 'Triangle Right'
+icon.triangle-left: 'Triangle Left'
+icon.triangle-bottom: 'Triangle Bottom'
+icon.triangle-top: 'Triangle Top'
+icon.console: Console
+icon.menu-left: 'Menu Left'
+icon.menu-right: 'Menu Right'
+icon.menu-down: 'Menu Down'
+icon.menu-up: 'Menu Up'
+file_disposition.disposition: 'File disposition'
+file_disposition.not-defined: 'Not defined'
+file_disposition.attachment: 'Attachment (force download)'
+file_disposition.inline: 'Inline (try to open in browser)'
+pdf_size.4a0: 4a0
+pdf_size.2a0: 2a0
+pdf_size.a0: A0
+pdf_size.a1: A1
+pdf_size.a2: A2
+pdf_size.a3: A3
+pdf_size.a4: A4
+pdf_size.a5: A5
+pdf_size.a6: A6
+pdf_size.a7: A7
+pdf_size.a8: A8
+pdf_size.a9: A9
+pdf_size.a10: A10
+pdf_size.b0: B0
+pdf_size.b1: B1
+pdf_size.b2: B2
+pdf_size.b3: B3
+pdf_size.b4: B4
+pdf_size.b5: B5
+pdf_size.b6: B6
+pdf_size.b7: B7
+pdf_size.b8: B8
+pdf_size.b9: B9
+pdf_size.b10: B10
+pdf_size.c0: C0
+pdf_size.c1: C1
+pdf_size.c2: C2
+pdf_size.c3: C3
+pdf_size.c4: C4
+pdf_size.c5: C5
+pdf_size.c6: C6
+pdf_size.c7: C7
+pdf_size.c8: C8
+pdf_size.c9: C9
+pdf_size.c10: C10
+pdf_size.ra0: ra0
+pdf_size.ra1: ra1
+pdf_size.ra2: ra2
+pdf_size.ra3: ra3
+pdf_size.ra4: ra4
+pdf_size.sra0: sra0
+pdf_size.sra1: sra1
+pdf_size.sra2: sra2
+pdf_size.sra3: sra3
+pdf_size.sra4: sra4
+pdf_size.letter: Letter
+pdf_size.half-letter: 'Half Letter'
+pdf_size.legal: Legal
+pdf_size.ledger: Ledger
+pdf_size.tabloid: Tabloid
+pdf_size.executive: Executive
+pdf_size.folio: Folio
+pdf_size.commercial-10-envelope: 'Commercial #10 envelope'
+pdf_size.catalog-10-12-envelope: 'Catalog #10 1/2 envelope'
+pdf_size.8.5x11: 8.5x11
+pdf_size.8.5x14: 8.5x14
+pdf_size.11x17: 11x17
+pdf_size.pdf_size: 'PDF Size'
+orientation.pdf_orientation: 'PDF Orientation'
+orientation.orientation: Orientation
+orientation.portrait: Portrait
+orientation.landscape: Landscape
+ems.view.data_link: 'Custom data link'
+ems.view.report: 'Report view'
+ems.view.hierarchical: 'Hierarchical view'
+ems.view.sorter: 'Sorter view'
+schedule.name: Name
+schedule.cron: Cron
+schedule.command: Command
+schedule.create: Create
+schedule.save: Save
+schedule.saveAndClose: 'Save and Close'
+user.locale: 'Language UI'
+user.locale_preferred: 'Language preferred'
+user.display_name: 'Display name'
+user.email: 'Email'
+user.email_notification: 'Email notification'
+user.current_password: 'Current password'
+user.password: Password
+user.password_confirmation: 'Repeat password'
+user.password.mismatch: 'The entered passwords don''t match.'
+user.new_password: 'New password'
+user.new_password_confirmation: 'Repeat new password'
+user.layout_boxed: 'Layout boxed'
+user.sidebar_mini: 'Sidebar mini'
+user.sidebar_collapse: 'Sidebar collapse'
+user.wysiwyg_profile: 'WYSIWYG profile'
+user.wysiwyg_options: 'WYSIWYG Options'

@@ -1,0 +1,4 @@
+{% extends '@EMSCore/action/form.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block title %}{{ 'view.action.edit.title'|trans({'%action%': action.label, '%contentType%': action.contentType.singularName }) }}{% endblock %}

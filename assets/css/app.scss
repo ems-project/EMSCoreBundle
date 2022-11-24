@@ -1,0 +1,38 @@
+$node-modules-path: "../../node_modules/";
+$fa-font-path: $node-modules-path + "font-awesome/fonts/";
+$ionicons-font-path: $node-modules-path + "ionicons/dist/fonts/";
+
+@import "ems-variables";
+
+// Import custom Bootstrap variables
+@import "bootstrap-variables";
+
+// Import Bootstrap for Sass
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+
+@import "jquery_ui";
+@import "ckeditor";
+@import "bootstrap_fix";
+@import "~admin-lte/plugins/timepicker/bootstrap-timepicker.css";
+@import "~fullcalendar/dist/fullcalendar.css";
+@import "~select2/src/scss/core";
+////@import "AdminLTE"; >> see less
+@import "~icheck/skins/all.css";
+@import "~datatables.net-bs/css/dataTables.bootstrap.css";
+//
+@import "~bootstrap-fileinput/scss/fileinput";
+@import "~daterangepicker/daterangepicker.css";
+@import "~eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css";
+@import "~font-awesome/scss/font-awesome";
+@import "~ionicons/dist/scss/ionicons";
+@import "~bootstrap-select/sass/bootstrap-select";
+@import "~bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css";
+@import "~bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone.css";
+
+@import "ems";
+@import "./modules/tasks";
+@import "./modules/spacer";
+@import "./modules/flags";
+@import "./modules/json_menu";
+@import "./fontello/ems.css";
+@import "./fontello/animation.css";

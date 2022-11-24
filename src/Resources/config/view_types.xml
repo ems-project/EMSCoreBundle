@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults public="true"/>
+
+        <service id="EMS\CoreBundle\Core\ContentType\ViewTypes" alias="ems.content_type.view_types" />
+        <service id="ems.content_type.view_types" class="EMS\CoreBundle\Core\ContentType\ViewTypes">
+            <argument type="tagged_iterator" tag="ems.form.viewtype" index-by="id"/>
+        </service>
+
+        <service id="ems.form.field.viewtypepickertype" class="EMS\CoreBundle\Form\Field\ViewTypePickerType">
+            <argument type="service" id="ems.content_type.view_types"/>
+            <tag name="form.type" />
+        </service>
+
+        <service id="ems.view.data_link" class="EMS\CoreBundle\Form\View\DataLinkViewType">
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="logger"/>
+            <tag name="ems.form.viewtype" alias="data_link" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="ems.view.keywords" class="EMS\CoreBundle\Form\View\KeywordsViewType">
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="logger"/>
+            <tag name="ems.form.viewtype" alias="keywords" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="ems.view.criteria" class="EMS\CoreBundle\Form\View\CriteriaViewType">
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="router"/>
+            <tag name="ems.form.viewtype" alias="criteria" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="ems.view.export" class="EMS\CoreBundle\Form\View\ExportViewType">
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems_common.pdf.printer.dom"/>
+            <tag name="ems.form.viewtype" alias="export" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="ems.view.sorter" class="EMS\CoreBundle\Form\View\SorterViewType">
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="ems.service.mapping"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="session"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="router"/>
+            <tag name="ems.form.viewtype" alias="sorter" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="ems.view.hierarchical" class="EMS\CoreBundle\Form\View\HierarchicalViewType">
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="ems.service.search"/>
+            <argument type="service" id="ems.service.mapping"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="session"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <tag name="ems.form.viewtype" alias="hierarchical" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="ems.view.report" class="EMS\CoreBundle\Form\View\ReportViewType">
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="logger"/>
+            <tag name="ems.form.viewtype" alias="report" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="ems.view.calendar" class="EMS\CoreBundle\Form\View\CalendarViewType">
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="logger"/>
+            <tag name="ems.form.viewtype" alias="calendar" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="ems.view.gallery" class="EMS\CoreBundle\Form\View\GalleryViewType">
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.search"/>
+            <tag name="ems.form.viewtype" alias="gallery" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="ems.view.importer" class="EMS\CoreBundle\Form\View\ImporterViewType">
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.file"/>
+            <argument type="service" id="ems.service.job"/>
+            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="router"/>
+            <tag name="ems.form.viewtype" alias="importer" />
+            <tag name="form.type" />
+        </service>
+    </services>
+</container>

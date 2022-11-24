@@ -1,0 +1,70 @@
+{%- trans_default_domain 'emsco-twigs' -%}
+{% extends '@EMSCore/layout.html.twig' %}
+
+{% block title %}{{ 'view.profile.show.action.profile.title'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'view.profile.show.action.profile.title'|trans }}{% endblock %}
+{% block subtitle %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-5 col-md-offset-4">
+            <div class="box box-primary">
+                <div class="box-body box-profile">
+                    <a href="https://www.gravatar.com/emails" target="_blank">
+                        <img class="profile-user-img img-responsive img-circle" src="https://www.gravatar.com/avatar/{{ app.user.email|lower|md5 }}?d={{ "https://www.gravatar.com/avatar"|url_encode }}" alt="{{ 'view.profile.show.alt.user_profile_picture'|trans }}">
+                    </a>
+                    <h3 class="profile-username text-center">{{ user.displayName }}</h3>
+                    <p class="text-muted text-center">{{ user.username }}</p>
+                    <ul class="list-group list-group-unbordered">
+                        <li class="list-group-item">
+                            <b>{{ 'view.profile.show.login'|trans }}</b> <i class="pull-right">{{ user.username }}</i>
+                        </li>
+                        <li class="list-group-item">
+                            <b>{{ 'view.profile.show.display_name'|trans }}</b> <i class="pull-right">{{ user.displayName }}</i>
+                        </li>
+                        <li class="list-group-item">
+                            <b>{{ 'view.profile.show.email'|trans }}</b> <i class="pull-right">{{ user.email }}</i>
+                        </li>
+                        <li class="list-group-item">
+                            <b>{{ 'view.profile.show.email_notification'|trans }}</b> <i class="pull-right fa fa-2x fa-{% if user.emailNotification %}check-{% endif %}square-o"></i>
+                        </li>
+                        <li class="list-group-item">
+                            <b>{{ 'user.option.simplified_ui'|trans({}, 'emsco-user') }}</b> <i class="pull-right fa fa-2x fa-{% if attribute(user.userOptions, 'simplified_ui') %}check-{% endif %}square-o"></i>
+                        </li>
+                        <li class="list-group-item">
+                            <b>{{ 'view.profile.show.locale'|trans }}</b> <i class="pull-right">{{ user.locale }}</i>
+                        </li>
+                        <li class="list-group-item">
+                            <b>{{ 'view.profile.show.locale_preferred'|trans }}</b> <i class="pull-right">{{ user.localePreferred }}</i>
+                        </li>
+                        {% if circles_object and circles_object|get_content_type %}
+                            <li class="list-group-item">
+                                <b>{{ circles_object|get_content_type.pluralName }} : </b>
+                                <i class="">
+                                    {% for circle in user.circles  -%}
+                                        <span class="badge text-nowrap">{{- circle|data_label|raw -}}</span>&nbsp;
+                                    {%- endfor %}
+                                </i>
+                            </li>
+                        {% endif %}
+                        <li class="list-group-item">
+                            <b>Roles : </b>
+                            <i class="">
+                                {% for role in user.roles  -%}
+                                    <span class="badge text-nowrap">{{- role|trans({}, 'EMSCoreBundle') -}}</span>&nbsp;
+                                {%- endfor %}
+                            </i>
+                        </li>
+                        <li class="list-group-item">
+                            <b>{{ 'view.profile.show.wysiwyg'|trans }}</b> <i class="pull-right">{% if user.wysiwygProfile %}{{ user.wysiwygProfile.name }}{% endif %}</i>
+                        </li>
+                    </ul>
+                    <div class="btn-group">
+                        <a href="{{ path(routes.USER_PROFILE_EDIT) }}" class="btn btn-primary"><i class="fa fa-pencil"></i> <b>{{ 'view.profile.show.action.edit'|trans }}</b></a>
+                        <a href="{{ path(routes.USER_CHANGE_PASSWORD) }}" class="btn btn-primary"><i class="fa fa-lock"></i> <b>{{ 'user.change_password.title'|trans({}, 'emsco-user') }}</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

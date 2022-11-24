@@ -1,0 +1,23 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'channel.index.title'|trans }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><i class="{{ 'view.icon.class.channel'|trans }}"></i> {{ 'channel.menu'|trans }}</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+	{%  set toolbar %}
+		<a class="btn btn-primary" href="{{ path('ems_core_channel_add') }}"><i class="fa fa-plus"></i> {{ add_label|default(form.vars.add_label)|trans }}</a>
+	{%  endset %}
+
+	{% form_theme form '@EMSCore/form/forms.html.twig' %}
+	{{ form(form, {
+		reorder_label: 'channel.index.reorder',
+		toolbar: toolbar
+	}) }}
+{% endblock %}

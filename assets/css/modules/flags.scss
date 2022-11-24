@@ -1,0 +1,22 @@
+@mixin size($px) { width: ($px) + px; height: ($px  * 0.75) + px; display: inline-block; }
+@mixin image($locale) { background-image: url('../images/locales/' + $locale + '.svg'); }
+
+.ems-flag-xs-nl { @include image('nl'); @include size(15); }
+.ems-flag-xs-fr { @include image('fr'); @include size(15); }
+.ems-flag-xs-de { @include image('de'); @include size(15); }
+.ems-flag-xs-en { @include image('en'); @include size(15); }
+
+.ems-flag-sm-nl { @include image('nl'); @include size(25); }
+.ems-flag-sm-fr { @include image('fr'); @include size(25); }
+.ems-flag-sm-de { @include image('de'); @include size(25); }
+.ems-flag-sm-en { @include image('en'); @include size(25); }
+
+.ems-flag-md-nl { @include image('nl'); @include size(50); }
+.ems-flag-md-fr { @include image('fr'); @include size(50); }
+.ems-flag-md-de { @include image('de'); @include size(50); }
+.ems-flag-md-en { @include image('en'); @include size(50); }
+
+.ems-flag-lg-nl { @include image('nl'); @include size(100); }
+.ems-flag-lg-fr { @include image('fr'); @include size(100); }
+.ems-flag-lg-de { @include image('de'); @include size(100); }
+.ems-flag-lg-en { @include image('en'); @include size(100); }

@@ -1,0 +1,86 @@
+{% trans_default_domain 'EMSCoreBundle' %}{% if rejectedNotifications|length <= 0  %}
+	<p>{{ 'No result for this filters combinaison'|trans }}: <a href="{{ path('notifications.inbox') }}">{{ 'reset filters' }}</a></p>
+{% else %}
+	<div class="table-responsive">
+		<table class="table table-condensed table-striped">
+			<tbody>
+				<tr>
+					<th class="" style="">
+	                  	Notification
+					</th>
+					<th>Rejected by</th>
+					<th>On</th>
+					<th>Environment</th>
+					<th>Message</th>
+					<th>Revision</th>
+					<th>Actions</th>
+				</tr>
+			</tbody>
+			{% for notification in rejectedNotifications %}
+				<tr>
+					<td class="" nowrap="nowrap">
+						<i class="{{notification.template.icon}}"></i> {{ notification.template.label }}
+						
+					</td>
+					<td>{{ notification.responseBy }}</td>
+					<td>{{ notification.responseTimestamp|date|date(date_time_format) }}</td>
+					<td>
+						<span class="badge bg-{{ notification.environment.color|raw }}">{{ notification.environment.name }}</span>
+					</td>
+					<td>
+					{% if notification.responseText|length > 0 %}
+						
+						<!-- Button trigger modal -->
+						<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#showRejectedMessageModal_{{ loop.index }}">
+							<i class="fa fa-commenting-o"></i>
+						</button>
+						
+						<!-- Modal -->
+						<div class="modal fade" id="showRejectedMessageModal_{{ loop.index }}" tabindex="-1" role="dialog" aria-labelledby="showRejectedMessageModal_{{ loop.index }}_Label">
+						  <div class="modal-dialog" role="document">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						        <h4 class="modal-title" id="showRejectedMessageModal_{{ loop.index }}_Label">Rejected message</h4>
+						      </div>
+						      <div class="modal-body">
+						      	{{ notification.responseText|raw }}
+						      </div>
+						      <div class="modal-footer">
+						        <button type="button" class="btn btn-default" data-dismiss="modal">
+						        	<i class="fa fa-close"></i>
+						        	Close
+					        	</button>
+						      </div>
+						    </div>
+						  </div>
+						</div>
+					{% endif %}
+					&nbsp;
+					</td>
+					<td>
+						{{ (notification.revision.contentType.name~':'~notification.revision.ouuid)|data_link(notification.revision.id)|raw }}
+	
+					<td>
+						<div class="btn-group">
+                            {% include '@EMSCore/elements/post-button.html.twig' with {
+								'url':  path('notification.acknowledge', {'notification': notification.id} ),
+								'label': 'Acknowledge',
+								'icon': 'check',
+								'message': 'Do you confirm?'
+							}%}
+
+                            {% include '@EMSCore/elements/object-views-button.html.twig' with {
+								'object':  notification.revision.buildObject,
+								'contentType': notification.revision.contentType,
+								'environment': notification.environment,
+								'ouuid': notification.revision,
+								'currentTemplate': notification.template
+							}%}
+	                    </div>
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endif %}

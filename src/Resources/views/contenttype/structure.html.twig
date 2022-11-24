@@ -1,0 +1,55 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}Edit "{{ contentType.singularName }}"  structure{% endblock %}
+{% block pagetitle %}Edit "{{ contentType.singularName }}" structure{% endblock %} 
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path("contenttype.index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
+		<li><a href="{{ path("contenttype.edit", {id: contentType.id}) }}"><i class="{{ contentType.icon }}"></i> Edit {{ contentType.singularName }}</a></li>
+   		<li class="active">Structure</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+
+	{{ form_start(form) }}
+	
+	<div class="row">
+		<div class="col-md-12">
+		
+			<div class="box ">
+				<div class="box-header with-border">
+					<i class="fa fa-sitemap"></i>
+					<h3 class="box-title">{{ contentType.singularName }}'s metas</h3>
+				</div>
+				<!-- /.box-header -->
+				<div class="box-body">
+
+				<div class="col-md-12">
+						{{ form_row(form.fieldType) }}
+				</div>
+
+
+										
+				</div>
+				<!-- /.box-body -->		
+				<div class="box-footer">
+					<div class="btn-group pull-right">
+						{{ form_widget(form.save) }}
+						{{ form_widget(form.saveAndClose) }}
+						{{ form_widget(form.saveAndReorder) }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{{ form_end(form) }}
+
+    {% include '@EMSCore/app/menu.html.twig' with {
+        'item':  'contenttype-list'
+    }%}
+
+
+{% endblock %}

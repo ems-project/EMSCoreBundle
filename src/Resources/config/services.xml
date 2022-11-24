@@ -1,0 +1,480 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <defaults public="false" />
+
+        <!-- event listeners -->
+        <service id="emsco.event_listener.access_denied_listener" class="EMS\CoreBundle\EventListener\AccessDeniedListener">
+            <argument type="service" id="router"/>
+            <tag name="kernel.event_subscriber" />
+        </service>
+        <service id="ems_core.event_listener.login_listener" class="EMS\CoreBundle\EventListener\LoginListener">
+            <argument type="service" id="emsco.manager.user" />
+            <tag name="kernel.event_subscriber" />
+        </service>
+        <service id="ems.event_listener.request_listener" class="EMS\CoreBundle\EventListener\RequestListener">
+            <argument type="service" id="ems.service.channel.register"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="router"/>
+            <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" />
+            <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" priority="110" />
+            <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" />
+        </service>
+        <service id="emsco.event_listener.migration" class="EMS\CoreBundle\EventListener\MigrationEventSubscriber">
+            <tag name="doctrine.event_subscriber" connection="default" />
+        </service>
+
+        <!-- core service -->
+        <service id="ems.dashboard.manager" class="EMS\CoreBundle\Core\Dashboard\DashboardManager">
+            <argument type="service" id="ems.repository.dashboard"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="security.authorization_checker"/>
+            <tag name="emsco.entity.service"/>
+        </service>
+        <service id="ems.service.channel" class="EMS\CoreBundle\Service\Channel\ChannelService">
+            <argument type="service" id="ems.repository.channel"/>
+            <argument type="service" id="logger"/>
+            <tag name="emsco.entity.service"/>
+        </service>
+        <service id="ems.service.channel.register" class="EMS\CoreBundle\Service\Channel\ChannelRegistrar">
+            <argument type="service" id="ems.repository.channel"/>
+            <argument type="service" id="EMS\ClientHelperBundle\Contracts\Environment\EnvironmentHelperInterface"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.index"/>
+            <argument>%ems_core.security.firewall.core%</argument>
+        </service>
+        <service id="ems.service.datatable" alias="EMS\CoreBundle\Service\DatatableService"/>
+        <service id="EMS\CoreBundle\Service\DatatableService">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems_common.storage.manager"/>
+            <argument type="service" id="ems.service.environment"/>
+        </service>
+        <service id="ems_core.core_document.data_links_factory" class="EMS\CoreBundle\Core\Document\DataLinksFactory">
+            <argument type="service" id="ems.service.search"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.content_type.view_types" />
+        </service>
+        <service id="ems_core.core_content_type_transformer.content_transformer" class="EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformer">
+            <argument type="service" id="ems_core.core_content_type_transformer.content_transformers"/>
+            <argument type="service" id="ems.service.data"/>
+        </service>
+        <service id="ems_core.core_content_type_transformer.content_transformers" class="EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformers"/>
+        <service id="ems_core.core_content_type_transformer.html_attribute_transformer" class="EMS\CoreBundle\Core\ContentType\Transformer\HtmlAttributeTransformer">
+            <tag name="ems_core.content_type.transformer"/>
+        </service>
+        <service id="ems_core.core_content_type_transformer.html_empty_transformer" class="EMS\CoreBundle\Core\ContentType\Transformer\HtmlEmptyTransformer">
+            <tag name="ems_core.content_type.transformer"/>
+        </service>
+        <service id="ems_core.core_content_type_transformer.html_remove_node_transformer" class="EMS\CoreBundle\Core\ContentType\Transformer\HtmlRemoveNodeTransformer">
+            <tag name="ems_core.content_type.transformer"/>
+        </service>
+
+        <service id="ems.service.query_search" alias="EMS\CoreBundle\Service\QuerySearchService"/>
+        <service id="EMS\CoreBundle\Service\QuerySearchService">
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.repository.query_search"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.environment" />
+            <tag name="emsco.entity.service"/>
+        </service>
+
+        <service id="ems.service.internationalization.xliff" alias="EMS\CoreBundle\Service\Internationalization\XliffService"/>
+        <service id="EMS\CoreBundle\Service\Internationalization\XliffService">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.revision"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+        </service>
+
+        <service id="ems_core.core_ui.ajax_service" class="EMS\CoreBundle\Core\UI\AjaxService">
+            <argument type="service" id="twig" />
+            <argument type="service" id="translator" />
+        </service>
+
+        <service id="ems_core.core_revision_search.revision_searcher" class="EMS\CoreBundle\Core\Revision\Search\RevisionSearcher">
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
+            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+            <argument>%ems_core.default_bulk_size%%</argument>
+        </service>
+
+        <service id="ems_core.core_revision_task.task_manager" class="EMS\CoreBundle\Core\Revision\Task\TaskManager">
+            <argument type="service" id="ems.repository.task" />
+            <argument type="service" id="ems_core.core_revision_task.task_table_service" />
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.user" />
+            <argument type="service" id="event_dispatcher" />
+            <argument type="service" id="logger" />
+        </service>
+        <service id="ems_core.core_revision_task.task_table_service" class="EMS\CoreBundle\Core\Revision\Task\Table\TaskTableService">
+            <argument type="service" id="ems.repository.task" />
+        </service>
+        <service id="ems_core.core_revision_task.task_subscriber" class="EMS\CoreBundle\Core\Revision\Task\TaskEventSubscriber">
+            <argument type="service" id="ems.repository.task"/>
+            <argument type="service" id="ems_core.core_mail.mailer_service"/>
+            <argument type="service" id="ems.service.user"/>
+            <argument>%ems_core.url_user%</argument>
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="ems_core.core_mail.mailer_service" class="EMS\CoreBundle\Core\Mail\MailerService">
+            <argument type="service" id="Symfony\Component\Mailer\MailerInterface"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="translator"/>
+            <argument>%ems_core.from_email%</argument>
+            <argument>%ems_core.name%</argument>
+        </service>
+
+        <service id="ems_core.core_data_table.table_renderer" class="EMS\CoreBundle\Core\DataTable\TableRenderer">
+            <argument type="service" id="twig"/>
+            <argument type="service" id="translator"/>
+            <argument type="service" id="ems_common.elasticsearch.elastica_logger" />
+        </service>
+        <service id="ems_core.core_data_table.table_exporter" class="EMS\CoreBundle\Core\DataTable\TableExporter">
+            <argument type="service" id="ems_core.core_data_table.table_renderer"/>
+            <argument type="service" id="EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface"/>
+        </service>
+        <service id="ems_core.service.uploaded-file" alias="EMS\CoreBundle\Service\DatatableService"/>
+        <service id="ems_core.core_revision.draft_in_progress" class="EMS\CoreBundle\Core\Revision\DraftInProgress">
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
+            <argument type="service" id="security.authorization_checker"/>
+            <argument type="service" id="ems.service.user"/>
+        </service>
+
+        <service id="ems_core.core_ui.flash_message_logger" class="EMS\CoreBundle\Core\UI\FlashMessageLogger">
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="translator" />
+        </service>
+
+        <service id="ems.view.manager" class="EMS\CoreBundle\Core\View\ViewManager">
+            <argument type="service" id="ems.repository.view"/>
+            <argument type="service" id="logger"/>
+        </service>
+        <service id="ems.schedule.manager" class="EMS\CoreBundle\Core\Job\ScheduleManager">
+            <argument type="service" id="ems.repository.schedule"/>
+            <argument type="service" id="logger"/>
+            <tag name="emsco.entity.service"/>
+        </service>
+        <service id="EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer">
+            <argument type="service" id="twig"/>
+            <argument type="service" id="security.authorization_checker"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
+            <argument type="service" id="ems.service.revision"/>
+            <tag name="twig.runtime"/>
+        </service>
+
+        <service id="ems.log.manager" class="EMS\CoreBundle\Core\Log\LogManager">
+            <argument type="service" id="ems.repository.log"/>
+            <argument type="service" id="logger"/>
+        </service>
+
+        <service id="emsco.helper.analyzer" class="EMS\CoreBundle\Core\Mapping\AnalyzerManager">
+            <argument type="service" id="ems.repository.analyzer"/>
+            <tag name="emsco.entity.service"/>
+        </service>
+        <service id="emsco.helper.filter" class="EMS\CoreBundle\Core\Mapping\FilterManager">
+            <argument type="service" id="ems.repository.filter"/>
+            <tag name="emsco.entity.service"/>
+        </service>
+        <service id="emsco.helper.entities" class="EMS\CoreBundle\Core\Entity\EntitiesHelper">
+            <argument type="tagged_iterator" tag="emsco.entity.service"/>
+        </service>
+
+        <service id="emsco.manager.user" class="EMS\CoreBundle\Core\User\UserManager">
+            <argument type="service" id="security.token_storage" />
+            <argument type="service" id="ems_core.core_mail.mailer_service" />
+            <argument type="service" id="ems.repository.user" />
+            <argument type="service" id="security.user_password_hasher" />
+        </service>
+
+        <service id="ems.service.mapping" class="EMS\CoreBundle\Service\Mapping">
+            <argument type="service" id="emsco.logger" />
+            <argument type="service" id="ems_common.elastica.client" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="ems.form.fieldtype.fieldtypetype" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument>%ems_core.instance_id%</argument>
+        </service>
+        <service id="EMS\CoreBundle\Service\DataService" class="EMS\CoreBundle\Service\DataService">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="security.token_storage" />
+            <argument>%ems_core.lock_time%</argument>
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="ems.service.mapping" />
+            <argument>%ems_core.instance_id%</argument>
+            <argument type="service" id="session" />
+            <argument type="service" id="form.factory" />
+            <argument type="service" id="service_container" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="event_dispatcher" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument>%ems_core.private_key%</argument>
+            <argument type="service" id="emsco.logger" />
+            <argument type="service" id="emsco.logger.audit" />
+            <argument type="service" id="ems_common.storage.manager" />
+            <argument type="service" id="twig" />
+            <argument type="service" id="app.twig_extension" />
+            <argument type="service" id="ems.service.user" />
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="ems.service.search" />
+            <argument type="service" id="ems.service.index" />
+            <argument>%ems_core.pre_generated_ouuids%</argument>
+            <argument type="service" id="ems.service.revision.post_processing" />
+            <tag name="kernel.event_listener" event="EMS\CoreBundle\Event\UpdateRevisionReferersEvent" method="updateReferers" priority="0"  />
+        </service>
+        <service id="ems.service.revision.post_processing" class="EMS\CoreBundle\Service\Revision\PostProcessingService">
+            <argument type="service" id="twig" />
+            <argument type="service" id="form.factory" />
+            <argument type="service" id="emsco.logger" />
+        </service>
+        <service id="ems.service.revision" class="EMS\CoreBundle\Service\Revision\RevisionService">
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="logger" />
+            <argument type="service" id="emsco.logger.audit" />
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
+            <argument type="service" id="ems.service.publish" />
+        </service>
+        <service id="ems.service.alias" class="EMS\CoreBundle\Service\AliasService">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems_common.elastica.client" />
+            <argument type="service" id="EMS\CoreBundle\Repository\EnvironmentRepository" />
+            <argument type="service" id="EMS\CoreBundle\Repository\ManagedAliasRepository" />
+            <argument type="service" id="ems_common.service.elastica" />
+        </service>
+        <service id="ems.service.index" class="EMS\CoreBundle\Service\IndexService">
+            <argument type="service" id="ems.service.alias" />
+            <argument type="service" id="ems_common.elastica.client" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="logger" />
+        </service>
+        <service id="ems.elasticsearch.bulker" class="EMS\CoreBundle\Elasticsearch\Bulker">
+            <argument type="service" id="ems_common.elastica.client" />
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.data" />
+        </service>
+        <service id="ems.elasticsearch.indexer" class="EMS\CoreBundle\Elasticsearch\Indexer">
+            <argument type="service" id="ems.service.index" />
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.mapping" />
+            <argument type="service" id="ems.service.alias" />
+        </service>
+        <service id="emsco.environment.publisher_factory" class="EMS\CoreBundle\Core\Environment\EnvironmentPublisherFactory">
+            <argument type="service" id="twig" />
+            <argument type="service" id="ems.service.search" />
+        </service>
+        <service id="EMS\CoreBundle\Service\EnvironmentService">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="ems.service.user" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument>%ems_core.instance_id%</argument>
+            <tag name="emsco.entity.service" />
+        </service>
+        <service id="EMS\CoreBundle\Service\ContentTypeService">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.mapping" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
+            <argument type="service" id="security.token_storage" />
+            <argument>%ems_core.circles_object%</argument>
+            <tag name="emsco.entity.service" />
+        </service>
+        <service id="ems.service.user" class="EMS\CoreBundle\Service\UserService">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="security.token_storage" />
+            <argument type="service" id="security.helper" />
+            <argument type="service" id="ems.repository.user" />
+            <argument type="service" id="ems.repository.search" />
+            <argument>%security.role_hierarchy.roles%</argument>
+        </service>
+        <service id="ems.service.wysiwyg_profile" class="EMS\CoreBundle\Service\WysiwygProfileService">
+            <argument type="service" id="ems.repository.wysiwyg_profile"/>
+            <argument type="service" id="logger"/>
+            <tag name="emsco.entity.service" />
+        </service>
+        <service id="ems.service.aggregate_option" class="EMS\CoreBundle\Service\AggregateOptionService">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="translator"/>
+        </service>
+        <service id="ems.service.sort_option" class="EMS\CoreBundle\Service\SortOptionService">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="translator"/>
+        </service>
+        <service id="ems.service.search_field_option" class="EMS\CoreBundle\Service\SearchFieldOptionService">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="translator"/>
+        </service>
+        <service id="ems.service.wysiwyg_styles_set" class="EMS\CoreBundle\Service\WysiwygStylesSetService">
+            <argument type="service" id="ems.repository.wysiwyg_style_set"/>
+            <argument type="service" id="logger"/>
+            <tag name="emsco.entity.service" />
+        </service>
+        <service id="ems.service.objectchoicecache" class="EMS\CoreBundle\Service\ObjectChoiceCacheService">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="security.authorization_checker"/>
+            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.query_search"/>
+        </service>
+        <service id="ems.service.publish" class="EMS\CoreBundle\Service\PublishService">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="security.authorization_checker"/>
+            <argument type="service" id="ems.service.index"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="emsco.environment.publisher_factory"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="ems.service.user"/>
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="emsco.logger"/>
+            <argument type="service" id="emsco.logger.audit"/>
+            <argument type="service" id="ems.elasticsearch.bulker"/>
+        </service>
+        <service id="ems.service.notification" class="EMS\CoreBundle\Service\NotificationService">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems.service.user"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="ems_core.core_mail.mailer_service"/>
+            <argument type="service" id="twig"/>
+            <tag name="kernel.event_listener" event="EMS\CoreBundle\Event\RevisionNewDraftEvent" method="newDraftEvent" priority="0" />
+            <tag name="kernel.event_listener" event="EMS\CoreBundle\Event\RevisionFinalizeDraftEvent" method="finalizeDraftEvent" priority="0" />
+            <tag name="kernel.event_listener" event="EMS\CoreBundle\Event\RevisionPublishEvent" method="publishEvent" priority="0" />
+            <tag name="kernel.event_listener" event="EMS\CoreBundle\Event\RevisionUnpublishEvent" method="unpublishEvent" priority="0" />
+        </service>
+        <service id="EMS\CoreBundle\Service\I18nService" class="EMS\CoreBundle\Service\I18nService">
+            <argument type="service" id="ems.repository.i18n"/>
+            <tag name="emsco.entity.service" />
+        </service>
+        <service id="ems.service.rest_client" class="EMS\CoreBundle\Service\RestClientService" />
+        <service id="ems.service.asset_extractor" class="EMS\CoreBundle\Service\AssetExtractorService">
+            <argument type="service" id="ems.service.rest_client"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems.service.file"/>
+            <argument>%ems_core.tika_server%</argument>
+            <argument>%kernel.project_dir%</argument>
+            <argument>%ems_core.tika_download_url%</argument>
+            <tag name="kernel.cache_warmer" />
+        </service>
+        <service id="ems.service.search" class="EMS\CoreBundle\Service\SearchService">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems.service.mapping"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems.service.contenttype"/>
+        </service>
+        <service id="ems.service.file" class="EMS\CoreBundle\Service\FileService">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems_common.storage.manager"/>
+            <argument type="service" id="ems_common.storage.processor"/>
+            <argument type="service" id="ems.repository.uploaded_asset_repository"/>
+        </service>
+        <service id="ems.service.helper" class="EMS\CoreBundle\Service\HelperService">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="request_stack"/>
+            <argument>%ems_core.paging_size%</argument>
+        </service>
+        <service id="ems.service.elasticsearch" class="EMS\CoreBundle\Service\ElasticsearchService">
+            <argument type="service" id="ems_common.service.elastica"/>
+        </service>
+        <service id="ems.service.template" class="EMS\CoreBundle\Service\TemplateService">
+            <argument type="service" id="twig"/>
+        </service>
+        <service id="EMS\CoreBundle\Service\JobService" class="EMS\CoreBundle\Service\JobService">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="kernel"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\JobRepository"/>
+            <argument type="service" id="security.token_storage"/>
+        </service>
+        <service id="ems.service.document" class="EMS\CoreBundle\Service\DocumentService">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="ems.elasticsearch.bulker"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
+        </service>
+        <service id="ems.service.action" class="EMS\CoreBundle\Service\ActionService">
+            <argument type="service" id="ems.repository.template"/>
+            <argument type="service" id="logger"/>
+        </service>
+        <service id="ems.service.release" class="EMS\CoreBundle\Service\ReleaseService">
+            <argument type="service" id="ems.repository.release"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="ems.service.release_revision"/>
+            <argument type="service" id="ems.service.publish"/>
+            <argument type="service" id="logger"/>
+        </service>
+        <service id="ems.service.release_revision" class="EMS\CoreBundle\Service\ReleaseRevisionService">
+            <argument type="service" id="ems.repository.release_revision"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.user"/>
+            <tag name="kernel.event_listener" event="EMS\CoreBundle\Event\RevisionFinalizeDraftEvent" method="finalizeDraftEvent" priority="0" />
+        </service>
+        <service id="ems.form_submission" class="EMS\CoreBundle\Service\Form\Submission\FormSubmissionService">
+            <argument type="service" id="ems.repository.form_submission"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="session"/>
+            <argument type="service" id="translator"/>
+        </service>
+        <service id="ems.form_verification" class="EMS\CoreBundle\Service\Form\Verification\FormVerificationService">
+            <argument type="service" id="ems.repository.form_verification"/>
+        </service>
+
+        <!-- Aliases -->
+        <service id="ems.service.data" alias="EMS\CoreBundle\Service\DataService" public="true"/>
+        <service id="ems.service.environment" alias="EMS\CoreBundle\Service\EnvironmentService" />
+        <service id="ems.service.contenttype" alias="EMS\CoreBundle\Service\ContentTypeService" />
+        <service id="ems.service.i18n" alias="EMS\CoreBundle\Service\I18nService" />
+        <service id="ems.service.job" alias="EMS\CoreBundle\Service\JobService" />
+
+        <service id="EMS\CoreBundle\Service\AliasService" alias="ems.service.alias" />
+        <service id="EMS\CoreBundle\Service\IndexService" alias="ems.service.index" />
+        <service id="EMS\CoreBundle\Service\ActionService" alias="ems.service.action" />
+        <service id="EMS\CoreBundle\Service\ReleaseService" alias="ems.service.release" />
+        <service id="EMS\CoreBundle\Service\ReleaseRevisionService" alias="ems.service.release_revision" />
+        <service id="EMS\CoreBundle\Elasticsearch\Bulker" alias="ems.elasticsearch.bulker" />
+        <service id="EMS\CoreBundle\Elasticsearch\Indexer" alias="ems.elasticsearch.indexer" />
+        <service id="EMS\CoreBundle\Service\FileService" alias="ems.service.file" />
+        <service id="EMS\CoreBundle\Service\ElasticsearchService" alias="ems.service.elasticsearch" />
+        <service id="EMS\CoreBundle\Service\AssetExtractorService" alias="ems.service.asset_extractor" />
+        <service id="EMS\CoreBundle\Service\UserService" alias="ems.service.user" />
+        <service id="EMS\CommonBundle\Helper\Text\Encoder" alias="ems_common.text.encoder" />
+        <service id="EMS\CoreBundle\Service\SearchService" alias="ems.service.search" />
+        <service id="EMS\CoreBundle\Service\PublishService" alias="ems.service.publish" />
+        <service id="EMS\CoreBundle\Service\AggregateOptionService" alias="ems.service.aggregate_option" />
+        <service id="EMS\CoreBundle\Service\Mapping" alias="ems.service.mapping" />
+        <service id="EMS\CoreBundle\Service\SortOptionService" alias="ems.service.sort_option" />
+        <service id="EMS\CoreBundle\Service\WysiwygProfileService" alias="ems.service.wysiwyg_profile" />
+        <service id="EMS\CoreBundle\Service\SearchFieldOptionService" alias="ems.service.search_field_option" />
+        <service id="EMS\CoreBundle\Service\WysiwygStylesSetService" alias="ems.service.wysiwyg_styles_set" />
+        <service id="EMS\CoreBundle\Service\NotificationService" alias="ems.service.notification" />
+        <service id="EMS\CoreBundle\Service\HelperService" alias="ems.service.helper" />
+        <service id="EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory" alias="ems.form.factories.objectChoiceListFactory" />
+        <service id="EMS\CoreBundle\Core\Revision\Task\TaskManager" alias="ems_core.core_revision_task.task_manager" />
+    </services>
+</container>

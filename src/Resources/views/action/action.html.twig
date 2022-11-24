@@ -1,0 +1,24 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block folderTitle %}{{ 'view.action.index.title'|trans({'%contentType%': contentType.singularName}) }}{% endblock %}
+{% block title %}{{ block('folderTitle') }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+{% block subtitle %}{% endblock %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path("contenttype.index") }}"><i class="fa fa-cubes"></i> {{ 'view.menu.breadcrumb.content-types'|trans }}</a></li>
+        <li><a href="{{ path("contenttype.edit", {id: contentType.id}) }}"><i class="{{ contentType.icon|default('fa fa-square') }}"></i> {{ contentType.singularName }}</a></li>
+        {% if app.request.get('_route') != 'ems_core_action_index' %}
+            <li><a href="{{ path("ems_core_action_index", {contentType: contentType.id}) }}">{{ block('folderTitle') }}</a></li>
+        {% endif %}
+        <li class="active">{{ block('title') }}</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+    {% include '@EMSCore/app/menu.html.twig' with {
+        'item':  'contenttype-index'
+    }%}
+{% endblock %}

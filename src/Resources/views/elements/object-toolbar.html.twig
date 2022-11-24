@@ -1,0 +1,35 @@
+{% trans_default_domain 'emsco-twigs' -%}
+
+{%- set ouuid = object.ouuid|default(object._id is defined ? object._id : '') -%}
+{%- set source = object.source|default(object._source is defined ? object._source : []) -%}
+<div class="btn-toolbar" role="toolbar" style="margin: 0;">
+	<div class="btn-group">
+		{% if recursiveView is not defined %}
+			{% set recursiveView = false %}
+		{% endif %}
+        {% include '@EMSCore/elements/object-views-button.html.twig' with {
+			'ouuid':  ouuid,
+			'contentType': contentType,
+			'environment': environment,
+			'recursiveView': recursiveView
+		}%}
+		{% if environment.managed %}
+			{% set info = [contentType, ouuid]|join(':')|emsco_document_info %}
+			{% if info %}
+				{% include '@EMSCore/elements/get-button.html.twig' with {
+					'url':  path('emsco_view_revisions', {'type': contentType.name, 'ouuid': ouuid} ),
+					'label': info.draft ? 'views.elements.object-toolbar-html.view-draft-in-progress'|trans : 'views.elements.object-toolbar-html.view-current-revision'|trans,
+					'icon': 'archive'
+				}%}
+				{% if is_granted(contentType.roles.edit) %}
+					{% if not  contentType.circlesField or attribute(source, contentType.circlesField) is not defined or attribute(source, contentType.circlesField)|in_my_circles %}
+						{% include '@EMSCore/elements/post-button.html.twig' with {
+							'url': path('revision.new-draft', {'ouuid': ouuid, 'type': contentType.name}),
+							'label': info.draft ? 'views.elements.object-toolbar-html.edit-draft'|trans : 'views.elements.object-toolbar-html.new-draft'|trans,
+							'icon': 'pencil' }%}
+					{% endif %}
+				{% endif %}
+			{% endif %}
+		{% endif %}
+	</div>
+</div>

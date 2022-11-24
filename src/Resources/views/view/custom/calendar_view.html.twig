@@ -1,0 +1,52 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ view.name }} of {{contentType.name}}{% endblock %}
+{% block pagetitle %}{{ view.name }} of {{contentType.name}}{% endblock %}
+
+
+{% block body %}
+      
+      
+	<div class="row">
+    	<div class="col-md-12">
+            {% include "@EMSCore/elasticsearch/search-form-filter.html.twig" with {
+				form: form,
+			} %}
+		</div>
+	</div>
+	<!-- /.row -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box box-primary">
+            <div class="box-body no-padding">
+              <!-- THE CALENDAR -->
+              <div id="calendar"
+                data-search-calendar-url="{{ path('views.calendar.search', {view: view.id})|e('html_attr') }}"
+                data-calendar-first-day="{{ view.options.firstDay|default(0) }}"
+                data-calendar-slot-duration="{{ view.options.slotDuration|default('00:15:00') }}"
+                data-calendar-weekends="{{ view.options.weekends|default(false) }}"
+                data-calendar-locale="{{ view.options.locale|default('en') }}"
+                data-calendar-time-format="{{ view.options.timeFormat|default('H:mm') }}"
+                data-replan-calendar-url="{{ path('views.calendar.replan', {view: view.id})|e('html_attr') }}"></div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /. box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+
+    {% include '@EMSCore/app/menu.html.twig' with {
+        'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
+    }%}
+
+{% endblock %}
+
+{% block frontend_application_css %}
+    <link rel="stylesheet" href="{{ asset('calendar.css', 'emscore') }}">
+{% endblock %}
+
+{% block frontend_application_js %}
+    <script src="{{ asset('calendar.js', 'emscore') }}"></script>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'Filters'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'Filters'|trans }}{% endblock %} 
+{% block subtitle %}<small>{{ 'expert mode'|trans }}</small>{% endblock %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path('ems_analyzer_index') }}"><i class="fa fa-filter"></i> {{ 'Filters'|trans }}</a></li>
+		<li>{{ 'List filters'|trans }}</li>
+   	</ol>
+{% endblock %}
+
+
+{% block body %}
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-users"></i>
+				<h3 class="box-title">{{ 'Filters'|trans }}</h3>
+				<a class="btn btn-xs btn-primary pull-right" href="{{ path('ems_filter_add') }}">
+					<i class="fa fa-plus"></i> {{ 'Add a Filter'|trans }}
+				</a>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+    			{% if paging.lastPage > 1 %}
+    				<div class="box-header">
+                        {% include '@EMSCore/elements/pagination.html.twig' with {
+        					'paging': paging,
+        					'currentFilters': app.request.query,
+        					'paginationPath': paginationPath,
+        					'showAlwaysFirstAndLast': false
+        				} %}
+    				</div>
+    			{% endif %}
+
+				<div class="table-responsive">
+					<table class="table table-condensed table-striped dataTable">
+						<thead>
+							<tr role="row">
+								<th class="nowrap text-center" style="width: 10px">{{ '#'|trans }}</th>
+                                {% include '@EMSCore/elements/sortable-th.html.twig' with {
+                                 'title': 'Name'|trans,
+                                 'field': 'name',
+                                 'orderField': paging.orderField,
+                                 'orderDirection': paging.orderDirection,
+                                 'paginationPath': paging.paginationPath,
+                                } %}
+                                {% include '@EMSCore/elements/sortable-th.html.twig' with {
+                                 'title': 'Label'|trans,
+                                 'field': 'label',
+                                 'orderField': paging.orderField,
+                                 'orderDirection': paging.orderDirection,
+                                 'paginationPath': paging.paginationPath,
+                                } %}
+                                {# 								{% include '@EMSCore/elements/sortable-th.html.twig' with {#}
+{#                                  'title': 'Dirty'|trans,#}
+{#                                  'field': 'dirty',#}
+{#                                  'orderField': paging.orderField,#}
+{#                                  'orderDirection': paging.orderDirection,#}
+{#                                  'paginationPath': paging.paginationPath,#}
+{#                                 } %}#}
+								<th class="nowrap">{{ 'Action'|trans }}</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for filter in paging.data %}
+							<tr>
+								<td class="text-center" style="width: 10px">{{ loop.index }}</td>
+								<td>{{ filter.name }}</td>
+								<td>{{ filter.label }}</td>
+{# 								<td><i class="fa fa-{% if filter.dirty %}check-{% endif %}square-o"></i></td>#}
+								<td class="">
+									<div class="btn-group">
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
+											'url':  path('ems_filter_edit', {'filter': filter.id}),
+											'label': 'Edit',
+											'icon': 'pencil'
+										}%}
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
+											'url':  path('emsco_filter_export', {'filter': filter.id}),
+											'label': 'Export',
+											'icon': 'sign-out'
+										}%}
+                                        {% include '@EMSCore/elements/post-button.html.twig' with {
+											'url': path('ems_filter_delete', {'filter': filter.id}),
+											'message': 'Delete the filter ' ~ filter.name ~ ' ?',
+											'label': 'Delete',
+											'icon': 'trash'
+										}%}
+									</div>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

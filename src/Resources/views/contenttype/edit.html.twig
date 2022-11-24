@@ -1,0 +1,167 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}Edit "{{ contentType.singularName }}"  content type{% endblock %}
+{% block pagetitle %}Edit "{{ contentType.singularName }}" content type{% endblock %} 
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path("contenttype.index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
+        <li class="active">edit</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    {{ form_start(form) }}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                <div class="box-header with-border">
+                    <i class="fa fa-sitemap"></i>
+                    <h3 class="box-title">{{ contentType.singularName }}'s metas</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="col-md-4">
+                        {# 						{{ form_row(form.active) }}#}
+                        {{ form_row(form.rootContentType) }}
+                        {% if contentType.environment.managed %}
+                            {{ form_row(form.askForOuuid) }}
+                            {{ form_row(form.autoPublish) }}
+                        {% endif %}
+                        {{ form_row(form.webContent) }}
+                        {{ form_row(form.editTwigWithWysiwyg) }}
+                        {{ form_row(form.singularName) }}
+                        {{ form_row(form.pluralName) }}
+                        {{ form_row(form.icon) }}
+                        {{ form_row(form.color) }}
+
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Permission</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for elementRole in form.roles %}
+                                    <tr>
+                                        <td>{{ form_label(elementRole) }}</td>
+                                        <td>{{ form_widget(elementRole) }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        {% if form.fields is defined %}
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Field</th>
+                                        <th>Mapping</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for elementField in form.fields %}
+                                    <tr>
+                                        <td>{{ form_label(elementField) }}</td>
+                                        <td>{{ form_widget(elementField) }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+
+                        {% if form.sortOrder is defined %}
+                            {{ form_row(form.sortOrder) }}
+                        {% endif %}
+
+                        {{ form_row(form.refererFieldName) }}
+                    </div>
+
+                    <div class="col-md-8">
+                        {{ form_row(form.description) }}
+                        {{ form_row(form.indexTwig) }}
+                        {% if contentType.environment.managed %}
+                            {{ form_row(form.defaultValue) }}
+                        {% endif %}
+                        {{ form_row(form.extra) }}
+                    </div>
+
+
+                    {% if mapping %}
+                        <div class="col-md-8">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">
+                                        <i class="fa fa-sliders"></i> Mapping
+                                        <a class="toggle-button pull-right" role="button" data-toggle="collapse"
+                                           href="#mapping-info" aria-expanded="false" aria-controls="mapping-info"
+                                           data-toggle-contain="Hide <i class=&quot;fa fa-chevron-down&quot;></i>">
+                                            Show <i class="fa fa-chevron-right"></i>
+                                        </a>
+                                    </h3>
+                                </div>
+
+                                <div class="panel-body collapse" id="mapping-info">
+								<pre class="ems-code-editor" data-language="ace/mode/json"
+                                     data-them="ace/theme/chrome">{{ mapping|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="col-md-8">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <i class="fa fa-tags"></i> Versioning
+                                    <a class="toggle-button pull-right" role="button" data-toggle="collapse"
+                                       href="#versioning" aria-expanded="false" aria-controls="mapping-info"
+                                       data-toggle-contain="Hide <i class=&quot;fa fa-chevron-down&quot;></i>">
+                                        Show <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </h3>
+                            </div>
+                            {% if form.versionFields is defined %}
+                                <div class="panel-body collapse" id="versioning">
+                                    <div class="row">
+                                        {% for versionField in form.versionFields %}
+                                            <div class="col-md-4">{{ form_row(versionField) }}</div>
+                                        {% endfor %}
+                                        <div class="col-md-4">{{ form_row(form.versionTags) }}</div>
+                                        <div class="col-md-8">{{ form_row(form.versionOptions) }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="btn-group">
+                        {{ form_widget(form.save) }}
+                        {{ form_widget(form.saveAndUpdateMapping) }}
+                        {{ form_widget(form.saveAndClose) }}
+                        {% if contentType.environment.managed %}
+                            {{ form_widget(form.saveAndEditStructure) }}
+                            {{ form_widget(form.saveAndReorder) }}
+                        {% endif %}
+                        <a href="{{ path('emsco_contenttype_update_from_json', {contentType: contentType.id}) }}" class="btn btn-sm btn-primary">
+                            <i class="fa fa-refresh"></i>
+                            {{ 'contenttype.action.update_from_json'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+
+    {% include '@EMSCore/app/menu.html.twig' with {
+        'item':  'contenttype-list'
+    } %}
+
+{% endblock %}

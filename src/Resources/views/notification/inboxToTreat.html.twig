@@ -1,0 +1,112 @@
+{% trans_default_domain 'EMSCoreBundle' %}{{ form_start(treatform) }}
+
+		{% if notifications|length <= 0  %}
+			<p>{{ 'No result for this filters combinaison'|trans }}: <a href="{{ path('notifications.inbox') }}">{{ 'reset filters' }}</a></p>
+		{% else %}
+				
+		<div class="table-responsive">
+		<table class="table table-condensed table-striped">
+			<tbody>
+				<tr>
+					<th class="" style="">
+						<input type="checkbox" data-grouped-checkbox-target=".item-to-treat">
+	                  	&nbsp;{{ 'Notification'|trans }}
+					</th>
+					<th>{{ 'Created by'|trans }}</th>
+					<th>{{ 'Date'|trans }}</th>
+					<th>{{ 'Environment'|trans }}</th>
+					<th>{{ 'Warnings'|trans }}</th>
+					<th>{{ 'Revision'|trans }}</th>
+					<th>{{ 'Actions'|trans }}</th>
+				</tr>
+			</tbody>
+			{% for notification in notifications %}
+				<tr>
+					<td class="" nowrap="nowrap">
+						<label id="treat_notifications_notifications_{{ notification.id }}_label">
+							&nbsp;&nbsp;&nbsp;<input class="item-to-treat" type="checkbox" id="treat_notifications_notifications_{{ notification.id }}" name="treat_notifications[notifications][{{ notification.id }}]" label="treat_notifications_notifications_{{ notification.id }}_label" value="{{ notification.id }}">
+							&nbsp;&nbsp;&nbsp;<i class="{{notification.template.icon}}"></i> {{ notification.template.label }}
+						</label>
+					</td>
+					<td>{{ notification.username|displayname }}</td>
+					<td>{{ notification.created|date|date(date_time_format) }}</td>
+					<td>
+						<span class="badge bg-{{ notification.environment.color|raw }}">{{ notification.environment.name }}</span>
+					</td>
+					<td>
+					{% set found = false %}
+					{% for env in notification.revision.environments %}
+						{% if env == notification.environment %}
+							{% set found = true %}
+						{% endif %}
+					{% endfor %}
+					{% if not found and notification.counter > 1 %}
+						<i class="fa fa-warning  text-{{ notification.revision.contentType.color }}" title=" This revision is not published in {{ notification.name }} anymore and another notification exists"></i> This revision is not published in {{ notification.environment.name }} anymore and another notification exists
+					{% elseif not found %}
+						<i class="fa fa-warning  text-{{ notification.revision.contentType.color }}" title="This revision is not published in {{ notification.environment.name }} anymore"></i> This revision is not published in {{ notification.environment.name }} anymore
+					{% elseif notification.counter > 1 %}
+						<i class="fa fa-warning  text-{{ notification.revision.contentType.color }}" title="At least another notification exists for this object"></i> At least another notification exists for this object
+					{% else %}
+						<i class="fa fa-thumbs-up  text-{{ notification.revision.contentType.color }}"></i>
+					{% endif %}
+					&nbsp;
+					</td>
+					<td>
+						{{ (notification.revision.contentType.name~':'~notification.revision.ouuid)|data_link(notification.revision.id)|raw }}
+
+					<td>
+						<div class="btn-group">
+							<button onclick="javascript: $('.item-to-treat').iCheck('uncheck'); $('#treat_notifications_notifications_{{ notification.id }}').iCheck('check'); return false;" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#treatNotificationsModal">
+							  <i class="fa fa-gear"></i> Treat
+							</button>
+                            {% include '@EMSCore/elements/object-views-button.html.twig' with {
+								'object':  notification.revision.buildObject,
+								'contentType': notification.revision.contentType,
+								'environment': notification.environment,
+								'ouuid': notification.revision.ouuid,
+								'currentTemplate': notification.template
+							}%}
+	                    </div>
+	         
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+		</div>
+	<div class="">
+		<div class="btn-group">					
+			<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#treatNotificationsModal">
+			  <i class="fa fa-gear"></i> Treat selection
+			</button>
+		</div>
+		{% endif %}
+	</div>
+	
+
+
+	<!-- Modal -->
+	<div class="modal fade" id="treatNotificationsModal" tabindex="-1" role="dialog" aria-labelledby="treatNotificationsModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="treatNotificationsModalLabel">Treat selected notifications</h4>
+	      </div>
+	      <div class="modal-body">
+      		{{ form_row(treatform.response) }}
+{#       		{{ form_row(treatform.unpublishFrom) }}#}
+      		{{ form_row(treatform.publishTo) }}
+	      </div>
+	      <div class="modal-footer">
+	      
+			<div class="btn-group">
+              	{{ form_widget(treatform.accept) }}		
+              	{{ form_widget(treatform.reject) }}
+			</div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+		
+	{{ form_widget(treatform.notifications) }}
+{{ form_end(treatform) }}

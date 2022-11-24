@@ -1,0 +1,425 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <defaults public="false" />
+
+        <service id="ems.form.factories.objectChoiceListFactory" class="EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory">
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.objectchoicecache" />
+        </service>
+        <service id="ems.form.factories.contentTypeFieldChoiceListFactory" class="EMS\CoreBundle\Form\Factory\ContentTypeFieldChoiceListFactory" />
+
+        <!-- DataFields -->
+        <service id="ems_core.form_data_field_options.migration_options_type" class="EMS\CoreBundle\Form\DataField\Options\MigrationOptionsType">
+            <argument type="service" id="ems_core.core_content_type_transformer.content_transformers"/>
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.container" class="EMS\CoreBundle\Form\DataField\ContainerFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="container" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.collection" class="EMS\CoreBundle\Form\DataField\CollectionFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="logger" />
+            <tag name="ems.form.datafieldtype" alias="collection" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.colorpicker" class="EMS\CoreBundle\Form\DataField\ColorPickerFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="colorpicker" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.nested" class="EMS\CoreBundle\Form\DataField\NestedFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="nested" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.tabs" class="EMS\CoreBundle\Form\DataField\TabsFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="tabs" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.ouuid" class="EMS\CoreBundle\Form\DataField\OuuidFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="ouuid" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.computed" class="EMS\CoreBundle\Form\DataField\ComputedFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="computed" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.json" class="EMS\CoreBundle\Form\DataField\JSONFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="json" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.dataLink" class="EMS\CoreBundle\Form\DataField\DataLinkFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <argument type="service" id="event_dispatcher" />
+            <tag name="ems.form.datafieldtype" alias="datalink" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.textstring" class="EMS\CoreBundle\Form\DataField\TextStringFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="textstring" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.wysiwyg" class="EMS\CoreBundle\Form\DataField\WysiwygFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <argument type="service" id="router" />
+            <argument type="service" id="ems.service.wysiwyg_styles_set" />
+            <argument type="service" id="EMS\CommonBundle\Twig\AssetRuntime" />
+            <tag name="ems.form.datafieldtype" alias="wysiwyg" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.code" class="EMS\CoreBundle\Form\DataField\CodeFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="code" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.json_menu_editor" class="EMS\CoreBundle\Form\DataField\JsonMenuEditorFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="json_menu" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.json_menu_nested_editor" class="EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="json_menu_nested" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.textarea" class="EMS\CoreBundle\Form\DataField\TextareaFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="textarea" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.select" class="EMS\CoreBundle\Form\DataField\SelectFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="select" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.password" class="EMS\CoreBundle\Form\DataField\PasswordFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="password" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.email" class="EMS\CoreBundle\Form\DataField\EmailFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="email" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.icon" class="EMS\CoreBundle\Form\DataField\IconFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="icon" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.asset" class="EMS\CoreBundle\Form\DataField\AssetFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <argument type="service" id="ems.service.file"/>
+            <tag name="ems.form.datafieldtype" alias="asset" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.indexed_asset" class="EMS\CoreBundle\Form\DataField\IndexedAssetFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <argument type="service" id="ems.service.file" />
+            <tag name="ems.form.datafieldtype" alias="file_attachment" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.radio" class="EMS\CoreBundle\Form\DataField\RadioFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="radio" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.choice" class="EMS\CoreBundle\Form\DataField\ChoiceFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="choice" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.multiplexed_tab_container" class="EMS\CoreBundle\Form\DataField\MultiplexedTabContainerFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <argument type="service" id="ems.service.user" />
+            <tag name="ems.form.datafieldtype" alias="multiplexed_tab_container" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.json_menu_link" class="EMS\CoreBundle\Form\DataField\JsonMenuLinkFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="ems_common.json.decoder" />
+            <tag name="ems.form.datafieldtype" alias="json_menu_link" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.json_menu_nested_link" class="EMS\CoreBundle\Form\DataField\JsonMenuNestedLinkFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="ems_common.json.decoder" />
+            <tag name="ems.form.datafieldtype" alias="json_menu_nested_link" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.checkbox" class="EMS\CoreBundle\Form\DataField\CheckboxFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="checkbox" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.number" class="EMS\CoreBundle\Form\DataField\NumberFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="number" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.integer" class="EMS\CoreBundle\Form\DataField\IntegerFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="integer" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.date" class="EMS\CoreBundle\Form\DataField\DateFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="date" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.date_time" class="EMS\CoreBundle\Form\DataField\DateTimeFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="date_time" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.daterange" class="EMS\CoreBundle\Form\DataField\DateRangeFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="daterange" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.time" class="EMS\CoreBundle\Form\DataField\TimeFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="time" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.collection_item" class="EMS\CoreBundle\Form\DataField\CollectionItemFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.copyto" class="EMS\CoreBundle\Form\DataField\CopyToFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="copyto" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.subfield" class="EMS\CoreBundle\Form\DataField\SubfieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.select_user_property" class="EMS\CoreBundle\Form\DataField\SelectUserPropertyFieldType">
+            <argument type="service" id="ems.service.user" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="select_user_property" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.fieldtype.version_tag" class="EMS\CoreBundle\Form\DataField\VersionTagFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="ems.service.environment" />
+            <tag name="ems.form.datafieldtype" alias="version_tag" />
+            <tag name="form.type"/>
+        </service>
+
+        <!-- Form types -->
+        <service id="ems.exteneded.collectiontype" class="EMS\CoreBundle\Form\Form\EmsCollectionType">
+            <argument type="service" id="security.authorization_checker" />
+            <tag name="form.type"/>
+        </service>
+        <service id="EMS\CoreBundle\Form\Submission\ProcessType">
+            <argument type="service" id="router" />
+            <tag name="form.type"/>
+        </service>
+        <service id="EMS\CoreBundle\Form\Form\SearchFormType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="ems.service.sort_option" />
+            <argument type="service" id="ems.service.search_field_option" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.objectpickertype" class="EMS\CoreBundle\Form\Field\ObjectPickerType">
+            <argument type="service" id="ems.form.factories.objectChoiceListFactory" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems_core.form.dashboard_type" class="EMS\CoreBundle\Form\Form\DashboardType">
+            <argument type="service" id="ems_core.dashboard.dashboards"/>
+            <tag name="form.type"/>
+        </service>
+        <service id="ems_core.form.view_type" class="EMS\CoreBundle\Form\Form\ViewType">
+            <argument type="service" id="service_container"/>
+            <tag name="form.type"/>
+        </service>
+        <service id="ems_core.form.schedule_type" class="EMS\CoreBundle\Form\Form\ScheduleType">
+            <tag name="form.type"/>
+        </service>
+        <service id="ems_core.form.user_type" class="EMS\CoreBundle\Form\Form\UserType">
+            <argument type="service" id="ems.service.user" />
+            <argument>%ems_core.circles_object%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.objectpickertype" class="EMS\CoreBundle\Form\Field\ObjectPickerType">
+            <argument type="service" id="ems.form.factories.objectChoiceListFactory" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.contenttypefieldpickertype" class="EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType">
+            <argument type="service" id="ems.form.factories.contentTypeFieldChoiceListFactory" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.querySearchPickerType" class="EMS\CoreBundle\Form\Field\QuerySearchPickerType">
+            <argument type="service" id="ems.service.query_search" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.datafieldtypepickertype" class="EMS\CoreBundle\Form\Field\FieldTypePickerType">
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.wysiwygstylessetpickertype" class="EMS\CoreBundle\Form\Field\WysiwygStylesSetPickerType">
+            <argument type="service" id="ems.service.wysiwyg_styles_set" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.rolepickertype" class="EMS\CoreBundle\Form\Field\RolePickerType">
+            <argument type="service" id="ems.service.user" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.environmentpickertype" class="EMS\CoreBundle\Form\Field\EnvironmentPickerType">
+            <argument type="service" id="ems.service.environment" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.contenttypepickertype" class="EMS\CoreBundle\Form\Field\ContentTypePickerType">
+            <argument type="service" id="ems.service.contenttype" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.fieldtype.fieldtypetype" class="EMS\CoreBundle\Form\FieldType\FieldTypeType">
+            <argument type="service" id="ems.form.field.datafieldtypepickertype" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="logger" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.form.templatetype" class="EMS\CoreBundle\Form\Form\TemplateType">
+            <argument>%ems_core.circles_object%</argument>
+            <argument type="service" id="ems.service.environment" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.form.querysearchtype" class="EMS\CoreBundle\Form\Form\QuerySearchType">
+            <argument type="service" id="ems.service.environment" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.form.notificationtype" class="EMS\CoreBundle\Form\Form\NotificationFormType">
+            <argument type="service" id="ems.service.environment" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.form.revisiontype" class="EMS\CoreBundle\Form\Form\RevisionType">
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="emsco.manager.user" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.revision_json_menu_nested" class="EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType">
+            <argument type="service" id="form.registry" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.analyzeroptionstype" class="EMS\CoreBundle\Form\Field\AnalyzerOptionsType">
+            <argument type="service" id="doctrine" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.analyzerpickertype" class="EMS\CoreBundle\Form\Field\AnalyzerPickerType">
+            <argument type="service" id="doctrine" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.alignindexes" class="EMS\CoreBundle\Form\Field\AlignIndexesType">
+            <argument type="service" id="ems.service.alias" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.managed_alias" class="EMS\CoreBundle\Form\Form\ManagedAliasType">
+            <argument type="service" id="ems.service.alias" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.field.select_user_property" class="EMS\CoreBundle\Form\Field\SelectUserPropertyType">
+            <argument type="service" id="ems.service.user" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems.form.form.releasetype" class="EMS\CoreBundle\Form\Form\ReleaseType">
+            <argument type="service" id="ems.service.environment" />
+            <tag name="form.type"/>
+        </service>
+        <service id="ems_core.form_revision_task.filters" class="EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType">
+            <argument type="service" id="ems.service.contenttype" />
+            <tag name="form.type"/>
+        </service>
+    </services>
+</container>

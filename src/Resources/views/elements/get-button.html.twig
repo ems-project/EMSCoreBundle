@@ -1,0 +1,20 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+
+<a  class="{% if btnClass is defined %}{{ btnClass }}{% else %}btn btn-sm btn-{{ btnType|default('default') }}{% endif %} {%  if disabled is defined and disabled %}disabled{% endif %}" href="{{ url }}"
+	{% if target is defined %}
+		target="{{ target }}"
+	{% endif %}
+>
+	{% if icon is defined %}
+		{% if icon|default('')|slice(0,9) == 'glyphicon'  %}
+			<span class="glyphicon {{ icon }}"></span>&nbsp;
+		{% elseif icon|default('') != '' %}
+			<span class="fa fa-{{ icon }}"></span>&nbsp;
+		{% endif  %}
+	{% endif %}
+	{% if label is defined %}
+		{{ label|trans({'%label%' : itemLabel|default('%label%')}) }}
+	{% endif %}
+
+</a>
+

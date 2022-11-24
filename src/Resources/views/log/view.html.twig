@@ -1,0 +1,58 @@
+{% extends '@EMSCore/log/abstract.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block title %}{{ 'log.view.title'|trans({'%created%': log.created|date(date_time_format)}) }}{% endblock %}
+
+{% block body %}
+    <div class="box box-default">
+        <div class="box-body">
+            {% if log.username|default(false) %}
+                <dl>
+                    <dt>{{ 'log.view.user'|trans }}</dt>
+                    {%  set displayName = log.username|displayname %}
+                    <dd>{{ displayName }}{% if log.username != displayName%} ({{ log.username }}){% endif %}</dd>
+                </dl>
+            {% endif %}
+            {% if log.impersonator|default(false) %}
+                <dl>
+                    <dt>{{ 'log.view.impersonator'|trans }}</dt>
+                    {%  set displayName = log.impersonator|displayname %}
+                    <dd>{{ displayName }}{% if log.impersonator != displayName%} ({{ log.impersonator }}){% endif %}</dd>
+                </dl>
+            {% endif %}
+            <dl>
+                <dt>{{ 'log.view.created'|trans }}</dt>
+                <dd>{{ log.created|date(date_time_format) }}</dd>
+            </dl>
+            <dl>
+                <dt>{{ 'log.view.message'|trans }}</dt>
+                <dd>{{ log.message }}</dd>
+            </dl>
+            <dl>
+                <dt>{{ 'log.view.level'|trans }}</dt>
+                <dd>{{ log.levelName }} ({{ log.level }})</dd>
+            </dl>
+            <dl>
+                <dt>{{ 'log.view.channel'|trans }}</dt>
+                <dd>{{ log.channel }}</dd>
+            </dl>
+            <dl>
+                <dt>{{ 'log.view.context'|trans }}</dt>
+                <dd><pre>{{ log.context|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre></dd>
+            </dl>
+            <dl>
+                <dt>{{ 'log.view.extra'|trans }}</dt>
+                <dd><pre>{{ log.extra|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre></dd>
+            </dl>
+        </div>
+        <div class="box-footer">
+            {% include '@EMSCore/elements/post-button.html.twig' with {
+                'url':  path('emsco_log_delete', {'log': log.id}),
+                'label': 'view.actions.delete'|trans,
+                'message': 'view.actions.delete_confirm'|trans,
+                'icon': 'trash',
+                'btnType': 'outline-danger',
+            }%}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'Edit a Filter'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'Edit a Filter'|trans }}{% endblock %}
+{% block subtitle %}<small>{{ 'expert mode'|trans }}</small>{% endblock %}
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path('ems_filter_index') }}"><i class="fa fa-filter"></i> {{ 'Filters'|trans }}</a></li>
+		<li>{{ 'Edit a Filter'|trans }}</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+
+    {% include "@EMSCore/filter/form.html.twig" with {
+    	form: form,
+    	label: 'Edit a Filter'|trans,
+    } %}
+
+{% endblock %}

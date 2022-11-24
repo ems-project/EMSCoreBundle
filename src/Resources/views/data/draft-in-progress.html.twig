@@ -1,0 +1,16 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'revision.draft-in-progress.title'|trans({'%contentType%': contentType.pluralName}) }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><i class="fa fa-fire"></i> {{ 'revision.draft-in-progress.breadcrumb'|trans({'%contentType%': contentType.pluralName}) }}</li>
+	</ol>
+{% endblock %}
+
+{% block body %}
+	{% form_theme form '@EMSCore/form/forms.html.twig' %}
+	{{ form(form) }}
+{% endblock %}

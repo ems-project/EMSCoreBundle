@@ -1,0 +1,95 @@
+{% block mail_created %}
+    {{ block('_printHello') }}
+    <p>A new task has been assigned to you.</p>
+    {{ block('_printInfo') }}
+{% endblock %}
+
+{% block mail_assignee_changed %}
+    {{ block('_printHello') }}
+    <p>The task "{{ task.title }}" is now assigned to {{ task.assignee|displayname }}.</p>
+    {{ block('_printInfo') }}
+{% endblock %}
+
+{% block mail_deleted %}
+     {{ block('_printHello') }}
+    <p>The task "{{ task.title }}" has been deleted.</p>
+    {{ block('_printInfo') }}
+{% endblock %}
+
+{% block mail_updated %}
+    {{ block('_printHello') }}
+    <p>The task "{{ task.title }}" has been updated.</p>
+    {{ block('_printInfo') }}
+{% endblock %}
+
+{% block mail_completed %}
+    {{ block('_printHello') }}
+    <p>The task "{{ task.title }}" has been send for validation.</p>
+    {% if task.getLatestCompleted != null %}
+        <p>
+            <strong>{{ task.getLatestCompleted.username|displayname }}, commented:</strong> <br/>
+            {{ task.getLatestCompleted.comment }}
+        </p>
+    {% endif %}
+    {{ block('_printInfo') }}
+{% endblock %}
+
+{% block mail_rejected %}
+    {{ block('_printHello') }}
+    <p>The task "{{ task.title }}" has been rejected.</p>
+    {% if task.getLatestRejection != null %}
+        <p>
+            <strong>{{ task.getLatestRejection.username|displayname }}, commented:</strong> <br/>
+            {{ task.getLatestRejection.comment }}
+        </p>
+    {% endif %}
+    {{ block('_printInfo') }}
+{% endblock %}
+
+{% block mail_approved %}
+    {{ block('_printHello') }}
+    <p>The task "{{ task.title }}" has been approved.</p>
+    {% if task.getLatestApproved != null and task.getLatestApproved.comment != null %}
+        <p>
+            <strong>{{ task.getLatestApproved.username|displayname }}, commented:</strong> <br/>
+            {{ task.getLatestApproved.comment }}
+        </p>
+    {% endif %}
+    {{ block('_printInfo') }}
+{% endblock %}
+
+{% block _printInfo %}
+    {{ block('_printDocument') }}
+    {{ block('_printTask') }}
+    {{ block('_printFooter') }}
+{% endblock %}
+
+{% block _printHello %}
+    <p>Hello {{ receiver.displayname }},</p>
+{% endblock %}
+
+{% block _printDocument %}
+    {% set path = path('data.revisions', { 'type': revision.giveContentType.name, 'ouuid': revision.ouuid })  %}
+    <p>
+        In {{ revision.giveContentType.singularName }} : <a href="{{ backendUrl|default('') }}{{ path }}" target="_blank"><strong>{{ revision.label }}</strong></a><br/>
+        {% if revision.hasOwner %}Owned by {{ revision.owner|displayname  }}{% endif %}
+    </p>
+{% endblock %}
+
+{% block _printTask %}
+    <p>
+        <strong>title:&nbsp;</strong>{{ task.title }}<br/>
+        {% if task.assignee != receiver.username %}<strong>assignee:&nbsp;</strong>{{ task.assignee|displayname }}<br/>{% endif %}
+        {% if task.hasDeadline %}<strong>deadline:&nbsp;</strong>{{ task.deadline.format(date_format) }}<br/>{% endif %}
+        {% if task.hasDescription %}
+            <strong>description:&nbsp;</strong><br/>
+            {{ task.description|nl2br }}
+        {% endif %}
+    </p>
+{% endblock %}
+
+{% block _printFooter %}
+    <br />
+    <hr />
+    <p>Regards,<br>{{ _senderName }}</p>
+{% endblock %}

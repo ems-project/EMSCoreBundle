@@ -1,0 +1,22 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('emsco_dashboard', {name: dashboard.name}) }}"><i class="{{ dashboard.icon }}"></i> {{ dashboard.label }}</a></li>
+    </ol>
+{% endblock %}
+
+{% block title %}{{ 'dashboard.exception.title'|trans({'%name%': dashboard.name}) }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+{% block subtitle %}{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-body">
+                <pre>{{ exception.message }}</pre>
+            </div>
+        </div>
+    </div>
+{% endblock %}

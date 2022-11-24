@@ -1,0 +1,23 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'release.revision.index.title'|trans }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path('emsco_release_index') }}"><i class="{{ 'view.icon.class.release'|trans }}"></i> {{ 'release.menu'|trans }}</a></li>
+		<li>{{ 'release.revision.menu'|trans }}</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+	{%  set toolbar %}
+
+	{%  endset %}
+
+	{% form_theme form '@EMSCore/form/forms.html.twig' %}
+	{{ form(form, {
+		toolbar: toolbar
+	}) }}
+{% endblock %}

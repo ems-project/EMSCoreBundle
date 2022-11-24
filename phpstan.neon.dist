@@ -1,0 +1,11 @@
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+
+parameters:
+    paths:
+        - %currentWorkingDirectory%/src
+    excludePaths:
+        - %currentWorkingDirectory%/src/Resources/*
+    level: 8

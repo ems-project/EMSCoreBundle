@@ -1,0 +1,155 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}List all content types{% endblock %}
+{% block pagetitle %}List all content types{% endblock %} 
+
+
+{% block body %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-sitemap"></i>
+				<h3 class="box-title">Content types</h3>
+				<div class="btn-group  pull-right">
+					<a class="btn btn-xs btn-primary" href="{{ path('contenttype.add') }}"><i class="fa fa-plus"></i> Add content type</a>
+					<a class="btn btn-xs btn-primary" href="{{ path('contenttype.unreferenced') }}"><i class="fa fa-plus"></i> Add referenced</a>
+					<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#content_type_modal_reorder">
+						<i class="fa fa-reorder"></i> {{ 'Reorder'|trans }}
+					</button>
+					
+					
+				</div>
+				
+			<div class="modal fade" id="content_type_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="myModalReorder">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalReorderLabel">
+						<strong>Reorder Content Types</strong>	
+					</h4>
+			      </div>
+			      {{ form_start(form) }}
+			      <div class="modal-body">
+					<ul class="list-group sortable" id="content_type_modal_reorder_list">
+			      		{% for child in form.contentTypeNames %}
+			      			<li class="list-group-item">
+			      				<i class="glyphicon glyphicon-move"></i>
+			      				{{ child.vars.value }}
+			      				{{ form_row( child ) }}
+			      			</li>
+			      		{% endfor %}
+					</ul>	
+				  </div>
+			      <div class="modal-footer">
+			      	<div class="btn-group">
+			      		{{ form_widget(form.reorder) }}
+				        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+			      	</div>
+			      </div>
+			      {{ form_end(form) }}	
+			    </div>
+			  </div>
+			</div>	
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				<div class="table-responsive">
+				<table class="table table-condensed table-striped">
+					<tbody>
+						<tr>
+							<th class="text-center" style="width: 10px">#</th>
+							<th class="text-center" style="width: 20px">Icon</th>
+							<th>Name</th>
+							<th>Singular</th>
+							<th>Plural</th>
+							<th>Draft Environment</th>
+							<th class="text-center" style="width: 30px">Dirty</th>
+							<th class="text-center" style="width: 30px">Active</th>
+							<th>Action</th>
+						</tr>
+						{% for contentType in get_content_types() %}
+							<tr class="text-{{ contentType.color }}">
+								<td class="text-center">{{ loop.index }}.</td>
+								<td class="text-center"><i class="{% if contentType.icon %}{{ contentType.icon }}{% else %}fa fa-book{% endif %}"></i></td>
+								<td>{{ contentType.name }}</td>
+								<td>{{ contentType.singularName }}</td>
+								<td>{{ contentType.pluralName }}</td>
+								<td>{{ contentType.environment.label }}</td>
+								<td class="text-center">{% if contentType.dirty %}<i class="fa fa-warning"></i>{% endif %}</td>
+								<td class="text-center">{% if contentType.active %}<i class="fa fa-check"></i>{% endif %}</td>
+								<td>
+								
+									<div class="btn-group">
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
+                                            'url':  path('contenttype.edit', {'id': contentType.id}),
+                                            'label': 'Edit',
+                                            'icon': 'pencil'
+                                        }%}
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
+                                            'url':  path('ems_contenttype_reorder', {'contentType': contentType.id}),
+                                            'label': 'Structure',
+                                            'icon': 'sitemap'
+                                        }%}
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
+											'url': path('ems_core_action_index', {'contentType': contentType.id}),
+											'label': 'Actions',
+											'icon': 'file-text-o'
+										}%}
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
+					                      'url': path('view.index', {'type': contentType.name}),
+					                      'label': 'Views',
+					                      'icon': 'tv'
+					                    }%}
+										{% include '@EMSCore/elements/get-button.html.twig' with {
+											'url': path('contenttype.export', {'contentType': contentType.id}),
+											'label': 'Export',
+											'icon': 'sign-out'
+										}%}
+										{% if contentType.environment.managed %}
+                                            {% include '@EMSCore/elements/post-button.html.twig' with {
+												'url':  path('contenttype.refreshmapping', {'id': contentType.id}),
+												'message': 'Try to update the ' ~ contentType.singularName ~ ' mapping ?',
+												'label': 'Update mapping',
+												'icon': 'refresh'
+											}%}
+										{% endif %}
+										{% if not contentType.active %}
+                                            {% include '@EMSCore/elements/post-button.html.twig' with {
+												'url':  path('contenttype.activate', {'contentType': contentType.id}),
+												'message': 'Are you ready to activate ' ~ contentType.singularName ~ ' ?',
+												'label': 'Activate',
+												'icon': 'warning'
+											}%}
+										{% else %}
+                                            {% include '@EMSCore/elements/post-button.html.twig' with {
+												'url':  path('contenttype.desactivate', {'contentType': contentType.id}),
+												'message': 'Are you ready to desactivate ' ~ contentType.singularName ~ ' ?',
+												'label': 'Desactivate',
+												'icon': 'warning'
+											}%}
+										{% endif %}
+                                        {% include '@EMSCore/elements/post-button.html.twig' with {
+											'url': path('contenttype.remove', {'id': contentType.id}),
+											'message': 'Delete the content type ' ~ contentType.singularName ~ ' ?',
+											'label': 'Delete',
+											'icon': 'trash'
+										}%}
+				                    </div>
+								
+              
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				</div>
+
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</div>
+</div>
+{% endblock %} 
+

@@ -1,0 +1,257 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'Align Environments'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'Align Environments'|trans }}{% endblock %} 
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><i class="fa fa-database"></i> {{ 'Environments'|trans }}</li>
+   		<li class="active">{{ 'Align Environments'|trans }}</li>
+   	</ol>
+{% endblock %}
+
+{% block subtitle %}
+<small>{{ 'time to align environments?'|trans }}</small>
+{% endblock %}
+
+{% block body %}
+
+<div class="row">
+{{ form_start(form) }}
+	<div class="col-xs-12">
+	<div class="box box-primary">
+      <div class="box-header with-border">
+        <h3 class="box-title">{{ 'Select Environments to compare'|trans }}</h3>
+      </div>
+      <!-- /.box-header -->
+      <!-- form start -->
+        <div class="box-body">
+        	<div class="col-md-6">
+        	{{ form_row(form.environment) }}
+        	</div>
+        	<div class="col-md-6">
+        	{{ form_row(form.withEnvironment) }}
+        	</div>
+        </div>
+        <!-- /.box-body -->
+        
+      <div class="box-header with-border">
+        <h3 class="box-title">{{ 'Filters' | trans }}</h3>
+      </div>
+        <div class="box-body">
+        	<div class="col-md-6">
+        	{{ form_row(form.contentTypes) }}
+        	</div>
+        </div>
+        <!-- /.box-body -->
+
+        <div class="box-footer">
+        	{{ form_row(form.compare) }}
+        </div>
+         {{ form_errors(form) }}
+    </div>
+	</div>
+
+{% if results %}
+	<div class="col-md-12">
+		<div class="box">
+      <div class="box-header">
+      
+      	{% set fromInMyCircles = environments[environment].circles|in_my_circles %}
+      	{% set toInMyCircles = environments[withEnvironment].circles|in_my_circles %}
+
+        <h3 class="box-title">Compare "{{ environment }}" and "{{ withEnvironment }}"</h3> <small>{{ total }} difference(s)</small>
+
+          {% include '@EMSCore/elements/pagination.html.twig' with {
+					'lastPage': lastPage,
+					'currentPage': page,
+					'currentFilters': app.request.query,
+					'paginationPath': paginationPath,
+					'showAlwaysFirstAndLast': false
+				} %}
+
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body no-padding">
+			  <div class="table-responsive">
+        <table class="table dataTable">
+          <thead>
+          <tr>
+            <th style="width: 10px">#</th>
+
+            <th>
+                <input type="checkbox" data-grouped-checkbox-target=".item-to-align">
+            </th>
+              {% include '@EMSCore/elements/sortable-th.html.twig' with {
+                 'title': 'Content type'|trans,
+                 'field': 'contentype',
+            } %}
+              {% include '@EMSCore/elements/sortable-th.html.twig' with {
+                 'title': 'Label'|trans,
+                 'field': 'label',
+            } %}
+
+            <th><span class="badge bg-{{ environments[environment].color }}" title="Circles:">{{ environment }}</span></th>
+            <th><span class="badge bg-{{ environments[withEnvironment].color }}" title="Circles:">{{ withEnvironment }}</span></th>
+            <th>Actions</th>
+
+          </tr>
+          </thead>
+          <tbody>
+          {% for item in results %}
+      			{% set data = (item.content_type_name~':'~item.ouuid) %}
+      			{% set minrev = item.minrevid|split('/') %}
+      			{% set maxrev = item.maxrevid|split('/') %}
+      			{% set defaultEnv = false %}
+            {% for ct in contentTypes %}
+            	{% if ct.name == item.content_type_name %}
+            		{% set defaultEnv = ct.environment %}
+            	{% endif %}
+            {% endfor %}
+            <tr>
+              <td>{{ loop.index+((page-1)*paging_size) }}.</td>
+              <td>
+                  {% if  (is_granted('ROLE_ALLOW_ALIGN') and is_granted(item.contentType.roles.publish))  %}
+                    <input class="item-to-align" type="checkbox" name="compare_environment_form[item_to_align][{{ minrev[1] }}]" value="{{ item.content_type_name }}:{{ item.ouuid }}">
+                  {% endif %}
+              </td>
+              <td class="text-{{ item.color }}"><i class="{% if item.icon %}{{item.icon}}{% else %}fa fa-book{% endif %}"></i> {{ item.content_type_singular_name }}</td>
+              <td><span title='{{ item.ouuid }}'>{{ item.item_labelField }}</span></td>
+              <td>
+              {% if defaultEnv %}
+        				{% if minrev[0] == fromEnv.id %}
+        					{% if fromEnv.id == defaultEnv.id %}
+        						<i class="fa fa-lock" aria-hidden="true"></i>
+        					{% elseif minrev[2] >= maxrev[2] %}
+        						<i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+        					{% endif %}
+        					{{ minrev[2]|date(date_time_format) }}
+        					({{ minrev[1] }})
+        				{% elseif maxrev[0] == fromEnv.id %}
+        					{% if fromEnv.id == defaultEnv.id %}
+        						<i class="fa fa-lock" aria-hidden="true"></i>
+        					{% elseif minrev[2] <= maxrev[2] %}
+        						<i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+        					{% endif %}
+        					{{ maxrev[2]|date(date_time_format) }}
+        					({{ maxrev[1] }})
+        				{% endif %}
+        			{% endif %}	
+              {% if item.objectEnvironment %}
+                  {% include '@EMSCore/elements/object-toolbar.html.twig' with {
+                  'object':  item.objectEnvironment,
+                  'environment': fromEnv,
+                  'contentType': item.contentType,
+                  'recursiveView': true
+              }%}
+              {% for notification in item.revisionEnvironment.notifications %}
+                {% if notification.status == 'pending'  %}
+                          <span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.label }}</span>
+                      {% endif %}
+              {% endfor %}
+              {% endif %} 
+              </td>
+              <td>
+        				{% if minrev[0] == withEnv.id %}
+        					{% if withEnv.id == defaultEnv.id %}
+        						<i class="fa fa-lock" aria-hidden="true"></i>
+        					{% elseif minrev[2] >= maxrev[2] %}
+        						<i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+        					{% endif %}
+        					{{ minrev[2]|date(date_time_format) }}
+        					({{ minrev[1] }})
+        				{% elseif maxrev[0] == withEnv.id %}
+        					{% if withEnv.id == defaultEnv.id %}
+        						<i class="fa fa-lock" aria-hidden="true"></i>
+        					{% elseif minrev[2] <= maxrev[2] %}
+        						<i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+        					{% endif %}
+        					{{ maxrev[2]|date(date_time_format) }}
+        					({{ maxrev[1] }})
+        				{% endif %}
+                {% if item.objectWithEnvironment %}
+                    {% include '@EMSCore/elements/object-toolbar.html.twig' with {
+                    'object':  item.objectWithEnvironment,
+                    'environment': withEnv,
+                    'contentType': item.contentType,
+                    'recursiveView': true
+                  }%}
+                  {% for notification in item.revisionEnvironment.notifications %}
+                      {% if notification.status == 'pending'  %}
+                      	<span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.label }}</span>
+                      {% endif %}
+                  {% endfor %}
+                {% endif %}
+              </td>
+              <td>
+                {% if is_granted('ROLE_ALLOW_ALIGN') and is_granted(item.contentType.roles.publish) %}
+                    <div class="btn-group">
+
+                            {%  if defaultEnv and withEnv.id != defaultEnv.id  and toInMyCircles %}
+                                {% if minrev[0] == fromEnv.id %}
+                                    <button type="submit" id="{{ minrev[1] }}" name="compare_environment_form[alignWith]" value="{{ minrev[1] }}" class="btn-primary btn-sm btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>
+                                {% elseif maxrev[0] == fromEnv.id %}
+                                    <button type="submit" id="{{ maxrev[1] }}" name="compare_environment_form[alignWith]" value="{{ maxrev[1] }}" class="btn-primary btn-sm btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>
+                                {% endif %}
+                            {% endif %}
+
+                            {%  if defaultEnv and fromEnv.id != defaultEnv.id  and fromInMyCircles %}
+                                {% if minrev[0] == withEnv.id %}
+                                    <button type="submit" id="{{ minrev[1] }}" name="compare_environment_form[alignWith]" value="{{ minrev[1] }}" class="btn-danger btn-sm btn"><span class="fa fa-chevron-left"></span>&nbsp;Align {{ environment }} with {{ withEnvironment }}</button>
+                                {% elseif maxrev[0] == withEnv.id %}
+                                    <button type="submit" id="{{ maxrev[1] }}" name="compare_environment_form[alignWith]" value="{{ maxrev[1] }}" class="btn-danger btn-sm btn"><span class="fa fa-chevron-left"></span>&nbsp;Align {{ environment }} with {{ withEnvironment }}</button>
+                                {% endif %}
+                            {% endif %}
+                    </div>
+                {% endif %}
+
+                  {% if minrev[1] != maxrev[1] %}
+                      {% include '@EMSCore/elements/get-button.html.twig' with {
+                          'url': path('emsco_view_revisions', {
+                              'type': item.content_type_name,
+                              'ouuid': item.ouuid,
+                              'revisionId': minrev[1]  > maxrev[1] ? minrev[1]  : maxrev[1],
+                              'compareId': minrev[1]  < maxrev[1] ? minrev[1]  : maxrev[1]
+                          }),
+                          'label': 'Compare',
+                          'icon': 'compress' }%}
+                  {% endif %}
+              </td>
+            </tr>
+        {% endfor %}
+        </tbody></table>
+        </div>
+      </div>
+      {% if is_granted('ROLE_ALLOW_ALIGN') or lastPage > 1 %}
+          <div class="box-footer">
+            {% if is_granted('ROLE_ALLOW_ALIGN')  %}
+              	<div class="btn-group">
+              		{%  if toInMyCircles %}
+                		<button type="submit" name="compare_environment_form[alignRight]" class="btn-primary btn-md btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>
+                	{% endif %}
+              		{%  if fromInMyCircles %}
+                		<button type="submit" name="compare_environment_form[alignLeft]" class="btn-danger btn-md btn"><span class="fa fa-chevron-left"></span>&nbsp;Align {{ environment }} with {{ withEnvironment }}</button>
+              	    {% endif %}
+              	</div>
+            {% endif %}
+
+              {% include '@EMSCore/elements/pagination.html.twig' with {
+    			'lastPage': lastPage,
+    			'currentPage': page,
+    			'currentFilters': app.request.query,
+    			'paginationPath': paginationPath,
+    			'showAlwaysFirstAndLast': false
+    		} %}
+          </div>
+          <!-- /.box-body -->
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{{ form_rest(form) }}
+{{ form_end(form) }}
+</div>
+{% include '@EMSCore/app/menu.html.twig' with {
+    'item':  'environment-align'
+}%}
+{% endblock %}	

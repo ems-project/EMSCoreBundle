@@ -1,0 +1,13 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
+{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
+
+{% block body %}
+    <div class="box with-border">
+        <div class="box-body">
+            {{ form(form) }}
+        </div>
+    </div>
+{% endblock %} 
+

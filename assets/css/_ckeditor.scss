@@ -1,0 +1,22 @@
+// Specific to dialog popup
+.cke_dialog {
+	.select2-container {
+		z-index:10020;
+		position:relative !important;
+		.select2-selection--single .select2-selection__rendered .fa {
+			font-family: 'FontAwesome' !important;
+		}
+	}
+	div.cke_dialog_ui_input_select {
+		display: block;
+	}
+}
+// More generic change, because dialog z-index is higher than select2 dropdown.
+.select2-dropdown {
+	z-index: 10051 !important;
+	position: absolute !important;
+}
+
+.cke_combopanel {
+	width:350px !important;
+}

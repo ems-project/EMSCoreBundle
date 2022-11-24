@@ -1,0 +1,13 @@
+{% trans_default_domain 'EMSCoreBundle' %}{#
+  Parameters:
+    * paginationPath (string) : the route used for the pagination
+    * field (string) : the field associted the column
+    * title (string) : the column's title
+    * orderDirection (string) : "asc", "desc"
+    * orderField (string) : The column name
+#}
+{% apply spaceless %}
+<th class="nowrap sorting{% if field == orderField %}{% if orderDirection == 'asc' %}_asc{% else %}_desc{% endif %}{% endif %}" onclick="document.location.href='{% if field == orderField and orderDirection == 'asc' %}{{ path(paginationPath, app.request.query.all|merge({'orderField':field, 'orderDirection': 'desc'}))|e('js') }}{% else %}{{ path(paginationPath, app.request.query.all|merge({'orderField':field, 'orderDirection': 'asc'}))|e('js') }}{% endif %}'">
+    {{ title }}
+</th>
+{% endapply %}

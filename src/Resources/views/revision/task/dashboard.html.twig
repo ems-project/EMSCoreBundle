@@ -1,0 +1,91 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'task.title'|trans }}{% endblock %}
+
+{% block pagetitle %}{{ 'task.title'|trans }}{% endblock %}
+
+{% block body %}
+{%- set route = app.request.get('_route') -%}
+{%- set requestQuery = app.request.query.all -%}
+{%- set routeParams = app.request.get('_route_params')|merge(requestQuery) -%}
+{%- set showFilters = attribute(requestQuery, 'filters')|default([])|length > 0 -%}
+<div id="task-dashboard" class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        {% for tabName in tabs %}
+            {% if currentTab == tabName %}
+                <li class="active">
+                    <a href="#{{ currentTab }}" data-toggle="tab" aria-expanded="true">{{ "task.dashboard.tab.#{tabName}"|trans }}</a>
+                </li>
+            {% else %}
+                <li>
+                    <a href="{{ path(route, routeParams|merge({'tab': tabName})) }}">
+                        {{ "task.dashboard.tab.#{tabName}"|trans }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        {% if filterForm is defined %}
+            <li class="pull-right">
+                <div>
+                    <a class="btn btn-sm btn-primary" role="button" data-toggle="collapse" href="#filters" aria-expanded="{{ showFilters ? 'true' : 'false' }}" aria-controls="filters">
+                        <i class="fa fa-filter" aria-hidden="true"></i> {{ 'task.filters'|trans }}
+                    </a>
+                </div>
+            </li>
+        {% endif %}
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="{{ currentTab }}">
+            {{ block('filters') }}
+            {% form_theme formTable '@EMSCore/form/forms.html.twig' %}
+            {{ form(formTable) }}
+            {% if table.count > 0 %}
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Export <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ path('ems_core_task_ajax_datatable_excel', routeParams|merge({'tab': currentTab}) ) }}">Excel</a></li>
+                        <li><a href="{{ path('ems_core_task_ajax_datatable_csv', routeParams|merge({'tab': currentTab}) ) }}">CSV</a></li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block filters %}
+    {% if filterForm is defined %}
+        <div class="collapse {{ showFilters ? 'in' }}" id="filters">
+            <div class="well">
+                <div class="row">
+                    {{ form_start(filterForm) }}
+                    {{ form_row(filterForm.status, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.status'|trans }) }}
+                    {% if filterForm.version is defined %}
+                        {{ form_row(filterForm.version, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.version'|trans  }) }}
+                    {% endif %}
+                    {% if filterForm.assignee is defined %}
+                        {{ form_row(filterForm.assignee, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.assignee'|trans  }) }}
+                    {% endif %}
+                    {% if filterForm.owner is defined %}
+                        {{ form_row(filterForm.owner, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.owner'|trans  }) }}
+                    {% endif %}
+                    <div class="col-md-12">
+                        <input type="hidden" name="tab" value="{{ currentTab }}" />
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-search" aria-hidden="true"></i>  {{ 'task.filter.submit'|trans }}
+                            </button>
+                            <a href="{{ path(route, app.request.get('_route_params')|merge({ 'tab': currentTab }) ) }}"  class="btn btn-default">
+                                <i class="fa fa-remove" aria-hidden="true"></i>  {{ 'task.filter.reset'|trans }}
+                            </a>
+                        </div>
+                    </div>
+                    {{ form_end(filterForm) }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

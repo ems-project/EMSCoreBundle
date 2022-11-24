@@ -1,0 +1,23 @@
+{% extends '@EMSCore/base.html.twig' %}
+
+{% block title %}User management{% endblock %}
+{% block pagetitle %}User management{% endblock %} 
+
+{% block subtitle %}<small>Are you ready to rock</small>{% endblock %} 
+
+{% block body %}
+	{% block content %}{% endblock %}
+
+    {% include '@EMSCore/app/menu.html.twig' with {
+        'item':  'user-index'
+    }%}
+{% endblock %}
+
+{% block frontend_application_css %}
+	<link rel="stylesheet" href="{{ asset('user-profile.css', 'emscore') }}">
+{% endblock %}
+
+{% block frontend_application_js %}
+	<script src="{{ asset('user-profile.js', 'emscore') }}"></script>
+{% endblock %}
+

@@ -1,0 +1,94 @@
+{% extends '@EMSCore/base.html.twig' %} {% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %} Notifications {%endblock %} 
+{% block pagetitle %} Notifications {% endblock %} 
+
+{% block body %}
+
+<div class="row">
+
+	<div class="col-sm-12 col-md-3">
+		<div class="col-sm-6 col-md-12">
+			<div class="box box-solid">
+				<div class="box-header with-border">
+					<h3 class="box-title">Folders</h3>
+	
+					<div class="box-tools">
+						<button type="button" class="btn btn-box-tool"
+							data-widget="collapse">
+							<i class="fa fa-minus"></i>
+						</button>
+					</div>
+				</div>
+				<div class="box-body no-padding" style="display: block;">
+					<ul class="nav nav-pills nav-stacked">
+						<li class="{% if folder == 'inbox' %}active{% endif %}">
+							<a href="{{ path('notifications.inbox') }}">
+								<i class="fa fa-inbox"></i> 
+								{{ 'Inbox'|trans }} 
+								{% if counter > 0 %}
+	     							<span class="label label-primary pull-right">{{ counter }}</span>
+	     						{% endif %}
+							</a>
+						</li>
+						<li class="{% if folder == 'sent' %}active{% endif %}">
+							<a href="{{ path('notifications.sent') }}">
+								<i class="fa fa-envelope-o"></i> 
+								{{ 'Outbox'|trans }}
+								{% if countSent > 0 %}
+	     							<span class="label label-default pull-right">{{ countSent }}</span>
+	     						{% endif %}
+							</a>
+						</li>
+					</ul>
+				</div>
+				<!-- /.box-body -->
+			</div>	
+		</div>
+		
+		<div class="col-sm-6 col-md-12">
+			<div class="box box-solid collapsed-box">
+				{{ form_start(form) }}
+				<div class="box-header with-border">
+					<h3 class="box-title">Filters</h3>
+	
+					<div class="box-tools">
+						<button type="button" class="btn btn-box-tool"
+							data-widget="collapse">
+							<i class="fa fa-plus"></i>
+						</button>
+					</div>
+				</div>
+				<div class="box-body no-padding">
+	              	<div class="col-md-12">
+	              	{{ form_row(form.template) }}
+	              	</div>
+	              	<div class="col-md-12">
+	              	{{ form_row(form.environment) }}
+	              	</div>
+	              	<div class="col-md-12">
+	              	{{ form_row(form.contentType) }}
+	              	</div>
+		            {{ form_errors(form) }}
+				</div>
+				<!-- /.box-body -->
+		        <div class="box-footer">
+		        	{{ form_row(form.filter) }}
+		        </div>
+				{{ form_end(form) }}
+			</div>
+		</div>
+	</div>
+	
+	<div class="col-md-9 col-sm-12">
+        {% include '@EMSCore/notification/'~folder~'.html.twig' with {
+			'lastPage': lastPage,
+			'currentPage': page,
+			'currentFilters': app.request.query,
+			'paginationPath': paginationPath,
+			'showAlwaysFirstAndLast': false
+		} %}
+	</div>
+	
+</div>
+{% endblock %} 

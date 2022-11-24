@@ -1,0 +1,31 @@
+{% extends '@EMSCore/base.html.twig' %} {% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %} {{ 'I18N edit'|trans }} {%endblock %}
+{% block pagetitle %} {{ 'I18N edit'|trans }} {% endblock %} 
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path('i18n_index') }}"><i class="fa fa-language"></i> {{ 'I18N'|trans }}</a></li>
+   		<li class="active">{{ 'I18N edit'|trans }} </li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+    {% include "@EMSCore/i18n/form.html.twig" with {
+		form: edit_form,
+		title: 'I18N edit',
+		action: 'Save',
+		actionIcon: 'fa-save'
+	} %}
+	{% include '@EMSCore/app/menu.html.twig' with {
+		'item':  'i18n-index'
+	}%}
+{% endblock %}
+
+{% block frontend_application_css %}
+	<link rel="stylesheet" href="{{ asset('i18n.css', 'emscore') }}">
+{% endblock %}
+
+{% block frontend_application_js %}
+	<script src="{{ asset('i18n.js', 'emscore') }}"></script>
+{% endblock %}

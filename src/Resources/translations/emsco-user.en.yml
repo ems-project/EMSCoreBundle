@@ -1,0 +1,44 @@
+user:
+    option:
+        title: 'Options'
+        simplified_ui: 'Simplified UI'
+    login:
+        title: 'Sign in to start your session'
+        username: Username
+        password: Password
+        remember_me: 'Remember me'
+        forgot: 'I forgot my password'
+        submit: 'Log in'
+    logout:
+        submit: 'Sign out'
+        exit: 'Exit'
+    logged_in:
+        title: 'Logged in as %username%'
+        member_since: 'Member since %date%'
+    new_password: New password
+    new_password_confirmation: Repeat new password
+    management:
+        title: User management
+    profile:
+        title: Your profile
+    change_password:
+        title: 'Change your password'
+        cancel: Cancel
+        submit: 'Change password'
+    resetting:
+        title: Reset password
+        username_email: Username or email address
+        check_email: |
+            An email has been sent. It contains a link you must click to reset your password.
+            Note: You can only request a new password once within %tokenLifetime% hours.
+
+            If you don't get an email check your spam folder or try again.
+        email:
+            subject: 'Reset Password'
+            message: |
+                Hello %username%!
+                
+                To reset your password - please visit %confirmationUrl%
+                
+                Regards,
+                the Team.

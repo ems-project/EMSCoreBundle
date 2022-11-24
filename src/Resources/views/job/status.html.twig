@@ -1,0 +1,115 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}Status of the job #{{ job.id }}{% endblock %}
+{% block pagetitle %}Status of the job #{{ job.id }}{% endblock %} 
+{% block subtitle %}<small>Asynchronous process</small>{% endblock %} 
+
+
+{% block body %}
+<div class="row" {% if launchJob %}data-start-job-url="{{ path('job.start', {job: job.id}) }}"{% endif %}>
+	<div class="col-md-3">
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-info"></i>
+				<h3 class="box-title">Meta information</h3>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				<strong><i class="fa fa-clock-o margin-r-5"></i> Started</strong>
+				<p class="text-muted">
+					{{ job.created|date(date_time_format) }}
+				</p>
+
+				<hr>
+				<strong><i class="fa fa-user margin-r-5"></i> By</strong>
+				<p class="text-muted">
+					{{ job.user|displayname }}
+				</p>
+				<hr>
+				<strong><i class="fa fa-terminal margin-r-5"></i> Comand</strong>
+				<p class="text-muted">
+					{{ job.command }}
+				</p>
+				<hr>
+				<strong><i class="fa fa-clock-o margin-r-5"></i> Last update</strong>
+				<p class="text-muted">
+					{{ job.modified|date(date_time_format) }}
+				</p>
+
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</div>
+	<div class="col-md-9">
+		<!-- general form elements -->
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">Job's Status</h3>
+			</div>
+			<!-- /.box-header -->
+				
+				<div class="box-body">
+					<div class="info-box bg-green">
+			            <span class="info-box-icon"><i class="fa fa-gear {% if not job.done %}fa-spin{% endif %}"></i></span>
+			
+			            <div class="info-box-content">
+			              <span class="info-box-text">Started on {{ job.created|date(date_time_format) }}</span>
+			              <span class="info-box-number">{{ status|raw }}</span>
+			
+			              <div class="progress">
+			                <div class="progress-bar" style="width: {{ job.progress }}%"></div>
+			              </div>
+			                  <span class="progress-description">
+			                    {{ job.progress }}% completed
+			                  </span>
+			            </div>
+			            <!-- /.info-box-content -->
+			          </div>
+			          <div class="info-box bg-black color-palette">
+			          	<div class="box-header with-border">
+			              <h3 class="box-title">Console's ouputs</h3>
+			            </div>
+			             <div class="box-body">
+			             	<div class="console">
+			            		{{ output|raw|nl2br }}
+							</div>
+			            </div>
+			            
+			          </div>
+				</div>
+                 
+				<!-- /.box-body -->
+				<div class="box-footer">
+					<div class="btn-group">
+						{% if not job.done %}
+							{% include '@EMSCore/elements/get-button.html.twig' with {
+								'url':  path('job.status', {'job': job.id}),
+								'label': 'Refresh page',
+								'icon': 'refresh'
+							}%}
+						{% endif %}
+						{% if is_granted('ROLE_ADMIN') %}
+							{% include '@EMSCore/elements/get-button.html.twig' with {
+								'url':  path('job.index'),
+								'label': 'Job\'s list',
+								'icon': 'chevron-circle-right'
+							}%}
+							{% include '@EMSCore/elements/post-button.html.twig' with {
+								'url':  path('job.delete', {'job': job.id}),
+								'message': 'Do you confirm ?',
+								'label': 'Delete',
+								'icon': 'trash'
+							}%}
+						{% endif %}
+					</div>
+				</div>
+
+		</div>
+		<!-- /.box -->
+	</div>
+</div>
+
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'job-index'
+}%}
+{% endblock %}

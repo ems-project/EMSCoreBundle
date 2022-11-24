@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="elasticsearch.alias.add" path="/alias/add/{name}" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ElasticsearchController::addAliasAction</default>
+    </route>
+    <route id="elasticsearch.search.delete" path="/delete-search/{id}" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ElasticsearchController::deleteSearchAction</default>
+    </route>
+    <route id="ems_search_set_default_search_from" path="/set-default-search/{id}/{contentType}" methods="POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ElasticsearchController::setDefaultSearchAction</default>
+        <default key="contentType" xsi:nil="true" />
+    </route>
+    <route id="elasticsearch.index.delete" path="/index/delete/{name}" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ElasticsearchController::deleteIndexAction</default>
+    </route>
+</routes>

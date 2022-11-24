@@ -1,0 +1,136 @@
+{% trans_default_domain 'EMSCoreBundle' %}{% extends '@EMSCore/base.html.twig' %} {% block title %} I18n list {% endblock %}
+{% block pagetitle %} I18n list {% endblock %} 
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><i class="fa fa-language"></i> {{ 'I18N'|trans }}</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+	<div class="col-xs-12">
+			{{ form_start(filterform) }}
+			<div class="box box-primary">
+	            <div class="box-header with-border">
+	              <h3 class="box-title">Select and filter</h3>
+	            </div>
+	            <!-- /.box-header -->
+	            <!-- form start -->
+	              <div class="box-body">
+	              	<div class="col-md-4">
+	              	{{ form_row(filterform.identifier) }}
+	              	</div>
+		             {{ form_errors(filterform) }}
+	              </div>
+	              <!-- /.box-body -->
+	
+	              <div class="box-footer">
+	              	{{ form_row(filterform.filter) }}
+	              </div>
+	        </div>
+			{{ form_end(filterform) }}
+	</div>
+	<div class="col-xs-12">
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-file-text-o"></i>
+				<h3 class="box-title">List of translation keys</h3>
+                {% include '@EMSCore/elements/pagination.html.twig' with { 'lastPage':
+				lastPage, 'currentPage': page, 'currentFilters': app.request.query,
+				'paginationPath': paginationPath, 'showAlwaysFirstAndLast': false }
+				%}
+			</div>
+				<div class="box-body">
+					<div class="table-responsive">
+					<table class="table table-condensed table-striped">
+						<tbody>
+							<tr>
+								<th>#</th>
+								<th>Key</th>
+								<th>Translations</th>
+								<th>Actions</th>
+							</tr>
+						</tbody>
+						<tbody>
+							{% for i18n in i18nkeys %}
+							<tr> 
+								<td class="">{{ loop.index+((page-1)*paging_size) }}.</td>
+								<td class="">{{ i18n.identifier }}</td>
+								<td>
+									<a data-toggle="modal" data-target="#Id{{ i18n.id }}Modal" class="btn btn-sm btn-success">
+										<i class="fa fa-eye"></i>&nbsp;
+										{{ i18n.content|length }}
+									</a>
+								</td>
+								<td>
+									<div class="btn-group">
+										<a class="btn btn-primary btn-sm"
+											href="{{ path('i18n_edit', { 'id': i18n.id }) }}"><i class="fa fa-pencil"></i> {{ 'Edit'|trans }}</a>
+
+                                        {% include '@EMSCore/elements/post-button.html.twig' with {
+											'url':  path('i18n_delete', { 'id': i18n.id }),
+											'message': 'Delete the translations for the key ' ~  i18n.identifier ~ ' ?',
+											'label': 'Delete',
+											'icon': 'trash'
+										}%}
+									</div>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					</div>
+				</div>
+
+				<div class="box-footer with-border">
+					<a class="btn btn-primary btn-sm" href="{{ path('i18n_new') }}">
+						<i class="fa fa-plus"></i>
+						Create a new entry
+					</a>
+
+                    {% include '@EMSCore/elements/pagination.html.twig' with {
+						'lastPage': lastPage, 'currentPage': page, 'currentFilters':
+						app.request.query, 'paginationPath': paginationPath,
+						'showAlwaysFirstAndLast': false } %}
+				</div>
+			</div>
+
+		{% for key, i18n in i18nkeys %}
+		<!-- Modal -->
+		<div class="modal fade" id="Id{{ i18n.id }}Modal" tabindex="-1"
+			role="dialog" aria-labelledby="Id{{ i18n.id }}ModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title" id="Id{{ i18n.id }}ModalLabel"><i class="fa fa-language"></i> Translations for key "{{ i18n.identifier }}"</h4>
+					</div>
+					<div class="modal-body">
+						<div class="table-responsive">
+						<table class="table table-condensed table-striped">
+							<tbody>
+								<tr>
+									<th>Locale</th>
+									<th>Text</th>
+								</tr>
+								{% for translation in i18n.content %}
+								<tr>
+									<td>{{ translation.locale }}</td>
+									<td>{{ translation.text }}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}

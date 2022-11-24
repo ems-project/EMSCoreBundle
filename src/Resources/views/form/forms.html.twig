@@ -1,0 +1,364 @@
+{% use "@EMSCore/form/fields.html.twig" %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block emsco_form_table_column_data_value_template %}
+    {{- include(template_from_string(column.template), {
+        data: line.data,
+        column: column,
+        row_context: row_context|default({}),
+    }) -}}
+{% endblock emsco_form_table_column_data_value_template %}
+
+{% block emsco_form_table_column_data_value_data_links %}
+    {%- set value = attribute(line.data, column.attribute)|default([]) -%}
+    {%- if value is iterable and column.valid(line.data) -%}
+        {%- for link in value -%}
+            {{- link|data_link|raw -}}
+            {%- if not loop.last -%}
+                &nbsp;
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
+{% endblock emsco_form_table_column_data_value_data_links %}
+
+{% block emsco_form_table_column_data_value_bool %}
+    {%- if attribute(line.data, column.attribute)|default(false) -%}
+        <i class="fa fa-check-square-o" title="{{ 'form.data.bool_table_collum.true_value'|trans }}"></i> <span class="sr-only">{{ 'form.data.bool_table_collum.true_value'|trans }}</span>
+    {%- else -%}
+        <i class="fa fa-square-o" title="{{ 'form.data.bool_table_collum.false_value'|trans }}"></i> <span class="sr-only">{{ 'form.data.bool_table_collum.false_value'|trans }}</span>
+    {%- endif -%}
+{% endblock emsco_form_table_column_data_value_bool %}
+
+{% block emsco_form_table_column_data_bool %}
+    <td data-order="{% if attribute(line.data, column.attribute)|default(false) %}1{% endif %}">
+        {{- block(column.tableDataValueBlock()) -}}
+    </td>
+{% endblock emsco_form_table_column_data_bool %}
+
+{% block emsco_form_table_column_data_value_datetime %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+        {%- if value and column.valid(line.data) -%}
+            {{- block('emsco_form_table_column_data_label_prefix') -}}
+            {{- value|date(date_time_format) }}
+            {{- block('emsco_form_table_column_data_label_suffix') -}}
+        {%- endif -%}
+{% endblock emsco_form_table_column_data_value_datetime %}
+
+{% block emsco_form_table_column_data_value_date %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+        {%- if value and column.valid(line.data)  -%}
+            {{- block('emsco_form_table_column_data_label_prefix') -}}
+            {{- value|date(date_format) }}
+            {{- block('emsco_form_table_column_data_label_suffix') -}}
+        {%- endif -%}
+{% endblock emsco_form_table_column_data_value_date %}
+
+{% block emsco_form_table_column_data_value_time %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+        {%- if value and column.valid(line.data)  -%}
+            {{- block('emsco_form_table_column_data_label_prefix') -}}
+            {{- value|date(time_format) }}
+            {{- block('emsco_form_table_column_data_label_suffix') -}}
+        {%- endif -%}
+{% endblock emsco_form_table_column_data_value_time %}
+
+{% block emsco_form_table_column_data_datetime %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+    <td data-order="{% if value %}{{ value|date('c') }}{% endif %}">
+        {{- block(column.tableDataValueBlock()) -}}
+    </td>
+{% endblock emsco_form_table_column_data_datetime %}
+
+{% block emsco_form_table_column_data_value_roles %}
+    {%- set value = attribute(line.data, column.attribute)|default([]) -%}
+    {%- if value is iterable and column.valid(line.data)  -%}
+        {%- for string in value -%}
+            {%- if not loop.first -%}
+                {%- if loop.last -%}
+                    &nbsp;&amp;&nbsp;
+                {%- else -%}
+                    ,&nbsp;
+                {%- endif -%}
+            {%- endif -%}
+            {{- string|trans -}}
+        {%- endfor -%}
+    {%- endif -%}
+{% endblock emsco_form_table_column_data_value_roles %}
+
+{% block emsco_form_table_column_data_roles %}
+    {%- set value = attribute(line.data, column.attribute)|default([]) -%}
+    <td>
+        {{- block(column.tableDataValueBlock()) -}}
+    </td>
+{% endblock emsco_form_table_column_data_roles %}
+
+{% block emsco_form_table_column_data_value_bytes %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+    {%- if value and column.valid(line.data)  -%}
+        {{- block('emsco_form_table_column_data_label_prefix') -}}
+        {{- value|format_bytes -}}
+        {{- block('emsco_form_table_column_data_label_suffix') -}}
+    {%- endif -%}
+{% endblock emsco_form_table_column_data_value_bytes %}
+
+{% block emsco_form_table_column_data_bytes %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+    <td data-order="{% if value %}{{ value }}{% endif %}">
+        {{- block(column.tableDataValueBlock()) -}}
+    </td>
+{% endblock emsco_form_table_column_data_bytes %}
+
+{% block emsco_form_table_column_data_value_translation %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+    {%- if value and column.valid(line.data)  -%}
+        {{- block('emsco_form_table_column_data_label_prefix') -}}
+        {{- value|trans({}, column.domain) -}}
+        {{- block('emsco_form_table_column_data_label_suffix') -}}
+    {%- endif -%}
+{% endblock emsco_form_table_column_data_value_translation %}
+
+{% block emsco_form_table_column_data_translation %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+    <td data-order="{% if value %}{{ value }}{% endif %}">
+        {{- block(column.tableDataValueBlock()) -}}
+    </td>
+{% endblock emsco_form_table_column_data_translation %}
+
+{% block emsco_form_table_column_data_value_user %}
+    {%- set value = attribute(line.data, column.attribute)|default('') -%}
+    {% if column.valid(line.data) %}
+        {%- set displayname = value|displayname  -%}
+        {{- block('emsco_form_table_column_data_label_prefix') -}}
+        {{- displayname -}}
+        {{- block('emsco_form_table_column_data_label_suffix') -}}
+    {% endif %}
+{% endblock emsco_form_table_column_data_value_user %}
+
+{% block emsco_form_table_column_data_user %}
+    {%- set value = attribute(line.data, column.attribute)|default('') -%}
+    {%- set displayname = value|displayname -%}
+    <td data-search="{{ value }} {{ displayname }}">
+        {{- block(column.tableDataValueBlock()) -}}
+    </td>
+{% endblock emsco_form_table_column_data_user %}
+
+{% block emsco_form_table_column_data_label_prefix -%}
+{%- if export|default(false) == false -%}
+    <div{{ block('emsco_form_table_column_data_html_atributes')  }}>
+    {%- if column.routeName and column.getRouteProperties(line.data)-%}
+        <a href="{{ path(column.routeName, column.getRouteProperties(line.data)) }}" {% if column.routeTarget %}target="{{ column.routeTarget }}"{% endif %}>
+    {%- elseif column.hasPath(line.data, app.request.baseUrl) -%}
+        <a href="{{ column.path(line.data, app.request.baseUrl) }}" target="{{ column.pathTarget }}">
+    {%- endif -%}
+    {%- if column.itemIconClass(line.data) -%}
+        <i class="{{ column.itemIconClass(line.data) }}"></i>&nbsp;
+    {%- endif -%}
+{%- endif -%}
+{%- endblock emsco_form_table_column_data_label_prefix %}
+
+{% block emsco_form_table_column_data_label_suffix -%}
+{%- if export|default(false) == false -%}
+    {%- if (column.routeName and column.getRouteProperties(line.data)) or column.hasPath(line.data, app.request.baseUrl) -%}
+        </a>
+    {%- endif -%}
+    </div>
+{%- endif -%}
+{% endblock emsco_form_table_column_data_label_suffix -%}
+
+{% block emsco_form_table_column_data_html_atributes %}
+    {%- for key, value in column.htmlAttributes(line.data) %} {{ key }}="{{ value }}"{% endfor -%}
+{% endblock emsco_form_table_column_data_html_atributes %}
+
+{% block emsco_form_table_column_data_value %}
+    {%- set value = attribute(line.data, column.attribute) -%}
+    {% if column.valid(line.data) %}
+        {{- block('emsco_form_table_column_data_label_prefix') -}}
+        {{- value -}}
+        {{- block('emsco_form_table_column_data_label_suffix') -}}
+    {% endif %}
+{% endblock emsco_form_table_column_data_value %}
+
+{% block emsco_form_table_column_data %}
+    {% if column.cellRender %}
+        <td>{{ block(column.tableDataValueBlock()) }}</td>
+    {% else %}
+        {{ block(column.tableDataValueBlock()) }}
+    {% endif %}
+{% endblock emsco_form_table_column_data %}
+
+{% block emsco_form_table_column_action_checkbox %}
+    {% set id = table.idField is defined ? attribute(line.data, table.idField) : line.data.id %}
+    {% for chekbox in form.selected|filter(f => f.vars.value == id) %}
+        {{ form_widget(chekbox) }}
+    {%  endfor %}
+{% endblock emsco_form_table_column_action_checkbox %}
+
+{% block emsco_form_table_column_row_actions %}
+    <div class="btn-group {{ table.rowActionsClass }}">
+        {% for action in table.itemActions %}
+            {% if action.valid(line.data) %}
+                {%  if action.dynamic == true %}
+                    {% set routeParameters = {} %}
+                    {% for name, property in action.routeParameters %}
+                        {% set data = line.data %}
+                        {% for token in property|split('.') %}
+                            {% set data = attribute(data, token)|default(property) %}
+                        {% endfor %}
+                        {% set routeParameters = routeParameters|merge({ (name): data }) %}
+                    {%  endfor %}
+                {% else %}
+                    {% set routeParameters = action.routeParameters|merge({(table.attributeName): line.data.id}) %}
+                {% endif %}
+                {% if action.post %}
+                    {% if action.route != 'EMS_user_apikey' or 'ROLE_API' in line.data.roles  %}
+                        {% include '@EMSCore/elements/post-button.html.twig' with {
+                            'url': path(action.route, routeParameters),
+                            'message': action.messageKey,
+                            'label': action.labelKey,
+                            'btnType': action.buttonType,
+                            'itemLabel': attribute(line.data, table.labelAttribute),
+                            'icon': action.icon,
+                            'group_class': loop.last ? 'pull-right' : '',
+                        }%}
+                    {% endif %}
+                {% else %}
+                    {% include '@EMSCore/elements/get-button.html.twig' with {
+                        'url':  path(action.route, routeParameters),
+                        'label': action.labelKey,
+                        'itemLabel': attribute(line.data, table.labelAttribute),
+                        'btnType': action.buttonType,
+                        'icon': action.icon,
+                    }%}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock emsco_form_table_column_row_actions %}
+
+
+{% block emsco_form_table_type_widget %}
+    {% set table = form.vars.data %}
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_start(form) }}
+            <div class="box ">
+                {% if form.vars.title_label|default(false) %}
+                    <div class="box-header with-border">
+                        <h2 class="box-title">{{ form.vars.title_label|trans }}</h2>
+                    </div>
+                {% endif %}
+                <div class="box-header with-border">
+                    <div class="btn-group  pull-right">
+                        {% if toolbar is defined %}
+                            {{ toolbar }}
+                        {% endif %}
+                        {%  if table.sortable and table.supportsTableActions %}
+                            <button type="button" class="btn" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
+                                <i class="fa fa-reorder"></i> {{ reorder_label|default(form.vars.reorder_label)|trans }}
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="box-body with-border">
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-striped" data-datatable="{{ table.frontendOptions|json_encode|e('html_attr') }}">
+                            <thead>
+                            <tr role="row">
+                                {% if table.supportsTableActions %}
+                                    <th class="fit" data-orderable="false" data-name="_checkbox">
+                                        <label class="sr-only" for="select-all">{{ 'form.header.checkbo.select-all'|trans }}</label>
+                                        <input type="checkbox" value="" data-grouped-checkbox-target=".{{ table.attributeName|e('html_attr') }}-to-select" id="select-all">
+                                    </th>
+                                {% endif %}
+                                {% for column in table.columns %}
+                                    <th class="nowrap" data-orderable="{{ column.orderable ? 'true' : 'false' }}" data-name="{{  column.attribute }}">
+                                        {% if column.iconClass %}
+                                            <i class="{{ column.iconClass }}" aria-hidden="true" title="{{ column.titleKey|trans(column.transLabelOptions)|e('html_attr') }}"></i>
+                                            <span class="sr-only">{{ column.titleKey|trans }}</span>
+                                        {% else %}
+                                            {{ column.titleKey|trans(column.transLabelOptions) }}
+                                        {% endif %}
+                                    </th>
+                                {% endfor %}
+                                {% if table.itemActions|length > 0 %}
+                                    <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for line in table %}
+                                <tr>
+                                    {% if table.supportsTableActions %}
+                                        <td class="{{ table.attributeName|e('html_attr') }}-to-select">
+                                            {{ block('emsco_form_table_column_action_checkbox') }}
+                                        </td>
+                                    {% endif %}
+                                    {% for column in table.columns %}
+                                        {{ block(column.tableDataBlock()) }}
+                                    {% endfor %}
+                                    {% if table.itemActions|length > 0 %}
+                                        <td data-search="">
+                                            {{ block('emsco_form_table_column_row_actions') }}
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {%  endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% if table.supportsTableActions or toolbar is defined %}
+                    <div class="box-footer with-border">
+                        {% if table.supportsTableActions %}
+                            <div class="btn-group">
+                                {% for action in table.tableActions %}
+                                    {{ form_widget(attribute(form, action.name)) }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if toolbar is defined %}
+                            <div class="btn-group">
+                                {{ toolbar }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            {%  if attribute(form, 'reordered') is defined and table.supportsTableActions %}
+                <div class="modal fade" id="{{ table.attributeName|e('html_attr') }}_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="{{ table.attributeName|e('html_attr') }}_modal_reorder_label">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="{{ table.attributeName|e('html_attr') }}_modal_reorder_label">
+                                    <strong>{{ reorder_label|default(form.vars.reorder_label)|trans }}</strong>
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                <ul class="list-group sortable" id="{{ table.attributeName|e('html_attr') }}_modal_reorder_list">
+                                    {% for child in form.reordered %}
+                                        <li class="list-group-item">
+                                            <i class="glyphicon glyphicon-move"></i>
+
+                                            {% for line in table|filter(line => child.vars.value == line.data.id) %}
+                                                {{ attribute(line.data, table.labelAttribute) }}
+                                            {% endfor %}
+                                            {{ form_row( child ) }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="btn-group">
+                                    {{ form_widget(form.reorderAction) }}
+                                    <button type="button" class="btn" data-dismiss="modal"><i class="fa fa-close"></i> {{ 'table.index.button.close'|trans }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

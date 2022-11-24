@@ -1,0 +1,72 @@
+{
+	"name" : "elasticms/core-bundle",
+	"description" : "The elasticms core bundle",
+	"type" : "symfony-bundle",
+	"keywords" : [
+		"elasticms"
+	],
+	"license" : "MIT",
+	"authors" : [
+		{
+			"name" : "EMS Community",
+			"homepage" : "https://github.com/ems-project/EMSFormBundle/contributors"
+		}
+	],
+	"minimum-stability": "RC",
+	"require" : {
+		"php": "^7.4",
+		"ext-libxml": "*",
+		"ext-openssl": "*",
+		"ext-simplexml": "*",
+		"ext-soap": "*",
+		"caxy/php-htmldiff": "^0.1",
+		"doctrine/doctrine-bundle": "^2.7",
+		"doctrine/doctrine-migrations-bundle": "^3.2",
+		"dragonmantank/cron-expression": "^3.1",
+		"elasticms/submission-bundle": "^4.0",
+		"elasticms/xliff": "^1.0",
+		"guzzlehttp/guzzle": "^6.3",
+		"ocramius/doctrine-batch-utils": "2.1",
+		"ramsey/uuid-doctrine": "^1.8",
+		"sensio/framework-extra-bundle": "^6.2",
+		"sensiolabs/ansi-to-html": "^1.1",
+		"symfony/asset": "^5.4",
+		"symfony/cache": "^5.4",
+		"symfony/form": "^5.4",
+		"symfony/ldap": "^5.4",
+		"symfony/mailer": "^5.4",
+		"symfony/monolog-bridge": "^5.4",
+		"symfony/security-bundle": "^5.4",
+		"symfony/twig-bundle": "^5.4",
+		"symfony/validator": "^5.4",
+		"symfony/web-link": "^5.4"
+	},
+	"require-dev" : {
+		"friendsofphp/php-cs-fixer": "^3.0",
+		"phpstan/phpstan": "^1.0",
+		"phpstan/phpstan-doctrine": "^1.3",
+		"phpstan/phpstan-symfony": "^1.2",
+		"symfony/test-pack": "^1.0",
+		"symfony/yaml": "^5.4"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"EMS\\CoreBundle\\" : "src/"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"EMS\\CoreBundle\\Tests\\" : "tests/"
+		}
+	},
+	"config": {
+		"lock": false,
+		"sort-packages": true
+	},
+	"scripts": {
+		"phpcs": "php-cs-fixer fix",
+		"phpstan": "phpstan analyse --memory-limit 1G",
+		"phpunit": "phpunit",
+		"phpall": "php-cs-fixer fix && phpunit && phpstan analyse --memory-limit 1G"
+	}
+}

@@ -1,0 +1,196 @@
+views.data.edit-revision-html.discard-draft-message: 'Modifications made in this draft will be lost'
+views.data.edit-revision-html.publish-label: 'Save and publish in %environment%'
+views.data.edit-revision-html.discard-draft-label: 'Delete this draft'
+views.data.edit-revision-html.cancel-label: 'Discard non-saved modifications'
+views.data.edit-revision-html.subtitle: 'Working area'
+views.data.edit-revision-html.title: 'Edit the %content-type%: "%revision%"'
+views.data.edit-revision-html.new-draft-title: '%content-type%: new draft'
+views.elements.revision-toolbar-html.view-label: 'View this revision'
+views.elements.revision-toolbar-html.edit-draft-label: 'Edit draft'
+views.elements.revision-toolbar-html.cancel-label: Cancel
+views.elements.revision-toolbar-html.cancel-message: 'Cancel last modifications ?'
+views.elements.revision-toolbar-html.edit-revision-json: 'JSON raw edit'
+views.elements.revision-toolbar-html.finalize-draft-message: 'Confirm save and publish ?'
+views.elements.revision-toolbar-html.finalize-draft-label: 'Save and publish in %environment%'
+views.elements.revision-toolbar-html.discard-draft-label: 'Delete this draft'
+views.elements.revision-toolbar-html.discard-draft-message: 'Modification made in this draft will be lost'
+views.elements.revision-toolbar-html.cancel-last-updates-label: 'Cancel non-saved modifications'
+views.elements.revision-toolbar-html.new-draft-label: Edit
+views.elements.revision-toolbar-html.edit-revision-label: 'Edit revision'
+views.elements.revision-toolbar-html.revert-revision-label: 'Revert to this revision'
+views.elements.revision-toolbar-html.re-index-label: Re-index
+views.elements.revision-toolbar-html.publish-to-label: 'Publish to'
+views.elements.revision-toolbar-html.unpublish-from-label: 'Unpublish from'
+form_submissions.overview: Overview
+form_submissions.title: 'Form Submissions'
+view.elements.side-menu.chanel-admin.index-link: Channels
+view.elements.side-menu.release-admin.index-link: Releases
+view.elements.side-menu.query_search.index-link: QuerySearch
+view.icon.class.channel: 'fa fa-eye'
+view.icon.class.release: 'fa fa-cube'
+view.icon.class.query_search: 'fa fa-list-alt'
+views.elements.side-menu-html.anonymous-user: 'Anonymous user'
+views.elements.side-menu-html.quick-search-placeholder: Search...
+views.elements.side-menu-html.quick-search-label: 'Quick search'
+views.elements.side-menu-html.trash: Trash
+views.elements.side-menu-html.publishers: Publishers
+views.elements.side-menu-html.compare-environments: 'Compare environments'
+views.elements.side-menu-html.uploaded-files: 'Uploaded files'
+views.elements.side-menu-html.user-management: 'User management'
+views.elements.side-menu-html.users: Users
+views.elements.side-menu-html.admin: Admin
+views.elements.side-menu-html.content-types: 'Content types'
+views.elements.side-menu-html.environments: Environments
+views.elements.side-menu-html.search: Search
+views.elements.side-menu-html.i18n: I18N
+views.elements.side-menu-html.jobs: Jobs
+views.elements.side-menu-html.analyzers: Analyzers
+views.elements.side-menu-html.filters: Filters
+views.elements.side-menu-html.other: Other
+views.elements.side-menu-html.status: Status
+views.elements.side-menu-html.documentations: Documentations
+views.elements.side-menu-html.wysiwyg: WYSIWYG
+view.action.add.title: 'Add a new action to %contentType%'
+view.action.edit.title: 'Edit the action %action% for %contentType%'
+view.action.index.add.title: 'Add an action'
+view.action.index.title: '%contentType%''s actions'
+view.menu.breadcrumb.content-types: 'Content types'
+not-applicable: N/A
+views.elasticsearch.export-search.title: 'Export documents'
+views.elasticsearch.search.error_title: 'Error with the search result'
+views.elasticsearch.search.pagetitle: Search
+views.elasticsearch.search.subtitle: '%total%'
+views.elasticsearch.search.title: 'Search engine: %total% results'
+views.elasticsearch.search.sort-options: 'Sort options'
+views.elasticsearch.status.cluster-uuid: 'Cluster''s UUID'
+views.elasticsearch.status.tagline: Tagline
+views.elasticsearch.status.node-name: 'Node''s name'
+views.elasticsearch.status.version: 'Elasticsearch''s version'
+views.elasticsearch.status.lucene-version: 'Lucene''s version'
+views.elasticsearch.status.build-date: 'Build date'
+views.elasticsearch.status.certificate-information: 'Certificate''s information'
+views.elasticsearch.status.bits: Bits
+views.elasticsearch.status.certificate-is-missing: 'Certificate is missing'
+views.elasticsearch.status.tika-server: 'Tika server'
+views.elasticsearch.status.tika-server-not-configured: 'Tika server is not configured'
+views.elasticsearch.status.public-key: 'Public key'
+views.elements.revision-toolbar-html.other-revision-actions: 'Other actions on this revision'
+views.elements.revision-toolbar-html.cancel-last-updates-message: 'Cancel non-saved modifications'
+views.elements.revision-toolbar-html.compare-label: 'Compare this revision with the current one'
+views.elements.revision-toolbar-html.other-environment-actions: 'Other environment actions'
+views.data.revisions-data-html.status: Status
+views.data.revisions-data-html.draft-in-progress: 'Draft in progress'
+views.data.revisions-data-html.current-revision: 'Current revision'
+views.data.revisions-data-html.previous-revision: 'Previous revision'
+views.data.revisions-data-html.owner: Owner
+views.data.revisions-data-html.finalized-by: 'Finalized by'
+views.data.revisions-data-html.finalized-on: 'Finalized on'
+views.data.revisions-data-html.all-linked-documents: 'All linked documents'
+views.data.revisions-data-html.no-linked-document: 'This document does not have any linked document'
+task.tab_task: Task
+task.tab_tasks: Tasks
+views.data.revisions-data-html.revision: Revision
+views.data.revisions-data-html.pending: Pending
+views.data.revisions-data-html.nothing: Nothing
+views.data.revisions-data-html.linked-documents-in: 'Linked documents in %environment% (%length%/%total%)'
+views.data.revisions-data-html.title: 'Revisions of %content-type% : %title%'
+views.data.revisions-data-html.revision-draft-in-progress: 'This is a draft in progress'
+views.data.revisions-data-html.revision-current: 'You are viewing the last revision'
+views.data.revisions-data-html.revision-previous: 'This is a revision from the past'
+views.data.revisions-data-html.creation-date: 'Creation date'
+views.data.revisions-data-html.last-update: 'Last update'
+views.data.revisions-data-html.modified-by: 'Modified by'
+views.data.revisions-data-html.revisions.th.id: '#'
+views.data.revisions-data-html.revisions.th.date: Date
+views.data.revisions-data-html.revisions.th.finalize: Finalize
+views.data.revisions-data-html.revisions.th.locked: Locked
+views.data.revisions-data-html.revisions.th.autosave: Autosave
+views.data.revisions-data-html.revisions.th.environments: Environments
+views.data.revisions-data-html.revisions.th.pendings: Pendings
+views.data.revisions-data-html.revisions.th.actions: Actions
+views.elements.object-toolbar-html.view-draft-in-progress: 'View draft in progress'
+views.elements.object-toolbar-html.view-current-revision: 'View current revision'
+views.elements.object-toolbar-html.edit-draft: 'Edit draft'
+views.elements.object-toolbar-html.new-draft: Edit
+views.elements.side-menu-html.uploaded-files-logs: 'Uploaded file logs'
+views.elements.side-menu-html.audit-logs: 'Logs'
+uploaded-file-logs.index.title: 'Uploaded file logs'
+view.icon.class.uploaded-file: 'fa fa-upload'
+uploaded-file-logs.menu: 'Uploaded file logs'
+view.icon.class.dashboard: 'fa fa-dashboard'
+view.elements.side-menu.dashboard-admin.index-link: Dashboards
+dashboard.menu: Dashboards
+dashboard.tagline: 'Customize the lobby'
+dashboard.index.title: 'List of dashboards'
+table.index.button.add: Add
+dashboard.add.title: 'Add a dashboard'
+dashboard.edit.title: 'Edit the dashboard "%label%"'
+ems_core.dashboard.template.icon: 'fa fa-html5'
+ems_core.dashboard.template.label: Template
+ems_core.dashboard.export.icon: 'glyphicon glyphicon-export'
+ems_core.dashboard.export.label: Export
+ems_core.dashboard.revision_task.label: 'Revision tasks'
+views.elements.sidebar-menu-html.dashboards: Dashboards
+views.elements.sidebar-menu-html.content-types: 'Content Types'
+dashboard.exception.title: 'The dashboard %name% raised an exception'
+release.release-revisison.publish: Publish
+release.release-revisison.unpublish: Unpublish
+release.release-revisison.revision: '%date% finalized by %user%'
+release.release-revisison.missing-revision: 'The document %ouuid% is no more available in %environment%'
+release.release-revisison.not-applicable: 'not applicable'
+release.release-revisison.still_in_target: 'Still released in %target%'
+release.release-revisison.no_more_in_target: 'This revision has been unpublished from %target%'
+release.release-revisison.revision-not-applicable: 'Not applicable'
+view.add.title: 'Add a new view for %type%'
+content-type.icon.class: 'fa fa-cubes'
+content-type.menu: 'Content Types'
+content-type.edit: '%type%'
+view.tagline: ''
+view.icon.class: 'fa fa-tv'
+view.list.menu: Views
+view.edit.title: 'Edit view "%name%" for %type%'
+view.index.title: '%type%''s views'
+view.index.add_button: 'Add a View'
+sidebar_menu.content_type.search: 'Search in %plural%'
+sidebar_menu.content_type.search_in_my_circle: 'In my %name%'
+sidebar_menu.content_type.draft_in_progress: 'Draft in progress'
+sidebar_menu.content_type.create: 'New %name%'
+sidebar_menu.content_type.trash: Trash
+view.elements.side-menu.user.searches: Searches
+view.elements.side-menu.user.name: '%name%'
+job.icon.class: 'fa fa-terminal'
+job.menu: Jobs
+schedule.icon.class: 'fa fa-calendar-o'
+schedule.list.menu: Schedule
+schedule.tagline: 'When you are not at work'
+schedule.index.reorder: Reorder
+schedule.index.title: Schedule
+schedule.index.add_button: 'Add a schedule'
+schedule.add.title: 'Add a schedule'
+schedule.edit.title: 'Edit schedule "%name%"'
+views.elements.side-menu-html.logs: 'Job''s logs'
+views.elements.side-menu-html.schedule: Schedule
+log.icon.class: 'fa fa-file-text'
+log.menu: Logs
+log.tagline: 'Who did what'
+log.index.title: Logs
+log.view.title: 'Logs of %created%'
+log.view.user: 'User'
+log.view.impersonator: 'Impersonator'
+log.view.created: 'Created'
+log.view.message: 'Message'
+log.view.level: 'Severity'
+log.view.chanel: 'Channel'
+log.view.context: 'Context'
+log.view.extra: 'Extra'
+view.profile.show.alt.user_profile_picture: 'User profile''s picture'
+view.profile.show.login: 'Login'
+view.profile.show.display_name: 'Display name'
+view.profile.show.email: 'e-mail'
+view.profile.show.locale: 'Locale UI'
+view.profile.show.locale_preferred: 'Locale preferred'
+view.profile.show.email_notification: 'e-mail notification'
+view.profile.show.wysiwyg: 'WYSIWYG profile'
+view.profile.show.action.edit: 'Edit'
+view.profile.show.action.profile.title: 'Your profile'
+view.profile.show.action.cancel: 'Cancel'

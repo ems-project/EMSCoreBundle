@@ -1,0 +1,9 @@
+{% trans_default_domain 'EMSCoreBundle' %}{% extends '@EMSCore/wysiwygprofile/form.html.twig' %}
+
+
+{% block title %} {{ 'New WYSIWYG profile'|trans }} {%endblock %}
+{% block pagetitle %} {{ 'New WYSIWYG profile'|trans }} {% endblock %} 
+{% block box_title %} {{ 'New WYSIWYG profile'|trans }} {% endblock %}
+{% block save_buton %}
+    {{ form_widget(form.save, {'label':'Create'}) }}
+{% endblock %}

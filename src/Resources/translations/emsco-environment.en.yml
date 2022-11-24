@@ -1,0 +1,23 @@
+environment:
+    single: Environment
+    plural: Environments
+    index:
+        title: 'List Environments'
+    edit:
+        title: 'Edit the environment "%name%"'
+        short_title: 'Edit environment'
+        notice_rename: | 
+            If you intend to rename the alias, 
+            please create a new environment and align it to the one you would like to rename the alias.
+            Then delete the previous one.
+        save: 'Update'
+    property:
+        name: Name
+        label: Label
+        color: Color
+        rolePublish: Publish role
+        base_url: 'Base URL'
+        template_publication: 'Publication template'
+        option:
+            default_search: 'In default search'
+            update_referrers: 'Update referrers'

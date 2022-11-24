@@ -1,0 +1,1 @@
+CKEDITOR.plugins.add("imagebrowser",{init:function(e){if(void 0!==e.config.imageBrowser_listUrl&&null!==e.config.imageBrowser_listUrl){var r=e.plugins.imagebrowser.path+"browser/browser.html?listUrl="+encodeURIComponent(e.config.imageBrowser_listUrl);e.config.baseHref&&(r+="&baseHref="+encodeURIComponent(e.config.baseHref)),e.config.filebrowserImageBrowseUrl=r}}});

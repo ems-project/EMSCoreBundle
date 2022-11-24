@@ -1,0 +1,104 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+{%- set ouuid = object.ouuid|default(object._id is defined ? object._id : '') -%}
+{%- set source = object.source|default(object._source is defined ? object._source : []) -%}
+{%- if contentType -%}
+	<div class="btn-group">
+		<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+			<i class="{{ 'views.elements.object-views-button.action-dropdown-icon-class'|trans }}"></i>
+			{{ 'views.elements.object-views-button.action-dropdown-label'|trans({'%environment%': environment.label}) }}
+			<span class="caret"></span>
+			<span class="sr-only">{{ 'views.elements.object-views-button.action-dropdown-sr-only'|trans({'%environment%': environment.label}) }}</span>
+		</button>
+		<ul class="dropdown-menu" role="menu">
+				{% for template in contentType.templates %}
+					{%  if currentTemplate is not defined or template != currentTemplate %}
+					{%if template.role == "not-defined" or is_granted(template.role) and (template.environments is empty or environment in template.environments or template.isEnvironmentExist(environment.name)) %}
+					
+						{% if template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXTERNALLINK') %}
+							{% set link = template.body|generate_from_template({
+									environment: environment,
+									contentType: contentType,
+									object: object,
+									source: source
+								}) %}
+
+    							<li class="{% if not link %}disabled{% endif %}"><a href="{{ link }}" target="_blank">
+    								<i class="{{ template.icon|raw }}"></i>
+    								{{ template.label}}
+    								<i class="fa fa-external-link pull-right"></i>
+    							</a></li>
+
+						{% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::RAW_HTML') %}
+							{%- if (is_granted(template.role)) or template.role == "not-defined" -%}
+								{%- set rawHTML = template.body|generate_from_template({
+									environment: environment,
+									contentType: contentType,
+									object: object,
+									source: source
+								}) -%}
+								{%- if rawHTML != '' -%}<li>{{ rawHTML|raw  }}</li>{%- endif -%}
+							{%- endif -%}
+						{% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::NOTIFICATION') %}
+							{% if ( is_granted(template.role) and ((attribute(source, contentType.circlesField) is not defined) or (source and attribute(source, contentType.circlesField)|in_my_circles) or (environment.circles|in_my_circles and is_granted('ROLE_PUBLISHER')) ) ) %}
+								<li><a href='#' class="request_notification" onclick="requestNotification(this, {{template.id}}, '{{environment.name}}', '{{contentType.id}}' , '{{ouuid}}'); return false;" href="#" data-url="{{ path('notification.ajaxnotification', {'objectId' : ouuid}) }}">
+									<i class="{{ template.icon|raw }}"></i>
+									{{ template.label }}
+								</a></li>
+							{% endif %}
+                        {% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::JOB') %}
+            				{% if (is_granted(template.role)) or template.role == "not-defined" %}
+								<li><a href="#" class="request_job" data-url="{{ path('ems_job_custom_view', {'environmentName': environment.name, 'templateId': template.id, 'ouuid': ouuid}) }}">
+									<i class="{{ template.icon|raw }}"></i>
+									{{ template.label }}
+								</a></li>
+							{% endif %}
+						{% else %}
+							<li><a href="{{ path(template.public?'ems_data_custom_template_public':'ems_data_custom_template_protected', {
+										environmentName: environment.name,
+										ouuid: ouuid,
+										templateId: template.id}) }}" >
+								<i class="{{ template.icon|raw }}"></i>
+								{{ template.label }}
+							</a></li>
+						{% endif %}						
+							
+					
+					{% endif %}	
+					{% endif %}					
+				{% endfor %}
+				{% if is_granted('ROLE_COPY_PASTE') %}
+					<li>
+						<a href="{{ path('revision.copy', {'environment': environment.name, 'type': contentType.name, 'ouuid': ouuid} ) }}">
+							<i class="{{ 'views.elements.object-views-button.copy-data-icon-class'|trans }}"></i>
+							{{ 'views.elements.object-views-button.copy-data'|trans }}
+						</a>
+					</li>
+					{% if not contentType.askForOuuid  %}
+						<li>
+							{% include '@EMSCore/elements/post-button.html.twig' with {
+								'url': path('emsco_duplicate_revision', {'environment': environment.name, 'type': contentType.name, 'ouuid': ouuid}),
+								'label': 'Duplicate',
+								'icon': 'clone',
+								'btnClass': ''
+							}%}
+						</li>
+					{% endif %}
+					<li>
+						<a href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': ouuid} ) }}">
+							<i class="{{ 'views.elements.object-views-button.raw-view-icon-class'|trans }}"></i>
+							{{ 'views.elements.object-views-button.raw-view'|trans }}
+						</a>
+					</li>
+
+				{% endif %}
+		</ul>
+	</div>
+{% else %}
+
+		<a class="btn btn-sm btn-default " href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': object.ouuid} ) }}">
+			<i class="{{ 'views.elements.object-views-button.raw-view-icon-class'|trans }}"></i>
+			{{ 'views.elements.object-views-button.raw-view'|trans }}
+		</a>
+{% endif %}	
+	
+

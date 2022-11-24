@@ -1,0 +1,19 @@
+
+{% if attribute(parent, view.options.field) is defined %}
+    {% for child in attribute(parent, view.options.field) %}
+    	{% set data = child|data %}
+    	{% if data %}
+    		{% set key = child|split(':') %}
+    	    {% set contentType = key[0]|get_content_type %}
+
+            {% include "@EMSCore/view/custom/hierarchical_add_item.html.twig" with {
+        		parent: data,
+            	view: view,
+            	key: key,
+            	contentType: contentType,
+            	child: child
+        	} %}  
+        {% endif %}
+    
+    {% endfor %}
+{% endif %}

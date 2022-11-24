@@ -1,0 +1,82 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <defaults public="false" />
+
+        <service id="app.twig_extension" alias="EMS\CoreBundle\Twig\AppExtension" public="true"/>
+        <service id="EMS\CoreBundle\Twig\AppExtension">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="ems.service.user" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="router" />
+            <argument type="service" id="twig" />
+            <argument type="service" id="ems.form.factories.objectChoiceListFactory" />
+            <argument type="service" id="logger" />
+            <argument type="service" id="form.factory" />
+            <argument type="service" id="ems.service.file" />
+            <argument type="service" id="ems_common.twig.runtime.request" />
+            <argument type="service" id="ems_core.core_mail.mailer_service" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="ems.service.search" />
+            <argument type="service" id="EMS\CommonBundle\Twig\AssetRuntime" />
+            <argument>%ems_core.asset_config%</argument>
+            <tag name="twig.extension" priority="-2000" />
+        </service>
+
+        <service id="app.twig_extension_revision" alias="EMS\CoreBundle\Twig\RevisionRuntime"/>
+        <service id="EMS\CoreBundle\Twig\RevisionRuntime">
+            <argument type="service" id="ems.service.revision"/>
+            <tag name="twig.runtime" priority="-2000" />
+        </service>
+        <service id="app.twig_extension_user" alias="EMS\CoreBundle\Twig\UserRuntime"/>
+        <service id="EMS\CoreBundle\Twig\UserRuntime">
+            <argument type="service" id="ems.repository.user"/>
+            <tag name="twig.runtime" priority="-2000" />
+        </service>
+
+        <service id="app.twig.extension.stringloader" class="Twig\Extension\StringLoaderExtension">
+            <tag name="twig.extension" />
+        </service>
+
+        <service id="ems.twig.runtime.datatable" alias="EMS\CoreBundle\Twig\DatatableRuntime"/>
+        <service id="EMS\CoreBundle\Twig\DatatableRuntime">
+            <argument type="service" id="ems.service.datatable"/>
+            <argument type="service" id="twig"/>
+            <tag name="twig.runtime"/>
+        </service>
+
+        <service id="emsco.twig.environment_runtime" class="EMS\CoreBundle\Twig\EnvironmentRuntime">
+            <argument type="service" id="ems.service.environment"/>
+            <tag name="twig.runtime"/>
+        </service>
+
+        <service id="ems_core.twig.core_runtime" class="EMS\CoreBundle\Twig\CoreRuntime">
+            <argument type="service" id="logger"/>
+            <tag name="twig.runtime"/>
+        </service>
+
+        <service id="ems_core.core_revision_wysiwyg.wysiwyg_runtime" class="EMS\CoreBundle\Core\Revision\Wysiwyg\WysiwygRuntime">
+            <argument type="service" id="ems.service.wysiwyg_styles_set"/>
+            <argument type="service" id="ems.service.user"/>
+            <argument type="service" id="router"/>
+            <tag name="twig.runtime" />
+        </service>
+
+        <service id="ems.twig.runtime.i18n" class="EMS\CoreBundle\Twig\I18nRuntime">
+            <argument type="service" id="ems.service.i18n"/>
+            <argument type="service" id="ems.service.user"/>
+            <argument>%ems_core.fallback_locale%</argument>
+            <tag name="twig.runtime" />
+        </service>
+
+        <service id="ems.twig.runtime.data_extractor" class="EMS\CoreBundle\Twig\DataExtractorRuntime">
+            <argument type="service" id="ems.service.asset_extractor"/>
+            <tag name="twig.runtime" />
+        </service>
+
+    </services>
+</container>

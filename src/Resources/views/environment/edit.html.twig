@@ -1,0 +1,52 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-environment' %}
+
+{% block title %}{{ 'environment.edit.title'|trans({ '%name%': environment.name }) }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><i class="fa fa-database"></i> {{ 'environment.plural'|trans }}</li>
+		<li><a href={{ path('environment.index') }}>{{ 'environment.index.title'|trans }}</a></li>
+   		<li class="active">{{ 'environment.edit.short_title'|trans }}</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="box box-info">
+			<div class="box-header with-border">
+				<h3 class="box-title">{{ block('title') }}</h3>
+			</div>
+			{{ form_start(form) }}
+				<div class="box-body">
+					<div class="row">
+						<div class="col-md-4">
+							{{ form_row(form.name) }}
+							{{ form_row(form.label) }}
+							{{ form_row(form.color) }}
+							{{ form_row(form.rolePublish) }}
+
+							{% if form.circles is defined %}
+								{{ form_row(form.circles) }}
+							{% endif %}
+						</div>
+						<div class="col-md-8">
+							{{ form_row(form.inDefaultSearch) }}
+							{{ form_row(form.updateReferrers) }}
+							{{ form_row(form.baseUrl) }}
+							{{ form_row(form.templatePublication) }}
+						</div>
+					</div>
+
+				</div>
+				<div class="box-footer">
+					<div class="btn-group">
+						{{ form_widget(form.save) }}
+					</div>
+				</div>
+			{{ form_end(form) }}
+		</div>
+	</div>
+</div>
+{% include '@EMSCore/app/menu.html.twig' with { 'item':  'environment-list'}%}
+{% endblock %}

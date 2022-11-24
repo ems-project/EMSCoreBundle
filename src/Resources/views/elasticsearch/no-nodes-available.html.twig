@@ -1,0 +1,26 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-twigs' %}
+
+
+{% block title %}No node available{% endblock %}
+{% block pagetitle %}No node available{% endblock %} 
+{% block subtitle %}<small>Something goes wrong</small>{% endblock %}
+{% block body %}
+<div class="col-md-12">
+	<div class="box box box-solid">
+		<div class="box-header with-border bg-red">
+			<h3 class="box-title">
+				<i class="icon fa fa-ban fa-2x"></i>  No node available for the following cluster
+			</h3>
+			<ul>
+				{% for server in cluster %}
+					<li>{{server}}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+
+</div>
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'elasticsearch-status'
+}%}
+{% endblock %}

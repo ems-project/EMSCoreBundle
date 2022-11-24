@@ -1,0 +1,25 @@
+{% extends '@EMSCore/base.html.twig' %} {% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %} Publish search result {%endblock %} 
+{% block pagetitle %} Publish search result {% endblock %} 
+
+{% block body %}
+	<div class="row">
+		<div class="col-md-12">
+			{{ form_start(form) }}
+			<div class="box box-primary">
+	        	<div class="box-header with-border">
+	        		<h3>Publish <span class="text-{{ contentType.color }}"><strong>{{counter}}</strong> {{ contentType.pluralName }} <i class="{{ contentType.icon }}"></i></span> from <span class="text-{{ fromEnvironment.color }}">{{ fromEnvironment.name }}</span></h3>
+	            </div>
+	        	<div class="box-body">
+	        		
+					{{ form_row(form.toEnvironment) }}
+	            </div>
+	        	<div class="box-footer with-border">
+					{{ form_row(form.publish) }}
+	            </div>
+			</div>
+			{{ form_end(form) }}
+		</div>
+	</div>
+{% endblock %} 

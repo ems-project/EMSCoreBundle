@@ -1,0 +1,15 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'Documentation'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'Documentation'|trans }}{% endblock %}
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><i class="fa fa-book"></i> {{ 'Documentation'|trans }}</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+
+    {{ 'ems.documentation.body'|i18n|generate_from_template|raw }}
+
+{% endblock %}

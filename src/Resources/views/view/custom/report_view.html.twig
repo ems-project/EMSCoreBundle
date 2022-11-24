@@ -1,0 +1,28 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+
+{% block extraheader %}{{ header|raw }}{% endblock %}
+
+{% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
+{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %} 
+{# {% block subtitle %}<!-- TODO -->{% endblock %} #}
+
+
+{% block body %}
+	
+<div class="box with-border">
+	<div class="box-body" style="display: block;">
+		{{ render|raw }}
+    </div>
+    <!-- /.box-body -->
+</div>
+{% include '@EMSCore/app/menu.html.twig' with {
+    'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
+}%}
+
+{% endblock %} 
+
+
+{% block javascripts %}
+    {{ javascript|raw }}
+{% endblock %}	

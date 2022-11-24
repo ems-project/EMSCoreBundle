@@ -1,0 +1,48 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+<div class="box entity-box">
+	<div class="box-header with-border">
+		<i class="{{ icon }}"></i>
+		<h3 class="box-title">{{ title }}</h3>
+		<div class="btn-group  pull-right">
+			<a class="btn btn-xs btn-primary" href="{{ path(add_route) }}"><i class="fa fa-plus"></i> {{ add_label }}</a>
+		</div>
+	</div>
+	<!-- /.box-header -->
+	{% if entities|length %}
+		<div class="box-body no-padding">
+            {{ form_start(form) }}
+			<ol class="nested-sortable vertical">
+				{% for entity in entities %}
+					<li id="{{ entity.id }}" class="mjs-nestedSortable-no-nesting mjs-nestedSortable-leaf">
+        				<div class="box-header ui-sortable-handle">
+							<div class="pull-right box-tools ui-sortable-handle">
+								<div class="btn-group">
+                                    {% include '@EMSCore/elements/get-button.html.twig' with {
+										'url':  path(edit_route, {'id': entity.id}),
+										'label': 'Edit',
+										'icon': 'pencil'
+									}%}
+								</div>
+							</div>
+							<h3 class="box-title">{{ entity.name }}</h3>
+						</div>
+					</li>
+				{% endfor %}
+			</ol>
+		    <div>
+		    	<div class="box-footer">
+    				<div class="btn-group">
+    				    {{ form_widget(form.reorder) }}
+    				</div>
+        		</div>
+        	</div>
+		    {{ form_end(form) }}
+    		<!-- /.box-footer -->
+    	</div>
+	{% else %}
+		<div class="box-body">
+		    {{missing_label}}
+		</div>
+	{% endif %}
+	<!-- /.box-body -->
+</div>

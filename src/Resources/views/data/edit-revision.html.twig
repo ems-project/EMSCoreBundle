@@ -1,0 +1,91 @@
+{% extends '@EMSCore/data/abstract-revision.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block subtitle %}<small>{{ 'views.data.edit-revision-html.subtitle'|trans }}</small>{% endblock %}
+
+
+{% block body %}
+<div class="box box-primary" id="revision-primary-box"
+	data-update-mode="
+		{%- if not revision.draft -%}
+			disabled
+		{%- elseif revision.contentType.autoPublish -%}
+			autoPublish
+		{%- else -%}
+			autoSave
+		{%- endif -%}"
+	data-ajax-update="{{ path('revision.ajaxupdate', { revisionId: revision.id })|e('html_attr') }}">
+	<div class="box-header with-border">
+		<h3 class="box-title text-{{ revision.contentType.color }}"><i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %} "></i>&nbsp;&nbsp;&nbsp;{{ revision.contentType.singularName }}</h3>
+	</div>
+		{{ form_start(form) }}
+		<div class="box-body">
+    	    {{- form_errors(form) -}}
+    	    {{- form_errors(form.data) -}}
+			{{ form_widget(form.data) }}
+		</div>
+		<div class="box-footer">
+			{% if revision.draft and form.publish is defined %}
+				{{ form_widget(form.publish) }}
+			{% endif %}
+
+			{% if form.save is defined and app.user.userOptions.enabled('simplified_ui') == false %}
+				<div class="btn-group">
+					{{ form_widget(form.save) }}
+					<div class="btn-group">
+						<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+							<span class="fa fa-ellipsis-h"></span>
+						</button>
+						<ul class="dropdown-menu">
+							{% if form.copy is defined %}
+								<li>{{ form_widget(form.copy) }}</li>
+							{% endif %}
+							{% if form.paste is defined %}
+								<li>{{ form_widget(form.paste) }}</li>
+							{% endif %}
+							<li>
+								{% include '@EMSCore/elements/post-button.html.twig' with {
+									'url': path('revision.cancel', {'revision': revision.id}),
+									'btnClass': '',
+									'label': 'views.data.edit-revision-html.cancel-label'|trans,
+									'icon': 'remove'
+								}%}
+							</li>
+						</ul>
+					</div>
+				</div>
+			{% endif %}
+
+			{% if revision.draft %}
+				{% include '@EMSCore/elements/post-button.html.twig' with {
+					'url': path('revision.discard', {'revisionId': revision.id, 'type': revision.contentType.name}),
+					'message': 'views.data.edit-revision-html.discard-draft-message'|trans,
+					'btnType': 'outline-danger',
+					'label': 'views.data.edit-revision-html.discard-draft-label'|trans,
+					'icon': 'trash',
+					'group_class': 'pull-right',
+				}%}
+			{% endif %}
+		</div>
+		{{ form_end(form) }}
+</div>
+
+{% if revision.draft %}
+	{% include '@EMSCore/app/menu.html.twig' with {
+		'item':  'data-draft-' ~ revision.contentType.id
+	}%}
+{% else %}
+	{% include '@EMSCore/app/menu.html.twig' with {
+		'item':  'data-index-' ~ revision.contentType.id
+	}%}
+{% endif %}
+
+{% endblock %}
+
+{% block frontend_application_css %}
+	<link rel="stylesheet" href="{{ asset('edit-revision.css', 'emscore') }}">
+{% endblock %}
+
+{% block frontend_application_js %}
+	<script src="{{ asset('edit-revision.js', 'emscore') }}"></script>
+{% endblock %}

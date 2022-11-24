@@ -1,0 +1,19 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'channel.add.title'|trans }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path('ems_core_channel_index') }}"><i class="{{ 'view.icon.class.channel'|trans }}"></i> {{ 'channel.menu'|trans }}</a></li>
+		<li>{{ block('title') }}</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+    {% include "@EMSCore/channel/form.html.twig" with {
+    	label: 'channel.add.title',
+		save_action_key: 'channel.add.save',
+    } %}
+{% endblock %}

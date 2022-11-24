@@ -1,0 +1,46 @@
+{%- trans_default_domain 'emsco-twigs' -%}
+{% extends '@EMSCore/layout.html.twig' %}
+
+{% block title %}Your profile{% endblock %}
+{% block pagetitle %}Your profile{% endblock %}
+{% block subtitle %}{% endblock %}
+
+{% block content %}
+    {{ form_start(form, { 'action': path(routes.USER_PROFILE_EDIT) }) }}
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Edit your profile</h3>
+                </div>
+                <div class="box-body">
+                    {{ form_row(form.displayName) }}
+                    {{ form_row(form.email) }}
+                    {{ form_row(form.emailNotification) }}
+                    {{ form_row(form.current_password) }}
+
+                    {{ form_row(form.layoutBoxed) }}
+                    {{ form_row(form.sidebarMini) }}
+                    {{ form_row(form.sidebarCollapse) }}
+
+                    {{ form_row(form.userOptions) }}
+
+                    {{ form_row(form.locale) }}
+                    {{ form_row(form.localePreferred) }}
+
+                    {% if form.wysiwygProfile is defined %}
+                        {% include "@EMSCore/user/wysiwygOptions.html.twig" with {
+                            form: form
+                        } %}
+                    {% endif %}
+                </div>
+                <div class="box-footer">
+                    {{ form_row(form._token) }}
+                    <input type="submit" value="Update" class="btn btn-primary"/>
+                    <a href="{{ path(routes.USER_PROFILE) }}" class="btn pull-right btn-default">{{ 'view.profile.show.action.cancel'|trans }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock content %}

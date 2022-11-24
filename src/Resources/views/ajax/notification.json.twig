@@ -1,0 +1,29 @@
+{
+   "acknowledged": true,
+   	{% set notice = app.session.flashbag.get('notice')  %}
+	{% if notice %}
+		"notice": {{ notice|json_encode|raw }},
+	{% endif %}
+	{% set warning = app.session.flashbag.get('warning')  %}
+	{% if warning %}
+		"warning": {{ warning|json_encode|raw }},
+	{% endif %}
+	{% set error = app.session.flashbag.get('error')  %}
+	{% if error %}
+		"error": {{ error|json_encode|raw }},
+	{% endif %}
+  {% if revision_id is defined %}
+		"revision_id": {{ revision_id|json_encode|raw }},
+	{% endif %}
+  {% if ouuid is defined %}
+    "ouuid": {{ ouuid|json_encode|raw }},
+  {% endif %}
+  {% if uuid is defined %}
+    "uuid": {{ uuid|json_encode|raw }},
+  {% endif %}
+  {% if type is defined %}
+    "type": {{ type|json_encode|raw }},
+  {% endif %}
+	{% block body %}{% endblock %}
+   "success": {{ success|json_encode|raw }}
+}

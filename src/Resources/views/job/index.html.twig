@@ -1,0 +1,96 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}Job's list{% endblock %}
+{% block pagetitle %}Job's list{% endblock %} 
+{% block subtitle %}<small>Running process</small>{% endblock %} 
+
+
+{% block body %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-database"></i>
+				<h3 class="box-title">Jobs</h3>
+				<div class="btn-group  pull-right">
+                    {% include '@EMSCore/elements/get-button.html.twig' with {
+						'url':  path('job.add'),
+						'label': 'New job',
+						'icon': 'plus'
+					}%}
+                    {% include '@EMSCore/elements/post-button.html.twig' with {
+						'url':  path('job.clean'),
+						'message': 'Clean done jobs ?',
+						'label': 'Clean',
+						'icon': 'trash'
+					}%}
+				</div>
+				
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				<div class="table-responsive">
+				<table class="table table-condensed table-striped">
+					<tbody>
+						<tr>
+							<th class="text-center" style="width: 10px">#</th>
+							<th>Started</th>
+							<th>Last update</th>
+							<th>Command/Service</th>
+							<th>Status</th>
+							<th>Action</th>
+						</tr>
+						{% for job in jobs %}
+							<tr>
+								<td class="text-center" style="width: 10px">{{ from+loop.index }}</td>
+								<td>{{ job.created|date(date_time_format) }}</td>
+								<td>{{ job.modified|date(date_time_format) }}</td>
+								<td>{{ job.command }}</td>
+								<td>
+									<div class="progress-group">
+					                    <span class="progress-text">{{ job.status }}</span>
+					                    <span class="progress-number"><b>{{ job.progress }}</b>/100</span>
+					
+					                    <div class="progress sm">
+					                      <div class="progress-bar progress-bar-aqua" style="width: {{ job.progress }}%"></div>
+					                    </div>
+				                 	</div>
+								</td>
+								<td>
+									<div class="btn-group">
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
+											'url':  path('job.status', {'job': job.id}),
+											'label': 'Status',
+											'icon': 'eye'
+										}%}
+                                        {% include '@EMSCore/elements/post-button.html.twig' with {
+											'url':  path('job.delete', {'job': job.id}),
+											'message': 'Do you confirm ?',
+											'label': 'Delete',
+											'icon': 'trash'
+										}%}
+									</div>
+								</td>
+							</tr>						
+						{% endfor %}
+					</tbody>
+				</table>
+				</div>
+			</div>
+			<!-- /.box-body -->
+			<div class="box-footer with-border">
+                {% include '@EMSCore/elements/pagination.html.twig' with {
+					'lastPage': lastPage,
+					'currentPage': page,
+					'currentFilters': app.request.query,
+					'paginationPath': paginationPath,
+					'showAlwaysFirstAndLast': false
+				} %}
+			</div>
+		</div>
+	</div>
+</div>
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'job-index'
+}%}
+{% endblock %}

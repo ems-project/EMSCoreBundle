@@ -1,0 +1,32 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('emsco_dashboard', {name: dashboard.name}) }}"><i class="{{ dashboard.icon }}"></i> {{ dashboard.label }}</a></li>
+        {% block breadcrumb_items %}{% endblock breadcrumb_items %}
+    </ol>
+{% endblock %}
+
+{% block title %}{{ dashboard.label }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+{% block subtitle %}{% endblock %}
+
+
+{% block extraheader %}
+    {%- if options.header is defined -%}
+        {{- include(template_from_string(options.header, "Header template for Dashboard " ~ dashboard.name)) -}}
+    {%- endif -%}
+{% endblock %}
+
+{% block body %}
+    {%- if options.body is defined -%}
+        {{- include(template_from_string(options.body, "Body template for Dashboard " ~ dashboard.name)) -}}
+    {%- endif -%}
+{% endblock %}
+
+{% block javascripts %}
+    {%- if options.footer is defined -%}
+        {{- include(template_from_string(options.footer, "Footer template for Dashboard " ~ dashboard.name)) -}}
+    {%- endif -%}
+{% endblock %}

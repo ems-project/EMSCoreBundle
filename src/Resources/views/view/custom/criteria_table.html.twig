@@ -1,0 +1,198 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ view.name }} for {{view.contentType.pluralName}}{% endblock %}
+{% block pagetitle %}{{ view.name }} for {{view.contentType.pluralName}}{% endblock %}
+
+
+{% block body %}
+		{% set criteriaFilters = {} %}
+		
+		
+		<div style="display: none;">
+			{{ form_start(form) }}
+			{{ form_end(form) }}
+		</div>
+
+	 	<form role="form" id="criteria-form"
+			data-api-search="{{ path("elasticsearch.api.search")|e('html_attr') }}"
+			data-category="{{ config.category.rawData|default('')|e('html_attr') }}"
+			data-environment-name="{% if targetContentType %}{{ targetContentType.environment.name|e('html_attr') }}{% else %}{{ view.contentType.environment.name|e('html_attr') }}{% endif %}"
+			data-type-name="{% if targetContentType %}{{ targetContentType.name|e('html_attr') }}{% else %}{{ view.contentType.name|e('html_attr') }}{% endif %}"
+			data-add-url="{{ path('views.criteria.add', {view: view.id}) |e('html_attr') }}"
+			data-remove-url="{{ path('views.criteria.remove', {view: view.id})|e('html_attr') }}"
+			data-criteria-field="{{ view.options.criteriaField|e('html_attr') }}"
+			data-revision-url="{{ path('data.revisions', {type: '__type__' , ouuid: '__ouuid__' })|e('html_attr') }}">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">
+				{{ view.contentType.pluralName }}			
+				
+				{% if config.criterion|length > 2 %}
+					for criterion 				
+					{% for index, criterion in config.criterion %}	
+							{% if criterion.rawData|length == 1 %}
+								{% for item in criterion.rawData %}
+									{% set criteriaFilters = criteriaFilters|merge({(index):item}) %}
+									<span class="label label-primary">{{ attribute(attribute(criteriaChoiceLists, criterion.fieldType.name), item).label|raw }}</span>
+								{% endfor %}
+
+							{% endif %}
+						
+					{% endfor %}
+				{% endif %}
+				
+				{% if config.category and config.category.rawData %}
+					filtered by 
+					<strong>
+						<span class="label label-primary">{{ attribute(categoryChoiceList, config.category.rawData).label|raw }}</span>
+					</strong>
+				{% endif %}
+				</h3>
+				
+				<div class="btn-group  pull-right">
+                    {% include '@EMSCore/elements/post-button.html.twig' with {
+						'url': app.request.requestUri,
+						'label': 'Update filters',
+						'icon': 'sliders',
+						'destinationFormName': 'criteria_filter' }%}
+				</div>
+				
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				<div class="dataTables_wrapper form-inline dt-bootstrap">
+						<div class="table-responsive">
+							<table id="CriteriaUpdateCustomViewTable"
+								class="table table-bordered table-striped dataTable" role="grid"
+								aria-describedby="example1_info" data-filters="{{ criteriaFilters|json_encode }}" >
+								<thead>
+									<tr role="row">
+										<th rowspan="1" colspan="1">&nbsp;</th>
+										{% for columnIdx in table|first|keys %}
+											{% if loop.index is divisible by(10) and loop.revindex >= 5 %}		
+												<th>&nbsp;</th>
+											{% endif %}
+											<th rowspan="1" colspan="1" nowrap>
+												{% if authorized %}
+                                                    {% include '@EMSCore/elements/post-button.html.twig' with {
+														'url': app.request.requestUri,
+														'destinationFormName': 'criteria_filter',
+														'action': path('views.criteria.align', {view: view.id}),
+														'name': 'alignOn',
+														'value': 'col:'~columnIdx,
+														'rawlabel': attribute(columns, columnIdx).label,
+														'message': 'Align table based on this column?' }%}
+												{% else %}
+													{{ attribute(columns, columnIdx).label|raw }}
+												{% endif %}
+											</th>	
+										{% endfor %}
+										<th rowspan="1" colspan="1">&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for rowIdx in table|keys %}
+										{% if loop.index is divisible by(10) and loop.revindex >= 5 %}
+											<tr role="row">
+												<th>&nbsp;</th>
+												{% for columnIdx in table|first|keys %}
+													{% if loop.index is divisible by(10) and loop.revindex >= 5 %}		
+														<th>&nbsp;</th>
+													{% endif %}
+													<th rowspan="1" colspan="1" nowrap>{{ attribute(columns, columnIdx).label|raw }}</th>	
+												{% endfor %}
+												<th>&nbsp;</th>
+											</tr>
+										{% endif %}
+										
+										<tr role="row">
+											<th nowrap>
+											{% if authorized %}
+                                                {% include '@EMSCore/elements/post-button.html.twig' with {
+													'url': app.request.requestUri, 
+													'rawlabel': attribute(rows, rowIdx).label|raw,
+													'destinationFormName': 'criteria_filter',
+													'action': path('views.criteria.align', {view: view.id}),
+													'name': 'alignOn',
+													'value': 'row:'~rowIdx,
+													'message': 'Align table based on this line?' }%}
+											{% else %}
+												{{ attribute(rows, rowIdx).label|raw }}
+											{% endif %}
+											
+											</th>
+											{% for col in attribute(table, rowIdx) %}
+												{% if loop.index is divisible by(10) and loop.revindex >= 5 %}		
+													<th nowrap>{{ attribute(rows, rowIdx).label|raw }}</th>
+												{% endif %}
+												<td class="row" data-filters="{{ {(rowFieldType.name):rowIdx, (columnFieldType.name):attribute(table|first|keys, loop.index0) }|json_encode }}">
+								                  <select style="width: 100%" multiple {% if not authorized %}disabled{% endif %}>
+								                  	{% for card in col %}
+									                    <option data-status="added" value="{{ card.value }}" selected{% if card.color %} data-color="{{ card.color }}"{% endif %}>{{ card.label }}</option>
+								                  	{% endfor %}
+								                  </select>
+												</td>
+											{% endfor %}
+											<th nowrap>
+												{% if authorized %}
+                                                    {% include '@EMSCore/elements/post-button.html.twig' with {
+														'url': app.request.requestUri, 
+														'rawlabel': attribute(rows, rowIdx).label|raw,
+														'destinationFormName': 'criteria_filter',
+														'action': path('views.criteria.align', {view: view.id}),
+														'name': 'alignOn',
+														'value': 'row:'~rowIdx,
+														'message': 'Align table based on this line?' }%}
+												{% else %}
+													{{ attribute(rows, rowIdx).label|raw }}
+												{% endif %}
+											</th>
+										</tr>
+									{% endfor %}
+								</tbody>
+								<tfoot>
+									<tr>
+										<th rowspan="1" colspan="1">&nbsp;</th>
+										{% for columnIdx in table|first|keys %}
+											{% if loop.index is divisible by(10) and loop.revindex >= 5 %}		
+												<th>&nbsp;</th>
+											{% endif %}
+											<th rowspan="1" colspan="1" nowrap>
+												{% if authorized %}
+                                                    {% include '@EMSCore/elements/post-button.html.twig' with {
+														'url': app.request.requestUri,
+														'destinationFormName': 'criteria_filter',
+														'action': path('views.criteria.align', {view: view.id}),
+														'name': 'alignOn',
+														'value': 'col:'~columnIdx,
+														'rawlabel': attribute(columns, columnIdx).label,
+														'message': 'Align table based on this column?' }%}
+												{% else %}
+													{{ attribute(columns, columnIdx).label|raw }}
+												{% endif %}
+											</th>	
+										{% endfor %}
+										<th rowspan="1" colspan="1">&nbsp;</th>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+				</div>
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</form>
+
+    {% include '@EMSCore/app/menu.html.twig' with {
+        'item':  'data-view-'~ view.contentType.id ~ '-' ~ view.id
+    }%}
+
+{% endblock %}
+
+{% block frontend_application_css %}
+	<link rel="stylesheet" href="{{ asset('criteria-table.css', 'emscore') }}">
+{% endblock %}
+
+{% block frontend_application_js %}
+	<script src="{{ asset('criteria-table.js', 'emscore') }}"></script>
+{% endblock %}

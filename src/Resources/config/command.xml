@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- EMS content-type -->
+        <service id="ems.contenttype.lock" class="EMS\CoreBundle\Command\LockCommand">
+            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.contenttype.transform" class="EMS\CoreBundle\Command\ContentType\TransformCommand">
+            <argument type="service" id="ems_core.core_revision_search.revision_searcher"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems_core.core_content_type_transformer.content_transformer"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- EMS environment -->
+        <service id="ems_core.command_environment.abstract_environment_command" class="EMS\CoreBundle\Command\Environment\AbstractEnvironmentCommand" abstract="true">
+            <argument type="service" id="ems_core.core_revision_search.revision_searcher" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="ems.service.publish" />
+        </service>
+        <service id="ems_core.command_environment.align_command" class="EMS\CoreBundle\Command\Environment\AlignCommand" parent="ems_core.command_environment.abstract_environment_command">
+            <tag name="console.command"/>
+        </service>
+        <service id="ems_core.command_environment.unpublish_command" class="EMS\CoreBundle\Command\Environment\UnpublishCommand" parent="ems_core.command_environment.abstract_environment_command">
+            <tag name="console.command"/>
+        </service>
+
+        <!-- EMS revision -->
+        <service id="ems.command.revision.archive" class="EMS\CoreBundle\Command\Revision\ArchiveCommand">
+            <argument type="service" id="ems_core.core_revision_search.revision_searcher"/>
+            <argument type="service" id="ems.service.revision"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.command.revision.copy" class="EMS\CoreBundle\Command\Revision\CopyCommand" >
+            <argument type="service" id="ems_core.core_revision_search.revision_searcher" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="ems.service.revision" />
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.command.revision.delete" class="EMS\CoreBundle\Command\Revision\DeleteCommand">
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.publish" />
+            <tag name="console.command"/>
+            <tag name="console.command" command="ems:contenttype:delete" />
+        </service>
+        <service id="ems.command.revision.time_machine" class="EMS\CoreBundle\Command\Revision\TimeMachineCommand">
+            <argument type="service" id="ems.service.revision"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems.service.index"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.command_revision.task_create_command" class="EMS\CoreBundle\Command\Revision\TaskCreateCommand">
+            <argument type="service" id="ems_core.core_revision_search.revision_searcher"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems.service.user"/>
+            <argument type="service" id="ems_core.core_revision_task.task_manager"/>
+            <tag name="console.command"/>
+        </service>
+        <!-- EMSCO release -->
+        <service id="emsco.release.publish" class="EMS\CoreBundle\Command\Release\PublishReleaseCommand">
+            <argument type="service" id="ems.service.release"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="emsco.release.create" class="EMS\CoreBundle\Command\Release\CreateReleaseCommand">
+            <argument type="service" id="ems.service.release"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.revision"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- EMS notification -->
+        <service id="ems.command.notification.bulk_action" class="EMS\CoreBundle\Command\Notification\BulkActionCommand">
+            <argument type="service" id="ems.service.notification"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.revision"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.command.notification.send" class="EMS\CoreBundle\Command\Notification\SendAllCommand">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems.service.notification"/>
+            <argument>%ems_core.notification_pending_timeout%</argument>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.command.check.aliases" class="EMS\CoreBundle\Command\Check\AliasesCheckCommand">
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems.service.alias"/>
+            <argument type="service" id="ems.service.job"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.command.asset.head" class="EMS\CoreBundle\Command\Asset\HeadAssetCommand">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.file"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="ems_core.command_user.abstract_user_command" class="EMS\CoreBundle\Command\User\AbstractUserCommand" abstract="true">
+            <argument type="service" id="emsco.manager.user" />
+        </service>
+        <service id="ems.command.activate_user" class="EMS\CoreBundle\Command\User\ActivateUserCommand" parent="ems_core.command_user.abstract_user_command">
+            <tag name="console.command"/>
+            <tag name="console.command" command="fos:user:activate" />
+        </service>
+        <service id="ems.command.change_password" class="EMS\CoreBundle\Command\User\ChangePasswordCommand" parent="ems_core.command_user.abstract_user_command">
+            <tag name="console.command"/>
+            <tag name="console.command" command="fos:user:change-password" />
+        </service>
+        <service id="ems.command.create_user" class="EMS\CoreBundle\Command\User\CreateUserCommand" parent="ems_core.command_user.abstract_user_command">
+            <tag name="console.command"/>
+            <tag name="console.command" command="fos:user:create" />
+        </service>
+        <service id="ems.command.deactivate_user" class="EMS\CoreBundle\Command\User\DeactivateUserCommand" parent="ems_core.command_user.abstract_user_command">
+            <tag name="console.command"/>
+            <tag name="console.command" command="fos:user:deactivate" />
+        </service>
+        <service id="ems.command.demote_user" class="EMS\CoreBundle\Command\User\DemoteUserCommand" parent="ems_core.command_user.abstract_user_command">
+            <tag name="console.command"/>
+            <tag name="console.command" command="fos:user:demote" />
+        </service>
+        <service id="ems.command.promote_user" class="EMS\CoreBundle\Command\User\PromoteUserCommand" parent="ems_core.command_user.abstract_user_command">
+            <tag name="console.command"/>
+            <tag name="console.command" command="fos:user:promote" />
+        </service>
+        
+        <service id="ems.command.xliff.extract" class="EMS\CoreBundle\Command\Xliff\ExtractCommand">
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.internationalization.xliff"/>
+            <argument type="service" id="ems_common.twig.runtime.asset"/>
+            <argument>%ems_core.default_bulk_size%</argument>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.command.xliff.update" class="EMS\CoreBundle\Command\Xliff\UpdateCommand">
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems.service.internationalization.xliff"/>
+            <argument type="service" id="ems.service.publish"/>
+            <argument type="service" id="ems.service.revision"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.command.revision.discard-drafts" class="EMS\CoreBundle\Command\Revision\DiscardDraftCommand">
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="ems.service.revision"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="ems.contenttype.migrate" class="EMS\CoreBundle\Command\MigrateCommand">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.document"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.make.document" class="EMS\CoreBundle\Command\DocumentCommand">
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.document"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument>%ems_core.default_bulk_size%</argument>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.contenttype.export" class="EMS\CoreBundle\Command\ExportDocumentsCommand">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.template"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems_common.twig.runtime.asset"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument>%ems_core.instance_id%</argument>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.environment.rebuild" class="EMS\CoreBundle\Command\RebuildCommand">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems.environment.reindex"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.mapping"/>
+            <argument type="service" id="ems.service.alias"/>
+            <argument>%ems_core.instance_id%</argument>
+            <argument>%ems_core.default_bulk_size%</argument>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.delete.orphans" class="EMS\CoreBundle\Command\DeleteOrphanIndexesCommand">
+            <argument type="service" id="ems.service.index"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.environment.recompute" class="EMS\CoreBundle\Command\RecomputeCommand">
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="ems.service.publish"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
+            <argument type="service" id="ems.service.index"/>
+            <argument type="service" id="ems.service.search"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.environment.removeexpiredsubmissions" class="EMS\CoreBundle\Command\RemoveExpiredSubmissionsCommand">
+            <argument type="service" id="ems.form_submission"/>
+            <argument type="service" id="logger"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.environment.emailsubmissions" class="EMS\CoreBundle\Command\EmailSubmissionsCommand">
+            <argument type="service" id="ems.form_submission"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems_core.core_mail.mailer_service"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.environment.updatemetafield" class="EMS\CoreBundle\Command\UpdateMetaFieldCommand">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.data"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.environment.reindex" class="EMS\CoreBundle\Command\ReindexCommand">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.mapping"/>
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="ems.elasticsearch.bulker"/>
+            <argument>%ems_core.default_bulk_size%</argument>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.contenttype.clean" class="EMS\CoreBundle\Command\CleanDeletedContentTypeCommand">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.mapping"/>
+            <argument type="service" id="service_container"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.revisions.index-file-fields" class="EMS\CoreBundle\Command\IndexFileCommand">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.asset_extractor"/>
+            <argument type="service" id="ems.service.file"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.environment.list" class="EMS\CoreBundle\Command\EnvironmentCommand">
+            <argument type="service" id="ems.service.environment"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="EMS\CoreBundle\Command\SynchronizeAssetCommand">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.asset_extractor"/>
+            <argument type="service" id="ems.service.file"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="EMS\CoreBundle\Command\CleanAssetCommand">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems.service.file"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="EMS\CoreBundle\Command\AlignManagedAliases">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.alias"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="EMS\CoreBundle\Command\ManagedAliases">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.alias"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="EMS\CoreBundle\Command\ExtractAssetCommand">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.asset_extractor"/>
+            <argument type="service" id="ems_common.storage.manager"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.contenttype.activate" class="EMS\CoreBundle\Command\ActivateContentTypeCommand">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.environment.create" class="EMS\CoreBundle\Command\CreateEnvironmentCommand">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="ems.service.data"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.revisions.unlock" class="EMS\CoreBundle\Command\UnlockRevisionsCommand">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.data"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.job.run" class="EMS\CoreBundle\Command\JobCommand">
+            <argument type="service" id="ems.service.job"/>
+            <argument type="service" id="ems.schedule.manager"/>
+            <argument>%ems_core.date_time_format%</argument>
+            <argument>%ems_core.clean_jobs_time_string%</argument>
+            <tag name="console.command"/>
+        </service>
+    </services>
+</container>

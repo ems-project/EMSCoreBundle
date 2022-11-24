@@ -1,0 +1,21 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'Add an Analyzer'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'Add an Analyzer'|trans }}{% endblock %} 
+{% block subtitle %}<small>{{ 'expert mode'|trans }}</small>{% endblock %}
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path('ems_analyzer_index') }}"><i class="fa fa-signal"></i> {{ 'Analyzers'|trans }}</a></li>
+		<li>{{ 'Add an analyzer'|trans }}</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+
+    {% include "@EMSCore/analyzer/form.html.twig" with {
+    	form: form,
+    	label: 'Add an analyzer',
+    } %}
+
+{% endblock %}

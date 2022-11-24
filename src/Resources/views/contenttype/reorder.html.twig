@@ -1,0 +1,64 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %} {{ 'Reorder the content type "%content_type%"'|trans({'%content_type%': contentType.singularName }) }}{% endblock %}
+{% block pagetitle %}{{ 'Reorder the content type "%content_type%"'|trans({'%content_type%': contentType.singularName }) }}{% endblock %} 
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path("contenttype.index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
+		<li><a href="{{ path("contenttype.edit", {id: contentType.id}) }}"><i class="{{ contentType.icon }}"></i> Edit {{ contentType.singularName }}</a></li>
+   		<li class="active">{{ 'Reorder'|trans }}</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="box box-solid">
+			<div class="box-header with-border">
+				<h2 class="box-title">
+					<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
+					{{ 'Reorder %name%\'s fields'|trans({'%name%': contentType.name}) }}
+				</h2>
+
+				<div class="btn-group  pull-right">
+					<a class="btn btn-xs btn-primary" href="{{ path('ems_contenttype_field_edit', { contentType: contentType.id, field: contentType.fieldType.id }) }}">
+						<i class="fa fa-edit"></i>
+                        {{ 'view.contenttype.reorder_item.edit_main_container_button'|trans() }}
+					</a>
+				</div>
+			</div>
+            {{ form_start(form) }}
+				<div class="box-body no-padding">
+					<ol class="nested-sortable vertical" id="root-list" data-nested-max-level="15" data-nested-is-tree="true">
+						{% include "@EMSCore/contenttype/reorder_item.html.twig" with {
+							parent: contentType.fieldType
+						} %}
+					</ol>
+				</div>
+				<!-- /.box-body -->
+				<div>
+					{% if form.addItem is defined  %}
+					<div class="box-footer">
+						{{ form_row(form.addItem) }}
+					</div>
+					<!-- /.box-footer -->
+					{% endif %}
+					<div class="box-footer">
+						<div class="btn-group">
+							{{ form_widget(form.reorder) }}
+						</div>
+					</div>
+				</div>
+			{{ form_end(form) }}
+			<!-- /.box-footer -->
+		</div>
+	</div>
+</div>
+
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'contenttype-list'
+}%}
+
+{% endblock %}

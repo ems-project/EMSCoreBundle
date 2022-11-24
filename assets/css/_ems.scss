@@ -1,0 +1,132 @@
+
+table#CriteriaUpdateCustomViewTable > tbody > tr > td {
+	min-width: 150px;	
+}
+
+
+.ui-sortable-handle {
+    cursor: move;
+}
+
+.raw-view, .revision-view {
+    word-break: break-word;
+	.leaf-item {
+		max-height: 400px;
+    	overflow-y: scroll;
+	}
+}
+
+div.table-responsive {
+	padding-bottom: 20px;
+}
+
+table td {
+  &.col-xs { width: 10%; }
+  &.col-sm { width: 15%; }
+  &.col-md { width: 25%; }
+  &.col-lg { width: 35%; }
+}
+
+.nowrap  {
+	white-space: nowrap;
+}
+
+ol.vertical {
+  border: 1px solid #cccccc;
+  padding: 8px;
+
+  & > li, ol > li {
+    display: block;
+    margin-top: 6px;
+
+    border: 1px solid #cccccc;
+
+    & > div > span.input-group {
+      margin-right: -1px;
+      margin-left: -1px;
+      margin-top: -1px;
+      margin-bottom: 8px;
+    }
+
+    &.mjs-nestedSortable-no-nesting > div > span.input-group {
+      margin-bottom: -2px;
+    }
+  }
+
+  & ol {
+    border-top: 0;
+    padding-left: 30px;
+    padding-right: 8px;
+    padding-bottom: 8px;
+  }
+}
+
+.mjs-nestedSortable-error {
+	background: #fbe3e4;
+	border-color: transparent;
+}
+
+.max-2-lines {
+    max-height: 85px;
+    overflow-y: scroll;
+}
+.max-3-lines {
+    max-height: 115px;
+    overflow-y: scroll;
+}
+.max-4-lines {
+    max-height: 143px;
+    overflow-y: scroll;
+}
+.max-5-lines {
+    max-height: 174px;
+    overflow-y: scroll;
+}
+
+.btn-collapse, .collapse { display: none;}
+
+button.button-collapse[aria-expanded=true]:after, button.btn-collapse[aria-expanded=false]:after  {
+  font-family: FontAwesome;
+  content: "\f106";
+}
+button.button-collapse[aria-expanded=false]:after, button.btn-collapse[aria-expanded=true]:after   {
+  font-family: FontAwesome;
+  content: "\f107";
+}
+
+button.button-collapse-all[aria-expanded=true]:before {
+  font-family: FontAwesome;
+  content: "\f102";
+}
+button.button-collapse-all[aria-expanded=false]:before {
+  font-family: FontAwesome;
+  content: "\f103";
+}
+
+
+.panel-fullscreen {
+  display: block;
+  z-index: 9990;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  overflow: auto;
+  background-color: rgba(200, 200, 200, .95);
+}
+
+.asset-preview-tab img {
+  background-image: url('../images/background-img.png');
+  background-repeat: repeat;
+}
+
+div.box-body p {
+  overflow-x: auto;
+}
+
+div.console {
+  overflow-x: auto;
+}

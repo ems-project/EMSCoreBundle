@@ -1,0 +1,35 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+<li id="{{ child }}" class="collapsible-container {% if contentType.name != view.contentType.name %}mjs-nestedSortable-no-nesting{%  else %}mjs-nestedSortable{% endif %}">
+	<div class="box-header">
+		<div class="pull-right box-tools">
+			<div class="btn-group">
+            	<a href="{{ path('data.revisions', {type: key[0], ouuid:key[1]} ) }}" type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" title="" data-original-title="{{ 'Revisions'|trans }}">
+              		<i class="fa fa-archive"></i>
+             	</a>
+            	<a type="button" class="btn btn-default btn-sm remove-item" data-toggle="tooltip" title="" data-original-title="{{ 'Remove' }}">
+              		<i class="fa fa-trash"></i>
+              	</a>
+                {% if contentType.name == view.contentType.name %}
+					<button type="button" title="collapse" aria-expanded="true" class="btn btn-default btn-sm button-collapse"></button>
+					<button type="button" title="collapse all" aria-expanded="true" class="btn btn-default btn-sm button-collapse-all"></button>
+				{% endif %}
+			</div>
+      	</div>
+		<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
+		<h3 class="box-title">
+	    {% if (contentType.labelField) and (attribute(data, contentType.labelField)  is defined ) %}
+    		{{ attribute(data, contentType.labelField) }}
+    	{% else %}
+    		{{ child }}
+    	{% endif %}
+        </h3>
+	</div>
+	{% if contentType.name == view.contentType.name %}
+		<ol style="display:none;">
+            {% include "@EMSCore/view/custom/hierarchical_item.html.twig" with {
+        		parent: data,
+            	view: view,
+        	} %}
+		</ol>
+	{% endif %}
+</li>

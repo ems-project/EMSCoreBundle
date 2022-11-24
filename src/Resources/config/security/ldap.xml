@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <defaults public="false" />
+
+        <service id="ems_core.security.ldap.config" class="EMS\CoreBundle\Security\Ldap\LdapConfig">
+            <argument>%ems_core.security.ldap.config%</argument>
+        </service>
+
+        <service id="emsco.security.provider.user_ldap" class="EMS\CoreBundle\Security\Ldap\LdapUserProvider">
+            <argument type="service" id="Symfony\Component\Ldap\Ldap"/>
+            <argument type="service" id="ems_core.security.ldap.config" />
+            <argument type="service" id="ems.repository.user"/>
+        </service>
+
+        <service id="emsco.security.authenticator.form_login_ldap" class="EMS\CoreBundle\Security\Ldap\LdapFormLoginAuthenticator">
+            <argument type="service" id="ems_core.security.ldap.config" />
+            <argument type="service" id="router" />
+        </service>
+    </services>
+</container>

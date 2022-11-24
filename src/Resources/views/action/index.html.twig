@@ -1,0 +1,17 @@
+{% extends '@EMSCore/action/action.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+
+{% block body %}
+    {%  set toolbar %}
+        <a class="btn btn-primary" href="{{ path('ems_core_action_add', {contentType: contentType.id}) }}"><i class="fa fa-plus"></i> {{ 'view.action.index.add.title'|trans }}</a>
+    {%  endset %}
+
+    {% form_theme form '@EMSCore/form/forms.html.twig' %}
+    {{ form(form, {
+        reorder_label: 'action.index.reorder',
+        toolbar: toolbar
+    }) }}
+
+    {{ parent() }}
+{% endblock %}

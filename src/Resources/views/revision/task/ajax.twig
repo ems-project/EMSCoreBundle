@@ -1,0 +1,287 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block currentTask %}
+    {%- if task == null -%}
+        <div>No task found!</div>
+    {%- else -%}
+        <div id="task-title"> <i class="{{ task.statusIcon }}"></i> {{ task.title }}</div>
+        <div id="task-info">
+            {%- if task.hasDeadline -%}
+                <span id="task-deadline {{ task.deadline.timestamp < 'now'|date('U') ? 'task-deadline-red' }}">
+                    <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{ task.deadline.format(date_format) }}
+                </span>
+            {%- endif -%}
+            <span>{{ 'task.for'|trans }}&nbsp;{{ task.assignee|displayname }}</span>
+        </div>
+        <span class="label label-{{ task.statusLabel }}">{{ "task.status.#{task.status}"|trans }}</span>
+        {%- if task.hasDescription -%}<p id="task-description">{{ task.description }}</p>{%- endif -%}
+        {% if formRequestValidation is defined and formRequestValidation != null %}
+            {% set logRejection = task.getLatestRejection %}
+            <div id="task-send-validation">
+                <hr />
+                {%- if null != logRejection -%}<p class="task-comment bg-danger">{{ logRejection.comment }}</p>{%- endif -%}
+                {{ form(formRequestValidation) }}
+                <button id="btn-validation-request" class="btn btn-sm btn-primary"> <i class="fa fa-paper-plane"></i>&nbsp;{{ 'task.validation.send'|trans  }}</button>
+            </div>
+        {% endif %}
+        <div class="clearfix">
+            <button class="btn-modal-history-task btn btn-sm btn-default pull-right"
+                    data-url="{{ path('ems_core_task_ajax_modal_history', {'revisionId': revisionId, 'taskId': task.id }) }}"
+                    data-title="{{ 'task.history'|trans }} : {{ task.title }}">
+                    <i class="fa fa-history" aria-hidden="true"></i>
+            </button>
+        </div>
+    {%- endif -%}
+{% endblock %}
+
+{% block taskItem %}
+    <li class="list-group-item tasks-item {{ isCurrent|default(false) ? 'tasks-item-current' }}" data-id="{{ task.id }}">
+        <div class="tasks-item-block">
+            <div class="tasks-item-info">
+                <i class="task-icon {{ task.statusIcon }}"></i>
+                <div>
+                    <div class="tasks-item-title">{{ task.title }}</div>
+                    <div>{{ 'task.assigned_to'|trans }}<strong>{{ task.assignee|displayname }}</strong></div>
+                    {% if isCurrent|default(false) %}
+                        <div><span class="task-current-status label label-{{ task.statusLabel }}">{{ "task.status.#{task.status}"|trans }}</span></div>
+                    {% endif %}
+                </div>
+            </div>
+            <button class="btn-task-update-modal btn btn-sm pull-right"
+                    data-title="{{ 'task.update.title'|trans({ '%title%': task.title }) }}"
+                    data-url="{{ path('ems_core_task_ajax_modal_update', { revisionId: revision.id, taskId: task.id }) }}">
+                <i class="fa fa-pencil-square-o"></i>
+            </button>
+        </div>
+        {% if formValidation is defined %}
+            <div id="tasks-item-validation">
+                {% set logCompleted = task.getLatestCompleted %}
+                {% if task.assignee != app.user.username and logCompleted != null %}
+                    <p class="task-comment bg-gray-light">{{ logCompleted.comment }}</p>
+                {% endif %}
+                {{ form(formValidation) }}
+                {% if task.assignee == app.user.username %}
+                    <button id="btn-task-validation-approve" class="btn btn-sm btn-primary">
+                        <i class="fa fa-check"></i>&nbsp;{{ 'task.validation.done'|trans  }}
+                    </button>
+                {% else %}
+                    <button id="btn-task-validation-approve" class="btn btn-sm btn-primary">
+                        <i class="fa fa-check"></i>&nbsp;{{ 'task.validation.approve'|trans  }}
+                    </button>
+                    {% if task.status != 'rejected' %}
+                        <button id="btn-task-validation-reject" class="btn btn-sm btn-default pull-right">
+                            <i class="fa fa-close"></i>&nbsp;{{ 'task.validation.reject'|trans  }}
+                        </button>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endif %}
+    </li>
+{% endblock %}
+
+{% block taskItemApproved %}
+    <li class="list-group-item tasks-item"
+        data-url="{{ path('ems_core_task_ajax_modal_task', {'revisionId': revision.id, 'taskId': task.id }) }}"
+        data-title="Task: {{ task.title }}">
+        <div class="tasks-item-block">
+            <div class="tasks-item-info">
+                <i class="task-icon {{ task.statusIcon }}"></i>
+                <div>
+                    <div class="tasks-item-title">{{ task.title }}</div>
+                    <div>{{ 'task.assigned_to'|trans }} <strong>{{ task.assignee|displayname }}</strong></div>
+                </div>
+            </div>
+        </div>
+    </li>
+{% endblock %}
+
+{% block tasksApprovedLink %}
+    {%- if count > 0 -%}
+        <a href="#" id="btn-tasks-approved"
+           data-toggle="false"
+           data-toggle-text="{{ 'task.finished.hide'|trans({ '%number%': count }) }}">
+            {{- 'task.finished.show'|trans({ '%number%': count }) -}}
+        </a>
+    {%- endif -%}
+{% endblock %}
+
+{% block modalFooterClose %}
+    <div class="pull-left">
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">{{ 'task.close'|trans }}</button>
+    </div>
+{% endblock %}
+
+{% block modalFooterActions %}
+    <div class="pull-left">
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">{{ 'task.close'|trans }}</button>
+    </div>
+    <div class="pull-right">
+        <div class="btn-group">
+            <a class="btn btn-sm btn-default" href="{{ path('data.revisions', { 'type': contentType.name, 'ouuid': ouuid }) }}">
+                <i class="fa fa-file" aria-hidden="true"></i> {{ 'task.dashboard.action.go_revision'|trans }}
+            </a>
+            <a class="btn btn-sm btn-default" href="{{ path('revision.new-draft', { 'type': contentType.name, 'ouuid': ouuid }) }}">
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'task.dashboard.action.edit_revision'|trans }}
+            </a>
+            {% if isManager %}
+                <a href="#task-change-owner" class="btn btn-sm btn-default btn-task-change-owner-modal"
+                    data-url="{{ path('ems_core_task_ajax_modal_change_owner', { 'revisionId': revisionId }) }}"
+                    data-title="{{ 'task.dashboard.action.change_owner'|trans }}">
+                    <i class="fa fa-user-circle-o" aria-hidden="true"></i> {{ 'task.dashboard.action.change_owner'|trans }}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block modalCreateBody %}
+    {{ block('taskForm') }}
+{% endblock %}
+
+{% block modalCreateFooter %}
+    <div class="pull-left">
+        <button id="ajax-modal-submit" class="btn btn-sm btn-primary">{{ 'task.create.submit'|trans }}</button>
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cancel</button>
+    </div>
+{% endblock %}
+
+{% block modalTaskBody %}
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#tab_task_info" data-toggle="tab" aria-expanded="true">
+                    <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;{{ 'task.update.tab.info'|trans }}
+                </a>
+            </li>
+            <li>
+                <a href="#tab_task_history" data-toggle="tab" aria-expanded="false">
+                    <i class="fa fa-history" aria-hidden="true"></i>&nbsp;{{ 'task.update.tab.history'|trans }}
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_task_info">
+                {% if form is defined %}
+                    {{ block('taskForm') }}
+                {% else %}
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="mb-1"><strong>{{ 'task.field.title'|trans }}</strong></div>
+                            <div>{{ task.title }}</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="mb-1"><strong>{{ 'task.field.assignee'|trans }}</strong></div>
+                            <div>{{ task.assignee|displayname }}</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="mb-1"><strong>{{ 'task.field.deadline'|trans }}</strong></div>
+                            {%- if task.hasDeadline -%}
+                                <div>
+                                    {%- set deadline = task.deadline.format(date_format) -%}
+                                    {%- if task.deadline.timestamp < date('now').timestamp -%}
+                                        <span class="text-danger"><strong>{{ deadline }}</strong></span>
+                                    {%- else -%}
+                                        {{ deadline }}
+                                    {%- endif -%}
+                                </div>
+                            {%- else -%}
+                                /
+                            {%- endif -%}
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="mb-1"><strong>{{ 'task.field.description'|trans }}</strong></div>
+                            {%- if task.hasDescription -%}<div>{{ task.description|nl2br }}</div>{% else %}/{% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="tab-pane" id="tab_task_history">{{ block('renderHistoryTimeline') }}</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block modalUpdateFooter %}
+    <div class="pull-left">
+        {%- if task.status != 'completed' -%}
+            <button id="ajax-modal-submit" class="btn btn-sm btn-primary">{{ 'task.update.submit'|trans }}</button>
+        {%- endif -%}
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">{{ 'task.close'|trans }}</button>
+    </div>
+    <div class="pull-right">
+        <button type="button" id="btn-task-delete"
+                data-url="{{ path('ems_core_task_ajax_delete', {'revisionId': revisionId, 'taskId': task.id}) }}"
+                class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> {{ 'task.delete.submit'|trans }}</button>
+    </div>
+{% endblock %}
+
+{% block modalHistoryBody %}{{ block('renderHistoryTimeline') }}{% endblock %}
+
+{% block modalChangeOwnerBody %}
+    {%- if revision.hasOwner -%}
+        {% set info = 'task.change_owner.current'|trans({'%revision%': revision.label, '%owner%': revision.owner|displayname }) %}
+    {%- else -%}
+        {% set info = 'task.change_owner.missing'|trans({'%revision%': revision}) %}
+    {%- endif -%}
+    <div class="alert alert-info" role="alert">{{ info }}</div>
+    {{ form(form) }}
+{% endblock %}
+
+{% block modalChangeOwnerFooter %}
+    <div class="pull-left">
+        <button id="ajax-modal-submit" class="btn btn-sm btn-primary">{{ 'task.change_owner.submit'|trans }}</button>
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+    </div>
+{% endblock %}
+
+{% block taskForm %}
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-12">{{ form_row(form.title) }}</div>
+        <div class="col-md-6">{{ form_row(form.assignee) }}</div>
+        <div class="col-md-6">{{ form_row(form.deadline) }}</div>
+        <div class="col-md-12">{{ form_row(form.description) }}</div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block renderHistoryTimeline %}
+    <ul class="timeline">
+        {% for log in task.logs|reverse %}
+            <li>
+                <i class="{{ log.icon }}"></i>
+                <div class="timeline-item">
+                    <span class="time"><i class="fa fa-clock-o"></i> {{ log.date.format(date_time_format) }}</span>
+                    <h3 class="timeline-header bg-info">
+                        {{ "task.status.history.#{log.status}"|trans({
+                            '%user%': "<strong>#{log.username|displayname}</strong>",
+                            '%assignee%': "<strong>#{log.assignee|displayname}</strong>"
+                        })|raw }}
+                    </h3>
+                    {% if log.comment %}<div class="timeline-body bg-gray-light">{{ log.comment }}</div>{% endif %}
+                    {% if log.hasTaskData %}
+                        <div class="timeline-body bg-gray-light">
+                            <dl class="dl-horizontal task-info">
+                                {% if null != log.taskTitle %}
+                                    <dt>{{ 'task.field.title'|trans }}</dt>
+                                    <dd>{{ log.taskTitle }}</dd>
+                                {% endif %}
+                                {% if null != log.taskAssignee %}
+                                    <dt>{{ 'task.field.assignee'|trans }}</dt>
+                                    <dd>{{ log.taskAssignee|displayname }}</dd>
+                                {% endif %}
+                                {% if null != log.taskDeadline %}
+                                    <dt>{{ 'task.field.deadline'|trans }}</dt>
+                                    <dd>{{ log.taskDeadline.format(date_format) }}</dd>
+                                {% endif %}
+                                {% if null != log.taskDescription %}
+                                    <dt>{{ 'task.field.description'|trans }}</dt>
+                                    <dd>{{ log.taskDescription|nl2br }}</dd>
+                                {% endif %}
+                            </dl>
+                        </div>
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

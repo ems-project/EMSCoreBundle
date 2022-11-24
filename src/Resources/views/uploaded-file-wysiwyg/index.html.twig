@@ -1,0 +1,35 @@
+{% extends '@EMSCore/base-light.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'uploaded-file.index.title'|trans }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+{% block subtitle %}{% endblock %}
+{% block containerClass %}{% endblock %}
+
+{% block body %}
+
+    {% form_theme form '@EMSCore/form/forms.html.twig' %}
+    {{ form(form, {
+        reorder_label: 'uploaded-file.index.reorder'
+    }) }}
+{% endblock %}
+
+{% block javascripts %}
+ <script>  
+   $(document).on('click', 'td a', function () {
+     let fileUrl = $(this).parent().data('url');
+     let data = $(this).text();
+     window.opener.CKEDITOR.tools.callFunction({{ CKEditorFuncNum }}, fileUrl, function() {
+         // Get the reference to a dialog window.
+         var dialog = this.getDialog();
+         // Check if this is the Link Properties dialog window.
+         if ( dialog.getName() == 'link' ) {
+             dialog.getContentElement( 'info', 'fileLink' ).setValue(data);
+             dialog.getContentElement( 'info', 'fileLink' ).getInputElement().$.setAttribute('data-link', fileUrl);
+         }
+     } );
+     window.close();
+ });
+</script>
+{% endblock %}
+  

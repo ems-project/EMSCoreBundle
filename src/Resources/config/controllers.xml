@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- Api\Admin -->
+        <service id="EMS\CoreBundle\Controller\Api\Admin\EntitiesController">
+            <argument type="service" id="emsco.helper.entities" />
+            <argument type="service" id="emsco.logger" />
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\Api\Admin\MetaController">
+            <argument type="service" id="ems.service.contenttype" />
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Api\File -->
+        <service id="EMS\CoreBundle\Controller\Api\File\ExtractDataController">
+            <argument type="service" id="ems.service.asset_extractor" />
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Api\Form -->
+        <service id="EMS\CoreBundle\Controller\Api\Form\SubmissionController" public="true">
+            <argument type="service" id="ems.form_submission" />
+            <argument type="service" id="logger" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\Api\Form\VerificationController" public="true">
+            <argument type="service" id="ems.form_verification" />
+            <argument type="service" id="logger" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Api\Search -->
+        <service id="EMS\CoreBundle\Controller\Api\Search\SearchController">
+            <argument type="service" id="ems_common.service.elastica"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Api -->
+        <service id="EMS\CoreBundle\Controller\Api\AuthTokenLoginController"/>
+
+        <!-- ContentManagement -->
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ActionController" public="true">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.action" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController" public="true">
+            <argument type="service" id="emsco.logger" />
+            <argument type="service" id="ems.service.helper" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\AssetController" public="true">
+            <argument type="service" id="ems_common.storage.processor" />
+            <argument type="service" id="ems.repository.channel" />
+            <argument>%ems_core.asset_config%</argument>
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController" public="true">
+            <argument type="service" id="emsco.logger" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.mapping" />
+            <argument type="service" id="form.registry" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\CrudController" public="true">
+            <argument type="service" id="emsco.logger" />
+            <argument type="service" id="ems.service.user" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.contenttype" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\DataController" public="true">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.search" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="ems.service.index" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="ems.content_type.view_types" />
+            <argument type="service" id="twig" />
+            <argument type="service" id="ems_common.pdf.printer.dom" />
+            <argument type="service" id="ems.service.job" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\DatatableController" public="true">
+            <argument type="service" id="ems.service.datatable" />
+            <argument type="service" id="ems_core.core_data_table.table_renderer" />
+            <argument type="service" id="ems_core.core_data_table.table_exporter" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController" public="true">
+            <argument type="service" id="emsco.logger" />
+            <argument type="service" id="ems.service.search" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="ems.service.publish" />
+            <argument type="service" id="ems.service.index" />
+            <argument type="service" id="ems.service.mapping" />
+            <argument type="service" id="ems.service.alias" />
+            <argument type="service" id="ems.service.job" />
+            <argument>%ems_core.paging_size%</argument>
+            <argument>%ems_core.instance_id%</argument>
+            <argument>%ems_core.circles_object%</argument>
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\FileController" public="true">
+            <argument type="service" id="ems.service.file" />
+            <argument type="service" id="ems.service.asset_extractor" />
+            <argument type="service" id="emsco.logger" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\FilterController" public="true">
+            <argument type="service" id="emsco.logger" />
+            <argument type="service" id="ems.service.helper" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\IndexController" public="true">
+            <argument type="service" id="ems.service.index" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\JobController" public="true">
+            <argument type="service" id="emsco.logger" />
+            <argument type="service" id="ems.service.job" />
+            <argument>%ems_core.paging_size%</argument>
+            <argument>%ems_core.trigger_job_from_web%</argument>
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController" public="true">
+            <argument type="service" id="emsco.logger" />
+            <argument type="service" id="ems.service.alias" />
+            <argument>%ems_core.instance_id%</argument>
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\PublishController" public="true">
+            <argument type="service" id="ems.service.publish" />
+            <argument type="service" id="ems.service.job" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.search" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ReleaseController" public="true">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.release" />
+            <argument type="service" id="ems.service.release_revision" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ContentManagement\ViewController" public="true">
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.view.manager" />
+            <argument type="service" id="logger"/>
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Dashboard -->
+        <service id="EMS\CoreBundle\Controller\Dashboard\DashboardController" public="true">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.dashboard.manager" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Form -->
+        <service id="EMS\CoreBundle\Controller\Form\SubmissionController" public="true">
+            <argument type="service" id="ems.form_submission" />
+            <argument type="service" id="logger" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Job -->
+        <service id="EMS\CoreBundle\Controller\Job\ScheduleController" public="true">
+            <argument type="service" id="ems.schedule.manager" />
+            <argument type="service" id="logger"/>
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Log -->
+        <service id="EMS\CoreBundle\Controller\Log\LogController" public="true">
+            <argument type="service" id="ems.log.manager" />
+            <argument type="service" id="logger" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Revision -->
+        <service id="EMS\CoreBundle\Controller\Revision\DetailController" public="true">
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="ems.service.search" />
+            <argument type="service" id="ems.log.manager"/>
+            <argument type="service" id="logger" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\Revision\EditController" public="true">
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems_core.core_revision.draft_in_progress" />
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.publish" />
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="translator" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\Revision\JsonMenuNestedController" public="true">
+            <argument type="service" id="ems_core.core_ui.ajax_service" />
+            <argument type="service" id="EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer" />
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.user" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\Revision\TaskController" public="true">
+            <argument type="service" id="ems_core.core_revision_task.task_manager" />
+            <argument type="service" id="ems_core.core_ui.ajax_service" />
+            <argument type="service" id="form.factory" />
+            <argument type="service" id="ems_core.core_data_table.table_exporter" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Search -->
+        <service id="EMS\CoreBundle\Controller\Search\QuerySearchController" public="true">
+            <argument type="service" id="ems.service.query_search" />
+            <argument type="service" id="EMS\CoreBundle\Controller\ElasticsearchController" />
+            <argument type="service" id="ems_core.core_document.data_links_factory" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- User -->
+        <service id="EMS\CoreBundle\Controller\User\LoginController">
+            <argument type="service" id="twig"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\User\ProfileController" public="true">
+            <argument type="service" id="emsco.manager.user" />
+            <argument type="service" id="emsco.logger" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\User\ResettingController" public="true">
+            <argument type="service" id="emsco.manager.user" />
+            <argument type="service" id="ems_core.security.authenticator" />
+            <argument type="service" id="emsco.logger" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+        </service>
+
+        <!-- Views -->
+        <service id="EMS\CoreBundle\Controller\Views\CalendarController" public="true">
+            <argument type="service" id="emsco.logger" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.search" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\Views\CriteriaController" public="true">
+            <argument type="service" id="emsco.logger" />
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.form.factories.objectChoiceListFactory" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\Views\HierarchicalController" public="true">
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.search" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Wysiwyg -->
+        <service id="EMS\CoreBundle\Controller\Wysiwyg\StylesetController" public="true">
+            <argument type="service" id="ems.service.wysiwyg_styles_set" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Controllers -->
+        <service id="EMS\CoreBundle\Controller\ChannelController" public="true">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.channel" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\DashboardController" public="true">
+            <argument type="service" id="ems.dashboard.manager" />
+            <argument type="service" id="ems_core.dashboard.dashboards" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\DefaultController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\ElasticsearchController" public="true">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.index" />
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="ems.service.asset_extractor" />
+            <argument type="service" id="ems.service.environment" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.search" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="ems.service.job" />
+            <argument type="service" id="ems.service.aggregate_option" />
+            <argument type="service" id="ems.service.sort_option" />
+            <argument type="service" id="ems.dashboard.manager" />
+            <argument>%ems_core.paging_size%</argument>
+            <argument>%ems_core.health_check_allow_origin%</argument>
+            <argument>%ems_core.elasticsearch_cluster%</argument>
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\I18nController" public="true">
+            <argument type="service" id="ems.service.i18n" />
+            <argument>%ems_core.paging_size%</argument>
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\NotificationController" public="true">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.publish"/>
+            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="ems.service.notification"/>
+            <argument type="service" id="ems.dashboard.manager"/>
+            <argument>%ems_core.paging_size%</argument>
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\QuerySearchController" public="true">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.query_search" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\SearchController" public="true">
+            <argument type="service" id="ems.service.sort_option" />
+            <argument type="service" id="ems.service.aggregate_option" />
+            <argument type="service" id="ems.service.search_field_option" />
+            <argument type="service" id="translator" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\TwigElementsController" public="true">
+            <argument type="service" id="ems.service.asset_extractor"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="ems.service.user"/>
+            <argument type="service" id="ems.service.job"/>
+            <argument type="service" id="ems.dashboard.manager"/>
+            <argument type="service" id="ems.service.contenttype"/>
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\UploadedFileController" public="true">
+            <argument type="service" id="emsco.logger" />
+            <argument type="service" id="ems.service.file" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\UploadedFileWysiwygController" public="true">
+            <argument type="service" id="ems.service.file" />
+            <argument type="service" id="ems_core.core_ui.ajax_service" />
+            <argument type="service" id="router" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\UserController" public="true">
+            <argument type="service" id="logger" />
+            <argument>%ems_core.circles_object%</argument>
+            <argument type="service" id="ems.service.user" />
+            <argument type="service" id="emsco.manager.user" />
+            <argument type="service" id="EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface"/>
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\WysiwygController" public="true">
+            <argument type="service" id="ems.service.wysiwyg_profile" />
+            <argument type="service" id="ems.service.wysiwyg_styles_set" />
+            <argument type="service" id="translator" />
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+    </services>
+</container>

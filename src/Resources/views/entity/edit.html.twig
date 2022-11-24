@@ -1,0 +1,9 @@
+{% trans_default_domain 'EMSCoreBundle' %}{% extends '@EMSCore/entity/form.html.twig' %}
+
+
+{% block title %} {{ 'Edit %entity_name%'|trans({'%entity_name%': entity_name}) }} {%endblock %}
+{% block pagetitle %} {{ 'Edit %entity_name%'|trans({'%entity_name%': entity_name}) }} {% endblock %} 
+{% block box_title %} {{ 'Edit %entity_name%'|trans({'%entity_name%': entity_name}) }} {% endblock %}
+{% block save_buton %}
+    {{ form_widget(form.save, {'label':'Update'}) }}
+{% endblock %}

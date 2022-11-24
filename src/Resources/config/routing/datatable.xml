@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="ems_core_datatable_ajax_elastica" path="/ajax/{hashConfig}.json" methods="GET HEAD">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DatatableController:ajaxElastica</default>
+    </route>
+
+    <route id="ems_core_datatable_excel_elastica" path="/excel/{hashConfig}" methods="GET HEAD">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DatatableController:excelElastica</default>
+    </route>
+
+    <route id="ems_core_datatable_csv_elastica" path="/csv/{hashConfig}.csv" methods="GET HEAD">
+        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DatatableController:csvElastica</default>
+    </route>
+
+</routes>

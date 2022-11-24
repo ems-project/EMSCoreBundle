@@ -1,0 +1,42 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-twigs' %}
+
+{% block title %}Save search{% endblock %}
+{% block pagetitle %}
+	Save search
+{% endblock %} 
+{# {% block subtitle %}{% endblock %} #}
+
+
+
+{% block body %}
+<div class="row">
+	<div id="search-page" class="col-md-12">
+
+		{{ form_start(form) }}
+		
+			<div class="box ">
+				<div class="box-header with-border">
+					<h3>
+						<i class="fa fa-search"></i> Preset search form
+					</h3>
+				</div>
+				<div class="box-body">
+					<div class="row">
+						<div class="col-md-12">
+							{{ form_row(form.name) }}
+						</div>
+					</div>
+				</div>
+									
+				<div class="box-footer">
+					<div class="form-group">
+						<div class="btn-group">
+							{{ form_widget(form.save_search) }}
+						</div>
+					</div>
+				</div>
+			</div>
+		{{ form_end(form) }}
+	</div>
+</div>
+{% endblock %} 

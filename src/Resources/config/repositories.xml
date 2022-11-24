@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        https://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <defaults public="true" autowire="false" autoconfigure="false" />
+
+        <service id="ems.repository.auth_token" class="EMS\CoreBundle\Repository\AuthTokenRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.channel" class="EMS\CoreBundle\Repository\ChannelRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.query_search" class="EMS\CoreBundle\Repository\QuerySearchRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.search" class="EMS\CoreBundle\Repository\SearchRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.analyzer" class="EMS\CoreBundle\Repository\AnalyzerRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.filter" class="EMS\CoreBundle\Repository\FilterRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.notification" alias="EMS\CoreBundle\Repository\NotificationRepository"/>
+        <service id="EMS\CoreBundle\Repository\NotificationRepository">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="security.authorization_checker"/>
+            <tag name="doctrine.repository_service"/>
+        </service>
+        <service id="ems.repository.template" alias="EMS\CoreBundle\Repository\TemplateRepository"/>
+        <service id="EMS\CoreBundle\Repository\TemplateRepository">
+            <argument type="service" id="doctrine"/>
+            <tag name="doctrine.repository_service"/>
+        </service>
+        <service id="ems.repository.task" class="EMS\CoreBundle\Repository\TaskRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.dashboard" class="EMS\CoreBundle\Repository\DashboardRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.release" class="EMS\CoreBundle\Repository\ReleaseRepository">
+           <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.release_revision" class="EMS\CoreBundle\Repository\ReleaseRevisionRepository">
+           <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.view" class="EMS\CoreBundle\Repository\ViewRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.schedule" class="EMS\CoreBundle\Repository\ScheduleRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.user" class="EMS\CoreBundle\Repository\UserRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.log" class="EMS\CoreBundle\Repository\LogRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.wysiwyg_profile" class="EMS\CoreBundle\Repository\WysiwygProfileRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.wysiwyg_style_set" class="EMS\CoreBundle\Repository\WysiwygStylesSetRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.i18n" class="EMS\CoreBundle\Repository\I18nRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+
+        <service id="EMS\CoreBundle\Repository\ContentTypeRepository">
+            <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
+            <argument>EMS\CoreBundle\Entity\ContentType</argument>
+        </service>
+        <service id="EMS\CoreBundle\Repository\EnvironmentRepository">
+            <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
+            <argument>EMS\CoreBundle\Entity\Environment</argument>
+        </service>
+        <service id="EMS\CoreBundle\Repository\I18nRepository">
+            <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
+            <argument>EMS\CoreBundle\Entity\I18n</argument>
+        </service>
+        <service id="EMS\CoreBundle\Repository\JobRepository">
+            <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
+            <argument>EMS\CoreBundle\Entity\Job</argument>
+        </service>
+        <service id="EMS\CoreBundle\Repository\ManagedAliasRepository">
+            <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
+            <argument>EMS\CoreBundle\Entity\ManagedAlias</argument>
+        </service>
+        <service id="EMS\CoreBundle\Repository\RevisionRepository">
+            <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
+            <argument>EMS\CoreBundle\Entity\Revision</argument>
+        </service>
+        <service id="EMS\CoreBundle\Repository\UserRepository">
+            <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
+            <argument>EMS\CoreBundle\Entity\User</argument>
+        </service>
+        <service id="ems.repository.form_submission" class="EMS\CoreBundle\Repository\FormSubmissionRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.form_verification" class="EMS\CoreBundle\Repository\FormVerificationRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="ems.repository.uploaded_asset_repository" class="EMS\CoreBundle\Repository\UploadedAssetRepository">
+            <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
+            <argument>EMS\CoreBundle\Entity\UploadedAsset</argument>
+        </service>
+    </services>
+</container>

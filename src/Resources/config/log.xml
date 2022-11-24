@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults public="false" autoconfigure="false" autowire="false" />
+
+        <service id="emsco.logger" class="EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface">
+            <factory service="EMS\CommonBundle\Contracts\Log\LocalizedLoggerFactoryInterface" />
+            <argument type="service" id="logger" />
+            <argument>ems_logger</argument>
+            <tag name="monolog.logger" channel="core"/>
+        </service>
+
+        <service id="emsco.logger.audit" class="EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface">
+            <factory service="EMS\CommonBundle\Contracts\Log\LocalizedLoggerFactoryInterface" />
+            <argument type="service" id="logger" />
+            <argument>ems_logger</argument>
+            <tag name="monolog.logger" channel="audit"/>
+        </service>
+
+    </services>
+</container>

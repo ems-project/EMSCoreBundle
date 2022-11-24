@@ -1,0 +1,51 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{%- block title -%}
+    <a href="#" class="task-modal"
+        data-url="{{ path('ems_core_task_ajax_modal_task', { 'revisionId': data.id, 'taskId': data.taskCurrent.id }) }}"
+        data-title="Task: {{ data.taskCurrent.title }}">
+        {{ data.taskCurrent.title }}
+    </a>
+{%- endblock -%}
+
+{%- block version -%}{{- data.versionTag -}}{%- endblock -%}
+{%- block owner -%}{{- data.owner|displayname -}}{%- endblock -%}
+{%- block assignee -%}{{- data.taskCurrent.assignee|displayname -}}{%- endblock -%}
+
+{% block status %}
+    <i class="{{ data.taskCurrent.statusIcon }}"></i>
+    <span class="text-{{- data.taskCurrent.statusText -}}">{{ "task.status.#{data.taskCurrent.status}"|trans }}</span>
+{% endblock %}
+
+{%- block deadline -%}
+    <td data-order="{{ data.taskCurrent.hasDeadline ? data.taskCurrent.deadline.timestamp : 0 }}">
+        {%- if data.taskCurrent.hasDeadline -%}
+            {%- set deadline = data.taskCurrent.deadline.format(date_format) -%}
+            {%- if data.taskCurrent.deadline.timestamp < date('now').timestamp -%}
+                <span class="text-danger"><strong>{{ deadline }}</strong></span>
+            {%- else -%}
+                {{ deadline }}
+            {%- endif -%}
+        {%- endif -%}
+    </td>
+{%- endblock -%}
+
+{%- block modified -%}<td data-order="{{ data.taskCurrent.modified.timestamp }}">{{ data.taskCurrent.modified.format(date_time_format) -}}</td>{%- endblock -%}
+
+{%- block actions -%}
+    <div class="btn-group">
+        <a class="btn btn-sm btn-default" href="{{ path('data.revisions', { 'type': data.giveContentType.name, 'ouuid': data.ouuid }) }}">
+            <i class="fa fa-file" aria-hidden="true"></i> {{ 'task.dashboard.action.go_revision'|trans }}
+        </a>
+        <a class="btn btn-sm btn-default" href="{{ path('revision.new-draft', { 'type': data.giveContentType.name, 'ouuid': data.ouuid }) }}">
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'task.dashboard.action.edit_revision'|trans }}
+        </a>
+        {% if table.context.tab|default('') == 'manager' %}
+            <a href="#task-change-owner" class="btn btn-sm btn-default btn-task-change-owner-modal"
+               data-url="{{ path('ems_core_task_ajax_modal_change_owner', { 'revisionId': data.id }) }}"
+               data-title="{{ 'task.dashboard.action.change_owner'|trans }}">
+                <i class="fa fa-user-circle-o" aria-hidden="true"></i> {{ 'task.dashboard.action.change_owner'|trans }}
+            </a>
+        {% endif %}
+    </div>
+{%- endblock -%}

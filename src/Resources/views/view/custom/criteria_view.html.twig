@@ -1,0 +1,71 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ view.name }} for {{view.contentType.pluralName}}{% endblock %}
+{% block pagetitle %}{{ view.name }} for {{view.contentType.pluralName}}{% endblock %} 
+{# {% block subtitle %}<!-- TODO -->{% endblock %} #}
+
+
+{% block body %}
+
+<div class="row">
+
+	<div class="col-md-12">
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">Configuration</h3>
+			</div>
+			<!-- /.box-header -->
+			
+			<!-- form start -->
+			{{ form_start(form) }}
+				
+				<div class="box-body">
+				
+				<div class="table-responsive">
+						<table class="table table-bordered">
+                <tbody><tr>
+                  <td>&nbsp;</td>
+                  <td width="66%">{{ form_row(form.columnCriteria) }}</td>
+                </tr>
+                <tr>
+                  <td>{{ form_row(form.rowCriteria) }}</td>
+                  <td>
+                  	{% if form.category is defined %}
+							{{ form_row(form.category) }}
+					{% endif %}
+				</td>
+                </tr>
+              </tbody></table></div>
+					<div class="" id="criterion">
+						{{ form_widget(form.criterion) }}
+					</div>
+				</div>
+				<!-- /.box-body -->
+				<div class="box-footer">
+							{{ form_row(form.manage) }}
+{# 					<button type="submit" class="btn btn-primary" id="applyConfig">Apply</button>#}
+				</div>
+				{{ form_end(form) }}
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-12" id="table_container">
+	</div>
+</div>
+
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
+}%}
+
+{% endblock %}
+
+
+{% block frontend_application_css %}
+	<link rel="stylesheet" href="{{ asset('criteria-view.css', 'emscore') }}">
+{% endblock %}
+
+{% block frontend_application_js %}
+	<script src="{{ asset('criteria-view.js', 'emscore') }}"></script>
+{% endblock %}

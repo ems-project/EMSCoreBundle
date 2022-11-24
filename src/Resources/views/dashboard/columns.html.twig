@@ -1,0 +1,14 @@
+{% extends '@EMSCore/dashboard/form.html.twig' %}
+{% trans_default_domain 'emsco-twigs' %}
+
+{% block type %}
+    <i class="{{ [line.data.type, 'icon']|join('.')|trans }}"></i>&nbsp;&nbsp;{{ [line.data.type, 'label']|join('.')|trans }}
+{% endblock type %}
+
+{% block landing_page %}
+    <i class="{% if line.data.landingPage %}fa fa-dot-circle-o{% else %}fa fa-circle-o{% endif %}"></i>
+{% endblock landing_page %}
+
+{% block quick_search %}
+    <i class="{% if line.data.quickSearch %}fa fa-dot-circle-o{% else %}fa fa-circle-o{% endif %}"></i>
+{% endblock quick_search %}

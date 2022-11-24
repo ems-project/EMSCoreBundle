@@ -1,0 +1,115 @@
+{% trans_default_domain 'EMSCoreBundle' %}{% if countSent %}
+	<div class="box box-primary ">
+		<div class="box-header with-border">
+			<h3 class="box-title">
+				<i class="fa fa-envelope-o"></i> Sent
+			</h3>
+
+
+            {% include '@EMSCore/elements/pagination.html.twig' with {
+				'lastPage': lastPage,
+				'currentPage': page,
+				'currentFilters': app.request.query,
+				'paginationPath': paginationPath,
+				'showAlwaysFirstAndLast': false
+			} %}
+		</div>
+		<!-- /.box-header -->
+		<div class="box-body ">
+		
+		{% if notifications|length <= 0  %}
+		<p>{{ 'No result to display'|trans }}: <a href="{{ path('notifications.sent') }}">{{ 'reset filters' }}</a></p>
+		{% else %}
+		<div class="table-responsive">
+						<table class="table table-condensed table-striped">
+							<tbody>
+								<tr>
+									<th class="" style="">
+					                  	Notification
+									</th>
+									<th>Create by</th>
+									<th>Date</th>
+									<th>Environment</th>
+									<th>Warnings</th>
+									<th>Revision</th>
+									<th>Actions</th>
+								</tr>
+							</tbody>
+							{% for notification in notifications %}
+								<tr>
+									<td class="" nowrap="nowrap">
+										<i class="{{notification.template.icon}}"></i> {{ notification.template.label }}
+										
+									</td>
+									<td>{{ notification.username|displayname }}</td>
+									<td>{{ notification.created|date|date(date_time_format) }}</td>
+									<td>
+										<span class="badge bg-{{ notification.environment.color|raw }}">{{ notification.environment.name }}</span>
+									</td>
+									<td>
+									{% set found = false %}
+									{% for env in notification.revision.environments %}
+										{% if env == notification.environment %}
+											{% set found = true %}
+										{% endif %}
+									{% endfor %}
+									{% if not found and notification.counter > 1 %}
+										<i class="fa fa-warning  text-{{ notification.revision.contentType.color }}" title=" This revision is not published in {{ notification.name }} anymore and another notification exists"></i> This revision is not published in {{ notification.environment.name }} anymore and another notification exists
+									{% elseif not found %}
+										<i class="fa fa-warning  text-{{ notification.revision.contentType.color }}" title="This revision is not published in {{ notification.environment.name }} anymore"></i> This revision is not published in {{ notification.environment.name }} anymore
+									{% elseif notification.counter > 1 %}
+										<i class="fa fa-warning  text-{{ notification.revision.contentType.color }}" title="At least another notification exists for this object"></i> At least another notification exists for this object
+									{% else %}
+										<i class="fa fa-thumbs-up  text-{{ notification.revision.contentType.color }}"></i>
+									{% endif %}
+									&nbsp;
+									</td>
+									<td>
+										{{ (notification.revision.contentType.name~':'~notification.revision.ouuid)|data_link(notification.revision.id)|raw }}
+				
+									<td>
+										<div class="btn-group">
+											{% if is_granted(notification.template.role) %}
+												{% include '@EMSCore/elements/post-button.html.twig' with {
+													'url':  path('notification.cancel', {'notification': notification.id} ),
+													'label': 'Cancel',
+													'icon': 'ban',
+													'message': 'Do you confirm?'
+												}%}
+											{% endif %}
+
+                                            {% include '@EMSCore/elements/object-views-button.html.twig' with {
+												'object':  notification.revision.buildObject,
+												'contentType': notification.revision.contentType,
+												'environment': notification.environment,
+												'ouuid': notification.revision.ouuid,
+												'currentTemplate': notification.template
+											}%}
+					                    </div>
+									</td>
+								</tr>
+							{% endfor %}
+						</table>
+						</div>
+			{% endif %}
+		</div>
+	</div>
+	
+{% else %}
+          <div class="box box-default">
+            <div class="box-header with-border">
+              <i class="fa fa-check"></i>
+
+              <h3 class="box-title">Empty</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+
+              <div class="callout callout-success">
+                <h4>{{ 'No pending notifications'|trans }}</h4>
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+{% endif %}

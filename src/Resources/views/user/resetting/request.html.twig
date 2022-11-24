@@ -1,0 +1,30 @@
+{%- trans_default_domain 'emsco-user' -%}
+{% extends '@EMSCore/layout.html.twig' %}
+
+{% block title %}{{ 'user.resetting.title'|trans }}{% endblock %}
+{% block pagetitle %}{% endblock %}
+{% block subtitle %}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            {{ form_start(form) }}
+            <div class="box-header with-border">
+                <h3 class="box-title">{{ 'user.resetting.title'|trans }}</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        {{ form_row(form.username_email) }}
+                    </div>
+                </div>
+            </div>
+            <div class="box-footer">
+                {{ form_row(form.submit, {'attr': { 'class': 'btn btn-primary'} }) }}
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock content %}

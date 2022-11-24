@@ -1,0 +1,1434 @@
+{% use "bootstrap_3_layout.html.twig" %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{# Widgets #}
+
+
+
+{% block checkbox_radio_label -%}
+    {# Do not display the label if widget is not defined in order to prevent double label rendering #}
+    {%- if widget is defined -%}
+        {%- if required -%}
+            {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) -%}
+        {%- endif -%}
+        {%- if parent_label_class is defined -%}
+            {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|trim}) -%}
+        {%- endif -%}
+        {%- if label is not same as(false) and label is empty -%}
+            {%- if label_format is not empty -%}
+                {%- set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) -%}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+		<label {% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+        {{- widget|raw }} <span class="checkbox-radio-label-text">{{ label is not same as(false) ? (translation_domain is same as(false) ? label : label|trans({}, translation_domain)) -}}</span>
+		</label>
+    {%- endif -%}
+{%- endblock checkbox_radio_label %}
+
+
+{% block container_field_type_row %}
+<div id="{{ form.vars.id }}" class="container-fluid">
+	<div class="row">	
+    	<div class="panel panel-default">
+        	<div class="panel-heading with-border">
+        		<h3 class="panel-title text-">{{- form_label(form) -}}</h3>
+        	</div>
+    	  	
+    	  	<div class="panel-body">
+    	  		{{- form_widget(form) -}}
+    	  	</div>
+    	    {{- form_errors(form) -}}
+    	</div>               
+	</div>
+</div>
+{% endblock container_field_type_row %}
+
+
+{% block empty_widget -%}
+{%- endblock empty_widget %}
+{% block empty_label -%}
+{%- endblock empty_label %}
+{% block empty_row-%}
+{%- endblock empty_row %}
+
+
+{% block bypassdatafield_row -%}
+	{% if form.value is defined %}
+		<div {{ block('widget_attributes') }} >
+			<div class="form-group">
+                {{ form_label(form.value) }}
+                {{ form_widget(form.value) }}
+					{% if form.vars.helptext is defined and form.vars.helptext %}
+						<div class="help-block">{{ form.vars.helptext|raw }}</div>
+					{% endif %}
+                {{ form_errors(form.value) }}
+			</div>
+		</div>
+    {% endif %}
+{%- endblock bypassdatafield_row %}
+
+
+{% block bypassdatafield_widget -%}
+	{% if form.value is defined %}
+        {{form_widget(form.value)}}
+    {% endif %}
+{%- endblock bypassdatafield_widget %}
+
+{% block icontext_widget -%}
+	{% if  prefixIcon or prefixText or suffixIcon or suffixText %}
+		<div class="input-group">
+			{% if prefixIcon or prefixText %}
+				<span class="input-group-addon"><i class="{% if prefixIcon %}{{ prefixIcon }}{% endif %}"></i>{% if prefixText %} &nbsp; {{ prefixText }} {% endif %}</span>
+			{% endif %}
+		 	{{ block('form_widget') }}
+			{% if suffixIcon or suffixText %}
+				<span class="input-group-addon"><i class="{% if suffixIcon %}{{ suffixIcon }}{% endif %}"></i>{% if suffixText %} &nbsp; {{ suffixText }} {% endif %}</span>
+			{% endif %}
+		</div>
+	{% else %}
+		{{ block('form_widget') }}
+	{% endif %}
+{%- endblock icontext_widget %}
+
+
+{% block ems_choice_row %}
+	{{form_row(form.value, {'attr': attr, 'required': required, 'disabled': disabled})}}
+{%- endblock ems_choice_row %}
+
+{% block colorpicker_widget -%}
+	<div class="input-group colorpicker-component">
+		<span class="input-group-addon"><i></i></span>
+	 	{{ block('form_widget') }}
+	</div>
+{%- endblock colorpicker_widget %}
+
+{% block select2_widget -%}
+	{% set attr = attr|merge({class: (attr.class|default('') ~ ' select2')|trim}) %}
+	{{ block('choice_widget') }}
+{%- endblock select2_widget %}
+
+{% block objectpicker_widget -%}
+	{% set attr = attr|merge({class: (attr.class|default('') ~ ' objectpicker')|trim}) %}
+	{{ block('choice_widget') }}
+{%- endblock objectpicker_widget %}
+
+{% block selectpicker_widget -%}
+	{% set attr = attr|merge({class: (attr.class|default('') ~ ' selectpicker')|trim}) %}
+	{{ block('choice_widget') }}
+{%- endblock selectpicker_widget %}
+
+{%- block submitems_widget -%}
+    {%- if label is empty -%}
+        {%- if label_format is not empty -%}
+            {% set label = label_format|replace({
+                '%name%': name,
+                '%id%': id,
+            }) %}
+        {%- else -%}
+            {% set label = name|humanize %}
+        {%- endif -%}
+    {%- endif -%}
+    <button type="{{ type|default('submit') }}" {{ block('button_attributes') }}>
+    	{%- if icon -%}
+			<span class="{{ icon }}"></span>&nbsp;
+		{% endif %}
+		{{ translation_domain is same as(false) ? label : label|trans(label_translation_parameters|default({}), translation_domain) }}
+  	</button>
+{%- endblock submitems_widget -%}
+
+
+{%- block data_field_options_widget -%}
+
+	{% if editSubfields is not defined or editSubfields %}
+		<div class="tab-content">
+			{% set active='active' %}
+			{% if form.displayOptions is defined %}
+				<div class="tab-pane {{ active }}" id="tab_display_{{ seed }}">
+					{{- form_widget(form.displayOptions) -}}
+				</div>
+				{% set active='' %}
+			{% endif %}
+			<!-- /.tab-pane -->
+			{% if form.mappingOptions is defined %}
+				<div class="tab-pane {{ active }}" id="tab_mapping_{{ seed }}">
+					{{- form_widget(form.mappingOptions) -}}
+				</div>
+				{% set active='' %}
+			{% endif %}
+			<!-- /.tab-pane -->
+			{% if form.restrictionOptions is defined %}
+			  <div class="tab-pane {{ active }}" id="tab_restriction_{{ seed }}">
+				{{- form_widget(form.restrictionOptions) -}}
+			  </div>
+			  {% set active='' %}
+			{% endif %}
+			<!-- /.tab-pane -->
+			{% if form.migrationOptions is defined %}
+			  <div class="tab-pane {{ active }}" id="tab_migration_{{ seed }}">
+				{{- form_widget(form.migrationOptions) -}}
+			  </div>
+			  {% set active='' %}
+			{% endif %}
+			<!-- /.tab-pane -->
+			{% if form.extraOptions is defined %}
+			  <div class="tab-pane {{ active }}" id="tab_extra_{{ seed }}">
+				{{- form_widget(form.extraOptions) -}}
+			  </div>
+			{% endif %}
+			<!-- /.tab-pane -->
+		</div>
+		<!-- /.tab-content -->
+	{% else %}
+		<div class="row">
+        {% if form.displayOptions is defined %}
+			<div class="col-md-4 match-height">
+				<div class="box box-default">
+					<div class="box-header with-border">
+						<i class="fa fa-eye"></i>
+						<h3 class="box-title">{{- form_label(form.displayOptions) -}}</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+                        {{- form_widget(form.displayOptions) -}}
+					</div>
+					<!-- /.box-body -->
+				</div>
+			</div>
+        {% endif %}
+		<!-- /.tab-pane -->
+        {% if form.mappingOptions is defined %}
+			<div class="col-md-4 match-height">
+				<div class="box box-default">
+					<div class="box-header with-border">
+						<i class="fa fa-sitemap"></i>
+						<h3 class="box-title">{{- form_label(form.mappingOptions) -}}</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+                        {{- form_widget(form.mappingOptions) -}}
+					</div>
+					<!-- /.box-body -->
+				</div>
+			</div>
+        {% endif %}
+		<!-- /.tab-pane -->
+        {% if form.restrictionOptions is defined %}
+			<div class="col-md-4 match-height">
+				<div class="box box-default">
+					<div class="box-header with-border">
+						<i class="fa fa-shield"></i>
+						<h3 class="box-title">{{- form_label(form.restrictionOptions) -}}</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+                        {{- form_widget(form.restrictionOptions) -}}
+					</div>
+					<!-- /.box-body -->
+				</div>
+			</div>
+        {% endif %}
+		<!-- /.tab-pane -->
+        {% if form.migrationOptions is defined %}
+			<div class="col-md-4 match-height">
+				<div class="box box-default">
+					<div class="box-header with-border">
+						<i class="fa fa-recycle"></i>
+						<h3 class="box-title">{{- form_label(form.migrationOptions) -}}</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+                        {{- form_widget(form.migrationOptions) -}}
+					</div>
+					<!-- /.box-body -->
+				</div>
+			</div>
+        {% endif %}
+		<!-- /.tab-pane -->
+        {% if form.extraOptions is defined %}
+			<div class="col-md-4 match-height">
+				<div class="box box-default">
+					<div class="box-header with-border">
+						<i class="fa fa-plus"></i>
+						<h3 class="box-title">{{- form_label(form.extraOptions) -}}</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+                        {{- form_widget(form.extraOptions) -}}
+					</div>
+					<!-- /.box-body -->
+				</div>
+			</div>
+        {% endif %}
+		</div>
+	{% endif %}
+
+{%- endblock data_field_options_widget -%}
+
+{# {% block datafieldtype_widget %}#}
+{# 	{% if isContainer %}#}
+{# 		<div id="{{ form.vars.id }}" class="container-fluid">#}
+{# 			<div class="row">#}
+{# 				{% for child in form.iterator %}#}
+{# 					{{- form_row(child) -}}#}
+{# 					{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}#}
+{# 						</div><div class="row">#}
+{# 					{% endif %}#}
+{# 				{% endfor %}#}
+{# 			</div>#}
+{# 		</div>#}
+{# 	{% else %}#}
+{# 		{{ form_widget(form) }}#}
+{# 	{% endif %}#}
+{# {% endblock datafieldtype_widget %}#}
+
+{# Labels #}
+
+
+{%- block code_editor_label -%}
+    {% if label is not same as(false) -%}
+        {% if not compound -%}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {%- endif -%}
+        {% if required -%}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {%- endif -%}
+        {% if label is empty -%}
+            {%- if label_format is not empty -%}
+                {% set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) %}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}</label>
+        {% if form.vars.slug %}
+        	&nbsp;<a href="http://www.elasticms.eu/en/doc/templates/{{ form.vars.slug }}" class="" target="_blank">more info</a>
+        {% endif %}
+    {%- endif -%}
+{%- endblock code_editor_label -%}
+
+{% block code_editor_row -%}
+    <div class="form-group ems-code-editor {{ row_attr.class|default('') }}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
+        {{- form_label(form) -}}
+        <div class="">
+            {{- form_widget(form) -}}
+            {{- form_errors(form) -}}
+        </div>
+{##}</div>
+{%- endblock code_editor_row %}
+
+
+{% block code_editor_widget %}
+    <pre>{{ form.vars.data }}</pre>
+    <input type="hidden" id="{{ form.vars.id }}" class="{{ attr.class|default('') }}"  name="{{ form.vars.full_name }}" data-language="{{ form.vars.language }}" data-disabled="{{ form.vars.disabled }}" data-min-lines="{{ form.vars.min_lines }}" data-max-lines="{{ form.vars.max_lines }}" value="{{ form.vars.value }}">
+{% endblock code_editor_widget %}
+
+{% block datafieldtype_label %}
+{% endblock datafieldtype_label %}
+
+{% block container_label -%}
+	{% if data.fieldType.displayOptions.label is defined  %}
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				{% if data.fieldType.displayOptions.icon is defined %}<i class="{{ data.fieldType.displayOptions.icon }}"></i>&nbsp;{% endif %}
+			</h3>
+		</div>
+	{% endif %}
+{%- endblock container_label %}
+
+{% block collectionfieldtype_label -%}
+	{% if data.fieldType.displayOptions.label is defined  %}
+		{% if data.fieldType.displayOptions.icon is defined %}
+			<i class="{{ data.fieldType.displayOptions.icon }}"></i>&nbsp;
+		{% endif %}
+		<label>{{ data.fieldType.displayOptions.label }}</label>
+	{% endif %}
+{%- endblock collectionfieldtype_label %}
+
+{%- block collectionitemtype_label -%}
+	{% if form.parent.vars.icon is defined %}<i class="{{ form.parent.vars.icon }}"></i>&nbsp;{% endif %}
+	<label>
+		{{- form.parent.vars.singularLabel }} #
+        {%- if name matches '/^\\d+$/' -%}
+            {{- name|number_format + 1 -}}
+		{%- else -%}{# placeholder for the prototype #}
+			{{- form.vars.label -}}
+        {%- endif -%}
+		<span class="collection-label-field"></span>
+	</label>
+{%- endblock collectionitemtype_label -%}
+
+{# Rows #}
+{% block bouttongroup_row -%}
+<div class="btn-group">
+	{% for button in buttons %}
+		<a class="btn btn-sm btn-primary" href="/meta/environment/switch/39"> <span
+			class="fa fa-share-square-o"></span>&nbsp; Switch</a>
+			
+            {{- form_row(button) -}}
+		
+	{% endfor %}
+</div>
+{%- endblock bouttongroup_row %}
+
+
+
+{% block search_filter_row -%}
+	<div class="filter-container row">
+		<div class="col-xs-12">
+			<div class="col-md-2  col-sm-3 col-xs-4">
+				<div class="form-group">
+					<div class="visible-xs-block visible-sm-block">
+						{{ form_label(form.booleanClause) }}
+					</div>
+					{{- form_widget(form.booleanClause) -}}
+				</div>
+			</div>
+			<div class="col-md-3 col-sm-5 col-xs-4">
+				<div class="form-group">
+					<div class="visible-xs-block visible-sm-block">
+						{{ form_label(form.field) }}
+					</div>
+					{{- form_widget(form.field) -}}
+				</div>
+			</div>
+			<div class="col-md-2 col-sm-4 col-xs-4">
+				<div class="form-group">
+					<div class="visible-xs-block visible-sm-block">
+						{{ form_label(form.operator) }}
+					</div>
+					{{- form_widget(form.operator) -}}
+				</div>
+			</div>
+			<div class="clearfix visible-sm-block visible-xs-block"></div>
+			<div class="{% if is_super() %}col-md-3 col-xs-8{% else %}col-md-4 col-xs-10{% endif %}">
+				<div class="form-group">
+					<div class="visible-xs-block visible-sm-block">
+						{{ form_label(form.pattern) }}
+					</div>
+					{{- form_widget(form.pattern) -}}
+				</div>
+			</div>
+			{% if is_super() %}
+				<div class="col-md-1 col-xs-2">
+					<div class="form-group">
+						<div class="visible-xs-block visible-sm-block">
+							{{ form_label(form.boost) }}
+						</div>
+						{{- form_widget(form.boost) -}}
+					</div>
+				</div>
+			{% endif %}
+			<div class="col-md-1  col-xs-2">
+				<div class="form-group">
+					<div class="visible-xs-block visible-sm-block">
+						<label class="control-label">&nbsp;</label>
+					</div>
+{# 					<fieldset class="btn-group">#}
+						{% if form.vars.name != '0'  %}
+							<a class="btn btn-primary remove-filter form-control" href="#">
+								<i class="fa fa-trash"></i>
+							</a>
+						{% endif %}
+{# 					</fieldset>#}
+				</div>
+			</div>
+			
+			{{- form_errors(form) -}}
+		</div>  
+	</div>             
+{%- endblock search_filter_row %}
+
+
+
+
+{# {% block container_row -%}#}
+{# 	<div class="panel panel-default">#}
+{# 	  	{{- form_label(form) -}}#}
+{# 	  	<div class="panel-body">#}
+{# 	  		{{- form_widget(form) -}}#}
+{# 	  	</div>#}
+{# 	    {{- form_errors(form) -}}#}
+{# 	</div>               #}
+{# {%- endblock container_row %}#}
+
+{% block tabsfieldtype_errors -%}
+{% endblock tabsfieldtype_errors -%}
+
+{% block form_errors %}
+	{% if form.vars.helptext is defined and form.vars.helptext %}
+		<div class="help-block">{{ form.vars.helptext|raw }}</div>
+	{% endif %}
+	{{ parent() }}
+{% endblock form_errors %}
+
+
+
+{% block tabsfieldtype_row -%}
+{# <div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">#}
+{# 	<div class="panel panel-default">#}
+{# 		<div class="panel-heading">#}
+{# 	  		{{- form_label(form) -}}#}
+{# 	  	</div>#}
+{# 	  	<div  class="panel-body">#}
+			{{- form_widget(form) -}}
+{# 		</div>#}
+		{{- form_errors(form) -}}
+{# 	</div>               #}
+{# </div>#}
+{% endblock tabsfieldtype_row %}
+
+{% block tabsfieldtype_widget_tab_label_per_item %}
+	<li id="{{ tab.vars.id}}__label" class="form-group{% if tab.vars.errors|length %} has-error{% endif %}{% if counter == 1%} active{% endif %}{% if tab.vars.class is defined and tab.vars.class != 'col-md-12' %} {{tab.vars.class}}{% endif %}">
+		<a href="#{{ tab.vars.id}}__tab" data-toggle="tab" aria-expanded="{% if counter == 1%}true{%else%}false{% endif %}">
+			{{- form_label(tab) -}}
+		</a>
+	</li>
+{% endblock tabsfieldtype_widget_tab_label_per_item %}
+
+{% block tabsfieldtype_widget_tab_panel_per_item %}
+	<div class="tab-pane{% if counter == 1%} active{% endif %}" id="{{ tab.vars.id}}__tab">
+		<div class="form-group has-error"  id="{{ tab.vars.id}}__error">
+			{{ form_errors(tab) }}
+		</div>
+		<fieldset>
+			{% if counter == 1%}
+				{{- form_widget(tab) -}}
+			{% else %}
+				{{- form_widget(tab) -}}
+			{% endif %}
+		</fieldset>
+	</div>
+{% endblock tabsfieldtype_widget_tab_panel_per_item %}
+
+{% block tabsfieldtype_widget -%}
+{# 	<div class="{% if class %}{{ class }}{% else %}col-xs-12 {% endif %}">#}
+		<div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+				{% set counter = 1 %}
+				{% for tab in  form.iterator %}
+					{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == tab.vars.data.fieldType.type and form.vars.data.fieldType.type == 'EMS\\CoreBundle\\Form\\DataField\\TabsFieldType' %}
+						{% for item in  tab.iterator %}
+							{% with {
+								'tab': item,
+								'counter': counter,
+								}
+							%}
+								{{ block('tabsfieldtype_widget_tab_label_per_item') }}
+							{% endwith %}
+							{% set counter = counter + 1 %}
+						{% endfor %}
+					{% else %}
+						{% with {
+							  'tab': tab,
+							  'counter': counter,
+							  }
+						  %}
+							{{ block('tabsfieldtype_widget_tab_label_per_item') }}
+						{% endwith %}
+						{% set counter = counter + 1 %}
+					{% endif %}
+				{% endfor %}
+            </ul>
+            <div class="tab-content panel panel-default">
+			  {% set counter = 1 %}
+              {% for tab in  form.iterator %}
+				  {% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == tab.vars.data.fieldType.type and form.vars.data.fieldType.type == 'EMS\\CoreBundle\\Form\\DataField\\TabsFieldType' %}
+					  {% for item in  tab.iterator %}
+						  {% with {
+							  'tab': item,
+							  'counter': counter,
+							  }
+						  %}
+							  {{ block('tabsfieldtype_widget_tab_panel_per_item') }}
+						  {% endwith %}
+						  {% set counter = counter + 1 %}
+					  {% endfor %}
+				  {% else %}
+					  {% with {
+						  'tab': tab,
+						  'counter': counter,
+						  }
+					  %}
+						  {{ block('tabsfieldtype_widget_tab_panel_per_item') }}
+					  {% endwith %}
+					  {% set counter = counter + 1 %}
+				  {% endif %}
+              {% endfor %}
+            </div>
+            <!-- /.tab-content -->
+         </div>             
+{# 	</div>#}
+{%- endblock tabsfieldtype_widget %}
+
+
+{% block collectionfieldtype_widget -%}
+	<div class="collection-panel"
+		 data-name="{{ form.vars.name }}"
+		 data-id="{{ form.vars.id }}"
+		 data-label-field="{{ form.vars.labelField|e('html_attr') }}"
+		 data-prototype-label="{{ form.vars.prototype.vars.label|e('html_attr') }}"
+		 data-prototype-name="{{ form.vars.prototype.vars.name|e('html_attr') }}"
+		 data-prototype="{{ form_row(form.vars.prototype)|e('html_attr') }}"
+		{% if (form|last).vars is defined  %}
+			data-index="{{ (form|last).vars.name + 1 }}"
+		{% else %}
+			data-index="0"
+		{% endif %}>
+		{% set tempId = form.vars.name~'_'~random() %}
+		<div class="panel-body{% if  form.vars.sortable %} ems-sortable{% endif %}">
+		    {{- form_widget(form, { 'attr': {'class': 'collection-panel-container'} }) -}}
+		</div>
+		<div>
+	  		<div class="btn-group">
+		  		{% if not form.vars.disabled %}
+					<a href="#" class="btn btn-primary add-content-button  btn-sm"><i class="fa fa-plus"></i> {{ 'Add'|trans }}</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+{%- endblock collectionfieldtype_widget %}
+
+{% block collectionfieldtype_row -%}
+    {% set collapsible = form.vars.data.fieldType.displayOptions.collapsible|default(false) %}
+{# <div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">#}
+	<div class="panel panel-default {% if collapsible %}collapsible-collection{% endif %}">
+		<div class="panel-heading">
+	  		{{- form_label(form) -}}
+
+            {% if collapsible %}
+				<div class="pull-right">
+					<div class="btn-group toggle-group" role="group">
+						<button type="button" title="collapse" aria-expanded="false" class="btn btn-sm button-collapse"></button>
+						<button type="button" title="collapse all" aria-expanded="false" class="btn btn-sm button-collapse-all"></button>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+            {% endif %}
+
+	  	</div>
+	  	<div  class="panel-body {% if collapsible %}collapse{% endif %}">
+			{{- form_widget(form) -}}
+		</div>
+		{{- form_errors(form) -}}
+	</div>               
+{# </div>#}
+{% endblock collectionfieldtype_row %}
+
+{% block collectionitemtype_row -%}
+{% set collapsible = form.parent.vars.data.fieldType.displayOptions.collapsible|default(false) %}
+
+<div data-index="{{ form.vars.name }}" data-id="{{ form.vars.id }}" class="form-group collection-item-panel{% if form.parent.vars.itemBootstrapClass %} {{ form.parent.vars.itemBootstrapClass }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
+	<div class="panel panel-default">
+		<div class="panel-heading ems-handle">
+			{{ form_label(form) }}
+	  		<div class="btn-group pull-right">
+	  			{{- form_widget(form.remove_collection_item) -}}
+                {% if collapsible %}
+                    <div class="pull-right">
+                        <div class="btn-group toggle-group" role="group">
+                            <button type="button" title="collapse" aria-expanded="false" class="btn btn-sm button-collapse"></button>
+                            <button type="button" title="collapse all" aria-expanded="false" class="btn btn-sm button-collapse-all"></button>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                {% endif %}
+			</div>
+	  	</div>		
+		
+	  	<div class="panel-body {% if collapsible %}collapse{% endif %}">
+	  		<div class="row">
+	  		{% for child in form.iterator|filter(c => c.vars.name not in ['remove_collection_item', '_ems_internal_deleted']) %}
+				<div class="{% if child.vars.data.fieldType.options.displayOptions.class is defined %}{{ child.vars.data.fieldType.options.displayOptions.class }}{% endif %}">
+    				{{- form_row(child) -}}
+				</div>
+				{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
+					</div><div class="row">
+				{% endif %}
+			{% endfor %}
+			</div>
+	  	</div>
+	  {{- form_errors(form) -}}
+	</div>
+    {{ form_row(form._ems_internal_deleted) }}
+</div>
+{% endblock collectionitemtype_row %}
+
+
+{# {%  block data_field_type_row %}#}
+{# 	<div class="{{ form.vars.class }}">#}
+{#     	{{ form_row(form) }}#}
+{# 	</div>#}
+{# 	{% if form.vars.lastOfRow is defined and form.vars.lastOfRow %}#}
+{# 		</div><div class="row">#}
+{# 	{% endif %}#}
+{# {% endblock data_field_type_row %}#}
+
+
+{% block container_field_type_widget %}
+	<div id="{{ form.vars.id }}" class="container-fluid">
+		<div class="row">
+			{% for child in form.iterator %}
+				<div class="{% if child.vars.data.fieldType.options.displayOptions.class is defined %}{{ child.vars.data.fieldType.options.displayOptions.class }}{% endif %}{% if child.vars.errors|length > 0 and not child.vars.isContainer|default(false)  %} has-error{% endif %}">
+    				{{- form_row(child) -}}
+				</div>
+				{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
+					</div><div class="row">
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+{% endblock container_field_type_widget %}
+
+{# {% block datafieldtype_row -%}#}
+{# {# <div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if form.vars.value.fieldType is defined and form.vars.value.fieldType.options.restrictionOptions is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory %} required {% endif %}{% if force_error|default(false) or not valid or form.vars.errors|length > 0 %} has-error{% endif %}">#}#}
+{# 	{% if isContainer and form.vars.data and form.vars.data.fieldType.options.displayOptions.label %}#}
+{# 		<div class="panel panel-default">#}
+{# 			<div class="panel-heading">#}
+{# 		  		{{- form_label(form) -}}#}
+{# 		  	</div>#}
+{# 		  <div class="panel-body">#}
+{# 		    {{- form_widget(form) -}}#}
+{# 		  </div>#}
+{# 		  {{- form_errors(form) -}}#}
+{# 		</div>               #}
+{# 	{% else %}#}
+{# 		  {{ form_row(form) }}#}
+{# 	{% endif %}#}
+{# {# </div>#}#}
+{# {% endblock datafieldtype_row %}#}
+
+{# {% block timefieldtype_row %}#}
+{# 	<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}">#}
+{#     	{{ form_label(form.data_value) }} #}
+
+{#                   <div class="input-group">#}
+{#                     <div class="input-group-addon">#}
+{#                       <i class="fa fa-clock-o"></i>#}
+{#                     </div>#}
+{#                     {{- form_widget(form.data_value) -}}#}
+{#                   </div>#}
+{#                   <!-- /.input group -->#}
+{#                 </div>#}
+{#                 <!-- /.form group -->#}
+{# {% endblock timefieldtype_row %}#}
+
+
+{%- block form_label -%}
+    {% if label is not same as (false) -%}
+        {% if not compound -%}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {%- endif -%}
+        {% if required -%}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {%- endif -%}
+        {% if label is empty -%}
+            {%- if label_format is not empty -%}
+                {% set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) %}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{% if form.vars.icon is defined and form.vars.icon %}<i class="{{ form.vars.icon }}"></i> {% endif %}{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}</label>
+    {%- endif -%}
+{%- endblock form_label -%}
+
+
+{% block codefieldtype_widget %}
+	<div class="ems-code-editor" {{ block('widget_attributes') }}>
+        {{ form_widget(form) }}
+    	<pre>{{ form.vars.value }}</pre>
+	</div>
+{% endblock codefieldtype_widget %}
+
+
+{% block codefieldtype_row %}
+	<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %} {% if form.vars.errors|length %} has-error{% endif %}">
+    	{{ form_label(form) }}
+    	{{ form_widget(form) }}
+    	{{ form_errors(form) }}
+    </div>
+    <!-- /.form group -->
+{% endblock codefieldtype_row %}
+
+
+{% block json_menu_editor_fieldtype_row %}
+	<div class="form-group {% if form.vars.errors|length %} has-error{% endif %} json_menu_editor_fieldtype">
+		{{ form_label(form) }}
+		{{ form_widget(form) }}
+		{{ form_errors(form) }}
+	</div>
+	<!-- /.form group -->
+{% endblock json_menu_editor_fieldtype_row %}
+
+
+
+{% block json_menu_editor_fieldtype_node %}
+	{% for item in children %}
+		{% set contentType = item.contentType|default('')|get_content_type %}
+		{% if contentType %}
+			{% set item = item|merge({
+				icon: contentType.icon,
+				contentType: contentType.name
+			}) %}
+		{% endif %}
+		<li id="{{ item.id }}" data-type="{{ item.type|default('node') }}" data-label="{{ item.label|default('') }}" data-content-type="{{ item.contentType|default('node') }}" class="collapsible-container nestedSortable mjs-nestedSortable{% if item.type|default('node') != 'node' %}-no-nesting{% endif %}">
+			<div class="nestedSortable">
+				<span class="input-group">
+					{% if item.type|default('node') == 'node' %}
+						<span class="input-group-btn">
+							<button href="#" type="button" title="{{ 'field_type.json_menu_editor.collapse_button'|trans }}" aria-expanded="false" class="btn btn-default button-collapse"></button>
+						</span>
+					{% endif %}
+					<span class="input-group-addon" >
+                        <i class="{% if item.icon|default(false) %}{{ item.icon }}{% elseif item.type|default('node') == 'node' %}fa fa-folder{% else %}fa fa-file-text{% endif %}"></i>
+                    </span>
+					<input type="text" class="form-control itemLabel ignore-ems-update" placeholder="{{ 'field_type.json_menu_editor.item_label_placeholder'|trans }}" value="{{ item.label|default('') }}">
+					<span class="input-group-btn">
+						<a type="button" class="btn btn-primary json_menu_sortable_handle_button" title="{{ 'field_type.json_menu_editor.move_item'|trans }}">
+							<i class="fa fa-arrows"></i>
+							<span class="">{{ 'field_type.json_menu_editor.move_item'|trans }}</span>
+						</a>
+						{% if item.type|default('node') == 'node' %}
+                            {{ addMenu }}
+						{% endif %}
+						<a type="button" class="btn btn-danger json_menu_sortable_remove_button" title="{{ 'field_type.json_menu_editor.delete_item'|trans }}">
+							<i class="fa fa-trash"></i>
+							<span class="sr-only">{{ 'field_type.json_menu_editor.delete_item'|trans }}</span>
+						</a>
+					</span>
+				</span>
+
+			</div>
+			{% if item.type|default('node') == 'node' and item.children|default({})|length > 0 %}
+				<ol>
+					{% set children = item.children %}
+					{{ block('json_menu_editor_fieldtype_node') }}
+				</ol>
+			{% endif %}
+		</li>
+	{% endfor %}
+{% endblock json_menu_editor_fieldtype_node %}
+
+
+{% block json_menu_editor_fieldtype_widget %}
+	{{  form_widget(form) }}
+    {% set nodeTypes =  form.vars.node_types|split(',') %}
+    {% set itemTypes =  form.vars.item_types|split(',') %}
+
+    {% set addMenu %}
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="fa fa-plus"></span>
+            {{ 'field_type.json_menu_editor.add'|trans }}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            {% for type in itemTypes %}
+                {% set contentType = type|get_content_type %}
+                {% if contentType %}
+                    {% set contentTypeIcon = contentType.icon|default('fa fa-file')  %}
+                    <li>
+                        <a type="button" class="json_menu_sortable_add_item_button" data-label="" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
+                            <i class="{{ contentTypeIcon }}"></i>
+                            {{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': contentType.singularName}) }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% for type in nodeTypes %}
+                {% set contentType = type|get_content_type %}
+                {% if contentType %}
+                    {% set contentTypeIcon = contentType.icon|default('fa fa-folder')  %}
+                    <li>
+                        <a type="button" class="json_menu_sortable_add_node_button" data-label="" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
+                            <i class="{{ contentTypeIcon }}"></i>
+                            {{ 'field_type.json_menu_editor.add_node'|trans({'%singular%': contentType.singularName}) }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endset %}
+
+
+	<div class="json_menu_editor_fieldtype_widget collapsible-container"
+		{% set children =  [{ id: '%uuid%', type: 'item', label: '%label%', icon: '%icon%', contentType: '%contentType%'}] %}
+		 data-prototype-item="{{ block('json_menu_editor_fieldtype_node')|e('html_attr') }}"
+		{% set children =  [{ id: '%uuid%', type: 'node', label: '%label%', icon: '%icon%', contentType: '%contentType%'}] %}
+		 data-prototype-node="{{ block('json_menu_editor_fieldtype_node')|e('html_attr') }}">
+		<div class="input-group">
+				<span class="input-group-btn">
+					<button type="#" title="{{ 'field_type.json_menu_editor.collapse_all_button'|trans }}" aria-expanded="false" class="btn btn-default button-collapse-all">
+					</button>
+                    {{ addMenu }}
+				</span>
+		</div>
+		<ol class="json_menu_sortable vertical not-collapsible">
+			{% set children =  form.vars.data.rawData |default('[]')|json_decode %}
+			{{ block('json_menu_editor_fieldtype_node') }}
+		</ol>
+		<div class="input-group">
+		</div>
+	</div>
+{% endblock json_menu_editor_fieldtype_widget %}
+
+{% block json_menu_nested_editor_fieldtype_row %}
+	<div class="form-group {% if form.vars.errors|length %} has-error{% endif %}"
+		data-name="{{ form.vars.name }}" data-block-prefix="{{ form.vars.unique_block_prefix }}">
+		{{ form_label(form) }}
+		{{ form_widget(form) }}
+		{{ form_errors(form) }}
+	</div>
+{% endblock json_menu_nested_editor_fieldtype_row %}
+
+{% block json_menu_nested_editor_fieldtype_widget %}
+	{{  form_widget(form) }}
+	{{ emsco_json_menu_nested({
+		'id': form.vars.id,
+		'field_type': data.fieldType,
+		'revision': revision,
+		'structure': data.rawData|default('{}'),
+	}, 'revision_edit') }}
+{% endblock json_menu_nested_editor_fieldtype_widget %}
+
+{% block datefieldtype_row %}
+<div class="form-group">
+	<div id="{{ form.vars.id}}__label">
+        {{ form_label(form.value) }} 
+	</div>
+	<div class="input-group">
+    	<div class="input-group-addon">
+    		<i class="fa fa-calendar"></i>
+    	</div>
+        {{- form_widget(form.value) -}}
+	</div>
+	<div class="has-error"  id="{{ form.vars.id}}__error">
+   	    {{- form_errors(form) -}}
+    </div>
+  	<!-- /.input group -->
+</div>
+<!-- /.form group -->
+{% endblock datefieldtype_row %}
+
+{% block date_time_field_type_row %}
+	<div class="form-group">
+		<div id="{{ form.vars.id}}__label">
+			{{ form_label(form.value) }}
+		</div>
+		<div class="input-group">
+			<div class="input-group-addon">
+				<i class="fa fa-calendar"></i>
+			</div>
+			{{- form_widget(form.value) -}}
+		</div>
+		<div class="has-error"  id="{{ form.vars.id}}__error">
+			{{- form_errors(form) -}}
+		</div>
+	</div>
+{% endblock date_time_field_type_row %}
+
+
+{% block assettype_multiple_item %}
+
+	{% set prototype = (fileItem.vars.name == '__name__') %}
+	<li class="input-file-entry">
+		<div>
+			<div class="modal" tabindex="-1" role="dialog" id="asst-details-{{ form.vars.id }}-__name__">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="{{ 'view.form.fields.asset.close-modal'|trans }}"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">{{ 'view.form.fields.asset.file-info'|trans }}</h4>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<label>{{ 'view.form.fields.asset.file-hash'|trans }}</label>
+								<div class="form-control asset-hash-signature">{% if fileItem.sha1.vars.value is defined %}{{ fileItem.sha1.vars.value }}{% endif %}</div>
+								{{- form_row(fileItem.sha1) -}}
+								{{- form_row(fileItem.mimetype) -}}
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'view.form.fields.asset.close-modal'|trans }}</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="asset-upload-tab {% if not prototype %}hidden{% endif %}">
+				<div class="progress-group">
+					<span class="progress-text">{{ 'view.form.fields.asset.init-upload'|trans }}</span>
+					<span class="progress-number">&nbsp;</span>
+					<div class="progress sm">
+						<div class="progress-bar" style="width: 0%"></div>
+					</div>
+				</div>
+			</div>
+			<div class="asset-preview-tab {% if prototype %}hidden{% endif %}">
+				<div class="input-group input-group-sm">
+					{{- form_widget(fileItem.filename) -}}
+					<span class="input-group-btn">
+						<button type="button" class="btn" title="{{ 'view.form.fields.asset.info-modal-button'|trans }}" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}-__name__">
+							<i class="fa fa-info"></i>
+							<span class="sr-only">{{ 'view.form.fields.asset.info-modal-button'|trans }}</span>
+						</button>
+						<a type="button" class="btn ui-sortable-handle move-handle" title="{{ 'view.form.fields.asset.move-button'|trans }}">
+							<i class="fa fa-arrows"></i>
+							<span class="sr-only">{{ 'view.form.fields.asset.move-button'|trans }}</span>
+						</a>
+						<a href="{% if prototype %}#{% else %}{{ ems_asset_path(fileItem.vars.value) }}{% endif %}" type="button" class="btn btn-primary view-asset-button {% if prototype %}disabled"{% endif %}" title="{{ 'view.form.fields.asset.view-button'|trans }}" target="_blank">
+							<i class="fa fa-eye"></i>
+							<span class="sr-only">{{ 'view.form.fields.asset.view-button'|trans }}</span>
+						</a>
+						<button type="button" class="btn btn-danger remove-item" title="{{ 'view.form.fields.asset.remove-button'|trans }}">
+							<i class="fa fa-trash"></i>
+							<span class="sr-only">{{ 'view.form.fields.asset.remove-button'|trans }}</span>
+						</button>
+					</span>
+				</div>
+			</div>
+
+		</div>
+	</li>
+{% endblock assettype_multiple_item %}
+
+
+{% block assettype_row %}
+
+	{% set multipleTemplate %}
+		{% if form.children.files is defined %}
+			{% set fileItem = form.children.files.vars.prototype %}
+			{{ block('assettype_multiple_item') }}
+		{% endif %}
+	{% endset %}
+
+<div class="panel panel-default file-uploader-row{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}"{% if form.vars.multiple|default(false) %} data-multiple="{{ multipleTemplate|e('html_attr') }}"{% endif %}>
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<i class="fa fa-file-o"></i> 				
+			{{ form_label(form) }}
+		</h3>
+	</div>
+	<div class="panel-body" >
+		{% if form.children.files is not defined %}
+			<div class="modal" tabindex="-1" role="dialog" id="asst-details-{{ form.vars.id }}">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="{{ 'view.form.fields.asset.close-modal'|trans }}"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">{{ 'view.form.fields.asset.file-info'|trans }}</h4>
+				  </div>
+				  <div class="modal-body">
+					<div class="form-group">
+						<label>{{ 'view.form.fields.asset.file-hash'|trans }}</label>
+						<div class="form-control asset-hash-signature">{% if form.vars.value.sha1 is defined %}{{ form.vars.value.sha1 }}{% endif %}</div>
+					</div>
+					{{- form_widget(form) -}}
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'view.form.fields.asset.close-modal'|trans }}</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		{% endif %}
+      <!-- Tab panes -->
+      <div class="" id="asset-tabs-{{ form.vars.id }}">
+        <div class="tab-pane {% if (form.vars.value.sha1 is defined and form.vars.value.sha1) or (form.children.files is defined and form.vars.value|length > 0) %}hidden{% endif %} asset-upload-tab" id="asset-upload-tab-{{ form.vars.id }}">
+        	{% if not form.vars.disabled %}
+        		<p class="text-center asset-preview">
+					{% if form.vars.multiple|default(false) %}
+						<strong>{{ 'view.form.fields.asset.drag-n-drop-files'|trans }}</strong>
+					{% else %}
+						<strong>{{ 'view.form.fields.asset.drag-n-drop-file'|trans }}</strong>
+					{% endif %}
+                </p>
+        	{% endif %}
+    		<div class="progress-group">
+            	<span class="progress-text">&nbsp;</span>
+    			<span class="progress-number">&nbsp;</span>
+    			<div class="progress sm">
+    				<div class="progress-bar" style="width: {% if form.children.sha1.vars.value|default(false) %}100{% else %}0{% endif %}%"></div>
+    			</div>
+    		</div>
+        </div>
+        <div class="tab-pane asset-preview-tab {% if form.vars.value.sha1 is not defined or not form.vars.value.sha1 %}hidden{% endif %}" id="asset-preview-tab-{{ form.vars.id }}">
+        	<div class="text-center">
+            	<img 
+            		data-src="{{ path('ems_asset_processor', {'hash':'_asset_hash_', 'processor': 'preview', 'type':'_asset_mimetype_', 'name': '_asset_name_' }) }}"
+            		{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %} 
+            			src="{{ emsco_asset_path(form.vars.value, 'preview') }}"
+            		{% endif %}
+            		class="img-responsive center-block" alt="{{ 'view.form.fields.asset.preview'|trans({'%label%': form_label(form)|striptags }) }}"
+            	>
+	        </div>
+        </div>
+
+		  {% if form.children.files is defined %}
+			  <div class="tab-pane asset-list-tab{% if form.vars.value|length == 0 %} hidden{% endif %}" id="asset-list-tab-{{ form.vars.id }}">
+
+				  <ol class="nested-sortable vertical" data-nested-max-level="1" data-nested-is-tree="false" data-nested-handle="a.move-handle" data-file-list-index="{{ form.children.files.children|length }}">
+					  {% for fileItem in form.children.files.children %}
+						  {{ block('assettype_multiple_item') }}
+					  {% endfor %}
+				  </ol>
+			  </div>
+		{% endif %}
+        {{- form_errors(form) -}}
+      </div>
+	</div>
+	<div class="panel-footer">
+		{% if form.vars.multiple|default(false) %}
+			<div class="btn-group">
+				<input type="file" class="file-uploader-input" {% if form.vars.disabled %}disabled="disabled"{% endif %} multiple="multiple" data-label="{{ 'view.form.fields.asset.upload-files'|trans|e('html_attr') }}">
+			</div>
+		{% else %}
+			<div class="btn-group">
+				<input type="file" class="file-uploader-input" {% if form.vars.disabled %}disabled="disabled"{% endif %} data-label="{{ 'view.form.fields.asset.upload-file'|trans|e('html_attr') }}">
+			</div>
+			<button type="button" data-href="{{ path('ems_core_uploaded_file_wysiwyg_modal') }}"  class="btn btn-small btn-default file-browse-server"><i class="fa fa-folder-open-o"></i><span class="sr-only">{{ 'view.form.fields.asset.browse-server'|trans }}</span></button>
+			<div class="btn-group">
+				<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
+				  	<i class="fa fa-info"></i>
+					{{ 'view.form.fields.asset.info-modal-button'|trans }}
+				</button>
+				<a href="{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}{{ ems_asset_path(form.vars.value) }}{% endif %}" class="btn btn-small btn-default view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{ 'view.form.fields.asset.view-button'|trans }}"><i class="fa fa-eye">&nbsp;{{ 'view.form.fields.asset.view-button'|trans }}</i></a>
+				<a href="#" class="btn btn-small btn-default clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{ 'view.form.fields.asset.clear-button'|trans }}"><i class="fa fa-remove"></i>&nbsp;{{ 'view.form.fields.asset.clear-button'|trans }}</a>
+			</div>
+		{% endif %}
+	</div>
+</div>
+{% endblock assettype_row %}
+
+
+{% block filetype_row %}
+<div class="panel panel-default file-uploader-row" {% if form.vars.meta_fields %}data-meta-fields{% endif %}>
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<i class="fa fa-file-o"></i>
+			{{ form_label(form) }}
+		</h3>
+	</div>
+	<div class="panel-body" >
+		<div class="modal" tabindex="-1" role="dialog" id="asst-details-{{ form.vars.id }}">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+              	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        		<h4 class="modal-title" id="myModalLabel">{{ 'Asset options'|trans }}</h4>
+              </div>
+              <div class="modal-body">
+              	<div class="form-group">
+              		<label>{{ 'Hash signature'|trans }}</label>
+              		<div class="form-control asset-hash-signature">{% if form.vars.value.sha1 is defined %}{{ form.vars.value.sha1 }}{% endif %}</div>
+              	</div>
+        		{{- form_widget(form) -}}
+              </div>
+              <div class="modal-footer">
+				<div class="btn-group">
+					{% if form.vars.meta_fields %}
+						<button type="button" class="btn btn-small btn-default extract-file-info" >
+							<i class="fa fa-bolt"></i>
+							{{ 'Extract content'|trans }}
+						</button>
+					{% endif %}
+                    <button type="button" class="btn btn-small btn-default " data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <!-- Tab panes -->
+      <div class="tab-content" id="asset-tabs-{{ form.vars.id }}">
+        <div role="tabpanel" class="tab-pane {% if form.vars.value.sha1 is not defined or not form.vars.value.sha1 %}active{% endif %} asset-upload-tab" id="asset-upload-tab-{{ form.vars.id }}">
+    		<p class="text-center asset-preview">
+                <strong>{{ 'Drag and drop your file here' }}</strong>
+            </p>
+    		<div class="progress-group">
+            	<span class="progress-text">&nbsp;</span>
+    			<span class="progress-number">&nbsp;</span>
+    			<div class="progress sm">
+    				<div class="progress-bar" style="width: {% if form.children.sha1.vars.value %}100{% else %}0{% endif %}%"></div>
+    			</div>
+    		</div>
+        </div>
+        <div role="tabpanel" class="tab-pane asset-preview-tab {% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}active{% endif %}" id="asset-preview-tab-{{ form.vars.id }}">
+        	<div class="text-center">
+            	<img
+            		data-src="{{ path('ems_asset_processor', {'hash':'_asset_hash_', 'processor': 'preview', 'type':'_asset_mimetype_', 'name': '_asset_name_' }) }}"
+            		{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}
+            			src="{{ path('ems_asset_processor', {'hash':form.vars.value.sha1, 'processor': 'preview', 'type':form.vars.value.mimetype, 'name':form.vars.value.filename }) }}"
+            		{% endif %}
+            		class="img-responsive center-block" alt="Preview of the field {{ form_label(form)|striptags }}"
+            	>
+	        </div>
+        </div>
+      </div>
+	</div>
+	<div class="panel-footer">
+		<div class="btn-group">
+			<input type="file" class="file-uploader-input">
+		</div>
+		<button type="button" data-href="{{ path('ems_core_uploaded_file_wysiwyg_modal') }}"  class="btn btn-small btn-default file-browse-server"><i class="fa fa-folder-open-o"></i><span class="sr-only">{{ 'view.form.fields.asset.browse-server'|trans }}</span></button>
+		<div class="btn-group">
+			<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
+              <i class="fa fa-info"></i>
+              {{ 'Info'|trans }}
+            </button>
+			<a href="#" class="btn btn-small btn-default view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
+			<a href="#" class="btn btn-small btn-default clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{'Clear'|trans}}"><i class="fa fa-remove"></i>&nbsp;{{'Clear'|trans}}</a>
+		</div>
+	</div>
+</div>
+{% endblock filetype_row %}
+
+
+
+{% block fieldTypeType_row -%}
+<li class="list-group-item" id="{{ form.vars.id }}_item">
+	<h4>
+	{% if form.vars.data.parent %}
+{# 			<i class="glyphicon glyphicon-move move-handle"></i>#}
+		<strong>{{ form.vars.data.name }}</strong> 
+		<small>{{ form.vars.data.type }}</small>
+	{% else %}
+		<strong>{{ form.vars.data.contentType.singularName }}</strong>
+	{% endif %}
+	<div class="btn-group pull-right">
+		{% if form.add is defined %}		
+			<!-- Modal windows add field -->
+			<div class="modal fade" id="{{ form.vars.id }}_modal_add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalLabel">
+						Add a field to <strong>{{ form.vars.data.name }}</strong>	
+					</h4>
+			      </div>
+			      <div class="modal-body">
+					{{ form_row( attribute(form, 'ems:internal:add:field:class')) }}
+					{{ form_row( attribute(form, 'ems:internal:add:field:name')) }}
+				  </div>
+			      <div class="modal-footer">
+			      	<div class="btn-group">
+			      		{{ form_widget(form.add) }}
+				        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+			      	</div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_modal_add">
+				<i class="fa fa-plus"></i> Field
+			</button>
+		{% endif %}	
+		
+		{% if form.subfield is defined %}
+			<div class="modal fade" id="{{ form.vars.id }}_modal_add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalLabel">
+						Add a subfield to <strong>{{ form.vars.data.name }}</strong>	
+					</h4>
+			      </div>
+			      <div class="modal-body">
+					{{ form_row( attribute(form, 'ems:internal:add:subfield:name')) }}
+				  </div>
+			      <div class="modal-footer">
+			      	<div class="btn-group">
+			      		{{ form_widget(form.subfield) }}
+				        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+			      	</div>
+			      </div>
+			    </div>
+			  </div>
+			</div>	
+			<div class="modal fade" id="{{ form.vars.id }}_duplicate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalLabel">
+						Duplicate <strong>{{ form.vars.data.name }}</strong>	
+					</h4>
+			      </div>
+			      <div class="modal-body">
+					{{ form_row( attribute(form, 'ems:internal:add:subfield:target_name')) }}
+				  </div>
+			      <div class="modal-footer">
+			      	<div class="btn-group">
+			      		{{ form_widget(form.duplicate) }}
+				        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+			      	</div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			{% if form.vars.editSubfields  %}
+				<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_modal_add">
+					<i class="fa fa-plus"></i> Subfield
+				</button>
+				<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_duplicate">
+					<i class="fa fa-paste"></i> Duplicate
+				</button>
+			{% endif %}
+		{% endif %}
+
+		{% if form.options is defined and form.vars.editSubfields %}
+			<!-- Modal windows field options -->
+			<div class="modal fade" id="{{ form.vars.id }}_modal_options" role="dialog" aria-labelledby="myModalLabel">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalLabel">
+						Options for the field <strong>{{ form.vars.data.name }}</strong> <small>({{ form.vars.data.type }})</small>	
+					</h4>
+			      </div>
+			      <div class="modal-body">
+		
+						<div class="nav-tabs-custom">
+							<ul class="nav nav-tabs">
+								{% set active='active' %}
+								{% if form.options.displayOptions is defined %}
+									<li class="{{ active }}"><a href="#tab_display_{{ form.vars.id }}" data-toggle="tab" aria-expanded="true">Display</a></li>
+									{% set active='' %}
+								{%  endif %}
+								{% if form.options.mappingOptions is defined %}
+									<li class="{{ active }}"><a href="#tab_mapping_{{ form.vars.id }}" data-toggle="tab" aria-expanded="false">Mapping</a></li>
+									{% set active='' %}
+								{%  endif %}
+				                {% if form.options.restrictionOptions is defined %}
+				                  <li class="{{ active }}"><a href="#tab_restriction_{{ form.vars.id }}" data-toggle="tab" aria-expanded="false">Restriction</a></li>
+									{% set active='' %}
+				                {%  endif %}
+				                {% if form.options.migrationOptions is defined %}
+				                  <li class="{{ active }}"><a href="#tab_migration_{{ form.vars.id }}" data-toggle="tab" aria-expanded="false">Migration</a></li>
+									{% set active='' %}
+				                {%  endif %}
+				                {% if form.options.extraOptions is defined %}
+				                  <li class="{{ active }}"><a href="#tab_extra_{{ form.vars.id }}" data-toggle="tab" aria-expanded="false">Extra</a></li>
+									{% set active='' %}
+				                {%  endif %}
+							</ul>
+							{{- form_widget(form.options, {'seed': form.vars.id} ) -}}
+						</div>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_modal_options">
+				  <i class="fa fa-sliders"></i> Options
+			</button>
+		{% endif %}
+		
+		{% if form.reorder is defined %}
+			<div class="modal fade" id="{{ form.vars.id }}_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="myModalReorderLabel">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalReorderLabel">
+						Reorder fields in <strong>{{ form.vars.data.name }}</strong>	
+					</h4>
+			      </div>
+			      <div class="modal-body">
+					<ul class="list-group sortable" id="{{ form.vars.id }}_modal_reorder_list">
+			      		{% for child in form.vars.data.children|filter(child => not child.deleted) %}
+			      			<li class="list-group-item">
+			      				<i class="glyphicon glyphicon-move"></i>
+			      				{{ child.name }}
+			      				{{ form_row( attribute(attribute(form, 'ems_'~child.name), 'name')) }}
+			      			</li>
+			      		{% endfor %}
+					</ul>	
+				  </div>
+			      <div class="modal-footer">
+			      	<div class="btn-group">
+			      		{{ form_widget(form.reorder) }}
+			      	</div>
+			      </div>
+			    </div>
+			  </div>
+			</div>	
+			<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_modal_reorder">
+				<i class="fa fa-reorder"></i> Reorder
+			</button>
+		{% endif %}
+		{% if form.remove is defined %}
+			{{ form_widget(form.remove) }}
+		{% endif %}
+		
+	</div> 
+
+	</h4>
+
+    {% if form.name is defined and form.name.rendered == false %}
+		{{ form_row(form.name) }}
+	{% endif %}
+
+    {% if form.options is defined and not form.vars.editSubfields %}
+        {{- form_widget(form.options, {'seed': form.vars.id, 'editSubfields': false} ) -}}
+    {% endif %}
+
+	{% if form.rendered == false and form.vars.data.children is defined and form.vars.data.children|filter(child => not child.deleted)|length > 0 %}
+		<ul class="list-group" id="{{ form.vars.id }}_list_container">
+			{{- form_widget(form) -}}
+		</ul>
+	{% endif %}
+</li>
+{%- endblock fieldTypeType_row %}
+
+
+{% block i18n_content_row -%}
+	<div class="filter-container row">
+		<div class="col-md-2 col-sm-3">
+			<div class="form-group col-xs-6 col-sm-12">
+				{{- form_label(form.locale) -}}
+				{{- form_widget(form.locale) -}}
+				{{- form_errors(form.locale) -}}
+			</div>
+			<div class="form-group col-xs-6 col-sm-12">
+					<div class="control-label visible-xs-block">&nbsp;
+					</div>
+					{% if not form|firstInArray(form.parent.children)  %}
+						<a class="btn btn-danger btn-remove form-control" href="#">
+							<i class="fa fa-trash"></i>
+						</a>
+					{% endif %}					
+			</div>
+			<div class="clearfix visible-xs-block"></div>
+		</div>
+		<div class="col-md-10 col-sm-9">
+			{{- form_row(form.text) -}}
+		</div>
+		{{- form_errors(form) -}}
+	</div>             
+{%- endblock i18n_content_row %}
+
+{%- block ems_version_tag_row -%}
+	{% if form.value is defined %}
+		{{- form_row(form.value) -}}
+	{% endif %}
+{%- endblock ems_version_tag_row -%}
+
+{%- block data_field_migration_transformer_row -%}
+	<div>
+		{{ form_row(form.class) }}
+		{{ form_row(form.config) }}
+	</div>
+{%- endblock -%}

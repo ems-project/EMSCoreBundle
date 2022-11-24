@@ -1,0 +1,78 @@
+/* Is it not a bootstrap bug that nested lists are so ugly? */
+li.list-group-item > ul.list-group {
+    margin-top: 20px;
+    margin-bottom: 6px;
+}
+
+/* Similar to glyphicon but with html5 entities */
+/* i.e. <span class="entity">&infin;</span> */
+span.entity, i.entity {
+    margin-right: 6px;
+    font-size: 1.5em;
+}
+
+/* align select2 container to bootstrap height */
+span.select2-container {
+	min-height: $input-height-base;
+	width: 100% !important;
+}
+
+/* height auto in user menu */
+ul.navbar-nav>.user-menu>.dropdown-menu>li.user-header {
+  height: auto;
+}
+
+.table td.fit,
+.table th.fit {
+  white-space: nowrap;
+  width: 1%;
+}
+
+ul.dropdown-menu li button {
+  border:0;
+  padding: 3px 20px;
+  width:100%;
+  text-align:left;
+  display: block;
+  clear: both;
+  font-weight: 400;
+  line-height: $line-height-base;
+  color: $navbar-default-link-color;
+  white-space: nowrap;
+  background-color: transparent;
+
+  & > .glyphicon,
+  & > .fa,
+  & > .ion {
+    margin-right: 10px;
+  }
+
+  &:hover,
+  &:focus {
+    color: $navbar-default-link-hover-color;
+    text-decoration: none;
+    background-color: #e1e3e9;
+  }
+}
+
+
+/** Bootstrap 4 classses */
+
+.btn.btn-outline-primary {
+  border-color: $brand-primary;
+  color: $brand-primary;
+}
+
+.btn.btn-outline-danger {
+  border-color: $brand-danger;
+  color: $brand-danger;
+}
+
+span[data-toggle="tooltip"] {
+  cursor: default;
+}
+
+.tooltip-inner {
+  max-width: 100%;
+  min-width: 150px;
+}

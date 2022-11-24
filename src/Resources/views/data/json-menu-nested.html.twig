@@ -1,0 +1,8 @@
+<div>
+    {{ form_start(form, { 'name': 'json-menu-nested-form-' ~ fieldType.name, 'class': 'json-nested-form' }) }}
+    {{- form_errors(form.data) -}}
+    {{ form_widget(form.data) }}
+    {{ form_end(form) }}
+</div>
+
+

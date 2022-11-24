@@ -1,0 +1,2 @@
+
+.ems-icon-ball { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#x4f;&nbsp;'); }

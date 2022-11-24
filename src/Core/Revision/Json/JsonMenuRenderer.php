@@ -187,9 +187,7 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
                 'silent_publish' => true,
                 'structure' => null,
             ])
-            ->setDefault('field_document', function (Options $options) {
-                return $options['field'];
-            });
+            ->setDefault('field_document', fn (Options $options) => $options['field']);
 
         $options = $optionsResolver->resolve($options);
 

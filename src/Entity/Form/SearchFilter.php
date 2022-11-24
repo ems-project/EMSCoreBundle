@@ -11,13 +11,11 @@ use Doctrine\ORM\Mapping as ORM;
 class SearchFilter implements \JsonSerializable
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Search", inversedBy="filters")
@@ -38,12 +36,12 @@ class SearchFilter implements \JsonSerializable
     /**
      * @ORM\Column(name="boolean_clause", type="string", length=20, nullable=true)
      */
-    public ?string $booleanClause;
+    public ?string $booleanClause = 'must';
 
     /**
      * @ORM\Column(name="operator", type="string", length=50)
      */
-    public string $operator;
+    public string $operator = 'query_and';
 
     /**
      * @ORM\Column(name="boost", type="decimal", scale=2, nullable=true)
@@ -52,8 +50,6 @@ class SearchFilter implements \JsonSerializable
 
     public function __construct()
     {
-        $this->operator = 'query_and';
-        $this->booleanClause = 'must';
     }
 
     /**
@@ -83,7 +79,7 @@ class SearchFilter implements \JsonSerializable
                 case 'match_and':
                     $out = [
                         'match' => [
-                            $field ? $field : '_all' => [
+                            $field ?: '_all' => [
                                 'query' => $this->pattern ?? '',
                                 'operator' => 'AND',
                                 'boost' => $this->boost ?? 1,
@@ -109,7 +105,7 @@ class SearchFilter implements \JsonSerializable
                     $out = [
                         'match' => [
                                 $field ?? '_all' => [
-                                'query' => $this->pattern ? $this->pattern : '',
+                                'query' => $this->pattern ?: '',
                                 'operator' => 'OR',
                                 'boost' => $this->boost ?? 1,
                                 ],
@@ -143,7 +139,7 @@ class SearchFilter implements \JsonSerializable
                 case 'term':
                     $out = [
                         'term' => [
-                            $field ? $field : '_all' => [
+                            $field ?: '_all' => [
                                 'value' => $this->pattern ?? '*',
                                 'boost' => $this->boost ?? 1,
                             ],
@@ -153,7 +149,7 @@ class SearchFilter implements \JsonSerializable
                 case 'prefix':
                     $out = [
                         'prefix' => [
-                            $field ? $field : '_all' => [
+                            $field ?: '_all' => [
                                 'value' => $this->pattern ?? '*',
                             ],
                         ],

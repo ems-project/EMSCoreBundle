@@ -192,7 +192,7 @@ class ContentTypeService implements EntityServiceInterface
 
     public function getIndex(ContentType $contentType, Environment $environment = null): string
     {
-        $environment = $environment ?? $contentType->giveEnvironment();
+        $environment ??= $contentType->giveEnvironment();
 
         return $environment->getAlias();
     }

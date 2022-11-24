@@ -17,7 +17,7 @@ class UserService implements EntityServiceInterface
 {
     private Registry $doctrine;
     private TokenStorageInterface $tokenStorage;
-    private ?UserInterface $currentUser;
+    private ?UserInterface $currentUser = null;
 
     /** @var array<mixed> */
     private array $securityRoles;
@@ -41,7 +41,6 @@ class UserService implements EntityServiceInterface
     {
         $this->doctrine = $doctrine;
         $this->tokenStorage = $tokenStorage;
-        $this->currentUser = null;
         $this->securityRoles = $securityRoles;
         $this->security = $security;
         $this->searchRepository = $searchRepository;
@@ -212,7 +211,7 @@ class UserService implements EntityServiceInterface
     public function listUserRoles(): array
     {
         $roleHierarchy = $this->securityRoles;
-        $roles = \array_merge(['ROLE_USER'], \array_keys($roleHierarchy), ['ROLE_API']);
+        $roles = [...['ROLE_USER'], ...\array_keys($roleHierarchy), ...['ROLE_API']];
 
         return \array_combine($roles, $roles);
     }

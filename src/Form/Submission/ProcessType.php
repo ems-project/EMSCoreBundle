@@ -14,8 +14,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 final class ProcessType extends AbstractType
 {
-    /** @var RouterInterface */
-    private $router;
+    private RouterInterface $router;
 
     public function __construct(RouterInterface $router)
     {

@@ -139,7 +139,7 @@ class FieldTypeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => 'EMS\CoreBundle\Entity\FieldType',
+            'data_class' => FieldType::class,
             'container' => false,
             'path' => false,
             'new_field' => false,
@@ -184,7 +184,7 @@ class FieldTypeType extends AbstractType
 
         $dataFieldType->buildObjectArray($dataField, $out);
 
-        $this->logger->debug('Builded', [\json_encode($out)]);
+        $this->logger->debug('Builded', [\json_encode($out, JSON_THROW_ON_ERROR)]);
 
         /** @var DataField $child */
         foreach ($dataField->getChildren() as $child) {

@@ -19,57 +19,44 @@ class ManagedAlias
 {
     use CreatedModifiedTrait;
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string
-     *
      * @EMSAssert\AliasName()
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(name="label", type="string", length=255, nullable=true)
      */
-    protected ?string $label;
+    protected ?string $label = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="alias", type="string", length=255, unique=true)
      */
-    private $alias;
+    private ?string $alias = null;
 
     /**
      * @var array<mixed>
      */
     private array $indexes = [];
 
-    /**
-     * @var int
-     */
-    private $total;
+    private ?int $total = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="color", type="string", length=50, nullable=true)
      */
-    private $color;
+    private string $color;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="extra", type="text", nullable=true)
      */
-    private $extra;
+    private string $extra;
 
     public function __construct()
     {
@@ -118,6 +105,10 @@ class ManagedAlias
      */
     public function getAlias()
     {
+        if (null === $this->alias) {
+            throw new \RuntimeException('Unexpected null alias');
+        }
+
         return $this->alias;
     }
 
@@ -149,6 +140,10 @@ class ManagedAlias
      */
     public function getTotal()
     {
+        if (null === $this->total) {
+            throw new \RuntimeException('Unexpected null total');
+        }
+
         return $this->total;
     }
 

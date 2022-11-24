@@ -36,7 +36,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @ORM\Column(name="label", type="string", length=255, nullable=true)
      */
-    protected ?string $label;
+    protected ?string $label = null;
 
     /**
      * @ORM\Column(name="alias", type="string", length=255)
@@ -487,7 +487,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
 
     public function jsonSerialize(): JsonClass
     {
-        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), self::class);
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');

@@ -84,14 +84,10 @@ class AnalyzerPickerType extends SelectPickerType
             'attr' => [
                     'data-live-search' => true,
             ],
-            'choice_attr' => function ($category, $key, $index) {
-                return [
-                        'data-content' => $this->humanize($key),
-                ];
-            },
-            'choice_value' => function ($value) {
-                return $value;
-            },
+            'choice_attr' => fn ($category, $key, $index) => [
+                    'data-content' => static::humanize($key),
+            ],
+            'choice_value' => fn ($value) => $value,
         ]);
     }
 }

@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\DependencyInjection;
 
+use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Routes;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
-use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class EMSCoreExtension extends Extension implements PrependExtensionInterface
@@ -24,7 +26,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $xmlLoader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $xmlLoader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $xmlLoader->load('command.xml');
         $xmlLoader->load('contracts.xml');
         $xmlLoader->load('controllers.xml');
@@ -119,7 +121,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
                 ],
                 'orm' => [
                     'resolve_target_entities' => [
-                        'EMS\CoreBundle\Entity\UserInterface' => 'EMS\CoreBundle\Entity\User',
+                        UserInterface::class => User::class,
                     ],
                 ],
             ]);

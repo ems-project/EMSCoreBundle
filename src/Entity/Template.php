@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
@@ -105,7 +106,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     /**
      * @ORM\Column(name="role", type="string")
      */
-    protected string $role;
+    protected string $role = 'not-defined';
 
     /**
      * @var Collection<int, Environment>
@@ -121,12 +122,12 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     /**
      * @ORM\Column(name="role_to", type="string")
      */
-    protected string $roleTo;
+    protected string $roleTo = 'not-defined';
 
     /**
      * @ORM\Column(name="role_cc", type="string")
      */
-    protected string $roleCc;
+    protected string $roleCc = 'not-defined';
 
     /**
      * @var ?string[]
@@ -168,18 +169,14 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     /**
      * @ORM\Column(name="public", type="boolean", options={"default" : 0})
      */
-    protected bool $public;
+    protected bool $public = false;
 
     public function __construct()
     {
-        $this->environments = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->public = false;
+        $this->environments = new ArrayCollection();
 
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
-        $this->role = 'not-defined';
-        $this->roleCc = 'not-defined';
-        $this->roleTo = 'not-defined';
     }
 
     /**
@@ -551,7 +548,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
 
     public function jsonSerialize(): JsonClass
     {
-        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), self::class);
         $json->removeProperty('id');
         $json->removeProperty('contentType');
         $json->removeProperty('environments');

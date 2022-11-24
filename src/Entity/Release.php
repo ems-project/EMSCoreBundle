@@ -35,12 +35,12 @@ class Release implements EntityInterface
     /**
      * @ORM\Column(name="execution_date", type="datetime", nullable=true)
      */
-    private ?\DateTime $executionDate;
+    private ?\DateTime $executionDate = null;
 
     /**
      * @ORM\Column(name="status", type="string", length=20)
      */
-    private string $status;
+    private string $status = Release::WIP_STATUS;
 
     /**
      * @ORM\Column(name="name", type="string", length=255)
@@ -69,7 +69,6 @@ class Release implements EntityInterface
     public function __construct()
     {
         $this->revisions = new ArrayCollection();
-        $this->status = Release::WIP_STATUS;
     }
 
     public function getId(): int

@@ -6,18 +6,12 @@ use EMS\CoreBundle\Entity\ContentType;
 
 class ExportDocuments
 {
-    /** @var string */
-    private $action;
-    /** @var string */
-    private $query;
-    /** @var string */
-    private $format;
-    /** @var bool */
-    private $withBusinessKey = false;
-    /** @var ContentType */
-    private $contentType;
-    /** @var string */
-    private $environment;
+    private string $action;
+    private string $query;
+    private ?string $format = null;
+    private bool $withBusinessKey = false;
+    private ContentType $contentType;
+    private ?string $environment = null;
 
     public function __construct(ContentType $contentType, string $action = '', string $query = '{}')
     {

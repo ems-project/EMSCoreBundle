@@ -189,7 +189,7 @@ class DateRangeFieldType extends DataFieldType
                 'icon' => $options['icon'],
                 'attr' => [
                     'class' => 'ems_daterangepicker',
-                    'data-display-option' => \json_encode($fieldType->getDisplayOptions()),
+                    'data-display-option' => \json_encode($fieldType->getDisplayOptions(), JSON_THROW_ON_ERROR),
                 ],
         ]);
     }

@@ -56,6 +56,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment as TwigEnvironment;
+use Twig\Error\Error;
 
 /**
  * @todo Move Revision related logic to RevisionService
@@ -66,8 +67,8 @@ class DataService
     protected const SCROLL_TIMEOUT = '1m';
 
     /** @var false|resource|null */
-    private $private_key;
-    private ?string $public_key;
+    private $private_key = null;
+    private ?string $public_key = null;
 
     protected string $lockTime;
     protected string $instanceId;
@@ -162,9 +163,6 @@ class DataService
         $this->preGeneratedOuuids = $preGeneratedOuuids;
         $this->postProcessingService = $postProcessingService;
 
-        $this->public_key = null;
-        $this->private_key = null;
-
         if (!empty($privateKey)) {
             try {
                 if (false === $privateKeyContent = \file_get_contents($privateKey)) {
@@ -184,7 +182,7 @@ class DataService
 
     public function unlockRevision(Revision $revision, ?string $lockerUsername = null): void
     {
-        $lockerUsername = $lockerUsername ?? $this->userService->getCurrentUser()->getUsername();
+        $lockerUsername ??= $this->userService->getCurrentUser()->getUsername();
 
         if ($revision->getLockBy() === $lockerUsername && $revision->getLockUntil() > (new \DateTime())) {
             $this->revRepository->unlockRevision(Type::integer($revision->getId()));
@@ -1038,7 +1036,7 @@ class DataService
                         EmsFields::LOG_OUUID_FIELD => $ouuid,
                     ]);
                 }
-            } catch (\Twig\Error\Error $e) {
+            } catch (Error $e) {
                 $this->logger->error('service.data.default_value_template_error', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     EmsFields::LOG_OUUID_FIELD => $ouuid,
@@ -1276,7 +1274,7 @@ class DataService
 
             $result = $query->getResult();
 
-            if (1 == \count($result)) {
+            if (1 == (\is_countable($result) ? \count($result) : 0)) {
                 /** @var Revision $previous */
                 $previous = $result[0];
                 $this->lockRevision($previous, null, $super, $username);
@@ -1532,7 +1530,7 @@ class DataService
         unset($object[Mapping::FINALIZATION_DATETIME_FIELD]);
         unset($object[Mapping::VERSION_TAG]);
         unset($object[Mapping::VERSION_UUID]);
-        if (\count($object) > 0) {
+        if ((\is_countable($object) ? \count($object) : 0) > 0) {
             $html = DataService::arrayToHtml($object);
 
             $this->logger->warning('service.data.data_not_consumed', [
@@ -1540,7 +1538,7 @@ class DataService
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
-                'count' => \count($object),
+                'count' => \is_countable($object) ? \count($object) : 0,
                 'data' => $html,
             ]);
         }

@@ -256,9 +256,7 @@ class MigrateCommand extends AbstractCommand
             foreach ($resultSet as $result) {
                 try {
                     $this->documentService->importDocument($importerContext, $result->getId(), $result->getSource());
-                } catch (NotLockedException $e) {
-                    $this->io->error($e);
-                } catch (CantBeFinalizedException $e) {
+                } catch (NotLockedException|CantBeFinalizedException $e) {
                     $this->io->error($e);
                 }
                 $progress->advance();

@@ -286,7 +286,7 @@ final class JsonMenuNestedDefinition
             if (\in_array($nodeType, $settings['deny']) || \in_array('all', $settings['deny'])) {
                 continue;
             }
-            if (\count($settings['allow']) > 0 && !\in_array($nodeType, $settings['allow'])) {
+            if ((\is_countable($settings['allow']) ? \count($settings['allow']) : 0) > 0 && !\in_array($nodeType, $settings['allow'])) {
                 continue;
             }
             if (!\in_array($actionName, ['copy', 'preview']) && null === $this->revision) {

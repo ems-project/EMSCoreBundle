@@ -7,7 +7,7 @@ use EMS\CoreBundle\Entity\User;
 class UserList
 {
     /** @var User[] */
-    private $users;
+    private array $users;
 
     /**
      * @param array<User> $users

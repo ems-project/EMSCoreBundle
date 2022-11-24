@@ -18,28 +18,21 @@ use Psr\Log\LoggerInterface;
 class AliasService
 {
     private const COUNTER_AGGREGATION = 'counter_aggregation';
-    /** @var EnvironmentRepository */
-    private $envRepo;
-    /** @var ManagedAliasRepository */
-    private $managedAliasRepo;
+    private EnvironmentRepository $envRepo;
+    private ManagedAliasRepository $managedAliasRepo;
     /** @var array<string, array{name: string, total: int, indexes: array<mixed>, environment: string, managed: bool}> */
-    private $aliases = [];
+    private array $aliases = [];
     /** @var array<array{name: string, count: int}> */
-    private $orphanIndexes = [];
-    /** @var bool */
-    private $isBuild = false;
-    /** @var Client */
-    private $elasticaClient;
-    /** @var ElasticaService */
-    private $elasticaService;
+    private array $orphanIndexes = [];
+    private bool $isBuild = false;
+    private Client $elasticaClient;
+    private ElasticaService $elasticaService;
     /** @var array<string, int> */
-    private $counterIndexes;
-    /** @var LoggerInterface */
-    private $logger;
+    private array $counterIndexes = [];
+    private LoggerInterface $logger;
 
     public function __construct(LoggerInterface $logger, Client $elasticaClient, EnvironmentRepository $environmentRepository, ManagedAliasRepository $managedAliasRepository, ElasticaService $elasticaService)
     {
-        $this->counterIndexes = [];
         $this->envRepo = $environmentRepository;
         $this->logger = $logger;
         $this->managedAliasRepo = $managedAliasRepository;
@@ -240,9 +233,7 @@ class AliasService
     {
         $aliases = $this->getAliases();
 
-        return \array_filter($aliases, function (array $alias) {
-            return null === $alias['environment'] && false === $alias['managed'];
-        });
+        return \array_filter($aliases, fn (array $alias) => null === $alias['environment'] && false === $alias['managed']);
     }
 
     /**
@@ -380,8 +371,8 @@ class AliasService
             'name' => $name,
             'indexes' => [$index => $this->getIndex($index)],
             'total' => $this->count($name),
-            'environment' => isset($env['name']) ? $env['name'] : null,
-            'managed' => isset($env['managed']) ? $env['managed'] : $managed,
+            'environment' => $env['name'] ?? null,
+            'managed' => $env['managed'] ?? $managed,
         ];
     }
 

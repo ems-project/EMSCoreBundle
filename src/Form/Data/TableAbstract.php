@@ -22,15 +22,15 @@ abstract class TableAbstract implements TableInterface
     public const REMOVE_ACTION = 'remove';
 
     /** @var string[] */
-    private $selected = [];
+    private array $selected = [];
     /** @var string[] */
-    private $reordered = [];
+    private array $reordered = [];
     /** @var TableColumn[] */
-    private $columns = [];
+    private array $columns = [];
     /** @var TableItemAction[] */
-    private $itemActions = [];
+    private array $itemActions = [];
     /** @var TableAction[] */
-    private $tableActions = [];
+    private array $tableActions = [];
     private ?string $orderField = null;
     private string $orderDirection = 'asc';
     private int $size;

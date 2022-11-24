@@ -31,7 +31,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      *
      * @ORM\Column(name="circles", type="json", nullable=true)
      */
-    private ?array $circles;
+    private ?array $circles = [];
 
     /**
      * @ORM\Column(name="display_name", type="string", length=255, nullable=true)
@@ -80,12 +80,12 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      * @ORM\OneToMany(targetEntity="AuthToken", mappedBy="user", cascade={"remove"})
      * @ORM\OrderBy({"created" = "ASC"})
      */
-    private $authTokens;
+    private Collection $authTokens;
 
     /**
      * @ORM\Column(name="locale", type="string", nullable=false, options={"default":"en"})
      */
-    private string $locale;
+    private string $locale = self::DEFAULT_LOCALE;
 
     /**
      * @ORM\Column(name="locale_preferred", type="string", nullable=true)
@@ -115,7 +115,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     /**
      * @ORM\Column(name="enabled", type="boolean")
      */
-    private bool $enabled;
+    private bool $enabled = false;
 
     /**
      * @ORM\Column(name="salt", type="string", nullable=true)
@@ -148,7 +148,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      *
      * @ORM\Column(name="roles", type="array")
      */
-    private array $roles;
+    private array $roles = [];
 
     /**
      * @var ?array<string, bool>
@@ -162,10 +162,6 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     public function __construct()
     {
         $this->authTokens = new ArrayCollection();
-        $this->enabled = false;
-        $this->roles = [];
-        $this->circles = [];
-        $this->locale = self::DEFAULT_LOCALE;
 
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
@@ -406,26 +402,17 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     {
         $data = \unserialize($serialized);
 
-        if (13 === \count($data)) {
+        if (13 === (\is_countable($data) ? \count($data) : 0)) {
             // Unserializing a User object from 1.3.x
             unset($data[4], $data[5], $data[6], $data[9], $data[10]);
             $data = \array_values($data);
-        } elseif (11 === \count($data)) {
+        } elseif (11 === (\is_countable($data) ? \count($data) : 0)) {
             // Unserializing a User from a dev version somewhere between 2.0-alpha3 and 2.0-beta1
             unset($data[4], $data[7], $data[8]);
             $data = \array_values($data);
         }
 
-        list(
-            $this->password,
-            $this->salt,
-            $this->usernameCanonical,
-            $this->username,
-            $this->enabled,
-            $this->id,
-            $this->email,
-            $this->emailCanonical
-        ) = $data;
+        [$this->password, $this->salt, $this->usernameCanonical, $this->username, $this->enabled, $this->id, $this->email, $this->emailCanonical] = $data;
     }
 
     public function eraseCredentials(): void

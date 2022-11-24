@@ -16,6 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class SendAllCommand extends Command
 {
+    protected static $defaultName = 'ems:notification:send';
     private Registry $doctrine;
     private NotificationService $notificationService;
     private string $notificationPendingTimeout;
@@ -30,9 +31,7 @@ final class SendAllCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:notification:send')
-            ->setDescription('Send all notifications and notification\'s responses emails')
+        $this->setDescription('Send all notifications and notification\'s responses emails')
             ->addOption(
                 'dry-run',
                 null,

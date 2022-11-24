@@ -117,9 +117,7 @@ final class ChannelController extends AbstractController
         $table->addColumn('table.index.column.loop_count', 'orderKey');
         $table->addColumn('channel.index.column.label', 'label');
         $column = $table->addColumn('channel.index.column.name', 'name');
-        $column->setPathCallback(function (Channel $channel, string $baseUrl = '') {
-            return $baseUrl.$channel->getEntryPath();
-        }, '_blank');
+        $column->setPathCallback(fn (Channel $channel, string $baseUrl = '') => $baseUrl.$channel->getEntryPath(), '_blank');
         $table->addColumn('channel.index.column.alias', 'alias');
         $table->addColumnDefinition(new BoolTableColumn('channel.index.column.public', 'public'));
         $table->addItemGetAction('ems_core_channel_edit', 'channel.actions.edit', 'pencil');

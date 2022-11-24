@@ -462,7 +462,7 @@ class EnvironmentController extends AbstractController
         if ($form->isSubmitted()) {
             /** @var Environment $environment */
             $environment = $form->getData();
-            if (!$this->isValidName($environment->getName())) {
+            if (!static::isValidName($environment->getName())) {
                 $form->get('name')->addError(new FormError('Must respects the following regex /^[a-z][a-z0-9\-_]*$/'));
             }
 

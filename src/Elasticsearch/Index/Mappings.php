@@ -7,10 +7,10 @@ use EMS\CoreBundle\Service\Mapping as EMS;
 class Mappings
 {
     /** @var array<mixed> */
-    private $mappings = [];
+    private array $mappings = [];
 
     /** @var array<array<mixed>> */
-    private $defaultProperties = [];
+    private array $defaultProperties = [];
 
     /**
      * @param array<mixed> $languageAnalyzers

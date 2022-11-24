@@ -17,23 +17,20 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ObjectChoiceCacheService
 {
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var ContentTypeService */
-    private $contentTypeService;
+    private LoggerInterface $logger;
+    private ContentTypeService $contentTypeService;
     /** @var AuthorizationCheckerInterface */
     protected $authorizationChecker;
     /** @var TokenStorageInterface */
     protected $tokenStorage;
-    /** @var ElasticaService */
-    private $elasticaService;
+    private ElasticaService $elasticaService;
     /** @var bool[] */
-    private $fullyLoaded;
+    private array $fullyLoaded = [];
     /** @var array<ObjectChoiceListItem[]> */
-    private $cache;
+    private array $cache = [];
     private QuerySearchService $querySearchName;
     /** @var ObjectChoiceListItem[][] */
-    private array $cachedQuerySearches;
+    private array $cachedQuerySearches = [];
 
     public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage, ElasticaService $elasticaService, QuerySearchService $querySearchName)
     {
@@ -43,10 +40,6 @@ class ObjectChoiceCacheService
         $this->tokenStorage = $tokenStorage;
         $this->elasticaService = $elasticaService;
         $this->querySearchName = $querySearchName;
-
-        $this->fullyLoaded = [];
-        $this->cache = [];
-        $this->cachedQuerySearches = [];
     }
 
     /**
@@ -113,7 +106,7 @@ class ObjectChoiceCacheService
                         $hitDocument = Document::fromResult($result);
                         if (!isset($choices[$hitDocument->getEmsId()])) {
                             $itemContentType = $this->contentTypeService->getByName($hitDocument->getContentType());
-                            $listItem = new ObjectChoiceListItem($hitDocument, $itemContentType ? $itemContentType : null);
+                            $listItem = new ObjectChoiceListItem($hitDocument, $itemContentType ?: null);
                             $choices[$listItem->getValue()] = $listItem;
                             $this->cache[$hitDocument->getContentType()][$hitDocument->getId()] = $listItem;
                         }
@@ -145,7 +138,7 @@ class ObjectChoiceCacheService
         $missingOuuidsPerIndexAndType = [];
         foreach ($objectIds as $objectId) {
             if (\is_string($objectId) && false !== \strpos($objectId, ':')) {
-                list($objectType, $objectOuuid) = \explode(':', $objectId);
+                [$objectType, $objectOuuid] = \explode(':', $objectId);
                 if (!isset($this->cache[$objectType])) {
                     $this->cache[$objectType] = [];
                 }

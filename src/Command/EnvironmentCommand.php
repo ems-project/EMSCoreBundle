@@ -11,8 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EnvironmentCommand extends Command
 {
-    /** @var EnvironmentService */
-    private $environmentService;
+    protected static $defaultName = 'ems:environment:list';
+    private EnvironmentService $environmentService;
 
     public function __construct(EnvironmentService $environmentService)
     {
@@ -22,9 +22,7 @@ class EnvironmentCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:environment:list')
-            ->setDescription('List the environments defined')
+        $this->setDescription('List the environments defined')
             ->addOption(
                 'all',
                 null,

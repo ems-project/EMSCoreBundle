@@ -122,7 +122,7 @@ class SearchService
 
     public function getDocument(ContentType $contentType, string $ouuid, ?Environment $environment = null): ElasticsearchDocument
     {
-        $environment = $environment ?? $contentType->giveEnvironment();
+        $environment ??= $contentType->giveEnvironment();
         $index = $this->contentTypeService->getIndex($contentType, $environment);
         $searchQuery = null;
 

@@ -8,8 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class FormVerificationException extends \Exception
 {
-    /** @var int */
-    private $httpCode;
+    private int $httpCode;
 
     public function __construct(string $message = '', int $httpCode = Response::HTTP_BAD_REQUEST)
     {

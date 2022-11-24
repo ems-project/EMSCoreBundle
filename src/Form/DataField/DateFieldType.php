@@ -34,7 +34,7 @@ class DateFieldType extends DataFieldType
         $dates = [];
         $format = $fieldType->getMappingOption('format', false);
         if (false !== $format) {
-            $format = $this->convertJavaDateFormat($format);
+            $format = static::convertJavaDateFormat($format);
         } else {
             $format = \DateTimeInterface::ISO8601;
         }
@@ -51,7 +51,7 @@ class DateFieldType extends DataFieldType
             return parent::modelTransform($dates, $fieldType);
         }
         $out = parent::modelTransform(null, $fieldType);
-        $out->addMessage('Was not able to import:'.\json_encode($data));
+        $out->addMessage('Was not able to import:'.\json_encode($data, JSON_THROW_ON_ERROR));
 
         return $out;
     }
@@ -64,7 +64,7 @@ class DateFieldType extends DataFieldType
         $data = parent::reverseModelTransform($dataField);
         $format = $dataField->giveFieldType()->getMappingOption('format', false);
         if (false !== $format) {
-            $format = $this->convertJavaDateFormat($format);
+            $format = static::convertJavaDateFormat($format);
         } else {
             $format = \DateTime::ISO8601;
         }

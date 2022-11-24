@@ -24,14 +24,10 @@ class RolePickerType extends SelectPickerType
         $resolver->setDefaults([
             'choices' => $choices,
             'attr' => ['data-live-search' => true],
-            'choice_attr' => function () {
-                return [
-                    'data-icon' => 'fa fa-user-circle',
-                ];
-            },
-            'choice_value' => function ($value) {
-                return $value;
-            },
+            'choice_attr' => fn () => [
+                'data-icon' => 'fa fa-user-circle',
+            ],
+            'choice_value' => fn ($value) => $value,
             'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
             'choice_translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
         ]);

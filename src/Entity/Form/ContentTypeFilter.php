@@ -9,10 +9,7 @@ use EMS\CoreBundle\Entity\ContentType;
  */
 class ContentTypeFilter
 {
-    /**
-     * @var ContentType
-     */
-    private $contentType;
+    private ?ContentType $contentType = null;
 
     /**
      * Set the $contentType filter.
@@ -35,6 +32,10 @@ class ContentTypeFilter
      */
     public function getContentType()
     {
+        if (null === $this->contentType) {
+            throw new \RuntimeException('Unexpected null contentType');
+        }
+
         return $this->contentType;
     }
 }

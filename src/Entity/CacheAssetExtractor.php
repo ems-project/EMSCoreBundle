@@ -16,27 +16,23 @@ class CacheAssetExtractor
 {
     use CreatedModifiedTrait;
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="hash", type="string", nullable=false, unique=true)
      */
-    private $hash;
+    private string $hash;
 
     /**
-     * @var ?array<mixed>
-     *
      * @ORM\Column(name="data", type="json", nullable=true)
+     *
+     * @var mixed[]|null
      */
-    private $data;
+    private ?array $data = null;
 
     public function __construct()
     {

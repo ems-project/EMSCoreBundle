@@ -70,12 +70,8 @@ class TemplateType extends AbstractType
                  'multiple' => true,
                 'choices' => $this->service->getEnvironments(),
                 'required' => false,
-                'choice_label' => function (Environment $value) {
-                    return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
-                },
-                'choice_value' => function (Environment $value) {
-                    return $value->getId();
-                },
+                'choice_label' => fn (Environment $value) => '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName(),
+                'choice_value' => fn (Environment $value) => $value->getId(),
         ])
         ->add('role', RolePickerType::class)
         ->add('active', CheckboxType::class, [

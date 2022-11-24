@@ -259,14 +259,14 @@ final class ReleaseController extends AbstractController
         ]);
     }
 
-    public function releasePublish(Request $request, Release $release): Response
+    public function releasePublish(Release $release): Response
     {
         $this->releaseService->publishRelease($release);
 
         return $this->redirectToRoute(Routes::RELEASE_INDEX);
     }
 
-    public function pickRelease(Request $request, Revision $revision): Response
+    public function pickRelease(Revision $revision): Response
     {
         $table = $this->initAddToReleaseTable($revision);
         $form = $this->createForm(TableType::class, $table);

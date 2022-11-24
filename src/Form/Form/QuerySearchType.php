@@ -55,9 +55,7 @@ final class QuerySearchType extends AbstractType
                 'row_attr' => [
                     'class' => 'col-md-6',
                 ],
-                'choice_label' => function (Environment $value) {
-                    return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
-                },
+                'choice_label' => fn (Environment $value) => '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName(),
                 'choice_value' => function (Environment $value) {
                     if (null != $value) {
                         return $value->getId();

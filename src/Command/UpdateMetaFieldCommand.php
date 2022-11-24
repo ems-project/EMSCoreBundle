@@ -18,6 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateMetaFieldCommand extends EmsCommand
 {
+    protected static $defaultName = 'ems:environment:updatemetafield';
     /** @var Registry */
     protected $doctrine;
     /** @var DataService */
@@ -35,9 +36,7 @@ class UpdateMetaFieldCommand extends EmsCommand
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:environment:updatemetafield')
-            ->setDescription('Update meta fields for all revisions of an environment')
+        $this->setDescription('Update meta fields for all revisions of an environment')
             ->addArgument(
                 'name',
                 InputArgument::REQUIRED,

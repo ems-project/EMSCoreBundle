@@ -16,8 +16,7 @@ class CreateEnvironmentCommand extends Command
 {
     protected static $defaultName = 'ems:environment:create';
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
     /** @var EnvironmentService */
     protected $environmentService;
@@ -25,8 +24,7 @@ class CreateEnvironmentCommand extends Command
     /** @var DataService */
     protected $dataService;
 
-    /** @var SymfonyStyle */
-    private $io;
+    private ?SymfonyStyle $io = null;
 
     public const ARGUMENT_ENV_NAME = 'name';
     public const OPTION_STRICT = 'strict';
@@ -72,6 +70,9 @@ class CreateEnvironmentCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
+        if (null === $this->io) {
+            throw new \RuntimeException('Unexpected null SymfonyStyle');
+        }
         $this->logger->info('Interact with the CreateEnvironment command');
 
         $this->io->section('Check environment name argument');
@@ -80,6 +81,9 @@ class CreateEnvironmentCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (null === $this->io) {
+            throw new \RuntimeException('Unexpected null SymfonyStyle');
+        }
         $this->logger->info('Execute the CreateEnvironment command');
 
         $this->io->section('Execute');
@@ -138,13 +142,14 @@ class CreateEnvironmentCommand extends Command
             $message = \sprintf('The environment "%s" already exist', $environmentName);
             $this->setEnvironmentNameArgument($input, $message);
             $this->checkEnvironmentNameArgument($input);
-
-            return;
         }
     }
 
     private function setEnvironmentNameArgument(InputInterface $input, string $message): string
     {
+        if (null === $this->io) {
+            throw new \RuntimeException('Unexpected null SymfonyStyle');
+        }
         if ($input->getOption(self::OPTION_STRICT)) {
             $this->logger->error($message);
             throw new \Exception($message);

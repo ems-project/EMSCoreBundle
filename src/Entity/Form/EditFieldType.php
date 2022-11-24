@@ -9,8 +9,7 @@ use EMS\CoreBundle\Entity\FieldType;
  */
 class EditFieldType
 {
-    /** @var FieldType */
-    private $fieldType;
+    private FieldType $fieldType;
 
     public function __construct(FieldType $fieldType)
     {
@@ -18,7 +17,7 @@ class EditFieldType
     }
 
     /**
-     * @return \EMS\CoreBundle\Entity\FieldType
+     * @return FieldType
      */
     public function getFieldType()
     {
@@ -26,7 +25,7 @@ class EditFieldType
     }
 
     /**
-     * @param \EMS\CoreBundle\Entity\FieldType $fieldType
+     * @param FieldType $fieldType
      *
      * @return EditFieldType
      */

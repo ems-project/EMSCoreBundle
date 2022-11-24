@@ -8,12 +8,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class FieldTypePickerType extends SelectPickerType
 {
     /** @var array<string, DataFieldType> */
-    private array $dataFieldTypes;
+    private array $dataFieldTypes = [];
 
     public function __construct()
     {
         parent::__construct();
-        $this->dataFieldTypes = [];
     }
 
     public function addDataFieldType(DataFieldType $dataField): void
@@ -40,9 +39,7 @@ class FieldTypePickerType extends SelectPickerType
                     'data-content' => '<div class="text-'.$category.'"><i class="'.$dataFieldType->getIcon().'"></i>&nbsp;&nbsp;'.$dataFieldType->getLabel().'</div>',
                 ];
             },
-            'choice_value' => function ($value) {
-                return $value;
-            },
+            'choice_value' => fn ($value) => $value,
         ]);
     }
 }

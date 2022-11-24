@@ -112,7 +112,7 @@ class JobService implements EntityServiceInterface
             $application = new Application($this->kernel);
             $application->setAutoExit(false);
 
-            $command = (null === $job->getCommand() ? 'list' : $job->getCommand());
+            $command = ($job->getCommand() ?? 'list');
             $input = new StringInput($command);
 
             $application->run($input, $output);

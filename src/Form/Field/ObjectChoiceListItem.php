@@ -9,16 +9,11 @@ use EMS\CoreBundle\Entity\ContentType;
 
 class ObjectChoiceListItem
 {
-    /** @var string */
-    private $label;
-    /** @var string|null */
-    private $title;
-    /** @var string */
-    private $value;
-    /** @var string|null */
-    private $group = null;
-    /** @var string|null */
-    private $color = null;
+    private string $label;
+    private ?string $title;
+    private string $value;
+    private ?string $group = null;
+    private ?string $color = null;
 
     public function __construct(Document $document, ?ContentType $contentType)
     {

@@ -32,7 +32,7 @@ class NotificationService
     private MailerService $mailerService;
     private TwigEnvironment $twig;
 
-    private bool $dryRun;
+    private bool $dryRun = false;
 
     public function __construct(
         Registry $doctrine,
@@ -48,7 +48,6 @@ class NotificationService
         $this->mailerService = $mailerService;
         $this->logger = $logger;
         $this->twig = $twig;
-        $this->dryRun = false;
     }
 
     public function publishEvent(RevisionPublishEvent $event): void
@@ -498,9 +497,9 @@ class NotificationService
 
         $toCircles = \array_unique(\array_merge($fromCircles, $notification->getTemplate()->getCirclesTo()));
 
-        $fromUser = $this->usersToEmailAddresses(\array_filter([$this->userService->getUser($notification->getUsername())]));
-        $toUsers = $this->usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleTo(), $toCircles));
-        $ccUsers = $this->usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleCc(), $toCircles));
+        $fromUser = self::usersToEmailAddresses(\array_filter([$this->userService->getUser($notification->getUsername())]));
+        $toUsers = self::usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleTo(), $toCircles));
+        $ccUsers = self::usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleCc(), $toCircles));
 
         $email = new Email();
         $params = [

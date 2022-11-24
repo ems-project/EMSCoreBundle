@@ -7,7 +7,7 @@ use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
 class ContentTypeFieldChoiceList implements ChoiceListInterface
 {
     /** @var array<mixed> */
-    private array $choices;
+    private array $choices = [];
     /** @var array<mixed> */
     private array $types;
     /** @var array<mixed> */
@@ -21,7 +21,6 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
      */
     public function __construct(array $mapping, array $types, bool $firstLevelOnly)
     {
-        $this->choices = [];
         $this->types = $types;
         $this->firstLevelOnly = $firstLevelOnly;
         $this->mapping = $mapping;

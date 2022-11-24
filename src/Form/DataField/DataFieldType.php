@@ -308,7 +308,7 @@ abstract class DataFieldType extends AbstractType
         $view->vars['class'] = $options['class'];
         $view->vars['lastOfRow'] = $options['lastOfRow'];
         $view->vars['helptext'] = $options['helptext'];
-        $view->vars['isContainer'] = $this->isContainer();
+        $view->vars['isContainer'] = static::isContainer();
         if (null == $options['label']) {
             $view->vars['label'] = false;
         }
@@ -398,7 +398,7 @@ abstract class DataFieldType extends AbstractType
 
             if (null === $parent || !isset($restrictionOptions['mandatory_if'])
                 || null === $parent->getRawData()
-                || !empty($this->resolve($masterRawData ?? [], $parentRawDataArray, $restrictionOptions['mandatory_if']))) {
+                || !empty(static::resolve($masterRawData ?? [], $parentRawDataArray, $restrictionOptions['mandatory_if']))) {
                 // Get rawData
                 $rawData = $dataField->getRawData();
                 if (null === $rawData || (\is_string($rawData) && '' === $rawData) || (\is_array($rawData) && 0 === \count($rawData))) {

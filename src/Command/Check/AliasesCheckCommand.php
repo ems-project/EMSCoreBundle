@@ -17,6 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class AliasesCheckCommand extends Command
 {
+    protected static $defaultName = self::COMMAND;
     public const COMMAND = 'ems:check:aliases';
     private const OPTION_REPAIR = 'repair';
     private EnvironmentService $environmentService;
@@ -35,9 +36,7 @@ final class AliasesCheckCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setName(self::COMMAND)
-            ->setDescription('Checks that all managed environments have their corresponding alias and index present in the cluster.')
+        $this->setDescription('Checks that all managed environments have their corresponding alias and index present in the cluster.')
             ->addOption(self::OPTION_REPAIR, null, InputOption::VALUE_NONE, 'If an environment does not have its alias present and if they are no pending job a rebuild job is queued.');
     }
 

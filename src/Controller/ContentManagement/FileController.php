@@ -95,12 +95,12 @@ class FileController extends AbstractController
             throw new \RuntimeException('Unexpected body content');
         }
 
-        $params = \json_decode($requestContent, true);
-        $name = isset($params['name']) ? $params['name'] : 'upload.bin';
-        $type = isset($params['type']) ? $params['type'] : 'application/bin';
-        $hash = isset($params['hash']) ? $params['hash'] : $sha1;
-        $size = isset($params['size']) ? $params['size'] : $size;
-        $algo = isset($params['algo']) ? $params['algo'] : 'sha1';
+        $params = \json_decode($requestContent, true, 512, JSON_THROW_ON_ERROR);
+        $name = $params['name'] ?? 'upload.bin';
+        $type = $params['type'] ?? 'application/bin';
+        $hash = $params['hash'] ?? $sha1;
+        $size = $params['size'] ?? $size;
+        $algo = $params['algo'] ?? 'sha1';
 
         $user = $this->getUsername();
 

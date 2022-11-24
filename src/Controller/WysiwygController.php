@@ -40,7 +40,7 @@ class WysiwygController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $order = \json_decode($form->getData()['items'], true);
+            $order = \json_decode($form->getData()['items'], true, 512, JSON_THROW_ON_ERROR);
             $i = 1;
             foreach ($order as $id) {
                 $profile = $this->wysiwygProfileService->getById(\intval($id['id']));
@@ -61,7 +61,7 @@ class WysiwygController extends AbstractController
         $formStylesSet->handleRequest($request);
 
         if ($formStylesSet->isSubmitted()) {
-            $order = \json_decode($formStylesSet->getData()['items'], true);
+            $order = \json_decode($formStylesSet->getData()['items'], true, 512, JSON_THROW_ON_ERROR);
             $i = 1;
             foreach ($order as $id) {
                 $stylesSet = $this->wysiwygStylesSetService->getById(\intval($id['id']));

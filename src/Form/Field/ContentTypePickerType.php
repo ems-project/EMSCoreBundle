@@ -48,9 +48,7 @@ class ContentTypePickerType extends ChoiceType
                         'data-content' => '<span class="text-'.$contentType->getColor().'"><i class="'.(empty($contentType->getIcon()) ? ' fa fa-book' : $contentType->getIcon()).'"></i>&nbsp;&nbsp;'.$contentType->getPluralName().'</span>',
                 ];
             },
-            'choice_value' => function ($value) {
-                return $value;
-            },
+            'choice_value' => fn ($value) => $value,
             'multiple' => false,
             'choice_translation_domain' => false,
         ]);

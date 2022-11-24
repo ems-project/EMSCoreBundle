@@ -34,7 +34,7 @@ class Task implements EntityInterface
     /**
      * @ORM\Column(name="status", type="string", length=25)
      */
-    private string $status;
+    private string $status = self::STATUS_PLANNED;
 
     /**
      * @ORM\Column(name="deadline", type="datetime_immutable", nullable=true)
@@ -77,7 +77,6 @@ class Task implements EntityInterface
         $this->id = Uuid::uuid4();
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
-        $this->status = self::STATUS_PLANNED;
     }
 
     public function addLog(TaskLog $taskLog): void

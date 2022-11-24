@@ -14,6 +14,7 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class ExtractAssetCommand extends EmsCommand
 {
+    protected static $defaultName = 'ems:asset:extract';
     /** @var AssetExtractorService */
     protected $extractorService;
     /** @var StorageManager */
@@ -31,9 +32,7 @@ class ExtractAssetCommand extends EmsCommand
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:asset:extract')
-            ->setDescription('Will extract data from all files found and load it in cache of the asset extractor service')
+        $this->setDescription('Will extract data from all files found and load it in cache of the asset extractor service')
             ->addArgument(
                 'path',
                 InputArgument::REQUIRED,

@@ -5,13 +5,13 @@ namespace EMS\CoreBundle\Elasticsearch\Index;
 class Settings
 {
     /** @var array<array<mixed>> */
-    private $filters = [];
+    private array $filters = [];
 
     /** @var array<array<mixed>> */
-    private $analyzers = [];
+    private array $analyzers = [];
 
     /** @var array<string> */
-    private $languageAnalyzers = [];
+    private array $languageAnalyzers = [];
 
     public function isEmpty(): bool
     {

@@ -23,6 +23,7 @@ use Twig\Error\Error;
 
 class ExportDocumentsCommand extends EmsCommand
 {
+    protected static $defaultName = 'ems:contenttype:export';
     public const OUTPUT_FILE_ARGUMENT = 'outputFile';
     /** @var LoggerInterface */
     protected $logger;
@@ -38,8 +39,7 @@ class ExportDocumentsCommand extends EmsCommand
     protected $runtime;
     /** @var string */
     protected $instanceId;
-    /** @var ElasticaService */
-    private $elasticaService;
+    private ElasticaService $elasticaService;
 
     public function __construct(LoggerInterface $logger, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, AssetRuntime $runtime, ElasticaService $elasticaService, string $instanceId)
     {
@@ -56,9 +56,7 @@ class ExportDocumentsCommand extends EmsCommand
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:contenttype:export')
-            ->setDescription('Export a search result of a content type to a specific format')
+        $this->setDescription('Export a search result of a content type to a specific format')
             ->addArgument(
                 'contentTypeName',
                 InputArgument::REQUIRED,

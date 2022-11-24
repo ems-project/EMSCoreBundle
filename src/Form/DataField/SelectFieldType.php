@@ -44,7 +44,7 @@ class SelectFieldType extends DataFieldType
         }
 
         $builder->add('value', ChoiceType::class, [
-                'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
+                'label' => ($options['label'] ?? $fieldType->getName()),
                 'required' => false,
                 'disabled' => $this->isDisabled($options),
                 'choices' => $choices,
@@ -131,9 +131,6 @@ class SelectFieldType extends DataFieldType
         return parent::reverseViewTransform($value, $fieldType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $temp = parent::viewTransform($dataField);
@@ -165,7 +162,8 @@ class SelectFieldType extends DataFieldType
                 $dataField->addMessage(\sprintf('Only the first item has been imported : %s ', \json_encode($temp, JSON_PRETTY_PRINT)));
             } else {
                 $dataField->addMessage(\sprintf('Was not able to import the data : %s', \json_encode($temp, JSON_PRETTY_PRINT)));
-                $out = '';
+
+                return ['value' => ''];
             }
         }
 

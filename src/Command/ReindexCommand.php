@@ -24,6 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ReindexCommand extends EmsCommand
 {
+    protected static $defaultName = 'ems:environment:reindex';
     /** @var Mapping */
     protected $mapping;
     /** @var Registry */
@@ -38,10 +39,8 @@ class ReindexCommand extends EmsCommand
     private int $deleted = 0;
     private int $reloaded = 0;
     private int $error = 0;
-    /** @var Bulker */
-    private $bulker;
-    /** @var string */
-    private $defaultBulkSize;
+    private Bulker $bulker;
+    private string $defaultBulkSize;
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container, DataService $dataService, Bulker $bulker, string $defaultBulkSize)
     {
@@ -57,9 +56,7 @@ class ReindexCommand extends EmsCommand
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:environment:reindex')
-            ->setDescription('Reindex an environment in it\'s existing index')
+        $this->setDescription('Reindex an environment in it\'s existing index')
             ->addArgument(
                 'name',
                 InputArgument::REQUIRED,

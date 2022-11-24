@@ -6,19 +6,14 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ContentTypeJsonUpdate
 {
-    /** @var UploadedFile */
-    private $json;
+    private ?UploadedFile $json = null;
 
-    /** @var bool */
-    private $deleteExitingTemplates;
+    private bool $deleteExitingTemplates = false;
 
-    /** @var bool */
-    private $deleteExitingViews;
+    private bool $deleteExitingViews = false;
 
     public function __construct()
     {
-        $this->deleteExitingTemplates = false;
-        $this->deleteExitingViews = false;
     }
 
     public function getJson(): ?UploadedFile

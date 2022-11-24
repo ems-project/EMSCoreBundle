@@ -122,14 +122,10 @@ class HierarchicalViewType extends ViewType
 
                 return $dataField;
             },
-            function (DataField $dataField) {
-                // transform the string back to an array
-                return $dataField->getRawData();
-            }
+            fn (DataField $dataField) => // transform the string back to an array
+$dataField->getRawData()
         ))->addViewTransformer(new CallbackTransformer(
-            function (DataField $dataField) {
-                return ['value' => $dataField->getRawData()];
-            },
+            fn (DataField $dataField) => ['value' => $dataField->getRawData()],
             function ($raw) {
                 $dataField = new DataField();
                 $dataField->setRawData($raw['value']);
@@ -185,7 +181,7 @@ class HierarchicalViewType extends ViewType
 
         if ($form->isSubmitted()) {
             $data = $form->getData();
-            $structure = \json_decode($data['structure'], true);
+            $structure = \json_decode($data['structure'], true, 512, JSON_THROW_ON_ERROR);
 
             $this->reorder($view->getOptions()['parent'], $view, $structure);
 
@@ -227,7 +223,7 @@ class HierarchicalViewType extends ViewType
             foreach ($structure as $item) {
                 $data[$view->getOptions()['field']][] = $item['id'];
                 if (\explode(':', $item['id'])[0] == $view->getContentType()->getName()) {
-                    $this->reorder($item['id'], $view, isset($item['children']) ? $item['children'] : []);
+                    $this->reorder($item['id'], $view, $item['children'] ?? []);
                 }
             }
             $revision->setRawData($data);

@@ -19,13 +19,11 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
 {
     use CreatedModifiedTrait;
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(name="name", type="string", length=255, unique=true)
@@ -37,7 +35,7 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
      *
      * @ORM\Column(name="dirty", type="boolean")
      */
-    protected $dirty;
+    protected $dirty = true;
 
     /**
      * @var string
@@ -51,7 +49,7 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
      *
      * @ORM\Column(name="options", type="json")
      */
-    protected array $options;
+    protected array $options = [];
 
     /**
      * @var int
@@ -64,9 +62,6 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
     {
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
-
-        $this->options = [];
-        $this->dirty = true;
     }
 
     /**
@@ -191,7 +186,7 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
 
     public function jsonSerialize(): JsonClass
     {
-        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), self::class);
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');

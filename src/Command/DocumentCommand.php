@@ -32,18 +32,12 @@ class DocumentCommand extends Command
 
     /** @var string */
     protected static $defaultName = self::COMMAND;
-    /** @var DocumentService */
-    private $documentService;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var DataService */
-    private $dataService;
-    /** @var SymfonyStyle */
-    private $io;
-    /** @var ContentType */
-    private $contentType;
-    /** @var string */
-    private $archiveFilename;
+    private DocumentService $documentService;
+    private ContentTypeService $contentTypeService;
+    private DataService $dataService;
+    private ?SymfonyStyle $io = null;
+    private ?ContentType $contentType = null;
+    private ?string $archiveFilename = null;
     private string $defaultBulkSize;
 
     public function __construct(ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService, string $defaultBulkSize)
@@ -115,6 +109,9 @@ class DocumentCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
+        if (null === $this->io) {
+            throw new \RuntimeException('Unexpected null SymfonyStyle');
+        }
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
         $archiveFilename = $input->getArgument(self::ARGUMENT_ARCHIVE);
         if (!\is_string($contentTypeName)) {
@@ -145,6 +142,15 @@ class DocumentCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (null === $this->io) {
+            throw new \RuntimeException('Unexpected null SymfonyStyle');
+        }
+        if (null === $this->contentType) {
+            throw new \RuntimeException('Unexpected null contentType');
+        }
+        if (null === $this->archiveFilename) {
+            throw new \RuntimeException('Unexpected null archiveFilename');
+        }
         $bulkSize = \intval($input->getOption(self::OPTION_BULK_SIZE));
         if ($bulkSize <= 0) {
             throw new \RuntimeException('Invalid bulk size');
@@ -191,7 +197,7 @@ class DocumentCommand extends Command
                 $progress->advance();
                 continue;
             }
-            $rawData = \json_decode($content, true);
+            $rawData = \json_decode($content, true, 512, JSON_THROW_ON_ERROR);
             $ouuid = \basename($file->getFilename(), '.json');
             if ($replaceBusinessKey) {
                 $dataLink = $this->dataService->getDataLink($this->contentType->getName(), $ouuid);
@@ -210,9 +216,7 @@ class DocumentCommand extends Command
 
             try {
                 $this->documentService->importDocument($importerContext, $document->getOuuid(), $document->getSource());
-            } catch (NotLockedException $e) {
-                $this->io->error($e);
-            } catch (CantBeFinalizedException $e) {
+            } catch (NotLockedException|CantBeFinalizedException $e) {
                 $this->io->error($e);
             }
 

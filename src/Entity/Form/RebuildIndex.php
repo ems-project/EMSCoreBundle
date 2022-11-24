@@ -7,10 +7,7 @@ namespace EMS\CoreBundle\Entity\Form;
  */
 class RebuildIndex
 {
-    /**
-     * @var string
-     */
-    private $option;
+    private ?string $option = null;
 
     /**
      * Set the rebuild option.
@@ -33,6 +30,10 @@ class RebuildIndex
      */
     public function getOption()
     {
+        if (null === $this->option) {
+            throw new \RuntimeException('Unexpected null option');
+        }
+
         return $this->option;
     }
 }

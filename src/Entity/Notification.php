@@ -16,13 +16,11 @@ class Notification
     public const PENDING = 'pending';
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Template")
@@ -31,44 +29,34 @@ class Notification
     private ?Template $template = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="username", type="string", length=100)
      */
-    private $username;
+    private string $username;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="status", type="string", length=20)
      */
-    private $status;
+    private string $status;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="sent_timestamp", type="datetime")
      */
-    private $sentTimestamp;
+    private \DateTime $sentTimestamp;
 
     /**
      * @ORM\Column(name="response_text", type="text", nullable=true)
      */
-    private ?string $responseText;
+    private ?string $responseText = null;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="response_timestamp", type="datetime", nullable=true)
      */
-    private $responseTimestamp;
+    private \DateTime $responseTimestamp;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="response_by", type="string", length=100, nullable=true)
      */
-    private $responseBy;
+    private string $responseBy;
 
     /**
      * @ORM\ManyToOne(targetEntity="Revision", inversedBy="notifications")
@@ -83,18 +71,14 @@ class Notification
     private ?Environment $environment = null;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="emailed", type="datetime", nullable=true)
      */
-    private $emailed;
+    private \DateTime $emailed;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="response_emailed", type="datetime", nullable=true)
      */
-    private $responseEmailed;
+    private \DateTime $responseEmailed;
 
     private int $counter = 0;
 

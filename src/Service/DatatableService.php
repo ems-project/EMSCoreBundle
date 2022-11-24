@@ -96,7 +96,7 @@ final class DatatableService
      */
     private function parsePersistedConfig(string $jsonConfig): array
     {
-        $parameters = \json_decode($jsonConfig, true);
+        $parameters = \json_decode($jsonConfig, true, 512, JSON_THROW_ON_ERROR);
         if (!\is_array($parameters)) {
             throw new \RuntimeException('Unexpected JSON config');
         }

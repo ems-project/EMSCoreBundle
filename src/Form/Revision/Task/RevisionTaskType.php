@@ -8,7 +8,8 @@ use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,12 +22,12 @@ final class RevisionTaskType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title', Type\TextType::class, [
+            ->add('title', TextType::class, [
                 'attr' => ['readonly' => Task::STATUS_COMPLETED == $options['task_status']],
                 'disabled' => Task::STATUS_COMPLETED == $options['task_status'],
                 'label' => 'task.field.title',
             ])
-            ->add('deadline', Type\TextType::class, [
+            ->add('deadline', TextType::class, [
                 'disabled' => Task::STATUS_COMPLETED == $options['task_status'],
                 'label' => 'task.field.deadline',
                 'attr' => [
@@ -44,7 +45,7 @@ final class RevisionTaskType extends AbstractType
                 'user_property' => 'username',
                 'label_property' => 'displayName',
             ])
-            ->add('description', Type\TextareaType::class, [
+            ->add('description', TextareaType::class, [
                 'disabled' => Task::STATUS_COMPLETED == $options['task_status'],
                 'label' => 'task.field.description',
                 'attr' => ['rows' => 5],

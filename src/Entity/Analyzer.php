@@ -37,7 +37,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
      *
      * @ORM\Column(name="dirty", type="boolean")
      */
-    protected $dirty;
+    protected $dirty = true;
 
     /**
      * @var string
@@ -51,7 +51,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
      *
      * @ORM\Column(name="options", type="json")
      */
-    protected array $options;
+    protected array $options = [];
 
     /**
      * @var int
@@ -62,9 +62,6 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
 
     public function __construct()
     {
-        $this->options = [];
-        $this->dirty = true;
-
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
     }
@@ -125,9 +122,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
         }
 
         if (isset($options['filter'])) {
-            $options['filter'] = \array_values(\array_filter($options['filter'], function (string $f) {
-                return 'standard' !== $f;
-            }));
+            $options['filter'] = \array_values(\array_filter($options['filter'], fn (string $f) => 'standard' !== $f));
         }
 
         return \array_filter($options);
@@ -207,7 +202,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
 
     public function jsonSerialize(): JsonClass
     {
-        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), self::class);
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');

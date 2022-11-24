@@ -4,8 +4,7 @@ namespace EMS\CoreBundle\Entity\Form;
 
 class I18nFilter
 {
-    /** @var string */
-    private $identifier;
+    private ?string $identifier = null;
 
     public function setIdentifier(string $identifier): I18nFilter
     {

@@ -21,6 +21,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class BulkActionCommand extends Command
 {
+    protected static $defaultName = 'ems:notification:bulk-action';
     private const CONTENT_TYPE_NAME = 'contentTypeName';
     private NotificationService $notificationService;
     private EnvironmentService $environmentService;
@@ -46,9 +47,7 @@ final class BulkActionCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:notification:bulk-action')
-            ->setDescription('Bulk all notifications actions for the passed query')
+        $this->setDescription('Bulk all notifications actions for the passed query')
             ->addArgument(self::CONTENT_TYPE_NAME, InputArgument::REQUIRED, 'Content type name')
             ->addArgument('actionName', InputArgument::REQUIRED, 'Notification action name')
             ->addArgument('query', InputArgument::REQUIRED, 'ES query')

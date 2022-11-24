@@ -41,9 +41,7 @@ class EnvironmentPublisher
 
     public function blockPublication(): bool
     {
-        $importantMessages = \array_filter($this->messages, function (array $message) {
-            return LogLevel::NOTICE !== $message['level'] && $message['ouuid'] === $this->revision->giveOuuid();
-        });
+        $importantMessages = \array_filter($this->messages, fn (array $message) => LogLevel::NOTICE !== $message['level'] && $message['ouuid'] === $this->revision->giveOuuid());
 
         return \count($importantMessages) > 0;
     }

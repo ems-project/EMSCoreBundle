@@ -834,14 +834,10 @@ class IconPickerType extends SelectPickerType
             'attr' => [
                     'data-live-search' => true,
             ],
-            'choice_attr' => function ($category, $key, $index) {
-                return [
-                    'data-icon' => $category,
-                ];
-            },
-            'choice_value' => function ($value) {
-                return $value;
-            },
+            'choice_attr' => fn ($category, $key, $index) => [
+                'data-icon' => $category,
+            ],
+            'choice_value' => fn ($value) => $value,
             'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
         ]);
     }

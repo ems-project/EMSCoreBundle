@@ -17,34 +17,26 @@ class AggregateOption
 {
     use CreatedModifiedTrait;
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="config", type="text", nullable=true)
      */
-    private $config;
+    private string $config;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="template", type="text", nullable=true)
      */
-    private $template;
+    private string $template;
 
     /**
      * @ORM\Column(name="orderKey", type="integer")
@@ -52,11 +44,9 @@ class AggregateOption
     private int $orderKey = 0;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="icon", type="text", length=255, nullable=true)
      */
-    private $icon;
+    private string $icon;
 
     public function __construct()
     {
@@ -210,7 +200,7 @@ class AggregateOption
             }
         };
 
-        $json = \json_decode($this->config, true);
+        $json = \json_decode($this->config, true, 512, JSON_THROW_ON_ERROR);
         $recursiveCheck($json);
 
         return $json;

@@ -86,9 +86,7 @@ final class UserType extends AbstractType
                 'label' => 'WYSIWYG profile',
                 'class' => WysiwygProfile::class,
                 'choice_label' => 'name',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC');
-                },
+                'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC'),
                 'attr' => [
                     'data-live-search' => true,
                     'class' => 'wysiwyg-profile-picker',

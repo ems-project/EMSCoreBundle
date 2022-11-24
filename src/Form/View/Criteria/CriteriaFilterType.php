@@ -54,7 +54,7 @@ class CriteriaFilterType extends AbstractType
                 /** @var FieldType $child */
                 $child = $criteriaField->getChildByPath($path);
                 if ($child instanceof FieldType) {
-                    $label = $child->getDisplayOptions()['label'] ? $child->getDisplayOptions()['label'] : $child->getName();
+                    $label = $child->getDisplayOptions()['label'] ?: $child->getName();
                     $choices[$label] = $child->getName();
                     $defaultRow = $defaultColumn;
                     $defaultColumn = $child->getName();
@@ -105,9 +105,7 @@ class CriteriaFilterType extends AbstractType
                     $builder->add('category', $categoryField->getType(), $displayOptions);
 
                     $builder->get('category')->addViewTransformer(new CallbackTransformer(
-                        function (DataField $dataField) {
-                            return ['value' => $dataField->getRawData()];
-                        },
+                        fn (DataField $dataField) => ['value' => $dataField->getRawData()],
                         function ($raw) use ($categoryField) {
                             $dataField = new DataField();
                             $dataField->setFieldType($categoryField);
@@ -156,9 +154,7 @@ class CriteriaFilterType extends AbstractType
 
                     $criterion->add($child->getName(), $child->getType(), $displayOptions);
                     $criterion->get($child->getName())->addViewTransformer(new CallbackTransformer(
-                        function (DataField $dataField) {
-                            return ['value' => $dataField->getRawData()];
-                        },
+                        fn (DataField $dataField) => ['value' => $dataField->getRawData()],
                         function ($raw) use ($child) {
                             $dataField = new DataField();
                             $dataField->setFieldType($child);

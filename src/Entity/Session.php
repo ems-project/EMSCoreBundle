@@ -11,12 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
 class Session
 {
     /**
-     * @var string
-     *
      * @ORM\Column(name="id", type="string", length=128, nullable=false)
      * @ORM\Id
      */
-    private $id;
+    private ?string $id = null;
 
     /**
      * @var resource
@@ -26,21 +24,21 @@ class Session
     private $data;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="time", type="integer", options={"unsigned":true})
      */
-    private $time;
+    private ?int $time = null;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="lifetime", type="integer")
      */
-    private $lifetime;
+    private ?int $lifetime = null;
 
     public function getId(): string
     {
+        if (null === $this->id) {
+            throw new \RuntimeException('Unexpected null id');
+        }
+
         return $this->id;
     }
 
@@ -71,6 +69,10 @@ class Session
 
     public function getTime(): int
     {
+        if (null === $this->time) {
+            throw new \RuntimeException('Unexpected null time');
+        }
+
         return $this->time;
     }
 
@@ -83,6 +85,10 @@ class Session
 
     public function getLifetime(): int
     {
+        if (null === $this->lifetime) {
+            throw new \RuntimeException('Unexpected null lifetime');
+        }
+
         return $this->lifetime;
     }
 

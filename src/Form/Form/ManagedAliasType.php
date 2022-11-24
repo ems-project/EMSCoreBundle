@@ -43,15 +43,11 @@ class ManagedAliasType extends AbstractType
             ->add('indexes', ChoiceType::class, [
                 'data' => \array_keys($data->getIndexes()),
                 'choices' => \array_keys($options['indexes']),
-                'choice_label' => function ($val) {
-                    return $val;
-                },
-                'choice_attr' => function ($val, $key, $index) use ($options) {
-                    return [
-                        'class' => 'align-index',
-                        'data-count' => $options['indexes'][$val]['count'],
-                    ];
-                },
+                'choice_label' => fn ($val) => $val,
+                'choice_attr' => fn ($val, $key, $index) => [
+                    'class' => 'align-index',
+                    'data-count' => $options['indexes'][$val]['count'],
+                ],
                 'mapped' => false,
                 'expanded' => true,
                 'multiple' => true,

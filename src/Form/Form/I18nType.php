@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
+use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Form\Field\I18nContentType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -34,7 +35,7 @@ class I18nType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => 'EMS\CoreBundle\Entity\I18n',
+            'data_class' => I18n::class,
         ]);
     }
 }

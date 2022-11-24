@@ -57,9 +57,7 @@ final class TableType extends AbstractType
         if ($data->supportsTableActions()) {
             $builder->add('selected', ChoiceType::class, [
                 'choices' => $choices,
-                'choice_label' => function ($choice, $key, $value) {
-                    return false;
-                },
+                'choice_label' => fn ($choice, $key, $value) => false,
                 'expanded' => true,
                 'multiple' => true,
                 'label' => false,

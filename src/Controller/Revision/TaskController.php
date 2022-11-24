@@ -95,7 +95,7 @@ final class TaskController extends AbstractController
                         ]),
                     ]);
                 } catch (\Throwable $e) {
-                    return new JsonResponse(['error' => $e->getMessage()], 400);
+                    return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
                 }
             }
         }
@@ -127,7 +127,7 @@ final class TaskController extends AbstractController
 
                     return $this->redirectToRoute('ems_core_task_ajax_tasks', ['revisionId' => $revisionId]);
                 } catch (\Throwable $e) {
-                    return new JsonResponse(['error' => $e->getMessage()], 400);
+                    return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
                 }
             }
         }
@@ -324,7 +324,7 @@ final class TaskController extends AbstractController
 
             return new JsonResponse([], Response::HTTP_ACCEPTED);
         } catch (\Throwable $e) {
-            return new JsonResponse(['error' => $e->getMessage()], 400);
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 

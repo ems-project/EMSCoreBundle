@@ -17,28 +17,22 @@ use Ramsey\Uuid\UuidInterface;
 class FormVerification
 {
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
-    private $id;
+    private UuidInterface $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="value", type="string", length=255)
      */
-    private $value;
+    private string $value;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="code", type="string", length=255)
      */
-    private $code;
+    private string $code;
 
     /**
      * @ORM\Column(name="created", type="datetime_immutable")
@@ -61,7 +55,7 @@ class FormVerification
         $this->expirationDate = $now->modify(self::EXPIRATION_TIME);
 
         $this->value = $value;
-        $this->code = \sprintf('%06d', \mt_rand(1, 999999));
+        $this->code = \sprintf('%06d', \random_int(1, 999999));
     }
 
     public function getId(): string

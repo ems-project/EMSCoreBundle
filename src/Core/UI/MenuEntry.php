@@ -22,7 +22,7 @@ class MenuEntry
      * @var array<string, mixed>
      */
     private array $parameters = [];
-    private ?string $badgeColor;
+    private ?string $badgeColor = null;
 
     /**
      * @param array<string, mixed> $routeParameters

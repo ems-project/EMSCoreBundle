@@ -23,10 +23,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class JsonMenuNestedLinkFieldType extends DataFieldType
 {
-    /** @var Decoder */
-    private $decoder;
-    /** @var ElasticaService */
-    private $elasticaService;
+    private Decoder $decoder;
+    private ElasticaService $elasticaService;
 
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
@@ -103,13 +101,11 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
                 $menu = $this->decoder->jsonMenuNestedDecode($json);
 
                 foreach ($menu as $item) {
-                    if (\count($allowTypes) > 0 && !\in_array($item->getType(), $allowTypes)) {
+                    if ((\is_countable($allowTypes) ? \count($allowTypes) : 0) > 0 && !\in_array($item->getType(), $allowTypes)) {
                         continue;
                     }
 
-                    $label = \implode(' > ', \array_map(function (JsonMenuNested $p) {
-                        return $p->getLabel();
-                    }, $item->getPath()));
+                    $label = \implode(' > ', \array_map(fn (JsonMenuNested $p) => $p->getLabel(), $item->getPath()));
 
                     $choices[$label] = $item->getId();
                 }
@@ -117,7 +113,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         }
 
         $builder->add('value', ChoiceType::class, [
-            'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
+            'label' => ($options['label'] ?? $fieldType->getName()),
             'required' => false,
             'disabled' => $this->isDisabled($options),
             'choices' => $choices,
@@ -153,9 +149,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
                 'json_menu_nested_field' => null,
                 'query' => null,
             ])
-            ->setNormalizer('json_menu_nested_types', function (Options $options, $value) {
-                return \explode(',', $value);
-            })
+            ->setNormalizer('json_menu_nested_types', fn (Options $options, $value) => \explode(',', $value))
         ;
     }
 
@@ -236,14 +230,14 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
                 if (\is_string($item) || \is_integer($item)) {
                     $out[] = $item;
                 } else {
-                    $dataField->addMessage('Was not able to import the data : '.\json_encode($temp));
+                    $dataField->addMessage('Was not able to import the data : '.\json_encode($temp, JSON_THROW_ON_ERROR));
                 }
             }
 
             return ['value' => $out];
         }
 
-        $dataField->addMessage('Was not able to import the data : '.\json_encode($temp));
+        $dataField->addMessage('Was not able to import the data : '.\json_encode($temp, JSON_THROW_ON_ERROR));
 
         return ['value' => []];
     }

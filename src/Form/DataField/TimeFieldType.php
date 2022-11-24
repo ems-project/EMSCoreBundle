@@ -89,7 +89,7 @@ class TimeFieldType extends DataFieldType
             return ''; // empty array means null/empty
         }
 
-        $format = $this->getFormat($dataField->giveFieldType()->getOptions());
+        $format = static::getFormat($dataField->giveFieldType()->getOptions());
 
         $dateTime = \DateTime::createFromFormat(TimeFieldType::STOREFORMAT, \strval($out));
         if ($dateTime) {
@@ -104,7 +104,7 @@ class TimeFieldType extends DataFieldType
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
-        $format = $this->getFormat($fieldType->getOptions());
+        $format = static::getFormat($fieldType->getOptions());
         $converted = \DateTime::createFromFormat($format, \strval($data));
         if ($converted) {
             $out = $converted->format($this::STOREFORMAT);
@@ -132,7 +132,7 @@ class TimeFieldType extends DataFieldType
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
-        $resolver->setDefault('prefixIcon', $this->getIcon());
+        $resolver->setDefault('prefixIcon', static::getIcon());
         $resolver->setDefault('minuteStep', 15);
         $resolver->setDefault('showMeridian', false);
         $resolver->setDefault('defaultTime', 'current');

@@ -315,9 +315,7 @@ class EnvironmentService implements EntityServiceInterface
      */
     public function getManagedEnvironement(): array
     {
-        return \array_filter($this->getEnvironments(), function (Environment $environment) {
-            return $environment->getManaged();
-        });
+        return \array_filter($this->getEnvironments(), fn (Environment $environment) => $environment->getManaged());
     }
 
     /**
@@ -325,9 +323,7 @@ class EnvironmentService implements EntityServiceInterface
      */
     public function getUnmanagedEnvironments(): array
     {
-        return \array_filter($this->getEnvironments(), function (Environment $environment) {
-            return !$environment->getManaged();
-        });
+        return \array_filter($this->getEnvironments(), fn (Environment $environment) => !$environment->getManaged());
     }
 
     /**

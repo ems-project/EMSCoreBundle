@@ -95,7 +95,7 @@ class AssetExtractorService implements CacheWarmerInterface
 
             return [
                 'code' => 200,
-                'content' => $this->cleanString($this->getTikaWrapper()->getText($temporaryName)),
+                'content' => self::cleanString($this->getTikaWrapper()->getText($temporaryName)),
             ];
         }
     }

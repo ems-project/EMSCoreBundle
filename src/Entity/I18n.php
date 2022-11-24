@@ -18,13 +18,11 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
 {
     use CreatedModifiedTrait;
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @var string
@@ -121,7 +119,7 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
 
     public function jsonSerialize(): JsonClass
     {
-        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), self::class);
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');

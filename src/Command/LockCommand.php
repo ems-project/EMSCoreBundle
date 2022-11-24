@@ -116,8 +116,8 @@ final class LockCommand extends Command
             return 0;
         }
 
-        $query = \json_decode($this->query, true);
-        if (\count($query) > 0) {
+        $query = \json_decode($this->query, true, 512, JSON_THROW_ON_ERROR);
+        if ((\is_countable($query) ? \count($query) : 0) > 0) {
             $search = $this->elasticaService->convertElasticsearchSearch([
                 'index' => (null !== $this->contentType->getEnvironment()) ? $this->contentType->getEnvironment()->getAlias() : '',
                 '_source' => false,

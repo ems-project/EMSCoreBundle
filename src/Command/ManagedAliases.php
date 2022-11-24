@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ManagedAliases extends Command
 {
+    protected static $defaultName = 'ems:managedalias:list';
     /** @var LoggerInterface */
     protected $logger;
     /** @var AliasService */
@@ -26,9 +27,7 @@ class ManagedAliases extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:managedalias:list')
-            ->setDescription('List managed aliases')
+        $this->setDescription('List managed aliases')
             ->addOption('detailed', null, InputOption::VALUE_NONE, 'List all indexes in each managed alias');
     }
 

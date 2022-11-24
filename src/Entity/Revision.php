@@ -29,30 +29,26 @@ class Revision implements EntityInterface
     use CreatedModifiedTrait;
 
     /**
-     * @var int|null
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="auto_save_at", type="datetime", nullable=true)
      */
-    private ?\DateTime $autoSaveAt;
+    private ?\DateTime $autoSaveAt = null;
 
     /**
      * @ORM\Column(name="archived", type="boolean", options={"default": false})
      */
-    private bool $archived;
+    private bool $archived = false;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="deleted", type="boolean")
      */
-    private $deleted;
+    private bool $deleted = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="ContentType")
@@ -98,24 +94,17 @@ class Revision implements EntityInterface
      */
     private ?\DateTime $finalizedDate = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $tryToFinalizeOn;
+    private ?\DateTime $tryToFinalizeOn = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="archived_by", type="string", length=255, nullable=true)
      */
-    private $archivedBy;
+    private ?string $archivedBy = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="deleted_by", type="string", length=255, nullable=true)
      */
-    private $deletedBy;
+    private ?string $deletedBy = null;
 
     /**
      * @ORM\Column(name="lock_by", type="string", length=255, nullable=true)
@@ -184,23 +173,19 @@ class Revision implements EntityInterface
     private ?bool $allFieldsAreThere = false;
 
     /**
-     * @var UuidInterface|null
-     *
      * @ORM\Column(type="uuid", name="version_uuid", unique=false, nullable=true)
      */
-    private $versionUuid;
+    private ?UuidInterface $versionUuid = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", name="version_tag", nullable=true)
      */
-    private $versionTag;
+    private ?string $versionTag = null;
 
     /**
      * @ORM\Column(name="draft_save_date", type="datetime", nullable=true)
      */
-    private ?\DateTime $draftSaveDate;
+    private ?\DateTime $draftSaveDate = null;
 
     /**
      * @var Collection<int, ReleaseRevision>
@@ -271,8 +256,6 @@ class Revision implements EntityInterface
 
     public function __construct()
     {
-        $this->archived = false;
-        $this->deleted = false;
         $this->environments = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->releases = new ArrayCollection();

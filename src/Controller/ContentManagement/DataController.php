@@ -190,15 +190,12 @@ class DataController extends AbstractController
             $searchForm->addFilter($filter);
         }
 
-        $formEncoded = \json_encode($searchForm);
-        if (false === $formEncoded) {
-            throw new \RuntimeException('Unexpected null json');
-        }
+        $formEncoded = \json_encode($searchForm, JSON_THROW_ON_ERROR);
 
         return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::searchAction', [
             'query' => null,
         ], [
-            'search_form' => \json_decode($formEncoded, true),
+            'search_form' => \json_decode($formEncoded, true, 512, JSON_THROW_ON_ERROR),
         ]);
     }
 
@@ -850,7 +847,7 @@ class DataController extends AbstractController
             }
 
             $revision = $this->dataService->finalizeDraft($revision, $form);
-            if (0 !== \count($form->getErrors())) {
+            if (0 !== (\is_countable($form->getErrors()) ? \count($form->getErrors()) : 0)) {
                 $this->logger->error('log.data.revision.can_finalized_as_invalid', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -888,7 +885,7 @@ class DataController extends AbstractController
     public function duplicateWithJsonContentAction(ContentType $contentType, string $ouuid, Request $request): RedirectResponse
     {
         $content = $request->get('JSON_BODY', null);
-        $jsonContent = \json_decode($content, true);
+        $jsonContent = \json_decode($content, true, 512, JSON_THROW_ON_ERROR);
         $jsonContent = \array_merge($this->dataService->getNewestRevision($contentType->getName(), $ouuid)->getRawData(), $jsonContent);
 
         return $this->intNewDocumentFromArray($contentType, $jsonContent);
@@ -897,7 +894,7 @@ class DataController extends AbstractController
     public function addFromJsonContentAction(ContentType $contentType, Request $request): RedirectResponse
     {
         $content = $request->get('JSON_BODY', null);
-        $jsonContent = \json_decode($content, true);
+        $jsonContent = \json_decode($content, true, 512, JSON_THROW_ON_ERROR);
         if (null === $jsonContent) {
             $this->logger->error('log.data.revision.add_from_json_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),

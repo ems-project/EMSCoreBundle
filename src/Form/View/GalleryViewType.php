@@ -17,10 +17,8 @@ use Twig\Environment;
 
 class GalleryViewType extends ViewType
 {
-    /** @var SearchService */
-    private $searchService;
-    /** @var ElasticaService */
-    private $elasticaService;
+    private SearchService $searchService;
+    private ElasticaService $elasticaService;
 
     public function __construct(FormFactory $formFactory, Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger, SearchService $searchService)
     {

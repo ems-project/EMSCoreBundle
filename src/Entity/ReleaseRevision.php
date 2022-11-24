@@ -30,13 +30,13 @@ class ReleaseRevision implements EntityInterface
      * @ORM\ManyToOne(targetEntity="Revision", inversedBy="releases")
      * @ORM\JoinColumn(name="revision_id", referencedColumnName="id", nullable=true)
      */
-    private ?Revision $revision;
+    private ?Revision $revision = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Revision")
      * @ORM\JoinColumn(name="revision_before_publish_id", referencedColumnName="id", nullable=true)
      */
-    private ?Revision $revisionBeforePublish;
+    private ?Revision $revisionBeforePublish = null;
 
     /**
      * @ORM\Column(name="revision_ouuid", type="string", length=255)

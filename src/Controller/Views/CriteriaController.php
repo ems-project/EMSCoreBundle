@@ -80,7 +80,7 @@ class CriteriaController extends AbstractController
         $filters = [];
         $criteriaField = $view->getOptions()['criteriaField'];
         foreach ($tables['criteriaChoiceLists'] as $name => $criteria) {
-            if (1 == \count($criteria)) {
+            if (1 == (\is_countable($criteria) ? \count($criteria) : 0)) {
                 $filters[$name] = \array_keys($criteria)[0];
             }
         }
@@ -1135,7 +1135,7 @@ class CriteriaController extends AbstractController
         ];
 
         foreach ($choices as $idx => $choice) {
-            $label = isset($labels[$idx]) ? $labels[$idx] : $choice;
+            $label = $labels[$idx] ?? $choice;
             if (!$request->query->get('q') || \stristr($choice, $request->query->get('q')) || \stristr($label, $request->query->get('q'))) {
                 $out['items'][] = [
                     'id' => $choice,

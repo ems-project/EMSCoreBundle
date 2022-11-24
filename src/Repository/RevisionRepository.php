@@ -483,7 +483,7 @@ class RevisionRepository extends EntityRepository
 
     public function findByOuuidContentTypeAndEnvironment(Revision $revision, Environment $env = null): ?Revision
     {
-        $env = $env ?? $revision->giveContentType()->giveEnvironment();
+        $env ??= $revision->giveContentType()->giveEnvironment();
 
         return $this->findByOuuidAndContentTypeAndEnvironment($revision->giveContentType(), $revision->giveOuuid(), $env);
     }
@@ -504,7 +504,7 @@ class RevisionRepository extends EntityRepository
 
         $result = $qb->getQuery()->getResult();
 
-        if (\count($result) > 1) {
+        if ((\is_countable($result) ? \count($result) : 0) > 1) {
             throw new NonUniqueResultException($ouuid.' is publish multiple times in '.$env->getName());
         }
 

@@ -14,27 +14,21 @@ class SortOption
 {
     use CreatedModifiedTrait;
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="field", type="text", length=255)
      */
-    private $field;
+    private string $field;
 
     /**
      * @ORM\Column(name="orderKey", type="integer")
@@ -42,18 +36,14 @@ class SortOption
     private int $orderKey = 0;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="inverted", type="boolean")
      */
-    private $inverted;
+    private bool $inverted;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="icon", type="text", length=255, nullable=true)
      */
-    private $icon;
+    private string $icon;
 
     public function __construct()
     {

@@ -157,21 +157,21 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      *
      * @ORM\Column(name="edit_twig_with_wysiwyg", type="boolean")
      */
-    protected $editTwigWithWysiwyg;
+    protected $editTwigWithWysiwyg = true;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="web_content", type="boolean", options={"default" : 1})
      */
-    protected $webContent;
+    protected $webContent = true;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="auto_publish", type="boolean", options={"default" : 0})
      */
-    protected $autoPublish;
+    protected $autoPublish = false;
 
     /**
      * @ORM\Column(name="active", type="boolean")
@@ -248,11 +248,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     {
         $this->templates = new ArrayCollection();
         $this->views = new ArrayCollection();
-
-        $this->dirty = true;
-        $this->editTwigWithWysiwyg = true;
-        $this->webContent = true;
-        $this->autoPublish = false;
 
         $fieldType = new FieldType();
         $fieldType->setName('source');
@@ -1042,7 +1037,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     {
         $this->getFieldType()->removeCircularReference();
 
-        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), self::class);
         $json->removeProperty('id');
         $json->removeProperty('environment');
         $json->removeProperty('created');

@@ -35,14 +35,10 @@ class ColorPickerType extends SelectPickerType
             'attr' => [
                     'data-live-search' => true,
             ],
-            'choice_attr' => function ($category, $key, $index) {
-                return [
-                        'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$this->humanize($key).'</div>',
-                ];
-            },
-            'choice_value' => function ($value) {
-                return $value;
-            },
+            'choice_attr' => fn ($category, $key, $index) => [
+                    'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".static::humanize($key).'</div>',
+            ],
+            'choice_value' => fn ($value) => $value,
         ]);
     }
 }

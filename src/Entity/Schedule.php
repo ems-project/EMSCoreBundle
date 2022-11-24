@@ -43,14 +43,14 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
     /**
      * @ORM\Column(name="command", type="string", length=2000, nullable=true)
      */
-    protected ?string $command;
+    protected ?string $command = null;
 
     /**
      * @var \Datetime
      *
      * @ORM\Column(name="previous_run", type="datetime", nullable=true)
      */
-    private ?\Datetime $previousRun;
+    private ?\Datetime $previousRun = null;
 
     /**
      * @ORM\Column(name="next_run", type="datetime")
@@ -155,7 +155,7 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
 
     public function jsonSerialize(): JsonClass
     {
-        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), self::class);
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');

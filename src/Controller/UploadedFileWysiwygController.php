@@ -61,7 +61,7 @@ final class UploadedFileWysiwygController extends AbstractController
         ]);
     }
 
-    public function modal(Request $request): Response
+    public function modal(): Response
     {
         $form = $this->createForm(TableType::class, $this->initTable());
 
@@ -77,9 +77,7 @@ final class UploadedFileWysiwygController extends AbstractController
         $table = new EntityTable($this->fileService, $this->router->generate('ems_core_uploaded_file_wysiwyg_ajax'), ['available' => false]);
         $router = $this->router;
         $table->addColumn('uploaded-file.index.column.name', 'name')
-            ->addHtmlAttribute('data-url', function (UploadedAsset $data) {
-                return EMSLink::EMSLINK_ASSET_PREFIX.$data->getSha1().'?name='.$data->getName().'&type='.$data->getType();
-            })
+            ->addHtmlAttribute('data-url', fn (UploadedAsset $data) => EMSLink::EMSLINK_ASSET_PREFIX.$data->getSha1().'?name='.$data->getName().'&type='.$data->getType())
             ->addHtmlAttribute('data-json', function (UploadedAsset $data) use ($router) {
                 $json = $data->getData();
                 $json = \array_merge($json, [
@@ -113,9 +111,7 @@ final class UploadedFileWysiwygController extends AbstractController
         $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.created', 'created'));
         $table->addColumnDefinition(new UserTableColumn('uploaded-file.index.column.username', 'user'));
         $table->addColumnDefinition(new BytesTableColumn('uploaded-file.index.column.size', 'size'));
-        $table->addColumn('uploaded-file.index.column.type', 'type')->setItemIconCallback(function (UploadedAsset $data) {
-            return Encoder::getFontAwesomeFromMimeType($data->getType(), EMSCoreBundle::FONTAWESOME_VERSION);
-        });
+        $table->addColumn('uploaded-file.index.column.type', 'type')->setItemIconCallback(fn (UploadedAsset $data) => Encoder::getFontAwesomeFromMimeType($data->getType(), EMSCoreBundle::FONTAWESOME_VERSION));
 
         $table->setDefaultOrder('created', 'desc');
 

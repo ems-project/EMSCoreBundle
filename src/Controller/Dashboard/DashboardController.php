@@ -131,9 +131,7 @@ class DashboardController extends AbstractController
         $table = new EntityTable($this->dashboardManager, $this->generateUrl(Routes::DASHBOARD_ADMIN_INDEX_AJAX));
         $table->addColumn('table.index.column.loop_count', 'orderKey');
         $table->addColumn('dashboard.index.column.name', 'name');
-        $table->addColumn('dashboard.index.column.label', 'label')->setItemIconCallback(function (Dashboard $dashboard) {
-            return $dashboard->getIcon();
-        });
+        $table->addColumn('dashboard.index.column.label', 'label')->setItemIconCallback(fn (Dashboard $dashboard) => $dashboard->getIcon());
         $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.type', 'type', '@EMSCore/dashboard/columns.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.landing_page', 'landing_page', '@EMSCore/dashboard/columns.html.twig'));
         $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.quick_search', 'quick_search', '@EMSCore/dashboard/columns.html.twig'));

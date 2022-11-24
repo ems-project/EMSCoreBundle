@@ -208,7 +208,7 @@ class ElasticaTable extends TableAbstract
             ->setAllowedValues(self::DESC_MISSING_VALUES_POSITION, ['_last', '_first'])
             ->setNormalizer(self::QUERY, function (Options $options, $value) {
                 if (\is_array($value)) {
-                    $value = \json_encode($value);
+                    $value = \json_encode($value, JSON_THROW_ON_ERROR);
                 }
                 if (!\is_string($value)) {
                     throw new \RuntimeException('Unexpected query type');
@@ -218,7 +218,7 @@ class ElasticaTable extends TableAbstract
             })
             ->setNormalizer(self::EMPTY_QUERY, function (Options $options, $value) {
                 if (\is_array($value)) {
-                    $value = \json_encode($value);
+                    $value = \json_encode($value, JSON_THROW_ON_ERROR);
                 }
                 if (!\is_string($value)) {
                     throw new \RuntimeException('Unexpected emptyQuery type');
@@ -250,8 +250,8 @@ class ElasticaTable extends TableAbstract
 
     private function getQuery(string $searchValue): string
     {
-        $encoded = \json_encode($searchValue);
-        if (false === $encoded || \strlen($encoded) < 2) {
+        $encoded = \json_encode($searchValue, JSON_THROW_ON_ERROR);
+        if (\strlen($encoded) < 2) {
             throw new \RuntimeException(\sprintf('Unexpected error while JSON encoding "%s"', $searchValue));
         }
         $encoded = \substr($encoded, 1, \strlen($encoded) - 2);

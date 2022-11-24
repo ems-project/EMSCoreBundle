@@ -123,7 +123,7 @@ class SorterViewType extends ViewType
             $renderQuery = '{}';
         }
 
-        $boby = \json_decode($renderQuery, true);
+        $boby = \json_decode($renderQuery, true, 512, JSON_THROW_ON_ERROR);
 
         $boby['sort'] = [
                 $view->getOptions()['field'] => [

@@ -164,18 +164,18 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
             } elseif ('views' == $property && \method_exists($object, 'addView')) {
                 foreach ($value as $index => $view) {
                     if (!empty($view)) {
-                        $object->addView($this->denormalize($view, "EMS\CoreBundle\Entity\View", $format, ['contentType' => $object]));
+                        $object->addView($this->denormalize($view, View::class, $format, ['contentType' => $object]));
                     }
                 }
             } elseif ('templates' == $property && \method_exists($object, 'addTemplate')) {
                 foreach ($value as $index => $template) {
                     if (!empty($template)) {
-                        $object->addTemplate($this->denormalize($template, "EMS\CoreBundle\Entity\Template", $format, ['contentType' => $object]));
+                        $object->addTemplate($this->denormalize($template, Template::class, $format, ['contentType' => $object]));
                     }
                 }
-            } elseif ("EMS\CoreBundle\Entity\Template" == $class && 'contentType' == $property && \method_exists($object, 'setContentType')) {
+            } elseif (Template::class == $class && 'contentType' == $property && \method_exists($object, 'setContentType')) {
                 $object->setContentType($context['contentType']);
-            } elseif ("EMS\CoreBundle\Entity\View" == $class && 'contentType' == $property && \method_exists($object, 'setContentType')) {
+            } elseif (View::class == $class && 'contentType' == $property && \method_exists($object, 'setContentType')) {
                 $object->setContentType($context['contentType']);
             } else {
                 $setter = 'set'.\ucfirst($property);

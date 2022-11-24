@@ -14,13 +14,11 @@ class Sequence
 {
     use CreatedModifiedTrait;
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(name="name", type="string", length=255, unique=true)
@@ -28,23 +26,17 @@ class Sequence
     private string $name;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="value", type="integer", nullable=false)
      */
-    private $value;
+    private int $value = 1;
 
     /**
-     * @var int
-     *
      * @ORM\Version @ORM\Column(name="version", type="integer", nullable=false)
      */
-    private $version;
+    private int $version = 0;
 
     public function __construct(string $name)
     {
-        $this->value = 1;
-        $this->version = 0;
         $this->name = $name;
 
         $this->created = DateTime::create('now');

@@ -11,7 +11,7 @@ class ObjectChoiceList implements ChoiceListInterface
 
     private string $types;
     /** @var array<mixed> */
-    private array $choices;
+    private array $choices = [];
     private bool $loadAll;
     private bool $circleOnly;
     private bool $withWarning;
@@ -26,7 +26,6 @@ class ObjectChoiceList implements ChoiceListInterface
         ?string $querySearchName = null
     ) {
         $this->objectChoiceCacheService = $objectChoiceCacheService;
-        $this->choices = [];
         $this->types = $types;
         $this->loadAll = $loadAll;
         $this->circleOnly = $circleOnly;

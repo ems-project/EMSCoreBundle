@@ -17,20 +17,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class UnlockRevisionsCommand extends Command
 {
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var DataService */
-    private $dataService;
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var SymfonyStyle */
-    private $io;
-    /** @var string */
-    private $user;
-    /** @var ContentType */
-    private $contentType;
-    /** @var bool */
-    private $all;
+    private LoggerInterface $logger;
+    private DataService $dataService;
+    private ContentTypeService $contentTypeService;
+    private ?SymfonyStyle $io = null;
+    private ?string $user = null;
+    private ?ContentType $contentType = null;
+    private ?bool $all = null;
 
     public const name = 'ems:revisions:unlock';
     protected static $defaultName = self::name;
@@ -87,6 +80,9 @@ final class UnlockRevisionsCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
+        if (null === $this->io) {
+            throw new \RuntimeException('Unexpected null SymfonyStyle');
+        }
         $this->io->section('Check arguments');
         $this->checkUserArgument($input);
         $this->checkContentTypeArgument($input);
@@ -112,6 +108,15 @@ final class UnlockRevisionsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (null === $this->io) {
+            throw new \RuntimeException('Unexpected null SymfonyStyle');
+        }
+        if (null === $this->user) {
+            throw new \RuntimeException('Unexpected null user');
+        }
+        if (null === $this->contentType) {
+            throw new \RuntimeException('Unexpected null contentType');
+        }
         try {
             if ($this->all) {
                 $count = $this->dataService->unlockAllRevisions($this->user);
@@ -140,6 +145,9 @@ final class UnlockRevisionsCommand extends Command
 
     private function setUserArgument(InputInterface $input, string $message): void
     {
+        if (null === $this->io) {
+            throw new \RuntimeException('Unexpected null SymfonyStyle');
+        }
         if ($input->getOption(self::OPTION_STRICT)) {
             $this->logger->error($message);
             throw new \Exception($message);
@@ -184,6 +192,9 @@ final class UnlockRevisionsCommand extends Command
 
     private function setContentTypeArgument(InputInterface $input, string $message): void
     {
+        if (null === $this->io) {
+            throw new \RuntimeException('Unexpected null SymfonyStyle');
+        }
         if ($input->getOption(self::OPTION_STRICT)) {
             $this->logger->error($message);
             throw new \Exception($message);

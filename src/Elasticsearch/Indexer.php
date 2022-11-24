@@ -9,14 +9,10 @@ use Psr\Log\LoggerInterface;
 
 class Indexer
 {
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var IndexService */
-    private $indexService;
-    /** @var Mapping */
-    private $mapping;
-    /** @var AliasService */
-    private $aliasService;
+    private LoggerInterface $logger;
+    private IndexService $indexService;
+    private Mapping $mapping;
+    private AliasService $aliasService;
 
     public function __construct(IndexService $indexService, LoggerInterface $logger, Mapping $mapping, AliasService $aliasService)
     {

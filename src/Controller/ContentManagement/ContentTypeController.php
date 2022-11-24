@@ -187,9 +187,7 @@ class ContentTypeController extends AbstractController
         ])->add('environment', ChoiceType::class, [
             'label' => 'Default environment',
             'choices' => $environments,
-            'choice_label' => function (Environment $environment) {
-                return $environment->getName();
-            },
+            'choice_label' => fn (Environment $environment) => $environment->getName(),
         ])->add('save', SubmitType::class, [
             'label' => 'Create',
             'attr' => [
@@ -214,7 +212,7 @@ class ContentTypeController extends AbstractController
                 $form->get('name')->addError(new FormError('Another content type named '.$contentTypeAdded->getName().' already exists'));
             }
 
-            if (!$this->isValidName($contentTypeAdded->getName())) {
+            if (!static::isValidName($contentTypeAdded->getName())) {
                 $form->get('name')->addError(new FormError('The content type name is malformed (format: [a-z][a-z0-9_-]*)'));
             }
 
@@ -392,7 +390,7 @@ class ContentTypeController extends AbstractController
                 && 0 != \strcmp($formArray['ems:internal:add:field:name'], '')
                 && isset($formArray['ems:internal:add:field:class'])
                 && 0 != \strcmp($formArray['ems:internal:add:field:class'], '')) {
-                if ($this->isValidName($formArray['ems:internal:add:field:name'])) {
+                if (static::isValidName($formArray['ems:internal:add:field:name'])) {
                     $fieldTypeNameOrServiceName = $formArray['ems:internal:add:field:class'];
                     $fieldName = $formArray['ems:internal:add:field:name'];
                     /** @var DataFieldType $dataFieldType */
@@ -475,7 +473,7 @@ class ContentTypeController extends AbstractController
         if (\array_key_exists('subfield', $formArray)) {
             if (isset($formArray['ems:internal:add:subfield:name'])
                 && 0 !== \strcmp($formArray['ems:internal:add:subfield:name'], '')) {
-                if ($this->isValidName($formArray['ems:internal:add:subfield:name'])) {
+                if (static::isValidName($formArray['ems:internal:add:subfield:name'])) {
                     $child = new FieldType();
                     $child->setName($formArray['ems:internal:add:subfield:name']);
                     $child->setType(SubfieldType::class);
@@ -525,7 +523,7 @@ class ContentTypeController extends AbstractController
         if (\array_key_exists('duplicate', $formArray)) {
             if (isset($formArray['ems:internal:add:subfield:target_name'])
                 && 0 !== \strcmp($formArray['ems:internal:add:subfield:target_name'], '')) {
-                if ($this->isValidName($formArray['ems:internal:add:subfield:target_name'])) {
+                if (static::isValidName($formArray['ems:internal:add:subfield:target_name'])) {
                     $new = clone $fieldType;
                     $new->setName($formArray['ems:internal:add:subfield:target_name']);
                     if ($parent = $new->getParent()) {
@@ -643,7 +641,7 @@ class ContentTypeController extends AbstractController
 
         if ($form->isSubmitted()) {
             $data = $form->getData();
-            $structure = \json_decode($data['items'], true);
+            $structure = \json_decode($data['items'], true, 512, JSON_THROW_ON_ERROR);
             $this->contentTypeService->reorderFields($contentType, $structure);
 
             return $this->redirectToRoute('contenttype.edit', ['id' => $contentType->getId()]);
@@ -899,7 +897,7 @@ class ContentTypeController extends AbstractController
         } else {
             switch ($action) {
                 case 'subfield':
-                    if ($this->isValidName($subFieldName)) {
+                    if (static::isValidName($subFieldName)) {
                         try {
                             $child = new FieldType();
                             $child->setName($subFieldName);
@@ -913,9 +911,7 @@ class ContentTypeController extends AbstractController
                                 'subfield_name' => $subFieldName,
                                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
                             ]);
-                        } catch (OptimisticLockException $e) {
-                            throw new ElasticmsException($e->getMessage());
-                        } catch (ORMException $e) {
+                        } catch (OptimisticLockException|ORMException $e) {
                             throw new ElasticmsException($e->getMessage());
                         }
                     } else {

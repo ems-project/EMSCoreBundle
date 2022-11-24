@@ -11,6 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AlignManagedAliases extends Command
 {
+    protected static $defaultName = 'ems:managedalias:align';
     /** @var LoggerInterface */
     protected $logger;
     /** @var AliasService */
@@ -25,9 +26,7 @@ class AlignManagedAliases extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:managedalias:align')
-            ->setDescription('Align a managed alias to another')
+        $this->setDescription('Align a managed alias to another')
             ->addArgument(
                 'source',
                 InputArgument::REQUIRED,

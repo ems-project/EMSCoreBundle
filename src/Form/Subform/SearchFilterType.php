@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Subform;
 
+use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\SearchFieldOption;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -32,8 +33,8 @@ class SearchFilterType extends AbstractType
                     $searchFieldOption = $options['searchFields'][$key];
 
                     return [
-                        'data-content-types' => \json_encode($searchFieldOption->getContentTypes()),
-                        'data-operators' => \json_encode($searchFieldOption->getOperators()),
+                        'data-content-types' => \json_encode($searchFieldOption->getContentTypes(), JSON_THROW_ON_ERROR),
+                        'data-operators' => \json_encode($searchFieldOption->getOperators(), JSON_THROW_ON_ERROR),
                     ];
                 },
             ]);
@@ -77,7 +78,7 @@ class SearchFilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => 'EMS\CoreBundle\Entity\Form\SearchFilter',
+            'data_class' => SearchFilter::class,
             'is_super' => false,
             'searchFields' => [],
             'searchFieldsData' => [],

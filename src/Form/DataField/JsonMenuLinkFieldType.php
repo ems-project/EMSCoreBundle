@@ -220,14 +220,14 @@ class JsonMenuLinkFieldType extends DataFieldType
                 if (\is_string($item) || \is_integer($item)) {
                     $out[] = $item;
                 } else {
-                    $dataField->addMessage('Was not able to import the data : '.\json_encode($temp));
+                    $dataField->addMessage('Was not able to import the data : '.\json_encode($temp, JSON_THROW_ON_ERROR));
                 }
             }
 
             return ['value' => $out];
         }
 
-        $dataField->addMessage('Was not able to import the data : '.\json_encode($temp));
+        $dataField->addMessage('Was not able to import the data : '.\json_encode($temp, JSON_THROW_ON_ERROR));
 
         return ['value' => []];
     }

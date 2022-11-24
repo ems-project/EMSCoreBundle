@@ -16,13 +16,11 @@ use EMS\CoreBundle\Entity\ContentType;
 class Search implements \JsonSerializable
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @var Collection<int, SearchFilter>
@@ -32,11 +30,9 @@ class Search implements \JsonSerializable
     public Collection $filters;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="username", type="string", length=100)
      */
-    private $user;
+    private string $user;
 
     /**
      * @var string[]
@@ -53,18 +49,14 @@ class Search implements \JsonSerializable
     public array $contentTypes = [];
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=100)
      */
-    private $name;
+    private string $name;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="default_search", type="boolean", options={"default" : false})
      */
-    private $default;
+    private bool $default = false;
 
     /**
      * @ORM\OneToOne(targetEntity="EMS\CoreBundle\Entity\ContentType", cascade={})
@@ -87,13 +79,11 @@ class Search implements \JsonSerializable
      *
      * @ORM\Column(name="minimum_should_match", type="integer", options={"default" : 1})
      */
-    protected $minimumShouldMatch;
+    protected $minimumShouldMatch = 1;
 
     public function __construct()
     {
         $this->filters = new ArrayCollection();
-        $this->default = false;
-        $this->minimumShouldMatch = 1;
     }
 
     /**

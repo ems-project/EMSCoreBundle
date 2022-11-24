@@ -18,7 +18,7 @@ final class RevisionSearcher
     private RevisionRepository $revisionRepository;
     private EntityManagerInterface $entityManager;
     private int $size;
-    private string $timeout;
+    private string $timeout = self::DEFAULT_TIME_OUT;
 
     public const DEFAULT_TIME_OUT = '1m';
 
@@ -31,7 +31,6 @@ final class RevisionSearcher
         $this->elasticaService = $elasticaService;
         $this->revisionRepository = $revisionRepository;
         $this->entityManager = $entityManager;
-        $this->timeout = self::DEFAULT_TIME_OUT;
         $this->size = \intval($defaultScrollSize);
     }
 

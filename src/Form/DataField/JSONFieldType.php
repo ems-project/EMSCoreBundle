@@ -54,7 +54,7 @@ class JSONFieldType extends DataFieldType
      */
     public function viewTransform(DataField $dataField)
     {
-        return ['value' => \json_encode($dataField->getRawData())];
+        return ['value' => \json_encode($dataField->getRawData(), JSON_THROW_ON_ERROR)];
     }
 
     /**
@@ -148,7 +148,7 @@ class JSONFieldType extends DataFieldType
     public function generateMapping(FieldType $current): array
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
-            return [$current->getName() => \json_decode($current->getMappingOptions()['mappingOptions'], true)];
+            return [$current->getName() => \json_decode($current->getMappingOptions()['mappingOptions'], true, 512, JSON_THROW_ON_ERROR)];
         }
 
         return [];

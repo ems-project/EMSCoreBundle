@@ -49,7 +49,7 @@ class DateTimeFieldType extends DataFieldType
         $fieldType = $builder->getOptions()['metadata'];
 
         $builder->add('value', TextType::class, [
-            'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
+            'label' => ($options['label'] ?? $fieldType->getName()),
             'required' => false,
             'disabled' => $this->isDisabled($options),
             'attr' => [

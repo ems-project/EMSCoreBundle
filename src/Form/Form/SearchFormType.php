@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\SearchFieldOption;
 use EMS\CoreBundle\Entity\SortOption;
 use EMS\CoreBundle\Form\Field\ContentTypePickerType;
@@ -87,11 +88,9 @@ class SearchFormType extends AbstractType
                 $builder->add('sortBy', ChoiceType::class, [
                     'required' => false,
                     'choices' => $sortFields,
-                    'choice_attr' => function ($category, $key, $index) use ($sortFieldIcons) {
-                        return [
-                            'data-content' => '<span class=""><i class="'.($sortFieldIcons[$index] ?: 'fa fa-square').'"></i>&nbsp;&nbsp;'.$key.'</span>',
-                        ];
-                    },
+                    'choice_attr' => fn ($category, $key, $index) => [
+                        'data-content' => '<span class=""><i class="'.($sortFieldIcons[$index] ?: 'fa fa-square').'"></i>&nbsp;&nbsp;'.$key.'</span>',
+                    ],
                     'attr' => [
                         'class' => 'selectpicker',
                     ],
@@ -103,11 +102,9 @@ class SearchFormType extends AbstractType
                     'Ascending' => 'asc',
                     'Descending' => 'desc',
                 ],
-                'choice_attr' => function ($category, $key, $index) {
-                    return [
-                        'data-content' => '<span class=""><i class="fa fa-sort-'.$index.'"></i>&nbsp;&nbsp;'.$key.'</span>',
-                    ];
-                },
+                'choice_attr' => fn ($category, $key, $index) => [
+                    'data-content' => '<span class=""><i class="fa fa-sort-'.$index.'"></i>&nbsp;&nbsp;'.$key.'</span>',
+                ],
                 'attr' => [
                     'class' => 'selectpicker',
                 ],
@@ -154,7 +151,7 @@ class SearchFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => 'EMS\CoreBundle\Entity\Form\Search',
+            'data_class' => Search::class,
             'savedSearch' => false,
             'csrf_protection' => false,
             'light' => false,

@@ -11,20 +11,11 @@ use EMS\CoreBundle\Entity\Template;
  */
 class NotificationFilter
 {
-    /**
-     * @var Template
-     */
-    private $template;
+    private ?Template $template = null;
 
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private ?Environment $environment = null;
 
-    /**
-     * @var ContentType
-     */
-    private $contentType;
+    private ?ContentType $contentType = null;
 
     /**
      * Set the template filter.
@@ -47,6 +38,10 @@ class NotificationFilter
      */
     public function getTemplate()
     {
+        if (null === $this->template) {
+            throw new \RuntimeException('Unexpected null template');
+        }
+
         return $this->template;
     }
 
@@ -71,6 +66,10 @@ class NotificationFilter
      */
     public function getEnvironment()
     {
+        if (null === $this->environment) {
+            throw new \RuntimeException('Unexpected null environment');
+        }
+
         return $this->environment;
     }
 
@@ -95,6 +94,10 @@ class NotificationFilter
      */
     public function getContentType()
     {
+        if (null === $this->contentType) {
+            throw new \RuntimeException('Unexpected null contentType');
+        }
+
         return $this->contentType;
     }
 }

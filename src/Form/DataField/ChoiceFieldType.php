@@ -99,7 +99,7 @@ class ChoiceFieldType extends DataFieldType
         }
 
         $builder->add('value', ChoiceType::class, [
-                'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
+                'label' => ($options['label'] ?? $fieldType->getName()),
                 'required' => false,
                 'disabled' => $this->isDisabled($options),
                 'choices' => $choices,
@@ -224,7 +224,7 @@ class ChoiceFieldType extends DataFieldType
                     if (\is_string($item) || \is_integer($item)) {
                         $out[] = $item;
                     } else {
-                        $dataField->addMessage('Was not able to import the data : '.\json_encode($item));
+                        $dataField->addMessage('Was not able to import the data : '.\json_encode($item, JSON_THROW_ON_ERROR));
                     }
                 }
             } else {
@@ -238,10 +238,10 @@ class ChoiceFieldType extends DataFieldType
                 $out = $temp;
             } elseif (\is_array($temp) && null != $temp && (\is_string(\array_values($temp)[0]) || \is_integer(\array_values($temp)[0]))) {
                 $out = \array_values($temp)[0];
-                $dataField->addMessage('Only the first item has been imported : '.\json_encode($temp));
+                $dataField->addMessage('Only the first item has been imported : '.\json_encode($temp, JSON_THROW_ON_ERROR));
             } else {
-                $dataField->addMessage('Was not able to import the data : '.\json_encode($temp));
-                $out = '';
+                $dataField->addMessage('Was not able to import the data : '.\json_encode($temp, JSON_THROW_ON_ERROR));
+                $out = [];
             }
         }
 

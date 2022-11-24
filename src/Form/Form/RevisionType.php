@@ -141,7 +141,7 @@ class RevisionType extends AbstractType
                 'compound' => true,
                 'content_type' => null,
                 'csrf_protection' => false,
-                'data_class' => 'EMS\CoreBundle\Entity\Revision',
+                'data_class' => Revision::class,
                 'has_clipboard' => false,
                 'has_copy' => false,
                 'migration' => false,

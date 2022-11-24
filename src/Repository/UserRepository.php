@@ -10,6 +10,7 @@ use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Core\Security\Canonicalizer;
 use EMS\CoreBundle\Core\User\UserList;
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -83,7 +84,7 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
             ])->getQuery()->getResult();
 
         if (!empty($circles)) {
-            /** @var \EMS\CoreBundle\Entity\UserInterface $user */
+            /** @var UserInterface $user */
             foreach ($resultSet as $idx => $user) {
                 if (empty(\array_intersect($circles, $user->getCircles()))) {
                     unset($resultSet[$idx]);

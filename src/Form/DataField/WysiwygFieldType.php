@@ -73,8 +73,8 @@ class WysiwygFieldType extends DataFieldType
         $contentCss = $options['content_css'] ?? null;
         $styleSet = $this->wysiwygStylesSetService->getByName($styleSetName);
         if (null !== $styleSet) {
-            $formatTags = $formatTags ?? $styleSet->getFormatTags();
-            $contentCss = $contentCss ?? $styleSet->getContentCss();
+            $formatTags ??= $styleSet->getFormatTags();
+            $contentCss ??= $styleSet->getContentCss();
             $assets = $styleSet->getAssets();
             $hash = $assets['sha1'] ?? null;
             if (null !== $assets && \is_string($hash)) {
@@ -125,9 +125,7 @@ class WysiwygFieldType extends DataFieldType
 
         $out = \preg_replace_callback(
             '/('.\preg_quote(\substr($path, 0, \strlen($path) - 8), '/').')([^\n\r"\'\?]*)/i',
-            function ($matches) {
-                return 'ems://asset:'.$matches[2];
-            },
+            fn ($matches) => 'ems://asset:'.$matches[2],
             $data
         );
         if (empty($out)) {
@@ -152,9 +150,7 @@ class WysiwygFieldType extends DataFieldType
         $path = \substr($path, 0, \strlen($path) - 8);
         $out = \preg_replace_callback(
             '/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
-            function ($matches) use ($path) {
-                return $path.$matches[2];
-            },
+            fn ($matches) => $path.$matches[2],
             $out
         );
 

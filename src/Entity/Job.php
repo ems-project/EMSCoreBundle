@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\Helpers\Standard\DateTime;
@@ -14,59 +15,45 @@ use EMS\Helpers\Standard\DateTime;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\JobRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Job extends JsonDeserializer implements \JsonSerializable, \EMS\CommonBundle\Entity\EntityInterface
+class Job extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     use CreatedModifiedTrait;
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="status", type="text", nullable=true)
      */
-    private $status = '';
+    private string $status = '';
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="output", type="text", nullable=true)
      */
-    private $output;
+    private ?string $output = null;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="done", type="boolean")
      */
-    private $done = false;
+    private bool $done = false;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="started", type="boolean")
      */
-    private $started = false;
+    private bool $started = false;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="progress", type="integer")
      */
-    private $progress = 0;
+    private int $progress = 0;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="username", type="string", length=255, nullable=true)
      */
-    private $user;
+    private ?string $user = null;
 
     /**
      * @var string|null
@@ -100,6 +87,10 @@ class Job extends JsonDeserializer implements \JsonSerializable, \EMS\CommonBund
 
     public function getUser(): string
     {
+        if (null === $this->user) {
+            throw new \RuntimeException('Unexpected null user');
+        }
+
         return $this->user;
     }
 
@@ -172,7 +163,7 @@ class Job extends JsonDeserializer implements \JsonSerializable, \EMS\CommonBund
 
     public function jsonSerialize(): JsonClass
     {
-        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), self::class);
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');

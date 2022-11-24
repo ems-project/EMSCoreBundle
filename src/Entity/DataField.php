@@ -22,25 +22,18 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 {
     /**
      * link to the linked FieldType.
-     *
-     * @var FieldType|null
      */
-    private $fieldType;
+    private ?FieldType $fieldType = null;
 
     /**
      * TODO: a retirer???
-     *
-     * @var int
      */
-    private $orderKey;
+    private ?int $orderKey = null;
 
-    /**
-     * @var DataField|null
-     */
-    private $parent;
+    private ?DataField $parent = null;
 
     /** @var ArrayCollection<int, DataField> */
-    private $children;
+    private ArrayCollection $children;
 
     /** @var mixed */
     private $rawData;
@@ -188,7 +181,6 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     public function __construct()
     {
         $this->children = new ArrayCollection();
-        $this->messages = [];
 
         // TODO: should use the clone method
         $a = \func_get_args();
@@ -485,7 +477,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         if (\is_array($this->rawData)) {
             $this->addMessage('Integer expected array found: '.\print_r($this->rawData, true));
 
-            return \count($this->rawData); // empty array means null/empty
+            return \is_countable($this->rawData) ? \count($this->rawData) : 0; // empty array means null/empty
         }
 
         if (null === $this->rawData || \is_int($this->rawData)) {
@@ -610,6 +602,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function getOrderKey()
     {
+        if (null === $this->orderKey) {
+            throw new \RuntimeException('Unexpected null orderKey');
+        }
+
         return $this->orderKey;
     }
 

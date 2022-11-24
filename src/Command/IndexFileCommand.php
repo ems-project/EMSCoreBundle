@@ -22,6 +22,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class IndexFileCommand extends EmsCommand
 {
+    protected static $defaultName = 'ems:revisions:index-file-fields';
     /** @var string */
     private const SYSTEM_USERNAME = 'SYSTEM_FILE_INDEXER';
     /** @var Registry */
@@ -51,9 +52,7 @@ class IndexFileCommand extends EmsCommand
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:revisions:index-file-fields')
-            ->setDescription('Migrate an ingested file field from an elasticsearch index')
+        $this->setDescription('Migrate an ingested file field from an elasticsearch index')
             ->addArgument(
                 'contentType',
                 InputArgument::REQUIRED,

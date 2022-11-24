@@ -119,7 +119,7 @@ class AssetController extends AbstractController
         ];
 
         $url = \sprintf('%s?%s', \implode('/', $slugs), $request->getQueryString());
-        $response = new RedirectResponse($url, 302);
+        $response = new RedirectResponse($url, Response::HTTP_FOUND);
         $response->setMaxAge(0);
         $response->mustRevalidate();
 

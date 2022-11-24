@@ -75,7 +75,7 @@ class EmailFieldType extends DataFieldType
             return parent::modelTransform($data, $fieldType);
         }
         $out = parent::modelTransform(null, $fieldType);
-        $out->addMessage('ems was not able to import the data: '.\json_encode($data));
+        $out->addMessage('ems was not able to import the data: '.\json_encode($data, JSON_THROW_ON_ERROR));
 
         return $out;
     }

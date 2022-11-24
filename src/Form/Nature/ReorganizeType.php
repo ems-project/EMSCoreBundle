@@ -53,15 +53,9 @@ class ReorganizeType extends AbstractType
 
                         return $dataField;
                     },
-                    function (DataField $tagsAsString) {
-                        // transform the string back to an array
-                        return null;
-                    }
+                    fn (DataField $tagsAsString) => null
                 ))->addViewTransformer(new CallbackTransformer(
-                    function (DataField $tagsAsString) {
-                        // transform the string back to an array
-                        return null;
-                    },
+                    fn (DataField $tagsAsString) => null,
                     function ($raw) {
                         $dataField = new DataField();
 

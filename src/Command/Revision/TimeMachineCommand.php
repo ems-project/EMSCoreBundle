@@ -144,7 +144,7 @@ final class TimeMachineCommand extends Command
         }
 
         if (\is_array($currentProperty) && \count($path) > 0) {
-            if (\count($currentProperty) !== \count($historyProperty)) {
+            if (\count($currentProperty) !== (\is_countable($historyProperty) ? \count($historyProperty) : 0)) {
                 $this->style->warning('Could not go back in time for different sized collections!');
 
                 return $currentRaw;

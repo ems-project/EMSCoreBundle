@@ -57,7 +57,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      *
      * @ORM\Column(name="deleted", type="boolean")
      */
-    protected $deleted;
+    protected $deleted = false;
 
     /**
      * @var string
@@ -78,7 +78,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
-    protected $orderKey;
+    protected $orderKey = 0;
 
     /**
      * @var ?FieldType
@@ -99,8 +99,6 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function __construct()
     {
         $this->children = new ArrayCollection();
-        $this->deleted = false;
-        $this->orderKey = 0;
 
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
@@ -746,7 +744,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
 
     public function jsonSerialize(): JsonClass
     {
-        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), self::class);
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');
@@ -780,9 +778,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
 
         $filtered = \array_filter(
             $this->getDisplayOptions(),
-            function ($value) use ($defineOptions) {
-                return \in_array($value, $defineOptions);
-            },
+            fn ($value) => \in_array($value, $defineOptions),
             ARRAY_FILTER_USE_KEY
         );
         $this->options[self::DISPLAY_OPTIONS] = $filtered;

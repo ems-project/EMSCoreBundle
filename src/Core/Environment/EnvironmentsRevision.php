@@ -32,9 +32,7 @@ class EnvironmentsRevision
         $this->publish = new ArrayCollection();
 
         if ($hasPublishRole) {
-            $publishEnvironments = $userPublishEnvironments->filter(function (Environment $e) {
-                return $e->getManaged() && $e !== $this->default;
-            });
+            $publishEnvironments = $userPublishEnvironments->filter(fn (Environment $e) => $e->getManaged() && $e !== $this->default);
 
             $this->publish = $publishEnvironments->filter(fn (Environment $e) => !$environments->contains($e));
             $this->unpublish = $publishEnvironments->filter(fn (Environment $e) => $environments->contains($e));

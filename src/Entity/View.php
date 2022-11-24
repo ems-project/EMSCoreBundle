@@ -44,7 +44,7 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     /**
      * @ORM\Column(name="icon", type="string", length=255, nullable=true)
      */
-    protected ?string $icon;
+    protected ?string $icon = null;
 
     /**
      * @var array<mixed>
@@ -72,7 +72,7 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     /**
      * @ORM\Column(name="role", type="string", length=100, nullable=true)
      */
-    protected ?string $role;
+    protected ?string $role = null;
 
     public function __construct()
     {
@@ -196,7 +196,7 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
 
     public function jsonSerialize(): JsonClass
     {
-        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), self::class);
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');

@@ -17,27 +17,21 @@ class UploadedAsset implements EntityInterface
 {
     use CreatedModifiedTrait;
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="status", type="string", length=64, nullable=true)
      */
-    private $status;
+    private string $status;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="sha1", type="string", length=128)
      */
-    private $sha1;
+    private string $sha1;
 
     /**
      * @ORM\Column(name="name", type="string", length=1024)
@@ -45,25 +39,19 @@ class UploadedAsset implements EntityInterface
     private string $name = '';
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="type", type="string", length=1024)
      */
-    private $type;
+    private string $type;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="username", type="string", length=255)
      */
-    private $user;
+    private string $user;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="available", type="boolean")
      */
-    private $available;
+    private bool $available;
 
     /**
      * @var int|string
@@ -80,11 +68,9 @@ class UploadedAsset implements EntityInterface
     private $uploaded;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="hash_algo", type="string", length=32, options={"default" : "sha1"})
      */
-    private $hashAlgo;
+    private ?string $hashAlgo = null;
 
     /**
      * @ORM\Column(name="hidden", type="boolean", options={"default" : 0})
@@ -94,7 +80,7 @@ class UploadedAsset implements EntityInterface
     /**
      * @ORM\Column(name="head_last", type="datetime", nullable=true)
      */
-    private ?\DateTime $headLast;
+    private ?\DateTime $headLast = null;
 
     /**
      * @var string[]|null
@@ -315,6 +301,10 @@ class UploadedAsset implements EntityInterface
 
     public function getHashAlgo(): string
     {
+        if (null === $this->hashAlgo) {
+            throw new \RuntimeException('Unexpected null hash algo');
+        }
+
         return $this->hashAlgo;
     }
 

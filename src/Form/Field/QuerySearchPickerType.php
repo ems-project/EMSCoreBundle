@@ -46,9 +46,7 @@ class QuerySearchPickerType extends ChoiceType
                     'data-content' => "<div class='text-".$name."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$querySearch->getName().'</div>',
                 ];
             },
-            'choice_value' => function ($value) {
-                return $value;
-            },
+            'choice_value' => fn ($value) => $value,
             'multiple' => false,
             'choice_translation_domain' => false,
         ]);

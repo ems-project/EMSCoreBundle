@@ -31,14 +31,10 @@ class NotificationFormType extends AbstractType
         $builder->add('template', EntityType::class, [
             'class' => Template::class,
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-            'query_builder' => function (EntityRepository $er) {
-                return $er->createQueryBuilder('t')
-                ->where("t.renderOption = 'notification'");
-            },
-            'choice_label' => function ($value, $key, $index) {
-                /* @var Template $value */
-                return '<i class="'.$value->getContentType()->getIcon().' text-'.$value->getContentType()->getColor().'"></i>&nbsp;&nbsp;'.$value->getName().' for '.$value->getContentType()->getSingularName();
-            },
+            'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('t')
+            ->where("t.renderOption = 'notification'"),
+            'choice_label' => fn ($value, $key, $index) => /* @var Template $value */
+'<i class="'.$value->getContentType()->getIcon().' text-'.$value->getContentType()->getColor().'"></i>&nbsp;&nbsp;'.$value->getName().' for '.$value->getContentType()->getSingularName(),
             'multiple' => true,
             'required' => false,
             'choice_value' => function ($value) {
@@ -62,9 +58,7 @@ class NotificationFormType extends AbstractType
 
                 'choices' => $this->service->getEnvironments(),
                 'required' => false,
-                'choice_label' => function ($value, $key, $index) {
-                    return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
-                },
+                'choice_label' => fn ($value, $key, $index) => '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName(),
                 'choice_value' => function ($value) {
                     if (null != $value) {
                         return $value->getId();
@@ -76,15 +70,11 @@ class NotificationFormType extends AbstractType
         ->add('contentType', EntityType::class, [
                 'class' => ContentType::class,
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('ct')
-                    ->where('ct.deleted = :false')
-                    ->setParameters(['false' => false])
-                    ->orderBy('ct.orderKey');
-                },
-                'choice_label' => function ($value, $key, $index) {
-                    return '<i class="'.$value->getIcon().' text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getSingularName();
-                },
+                'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('ct')
+                ->where('ct.deleted = :false')
+                ->setParameters(['false' => false])
+                ->orderBy('ct.orderKey'),
+                'choice_label' => fn ($value, $key, $index) => '<i class="'.$value->getIcon().' text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getSingularName(),
                 'multiple' => true,
                 'required' => false,
                 'choice_value' => function ($value) {

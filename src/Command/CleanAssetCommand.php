@@ -16,6 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CleanAssetCommand extends EmsCommand
 {
+    protected static $defaultName = 'ems:asset:clean';
     /** @var Registry */
     protected $doctrine;
     /** @var FileService */
@@ -33,9 +34,7 @@ class CleanAssetCommand extends EmsCommand
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:asset:clean')
-            ->setDescription('Unreference useless assets (no files are deleted from storages)');
+        $this->setDescription('Unreference useless assets (no files are deleted from storages)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

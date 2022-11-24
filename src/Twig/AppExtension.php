@@ -289,10 +289,7 @@ class AppExtension extends AbstractExtension
         if (\is_string($rawData[$field])) {
             return $rawData[$field];
         }
-        $encoded = \json_encode($rawData[$field]);
-        if (false === $encoded) {
-            throw new \RuntimeException('Failure on json encode');
-        }
+        $encoded = \json_encode($rawData[$field], JSON_THROW_ON_ERROR);
 
         return $encoded;
     }
@@ -631,7 +628,7 @@ class AppExtension extends AbstractExtension
      */
     public function diffRaw($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
-        $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
+        $b = $compareRawData[$fieldName] ?? null;
 
         return $this->diff($rawData, $b, $compare);
     }
@@ -642,7 +639,7 @@ class AppExtension extends AbstractExtension
      */
     public function diffText($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
-        $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
+        $b = $compareRawData[$fieldName] ?? null;
 
         return $this->diff($rawData, $b, $compare, true, true);
     }
@@ -653,7 +650,7 @@ class AppExtension extends AbstractExtension
      */
     public function diffHtml($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
-        $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
+        $b = $compareRawData[$fieldName] ?? null;
 
         return $this->diff($rawData, $b, $compare, false, true, true);
     }
@@ -1049,7 +1046,7 @@ class AppExtension extends AbstractExtension
             if ($v <= 0.03928) {
                 $components[$c] = $v / 12.92;
             } else {
-                $components[$c] = \pow(($v + 0.055) / 1.055, 2.4);
+                $components[$c] = (($v + 0.055) / 1.055) ** 2.4;
             }
         }
 

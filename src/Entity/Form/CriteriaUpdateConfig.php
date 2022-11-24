@@ -11,19 +11,18 @@ use Psr\Log\LoggerInterface;
  */
 class CriteriaUpdateConfig
 {
-    private ?string $columnCriteria;
-    private ?string $rowCriteria;
-    private ?DataField $category;
+    private ?string $columnCriteria = null;
+    private ?string $rowCriteria = null;
+    private ?DataField $category = null;
 
     /** @var array<mixed> */
-    private array $criterion;
+    private array $criterion = [];
 
     private LoggerInterface $logger;
 
     public function __construct(View $view, LoggerInterface $logger)
     {
         $this->logger = $logger;
-        $this->criterion = [];
         $contentType = $view->getContentType();
 
         $rootFieldType = $contentType->getFieldType();

@@ -186,7 +186,7 @@ class EditController extends AbstractController
                 if (isset($requestRevision['publish'])) {// Finalize
                     $revision = $this->dataService->finalizeDraft($revision, $form);
 
-                    if (0 === \count($form->getErrors(true))) {
+                    if (0 === (\is_countable($form->getErrors(true)) ? \count($form->getErrors(true)) : 0)) {
                         if ($revision->getOuuid()) {
                             return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
                                 'ouuid' => $revision->getOuuid(),
@@ -208,7 +208,7 @@ class EditController extends AbstractController
             // if Save or Discard
             if (!isset($requestRevision['publish'])) {
                 if (null != $revision->getOuuid()) {
-                    if (0 === \count($form->getErrors()) && $contentType->isAutoPublish()) {
+                    if (0 === (\is_countable($form->getErrors()) ? \count($form->getErrors()) : 0) && $contentType->isAutoPublish()) {
                         $this->publishService->silentPublish($revision);
                     }
 

@@ -63,13 +63,13 @@ final class ExtractCommand extends AbstractCommand
 
     protected static $defaultName = Commands::XLIFF_EXTRACT;
     private string $xliffFilename;
-    private ?string $baseUrl;
+    private ?string $baseUrl = null;
     private string $xliffVersion;
     private AssetRuntime $assetRuntime;
     /**
      * @var array<int, FieldType[]>
      */
-    private $fieldTypesByContentType = [];
+    private array $fieldTypesByContentType = [];
     private string $translationField;
     private string $localeField;
     private string $encoding;

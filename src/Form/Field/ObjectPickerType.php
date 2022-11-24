@@ -38,9 +38,7 @@ class ObjectPickerType extends Select2Type
 
                 return $this->choiceListFactory->createLoader($options['type'], $loadAll, $circleOnly, $withWarning, $querySearch);
             },
-            'choice_label' => function ($value, $key, $index) {
-                return $value->getLabel();
-            },
+            'choice_label' => fn ($value, $key, $index) => $value->getLabel(),
             'choice_attr' => function ($val, $key, $index) {
                 if ($val instanceof ObjectChoiceListItem) {
                     return ['title' => $val->getTitle()];
@@ -48,12 +46,8 @@ class ObjectPickerType extends Select2Type
 
                 return [];
             },
-            'group_by' => function ($value, $key, $index) {
-                return $value->getGroup();
-            },
-            'choice_value' => function ($value) {
-                return $value->getValue();
-            },
+            'group_by' => fn ($value, $key, $index) => $value->getGroup(),
+            'choice_value' => fn ($value) => $value->getValue(),
             'multiple' => false,
             'type' => null,
             'searchId' => null,

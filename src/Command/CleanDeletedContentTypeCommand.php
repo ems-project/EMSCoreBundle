@@ -23,6 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class CleanDeletedContentTypeCommand extends Command
 {
+    protected static $defaultName = 'ems:contenttype:clean';
     /** @var Mapping */
     protected $mapping;
     /** @var Registry */
@@ -43,9 +44,7 @@ class CleanDeletedContentTypeCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:contenttype:clean')
-            ->setDescription('Clean all deleted content types');
+        $this->setDescription('Clean all deleted content types');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

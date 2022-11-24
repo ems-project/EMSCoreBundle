@@ -97,7 +97,7 @@ class Export extends AbstractType implements DashboardInterface
                 'dashboard' => $dashboard,
                 'options' => $dashboard->getOptions(),
             ]));
-            $response->setStatusCode(500);
+            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $response;

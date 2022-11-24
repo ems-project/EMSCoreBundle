@@ -17,6 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SynchronizeAssetCommand extends EmsCommand
 {
+    protected static $defaultName = 'ems:asset:synchronize';
     /** @var Registry */
     protected $doctrine;
     /** @var ContentTypeService */
@@ -44,9 +45,7 @@ class SynchronizeAssetCommand extends EmsCommand
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:asset:synchronize')
-            ->setDescription('Synchronize registered assets on storage services');
+        $this->setDescription('Synchronize registered assets on storage services');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

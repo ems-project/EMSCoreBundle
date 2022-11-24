@@ -36,9 +36,7 @@ class DashboardPickerType extends SelectPickerType
                     'data-content' => \sprintf('<div class="text"><i class="%s"></i>&nbsp;&nbsp;%s</div>', $icon, \htmlentities($label)),
                 ];
             },
-            'choice_value' => function ($value) {
-                return $value;
-            },
+            'choice_value' => fn ($value) => $value,
         ]);
     }
 }

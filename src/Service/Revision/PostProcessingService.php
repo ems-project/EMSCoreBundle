@@ -138,7 +138,7 @@ final class PostProcessingService
                     $out = $this->twig->createTemplate($template)->render($context);
 
                     if ($fieldType->getDisplayOptions()['json']) {
-                        $out = \json_decode($out, true);
+                        $out = \json_decode($out, true, 512, JSON_THROW_ON_ERROR);
                     } else {
                         $out = \trim($out);
                     }
@@ -235,6 +235,6 @@ final class PostProcessingService
             }
         }
 
-        $objectArray[$fieldType->getName()] = \json_encode($jsonMenuNested->toArrayStructure());
+        $objectArray[$fieldType->getName()] = \json_encode($jsonMenuNested->toArrayStructure(), JSON_THROW_ON_ERROR);
     }
 }

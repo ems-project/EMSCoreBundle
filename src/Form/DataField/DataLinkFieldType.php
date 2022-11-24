@@ -278,14 +278,14 @@ class DataLinkFieldType extends DataFieldType
                     if (\is_string($item)) {
                         $temp[] = $item;
                     } else {
-                        $out->addMessage('Some data was not able to be imported: '.\json_encode($item));
+                        $out->addMessage('Some data was not able to be imported: '.\json_encode($item, JSON_THROW_ON_ERROR));
                     }
                 }
             } elseif (\is_string($data)) {
                 $temp[] = $data;
                 $out->addMessage('Data converted into array');
             } else {
-                $out->addMessage('Data was not able to be imported: '.\json_encode($data));
+                $out->addMessage('Data was not able to be imported: '.\json_encode($data, JSON_THROW_ON_ERROR));
             }
             $out->setRawData($temp);
         } else {
@@ -307,7 +307,7 @@ class DataLinkFieldType extends DataFieldType
                 }
             } else {
                 $out->setRawData(null);
-                $out->addMessage('Data was not able to be imported: '.\json_encode($data));
+                $out->addMessage('Data was not able to be imported: '.\json_encode($data, JSON_THROW_ON_ERROR));
             }
         }
 

@@ -14,6 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class JobCommand extends AbstractCommand
 {
+    protected static $defaultName = 'ems:job:run';
     private const USER_JOB_COMMAND = 'User-Job-Command';
     private JobService $jobService;
     private string $dateFormat;
@@ -31,9 +32,7 @@ class JobCommand extends AbstractCommand
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:job:run')
-            ->setDescription('Execute the next pending job if exist. If not execute the oldest due scheduled job if exist.')
+        $this->setDescription('Execute the next pending job if exist. If not execute the oldest due scheduled job if exist.')
             ->addOption(
                 'dump',
                 null,

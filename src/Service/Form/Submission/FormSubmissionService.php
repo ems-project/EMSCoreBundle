@@ -108,15 +108,14 @@ final class FormSubmissionService implements EntityServiceInterface
      */
     public function generateExportConfig(array $formSubmissionIds): array
     {
+        $config = [];
         $sheets = [];
 
         foreach ($formSubmissionIds as $formSubmissionId) {
             $formSubmission = $this->getById($formSubmissionId);
             /** @var array<mixed> $data */
             $data = $formSubmission->getData();
-            $data = \array_filter($data, function ($value) {
-                return \is_string($value);
-            });
+            $data = \array_filter($data, fn ($value) => \is_string($value));
             $data['id'] = $formSubmission->getId();
             $data['form'] = $formSubmission->getName();
             $data['instance'] = $formSubmission->getInstance();

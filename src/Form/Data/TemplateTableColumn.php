@@ -22,7 +22,7 @@ class TemplateTableColumn extends TableColumn
      */
     public function __construct(array $options)
     {
-        $options = $this->resolveOptions($options);
+        $options = self::resolveOptions($options);
         $this->orderable = null !== $options[self::ORDER_FIELD];
         $this->template = $options[self::TEMPLATE];
         parent::__construct($options[self::LABEL], $options[self::ORDER_FIELD] ?? 'not orderable');

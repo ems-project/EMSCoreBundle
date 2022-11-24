@@ -29,11 +29,12 @@ use Symfony\Component\Form\FormFactoryInterface;
 
 final class RecomputeCommand extends Command
 {
+    protected static $defaultName = 'ems:contenttype:recompute';
     private ContentType $contentType;
     private bool $optionDeep;
     private bool $forceFlag;
     private bool $cronFlag;
-    private ?string $ouuid;
+    private ?string $ouuid = null;
     private EntityManager $em;
     private DataService $dataService;
     private FormFactoryInterface $formFactory;
@@ -89,9 +90,7 @@ final class RecomputeCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setName('ems:contenttype:recompute')
-            ->setDescription('Recompute a content type')
+        $this->setDescription('Recompute a content type')
             ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'content type to recompute')
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
             ->addOption(self::OPTION_MISSING, null, InputOption::VALUE_NONE, 'will recompute the objects that are missing in their default environment only')

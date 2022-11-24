@@ -21,14 +21,12 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
 {
     use CreatedModifiedTrait;
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
-    private $id;
+    private UuidInterface $id;
 
     /**
      * @ORM\Column(name="name", type="string", length=255, unique=true)
@@ -47,7 +45,7 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
      *
      * @ORM\Column(name="public", type="boolean", options={"default" : 0})
      */
-    protected $public;
+    protected $public = false;
 
     /**
      * @var string
@@ -61,7 +59,12 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
      *
      * @ORM\Column(name="options", type="json", nullable=true)
      */
-    protected ?array $options = null;
+    protected ?array $options = [
+        'translationContentType' => 'label',
+        'routeContentType' => 'route',
+        'templateContentType' => 'template',
+        'searchConfig' => '{}',
+    ];
 
     /**
      * @ORM\Column(name="order_key", type="integer")
@@ -73,13 +76,6 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
         $this->id = Uuid::uuid4();
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
-        $this->public = false;
-        $this->options = [
-            'translationContentType' => 'label',
-            'routeContentType' => 'route',
-            'templateContentType' => 'template',
-            'searchConfig' => '{}',
-        ];
     }
 
     public static function fromJson(string $json, ?\EMS\CommonBundle\Entity\EntityInterface $channel = null): Channel
@@ -183,7 +179,7 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
 
     public function jsonSerialize(): JsonClass
     {
-        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), self::class);
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');

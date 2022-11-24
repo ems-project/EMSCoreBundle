@@ -76,14 +76,14 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
     /**
      * @ORM\Column(name="color", type="string", length=50, nullable=true)
      */
-    protected ?string $color;
+    protected ?string $color = null;
 
     /**
      * @var array<string, mixed>
      *
      * @ORM\Column(name="options", type="json", nullable=true)
      */
-    protected array $options;
+    protected array $options = [];
 
     /**
      * @ORM\Column(name="order_key", type="integer")
@@ -97,7 +97,6 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
         $this->id = Uuid::uuid4();
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
-        $this->options = [];
     }
 
     public function getId(): string
@@ -233,7 +232,7 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
 
     public function jsonSerialize(): JsonClass
     {
-        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), self::class);
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');

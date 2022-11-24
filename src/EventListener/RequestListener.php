@@ -46,7 +46,7 @@ class RequestListener
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        if ($event->isMasterRequest()) {
+        if ($event->isMainRequest()) {
             $this->channelRegistrar->register($event->getRequest());
         }
     }

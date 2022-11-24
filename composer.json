@@ -23,7 +23,7 @@
 		"doctrine/doctrine-bundle": "^2.7",
 		"doctrine/doctrine-migrations-bundle": "^3.2",
 		"dragonmantank/cron-expression": "^3.1",
-		"elasticms/submission-bundle": "^4.0",
+		"elasticms/submission-bundle": "^4.2",
 		"elasticms/xliff": "^1.0",
 		"guzzlehttp/guzzle": "^6.3",
 		"ocramius/doctrine-batch-utils": "2.1",

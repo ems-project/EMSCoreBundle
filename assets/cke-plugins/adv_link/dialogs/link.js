@@ -120,7 +120,7 @@
 
 		let localContentTypes = ems_wysiwyg_type_filters;
 		if (emsConfig.urlAllContentTypes !== undefined && !emsConfig.urlAllContentTypes) {
-			localContentTypes.shift(); //remove "All contentTypes selection"
+			localContentTypes = localContentTypes.filter(values => !values.includes('All content types'));
 		}
 
 		var advLinkConfig = {

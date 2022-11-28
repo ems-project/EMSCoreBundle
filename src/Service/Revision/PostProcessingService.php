@@ -137,7 +137,7 @@ final class PostProcessingService
                 try {
                     $out = $this->twig->createTemplate($template)->render($context);
 
-                    if ($fieldType->getDisplayOptions()['json']) {
+                    if ($fieldType->getDisplayOptions()['json'] && '' !== $out) {
                         $out = \json_decode($out, true, 512, JSON_THROW_ON_ERROR);
                     } else {
                         $out = \trim($out);

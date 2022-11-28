@@ -64,46 +64,29 @@ class ManagedAlias
         $this->modified = DateTime::create('now');
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return ManagedAlias
-     */
-    public function setName($name)
+    public function setName(string $name): ManagedAlias
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAlias()
+    public function getAlias(): string
     {
         if (null === $this->alias) {
             throw new \RuntimeException('Unexpected null alias');
@@ -135,64 +118,36 @@ class ManagedAlias
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getTotal()
+    public function getTotal(): ?int
     {
-        if (null === $this->total) {
-            throw new \RuntimeException('Unexpected null total');
-        }
-
         return $this->total;
     }
 
-    /**
-     * @param int $total
-     *
-     * @return ManagedAlias
-     */
-    public function setTotal($total)
+    public function setTotal(?int $total): ManagedAlias
     {
         $this->total = $total;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getColor()
+    public function getColor(): string
     {
         return $this->color;
     }
 
-    /**
-     * @param string $color
-     *
-     * @return ManagedAlias
-     */
-    public function setColor($color)
+    public function setColor(string $color): ManagedAlias
     {
         $this->color = $color;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getExtra()
+    public function getExtra(): string
     {
         return $this->extra;
     }
 
-    /**
-     * @param string $extra
-     *
-     * @return ManagedAlias
-     */
-    public function setExtra($extra)
+    public function setExtra(string $extra): ManagedAlias
     {
         $this->extra = $extra;
 

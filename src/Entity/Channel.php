@@ -139,7 +139,7 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
      */
     public function getOptions(): array
     {
-        return $this->options ?? [];
+        return \array_filter($this->options ?? []);
     }
 
     /**

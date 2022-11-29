@@ -219,6 +219,8 @@ final class RecomputeCommand extends Command
                 $this->em->persist($revision);
                 $this->em->persist($newRevision);
                 $this->em->flush();
+                $this->em->detach($revision);
+                $this->em->detach($newRevision);
 
                 $this->indexService->indexRevision($newRevision);
 

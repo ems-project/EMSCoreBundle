@@ -736,4 +736,11 @@ class ContentTypeService implements EntityServiceInterface
 
         return \strval($id);
     }
+
+    public function switchDefaultEnvironment(ContentType $contentType, Environment $target, string $username): void
+    {
+        $this->revisionRepository->switchEnvironments($contentType, $target, $username);
+        $contentType->setEnvironment($target);
+        $this->persist($contentType);
+    }
 }

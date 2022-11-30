@@ -18,6 +18,11 @@
             <argument type="service" id="ems_core.core_content_type_transformer.content_transformer"/>
             <tag name="console.command"/>
         </service>
+        <service id="emsco.contenttype.create" class="EMS\CoreBundle\Command\ContentType\SwitchDefaultCommand">
+          <argument type="service" id="ems.service.environment"/>
+          <argument type="service" id="ems.service.contenttype"/>
+          <tag name="console.command"/>
+        </service>
 
         <!-- EMS environment -->
         <service id="ems_core.command_environment.abstract_environment_command" class="EMS\CoreBundle\Command\Environment\AbstractEnvironmentCommand" abstract="true">
@@ -134,7 +139,7 @@
             <tag name="console.command"/>
             <tag name="console.command" command="fos:user:promote" />
         </service>
-        
+
         <service id="ems.command.xliff.extract" class="EMS\CoreBundle\Command\Xliff\ExtractCommand">
             <argument type="service" id="ems.service.contenttype"/>
             <argument type="service" id="ems.service.environment"/>

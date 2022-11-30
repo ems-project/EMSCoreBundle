@@ -636,15 +636,17 @@ class RevisionRepository extends EntityRepository
         return $this->deleteByQueryBuilder($qb);
     }
 
-    public function lockRevisions(?ContentType $contentType, \DateTime $until, string $by, bool $force = false, ?string $ouuid = null): int
+    public function lockRevisions(?ContentType $contentType, \DateTime $until, string $by, bool $force = false, ?string $ouuid = null, bool $onlyCurrentRevision = true): int
     {
         $qbSelect = $this->createQueryBuilder('s');
         $qbSelect
             ->select('s.id')
-            ->andWhere($qbSelect->expr()->isNull('s.endTime'))
             ->andWhere($qbSelect->expr()->eq('s.deleted', $qbSelect->expr()->literal(false)))
             ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(false)))
         ;
+        if ($onlyCurrentRevision) {
+            $qbSelect->andWhere($qbSelect->expr()->isNull('s.endTime'));
+        }
 
         $qbUpdate = $this->createQueryBuilder('r');
         $qbUpdate
@@ -697,16 +699,18 @@ class RevisionRepository extends EntityRepository
         return $this->lockRevisions(null, $until, $by, true);
     }
 
-    public function unlockRevisions(?ContentType $contentType, string $by): int
+    public function unlockRevisions(?ContentType $contentType, string $by, bool $onlyCurrentRevision = true): int
     {
         $qbSelect = $this->createQueryBuilder('s');
         $qbSelect
             ->select('s.id')
             ->andWhere($qbSelect->expr()->eq('s.lockBy', ':by'))
-            ->andWhere($qbSelect->expr()->isNull('s.endTime'))
             ->andWhere($qbSelect->expr()->eq('s.deleted', $qbSelect->expr()->literal(false)))
             ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(false)))
         ;
+        if ($onlyCurrentRevision) {
+            $qbSelect->andWhere($qbSelect->expr()->isNull('s.endTime'));
+        }
 
         $qbUpdate = $this->createQueryBuilder('u');
         $qbUpdate
@@ -1034,5 +1038,45 @@ class RevisionRepository extends EntityRepository
             ->setParameters($queryBuilder->getParameters());
 
         return $qbDelete->executeStatement();
+    }
+
+    public function switchEnvironments(ContentType $contentType, Environment $target, string $username, int $batchSize = 500): void
+    {
+        $this->lockRevisions($contentType, new \DateTime('+60 min'), $username, true, null, false);
+        $qb = $this->createQueryBuilder('r')
+            ->join('r.environments', 'e')
+            ->where('r.contentType = :ct')
+            ->andWhere('e.id IN (:ids)')
+            ->setParameter('ids', [$contentType->giveEnvironment()->getId(), $target->getId()])
+            ->setParameter('ct', $contentType);
+        $detachableEntities = [];
+        foreach ($qb->getQuery()->execute() as $revision) {
+            if (!$revision instanceof Revision) {
+                throw new \RuntimeException('Unexpected object');
+            }
+            if ($revision->getEnvironments()->contains($contentType->giveEnvironment()) && $revision->getEnvironments()->contains($target)) {
+                continue;
+            }
+            if ($revision->getEnvironments()->contains($contentType->giveEnvironment())) {
+                $revision->addEnvironment($target);
+                $revision->removeEnvironment($contentType->giveEnvironment());
+            } else {
+                $revision->addEnvironment($contentType->giveEnvironment());
+                $revision->removeEnvironment($target);
+            }
+            $detachableEntities[] = $revision;
+            if ((\count($detachableEntities) % $batchSize) === 0) {
+                $this->_em->flush();
+                foreach ($detachableEntities as $detachableEntity) {
+                    $this->_em->detach($detachableEntity);
+                }
+                $detachableEntities = [];
+            }
+        }
+        $this->_em->flush();
+        foreach ($detachableEntities as $detachableEntity) {
+            $this->_em->detach($detachableEntity);
+        }
+        $this->unlockRevisions($contentType, $username, false);
     }
 }

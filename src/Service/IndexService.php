@@ -38,7 +38,16 @@ final class IndexService
     public function deleteIndex(string $indexName): void
     {
         try {
-            $this->client->getIndex($indexName)->delete();
+            $index = $this->client->getIndex($indexName);
+            if (!empty($index->getAliases())) {
+                $this->logger->error('log.index.index_with_aliases', [
+                    'index_name' => $indexName,
+                    'counter' => \count($index->getAliases()),
+                ]);
+
+                return;
+            }
+            $index->delete();
             $this->logger->notice('log.index.delete_orphan_index', [
                 'index_name' => $indexName,
             ]);

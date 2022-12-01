@@ -14,7 +14,7 @@
         <default key="_controller">EMS\CoreBundle\Controller\ElasticsearchController::setDefaultSearchAction</default>
         <default key="contentType" xsi:nil="true" />
     </route>
-    <route id="elasticsearch.index.delete" path="/index/delete/{name}" methods="GET POST">
+    <route id="elasticsearch.index.delete" path="/index/delete/{name}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ElasticsearchController::deleteIndexAction</default>
     </route>
 </routes>

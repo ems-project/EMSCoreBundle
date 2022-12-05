@@ -18,10 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class ArchiveCommand extends AbstractCommand
 {
-    private RevisionService $revisionService;
-    private RevisionSearcher $revisionSearcher;
-    private ContentTypeService $contentTypeService;
-
     private ContentType $contentType;
     private string $searchQuery;
     private ?\DateTimeInterface $modifiedBefore = null;
@@ -38,14 +34,11 @@ final class ArchiveCommand extends AbstractCommand
     public const OPTION_SEARCH_QUERY = 'search-query';
 
     public function __construct(
-        RevisionSearcher $revisionSearcher,
-        RevisionService $revisionService,
-        ContentTypeService $contentTypeService
+        private readonly RevisionSearcher $revisionSearcher,
+        private readonly RevisionService $revisionService,
+        private readonly ContentTypeService $contentTypeService
     ) {
         parent::__construct();
-        $this->revisionSearcher = $revisionSearcher;
-        $this->revisionService = $revisionService;
-        $this->contentTypeService = $contentTypeService;
     }
 
     protected function configure(): void

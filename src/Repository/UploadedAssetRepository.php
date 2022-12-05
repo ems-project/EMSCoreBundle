@@ -14,7 +14,7 @@ use EMS\CoreBundle\Entity\UploadedAsset;
  */
 class UploadedAssetRepository extends EntityRepository
 {
-    public const PAGE_SIZE = 100;
+    final public const PAGE_SIZE = 100;
 
     /**
      * @return int
@@ -30,7 +30,7 @@ class UploadedAssetRepository extends EntityRepository
 
         try {
             return \intval($qb->getQuery()->getSingleScalarResult());
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return 0;
         }
     }
@@ -190,7 +190,7 @@ class UploadedAssetRepository extends EntityRepository
         if (null === $uploadedAsset || $uploadedAsset instanceof UploadedAsset) {
             return $uploadedAsset;
         }
-        throw new \RuntimeException(\sprintf('Unexpected class object %s', \get_class($uploadedAsset)));
+        throw new \RuntimeException(\sprintf('Unexpected class object %s', $uploadedAsset::class));
     }
 
     public function searchCount(string $searchValue = '', bool $availableOnly = false): int
@@ -207,7 +207,7 @@ class UploadedAssetRepository extends EntityRepository
 
         try {
             return \intval($qb->getQuery()->getSingleScalarResult());
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return 0;
         }
     }

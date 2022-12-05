@@ -27,19 +27,14 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class CollectionFieldType extends DataFieldType
 {
-    private DataService $dataService;
-    private LoggerInterface $logger;
-
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
-        DataService $dataService,
-        LoggerInterface $logger)
+        private readonly DataService $dataService,
+        private readonly LoggerInterface $logger)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->dataService = $dataService;
-        $this->logger = $logger;
     }
 
     public function getLabel(): string
@@ -145,7 +140,7 @@ class CollectionFieldType extends DataFieldType
     /**
      * {@inheritDoc}
      */
-    public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null): bool
+    public function isValid(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
             return true;

@@ -8,12 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class FormVerificationException extends \Exception
 {
-    private int $httpCode;
-
-    public function __construct(string $message = '', int $httpCode = Response::HTTP_BAD_REQUEST)
+    public function __construct(string $message = '', private readonly int $httpCode = Response::HTTP_BAD_REQUEST)
     {
         parent::__construct($message);
-        $this->httpCode = $httpCode;
     }
 
     public function getHttpCode(): int

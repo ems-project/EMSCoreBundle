@@ -37,33 +37,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DetailController extends AbstractController
 {
-    private ContentTypeService $contentTypeService;
-    private DataService $dataService;
-    private RevisionService $revisionService;
-    private RevisionRepository $revisionRepository;
-    private ElasticaService $elasticaService;
-    private SearchService $searchService;
-    private LogManager $logManager;
-    private LoggerInterface $logger;
-
-    public function __construct(
-        ContentTypeService $contentTypeService,
-        DataService $dataService,
-        RevisionService $revisionService,
-        RevisionRepository $revisionRepository,
-        ElasticaService $elasticaService,
-        SearchService $searchService,
-        LogManager $logManager,
-        LoggerInterface $logger
-    ) {
-        $this->contentTypeService = $contentTypeService;
-        $this->dataService = $dataService;
-        $this->revisionService = $revisionService;
-        $this->revisionRepository = $revisionRepository;
-        $this->elasticaService = $elasticaService;
-        $this->searchService = $searchService;
-        $this->logManager = $logManager;
-        $this->logger = $logger;
+    public function __construct(private readonly ContentTypeService $contentTypeService, private readonly DataService $dataService, private readonly RevisionService $revisionService, private readonly RevisionRepository $revisionRepository, private readonly ElasticaService $elasticaService, private readonly SearchService $searchService, private readonly LogManager $logManager, private readonly LoggerInterface $logger)
+    {
     }
 
     public function detailRevision(Request $request, string $type, string $ouuid, int $revisionId, int $compareId): Response

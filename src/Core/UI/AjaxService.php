@@ -9,13 +9,8 @@ use Twig\Environment;
 
 final class AjaxService
 {
-    private Environment $templating;
-    private TranslatorInterface $translator;
-
-    public function __construct(Environment $templating, TranslatorInterface $translator)
+    public function __construct(private readonly Environment $templating, private readonly TranslatorInterface $translator)
     {
-        $this->templating = $templating;
-        $this->translator = $translator;
     }
 
     public function getTemplating(): Environment

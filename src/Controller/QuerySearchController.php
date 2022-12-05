@@ -22,13 +22,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class QuerySearchController extends AbstractController
 {
-    private LoggerInterface $logger;
-    private QuerySearchService $querySearchService;
-
-    public function __construct(LoggerInterface $logger, QuerySearchService $querySearchService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly QuerySearchService $querySearchService)
     {
-        $this->logger = $logger;
-        $this->querySearchService = $querySearchService;
     }
 
     public function ajaxDataTable(Request $request): Response

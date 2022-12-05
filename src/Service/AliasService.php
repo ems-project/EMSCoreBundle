@@ -18,26 +18,16 @@ use Psr\Log\LoggerInterface;
 class AliasService
 {
     private const COUNTER_AGGREGATION = 'counter_aggregation';
-    private EnvironmentRepository $envRepo;
-    private ManagedAliasRepository $managedAliasRepo;
     /** @var array<string, array{name: string, total: int, indexes: array<mixed>, environment: string, managed: bool}> */
     private array $aliases = [];
     /** @var array<array{name: string, count: int}> */
     private array $orphanIndexes = [];
     private bool $isBuild = false;
-    private Client $elasticaClient;
-    private ElasticaService $elasticaService;
     /** @var array<string, int> */
     private array $counterIndexes = [];
-    private LoggerInterface $logger;
 
-    public function __construct(LoggerInterface $logger, Client $elasticaClient, EnvironmentRepository $environmentRepository, ManagedAliasRepository $managedAliasRepository, ElasticaService $elasticaService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly Client $elasticaClient, private readonly EnvironmentRepository $envRepo, private readonly ManagedAliasRepository $managedAliasRepo, private readonly ElasticaService $elasticaService)
     {
-        $this->envRepo = $environmentRepository;
-        $this->logger = $logger;
-        $this->managedAliasRepo = $managedAliasRepository;
-        $this->elasticaClient = $elasticaClient;
-        $this->elasticaService = $elasticaService;
     }
 
     /**
@@ -84,7 +74,7 @@ class AliasService
             $this->elasticaClient->requestEndpoint($endpoint)->getData();
 
             return true;
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
         }
 
         return false;
@@ -404,13 +394,13 @@ class AliasService
 
         return \array_filter(
             $indexesAliases,
-            [$this, 'validIndexName'],
+            $this->validIndexName(...),
             \ARRAY_FILTER_USE_KEY
         );
     }
 
     private function validIndexName(string $index): bool
     {
-        return \strlen($index) > 0 && '.' !== \substr($index, 0, 1);
+        return \strlen($index) > 0 && !\str_starts_with($index, '.');
     }
 }

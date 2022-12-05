@@ -17,10 +17,10 @@ class AlignCommand extends AbstractEnvironmentCommand
     private Environment $target;
     private bool $publicationTemplate = false;
 
-    public const ARGUMENT_SOURCE = 'source';
-    public const ARGUMENT_TARGET = 'target';
-    public const OPTION_SNAPSHOT = 'snapshot';
-    public const OPTION_PUBLICATION_TEMPLATE = 'publication-template';
+    final public const ARGUMENT_SOURCE = 'source';
+    final public const ARGUMENT_TARGET = 'target';
+    final public const OPTION_SNAPSHOT = 'snapshot';
+    final public const OPTION_PUBLICATION_TEMPLATE = 'publication-template';
 
     private const LOCK_USER = 'SYSTEM_ALIGN';
 

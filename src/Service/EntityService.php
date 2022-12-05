@@ -12,15 +12,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class EntityService
 {
-    protected Registry $doctrine;
-    protected LoggerInterface $logger;
-    protected TranslatorInterface $translator;
-
-    public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator)
+    public function __construct(protected Registry $doctrine, protected LoggerInterface $logger, protected TranslatorInterface $translator)
     {
-        $this->doctrine = $doctrine;
-        $this->logger = $logger;
-        $this->translator = $translator;
     }
 
     /**
@@ -84,7 +77,7 @@ abstract class EntityService
 
             $this->logger->notice('service.entity.created', [
                 'entity_type' => $this->getEntityName(),
-                'entity_name' => \method_exists($entity, 'getName') ? $entity->getName() : \get_class($entity),
+                'entity_name' => \method_exists($entity, 'getName') ? $entity->getName() : $entity::class,
             ]);
         }
     }
@@ -94,7 +87,7 @@ abstract class EntityService
         $this->update($entity);
         $this->logger->notice('service.entity.updated', [
             'entity_type' => $this->getEntityName(),
-            'entity_name' => \method_exists($entity, 'getName') ? $entity->getName() : \get_class($entity),
+            'entity_name' => \method_exists($entity, 'getName') ? $entity->getName() : $entity::class,
         ]);
     }
 
@@ -112,7 +105,7 @@ abstract class EntityService
         $em->flush();
         $this->logger->notice('service.entity.deleted', [
             'entity_type' => $this->getEntityName(),
-            'entity_name' => \method_exists($entity, 'getName') ? $entity->getName() : \get_class($entity),
+            'entity_name' => \method_exists($entity, 'getName') ? $entity->getName() : $entity::class,
         ]);
     }
 }

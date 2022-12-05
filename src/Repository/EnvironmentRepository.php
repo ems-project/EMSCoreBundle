@@ -92,7 +92,7 @@ class EnvironmentRepository extends EntityRepository
 
         try {
             return (int) $qb->getQuery()->getSingleScalarResult();
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             return 0;
         }
     }
@@ -108,7 +108,7 @@ class EnvironmentRepository extends EntityRepository
 
         try {
             return (int) $qb->getQuery()->getSingleScalarResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return 0;
         }
     }
@@ -184,7 +184,7 @@ class EnvironmentRepository extends EntityRepository
 
         try {
             return \intval($qb->getQuery()->getSingleScalarResult());
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return 0;
         }
     }

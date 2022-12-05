@@ -23,10 +23,6 @@ class MigrateCommand extends AbstractCommand
 {
     protected static $defaultName = 'ems:contenttype:migrate';
 
-    private ElasticaService $elasticaService;
-    protected Registry $doctrine;
-    private DocumentService $documentService;
-
     private string $elasticsearchIndex;
     private string $contentTypeNameFrom;
     private string $contentTypeNameTo;
@@ -44,7 +40,7 @@ class MigrateCommand extends AbstractCommand
     private bool $signData;
     private string $searchQuery;
     private bool $dontFinalize;
-    private ContentTypeRepository $contentTypeRepository;
+    private readonly ContentTypeRepository $contentTypeRepository;
 
     private const ARGUMENT_CONTENTTYPE_NAME_FROM = 'contentTypeNameFrom';
     private const ARGUMENT_CONTENTTYPE_NAME_TO = 'contentTypeNameTo';
@@ -53,14 +49,10 @@ class MigrateCommand extends AbstractCommand
     private const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
 
     public function __construct(
-        Registry $doctrine,
-        ElasticaService $elasticaService,
-        DocumentService $documentService)
+        protected Registry $doctrine,
+        private readonly ElasticaService $elasticaService,
+        private readonly DocumentService $documentService)
     {
-        $this->doctrine = $doctrine;
-        $this->elasticaService = $elasticaService;
-        $this->documentService = $documentService;
-
         $em = $this->doctrine->getManager();
         $contentTypeRepository = $em->getRepository(ContentType::class);
         if (!$contentTypeRepository instanceof ContentTypeRepository) {

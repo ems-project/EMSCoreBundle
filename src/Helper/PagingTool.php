@@ -10,35 +10,28 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PagingTool
 {
-    /** @var EntityRepository<object> */
-    private EntityRepository $repository;
-    private int $pageSize;
-    private int $lastPage;
-    private int $page;
-    private string $orderField;
-    private string $orderDirection;
-    private string $paginationPath;
+    private readonly int $lastPage;
+    private readonly int $page;
+    private readonly string $orderField;
+    private readonly string $orderDirection;
 
     /** @var array<mixed> */
-    private array $data;
+    private readonly array $data;
 
     /**
      * @param EntityRepository<object> $repository
      */
     public function __construct(
         Request $request,
-        EntityRepository $repository,
-        string $paginationPath,
+        private readonly EntityRepository $repository,
+        private readonly string $paginationPath,
         string $defaultOrderField,
-        int $pageSize
+        private readonly int $pageSize
     ) {
-        $this->repository = $repository;
-        $this->pageSize = $pageSize;
         $this->lastPage = (int) \ceil(\count($repository->findAll()) / $pageSize);
         $this->page = $request->query->getInt('page', 1);
         $this->orderField = Type::string($request->query->get('orderField', $defaultOrderField));
         $this->orderDirection = $request->query->getAlpha('orderDirection', 'asc');
-        $this->paginationPath = $paginationPath;
 
         $this->data = $this->repository->findBy([], [$this->orderField => $this->orderDirection], $pageSize, ($this->page - 1) * $this->pageSize);
     }

@@ -10,11 +10,8 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 final class UserRuntime implements RuntimeExtensionInterface
 {
-    private UserRepository $userRepository;
-
-    public function __construct(UserRepository $userRepository)
+    public function __construct(private readonly UserRepository $userRepository)
     {
-        $this->userRepository = $userRepository;
     }
 
     public function getUsersEnabled(): UserList

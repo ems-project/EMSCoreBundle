@@ -25,15 +25,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ViewController extends AbstractController
 {
-    private ContentTypeService $contentTypeService;
-    private ViewManager $viewManager;
-    private LoggerInterface $logger;
-
-    public function __construct(ContentTypeService $contentTypeService, ViewManager $viewManager, LoggerInterface $logger)
+    public function __construct(private readonly ContentTypeService $contentTypeService, private readonly ViewManager $viewManager, private readonly LoggerInterface $logger)
     {
-        $this->contentTypeService = $contentTypeService;
-        $this->viewManager = $viewManager;
-        $this->logger = $logger;
     }
 
     /**

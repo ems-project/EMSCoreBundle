@@ -9,11 +9,8 @@ use EMS\CoreBundle\Service\EntityServiceInterface;
 
 class AnalyzerManager implements EntityServiceInterface
 {
-    private AnalyzerRepository $analyzerRepository;
-
-    public function __construct(AnalyzerRepository $analyzerRepository)
+    public function __construct(private readonly AnalyzerRepository $analyzerRepository)
     {
-        $this->analyzerRepository = $analyzerRepository;
     }
 
     public function isSortable(): bool

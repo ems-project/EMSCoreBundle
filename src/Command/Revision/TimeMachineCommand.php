@@ -20,10 +20,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class TimeMachineCommand extends Command
 {
     private SymfonyStyle $style;
-    private RevisionService $revisionService;
-    private DataService $dataService;
-    private ObjectManager $em;
-    private IndexService $indexService;
+    private readonly ObjectManager $em;
 
     protected static $defaultName = 'ems:revision:time-machine';
 
@@ -39,16 +36,13 @@ final class TimeMachineCommand extends Command
     ];
 
     public function __construct(
-        RevisionService $revisionService,
-        DataService $dataService,
+        private readonly RevisionService $revisionService,
+        private readonly DataService $dataService,
         Registry $doctrine,
-        IndexService $indexService
+        private readonly IndexService $indexService
     ) {
         parent::__construct();
-        $this->revisionService = $revisionService;
-        $this->dataService = $dataService;
         $this->em = $doctrine->getManager();
-        $this->indexService = $indexService;
     }
 
     protected function configure(): void

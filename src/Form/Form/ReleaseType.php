@@ -18,11 +18,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class ReleaseType extends AbstractType
 {
-    private EnvironmentService $environmentService;
-
-    public function __construct(EnvironmentService $environmentService)
+    public function __construct(private readonly EnvironmentService $environmentService)
     {
-        $this->environmentService = $environmentService;
     }
 
     /**

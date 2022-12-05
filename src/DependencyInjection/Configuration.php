@@ -10,32 +10,32 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public const PAGING_SIZE = 20;
-    public const SHORTNAME = 'e<b>ms</b>';
-    public const NAME = 'elastic<b>ms</b>';
-    public const THEME_COLOR = 'blue';
-    public const DATE_TIME_FORMAT = 'j/m/Y \a\t G:i';
-    public const DATE_FORMAT = 'j/m/Y';
-    public const TIME_FORMAT = 'G:i:s';
-    public const FROM_EMAIL_ADDRESS = 'noreply@example.com';
-    public const FROM_EMAIL_NAME = 'elasticms';
-    public const INSTANCE_ID = 'ems_';
-    public const CIRCLES_OBJECT = null;
-    public const ELASTICSEARCH_DEFAULT_CLUSTER = ['http://localhost:9200'];
-    public const DATEPICKER_FORMAT = 'dd/mm/yyyy';
-    public const DATEPICKER_WEEKSTART = 1;
-    public const DATEPICKER_DAYSOFWEEK_HIGHLIGHTED = [0, 6];
-    public const NOTIFICATION_PENDING_TIMEOUT = 'P0Y0M15DT0H0M0S';
-    public const TRIGGER_JOB_FROM_WEB = true;
-    public const LOCK_TIME = '+1 minutes';
-    public const PRIVATE_KEY = null;
-    public const PUBLIC_KEY = null;
-    public const ASSET_CONFIG = [];
-    public const TIKA_SERVER = null;
-    public const SAVE_ASSETS_IN_DB = false;
-    public const DEFAULT_BULK_SIZE = 500;
-    public const CLEAN_JOBS_TIME_STRING = '-7 days';
-    public const FALLBACK_LOCALE = 'en';
+    final public const PAGING_SIZE = 20;
+    final public const SHORTNAME = 'e<b>ms</b>';
+    final public const NAME = 'elastic<b>ms</b>';
+    final public const THEME_COLOR = 'blue';
+    final public const DATE_TIME_FORMAT = 'j/m/Y \a\t G:i';
+    final public const DATE_FORMAT = 'j/m/Y';
+    final public const TIME_FORMAT = 'G:i:s';
+    final public const FROM_EMAIL_ADDRESS = 'noreply@example.com';
+    final public const FROM_EMAIL_NAME = 'elasticms';
+    final public const INSTANCE_ID = 'ems_';
+    final public const CIRCLES_OBJECT = null;
+    final public const ELASTICSEARCH_DEFAULT_CLUSTER = ['http://localhost:9200'];
+    final public const DATEPICKER_FORMAT = 'dd/mm/yyyy';
+    final public const DATEPICKER_WEEKSTART = 1;
+    final public const DATEPICKER_DAYSOFWEEK_HIGHLIGHTED = [0, 6];
+    final public const NOTIFICATION_PENDING_TIMEOUT = 'P0Y0M15DT0H0M0S';
+    final public const TRIGGER_JOB_FROM_WEB = true;
+    final public const LOCK_TIME = '+1 minutes';
+    final public const PRIVATE_KEY = null;
+    final public const PUBLIC_KEY = null;
+    final public const ASSET_CONFIG = [];
+    final public const TIKA_SERVER = null;
+    final public const SAVE_ASSETS_IN_DB = false;
+    final public const DEFAULT_BULK_SIZE = 500;
+    final public const CLEAN_JOBS_TIME_STRING = '-7 days';
+    final public const FALLBACK_LOCALE = 'en';
 
     public function getConfigTreeBuilder(): TreeBuilder
     {

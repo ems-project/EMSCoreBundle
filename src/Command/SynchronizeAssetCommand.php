@@ -18,28 +18,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SynchronizeAssetCommand extends EmsCommand
 {
     protected static $defaultName = 'ems:asset:synchronize';
-    /** @var Registry */
-    protected $doctrine;
-    /** @var ContentTypeService */
-    protected $contentTypeService;
-    /** @var AssetExtractorService */
-    protected $extractorService;
     /** @var string */
     protected $databaseName;
     /** @var string */
     protected $databaseDriver;
-    /** @var FileService */
-    protected $fileService;
-    /** @var LoggerInterface */
-    protected $logger;
 
-    public function __construct(LoggerInterface $logger, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
+    public function __construct(protected LoggerInterface $logger, protected Registry $doctrine, protected ContentTypeService $contentTypeService, protected AssetExtractorService $extractorService, protected FileService $fileService)
     {
-        $this->doctrine = $doctrine;
-        $this->contentTypeService = $contentTypeService;
-        $this->extractorService = $extractorService;
-        $this->fileService = $fileService;
-        $this->logger = $logger;
         parent::__construct();
     }
 

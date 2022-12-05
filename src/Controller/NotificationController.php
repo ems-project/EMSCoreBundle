@@ -30,30 +30,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class NotificationController extends AbstractController
 {
-    private PublishService $publishService;
-    private EnvironmentService $environmentService;
-    private NotificationService $notificationService;
-    private ManagerRegistry $doctrine;
-    private LoggerInterface $logger;
-    private DashboardManager $dashboardManager;
-    private int $pagingSize;
-
-    public function __construct(
-        LoggerInterface $logger,
-        PublishService $publishService,
-        EnvironmentService $environmentService,
-        ManagerRegistry $doctrine,
-        NotificationService $notificationService,
-        DashboardManager $dashboardManager,
-        int $pagingSize)
+    public function __construct(private readonly LoggerInterface $logger, private readonly PublishService $publishService, private readonly EnvironmentService $environmentService, private readonly ManagerRegistry $doctrine, private readonly NotificationService $notificationService, private readonly DashboardManager $dashboardManager, private readonly int $pagingSize)
     {
-        $this->logger = $logger;
-        $this->environmentService = $environmentService;
-        $this->notificationService = $notificationService;
-        $this->publishService = $publishService;
-        $this->doctrine = $doctrine;
-        $this->dashboardManager = $dashboardManager;
-        $this->pagingSize = $pagingSize;
     }
 
     public function ajaxNotificationAction(Request $request): Response

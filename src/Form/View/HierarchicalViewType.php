@@ -30,31 +30,18 @@ use Twig\Environment;
 
 class HierarchicalViewType extends ViewType
 {
-    protected SessionInterface $session;
-    protected DataService $dataService;
-    protected RouterInterface $router;
-    protected ContentTypeService $contentTypeService;
-    private Mapping $mapping;
-    private SearchService $searchService;
-
     public function __construct(
         FormFactory $formFactory,
         Environment $twig,
-        SearchService $searchService,
-        Mapping $mapping,
+        private readonly SearchService $searchService,
+        private readonly Mapping $mapping,
         LoggerInterface $logger,
-        SessionInterface $session,
-        DataService $dataService,
-        RouterInterface $router,
-        ContentTypeService $contentTypeService)
+        protected SessionInterface $session,
+        protected DataService $dataService,
+        protected RouterInterface $router,
+        protected ContentTypeService $contentTypeService)
     {
         parent::__construct($formFactory, $twig, $logger);
-        $this->searchService = $searchService;
-        $this->mapping = $mapping;
-        $this->session = $session;
-        $this->dataService = $dataService;
-        $this->router = $router;
-        $this->contentTypeService = $contentTypeService;
     }
 
     public function getLabel(): string
@@ -153,7 +140,7 @@ $dataField->getRawData()
         if (empty($view->getOptions()['parent'])) {
             throw new NotFoundHttpException('Parent menu not found');
         }
-        $parentId = \explode(':', $view->getOptions()['parent']);
+        $parentId = \explode(':', (string) $view->getOptions()['parent']);
         if (2 != \count($parentId)) {
             throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
         }
@@ -163,7 +150,7 @@ $dataField->getRawData()
         try {
             $document = $this->searchService->getDocument($contentType, $parentId[1]);
             $parent = $document->getRaw();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
         }
 
@@ -181,7 +168,7 @@ $dataField->getRawData()
 
         if ($form->isSubmitted()) {
             $data = $form->getData();
-            $structure = \json_decode($data['structure'], true, 512, JSON_THROW_ON_ERROR);
+            $structure = \json_decode((string) $data['structure'], true, 512, JSON_THROW_ON_ERROR);
 
             $this->reorder($view->getOptions()['parent'], $view, $structure);
 
@@ -222,7 +209,7 @@ $dataField->getRawData()
             $data[$view->getOptions()['field']] = [];
             foreach ($structure as $item) {
                 $data[$view->getOptions()['field']][] = $item['id'];
-                if (\explode(':', $item['id'])[0] == $view->getContentType()->getName()) {
+                if (\explode(':', (string) $item['id'])[0] == $view->getContentType()->getName()) {
                     $this->reorder($item['id'], $view, $item['children'] ?? []);
                 }
             }

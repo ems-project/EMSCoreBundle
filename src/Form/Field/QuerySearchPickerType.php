@@ -13,12 +13,10 @@ class QuerySearchPickerType extends ChoiceType
 {
     /** @var array<QuerySearch> */
     private array $choices = [];
-    private QuerySearchService $querySearchService;
 
-    public function __construct(QuerySearchService $querySearchService)
+    public function __construct(private readonly QuerySearchService $querySearchService)
     {
         parent::__construct();
-        $this->querySearchService = $querySearchService;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

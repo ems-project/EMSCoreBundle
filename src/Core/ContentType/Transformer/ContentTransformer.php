@@ -12,13 +12,8 @@ use EMS\Helpers\ArrayHelper\ArrayHelper;
 
 final class ContentTransformer
 {
-    private ContentTransformers $transformers;
-    private DataService $dataService;
-
-    public function __construct(ContentTransformers $transformers, DataService $dataService)
+    public function __construct(private readonly ContentTransformers $transformers, private readonly DataService $dataService)
     {
-        $this->transformers = $transformers;
-        $this->dataService = $dataService;
     }
 
     /**
@@ -78,12 +73,11 @@ final class ContentTransformer
     }
 
     /**
-     * @param mixed        $value
      * @param array<mixed> $transformerDefinitions
      *
      * @return mixed
      */
-    private function transformValue($value, array $transformerDefinitions)
+    private function transformValue(mixed $value, array $transformerDefinitions)
     {
         foreach ($transformerDefinitions as $definition) {
             /** @var ContentTransformerInterface $transformer */

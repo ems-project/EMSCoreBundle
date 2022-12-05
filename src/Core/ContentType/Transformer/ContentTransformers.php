@@ -17,7 +17,7 @@ final class ContentTransformers
     public function get(string $class): ContentTransformerInterface
     {
         foreach ($this->transformers as $transformer) {
-            if (\get_class($transformer) === $class) {
+            if ($transformer::class === $class) {
                 return $transformer;
             }
         }
@@ -37,7 +37,7 @@ final class ContentTransformers
                 continue;
             }
 
-            $choices[$transformer->getName()] = \get_class($transformer);
+            $choices[$transformer->getName()] = $transformer::class;
         }
 
         return $choices;

@@ -12,11 +12,8 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 class EnvironmentRuntime implements RuntimeExtensionInterface
 {
-    private EnvironmentService $environmentService;
-
-    public function __construct(EnvironmentService $environmentService)
+    public function __construct(private readonly EnvironmentService $environmentService)
     {
-        $this->environmentService = $environmentService;
     }
 
     /**

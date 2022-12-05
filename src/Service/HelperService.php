@@ -11,15 +11,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class HelperService
 {
-    private Registry $doctrine;
-    private int $pagingSize;
-    private RequestStack $requestStack;
-
-    public function __construct(Registry $doctrine, RequestStack $requestStack, int $pagingSize)
+    public function __construct(private readonly Registry $doctrine, private readonly RequestStack $requestStack, private readonly int $pagingSize)
     {
-        $this->doctrine = $doctrine;
-        $this->pagingSize = $pagingSize;
-        $this->requestStack = $requestStack;
     }
 
     /**

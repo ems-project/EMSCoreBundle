@@ -13,9 +13,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="managed_alias")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\ManagedAliasRepository")
  * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity(fields={"name"}, message="Name already exists!")
  */
-class ManagedAlias
+#[UniqueEntity(fields: ['name'], message: 'Name already exists!')]
+class ManagedAlias implements \Stringable
 {
     use CreatedModifiedTrait;
     /**

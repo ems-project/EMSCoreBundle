@@ -15,7 +15,7 @@ use EMS\Helpers\Standard\Type;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\TemplateRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Template extends JsonDeserializer implements \JsonSerializable, EntityInterface
+class Template extends JsonDeserializer implements \JsonSerializable, EntityInterface, \Stringable
 {
     use CreatedModifiedTrait;
     /**

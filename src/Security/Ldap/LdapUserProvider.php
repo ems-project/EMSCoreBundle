@@ -14,14 +14,8 @@ use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
 class LdapUserProvider extends SymfonyLdapUserProvider
 {
-    private UserRepository $userRepository;
-    private LdapConfig $ldapConfig;
-
-    public function __construct(LdapInterface $ldap, LdapConfig $ldapConfig, UserRepository $userRepository)
+    public function __construct(LdapInterface $ldap, private readonly LdapConfig $ldapConfig, private readonly UserRepository $userRepository)
     {
-        $this->userRepository = $userRepository;
-        $this->ldapConfig = $ldapConfig;
-
         parent::__construct($ldap,
             $ldapConfig->baseDn,
             $ldapConfig->searchDn,

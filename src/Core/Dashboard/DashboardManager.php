@@ -17,15 +17,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class DashboardManager implements EntityServiceInterface
 {
-    private DashboardRepository $dashboardRepository;
-    private LoggerInterface $logger;
-    private AuthorizationCheckerInterface $authorizationChecker;
-
-    public function __construct(DashboardRepository $dashboardRepository, LoggerInterface $logger, AuthorizationCheckerInterface $authorizationChecker)
+    public function __construct(private readonly DashboardRepository $dashboardRepository, private readonly LoggerInterface $logger, private readonly AuthorizationCheckerInterface $authorizationChecker)
     {
-        $this->dashboardRepository = $dashboardRepository;
-        $this->logger = $logger;
-        $this->authorizationChecker = $authorizationChecker;
     }
 
     public function isSortable(): bool

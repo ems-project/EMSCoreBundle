@@ -15,14 +15,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class HeadAssetCommand extends Command
 {
     protected static $defaultName = 'ems:asset:head';
-    protected FileService $fileService;
-    protected LoggerInterface $logger;
     private SymfonyStyle $io;
 
-    public function __construct(LoggerInterface $logger, FileService $fileService)
+    public function __construct(protected LoggerInterface $logger, protected FileService $fileService)
     {
-        $this->fileService = $fileService;
-        $this->logger = $logger;
         parent::__construct();
     }
 

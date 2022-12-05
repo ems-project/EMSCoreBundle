@@ -34,7 +34,7 @@ final class QuerySearchOptionsTransformer implements DataTransformerInterface
     {
         try {
             return Json::encode(Json::decode($value), true);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             return $value;
         }
     }

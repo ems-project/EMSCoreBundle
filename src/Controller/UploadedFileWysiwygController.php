@@ -25,15 +25,8 @@ use Symfony\Component\Routing\RouterInterface;
 
 final class UploadedFileWysiwygController extends AbstractController
 {
-    private FileService $fileService;
-    private AjaxService $ajax;
-    private RouterInterface $router;
-
-    public function __construct(FileService $fileService, AjaxService $ajax, RouterInterface $router)
+    public function __construct(private readonly FileService $fileService, private readonly AjaxService $ajax, private readonly RouterInterface $router)
     {
-        $this->fileService = $fileService;
-        $this->ajax = $ajax;
-        $this->router = $router;
     }
 
     public function ajaxDataTable(Request $request): Response

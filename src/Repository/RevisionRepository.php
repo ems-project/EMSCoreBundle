@@ -66,7 +66,7 @@ class RevisionRepository extends EntityRepository
             }
 
             return $result;
-        } catch (NoResultException $e) {
+        } catch (NoResultException) {
             return null;
         }
     }
@@ -201,7 +201,7 @@ class RevisionRepository extends EntityRepository
             $query = $qb->getQuery();
 
             return \intval($query->getSingleScalarResult());
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             throw new \RuntimeException(\sprintf('Revision with hash "%s" has non unique results!', $hash));
         }
     }
@@ -413,14 +413,10 @@ class RevisionRepository extends EntityRepository
      */
     public function compareEnvironment(int $source, int $target, array $contentTypes, int $from, int $limit, string $orderField = 'contenttype', string $orderDirection = 'ASC'): array
     {
-        switch ($orderField) {
-            case 'label':
-                $orderField = 'item_labelField';
-                break;
-            default:
-                $orderField = 'c.name';
-                break;
-        }
+        $orderField = match ($orderField) {
+            'label' => 'item_labelField',
+            default => 'c.name',
+        };
         $qb = $this->getCompareQueryBuilder($source, $target, $contentTypes);
         $qb->addOrderBy($orderField, $orderDirection)
         ->addOrderBy('r.ouuid')

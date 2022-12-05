@@ -6,15 +6,11 @@ use EMS\CoreBundle\Entity\User;
 
 class UserList
 {
-    /** @var User[] */
-    private array $users;
-
     /**
      * @param array<User> $users
      */
-    public function __construct(array $users)
+    public function __construct(private readonly array $users)
     {
-        $this->users = $users;
     }
 
     /**

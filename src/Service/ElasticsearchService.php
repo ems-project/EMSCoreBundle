@@ -6,11 +6,8 @@ use EMS\CommonBundle\Service\ElasticaService;
 
 class ElasticsearchService
 {
-    private ElasticaService $elasticaService;
-
-    public function __construct(ElasticaService $elasticaService)
+    public function __construct(private readonly ElasticaService $elasticaService)
     {
-        $this->elasticaService = $elasticaService;
     }
 
     public function getVersion(): string

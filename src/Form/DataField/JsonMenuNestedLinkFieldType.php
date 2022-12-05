@@ -23,19 +23,14 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class JsonMenuNestedLinkFieldType extends DataFieldType
 {
-    private Decoder $decoder;
-    private ElasticaService $elasticaService;
-
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
-        ElasticaService $elasticaService,
-        Decoder $decoder
+        private readonly ElasticaService $elasticaService,
+        private readonly Decoder $decoder
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->elasticaService = $elasticaService;
-        $this->decoder = $decoder;
     }
 
     public function getLabel(): string
@@ -149,7 +144,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
                 'json_menu_nested_field' => null,
                 'query' => null,
             ])
-            ->setNormalizer('json_menu_nested_types', fn (Options $options, $value) => \explode(',', $value))
+            ->setNormalizer('json_menu_nested_types', fn (Options $options, $value) => \explode(',', (string) $value))
         ;
     }
 

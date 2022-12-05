@@ -51,7 +51,7 @@ class NumberFieldType extends DataFieldType
     /**
      * {@inheritDoc}
      */
-    public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null): bool
+    public function isValid(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
             return true;

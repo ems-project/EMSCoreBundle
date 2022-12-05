@@ -25,17 +25,8 @@ use ZipStream\ZipStream;
 
 class FileService implements EntityServiceInterface, QueryServiceInterface
 {
-    private Registry $doctrine;
-    private StorageManager $storageManager;
-    private Processor $processor;
-    private UploadedAssetRepository $uploadedAssetRepository;
-
-    public function __construct(Registry $doctrine, StorageManager $storageManager, Processor $processor, UploadedAssetRepository $uploadedAssetRepository)
+    public function __construct(private readonly Registry $doctrine, private readonly StorageManager $storageManager, private readonly Processor $processor, private readonly UploadedAssetRepository $uploadedAssetRepository)
     {
-        $this->doctrine = $doctrine;
-        $this->storageManager = $storageManager;
-        $this->processor = $processor;
-        $this->uploadedAssetRepository = $uploadedAssetRepository;
     }
 
     public function getBase64(string $hash): ?string
@@ -84,7 +75,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
     {
         try {
             return $this->storageManager->getStream($hash);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             return null;
         }
     }
@@ -133,7 +124,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
                 try {
                     $zip->addFile($filename, $this->storageManager->getContents($file->getSha1()));
                     // TODO: this should works? $zip->addFileFromPsr7Stream($filename, $this->storageManager->getStream()Contents($file->getSha1()));
-                } catch (NotFoundException $e) {
+                } catch (NotFoundException) {
                 }
             }
 
@@ -283,7 +274,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
     {
         try {
             return $this->storageManager->getSize($hash);
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException) {
         }
         throw new NotFoundHttpException(\sprintf('File %s not found', $hash));
     }
@@ -311,7 +302,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
             try {
                 $this->storageManager->finalizeUpload($hash, $uploadedAsset->getSize(), StorageInterface::STORAGE_USAGE_ASSET);
                 $uploadedAsset->setAvailable(true);
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 $em->remove($uploadedAsset);
                 $em->flush($uploadedAsset);
                 throw new \Exception('Was not able to finalize or confirmed the upload in at least one storage service');

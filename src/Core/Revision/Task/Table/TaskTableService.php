@@ -14,8 +14,6 @@ use EMS\CoreBundle\Service\EntityServiceInterface;
 
 final class TaskTableService implements EntityServiceInterface
 {
-    private TaskRepository $taskRepository;
-
     private const COL_TITLE = 'title';
     private const COL_DOCUMENT = 'label';
     public const COL_DOCUMENT_VERSION = 'version';
@@ -40,9 +38,8 @@ final class TaskTableService implements EntityServiceInterface
         self::COL_ACTIONS => ['type' => 'block'],
     ];
 
-    public function __construct(TaskRepository $taskRepository)
+    public function __construct(private readonly TaskRepository $taskRepository)
     {
-        $this->taskRepository = $taskRepository;
     }
 
     public function buildTable(EntityTable $table, TaskTableContext $context): void

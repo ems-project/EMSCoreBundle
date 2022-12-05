@@ -12,15 +12,8 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class ObjectChoiceListFactory extends DefaultChoiceListFactory
 {
-    private ContentTypeService $contentTypes;
-    private ObjectChoiceCacheService $objectChoiceCacheService;
-
-    public function __construct(
-        ContentTypeService $contentTypes,
-        ObjectChoiceCacheService $objectChoiceCacheService
-    ) {
-        $this->contentTypes = $contentTypes;
-        $this->objectChoiceCacheService = $objectChoiceCacheService;
+    public function __construct(private readonly ContentTypeService $contentTypes, private readonly ObjectChoiceCacheService $objectChoiceCacheService)
+    {
     }
 
     public function createLoader(?string $types = null, bool $loadAll = false, bool $circleOnly = false, bool $withWarning = true, ?string $querySearchName = null): ObjectChoiceLoader

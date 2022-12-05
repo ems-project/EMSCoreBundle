@@ -17,7 +17,7 @@ use EMS\CoreBundle\Entity\UserInterface;
  */
 class AuthTokenRepository extends ServiceEntityRepository
 {
-    private EntityManagerInterface $entityManager;
+    private readonly EntityManagerInterface $entityManager;
 
     public function __construct(Registry $registry)
     {

@@ -18,22 +18,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TwigElementsController extends AbstractController
 {
-    public const ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
-    private ElasticaService $elasticaService;
-    private AssetExtractorService $assetExtractorService;
-    private UserService $userService;
-    private JobService $jobService;
-    private DashboardManager $dashboardManager;
-    private ContentTypeService $contentTypeService;
+    final public const ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
 
-    public function __construct(AssetExtractorService $assetExtractorService, ElasticaService $elasticaService, UserService $userService, JobService $jobService, DashboardManager $dashboardManager, ContentTypeService $contentTypeService)
+    public function __construct(private readonly AssetExtractorService $assetExtractorService, private readonly ElasticaService $elasticaService, private readonly UserService $userService, private readonly JobService $jobService, private readonly DashboardManager $dashboardManager, private readonly ContentTypeService $contentTypeService)
     {
-        $this->assetExtractorService = $assetExtractorService;
-        $this->elasticaService = $elasticaService;
-        $this->userService = $userService;
-        $this->jobService = $jobService;
-        $this->dashboardManager = $dashboardManager;
-        $this->contentTypeService = $contentTypeService;
     }
 
     public function sideMenuAction(): Response
@@ -98,7 +86,7 @@ class TwigElementsController extends AbstractController
             if (($result['code'] ?? 500) === 200) {
                 return 'green';
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
         }
 
         return 'yellow';

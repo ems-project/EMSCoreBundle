@@ -31,21 +31,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PublishController extends AbstractController
 {
-    private PublishService $publishService;
-    private JobService $jobService;
-    private EnvironmentService $environmentService;
-    private ContentTypeService $contentTypeService;
-    private SearchService $searchService;
-    private ElasticaService $elasticaService;
-
-    public function __construct(PublishService $publishService, JobService $jobService, EnvironmentService $environmentService, ContentTypeService $contentTypeService, SearchService $searchService, ElasticaService $elasticaService)
+    public function __construct(private readonly PublishService $publishService, private readonly JobService $jobService, private readonly EnvironmentService $environmentService, private readonly ContentTypeService $contentTypeService, private readonly SearchService $searchService, private readonly ElasticaService $elasticaService)
     {
-        $this->publishService = $publishService;
-        $this->jobService = $jobService;
-        $this->environmentService = $environmentService;
-        $this->contentTypeService = $contentTypeService;
-        $this->searchService = $searchService;
-        $this->elasticaService = $elasticaService;
     }
 
     public function publishToAction(Revision $revisionId, Environment $envId): Response
@@ -60,7 +47,7 @@ class PublishController extends AbstractController
 
         try {
             $this->publishService->publish($revision, $environment);
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             throw new NotFoundHttpException('Revision not found');
         }
 

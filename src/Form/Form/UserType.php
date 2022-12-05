@@ -25,16 +25,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class UserType extends AbstractType
 {
-    private UserService $userService;
-    private ?string $circleObject;
-
     public const MODE_CREATE = 'create';
     public const MODE_UPDATE = 'update';
 
-    public function __construct(UserService $userService, ?string $circleObject)
+    public function __construct(private readonly UserService $userService, private readonly ?string $circleObject)
     {
-        $this->userService = $userService;
-        $this->circleObject = $circleObject;
     }
 
     /**

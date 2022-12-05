@@ -19,45 +19,24 @@ class ElasticaTable extends TableAbstract
     private const ASC_MISSING_VALUES_POSITION = 'asc_missing_values_position';
     private const DESC_MISSING_VALUES_POSITION = 'desc_missing_values_position';
     private const DEFAULT_SORT = 'default_sort';
-    public const FILENAME = 'filename';
-    public const DISPOSITION = 'disposition';
-    public const SHEET_NAME = 'sheet_name';
+    final public const FILENAME = 'filename';
+    final public const DISPOSITION = 'disposition';
+    final public const SHEET_NAME = 'sheet_name';
     private const ROW_CONTEXT = 'row_context';
-    private ElasticaService $elasticaService;
-    /** @var string[] */
-    private array $aliases;
-    /** @var string[] */
-    private array $contentTypeNames;
     private ?int $count = null;
     private ?int $totalCount = null;
-    private string $emptyQuery;
-    private string $query;
-    private string $ascMissingValuesPosition;
-    private string $descMissingValuesPosition;
-    private string $rowContext;
-    /** @var array<string, string> */
-    private array $defaultSort;
 
     /**
      * @param string[]              $aliases
      * @param string[]              $contentTypeNames
      * @param array<string, string> $defaultSort
      */
-    public function __construct(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, string $emptyQuery, string $query, string $ascMissingValuesPosition, string $descMissingValuesPosition, string $filename, string $disposition, string $sheetName, string $rowContext, array $defaultSort = [])
+    public function __construct(private readonly ElasticaService $elasticaService, string $ajaxUrl, private readonly array $aliases, private readonly array $contentTypeNames, private readonly string $emptyQuery, private readonly string $query, private readonly string $ascMissingValuesPosition, private readonly string $descMissingValuesPosition, string $filename, string $disposition, string $sheetName, private readonly string $rowContext, private readonly array $defaultSort = [])
     {
         parent::__construct($ajaxUrl, 0, 0);
-        $this->elasticaService = $elasticaService;
-        $this->aliases = $aliases;
-        $this->contentTypeNames = $contentTypeNames;
-        $this->emptyQuery = $emptyQuery;
-        $this->query = $query;
-        $this->ascMissingValuesPosition = $ascMissingValuesPosition;
-        $this->descMissingValuesPosition = $descMissingValuesPosition;
         $this->setExportFileName($filename);
         $this->setExportDisposition($disposition);
         $this->setExportSheetName($sheetName);
-        $this->rowContext = $rowContext;
-        $this->defaultSort = $defaultSort;
     }
 
     /**
@@ -94,7 +73,7 @@ class ElasticaTable extends TableAbstract
         }
     }
 
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         $search = $this->getSearch($this->getSearchValue());
         $resultSet = $this->elasticaService->search($search);
@@ -106,7 +85,7 @@ class ElasticaTable extends TableAbstract
         }
     }
 
-    public function count()
+    public function count(): int
     {
         if (null === $this->count) {
             $search = $this->getSearch($this->getSearchValue());

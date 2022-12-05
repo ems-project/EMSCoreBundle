@@ -20,16 +20,10 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class DraftInProgress implements EntityServiceInterface
 {
-    public const DISCARD_SELECTED_DRAFT = 'DISCARD_SELECTED_DRAFT';
-    private RevisionRepository $revisionRepository;
-    private UserService $userService;
-    private AuthorizationCheckerInterface $authorizationChecker;
+    final public const DISCARD_SELECTED_DRAFT = 'DISCARD_SELECTED_DRAFT';
 
-    public function __construct(RevisionRepository $revisionRepository, AuthorizationCheckerInterface $authorizationChecker, UserService $userService)
+    public function __construct(private readonly RevisionRepository $revisionRepository, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly UserService $userService)
     {
-        $this->revisionRepository = $revisionRepository;
-        $this->userService = $userService;
-        $this->authorizationChecker = $authorizationChecker;
     }
 
     public function isSortable(): bool

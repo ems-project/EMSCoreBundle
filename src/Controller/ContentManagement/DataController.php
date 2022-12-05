@@ -58,42 +58,8 @@ use Twig\Error\Error;
 
 class DataController extends AbstractController
 {
-    private LoggerInterface $logger;
-    private DataService $dataService;
-    private SearchService $searchService;
-    private ContentTypeService $contentTypeService;
-    private EnvironmentService $environmentService;
-    private IndexService $indexService;
-    private TranslatorInterface $translator;
-    private ViewTypes $viewTypes;
-    private TwigEnvironment $twig;
-    private PdfPrinterInterface $pdfPrinter;
-    private JobService $jobService;
-
-    public function __construct(
-        LoggerInterface $logger,
-        DataService $dataService,
-        SearchService $searchService,
-        ContentTypeService $contentTypeService,
-        EnvironmentService $environmentService,
-        IndexService $indexService,
-        TranslatorInterface $translator,
-        ViewTypes $viewTypes,
-        TwigEnvironment $twig,
-        PdfPrinterInterface $pdfPrinter,
-        JobService $jobService
-    ) {
-        $this->logger = $logger;
-        $this->dataService = $dataService;
-        $this->searchService = $searchService;
-        $this->contentTypeService = $contentTypeService;
-        $this->environmentService = $environmentService;
-        $this->indexService = $indexService;
-        $this->translator = $translator;
-        $this->viewTypes = $viewTypes;
-        $this->twig = $twig;
-        $this->pdfPrinter = $pdfPrinter;
-        $this->jobService = $jobService;
+    public function __construct(private readonly LoggerInterface $logger, private readonly DataService $dataService, private readonly SearchService $searchService, private readonly ContentTypeService $contentTypeService, private readonly EnvironmentService $environmentService, private readonly IndexService $indexService, private readonly TranslatorInterface $translator, private readonly ViewTypes $viewTypes, private readonly TwigEnvironment $twig, private readonly PdfPrinterInterface $pdfPrinter, private readonly JobService $jobService)
+    {
     }
 
     public function rootAction(string $name): Response
@@ -243,7 +209,7 @@ class DataController extends AbstractController
 
         try {
             $document = $this->searchService->getDocument($contentType, $ouuid, $environment);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             throw new NotFoundHttpException(\sprintf('Document %s with identifier %s not found in environment %s', $contentType->getSingularName(), $ouuid, $environmentName));
         }
 
@@ -273,7 +239,7 @@ class DataController extends AbstractController
                 'ouuid' => $ouuid,
                 'revisionId' => $revision->getId(),
             ]);
-        } catch (NoResultException $e) {
+        } catch (NoResultException) {
             $this->logger->warning('log.data.revision.not_found_in_environment', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
@@ -307,7 +273,7 @@ class DataController extends AbstractController
 
         try {
             $dataRaw = $this->dataService->getRevisionByEnvironment($ouuid, $contentType, $environmentObject)->getCopyRawData();
-        } catch (NoResultException $e) {
+        } catch (NoResultException) {
             throw new NotFoundHttpException(\sprintf('Revision %s not found', $ouuid));
         }
 
@@ -349,7 +315,7 @@ class DataController extends AbstractController
 
         try {
             $dataRaw = $this->dataService->getRevisionByEnvironment($ouuid, $contentType, $environmentObject)->getCopyRawData();
-        } catch (NoResultException $e) {
+        } catch (NoResultException) {
             throw new NotFoundHttpException(\sprintf('Revision %s not found', $ouuid));
         }
 
@@ -395,7 +361,7 @@ class DataController extends AbstractController
                         LogRevisionContext::publish($sibling, $environment)
                     );
                     $found = true;
-                } catch (NoResultException $e) {
+                } catch (NoResultException) {
                 }
             }
         }
@@ -885,7 +851,7 @@ class DataController extends AbstractController
     public function duplicateWithJsonContentAction(ContentType $contentType, string $ouuid, Request $request): RedirectResponse
     {
         $content = $request->get('JSON_BODY', null);
-        $jsonContent = \json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        $jsonContent = \json_decode((string) $content, true, 512, JSON_THROW_ON_ERROR);
         $jsonContent = \array_merge($this->dataService->getNewestRevision($contentType->getName(), $ouuid)->getRawData(), $jsonContent);
 
         return $this->intNewDocumentFromArray($contentType, $jsonContent);
@@ -894,7 +860,7 @@ class DataController extends AbstractController
     public function addFromJsonContentAction(ContentType $contentType, Request $request): RedirectResponse
     {
         $content = $request->get('JSON_BODY', null);
-        $jsonContent = \json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        $jsonContent = \json_decode((string) $content, true, 512, JSON_THROW_ON_ERROR);
         if (null === $jsonContent) {
             $this->logger->error('log.data.revision.add_from_json_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
@@ -978,7 +944,7 @@ class DataController extends AbstractController
                 return $this->redirectToRoute(Routes::EDIT_REVISION, [
                     'revisionId' => $revision->getId(),
                 ]);
-            } catch (DuplicateOuuidException $e) {
+            } catch (DuplicateOuuidException) {
                 $form->get('ouuid')->addError(new FormError('Another '.$contentType->getName().' with this identifier already exists'));
             }
         }
@@ -1094,7 +1060,7 @@ class DataController extends AbstractController
             $template = $twig->createTemplate($rawTemplate);
             $filename = $template->render($options);
             $filename = \preg_replace('~[\r\n]+~', '', $filename);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             $filename = null;
         }
 

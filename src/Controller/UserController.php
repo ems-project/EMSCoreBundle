@@ -30,19 +30,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends AbstractController
 {
-    private ?string $circleObject;
-    private UserService $userService;
-    private UserManager $userManager;
-    private LoggerInterface $logger;
-    private SpreadsheetGeneratorServiceInterface $spreadsheetGenerator;
-
-    public function __construct(LoggerInterface $logger, ?string $circleObject, UserService $userService, UserManager $userManager, SpreadsheetGeneratorServiceInterface $spreadsheetGenerator)
+    public function __construct(private readonly LoggerInterface $logger, private readonly ?string $circleObject, private readonly UserService $userService, private readonly UserManager $userManager, private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGenerator)
     {
-        $this->circleObject = $circleObject;
-        $this->logger = $logger;
-        $this->userService = $userService;
-        $this->userManager = $userManager;
-        $this->spreadsheetGenerator = $spreadsheetGenerator;
     }
 
     public function ajaxDataTableAction(Request $request): Response

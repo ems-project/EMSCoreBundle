@@ -8,17 +8,11 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class Terms implements ConditionInterface
 {
-    private string $pathProperty;
-    /** @var string[] */
-    private array $values;
-
     /**
      * @param string[] $values
      */
-    public function __construct(string $pathProperty, array $values)
+    public function __construct(private readonly string $pathProperty, private readonly array $values)
     {
-        $this->pathProperty = $pathProperty;
-        $this->values = $values;
     }
 
     /**

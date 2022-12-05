@@ -19,8 +19,6 @@ use Psr\Log\LoggerInterface;
 
 class Bulker
 {
-    private LoggerInterface $logger;
-    private DataService $dataService;
     private int $counter = 0;
     private int $size = 500;
     private bool $sign = true;
@@ -28,13 +26,9 @@ class Bulker
     /** @var array<mixed> */
     private array $errors = [];
     private Bulk $bulk;
-    private Client $client;
 
-    public function __construct(Client $client, LoggerInterface $logger, DataService $dataService)
+    public function __construct(private readonly Client $client, private LoggerInterface $logger, private readonly DataService $dataService)
     {
-        $this->client = $client;
-        $this->logger = $logger;
-        $this->dataService = $dataService;
         $this->bulk = new Bulk($this->client);
     }
 

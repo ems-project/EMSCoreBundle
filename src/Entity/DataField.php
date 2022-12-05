@@ -13,12 +13,10 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @implements \IteratorAggregate<DataField>
- *
- * @Assert\Callback({"Vendor\Package\Validator", "validate"})
- *
- * @implements \ArrayAccess<int, DataField>
+ * @implements \ArrayAccess<int, mixed>
  */
-class DataField implements \ArrayAccess, \IteratorAggregate
+#[Assert\Callback(['Vendor\Package\Validator', 'validate'])]
+class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
 {
     /**
      * link to the linked FieldType.
@@ -64,21 +62,14 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         }
     }
 
-    /**
-     * @param mixed $offset
-     * @param mixed $value
-     */
-    public function offsetSet($offset, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->children->offsetSet($offset, $value);
     }
 
-    /**
-     * @param mixed $offset
-     */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
-        if ((\is_int($offset) || \ctype_digit($offset)) && !$this->children->offsetExists($offset) && null !== $this->fieldType && $this->fieldType->getChildren()->count() > 0) {
+        if (\is_int($offset) && !$this->children->offsetExists($offset) && null !== $this->fieldType && $this->fieldType->getChildren()->count() > 0) {
             $value = new DataField();
             $this->children->offsetSet($offset, $value);
 
@@ -88,32 +79,22 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this->children->offsetExists($offset);
     }
 
-    /**
-     * @param mixed $offset
-     */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         $this->children->offsetUnset($offset);
     }
 
-    /**
-     * @param mixed $offset
-     *
-     * @return mixed
-     */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
-        return ('children' === $offset) ? $this->children : $this->children->offsetGet($offset);
+        return (0 === $offset) ? $this->children : $this->children->offsetGet($offset);
     }
 
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return $this->children->getIterator();
     }
 
-    /**
-     * @Assert\Callback
-     */
+    #[Assert\Callback]
     public function isDataFieldValid(ExecutionContextInterface $context): void
     {
         // TODO: why is it not working? See https://stackoverflow.com/a/25265360
@@ -136,7 +117,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         }
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         if (null !== $this->rawData && \is_string($this->rawData)) {
             return $this->rawData;
@@ -201,12 +182,9 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         }
     }
 
-    /**
-     * @param mixed $input
-     */
-    public function __set(string $key, $input): void
+    public function __set(string $key, mixed $input): void
     {
-        if (0 !== \strpos($key, 'ems_')) {
+        if (!\str_starts_with($key, 'ems_')) {
             throw new \Exception('unprotected ems set with key '.$key);
         } else {
             $key = \substr($key, 4);
@@ -250,7 +228,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      *
      * @throws \Exception
      */
-    public function updateDataStructure(FieldType $meta): void
+    public function updateDataStructure(FieldType $meta): never
     {
         throw new \Exception('Deprecated method');
     }
@@ -261,11 +239,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      * @deprecated
      *
      * @param array<mixed> $elasticIndexDatas
-     * @param mixed        $isMigration
      *
      * @throws \Exception
      */
-    public function updateDataValue(array &$elasticIndexDatas, $isMigration = false): void
+    public function updateDataValue(array &$elasticIndexDatas, mixed $isMigration = false): never
     {
         throw new \Exception('Deprecated method');
     }
@@ -291,7 +268,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     public function __get(string $key): ?DataField
     {
-        if (0 !== \strpos($key, 'ems_')) {
+        if (!\str_starts_with($key, 'ems_')) {
             throw new \Exception('unprotected ems get with key '.$key);
         } else {
             $key = \substr($key, 4);
@@ -395,11 +372,9 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set dataValue, the set of field is delegated to the corresponding fieldType class.
      *
-     * @param mixed $inputString
-     *
      * @throws \Exception
      */
-    public function setDataValue($inputString): self
+    public function setDataValue(mixed $inputString): self
     {
         if ($fieldType = $this->getFieldType()) {
             $fieldType->setDataValue($inputString, $this);
@@ -424,7 +399,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * @param ?array<mixed> $rawData
+     * @param ?array<string, mixed> $rawData
      */
     public function setArrayTextValue(?array $rawData): DataField
     {
@@ -443,7 +418,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * @return ?array<mixed>
+     * @return array<mixed>
      */
     public function getArrayTextValue(): ?array
     {
@@ -636,8 +611,6 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set parent.
      *
-     * @param DataField $parent
-     *
      * @return DataField
      */
     public function setParent(DataField $parent = null)
@@ -718,11 +691,9 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * @param mixed $inputValue
-     *
      * @return DataField
      */
-    public function setInputValue($inputValue)
+    public function setInputValue(mixed $inputValue)
     {
         $this->inputValue = $inputValue;
 

@@ -25,48 +25,22 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class PublishService
 {
-    private Registry $doctrine;
-    private AuthorizationCheckerInterface $authorizationChecker;
-
-    private RevisionRepository $revRepository;
-    private ContentTypeService $contentTypeService;
-    private EnvironmentService $environmentService;
-    private EnvironmentPublisherFactory $environmentPublisherFactory;
-    private DataService $dataService;
-    private UserService $userService;
-    private EventDispatcherInterface $dispatcher;
-    private LoggerInterface $logger;
-    private LoggerInterface $auditLogger;
-    private IndexService $indexService;
-    private Bulker $bulker;
+    private readonly RevisionRepository $revRepository;
 
     public function __construct(
-        Registry $doctrine,
-        AuthorizationCheckerInterface $authorizationChecker,
-        IndexService $indexService,
-        ContentTypeService $contentTypeService,
-        EnvironmentService $environmentService,
-        EnvironmentPublisherFactory $environmentPublisherFactory,
-        DataService $dataService,
-        UserService $userService,
-        EventDispatcherInterface $dispatcher,
-        LoggerInterface $logger,
-        LoggerInterface $auditLogger,
-        Bulker $bulker
+        private readonly Registry $doctrine,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly IndexService $indexService,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly EnvironmentService $environmentService,
+        private readonly EnvironmentPublisherFactory $environmentPublisherFactory,
+        private readonly DataService $dataService,
+        private readonly UserService $userService,
+        private readonly EventDispatcherInterface $dispatcher,
+        private readonly LoggerInterface $logger,
+        private readonly LoggerInterface $auditLogger,
+        private readonly Bulker $bulker
     ) {
-        $this->doctrine = $doctrine;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->indexService = $indexService;
-        $this->contentTypeService = $contentTypeService;
-        $this->environmentService = $environmentService;
-        $this->environmentPublisherFactory = $environmentPublisherFactory;
-        $this->dataService = $dataService;
-        $this->userService = $userService;
-        $this->dispatcher = $dispatcher;
-        $this->logger = $logger;
-        $this->auditLogger = $auditLogger;
-        $this->bulker = $bulker;
-
         /** @var RevisionRepository $revRepository */
         $revRepository = $this->doctrine->getManager()->getRepository(Revision::class);
         $this->revRepository = $revRepository;
@@ -252,9 +226,9 @@ class PublishService
         if ($this->indexService->indexRevision($revision, $environment)) {
             $this->revRepository->save($revision);
         } else {
-            $this->logger->warning('service.publish.publish_failed', \array_merge([
+            $this->logger->warning('service.publish.publish_failed', [...[
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-            ], $logContext));
+            ], ...$logContext]);
         }
 
         if (null === $commandUser) {
@@ -265,9 +239,9 @@ class PublishService
             $this->revRepository->addEnvironment($revision, $environment);
 
             if (null === $commandUser) {
-                $this->auditLogger->notice('log.published.success', \array_merge([
+                $this->auditLogger->notice('log.published.success', [...[
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
-                ], $logContext));
+                ], ...$logContext]);
             }
 
             $this->dispatcher->dispatch(new RevisionPublishEvent($revision, $environment));
@@ -328,7 +302,7 @@ class PublishService
             $this->auditLogger->notice('log.unpublished.success', LogRevisionContext::unpublish($revision, $environment));
 
             $this->dispatcher->dispatch(new RevisionUnpublishEvent($revision, $environment));
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             if (!$revision->getDeleted()) {
                 $this->logger->warning('service.publish.already_unpublished', LogRevisionContext::publish($revision, $environment));
             }

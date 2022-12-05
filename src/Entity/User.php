@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
  * @ORM\Table(name="`user`")
  * @ORM\HasLifecycleCallbacks()
  */
-class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserInterface, \Stringable
 {
     use CreatedModifiedTrait;
     /**
@@ -25,55 +25,45 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private ?int $id = null;
-
     /**
      * @var ?string[]
      *
      * @ORM\Column(name="circles", type="json", nullable=true)
      */
     private ?array $circles = [];
-
     /**
      * @ORM\Column(name="display_name", type="string", length=255, nullable=true)
      */
     private ?string $displayName = null;
-
     /**
      * @ORM\Column(name="allowed_to_configure_wysiwyg", type="boolean", nullable=true)
      */
     private ?bool $allowedToConfigureWysiwyg = null;
-
     /**
      * @ORM\ManyToOne(targetEntity="EMS\CoreBundle\Entity\WysiwygProfile", cascade={})
      * @ORM\JoinColumn(name="wysiwyg_profile_id", referencedColumnName="id")
      */
     private ?WysiwygProfile $wysiwygProfile = null;
-
     /**
      * @ORM\Column(name="wysiwyg_options", type="text", nullable=true)
      */
     private ?string $wysiwygOptions = null;
-
     /**
      * @ORM\Column(name="layout_boxed", type="boolean")
      */
     private bool $layoutBoxed = false;
-
     /**
      * @ORM\Column(name="email_notification", type="boolean")
      */
     private bool $emailNotification = true;
-
     /**
      * @ORM\Column(name="sidebar_mini", type="boolean")
      */
     private bool $sidebarMini = false;
-
     /**
      * @ORM\Column(name="sidebar_collapse", type="boolean")
      */
     private bool $sidebarCollapse = false;
-
     /**
      * @var Collection<int,AuthToken>
      *
@@ -81,82 +71,67 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      * @ORM\OrderBy({"created" = "ASC"})
      */
     private Collection $authTokens;
-
     /**
      * @ORM\Column(name="locale", type="string", nullable=false, options={"default":"en"})
      */
     private string $locale = self::DEFAULT_LOCALE;
-
     /**
      * @ORM\Column(name="locale_preferred", type="string", nullable=true)
      */
     private ?string $localePreferred = null;
-
     /**
      * @ORM\Column(name="username", type="string", length=180)
      */
     private ?string $username = null;
-
     /**
      * @ORM\Column(name="username_canonical", type="string", length=180, unique=true)
      */
     private ?string $usernameCanonical = null;
-
     /**
      * @ORM\Column(name="email", type="string", length=180)
      */
     private ?string $email = null;
-
     /**
      * @ORM\Column(name="email_canonical", type="string", length=180, unique=true)
      */
     private ?string $emailCanonical = null;
-
     /**
      * @ORM\Column(name="enabled", type="boolean")
      */
     private bool $enabled = false;
-
     /**
      * @ORM\Column(name="salt", type="string", nullable=true)
      */
     private ?string $salt = null;
-
     /**
      * @ORM\Column(name="password", type="string")
      */
     private ?string $password = null;
     private ?string $plainPassword = null;
-
     /**
      * @ORM\Column(name="last_login", type="datetime", nullable=true)
      */
     private ?\DateTime $lastLogin = null;
-
     /**
      * @ORM\Column(name="confirmation_token", type="string", length=180, unique=true, nullable=true)
      */
     private ?string $confirmationToken = null;
-
     /**
      * @ORM\Column(name="password_requested_at", type="datetime", nullable=true)
      */
     private ?\DateTime $passwordRequestedAt = null;
-
     /**
      * @var string[]
      *
      * @ORM\Column(name="roles", type="array")
      */
     private array $roles = [];
-
     /**
      * @var ?array<string, bool>
      *
      * @ORM\Column(name="user_options", type="json", nullable=true)
      */
     protected ?array $userOptions = [];
-
     private const DEFAULT_LOCALE = 'en';
 
     public function __construct()

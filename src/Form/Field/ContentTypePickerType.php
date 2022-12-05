@@ -11,12 +11,10 @@ class ContentTypePickerType extends ChoiceType
 {
     /** @var array<mixed> */
     private array $choices = [];
-    private ContentTypeService $service;
 
-    public function __construct(ContentTypeService $service)
+    public function __construct(private readonly ContentTypeService $service)
     {
         parent::__construct();
-        $this->service = $service;
     }
 
     public function getBlockPrefix(): string

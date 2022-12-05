@@ -25,18 +25,9 @@ use Twig\Environment;
 
 class ImporterViewType extends ViewType
 {
-    private FileService $fileService;
-    private JobService $jobService;
-    private TokenStorageInterface $security;
-    private RouterInterface $router;
-
-    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger, FileService $fileService, JobService $jobService, TokenStorageInterface $security, RouterInterface $router)
+    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger, private readonly FileService $fileService, private readonly JobService $jobService, private readonly TokenStorageInterface $security, private readonly RouterInterface $router)
     {
         parent::__construct($formFactory, $twig, $logger);
-        $this->fileService = $fileService;
-        $this->jobService = $jobService;
-        $this->security = $security;
-        $this->router = $router;
     }
 
     public function getLabel(): string

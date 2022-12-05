@@ -15,13 +15,8 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class FilterController extends AbstractController
 {
-    private LoggerInterface $logger;
-    private HelperService $helperService;
-
-    public function __construct(LoggerInterface $logger, HelperService $helperService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly HelperService $helperService)
     {
-        $this->logger = $logger;
-        $this->helperService = $helperService;
     }
 
     public function indexAction(): Response

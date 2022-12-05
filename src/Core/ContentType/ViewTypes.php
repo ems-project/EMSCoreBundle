@@ -9,7 +9,7 @@ use EMS\CoreBundle\Form\View\ViewType;
 final class ViewTypes
 {
     /** @var array<string, ViewType> */
-    private array $viewTypes;
+    private readonly array $viewTypes;
 
     /**
      * @param \Traversable<ViewType> $viewTypes

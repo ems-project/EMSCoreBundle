@@ -21,8 +21,6 @@ class DiscardDraftCommand extends AbstractCommand
     private const OPTION_OLDER = 'older';
     private const DISCARD_DRAFT_COMMAND_USER = 'DISCARD_DRAFT_COMMAND_USER';
     protected static $defaultName = Commands::REVISION_DISCARD_DRAFT;
-    private DataService $dataService;
-    private RevisionService $revisionService;
     /**
      * @var string[]
      */
@@ -30,11 +28,9 @@ class DiscardDraftCommand extends AbstractCommand
     private bool $force;
     private \DateTimeInterface $olderThan;
 
-    public function __construct(DataService $dataService, RevisionService $revisionService)
+    public function __construct(private readonly DataService $dataService, private readonly RevisionService $revisionService)
     {
         parent::__construct();
-        $this->dataService = $dataService;
-        $this->revisionService = $revisionService;
     }
 
     protected function configure(): void

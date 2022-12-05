@@ -17,13 +17,8 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class AnalyzerController extends AbstractController
 {
-    private HelperService $helperService;
-    private LoggerInterface $logger;
-
-    public function __construct(LoggerInterface $logger, HelperService $helperService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly HelperService $helperService)
     {
-        $this->helperService = $helperService;
-        $this->logger = $logger;
     }
 
     public function index(): Response

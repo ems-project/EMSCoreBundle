@@ -20,11 +20,8 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
 final class AuthTokenLoginAuthenticator extends AbstractAuthenticator
 {
-    private AuthTokenRepository $authTokenRepository;
-
-    public function __construct(AuthTokenRepository $authTokenRepository)
+    public function __construct(private readonly AuthTokenRepository $authTokenRepository)
     {
-        $this->authTokenRepository = $authTokenRepository;
     }
 
     public function supports(Request $request): bool

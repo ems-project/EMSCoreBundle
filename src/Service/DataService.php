@@ -63,105 +63,49 @@ use Twig\Error\Error;
  */
 class DataService
 {
-    public const ALGO = OPENSSL_ALGO_SHA1;
+    final public const ALGO = OPENSSL_ALGO_SHA1;
     protected const SCROLL_TIMEOUT = '1m';
 
-    /** @var false|resource|null */
-    private $private_key = null;
+    private null|false|\OpenSSLAsymmetricKey $private_key = null;
     private ?string $public_key = null;
-
-    protected string $lockTime;
-    protected string $instanceId;
 
     /** @var array<mixed> */
     private array $cacheBusinessKey = [];
     /** @var array<mixed> */
     private array $cacheOuuids = [];
-
-    protected TwigEnvironment $twig;
-    protected Registry $doctrine;
-    protected AuthorizationCheckerInterface $authorizationChecker;
-    protected TokenStorageInterface $tokenStorage;
-    protected ElasticaService $elasticaService;
-    protected Mapping $mapping;
     protected EntityManager $em;
-    protected RevisionRepository $revRepository;
-    protected SessionInterface $session;
-    protected FormFactoryInterface $formFactory;
-    protected Container $container;
-    protected AppExtension $appTwig;
-    protected FormRegistryInterface $formRegistry;
-    protected EventDispatcherInterface $dispatcher;
-    protected ContentTypeService $contentTypeService;
-    protected UserService $userService;
-
-    protected LoggerInterface $logger;
-    private LoggerInterface $auditLogger;
-
-    private StorageManager $storageManager;
-    private EnvironmentService $environmentService;
-    private SearchService $searchService;
-    private IndexService $indexService;
-    private bool $preGeneratedOuuids;
-
-    private PostProcessingService $postProcessingService;
 
     public function __construct(
-        Registry $doctrine,
-        AuthorizationCheckerInterface $authorizationChecker,
-        TokenStorageInterface $tokenStorage,
-        string $lockTime,
-        ElasticaService $elasticaService,
-        Mapping $mapping,
-        string $instanceId,
-        SessionInterface $session,
-        FormFactoryInterface $formFactory,
-        Container $container,
-        FormRegistryInterface $formRegistry,
-        EventDispatcherInterface $dispatcher,
-        ContentTypeService $contentTypeService,
+        protected Registry $doctrine,
+        protected AuthorizationCheckerInterface $authorizationChecker,
+        protected TokenStorageInterface $tokenStorage,
+        protected string $lockTime,
+        protected ElasticaService $elasticaService,
+        protected Mapping $mapping,
+        protected string $instanceId,
+        protected SessionInterface $session,
+        protected FormFactoryInterface $formFactory,
+        protected Container $container,
+        protected FormRegistryInterface $formRegistry,
+        protected EventDispatcherInterface $dispatcher,
+        protected ContentTypeService $contentTypeService,
         string $privateKey,
-        LoggerInterface $logger,
-        LoggerInterface $auditLogger,
-        StorageManager $storageManager,
-        TwigEnvironment $twig,
-        AppExtension $appExtension,
-        UserService $userService,
-        RevisionRepository $revisionRepository,
-        EnvironmentService $environmentService,
-        SearchService $searchService,
-        IndexService $indexService,
-        bool $preGeneratedOuuids,
-        PostProcessingService $postProcessingService
+        protected LoggerInterface $logger,
+        private readonly LoggerInterface $auditLogger,
+        private readonly StorageManager $storageManager,
+        protected TwigEnvironment $twig,
+        protected AppExtension $appTwig,
+        protected UserService $userService,
+        protected RevisionRepository $revRepository,
+        private readonly EnvironmentService $environmentService,
+        private readonly SearchService $searchService,
+        private readonly IndexService $indexService,
+        private readonly bool $preGeneratedOuuids,
+        private readonly PostProcessingService $postProcessingService
     ) {
-        $this->doctrine = $doctrine;
-        $this->logger = $logger;
-        $this->auditLogger = $auditLogger;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->tokenStorage = $tokenStorage;
-        $this->lockTime = $lockTime;
-        $this->elasticaService = $elasticaService;
-        $this->mapping = $mapping;
-        $this->instanceId = $instanceId;
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         $this->em = $em;
-        $this->revRepository = $revisionRepository;
-        $this->session = $session;
-        $this->formFactory = $formFactory;
-        $this->container = $container;
-        $this->twig = $twig;
-        $this->appTwig = $appExtension;
-        $this->formRegistry = $formRegistry;
-        $this->dispatcher = $dispatcher;
-        $this->storageManager = $storageManager;
-        $this->contentTypeService = $contentTypeService;
-        $this->userService = $userService;
-        $this->environmentService = $environmentService;
-        $this->searchService = $searchService;
-        $this->indexService = $indexService;
-        $this->preGeneratedOuuids = $preGeneratedOuuids;
-        $this->postProcessingService = $postProcessingService;
 
         if (!empty($privateKey)) {
             try {
@@ -190,8 +134,6 @@ class DataService
     }
 
     /**
-     * @param Environment $publishEnv
-     *
      * @throws LockedException
      * @throws PrivilegeException
      * @throws \Exception
@@ -576,7 +518,7 @@ class DataService
         if ($this->private_key) {
             $signature = null;
             if (\openssl_sign($json, $signature, $this->private_key, OPENSSL_ALGO_SHA1)) {
-                $objectArray[Mapping::SIGNATURE_FIELD] = \base64_encode($signature);
+                $objectArray[Mapping::SIGNATURE_FIELD] = \base64_encode((string) $signature);
             } else {
                 $this->logger->warning('service.data.not_able_to_sign', [
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => \openssl_error_string(),
@@ -615,7 +557,7 @@ class DataService
     public function getPublicKey(): ?string
     {
         if ($this->private_key && empty($this->public_key)) {
-            $certificate = \openssl_pkey_get_private($this->private_key); /* @phpstan-ignore-line */
+            $certificate = \openssl_pkey_get_private($this->private_key);
             if (false === $certificate) {
                 throw new \RuntimeException('Private key not found');
             }
@@ -627,12 +569,12 @@ class DataService
     }
 
     /**
-     * @return ?array<mixed>
+     * @return ?array<mixed, mixed>
      */
     public function getCertificateInfo(): ?array
     {
         if ($this->private_key) {
-            $certificate = \openssl_pkey_get_private($this->private_key); /* @phpstan-ignore-line */
+            $certificate = \openssl_pkey_get_private($this->private_key);
             if (false === $certificate) {
                 throw new \RuntimeException('Private key not found');
             }
@@ -683,7 +625,7 @@ class DataService
                     unset($indexedItem[Mapping::HASH_FIELD]);
 
                     if (isset($indexedItem[Mapping::SIGNATURE_FIELD])) {
-                        $binary_signature = \base64_decode($indexedItem[Mapping::SIGNATURE_FIELD]);
+                        $binary_signature = \base64_decode((string) $indexedItem[Mapping::SIGNATURE_FIELD]);
                         unset($indexedItem[Mapping::SIGNATURE_FIELD]);
                         $data = Json::encode($indexedItem);
 
@@ -779,8 +721,6 @@ class DataService
     }
 
     /**
-     * @param ?FormInterface<FormInterface> $form
-     *
      * @throws DataStateException
      * @throws \Exception
      * @throws \Throwable
@@ -941,7 +881,7 @@ class DataService
      * Parcours all fields and call DataFieldsType postFinalizeTreament function.
      *
      * @param FormInterface<FormInterface> $form
-     * @param ?array<mixed>                $previousObjectArray
+     * @param ?array<string, mixed>        $previousObjectArray
      */
     public function postFinalizeTreatment(string $type, string $id, FormInterface $form, ?array $previousObjectArray = null): void
     {
@@ -1848,7 +1788,7 @@ class DataService
     {
         $form = null;
         foreach ($event->getToCleanOuuids() as $ouuid) {
-            $key = \explode(':', $ouuid);
+            $key = \explode(':', (string) $ouuid);
             try {
                 $revision = $this->initNewDraft($key[0], $key[1]);
                 $data = $revision->getRawData();
@@ -1874,7 +1814,7 @@ class DataService
         }
 
         foreach ($event->getToCreateOuuids() as $ouuid) {
-            $key = \explode(':', $ouuid);
+            $key = \explode(':', (string) $ouuid);
             try {
                 $revision = $this->initNewDraft($key[0], $key[1]);
                 $data = $revision->getRawData();

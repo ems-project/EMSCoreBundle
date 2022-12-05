@@ -20,17 +20,11 @@ final class AliasesCheckCommand extends Command
     protected static $defaultName = self::COMMAND;
     public const COMMAND = 'ems:check:aliases';
     private const OPTION_REPAIR = 'repair';
-    private EnvironmentService $environmentService;
-    private AliasService $aliasService;
-    private JobService $jobService;
     private SymfonyStyle $io;
     private bool $repair = false;
 
-    public function __construct(EnvironmentService $environmentService, AliasService $aliasService, JobService $jobService)
+    public function __construct(private readonly EnvironmentService $environmentService, private readonly AliasService $aliasService, private readonly JobService $jobService)
     {
-        $this->environmentService = $environmentService;
-        $this->aliasService = $aliasService;
-        $this->jobService = $jobService;
         parent::__construct();
     }
 

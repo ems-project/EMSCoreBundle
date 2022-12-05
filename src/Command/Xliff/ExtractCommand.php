@@ -28,12 +28,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class ExtractCommand extends AbstractCommand
 {
-    private ContentTypeService $contentTypeService;
-    private EnvironmentService $environmentService;
-    private ElasticaService $elasticaService;
-    private XliffService $xliffService;
-    private int $defaultBulkSize;
-
     private string $sourceLocale;
     private Environment $sourceEnvironment;
     private string $targetLocale;
@@ -65,7 +59,6 @@ final class ExtractCommand extends AbstractCommand
     private string $xliffFilename;
     private ?string $baseUrl = null;
     private string $xliffVersion;
-    private AssetRuntime $assetRuntime;
     /**
      * @var array<int, FieldType[]>
      */
@@ -76,19 +69,13 @@ final class ExtractCommand extends AbstractCommand
     private bool $encodeHtml;
 
     public function __construct(
-        ContentTypeService $contentTypeService,
-        EnvironmentService $environmentService,
-        ElasticaService $elasticaService,
-        XliffService $xliffService,
-        AssetRuntime $assetRuntime,
-        int $defaultBulkSize
+        private readonly ContentTypeService $contentTypeService,
+        private readonly EnvironmentService $environmentService,
+        private readonly ElasticaService $elasticaService,
+        private readonly XliffService $xliffService,
+        private readonly AssetRuntime $assetRuntime,
+        private readonly int $defaultBulkSize
     ) {
-        $this->contentTypeService = $contentTypeService;
-        $this->environmentService = $environmentService;
-        $this->elasticaService = $elasticaService;
-        $this->defaultBulkSize = $defaultBulkSize;
-        $this->xliffService = $xliffService;
-        $this->assetRuntime = $assetRuntime;
         parent::__construct();
     }
 

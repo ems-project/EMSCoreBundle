@@ -8,21 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class DataTableRequest
 {
-    private int $draw;
-    private int $from;
-    private int $size;
-    private ?string $orderField;
-    private string $orderDirection;
-    private string $searchValue;
-
-    private function __construct(int $draw, int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue)
+    private function __construct(private readonly int $draw, private readonly int $from, private readonly int $size, private readonly ?string $orderField, private readonly string $orderDirection, private readonly string $searchValue)
     {
-        $this->draw = $draw;
-        $this->from = $from;
-        $this->size = $size;
-        $this->orderField = $orderField;
-        $this->orderDirection = $orderDirection;
-        $this->searchValue = $searchValue;
     }
 
     public static function fromRequest(Request $request): self

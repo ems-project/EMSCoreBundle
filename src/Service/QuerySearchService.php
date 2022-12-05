@@ -21,19 +21,8 @@ use Psr\Log\LoggerInterface;
 
 final class QuerySearchService implements EntityServiceInterface
 {
-    private ElasticaService $elasticaService;
-    private QuerySearchRepository $querySearchRepository;
-    private LoggerInterface $logger;
-    private ContentTypeService $contentTypeService;
-    private EnvironmentService $environmentService;
-
-    public function __construct(ContentTypeService $contentTypeService, ElasticaService $elasticaService, QuerySearchRepository $querySearchRepository, LoggerInterface $logger, EnvironmentService $environmentService)
+    public function __construct(private readonly ContentTypeService $contentTypeService, private readonly ElasticaService $elasticaService, private readonly QuerySearchRepository $querySearchRepository, private readonly LoggerInterface $logger, private readonly EnvironmentService $environmentService)
     {
-        $this->elasticaService = $elasticaService;
-        $this->querySearchRepository = $querySearchRepository;
-        $this->logger = $logger;
-        $this->contentTypeService = $contentTypeService;
-        $this->environmentService = $environmentService;
     }
 
     /**

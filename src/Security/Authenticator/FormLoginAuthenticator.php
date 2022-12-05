@@ -27,13 +27,8 @@ class FormLoginAuthenticator extends AbstractAuthenticator implements Authentica
 {
     use TargetPathTrait;
 
-    private UrlGeneratorInterface $urlGenerator;
-    private bool $ldapEnabled;
-
-    public function __construct(UrlGeneratorInterface $urlGenerator, bool $ldapEnabled)
+    public function __construct(private readonly UrlGeneratorInterface $urlGenerator, private readonly bool $ldapEnabled)
     {
-        $this->urlGenerator = $urlGenerator;
-        $this->ldapEnabled = $ldapEnabled;
     }
 
     public function supports(Request $request): bool

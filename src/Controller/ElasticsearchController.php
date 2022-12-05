@@ -50,61 +50,11 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ElasticsearchController extends AbstractController
 {
-    private IndexService $indexService;
-    private LoggerInterface $logger;
-    private ElasticaService $elasticaService;
-    private DataService $dataService;
-    private AssetExtractorService $assetExtractorService;
-    private ContentTypeService $contentTypeService;
-    private EnvironmentService $environmentService;
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private SearchService $searchService;
-    private JobService $jobService;
-    private SortOptionService $sortOptionService;
-    private AggregateOptionService $aggregateOptionService;
-    private DashboardManager $dashboardManager;
-    private int $pagingSize;
-    private ?string $healthCheckAllowOrigin;
-    /** @var string[] */
-    private array $elasticsearchCluster;
-
     /**
      * @param string[] $elasticsearchCluster
      */
-    public function __construct(
-        LoggerInterface $logger,
-        IndexService $indexService,
-        ElasticaService $elasticaService,
-        DataService $dataService,
-        AssetExtractorService $assetExtractorService,
-        EnvironmentService $environmentService,
-        ContentTypeService $contentTypeService,
-        SearchService $searchService,
-        AuthorizationCheckerInterface $authorizationChecker,
-        JobService $jobService,
-        AggregateOptionService $aggregateOptionService,
-        SortOptionService $sortOptionService,
-        DashboardManager $dashboardManager,
-        int $pagingSize,
-        ?string $healthCheckAllowOrigin,
-        array $elasticsearchCluster)
+    public function __construct(private readonly LoggerInterface $logger, private readonly IndexService $indexService, private readonly ElasticaService $elasticaService, private readonly DataService $dataService, private readonly AssetExtractorService $assetExtractorService, private readonly EnvironmentService $environmentService, private readonly ContentTypeService $contentTypeService, private readonly SearchService $searchService, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly JobService $jobService, private readonly AggregateOptionService $aggregateOptionService, private readonly SortOptionService $sortOptionService, private readonly DashboardManager $dashboardManager, private readonly int $pagingSize, private readonly ?string $healthCheckAllowOrigin, private readonly array $elasticsearchCluster)
     {
-        $this->logger = $logger;
-        $this->indexService = $indexService;
-        $this->elasticaService = $elasticaService;
-        $this->dataService = $dataService;
-        $this->assetExtractorService = $assetExtractorService;
-        $this->environmentService = $environmentService;
-        $this->contentTypeService = $contentTypeService;
-        $this->searchService = $searchService;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->jobService = $jobService;
-        $this->aggregateOptionService = $aggregateOptionService;
-        $this->sortOptionService = $sortOptionService;
-        $this->dashboardManager = $dashboardManager;
-        $this->pagingSize = $pagingSize;
-        $this->healthCheckAllowOrigin = $healthCheckAllowOrigin;
-        $this->elasticsearchCluster = $elasticsearchCluster;
     }
 
     public function addAliasAction(string $name, Request $request): Response
@@ -198,7 +148,7 @@ class ElasticsearchController extends AbstractController
                 'info' => $this->elasticaService->getClusterInfo(),
                 'specifiedVersion' => $this->elasticaService->getVersion(),
             ]);
-        } catch (NoNodesAvailableException $e) {
+        } catch (NoNodesAvailableException) {
             return $this->render('@EMSCore/elasticsearch/no-nodes-available.'.$_format.'.twig', [
                 'cluster' => $this->elasticsearchCluster,
             ]);
@@ -317,7 +267,7 @@ class ElasticsearchController extends AbstractController
             $this->logger->notice('log.elasticsearch.index_deleted', [
                 'index_name' => $name,
             ]);
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException) {
             $this->logger->warning('log.elasticsearch.index_not_found', [
                 'index_name' => $name,
             ]);
@@ -664,7 +614,7 @@ class ElasticsearchController extends AbstractController
                 'sortOptions' => $this->sortOptionService->getAll(),
                 'aggregateOptions' => $this->aggregateOptionService->getAll(),
             ]);
-        } catch (NoNodesAvailableException $e) {
+        } catch (NoNodesAvailableException) {
             return $this->redirectToRoute('elasticsearch.status');
         }
     }

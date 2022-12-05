@@ -25,18 +25,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 final class SubmissionController extends AbstractController
 {
-    private FormSubmissionService $formSubmissionService;
-    private LoggerInterface $logger;
-    private SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService;
-
-    public function __construct(
-        FormSubmissionService $formSubmissionService,
-        LoggerInterface $logger,
-        SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService
-    ) {
-        $this->formSubmissionService = $formSubmissionService;
-        $this->logger = $logger;
-        $this->spreadsheetGeneratorService = $spreadsheetGeneratorService;
+    public function __construct(private readonly FormSubmissionService $formSubmissionService, private readonly LoggerInterface $logger, private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService)
+    {
     }
 
     public function ajaxDataTable(Request $request): Response
@@ -103,7 +93,7 @@ final class SubmissionController extends AbstractController
             ));
 
             return $response;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->addFlash('error', 'error');
 
             return $this->redirectToRoute('form.submissions');
@@ -117,7 +107,7 @@ final class SubmissionController extends AbstractController
     {
         try {
             $response = $this->formSubmissionService->createDownloadForMultiple($submissionIds);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->addFlash('error', 'error');
 
             return $this->redirectToRoute('form.submissions');

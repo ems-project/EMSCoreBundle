@@ -17,29 +17,15 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ObjectChoiceCacheService
 {
-    private LoggerInterface $logger;
-    private ContentTypeService $contentTypeService;
-    /** @var AuthorizationCheckerInterface */
-    protected $authorizationChecker;
-    /** @var TokenStorageInterface */
-    protected $tokenStorage;
-    private ElasticaService $elasticaService;
     /** @var bool[] */
     private array $fullyLoaded = [];
     /** @var array<ObjectChoiceListItem[]> */
     private array $cache = [];
-    private QuerySearchService $querySearchName;
     /** @var ObjectChoiceListItem[][] */
     private array $cachedQuerySearches = [];
 
-    public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage, ElasticaService $elasticaService, QuerySearchService $querySearchName)
+    public function __construct(private readonly LoggerInterface $logger, private readonly ContentTypeService $contentTypeService, protected AuthorizationCheckerInterface $authorizationChecker, protected TokenStorageInterface $tokenStorage, private readonly ElasticaService $elasticaService, private readonly QuerySearchService $querySearchName)
     {
-        $this->logger = $logger;
-        $this->contentTypeService = $contentTypeService;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->tokenStorage = $tokenStorage;
-        $this->elasticaService = $elasticaService;
-        $this->querySearchName = $querySearchName;
     }
 
     /**
@@ -137,7 +123,7 @@ class ObjectChoiceCacheService
         $choices = [];
         $missingOuuidsPerIndexAndType = [];
         foreach ($objectIds as $objectId) {
-            if (\is_string($objectId) && false !== \strpos($objectId, ':')) {
+            if (\is_string($objectId) && \str_contains($objectId, ':')) {
                 [$objectType, $objectOuuid] = \explode(':', $objectId);
                 if (!isset($this->cache[$objectType])) {
                     $this->cache[$objectType] = [];

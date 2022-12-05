@@ -23,17 +23,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SearchController extends AbstractController
 {
-    private SortOptionService $sortOptionService;
-    private AggregateOptionService $aggregateOptionService;
-    private SearchFieldOptionService $searchFieldOptionService;
-    private TranslatorInterface $translator;
-
-    public function __construct(SortOptionService $sortOptionService, AggregateOptionService $aggregateOptionService, SearchFieldOptionService $searchFieldOptionService, TranslatorInterface $translator)
+    public function __construct(private readonly SortOptionService $sortOptionService, private readonly AggregateOptionService $aggregateOptionService, private readonly SearchFieldOptionService $searchFieldOptionService, private readonly TranslatorInterface $translator)
     {
-        $this->sortOptionService = $sortOptionService;
-        $this->aggregateOptionService = $aggregateOptionService;
-        $this->searchFieldOptionService = $searchFieldOptionService;
-        $this->translator = $translator;
     }
 
     public function indexAction(Request $request): Response

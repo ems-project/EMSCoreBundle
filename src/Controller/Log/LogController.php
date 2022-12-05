@@ -24,13 +24,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LogController extends AbstractController
 {
-    private LoggerInterface $logger;
-    private LogManager $logManager;
-
-    public function __construct(LogManager $logManager, LoggerInterface $logger)
+    public function __construct(private readonly LogManager $logManager, private readonly LoggerInterface $logger)
     {
-        $this->logger = $logger;
-        $this->logManager = $logManager;
     }
 
     public function index(Request $request, string $_format): Response
@@ -50,13 +45,10 @@ class LogController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
-                switch ($action->getName()) {
-                    case EntityTable::DELETE_ACTION:
-                        $this->logManager->deleteByIds($table->getSelected());
-                        break;
-                    default:
-                        $this->logger->error('log.controller.log.unknown_action');
-                }
+                match ($action->getName()) {
+                    EntityTable::DELETE_ACTION => $this->logManager->deleteByIds($table->getSelected()),
+                    default => $this->logger->error('log.controller.log.unknown_action'),
+                };
             } else {
                 $this->logger->error('log.controller.log.unknown_action');
             }

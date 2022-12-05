@@ -17,20 +17,14 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class VersionTagFieldType extends DataFieldType
 {
-    private RevisionService $revisionService;
-    private EnvironmentService $environmentService;
-
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
-        RevisionService $revisionService,
-        EnvironmentService $environmentService
+        private readonly RevisionService $revisionService,
+        private readonly EnvironmentService $environmentService
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-
-        $this->revisionService = $revisionService;
-        $this->environmentService = $environmentService;
     }
 
     public function getLabel(): string

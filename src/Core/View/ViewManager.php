@@ -14,13 +14,8 @@ use Psr\Log\LoggerInterface;
 
 class ViewManager implements EntityServiceInterface
 {
-    private ViewRepository $viewRepository;
-    private LoggerInterface $logger;
-
-    public function __construct(ViewRepository $viewRepository, LoggerInterface $logger)
+    public function __construct(private readonly ViewRepository $viewRepository, private readonly LoggerInterface $logger)
     {
-        $this->viewRepository = $viewRepository;
-        $this->logger = $logger;
     }
 
     public function isSortable(): bool

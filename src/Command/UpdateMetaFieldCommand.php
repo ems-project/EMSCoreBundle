@@ -19,18 +19,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class UpdateMetaFieldCommand extends EmsCommand
 {
     protected static $defaultName = 'ems:environment:updatemetafield';
-    /** @var Registry */
-    protected $doctrine;
-    /** @var DataService */
-    protected $dataService;
-    /** @var LoggerInterface */
-    protected $logger;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, DataService $dataService)
+    public function __construct(protected Registry $doctrine, protected LoggerInterface $logger, protected DataService $dataService)
     {
-        $this->doctrine = $doctrine;
-        $this->dataService = $dataService;
-        $this->logger = $logger;
         parent::__construct();
     }
 

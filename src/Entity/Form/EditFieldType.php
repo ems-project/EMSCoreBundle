@@ -9,11 +9,8 @@ use EMS\CoreBundle\Entity\FieldType;
  */
 class EditFieldType
 {
-    private FieldType $fieldType;
-
-    public function __construct(FieldType $fieldType)
+    public function __construct(private FieldType $fieldType)
     {
-        $this->fieldType = $fieldType;
     }
 
     /**

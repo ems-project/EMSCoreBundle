@@ -10,21 +10,14 @@ use Twig\TemplateWrapper;
 
 final class MailTemplate
 {
-    private TemplateWrapper $template;
-    private TranslatorInterface $translator;
-    private string $senderName;
-
     private string $subject = 'subject';
     private string $body = 'body';
 
     /** @var array<mixed> */
     private array $to = [];
 
-    public function __construct(TemplateWrapper $template, TranslatorInterface $translator, string $senderName)
+    public function __construct(private readonly TemplateWrapper $template, private readonly TranslatorInterface $translator, private readonly string $senderName)
     {
-        $this->template = $template;
-        $this->translator = $translator;
-        $this->senderName = $senderName;
     }
 
     public function addTo(string $email, string $name = null): self

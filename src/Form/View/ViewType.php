@@ -14,15 +14,8 @@ use Twig\Environment;
 
 abstract class ViewType extends AbstractType
 {
-    protected Environment $twig;
-    protected FormFactory $formFactory;
-    protected LoggerInterface $logger;
-
-    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger)
+    public function __construct(protected FormFactory $formFactory, protected Environment $twig, protected LoggerInterface $logger)
     {
-        $this->twig = $twig;
-        $this->formFactory = $formFactory;
-        $this->logger = $logger;
     }
 
     abstract public function getLabel(): string;

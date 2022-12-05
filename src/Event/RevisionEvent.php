@@ -7,11 +7,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class RevisionEvent extends Event
 {
-    protected Revision $revision;
-
-    public function __construct(Revision $revision)
+    public function __construct(protected Revision $revision)
     {
-        $this->revision = $revision;
     }
 
     public function getRevision(): Revision

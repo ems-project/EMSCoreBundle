@@ -24,24 +24,8 @@ use Twig\Environment as TwigEnvironment;
 
 class RequestListener
 {
-    private ChannelRegistrar $channelRegistrar;
-    private TwigEnvironment $twig;
-    private Registry $doctrine;
-    private Logger $logger;
-    private RouterInterface $router;
-
-    public function __construct(
-        ChannelRegistrar $channelRegistrar,
-        TwigEnvironment $twig,
-        Registry $doctrine,
-        Logger $logger,
-        RouterInterface $router
-    ) {
-        $this->channelRegistrar = $channelRegistrar;
-        $this->twig = $twig;
-        $this->doctrine = $doctrine;
-        $this->logger = $logger;
-        $this->router = $router;
+    public function __construct(private readonly ChannelRegistrar $channelRegistrar, private readonly TwigEnvironment $twig, private readonly Registry $doctrine, private readonly Logger $logger, private readonly RouterInterface $router)
+    {
     }
 
     public function onKernelRequest(RequestEvent $event): void
@@ -67,7 +51,7 @@ class RequestListener
 
         try {
             if ($exception instanceof LockedException || $exception instanceof PrivilegeException) {
-                $this->logger->error($exception instanceof LockedException ? 'log.locked_exception_error' : 'log.privilege_exception_error', \array_merge(['username' => $exception->getRevision()->getLockBy()], LogRevisionContext::read($exception->getRevision())));
+                $this->logger->error($exception instanceof LockedException ? 'log.locked_exception_error' : 'log.privilege_exception_error', [...['username' => $exception->getRevision()->getLockBy()], ...LogRevisionContext::read($exception->getRevision())]);
                 if (null == $exception->getRevision()->getOuuid()) {
                     $response = new RedirectResponse($this->router->generate('data.draft_in_progress', [
                             'contentTypeId' => $exception->getRevision()->giveContentType()->getId(),

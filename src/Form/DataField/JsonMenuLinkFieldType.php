@@ -23,16 +23,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class JsonMenuLinkFieldType extends DataFieldType
 {
-    private ContentTypeService $contentTypeService;
-    private Decoder $decoder;
-    private ElasticaService $elasticaService;
-
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, ContentTypeService $contentTypeService, ElasticaService $elasticaService, Decoder $decoder)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, private readonly ContentTypeService $contentTypeService, private readonly ElasticaService $elasticaService, private readonly Decoder $decoder)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->elasticaService = $elasticaService;
-        $this->contentTypeService = $contentTypeService;
-        $this->decoder = $decoder;
     }
 
     public function getLabel(): string
@@ -82,7 +75,7 @@ class JsonMenuLinkFieldType extends DataFieldType
                     $icon = $contentType->getIcon() ?? 'fa fa-file';
                     $label = $result->getId();
                     if (null !== $contentType->getLabelField() && ($result->getSource()[$contentType->getLabelField()] ?? false)) {
-                        $label = \htmlentities($result->getSource()[$contentType->getLabelField()]);
+                        $label = \htmlentities((string) $result->getSource()[$contentType->getLabelField()]);
                     }
                     $label = \sprintf('<i class="%s"></i> %s <span class="sr-only">(%s)</span> /', $icon, $label, $result->getId());
 

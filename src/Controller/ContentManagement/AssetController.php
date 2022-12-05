@@ -16,19 +16,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AssetController extends AbstractController
 {
-    private Processor $processor;
-    private ChannelRepository $channelRepository;
-    /** @var array<string, mixed> */
-    protected array $assetConfig;
-
     /**
      * @param array<string, mixed> $assetConfig
      */
-    public function __construct(Processor $processor, ChannelRepository $channelRepository, array $assetConfig)
+    public function __construct(private readonly Processor $processor, private readonly ChannelRepository $channelRepository, protected array $assetConfig)
     {
-        $this->processor = $processor;
-        $this->channelRepository = $channelRepository;
-        $this->assetConfig = $assetConfig;
     }
 
     public function assetAction(string $hash, string $hash_config, string $filename, Request $request): Response
@@ -36,7 +28,7 @@ class AssetController extends AbstractController
         $this->closeSession($request);
         try {
             return $this->processor->getResponse($request, $hash, $hash_config, $filename);
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException) {
             throw new NotFoundHttpException(\sprintf('File %s/%s/%s not found', $hash_config, $hash, $filename));
         }
     }
@@ -86,7 +78,7 @@ class AssetController extends AbstractController
         }
         $baseUrl = $request->getBaseUrl();
 
-        if (\strlen($baseUrl) > 0 && 0 !== \strpos($refererPath, $baseUrl)) {
+        if (\strlen($baseUrl) > 0 && !\str_starts_with($refererPath, $baseUrl)) {
             throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));
         }
 
@@ -99,7 +91,7 @@ class AssetController extends AbstractController
 
         try {
             $channel = $this->channelRepository->findRegistered($channelName);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             throw new NotFoundHttpException(\sprintf('Channel %s not found', $channelName));
         }
 

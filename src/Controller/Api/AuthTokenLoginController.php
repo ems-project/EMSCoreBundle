@@ -6,7 +6,7 @@ namespace EMS\CoreBundle\Controller\Api;
 
 class AuthTokenLoginController
 {
-    public function login(): void
+    public function login(): never
     {
         throw new \RuntimeException('AuthTokenLogin authenticator should answer');
     }

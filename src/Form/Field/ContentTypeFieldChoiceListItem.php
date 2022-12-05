@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Field;
 
-class ContentTypeFieldChoiceListItem
+class ContentTypeFieldChoiceListItem implements \Stringable
 {
-    private string $label;
-    private ?string $value;
-
-    public function __construct(?string $value, string $label)
+    public function __construct(private readonly ?string $value, private readonly string $label)
     {
-        $this->value = $value;
-        $this->label = $label;
     }
 
     public function getValue(): ?string

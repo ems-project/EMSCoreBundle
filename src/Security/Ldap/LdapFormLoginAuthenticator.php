@@ -26,13 +26,8 @@ class LdapFormLoginAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
-    private LdapConfig $ldapConfig;
-    private UrlGeneratorInterface $urlGenerator;
-
-    public function __construct(LdapConfig $ldapConfig, UrlGeneratorInterface $urlGenerator)
+    public function __construct(private readonly LdapConfig $ldapConfig, private readonly UrlGeneratorInterface $urlGenerator)
     {
-        $this->ldapConfig = $ldapConfig;
-        $this->urlGenerator = $urlGenerator;
     }
 
     public function supports(Request $request): bool

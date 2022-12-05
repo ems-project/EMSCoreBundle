@@ -10,13 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class TableExporter
 {
-    private TableRenderer $tableRenderer;
-    private SpreadsheetGeneratorServiceInterface $spreadsheetGenerator;
-
-    public function __construct(TableRenderer $tableRenderer, SpreadsheetGeneratorServiceInterface $spreadsheetGenerator)
+    public function __construct(private readonly TableRenderer $tableRenderer, private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGenerator)
     {
-        $this->tableRenderer = $tableRenderer;
-        $this->spreadsheetGenerator = $spreadsheetGenerator;
     }
 
     public function exportExcel(TableInterface $table): Response

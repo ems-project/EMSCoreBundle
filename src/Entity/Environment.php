@@ -16,7 +16,7 @@ use EMS\Helpers\Standard\DateTime;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\EnvironmentRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Environment extends JsonDeserializer implements \JsonSerializable, EntityInterface
+class Environment extends JsonDeserializer implements \JsonSerializable, EntityInterface, \Stringable
 {
     use CreatedModifiedTrait;
     /**

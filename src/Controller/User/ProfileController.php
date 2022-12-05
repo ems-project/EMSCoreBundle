@@ -15,13 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProfileController extends AbstractController
 {
-    private UserManager $userManager;
-    private LoggerInterface $logger;
-
-    public function __construct(UserManager $userManager, LoggerInterface $logger)
+    public function __construct(private readonly UserManager $userManager, private readonly LoggerInterface $logger)
     {
-        $this->userManager = $userManager;
-        $this->logger = $logger;
     }
 
     public function show(): Response

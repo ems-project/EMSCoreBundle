@@ -16,7 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class AnalyzerOptionsType extends AbstractType
 {
-    public const FIELDS_BY_TYPE = [
+    final public const FIELDS_BY_TYPE = [
         'standard' => [
             'stopwords',
             'max_token_length',
@@ -42,13 +42,10 @@ class AnalyzerOptionsType extends AbstractType
             'position_increment_gap',
         ],
     ];
+    private readonly ArrayValuesTransformer $arrayValuesTransformer;
 
-    private Registry $doctrine;
-    private ArrayValuesTransformer $arrayValuesTransformer;
-
-    public function __construct(Registry $doctrine)
+    public function __construct(private readonly Registry $doctrine)
     {
-        $this->doctrine = $doctrine;
         $this->arrayValuesTransformer = new ArrayValuesTransformer();
     }
 

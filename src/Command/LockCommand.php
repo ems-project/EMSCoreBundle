@@ -22,12 +22,9 @@ final class LockCommand extends Command
 {
     private string $by;
     private ContentType $contentType;
-    private ContentTypeRepository $contentTypeRepository;
-    private ElasticaService $elasticaService;
     private bool $force;
     private SymfonyStyle $io;
     private string $query;
-    private RevisionRepository $revisionRepository;
     private \DateTime $until;
 
     private const ARGUMENT_CONTENT_TYPE = 'contentType';
@@ -43,13 +40,9 @@ final class LockCommand extends Command
     public const name = 'ems:contenttype:lock';
     protected static $defaultName = self::name;
 
-    public function __construct(ContentTypeRepository $contentTypeRepository, ElasticaService $elasticaService, RevisionRepository $revisionRepository)
+    public function __construct(private readonly ContentTypeRepository $contentTypeRepository, private readonly ElasticaService $elasticaService, private readonly RevisionRepository $revisionRepository)
     {
         parent::__construct();
-
-        $this->contentTypeRepository = $contentTypeRepository;
-        $this->elasticaService = $elasticaService;
-        $this->revisionRepository = $revisionRepository;
     }
 
     protected function configure(): void

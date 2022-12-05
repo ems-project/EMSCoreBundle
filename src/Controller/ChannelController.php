@@ -22,13 +22,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class ChannelController extends AbstractController
 {
-    private LoggerInterface $logger;
-    private ChannelService $channelService;
-
-    public function __construct(LoggerInterface $logger, ChannelService $channelService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly ChannelService $channelService)
     {
-        $this->logger = $logger;
-        $this->channelService = $channelService;
     }
 
     public function ajaxDataTable(Request $request): Response

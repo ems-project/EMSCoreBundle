@@ -7,30 +7,11 @@ use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
 
 class ObjectChoiceList implements ChoiceListInterface
 {
-    private ObjectChoiceCacheService $objectChoiceCacheService;
-
-    private string $types;
     /** @var array<mixed> */
     private array $choices = [];
-    private bool $loadAll;
-    private bool $circleOnly;
-    private bool $withWarning;
-    private ?string $querySearchName;
 
-    public function __construct(
-        ObjectChoiceCacheService $objectChoiceCacheService,
-        string $types,
-        bool $loadAll = false,
-        bool $circleOnly = false,
-        bool $withWarning = true,
-        ?string $querySearchName = null
-    ) {
-        $this->objectChoiceCacheService = $objectChoiceCacheService;
-        $this->types = $types;
-        $this->loadAll = $loadAll;
-        $this->circleOnly = $circleOnly;
-        $this->withWarning = $withWarning;
-        $this->querySearchName = $querySearchName;
+    public function __construct(private readonly ObjectChoiceCacheService $objectChoiceCacheService, private string $types, private readonly bool $loadAll = false, private bool $circleOnly = false, private bool $withWarning = true, private ?string $querySearchName = null)
+    {
     }
 
     public function getTypes(): string

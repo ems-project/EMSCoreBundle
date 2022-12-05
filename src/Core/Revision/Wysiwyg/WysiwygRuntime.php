@@ -12,18 +12,8 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 final class WysiwygRuntime implements RuntimeExtensionInterface
 {
-    private WysiwygStylesSetService $wysiwygStylesSetService;
-    private UserService $userService;
-    private UrlGeneratorInterface $urlGenerator;
-
-    public function __construct(
-        WysiwygStylesSetService $wysiwygStylesSetService,
-        UserService $userService,
-        UrlGeneratorInterface $urlGenerator
-    ) {
-        $this->wysiwygStylesSetService = $wysiwygStylesSetService;
-        $this->userService = $userService;
-        $this->urlGenerator = $urlGenerator;
+    public function __construct(private readonly WysiwygStylesSetService $wysiwygStylesSetService, private readonly UserService $userService, private readonly UrlGeneratorInterface $urlGenerator)
+    {
     }
 
     public function getInfo(): string
@@ -46,7 +36,7 @@ final class WysiwygRuntime implements RuntimeExtensionInterface
     {
         try {
             $user = $this->userService->getCurrentUser();
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException) {
             return [];
         }
 

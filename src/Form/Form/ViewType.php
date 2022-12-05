@@ -18,11 +18,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ViewType extends AbstractType
 {
-    private ContainerInterface $container;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(private readonly ContainerInterface $container)
     {
-        $this->container = $container;
     }
 
     /**
@@ -80,7 +77,7 @@ class ViewType extends AbstractType
                 'icon' => 'fa fa-save',
             ]);
         } else {
-            $builder->add('options', Type::string(\get_class($this->container->get($view->getType()))), [
+            $builder->add('options', Type::string($this->container->get($view->getType())::class), [
                     'view' => $view,
                     'row_attr' => [
                         'class' => 'col-md-12',

@@ -14,18 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class DataLinksFactory
 {
-    private SearchService $searchService;
-    private ContentTypeService $contentTypeService;
-    private ViewTypes $viewTypes;
-
-    public function __construct(
-        SearchService $searchService,
-        ContentTypeService $contentTypeService,
-        ViewTypes $viewTypes
-    ) {
-        $this->searchService = $searchService;
-        $this->contentTypeService = $contentTypeService;
-        $this->viewTypes = $viewTypes;
+    public function __construct(private readonly SearchService $searchService, private readonly ContentTypeService $contentTypeService, private readonly ViewTypes $viewTypes)
+    {
     }
 
     public function create(Request $request): DataLinks

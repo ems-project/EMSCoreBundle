@@ -14,17 +14,8 @@ use Psr\Log\LoggerInterface;
 
 final class IndexService
 {
-    private AliasService $aliasService;
-    private Client $client;
-    private LoggerInterface $logger;
-    private ContentTypeService $contentTypeService;
-
-    public function __construct(AliasService $aliasService, Client $client, ContentTypeService $contentTypeService, LoggerInterface $logger)
+    public function __construct(private readonly AliasService $aliasService, private readonly Client $client, private readonly ContentTypeService $contentTypeService, private readonly LoggerInterface $logger)
     {
-        $this->aliasService = $aliasService;
-        $this->client = $client;
-        $this->logger = $logger;
-        $this->contentTypeService = $contentTypeService;
     }
 
     public function deleteOrphanIndexes(): void
@@ -51,7 +42,7 @@ final class IndexService
             $this->logger->notice('log.index.delete_orphan_index', [
                 'index_name' => $indexName,
             ]);
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException) {
             $this->logger->notice('log.index.index_not_found', [
                 'index_name' => $indexName,
             ]);
@@ -182,7 +173,7 @@ final class IndexService
         }
         try {
             $result = $this->client->requestEndpoint($endpoint);
-        } catch (ResponseException $e) {
+        } catch (ResponseException) {
             return [];
         }
         $data = $result->getData();

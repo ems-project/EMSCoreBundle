@@ -9,13 +9,8 @@ use Psr\Log\LoggerInterface;
 
 class WysiwygProfileService implements EntityServiceInterface
 {
-    private WysiwygProfileRepository $wysiwygProfileRepository;
-    private LoggerInterface $logger;
-
-    public function __construct(WysiwygProfileRepository $wysiwygProfileRepository, LoggerInterface $logger)
+    public function __construct(private readonly WysiwygProfileRepository $wysiwygProfileRepository, private readonly LoggerInterface $logger)
     {
-        $this->wysiwygProfileRepository = $wysiwygProfileRepository;
-        $this->logger = $logger;
     }
 
     /**

@@ -11,22 +11,19 @@ use Twig\TemplateWrapper;
 
 class TemplateService
 {
-    public const EMS_INDEX_PREFIX = '_ems_index_';
-    public const JSON_FORMAT = 'json';
-    public const XML_FORMAT = 'xml';
-    public const MERGED_JSON_FORMAT = 'merged-json';
-    public const MERGED_XML_FORMAT = 'merged-xml';
-    public const EXPORT_FORMATS = [self::JSON_FORMAT, self::XML_FORMAT, self::MERGED_JSON_FORMAT, self::MERGED_XML_FORMAT];
-
-    private Environment $twig;
+    final public const EMS_INDEX_PREFIX = '_ems_index_';
+    final public const JSON_FORMAT = 'json';
+    final public const XML_FORMAT = 'xml';
+    final public const MERGED_JSON_FORMAT = 'merged-json';
+    final public const MERGED_XML_FORMAT = 'merged-xml';
+    final public const EXPORT_FORMATS = [self::JSON_FORMAT, self::XML_FORMAT, self::MERGED_JSON_FORMAT, self::MERGED_XML_FORMAT];
     private Template $template;
 
     private ?TemplateWrapper $twigTemplate = null;
     private ?TemplateWrapper $filenameTwigTemplate = null;
 
-    public function __construct(Environment $twig)
+    public function __construct(private readonly Environment $twig)
     {
-        $this->twig = $twig;
     }
 
     public function getTemplate(): Template
@@ -118,7 +115,7 @@ class TemplateService
             if (\is_array($fieldData)) {
                 $this->addNested($xmlDocument, $child, $index, $fieldData);
             } else {
-                $child->appendChild($xmlDocument->createElement($index, \htmlspecialchars($fieldData)));
+                $child->appendChild($xmlDocument->createElement($index, \htmlspecialchars((string) $fieldData)));
             }
         }
     }

@@ -13,13 +13,8 @@ use Psr\Log\LoggerInterface;
 
 final class ChannelService implements EntityServiceInterface
 {
-    private ChannelRepository $channelRepository;
-    private LoggerInterface $logger;
-
-    public function __construct(ChannelRepository $channelRepository, LoggerInterface $logger)
+    public function __construct(private readonly ChannelRepository $channelRepository, private readonly LoggerInterface $logger)
     {
-        $this->channelRepository = $channelRepository;
-        $this->logger = $logger;
     }
 
     /**

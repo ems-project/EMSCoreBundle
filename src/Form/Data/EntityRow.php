@@ -8,11 +8,8 @@ use EMS\CommonBundle\Entity\EntityInterface;
 
 final class EntityRow implements TableRowInterface
 {
-    private EntityInterface $entity;
-
-    public function __construct(EntityInterface $entity)
+    public function __construct(private readonly EntityInterface $entity)
     {
-        $this->entity = $entity;
     }
 
     public function getData(): EntityInterface

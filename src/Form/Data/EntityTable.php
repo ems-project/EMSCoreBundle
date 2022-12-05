@@ -9,24 +9,16 @@ use EMS\CoreBundle\Service\EntityServiceInterface;
 
 final class EntityTable extends TableAbstract
 {
-    private EntityServiceInterface $entityService;
     private bool $loadAll;
     private ?int $count = null;
     private ?int $totalCount = null;
     private bool $massAction = true;
-    /**
-     * @var mixed|null
-     */
-    private $context;
 
     /**
      * @param mixed $context
      */
-    public function __construct(EntityServiceInterface $entityService, string $ajaxUrl, $context = null, int $loadAllMaxRow = 400)
+    public function __construct(private readonly EntityServiceInterface $entityService, string $ajaxUrl, private $context = null, int $loadAllMaxRow = 400)
     {
-        $this->entityService = $entityService;
-        $this->context = $context;
-
         if ($this->count() > $loadAllMaxRow) {
             parent::__construct($ajaxUrl, 0, 0);
             $this->loadAll = false;
@@ -62,9 +54,9 @@ final class EntityTable extends TableAbstract
     }
 
     /**
-     * @return \IteratorAggregate<string, EntityRow>
+     * @return \Traversable<string, EntityRow>
      */
-    public function getIterator(): iterable
+    public function getIterator(): \Traversable
     {
         foreach ($this->entityService->get($this->getFrom(), $this->getSize(), $this->getOrderField(), $this->getOrderDirection(), $this->getSearchValue(), $this->context) as $entity) {
             yield \strval($entity->getId()) => new EntityRow($entity);

@@ -7,12 +7,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ViewTypePickerType extends SelectPickerType
 {
-    private ViewTypes $viewTypes;
-
-    public function __construct(ViewTypes $viewTypes)
+    public function __construct(private readonly ViewTypes $viewTypes)
     {
         parent::__construct();
-        $this->viewTypes = $viewTypes;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

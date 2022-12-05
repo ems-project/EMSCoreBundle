@@ -43,13 +43,9 @@ class ChoiceFieldType extends DataFieldType
     }
 
     /**
-     * @param mixed $choiceValue
-     * @param mixed $key
-     * @param mixed $value
-     *
      * @return array<string, string>
      */
-    public function choiceAttr($choiceValue, $key, $value): array
+    public function choiceAttr(mixed $choiceValue, mixed $key, mixed $value): array
     {
         $out = [];
         if (null !== $this->fakeIndex && \is_int($choiceValue) && $choiceValue >= $this->fakeIndex) {
@@ -69,8 +65,8 @@ class ChoiceFieldType extends DataFieldType
         $fieldType = $builder->getOptions()['metadata'];
 
         $choices = [];
-        $values = \explode("\n", \str_replace("\r", '', $options['choices']));
-        $labels = \explode("\n", \str_replace("\r", '', $options['labels']));
+        $values = \explode("\n", \str_replace("\r", '', (string) $options['choices']));
+        $labels = \explode("\n", \str_replace("\r", '', (string) $options['labels']));
 
         foreach ($values as $id => $value) {
             if ('' != $value) {
@@ -106,7 +102,7 @@ class ChoiceFieldType extends DataFieldType
                 'empty_data' => $options['multiple'] ? [] : null,
                 'multiple' => $options['multiple'],
                 'expanded' => $options['expanded'],
-                'choice_attr' => [$this, 'choiceAttr'],
+                'choice_attr' => $this->choiceAttr(...),
         ]);
     }
 

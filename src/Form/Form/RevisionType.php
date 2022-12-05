@@ -20,13 +20,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RevisionType extends AbstractType
 {
-    private FormRegistryInterface $formRegistry;
-    private UserManager $userManager;
-
-    public function __construct(FormRegistryInterface $formRegistry, UserManager $userManager)
+    public function __construct(private readonly FormRegistryInterface $formRegistry, private readonly UserManager $userManager)
     {
-        $this->formRegistry = $formRegistry;
-        $this->userManager = $userManager;
     }
 
     /**

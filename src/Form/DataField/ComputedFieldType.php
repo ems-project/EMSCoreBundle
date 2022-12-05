@@ -25,10 +25,10 @@ class ComputedFieldType extends DataFieldType
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
             try {
-                $mapping = \json_decode($current->getMappingOptions()['mappingOptions'], true, 512, JSON_THROW_ON_ERROR);
+                $mapping = \json_decode((string) $current->getMappingOptions()['mappingOptions'], true, 512, JSON_THROW_ON_ERROR);
 
                 return [$current->getName() => $this->elasticsearchService->updateMapping($mapping)];
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 // TODO send message to user, mustr move to service first
             }
         }
@@ -119,9 +119,9 @@ class ComputedFieldType extends DataFieldType
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
         try {
-            $value = \json_decode($data['value'], null, 512, JSON_THROW_ON_ERROR);
+            $value = \json_decode((string) $data['value'], null, 512, JSON_THROW_ON_ERROR);
             $dataField->setRawData($value);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $dataField->setRawData(null);
             $dataField->addMessage('ems was not able to parse the field');
         }

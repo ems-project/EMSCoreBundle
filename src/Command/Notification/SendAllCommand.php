@@ -17,15 +17,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class SendAllCommand extends Command
 {
     protected static $defaultName = 'ems:notification:send';
-    private Registry $doctrine;
-    private NotificationService $notificationService;
-    private string $notificationPendingTimeout;
 
-    public function __construct(Registry $doctrine, NotificationService $notificationService, string $notificationPendingTimeout)
+    public function __construct(private readonly Registry $doctrine, private readonly NotificationService $notificationService, private readonly string $notificationPendingTimeout)
     {
-        $this->doctrine = $doctrine;
-        $this->notificationService = $notificationService;
-        $this->notificationPendingTimeout = $notificationPendingTimeout;
         parent::__construct();
     }
 

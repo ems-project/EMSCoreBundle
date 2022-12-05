@@ -19,26 +19,13 @@ use ZipStream\ZipStream;
 
 final class FormSubmissionService implements EntityServiceInterface
 {
-    private FormSubmissionRepository $formSubmissionRepository;
-
-    private Environment $twig;
-
-    /** @var Session<mixed> */
-    private Session $session;
-
-    private TranslatorInterface $translator;
-
     /**
      * FormSubmissionService constructor.
      *
      * @param Session<mixed> $session
      */
-    public function __construct(FormSubmissionRepository $formSubmissionRepository, Environment $twig, Session $session, TranslatorInterface $translator)
+    public function __construct(private readonly FormSubmissionRepository $formSubmissionRepository, private readonly Environment $twig, private readonly Session $session, private readonly TranslatorInterface $translator)
     {
-        $this->formSubmissionRepository = $formSubmissionRepository;
-        $this->twig = $twig;
-        $this->session = $session;
-        $this->translator = $translator;
     }
 
     /**

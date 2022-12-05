@@ -9,17 +9,17 @@ use EMS\CoreBundle\Helper\DataTableRequest;
 abstract class TableAbstract implements TableInterface
 {
     /** @var string */
-    public const DELETE_ACTION = 'delete';
+    final public const DELETE_ACTION = 'delete';
     /** @var string */
-    public const DOWNLOAD_ACTION = 'download';
+    final public const DOWNLOAD_ACTION = 'download';
     /** @var string */
-    public const EXPORT_ACTION = 'export';
+    final public const EXPORT_ACTION = 'export';
 
     /** @var string */
-    public const ADD_ACTION = 'add';
+    final public const ADD_ACTION = 'add';
 
     /** @var string */
-    public const REMOVE_ACTION = 'remove';
+    final public const REMOVE_ACTION = 'remove';
 
     /** @var string[] */
     private array $selected = [];
@@ -33,10 +33,7 @@ abstract class TableAbstract implements TableInterface
     private array $tableActions = [];
     private ?string $orderField = null;
     private string $orderDirection = 'asc';
-    private int $size;
-    private int $from;
     private string $searchValue = '';
-    private ?string $ajaxUrl = null;
     /** @var array<mixed> */
     private array $extraFrontendOption = [];
 
@@ -46,11 +43,8 @@ abstract class TableAbstract implements TableInterface
     private string $labelAttribute = 'name';
     private string $rowActionsClass = '';
 
-    public function __construct(?string $ajaxUrl, int $from, int $size)
+    public function __construct(private readonly ?string $ajaxUrl, private int $from, private int $size)
     {
-        $this->ajaxUrl = $ajaxUrl;
-        $this->from = $from;
-        $this->size = $size;
     }
 
     public function isSortable(): bool

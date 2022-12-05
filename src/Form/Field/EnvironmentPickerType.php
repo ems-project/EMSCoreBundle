@@ -12,12 +12,10 @@ class EnvironmentPickerType extends ChoiceType
 {
     /** @var array<mixed> */
     private array $choices = [];
-    private EnvironmentService $service;
 
-    public function __construct(EnvironmentService $service)
+    public function __construct(private readonly EnvironmentService $service)
     {
         parent::__construct();
-        $this->service = $service;
     }
 
     public function getBlockPrefix(): string

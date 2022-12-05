@@ -25,12 +25,10 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     private const LABELS_DISPLAY_OPTION = 'labels';
     private const VALUES_DISPLAY_OPTION = 'values';
     private const ICON_DISPLAY_OPTION = 'icon';
-    private UserService $userService;
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, UserService $userService)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, private readonly UserService $userService)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->userService = $userService;
     }
 
     public function getLabel(): string

@@ -15,12 +15,9 @@ use Twig\Environment;
 
 class ReportViewType extends ViewType
 {
-    private ElasticaService $elasticaService;
-
-    public function __construct(FormFactory $formFactory, Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger)
+    public function __construct(FormFactory $formFactory, Environment $twig, private readonly ElasticaService $elasticaService, LoggerInterface $logger)
     {
         parent::__construct($formFactory, $twig, $logger);
-        $this->elasticaService = $elasticaService;
     }
 
     public function getLabel(): string
@@ -118,7 +115,7 @@ class ReportViewType extends ViewType
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $resultSet->getResponse()->getData(),
             ]);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $javascript = '';
         }
         try {
@@ -128,7 +125,7 @@ class ReportViewType extends ViewType
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $resultSet->getResponse()->getData(),
             ]);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $header = '';
         }
 

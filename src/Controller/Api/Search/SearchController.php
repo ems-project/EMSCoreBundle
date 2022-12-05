@@ -11,11 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SearchController
 {
-    private ElasticaService $elasticaService;
-
-    public function __construct(ElasticaService $elasticaService)
+    public function __construct(private readonly ElasticaService $elasticaService)
     {
-        $this->elasticaService = $elasticaService;
     }
 
     public function search(Request $request): Response

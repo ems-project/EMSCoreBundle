@@ -8,12 +8,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class IndexController extends AbstractController
 {
-    private IndexService $indexService;
-
-    public function __construct(
-        IndexService $indexService
-    ) {
-        $this->indexService = $indexService;
+    public function __construct(private readonly IndexService $indexService)
+    {
     }
 
     public function deleteOrphansIndexesAction(): RedirectResponse

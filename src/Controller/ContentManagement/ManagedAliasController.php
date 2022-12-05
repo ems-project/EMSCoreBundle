@@ -15,15 +15,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ManagedAliasController extends AbstractController
 {
-    private AliasService $aliasService;
-    private LoggerInterface $logger;
-    private string $instanceId;
-
-    public function __construct(LoggerInterface $logger, AliasService $aliasService, string $instanceId)
+    public function __construct(private readonly LoggerInterface $logger, private readonly AliasService $aliasService, private readonly string $instanceId)
     {
-        $this->aliasService = $aliasService;
-        $this->logger = $logger;
-        $this->instanceId = $instanceId;
     }
 
     public function addAction(Request $request): Response

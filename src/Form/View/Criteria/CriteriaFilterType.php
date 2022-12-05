@@ -44,7 +44,7 @@ class CriteriaFilterType extends AbstractType
             $defaultColumn = false;
             $defaultRow = false;
 
-            $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
+            $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', (string) $view->getOptions()['criteriaFieldPaths']);
 
             if (!\is_array($fieldPaths)) {
                 throw new \RuntimeException('Splitting criteriaFieldPaths failed!');
@@ -123,7 +123,7 @@ class CriteriaFilterType extends AbstractType
                     'label' => ' ',
             ]);
 
-            $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
+            $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', (string) $view->getOptions()['criteriaFieldPaths']);
 
             if (!\is_array($fieldPaths)) {
                 throw new \RuntimeException('Splitting criteriaFieldPaths failed!');

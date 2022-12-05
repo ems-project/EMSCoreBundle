@@ -14,14 +14,14 @@ class ContentTypeFields implements \ArrayAccess
     /** @var array<string, ?string> */
     private array $fields = [];
 
-    public const LABEL = 'label';
-    public const COLOR = 'color';
-    public const SORT = 'sort';
-    public const TOOLTIP = 'tooltip';
-    public const CIRCLES = 'circles';
-    public const BUSINESS_ID = 'business_id';
-    public const CATEGORY = 'category';
-    public const ASSET = 'asset';
+    final public const LABEL = 'label';
+    final public const COLOR = 'color';
+    final public const SORT = 'sort';
+    final public const TOOLTIP = 'tooltip';
+    final public const CIRCLES = 'circles';
+    final public const BUSINESS_ID = 'business_id';
+    final public const CATEGORY = 'category';
+    final public const ASSET = 'asset';
 
     private const FIELDS = [
         self::LABEL,
@@ -60,17 +60,17 @@ class ContentTypeFields implements \ArrayAccess
         return isset($this->fields[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): ?string
     {
         return $this->fields[$offset] ?? null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->fields[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->fields[$offset]);
     }

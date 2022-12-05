@@ -20,12 +20,6 @@ use Twig\TemplateWrapper;
 
 final class JsonMenuRenderer implements RuntimeExtensionInterface
 {
-    private Environment $twig;
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private UrlGeneratorInterface $urlGenerator;
-    private ContentTypeRepository $contentTypeRepository;
-    private RevisionService $revisionService;
-
     public const TYPE_MODAL = 'modal';
     public const TYPE_PASTE = 'paste';
     public const TYPE_SILENT_PUBLISH = 'silent_publish';
@@ -36,18 +30,8 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
     public const NESTED_TEMPLATE = '@EMSCore/revision/json/json_menu_nested.html.twig';
     private const ITEM_ACTIONS = ['move', 'copy', 'paste', 'add', 'edit', 'delete', 'preview'];
 
-    public function __construct(
-        Environment $twig,
-        AuthorizationCheckerInterface $authorizationChecker,
-        UrlGeneratorInterface $urlGenerator,
-        ContentTypeRepository $contentTypeRepository,
-        RevisionService $revisionService
-    ) {
-        $this->authorizationChecker = $authorizationChecker;
-        $this->twig = $twig;
-        $this->urlGenerator = $urlGenerator;
-        $this->contentTypeRepository = $contentTypeRepository;
-        $this->revisionService = $revisionService;
+    public function __construct(private readonly Environment $twig, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly UrlGeneratorInterface $urlGenerator, private readonly ContentTypeRepository $contentTypeRepository, private readonly RevisionService $revisionService)
+    {
     }
 
     /**

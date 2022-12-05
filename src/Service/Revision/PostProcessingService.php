@@ -25,15 +25,8 @@ use Twig\Environment;
 
 final class PostProcessingService
 {
-    private Environment $twig;
-    private FormFactoryInterface $formFactory;
-    private LoggerInterface $logger;
-
-    public function __construct(Environment $twig, FormFactoryInterface $formFactory, LoggerInterface $logger)
+    public function __construct(private readonly Environment $twig, private readonly FormFactoryInterface $formFactory, private readonly LoggerInterface $logger)
     {
-        $this->twig = $twig;
-        $this->formFactory = $formFactory;
-        $this->logger = $logger;
     }
 
     /**

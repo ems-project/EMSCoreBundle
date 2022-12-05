@@ -26,29 +26,19 @@ use Twig\Environment;
 
 class SorterViewType extends ViewType
 {
-    public const SEARCH_SIZE = 100;
-    protected SessionInterface $session;
-    protected DataService $dataService;
-    protected RouterInterface $router;
-    protected Mapping $mapping;
-    private ElasticaService $elasticaService;
+    final public const SEARCH_SIZE = 100;
 
     public function __construct(
         FormFactory $formFactory,
         Environment $twig,
-        Mapping $mapping,
-        ElasticaService $elasticaService,
+        protected Mapping $mapping,
+        private readonly ElasticaService $elasticaService,
         LoggerInterface $logger,
-        SessionInterface $session,
-        DataService $dataService,
-        RouterInterface $router
+        protected SessionInterface $session,
+        protected DataService $dataService,
+        protected RouterInterface $router
     ) {
         parent::__construct($formFactory, $twig, $logger);
-        $this->mapping = $mapping;
-        $this->session = $session;
-        $this->dataService = $dataService;
-        $this->router = $router;
-        $this->elasticaService = $elasticaService;
     }
 
     public function getLabel(): string

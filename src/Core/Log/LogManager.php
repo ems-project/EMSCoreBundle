@@ -12,13 +12,8 @@ use Psr\Log\LoggerInterface;
 
 class LogManager implements EntityServiceInterface
 {
-    private LogRepository $logRepository;
-    private LoggerInterface $logger;
-
-    public function __construct(LogRepository $logRepository, LoggerInterface $logger)
+    public function __construct(private readonly LogRepository $logRepository, private readonly LoggerInterface $logger)
     {
-        $this->logRepository = $logRepository;
-        $this->logger = $logger;
     }
 
     public function delete(Log $log): void

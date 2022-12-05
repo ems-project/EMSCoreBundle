@@ -15,13 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class VerificationController extends AbstractController
 {
-    private FormVerificationService $formVerificationService;
-    private LoggerInterface $logger;
-
-    public function __construct(FormVerificationService $formVerificationService, LoggerInterface $logger)
+    public function __construct(private readonly FormVerificationService $formVerificationService, private readonly LoggerInterface $logger)
     {
-        $this->formVerificationService = $formVerificationService;
-        $this->logger = $logger;
     }
 
     public function createVerification(Request $request): Response

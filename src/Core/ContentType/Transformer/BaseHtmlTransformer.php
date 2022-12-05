@@ -13,14 +13,14 @@ abstract class BaseHtmlTransformer extends AbstractTransformer
         $data = $context->getData();
         $transformed = $crawler->outerHtml();
 
-        if (false === \strpos($data, '<html')) {
+        if (!\str_contains((string) $data, '<html')) {
             $transformed = \str_replace(['<html>', '</html>'], '', $transformed);
         }
-        if (false === \strpos($data, '<body')) {
+        if (!\str_contains((string) $data, '<body')) {
             $transformed = \str_replace(['<body>', '</body>'], '', $transformed);
         }
 
-        if ('<!DOCTYPE' === \substr($data, 0, 9)) {
+        if (\str_starts_with((string) $data, '<!DOCTYPE')) {
             $transformed = <<<transformed
 <!DOCTYPE html>
 $transformed

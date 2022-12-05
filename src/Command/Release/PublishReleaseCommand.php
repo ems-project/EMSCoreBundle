@@ -13,12 +13,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 class PublishReleaseCommand extends AbstractCommand
 {
     protected static $defaultName = Commands::RELEASE_PUBLISH;
-    private ReleaseService $releaseService;
 
-    public function __construct(ReleaseService $releaseService)
+    public function __construct(private readonly ReleaseService $releaseService)
     {
         parent::__construct();
-        $this->releaseService = $releaseService;
     }
 
     protected function configure(): void

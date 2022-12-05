@@ -25,11 +25,6 @@ class FormVerification
     private UuidInterface $id;
 
     /**
-     * @ORM\Column(name="value", type="string", length=255)
-     */
-    private string $value;
-
-    /**
      * @ORM\Column(name="code", type="string", length=255)
      */
     private string $code;
@@ -46,15 +41,16 @@ class FormVerification
 
     private const EXPIRATION_TIME = '+3 hours';
 
-    public function __construct(string $value)
+    public function __construct(/**
+     * @ORM\Column(name="value", type="string", length=255)
+     */
+    private string $value)
     {
         $now = new \DateTimeImmutable();
 
         $this->id = Uuid::uuid4();
         $this->created = $now;
         $this->expirationDate = $now->modify(self::EXPIRATION_TIME);
-
-        $this->value = $value;
         $this->code = \sprintf('%06d', \random_int(1, 999999));
     }
 

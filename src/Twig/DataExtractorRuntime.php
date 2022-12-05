@@ -10,13 +10,11 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 class DataExtractorRuntime implements RuntimeExtensionInterface
 {
-    protected AssetExtractorService $extractorService;
     protected StorageManager $storageManager;
     protected LoggerInterface $logger;
 
-    public function __construct(AssetExtractorService $extractorService)
+    public function __construct(protected AssetExtractorService $extractorService)
     {
-        $this->extractorService = $extractorService;
     }
 
     public function guessLocale(string $text): ?string

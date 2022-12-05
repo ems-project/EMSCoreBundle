@@ -23,13 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class ScheduleController extends AbstractController
 {
-    private LoggerInterface $logger;
-    private ScheduleManager $scheduleManager;
-
-    public function __construct(ScheduleManager $scheduleManager, LoggerInterface $logger)
+    public function __construct(private readonly ScheduleManager $scheduleManager, private readonly LoggerInterface $logger)
     {
-        $this->logger = $logger;
-        $this->scheduleManager = $scheduleManager;
     }
 
     public function index(Request $request, string $_format): Response

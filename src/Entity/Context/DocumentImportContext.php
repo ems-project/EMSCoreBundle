@@ -7,29 +7,17 @@ use EMS\CoreBundle\Entity\Environment;
 
 class DocumentImportContext
 {
-    private Environment $environment;
-    private ContentType $contentType;
-    private string $lockUser;
-    private bool $shouldRawImport;
+    private readonly Environment $environment;
     private bool $shouldOnlyChanged = false;
-    private bool $shouldIndexInDefaultEnv;
-    private bool $shouldFinalize;
-    private bool $shouldForce;
 
     public function __construct(
-        ContentType $contentType,
-        string $lockUser,
-        bool $shouldRawImport,
-        bool $shouldIndexInDefaultEnv,
-        bool $shouldFinalize,
-        bool $shouldForceImport
+        private readonly ContentType $contentType,
+        private readonly string $lockUser,
+        private readonly bool $shouldRawImport,
+        private readonly bool $shouldIndexInDefaultEnv,
+        private readonly bool $shouldFinalize,
+        private readonly bool $shouldForce
     ) {
-        $this->contentType = $contentType;
-        $this->shouldIndexInDefaultEnv = $shouldIndexInDefaultEnv;
-        $this->lockUser = $lockUser;
-        $this->shouldRawImport = $shouldRawImport;
-        $this->shouldFinalize = $shouldFinalize;
-        $this->shouldForce = $shouldForceImport;
         $this->environment = $this->contentType->giveEnvironment();
     }
 

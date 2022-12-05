@@ -17,31 +17,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AbstractEnvironmentCommand extends AbstractCommand
 {
-    protected RevisionSearcher $revisionSearcher;
-    protected EnvironmentService $environmentService;
-    protected PublishService $publishService;
     protected ?LoggerInterface $logger = null;
 
     protected string $searchQuery = '{}';
     protected string $lockUser = 'SYSTEM_ALIGN';
     protected bool $dryRun = false;
 
-    public const OPTION_SCROLL_SIZE = 'scroll-size';
-    public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
-    public const OPTION_SEARCH_QUERY = 'search-query';
-    public const OPTION_USER = 'user';
-    public const OPTION_FORCE = 'force';
-    public const OPTION_DRY_RUN = 'dry-run';
+    final public const OPTION_SCROLL_SIZE = 'scroll-size';
+    final public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
+    final public const OPTION_SEARCH_QUERY = 'search-query';
+    final public const OPTION_USER = 'user';
+    final public const OPTION_FORCE = 'force';
+    final public const OPTION_DRY_RUN = 'dry-run';
 
     public function __construct(
-        RevisionSearcher $revisionSearcher,
-        EnvironmentService $environmentService,
-        PublishService $publishService
+        protected RevisionSearcher $revisionSearcher,
+        protected EnvironmentService $environmentService,
+        protected PublishService $publishService
     ) {
         parent::__construct();
-        $this->revisionSearcher = $revisionSearcher;
-        $this->environmentService = $environmentService;
-        $this->publishService = $publishService;
     }
 
     protected function configureForceProtection(): void

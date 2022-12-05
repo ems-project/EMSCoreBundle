@@ -20,15 +20,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FileController extends AbstractController
 {
-    private FileService $fileService;
-    private AssetExtractorService $assetExtractorService;
-    private LoggerInterface $logger;
-
-    public function __construct(FileService $fileService, AssetExtractorService $assetExtractorService, LoggerInterface $logger)
+    public function __construct(private readonly FileService $fileService, private readonly AssetExtractorService $assetExtractorService, private readonly LoggerInterface $logger)
     {
-        $this->fileService = $fileService;
-        $this->assetExtractorService = $assetExtractorService;
-        $this->logger = $logger;
     }
 
     public function viewFileAction(string $sha1, Request $request): Response
@@ -68,7 +61,7 @@ class FileController extends AbstractController
 
         try {
             $data = $this->assetExtractorService->extractData($sha1, null, $forced);
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException) {
             throw new NotFoundHttpException(\sprintf('Asset %s not found', $sha1));
         }
 
@@ -229,7 +222,7 @@ class FileController extends AbstractController
     {
         $userObject = $this->getUser();
         if (!$userObject instanceof UserInterface) {
-            throw new \RuntimeException(\sprintf('Unexpected User class %s', null === $userObject ? 'null' : \get_class($userObject)));
+            throw new \RuntimeException(\sprintf('Unexpected User class %s', null === $userObject ? 'null' : $userObject::class));
         }
 
         return $userObject->getUsername();

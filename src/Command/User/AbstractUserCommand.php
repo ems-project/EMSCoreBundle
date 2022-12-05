@@ -9,11 +9,8 @@ use EMS\CoreBundle\Core\User\UserManager;
 
 abstract class AbstractUserCommand extends AbstractCommand
 {
-    protected UserManager $userManager;
-
-    public function __construct(UserManager $userManager)
+    public function __construct(protected UserManager $userManager)
     {
         parent::__construct();
-        $this->userManager = $userManager;
     }
 }

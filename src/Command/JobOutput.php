@@ -9,16 +9,11 @@ use Symfony\Component\Console\Output\Output;
 
 class JobOutput extends Output
 {
-    private int $jobId;
-    private JobRepository $jobRepository;
-
     private const JOB_VERBOSITY = self::VERBOSITY_NORMAL;
 
-    public function __construct(JobRepository $jobRepository, int $jobId)
+    public function __construct(private readonly JobRepository $jobRepository, private readonly int $jobId)
     {
         parent::__construct(self::JOB_VERBOSITY);
-        $this->jobRepository = $jobRepository;
-        $this->jobId = $jobId;
     }
 
     /**

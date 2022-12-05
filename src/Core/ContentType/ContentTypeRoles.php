@@ -14,16 +14,16 @@ class ContentTypeRoles implements \ArrayAccess
     /** @var array<string, string> */
     private array $roles = [];
 
-    public const VIEW = 'view';
-    public const CREATE = 'create';
-    public const EDIT = 'edit';
-    public const PUBLISH = 'publish';
-    public const DELETE = 'delete';
-    public const TRASH = 'trash';
-    public const ARCHIVE = 'archive';
-    public const OWNER = 'owner';
-    public const SHOW_LINK_CREATE = 'show_link_create';
-    public const SHOW_LINK_SEARCH = 'show_link_search';
+    final public const VIEW = 'view';
+    final public const CREATE = 'create';
+    final public const EDIT = 'edit';
+    final public const PUBLISH = 'publish';
+    final public const DELETE = 'delete';
+    final public const TRASH = 'trash';
+    final public const ARCHIVE = 'archive';
+    final public const OWNER = 'owner';
+    final public const SHOW_LINK_CREATE = 'show_link_create';
+    final public const SHOW_LINK_SEARCH = 'show_link_search';
 
     private const TYPES = [
         self::VIEW,
@@ -50,19 +50,12 @@ class ContentTypeRoles implements \ArrayAccess
 
     private function getDefaultValue(string $type): string
     {
-        switch ($type) {
-            case self::VIEW:
-            case self::CREATE:
-            case self::EDIT:
-                return Roles::ROLE_AUTHOR;
-            case self::PUBLISH:
-                return Roles::ROLE_PUBLISHER;
-            case self::SHOW_LINK_SEARCH:
-            case self::SHOW_LINK_CREATE:
-                return Roles::ROLE_USER;
-            default:
-                return 'not-defined';
-        }
+        return match ($type) {
+            self::VIEW, self::CREATE, self::EDIT => Roles::ROLE_AUTHOR,
+            self::PUBLISH => Roles::ROLE_PUBLISHER,
+            self::SHOW_LINK_SEARCH, self::SHOW_LINK_CREATE => Roles::ROLE_USER,
+            default => 'not-defined',
+        };
     }
 
     /**
@@ -78,17 +71,17 @@ class ContentTypeRoles implements \ArrayAccess
         return isset($this->roles[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): ?string
     {
         return $this->roles[$offset] ?? null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->roles[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->roles[$offset]);
     }

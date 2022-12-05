@@ -27,16 +27,13 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class DataLinkFieldType extends DataFieldType
 {
-    protected EventDispatcherInterface $dispatcher;
-
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
-        EventDispatcherInterface $dispatcher
+        protected EventDispatcherInterface $dispatcher
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -72,10 +69,10 @@ class DataLinkFieldType extends DataFieldType
      */
     public function getElasticsearchQuery(DataField $dataField, array $options = []): array
     {
-        $opt = \array_merge([
+        $opt = [...[
                 'nested' => '',
-        ], $options);
-        if (\strlen($opt['nested'])) {
+        ], ...$options];
+        if (\strlen((string) $opt['nested'])) {
             $opt['nested'] .= '.';
         }
 

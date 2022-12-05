@@ -17,11 +17,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 final class AccessDeniedListener implements EventSubscriberInterface
 {
-    private UrlGeneratorInterface $urlGenerator;
-
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(private readonly UrlGeneratorInterface $urlGenerator)
     {
-        $this->urlGenerator = $urlGenerator;
     }
 
     public static function getSubscribedEvents(): array

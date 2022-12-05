@@ -16,25 +16,14 @@ class CreateEnvironmentCommand extends Command
 {
     protected static $defaultName = 'ems:environment:create';
 
-    private LoggerInterface $logger;
-
-    /** @var EnvironmentService */
-    protected $environmentService;
-
-    /** @var DataService */
-    protected $dataService;
-
     private ?SymfonyStyle $io = null;
 
-    public const ARGUMENT_ENV_NAME = 'name';
-    public const OPTION_STRICT = 'strict';
-    public const OPTION_UPDATE_REFERRERS = 'update-referrers';
+    final public const ARGUMENT_ENV_NAME = 'name';
+    final public const OPTION_STRICT = 'strict';
+    final public const OPTION_UPDATE_REFERRERS = 'update-referrers';
 
-    public function __construct(LoggerInterface $logger, EnvironmentService $environmentService, DataService $dataService)
+    public function __construct(private readonly LoggerInterface $logger, protected EnvironmentService $environmentService, protected DataService $dataService)
     {
-        $this->logger = $logger;
-        $this->environmentService = $environmentService;
-        $this->dataService = $dataService;
         parent::__construct();
     }
 

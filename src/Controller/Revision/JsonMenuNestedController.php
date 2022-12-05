@@ -27,24 +27,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class JsonMenuNestedController extends AbstractController
 {
-    private AjaxService $ajax;
-    private JsonMenuRenderer $jsonMenuRenderer;
-    private RevisionService $revisionService;
-    private DataService $dataService;
-    private UserService $userService;
-
-    public function __construct(
-        AjaxService $ajax,
-        JsonMenuRenderer $jsonMenuRenderer,
-        RevisionService $revisionService,
-        DataService $dataService,
-        UserService $userService
-    ) {
-        $this->ajax = $ajax;
-        $this->jsonMenuRenderer = $jsonMenuRenderer;
-        $this->revisionService = $revisionService;
-        $this->dataService = $dataService;
-        $this->userService = $userService;
+    public function __construct(private readonly AjaxService $ajax, private readonly JsonMenuRenderer $jsonMenuRenderer, private readonly RevisionService $revisionService, private readonly DataService $dataService, private readonly UserService $userService)
+    {
     }
 
     public function modal(Request $request, Revision $revision, FieldType $fieldType): JsonResponse

@@ -19,12 +19,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class NotificationRepository extends ServiceEntityRepository
 {
-    private AuthorizationCheckerInterface $authorizationChecker;
-
-    public function __construct(Registry $registry, AuthorizationCheckerInterface $authorizationChecker)
+    public function __construct(Registry $registry, private readonly AuthorizationCheckerInterface $authorizationChecker)
     {
         parent::__construct($registry, Notification::class);
-        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**

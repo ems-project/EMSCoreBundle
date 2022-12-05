@@ -15,15 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class DatatableController extends AbstractController
 {
-    private DatatableService $datatableService;
-    private TableRenderer $tableRenderer;
-    private TableExporter $tableExporter;
-
-    public function __construct(DatatableService $datatableService, TableRenderer $tableRenderer, TableExporter $tableExporter)
+    public function __construct(private readonly DatatableService $datatableService, private readonly TableRenderer $tableRenderer, private readonly TableExporter $tableExporter)
     {
-        $this->datatableService = $datatableService;
-        $this->tableRenderer = $tableRenderer;
-        $this->tableExporter = $tableExporter;
     }
 
     public function ajaxElastica(Request $request, string $hashConfig): Response

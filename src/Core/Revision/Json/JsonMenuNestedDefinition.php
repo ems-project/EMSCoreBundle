@@ -15,19 +15,16 @@ use Twig\Environment;
 
 final class JsonMenuNestedDefinition
 {
-    private Environment $twig;
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private UrlGeneratorInterface $urlGenerator;
-    private FieldType $fieldType;
-    private JsonMenuNested $menu;
-    private ?Revision $revision;
-    private ?string $fieldDocument;
+    private readonly FieldType $fieldType;
+    private readonly JsonMenuNested $menu;
+    private readonly ?Revision $revision;
+    private readonly ?string $fieldDocument;
     /** @var array<mixed> */
-    private array $actionsNames;
+    private readonly array $actionsNames;
     /** @var array<mixed> */
-    private array $blocks;
+    private readonly array $blocks;
     /** @var array<mixed> */
-    private array $context;
+    private readonly array $context;
 
     public string $id;
     /** @var array<mixed> */
@@ -39,14 +36,11 @@ final class JsonMenuNestedDefinition
      * @param array<mixed> $options
      */
     public function __construct(
-        Environment $twig,
-        AuthorizationCheckerInterface $authorizationChecker,
-        UrlGeneratorInterface $urlGenerator,
+        private readonly Environment $twig,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly UrlGeneratorInterface $urlGenerator,
         array $options = []
     ) {
-        $this->twig = $twig;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->urlGenerator = $urlGenerator;
         $this->fieldType = $options['field_type'];
 
         $json = Json::decode($options['structure']);

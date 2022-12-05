@@ -63,7 +63,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
         $reflectionClass = new \ReflectionClass($object);
 
         $data['__jsonclass__'] = [
-                \get_class($object),
+                $object::class,
                 [], // constructor arguments
         ];
         // Parsing all methods of the object
@@ -141,7 +141,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
      *
      * @return array<mixed>|object
      */
-    public function denormalize($data, $class, $format = null, array $context = [])
+    public function denormalize($data, $class, $format = null, array $context = []): array|object
     {
         $class = $data['__jsonclass__'][0];
         $reflectionClass = new \ReflectionClass($class);

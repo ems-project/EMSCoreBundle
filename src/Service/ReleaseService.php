@@ -16,21 +16,8 @@ use Psr\Log\LoggerInterface;
 
 final class ReleaseService implements EntityServiceInterface
 {
-    private ReleaseRepository $releaseRepository;
-    private ContentTypeService $contentTypeService;
-    private DataService $dataService;
-    private ReleaseRevisionService $releaseRevisionService;
-    private PublishService $publishService;
-    private LoggerInterface $logger;
-
-    public function __construct(ReleaseRepository $releaseRepository, ContentTypeService $contentTypeService, DataService $dataService, ReleaseRevisionService $releaseRevisionService, PublishService $publishService, LoggerInterface $logger)
+    public function __construct(private readonly ReleaseRepository $releaseRepository, private readonly ContentTypeService $contentTypeService, private readonly DataService $dataService, private readonly ReleaseRevisionService $releaseRevisionService, private readonly PublishService $publishService, private readonly LoggerInterface $logger)
     {
-        $this->releaseRepository = $releaseRepository;
-        $this->contentTypeService = $contentTypeService;
-        $this->dataService = $dataService;
-        $this->releaseRevisionService = $releaseRevisionService;
-        $this->publishService = $publishService;
-        $this->logger = $logger;
     }
 
     /**
@@ -56,7 +43,7 @@ final class ReleaseService implements EntityServiceInterface
     public function addRevision(Release $release, Revision $revision): void
     {
         if ($revision->getDraft()) {
-            $this->logger->error('log.data.revision.can_not_add_draft_in_release', \array_merge(['release' => $release->getName()], LogRevisionContext::read($revision)));
+            $this->logger->error('log.data.revision.can_not_add_draft_in_release', [...['release' => $release->getName()], ...LogRevisionContext::read($revision)]);
 
             return;
         }
@@ -65,13 +52,13 @@ final class ReleaseService implements EntityServiceInterface
                 continue;
             }
             if ($releaseRevision->getRevision() === $revision) {
-                $this->logger->notice('log.data.revision.already_in_release', \array_merge(['release' => $release->getName()], LogRevisionContext::read($revision)));
+                $this->logger->notice('log.data.revision.already_in_release', [...['release' => $release->getName()], ...LogRevisionContext::read($revision)]);
 
                 return;
             }
             $releaseRevision->setRevision($revision);
             $this->releaseRepository->create($release);
-            $this->logger->notice('log.data.revision.document_already_in_release_but_updated', \array_merge(['release' => $release->getName()], LogRevisionContext::read($revision)));
+            $this->logger->notice('log.data.revision.document_already_in_release_but_updated', [...['release' => $release->getName()], ...LogRevisionContext::read($revision)]);
 
             return;
         }
@@ -82,7 +69,7 @@ final class ReleaseService implements EntityServiceInterface
         $releaseRevision->setRevision($revision);
         $release->addRevision($releaseRevision);
         $this->releaseRepository->create($release);
-        $this->logger->notice('log.data.revision.added_to_release', \array_merge(['release' => $release->getName()], LogRevisionContext::read($revision)));
+        $this->logger->notice('log.data.revision.added_to_release', [...['release' => $release->getName()], ...LogRevisionContext::read($revision)]);
     }
 
     /**
@@ -102,7 +89,7 @@ final class ReleaseService implements EntityServiceInterface
 
             try {
                 $revision = $this->dataService->getRevisionByEnvironment($emsLinkObject->getOuuid(), $contentType, $release->getEnvironmentSource());
-            } catch (NoResultException $e) {
+            } catch (NoResultException) {
                 $revision = null;
             }
 
@@ -214,7 +201,7 @@ final class ReleaseService implements EntityServiceInterface
         foreach ($release->getRevisions() as $releaseRevision) {
             try {
                 $revisionToRemove = $this->dataService->getRevisionByEnvironment($releaseRevision->getRevisionOuuid(), $releaseRevision->getContentType(), $release->getEnvironmentTarget());
-            } catch (NoResultException $e) {
+            } catch (NoResultException) {
                 $revisionToRemove = null;
             }
             $releaseRevision->setRevisionBeforePublish($revisionToRemove);

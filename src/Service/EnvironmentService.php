@@ -23,8 +23,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EnvironmentService implements EntityServiceInterface
 {
-    private Registry $doctrine;
-
     /** @var array<string, Environment> */
     private array $environments = [];
     /** @var array<string, Environment> */
@@ -32,29 +30,16 @@ class EnvironmentService implements EntityServiceInterface
     /** @var array<int, Environment> */
     private array $environmentsById = [];
 
-    private UserService $userService;
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private LoggerInterface $logger;
-    private ElasticaService $elasticaService;
-    private string $instanceId;
-
-    private EnvironmentRepository $environmentRepository;
+    private readonly EnvironmentRepository $environmentRepository;
 
     public function __construct(
-        Registry $doctrine,
-        UserService $userService,
-        AuthorizationCheckerInterface $authorizationChecker,
-        LoggerInterface $logger,
-        ElasticaService $elasticaService,
-        string $instanceId
+        private readonly Registry $doctrine,
+        private readonly UserService $userService,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly LoggerInterface $logger,
+        private readonly ElasticaService $elasticaService,
+        private readonly string $instanceId
     ) {
-        $this->doctrine = $doctrine;
-        $this->userService = $userService;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->logger = $logger;
-        $this->elasticaService = $elasticaService;
-        $this->instanceId = $instanceId;
-
         $environmentRepository = $doctrine->getRepository(Environment::class);
         if (!$environmentRepository instanceof EnvironmentRepository) {
             throw new \RuntimeException('Not found repository');
@@ -256,18 +241,12 @@ class EnvironmentService implements EntityServiceInterface
         return $stats;
     }
 
-    /**
-     * @return Environment|false
-     */
-    public function getAliasByName(string $name)
+    public function getAliasByName(string $name): Environment|false
     {
         return $this->getByName($name);
     }
 
-    /**
-     * @return Environment|false
-     */
-    public function getByName(string $name)
+    public function getByName(string $name): Environment|false
     {
         if (isset($this->getEnvironments()[$name])) {
             return $this->getEnvironments()[$name];
@@ -297,11 +276,9 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
-     * @return Environment|false
-     *
      * @deprecated cant find usage of this function, should be removed if proven so!
      */
-    public function getById(int $id)
+    public function getById(int $id): Environment|false
     {
         if (isset($this->getEnvironmentsById()[$id])) {
             return $this->getEnvironmentsById()[$id];

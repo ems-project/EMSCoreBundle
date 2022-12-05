@@ -6,10 +6,7 @@ use EMS\Helpers\Standard\Json;
 
 abstract class JsonDeserializer
 {
-    /**
-     * @param mixed $value
-     */
-    public function deserialize(string $name, $value): void
+    public function deserialize(string $name, mixed $value): void
     {
         if ($this->isJsonClassArray($value)) {
             $subJson = JsonClass::fromJsonString(Json::encode($value));
@@ -61,10 +58,7 @@ abstract class JsonDeserializer
         return $deserialized;
     }
 
-    /**
-     * @param mixed $array
-     */
-    private function isJsonClassArray($array): bool
+    private function isJsonClassArray(mixed $array): bool
     {
         if (!\is_array($array)) {
             return false;

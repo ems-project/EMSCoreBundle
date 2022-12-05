@@ -4,13 +4,10 @@ namespace EMS\CoreBundle\Exception;
 
 use EMS\CoreBundle\Entity\Revision;
 
-class NotLockedException extends \Exception
+class NotLockedException extends \Exception implements \Stringable
 {
-    private Revision $revision;
-
-    public function __construct(Revision $revision)
+    public function __construct(private readonly Revision $revision)
     {
-        $this->revision = $revision;
         $message = 'Update on a not locked object '.$revision->giveContentType()->getName().':'.$revision->getOuuid().' #'.$revision->getId();
         parent::__construct($message, 0, null);
     }
@@ -20,7 +17,7 @@ class NotLockedException extends \Exception
         return $this->revision;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return parent::getMessage();
     }

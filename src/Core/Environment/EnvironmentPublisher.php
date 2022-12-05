@@ -9,18 +9,11 @@ use Psr\Log\LogLevel;
 
 class EnvironmentPublisher
 {
-    private Revision $revision;
-
-    /** @var array<int, array{'level': string, 'ouuid': string, 'revision': string, 'message': string}> */
-    private array $messages;
-
     /**
      * @param array<int, array{'level': string, 'ouuid': string, 'revision': string, 'message': string}> $messages
      */
-    public function __construct(Revision $revision, array $messages)
+    public function __construct(private readonly Revision $revision, private array $messages)
     {
-        $this->revision = $revision;
-        $this->messages = $messages;
     }
 
     /**

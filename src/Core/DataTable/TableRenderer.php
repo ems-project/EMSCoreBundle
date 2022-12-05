@@ -16,15 +16,8 @@ use Twig\TemplateWrapper;
 
 final class TableRenderer
 {
-    private Environment $twig;
-    private TranslatorInterface $translator;
-    private ElasticaLogger $elasticaLogger;
-
-    public function __construct(Environment $twig, TranslatorInterface $translator, ElasticaLogger $elasticaLogger)
+    public function __construct(private readonly Environment $twig, private readonly TranslatorInterface $translator, private readonly ElasticaLogger $elasticaLogger)
     {
-        $this->twig = $twig;
-        $this->translator = $translator;
-        $this->elasticaLogger = $elasticaLogger;
     }
 
     /**

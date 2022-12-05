@@ -23,7 +23,7 @@ use EMS\Helpers\Standard\Type;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\ContentTypeRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class ContentType extends JsonDeserializer implements \JsonSerializable, EntityInterface
+class ContentType extends JsonDeserializer implements \JsonSerializable, EntityInterface, \Stringable
 {
     use CreatedModifiedTrait;
     /**
@@ -260,7 +260,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->modified = DateTime::create('now');
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name;
     }
@@ -649,8 +649,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     /**
      * Set environment.
-     *
-     * @param Environment $environment
      *
      * @return ContentType
      */

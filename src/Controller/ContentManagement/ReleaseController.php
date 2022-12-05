@@ -31,15 +31,9 @@ use Symfony\Component\HttpFoundation\Response;
 final class ReleaseController extends AbstractController
 {
     public const ROLLBACK_ACTION = 'rollback_action';
-    private LoggerInterface $logger;
-    private ReleaseService $releaseService;
-    private ReleaseRevisionService $releaseRevisionService;
 
-    public function __construct(LoggerInterface $logger, ReleaseService $releaseService, ReleaseRevisionService $releaseRevisionService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly ReleaseService $releaseService, private readonly ReleaseRevisionService $releaseRevisionService)
     {
-        $this->logger = $logger;
-        $this->releaseService = $releaseService;
-        $this->releaseRevisionService = $releaseRevisionService;
     }
 
     public function ajaxReleaseTable(Request $request, ?Revision $revision = null): Response
@@ -89,13 +83,10 @@ final class ReleaseController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
-                switch ($action->getName()) {
-                    case TableAbstract::DELETE_ACTION:
-                        $this->releaseService->deleteByIds($table->getSelected());
-                        break;
-                    default:
-                        $this->logger->error('log.controller.release.unknown_action');
-                }
+                match ($action->getName()) {
+                    TableAbstract::DELETE_ACTION => $this->releaseService->deleteByIds($table->getSelected()),
+                    default => $this->logger->error('log.controller.release.unknown_action'),
+                };
             } else {
                 $this->logger->error('log.controller.release.unknown_action');
             }
@@ -135,13 +126,10 @@ final class ReleaseController extends AbstractController
         $revisionsForm->handleRequest($request);
         if ($revisionsForm->isSubmitted() && $revisionsForm->isValid()) {
             if ($revisionsForm instanceof Form && ($action = $revisionsForm->getClickedButton()) instanceof SubmitButton) {
-                switch ($action->getName()) {
-                    case TableAbstract::REMOVE_ACTION:
-                        $this->releaseService->removeRevisions($release, $revisionsTable->getSelected());
-                        break;
-                    default:
-                        $this->logger->error('log.controller.release.unknown_action');
-                }
+                match ($action->getName()) {
+                    TableAbstract::REMOVE_ACTION => $this->releaseService->removeRevisions($release, $revisionsTable->getSelected()),
+                    default => $this->logger->error('log.controller.release.unknown_action'),
+                };
             } else {
                 $this->logger->error('log.controller.release.unknown_action');
             }
@@ -240,13 +228,10 @@ final class ReleaseController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
-                switch ($action->getName()) {
-                    case TableAbstract::ADD_ACTION:
-                        $this->releaseService->addRevisions($release, $table->getSelected());
-                        break;
-                    default:
-                        $this->logger->error('log.controller.release.unknown_action');
-                }
+                match ($action->getName()) {
+                    TableAbstract::ADD_ACTION => $this->releaseService->addRevisions($release, $table->getSelected()),
+                    default => $this->logger->error('log.controller.release.unknown_action'),
+                };
             } else {
                 $this->logger->error('log.controller.release.unknown_action');
             }

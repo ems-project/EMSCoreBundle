@@ -16,15 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ResettingController extends AbstractController
 {
-    private UserManager $userManager;
-    private Authenticator $authenticator;
-    private LoggerInterface $logger;
-
-    public function __construct(UserManager $userManager, Authenticator $authenticator, LoggerInterface $logger)
+    public function __construct(private readonly UserManager $userManager, private readonly Authenticator $authenticator, private readonly LoggerInterface $logger)
     {
-        $this->userManager = $userManager;
-        $this->authenticator = $authenticator;
-        $this->logger = $logger;
     }
 
     public function request(Request $request): Response

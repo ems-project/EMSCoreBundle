@@ -23,26 +23,16 @@ final class BulkActionCommand extends Command
 {
     protected static $defaultName = 'ems:notification:bulk-action';
     private const CONTENT_TYPE_NAME = 'contentTypeName';
-    private NotificationService $notificationService;
-    private EnvironmentService $environmentService;
-    private ElasticaService $elasticaService;
-    private RevisionService $revisionService;
     private SymfonyStyle $io;
-    private ContentTypeService $contentTypeService;
 
     public function __construct(
-        NotificationService $notificationService,
-        EnvironmentService $environmentService,
-        ContentTypeService $contentTypeService,
-        ElasticaService $elasticaService,
-        RevisionService $revisionService
+        private readonly NotificationService $notificationService,
+        private readonly EnvironmentService $environmentService,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly ElasticaService $elasticaService,
+        private readonly RevisionService $revisionService
     ) {
         parent::__construct();
-        $this->notificationService = $notificationService;
-        $this->environmentService = $environmentService;
-        $this->contentTypeService = $contentTypeService;
-        $this->elasticaService = $elasticaService;
-        $this->revisionService = $revisionService;
     }
 
     protected function configure(): void

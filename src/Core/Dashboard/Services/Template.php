@@ -15,11 +15,8 @@ use Twig\Environment;
 
 class Template extends AbstractType implements DashboardInterface
 {
-    private Environment $twig;
-
-    public function __construct(Environment $twig)
+    public function __construct(private readonly Environment $twig)
     {
-        $this->twig = $twig;
     }
 
     /**

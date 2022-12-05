@@ -28,11 +28,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateReleaseCommand extends AbstractCommand
 {
     protected static $defaultName = Commands::RELEASE_CREATE;
-    private ReleaseService $releaseService;
-    private EnvironmentService $environmentService;
-    private ContentTypeService $contentTypeService;
-    private RevisionService $revisionService;
-    private ElasticaService $elasticaService;
 
     private ContentType $contentType;
     private Environment $target;
@@ -43,13 +38,8 @@ class CreateReleaseCommand extends AbstractCommand
     private const ARGUMENT_TARGET = 'target';
     private const OPTION_QUERY = 'query';
 
-    public function __construct(ReleaseService $releaseService, EnvironmentService $environmentService, ContentTypeService $contentTypeService, RevisionService $revisionService, ElasticaService $elasticaService)
+    public function __construct(private readonly ReleaseService $releaseService, private readonly EnvironmentService $environmentService, private readonly ContentTypeService $contentTypeService, private readonly RevisionService $revisionService, private readonly ElasticaService $elasticaService)
     {
-        $this->releaseService = $releaseService;
-        $this->environmentService = $environmentService;
-        $this->contentTypeService = $contentTypeService;
-        $this->revisionService = $revisionService;
-        $this->elasticaService = $elasticaService;
         parent::__construct();
     }
 

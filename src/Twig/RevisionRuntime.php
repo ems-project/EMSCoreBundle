@@ -14,11 +14,8 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 class RevisionRuntime implements RuntimeExtensionInterface
 {
-    private RevisionService $revisionService;
-
-    public function __construct(RevisionService $revisionService)
+    public function __construct(private readonly RevisionService $revisionService)
     {
-        $this->revisionService = $revisionService;
     }
 
     public function getRevision(string $ouuid, string $contentTypeName): ?Revision
@@ -65,10 +62,7 @@ class RevisionRuntime implements RuntimeExtensionInterface
         return $this->revisionService->findAllDraftsByContentTypeName($contentTypeName);
     }
 
-    /**
-     * @param string|EMSLink $documentLink
-     */
-    public function getDocumentInfo($documentLink): ?DocumentInfo
+    public function getDocumentInfo(string|EMSLink $documentLink): ?DocumentInfo
     {
         try {
             if (\is_string($documentLink)) {
@@ -76,7 +70,7 @@ class RevisionRuntime implements RuntimeExtensionInterface
             }
 
             return $this->revisionService->getDocumentInfo($documentLink);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             return null;
         }
     }

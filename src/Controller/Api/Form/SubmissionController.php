@@ -16,13 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class SubmissionController extends AbstractController
 {
-    private FormSubmissionService $formSubmissionService;
-    private LoggerInterface $logger;
-
-    public function __construct(FormSubmissionService $formSubmissionService, LoggerInterface $logger)
+    public function __construct(private readonly FormSubmissionService $formSubmissionService, private readonly LoggerInterface $logger)
     {
-        $this->formSubmissionService = $formSubmissionService;
-        $this->logger = $logger;
     }
 
     public function submit(Request $request): Response

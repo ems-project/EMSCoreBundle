@@ -13,15 +13,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ManagedAliases extends Command
 {
     protected static $defaultName = 'ems:managedalias:list';
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var AliasService */
-    protected $aliasService;
 
-    public function __construct(LoggerInterface $logger, AliasService $aliasService)
+    public function __construct(protected LoggerInterface $logger, protected AliasService $aliasService)
     {
-        $this->logger = $logger;
-        $this->aliasService = $aliasService;
         parent::__construct();
     }
 

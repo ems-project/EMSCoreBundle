@@ -54,18 +54,14 @@ class UploadedAsset implements EntityInterface
     private bool $available;
 
     /**
-     * @var int|string
-     *
      * @ORM\Column(name="size", type="bigint")
      */
-    private $size;
+    private int|string|null $size = null;
 
     /**
-     * @var int|string
-     *
      * @ORM\Column(name="uploaded", type="bigint")
      */
-    private $uploaded;
+    private int|string|null $uploaded = null;
 
     /**
      * @ORM\Column(name="hash_algo", type="string", length=32, options={"default" : "sha1"})

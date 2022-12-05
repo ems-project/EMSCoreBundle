@@ -18,11 +18,8 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 final class SelectUserPropertyType extends AbstractType
 {
-    private UserService $userService;
-
-    public function __construct(UserService $userService)
+    public function __construct(private readonly UserService $userService)
     {
-        $this->userService = $userService;
     }
 
     public function getParent(): string

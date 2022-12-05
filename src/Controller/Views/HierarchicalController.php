@@ -12,13 +12,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HierarchicalController extends AbstractController
 {
-    private ContentTypeService $contentTypeService;
-    private SearchService $searchService;
-
-    public function __construct(ContentTypeService $contentTypeService, SearchService $searchService)
+    public function __construct(private readonly ContentTypeService $contentTypeService, private readonly SearchService $searchService)
     {
-        $this->contentTypeService = $contentTypeService;
-        $this->searchService = $searchService;
     }
 
     public function item(View $view, string $key): Response
@@ -30,7 +25,7 @@ class HierarchicalController extends AbstractController
         }
         try {
             $document = $this->searchService->getDocument($contentType, $ouuid[1]);
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException) {
             throw new NotFoundHttpException(\sprintf('Document %s not found', $ouuid[1]));
         }
 

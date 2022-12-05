@@ -52,61 +52,11 @@ use Twig\TwigFunction;
 
 class AppExtension extends AbstractExtension
 {
-    protected FormFactory $formFactory;
-    protected FileService $fileService;
-    protected RequestRuntime $commonRequestRuntime;
-    /** @var array<mixed> */
-    protected $assetConfig;
-    private Registry $doctrine;
-    private UserService $userService;
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private ContentTypeService $contentTypeService;
-    private RouterInterface $router;
-    private TwigEnvironment $twig;
-    private ObjectChoiceListFactory $objectChoiceListFactory;
-    private LoggerInterface $logger;
-    private MailerService $mailer;
-    private ElasticaService $elasticaService;
-    private SearchService $searchService;
-    private AssetRuntime $assetRuntime;
-
     /**
      * @param array<mixed> $assetConfig
      */
-    public function __construct(
-        Registry $doctrine,
-        AuthorizationCheckerInterface $authorizationChecker,
-        UserService $userService,
-        ContentTypeService $contentTypeService,
-        RouterInterface $router,
-        TwigEnvironment $twig,
-        ObjectChoiceListFactory $objectChoiceListFactory,
-        LoggerInterface $logger,
-        FormFactory $formFactory,
-        FileService $fileService,
-        RequestRuntime $commonRequestRuntime,
-        MailerService $mailer,
-        ElasticaService $elasticaService,
-        SearchService $searchService,
-        AssetRuntime $assetRuntime,
-        array $assetConfig
-    ) {
-        $this->doctrine = $doctrine;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->userService = $userService;
-        $this->contentTypeService = $contentTypeService;
-        $this->router = $router;
-        $this->twig = $twig;
-        $this->objectChoiceListFactory = $objectChoiceListFactory;
-        $this->logger = $logger;
-        $this->formFactory = $formFactory;
-        $this->fileService = $fileService;
-        $this->commonRequestRuntime = $commonRequestRuntime;
-        $this->mailer = $mailer;
-        $this->elasticaService = $elasticaService;
-        $this->searchService = $searchService;
-        $this->assetRuntime = $assetRuntime;
-        $this->assetConfig = $assetConfig;
+    public function __construct(private readonly Registry $doctrine, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly UserService $userService, private readonly ContentTypeService $contentTypeService, private readonly RouterInterface $router, private readonly TwigEnvironment $twig, private readonly ObjectChoiceListFactory $objectChoiceListFactory, private readonly LoggerInterface $logger, protected FormFactory $formFactory, protected FileService $fileService, protected RequestRuntime $commonRequestRuntime, private readonly MailerService $mailer, private readonly ElasticaService $elasticaService, private readonly SearchService $searchService, private readonly AssetRuntime $assetRuntime, protected array $assetConfig)
+    {
     }
 
     /**
@@ -115,25 +65,25 @@ class AppExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('get_content_types', [$this, 'getContentTypes']),
-            new TwigFunction('cant_be_finalized', [$this, 'cantBeFinalized']),
-            new TwigFunction('sequence', [$this, 'getSequenceNextValue']),
-            new TwigFunction('diff_text', [$this, 'diffText'], ['is_safe' => ['html']]),
-            new TwigFunction('diff', [$this, 'diff'], ['is_safe' => ['html']]),
-            new TwigFunction('diff_html', [$this, 'diffHtml'], ['is_safe' => ['html']]),
-            new TwigFunction('diff_icon', [$this, 'diffIcon'], ['is_safe' => ['html']]),
-            new TwigFunction('diff_raw', [$this, 'diffRaw'], ['is_safe' => ['html']]),
-            new TwigFunction('diff_color', [$this, 'diffColor'], ['is_safe' => ['html']]),
-            new TwigFunction('diff_boolean', [$this, 'diffBoolean'], ['is_safe' => ['html']]),
-            new TwigFunction('diff_choice', [$this, 'diffChoice'], ['is_safe' => ['html']]),
-            new TwigFunction('diff_data_link', [$this, 'diffDataLink'], ['is_safe' => ['html']]),
-            new TwigFunction('diff_date', [$this, 'diffDate'], ['is_safe' => ['html']]),
-            new TwigFunction('diff_time', [$this, 'diffTime'], ['is_safe' => ['html']]),
-            new TwigFunction('is_super', [$this, 'isSuper']),
-            new TwigFunction('emsco_asset_path', [$this, 'assetPath'], ['is_safe' => ['html']]),
-            new TwigFunction('call_user_func', [$this, 'callUserFunc']),
-            new TwigFunction('emsco_generate_email', [$this, 'generateEmailMessage']),
-            new TwigFunction('emsco_send_email', [$this, 'sendEmail']),
+            new TwigFunction('get_content_types', $this->getContentTypes(...)),
+            new TwigFunction('cant_be_finalized', $this->cantBeFinalized(...)),
+            new TwigFunction('sequence', $this->getSequenceNextValue(...)),
+            new TwigFunction('diff_text', $this->diffText(...), ['is_safe' => ['html']]),
+            new TwigFunction('diff', $this->diff(...), ['is_safe' => ['html']]),
+            new TwigFunction('diff_html', $this->diffHtml(...), ['is_safe' => ['html']]),
+            new TwigFunction('diff_icon', $this->diffIcon(...), ['is_safe' => ['html']]),
+            new TwigFunction('diff_raw', $this->diffRaw(...), ['is_safe' => ['html']]),
+            new TwigFunction('diff_color', $this->diffColor(...), ['is_safe' => ['html']]),
+            new TwigFunction('diff_boolean', $this->diffBoolean(...), ['is_safe' => ['html']]),
+            new TwigFunction('diff_choice', $this->diffChoice(...), ['is_safe' => ['html']]),
+            new TwigFunction('diff_data_link', $this->diffDataLink(...), ['is_safe' => ['html']]),
+            new TwigFunction('diff_date', $this->diffDate(...), ['is_safe' => ['html']]),
+            new TwigFunction('diff_time', $this->diffTime(...), ['is_safe' => ['html']]),
+            new TwigFunction('is_super', $this->isSuper(...)),
+            new TwigFunction('emsco_asset_path', $this->assetPath(...), ['is_safe' => ['html']]),
+            new TwigFunction('call_user_func', $this->callUserFunc(...)),
+            new TwigFunction('emsco_generate_email', $this->generateEmailMessage(...)),
+            new TwigFunction('emsco_send_email', $this->sendEmail(...)),
             new TwigFunction('emsco_users_enabled', [UserRuntime::class, 'getUsersEnabled']),
             new TwigFunction('emsco_uuid', [Uuid::class, 'uuid4']),
             new TwigFunction('emsco_datatable', [DatatableRuntime::class, 'generateDatatable'], ['is_safe' => ['html']]),
@@ -160,45 +110,45 @@ class AppExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('data', [$this, 'data']),
-            new TwigFilter('inArray', [$this, 'inArray']),
-            new TwigFilter('firstInArray', [$this, 'firstInArray']),
-            new TwigFilter('md5', [$this, 'md5']),
-            new TwigFilter('convertJavaDateFormat', [$this, 'convertJavaDateFormat']),
-            new TwigFilter('convertJavascriptDateFormat', [$this, 'convertJavascriptDateFormat']),
-            new TwigFilter('convertJavascriptDateRangeFormat', [$this, 'convertJavascriptDateRangeFormat']),
-            new TwigFilter('getTimeFieldTimeFormat', [$this, 'getTimeFieldTimeFormat']),
-            new TwigFilter('soapRequest', [$this, 'soapRequest']),
-            new TwigFilter('luma', [$this, 'relativeLuminance']),
-            new TwigFilter('contrastratio', [$this, 'contrastRatio']),
-            new TwigFilter('all_granted', [$this, 'allGranted']),
-            new TwigFilter('one_granted', [$this, 'oneGranted']),
-            new TwigFilter('in_my_circles', [$this, 'inMyCircles']),
-            new TwigFilter('data_link', [$this, 'dataLink'], ['is_safe' => ['html']]),
-            new TwigFilter('data_label', [$this, 'dataLabel'], ['is_safe' => ['html']]),
-            new TwigFilter('get_content_type', [$this, 'getContentType']),
+            new TwigFilter('data', $this->data(...)),
+            new TwigFilter('inArray', $this->inArray(...)),
+            new TwigFilter('firstInArray', $this->firstInArray(...)),
+            new TwigFilter('md5', $this->md5(...)),
+            new TwigFilter('convertJavaDateFormat', $this->convertJavaDateFormat(...)),
+            new TwigFilter('convertJavascriptDateFormat', $this->convertJavascriptDateFormat(...)),
+            new TwigFilter('convertJavascriptDateRangeFormat', $this->convertJavascriptDateRangeFormat(...)),
+            new TwigFilter('getTimeFieldTimeFormat', $this->getTimeFieldTimeFormat(...)),
+            new TwigFilter('soapRequest', $this->soapRequest(...)),
+            new TwigFilter('luma', $this->relativeLuminance(...)),
+            new TwigFilter('contrastratio', $this->contrastRatio(...)),
+            new TwigFilter('all_granted', $this->allGranted(...)),
+            new TwigFilter('one_granted', $this->oneGranted(...)),
+            new TwigFilter('in_my_circles', $this->inMyCircles(...)),
+            new TwigFilter('data_link', $this->dataLink(...), ['is_safe' => ['html']]),
+            new TwigFilter('data_label', $this->dataLabel(...), ['is_safe' => ['html']]),
+            new TwigFilter('get_content_type', $this->getContentType(...)),
             new TwigFilter('emsco_get_environment', [EnvironmentRuntime::class, 'getEnvironment']),
-            new TwigFilter('generate_from_template', [$this, 'generateFromTemplate']),
-            new TwigFilter('objectChoiceLoader', [$this, 'objectChoiceLoader']),
-            new TwigFilter('groupedObjectLoader', [$this, 'groupedObjectLoader']),
-            new TwigFilter('propertyPath', [$this, 'propertyPath']),
-            new TwigFilter('is_super', [$this, 'isSuper']),
+            new TwigFilter('generate_from_template', $this->generateFromTemplate(...)),
+            new TwigFilter('objectChoiceLoader', $this->objectChoiceLoader(...)),
+            new TwigFilter('groupedObjectLoader', $this->groupedObjectLoader(...)),
+            new TwigFilter('propertyPath', $this->propertyPath(...)),
+            new TwigFilter('is_super', $this->isSuper(...)),
             new TwigFilter('i18n', [I18nRuntime::class, 'i18n']),
-            new TwigFilter('internal_links', [$this, 'internalLinks']),
-            new TwigFilter('src_path', [$this, 'srcPath']),
-            new TwigFilter('get_user', [$this, 'getUser']),
-            new TwigFilter('displayname', [$this, 'displayName']),
-            new TwigFilter('date_difference', [$this, 'dateDifference']),
-            new TwigFilter('debug', [$this, 'debug']),
-            new TwigFilter('search', [$this, 'deprecatedSearch'], ['deprecated' => true, 'alternative' => 'emsco_search']),
-            new TwigFilter('emsco_search', [$this, 'search']),
-            new TwigFilter('call_user_func', [$this, 'callUserFunc']),
-            new TwigFilter('merge_recursive', [$this, 'arrayMergeRecursive']),
-            new TwigFilter('array_intersect', [$this, 'arrayIntersect']),
-            new TwigFilter('get_string', [$this, 'getString']),
-            new TwigFilter('get_file', [$this, 'getFile']),
-            new TwigFilter('get_field_by_path', [$this, 'getFieldByPath']),
-            new TwigFilter('json_decode', [$this, 'jsonDecode']),
+            new TwigFilter('internal_links', $this->internalLinks(...)),
+            new TwigFilter('src_path', $this->srcPath(...)),
+            new TwigFilter('get_user', $this->getUser(...)),
+            new TwigFilter('displayname', $this->displayName(...)),
+            new TwigFilter('date_difference', $this->dateDifference(...)),
+            new TwigFilter('debug', $this->debug(...)),
+            new TwigFilter('search', $this->deprecatedSearch(...), ['deprecated' => true, 'alternative' => 'emsco_search']),
+            new TwigFilter('emsco_search', $this->search(...)),
+            new TwigFilter('call_user_func', $this->callUserFunc(...)),
+            new TwigFilter('merge_recursive', $this->arrayMergeRecursive(...)),
+            new TwigFilter('array_intersect', $this->arrayIntersect(...)),
+            new TwigFilter('get_string', $this->getString(...)),
+            new TwigFilter('get_file', $this->getFile(...)),
+            new TwigFilter('get_field_by_path', $this->getFieldByPath(...)),
+            new TwigFilter('json_decode', $this->jsonDecode(...)),
             new TwigFilter('get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
             new TwigFilter('emsco_document_info', [RevisionRuntime::class, 'getDocumentInfo']),
             new TwigFilter('emsco_log_notice', [CoreRuntime::class, 'logNotice']),
@@ -207,8 +157,8 @@ class AppExtension extends AbstractExtension
             new TwigFilter('emsco_guess_locale', [DataExtractorRuntime::class, 'guessLocale']),
             new TwigFilter('emsco_asset_meta', [DataExtractorRuntime::class, 'assetMeta']),
             // deprecated
-            new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true, 'alternative' => 'ems_webalize']),
-            new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true, 'alternative' => 'ems_webalize']),
+            new TwigFilter('url_generator', Encoder::webalize(...), ['deprecated' => true, 'alternative' => 'ems_webalize']),
+            new TwigFilter('emsco_webalize', Encoder::webalize(...), ['deprecated' => true, 'alternative' => 'ems_webalize']),
             new TwigFilter('get_environment', [EnvironmentRuntime::class, 'getEnvironment'], ['deprecated' => true, 'alternative' => 'emsco_get_environment']),
         ];
     }
@@ -533,7 +483,7 @@ class AppExtension extends AbstractExtension
                     }
                 }
                 if (!\in_array($item, $a)) {
-                    $out .= '<'.$tag.' class="text-'.$delColor.'"><del class="diffmod">'.\htmlentities($value).'</del></'.$tag.'>';
+                    $out .= '<'.$tag.' class="text-'.$delColor.'"><del class="diffmod">'.\htmlentities((string) $value).'</del></'.$tag.'>';
                 }
             }
         }
@@ -547,9 +497,9 @@ class AppExtension extends AbstractExtension
                 }
             }
             if (!$compare || \in_array($item, $b)) {
-                $out .= '<'.$tag.' class="" data-ems-id="'.$item.'">'.\htmlentities($value).'</'.$tag.'>';
+                $out .= '<'.$tag.' class="" data-ems-id="'.$item.'">'.\htmlentities((string) $value).'</'.$tag.'>';
             } else {
-                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.\htmlentities($value).'</ins></'.$tag.'>';
+                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.\htmlentities((string) $value).'</ins></'.$tag.'>';
             }
         }
 
@@ -687,18 +637,15 @@ class AppExtension extends AbstractExtension
         return \array_merge_recursive($arrays);
     }
 
-    public function cantBeFinalized(string $message = '', int $code = 0, \Throwable $previous = null): void
+    public function cantBeFinalized(string $message = '', int $code = 0, \Throwable $previous = null): never
     {
         throw new CantBeFinalizedException($message, $code, $previous);
     }
 
     /**
-     * @param mixed $function
-     * @param mixed ...$parameter
-     *
      * @return mixed
      */
-    public function callUserFunc($function, ...$parameter)
+    public function callUserFunc(mixed $function, mixed ...$parameter)
     {
         return \call_user_func($function, $parameter);
     }
@@ -867,7 +814,7 @@ class AppExtension extends AbstractExtension
     /**
      * @param string|string[] $circles
      */
-    public function inMyCircles($circles): bool
+    public function inMyCircles(string|array $circles): bool
     {
         $condition = new InMyCircles($this->userService, $this->authorizationChecker);
 
@@ -1009,7 +956,7 @@ class AppExtension extends AbstractExtension
             $document = $this->searchService->getDocument($contentType, $ouuid);
 
             return $document->getSource();
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException) {
             return null;
         }
     }
@@ -1104,19 +1051,17 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param mixed        $needle
      * @param array<mixed> $haystack
      */
-    public function inArray($needle, array $haystack): bool
+    public function inArray(mixed $needle, array $haystack): bool
     {
         return false !== \array_search($needle, $haystack);
     }
 
     /**
-     * @param mixed        $needle
      * @param array<mixed> $haystack
      */
-    public function firstInArray($needle, array $haystack): bool
+    public function firstInArray(mixed $needle, array $haystack): bool
     {
         return 0 === \array_search($needle, $haystack);
     }
@@ -1140,12 +1085,11 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param mixed                                                               $wsdl
      * @param array{function: string, options?: array<mixed>, parameters?: mixed} $arguments
      *
      * @return mixed
      */
-    public function soapRequest($wsdl, array $arguments)
+    public function soapRequest(mixed $wsdl, array $arguments)
     {
         /** @var \SoapClient $soapClient */
         $soapClient = null;
@@ -1188,7 +1132,7 @@ class AppExtension extends AbstractExtension
 
             if ($contentType->hasLabelField()) {
                 $label = $emsSource->get($contentType->giveLabelField(), $emsLink->getEmsId());
-                $out .= (\strlen($label) > 0 ? $label : $emsLink->getEmsId());
+                $out .= (\strlen((string) $label) > 0 ? $label : $emsLink->getEmsId());
             } else {
                 $out .= $emsLink->getEmsId();
             }

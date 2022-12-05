@@ -18,8 +18,6 @@ final class DataLinks
     /** @var array<mixed> */
     private array $items = [];
     private ?string $locale = null;
-    private int $page;
-    private string $pattern;
     private ?string $querySearchName = null;
     private ?Document $referrerDocument = null;
     private ?int $searchId = null;
@@ -27,10 +25,8 @@ final class DataLinks
 
     private bool $customViewRendered = false;
 
-    public function __construct(int $page, string $pattern)
+    public function __construct(private readonly int $page, private readonly string $pattern)
     {
-        $this->page = $page;
-        $this->pattern = $pattern;
     }
 
     public function add(string $id, string $text): self

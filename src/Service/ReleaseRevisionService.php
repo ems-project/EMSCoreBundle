@@ -17,19 +17,8 @@ use Psr\Log\LoggerInterface;
 
 final class ReleaseRevisionService implements QueryServiceInterface, EntityServiceInterface
 {
-    private ReleaseRevisionRepository $releaseRevisionRepository;
-    private RevisionRepository $revisionRepository;
-    private LoggerInterface $logger;
-    private UserService $userService;
-    private ContentTypeService $contentTypeService;
-
-    public function __construct(ReleaseRevisionRepository $releaseRevisionRepository, RevisionRepository $revisionRepository, LoggerInterface $logger, ContentTypeService $contentTypeService, UserService $userService)
+    public function __construct(private readonly ReleaseRevisionRepository $releaseRevisionRepository, private readonly RevisionRepository $revisionRepository, private readonly LoggerInterface $logger, private readonly ContentTypeService $contentTypeService, private readonly UserService $userService)
     {
-        $this->releaseRevisionRepository = $releaseRevisionRepository;
-        $this->revisionRepository = $revisionRepository;
-        $this->logger = $logger;
-        $this->userService = $userService;
-        $this->contentTypeService = $contentTypeService;
     }
 
     public function isQuerySortable(): bool

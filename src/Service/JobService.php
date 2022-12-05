@@ -22,19 +22,11 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class JobService implements EntityServiceInterface
 {
-    private ObjectManager $em;
-    private JobRepository $repository;
-    private KernelInterface $kernel;
-    private LoggerInterface $logger;
-    private TokenStorageInterface $tokenStorage;
+    private readonly ObjectManager $em;
 
-    public function __construct(Registry $doctrine, KernelInterface $kernel, LoggerInterface $logger, JobRepository $jobRepository, TokenStorageInterface $tokenStorage)
+    public function __construct(Registry $doctrine, private readonly KernelInterface $kernel, private readonly LoggerInterface $logger, private readonly JobRepository $repository, private readonly TokenStorageInterface $tokenStorage)
     {
         $this->em = $doctrine->getManager();
-        $this->repository = $jobRepository;
-        $this->kernel = $kernel;
-        $this->logger = $logger;
-        $this->tokenStorage = $tokenStorage;
     }
 
     public function clean(): void
@@ -244,7 +236,7 @@ class JobService implements EntityServiceInterface
     {
         try {
             return $this->repository->findById(\intval($name));
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             return null;
         }
     }

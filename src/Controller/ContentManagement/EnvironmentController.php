@@ -43,48 +43,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EnvironmentController extends AbstractController
 {
-    private SearchService $searchService;
-    private EnvironmentService $environmentService;
-    private ContentTypeService $contentTypeService;
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private PublishService $publishService;
-    private LoggerInterface $logger;
-    private IndexService $indexService;
-    private Mapping $mapping;
-    private AliasService $aliasService;
-    private JobService $jobService;
-    private int $pagingSize;
-    private string $instanceId;
-    private ?string $circlesObject;
-
-    public function __construct(
-        LoggerInterface $logger,
-        SearchService $searchService,
-        EnvironmentService $environmentService,
-        ContentTypeService $contentTypeService,
-        AuthorizationCheckerInterface $authorizationChecker,
-        PublishService $publishService,
-        IndexService $indexService,
-        Mapping $mapping,
-        AliasService $aliasService,
-        JobService $jobService,
-        int $pagingSize,
-        string $instanceId,
-        ?string $circlesObject)
+    public function __construct(private readonly LoggerInterface $logger, private readonly SearchService $searchService, private readonly EnvironmentService $environmentService, private readonly ContentTypeService $contentTypeService, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly PublishService $publishService, private readonly IndexService $indexService, private readonly Mapping $mapping, private readonly AliasService $aliasService, private readonly JobService $jobService, private readonly int $pagingSize, private readonly string $instanceId, private readonly ?string $circlesObject)
     {
-        $this->logger = $logger;
-        $this->searchService = $searchService;
-        $this->environmentService = $environmentService;
-        $this->contentTypeService = $contentTypeService;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->publishService = $publishService;
-        $this->indexService = $indexService;
-        $this->mapping = $mapping;
-        $this->aliasService = $aliasService;
-        $this->jobService = $jobService;
-        $this->pagingSize = $pagingSize;
-        $this->instanceId = $instanceId;
-        $this->circlesObject = $circlesObject;
     }
 
     public function alignAction(Request $request): Response
@@ -164,7 +124,7 @@ class EnvironmentController extends AbstractController
                     }
                 } elseif (\array_key_exists('alignLeft', $request->request->all('compare_environment_form'))) {
                     foreach ($request->request->all('compare_environment_form')['item_to_align'] as $item) {
-                        $exploded = \explode(':', $item);
+                        $exploded = \explode(':', (string) $item);
                         if (2 == \count($exploded)) {
                             $this->publishService->alignRevision($exploded[0], $exploded[1], Type::string($request->query->get('withEnvironment')), Type::string($request->query->get('environment')));
                         } else {
@@ -175,7 +135,7 @@ class EnvironmentController extends AbstractController
                     }
                 } elseif (\array_key_exists('alignRight', $request->request->all('compare_environment_form'))) {
                     foreach ($request->request->all('compare_environment_form')['item_to_align'] as $item) {
-                        $exploded = \explode(':', $item);
+                        $exploded = \explode(':', (string) $item);
                         if (2 == \count($exploded)) {
                             $this->publishService->alignRevision($exploded[0], $exploded[1], Type::string($request->query->get('environment')), Type::string($request->query->get('withEnvironment')));
                         } else {
@@ -255,8 +215,8 @@ class EnvironmentController extends AbstractController
                     $results[$index]['contentType'] = $this->contentTypeService->getByName($results[$index]['content_type_name']);
 //                     $results[$index]['revisionEnvironment'] = $repository->findOneById($results[$index]['rId']);
 // TODO: is it the better options? to concatenate and split things?
-                    $minrevid = \explode('/', $results[$index]['minrevid']); // 1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
-                    $maxrevid = \explode('/', $results[$index]['maxrevid']);
+                    $minrevid = \explode('/', (string) $results[$index]['minrevid']); // 1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
+                    $maxrevid = \explode('/', (string) $results[$index]['maxrevid']);
 
                     $results[$index]['revisionEnvironment'] = $repository->findOneById((int) $minrevid[1]);
                     $results[$index]['revisionWithEnvironment'] = $repository->findOneById((int) $maxrevid[1]);
@@ -268,13 +228,13 @@ class EnvironmentController extends AbstractController
                     try {
                         $document = $this->searchService->getDocument($contentType, $results[$index]['ouuid'], $env);
                         $results[$index]['objectEnvironment'] = $document->getRaw();
-                    } catch (NotFoundException $e) {
+                    } catch (NotFoundException) {
                         $results[$index]['objectEnvironment'] = null; // This revision doesn't exist in this environment, but it's ok.
                     }
                     try {
                         $document = $this->searchService->getDocument($contentType, $results[$index]['ouuid'], $withEnvi);
                         $results[$index]['objectWithEnvironment'] = $document->getRaw();
-                    } catch (NotFoundException $e) {
+                    } catch (NotFoundException) {
                         $results[$index]['objectWithEnvironment'] = null; // This revision doesn't exist in this environment, but it's ok.
                     }
                 }
@@ -705,7 +665,7 @@ class EnvironmentController extends AbstractController
                 'managedAliases' => $this->aliasService->getManagedAliases(),
                 'form' => $form->createView(),
             ]);
-        } catch (NoNodesAvailableException $e) {
+        } catch (NoNodesAvailableException) {
             return $this->redirectToRoute('elasticsearch.status');
         }
     }

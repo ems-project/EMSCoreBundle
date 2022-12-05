@@ -5,16 +5,10 @@ namespace EMS\CoreBundle\Form\Data;
 class QueryRow
 {
     /**
-     * @var mixed[]
-     */
-    private array $data;
-
-    /**
      * @param mixed[] $data
      */
-    public function __construct(array $data)
+    public function __construct(private readonly array $data)
     {
-        $this->data = $data;
     }
 
     /**

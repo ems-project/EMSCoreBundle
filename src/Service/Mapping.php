@@ -16,15 +16,15 @@ use Psr\Log\LoggerInterface;
 
 class Mapping
 {
-    public const FINALIZATION_DATETIME_FIELD = '_finalization_datetime';
-    public const FINALIZED_BY_FIELD = '_finalized_by';
-    public const HASH_FIELD = '_sha1';
-    public const SIGNATURE_FIELD = '_signature';
-    public const CONTENT_TYPE_FIELD = '_contenttype';
-    public const VERSION_UUID = '_version_uuid';
-    public const VERSION_TAG = '_version_tag';
+    final public const FINALIZATION_DATETIME_FIELD = '_finalization_datetime';
+    final public const FINALIZED_BY_FIELD = '_finalized_by';
+    final public const HASH_FIELD = '_sha1';
+    final public const SIGNATURE_FIELD = '_signature';
+    final public const CONTENT_TYPE_FIELD = '_contenttype';
+    final public const VERSION_UUID = '_version_uuid';
+    final public const VERSION_TAG = '_version_tag';
 
-    public const MAPPING_INTERNAL_FIELDS = [
+    final public const MAPPING_INTERNAL_FIELDS = [
         Mapping::PUBLISHED_DATETIME_FIELD => Mapping::PUBLISHED_DATETIME_FIELD,
         Mapping::FINALIZATION_DATETIME_FIELD => Mapping::FINALIZATION_DATETIME_FIELD,
         Mapping::FINALIZED_BY_FIELD => Mapping::FINALIZED_BY_FIELD,
@@ -35,37 +35,15 @@ class Mapping
         Mapping::VERSION_TAG => Mapping::VERSION_TAG,
     ];
 
-    public const CONTENT_TYPE_META_FIELD = 'content_type';
-    public const GENERATOR_META_FIELD = 'generator';
-    public const GENERATOR_META_FIELD_VALUE = 'elasticms';
-    public const CORE_VERSION_META_FIELD = 'core_version';
-    public const INSTANCE_ID_META_FIELD = 'instance_id';
-    public const PUBLISHED_DATETIME_FIELD = '_published_datetime';
+    final public const CONTENT_TYPE_META_FIELD = 'content_type';
+    final public const GENERATOR_META_FIELD = 'generator';
+    final public const GENERATOR_META_FIELD_VALUE = 'elasticms';
+    final public const CORE_VERSION_META_FIELD = 'core_version';
+    final public const INSTANCE_ID_META_FIELD = 'instance_id';
+    final public const PUBLISHED_DATETIME_FIELD = '_published_datetime';
 
-    private EnvironmentService $environmentService;
-    private FieldTypeType $fieldTypeType;
-    private ElasticsearchService $elasticsearchService;
-    private string $instanceId;
-    private ElasticaService $elasticaService;
-    private Client $elasticaClient;
-    private LoggerInterface $logger;
-
-    public function __construct(
-        LoggerInterface $logger,
-        Client $elasticaClient,
-        EnvironmentService $environmentService,
-        FieldTypeType $fieldTypeType,
-        ElasticsearchService $elasticsearchService,
-        ElasticaService $elasticaService,
-        string $instanceId
-    ) {
-        $this->elasticaClient = $elasticaClient;
-        $this->environmentService = $environmentService;
-        $this->fieldTypeType = $fieldTypeType;
-        $this->elasticsearchService = $elasticsearchService;
-        $this->elasticaService = $elasticaService;
-        $this->instanceId = $instanceId;
-        $this->logger = $logger;
+    public function __construct(private readonly LoggerInterface $logger, private readonly Client $elasticaClient, private readonly EnvironmentService $environmentService, private readonly FieldTypeType $fieldTypeType, private readonly ElasticsearchService $elasticsearchService, private readonly ElasticaService $elasticaService, private readonly string $instanceId)
+    {
     }
 
     /**
@@ -138,7 +116,7 @@ class Mapping
     /**
      * @param string[] $environmentNames
      *
-     * @return ?array<mixed>
+     * @return ?array<string, mixed>
      */
     public function getMapping(array $environmentNames): ?array
     {
@@ -159,7 +137,7 @@ class Mapping
                 foreach ($mappings as $mapping) {
                     $mergeMapping = $this->mergeMappings($mapping['properties'], $mergeMapping);
                 }
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 continue;
             }
         }

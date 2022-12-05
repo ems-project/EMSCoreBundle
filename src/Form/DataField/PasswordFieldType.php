@@ -111,17 +111,11 @@ class PasswordFieldType extends DataFieldType
         if ($data['reset_password_value']) {
             $out = null;
         } elseif (isset($data['password_value'])) {
-            // new password defined?
-            switch ($fieldType->getDisplayOptions()['encryption']) {
-                case 'md5':
-                    $out = \md5($data['password_value']);
-                    break;
-                case 'bcrypt_12':
-                    $out = \password_hash($data['password_value'], PASSWORD_BCRYPT, ['cost' => 12]);
-                    break;
-                default:
-                    $out = \sha1($data['password_value']);
-            }
+            $out = match ($fieldType->getDisplayOptions()['encryption']) {
+                'md5' => \md5((string) $data['password_value']),
+                'bcrypt_12' => \password_hash((string) $data['password_value'], PASSWORD_BCRYPT, ['cost' => 12]),
+                default => \sha1((string) $data['password_value']),
+            };
         }
 
         return parent::reverseViewTransform($out, $fieldType);
@@ -133,14 +127,10 @@ class PasswordFieldType extends DataFieldType
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
-            switch ($data->giveFieldType()->getDisplayOptions()['encryption']) {
-                case 'md5':
-                    $out[$data->giveFieldType()->getName()] = \md5($data->getTextValue());
-                    break;
-                default:
-                    $out[$data->giveFieldType()->getName()] = \sha1($data->getTextValue());
-                    break;
-            }
+            $out[$data->giveFieldType()->getName()] = match ($data->giveFieldType()->getDisplayOptions()['encryption']) {
+                'md5' => \md5((string) $data->getTextValue()),
+                default => \sha1((string) $data->getTextValue()),
+            };
         }
     }
 

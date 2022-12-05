@@ -14,26 +14,10 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 final class ChannelRegistrar
 {
-    private ChannelRepository $channelRepository;
-    private EnvironmentHelperInterface $environmentHelper;
-    private LoggerInterface $logger;
-    private IndexService $indexService;
-    private string $firewallName;
-
     public const EMSCO_CHANNEL_PATH_REGEX = '/^(\\/index\\.php)?\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
 
-    public function __construct(
-        ChannelRepository $channelRepository,
-        EnvironmentHelperInterface $environmentHelper,
-        LoggerInterface $logger,
-        IndexService $indexService,
-        string $firewallName
-    ) {
-        $this->channelRepository = $channelRepository;
-        $this->environmentHelper = $environmentHelper;
-        $this->logger = $logger;
-        $this->indexService = $indexService;
-        $this->firewallName = $firewallName;
+    public function __construct(private readonly ChannelRepository $channelRepository, private readonly EnvironmentHelperInterface $environmentHelper, private readonly LoggerInterface $logger, private readonly IndexService $indexService, private readonly string $firewallName)
+    {
     }
 
     public function register(Request $request): void
@@ -57,7 +41,7 @@ final class ChannelRegistrar
 
         $baseUrl = \vsprintf('%s://%s%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath()]);
         $searchConfig = \json_decode($channel->getOptions()['searchConfig'] ?? '{}', true, 512, JSON_THROW_ON_ERROR);
-        $attributes = \json_decode($channel->getOptions()['attributes'] ?? null, true, 512, JSON_THROW_ON_ERROR);
+        $attributes = \json_decode((string) ($channel->getOptions()['attributes'] ?? null), true, 512, JSON_THROW_ON_ERROR);
 
         if (!$this->indexService->hasIndex($alias)) {
             $this->logger->warning('log.channel.alias_not_found', [

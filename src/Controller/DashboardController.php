@@ -14,13 +14,8 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 final class DashboardController extends AbstractController
 {
-    private DashboardManager $dashboardManager;
-    private DashboardService $dashboardService;
-
-    public function __construct(DashboardManager $dashboardManager, DashboardService $dashboardService)
+    public function __construct(private readonly DashboardManager $dashboardManager, private readonly DashboardService $dashboardService)
     {
-        $this->dashboardManager = $dashboardManager;
-        $this->dashboardService = $dashboardService;
     }
 
     /**

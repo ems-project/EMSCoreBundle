@@ -7,21 +7,14 @@ namespace EMS\CoreBundle\Core\ContentType\Transformer;
 final class TransformContext
 {
     /** @var mixed */
-    private $data;
-    /** @var array<mixed> */
-    private array $options;
-    /** @var mixed */
     private $transformed;
 
     /**
-     * @param mixed        $data
      * @param array<mixed> $options
      */
-    public function __construct($data, array $options)
+    public function __construct(private readonly mixed $data, private readonly array $options)
     {
-        $this->data = $data;
         $this->transformed = $data;
-        $this->options = $options;
     }
 
     public function isTransformed(): bool
@@ -53,10 +46,7 @@ final class TransformContext
         return $this->transformed;
     }
 
-    /**
-     * @param mixed $transformed
-     */
-    public function setTransformed($transformed): void
+    public function setTransformed(mixed $transformed): void
     {
         $this->transformed = $transformed;
     }

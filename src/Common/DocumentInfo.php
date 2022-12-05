@@ -9,17 +9,11 @@ use EMS\CoreBundle\Entity\Revision;
 
 final class DocumentInfo
 {
-    private EMSLink $id;
-    /** @var Revision[] */
-    private array $revisions;
-
     /**
      * @param Revision[] $revisions
      */
-    public function __construct(EMSLink $id, array $revisions)
+    public function __construct(private readonly EMSLink $id, private readonly array $revisions)
     {
-        $this->id = $id;
-        $this->revisions = $revisions;
     }
 
     public function getId(): EMSLink

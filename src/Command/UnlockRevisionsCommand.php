@@ -17,9 +17,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class UnlockRevisionsCommand extends Command
 {
-    private LoggerInterface $logger;
-    private DataService $dataService;
-    private ContentTypeService $contentTypeService;
     private ?SymfonyStyle $io = null;
     private ?string $user = null;
     private ?ContentType $contentType = null;
@@ -33,12 +30,8 @@ final class UnlockRevisionsCommand extends Command
     private const OPTION_ALL = 'all';
     private const OPTION_STRICT = 'strict';
 
-    public function __construct(LoggerInterface $logger, DataService $dataService, ContentTypeService $contentTypeService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly DataService $dataService, private readonly ContentTypeService $contentTypeService)
     {
-        $this->logger = $logger;
-        $this->dataService = $dataService;
-        $this->contentTypeService = $contentTypeService;
-
         parent::__construct();
     }
 

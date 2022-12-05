@@ -8,11 +8,8 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class DateInFuture implements ConditionInterface
 {
-    private string $pathProperty;
-
-    public function __construct(string $pathProperty)
+    public function __construct(private readonly string $pathProperty)
     {
-        $this->pathProperty = $pathProperty;
     }
 
     /**

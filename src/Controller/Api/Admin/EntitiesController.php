@@ -17,13 +17,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EntitiesController
 {
-    private EntitiesHelper $entitiesHelper;
-    private LoggerInterface $logger;
-
-    public function __construct(EntitiesHelper $entitiesHelper, LoggerInterface $logger)
+    public function __construct(private readonly EntitiesHelper $entitiesHelper, private readonly LoggerInterface $logger)
     {
-        $this->entitiesHelper = $entitiesHelper;
-        $this->logger = $logger;
     }
 
     public function index(string $entity): Response

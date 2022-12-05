@@ -14,8 +14,8 @@ class TemplateTableColumn extends TableColumn
     private const CELL_TYPE = 'cellType';
     private const CELL_CLASS = 'cellClass';
     private const CELL_RENDER = 'cellRender';
-    private bool $orderable;
-    private string $template;
+    private readonly bool $orderable;
+    private readonly string $template;
 
     /**
      * @param array<string, mixed> $options

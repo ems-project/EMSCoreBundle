@@ -21,15 +21,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FieldTypeType extends AbstractType
 {
-    private FieldTypePickerType $fieldTypePickerType;
-    private FormRegistryInterface $formRegistry;
-    private LoggerInterface $logger;
-
-    public function __construct(FieldTypePickerType $fieldTypePickerType, FormRegistryInterface $formRegistry, LoggerInterface $logger)
+    public function __construct(private readonly FieldTypePickerType $fieldTypePickerType, private readonly FormRegistryInterface $formRegistry, private readonly LoggerInterface $logger)
     {
-        $this->fieldTypePickerType = $fieldTypePickerType;
-        $this->formRegistry = $formRegistry;
-        $this->logger = $logger;
     }
 
     /**
@@ -176,7 +169,7 @@ class FieldTypeType extends AbstractType
             $dataFieldType = $this->formRegistry->getType(CollectionItemFieldType::class)->getInnerType();
         }
 
-        $this->logger->debug('build object array 2', [\get_class($dataFieldType)]);
+        $this->logger->debug('build object array 2', [$dataFieldType::class]);
 
         if (!$dataFieldType instanceof DataFieldType) {
             throw new \Exception('Invalid dataFieldType');

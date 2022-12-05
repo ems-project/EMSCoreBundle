@@ -9,11 +9,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MetaController
 {
-    private ContentTypeService $contentTypeService;
-
-    public function __construct(ContentTypeService $contentTypeService)
+    public function __construct(private readonly ContentTypeService $contentTypeService)
     {
-        $this->contentTypeService = $contentTypeService;
     }
 
     public function contentType(string $contentTypeName): Response

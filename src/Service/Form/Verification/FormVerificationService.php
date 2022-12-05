@@ -10,11 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class FormVerificationService
 {
-    private FormVerificationRepository $repository;
-
-    public function __construct(FormVerificationRepository $repository)
+    public function __construct(private readonly FormVerificationRepository $repository)
     {
-        $this->repository = $repository;
     }
 
     /**

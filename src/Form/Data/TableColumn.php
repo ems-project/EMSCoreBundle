@@ -8,7 +8,6 @@ use EMS\CoreBundle\Form\Data\Condition\ConditionInterface;
 
 class TableColumn
 {
-    private string $titleKey;
     private string $attribute;
     private ?string $routeName = null;
     private ?\Closure $routeParametersCallback = null;
@@ -28,9 +27,8 @@ class TableColumn
     /** @var array<string, mixed> */
     private array $transLabelOptions = [];
 
-    public function __construct(string $titleKey, string $attribute)
+    public function __construct(private readonly string $titleKey, string $attribute)
     {
-        $this->titleKey = $titleKey;
         $this->orderField = $this->attribute = $attribute;
     }
 
@@ -113,11 +111,9 @@ class TableColumn
     }
 
     /**
-     * @param mixed $data
-     *
      * @return array<string, mixed>|null
      */
-    public function getRouteProperties($data): ?array
+    public function getRouteProperties(mixed $data): ?array
     {
         if (null === $this->routeParametersCallback) {
             return [];
@@ -136,10 +132,7 @@ class TableColumn
         $this->itemIconCallback = $callback;
     }
 
-    /**
-     * @param mixed $data
-     */
-    public function getItemIconClass($data): ?string
+    public function getItemIconClass(mixed $data): ?string
     {
         if (null === $this->itemIconCallback) {
             return null;
@@ -170,11 +163,9 @@ class TableColumn
     }
 
     /**
-     * @param mixed $data
-     *
      * @return array<string, \Closure>
      */
-    public function getHtmlAttributes($data): array
+    public function getHtmlAttributes(mixed $data): array
     {
         $out = [];
         foreach ($this->htmlAttributes as $htmlAttribute => $callValue) {
@@ -205,18 +196,12 @@ class TableColumn
         $this->pathTarget = $target;
     }
 
-    /**
-     * @param mixed $context
-     */
-    public function hasPath($context, string $baseUrl): bool
+    public function hasPath(mixed $context, string $baseUrl): bool
     {
         return null !== $this->pathCallback && \is_string($this->pathCallback->call($this, $context, $baseUrl));
     }
 
-    /**
-     * @param mixed $context
-     */
-    public function getPath($context, string $baseUrl): string
+    public function getPath(mixed $context, string $baseUrl): string
     {
         if (null === $this->pathCallback) {
             throw new \RuntimeException('Unexpected null pathCallback. use the hasPathCallback first');

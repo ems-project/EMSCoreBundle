@@ -12,7 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class FilterOptionsType extends AbstractType
 {
-    public const FIELDS_BY_TYPE = [
+    final public const FIELDS_BY_TYPE = [
             'standard' => [],
             'stop' => [
                 'stopwords',
@@ -186,7 +186,7 @@ class FilterOptionsType extends AbstractType
                 return $tagsAsArray;
             },
             fn ($tagsAsString) => // transform the string back to an array
-\explode(', ', $tagsAsString)
+\explode(', ', (string) $tagsAsString)
         );
 
         $builder->get('articles')->addModelTransformer($textArea2Array);

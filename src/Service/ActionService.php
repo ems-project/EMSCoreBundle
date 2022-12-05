@@ -12,13 +12,8 @@ use Psr\Log\LoggerInterface;
 
 final class ActionService implements EntityServiceInterface
 {
-    private TemplateRepository $templateRepository;
-    private LoggerInterface $logger;
-
-    public function __construct(TemplateRepository $templateRepository, LoggerInterface $logger)
+    public function __construct(private readonly TemplateRepository $templateRepository, private readonly LoggerInterface $logger)
     {
-        $this->templateRepository = $templateRepository;
-        $this->logger = $logger;
     }
 
     /**

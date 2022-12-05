@@ -106,7 +106,7 @@ final class HtmlAttributeTransformer extends BaseHtmlTransformer
 
             $exploded = \explode(' ', $attributeValue);
             $filter = \array_filter($exploded,
-                fn (string $class) => \substr(\trim($class), 0, \strlen($removeValuePrefix)) !== $removeValuePrefix
+                fn (string $class) => !\str_starts_with(\trim($class), $removeValuePrefix)
             );
 
             if ($filter !== $exploded) {
@@ -137,7 +137,7 @@ final class HtmlAttributeTransformer extends BaseHtmlTransformer
 
             $exploded = \explode(';', $styleValue);
             $filter = \array_filter(\array_filter($exploded,
-                fn (string $style) => \substr(\trim($style), 0, \strlen($removeValuePrefix)) !== $removeValuePrefix)
+                fn (string $style) => !\str_starts_with(\trim($style), $removeValuePrefix))
             );
 
             if ($filter !== $exploded) {

@@ -7,12 +7,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class WysiwygStylesSetPickerType extends SelectPickerType
 {
-    private WysiwygStylesSetService $stylesSetService;
-
-    public function __construct(WysiwygStylesSetService $stylesSetService)
+    public function __construct(private readonly WysiwygStylesSetService $stylesSetService)
     {
         parent::__construct();
-        $this->stylesSetService = $stylesSetService;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

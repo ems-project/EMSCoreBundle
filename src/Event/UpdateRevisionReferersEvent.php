@@ -11,27 +11,14 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class UpdateRevisionReferersEvent extends Event
 {
-    public const NAME = 'ems_core.revision.update_referers';
-
-    private string $targetField;
-    private string $id;
-    /** @var array<mixed> */
-    private array $toClean;
-    /** @var array<mixed> */
-    private array $toCreate;
-    private string $type;
+    final public const NAME = 'ems_core.revision.update_referers';
 
     /**
-     * @param array<mixed> $toCleanOuuids
-     * @param array<mixed> $toCreateOuuids
+     * @param array<mixed> $toClean
+     * @param array<mixed> $toCreate
      */
-    public function __construct(string $type, string $id, string $targetField, array $toCleanOuuids, array $toCreateOuuids)
+    public function __construct(private readonly string $type, private readonly string $id, private readonly string $targetField, private readonly array $toClean, private readonly array $toCreate)
     {
-        $this->type = $type;
-        $this->id = $id;
-        $this->targetField = $targetField;
-        $this->toClean = $toCleanOuuids;
-        $this->toCreate = $toCreateOuuids;
     }
 
     /**

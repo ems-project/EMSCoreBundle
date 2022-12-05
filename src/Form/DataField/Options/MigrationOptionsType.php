@@ -17,11 +17,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MigrationOptionsType extends AbstractType
 {
-    private ContentTransformers $transformers;
-
-    public function __construct(ContentTransformers $transformers)
+    public function __construct(private readonly ContentTransformers $transformers)
     {
-        $this->transformers = $transformers;
     }
 
     /**
@@ -40,7 +37,7 @@ class MigrationOptionsType extends AbstractType
             $builder->add('transformers', CollectionType::class, [
                 'entry_type' => MigrationOptionsTransformerType::class,
                 'entry_options' => [
-                    'transformers' => \array_merge(['Select a transformer' => ''], $transformers),
+                    'transformers' => [...['Select a transformer' => ''], ...$transformers],
                 ],
                 'label' => false,
                 'attr' => [

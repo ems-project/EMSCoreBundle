@@ -4,7 +4,7 @@ namespace EMS\CoreBundle\Exception;
 
 use EMS\CoreBundle\Entity\Revision;
 
-class CantBeFinalizedException extends ElasticmsException
+class CantBeFinalizedException extends ElasticmsException implements \Stringable
 {
     public function __construct(string $originMessage = '', int $code = 0, \Throwable $previous = null, Revision $revision = null)
     {
@@ -21,7 +21,7 @@ class CantBeFinalizedException extends ElasticmsException
         parent::__construct($message, $code, $previous);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return parent::getMessage();
     }

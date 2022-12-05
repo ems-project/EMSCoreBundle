@@ -17,13 +17,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RevisionTaskFiltersType extends AbstractType
 {
-    private ContentTypeService $contentTypeService;
+    final public const NAME = 'filters';
 
-    public const NAME = 'filters';
-
-    public function __construct(ContentTypeService $contentTypeService)
+    public function __construct(private readonly ContentTypeService $contentTypeService)
     {
-        $this->contentTypeService = $contentTypeService;
     }
 
     /**

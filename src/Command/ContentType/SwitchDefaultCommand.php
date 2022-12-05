@@ -14,10 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SwitchDefaultCommand extends AbstractCommand
 {
-    public const CONTENT_TYPE_SWITCH_DEFAULT_ENV_USERNAME = 'CONTENT_TYPE_SWITCH_DEFAULT_ENV_USERNAME';
+    final public const CONTENT_TYPE_SWITCH_DEFAULT_ENV_USERNAME = 'CONTENT_TYPE_SWITCH_DEFAULT_ENV_USERNAME';
     protected static $defaultName = Commands::CONTENT_TYPE_SWITCH_DEFAULT_ENV;
-    private EnvironmentService $environmentService;
-    private ContentTypeService $contentTypeService;
 
     private ContentType $contentType;
     private Environment $target;
@@ -25,10 +23,8 @@ class SwitchDefaultCommand extends AbstractCommand
     private const ARGUMENT_CONTENT_TYPE = 'contentType';
     private const ARGUMENT_TARGET_ENVIRONMENT = 'target-environment';
 
-    public function __construct(EnvironmentService $environmentService, ContentTypeService $contentTypeService)
+    public function __construct(private readonly EnvironmentService $environmentService, private readonly ContentTypeService $contentTypeService)
     {
-        $this->environmentService = $environmentService;
-        $this->contentTypeService = $contentTypeService;
         parent::__construct();
     }
 

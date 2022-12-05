@@ -167,7 +167,7 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
         if (!\is_string($entryPath) || 0 === \strlen($entryPath)) {
             return null;
         }
-        if ('/' !== \substr($entryPath, 0, 1)) {
+        if (!\str_starts_with($entryPath, '/')) {
             $entryPath = '/'.$entryPath;
         }
         if ('/' === $entryPath) {

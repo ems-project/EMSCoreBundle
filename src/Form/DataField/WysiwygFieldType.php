@@ -27,16 +27,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class WysiwygFieldType extends DataFieldType
 {
-    private RouterInterface $router;
-    private WysiwygStylesSetService $wysiwygStylesSetService;
-    private AssetRuntime $assetRuntime;
-
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, RouterInterface $router, WysiwygStylesSetService $wysiwygStylesSetService, AssetRuntime $assetRuntime)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, private readonly RouterInterface $router, private readonly WysiwygStylesSetService $wysiwygStylesSetService, private readonly AssetRuntime $assetRuntime)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->router = $router;
-        $this->wysiwygStylesSetService = $wysiwygStylesSetService;
-        $this->assetRuntime = $assetRuntime;
     }
 
     public function getLabel(): string

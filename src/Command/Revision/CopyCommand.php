@@ -18,10 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class CopyCommand extends AbstractCommand
 {
-    private EnvironmentService $environmentService;
-    private RevisionSearcher $revisionSearcher;
-    private RevisionService $revisionService;
-
     private Environment $environment;
     private string $searchQuery;
     /** @var ?array<mixed> */
@@ -36,14 +32,11 @@ final class CopyCommand extends AbstractCommand
     protected static $defaultName = Commands::REVISION_COPY;
 
     public function __construct(
-        RevisionSearcher $revisionSearcher,
-        EnvironmentService $environmentService,
-        RevisionService $revisionService
+        private readonly RevisionSearcher $revisionSearcher,
+        private readonly EnvironmentService $environmentService,
+        private readonly RevisionService $revisionService
     ) {
         parent::__construct();
-        $this->revisionSearcher = $revisionSearcher;
-        $this->environmentService = $environmentService;
-        $this->revisionService = $revisionService;
     }
 
     protected function configure(): void

@@ -17,18 +17,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CleanAssetCommand extends EmsCommand
 {
     protected static $defaultName = 'ems:asset:clean';
-    /** @var Registry */
-    protected $doctrine;
-    /** @var FileService */
-    protected $fileService;
-    /** @var LoggerInterface */
-    protected $logger;
 
-    public function __construct(LoggerInterface $logger, Registry $doctrine, FileService $fileService)
+    public function __construct(protected LoggerInterface $logger, protected Registry $doctrine, protected FileService $fileService)
     {
-        $this->doctrine = $doctrine;
-        $this->fileService = $fileService;
-        $this->logger = $logger;
         parent::__construct();
     }
 

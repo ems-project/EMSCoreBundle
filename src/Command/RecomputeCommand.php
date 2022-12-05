@@ -35,18 +35,9 @@ final class RecomputeCommand extends Command
     private bool $forceFlag;
     private bool $cronFlag;
     private ?string $ouuid = null;
-    private EntityManager $em;
-    private DataService $dataService;
-    private FormFactoryInterface $formFactory;
-    private PublishService $publishService;
-    private ContentTypeRepository $contentTypeRepository;
-    private RevisionRepository $revisionRepository;
-    private ContentTypeService $contentTypeService;
-    private IndexService $indexService;
-    private SearchService $searchService;
+    private readonly EntityManager $em;
     private SymfonyStyle $io;
     private string $query;
-    protected LoggerInterface $logger;
 
     private const ARGUMENT_CONTENT_TYPE = 'contentType';
     private const OPTION_FORCE = 'force';
@@ -60,32 +51,22 @@ final class RecomputeCommand extends Command
     private const LOCK_BY = 'SYSTEM_RECOMPUTE';
 
     public function __construct(
-        DataService $dataService,
+        private readonly DataService $dataService,
         Registry $doctrine,
-        FormFactoryInterface $formFactory,
-        PublishService $publishService,
-        LoggerInterface $logger,
-        ContentTypeService $contentTypeService,
-        ContentTypeRepository $contentTypeRepository,
-        RevisionRepository $revisionRepository,
-        IndexService $indexService,
-        SearchService $searchService
+        private readonly FormFactoryInterface $formFactory,
+        private readonly PublishService $publishService,
+        protected LoggerInterface $logger,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly ContentTypeRepository $contentTypeRepository,
+        private readonly RevisionRepository $revisionRepository,
+        private readonly IndexService $indexService,
+        private readonly SearchService $searchService
     ) {
-        $this->logger = $logger;
         parent::__construct();
-
-        $this->dataService = $dataService;
-        $this->formFactory = $formFactory;
-        $this->publishService = $publishService;
-        $this->contentTypeService = $contentTypeService;
 
         /** @var EntityManager $em */
         $em = $doctrine->getManager();
         $this->em = $em;
-        $this->contentTypeRepository = $contentTypeRepository;
-        $this->revisionRepository = $revisionRepository;
-        $this->indexService = $indexService;
-        $this->searchService = $searchService;
     }
 
     protected function configure(): void
@@ -154,7 +135,7 @@ final class RecomputeCommand extends Command
         $this->em->getConnection()->setAutoCommit(false);
 
         if (!$input->getOption(self::OPTION_CONTINUE) || $input->getOption(self::OPTION_CRON)) {
-            $this->lock($output, $this->contentType, $this->forceFlag, $this->cronFlag, $this->ouuid, $this->query);
+            $this->lock($output, $this->contentType, $this->query, $this->forceFlag, $this->cronFlag, $this->ouuid);
         }
 
         $page = 0;
@@ -189,7 +170,7 @@ final class RecomputeCommand extends Command
                         $this->revisionRepository->unlockRevision($revisionId);
                         $progress->advance();
                         continue;
-                    } catch (NotFoundException $e) {
+                    } catch (NotFoundException) {
                     }
                 }
                 $transactionActive = true;
@@ -257,7 +238,7 @@ final class RecomputeCommand extends Command
         return 0;
     }
 
-    private function lock(OutputInterface $output, ContentType $contentType, bool $force = false, bool $ifEmpty = false, ?string $ouuid = null, string $query): int
+    private function lock(OutputInterface $output, ContentType $contentType, string $query, bool $force = false, bool $ifEmpty = false, ?string $ouuid = null): int
     {
         $application = $this->getApplication();
         if (null === $application) {

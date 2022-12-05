@@ -10,9 +10,6 @@ use Twig\TemplateWrapper;
 
 final class AjaxModal
 {
-    private TemplateWrapper $template;
-    private TranslatorInterface $translator;
-
     private ?string $title = null;
     private ?string $body = null;
     private ?string $footer = null;
@@ -21,10 +18,8 @@ final class AjaxModal
     /** @var array<mixed> */
     private array $messages = [];
 
-    public function __construct(TemplateWrapper $template, TranslatorInterface $translator)
+    public function __construct(private readonly TemplateWrapper $template, private readonly TranslatorInterface $translator)
     {
-        $this->template = $template;
-        $this->translator = $translator;
     }
 
     /**

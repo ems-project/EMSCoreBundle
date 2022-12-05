@@ -41,23 +41,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class CriteriaController extends AbstractController
 {
-    private ElasticaService $elasticaService;
-    private DataService $dataService;
-    private ContentTypeService $contentTypeService;
-    private ObjectChoiceListFactory $objectChoiceListFactory;
-    private LoggerInterface $logger;
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private FormRegistryInterface $formRegistry;
-
-    public function __construct(LoggerInterface $logger, ElasticaService $elasticaService, DataService $dataService, ContentTypeService $contentTypeService, ObjectChoiceListFactory $objectChoiceListFactory, AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry)
+    public function __construct(private readonly LoggerInterface $logger, private readonly ElasticaService $elasticaService, private readonly DataService $dataService, private readonly ContentTypeService $contentTypeService, private readonly ObjectChoiceListFactory $objectChoiceListFactory, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly FormRegistryInterface $formRegistry)
     {
-        $this->logger = $logger;
-        $this->elasticaService = $elasticaService;
-        $this->dataService = $dataService;
-        $this->contentTypeService = $contentTypeService;
-        $this->objectChoiceListFactory = $objectChoiceListFactory;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->formRegistry = $formRegistry;
     }
 
     public function align(View $view, Request $request): Response
@@ -130,7 +115,7 @@ class CriteriaController extends AbstractController
                                 }
                                 if (isset($view->getOptions()['targetField'])) {
                                     $pathTargetField = $view->getOptions()['targetField'];
-                                    $pathTargetField = \explode('.', $pathTargetField);
+                                    $pathTargetField = \explode('.', (string) $pathTargetField);
                                     $targetFieldName = \array_pop($pathTargetField);
                                     $rawData[$targetFieldName] = $toremove->getValue();
                                 }
@@ -184,7 +169,7 @@ class CriteriaController extends AbstractController
                                 }
                                 if (isset($view->getOptions()['targetField'])) {
                                     $pathTargetField = $view->getOptions()['targetField'];
-                                    $pathTargetField = \explode('.', $pathTargetField);
+                                    $pathTargetField = \explode('.', (string) $pathTargetField);
                                     $targetFieldName = \array_pop($pathTargetField);
                                     $rawData[$targetFieldName] = $toadd->getValue();
                                 }
@@ -290,7 +275,7 @@ class CriteriaController extends AbstractController
 
         $columnField = null;
         $rowField = null;
-        $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
+        $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', (string) $view->getOptions()['criteriaFieldPaths']);
         $fieldPaths = \is_array($fieldPaths) ? $fieldPaths : [];
 
         $authorized = $this->isAuthorized($criteriaField, $this->authorizationChecker) && $this->authorizationChecker->isGranted($view->getContentType()->role(ContentTypeRoles::EDIT));
@@ -543,7 +528,7 @@ class CriteriaController extends AbstractController
                 if ($revision = $this->addCriteria($filters, $revision, $criteriaField)) {
                     $this->dataService->finalizeDraft($revision);
                 }
-            } catch (LockedException $e) {
+            } catch (LockedException) {
                 if (!$revision instanceof Revision) {
                     throw new \RuntimeException('Unexpected revision type');
                 }
@@ -568,7 +553,7 @@ class CriteriaController extends AbstractController
             }
             if (isset($view->getOptions()['targetField'])) {
                 $pathTargetField = $view->getOptions()['targetField'];
-                $pathTargetField = \explode('.', $pathTargetField);
+                $pathTargetField = \explode('.', (string) $pathTargetField);
                 $targetFieldName = \array_pop($pathTargetField);
                 $rawData[$targetFieldName] = $target;
             }
@@ -718,11 +703,9 @@ class CriteriaController extends AbstractController
     /**
      * @param array<mixed> $filters
      *
-     * @return false|Revision
-     *
      * @throws \Exception
      */
-    public function addCriteria(array $filters, Revision $revision, string $criteriaField)
+    public function addCriteria(array $filters, Revision $revision, string $criteriaField): false|Revision
     {
         $rawData = $revision->getRawData();
         if (!isset($rawData[$criteriaField])) {
@@ -824,7 +807,7 @@ class CriteriaController extends AbstractController
                 if ($revision = $this->removeCriteria($filters, $revision, $criteriaField)) {
                     $this->dataService->finalizeDraft($revision);
                 }
-            } catch (LockedException $e) {
+            } catch (LockedException) {
                 if (!$revision instanceof Revision) {
                     throw new \RuntimeException('Unexpected revision type');
                 }
@@ -849,7 +832,7 @@ class CriteriaController extends AbstractController
             }
             if (isset($view->getOptions()['targetField'])) {
                 $pathTargetField = $view->getOptions()['targetField'];
-                $pathTargetField = \explode('.', $pathTargetField);
+                $pathTargetField = \explode('.', (string) $pathTargetField);
                 $targetFieldName = \array_pop($pathTargetField);
                 $rawData[$targetFieldName] = $target;
             }
@@ -977,11 +960,9 @@ class CriteriaController extends AbstractController
     /**
      * @param array<mixed> $filters
      *
-     * @return false|Revision
-     *
      * @throws \Exception
      */
-    public function removeCriteria(array $filters, Revision $revision, string $criteriaField)
+    public function removeCriteria(array $filters, Revision $revision, string $criteriaField): false|Revision
     {
         $rawData = $revision->getRawData();
         if (!isset($rawData[$criteriaField])) {
@@ -1091,10 +1072,7 @@ class CriteriaController extends AbstractController
         }
     }
 
-    /**
-     * @return false|string
-     */
-    private function getMultipleField(FieldType $criteriaFieldType)
+    private function getMultipleField(FieldType $criteriaFieldType): false|string
     {
         /** @var FieldType $criteria */
         foreach ($criteriaFieldType->getChildren() as $criteria) {
@@ -1124,9 +1102,9 @@ class CriteriaController extends AbstractController
         $field = $repository->find($request->query->get('targetField'));
 
         $choices = $field->getDisplayOptions()['choices'];
-        $choices = \explode("\n", \str_replace("\r", '', $choices));
+        $choices = \explode("\n", \str_replace("\r", '', (string) $choices));
         $labels = $field->getDisplayOptions()['labels'];
-        $labels = \explode("\n", \str_replace("\r", '', $labels));
+        $labels = \explode("\n", \str_replace("\r", '', (string) $labels));
 
         $out = [
             'incomplete_results' => false,
@@ -1153,6 +1131,6 @@ class CriteriaController extends AbstractController
         if ($dataFieldType instanceof DataFieldType) {
             return $dataFieldType;
         }
-        throw new ElasticmsException(\sprintf('Expecting a DataFieldType instance, got a %s', \get_class($dataFieldType)));
+        throw new ElasticmsException(\sprintf('Expecting a DataFieldType instance, got a %s', $dataFieldType::class));
     }
 }

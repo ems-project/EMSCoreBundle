@@ -9,11 +9,8 @@ use EMS\CoreBundle\Service\EntityServiceInterface;
 
 class FilterManager implements EntityServiceInterface
 {
-    private FilterRepository $filterRepository;
-
-    public function __construct(FilterRepository $filterRepository)
+    public function __construct(private readonly FilterRepository $filterRepository)
     {
-        $this->filterRepository = $filterRepository;
     }
 
     public function isSortable(): bool

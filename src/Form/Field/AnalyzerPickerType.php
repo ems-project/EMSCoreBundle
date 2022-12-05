@@ -9,12 +9,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AnalyzerPickerType extends SelectPickerType
 {
-    private Registry $doctrine;
-
-    public function __construct(Registry $doctrine)
+    public function __construct(private readonly Registry $doctrine)
     {
         parent::__construct();
-        $this->doctrine = $doctrine;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -8,14 +8,6 @@ use EMS\CoreBundle\Form\Data\Condition\ConditionInterface;
 
 final class TableItemAction
 {
-    private bool $post;
-    private string $route;
-    /** @var array<string, mixed> */
-    private array $routeParameters;
-    private string $icon;
-    private string $labelKey;
-    private ?string $messageKey;
-    private bool $dynamic;
     private string $buttonType = 'default';
     /** @var ConditionInterface[] */
     private array $conditions = [];
@@ -23,15 +15,8 @@ final class TableItemAction
     /**
      * @param array<string, mixed> $routeParameters
      */
-    private function __construct(bool $post, string $route, string $labelKey, string $icon, ?string $messageKey, array $routeParameters, bool $dynamic = false)
+    private function __construct(private readonly bool $post, private readonly string $route, private readonly string $labelKey, private readonly string $icon, private readonly ?string $messageKey, private readonly array $routeParameters, private bool $dynamic = false)
     {
-        $this->post = $post;
-        $this->route = $route;
-        $this->routeParameters = $routeParameters;
-        $this->labelKey = $labelKey;
-        $this->icon = $icon;
-        $this->messageKey = $messageKey;
-        $this->dynamic = $dynamic;
     }
 
     /**

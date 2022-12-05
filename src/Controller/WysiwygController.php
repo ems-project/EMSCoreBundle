@@ -21,15 +21,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WysiwygController extends AbstractController
 {
-    private WysiwygProfileService $wysiwygProfileService;
-    private WysiwygStylesSetService $wysiwygStylesSetService;
-    private TranslatorInterface $translator;
-
-    public function __construct(WysiwygProfileService $wysiwygProfileService, WysiwygStylesSetService $wysiwygStylesSetService, TranslatorInterface $translator)
+    public function __construct(private readonly WysiwygProfileService $wysiwygProfileService, private readonly WysiwygStylesSetService $wysiwygStylesSetService, private readonly TranslatorInterface $translator)
     {
-        $this->wysiwygProfileService = $wysiwygProfileService;
-        $this->wysiwygStylesSetService = $wysiwygStylesSetService;
-        $this->translator = $translator;
     }
 
     public function indexAction(Request $request): Response
@@ -40,7 +33,7 @@ class WysiwygController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $order = \json_decode($form->getData()['items'], true, 512, JSON_THROW_ON_ERROR);
+            $order = \json_decode((string) $form->getData()['items'], true, 512, JSON_THROW_ON_ERROR);
             $i = 1;
             foreach ($order as $id) {
                 $profile = $this->wysiwygProfileService->getById(\intval($id['id']));
@@ -61,7 +54,7 @@ class WysiwygController extends AbstractController
         $formStylesSet->handleRequest($request);
 
         if ($formStylesSet->isSubmitted()) {
-            $order = \json_decode($formStylesSet->getData()['items'], true, 512, JSON_THROW_ON_ERROR);
+            $order = \json_decode((string) $formStylesSet->getData()['items'], true, 512, JSON_THROW_ON_ERROR);
             $i = 1;
             foreach ($order as $id) {
                 $stylesSet = $this->wysiwygStylesSetService->getById(\intval($id['id']));

@@ -65,7 +65,7 @@ class DateRangeFieldType extends DataFieldType
 
         $format = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
 
-        $inputs = \explode(' - ', $input);
+        $inputs = \explode(' - ', (string) $input);
 
         if (2 == \count($inputs)) {
             $convertedDates = [];

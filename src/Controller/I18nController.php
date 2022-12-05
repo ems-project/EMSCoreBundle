@@ -14,13 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class I18nController extends AbstractController
 {
-    private I18nService $i18nService;
-    private int $pagingSize;
-
-    public function __construct(I18nService $i18nService, int $pagingSize)
+    public function __construct(private readonly I18nService $i18nService, private readonly int $pagingSize)
     {
-        $this->i18nService = $i18nService;
-        $this->pagingSize = $pagingSize;
     }
 
     public function indexAction(Request $request): Response

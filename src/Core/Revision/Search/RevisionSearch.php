@@ -8,13 +8,8 @@ use Elastica\Scroll;
 
 final class RevisionSearch
 {
-    private Scroll $scroll;
-    private int $total;
-
-    public function __construct(Scroll $scroll, int $total)
+    public function __construct(private readonly Scroll $scroll, private readonly int $total)
     {
-        $this->scroll = $scroll;
-        $this->total = $total;
     }
 
     public function getTotal(): int

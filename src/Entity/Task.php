@@ -58,13 +58,13 @@ class Task implements EntityInterface
      */
     private array $logs;
 
-    public const STATUS_PROGRESS = 'progress';
-    public const STATUS_PLANNED = 'planned';
-    public const STATUS_COMPLETED = 'completed';
-    public const STATUS_REJECTED = 'rejected';
-    public const STATUS_APPROVED = 'approved';
+    final public const STATUS_PROGRESS = 'progress';
+    final public const STATUS_PLANNED = 'planned';
+    final public const STATUS_COMPLETED = 'completed';
+    final public const STATUS_REJECTED = 'rejected';
+    final public const STATUS_APPROVED = 'approved';
 
-    public const STYLES = [
+    final public const STYLES = [
         self::STATUS_PLANNED => ['icon' => 'fa fa-hourglass-o', 'bg' => 'gray', 'text' => 'muted', 'label' => 'default'],
         self::STATUS_PROGRESS => ['icon' => 'fa fa-ticket', 'bg' => 'blue', 'text' => 'primary', 'label' => 'primary'],
         self::STATUS_COMPLETED => ['icon' => 'fa fa-paper-plane', 'bg' => 'green', 'text' => 'success', 'label' => 'success'],

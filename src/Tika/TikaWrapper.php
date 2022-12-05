@@ -10,11 +10,8 @@ use Symfony\Component\Process\Process;
  */
 class TikaWrapper
 {
-    private string $tikaJar;
-
-    public function __construct(string $tikaJar)
+    public function __construct(private readonly string $tikaJar)
     {
-        $this->tikaJar = $tikaJar;
     }
 
     /**

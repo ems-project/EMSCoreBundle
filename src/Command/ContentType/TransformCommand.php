@@ -18,10 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class TransformCommand extends AbstractCommand
 {
-    private RevisionSearcher $revisionSearcher;
-    private ContentTypeService $contentTypeService;
-    private ContentTransformer $contentTransformer;
-
     private ContentType $contentType;
     private string $searchQuery;
     private string $user = 'SYSTEM_CONTENT_TRANSFORM';
@@ -36,14 +32,11 @@ final class TransformCommand extends AbstractCommand
     protected static $defaultName = Commands::CONTENT_TYPE_TRANSFORM;
 
     public function __construct(
-        RevisionSearcher $revisionSearcher,
-        ContentTypeService $contentTypeService,
-        ContentTransformer $contentTransformer
+        private readonly RevisionSearcher $revisionSearcher,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly ContentTransformer $contentTransformer
     ) {
         parent::__construct();
-        $this->revisionSearcher = $revisionSearcher;
-        $this->contentTypeService = $contentTypeService;
-        $this->contentTransformer = $contentTransformer;
     }
 
     protected function configure(): void

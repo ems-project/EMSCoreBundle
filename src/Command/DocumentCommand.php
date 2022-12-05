@@ -19,7 +19,7 @@ use Symfony\Component\Finder\Finder;
 
 class DocumentCommand extends Command
 {
-    public const COMMAND = 'ems:contenttype:import';
+    final public const COMMAND = 'ems:contenttype:import';
 
     private const ARGUMENT_CONTENT_TYPE = 'content-type-name';
     private const ARGUMENT_ARCHIVE = 'archive';
@@ -32,20 +32,12 @@ class DocumentCommand extends Command
 
     /** @var string */
     protected static $defaultName = self::COMMAND;
-    private DocumentService $documentService;
-    private ContentTypeService $contentTypeService;
-    private DataService $dataService;
     private ?SymfonyStyle $io = null;
     private ?ContentType $contentType = null;
     private ?string $archiveFilename = null;
-    private string $defaultBulkSize;
 
-    public function __construct(ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService, string $defaultBulkSize)
+    public function __construct(private readonly ContentTypeService $contentTypeService, private readonly DocumentService $documentService, private readonly DataService $dataService, private readonly string $defaultBulkSize)
     {
-        $this->contentTypeService = $contentTypeService;
-        $this->documentService = $documentService;
-        $this->dataService = $dataService;
-        $this->defaultBulkSize = $defaultBulkSize;
         parent::__construct();
     }
 

@@ -24,21 +24,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class CleanDeletedContentTypeCommand extends Command
 {
     protected static $defaultName = 'ems:contenttype:clean';
-    /** @var Mapping */
-    protected $mapping;
-    /** @var Registry */
-    protected $doctrine;
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var ContainerInterface */
-    protected $container;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container)
+    public function __construct(protected Registry $doctrine, protected LoggerInterface $logger, protected Mapping $mapping, protected ContainerInterface $container)
     {
-        $this->doctrine = $doctrine;
-        $this->logger = $logger;
-        $this->mapping = $mapping;
-        $this->container = $container;
         parent::__construct();
     }
 

@@ -14,19 +14,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EmailSubmissionsCommand extends Command implements CommandInterface
 {
-    protected FormSubmissionService $formSubmissionService;
-    protected LoggerInterface $logger;
-    protected MailerService $mailerService;
-
     protected static $defaultName = 'ems:submissions:email';
 
     private const TITLE = 'Form submissions';
 
-    public function __construct(FormSubmissionService $formSubmissionService, LoggerInterface $logger, MailerService $mailerService)
+    public function __construct(protected FormSubmissionService $formSubmissionService, protected LoggerInterface $logger, protected MailerService $mailerService)
     {
-        $this->formSubmissionService = $formSubmissionService;
-        $this->logger = $logger;
-        $this->mailerService = $mailerService;
         parent::__construct();
     }
 

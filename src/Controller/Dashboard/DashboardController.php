@@ -23,13 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DashboardController extends AbstractController
 {
-    private LoggerInterface $logger;
-    private DashboardManager $dashboardManager;
-
-    public function __construct(LoggerInterface $logger, DashboardManager $dashboardManager)
+    public function __construct(private readonly LoggerInterface $logger, private readonly DashboardManager $dashboardManager)
     {
-        $this->logger = $logger;
-        $this->dashboardManager = $dashboardManager;
     }
 
     public function datatable(Request $request): Response

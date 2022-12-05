@@ -19,11 +19,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class DashboardType extends AbstractType
 {
-    private DashboardService $dashboardService;
-
-    public function __construct(DashboardService $dashboardService)
+    public function __construct(private readonly DashboardService $dashboardService)
     {
-        $this->dashboardService = $dashboardService;
     }
 
     /**
@@ -97,7 +94,7 @@ final class DashboardType extends AbstractType
                 'icon' => 'fa fa-save',
             ]);
         } else {
-            $builder->add('options', \get_class($this->dashboardService->get($dashboard->getType())), [
+            $builder->add('options', $this->dashboardService->get($dashboard->getType())::class, [
                 'label' => false,
             ])
             ->add('save', SubmitEmsType::class, [

@@ -47,17 +47,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ContentTypeController extends AbstractController
 {
-    private LoggerInterface $logger;
-    private ContentTypeService $contentTypeService;
-    private Mapping $mappingService;
-    private FormRegistryInterface $formRegistry;
-
-    public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, Mapping $mappingService, FormRegistryInterface $formRegistry)
+    public function __construct(private readonly LoggerInterface $logger, private readonly ContentTypeService $contentTypeService, private readonly Mapping $mappingService, private readonly FormRegistryInterface $formRegistry)
     {
-        $this->logger = $logger;
-        $this->contentTypeService = $contentTypeService;
-        $this->mappingService = $mappingService;
-        $this->formRegistry = $formRegistry;
     }
 
     public static function isValidName(string $name): bool
@@ -379,17 +370,15 @@ class ContentTypeController extends AbstractController
      *
      * @param array<mixed> $formArray
      *
-     * @return bool|string
-     *
      * @throws ElasticmsException
      */
-    private function addNewField(array $formArray, FieldType $fieldType)
+    private function addNewField(array $formArray, FieldType $fieldType): bool|string
     {
         if (\array_key_exists('add', $formArray)) {
             if (isset($formArray['ems:internal:add:field:name'])
-                && 0 != \strcmp($formArray['ems:internal:add:field:name'], '')
+                && 0 != \strcmp((string) $formArray['ems:internal:add:field:name'], '')
                 && isset($formArray['ems:internal:add:field:class'])
-                && 0 != \strcmp($formArray['ems:internal:add:field:class'], '')) {
+                && 0 != \strcmp((string) $formArray['ems:internal:add:field:class'], '')) {
                 if (static::isValidName($formArray['ems:internal:add:field:name'])) {
                     $fieldTypeNameOrServiceName = $formArray['ems:internal:add:field:class'];
                     $fieldName = $formArray['ems:internal:add:field:name'];
@@ -465,14 +454,12 @@ class ContentTypeController extends AbstractController
      * Try to find (recursively) if there is a new field to add to the content type.
      *
      * @param array<mixed> $formArray
-     *
-     * @return bool|string
      */
-    private function addNewSubfield(array $formArray, FieldType $fieldType)
+    private function addNewSubfield(array $formArray, FieldType $fieldType): bool|string
     {
         if (\array_key_exists('subfield', $formArray)) {
             if (isset($formArray['ems:internal:add:subfield:name'])
-                && 0 !== \strcmp($formArray['ems:internal:add:subfield:name'], '')) {
+                && 0 !== \strcmp((string) $formArray['ems:internal:add:subfield:name'], '')) {
                 if (static::isValidName($formArray['ems:internal:add:subfield:name'])) {
                     $child = new FieldType();
                     $child->setName($formArray['ems:internal:add:subfield:name']);
@@ -515,14 +502,12 @@ class ContentTypeController extends AbstractController
      * Try to find (recursively) if there is a field to duplicate.
      *
      * @param array<mixed> $formArray
-     *
-     * @return bool|string
      */
-    private function duplicateField(array $formArray, FieldType $fieldType)
+    private function duplicateField(array $formArray, FieldType $fieldType): bool|string
     {
         if (\array_key_exists('duplicate', $formArray)) {
             if (isset($formArray['ems:internal:add:subfield:target_name'])
-                && 0 !== \strcmp($formArray['ems:internal:add:subfield:target_name'], '')) {
+                && 0 !== \strcmp((string) $formArray['ems:internal:add:subfield:target_name'], '')) {
                 if (static::isValidName($formArray['ems:internal:add:subfield:target_name'])) {
                     $new = clone $fieldType;
                     $new->setName($formArray['ems:internal:add:subfield:target_name']);
@@ -641,7 +626,7 @@ class ContentTypeController extends AbstractController
 
         if ($form->isSubmitted()) {
             $data = $form->getData();
-            $structure = \json_decode($data['items'], true, 512, JSON_THROW_ON_ERROR);
+            $structure = \json_decode((string) $data['items'], true, 512, JSON_THROW_ON_ERROR);
             $this->contentTypeService->reorderFields($contentType, $structure);
 
             return $this->redirectToRoute('contenttype.edit', ['id' => $contentType->getId()]);
@@ -678,7 +663,7 @@ class ContentTypeController extends AbstractController
         $inputContentType = $request->request->all('content_type');
         try {
             $mapping = $this->mappingService->getMapping([$environment->getName()]);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             $this->logger->warning('log.contenttype.mapping.not_found', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
@@ -954,6 +939,6 @@ class ContentTypeController extends AbstractController
         if ($dataFieldType instanceof DataFieldType) {
             return $dataFieldType;
         }
-        throw new ElasticmsException(\sprintf('Expecting a DataFieldType instance, got a %s', \get_class($dataFieldType)));
+        throw new ElasticmsException(\sprintf('Expecting a DataFieldType instance, got a %s', $dataFieldType::class));
     }
 }

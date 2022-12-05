@@ -28,16 +28,13 @@ class AuthToken
      */
     private string $value;
 
-    /**
+    public function __construct(/**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="authTokens")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
-    private UserInterface $user;
-
-    public function __construct(UserInterface $user)
+    private UserInterface $user)
     {
         $this->value = \base64_encode(\random_bytes(50));
-        $this->user = $user;
 
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');

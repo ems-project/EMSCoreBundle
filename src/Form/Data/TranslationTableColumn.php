@@ -6,12 +6,9 @@ namespace EMS\CoreBundle\Form\Data;
 
 final class TranslationTableColumn extends TableColumn
 {
-    private string $domain;
-
-    public function __construct(string $titleKey, string $attribute, string $domain)
+    public function __construct(string $titleKey, string $attribute, private readonly string $domain)
     {
         parent::__construct($titleKey, $attribute);
-        $this->domain = $domain;
     }
 
     public function tableDataBlock(): string

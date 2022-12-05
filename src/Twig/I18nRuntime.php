@@ -10,15 +10,8 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 class I18nRuntime implements RuntimeExtensionInterface
 {
-    private I18nService $i18nService;
-    private string $fallbackLocale;
-    private UserService $userService;
-
-    public function __construct(I18nService $i18nService, UserService $userService, string $fallbackLocale)
+    public function __construct(private readonly I18nService $i18nService, private readonly UserService $userService, private readonly string $fallbackLocale)
     {
-        $this->i18nService = $i18nService;
-        $this->userService = $userService;
-        $this->fallbackLocale = $fallbackLocale;
     }
 
     public function i18n(string $key, string $locale = null): string
@@ -61,7 +54,7 @@ class I18nRuntime implements RuntimeExtensionInterface
             if ($user instanceof User) {
                 return $user->getLocalePreferred() ?? $user->getLocale();
             }
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
         }
 
         return $this->fallbackLocale;

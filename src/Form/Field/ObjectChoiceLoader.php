@@ -7,7 +7,7 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class ObjectChoiceLoader implements ChoiceLoaderInterface
 {
-    private ObjectChoiceList $objectChoiceList;
+    private readonly ObjectChoiceList $objectChoiceList;
 
     public function __construct(
         ObjectChoiceCacheService $objectChoiceCacheService,

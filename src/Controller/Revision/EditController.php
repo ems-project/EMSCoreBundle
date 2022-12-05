@@ -36,27 +36,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EditController extends AbstractController
 {
-    private DataService $dataService;
-    private LoggerInterface $logger;
-    private PublishService $publishService;
-    private RevisionService $revisionService;
-    private TranslatorInterface $translator;
-    private DraftInProgress $draftInProgress;
-
-    public function __construct(
-        DataService $dataService,
-        DraftInProgress $draftInProgress,
-        LoggerInterface $logger,
-        PublishService $publishService,
-        RevisionService $revisionService,
-        TranslatorInterface $translator
-    ) {
-        $this->dataService = $dataService;
-        $this->logger = $logger;
-        $this->publishService = $publishService;
-        $this->revisionService = $revisionService;
-        $this->translator = $translator;
-        $this->draftInProgress = $draftInProgress;
+    public function __construct(private readonly DataService $dataService, private readonly DraftInProgress $draftInProgress, private readonly LoggerInterface $logger, private readonly PublishService $publishService, private readonly RevisionService $revisionService, private readonly TranslatorInterface $translator)
+    {
     }
 
     public function editJsonRevision(Revision $revision, Request $request): Response
@@ -290,7 +271,7 @@ class EditController extends AbstractController
                                 $label = $revision->getLabel();
                                 $this->dataService->discardDraft($revision);
                                 $this->logger->notice('log.controller.draft-in-progress.discard_draft', ['revision' => $label]);
-                            } catch (NotFoundHttpException $e) {
+                            } catch (NotFoundHttpException) {
                                 $this->logger->warning('log.controller.draft-in-progress.draft-not-found', ['revisionId' => $revisionId]);
                             }
                         }
@@ -337,10 +318,7 @@ class EditController extends AbstractController
         ]);
     }
 
-    /**
-     * @param mixed $input
-     */
-    private function reorderCollection(&$input): void
+    private function reorderCollection(mixed &$input): void
     {
         if (!\is_array($input) || empty($input)) {
             return;

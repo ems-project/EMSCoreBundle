@@ -6,18 +6,10 @@ namespace EMS\CoreBundle\Form\Data;
 
 final class TableAction
 {
-    private string $name;
-    private string $labelKey;
-    private string $confirmationKey;
-    private string $icon;
     private string $cssClass = 'btn btn-default';
 
-    public function __construct(string $name, string $icon, string $labelKey, string $confirmationKey)
+    public function __construct(private readonly string $name, private readonly string $icon, private readonly string $labelKey, private readonly string $confirmationKey)
     {
-        $this->name = $name;
-        $this->icon = $icon;
-        $this->labelKey = $labelKey;
-        $this->confirmationKey = $confirmationKey;
     }
 
     public function getName(): string

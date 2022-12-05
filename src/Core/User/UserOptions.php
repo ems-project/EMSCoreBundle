@@ -12,7 +12,7 @@ class UserOptions implements \ArrayAccess
     /** @var array<string, bool> */
     private array $options = [];
 
-    public const SIMPLIFIED_UI = 'simplified_ui';
+    final public const SIMPLIFIED_UI = 'simplified_ui';
 
     /**
      * @param array<string, bool> $data
@@ -40,17 +40,17 @@ class UserOptions implements \ArrayAccess
         return isset($this->options[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): ?bool
     {
         return $this->options[$offset] ?? null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->options[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->options[$offset]);
     }

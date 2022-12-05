@@ -30,21 +30,8 @@ use Twig\TemplateWrapper;
 
 final class TaskController extends AbstractController
 {
-    private TaskManager $taskManager;
-    private AjaxService $ajax;
-    private FormFactoryInterface $formFactory;
-    private TableExporter $tableExporter;
-
-    public function __construct(
-        TaskManager $taskManager,
-        AjaxService $ajax,
-        FormFactoryInterface $formFactory,
-        TableExporter $tableExporter
-    ) {
-        $this->taskManager = $taskManager;
-        $this->ajax = $ajax;
-        $this->formFactory = $formFactory;
-        $this->tableExporter = $tableExporter;
+    public function __construct(private readonly TaskManager $taskManager, private readonly AjaxService $ajax, private readonly FormFactoryInterface $formFactory, private readonly TableExporter $tableExporter)
+    {
     }
 
     public function ajaxDataTable(Request $request, string $tab): Response
@@ -199,7 +186,7 @@ final class TaskController extends AbstractController
                     ->setBodyHtml('')
                     ->setFooter('modalFooterClose')
                     ->getResponse();
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 $ajaxModal->addMessageError('task.error.ajax');
             }
         }
@@ -230,7 +217,7 @@ final class TaskController extends AbstractController
                     ->addMessageSuccess('task.update.success', ['%title%' => $task->getTitle()])
                     ->setBody('modalTaskBody', ['form' => $form->createView(), 'task' => $task])
                     ->getResponse();
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 $ajaxModal->addMessageError('task.error.ajax');
             }
         }
@@ -281,7 +268,7 @@ final class TaskController extends AbstractController
                     ->setBodyHtml('')
                     ->setFooter('modalFooterClose')
                     ->getResponse();
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 $ajaxModal->addMessageError('task.error.ajax');
             }
         }
@@ -307,7 +294,7 @@ final class TaskController extends AbstractController
 
             $this->taskManager->taskDelete($task, $revisionId, $taskDTO->description);
             $ajaxModal->addMessageSuccess('task.delete.success', ['%title%' => $task->getTitle()]);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             $ajaxModal->addMessageError('task.error.ajax');
         }
 

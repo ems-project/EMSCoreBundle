@@ -34,51 +34,16 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 class ContentTypeService implements EntityServiceInterface
 {
     private const CONTENT_TYPE_AGGREGATION_NAME = 'content-types';
-
-    protected Registry $doctrine;
-
-    protected LoggerInterface $logger;
-
-    private Mapping $mappingService;
-
-    private ElasticaService $elasticaService;
-
-    private EnvironmentService $environmentService;
     /** @var ContentType[] */
     protected array $orderedContentTypes = [];
     /** @var ContentType[] */
     protected array $contentTypeArrayByName = [];
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private RevisionRepository $revisionRepository;
-    private TokenStorageInterface $tokenStorage;
-    private ?string $circleContentTypeName;
 
-    public function __construct(
-        Registry $doctrine,
-        LoggerInterface $logger,
-        Mapping $mappingService,
-        ElasticaService $elasticaService,
-        EnvironmentService $environmentService,
-        AuthorizationCheckerInterface $authorizationChecker,
-        RevisionRepository $revisionRepository,
-        TokenStorageInterface $tokenStorage,
-        ?string $circleContentTypeName)
+    public function __construct(protected Registry $doctrine, protected LoggerInterface $logger, private readonly Mapping $mappingService, private readonly ElasticaService $elasticaService, private readonly EnvironmentService $environmentService, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly RevisionRepository $revisionRepository, private readonly TokenStorageInterface $tokenStorage, private readonly ?string $circleContentTypeName)
     {
-        $this->doctrine = $doctrine;
-        $this->logger = $logger;
-        $this->mappingService = $mappingService;
-        $this->elasticaService = $elasticaService;
-        $this->environmentService = $environmentService;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->revisionRepository = $revisionRepository;
-        $this->tokenStorage = $tokenStorage;
-        $this->circleContentTypeName = $circleContentTypeName;
     }
 
-    /**
-     * @return FieldType|false
-     */
-    public function getChildByPath(FieldType $fieldType, string $path, bool $skipVirtualFields = false)
+    public function getChildByPath(FieldType $fieldType, string $path, bool $skipVirtualFields = false): FieldType|false
     {
         $elem = \explode('.', $path);
 
@@ -144,7 +109,7 @@ class ContentTypeService implements EntityServiceInterface
     {
         $out = [];
         foreach ($fieldType->getChildren() as $child) {
-            $out = \array_merge($out, $this->listAllFields($child));
+            $out = [...$out, ...$this->listAllFields($child)];
         }
         $out['key_'.$fieldType->getId()] = $fieldType;
 
@@ -256,10 +221,7 @@ class ContentTypeService implements EntityServiceInterface
         return $contentType;
     }
 
-    /**
-     * @return ContentType|false
-     */
-    public function getByName(string $name)
+    public function getByName(string $name): ContentType|false
     {
         $this->loadEnvironment();
 

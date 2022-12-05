@@ -25,15 +25,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SearchFormType extends AbstractType
 {
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private SortOptionService $sortOptionService;
-    private SearchFieldOptionService $searchFieldOptionService;
-
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, SortOptionService $sortOptionService, SearchFieldOptionService $searchFieldOptionService)
+    public function __construct(private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly SortOptionService $sortOptionService, private readonly SearchFieldOptionService $searchFieldOptionService)
     {
-        $this->authorizationChecker = $authorizationChecker;
-        $this->sortOptionService = $sortOptionService;
-        $this->searchFieldOptionService = $searchFieldOptionService;
     }
 
     /**

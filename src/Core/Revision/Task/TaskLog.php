@@ -10,9 +10,6 @@ use EMS\CoreBundle\Entity\Task;
 final class TaskLog
 {
     private \DateTimeInterface $date;
-
-    public string $username;
-    public string $assignee;
     public string $status;
     public ?string $comment = null;
 
@@ -24,10 +21,8 @@ final class TaskLog
     private const STATUS_CREATED = 'created';
     private const STATUS_UPDATED = 'updated';
 
-    private function __construct(string $assignee, string $username)
+    private function __construct(public string $assignee, public string $username)
     {
-        $this->assignee = $assignee;
-        $this->username = $username;
         $this->date = new \DateTimeImmutable('now');
     }
 

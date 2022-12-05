@@ -23,15 +23,8 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class XliffService
 {
-    private LoggerInterface $logger;
-    private RevisionService $revisionService;
-    private ElasticaService $elasticaService;
-
-    public function __construct(LoggerInterface $logger, RevisionService $revisionService, ElasticaService $elasticaService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly RevisionService $revisionService, private readonly ElasticaService $elasticaService)
     {
-        $this->logger = $logger;
-        $this->revisionService = $revisionService;
-        $this->elasticaService = $elasticaService;
     }
 
     /**
@@ -47,7 +40,7 @@ class XliffService
             try {
                 $currentRevision = $this->revisionService->getCurrentRevisionForEnvironment($source->getId(), $contentType, $targetEnvironment);
                 $currentData = null === $currentRevision ? [] : $currentRevision->getRawData();
-            } catch (UnexpectedResultException $e) {
+            } catch (UnexpectedResultException) {
                 $currentData = [];
             }
         }

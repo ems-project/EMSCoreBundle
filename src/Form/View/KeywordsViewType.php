@@ -15,12 +15,9 @@ use Twig\Environment;
 
 class KeywordsViewType extends ViewType
 {
-    private ElasticaService $elasticaService;
-
-    public function __construct(FormFactory $formFactory, Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger)
+    public function __construct(FormFactory $formFactory, Environment $twig, private readonly ElasticaService $elasticaService, LoggerInterface $logger)
     {
         parent::__construct($formFactory, $twig, $logger);
-        $this->elasticaService = $elasticaService;
     }
 
     public function getLabel(): string

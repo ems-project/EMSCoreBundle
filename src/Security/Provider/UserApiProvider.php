@@ -12,11 +12,8 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserApiProvider implements UserProviderInterface
 {
-    private AuthTokenRepository $authTokenRepository;
-
-    public function __construct(AuthTokenRepository $authTokenRepository)
+    public function __construct(private readonly AuthTokenRepository $authTokenRepository)
     {
-        $this->authTokenRepository = $authTokenRepository;
     }
 
     public function loadUserByIdentifier(string $identifier): UserInterface

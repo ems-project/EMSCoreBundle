@@ -9,17 +9,8 @@ use Psr\Log\LoggerInterface;
 
 class Indexer
 {
-    private LoggerInterface $logger;
-    private IndexService $indexService;
-    private Mapping $mapping;
-    private AliasService $aliasService;
-
-    public function __construct(IndexService $indexService, LoggerInterface $logger, Mapping $mapping, AliasService $aliasService)
+    public function __construct(private readonly IndexService $indexService, private LoggerInterface $logger, private readonly Mapping $mapping, private readonly AliasService $aliasService)
     {
-        $this->logger = $logger;
-        $this->indexService = $indexService;
-        $this->mapping = $mapping;
-        $this->aliasService = $aliasService;
     }
 
     public function setLogger(LoggerInterface $logger): Indexer

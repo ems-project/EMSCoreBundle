@@ -7,11 +7,11 @@ namespace EMS\CoreBundle\Form\Field;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CoreBundle\Entity\ContentType;
 
-class ObjectChoiceListItem
+class ObjectChoiceListItem implements \Stringable
 {
-    private string $label;
+    private readonly string $label;
     private ?string $title;
-    private string $value;
+    private readonly string $value;
     private ?string $group = null;
     private ?string $color = null;
 

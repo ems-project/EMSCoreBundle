@@ -53,9 +53,9 @@ class SearchFilter implements \JsonSerializable
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'pattern' => $this->pattern,

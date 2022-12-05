@@ -22,105 +22,84 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\RevisionRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Revision implements EntityInterface
+class Revision implements EntityInterface, \Stringable
 {
     use RevisionTaskTrait;
-
     use CreatedModifiedTrait;
-
     /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private ?int $id = null;
-
     /**
      * @ORM\Column(name="auto_save_at", type="datetime", nullable=true)
      */
     private ?\DateTime $autoSaveAt = null;
-
     /**
      * @ORM\Column(name="archived", type="boolean", options={"default": false})
      */
     private bool $archived = false;
-
     /**
      * @ORM\Column(name="deleted", type="boolean")
      */
     private bool $deleted = false;
-
     /**
      * @ORM\ManyToOne(targetEntity="ContentType")
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
     private ?ContentType $contentType = null;
-
     private ?DataField $dataField = null;
-
     /**
      * @ORM\Column(name="version", type="integer")
      * @ORM\Version
      */
     private int $version = 0;
-
     /**
      * @ORM\Column(name="ouuid", type="string", length=255, nullable=true)
      */
     private ?string $ouuid = null;
-
     /**
      * @ORM\Column(name="start_time", type="datetime")
      */
     private \DateTime $startTime;
-
     /**
      * @ORM\Column(name="end_time", type="datetime", nullable=true)
      */
     private ?\DateTime $endTime = null;
-
     /**
      * @ORM\Column(name="draft", type="boolean")
      */
     private bool $draft = false;
-
     /**
      * @ORM\Column(name="finalized_by", type="string", length=255, nullable=true)
      */
     private ?string $finalizedBy = null;
-
     /**
      * @ORM\Column(name="finalized_date", type="datetime", nullable=true)
      */
     private ?\DateTime $finalizedDate = null;
-
     private ?\DateTime $tryToFinalizeOn = null;
-
     /**
      * @ORM\Column(name="archived_by", type="string", length=255, nullable=true)
      */
     private ?string $archivedBy = null;
-
     /**
      * @ORM\Column(name="deleted_by", type="string", length=255, nullable=true)
      */
     private ?string $deletedBy = null;
-
     /**
      * @ORM\Column(name="lock_by", type="string", length=255, nullable=true)
      */
     private ?string $lockBy = null;
-
     /**
      * @ORM\Column(name="auto_save_by", type="string", length=255, nullable=true)
      */
     private ?string $autoSaveBy = null;
-
     /**
      * @ORM\Column(name="lock_until", type="datetime", nullable=true)
      */
     private ?\DateTime $lockUntil = null;
-
     /**
      * @var ArrayCollection<int, Environment>|Environment[]
      *
@@ -129,7 +108,6 @@ class Revision implements EntityInterface
      * @ORM\OrderBy({"orderKey":"ASC"})
      */
     private Collection $environments;
-
     /**
      * @var Collection<int, Notification>
      *
@@ -137,63 +115,52 @@ class Revision implements EntityInterface
      * @ORM\OrderBy({"created" = "ASC"})
      */
     private Collection $notifications;
-
     /**
      * @var ?array<mixed>
      *
      * @ORM\Column(name="raw_data", type="json", nullable=true)
      */
     private ?array $rawData = null;
-
     /**
      * @var ?array<mixed>
      *
      * @ORM\Column(name="auto_save", type="json", nullable=true)
      */
     private ?array $autoSave = null;
-
     /**
      * @var ?string[]
      *
      * @ORM\Column(name="circles", type="simple_array", nullable=true)
      */
     private ?array $circles = null;
-
     /**
      * @ORM\Column(name="labelField", type="text", nullable=true)
      */
     private ?string $labelField = null;
-
     /**
      * @ORM\Column(name="sha1", type="string", nullable=true)
      */
     private ?string $sha1 = null;
-
     /**not persisted field to ensure that they are all there after a submit */
     private ?bool $allFieldsAreThere = false;
-
     /**
      * @ORM\Column(type="uuid", name="version_uuid", unique=false, nullable=true)
      */
     private ?UuidInterface $versionUuid = null;
-
     /**
      * @ORM\Column(type="string", name="version_tag", nullable=true)
      */
     private ?string $versionTag = null;
-
     /**
      * @ORM\Column(name="draft_save_date", type="datetime", nullable=true)
      */
     private ?\DateTime $draftSaveDate = null;
-
     /**
      * @var Collection<int, ReleaseRevision>
      *
      * @ORM\OneToMany(targetEntity="ReleaseRevision", mappedBy="revision", cascade={"remove"})
      */
     private Collection $releases;
-
     private bool $selfUpdate = false;
 
     public function enableSelfUpdate(): void
@@ -292,7 +259,7 @@ class Revision implements EntityInterface
         // TODO: Refactoring: Dependency injection of the first Datafield in the Revision.
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $out = 'New instance';
         if ($this->ouuid) {
@@ -749,7 +716,7 @@ class Revision implements EntityInterface
     }
 
     /**
-     * @param ?array<mixed> $autoSave
+     * @param array<mixed> $autoSave
      */
     public function setAutoSave(?array $autoSave): self
     {

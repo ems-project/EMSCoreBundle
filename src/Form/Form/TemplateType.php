@@ -22,13 +22,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TemplateType extends AbstractType
 {
-    private EnvironmentService $service;
-    private string $circleType;
-
-    public function __construct(string $circleType, EnvironmentService $service)
+    public function __construct(private readonly string $circleType, private readonly EnvironmentService $service)
     {
-        $this->service = $service;
-        $this->circleType = $circleType;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

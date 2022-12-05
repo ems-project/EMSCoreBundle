@@ -31,13 +31,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class ActionController extends AbstractController
 {
-    private LoggerInterface $logger;
-    private ActionService $actionService;
-
-    public function __construct(LoggerInterface $logger, ActionService $actionService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly ActionService $actionService)
     {
-        $this->logger = $logger;
-        $this->actionService = $actionService;
     }
 
     public function ajaxDataTableAction(ContentType $contentType, Request $request): Response

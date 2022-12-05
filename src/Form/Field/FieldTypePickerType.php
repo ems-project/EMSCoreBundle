@@ -17,7 +17,7 @@ class FieldTypePickerType extends SelectPickerType
 
     public function addDataFieldType(DataFieldType $dataField): void
     {
-        $this->dataFieldTypes[\get_class($dataField)] = $dataField;
+        $this->dataFieldTypes[$dataField::class] = $dataField;
     }
 
     public function getDataFieldType(string $dataFieldTypeId): DataFieldType

@@ -19,11 +19,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class QuerySearchType extends AbstractType
 {
-    private EnvironmentService $service;
-
-    public function __construct(EnvironmentService $service)
+    public function __construct(private readonly EnvironmentService $service)
     {
-        $this->service = $service;
     }
 
     /**

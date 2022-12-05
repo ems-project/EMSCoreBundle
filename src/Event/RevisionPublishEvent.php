@@ -9,12 +9,9 @@ use EMS\CoreBundle\Entity\Revision;
 
 class RevisionPublishEvent extends RevisionEvent
 {
-    protected Environment $environment;
-
-    public function __construct(Revision $revision, Environment $environment)
+    public function __construct(Revision $revision, protected Environment $environment)
     {
         parent::__construct($revision);
-        $this->environment = $environment;
     }
 
     public function getEnvironment(): Environment

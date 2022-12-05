@@ -11,18 +11,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RemoveExpiredSubmissionsCommand extends Command implements CommandInterface
 {
-    /** @var FormSubmissionService */
-    protected $formSubmissionService;
-
-    /** @var LoggerInterface */
-    protected $logger;
-
     protected static $defaultName = 'ems:submissions:remove-expired';
 
-    public function __construct(FormSubmissionService $formSubmissionService, LoggerInterface $logger)
+    public function __construct(protected FormSubmissionService $formSubmissionService, protected LoggerInterface $logger)
     {
-        $this->formSubmissionService = $formSubmissionService;
-        $this->logger = $logger;
         parent::__construct();
     }
 

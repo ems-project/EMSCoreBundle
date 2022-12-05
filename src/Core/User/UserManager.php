@@ -16,25 +16,12 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 final class UserManager
 {
-    private TokenStorageInterface $tokenStorage;
-    private MailerService $mailerService;
-    private UserRepository $userRepository;
-    private UserPasswordHasherInterface $userPasswordHasher;
-
     public const PASSWORD_RETRY_TTL = 7200;
     public const CONFIRMATION_TOKEN_TTL = 86400;
     private const MAIL_TEMPLATE = '@EMSCore/user/mail.twig';
 
-    public function __construct(
-        TokenStorageInterface $tokenStorage,
-        MailerService $mailerService,
-        UserRepository $userRepository,
-        UserPasswordHasherInterface $userPasswordHasher
-    ) {
-        $this->tokenStorage = $tokenStorage;
-        $this->mailerService = $mailerService;
-        $this->userRepository = $userRepository;
-        $this->userPasswordHasher = $userPasswordHasher;
+    public function __construct(private readonly TokenStorageInterface $tokenStorage, private readonly MailerService $mailerService, private readonly UserRepository $userRepository, private readonly UserPasswordHasherInterface $userPasswordHasher)
+    {
     }
 
     public function create(string $username, string $password, string $email, bool $active, bool $superAdmin): User
@@ -54,7 +41,7 @@ final class UserManager
     {
         try {
             return $this->getAuthenticatedUser();
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             return null;
         }
     }

@@ -17,11 +17,8 @@ use Twig\Environment;
 
 class Export extends AbstractType implements DashboardInterface
 {
-    private Environment $twig;
-
-    public function __construct(Environment $twig)
+    public function __construct(private readonly Environment $twig)
     {
-        $this->twig = $twig;
     }
 
     /**

@@ -12,13 +12,11 @@ use EMS\CoreBundle\Entity\Task;
  */
 final class TaskCollection implements \IteratorAggregate
 {
-    private Revision $revision;
     /** @var Task[] */
     private array $tasks = [];
 
-    public function __construct(Revision $revision)
+    public function __construct(private readonly Revision $revision)
     {
-        $this->revision = $revision;
     }
 
     /**

@@ -14,9 +14,9 @@ class VersionFields implements \ArrayAccess
     /** @var array<string, ?string> */
     private array $fields = [];
 
-    public const DATE_FROM = 'date_from';
-    public const DATE_TO = 'date_to';
-    public const VERSION_TAG = 'version_tag';
+    final public const DATE_FROM = 'date_from';
+    final public const DATE_TO = 'date_to';
+    final public const VERSION_TAG = 'version_tag';
 
     private const FIELDS = [
         self::DATE_FROM,
@@ -50,17 +50,17 @@ class VersionFields implements \ArrayAccess
         return isset($this->fields[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): ?string
     {
         return $this->fields[$offset] ?? null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->fields[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->fields[$offset]);
     }

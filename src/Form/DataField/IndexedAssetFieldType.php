@@ -24,16 +24,13 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class IndexedAssetFieldType extends DataFieldType
 {
-    private FileService $fileService;
-
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
-        FileService $fileService
+        private readonly FileService $fileService
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->fileService = $fileService;
     }
 
     public static function getIcon(): string

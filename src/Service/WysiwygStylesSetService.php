@@ -9,13 +9,8 @@ use Psr\Log\LoggerInterface;
 
 class WysiwygStylesSetService implements EntityServiceInterface
 {
-    private WysiwygStylesSetRepository $wysiwygStylesSetRepository;
-    private LoggerInterface $logger;
-
-    public function __construct(WysiwygStylesSetRepository $wysiwygStylesSetRepository, LoggerInterface $logger)
+    public function __construct(private readonly WysiwygStylesSetRepository $wysiwygStylesSetRepository, private readonly LoggerInterface $logger)
     {
-        $this->wysiwygStylesSetRepository = $wysiwygStylesSetRepository;
-        $this->logger = $logger;
     }
 
     /**

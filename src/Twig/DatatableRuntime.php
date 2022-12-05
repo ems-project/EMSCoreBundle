@@ -10,13 +10,8 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 final class DatatableRuntime implements RuntimeExtensionInterface
 {
-    private DatatableService $datatableService;
-    private Environment $twig;
-
-    public function __construct(DatatableService $datatableService, Environment $twig)
+    public function __construct(private readonly DatatableService $datatableService, private readonly Environment $twig)
     {
-        $this->datatableService = $datatableService;
-        $this->twig = $twig;
     }
 
     /**

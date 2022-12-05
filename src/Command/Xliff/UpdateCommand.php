@@ -29,11 +29,6 @@ final class UpdateCommand extends AbstractCommand
     public const OPTION_LOCALE_FIELD = 'locale-field';
     public const OPTION_DRY_RUN = 'dry-run';
 
-    private EnvironmentService $environmentService;
-    private XliffService $xliffService;
-    private PublishService $publishService;
-    private RevisionService $revisionService;
-
     private string $xliffFilename;
     private ?Environment $publishTo = null;
     private bool $archive = false;
@@ -42,15 +37,11 @@ final class UpdateCommand extends AbstractCommand
     private bool $dryRun = false;
 
     public function __construct(
-        EnvironmentService $environmentService,
-        XliffService $xliffService,
-        PublishService $publishService,
-        RevisionService $revisionService
+        private readonly EnvironmentService $environmentService,
+        private readonly XliffService $xliffService,
+        private readonly PublishService $publishService,
+        private readonly RevisionService $revisionService
     ) {
-        $this->environmentService = $environmentService;
-        $this->xliffService = $xliffService;
-        $this->publishService = $publishService;
-        $this->revisionService = $revisionService;
         parent::__construct();
     }
 

@@ -18,24 +18,8 @@ use EMS\CoreBundle\Entity\Form\Search;
 
 class SearchService
 {
-    private Mapping $mapping;
-    private ElasticaService $elasticaService;
-    private EnvironmentService $environmentService;
-    private ContentTypeService $contentTypeService;
-    private Registry $doctrine;
-
-    public function __construct(
-        Registry $doctrine,
-        Mapping $mapping,
-        ElasticaService $elasticaService,
-        EnvironmentService $environmentService,
-        ContentTypeService $contentTypeService
-    ) {
-        $this->mapping = $mapping;
-        $this->elasticaService = $elasticaService;
-        $this->environmentService = $environmentService;
-        $this->contentTypeService = $contentTypeService;
-        $this->doctrine = $doctrine;
+    public function __construct(private readonly Registry $doctrine, private readonly Mapping $mapping, private readonly ElasticaService $elasticaService, private readonly EnvironmentService $environmentService, private readonly ContentTypeService $contentTypeService)
+    {
     }
 
     /**

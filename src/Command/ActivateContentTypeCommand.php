@@ -19,22 +19,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ActivateContentTypeCommand extends Command
 {
     protected static $defaultName = 'ems:contenttype:activate';
-
-    /** @var ContentTypeService */
-    protected $contentTypeService;
     private ?SymfonyStyle $io = null;
-    private LoggerInterface $logger;
     private ?bool $deactivate = null;
 
-    public const ARGUMENT_CONTENTTYPES = 'contenttypes';
-    public const OPTION_ALL = 'all';
-    public const DEACTIVATE = 'deactivate';
-    public const FORCE = 'force';
+    final public const ARGUMENT_CONTENTTYPES = 'contenttypes';
+    final public const OPTION_ALL = 'all';
+    final public const DEACTIVATE = 'deactivate';
+    final public const FORCE = 'force';
 
-    public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService)
+    public function __construct(private readonly LoggerInterface $logger, protected ContentTypeService $contentTypeService)
     {
-        $this->contentTypeService = $contentTypeService;
-        $this->logger = $logger;
         parent::__construct();
     }
 

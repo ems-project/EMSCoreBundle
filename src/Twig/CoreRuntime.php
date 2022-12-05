@@ -9,11 +9,8 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 final class CoreRuntime implements RuntimeExtensionInterface
 {
-    private LoggerInterface $logger;
-
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private readonly LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     public function logNotice(string $notice): void

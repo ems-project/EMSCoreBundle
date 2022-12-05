@@ -21,16 +21,13 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class SelectUserPropertyFieldType extends DataFieldType
 {
-    private UserService $userService;
-
     public function __construct(
-        UserService $userService,
+        private readonly UserService $userService,
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->userService = $userService;
     }
 
     public function getLabel(): string

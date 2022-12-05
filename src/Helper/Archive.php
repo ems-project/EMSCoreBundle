@@ -7,7 +7,7 @@ use Symfony\Component\Mime\MimeTypes;
 
 class Archive
 {
-    private MimeTypes $mimeTypes;
+    private readonly MimeTypes $mimeTypes;
 
     public function __construct()
     {
@@ -20,12 +20,10 @@ class Archive
             return $filename;
         }
 
-        switch ($this->guessMimeType($filename)) {
-            case 'application/zip':
-                return $this->unzip($filename);
-            default:
-                throw new \Exception('Unsupported archive type');
-        }
+        return match ($this->guessMimeType($filename)) {
+            'application/zip' => $this->unzip($filename),
+            default => throw new \Exception('Unsupported archive type'),
+        };
     }
 
     private function guessMimeType(string $filename): string

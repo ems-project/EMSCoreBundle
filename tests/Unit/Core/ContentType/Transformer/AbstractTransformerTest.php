@@ -12,10 +12,7 @@ abstract class AbstractTransformerTest extends TestCase
 {
     abstract protected function getTransformer(): ContentTransformerInterface;
 
-    /**
-     * @param mixed $output
-     */
-    protected function assertEqualsInputOutPut(string $input, $output, array $options = []): void
+    protected function assertEqualsInputOutPut(string $input, mixed $output, array $options = []): void
     {
         $context = new TransformContext($input, $options);
         $this->getTransformer()->transform($context);

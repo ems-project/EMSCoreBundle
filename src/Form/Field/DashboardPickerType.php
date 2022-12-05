@@ -11,14 +11,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DashboardPickerType extends SelectPickerType
 {
-    private DashboardService $dashboardService;
-    private TranslatorInterface $translator;
-
-    public function __construct(DashboardService $dashboardService, TranslatorInterface $translator)
+    public function __construct(private readonly DashboardService $dashboardService, private readonly TranslatorInterface $translator)
     {
         parent::__construct();
-        $this->dashboardService = $dashboardService;
-        $this->translator = $translator;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -6,7 +6,7 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
 {
-    private ContentTypeFieldChoiceList $contentTypeFieldChoiceList;
+    private readonly ContentTypeFieldChoiceList $contentTypeFieldChoiceList;
 
     /**
      * @param array<mixed> $mapping

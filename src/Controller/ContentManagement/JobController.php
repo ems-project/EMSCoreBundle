@@ -21,17 +21,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class JobController extends AbstractController
 {
-    private JobService $jobService;
-    private LoggerInterface $logger;
-    private int $pagingSize;
-    private bool $triggerJobFromWeb;
-
-    public function __construct(LoggerInterface $logger, JobService $jobService, int $pagingSize, bool $triggerJobFromWeb)
+    public function __construct(private readonly LoggerInterface $logger, private readonly JobService $jobService, private readonly int $pagingSize, private readonly bool $triggerJobFromWeb)
     {
-        $this->logger = $logger;
-        $this->jobService = $jobService;
-        $this->pagingSize = $pagingSize;
-        $this->triggerJobFromWeb = $triggerJobFromWeb;
     }
 
     public function index(Request $request): Response

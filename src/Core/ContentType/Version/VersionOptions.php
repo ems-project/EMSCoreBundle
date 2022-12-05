@@ -12,8 +12,8 @@ class VersionOptions implements \ArrayAccess
     /** @var array<string, bool> */
     private array $options = [];
 
-    public const DATES_READ_ONLY = 'dates_read_only';
-    public const DATES_INTERVAL_ONE_DAY = 'dates_interval_one_day';
+    final public const DATES_READ_ONLY = 'dates_read_only';
+    final public const DATES_INTERVAL_ONE_DAY = 'dates_interval_one_day';
 
     /**
      * @param array<string, bool> $data
@@ -37,17 +37,17 @@ class VersionOptions implements \ArrayAccess
         return isset($this->options[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): ?bool
     {
         return $this->options[$offset] ?? null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->options[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->options[$offset]);
     }

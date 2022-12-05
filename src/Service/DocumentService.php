@@ -15,25 +15,10 @@ use Symfony\Component\Form\FormFactoryInterface;
 
 class DocumentService
 {
-    protected DataService $dataService;
-    private FormFactoryInterface $formFactory;
-    private Registry $doctrine;
-    private Bulker $bulker;
-    private RevisionRepository $revisionRepository;
     private ?EntityManager $entityManager = null;
 
-    public function __construct(
-        Registry $doctrine,
-        DataService $dataService,
-        FormFactoryInterface $formFactory,
-        Bulker $bulker,
-        RevisionRepository $revisionRepository
-    ) {
-        $this->dataService = $dataService;
-        $this->formFactory = $formFactory;
-        $this->doctrine = $doctrine;
-        $this->bulker = $bulker;
-        $this->revisionRepository = $revisionRepository;
+    public function __construct(private readonly Registry $doctrine, protected DataService $dataService, private readonly FormFactoryInterface $formFactory, private readonly Bulker $bulker, private readonly RevisionRepository $revisionRepository)
+    {
     }
 
     public function initDocumentImporterContext(ContentType $contentType, string $lockUser, bool $rawImport, bool $signData, bool $indexInDefaultEnv, int $bulkSize, bool $finalize, bool $force): DocumentImportContext

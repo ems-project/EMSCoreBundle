@@ -13,14 +13,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class FlashMessageLogger extends AbstractProcessingHandler
 {
-    private RequestStack $requestStack;
-    private TranslatorInterface $translator;
-
-    public function __construct(RequestStack $requestStack, TranslatorInterface $translator)
+    public function __construct(private readonly RequestStack $requestStack, private readonly TranslatorInterface $translator)
     {
         parent::__construct(Logger::NOTICE);
-        $this->requestStack = $requestStack;
-        $this->translator = $translator;
     }
 
     /**

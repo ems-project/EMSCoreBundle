@@ -57,9 +57,9 @@ class HiddenFieldType extends DataFieldType
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
         try {
-            $value = \json_decode($data['value'], null, 512, JSON_THROW_ON_ERROR);
+            $value = \json_decode((string) $data['value'], null, 512, JSON_THROW_ON_ERROR);
             $dataField->setRawData($value);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $dataField->setRawData(null);
             $dataField->addMessage('ems was not able to parse the field');
         }

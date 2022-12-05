@@ -10,10 +10,10 @@ use EMS\Helpers\Standard\DateTime;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\NotificationRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Notification
+class Notification implements \Stringable
 {
     use CreatedModifiedTrait;
-    public const PENDING = 'pending';
+    final public const PENDING = 'pending';
 
     /**
      * @ORM\Column(name="id", type="integer")
@@ -88,7 +88,7 @@ class Notification
         $this->modified = DateTime::create('now');
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getTemplate()->getName().'#'.$this->id;
     }

@@ -24,33 +24,10 @@ use Twig\Error\Error;
 class ExportDocumentsCommand extends EmsCommand
 {
     protected static $defaultName = 'ems:contenttype:export';
-    public const OUTPUT_FILE_ARGUMENT = 'outputFile';
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var DataService */
-    protected $dataService;
-    /** @var EnvironmentService */
-    protected $environmentService;
-    /** @var ContentTypeService */
-    protected $contentTypeService;
-    /** @var TemplateService */
-    protected $templateService;
-    /** @var AssetRuntime */
-    protected $runtime;
-    /** @var string */
-    protected $instanceId;
-    private ElasticaService $elasticaService;
+    final public const OUTPUT_FILE_ARGUMENT = 'outputFile';
 
-    public function __construct(LoggerInterface $logger, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, AssetRuntime $runtime, ElasticaService $elasticaService, string $instanceId)
+    public function __construct(protected LoggerInterface $logger, protected TemplateService $templateService, protected DataService $dataService, protected ContentTypeService $contentTypeService, protected EnvironmentService $environmentService, protected AssetRuntime $runtime, private readonly ElasticaService $elasticaService, protected string $instanceId)
     {
-        $this->logger = $logger;
-        $this->templateService = $templateService;
-        $this->dataService = $dataService;
-        $this->environmentService = $environmentService;
-        $this->instanceId = $instanceId;
-        $this->contentTypeService = $contentTypeService;
-        $this->runtime = $runtime;
-        $this->elasticaService = $elasticaService;
         parent::__construct();
     }
 
@@ -205,9 +182,9 @@ class ExportDocumentsCommand extends EmsCommand
         } else {
             $accumulateInOneFile = \in_array($format, [TemplateService::MERGED_JSON_FORMAT, TemplateService::MERGED_XML_FORMAT]);
             $useTemplate = false;
-            if (false !== \strpos($format, TemplateService::JSON_FORMAT)) {
+            if (\str_contains($format, (string) TemplateService::JSON_FORMAT)) {
                 $extension = '.json';
-            } elseif (false !== \strpos($format, TemplateService::XML_FORMAT)) {
+            } elseif (\str_contains($format, (string) TemplateService::XML_FORMAT)) {
                 $extension = '.xml';
             } else {
                 $output->writeln(\sprintf('WARNING: Format %s not found', $format));
@@ -260,9 +237,9 @@ class ExportDocumentsCommand extends EmsCommand
                 } else {
                     if ($accumulateInOneFile) {
                         $content = Json::encode($document->getSource());
-                    } elseif (false !== \strpos($format, TemplateService::JSON_FORMAT)) {
+                    } elseif (\str_contains($format, (string) TemplateService::JSON_FORMAT)) {
                         $content = Json::encode($document->getSource(), true);
-                    } elseif (false !== \strpos($format, TemplateService::XML_FORMAT)) {
+                    } elseif (\str_contains($format, (string) TemplateService::XML_FORMAT)) {
                         $content = $this->templateService->getXml($contentType, $document->getSource(), false, $document->getOuuid());
                     } else {
                         $this->logger->error('log.command.export.unknow_format', [
@@ -289,9 +266,9 @@ class ExportDocumentsCommand extends EmsCommand
         if ($accumulateInOneFile) {
             if ($useTemplate) {
                 $accumulatedContent = \implode('', $accumulatedContent);
-            } elseif (false !== \strpos($format, TemplateService::JSON_FORMAT)) {
+            } elseif (\str_contains($format, (string) TemplateService::JSON_FORMAT)) {
                 $accumulatedContent = Json::encode($accumulatedContent);
-            } elseif (false !== \strpos($format, TemplateService::XML_FORMAT)) {
+            } elseif (\str_contains($format, (string) TemplateService::XML_FORMAT)) {
                 $accumulatedContent = $this->templateService->getXml($contentType, $accumulatedContent, true);
             } else {
                 $output->writeln(\sprintf('WARNING: Format %s not found', $format));

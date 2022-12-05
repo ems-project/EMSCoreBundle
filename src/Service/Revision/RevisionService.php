@@ -22,24 +22,8 @@ use Ramsey\Uuid\UuidInterface;
 
 class RevisionService implements RevisionServiceInterface
 {
-    private DataService $dataService;
-    private LoggerInterface $logger;
-    private LoggerInterface $auditLogger;
-    private RevisionRepository $revisionRepository;
-    private PublishService $publishService;
-
-    public function __construct(
-        DataService $dataService,
-        LoggerInterface $logger,
-        LoggerInterface $auditLogger,
-        RevisionRepository $revisionRepository,
-        PublishService $publishService
-    ) {
-        $this->dataService = $dataService;
-        $this->logger = $logger;
-        $this->auditLogger = $auditLogger;
-        $this->revisionRepository = $revisionRepository;
-        $this->publishService = $publishService;
+    public function __construct(private readonly DataService $dataService, private readonly LoggerInterface $logger, private readonly LoggerInterface $auditLogger, private readonly RevisionRepository $revisionRepository, private readonly PublishService $publishService)
+    {
     }
 
     public function archive(Revision $revision, string $archivedBy, bool $flush = true): bool
@@ -58,7 +42,7 @@ class RevisionService implements RevisionServiceInterface
     }
 
     /**
-     * @return ?array<mixed>
+     * @return array<mixed>
      */
     public function compare(Revision $revision, int $compareRevisionId): ?array
     {
@@ -71,7 +55,7 @@ class RevisionService implements RevisionServiceInterface
 
         try {
             $compareRevision = $this->revisionRepository->findOneById($compareRevisionId);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             $this->logger->warning('log.data.revision.compare_revision_not_found', $logContext);
 
             return null;
@@ -205,7 +189,7 @@ class RevisionService implements RevisionServiceInterface
     }
 
     /**
-     * @param ?array<mixed> $mergeRawData
+     * @param array<mixed> $mergeRawData
      */
     public function copy(Revision $revision, ?array $mergeRawData = null): void
     {

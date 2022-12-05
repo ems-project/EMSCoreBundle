@@ -14,13 +14,8 @@ use Psr\Log\LoggerInterface;
 
 class ScheduleManager implements EntityServiceInterface
 {
-    private ScheduleRepository $scheduleRepository;
-    private LoggerInterface $logger;
-
-    public function __construct(ScheduleRepository $scheduleRepository, LoggerInterface $logger)
+    public function __construct(private readonly ScheduleRepository $scheduleRepository, private readonly LoggerInterface $logger)
     {
-        $this->scheduleRepository = $scheduleRepository;
-        $this->logger = $logger;
     }
 
     /**

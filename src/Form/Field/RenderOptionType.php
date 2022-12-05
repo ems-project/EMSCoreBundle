@@ -9,13 +9,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RenderOptionType extends ChoiceType
 {
-    public const EMBED = 'embed';
-    public const EXPORT = 'export';
-    public const EXTERNALLINK = 'externalLink';
-    public const RAW_HTML = 'rawHTML';
-    public const NOTIFICATION = 'notification';
-    public const JOB = 'job';
-    public const PDF = 'pdf';
+    final public const EMBED = 'embed';
+    final public const EXPORT = 'export';
+    final public const EXTERNALLINK = 'externalLink';
+    final public const RAW_HTML = 'rawHTML';
+    final public const NOTIFICATION = 'notification';
+    final public const JOB = 'job';
+    final public const PDF = 'pdf';
 
     /** @var array<string, string> */
     private array $choices = [

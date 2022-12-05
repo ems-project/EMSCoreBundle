@@ -16,11 +16,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ManagedAliasType extends AbstractType
 {
-    private AliasService $aliasService;
-
-    public function __construct(AliasService $aliasService)
+    public function __construct(private readonly AliasService $aliasService)
     {
-        $this->aliasService = $aliasService;
     }
 
     /**

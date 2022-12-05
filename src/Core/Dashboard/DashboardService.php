@@ -9,7 +9,7 @@ use EMS\CoreBundle\Core\Dashboard\Services\DashboardInterface;
 class DashboardService
 {
     /** @var array<string, DashboardInterface> */
-    private array $dashboards;
+    private readonly array $dashboards;
 
     /**
      * @param \Traversable<DashboardInterface> $viewTypes

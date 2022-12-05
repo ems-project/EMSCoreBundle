@@ -6,11 +6,8 @@ namespace EMS\CoreBundle\Exception;
 
 class EntityServiceNotFoundException extends ElasticmsException
 {
-    private string $entityName;
-
-    public function __construct(string $entityName)
+    public function __construct(private readonly string $entityName)
     {
-        $this->entityName = $entityName;
         parent::__construct(\sprintf('Entity service %s not found', $entityName));
     }
 

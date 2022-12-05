@@ -19,34 +19,12 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class TaskManager
 {
-    private TaskRepository $taskRepository;
-    private TaskTableService $taskTableService;
-    private RevisionRepository $revisionRepository;
-    private DataService $dataService;
-    private UserService $userService;
-    private EventDispatcherInterface $eventDispatcher;
-    private LoggerInterface $logger;
-
     public const TAB_USER = 'user';
     public const TAB_OWNER = 'owner';
     public const TAB_MANAGER = 'manager';
 
-    public function __construct(
-        TaskRepository $taskRepository,
-        TaskTableService $taskTableService,
-        RevisionRepository $revisionRepository,
-        DataService $dataService,
-        UserService $userService,
-        EventDispatcherInterface $eventDispatcher,
-        LoggerInterface $logger
-    ) {
-        $this->taskRepository = $taskRepository;
-        $this->taskTableService = $taskTableService;
-        $this->revisionRepository = $revisionRepository;
-        $this->dataService = $dataService;
-        $this->userService = $userService;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->logger = $logger;
+    public function __construct(private readonly TaskRepository $taskRepository, private readonly TaskTableService $taskTableService, private readonly RevisionRepository $revisionRepository, private readonly DataService $dataService, private readonly UserService $userService, private readonly EventDispatcherInterface $eventDispatcher, private readonly LoggerInterface $logger)
+    {
     }
 
     public function countApprovedTasks(Revision $revision): int

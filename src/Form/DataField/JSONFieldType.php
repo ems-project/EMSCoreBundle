@@ -69,7 +69,7 @@ class JSONFieldType extends DataFieldType
         if (null === $data) {
             $dataValues->setRawData(null);
         } else {
-            $json = @\json_decode($data['value']);
+            $json = @\json_decode((string) $data['value']);
             if (null === $json
                     && JSON_ERROR_NONE !== \json_last_error()) {
                 $dataValues->setRawData($data['value']);
@@ -103,7 +103,7 @@ class JSONFieldType extends DataFieldType
     /**
      * {@inheritDoc}
      */
-    public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null): bool
+    public function isValid(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
             return true;
@@ -112,7 +112,7 @@ class JSONFieldType extends DataFieldType
         $isValid = parent::isValid($dataField, $parent, $masterRawData);
         $rawData = $dataField->getRawData();
         if (null !== $rawData) {
-            $data = @\json_decode($rawData);
+            $data = @\json_decode((string) $rawData);
 
             if (JSON_ERROR_NONE !== \json_last_error()) {
                 $isValid = false;
@@ -148,7 +148,7 @@ class JSONFieldType extends DataFieldType
     public function generateMapping(FieldType $current): array
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
-            return [$current->getName() => \json_decode($current->getMappingOptions()['mappingOptions'], true, 512, JSON_THROW_ON_ERROR)];
+            return [$current->getName() => \json_decode((string) $current->getMappingOptions()['mappingOptions'], true, 512, JSON_THROW_ON_ERROR)];
         }
 
         return [];

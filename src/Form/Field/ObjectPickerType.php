@@ -10,12 +10,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ObjectPickerType extends Select2Type
 {
-    private ObjectChoiceListFactory $choiceListFactory;
-
-    public function __construct(ObjectChoiceListFactory $factory)
+    public function __construct(private readonly ObjectChoiceListFactory $choiceListFactory)
     {
-        $this->choiceListFactory = $factory;
-        parent::__construct($factory);
+        parent::__construct($choiceListFactory);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

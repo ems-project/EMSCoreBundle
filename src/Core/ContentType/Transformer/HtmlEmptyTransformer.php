@@ -24,7 +24,7 @@ final class HtmlEmptyTransformer extends AbstractTransformer
             return;
         }
 
-        $stripTags = \strip_tags($data);
+        $stripTags = \strip_tags((string) $data);
         $trimmed = \trim(\html_entity_decode($stripTags), " \t\n\r\0\x0B\xC2\xA0");
 
         if ('' === $trimmed) {

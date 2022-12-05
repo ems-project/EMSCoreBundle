@@ -12,18 +12,13 @@ use Twig\TemplateWrapper;
 
 class EnvironmentPublisherFactory
 {
-    private TwigEnvironment $templating;
-    private SearchService $searchService;
-
     /** @var array<string, ?TemplateWrapper> */
     private array $templates = [];
     /** @var array<string, EnvironmentPublisher> */
     private array $publishers = [];
 
-    public function __construct(TwigEnvironment $templating, SearchService $searchService)
+    public function __construct(private readonly TwigEnvironment $templating, private readonly SearchService $searchService)
     {
-        $this->templating = $templating;
-        $this->searchService = $searchService;
     }
 
     public function create(Environment $environment, Revision $revision): EnvironmentPublisher

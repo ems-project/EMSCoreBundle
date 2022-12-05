@@ -6,14 +6,6 @@ namespace EMS\CoreBundle\Core\UI;
 
 class MenuEntry
 {
-    private string $label;
-    private string $icon;
-    private string $route;
-    /**
-     * @var array<string, mixed>
-     */
-    private array $routeParameters;
-    private ?string $color;
     private ?string $badge = null;
     /** @var MenuEntry[] */
     private array $children = [];
@@ -27,13 +19,8 @@ class MenuEntry
     /**
      * @param array<string, mixed> $routeParameters
      */
-    public function __construct(string $label, string $icon, string $route, array $routeParameters = [], ?string $color = null)
+    public function __construct(private readonly string $label, private readonly string $icon, private string $route, private array $routeParameters = [], private readonly ?string $color = null)
     {
-        $this->label = $label;
-        $this->icon = $icon;
-        $this->route = $route;
-        $this->routeParameters = $routeParameters;
-        $this->color = $color;
     }
 
     /**

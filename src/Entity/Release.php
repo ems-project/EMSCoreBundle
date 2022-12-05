@@ -18,12 +18,12 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class Release implements EntityInterface
 {
-    public const WIP_STATUS = 'wip';
-    public const READY_STATUS = 'ready';
-    public const APPLIED_STATUS = 'applied';
-    public const CANCELED_STATUS = 'canceled';
-    public const SCHEDULED_STATUS = 'scheduled';
-    public const ROLLBACKED_STATUS = 'rollbacked';
+    final public const WIP_STATUS = 'wip';
+    final public const READY_STATUS = 'ready';
+    final public const APPLIED_STATUS = 'applied';
+    final public const CANCELED_STATUS = 'canceled';
+    final public const SCHEDULED_STATUS = 'scheduled';
+    final public const ROLLBACKED_STATUS = 'rollbacked';
 
     /**
      * @ORM\Column(name="id", type="integer")
@@ -169,9 +169,7 @@ class Release implements EntityInterface
         return $ids;
     }
 
-    /**
-     * @Assert\Callback
-     */
+    #[Assert\Callback]
     public function validate(ExecutionContextInterface $context): void
     {
         if ($this->getEnvironmentTarget() === $this->getEnvironmentSource()) {

@@ -25,32 +25,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ReindexCommand extends EmsCommand
 {
     protected static $defaultName = 'ems:environment:reindex';
-    /** @var Mapping */
-    protected $mapping;
-    /** @var Registry */
-    protected $doctrine;
-    /** @var LoggerInterface */
-    protected $logger;
-    /** @var ContainerInterface */
-    protected $container;
-    /** @var DataService */
-    protected $dataService;
     private int $count = 0;
     private int $deleted = 0;
     private int $reloaded = 0;
     private int $error = 0;
-    private Bulker $bulker;
-    private string $defaultBulkSize;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container, DataService $dataService, Bulker $bulker, string $defaultBulkSize)
+    public function __construct(protected Registry $doctrine, protected LoggerInterface $logger, protected Mapping $mapping, protected ContainerInterface $container, protected DataService $dataService, private readonly Bulker $bulker, private readonly string $defaultBulkSize)
     {
-        $this->doctrine = $doctrine;
-        $this->logger = $logger;
-        $this->mapping = $mapping;
-        $this->container = $container;
-        $this->dataService = $dataService;
-        $this->bulker = $bulker;
-        $this->defaultBulkSize = $defaultBulkSize;
         parent::__construct();
     }
 

@@ -10,11 +10,8 @@ use Twig\Environment;
 
 class LoginController
 {
-    private Environment $twig;
-
-    public function __construct(Environment $twig)
+    public function __construct(private readonly Environment $twig)
     {
-        $this->twig = $twig;
     }
 
     public function login(AuthenticationUtils $authenticationUtils): Response
@@ -28,7 +25,7 @@ class LoginController
         ]));
     }
 
-    public function logout(): void
+    public function logout(): never
     {
         throw new \RuntimeException('You must activate the logout in your security firewall configuration.');
     }

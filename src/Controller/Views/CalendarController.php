@@ -17,17 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CalendarController extends AbstractController
 {
-    private DataService $dataService;
-    private LoggerInterface $logger;
-    private SearchService $searchService;
-    private ElasticaService $elasticaService;
-
-    public function __construct(LoggerInterface $logger, ElasticaService $elasticaService, DataService $dataService, SearchService $searchService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly ElasticaService $elasticaService, private readonly DataService $dataService, private readonly SearchService $searchService)
     {
-        $this->logger = $logger;
-        $this->elasticaService = $elasticaService;
-        $this->dataService = $dataService;
-        $this->searchService = $searchService;
     }
 
     public function update(View $view, Request $request): Response

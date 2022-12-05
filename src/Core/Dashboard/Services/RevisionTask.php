@@ -20,24 +20,8 @@ use Twig\Environment;
 
 final class RevisionTask extends AbstractType implements DashboardInterface
 {
-    private Environment $twig;
-    private RouterInterface $router;
-    private RequestStack $requestStack;
-    private FormFactoryInterface $formFactory;
-    private TaskManager $taskManager;
-
-    public function __construct(
-        Environment $twig,
-        RouterInterface $router,
-        RequestStack $requestStack,
-        FormFactoryInterface $formFactory,
-        TaskManager $taskManager)
+    public function __construct(private readonly Environment $twig, private readonly RouterInterface $router, private readonly RequestStack $requestStack, private readonly FormFactoryInterface $formFactory, private readonly TaskManager $taskManager)
     {
-        $this->twig = $twig;
-        $this->router = $router;
-        $this->requestStack = $requestStack;
-        $this->formFactory = $formFactory;
-        $this->taskManager = $taskManager;
     }
 
     public function getResponse(Dashboard $dashboard): Response

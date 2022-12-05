@@ -10,11 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class StylesetController extends AbstractController
 {
-    private WysiwygStylesSetService $wysiwygStylesSetService;
-
-    public function __construct(WysiwygStylesSetService $wysiwygStylesSetService)
+    public function __construct(private readonly WysiwygStylesSetService $wysiwygStylesSetService)
     {
-        $this->wysiwygStylesSetService = $wysiwygStylesSetService;
     }
 
     public function iframe(string $name, string $language): Response

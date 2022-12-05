@@ -19,32 +19,10 @@ class AssetExtractorService implements CacheWarmerInterface
     private const CONTENT_EP = '/tika';
     private const HELLO_EP = '/tika';
     private const META_EP = '/meta';
-
-    private ?string $tikaServer;
-    private string $projectDir;
-    private ?string $tikaDownloadUrl;
-    private RestClientService $rest;
-    private LoggerInterface $logger;
-    private Registry $doctrine;
-    private FileService $fileService;
     private ?TikaWrapper $wrapper = null;
 
-    public function __construct(
-        RestClientService $rest,
-        LoggerInterface $logger,
-        Registry $doctrine,
-        FileService $fileService,
-        ?string $tikaServer,
-        string $projectDir,
-        ?string $tikaDownloadUrl
-    ) {
-        $this->tikaServer = $tikaServer;
-        $this->projectDir = $projectDir;
-        $this->rest = $rest;
-        $this->logger = $logger;
-        $this->doctrine = $doctrine;
-        $this->fileService = $fileService;
-        $this->tikaDownloadUrl = $tikaDownloadUrl;
+    public function __construct(private readonly RestClientService $rest, private readonly LoggerInterface $logger, private readonly Registry $doctrine, private readonly FileService $fileService, private readonly ?string $tikaServer, private readonly string $projectDir, private readonly ?string $tikaDownloadUrl)
+    {
     }
 
     private function getTikaWrapper(): TikaWrapper
@@ -57,7 +35,7 @@ class AssetExtractorService implements CacheWarmerInterface
         if (!\file_exists($filename) && $this->tikaDownloadUrl) {
             try {
                 \file_put_contents($filename, \fopen($this->tikaDownloadUrl, 'r'));
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 if (\file_exists($filename)) {
                     \unlink($filename);
                 }

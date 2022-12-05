@@ -21,11 +21,6 @@ class Sequence
     private int $id;
 
     /**
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
-     */
-    private string $name;
-
-    /**
      * @ORM\Column(name="value", type="integer", nullable=false)
      */
     private int $value = 1;
@@ -35,10 +30,11 @@ class Sequence
      */
     private int $version = 0;
 
-    public function __construct(string $name)
+    public function __construct(/**
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
+     */
+    private string $name)
     {
-        $this->name = $name;
-
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
     }

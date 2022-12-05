@@ -26,17 +26,12 @@ use Symfony\Component\HttpFoundation\Response;
 class UploadedFileController extends AbstractController
 {
     /** @var string */
-    public const SOFT_DELETE_ACTION = 'soft_delete';
+    final public const SOFT_DELETE_ACTION = 'soft_delete';
     /** @var string */
-    public const HIDE_ACTION = 'hide';
+    final public const HIDE_ACTION = 'hide';
 
-    private LoggerInterface $logger;
-    private FileService $fileService;
-
-    public function __construct(LoggerInterface $logger, FileService $fileService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly FileService $fileService)
     {
-        $this->logger = $logger;
-        $this->fileService = $fileService;
     }
 
     public function ajaxDataTable(Request $request): Response

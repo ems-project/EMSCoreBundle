@@ -10,11 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ExtractDataController
 {
-    private AssetExtractorService $assetExtractorService;
-
-    public function __construct(AssetExtractorService $assetExtractorService)
+    public function __construct(private readonly AssetExtractorService $assetExtractorService)
     {
-        $this->assetExtractorService = $assetExtractorService;
     }
 
     public function get(string $hash): Response

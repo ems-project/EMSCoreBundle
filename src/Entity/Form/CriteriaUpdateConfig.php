@@ -18,11 +18,8 @@ class CriteriaUpdateConfig
     /** @var array<mixed> */
     private array $criterion = [];
 
-    private LoggerInterface $logger;
-
-    public function __construct(View $view, LoggerInterface $logger)
+    public function __construct(View $view, private readonly LoggerInterface $logger)
     {
-        $this->logger = $logger;
         $contentType = $view->getContentType();
 
         $rootFieldType = $contentType->getFieldType();
@@ -42,7 +39,7 @@ class CriteriaUpdateConfig
             throw new \Exception('Should never happen');
         }
 
-        $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
+        $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', (string) $view->getOptions()['criteriaFieldPaths']);
 
         if (\is_array($fieldPaths)) {
             foreach ($fieldPaths as $path) {

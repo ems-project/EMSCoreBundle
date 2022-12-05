@@ -16,18 +16,10 @@ class JobCommand extends AbstractCommand
 {
     protected static $defaultName = 'ems:job:run';
     private const USER_JOB_COMMAND = 'User-Job-Command';
-    private JobService $jobService;
-    private string $dateFormat;
-    private ScheduleManager $scheduleManager;
-    private string $cleanJobsTimeString;
 
-    public function __construct(JobService $jobService, ScheduleManager $scheduleManager, string $dateFormat, string $cleanJobsTimeString)
+    public function __construct(private readonly JobService $jobService, private readonly ScheduleManager $scheduleManager, private readonly string $dateFormat, private readonly string $cleanJobsTimeString)
     {
         parent::__construct();
-        $this->jobService = $jobService;
-        $this->dateFormat = $dateFormat;
-        $this->scheduleManager = $scheduleManager;
-        $this->cleanJobsTimeString = $cleanJobsTimeString;
     }
 
     protected function configure(): void

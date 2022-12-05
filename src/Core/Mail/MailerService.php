@@ -12,23 +12,17 @@ use Twig\Environment;
 
 class MailerService
 {
-    private MailerInterface $mailer;
-    private Environment $templating;
-    private TranslatorInterface $translator;
-    private Address $from;
+    private readonly Address $from;
 
     /**
      * @param array{address: string, sender_name:string} $sender
      */
     public function __construct(
-        MailerInterface $mailer,
-        Environment $templating,
-        TranslatorInterface $translator,
+        private readonly MailerInterface $mailer,
+        private readonly Environment $templating,
+        private readonly TranslatorInterface $translator,
         array $sender
     ) {
-        $this->mailer = $mailer;
-        $this->templating = $templating;
-        $this->translator = $translator;
         $this->from = new Address($sender['address'], $sender['sender_name']);
     }
 

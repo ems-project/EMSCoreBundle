@@ -16,11 +16,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RevisionJsonMenuNestedType extends AbstractType
 {
-    private FormRegistryInterface $formRegistry;
-
-    public function __construct(FormRegistryInterface $formRegistry)
+    public function __construct(private readonly FormRegistryInterface $formRegistry)
     {
-        $this->formRegistry = $formRegistry;
     }
 
     /**

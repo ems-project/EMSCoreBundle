@@ -8,14 +8,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DeleteOrphanIndexesCommand extends EmsCommand
 {
-    /** @var IndexService */
-    protected $indexService;
-
     protected static $defaultName = 'ems:delete:orphans';
 
-    public function __construct(IndexService $indexService)
+    public function __construct(protected IndexService $indexService)
     {
-        $this->indexService = $indexService;
         parent::__construct();
     }
 

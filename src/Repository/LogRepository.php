@@ -32,7 +32,7 @@ class LogRepository extends ServiceEntityRepository
 
         try {
             return \intval($qb->getQuery()->getSingleScalarResult());
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return 0;
         }
     }

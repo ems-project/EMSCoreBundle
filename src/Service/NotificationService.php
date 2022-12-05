@@ -25,29 +25,10 @@ use Twig\Environment as TwigEnvironment;
 
 class NotificationService
 {
-    private Registry $doctrine;
-    private UserService $userService;
-    private LoggerInterface $logger;
-    private DataService $dataService;
-    private MailerService $mailerService;
-    private TwigEnvironment $twig;
-
     private bool $dryRun = false;
 
-    public function __construct(
-        Registry $doctrine,
-        UserService $userService,
-        LoggerInterface $logger,
-        DataService $dataService,
-        MailerService $mailerService,
-        TwigEnvironment $twig
-    ) {
-        $this->doctrine = $doctrine;
-        $this->userService = $userService;
-        $this->dataService = $dataService;
-        $this->mailerService = $mailerService;
-        $this->logger = $logger;
-        $this->twig = $twig;
+    public function __construct(private readonly Registry $doctrine, private readonly UserService $userService, private readonly LoggerInterface $logger, private readonly DataService $dataService, private readonly MailerService $mailerService, private readonly TwigEnvironment $twig)
+    {
     }
 
     public function publishEvent(RevisionPublishEvent $event): void
@@ -240,9 +221,7 @@ class NotificationService
     }
 
     /**
-     * Call to display notifications in header menu.
-     *
-     * @param ?array<mixed> $filters
+     * @param ?array<string, mixed> $filters
      */
     public function menuNotification(?array $filters = null): int
     {
@@ -447,7 +426,7 @@ class NotificationService
 
         try {
             $this->sendEmail($notification);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
         }
 
         $this->logger->notice('service.notification.treated', [
@@ -521,7 +500,7 @@ class NotificationService
                 ->subject($notification->getTemplate().' for '.$notification->getRevision())
                 ->to(...\array_values($toUsers));
 
-            $cc = \array_merge($ccUsers, $fromUser);
+            $cc = [...$ccUsers, ...$fromUser];
             if ($cc) {
                 $email->cc(...\array_values($cc));
             }
@@ -539,7 +518,7 @@ class NotificationService
                 ->subject($notification->getTemplate().' for '.$notification->getRevision().' has been '.$notification->getStatus())
                 ->to(...\array_values($fromUser));
 
-            $cc = \array_merge($ccUsers, $toUsers);
+            $cc = [...$ccUsers, ...$toUsers];
             if ($cc) {
                 $email->cc(...\array_values($cc));
             }
@@ -560,7 +539,7 @@ class NotificationService
                 $this->mailerService->sendMail($email);
                 $em->persist($notification);
                 $em->flush();
-            } catch (TransportExceptionInterface $e) {
+            } catch (TransportExceptionInterface) {
             }
         }
     }

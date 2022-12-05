@@ -8,22 +8,13 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
 {
     /** @var array<mixed> */
     private array $choices = [];
-    /** @var array<mixed> */
-    private array $types;
-    /** @var array<mixed> */
-    private array $mapping;
-
-    private bool $firstLevelOnly;
 
     /**
      * @param array<mixed> $mapping
      * @param array<mixed> $types
      */
-    public function __construct(array $mapping, array $types, bool $firstLevelOnly)
+    public function __construct(private readonly array $mapping, private readonly array $types, private readonly bool $firstLevelOnly)
     {
-        $this->types = $types;
-        $this->firstLevelOnly = $firstLevelOnly;
-        $this->mapping = $mapping;
     }
 
     /**
@@ -145,7 +136,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     public function loadChoices(array $choices): array
     {
         foreach ($choices as $choice) {
-            $path = \explode('.', $choice);
+            $path = \explode('.', (string) $choice);
 
             $target = $this->mapping;
             $value = '';

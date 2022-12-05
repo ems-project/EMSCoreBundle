@@ -16,19 +16,9 @@ final class DatatableService
     private const CONFIG = 'config';
     private const ALIASES = 'aliases';
     private const CONTENT_TYPES = 'contentTypes';
-    private ElasticaService $elasticaService;
-    private EnvironmentService $environmentService;
-    private LoggerInterface $logger;
-    private RouterInterface $router;
-    private StorageManager $storageManager;
 
-    public function __construct(LoggerInterface $logger, RouterInterface $router, ElasticaService $elasticaService, StorageManager $storageManager, EnvironmentService $environmentService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly RouterInterface $router, private readonly ElasticaService $elasticaService, private readonly StorageManager $storageManager, private readonly EnvironmentService $environmentService)
     {
-        $this->elasticaService = $elasticaService;
-        $this->logger = $logger;
-        $this->environmentService = $environmentService;
-        $this->router = $router;
-        $this->storageManager = $storageManager;
     }
 
     /**

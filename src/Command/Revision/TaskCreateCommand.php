@@ -23,11 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class TaskCreateCommand extends AbstractCommand
 {
-    private RevisionSearcher $revisionSearcher;
-    private EnvironmentService $environmentService;
-    private UserService $userService;
-    private TaskManager $taskManager;
-
     private Environment $environment;
     /** @var array<mixed> */
     private array $task;
@@ -55,16 +50,12 @@ final class TaskCreateCommand extends AbstractCommand
     protected static $defaultName = Commands::REVISION_TASK_CREATE;
 
     public function __construct(
-        RevisionSearcher $revisionSearcher,
-        EnvironmentService $environmentService,
-        UserService $userService,
-        TaskManager $taskManager
+        private readonly RevisionSearcher $revisionSearcher,
+        private readonly EnvironmentService $environmentService,
+        private readonly UserService $userService,
+        private readonly TaskManager $taskManager
     ) {
         parent::__construct();
-        $this->revisionSearcher = $revisionSearcher;
-        $this->environmentService = $environmentService;
-        $this->userService = $userService;
-        $this->taskManager = $taskManager;
     }
 
     protected function configure(): void

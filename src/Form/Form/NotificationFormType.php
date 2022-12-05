@@ -15,11 +15,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class NotificationFormType extends AbstractType
 {
-    private EnvironmentService $service;
-
-    public function __construct(EnvironmentService $service)
+    public function __construct(private readonly EnvironmentService $service)
     {
-        $this->service = $service;
     }
 
     /**

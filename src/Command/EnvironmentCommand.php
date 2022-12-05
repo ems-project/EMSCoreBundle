@@ -12,11 +12,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class EnvironmentCommand extends Command
 {
     protected static $defaultName = 'ems:environment:list';
-    private EnvironmentService $environmentService;
 
-    public function __construct(EnvironmentService $environmentService)
+    public function __construct(private readonly EnvironmentService $environmentService)
     {
-        $this->environmentService = $environmentService;
         parent::__construct();
     }
 

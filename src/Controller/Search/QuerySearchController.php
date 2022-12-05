@@ -13,18 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class QuerySearchController extends AbstractController
 {
-    private QuerySearchService $querySearchService;
-    private ElasticsearchController $elasticsearchController;
-    private DataLinksFactory $dataLinksFactory;
-
-    public function __construct(
-        QuerySearchService $querySearchService,
-        ElasticsearchController $elasticsearchController,
-        DataLinksFactory $dataLinksFactory
-    ) {
-        $this->querySearchService = $querySearchService;
-        $this->elasticsearchController = $elasticsearchController;
-        $this->dataLinksFactory = $dataLinksFactory;
+    public function __construct(private readonly QuerySearchService $querySearchService, private readonly ElasticsearchController $elasticsearchController, private readonly DataLinksFactory $dataLinksFactory)
+    {
     }
 
     public function __invoke(Request $request): JsonResponse

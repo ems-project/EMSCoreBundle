@@ -9,7 +9,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 class NotEmpty implements ConditionInterface
 {
     /** @var string[] */
-    private array $pathProperties;
+    private readonly array $pathProperties;
 
     public function __construct(string ...$pathProperties)
     {

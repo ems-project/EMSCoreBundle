@@ -15,18 +15,9 @@ use Symfony\Component\Finder\SplFileInfo;
 class ExtractAssetCommand extends EmsCommand
 {
     protected static $defaultName = 'ems:asset:extract';
-    /** @var AssetExtractorService */
-    protected $extractorService;
-    /** @var StorageManager */
-    protected $storageManager;
-    /** @var LoggerInterface */
-    protected $logger;
 
-    public function __construct(LoggerInterface $logger, AssetExtractorService $extractorService, StorageManager $storageManager)
+    public function __construct(protected LoggerInterface $logger, protected AssetExtractorService $extractorService, protected StorageManager $storageManager)
     {
-        $this->extractorService = $extractorService;
-        $this->storageManager = $storageManager;
-        $this->logger = $logger;
         parent::__construct();
     }
 

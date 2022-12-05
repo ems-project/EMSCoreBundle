@@ -21,31 +21,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RebuildCommand extends EmsCommand
 {
     protected static $defaultName = self::COMMAND;
-    public const COMMAND = 'ems:environment:rebuild';
-    private Registry $doctrine;
-    private ContentTypeService $contentTypeService;
-    private EnvironmentService $environmentService;
-    private ReindexCommand $reindexCommand;
-    private string $instanceId;
-    private ElasticaService $elasticaService;
-    /** @var LoggerInterface */
-    protected $logger;
-    private Mapping $mapping;
-    private AliasService $aliasService;
-    private string $defaultBulkSize;
+    final public const COMMAND = 'ems:environment:rebuild';
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId, string $defaultBulkSize)
+    public function __construct(private readonly Registry $doctrine, protected LoggerInterface $logger, private readonly ContentTypeService $contentTypeService, private readonly EnvironmentService $environmentService, private readonly ReindexCommand $reindexCommand, private readonly ElasticaService $elasticaService, private readonly Mapping $mapping, private readonly AliasService $aliasService, private readonly string $instanceId, private readonly string $defaultBulkSize)
     {
-        $this->doctrine = $doctrine;
-        $this->contentTypeService = $contentTypeService;
-        $this->environmentService = $environmentService;
-        $this->reindexCommand = $reindexCommand;
-        $this->instanceId = $instanceId;
-        $this->elasticaService = $elasticaService;
-        $this->logger = $logger;
-        $this->mapping = $mapping;
-        $this->aliasService = $aliasService;
-        $this->defaultBulkSize = $defaultBulkSize;
         parent::__construct();
     }
 

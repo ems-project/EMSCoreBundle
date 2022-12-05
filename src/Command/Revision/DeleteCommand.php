@@ -16,10 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DeleteCommand extends AbstractCommand
 {
-    private RevisionService $revisionService;
-    private ContentTypeService $contentTypeService;
-    private PublishService $publishService;
-
     protected static $defaultName = Commands::REVISION_DELETE;
     private const ARGUMENT_CONTENT_TYPES = 'contentTypes';
     private const OPTION_MODE = 'mode';
@@ -34,14 +30,11 @@ class DeleteCommand extends AbstractCommand
     private string $mode;
 
     public function __construct(
-        RevisionService $revisionService,
-        ContentTypeService $contentTypeService,
-        PublishService $publishService
+        private readonly RevisionService $revisionService,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly PublishService $publishService
     ) {
         parent::__construct();
-        $this->revisionService = $revisionService;
-        $this->contentTypeService = $contentTypeService;
-        $this->publishService = $publishService;
     }
 
     protected function configure(): void

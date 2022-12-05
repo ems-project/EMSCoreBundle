@@ -116,7 +116,7 @@ class DateFieldType extends DataFieldType
     {
         $dates = [];
         $format = DateFieldType::convertJavascriptDateFormat($fieldType->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
-        foreach (\explode(',', $data['value']) as $date) {
+        foreach (\explode(',', (string) $data['value']) as $date) {
             if (!empty($date)) {
                 $dates[] = \DateTime::createFromFormat($format, $date);
             }

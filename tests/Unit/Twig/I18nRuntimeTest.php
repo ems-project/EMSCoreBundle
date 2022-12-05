@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class I18nRuntimeTest extends TestCase
 {
-    private I18nService $service;
+    private readonly I18nService $service;
     private I18nRuntime $i18nRuntime;
 
     public function setUp(): void

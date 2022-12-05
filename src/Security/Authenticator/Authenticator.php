@@ -11,18 +11,8 @@ use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 final class Authenticator
 {
-    private FormLoginAuthenticator $formLoginAuthenticator;
-    private UserAuthenticatorInterface $userAuthenticator;
-    private RequestStack $requestStack;
-
-    public function __construct(
-        FormLoginAuthenticator $formLoginAuthenticator,
-        UserAuthenticatorInterface $userAuthenticator,
-        RequestStack $requestStack
-    ) {
-        $this->formLoginAuthenticator = $formLoginAuthenticator;
-        $this->userAuthenticator = $userAuthenticator;
-        $this->requestStack = $requestStack;
+    public function __construct(private readonly FormLoginAuthenticator $formLoginAuthenticator, private readonly UserAuthenticatorInterface $userAuthenticator, private readonly RequestStack $requestStack)
+    {
     }
 
     public function authenticate(User $user): void

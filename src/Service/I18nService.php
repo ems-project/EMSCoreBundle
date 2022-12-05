@@ -8,11 +8,8 @@ use EMS\CoreBundle\Repository\I18nRepository;
 
 class I18nService implements EntityServiceInterface
 {
-    private I18nRepository $repository;
-
-    public function __construct(I18nRepository $i18nRepository)
+    public function __construct(private readonly I18nRepository $repository)
     {
-        $this->repository = $i18nRepository;
     }
 
     /**

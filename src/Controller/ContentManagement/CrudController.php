@@ -22,17 +22,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CrudController extends AbstractController
 {
-    private UserService $userService;
-    private LoggerInterface $logger;
-    private DataService $dataService;
-    private ContentTypeService $contentTypeService;
-
-    public function __construct(LoggerInterface $logger, UserService $userService, DataService $dataService, ContentTypeService $contentTypeService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly UserService $userService, private readonly DataService $dataService, private readonly ContentTypeService $contentTypeService)
     {
-        $this->logger = $logger;
-        $this->userService = $userService;
-        $this->dataService = $dataService;
-        $this->contentTypeService = $contentTypeService;
     }
 
     public function createAction(?string $ouuid, string $name, Request $request): Response

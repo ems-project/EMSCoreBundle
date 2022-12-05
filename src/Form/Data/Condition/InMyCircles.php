@@ -10,13 +10,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class InMyCircles implements ConditionInterface
 {
-    private UserService $userService;
-    private AuthorizationCheckerInterface $authorizationChecker;
-
-    public function __construct(UserService $userService, AuthorizationCheckerInterface $authorizationChecker)
+    public function __construct(private readonly UserService $userService, private readonly AuthorizationCheckerInterface $authorizationChecker)
     {
-        $this->userService = $userService;
-        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -31,10 +26,7 @@ class InMyCircles implements ConditionInterface
         return $this->inMyCircles($objectOrArray->getCircles());
     }
 
-    /**
-     * @param mixed $circles
-     */
-    public function inMyCircles($circles): bool
+    public function inMyCircles(mixed $circles): bool
     {
         if (\is_array($circles) && 0 === \count($circles)) {
             return true;

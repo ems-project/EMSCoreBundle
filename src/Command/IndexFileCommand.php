@@ -25,28 +25,13 @@ class IndexFileCommand extends EmsCommand
     protected static $defaultName = 'ems:revisions:index-file-fields';
     /** @var string */
     private const SYSTEM_USERNAME = 'SYSTEM_FILE_INDEXER';
-    /** @var Registry */
-    protected $doctrine;
-    /** @var ContentTypeService */
-    protected $contentTypeService;
-    /** @var AssetExtractorService */
-    protected $extractorService;
     /** @var string */
     protected $databaseName;
     /** @var string */
     protected $databaseDriver;
-    /** @var FileService */
-    protected $fileService;
-    /** @var LoggerInterface */
-    protected $logger;
 
-    public function __construct(LoggerInterface $logger, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
+    public function __construct(protected LoggerInterface $logger, protected Registry $doctrine, protected ContentTypeService $contentTypeService, protected AssetExtractorService $extractorService, protected FileService $fileService)
     {
-        $this->doctrine = $doctrine;
-        $this->contentTypeService = $contentTypeService;
-        $this->extractorService = $extractorService;
-        $this->fileService = $fileService;
-        $this->logger = $logger;
         parent::__construct();
     }
 
@@ -210,7 +195,7 @@ class IndexFileCommand extends EmsCommand
                 $file = $this->fileService->getFile($rawData['sha1']);
 
                 if (null === $file && isset($rawData['content'])) {
-                    $fileContent = \base64_decode($rawData['content']);
+                    $fileContent = \base64_decode((string) $rawData['content']);
 
                     if (\sha1($fileContent) === $rawData[EmsFields::CONTENT_FILE_HASH_FIELD]) {
                         $file = $this->fileService->temporaryFilename($rawData[EmsFields::CONTENT_FILE_HASH_FIELD]);
@@ -218,7 +203,7 @@ class IndexFileCommand extends EmsCommand
                         try {
                             $this->fileService->uploadFile($rawData[EmsFields::CONTENT_FILE_NAME_FIELD] ?? 'filename.bin', $rawData[EmsFields::CONTENT_MIME_TYPE_FIELD] ?? 'application/bin', $file, self::SYSTEM_USERNAME);
                             $output->writeln(\sprintf('File restored from DB: %s', $rawData[EmsFields::CONTENT_FILE_HASH_FIELD]));
-                        } catch (\Throwable $e) {
+                        } catch (\Throwable) {
                             $file = null;
                         }
                     }

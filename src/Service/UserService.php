@@ -15,36 +15,15 @@ use Symfony\Component\Security\Core\Security;
 
 class UserService implements EntityServiceInterface
 {
-    private Registry $doctrine;
-    private TokenStorageInterface $tokenStorage;
     private ?UserInterface $currentUser = null;
 
-    /** @var array<mixed> */
-    private array $securityRoles;
-
-    private UserRepository $userRepository;
-    private Security $security;
-
-    public const DONT_DETACH = false;
-    private SearchRepository $searchRepository;
+    final public const DONT_DETACH = false;
 
     /**
      * @param array<mixed> $securityRoles
      */
-    public function __construct(
-        Registry $doctrine,
-        TokenStorageInterface $tokenStorage,
-        Security $security,
-        UserRepository $userRepository,
-        SearchRepository $searchRepository,
-        array $securityRoles)
+    public function __construct(private readonly Registry $doctrine, private readonly TokenStorageInterface $tokenStorage, private readonly Security $security, private readonly UserRepository $userRepository, private readonly SearchRepository $searchRepository, private readonly array $securityRoles)
     {
-        $this->doctrine = $doctrine;
-        $this->tokenStorage = $tokenStorage;
-        $this->securityRoles = $securityRoles;
-        $this->security = $security;
-        $this->searchRepository = $searchRepository;
-        $this->userRepository = $userRepository;
     }
 
     public function searchUser(string $search): ?UserInterface
@@ -99,7 +78,7 @@ class UserService implements EntityServiceInterface
             return null;
         }
         if (!$user instanceof UserInterface) {
-            throw new \RuntimeException(\sprintf('Unknown user object class: %s', \get_class($user)));
+            throw new \RuntimeException(\sprintf('Unknown user object class: %s', $user::class));
         }
 
         if (!$detachIt) {
@@ -294,7 +273,7 @@ class UserService implements EntityServiceInterface
     {
         $user = $this->getUser($name);
         if (!$user instanceof User && null !== $user) {
-            throw new \RuntimeException(\sprintf('Unknown user object class: %s', \get_class($user)));
+            throw new \RuntimeException(\sprintf('Unknown user object class: %s', $user::class));
         }
 
         return $user;

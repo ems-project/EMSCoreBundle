@@ -1,39 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity\Form;
 
-/**
- * RebuildIndex.
- */
 class RebuildIndex
 {
     private ?string $option = null;
 
-    /**
-     * Set the rebuild option.
-     *
-     * @param string $option
-     *
-     * @return RebuildIndex
-     */
-    public function setOption($option)
+    public function setOption(string $option): RebuildIndex
     {
         $this->option = $option;
 
         return $this;
     }
 
-    /**
-     * Get the selected rebuild option.
-     *
-     * @return string
-     */
-    public function getOption()
+    public function getOption(): ?string
     {
-        if (null === $this->option) {
-            throw new \RuntimeException('Unexpected null option');
-        }
-
         return $this->option;
     }
 }

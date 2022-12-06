@@ -17,6 +17,7 @@ use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType;
 use EMS\CoreBundle\Form\DataField\MultiplexedTabContainerFieldType;
 use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -137,10 +138,15 @@ final class PostProcessingService
                 try {
                     $out = $this->twig->createTemplate($template)->render($context);
 
-                    if ($fieldType->getDisplayOptions()['json'] && '' !== $out) {
+                    if (!$fieldType->getDisplayOptions()['json']) {
+                        $out = \trim($out);
+                    } elseif (Json::isJson($out)) {
                         $out = \json_decode($out, true, 512, JSON_THROW_ON_ERROR);
                     } else {
-                        $out = \trim($out);
+                        if (0 !== \strlen(\trim($out))) {
+                            throw new \RuntimeException(\sprintf('None parsable output in "%s"', $path));
+                        }
+                        $out = null;
                     }
                 } catch (\Throwable $e) {
                     if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {

@@ -55,7 +55,6 @@ require('slimscroll');
 require('bootstrap-datepicker');
 require('eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker');
 require('admin-lte');
-require('bootstrap-fileinput');
 require('daterangepicker');
 require('./nestedSortable');
 window.moment = require('moment');

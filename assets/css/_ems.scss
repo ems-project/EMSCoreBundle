@@ -130,3 +130,9 @@ div.box-body p {
 div.console {
   overflow-x: auto;
 }
+
+input.file-uploader-input {
+  z-index: -1;
+  position: absolute;
+  opacity: 0;
+}

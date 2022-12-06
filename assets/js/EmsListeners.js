@@ -478,30 +478,6 @@ export default class EmsListeners {
             self.onAssetData(this, event.originalEvent.detail);
         });
 
-        const fileInputs = target.find(".file-uploader-input");
-
-        fileInputs.each(function(){
-            const fileField = $(this);
-            let browseLabel = fileField.data('label');
-            if(typeof browseLabel === 'undefined') {
-                browseLabel = 'Upload file';
-            }
-
-
-            fileField.fileinput({
-                'showUpload':false,
-                'showCaption': false,
-                'showPreview': false,
-                'showRemove': false,
-                'showCancel': false,
-                'showClose': false,
-                'browseClass': 'btn btn-default',
-                'browseIcon': '<i class="fa fa-upload"></i>&nbsp;',
-                'browseLabel': browseLabel
-            });
-
-        });
-
         target.find(".extract-file-info").click(function() {
             const target = $(this).closest('.modal-content');
             self.fileDataExtrator(target, true);
@@ -544,10 +520,13 @@ export default class EmsListeners {
             return false
         });
 
-        target.find(".file-uploader-input").change(function(){
-            self.initFilesUploader($(this)[0].files, this);
-        });
+        let fileUploaderInputs = this.target.getElementsByClassName('file-uploader-input');
 
+        [].forEach.call(fileUploaderInputs, function (fileUploaderInput) {
+            fileUploaderInput.onchange = () => {
+                self.initFilesUploader(fileUploaderInput.files, fileUploaderInput);
+            }
+        });
 
         target.find(".file-uploader-row").each(function(){
             // file drop

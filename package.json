@@ -4,7 +4,6 @@
     "@elasticms/file-uploader": "^1.0.1",
     "ace-builds": "^1.4.12",
     "admin-lte": "^2.3.2",
-    "bootstrap-fileinput": "^4.5.0",
     "bootstrap-sass": "^3.4.1",
     "bootstrap-select": "^1.13.18",
     "buffer": "^4.9.2",

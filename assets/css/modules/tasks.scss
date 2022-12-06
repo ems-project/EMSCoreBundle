@@ -121,7 +121,7 @@ div#revision-tabs {
       ul.revision-tasks li {
         &:hover { cursor: pointer; }
         div.tasks-item-info {
-          .tasks-item-title { color: $green; }
+          .tasks-item-title { color: $brand-success; }
         }
       }
     }

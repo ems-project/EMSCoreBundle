@@ -67,11 +67,11 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     protected $description;
 
     /**
-     * @var array<mixed>
+     * @var array<mixed>|null
      *
      * @ORM\Column(name="options", type="json", nullable=true)
      */
-    protected array $options = [];
+    protected array|null $options = [];
 
     /**
      * @var int
@@ -709,7 +709,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * @param array<mixed> $options
+     * @param array<mixed>|null $options
      */
     public function setOptions(?array $options): self
     {
@@ -723,7 +723,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      */
     public function getOptions(): array
     {
-        return $this->options;
+        return $this->options ?? [];
     }
 
     public function jsonSerialize(): JsonClass

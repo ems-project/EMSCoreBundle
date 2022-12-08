@@ -9,14 +9,9 @@ interface QueryServiceInterface
     public function isQuerySortable(): bool;
 
     /**
-     * @param mixed $context
-     *
      * @return mixed[]
      */
-    public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array;
+    public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array;
 
-    /**
-     * @param mixed $context
-     */
-    public function countQuery(string $searchValue = '', $context = null): int;
+    public function countQuery(string $searchValue = '', mixed $context = null): int;
 }

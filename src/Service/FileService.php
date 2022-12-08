@@ -395,12 +395,12 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
         return false;
     }
 
-    public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         return $this->uploadedAssetRepository->query($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
-    public function countQuery(string $searchValue = '', $context = null): int
+    public function countQuery(string $searchValue = '', mixed $context = null): int
     {
         return $this->uploadedAssetRepository->countGroupByHashQuery($searchValue);
     }

@@ -78,5 +78,9 @@
             <tag name="twig.runtime" />
         </service>
 
+        <service id="emsco.twig_components.file_browser" class="EMS\CoreBundle\Twig\Components\MediaLibraryComponent">
+            <argument type="service" id="emsco.core.media_library.config_factory" />
+            <tag name="twig.component" key="media_library" template="@EMSCore/components/media_library.html.twig"  />
+        </service>
     </services>
 </container>

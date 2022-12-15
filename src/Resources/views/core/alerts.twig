@@ -1,0 +1,19 @@
+{%- set types = {
+    'notice' : { 'class': 'info', 'title': 'Info!', 'icon': 'fa-info' },
+    'warning' : { 'class': 'warning', 'title': 'Warning!', 'icon': 'fa-warning' },
+    'error' : { 'class': 'danger', 'title': 'Error!', 'icon': 'fa-ban' },
+} -%}
+{%- for type, config in types -%}
+    {% set alerts = app.session.flashbag.get(type) %}
+    {% if alerts|length > 0 %}
+        <div class="alert alert-{{ config.class }} alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa {{ config.icon }}"></i> {{ config.title }} </h4>
+            {% for alert in alerts %}
+                <div class="flash-{{ type }}">
+                    {{ alert|ems_markdown }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{%- endfor -%}

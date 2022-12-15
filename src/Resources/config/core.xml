@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+
+        <!-- Config -->
+        <service id="emsco.config.abstract_config_factory" class="EMS\CoreBundle\Core\Config\AbstractConfigFactory" abstract="true">
+            <call method="setStorageManager">
+                <argument type="service" id="ems_common.storage.manager" />
+            </call>
+        </service>
+        <service id="emsco.config.param_converter" class="EMS\CoreBundle\Core\Config\ConfigParamConverter">
+            <argument type="tagged_locator" tag="emsco.config.factory" index-by="config"/>
+            <tag name="request.param_converter" converter="emsco.config" />
+        </service>
+
+        <!-- Media Library -->
+        <service id="emsco.core.media_library" class="EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryService">
+            <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="EMS\CoreBundle\Service\DataService" />
+            <argument type="service" id="ems.service.file" />
+            <argument type="service" id="translator" />
+        </service>
+        <service id="emsco.core.media_library.config_factory"
+                 class="EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryConfigFactory"
+                 parent="emsco.config.abstract_config_factory">
+            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
+            <tag name="emsco.config.factory" config="EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryConfig" />
+        </service>
+    </services>
+</container>

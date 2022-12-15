@@ -2,10 +2,7 @@
 import jquery from 'jquery';
 import ace from 'ace-builds/src-noconflict/ace';
 require('icheck');
-import JsonMenu from './module/jsonMenu';
-import JsonMenuNested from './module/jsonMenuNested';
 import PickFileFromServer from './module/pickFileFromServer';
-import collapse from './helper/collapse';
 import FileUploader from "@elasticms/file-uploader";
 import Datatables from "./module/datatables";
 import {tooltipDataLinks} from "./helper/tooltip";

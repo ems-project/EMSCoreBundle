@@ -14,16 +14,25 @@ use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Form\FormInterface;
 
 class RevisionService implements RevisionServiceInterface
 {
-    public function __construct(private readonly DataService $dataService, private readonly LoggerInterface $logger, private readonly LoggerInterface $auditLogger, private readonly RevisionRepository $revisionRepository, private readonly PublishService $publishService)
-    {
+    public function __construct(
+        private readonly DataService $dataService,
+        private readonly FormFactory $formFactory,
+        private readonly LoggerInterface $logger,
+        private readonly LoggerInterface $auditLogger,
+        private readonly RevisionRepository $revisionRepository,
+        private readonly PublishService $publishService
+    ) {
     }
 
     public function archive(Revision $revision, string $archivedBy, bool $flush = true): bool
@@ -76,6 +85,17 @@ class RevisionService implements RevisionServiceInterface
         }
 
         return $compareRevision->getRawData();
+    }
+
+    public function createRevisionForm(Revision $revision): FormInterface
+    {
+        if (null == $revision->getDatafield()) {
+            $this->dataService->loadDataStructure($revision);
+        }
+
+        return $this->formFactory->createBuilder(RevisionType::class, $revision, [
+            'raw_data' => $revision->getRawData(),
+        ])->getForm();
     }
 
     public function deleteByContentType(ContentType $contentType): int

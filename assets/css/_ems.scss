@@ -136,3 +136,25 @@ input.file-uploader-input {
   position: absolute;
   opacity: 0;
 }
+
+div.core-js-progress {
+  margin-bottom: 0;
+  border-radius: 5px;
+
+  label {
+    display: inline-block;
+    float: left;
+  }
+  div.status {
+    display: inline-block;
+    float: right;
+    font-style: italic;
+  }
+
+  div.progress {
+    clear: both;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 0;
+  }
+}

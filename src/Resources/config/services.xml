@@ -241,6 +241,7 @@
         </service>
         <service id="ems.service.revision" class="EMS\CoreBundle\Service\Revision\RevisionService">
             <argument type="service" id="ems.service.data" />
+            <argument type="service" id="form.factory" />
             <argument type="service" id="logger" />
             <argument type="service" id="emsco.logger.audit" />
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />

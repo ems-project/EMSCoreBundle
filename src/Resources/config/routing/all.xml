@@ -12,6 +12,8 @@
             prefix="/action" />
     <import resource="@EMSCoreBundle/Resources/config/routing/channel.xml"
             prefix="/channel-admin" />
+    <import resource="@EMSCoreBundle/Resources/config/routing/component.xml"
+            prefix="/component" />
     <import resource="@EMSCoreBundle/Resources/config/routing/uploaded-file.xml"
             prefix="/publisher/uploaded-file" />
     <import resource="@EMSCoreBundle/Resources/config/routing/uploaded-file-logs.xml"

@@ -74,7 +74,9 @@ class AjaxModal {
         }
 
         this.stateLoading();
-        this.modal.querySelector('.modal-title').innerHTML = options.title;
+        if (options.hasOwnProperty('title')) {
+            this.modal.querySelector('.modal-title').innerHTML = options.title;
+        }
         this.$modal.modal('show');
 
         if (options.hasOwnProperty('data')) {

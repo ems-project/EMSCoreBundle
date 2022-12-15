@@ -1,0 +1,10 @@
+media_library:
+    home: 'Home'
+    folder:
+        add:
+            title: 'Add folder'
+            submit: 'Create'
+            cancel: 'Cancel'
+    file:
+        add:
+            title: 'Upload'

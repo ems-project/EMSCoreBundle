@@ -1,0 +1,11 @@
+{% trans_default_domain 'emsco-component' %}
+
+{% block bodyAddFolder %}
+    {% include '@EMSCore/core/alerts.twig' %}
+    {{ form(form) }}
+{% endblock %}
+
+{% block footerAddFolder %}
+    <button id="ajax-modal-submit" class="btn btn-sm btn-primary">{{ 'media_library.folder.add.submit'|trans }}</button>
+    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">{{ 'media_library.folder.add.cancel'|trans }}</button>
+{% endblock %}

@@ -59,6 +59,7 @@
       data-search-api="{{ path('elasticsearch.api.search')|e('html_attr') }}"
       data-asset-path="{{ asset('')|e('html_attr') }}"
       data-init-upload="{{ path('emsco_file_data_init_upload')|e('html_attr') }}"
+      data-file-view="{{ path('ems.file.view', { sha1: '__file_identifier__', name: '__file_name__' })|e('html_attr') }}"
       data-file-extract="{{ path('ems_file_extract', { sha1: '__file_identifier__', name: '__file_name__' })|e('html_attr') }}"
       data-file-extract-forced="{{ path('ems_file_extract_forced', { sha1: '__file_identifier__', name: '__file_name__' })|e('html_attr') }}">
 <div class="wrapper">
@@ -224,46 +225,7 @@
 
     <!-- Main content -->
     <section class="content">
-    	<div id="flashbags">
-			{% set notice = app.session.flashbag.get('notice')  %}
-			{% if notice %}
-				<div class="alert alert-info alert-dismissible">
-	                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-	                <h4><i class="icon fa fa-info"></i> Info! </h4>
-	                {% for flash_message in notice %}
-					    <div class="flash-notice">
-					       {{ flash_message|ems_markdown }}
-					    </div>
-					{% endfor %}
-	            </div>
-			{% endif %}
-
-			{% set warning = app.session.flashbag.get('warning')  %}
-			{% if warning %}
-				<div class="alert alert-warning alert-dismissible">
-	                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-	                <h4><i class="icon fa fa-warning"></i> Warning! </h4>
-	                {% for flash_message in warning %}
-					    <div class="flash-warning">
-					       {{ flash_message|ems_markdown }}
-					    </div>
-					{% endfor %}
-	            </div>
-			{% endif %}
-
-			{% set error = app.session.flashbag.get('error')  %}
-			{% if error %}
-				<div class="alert alert-danger alert-dismissible">
-	                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-	                <h4><i class="icon fa fa-ban"></i> Error! </h4>
-	                {% for flash_message in error %}
-					    <div class="flash-error">
-					       {{ flash_message|ems_markdown }}
-					    </div>
-					{% endfor %}
-	            </div>
-			{% endif %}
-		</div>
+    	<div id="flashbags">{% include '@EMSCore/core/alerts.twig' %}</div>
 
       <!-- Your Page Content Here -->
       {% block body %}{% endblock %}

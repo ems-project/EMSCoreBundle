@@ -190,7 +190,7 @@ class UploadedAssetRepository extends EntityRepository
         if (null === $uploadedAsset || $uploadedAsset instanceof UploadedAsset) {
             return $uploadedAsset;
         }
-        throw new \RuntimeException(\sprintf('Unexpected class object %s', $uploadedAsset::class));
+        throw new \RuntimeException(\sprintf('Unexpected class object %s', UploadedAsset::class));
     }
 
     public function searchCount(string $searchValue = '', bool $availableOnly = false): int

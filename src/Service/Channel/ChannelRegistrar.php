@@ -16,8 +16,13 @@ final class ChannelRegistrar
 {
     public const EMSCO_CHANNEL_PATH_REGEX = '/^(\\/index\\.php)?\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
 
-    public function __construct(private readonly ChannelRepository $channelRepository, private readonly EnvironmentHelperInterface $environmentHelper, private readonly LoggerInterface $logger, private readonly IndexService $indexService, private readonly string $firewallName)
-    {
+    public function __construct(
+        private readonly ChannelRepository $channelRepository,
+        private readonly EnvironmentHelperInterface $environmentHelper,
+        private readonly LoggerInterface $logger,
+        private readonly IndexService $indexService,
+        private readonly string $firewallName
+    ) {
     }
 
     public function register(Request $request): void
@@ -40,8 +45,10 @@ final class ChannelRegistrar
         }
 
         $baseUrl = \vsprintf('%s://%s%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath()]);
-        $searchConfig = \json_decode($channel->getOptions()['searchConfig'] ?? '{}', true, 512, JSON_THROW_ON_ERROR);
-        $attributes = \json_decode((string) ($channel->getOptions()['attributes'] ?? null), true, 512, JSON_THROW_ON_ERROR);
+        $defaultSearchConfigOption = (isset($channel->getOptions()['searchConfig']) && '' !== $channel->getOptions()['searchConfig']) ? $channel->getOptions()['searchConfig'] : '{}';
+        $searchConfig = \json_decode($defaultSearchConfigOption, true, 512, JSON_THROW_ON_ERROR);
+        $defaultAttributesOption = (isset($channel->getOptions()['attributes']) && '' !== $channel->getOptions()['attributes']) ? $channel->getOptions()['attributes'] : '{}';
+        $attributes = \json_decode($defaultAttributesOption, true, 512, JSON_THROW_ON_ERROR);
 
         if (!$this->indexService->hasIndex($alias)) {
             $this->logger->warning('log.channel.alias_not_found', [
@@ -58,7 +65,7 @@ final class ChannelRegistrar
             'search_config' => $searchConfig,
         ];
 
-        if (\is_array($attributes)) {
+        if (\is_array($attributes) && \count($attributes) > 0) {
             $options[Environment::REQUEST_CONFIG] = $attributes;
         }
 

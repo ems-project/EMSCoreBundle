@@ -16,6 +16,7 @@ dashboard.index.reorder: Reorder
 ROLE_SUPER_WEBMASTER: 'Super Webmaster'
 ROLE_TASK_MANAGER: 'Task Manager'
 ROLE_TRADUCTOR: Traductor
+ROLE_COPYWRITER: 'Copywriter'
 ROLE_AUDITOR: Auditor
 ROLE_USER: User
 ROLE_USER_MANAGEMENT: 'User Management'

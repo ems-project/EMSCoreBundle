@@ -15,6 +15,7 @@ class Roles
     final public const ROLE_TASK_MANAGER = 'ROLE_TASK_MANAGER';
     final public const ROLE_REVIEWER = 'ROLE_REVIEWER';
     final public const ROLE_TRADUCTOR = 'ROLE_TRADUCTOR';
+    final public const ROLE_COPYWRITER = 'ROLE_COPYWRITER';
     final public const ROLE_AUDITOR = 'ROLE_AUDITOR';
     final public const ROLE_PUBLISHER = 'ROLE_PUBLISHER';
     final public const ROLE_WEBMASTER = 'ROLE_WEBMASTER';

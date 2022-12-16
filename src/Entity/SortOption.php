@@ -43,7 +43,7 @@ class SortOption
     /**
      * @ORM\Column(name="icon", type="text", length=255, nullable=true)
      */
-    private string $icon;
+    private ?string $icon = null;
 
     public function __construct()
     {
@@ -177,12 +177,7 @@ class SortOption
         return $this;
     }
 
-    /**
-     * Get icon.
-     *
-     * @return string
-     */
-    public function getIcon()
+    public function getIcon(): ?string
     {
         return $this->icon;
     }

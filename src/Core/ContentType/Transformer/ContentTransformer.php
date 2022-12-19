@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\ContentType\Transformer;
 
-use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\DataService;
 use EMS\Helpers\ArrayHelper\ArrayHelper;
+use EMS\Helpers\Standard\Json;
 
 final class ContentTransformer
 {

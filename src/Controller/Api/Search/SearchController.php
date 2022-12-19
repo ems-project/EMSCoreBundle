@@ -2,9 +2,9 @@
 
 namespace EMS\CoreBundle\Controller\Api\Search;
 
-use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

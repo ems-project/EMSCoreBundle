@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Wysiwyg;
 
-use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CoreBundle\Service\UserService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\RuntimeExtensionInterface;
 

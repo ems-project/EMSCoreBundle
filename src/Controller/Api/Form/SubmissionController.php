@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Api\Form;
 
-use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionException;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
+use EMS\Helpers\Standard\Json;
 use EMS\SubmissionBundle\Request\DatabaseRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

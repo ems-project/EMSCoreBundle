@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Xliff;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
-use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -19,6 +18,7 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Internationalization\XliffService;
+use EMS\Helpers\Standard\Json;
 use EMS\Xliff\Xliff\Extractor;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

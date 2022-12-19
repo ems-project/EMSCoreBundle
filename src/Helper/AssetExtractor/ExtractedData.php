@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Helper\AssetExtractor;
 
-use EMS\CommonBundle\Common\Standard\Json;
+use EMS\Helpers\Standard\Json;
 
 class ExtractedData
 {

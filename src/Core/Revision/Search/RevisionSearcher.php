@@ -6,11 +6,11 @@ namespace EMS\CoreBundle\Core\Revision\Search;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Elastica\Document;
-use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\Mapping;
+use EMS\Helpers\Standard\Json;
 
 final class RevisionSearcher
 {

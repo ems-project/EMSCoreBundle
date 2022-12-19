@@ -3,8 +3,8 @@
 namespace EMS\CoreBundle\Entity\Helper;
 
 use Doctrine\ORM\PersistentCollection;
-use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CoreBundle\Entity\EntityInterface;
+use EMS\Helpers\Standard\Json;
 
 class JsonClass implements \JsonSerializable
 {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\ContentType\Transformer;
 
-use EMS\CommonBundle\Common\Standard\Json;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractTransformer implements ContentTransformerInterface

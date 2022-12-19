@@ -2,10 +2,10 @@
 
 namespace EMS\CoreBundle\Twig;
 
-use EMS\CommonBundle\Common\Standard\Json;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Service\I18nService;
 use EMS\CoreBundle\Service\UserService;
+use EMS\Helpers\Standard\Json;
 use Twig\Extension\RuntimeExtensionInterface;
 
 class I18nRuntime implements RuntimeExtensionInterface

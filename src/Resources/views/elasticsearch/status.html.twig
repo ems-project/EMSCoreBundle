@@ -2,8 +2,8 @@
 
 
 {% block title %}Elasticsearch cluster's status{% endblock %}
-{% block pagetitle %}Status of the cluster{% endblock %} 
-{% block subtitle %}<small>Life inside a cluster</small>{% endblock %} 
+{% block pagetitle %}Status of the cluster{% endblock %}
+{% block subtitle %}<small>Life inside a cluster</small>{% endblock %}
 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
@@ -38,7 +38,7 @@
 						<li class="list-group-item">{{ 'views.elasticsearch.status.lucene-version'|trans }}<span
 							class=" badge bg-{{ status.status }}">{{ info.version.lucene_version }}</span></li>
 						<li class="list-group-item">{{ 'views.elasticsearch.status.build-date'|trans }}<span
-							class=" badge bg-{{ status.status }}">{{ info.version.build_date|date(date_time_format) }}</span></li>
+							class=" badge bg-{{ status.status }}">{{ info.version.build_date|split('.')|first|date(date_time_format) }}</span></li>
 					{% endif %}
 					<li class="list-group-item">Number of nodes <span
 						class=" badge bg-{{ status.status }}">{{ status.number_of_nodes }}</span></li>

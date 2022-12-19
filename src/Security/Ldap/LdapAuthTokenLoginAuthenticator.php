@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Security\Authenticator;
+namespace EMS\CoreBundle\Security\Ldap;
 
 use EMS\CoreBundle\Entity\UserInterface as CoreUserInterface;
 use EMS\CoreBundle\Repository\AuthTokenRepository;
@@ -11,6 +11,8 @@ use EMS\Helpers\Standard\Json;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Ldap\Ldap;
+use Symfony\Component\Ldap\Security\LdapBadge;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
@@ -18,18 +20,18 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
-final class AuthTokenLoginAuthenticator extends AbstractAuthenticator
+class LdapAuthTokenLoginAuthenticator extends AbstractAuthenticator
 {
     private AuthTokenRepository $authTokenRepository;
-    private bool $ldapEnabled;
+    private LdapConfig $ldapConfig;
 
-    public function __construct(AuthTokenRepository $authTokenRepository, bool $ldapEnabled)
+    public function __construct(LdapConfig $ldapConfig, AuthTokenRepository $authTokenRepository)
     {
         $this->authTokenRepository = $authTokenRepository;
-        $this->ldapEnabled = $ldapEnabled;
+        $this->ldapConfig = $ldapConfig;
     }
 
-    public function supports(Request $request): bool
+    public function supports(Request $request): ?bool
     {
         return Routes::AUTH_TOKEN_LOGIN === $request->attributes->get('_route') && $request->isMethod('POST');
     }
@@ -46,7 +48,18 @@ final class AuthTokenLoginAuthenticator extends AbstractAuthenticator
             throw new AuthenticationException('Missing credentials');
         }
 
-        return new Passport(new UserBadge($username), new PasswordCredentials($password));
+        return new Passport(
+            new UserBadge($username),
+            new PasswordCredentials($password),
+            [
+                new LdapBadge(
+                    Ldap::class,
+                    $this->ldapConfig->dnString,
+                    $this->ldapConfig->searchDn,
+                    $this->ldapConfig->searchPassword
+                ),
+            ]
+        );
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
@@ -65,10 +78,6 @@ final class AuthTokenLoginAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        if ($this->ldapEnabled) {
-            return null;
-        }
-
         return new JsonResponse([
             'success' => false,
             'acknowledged' => true,

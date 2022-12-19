@@ -18,6 +18,7 @@
         <service id="emsco.security.authenticator.auth_token" class="EMS\CoreBundle\Security\Authenticator\AuthTokenAuthenticator" />
         <service id="emsco.security.authenticator.auth_token_login" class="EMS\CoreBundle\Security\Authenticator\AuthTokenLoginAuthenticator">
             <argument type="service" id="ems.repository.auth_token" />
+            <argument>%ems_core.security.ldap.enabled%</argument>
         </service>
         <service id="emsco.security.authenticator.form_login" class="EMS\CoreBundle\Security\Authenticator\FormLoginAuthenticator">
             <argument type="service" id="router" />

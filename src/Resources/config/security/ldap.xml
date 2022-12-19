@@ -20,5 +20,11 @@
             <argument type="service" id="ems_core.security.ldap.config" />
             <argument type="service" id="router" />
         </service>
+
+        <service id="emsco.security.authenticator.auth_token_ldap" class="EMS\CoreBundle\Security\Ldap\LdapAuthTokenLoginAuthenticator">
+            <argument type="service" id="ems_core.security.ldap.config" />
+            <argument type="service" id="ems.repository.auth_token" />
+        </service>
+
     </services>
 </container>

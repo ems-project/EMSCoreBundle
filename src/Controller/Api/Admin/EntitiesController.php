@@ -50,6 +50,11 @@ class EntitiesController
         return new JsonResponse($item);
     }
 
+    public function getEntityNames(): Response
+    {
+        return new JsonResponse($this->entitiesHelper->getEntityNames());
+    }
+
     public function update(string $entity, string $name, Request $request): Response
     {
         $entityService = $this->getEntityService($entity);

@@ -36,4 +36,12 @@ class EntitiesHelper
 
         throw new EntityServiceNotFoundException($entityName);
     }
+
+    /**
+     * @return string[]
+     */
+    public function getEntityNames(): array
+    {
+        return \array_keys($this->entityServices);
+    }
 }

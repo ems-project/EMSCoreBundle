@@ -25,4 +25,16 @@ class MetaController
             'environment' => $contentType->giveEnvironment()->getName(),
         ]);
     }
+
+    public function contentTypes(): Response
+    {
+        $contentTypes = [];
+        foreach ($this->contentTypeService->getAll() as $contentType) {
+            if ($contentType->getActive() && !$contentType->getDeleted() && $contentType->giveEnvironment()->getManaged()) {
+                $contentTypes[] = $contentType->getName();
+            }
+        }
+
+        return new JsonResponse($contentTypes);
+    }
 }

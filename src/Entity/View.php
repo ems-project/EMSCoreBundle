@@ -51,7 +51,7 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
      *
      * @ORM\Column(name="options", type="json", nullable=true)
      */
-    protected array $options;
+    protected ?array $options = null;
 
     /**
      * @ORM\Column(name="order_key", type="integer")
@@ -145,7 +145,7 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
      */
     public function getOptions(): array
     {
-        return $this->options;
+        return $this->options ?? [];
     }
 
     public function setOrderKey(int $orderKey): View

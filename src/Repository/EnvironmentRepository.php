@@ -3,7 +3,7 @@
 namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ReadableCollection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
@@ -202,9 +202,9 @@ class EnvironmentRepository extends EntityRepository
     }
 
     /**
-     * @return Collection<int, Environment>
+     * @return ReadableCollection<int, Environment>
      */
-    public function findAllPublishedForRevision(Revision $revision): Collection
+    public function findAllPublishedForRevision(Revision $revision): ReadableCollection
     {
         $qb = $this->createQueryBuilder('e');
         $qb

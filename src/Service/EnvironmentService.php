@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ReadableCollection;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -118,9 +119,9 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
-     * @return Collection<int, Environment>
+     * @return ReadableCollection<int, Environment>
      */
-    public function getPublishedForRevision(Revision $revision, bool $excludeDefault = false): Collection
+    public function getPublishedForRevision(Revision $revision, bool $excludeDefault = false): ReadableCollection
     {
         $environments = $this->environmentRepository->findAllPublishedForRevision($revision);
 

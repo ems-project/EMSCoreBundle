@@ -6,23 +6,24 @@ namespace EMS\CoreBundle\Core\Environment;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ReadableCollection;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 
 class EnvironmentsRevision
 {
     public Environment $default;
-    /** @var Collection<int, Environment> */
-    public Collection $environments;
-    /** @var Collection<int, Environment> */
-    public Collection $unpublish;
-    /** @var Collection<int, Environment> */
-    public Collection $publish;
+    /** @var ReadableCollection<int, Environment> */
+    public ReadableCollection $environments;
+    /** @var ReadableCollection<int, Environment> */
+    public ReadableCollection $unpublish;
+    /** @var ReadableCollection<int, Environment> */
+    public ReadableCollection $publish;
 
     /**
      * @param Collection<int, Environment> $userPublishEnvironments
      */
-    public function __construct(Revision $revision, Collection $userPublishEnvironments, bool $hasPublishRole)
+    public function __construct(Revision $revision, ReadableCollection $userPublishEnvironments, bool $hasPublishRole)
     {
         $environments = $revision->getEnvironments();
 

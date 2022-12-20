@@ -127,6 +127,7 @@ class TwigElementsController extends AbstractController
         $menu->addChild('views.elements.side-menu-html.i18n', 'fa fa-language', 'i18n_index')->setTranslation([]);
         $jobMenu = $menu->addChild('views.elements.side-menu-html.jobs', 'fa fa-terminal', 'job.index');
         $jobMenu->setTranslation([]);
+        $jobMenu->addChild('views.elements.side-menu-html.create-job', 'fa fa-plus', 'job.add')->setTranslation([]);
         $jobMenu->addChild('views.elements.side-menu-html.logs', 'fa fa-file-text-o', 'job.index')->setTranslation([]);
         $jobMenu->addChild('views.elements.side-menu-html.schedule', 'fa fa-calendar-o', Routes::SCHEDULE_INDEX)->setTranslation([]);
         $menu->addChild('views.elements.side-menu-html.analyzers', 'fa fa-signal', 'ems_analyzer_index')->setTranslation([]);

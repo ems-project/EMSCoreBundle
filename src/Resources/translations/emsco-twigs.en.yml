@@ -44,6 +44,7 @@ views.elements.side-menu-html.environments: Environments
 views.elements.side-menu-html.search: Search
 views.elements.side-menu-html.i18n: I18N
 views.elements.side-menu-html.jobs: Jobs
+views.elements.side-menu-html.create-job: New job
 views.elements.side-menu-html.analyzers: Analyzers
 views.elements.side-menu-html.filters: Filters
 views.elements.side-menu-html.other: Other

@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
@@ -22,7 +23,8 @@ class VersionTagFieldType extends DataFieldType
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
         private readonly RevisionService $revisionService,
-        private readonly EnvironmentService $environmentService
+        private readonly EnvironmentService $environmentService,
+        private readonly ContentTypeService $contentTypeService
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
@@ -63,7 +65,6 @@ class VersionTagFieldType extends DataFieldType
         $fieldType = $builder->getOptions()['metadata'];
         $contentType = $fieldType->giveContentType();
 
-        $versionTags = $contentType->getVersionTags();
         $emsId = $options['referrer-ems-id'] ?? null;
         $countEnvironments = 0;
 
@@ -72,11 +73,16 @@ class VersionTagFieldType extends DataFieldType
             $countEnvironments = $revision ? $this->environmentService->getPublishedForRevision($revision, true)->count() : 0;
         }
 
+        if (0 === $countEnvironments) {
+            $choices = $this->contentTypeService->getVersionDefault($contentType);
+        } else {
+            $choices = $this->contentTypeService->getVersionTags($contentType);
+        }
+
         $builder->add('value', ChoiceType::class, [
             'label' => ($options['label'] ?? $fieldType->getName()),
-            'required' => 0 === $countEnvironments,
-            'disabled' => 0 === $countEnvironments,
-            'choices' => \array_combine($versionTags, $versionTags),
+            'placeholder' => false,
+            'choices' => $choices,
         ]);
     }
 

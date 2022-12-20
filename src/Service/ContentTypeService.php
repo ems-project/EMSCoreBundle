@@ -12,6 +12,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Core\UI\MenuEntry;
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
@@ -30,6 +31,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ContentTypeService implements EntityServiceInterface
 {
@@ -39,7 +41,17 @@ class ContentTypeService implements EntityServiceInterface
     /** @var ContentType[] */
     protected array $contentTypeArrayByName = [];
 
-    public function __construct(protected Registry $doctrine, protected LoggerInterface $logger, private readonly Mapping $mappingService, private readonly ElasticaService $elasticaService, private readonly EnvironmentService $environmentService, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly RevisionRepository $revisionRepository, private readonly TokenStorageInterface $tokenStorage, private readonly ?string $circleContentTypeName)
+    public function __construct(
+        protected Registry $doctrine,
+        protected LoggerInterface $logger,
+        private readonly Mapping $mappingService,
+        private readonly ElasticaService $elasticaService,
+        private readonly EnvironmentService $environmentService,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly RevisionRepository $revisionRepository,
+        private readonly TokenStorageInterface $tokenStorage,
+        private readonly TranslatorInterface $translator,
+        private readonly ?string $circleContentTypeName)
     {
     }
 
@@ -669,18 +681,46 @@ class ContentTypeService implements EntityServiceInterface
     }
 
     /**
-     * @return string[]
+     * @return array<string, ?string>
      */
-    public function getAllVersionTags(): array
+    public function getVersionDefault(ContentType $contentType): array
     {
-        $versionTags = [];
-        foreach ($this->getAll() as $contentType) {
-            if ($contentType->isActive()) {
-                $versionTags = \array_merge($versionTags, $contentType->getVersionTags());
-            }
+        if (!$contentType->hasVersionTags()) {
+            return [];
         }
 
-        return \array_unique($versionTags);
+        $versionTags = $contentType->getVersionTags();
+        $defaultVersion = \array_shift($versionTags);
+        $defaultVersionLabel = $this->translator->trans(
+            'revision.version_tag',
+            ['%version_tag%' => $defaultVersion],
+            EMSCoreBundle::TRANS_DOMAIN
+        );
+
+        return [$defaultVersionLabel => $defaultVersion];
+    }
+
+    /**
+     * @return array<string, ?string>
+     */
+    public function getVersionTags(ContentType $contentType): array
+    {
+        if (!$contentType->hasVersionTags()) {
+            return [];
+        }
+
+        $versionTags = $contentType->getVersionTags();
+        $versionTagsLabels = \array_map(function (string $versionTag) {
+            return $this->translator->trans(
+                'revision.version_tag',
+                ['%version_tag%' => $versionTag],
+                EMSCoreBundle::TRANS_DOMAIN
+            );
+        }, $versionTags);
+
+        $emptyLabel = $this->translator->trans('revision.version_tag.empty', [], EMSCoreBundle::TRANS_DOMAIN);
+
+        return [$emptyLabel => null] + \array_combine($versionTagsLabels, $versionTags);
     }
 
     public function deleteByItemName(string $name): string

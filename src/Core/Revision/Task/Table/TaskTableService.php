@@ -16,8 +16,8 @@ final class TaskTableService implements EntityServiceInterface
 {
     private const COL_TITLE = 'title';
     private const COL_DOCUMENT = 'label';
-    public const COL_DOCUMENT_VERSION = 'version';
-    public const COL_OWNER = 'owner';
+    public const COL_VERSION_TAG = 'version_tag';
+    public const COL_REQUESTER = 'requester';
     public const COL_ASSIGNEE = 'assignee';
     public const COL_STATUS = 'status';
     private const COL_DEADLINE = 'deadline';
@@ -29,13 +29,13 @@ final class TaskTableService implements EntityServiceInterface
     public const COLUMNS = [
         self::COL_TITLE => ['type' => 'block', 'column' => 'taskTitle', 'mapping' => 't.title'],
         self::COL_DOCUMENT => ['column' => 'label', 'mapping' => 'r.labelField'],
-        self::COL_DOCUMENT_VERSION => ['type' => 'block', 'column' => 'versionTag', 'mapping' => 'r.versionTag'],
-        self::COL_OWNER => ['type' => 'block', 'column' => 'owner', 'mapping' => 'r.owner'],
+        self::COL_VERSION_TAG => ['type' => 'block'],
+        self::COL_REQUESTER => ['type' => 'block', 'column' => 'requester', 'mapping' => 't.createdBy'],
         self::COL_ASSIGNEE => ['type' => 'block', 'column' => 'taskAssignee', 'mapping' => 't.assignee'],
         self::COL_STATUS => ['type' => 'block', 'column' => 'taskStatus', 'mapping' => 't.status'],
         self::COL_DEADLINE => ['type' => 'block', 'column' => 'taskDeadline', 'mapping' => 't.deadline'],
         self::COL_MODIFIED => ['type' => 'block', 'column' => 'taskModified', 'mapping' => 't.modified'],
-        self::COL_ACTIONS => ['type' => 'block'],
+        self::COL_ACTIONS => ['type' => 'block', 'label'],
     ];
 
     public function __construct(private readonly TaskRepository $taskRepository)
@@ -47,7 +47,7 @@ final class TaskTableService implements EntityServiceInterface
         /** @var array<string, array{type: ?string, column: ?string, label: string, mapping?: string}> $columns */
         $columns = $this->getColumns($context);
 
-        $disableSorting = [self::COL_ASSIGNEE, self::COL_OWNER, self::COL_DOCUMENT_VERSION, self::COL_ACTIONS];
+        $disableSorting = [self::COL_ASSIGNEE, self::COL_VERSION_TAG, self::COL_ACTIONS];
 
         foreach ($columns as $name => $options) {
             $orderField = !\in_array($name, $disableSorting) ? $name : null;
@@ -131,11 +131,11 @@ final class TaskTableService implements EntityServiceInterface
         if (TaskManager::TAB_USER === $context->tab) {
             unset($columns[self::COL_ASSIGNEE]);
         }
-        if (TaskManager::TAB_OWNER === $context->tab) {
-            unset($columns[self::COL_OWNER]);
+        if (TaskManager::TAB_REQUESTER === $context->tab) {
+            unset($columns[self::COL_REQUESTER]);
         }
         if (!$context->showVersionTagColumn) {
-            unset($columns[self::COL_DOCUMENT_VERSION]);
+            unset($columns[self::COL_VERSION_TAG]);
         }
 
         foreach ($columns as $name => &$column) {

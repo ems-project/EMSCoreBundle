@@ -49,6 +49,11 @@
             <tag name="twig.runtime"/>
         </service>
 
+        <service id="emsco.twig.content_type_runtime" class="EMS\CoreBundle\Twig\ContentTypeRuntime">
+            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService"/>
+            <tag name="twig.runtime"/>
+        </service>
+
         <service id="emsco.twig.environment_runtime" class="EMS\CoreBundle\Twig\EnvironmentRuntime">
             <argument type="service" id="ems.service.environment"/>
             <tag name="twig.runtime"/>

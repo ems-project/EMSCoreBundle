@@ -112,12 +112,11 @@
 
 {% block revisionSidebar %}
 	{% set tabs = [{name: 'tab_about_revision', label: 'views.data.revisions-data-html.revision'|trans}] %}
-	{% if revision.isTaskEnabled %}
-		{% if (revision.hasOwner and revision.owner == app.user.username) or (revision.hasTasks == false and is_granted(revision.giveContentType.roles.owner) and revision.hasOwner == false) %}
-			{% set tabs = tabs|merge([{ name: 'tab_tasks', label: 'task.tab_tasks'|trans }]) %}
-		{% endif %}
-		{% if revision.hasTaskCurrent and revision.owner != app.user.username %}
+	{% if revision.giveContentType.tasksEnabled %}
+		{% if revision.hasTaskCurrent and revision.taskCurrent.assignee == app.user.userIdentifier %}
 			{% set tabs = tabs|merge([{ name: 'tab_task', label: 'task.tab_task'|trans }]) %}
+		{% else %}
+			{% set tabs = tabs|merge([{ name: 'tab_tasks', label: 'task.tab_tasks'|trans }]) %}
 		{% endif %}
 	{% endif %}
 	<div id="revision-tabs" class="nav-tabs-custom">
@@ -167,12 +166,6 @@
 			{{ 'views.data.revisions-data-html.previous-revision'|trans({'%timestamp%': revision.created|date(date_time_format)}) }}
 		{% endif %}
 	</p>
-
-	{% if revision.hasOwner %}
-		<hr/>
-		<strong><i class="fa fa-user-circle-o margin-r-5"></i> {{ 'views.data.revisions-data-html.owner'|trans }}</strong>
-		<p class="text-muted">{{ revision.owner|displayname }}</p>
-	{% endif %}
 
 	{% if revision.finalizedBy %}
 		<hr>

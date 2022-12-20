@@ -54,9 +54,14 @@ class Task implements EntityInterface
     /**
      * @var array<mixed>
      *
-     * @ORM\Column(name="logs", type="json", nullable=false)
+     * @ORM\Column(name="logs", type="json")
      */
     private array $logs;
+
+    /**
+     * @ORM\Column(name="created_by", type="text")
+     */
+    private string $createdBy;
 
     final public const STATUS_PROGRESS = 'progress';
     final public const STATUS_PLANNED = 'planned';
@@ -72,11 +77,12 @@ class Task implements EntityInterface
         self::STATUS_APPROVED => ['icon' => 'fa fa-check', 'bg' => 'green', 'text' => 'success', 'label' => 'success'],
     ];
 
-    public function __construct()
+    public function __construct(string $username)
     {
         $this->id = Uuid::uuid4();
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
+        $this->createdBy = $username;
     }
 
     public function addLog(TaskLog $taskLog): void
@@ -84,9 +90,9 @@ class Task implements EntityInterface
         $this->logs[] = $taskLog->getData();
     }
 
-    public static function createFromDTO(TaskDTO $dto): Task
+    public static function createFromDTO(TaskDTO $dto, string $username): Task
     {
-        $task = new self();
+        $task = new self($username);
         $task->updateFromDTO($dto);
 
         return $task;
@@ -237,5 +243,15 @@ class Task implements EntityInterface
     public function getName(): string
     {
         return $this->getId();
+    }
+
+    public function getCreatedBy(): string
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(string $createdBy): void
+    {
+        $this->createdBy = $createdBy;
     }
 }

@@ -147,6 +147,9 @@ class ContentTypeType extends AbstractType
             'managed' => $environment->getManaged(),
             'label' => false,
         ]);
+        $builder->add('settings', ContentTypeSettingsType::class, [
+            'label' => false,
+        ]);
 
         if (null !== $mapping) {
             $builder->add('fields', ContentTypeFieldsType::class, [

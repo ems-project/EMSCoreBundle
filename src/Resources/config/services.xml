@@ -293,6 +293,7 @@
             <argument type="service" id="security.authorization_checker" />
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
             <argument type="service" id="security.token_storage" />
+            <argument type="service" id="translator" />
             <argument>%ems_core.circles_object%</argument>
             <tag name="emsco.entity.service" />
         </service>

@@ -20,7 +20,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 final class TaskManager
 {
     public const TAB_USER = 'user';
-    public const TAB_OWNER = 'owner';
+    public const TAB_REQUESTER = 'requester';
     public const TAB_MANAGER = 'manager';
 
     public function __construct(private readonly TaskRepository $taskRepository, private readonly TaskTableService $taskTableService, private readonly RevisionRepository $revisionRepository, private readonly DataService $dataService, private readonly UserService $userService, private readonly EventDispatcherInterface $eventDispatcher, private readonly LoggerInterface $logger)
@@ -32,16 +32,6 @@ final class TaskManager
         return $this->taskRepository->countApproved($revision);
     }
 
-    public function changeOwner(Revision $revision, string $newOwner): void
-    {
-        $transaction = $this->revisionTransaction(function (Revision $revision) use ($newOwner) {
-            $revision->setOwner($newOwner);
-            $this->revisionRepository->save($revision);
-        });
-
-        $transaction($revision->getId());
-    }
-
     /**
      * @return string[]
      */
@@ -49,7 +39,7 @@ final class TaskManager
     {
         return \array_filter([
             self::TAB_USER,
-            $this->isTaskOwner() ? self::TAB_OWNER : null,
+            self::TAB_REQUESTER,
             $this->isTaskManager() ? self::TAB_MANAGER : null,
         ]);
     }
@@ -127,18 +117,11 @@ final class TaskManager
         return $task->getAssignee() === $user->getUsername();
     }
 
-    public function isTaskOwner(): bool
+    public function isTaskRequester(Task $task): bool
     {
         $user = $this->userService->getCurrentUser();
 
-        return $this->taskRepository->countForOwner($user) > 0;
-    }
-
-    public function isTaskOwnerRevision(Revision $revision): bool
-    {
-        $user = $this->userService->getCurrentUser();
-
-        return $revision->hasOwner() && $revision->getOwner() === $user->getUsername();
+        return $task->getCreatedBy() === $user->getUsername();
     }
 
     public function isTaskManager(): bool
@@ -161,8 +144,8 @@ final class TaskManager
 
     public function taskCreateFromRevision(TaskDTO $taskDTO, Revision $revision, string $username): Task
     {
-        $task = Task::createFromDTO($taskDTO);
-        $revision->addTask($task, $username);
+        $task = Task::createFromDTO($taskDTO, $username);
+        $revision->addTask($task);
 
         $this->dispatchEvent($this->createTaskEvent($task, $revision, $username), TaskEvent::CREATE);
         if ($revision->isTaskCurrent($task)) {
@@ -216,7 +199,7 @@ final class TaskManager
 
             if ($approve) {
                 $this->dispatchEvent($event, TaskEvent::APPROVED);
-                $revision->addTask($task, $revision->getOwner());
+                $revision->addTask($task);
                 $this->setNextPlanned($revision);
             } else {
                 $revision->updateModified();
@@ -254,7 +237,7 @@ final class TaskManager
             $oldCurrentTask = $revision->getTaskCurrent();
             $orderTaskCurrent = $this->getTask($orderCurrentTaskId);
 
-            if ($revision->taskCurrentReplace($orderTaskCurrent, $user->getUsername())) {
+            if ($revision->taskCurrentReplace($orderTaskCurrent)) {
                 $this->dispatchEvent($this->createTaskEvent($oldCurrentTask, $revision), TaskEvent::PLANNED);
                 $this->dispatchEvent($this->createTaskEvent($orderTaskCurrent, $revision), TaskEvent::PROGRESS);
             }

@@ -72,7 +72,6 @@
     {% set path = path('data.revisions', { 'type': revision.giveContentType.name, 'ouuid': revision.ouuid })  %}
     <p>
         In {{ revision.giveContentType.singularName }} : <a href="{{ backendUrl|default('') }}{{ path }}" target="_blank"><strong>{{ revision.label }}</strong></a><br/>
-        {% if revision.hasOwner %}Owned by {{ revision.owner|displayname  }}{% endif %}
     </p>
 {% endblock %}
 
@@ -80,6 +79,7 @@
     <p>
         <strong>title:&nbsp;</strong>{{ task.title }}<br/>
         {% if task.assignee != receiver.username %}<strong>assignee:&nbsp;</strong>{{ task.assignee|displayname }}<br/>{% endif %}
+        {% if task.createdBy != receiver.username %}<strong>requester:&nbsp;</strong>{{ task.createdBy|displayname }}<br/>{% endif %}
         {% if task.hasDeadline %}<strong>deadline:&nbsp;</strong>{{ task.deadline.format(date_format) }}<br/>{% endif %}
         {% if task.hasDescription %}
             <strong>description:&nbsp;</strong><br/>

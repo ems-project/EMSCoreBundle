@@ -137,6 +137,23 @@
                             {% endif %}
                         </div>
                     </div>
+
+                    <div class="col-md-8">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Settings</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for settingField in form.settings %}
+                                <tr>
+                                    <td>{{ form_widget(settingField) }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">

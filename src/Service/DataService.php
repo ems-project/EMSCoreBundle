@@ -1013,11 +1013,6 @@ class DataService
         $revision->setLockBy($username);
         $revision->setLockUntil(new \DateTime($this->lockTime));
 
-        if (null !== $currentUser
-            && $this->userService->isGrantedRole($contentType->role(ContentTypeRoles::OWNER))) {
-            $revision->setOwner($currentUser->getUsername());
-        }
-
         if (null !== $currentUser && $contentType->getCirclesField()) {
             if (isset($revision->getRawData()[$contentType->getCirclesField()])) {
                 if (\is_array($revision->getRawData()[$contentType->getCirclesField()])) {

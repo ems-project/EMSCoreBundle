@@ -13,7 +13,6 @@ use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
-use EMS\CoreBundle\Entity\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Task>
@@ -23,34 +22,6 @@ final class TaskRepository extends ServiceEntityRepository
     public function __construct(Registry $registry)
     {
         parent::__construct($registry, Task::class);
-    }
-
-    public function countForOwner(UserInterface $user): int
-    {
-        $qb = $this->_em->createQueryBuilder();
-        $qb
-            ->select('count(r.id)')
-            ->from(Revision::class, 'r')
-            ->where('r.endTime is null')
-            ->andWhere($qb->expr()->eq('r.deleted', ':false'))
-            ->andWhere($qb->expr()->eq('r.owner', ':username'))
-            ->setParameters([
-                'username' => $user->getUsername(),
-                'false' => false,
-            ]);
-
-        return \intval($qb->getQuery()->getSingleScalarResult());
-    }
-
-    public function countForUser(UserInterface $user): int
-    {
-        $qb = $this->createQueryBuilder('t');
-        $qb
-            ->select('count(t.id)')
-            ->andWhere($qb->expr()->eq('t.assignee', ':username'))
-            ->setParameter('username', $user->getUsername());
-
-        return \intval($qb->getQuery()->getSingleScalarResult());
     }
 
     public function countApproved(Revision $revision): int
@@ -106,9 +77,9 @@ final class TaskRepository extends ServiceEntityRepository
                     ->andWhere($qb->expr()->eq('t.assignee', ':username'))
                     ->setParameter('username', $context->user->getUsername());
                 break;
-            case TaskManager::TAB_OWNER:
+            case TaskManager::TAB_REQUESTER:
                 $qb
-                    ->andWhere($qb->expr()->eq('r.owner', ':username'))
+                    ->andWhere($qb->expr()->eq('t.createdBy', ':username'))
                     ->setParameter('username', $context->user->getUsername());
                 break;
         }

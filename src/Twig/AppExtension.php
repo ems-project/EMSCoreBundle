@@ -55,8 +55,24 @@ class AppExtension extends AbstractExtension
     /**
      * @param array<mixed> $assetConfig
      */
-    public function __construct(private readonly Registry $doctrine, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly UserService $userService, private readonly ContentTypeService $contentTypeService, private readonly RouterInterface $router, private readonly TwigEnvironment $twig, private readonly ObjectChoiceListFactory $objectChoiceListFactory, private readonly LoggerInterface $logger, protected FormFactory $formFactory, protected FileService $fileService, protected RequestRuntime $commonRequestRuntime, private readonly MailerService $mailer, private readonly ElasticaService $elasticaService, private readonly SearchService $searchService, private readonly AssetRuntime $assetRuntime, protected array $assetConfig)
-    {
+    public function __construct(
+        private readonly Registry $doctrine,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly UserService $userService,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly RouterInterface $router,
+        private readonly TwigEnvironment $twig,
+        private readonly ObjectChoiceListFactory $objectChoiceListFactory,
+        private readonly LoggerInterface $logger,
+        protected FormFactory $formFactory,
+        protected FileService $fileService,
+        protected RequestRuntime $commonRequestRuntime,
+        private readonly MailerService $mailer,
+        private readonly ElasticaService $elasticaService,
+        private readonly SearchService $searchService,
+        private readonly AssetRuntime $assetRuntime,
+        protected array $assetConfig
+    ) {
     }
 
     /**
@@ -65,7 +81,6 @@ class AppExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('get_content_types', $this->getContentTypes(...)),
             new TwigFunction('cant_be_finalized', $this->cantBeFinalized(...)),
             new TwigFunction('sequence', $this->getSequenceNextValue(...)),
             new TwigFunction('diff_text', $this->diffText(...), ['is_safe' => ['html']]),
@@ -99,8 +114,11 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_get_environments', [EnvironmentRuntime::class, 'getEnvironments']),
             new TwigFunction('emsco_get_environments_revision', [EnvironmentRuntime::class, 'getEnvironmentsRevision']),
             new TwigFunction('emsco_get_default_environment_names', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames']),
+            new TwigFunction('emsco_get_content_types', [ContentTypeRuntime::class, 'getContentTypes']),
+            new TwigFunction('emsco_get_content_type_version_tags', [ContentTypeRuntime::class, 'getContentTypeVersionTags']),
             // deprecated
             new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames'], ['deprecated' => true, 'alternative' => 'emsco_get_default_environment_names']),
+            new TwigFunction('get_content_types', [ContentTypeRuntime::class, 'getContentTypes'], ['deprecated' => true, 'alternative' => 'emsco_get_content_types']),
         ];
     }
 
@@ -126,7 +144,6 @@ class AppExtension extends AbstractExtension
             new TwigFilter('in_my_circles', $this->inMyCircles(...)),
             new TwigFilter('data_link', $this->dataLink(...), ['is_safe' => ['html']]),
             new TwigFilter('data_label', $this->dataLabel(...), ['is_safe' => ['html']]),
-            new TwigFilter('get_content_type', $this->getContentType(...)),
             new TwigFilter('emsco_get_environment', [EnvironmentRuntime::class, 'getEnvironment']),
             new TwigFilter('generate_from_template', $this->generateFromTemplate(...)),
             new TwigFilter('objectChoiceLoader', $this->objectChoiceLoader(...)),
@@ -156,10 +173,12 @@ class AppExtension extends AbstractExtension
             new TwigFilter('emsco_log_error', [CoreRuntime::class, 'logError']),
             new TwigFilter('emsco_guess_locale', [DataExtractorRuntime::class, 'guessLocale']),
             new TwigFilter('emsco_asset_meta', [DataExtractorRuntime::class, 'assetMeta']),
+            new TwigFilter('emsco_get_content_type', [ContentTypeRuntime::class, 'getContentType']),
             // deprecated
             new TwigFilter('url_generator', Encoder::webalize(...), ['deprecated' => true, 'alternative' => 'ems_webalize']),
             new TwigFilter('emsco_webalize', Encoder::webalize(...), ['deprecated' => true, 'alternative' => 'ems_webalize']),
             new TwigFilter('get_environment', [EnvironmentRuntime::class, 'getEnvironment'], ['deprecated' => true, 'alternative' => 'emsco_get_environment']),
+            new TwigFilter('get_content_type', [ContentTypeRuntime::class, 'getContentType'], ['deprecated' => true, 'alternative' => 'emsco_get_contentType']),
         ];
     }
 
@@ -1064,24 +1083,6 @@ class AppExtension extends AbstractExtension
     public function firstInArray(mixed $needle, array $haystack): bool
     {
         return 0 === \array_search($needle, $haystack);
-    }
-
-    public function getContentType(string $name): ?ContentType
-    {
-        $contentType = $this->contentTypeService->getByName($name);
-        if (false !== $contentType) {
-            return $contentType;
-        }
-
-        return null;
-    }
-
-    /**
-     * @return ContentType[]
-     */
-    public function getContentTypes(): array
-    {
-        return $this->contentTypeService->getAll();
     }
 
     /**

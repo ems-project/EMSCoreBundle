@@ -82,7 +82,6 @@ views.data.revisions-data-html.status: Status
 views.data.revisions-data-html.draft-in-progress: 'Draft in progress'
 views.data.revisions-data-html.current-revision: 'Current revision'
 views.data.revisions-data-html.previous-revision: 'Previous revision'
-views.data.revisions-data-html.owner: Owner
 views.data.revisions-data-html.finalized-by: 'Finalized by'
 views.data.revisions-data-html.finalized-on: 'Finalized on'
 views.data.revisions-data-html.all-linked-documents: 'All linked documents'

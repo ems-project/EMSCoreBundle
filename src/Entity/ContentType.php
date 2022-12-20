@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
+use EMS\CoreBundle\Core\ContentType\ContentTypeSettings;
 use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
 use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
@@ -17,8 +18,6 @@ use EMS\Helpers\Standard\DateTime;
 use EMS\Helpers\Standard\Type;
 
 /**
- * ContentType.
- *
  * @ORM\Table(name="content_type")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\ContentTypeRepository")
  * @ORM\HasLifecycleCallbacks()
@@ -243,6 +242,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @ORM\Column(name="fields", type="json", nullable=true)
      */
     protected array $fields = [];
+
+    /**
+     * @var array<string, bool>
+     *
+     * @ORM\Column(name="settings", type="json", nullable=true)
+     */
+    protected ?array $settings = null;
 
     public function __construct()
     {
@@ -1186,5 +1192,20 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function setFields(ContentTypeFields $fields): void
     {
         $this->fields = $fields->getFields();
+    }
+
+    public function tasksEnabled(): bool
+    {
+        return $this->getSettings()[ContentTypeSettings::TASKS_ENABLED] ?? false;
+    }
+
+    public function getSettings(): ContentTypeSettings
+    {
+        return new ContentTypeSettings($this->settings ?? []);
+    }
+
+    public function setSettings(ContentTypeSettings $settings): void
+    {
+        $this->settings = $settings->getSettings();
     }
 }

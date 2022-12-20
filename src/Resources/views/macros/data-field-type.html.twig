@@ -1237,7 +1237,12 @@
 			{% endif %}
 		</dt>
 		<dd>
-			{{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+			{% if dataField.rawData %}
+				{% set translateRaw = 'revision.version_tag'|trans({'%version_tag%': dataField.rawData})  %}
+			{% else %}
+				{% set translateRaw = 'revision.version_tag.empty'|trans %}
+			{% endif %}
+			{{ diff_text(translateRaw, false, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}

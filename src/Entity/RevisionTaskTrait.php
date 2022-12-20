@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
-use EMS\CoreBundle\Roles;
 
 trait RevisionTaskTrait
 {
@@ -30,21 +28,8 @@ trait RevisionTaskTrait
      */
     private ?array $taskApprovedIds = [];
 
-    /**
-     * @ORM\Column(name="owner", type="text", nullable=true)
-     */
-    private ?string $owner = null;
-
-    public function addTask(Task $task, string $username): void
+    public function addTask(Task $task): void
     {
-        if (null === $this->owner) {
-            $this->owner = $username;
-        }
-
-        if ($this->owner !== $username) {
-            throw new \RuntimeException(\sprintf('User %s is the owner!', $this->owner));
-        }
-
         if (null === $this->taskCurrent) {
             $this->taskCurrent = $task;
         } elseif (Task::STATUS_PLANNED === $task->getStatus()) {
@@ -54,13 +39,13 @@ trait RevisionTaskTrait
         }
     }
 
-    public function taskCurrentReplace(Task $newTaskCurrent, string $username): bool
+    public function taskCurrentReplace(Task $newTaskCurrent): bool
     {
         if ($this->hasTaskCurrent() && $newTaskCurrent->getId() === $this->getTaskCurrent()->getId()) {
             return false;
         }
 
-        $this->addTask($this->getTaskCurrent(), $username);
+        $this->addTask($this->getTaskCurrent());
         $this->taskCurrent = $newTaskCurrent;
         $this->deleteTaskPlanned($newTaskCurrent);
 
@@ -134,15 +119,6 @@ trait RevisionTaskTrait
         return $this->getTaskCurrent()->getTitle();
     }
 
-    public function getOwner(): string
-    {
-        if (null === $owner = $this->owner) {
-            throw new \RuntimeException('Revision has no owner');
-        }
-
-        return $owner;
-    }
-
     public function getTaskNextPlannedId(): ?string
     {
         if (!$this->hasTaskPlannedIds()) {
@@ -159,11 +135,6 @@ trait RevisionTaskTrait
     public function hasTasks(bool $includeApproved = true): bool
     {
         return $this->hasTaskCurrent() || $this->hasTaskPlannedIds() || ($includeApproved && $this->hasTaskApprovedIds());
-    }
-
-    public function hasOwner(): bool
-    {
-        return null !== $this->owner;
     }
 
     public function hasTaskCurrent(): bool
@@ -194,16 +165,6 @@ trait RevisionTaskTrait
     public function isTaskApproved(Task $task): bool
     {
         return \in_array($task->getId(), $this->getTaskApprovedIds(), true);
-    }
-
-    public function isTaskEnabled(): bool
-    {
-        return Roles::NOT_DEFINED !== $this->giveContentType()->role(ContentTypeRoles::OWNER);
-    }
-
-    public function setOwner(string $owner): void
-    {
-        $this->owner = $owner;
     }
 
     public function setTaskCurrent(?Task $task): void

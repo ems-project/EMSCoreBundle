@@ -493,30 +493,23 @@ table.index.column.actions: Actions
 table.index.column.loop_count: '#'
 table.index.empty: 'Nothing to show here'
 task.assigned_to: 'Assigned to '
-task.change_owner.change: 'New owner'
-task.change_owner.current: 'The current owner for document "%revision%" is "%owner%"'
-task.change_owner.missing: 'The document "%revision%" has no owner'
-task.change_owner.submit: Change
-task.change_owner.success: 'Successfully changed ownership!'
-task.change_owner.title: 'Change owner for %revision%'
 task.create.button: 'Add a task'
 task.create.submit: 'Create task'
 task.create.success: 'Task "%title%" successfully created.'
 task.create.title: 'Add a new task'
-task.dashboard.action.change_owner: 'Change owner'
 task.dashboard.action.edit_revision: 'Edit revision'
 task.dashboard.action.go_revision: Revision
-task.dashboard.column.version: Version
+task.dashboard.column.version_tag: 'New version'
 task.dashboard.column.actions: Actions
 task.dashboard.column.assignee: Assignee
 task.dashboard.column.deadline: Deadline
 task.dashboard.column.modified: Last modification
 task.dashboard.column.label: Document
-task.dashboard.column.owner: Owner
+task.dashboard.column.requester: Requester
 task.dashboard.column.status: Status
 task.dashboard.column.title: Task
 task.dashboard.tab.manager: 'All tasks'
-task.dashboard.tab.owner: 'Created tasks'
+task.dashboard.tab.requester: 'Requested tasks'
 task.dashboard.tab.user: 'Assigned to me'
 task.delete.submit: 'Delete task'
 task.delete.success: 'Task "%title%" successfully deleted.'
@@ -569,7 +562,7 @@ task.filters: Filters
 task.filter.status: Statuses
 task.filter.version: Versions
 task.filter.assignee: Assignees
-task.filter.owner: Owners
+task.filter.requester: Requesters
 task.filter.submit: Search
 task.filter.reset: Clear
 uploaded-file.action.download_selected: 'Download selected'
@@ -907,3 +900,6 @@ log.data.revision.added_to_release: 'Document "%label%" has been added to releas
 log.data.revision.can_not_add_draft_in_release: 'Revision in draft mode can not be added to a release'
 log.data.revision.document_already_in_release_but_updated: 'Document "%label%" has been updated with a new revision in release "%release%"'
 log.data.revision.already_in_release: 'This revision of document "%label%" was already in release "%release%"'
+revision.version_tag: 'Yes as %version_tag%'
+revision.version_tag.empty: 'No (Silent publish)'
+

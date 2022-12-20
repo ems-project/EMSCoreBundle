@@ -89,8 +89,8 @@ final class TaskEventSubscriber implements EventSubscriberInterface
     {
         $this->updateStatus($event, Task::STATUS_COMPLETED);
 
-        if ($event->isTaskCurrent() && $event->revision->hasOwner()) {
-            $this->sendMail($event, 'completed', $event->revision->getOwner());
+        if ($event->isTaskCurrent()) {
+            $this->sendMail($event, 'completed', $event->task->getCreatedBy());
         }
     }
 
@@ -131,7 +131,7 @@ final class TaskEventSubscriber implements EventSubscriberInterface
 
         if (null === $receiver
             || !$receiver->getEmailNotification()
-            || (Task::STATUS_COMPLETED !== $type && $event->isAssigneeIsOwner())) {
+            || (Task::STATUS_COMPLETED !== $type && $event->isAssigneeIsRequester())) {
             return;
         }
 

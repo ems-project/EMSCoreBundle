@@ -4,21 +4,19 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Revision;
 
-use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\DataTable\TableExporter;
 use EMS\CoreBundle\Core\Revision\Task\Table\TaskTableFilters;
 use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Core\UI\AjaxModal;
 use EMS\CoreBundle\Core\UI\AjaxService;
+use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\Helpers\Standard\Json;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -102,7 +100,7 @@ final class TaskController extends AbstractController
         $revision = $tasks->getRevision();
         $ajaxTemplate = $this->getAjaxTemplate();
 
-        if ($this->taskManager->isTaskOwnerRevision($revision)) {
+        if ($revision->hasTaskCurrent() && Task::STATUS_PROGRESS !== $revision->getTaskCurrent()->getStatus()) {
             $action = $request->get('action');
             $formValidation = $this->createCommentForm('validation', 'approve' !== $action);
             $formValidation->handleRequest($request);
@@ -232,50 +230,6 @@ final class TaskController extends AbstractController
         return $this->getAjaxModal()
             ->setFooter('modalFooterClose')
             ->setBody('modalHistoryBody', ['task' => $this->taskManager->getTask($taskId)])
-            ->getResponse();
-    }
-
-    public function ajaxModalChangeOwner(Request $request, int $revisionId): JsonResponse
-    {
-        $revision = $this->taskManager->getRevision($revisionId);
-        $contentType = $revision->giveContentType();
-
-        $ajaxModal = $this->getAjaxModal();
-        $ajaxModal->setTitle('task.change_owner.title', ['%revision%' => $revision->getLabel()]);
-
-        $form = $this->formFactory->createNamed('task_change_owner', FormType::class, [], [
-            'translation_domain' => 'EMSCoreBundle',
-        ]);
-        $form->add('new_owner', SelectUserPropertyType::class, [
-            'constraints' => [new NotBlank()],
-            'user_roles' => [$contentType->role(ContentTypeRoles::OWNER)],
-            'exclude_values' => $revision->hasOwner() ? [$revision->getOwner()] : [],
-            'placeholder' => '',
-            'label' => 'task.change_owner.change',
-            'allow_add' => false,
-            'user_property' => 'username',
-            'label_property' => 'displayName',
-        ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $this->taskManager->changeOwner($revision, $form->get('new_owner')->getData());
-
-                return $ajaxModal
-                    ->addMessageSuccess('task.change_owner.success')
-                    ->setBodyHtml('')
-                    ->setFooter('modalFooterClose')
-                    ->getResponse();
-            } catch (\Throwable) {
-                $ajaxModal->addMessageError('task.error.ajax');
-            }
-        }
-
-        return $ajaxModal
-            ->setBody('modalChangeOwnerBody', ['revision' => $revision, 'form' => $form->createView()])
-            ->setFooter('modalChangeOwnerFooter')
             ->getResponse();
     }
 

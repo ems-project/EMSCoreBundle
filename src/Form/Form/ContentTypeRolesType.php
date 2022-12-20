@@ -28,7 +28,6 @@ class ContentTypeRolesType extends AbstractType
                 ->add(ContentTypeRoles::DELETE, RolePickerType::class)
                 ->add(ContentTypeRoles::TRASH, RolePickerType::class)
                 ->add(ContentTypeRoles::ARCHIVE, RolePickerType::class)
-                ->add(ContentTypeRoles::OWNER, RolePickerType::class)
                 ->add(ContentTypeRoles::SHOW_LINK_CREATE, RolePickerType::class)
             ;
         }

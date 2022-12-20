@@ -243,7 +243,6 @@ class Revision implements EntityInterface, \Stringable
                 $this->rawData = $ancestor->rawData;
                 $this->circles = $ancestor->circles;
                 $this->dataField = new DataField($ancestor->dataField);
-                $this->owner = $ancestor->owner;
                 $this->taskCurrent = $ancestor->taskCurrent;
                 $this->taskPlannedIds = $ancestor->taskPlannedIds;
                 $this->taskApprovedIds = $ancestor->taskApprovedIds;

@@ -177,6 +177,6 @@ trait RevisionTaskTrait
      */
     public function setTaskPlanned(array $taskPlanned): void
     {
-        $this->taskPlannedIds = \array_map(fn (Task $task) => $task->getId(), $taskPlanned);
+        $this->taskPlannedIds = \array_values(\array_map(fn (Task $task) => $task->getId(), $taskPlanned));
     }
 }

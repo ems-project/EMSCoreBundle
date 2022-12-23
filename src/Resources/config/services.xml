@@ -409,6 +409,7 @@
             <argument type="service" id="logger"/>
             <argument type="service" id="EMS\CoreBundle\Repository\JobRepository"/>
             <argument type="service" id="security.token_storage"/>
+            <tag name="emsco.entity.service"/>
         </service>
         <service id="ems.service.document" class="EMS\CoreBundle\Service\DocumentService">
             <argument type="service" id="doctrine"/>

@@ -117,7 +117,10 @@ class JobController extends AbstractController
             ]);
         }
 
-        $request->getSession()->save();
+        if ($request->hasSession() && $request->getSession()->isStarted()) {
+            $request->getSession()->save();
+        }
+
         \set_time_limit(0);
         $this->jobService->run($job);
         $this->logger->notice('log.data.job.done', [

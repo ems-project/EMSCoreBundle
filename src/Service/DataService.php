@@ -357,11 +357,8 @@ class DataService
 
     /**
      * @param FormInterface<FormInterface> $form
-     * @param array<mixed>                 $rawData
-     *
-     * @return mixed
      */
-    public function walkRecursive(FormInterface $form, array $rawData, callable $callback)
+    private function walkRecursive(FormInterface $form, mixed $rawData, callable $callback): mixed
     {
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $form->getConfig()->getType()->getInnerType();

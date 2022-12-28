@@ -9,6 +9,7 @@
         <!-- event listeners -->
         <service id="emsco.event_listener.access_denied_listener" class="EMS\CoreBundle\EventListener\AccessDeniedListener">
             <argument type="service" id="router"/>
+            <argument>%ems_core.security.firewall.core%</argument>
             <tag name="kernel.event_subscriber" />
         </service>
         <service id="ems_core.event_listener.login_listener" class="EMS\CoreBundle\EventListener\LoginListener">

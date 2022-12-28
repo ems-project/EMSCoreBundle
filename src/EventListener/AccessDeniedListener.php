@@ -14,11 +14,16 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 final class AccessDeniedListener implements EventSubscriberInterface
 {
-    public function __construct(private readonly UrlGeneratorInterface $urlGenerator)
-    {
+    use TargetPathTrait;
+
+    public function __construct(
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly string $coreFirewallName,
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -32,26 +37,43 @@ final class AccessDeniedListener implements EventSubscriberInterface
     {
         $exception = $event->getThrowable();
 
-        if (!$exception instanceof AccessDeniedException && !$exception instanceof AccessDeniedHttpException) {
+        if (!$exception instanceof AccessDeniedException
+            && !$exception instanceof AccessDeniedHttpException) {
             return;
         }
 
         $path = $event->getRequest()->getPathInfo();
 
         if (\preg_match('/^\/api\/.*/', $path)) {
-            $event->setResponse(
-                new JsonResponse([
-                    'success' => false,
-                    'acknowledged' => true,
-                    'error' => 'Access Denied',
-                ], Response::HTTP_FORBIDDEN)
-            );
-            $event->stopPropagation();
-        } elseif (null === $event->getRequest()->getUser()) {
-            $event->setResponse(new RedirectResponse($this->urlGenerator->generate(Routes::USER_LOGIN, [
-                '_target_path' => $event->getRequest()->getRequestUri(),
-            ])));
-            $event->stopPropagation();
+            $this->apiAccessDenied($event);
+        } elseif (\preg_match('/^\/channel\/.*/', $path)) {
+            $this->apiChannelAccessDenied($event);
         }
+    }
+
+    private function apiAccessDenied(ExceptionEvent $event): void
+    {
+        $event->setResponse(new JsonResponse([
+            'success' => false,
+            'acknowledged' => true,
+            'error' => 'Access Denied',
+        ], Response::HTTP_FORBIDDEN));
+        $event->stopPropagation();
+    }
+
+    private function apiChannelAccessDenied(ExceptionEvent $event): void
+    {
+        $request = $event->getRequest();
+
+        if (null !== $request->getUser()) {
+            return;
+        }
+
+        if ($request->hasSession() && $request->isMethodSafe() && !$request->isXmlHttpRequest()) {
+            $this->saveTargetPath($request->getSession(), $this->coreFirewallName, $request->getUri());
+        }
+
+        $event->setResponse(new RedirectResponse($this->urlGenerator->generate(Routes::USER_LOGIN)));
+        $event->stopPropagation();
     }
 }

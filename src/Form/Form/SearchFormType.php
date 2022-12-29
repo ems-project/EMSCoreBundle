@@ -126,6 +126,7 @@ class SearchFormType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'managedOnly' => false,
+                'userPublishEnvironments' => false,
             ])->add('contentTypes', ContentTypePickerType::class, [
                 'multiple' => true,
                 'required' => false,

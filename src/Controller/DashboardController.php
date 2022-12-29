@@ -18,9 +18,7 @@ final class DashboardController extends AbstractController
     {
     }
 
-    /**
-     * @deprecated
-     */
+    /** @deprecated */
     public function landing(): RedirectResponse
     {
         @\trigger_error(\sprintf('Route ems_core_dashboard is deprecated, use %s instead', Routes::DASHBOARD), E_USER_DEPRECATED);

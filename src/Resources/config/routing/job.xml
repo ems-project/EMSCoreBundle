@@ -2,21 +2,18 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_job_status" path="/status/{job}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\JobController:jobStatus</default>
-        <default key="_format">html</default>
-    </route>
-    <route id="emsco_job_start" path="/start/{job}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\JobController:startJob</default>
-        <default key="_format">html</default>
-    </route>
-
-
-    <route id="job.status" path="/status/{job}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\JobController:jobStatus</default>
-        <default key="_format">html</default>
-    </route>
-
+    <route id="emsco_job_status" path="/status/{job}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\JobController::jobStatus"
+           methods="GET"
+           format="html"/>
+    <route id="emsco_job_start" path="/start/{job}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\JobController::startJob"
+           methods="POST"
+           format="html"/>
+    <route id="job.status" path="/status/{job}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\JobController::jobStatus"
+           methods="GET"
+           format="html"/>
 </routes>

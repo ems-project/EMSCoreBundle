@@ -2,10 +2,10 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_images_index" path="/index" methods="GET HEAD">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::indexImagesAction</default>
-        <default key="_format">json</default>
-    </route>
+    <route id="ems_images_index" path="/index"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::indexImagesAction"
+           methods="GET|HEAD"
+           format="json"/>
 </routes>

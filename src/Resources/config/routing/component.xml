@@ -2,27 +2,30 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco.media_library.files" path="/media-lib/{hash}/files" methods="GET">
+    <route id="emsco.media_library.files" path="/media-lib/{hash}/files"
+           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::getFiles"
+           methods="GET">
         <requirement key="hash">.*</requirement>
-        <default key="_controller">EMS\CoreBundle\Controller\Component\MediaLibraryController::getFiles</default>
     </route>
-    <route id="emsco.media_library.folders" path="/media-lib/{hash}/folders" methods="GET">
+    <route id="emsco.media_library.folders" path="/media-lib/{hash}/folders"
+           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::getFolders"
+           methods="GET">
         <requirement key="hash">.*</requirement>
-        <default key="_controller">EMS\CoreBundle\Controller\Component\MediaLibraryController::getFolders</default>
-    </route>
-
-    <route id="emsco.media_library.add_folder" path="/media-lib/{hash}/add-folder" methods="GET POST">
-        <requirement key="hash">.*</requirement>
-        <default key="_controller">EMS\CoreBundle\Controller\Component\MediaLibraryController::addFolder</default>
     </route>
 
-    <route id="emsco.media_library.add_file" path="/media-lib/{hash}/add-file/{fileHash}" methods="POST">
+    <route id="emsco.media_library.add_folder" path="/media-lib/{hash}/add-folder"
+           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::addFolder"
+           methods="GET|POST">
+        <requirement key="hash">.*</requirement>
+    </route>
+
+    <route id="emsco.media_library.add_file" path="/media-lib/{hash}/add-file/{fileHash}"
+           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::addFile"
+           methods="POST">
         <requirement key="hash">.*</requirement>
         <requirement key="fileHash">.*</requirement>
-        <default key="_controller">EMS\CoreBundle\Controller\Component\MediaLibraryController::addFile</default>
     </route>
-
 
 </routes>

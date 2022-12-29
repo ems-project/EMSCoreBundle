@@ -2,18 +2,16 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_log_index" path="/index.{_format}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Log\LogController:index</default>
-        <default key="_format">html</default>
-    </route>
-    <route id="emsco_log_delete" path="/delete/{log}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Log\LogController::delete</default>
-    </route>
-    <route id="emsco_log_view" path="/view/{log}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Log\LogController::view</default>
-    </route>
-
-
+    <route id="emsco_log_index" path="/index.{_format}"
+           controller="EMS\CoreBundle\Controller\Log\LogController::index"
+           methods="GET|POST"
+           format="html"/>
+    <route id="emsco_log_delete" path="/delete/{log}"
+           controller="EMS\CoreBundle\Controller\Log\LogController::delete"
+           methods="POST"/>
+    <route id="emsco_log_view" path="/view/{log}"
+           controller="EMS\CoreBundle\Controller\Log\LogController::view"
+           methods="GET"/>
 </routes>

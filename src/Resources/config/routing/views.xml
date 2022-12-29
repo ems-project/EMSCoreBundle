@@ -2,59 +2,59 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_views_hierarchical_item" path="/hierarchical/item/{view}/{key}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\HierarchicalController::item</default>
-    </route>
-    <route id="emsco_views_calendar_replan" path="/calendar/replan/{view}.json" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CalendarController::update</default>
-        <default key="_format">json</default>
-    </route>
-    <route id="emsco_views_calendar_search" path="/calendar/search/{view}.json" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CalendarController::update</default>
-        <default key="_format">json</default>
-    </route>
-    <route id="emsco_views_criteria_align" path="/criteria/align/{view}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CriteriaController::align</default>
-    </route>
-    <route id="emsco_views_criteria_table" path="/criteria/table/{view}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CriteriaController::generateCriteriaTableAction</default>
-    </route>
-    <route id="emsco_views_criteria_add" path="/criteria/addCriterion/{view}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CriteriaController::addCriteriaAction</default>
-    </route>
-    <route id="emsco_views_criteria_remove" path="/criteria/removeCriterion/{view}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CriteriaController::removeCriteriaAction</default>
-    </route>
-    <route id="emsco_views_criteria_fieldFilter" path="/criteria/fieldFilter" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CriteriaController::fieldFilterAction</default>
-    </route>
+    <route id="emsco_views_hierarchical_item" path="/hierarchical/item/{view}/{key}"
+           controller="EMS\CoreBundle\Controller\Views\HierarchicalController::item"
+           methods="GET"/>
+    <route id="emsco_views_calendar_replan" path="/calendar/replan/{view}.json"
+           controller="EMS\CoreBundle\Controller\Views\CalendarController::update"
+           methods="POST"
+           format="json"/>
+    <route id="emsco_views_calendar_search" path="/calendar/search/{view}.json"
+           controller="EMS\CoreBundle\Controller\Views\CalendarController::update"
+           methods="GET"
+           format="json"/>
+    <route id="emsco_views_criteria_align" path="/criteria/align/{view}"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::align"
+           methods="POST"/>
+    <route id="emsco_views_criteria_table" path="/criteria/table/{view}"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::generateCriteriaTableAction"
+           methods="GET|POST"/>
+    <route id="emsco_views_criteria_add" path="/criteria/addCriterion/{view}"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::addCriteriaAction"
+           methods="POST"/>
+    <route id="emsco_views_criteria_remove" path="/criteria/removeCriterion/{view}"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::removeCriteriaAction"
+           methods="POST"/>
+    <route id="emsco_views_criteria_fieldFilter" path="/criteria/fieldFilter"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::fieldFilterAction"
+           methods="GET"/>
 
-    <route id="views.hierarchical.item" path="/hierarchical/item/{view}/{key}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\HierarchicalController::item</default>
-    </route>
-    <route id="views.calendar.replan" path="/calendar/replan/{view}.json" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CalendarController::update</default>
-        <default key="_format">json</default>
-    </route>
-    <route id="views.calendar.search" path="/calendar/search/{view}.json" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CalendarController::update</default>
-        <default key="_format">json</default>
-    </route>
-    <route id="views.criteria.align" path="/criteria/align/{view}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CriteriaController::align</default>
-    </route>
-    <route id="views.criteria.table" path="/criteria/table/{view}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CriteriaController::generateCriteriaTableAction</default>
-    </route>
-    <route id="views.criteria.add" path="/criteria/addCriterion/{view}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CriteriaController::addCriteriaAction</default>
-    </route>
-    <route id="views.criteria.remove" path="/criteria/removeCriterion/{view}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CriteriaController::removeCriteriaAction</default>
-    </route>
-    <route id="views.criteria.fieldFilter" path="/criteria/fieldFilter" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Views\CriteriaController::fieldFilterAction</default>
-    </route>
+    <route id="views.hierarchical.item" path="/hierarchical/item/{view}/{key}"
+           controller="EMS\CoreBundle\Controller\Views\HierarchicalController::item"
+           methods="GET"/>
+    <route id="views.calendar.replan" path="/calendar/replan/{view}.json"
+           controller="EMS\CoreBundle\Controller\Views\CalendarController::update"
+           methods="POST"
+           format="json"/>
+    <route id="views.calendar.search" path="/calendar/search/{view}.json"
+           controller="EMS\CoreBundle\Controller\Views\CalendarController::update"
+           methods="GET"
+           format="json"/>
+    <route id="views.criteria.align" path="/criteria/align/{view}"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::align"
+           methods="POST"/>
+    <route id="views.criteria.table" path="/criteria/table/{view}"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::generateCriteriaTableAction"
+           methods="GET|POST"/>
+    <route id="views.criteria.add" path="/criteria/addCriterion/{view}"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::addCriteriaAction"
+           methods="POST"/>
+    <route id="views.criteria.remove" path="/criteria/removeCriterion/{view}"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::removeCriteriaAction"
+           methods="POST"/>
+    <route id="views.criteria.fieldFilter" path="/criteria/fieldFilter"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::fieldFilterAction"
+           methods="GET"/>
 </routes>

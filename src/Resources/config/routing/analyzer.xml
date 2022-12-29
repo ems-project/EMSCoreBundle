@@ -2,22 +2,21 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_analyzer_index" path="/" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\AnalyzerController:index</default>
-    </route>
-    <route id="ems_analyzer_edit" path="/edit/{analyzer}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\AnalyzerController:edit</default>
-    </route>
-    <route id="ems_analyzer_delete" path="/delete/{analyzer}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\AnalyzerController:delete</default>
-    </route>
-    <route id="ems_analyzer_add" path="/add" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\AnalyzerController:add</default>
-    </route>
-    <route id="emsco_analyzer_export" path="/export/{analyzer}.json" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\AnalyzerController:export</default>
-    </route>
-
+    <route id="ems_analyzer_index" path="/"
+           controller="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController::index"
+           methods="GET"/>
+    <route id="ems_analyzer_edit" path="/edit/{analyzer}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController::edit"
+           methods="GET|POST"/>
+    <route id="ems_analyzer_delete" path="/delete/{analyzer}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController::delete"
+           methods="POST"/>
+    <route id="ems_analyzer_add" path="/add"
+           controller="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController::add"
+           methods="GET|POST"/>
+    <route id="emsco_analyzer_export" path="/export/{analyzer}.json"
+           controller="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController::export"
+           methods="GET"/>
 </routes>

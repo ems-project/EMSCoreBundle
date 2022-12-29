@@ -2,50 +2,53 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_core_task_ajax_datatable" path="/tasks/dashboard/{tab}.json" methods="GET POST">
+    <route id="ems_core_task_ajax_datatable" path="/tasks/dashboard/{tab}.json"
+           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxDataTable"
+           methods="GET|POST">
         <requirement key="tab">user|requester|manager</requirement>
         <default key="tab">user</default>
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxDataTable</default>
     </route>
-    <route id="ems_core_task_ajax_datatable_csv" path="/tasks/dashboard/{tab}.csv" methods="GET">
+    <route id="ems_core_task_ajax_datatable_csv" path="/tasks/dashboard/{tab}.csv"
+           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxDataTableCSV"
+           methods="GET">
         <requirement key="tab">user|requester|manager</requirement>
         <default key="tab">user</default>
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxDataTableCSV</default>
     </route>
-    <route id="ems_core_task_ajax_datatable_excel" path="/tasks/dashboard/{tab}-excel" methods="GET">
+    <route id="ems_core_task_ajax_datatable_excel" path="/tasks/dashboard/{tab}-excel"
+           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxDataTableExcel"
+           methods="GET">
         <requirement key="tab">user|requester|manager</requirement>
         <default key="tab">user</default>
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxDataTableExcel</default>
     </route>
 
-    <route id="ems_core_task_ajax_task" path="/data/revisions/{revisionId}/task" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTask</default>
-    </route>
-    <route id="ems_core_task_ajax_tasks" path="/data/revisions/{revisionId}/tasks" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTasks</default>
-    </route>
-    <route id="ems_core_task_ajax_tasks_approved" path="/data/revisions/{revisionId}/tasks-approved" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTasksApproved</default>
-    </route>
+    <route id="ems_core_task_ajax_task" path="/data/revisions/{revisionId}/task"
+           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTask"
+           methods="GET|POST"/>
+    <route id="ems_core_task_ajax_tasks" path="/data/revisions/{revisionId}/tasks"
+           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTasks"
+           methods="GET|POST"/>
+    <route id="ems_core_task_ajax_tasks_approved" path="/data/revisions/{revisionId}/tasks-approved"
+           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTasksApproved"
+           methods="GET"/>
 
-    <route id="ems_core_task_ajax_modal_task" path="/data/revisions/{revisionId}/task-modal/{taskId}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalTask</default>
-    </route>
-    <route id="ems_core_task_ajax_modal_create" path="/data/revisions/{revisionId}/create-modal" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalCreate</default>
-    </route>
-    <route id="ems_core_task_ajax_modal_update" path="/data/revisions/{revisionId}/update-modal/{taskId}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalUpdate</default>
-    </route>
-    <route id="ems_core_task_ajax_modal_history" path="/data/revisions/{revisionId}/history-modal/{taskId}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalHistory</default>
-    </route>
-    <route id="ems_core_task_ajax_delete" path="/data/revisions/{revisionId}/delete/{taskId}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxDelete</default>
-    </route>
-    <route id="ems_core_task_ajax_reorder" path="/data/revisions/{revisionId}/reorder" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\TaskController::ajaxReorder</default>
-    </route>
+    <route id="ems_core_task_ajax_modal_task" path="/data/revisions/{revisionId}/task-modal/{taskId}"
+           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalTask"
+           methods="GET"/>
+    <route id="ems_core_task_ajax_modal_create" path="/data/revisions/{revisionId}/create-modal"
+           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalCreate"
+           methods="GET|POST"/>
+    <route id="ems_core_task_ajax_modal_update" path="/data/revisions/{revisionId}/update-modal/{taskId}"
+           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalUpdate"
+           methods="GET|POST"/>
+    <route id="ems_core_task_ajax_modal_history" path="/data/revisions/{revisionId}/history-modal/{taskId}"
+           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalHistory"
+           methods="GET"/>
+    <route id="ems_core_task_ajax_delete" path="/data/revisions/{revisionId}/delete/{taskId}"
+           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxDelete"
+           methods="POST"/>
+    <route id="ems_core_task_ajax_reorder" path="/data/revisions/{revisionId}/reorder"
+           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxReorder"
+           methods="POST"/>
 </routes>

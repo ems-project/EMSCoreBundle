@@ -2,33 +2,33 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="environment.attach" path="/attach/{name}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::attachAction</default>
-    </route>
-    <route id="environment.remove.alias" path="/remove/alias/{name}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::removeAliasAction</default>
-    </route>
-    <route id="environment.remove" path="/remove/{id}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::removeAction</default>
-    </route>
-    <route id="environment.add" path="/add" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::addAction</default>
-    </route>
-    <route id="environment.edit" path="/edit/{id}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::editAction</default>
-    </route>
-    <route id="environment.view" path="/{id}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::viewAction</default>
-    </route>
-    <route id="environment.rebuild" path="/rebuild/{id}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::rebuild</default>
-    </route>
-    <route id="environment.index" path="/" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::indexAction</default>
-    </route>
-    <route id="ems_environment_index" path="/" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::indexAction</default>
-    </route>
+    <route id="environment.attach" path="/attach/{name}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::attachAction"
+           methods="POST"/>
+    <route id="environment.remove.alias" path="/remove/alias/{name}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::removeAliasAction"
+           methods="POST"/>
+    <route id="environment.remove" path="/remove/{id}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::removeAction"
+           methods="POST"/>
+    <route id="environment.add" path="/add"
+           controller="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::addAction"
+           methods="GET|POST"/>
+    <route id="environment.edit" path="/edit/{id}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::editAction"
+           methods="GET|POST"/>
+    <route id="environment.view" path="/{id}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::viewAction"
+           methods="GET|POST"/>
+    <route id="environment.rebuild" path="/rebuild/{id}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::rebuild"
+           methods="GET|POST"/>
+    <route id="environment.index" path="/"
+           controller="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::indexAction"
+           methods="GET|POST"/>
+    <route id="ems_environment_index" path="/"
+           controller="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::indexAction"
+           methods="GET|POST"/>
 </routes>

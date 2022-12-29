@@ -47,6 +47,7 @@ final class ActionController extends AbstractController
         ], new JsonResponse());
     }
 
+    /** @deprecated */
     public function indexAction(string $type): Response
     {
         \trigger_error('Route template.index is now deprecated, use the route ems_core_action_index', E_USER_DEPRECATED);
@@ -104,6 +105,7 @@ final class ActionController extends AbstractController
         ]);
     }
 
+    /** @deprecated */
     public function addAction(string $type, Request $request): Response
     {
         \trigger_error('Route template.add is now deprecated, use the route ems_core_action_add', E_USER_DEPRECATED);
@@ -158,6 +160,7 @@ final class ActionController extends AbstractController
         ]);
     }
 
+    /** @deprecated */
     public function editAction(Template $id, Request $request, string $_format): Response
     {
         \trigger_error('Route template.edit is now deprecated, use the route ems_core_action_edit', E_USER_DEPRECATED);
@@ -215,6 +218,7 @@ final class ActionController extends AbstractController
         ]);
     }
 
+    /** @deprecated */
     public function removeAction(string $id): RedirectResponse
     {
         \trigger_error('Route template.remove is now deprecated, use the route ems_core_action_delete', E_USER_DEPRECATED);

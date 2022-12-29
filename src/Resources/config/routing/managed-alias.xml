@@ -2,17 +2,19 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="environment_add_managed_alias" path="/add" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::addAction</default>
-    </route>
-    <route id="environment_edit_managed_alias" path="/edit/{id}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::editAction</default>
+    <route id="environment_add_managed_alias" path="/add"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::addAction"
+           methods="GET POST"/>
+    <route id="environment_edit_managed_alias" path="/edit/{id}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::editAction"
+           methods="GET POST">
         <requirement key="id">\d+</requirement>
     </route>
-    <route id="environment_remove_managed_alias" path="/remove/{id}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::removeAction</default>
+    <route id="environment_remove_managed_alias" path="/remove/{id}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::removeAction"
+           methods="POST">
         <requirement key="id">\d+</requirement>
     </route>
 </routes>

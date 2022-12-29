@@ -2,32 +2,32 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_edit_revision" path="/draft/edit/{revisionId}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\EditController::editRevision</default>
-    </route>
-    <route id="emsco_edit_json_revision" path="/draft/edit-json/{revision}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\EditController::editJsonRevision</default>
-    </route>
-    <route id="emsco_draft_in_progress" path="/draft/{contentTypeId}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\EditController::draftInProgress</default>
-    </route>
-    <route id="emsco_draft_in_progress_ajax" path="/draft/{contentType}/datatable.json" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\EditController::ajaxDraftInProgress</default>
-    </route>
-    <route id="emsco_revision_archive" path="/archive/{revision}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\EditController::archiveRevision</default>
-    </route>
+    <route id="emsco_edit_revision" path="/draft/edit/{revisionId}"
+           controller="EMS\CoreBundle\Controller\Revision\EditController::editRevision"
+           methods="GET|POST"/>
+    <route id="emsco_edit_json_revision" path="/draft/edit-json/{revision}"
+           controller="EMS\CoreBundle\Controller\Revision\EditController::editJsonRevision"
+           methods="GET|POST"/>
+    <route id="emsco_draft_in_progress" path="/draft/{contentTypeId}"
+           controller="EMS\CoreBundle\Controller\Revision\EditController::draftInProgress"
+           methods="GET|POST"/>
+    <route id="emsco_draft_in_progress_ajax" path="/draft/{contentType}/datatable.json"
+           controller="EMS\CoreBundle\Controller\Revision\EditController::ajaxDraftInProgress"
+           methods="GET|POST"/>
+    <route id="emsco_revision_archive" path="/archive/{revision}"
+           controller="EMS\CoreBundle\Controller\Revision\EditController::archiveRevision"
+           methods="POST"/>
 
     <!-- Deprecated routes -->
-    <route id="ems_revision_edit" path="/draft/edit/{revisionId}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\EditController::editRevision</default>
-    </route>
-    <route id="revision.edit" path="/draft/edit/{revisionId}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\EditController::editRevision</default>
-    </route>
-    <route id="data.draft_in_progress" path="/draft/{contentTypeId}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Revision\EditController::draftInProgress</default>
-    </route>
+    <route id="ems_revision_edit" path="/draft/edit/{revisionId}"
+           controller="EMS\CoreBundle\Controller\Revision\EditController::editRevision"
+           methods="GET|POST"/>
+    <route id="revision.edit" path="/draft/edit/{revisionId}"
+           controller="EMS\CoreBundle\Controller\Revision\EditController::editRevision"
+           methods="GET|POST"/>
+    <route id="data.draft_in_progress" path="/draft/{contentTypeId}"
+           controller="EMS\CoreBundle\Controller\Revision\EditController::draftInProgress"
+           methods="GET|POST"/>
 </routes>

@@ -76,6 +76,8 @@ class FileController extends AbstractController
 
     /**
      * @param int $size
+     *
+     * @deprecated
      */
     public function initUploadFileAction(?string $sha1, $size, bool $apiRoute, Request $request): Response
     {
@@ -121,6 +123,7 @@ class FileController extends AbstractController
         ]);
     }
 
+    /** @deprecated */
     public function uploadChunkAction(?string $sha1, ?string $hash, bool $apiRoute, Request $request): Response
     {
         if (null !== $sha1) {

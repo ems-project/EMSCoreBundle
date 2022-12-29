@@ -276,9 +276,7 @@ class ElasticsearchController extends AbstractController
         return $this->redirectToRoute('environment.index');
     }
 
-    /**
-     * @deprecated
-     */
+    /** @deprecated */
     public function deprecatedSearchApiAction(Request $request, DataLinks $dataLinks): void
     {
         @\trigger_error('QuerySearch not defined, you should refer to one', E_USER_DEPRECATED);

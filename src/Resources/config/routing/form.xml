@@ -2,20 +2,20 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_core_submission_ajax" path="/datatable.json" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Form\SubmissionController:ajaxDataTable</default>
-    </route>
-    <route id="form.submissions" path="/submissions" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Form\SubmissionController:indexAction</default>
-    </route>
-    <route id="form.submissions.process" path="/submissions/process/{formSubmission}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Form\SubmissionController:process</default>
-    </route>
-    <route id="form.submissions.download" path="/submissions/download/{formSubmission}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Form\SubmissionController:download</default>
+    <route id="ems_core_submission_ajax" path="/datatable.json"
+           controller="EMS\CoreBundle\Controller\Form\SubmissionController::ajaxDataTable"
+           methods="GET"/>
+    <route id="form.submissions" path="/submissions"
+           controller="EMS\CoreBundle\Controller\Form\SubmissionController::indexAction"
+           methods="GET|POST"/>
+    <route id="form.submissions.process" path="/submissions/process/{formSubmission}"
+           controller="EMS\CoreBundle\Controller\Form\SubmissionController::process"
+           methods="POST"/>
+    <route id="form.submissions.download" path="/submissions/download/{formSubmission}"
+           controller="EMS\CoreBundle\Controller\Form\SubmissionController::download"
+           methods="GET">
         <requirement key="id">\S+</requirement>
     </route>
-
 </routes>

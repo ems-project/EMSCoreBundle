@@ -2,22 +2,22 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_core_channel_index" path="/" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ChannelController:index</default>
-    </route>
-    <route id="ems_core_channel_add" path="/add" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ChannelController:add</default>
-    </route>
-    <route id="ems_core_channel_edit" path="/edit/{channel}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ChannelController:edit</default>
-    </route>
-    <route id="ems_core_channel_delete" path="/delete/{channel}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ChannelController:delete</default>
-    </route>
-    <route id="ems_core_channel_ajax_data_table" path="/datatable.json" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\ChannelController:ajaxDataTable</default>
-    </route>
+    <route id="ems_core_channel_index" path="/"
+           controller="EMS\CoreBundle\Controller\ChannelController::index"
+           methods="GET|POST"/>
+    <route id="ems_core_channel_add" path="/add"
+           controller="EMS\CoreBundle\Controller\ChannelController::add"
+           methods="GET|POST"/>
+    <route id="ems_core_channel_edit" path="/edit/{channel}"
+           controller="EMS\CoreBundle\Controller\ChannelController::edit"
+           methods="GET|POST"/>
+    <route id="ems_core_channel_delete" path="/delete/{channel}"
+           controller="EMS\CoreBundle\Controller\ChannelController::delete"
+           methods="POST"/>
+    <route id="ems_core_channel_ajax_data_table" path="/datatable.json"
+           controller="EMS\CoreBundle\Controller\ChannelController::ajaxDataTable"
+           methods="GET"/>
 
 </routes>

@@ -2,32 +2,32 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_user_datatable" path="/datatable.json" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\UserController:ajaxDataTableAction</default>
-    </route>
-    <route id="emsco_user_index" path="/" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\UserController:indexAction</default>
-    </route>
-    <route id="emsco_user_add" path="/add" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\UserController:addUserAction</default>
-    </route>
-    <route id="emsco_user_edit" path="/edit/{user}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\UserController:edit</default>
-    </route>
-    <route id="emsco_user_delete" path="/delete/{user}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\UserController:delete</default>
-    </route>
-    <route id="emsco_user_enabling" path="/enabling/{user}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\UserController:enabling</default>
-    </route>
-    <route id="emsco_user_api_key" path="/api-key/{username}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\UserController:apiKey</default>
-    </route>
-    <route id="emsco_user_spreadsheet_export" path="/users.{_format}" methods="GET">
-        <requirement key="_format">csv|xlsx</requirement>
-        <default key="_controller">EMS\CoreBundle\Controller\UserController:spreadsheetExport</default>
-    </route>
+    <route id="emsco_user_datatable" path="/datatable.json"
+           controller="EMS\CoreBundle\Controller\UserController::ajaxDataTableAction"
+           methods="GET"/>
+    <route id="emsco_user_index" path="/"
+           controller="EMS\CoreBundle\Controller\UserController::indexAction"
+           methods="GET"/>
+    <route id="emsco_user_add" path="/add"
+           controller="EMS\CoreBundle\Controller\UserController::addUserAction"
+           methods="GET|POST"/>
+    <route id="emsco_user_edit" path="/edit/{user}"
+           controller="EMS\CoreBundle\Controller\UserController::edit"
+           methods="GET|POST"/>
+    <route id="emsco_user_delete" path="/delete/{user}"
+           controller="EMS\CoreBundle\Controller\UserController::delete"
+           methods="POST"/>
+    <route id="emsco_user_enabling" path="/enabling/{user}"
+           controller="EMS\CoreBundle\Controller\UserController::enabling"
+           methods="POST"/>
+    <route id="emsco_user_api_key" path="/api-key/{username}"
+           controller="EMS\CoreBundle\Controller\UserController::apiKey"
+           methods="POST"/>
+    <route id="emsco_user_spreadsheet_export" path="/users.{_format}"
+           controller="EMS\CoreBundle\Controller\UserController::spreadsheetExport"
+           methods="GET"
+           format="csv|xlsx"/>
 
 </routes>

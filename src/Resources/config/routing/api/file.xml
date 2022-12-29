@@ -2,40 +2,52 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems.api.file.view" path="/view/{sha1}" methods="GET HEAD">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::viewFileAction</default>
+    <route id="ems.api.file.view" path="/view/{sha1}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::viewFileAction"
+           methods="GET|HEAD"/>
+    <route id="file.api.download" path="/{sha1}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::downloadFileAction"
+           methods="GET|HEAD"/>
+    <route id="file.api.init-upload" path="/init-upload/{sha1}/{size}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::initUploadFileAction"
+           methods="POST"
+           format="json">
+        <default key="apiRoute">
+            <bool>true</bool>
+        </default>
     </route>
-    <route id="file.api.download" path="/{sha1}" methods="GET HEAD">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::downloadFileAction</default>
-    </route>
-    <route id="file.api.init-upload" path="/init-upload/{sha1}/{size}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::initUploadFileAction</default>
-        <default key="_format">json</default>
-        <default key="apiRoute"><bool>true</bool></default>
-    </route>
-    <route id="emsco_file_api_init_upload" path="/init-upload" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::initUploadFileAction</default>
-        <default key="_format">json</default>
-        <default key="apiRoute"><bool>true</bool></default>
+    <route id="emsco_file_api_init_upload" path="/init-upload"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::initUploadFileAction"
+        methods="POST"
+        format="json">
+        <default key="apiRoute">
+            <bool>true</bool>
+        </default>
         <default key="sha1" xsi:nil="true"/>
         <default key="size" xsi:nil="true"/>
     </route>
-    <route id="file.api.uploadchunk" path="/upload-chunk/{sha1}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::uploadChunkAction</default>
-        <default key="_format">json</default>
-        <default key="apiRoute"><bool>true</bool></default>
+    <route id="file.api.uploadchunk" path="/upload-chunk/{sha1}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::uploadChunkAction"
+           methods="POST"
+           format="json">
+        <default key="apiRoute">
+            <bool>true</bool>
+        </default>
         <default key="hash" xsi:nil="true"/>
     </route>
-    <route id="emsco_file_api_chunk_upload" path="/chunk/{hash}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::uploadChunkAction</default>
-        <default key="_format">json</default>
-        <default key="apiRoute"><bool>true</bool></default>
+    <route id="emsco_file_api_chunk_upload" path="/chunk/{hash}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::uploadChunkAction"
+           methods="POST"
+           format="json">
+        <default key="apiRoute">
+            <bool>true</bool>
+        </default>
         <default key="sha1" xsi:nil="true"/>
     </route>
-    <route id="ems_api_image_upload_url" path="/upload" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::uploadFileAction</default>
-        <default key="_format">json</default>
-    </route>
+    <route id="ems_api_image_upload_url" path="/upload"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::uploadFileAction"
+           methods="POST"
+           format="json"/>
 </routes>

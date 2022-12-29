@@ -2,37 +2,37 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_api_search" path="/search" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:search</default>
-    </route>
-    <route id="emsco_api_search_count" path="/count" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:count</default>
-    </route>
-    <route id="emsco_api_cluster_version" path="/version" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:version</default>
-    </route>
-    <route id="emsco_api_cluster_health_status" path="/health-status" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:healthStatus</default>
-    </route>
-    <route id="emsco_api_scroll_init" path="/init-scroll" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:initScroll</default>
-    </route>
-    <route id="emsco_api_scroll_next" path="/next-scroll" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:nextScroll</default>
-    </route>
-    <route id="emsco_api_index_refresh" path="/refresh" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:refresh</default>
-    </route>
-    <route id="emsco_api_indices_from_alias" path="/indices-from-alias" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:getIndicesFromAlias</default>
-    </route>
-    <route id="emsco_api_aliases_from_index" path="/aliases-from-index" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:getAliasesFromIndex</default>
-    </route>
-    <route id="emsco_api_get_document" path="/document" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\Api\Search\SearchController:getDocument</default>
-    </route>
+    <route id="emsco_api_search" path="/search"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::search"
+           methods="POST"/>
+    <route id="emsco_api_search_count" path="/count"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::count"
+           methods="POST"/>
+    <route id="emsco_api_cluster_version" path="/version"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::version"
+           methods="GET"/>
+    <route id="emsco_api_cluster_health_status" path="/health-status"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::healthStatus"
+           methods="GET"/>
+    <route id="emsco_api_scroll_init" path="/init-scroll"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::initScroll"
+           methods="POST"/>
+    <route id="emsco_api_scroll_next" path="/next-scroll"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::nextScroll"
+           methods="POST"/>
+    <route id="emsco_api_index_refresh" path="/refresh"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::refresh"
+           methods="POST"/>
+    <route id="emsco_api_indices_from_alias" path="/indices-from-alias"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::getIndicesFromAlias"
+           methods="POST"/>
+    <route id="emsco_api_aliases_from_index" path="/aliases-from-index"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::getAliasesFromIndex"
+           methods="POST"/>
+    <route id="emsco_api_get_document" path="/document"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::getDocument"
+           methods="POST"/>
 
 </routes>

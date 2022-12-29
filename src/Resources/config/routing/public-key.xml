@@ -2,13 +2,13 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_public_key" path="/public-key" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:publicKey</default>
-    </route>
+    <route id="emsco_public_key" path="/public-key"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::publicKey"
+           methods="GET"/>
 
-    <route id="ems_get_public_key" path="/public-key" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:publicKey</default>
-    </route>
+    <route id="ems_get_public_key" path="/public-key"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::publicKey"
+           methods="GET"/>
 </routes>

@@ -2,48 +2,48 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_contenttype_update_from_json" path="/json-update/{contentType}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:updateFromJsonAction</default>
-        <default key="_format">html</default>
-    </route>
-    <route id="contenttype.remove" path="/remove/{id}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:removeAction</default>
-    </route>
-    <route id="contenttype.activate" path="/activate/{contentType}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:activateAction</default>
-    </route>
-    <route id="contenttype.desactivate" path="/disable/{contentType}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:disableAction</default>
-    </route>
-    <route id="contenttype.refreshmapping" path="/refresh-mapping/{id}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:refreshMappingAction</default>
-    </route>
-    <route id="contenttype.add" path="/add" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:addAction</default>
-    </route>
-    <route id="contenttype.index" path="/" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:indexAction</default>
-    </route>
-    <route id="contenttype.unreferenced" path="/unreferenced" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:unreferencedAction</default>
-    </route>
-    <route id="ems_contenttype_field_edit" path="/{contentType}/field/{field}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:editFieldAction</default>
-    </route>
-    <route id="ems_contenttype_reorder" path="/reorder/{contentType}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:reorderAction</default>
-    </route>
-    <route id="contenttype.edit" path="/{id}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:editAction</default>
-    </route>
-    <route id="contenttype.structure" path="/structure/{id}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:editStructureAction</default>
-    </route>
-    <route id="contenttype.export" path="/export/{contentType}.{_format}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ContentTypeController:exportAction</default>
-        <default key="_format">json</default>
-    </route>
+    <route id="emsco_contenttype_update_from_json" path="/json-update/{contentType}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::updateFromJsonAction"
+           methods="GET|POST"
+           format="html"/>
+    <route id="contenttype.remove" path="/remove/{id}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::removeAction"
+           methods="POST"/>
+    <route id="contenttype.activate" path="/activate/{contentType}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::activateAction"
+           methods="POST"/>
+    <route id="contenttype.desactivate" path="/disable/{contentType}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::disableAction"
+           methods="POST"/>
+    <route id="contenttype.refreshmapping" path="/refresh-mapping/{id}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::refreshMappingAction"
+           methods="POST"/>
+    <route id="contenttype.add" path="/add"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::addAction"
+           methods="GET|POST"/>
+    <route id="contenttype.index" path="/"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::indexAction"
+           methods="GET|POST"/>
+    <route id="contenttype.unreferenced" path="/unreferenced"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::unreferencedAction"
+           methods="GET|POST"/>
+    <route id="ems_contenttype_field_edit" path="/{contentType}/field/{field}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::editFieldAction"
+           methods="GET|POST"/>
+    <route id="ems_contenttype_reorder" path="/reorder/{contentType}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::reorderAction"
+           methods="GET|POST"/>
+    <route id="contenttype.edit" path="/{id}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::editAction"
+           methods="GET|POST"/>
+    <route id="contenttype.structure" path="/structure/{id}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::editStructureAction"
+           methods="GET|POST"/>
+    <route id="contenttype.export" path="/export/{contentType}.{_format}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::exportAction"
+           methods="GET"
+           format="json"/>
 
 </routes>

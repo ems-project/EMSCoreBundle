@@ -2,9 +2,9 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_delete_ophean_indexes" path="/delete-orphans" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\IndexController::deleteOrphansIndexesAction</default>
-    </route>
+    <route id="ems_delete_ophean_indexes" path="/delete-orphans"
+           controller="EMS\CoreBundle\Controller\ContentManagement\IndexController::deleteOrphansIndexesAction"
+           methods="POST"/>
 </routes>

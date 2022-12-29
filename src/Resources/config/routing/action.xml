@@ -2,22 +2,22 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_core_action_index" path="/{contentType}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ActionController:index</default>
-    </route>
-    <route id="ems_core_action_add" path="/{contentType}/add" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ActionController:add</default>
-    </route>
-    <route id="ems_core_action_edit" path="/{contentType}/edit/{action}.{_format}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ActionController:edit</default>
-        <default key="_format">html</default>
-    </route>
-    <route id="ems_core_action_delete" path="/{contentType}/delete/{action}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ActionController:delete</default>
-    </route>
-    <route id="ems_core_action_datatable_ajax" path="/{contentType}/datatable.json" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\ActionController:ajaxDataTableAction</default>
-    </route>
+    <route id="ems_core_action_index" path="/{contentType}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ActionController::index"
+           methods="GET|POST"/>
+    <route id="ems_core_action_add" path="/{contentType}/add"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ActionController::add"
+           methods="GET|POST"/>
+    <route id="ems_core_action_edit" path="/{contentType}/edit/{action}.{_format}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ActionController::edit"
+           format="html"
+           methods="GET|POST"/>
+    <route id="ems_core_action_delete" path="/{contentType}/delete/{action}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ActionController::delete"
+           methods="POST"/>
+    <route id="ems_core_action_datatable_ajax" path="/{contentType}/datatable.json"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ActionController::ajaxDataTableAction"
+           methods="GET|POST"/>
 </routes>

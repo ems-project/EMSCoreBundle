@@ -2,9 +2,9 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="revision.unpublish" path="/unpublish/{revisionId}/{envId}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\PublishController::unPublishAction</default>
-    </route>
+    <route id="revision.unpublish" path="/unpublish/{revisionId}/{envId}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\PublishController::unPublishAction"
+           methods="GET|POST"/>
 </routes>

@@ -29,9 +29,7 @@ class ViewController extends AbstractController
     {
     }
 
-    /**
-     * @deprecated
-     */
+    /** @deprecated */
     public function indexDeprecated(string $type, string $_format, Request $request): Response
     {
         @\trigger_error(\sprintf('Route view.index is deprecated, use %s instead', Routes::VIEW_INDEX), E_USER_DEPRECATED);
@@ -84,9 +82,7 @@ class ViewController extends AbstractController
         ]);
     }
 
-    /**
-     * @deprecated
-     */
+    /** @deprecated */
     public function addDeprecated(string $type, Request $request): Response
     {
         @\trigger_error(\sprintf('Route view.add is deprecated, use %s instead', Routes::VIEW_ADD), E_USER_DEPRECATED);
@@ -124,9 +120,7 @@ class ViewController extends AbstractController
         ]);
     }
 
-    /**
-     * @deprecated
-     */
+    /** @deprecated */
     public function editDeprecated(View $view, string $_format, Request $request): Response
     {
         @\trigger_error(\sprintf('Route view.edit is deprecated, use %s instead', Routes::VIEW_EDIT), E_USER_DEPRECATED);
@@ -177,9 +171,7 @@ class ViewController extends AbstractController
         return $this->redirectToRoute(Routes::VIEW_EDIT, ['view' => $newView->getId()]);
     }
 
-    /**
-     * @deprecated
-     */
+    /** @deprecated */
     public function deleteDeprecated(View $view): Response
     {
         @\trigger_error(\sprintf('Route view.delete is deprecated, use %s instead', Routes::VIEW_DELETE), E_USER_DEPRECATED);

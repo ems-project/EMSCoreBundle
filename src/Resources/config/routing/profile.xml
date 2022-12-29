@@ -2,11 +2,11 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <!-- Deprecated -->
-    <route id="user.sidebar-collapse" path="/sidebar-collapse/{collapsed}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\UserController:sidebarCollapseAction</default>
-    </route>
+    <route id="user.sidebar-collapse" path="/sidebar-collapse/{collapsed}"
+           controller="EMS\CoreBundle\Controller\UserController::sidebarCollapseAction"
+           methods="POST"/>
 
 </routes>

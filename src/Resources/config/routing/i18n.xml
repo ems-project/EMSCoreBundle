@@ -2,18 +2,18 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="i18n_index" path="/" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\I18nController::indexAction</default>
-    </route>
-    <route id="i18n_new" path="/new" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\I18nController::newAction</default>
-    </route>
-    <route id="i18n_edit" path="/{id}/edit" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\I18nController::editAction</default>
-    </route>
-    <route id="i18n_delete" path="/{id}" methods="POST">
-        <default key="_controller">EMS\CoreBundle\Controller\I18nController::deleteAction</default>
-    </route>
+    <route id="i18n_index" path="/"
+           controller="EMS\CoreBundle\Controller\I18nController::indexAction"
+           methods="GET"/>
+    <route id="i18n_new" path="/new"
+           controller="EMS\CoreBundle\Controller\I18nController::newAction"
+           methods="GET|POST"/>
+    <route id="i18n_edit" path="/{id}/edit"
+           controller="EMS\CoreBundle\Controller\I18nController::editAction"
+           methods="GET|POST"/>
+    <route id="i18n_delete" path="/{id}"
+           controller="EMS\CoreBundle\Controller\I18nController::deleteAction"
+           methods="POST"/>
 </routes>

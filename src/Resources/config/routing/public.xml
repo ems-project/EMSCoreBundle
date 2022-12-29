@@ -2,33 +2,33 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_data_public_view" path="/public/view/{viewId}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customIndexViewAction</default>
+    <route id="emsco_data_public_view" path="/public/view/{viewId}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customIndexViewAction"
+           methods="GET">
         <default key="public">1</default>
     </route>
-    <route id="emsco_data_public_action" path="/public/action/{environmentName}/{templateId}/{ouuid}/{_download}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customViewAction</default>
+    <route id="emsco_data_public_action" path="/public/action/{environmentName}/{templateId}/{ouuid}/{_download}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customViewAction"
+           methods="GET">
         <default key="public">1</default>
         <default key="_download">0</default>
     </route>
-    <route id="ems_file_download_public" path="/public/file/{sha1}" methods="GET HEAD">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\FileController::downloadFileAction</default>
-    </route>
+    <route id="ems_file_download_public" path="/public/file/{sha1}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::downloadFileAction"
+           methods="GET|HEAD"/>
 
-
-
-
-
-
-    <!--- Deprecated routes -->
-    <route id="ems_custom_view_public" path="/public/view/{viewId}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customIndexViewAction</default>
+    <!-- Deprecated routes -->
+    <route id="ems_custom_view_public" path="/public/view/{viewId}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customIndexViewAction"
+           methods="GET">
         <default key="public">1</default>
     </route>
-    <route id="ems_data_custom_template_public" path="/public/template/{environmentName}/{templateId}/{ouuid}/{_download}" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\ContentManagement\DataController:customViewAction</default>
+    <route id="ems_data_custom_template_public"
+           path="/public/template/{environmentName}/{templateId}/{ouuid}/{_download}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customViewAction"
+           methods="GET">
         <default key="public">1</default>
         <default key="_download">0</default>
     </route>

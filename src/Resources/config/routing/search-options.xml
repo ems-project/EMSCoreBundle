@@ -2,27 +2,27 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_search_options_index" path="/" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\SearchController::indexAction</default>
-    </route>
-    <route id="ems_search_sort_option_new" path="/sort/new" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\SearchController::newSortOptionAction</default>
-    </route>
-    <route id="ems_search_field_option_new" path="/search-field/new" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\SearchController::newSearchFieldOptionAction</default>
-    </route>
-    <route id="ems_search_aggregate_option_new" path="/aggregate/new" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\SearchController::newAggregateOptionAction</default>
-    </route>
-    <route id="ems_search_sort_option_edit" path="/sort/{id}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\SearchController::editSortOptionAction</default>
-    </route>
-    <route id="ems_search_field_option_edit" path="/search-field/{id}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\SearchController::editSearchFieldOptionAction</default>
-    </route>
-    <route id="ems_search_aggregate_option_edit" path="/aggregate/{id}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\SearchController::editAggregagteOptionAction</default>
-    </route>
+    <route id="ems_search_options_index" path="/"
+           controller="EMS\CoreBundle\Controller\SearchController::indexAction"
+           methods="GET|POST"/>
+    <route id="ems_search_sort_option_new" path="/sort/new"
+           controller="EMS\CoreBundle\Controller\SearchController::newSortOptionAction"
+           methods="GET|POST"/>
+    <route id="ems_search_field_option_new" path="/search-field/new"
+           controller="EMS\CoreBundle\Controller\SearchController::newSearchFieldOptionAction"
+           methods="GET|POST"/>
+    <route id="ems_search_aggregate_option_new" path="/aggregate/new"
+           controller="EMS\CoreBundle\Controller\SearchController::newAggregateOptionAction"
+           methods="GET|POST"/>
+    <route id="ems_search_sort_option_edit" path="/sort/{id}"
+           controller="EMS\CoreBundle\Controller\SearchController::editSortOptionAction"
+           methods="GET|POST"/>
+    <route id="ems_search_field_option_edit" path="/search-field/{id}"
+           controller="EMS\CoreBundle\Controller\SearchController::editSearchFieldOptionAction"
+           methods="GET|POST"/>
+    <route id="ems_search_aggregate_option_edit" path="/aggregate/{id}"
+           controller="EMS\CoreBundle\Controller\SearchController::editAggregagteOptionAction"
+           methods="GET|POST"/>
 </routes>

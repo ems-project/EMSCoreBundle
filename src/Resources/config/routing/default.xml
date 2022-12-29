@@ -2,21 +2,21 @@
 
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="documentation" path="/documentation" methods="GET HEAD">
-        <default key="_controller">EMS\CoreBundle\Controller\DefaultController::documentation</default>
-    </route>
-    <route id="health-check" path="/health_check.{_format}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ElasticsearchController::healthCheckAction</default>
-        <default key="_format">html</default>
-    </route>
-    <route id="elasticsearch.status" path="/status.{_format}" methods="GET POST">
-        <default key="_controller">EMS\CoreBundle\Controller\ElasticsearchController::statusAction</default>
-        <default key="_format">html</default>
-    </route>
-    <route id="ems_quick_search" path="/quick-search" methods="GET">
-        <default key="_controller">EMS\CoreBundle\Controller\ElasticsearchController::quickSearchAction</default>
-        <default key="_format">html</default>
-    </route>
+    <route id="documentation" path="/documentation"
+           controller="EMS\CoreBundle\Controller\DefaultController::documentation"
+           methods="GET|HEAD"/>
+    <route id="health-check" path="/health_check.{_format}"
+           controller="EMS\CoreBundle\Controller\ElasticsearchController::healthCheckAction"
+           methods="GET|POST"
+           format="html"/>
+    <route id="elasticsearch.status" path="/status.{_format}"
+           controller="EMS\CoreBundle\Controller\ElasticsearchController::statusAction"
+           methods="GET|POST"
+           format="html"/>
+    <route id="ems_quick_search" path="/quick-search"
+           controller="EMS\CoreBundle\Controller\ElasticsearchController::quickSearchAction"
+           methods="GET"
+           format="html"/>
 </routes>

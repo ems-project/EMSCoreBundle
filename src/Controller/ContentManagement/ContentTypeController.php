@@ -245,9 +245,6 @@ class ContentTypeController extends AbstractController
             return $this->redirectToRoute('contenttype.edit', [
                 'id' => $contentType->getId(),
             ]);
-        } else {
-            $this->logger->error('log.contenttype.created_failed', [
-            ]);
         }
 
         return $this->render('@EMSCore/contenttype/add.html.twig', [

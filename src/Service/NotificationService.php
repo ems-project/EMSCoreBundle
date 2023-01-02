@@ -436,6 +436,7 @@ class NotificationService
             EmsFields::LOG_REVISION_ID_FIELD => $notification->getRevision()->getId(),
             EmsFields::LOG_ENVIRONMENT_FIELD => $notification->getEnvironment()->getName(),
             'status' => $notification->getStatus(),
+            'label' => $notification->getRevision()->getLabel(),
         ]);
     }
 

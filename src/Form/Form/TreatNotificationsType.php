@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
@@ -19,49 +21,32 @@ class TreatNotificationsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $notifications = $options['notifications'];
-
-        $builder->add('notifications', CollectionType::class, [
+        $builder
+            ->add('notifications', CollectionType::class, [
                 'entry_type' => CheckboxType::class,
                 'allow_add' => true,
                 'required' => false,
-                'entry_options' => [
-                    'label' => null,
-                    'required' => false,
-                ],
+                'entry_options' => ['label' => null, 'required' => false],
             ])
             ->add('publishTo', EnvironmentPickerType::class, [
-                    'multiple' => false,
-                    'required' => false,
+                'multiple' => false,
+                'required' => false,
             ])
-//             ->add('unpublishFrom', EnvironmentPickerType::class, [
-//                     'multiple' => false,
-//                     'required' => false,
-//             ] )
             ->add('response', TextareaType::class, [
-                    'attr' => [
-                            'class' => 'ckeditor',
-                    ],
+                'attr' => ['class' => 'ckeditor'],
             ])
             ->add('accept', SubmitEmsType::class, [
-                    'attr' => [
-                            'class' => 'btn btn-success btn-md',
-                    ],
-                    'disabled' => true,
-                    'icon' => 'fa fa-check',
+                'attr' => ['class' => 'btn btn-success btn-md'],
+                'icon' => 'fa fa-check',
             ])
             ->add('reject', SubmitEmsType::class, [
-                    'attr' => [
-                            'class' => 'btn btn-danger btn-md',
-                    ],
-                    'icon' => 'fa fa-ban',
+                'attr' => ['class' => 'btn btn-danger btn-md'],
+                'icon' => 'fa fa-ban',
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'notifications' => [],
-        ]);
+        $resolver->setDefaults(['notifications' => []]);
     }
 }

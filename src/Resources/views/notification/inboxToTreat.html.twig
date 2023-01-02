@@ -100,7 +100,7 @@
 	      <div class="modal-footer">
 	      
 			<div class="btn-group">
-              	{{ form_widget(treatform.accept) }}		
+              	{{ form_widget(treatform.accept, { 'attr': { 'disabled': true } }) }}
               	{{ form_widget(treatform.reject) }}
 			</div>
 	      </div>

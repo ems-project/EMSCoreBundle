@@ -18,6 +18,14 @@ class AjaxModal {
                 }
             });
         }
+
+        this.onKeyDown = (event) => {
+            let btnAjaxSubmit = this.modal.querySelector('#ajax-modal-submit')
+            if (btnAjaxSubmit && event.key === "Enter") {
+                event.preventDefault();
+                btnAjaxSubmit.click();
+            }
+        };
     }
 
     close() {
@@ -26,6 +34,7 @@ class AjaxModal {
 
     reset() {
         this.loadingElement.style.display = 'block';
+        document.removeEventListener('keydown', this.onKeyDown);
 
         this.$modal.find('.ckeditor_ems').each(function () {
             if (CKEDITOR.instances.hasOwnProperty($(this).attr('id'))) {
@@ -65,7 +74,7 @@ class AjaxModal {
 
     load(options, callback)
     {
-        var dialog = this.modal.querySelector('.modal-dialog');
+        let dialog = this.modal.querySelector('.modal-dialog');
         dialog.classList.remove('modal-xs', 'modal-sm', 'modal-md', 'modal-lg');
         if (options.hasOwnProperty('size')) {
             dialog.classList.add('modal-'+options.size);
@@ -105,7 +114,7 @@ class AjaxModal {
         for (let i in CKEDITOR.instances) {
             if(CKEDITOR.instances.hasOwnProperty(i)) { CKEDITOR.instances[i].updateElement(); }
         }
-        var formData = this.$modal.find('form').serialize();
+        let formData = this.$modal.find('form').serialize();
 
         this.stateLoading();
         ajaxJsonSubmit(url, formData, (json, request) => {
@@ -137,10 +146,10 @@ class AjaxModal {
                 this.$modal.find('.ajax-modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
             }
 
-            var messages = json.hasOwnProperty('modalMessages') ? json.modalMessages : [];
+            let messages = json.hasOwnProperty('modalMessages') ? json.modalMessages : [];
             messages.forEach((m) => {
-                var messageType = Object.keys(m)[0];
-                var message = m[messageType];
+                let messageType = Object.keys(m)[0];
+                let message = m[messageType];
                 this.printMessage(messageType, message);
 
                 if (messageType === 'error') {
@@ -148,16 +157,17 @@ class AjaxModal {
                 }
             });
 
-            var modelForm = this.modal.querySelector('form');
+            let modelForm = this.modal.querySelector('form');
             if (modelForm) {
                 editRevisionEventListeners(this.$modal.find('form'));
             }
 
-            var btnAjaxSubmit = this.modal.querySelector('#ajax-modal-submit');
+            let btnAjaxSubmit = this.modal.querySelector('#ajax-modal-submit');
             if (btnAjaxSubmit) {
                 btnAjaxSubmit.addEventListener('click', () => {
                     ajaxModal.submitForm( request.responseURL, callback);
                 });
+                document.addEventListener('keydown', this.onKeyDown);
             }
 
             tooltipDataLinks(this.modal);

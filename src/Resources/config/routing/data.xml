@@ -60,7 +60,7 @@
         <default key="public">0</default>
     </route>
     <route id="emsco_data_private_action" path="/action/{environmentName}/{templateId}/{ouuid}/{_download}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customViewAction"
+           controller="EMS\CoreBundle\Controller\Revision\ActionController::render"
            methods="GET">
         <default key="public">0</default>
         <default key="_download">0</default>
@@ -199,13 +199,13 @@
         <default key="public">0</default>
     </route>
     <route id="data.customview" path="/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customViewAction"
+           controller="EMS\CoreBundle\Controller\Revision\ActionController::render"
            methods="GET">
         <default key="public">0</default>
         <default key="_download">0</default>
     </route>
     <route id="ems_data_custom_template_protected" path="/template/{environmentName}/{templateId}/{ouuid}/{_download}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customViewAction"
+           controller="EMS\CoreBundle\Controller\Revision\ActionController::render"
            methods="GET">
         <default key="public">0</default>
         <default key="_download">0</default>

@@ -16,9 +16,8 @@ $(window).ready(function() {
     const notificationClass = $('.notification');
     const embedClass = $('.embed');
     const pdfClass = $('.pdf');
-    const renderOption = $('#template_renderOption');
+    const renderOption = $('#action_renderOption');
 
-    // Jira - ELASTICMS-41
     exportClass.hide();
     notificationClass.hide();
     embedClass.hide();

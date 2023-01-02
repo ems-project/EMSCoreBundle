@@ -372,7 +372,7 @@
             <argument type="service" id="logger" />
             <tag name="form.type"/>
         </service>
-        <service id="ems.form.form.templatetype" class="EMS\CoreBundle\Form\Form\TemplateType">
+        <service id="ems.form.form.action_type" class="EMS\CoreBundle\Form\Form\ActionType">
             <argument>%ems_core.circles_object%</argument>
             <argument type="service" id="ems.service.environment" />
             <tag name="form.type"/>

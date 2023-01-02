@@ -171,6 +171,11 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
      */
     protected bool $public = false;
 
+    /**
+     * @ORM\Column(name="spreadsheet", type="boolean", options={"default": false})
+     */
+    protected bool $spreadsheet = false;
+
     public function __construct()
     {
         $this->environments = new ArrayCollection();
@@ -582,5 +587,15 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     public function setLabel(string $label): void
     {
         $this->label = $label;
+    }
+
+    public function isSpreadsheet(): bool
+    {
+        return $this->spreadsheet;
+    }
+
+    public function setSpreadsheet(bool $spreadsheet): void
+    {
+        $this->spreadsheet = $spreadsheet;
     }
 }

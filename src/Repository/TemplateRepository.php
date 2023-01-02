@@ -122,7 +122,7 @@ class TemplateRepository extends ServiceEntityRepository
         }
     }
 
-    public function getById(string $id): Template
+    public function getById(int $id): Template
     {
         $action = $this->find($id);
         if (!$action instanceof Template) {

@@ -107,7 +107,6 @@
             <argument type="service" id="translator" />
             <argument type="service" id="ems.content_type.view_types" />
             <argument type="service" id="twig" />
-            <argument type="service" id="ems_common.pdf.printer.dom" />
             <argument type="service" id="ems.service.job" />
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
@@ -239,6 +238,16 @@
         </service>
 
         <!-- Revision -->
+        <service id="EMS\CoreBundle\Controller\Revision\ActionController" public="true">
+            <argument type="service" id="EMS\CoreBundle\Repository\TemplateRepository" />
+            <argument type="service" id="EMS\CoreBundle\Service\EnvironmentService" />
+            <argument type="service" id="ems.service.search" />
+            <argument type="service" id="ems_common.pdf.printer.dom" />
+            <argument type="service" id="ems_common.service.spreadsheet_generator_service" />
+            <argument type="service" id="logger" />
+            <argument type="service" id="twig" />
+        </service>
+
         <service id="EMS\CoreBundle\Controller\Revision\DetailController" public="true">
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.data" />

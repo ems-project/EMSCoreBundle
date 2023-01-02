@@ -57,7 +57,7 @@ final class ActionService implements EntityServiceInterface
     {
         $counter = 1;
         foreach ($ids as $id) {
-            $action = $this->templateRepository->getById($id);
+            $action = $this->templateRepository->getById((int) $id);
             $action->setOrderKey($counter++);
             $this->templateRepository->create($action);
         }
@@ -109,7 +109,7 @@ final class ActionService implements EntityServiceInterface
 
     public function getByItemName(string $name): ?EntityInterface
     {
-        return $this->templateRepository->getById($name);
+        return $this->templateRepository->getById((int) $name);
     }
 
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface

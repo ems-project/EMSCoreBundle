@@ -36,7 +36,7 @@
 				<h3 class="box-title">View {{ template.label }}</h3>
 			</div>
 			<div class="box-body">
-				{%  if template.body and (template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EMBED') or template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT') or template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::PDF')) %}
+				{% if template.renderOption in [constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EMBED'), constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT'), constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::PDF')] %}
 					{{ template.body|generate_from_template({
 						environment: environment,
 						contentType: contentType,
@@ -44,10 +44,6 @@
 						source: object.source,
 						_download: false
 					})|raw }}
-
-				{% else %}
-					{{ 'Template is missing'|trans }}
-
 				{% endif %}
 
 				{% if template.filename and template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT') %}

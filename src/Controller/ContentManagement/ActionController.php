@@ -12,8 +12,8 @@ use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
+use EMS\CoreBundle\Form\Form\ActionType;
 use EMS\CoreBundle\Form\Form\TableType;
-use EMS\CoreBundle\Form\Form\TemplateType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
@@ -132,7 +132,7 @@ final class ActionController extends AbstractController
         $action = new Template();
         $action->setContentType($contentType);
 
-        $form = $this->createForm(TemplateType::class, $action);
+        $form = $this->createForm(ActionType::class, $action);
 
         $form->handleRequest($request);
 
@@ -174,7 +174,7 @@ final class ActionController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $id = $action->getId();
 
-        $form = $this->createForm(TemplateType::class, $action, [
+        $form = $this->createForm(ActionType::class, $action, [
             'ajax-save-url' => $this->generateUrl('ems_core_action_edit', ['contentType' => $action->getContentType(), 'action' => $id, '_format' => 'json']),
         ]);
 

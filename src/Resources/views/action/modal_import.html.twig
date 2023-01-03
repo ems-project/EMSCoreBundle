@@ -1,0 +1,11 @@
+{% trans_default_domain 'emsco-contenttype' %}
+
+{% block body %}
+    {% include '@EMSCore/core/alerts.twig' %}
+    {{ form(form) }}
+{% endblock %}
+
+{% block footer %}
+    <button id="ajax-modal-submit" class="btn btn-sm btn-primary">{{ 'contenttype.action.modal_import.submit'|trans }}</button>
+    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">{{ 'contenttype.action.modal_import.cancel'|trans }}</button>
+{% endblock %}

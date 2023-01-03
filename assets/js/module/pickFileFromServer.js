@@ -14,7 +14,8 @@ export default class PickFileFromServer {
     }
 
     onClick(button) {
-        ajaxModal.load({ url: button.dataset.href, title: button.textContent, size: 'lg' }, function(json, request, modal) {
+        ajaxModal.load({ url: button.dataset.href, title: button.textContent, size: 'lg' },
+            (json, modal) => {
 
             const addClickCallbacks = function(linkList){
                 for (let i = 0; i < linkList.length; i++) {

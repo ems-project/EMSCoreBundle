@@ -53,7 +53,6 @@
             <argument type="service" id="ems_core.core_ui.ajax_service" />
             <argument type="service" id="translator" />
             <argument type="service" id="form.factory" />
-            <argument type="service" id="session.flash_bag" />
             <tag name="controller.service_arguments"/>
         </service>
 
@@ -238,7 +237,7 @@
         </service>
 
         <!-- Revision -->
-        <service id="EMS\CoreBundle\Controller\Revision\ActionController" public="true">
+        <service id="EMS\CoreBundle\Controller\Revision\Action\ActionController" public="true">
             <argument type="service" id="EMS\CoreBundle\Repository\TemplateRepository" />
             <argument type="service" id="EMS\CoreBundle\Service\EnvironmentService" />
             <argument type="service" id="ems.service.search" />
@@ -246,6 +245,15 @@
             <argument type="service" id="ems_common.service.spreadsheet_generator_service" />
             <argument type="service" id="logger" />
             <argument type="service" id="twig" />
+        </service>
+        <service id="EMS\CoreBundle\Controller\Revision\Action\ActionImportController" public="true">
+            <argument type="service" id="EMS\CoreBundle\Repository\TemplateRepository" />
+            <argument type="service" id="ems_core.core_ui.ajax_service" />
+            <argument type="service" id="form.factory" />
+            <argument type="service" id="ems_common.file.reader" />
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="twig" />
+            <argument type="service" id="emsco.logger" />
         </service>
 
         <service id="EMS\CoreBundle\Controller\Revision\DetailController" public="true">

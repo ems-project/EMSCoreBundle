@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Controller\Revision;
+namespace EMS\CoreBundle\Controller\Revision\Action;
 
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
@@ -52,7 +52,8 @@ class ActionController
 
         $body = $this->twig->createTemplate($action->getBody());
 
-        if ($_download || !$action->getPreview()) {
+        if ($_download || !$action->getPreview()
+            && \in_array($action->getRenderOption(), [RenderOptionType::PDF, RenderOptionType::EXPORT])) {
             try {
                 $content = $body->render([
                     'environment' => $environment,

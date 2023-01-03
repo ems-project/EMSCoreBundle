@@ -10,7 +10,7 @@
         <default key="public">1</default>
     </route>
     <route id="emsco_data_public_action" path="/public/action/{environmentName}/{templateId}/{ouuid}/{_download}"
-           controller="EMS\CoreBundle\Controller\Revision\ActionController::render"
+           controller="EMS\CoreBundle\Controller\Revision\Action\ActionController::render"
            methods="GET">
         <default key="public">1</default>
         <default key="_download">0</default>
@@ -27,7 +27,7 @@
     </route>
     <route id="ems_data_custom_template_public"
            path="/public/template/{environmentName}/{templateId}/{ouuid}/{_download}"
-           controller="EMS\CoreBundle\Controller\Revision\ActionController::render"
+           controller="EMS\CoreBundle\Controller\Revision\Action\ActionController::render"
            methods="GET">
         <default key="public">1</default>
         <default key="_download">0</default>

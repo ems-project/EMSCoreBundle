@@ -130,7 +130,7 @@ export default class MediaLibrary {
     }
     _addFolder() {
         ajaxModal.load({ url: this._makeUrl('add-folder'), size: 'sm'}, (json) => {
-            if (json.hasOwnProperty('success')) {
+            if (json.hasOwnProperty('success') && json.success === true) {
                 this._disableButtons();
                 this._getFolders(json.path).then(() => this._enableButtons());
             }

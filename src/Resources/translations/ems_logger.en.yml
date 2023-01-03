@@ -1,4 +1,11 @@
 log:
+  contenttype:
+    action:
+      import:
+        error:
+          failed: 'Import failed'
+          missing_columns: 'Missing columns in import file, required columns "%columns%"'
+          missing_data: 'Missing data in import file'
   revision:
     draft:
       created: 'A new draft has been initiated for the document "%label%"'

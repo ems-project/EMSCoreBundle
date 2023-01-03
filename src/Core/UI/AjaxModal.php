@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\UI;
 
+use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\TemplateWrapper;
 
 final class AjaxModal
 {
+    private ?string $icon = null;
     private ?string $title = null;
     private ?string $body = null;
     private ?string $footer = null;
@@ -40,12 +42,26 @@ final class AjaxModal
         return $this->addMessage('error', $key, $parameters);
     }
 
+    public function setIcon(?string $icon): self
+    {
+        $this->icon = $icon;
+
+        return $this;
+    }
+
+    public function setTitleRaw(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
     /**
      * @param array<mixed> $parameters
      */
-    public function setTitle(string $key, array $parameters = []): self
+    public function setTitle(string $key, array $parameters = [], string $translationDomain = EMSCoreBundle::TRANS_DOMAIN): self
     {
-        $this->title = $this->translator->trans($key, $parameters, 'EMSCoreBundle');
+        $this->title = $this->translator->trans($key, $parameters, $translationDomain);
 
         return $this;
     }
@@ -97,9 +113,13 @@ final class AjaxModal
 
     public function getResponse(): JsonResponse
     {
+        $title = $this->icon && $this->title ?
+            \sprintf('<i class="%s"></i> %s', $this->icon, $this->title)
+            : $this->title;
+
         return new JsonResponse(\array_filter([
             'modalMessages' => $this->messages,
-            'modalTitle' => $this->title,
+            'modalTitle' => $title,
             'modalBody' => $this->body,
             'modalFooter' => $this->footer,
             'modalSuccess' => $this->success,

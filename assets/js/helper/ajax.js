@@ -1,3 +1,7 @@
+/*
+ @TODO deprecated, please use fetchApi see ajaxModal.js
+ */
+
 function ajaxJsonGet(url, onready) {
     var httpRequest = new XMLHttpRequest();
     httpRequest.open('GET', url, true);

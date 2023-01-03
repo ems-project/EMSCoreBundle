@@ -29,6 +29,10 @@ final class FlashMessageLogger extends AbstractProcessingHandler
             return;
         }
 
+        if (true === ($record['context']['noFlash'] ?? false)) {
+            return;
+        }
+
         // TODO: remove the translator when all logger have been migrated to the localized logger
         $parameters = [];
         foreach ($record['context'] as $key => &$value) {

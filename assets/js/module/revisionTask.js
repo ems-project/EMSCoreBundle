@@ -40,9 +40,8 @@ export default class RevisionTask {
                 e.preventDefault();
                 ajaxModal.load(
                     { url: e.target.dataset.url, title: e.target.dataset.title},
-                    (json, request) => {
-                        var success = json.hasOwnProperty('modalSuccess') ? json.modalSuccess : false;
-                        if (success) {
+                    (json) => {
+                        if (json.hasOwnProperty('modalSuccess') && json.modalSuccess === true) {
                             window.location.reload();
                         }
                     }
@@ -144,7 +143,7 @@ export default class RevisionTask {
         this.tasksListApproved.querySelectorAll('.tasks-item').forEach((e) => { e.remove();});
     }
     modalFinish(json) {
-        var success = json.hasOwnProperty('modalSuccess') ? json.modalSuccess : false;
+        let success = json.hasOwnProperty('modalSuccess') ? json.modalSuccess : false;
         if (success) { this.loadTasks(); }
     }
     btnTaskCreateModal() {
@@ -153,7 +152,7 @@ export default class RevisionTask {
             event.preventDefault();
             ajaxModal.load(
                 { url: button.dataset.url, title: button.dataset.title},
-                (json, request) => { this.modalFinish(json); }
+                (json) => { this.modalFinish(json); }
             );
         }
         button.removeAttribute('disabled');
@@ -164,7 +163,7 @@ export default class RevisionTask {
             buttonModalEdit.addEventListener('click', () => {
                 ajaxModal.load(
                     { url: buttonModalEdit.dataset.url, title: buttonModalEdit.dataset.title  },
-                    (json, request) => {
+                    (json) => {
                         this.btnTaskDelete();
                         this.modalFinish(json);
                     }

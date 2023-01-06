@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Core\Document;
 
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Common\Standard\Type;
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use EMS\CoreBundle\Form\View\DataLinkViewType;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -33,9 +34,12 @@ final class DataLinksFactory
         }
 
         if ($query->has('referrerEmsId')) {
-            $referrerEmsId = EMSLink::fromText($query->get('referrerEmsId'));
-            $referrerDocument = $this->searchService->getDocumentByEmsLink($referrerEmsId);
-            $dataLinks->setReferrerDocument($referrerDocument);
+            try {
+                $referrerEmsId = EMSLink::fromText($query->get('referrerEmsId'));
+                $referrerDocument = $this->searchService->getDocumentByEmsLink($referrerEmsId);
+                $dataLinks->setReferrerDocument($referrerDocument);
+            } catch (NotFoundException) {
+            }
         }
 
         if ($query->has('type')) {

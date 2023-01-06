@@ -273,13 +273,11 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * Assign data of the dataField based on the elastic index content ($sourceArray).
-     *
-     * @param string|array<mixed> $sourceArray
+     * @param array<mixed>|string|int|float|bool|null $sourceArray
      *
      * @return array<mixed>
      */
-    public function importData(DataField $dataField, string|array $sourceArray, bool $isMigration): array
+    public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {

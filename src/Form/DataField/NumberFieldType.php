@@ -19,19 +19,6 @@ class NumberFieldType extends DataFieldType
         return 'glyphicon glyphicon-sort-by-order';
     }
 
-//     /**
-//      *
-//      * {@inheritDoc}
-//      *
-//      */
-//     public function importData(DataField $dataField, $sourceArray, $isMigration) {
-//         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
-//         if(!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
-//             $dataField->setFloatValue($sourceArray);
-//         }
-//         return [$dataField->getFieldType()->getName()];
-//     }
-
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options

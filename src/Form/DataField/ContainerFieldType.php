@@ -45,7 +45,7 @@ class ContainerFieldType extends DataFieldType
     /**
      * {@inheritDoc}
      */
-    public function importData(DataField $dataField, $sourceArray, bool $isMigration): array
+    public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         throw new \Exception('This method should never be called');
     }

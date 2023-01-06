@@ -33,7 +33,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     /** @var ArrayCollection<int, DataField> */
     private ArrayCollection $children;
 
-    /** @var mixed */
+    /** @var array<mixed>|string|int|float|bool|null */
     private $rawData;
 
     /** @var mixed */
@@ -310,10 +310,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
         }
 
         if (null !== $this->rawData && !\is_string($this->rawData)) {
-            if (\is_array($this->rawData) && 1 == \count($this->rawData) && \is_string($this->rawData[0])) {
+            if (\is_array($this->rawData) && 1 === \count($this->rawData) && \is_string($stringValue = \reset($this->rawData))) {
                 $this->addMessage('String expected, single string in array instead');
 
-                return $this->rawData[0];
+                return $stringValue;
             }
             $this->addMessage('String expected from the DB: '.\print_r($this->rawData, true));
         }
@@ -358,15 +358,17 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
 
     public function getFloatValue(): ?float
     {
-        if (\is_array($this->rawData) && 0 === \count($this->rawData)) {
-            return null; // empty array means null/empty
+        if (\is_array($this->rawData) && empty($this->rawData)) {
+            return null;
+        }
+        if (null === $this->rawData || '' === $this->rawData) {
+            return null;
+        }
+        if (\is_numeric($this->rawData) && \is_finite((float) $this->rawData)) {
+            return (float) $this->rawData;
         }
 
-        if (null !== $this->rawData && !\is_finite($this->rawData)) {
-            throw new DataFormatException('Float or double expected: '.\print_r($this->rawData, true));
-        }
-
-        return $this->rawData;
+        throw new DataFormatException('Float or double expected: '.\print_r($this->rawData, true));
     }
 
     /**

@@ -54,6 +54,7 @@
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.publish" />
+            <argument type="service" id="EMS\CommonBundle\Service\ElasticaService"/>
             <tag name="console.command"/>
             <tag name="console.command" command="ems:contenttype:delete" />
         </service>

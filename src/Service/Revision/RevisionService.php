@@ -103,6 +103,14 @@ class RevisionService implements RevisionServiceInterface
         return $this->revisionRepository->deleteByContentType($contentType);
     }
 
+    /**
+     * @param string[] $ouuids
+     */
+    public function deleteByOuuids(array $ouuids): int
+    {
+        return $this->revisionRepository->deleteByOuuids($ouuids);
+    }
+
     public function deleteOldest(ContentType $contentType): int
     {
         return $this->revisionRepository->deleteOldest($contentType);

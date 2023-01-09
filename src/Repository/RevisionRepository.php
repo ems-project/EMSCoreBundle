@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder as DBALQueryBuilder;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityRepository;
@@ -632,6 +633,21 @@ class RevisionRepository extends EntityRepository
         return $this->deleteByQueryBuilder($qb);
     }
 
+    /**
+     * @param string[] $ouuids
+     */
+    public function deleteByOuuids(array $ouuids): int
+    {
+        $conn = $this->_em->getConnection();
+        $qb = $conn->createQueryBuilder();
+        $qb
+            ->from('revision', 'r')
+            ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
+            ->setParameter('ouuids', $ouuids, Connection::PARAM_STR_ARRAY);
+
+        return $this->deleteByQueryBuilder($qb);
+    }
+
     public function lockRevisions(?ContentType $contentType, \DateTime $until, string $by, bool $force = false, ?string $ouuid = null, bool $onlyCurrentRevision = true): int
     {
         $qbSelect = $this->createQueryBuilder('s');
@@ -1022,16 +1038,16 @@ class RevisionRepository extends EntityRepository
         $qbDeleteNotifications = $conn->createQueryBuilder();
         $qbDeleteNotifications
             ->delete('notification')
-            ->andWhere($qbDeleteNotifications->expr()->in('revision_id', $revisionIds))
-            ->setParameters($queryBuilder->getParameters());
+            ->andWhere($qbDeleteNotifications->expr()->in('revision_id', $revisionIds));
+        $this->copyParameters($qbDeleteNotifications, $queryBuilder);
 
         $qbDeleteNotifications->executeStatement();
 
         $qbDelete = $conn->createQueryBuilder();
         $qbDelete
             ->delete('revision')
-            ->andWhere($qbDelete->expr()->in('id', $revisionIds))
-            ->setParameters($queryBuilder->getParameters());
+            ->andWhere($qbDelete->expr()->in('id', $revisionIds));
+        $this->copyParameters($qbDelete, $queryBuilder);
 
         return $qbDelete->executeStatement();
     }
@@ -1074,5 +1090,12 @@ class RevisionRepository extends EntityRepository
             $this->_em->detach($detachableEntity);
         }
         $this->unlockRevisions($contentType, $username, false);
+    }
+
+    private function copyParameters(DBALQueryBuilder $target, DBALQueryBuilder $source): void
+    {
+        foreach ($source->getParameters() as $key => $value) {
+            $target->setParameter($key, $value, $source->getParameterType($key));
+        }
     }
 }

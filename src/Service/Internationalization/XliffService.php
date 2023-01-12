@@ -14,7 +14,7 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\Revision\RevisionService;
-use EMS\Helpers\Html\Html;
+use EMS\Helpers\Html\HtmlHelper;
 use EMS\Xliff\Xliff\Entity\InsertReport;
 use EMS\Xliff\Xliff\Extractor;
 use EMS\Xliff\Xliff\InsertionRevision;
@@ -68,7 +68,7 @@ class XliffService
             $translation = $propertyAccessor->getValue($currentTranslationData, $propertyPath);
             $isFinal = (null !== $targetEnvironment && $contentType->giveEnvironment()->getName() !== $targetEnvironment->getName() && $currentValue === $value && null !== $translation);
 
-            if (Html::isHtml($value)) {
+            if (HtmlHelper::isHtml($value)) {
                 $extractor->addHtmlField($xliffDoc, $fieldPath, $value, $translation, $isFinal, $encodeHtml);
             } else {
                 $extractor->addSimpleField($xliffDoc, $fieldPath, $value, $translation, $isFinal);

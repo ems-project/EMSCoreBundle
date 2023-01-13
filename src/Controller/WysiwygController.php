@@ -87,7 +87,7 @@ class WysiwygController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            \json_decode($profile->getConfig(), true);
+            \json_decode($profile->getConfig() ?? '{}', true);
             if (\json_last_error()) {
                 $form->get('config')->addError(new FormError($this->translator->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], EMSCoreBundle::TRANS_DOMAIN)));
             } else {
@@ -173,7 +173,7 @@ class WysiwygController extends AbstractController
             }
 
             if ($form->isValid()) {
-                \json_decode($profile->getConfig(), true);
+                \json_decode($profile->getConfig() ?? '{}', true);
                 if (\json_last_error()) {
                     $form->get('config')->addError(new FormError($this->translator->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], 'EMSCoreBundle')));
                 } else {

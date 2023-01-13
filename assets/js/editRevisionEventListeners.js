@@ -159,7 +159,25 @@ function editRevisionEventListeners(target, onChangeCallback = null){
             }
         });
 
+        if (ckconfig.hasOwnProperty('emsAjaxPaste')) {
+            let editor = CKEDITOR.instances[$( this ).attr('id')];
+            editor.on('beforePaste', (event) => {
+                let pastedText = event.data.dataTransfer.getData('text/html');
+                if (!pastedText || pastedText === '') return
 
+                event.cancel();
+                fetch(ckconfig.emsAjaxPaste, {
+                    method: 'POST',
+                    body: JSON.stringify({ content: pastedText }),
+                    headers: { 'Content-Type': 'application/json' }
+                }).then((response) => {
+                    return response.ok ? response.json().then((json) => {
+                        event.data.dataValue = json.content;
+                        editor.fire( 'paste', event.data);
+                    }): Promise.reject(response)
+                }).catch(() => { console.error('error pasting') })
+            });
+        }
     });
 
     target.find(".colorpicker-component").colorpicker();

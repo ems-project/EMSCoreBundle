@@ -360,6 +360,11 @@
         </service>
 
         <!-- Wysiwyg -->
+        <service id="EMS\CoreBundle\Controller\Wysiwyg\AjaxPasteController" public="true">
+            <argument type="service" id="ems.service.wysiwyg_profile" />
+            <argument type="service" id="emsco.logger" />
+            <tag name="controller.service_arguments"/>
+        </service>
         <service id="EMS\CoreBundle\Controller\Wysiwyg\StylesetController" public="true">
             <argument type="service" id="ems.service.wysiwyg_styles_set" />
             <call method="setContainer"/>

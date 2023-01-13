@@ -12,8 +12,11 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 final class WysiwygRuntime implements RuntimeExtensionInterface
 {
-    public function __construct(private readonly WysiwygStylesSetService $wysiwygStylesSetService, private readonly UserService $userService, private readonly UrlGeneratorInterface $urlGenerator)
-    {
+    public function __construct(
+        private readonly WysiwygStylesSetService $wysiwygStylesSetService,
+        private readonly UserService $userService,
+        private readonly UrlGeneratorInterface $urlGenerator
+    ) {
     }
 
     public function getInfo(): string
@@ -42,8 +45,16 @@ final class WysiwygRuntime implements RuntimeExtensionInterface
 
         $profile = $user->getWysiwygProfile();
 
-        if ($profile && null !== $profile->getConfig()) {
-            return Json::decode($profile->getConfig());
+        if ($profile && null !== $jsonConfig = $profile->getConfig()) {
+            $config = Json::decode($jsonConfig);
+
+            if (isset($config['ems']['paste'])) {
+                $config['emsAjaxPaste'] = $this->urlGenerator->generate('emsco_wysiwyg_ajax_paste', [
+                    'wysiwygProfileId' => $profile->getId(),
+                ]);
+            }
+
+            return $config;
         }
 
         $wysiwygOptions = $user->getWysiwygOptions();

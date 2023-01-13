@@ -30,11 +30,9 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
     protected string $name = '';
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="config", type="text", nullable=true)
      */
-    protected $config;
+    protected ?string $config = null;
 
     /**
      * @ORM\Column(name="orderKey", type="integer")
@@ -75,26 +73,12 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
         return $this->name;
     }
 
-    /**
-     * Set config.
-     *
-     * @param string $config
-     *
-     * @return WysiwygProfile
-     */
-    public function setConfig($config)
+    public function setConfig(?string $config): void
     {
         $this->config = $config;
-
-        return $this;
     }
 
-    /**
-     * Get config.
-     *
-     * @return string
-     */
-    public function getConfig()
+    public function getConfig(): ?string
     {
         return $this->config;
     }

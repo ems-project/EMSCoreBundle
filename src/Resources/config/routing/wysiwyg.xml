@@ -7,4 +7,8 @@
     <route id="emsco_wysiwyg_styleset_iframe" path="/styleset/iframe/{name}/{language}"
            controller="EMS\CoreBundle\Controller\Wysiwyg\StylesetController::iframe"
            methods="GET"/>
+
+    <route id="emsco_wysiwyg_ajax_paste" path="/ajax/{wysiwygProfileId}/paste"
+           controller="EMS\CoreBundle\Controller\Wysiwyg\AjaxPasteController"
+           methods="POST" />
 </routes>

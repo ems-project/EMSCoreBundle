@@ -33,6 +33,6 @@ final class MediaLibraryComponent
         $this->hash = $config->getHash();
         $this->id = $config->getId();
 
-        return $options;
+        return [];
     }
 }

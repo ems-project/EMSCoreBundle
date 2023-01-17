@@ -9,14 +9,19 @@ use EMS\CoreBundle\Entity\ContentType;
 
 class MediaLibraryConfig implements ConfigInterface
 {
+    public ?string $fieldPathOrder = null;
+    /** @var array<mixed> */
+    public array $defaultValue = [];
+    /** @var array<mixed> */
+    public array $searchQuery = [];
+
     public function __construct(
         private readonly string $hash,
         private readonly string $id,
         public readonly ContentType $contentType,
         public readonly string $fieldPath,
         public readonly string $fieldLocation,
-        public readonly string $fieldFile,
-        public readonly ?string $fieldOrderAlpha,
+        public readonly string $fieldFile
     ) {
     }
 

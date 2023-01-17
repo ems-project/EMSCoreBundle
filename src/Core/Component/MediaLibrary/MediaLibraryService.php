@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Component\MediaLibrary;
 
 use Elastica\Document;
-use Elastica\Query\AbstractQuery;
+use Elastica\Query\BoolQuery;
 use Elastica\Query\Exists;
 use Elastica\Query\Nested;
 use Elastica\Query\Term;
@@ -103,6 +103,7 @@ class MediaLibraryService
      */
     private function create(MediaLibraryConfig $config, array $rawData): bool
     {
+        $rawData = \array_merge_recursive($config->defaultValue, $rawData);
         $revision = $this->revisionService->create($config->contentType, Uuid::uuid4(), $rawData);
 
         $form = $this->revisionService->createRevisionForm($revision);
@@ -135,15 +136,19 @@ class MediaLibraryService
         return $type ?: 'application/bin';
     }
 
-    private function search(MediaLibraryConfig $config, AbstractQuery $query): ResultSet
+    private function search(MediaLibraryConfig $config, BoolQuery $query): ResultSet
     {
+        if ($config->searchQuery) {
+            $query->addMust($config->searchQuery);
+        }
+
         $search = new Search([$config->contentType->giveEnvironment()->getAlias()], $query);
         $search->setContentTypes([$config->contentType->getName()]);
         $search->setFrom(0);
         $search->setSize(5000);
 
-        if ($config->fieldOrderAlpha) {
-            $search->setSort([$config->fieldOrderAlpha => ['order' => 'asc']]);
+        if ($config->fieldPathOrder) {
+            $search->setSort([$config->fieldPathOrder => ['order' => 'asc']]);
         }
 
         return $this->elasticaService->search($search);

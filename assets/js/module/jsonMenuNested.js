@@ -190,7 +190,7 @@ export default class JsonMenuNested {
 
             let json = JSON.parse(localStorage.getItem(this.copyName));
 
-            return loopJson(json, (key, value) => key === 'id' && value !== 'root' ? uuidv4() : value);
+            return loopJson(json, (key, value) => key === 'id' && value !== '_root' ? uuidv4() : value);
         }
 
         return false;
@@ -302,9 +302,9 @@ export default class JsonMenuNested {
         btnCopyAll.onclick = (e) => {
             e.preventDefault();
             this._setCopy({
-                id: 'root',
-                label: 'root',
-                type: 'root',
+                id: '_root',
+                label: '_root',
+                type: '_root',
                 children: JSON.parse(this.getStructureJson())
             });
         }
@@ -348,7 +348,8 @@ export default class JsonMenuNested {
             btnPaste.onclick = (e) => {
                 e.preventDefault();
 
-                let copied = this._getCopy(true);
+                let copied = this._getCopy();
+
                 if (false === copied) {
                     return;
                 }

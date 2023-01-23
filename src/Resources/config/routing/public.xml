@@ -32,4 +32,16 @@
         <default key="public">1</default>
         <default key="_download">0</default>
     </route>
+
+  <route id="ems_core_datatable_ajax_elastica_public" path="/public/datatable/ajax/{hashConfig}.json"
+         controller="EMS\CoreBundle\Controller\ContentManagement\DatatableController::ajaxElastica"
+         methods="GET|HEAD"/>
+
+  <route id="ems_core_datatable_excel_elastica_public" path="/public/datatable/excel/{hashConfig}"
+         controller="EMS\CoreBundle\Controller\ContentManagement\DatatableController::excelElastica"
+         methods="GET|HEAD"/>
+
+  <route id="ems_core_datatable_csv_elastica_public" path="/public/datatable/csv/{hashConfig}.csv"
+         controller="EMS\CoreBundle\Controller\ContentManagement\DatatableController::csvElastica"
+         methods="GET|HEAD"/>
 </routes>

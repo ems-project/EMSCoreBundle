@@ -23,6 +23,7 @@ class ElasticaTable extends TableAbstract
     final public const DISPOSITION = 'disposition';
     final public const SHEET_NAME = 'sheet_name';
     private const ROW_CONTEXT = 'row_context';
+    public const PROTECTED = 'protected';
     private ?int $count = null;
     private ?int $totalCount = null;
 
@@ -31,7 +32,7 @@ class ElasticaTable extends TableAbstract
      * @param string[]              $contentTypeNames
      * @param array<string, string> $defaultSort
      */
-    public function __construct(private readonly ElasticaService $elasticaService, string $ajaxUrl, private readonly array $aliases, private readonly array $contentTypeNames, private readonly string $emptyQuery, private readonly string $query, private readonly string $ascMissingValuesPosition, private readonly string $descMissingValuesPosition, string $filename, string $disposition, string $sheetName, private readonly string $rowContext, private readonly array $defaultSort = [])
+    public function __construct(private readonly ElasticaService $elasticaService, string $ajaxUrl, private readonly array $aliases, private readonly array $contentTypeNames, private readonly string $emptyQuery, private readonly string $query, private readonly string $ascMissingValuesPosition, private readonly string $descMissingValuesPosition, string $filename, string $disposition, string $sheetName, private readonly string $rowContext, private readonly array $defaultSort = [], private readonly bool $protected = true)
     {
         parent::__construct($ajaxUrl, 0, 0);
         $this->setExportFileName($filename);
@@ -47,7 +48,7 @@ class ElasticaTable extends TableAbstract
     public static function fromConfig(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, array $options): ElasticaTable
     {
         $options = self::resolveOptions($options);
-        $datatable = new self($elasticaService, $ajaxUrl, $aliases, $contentTypeNames, $options[self::EMPTY_QUERY], $options[self::QUERY], $options[self::ASC_MISSING_VALUES_POSITION], $options[self::DESC_MISSING_VALUES_POSITION], $options[self::FILENAME], $options[self::DISPOSITION], $options[self::SHEET_NAME], $options[self::ROW_CONTEXT], $options[self::DEFAULT_SORT]);
+        $datatable = new self($elasticaService, $ajaxUrl, $aliases, $contentTypeNames, $options[self::EMPTY_QUERY], $options[self::QUERY], $options[self::ASC_MISSING_VALUES_POSITION], $options[self::DESC_MISSING_VALUES_POSITION], $options[self::FILENAME], $options[self::DISPOSITION], $options[self::SHEET_NAME], $options[self::ROW_CONTEXT], $options[self::DEFAULT_SORT], $options[self::PROTECTED]);
         foreach ($options[self::COLUMNS] as $column) {
             $datatable->addColumnDefinition(new TemplateTableColumn($column));
         }
@@ -151,7 +152,7 @@ class ElasticaTable extends TableAbstract
     /**
      * @param array<string, mixed> $options
      *
-     * @return array{columns: array<mixed>, query: string, empty_query: string, frontendOptions: array<mixed>, asc_missing_values_position: string, desc_missing_values_position: string, filename: string, disposition: string, sheet_name: string, row_context: string, default_sort: array<string, string>}
+     * @return array{columns: array<mixed>, query: string, empty_query: string, frontendOptions: array<mixed>, asc_missing_values_position: string, desc_missing_values_position: string, filename: string, disposition: string, sheet_name: string, row_context: string, default_sort: array<string, string>, protected: bool}
      */
     private static function resolveOptions(array $options): array
     {
@@ -172,6 +173,7 @@ class ElasticaTable extends TableAbstract
                 self::DISPOSITION => 'attachment',
                 self::SHEET_NAME => 'Sheet',
                 self::ROW_CONTEXT => '',
+                self::PROTECTED => true,
                 self::DEFAULT_SORT => [],
             ])
             ->setAllowedTypes(self::COLUMNS, ['array'])
@@ -183,6 +185,7 @@ class ElasticaTable extends TableAbstract
             ->setAllowedTypes(self::SHEET_NAME, ['string'])
             ->setAllowedTypes(self::ROW_CONTEXT, ['string'])
             ->setAllowedTypes(self::DEFAULT_SORT, ['array'])
+            ->setAllowedTypes(self::PROTECTED, ['bool'])
             ->setAllowedValues(self::ASC_MISSING_VALUES_POSITION, ['_last', '_first'])
             ->setAllowedValues(self::DESC_MISSING_VALUES_POSITION, ['_last', '_first'])
             ->setNormalizer(self::QUERY, function (Options $options, $value) {
@@ -221,7 +224,7 @@ class ElasticaTable extends TableAbstract
                 return $value;
             })
         ;
-        /** @var array{columns: array<mixed>, query: string, empty_query: string, frontendOptions: array<mixed>, asc_missing_values_position: string, desc_missing_values_position: string, filename: string, disposition: string, sheet_name: string, row_context: string, default_sort: array<string, string>} $resolvedParameter */
+        /** @var array{columns: array<mixed>, query: string, empty_query: string, frontendOptions: array<mixed>, asc_missing_values_position: string, desc_missing_values_position: string, filename: string, disposition: string, sheet_name: string, row_context: string, default_sort: array<string, string>, protected: bool} $resolvedParameter */
         $resolvedParameter = $resolver->resolve($options);
 
         return $resolvedParameter;
@@ -241,5 +244,10 @@ class ElasticaTable extends TableAbstract
     public function getRowTemplate(): string
     {
         return \sprintf("{%%- use '@EMSCore/datatable/row.json.twig' -%%}%s{{ block('emsco_datatable_row') }}", $this->getRowContext());
+    }
+
+    public function isProtected(): bool
+    {
+        return $this->protected;
     }
 }

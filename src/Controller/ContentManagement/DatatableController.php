@@ -6,22 +6,26 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CoreBundle\Core\DataTable\TableExporter;
 use EMS\CoreBundle\Core\DataTable\TableRenderer;
+use EMS\CoreBundle\Form\Data\ElasticaTable;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\DatatableService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class DatatableController extends AbstractController
 {
-    public function __construct(private readonly DatatableService $datatableService, private readonly TableRenderer $tableRenderer, private readonly TableExporter $tableExporter)
+    public function __construct(private readonly DatatableService $datatableService, private readonly TableRenderer $tableRenderer, private readonly TableExporter $tableExporter, private readonly TokenStorageInterface $tokenStorage)
     {
     }
 
     public function ajaxElastica(Request $request, string $hashConfig): Response
     {
         $table = $this->datatableService->generateDatatableFromHash($hashConfig);
+        $this->checkAccess($table, $hashConfig);
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
@@ -36,6 +40,7 @@ final class DatatableController extends AbstractController
     public function excelElastica(string $hashConfig): Response
     {
         $table = $this->datatableService->generateDatatableFromHash($hashConfig);
+        $this->checkAccess($table, $hashConfig);
 
         return $this->tableExporter->exportExcel($table);
     }
@@ -43,7 +48,15 @@ final class DatatableController extends AbstractController
     public function csvElastica(string $hashConfig): Response
     {
         $table = $this->datatableService->generateDatatableFromHash($hashConfig);
+        $this->checkAccess($table, $hashConfig);
 
         return $this->tableExporter->exportCSV($table);
+    }
+
+    private function checkAccess(ElasticaTable $table, string $hashConfig): void
+    {
+        if ($table->isProtected() && null === $this->tokenStorage->getToken()) {
+            throw new AccessDeniedException($hashConfig);
+        }
     }
 }

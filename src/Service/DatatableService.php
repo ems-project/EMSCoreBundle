@@ -31,7 +31,7 @@ final class DatatableService
         $aliases = $this->convertToAliases($environmentNames);
         $hashConfig = $this->saveConfig($options, $aliases, $contentTypeNames);
 
-        return ElasticaTable::fromConfig($this->elasticaService, $this->getAjaxUrl($hashConfig), $aliases, $contentTypeNames, $options);
+        return ElasticaTable::fromConfig($this->elasticaService, $this->getAjaxUrl($hashConfig, $options[ElasticaTable::PROTECTED] ?? true), $aliases, $contentTypeNames, $options);
     }
 
     /**
@@ -41,7 +41,12 @@ final class DatatableService
      */
     public function getExcelPath(array $environmentNames, array $contentTypeNames, array $options): string
     {
-        return $this->getRoutePath('ems_core_datatable_excel_elastica', $environmentNames, $contentTypeNames, $options);
+        $route = 'ems_core_datatable_excel_elastica';
+        if (false === ($options['protected'] ?? true)) {
+            $route = 'ems_core_datatable_excel_elastica_public';
+        }
+
+        return $this->getRoutePath($route, $environmentNames, $contentTypeNames, $options);
     }
 
     /**
@@ -51,14 +56,19 @@ final class DatatableService
      */
     public function getCsvPath(array $environmentNames, array $contentTypeNames, array $options): string
     {
-        return $this->getRoutePath('ems_core_datatable_csv_elastica', $environmentNames, $contentTypeNames, $options);
+        $route = 'ems_core_datatable_csv_elastica';
+        if (false === ($options['protected'] ?? true)) {
+            $route = 'ems_core_datatable_csv_elastica_public';
+        }
+
+        return $this->getRoutePath($route, $environmentNames, $contentTypeNames, $options);
     }
 
     public function generateDatatableFromHash(string $hashConfig): ElasticaTable
     {
         $config = $this->parsePersistedConfig($this->storageManager->getContents($hashConfig));
 
-        return ElasticaTable::fromConfig($this->elasticaService, $this->getAjaxUrl($hashConfig), $config[self::ALIASES], $config[self::CONTENT_TYPES], $config[self::CONFIG]);
+        return ElasticaTable::fromConfig($this->elasticaService, $this->getAjaxUrl($hashConfig, $config[self::CONFIG][ElasticaTable::PROTECTED] ?? true), $config[self::ALIASES], $config[self::CONTENT_TYPES], $config[self::CONFIG]);
     }
 
     /**
@@ -108,9 +118,15 @@ final class DatatableService
         return $resolvedParameter;
     }
 
-    public function getAjaxUrl(string $hashConfig): string
+    public function getAjaxUrl(string $hashConfig, bool $protected = true): string
     {
-        return $this->router->generate('ems_core_datatable_ajax_elastica', ['hashConfig' => $hashConfig]);
+        if ($protected) {
+            $route = 'ems_core_datatable_ajax_elastica';
+        } else {
+            $route = 'ems_core_datatable_ajax_elastica_public';
+        }
+
+        return $this->router->generate($route, ['hashConfig' => $hashConfig]);
     }
 
     /**

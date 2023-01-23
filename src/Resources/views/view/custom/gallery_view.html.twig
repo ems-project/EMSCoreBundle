@@ -1,13 +1,13 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ view.name }} of {{contentType.name}}{% endblock %}
-{% block pagetitle %}{{ view.name }} of {{contentType.name}}{% endblock %} 
-{% block subtitle %}{{ 'gallery view plugin'|trans }}{% endblock %} 
+{% block pagetitle %}{{ view.name }} of {{contentType.name}}{% endblock %}
+{% block subtitle %}{{ 'gallery view plugin'|trans }}{% endblock %}
 
 
 {% block body %}
-      
-      
+
+
 	<div class="row">
     	<div class="col-md-12">
             {% include "@EMSCore/elasticsearch/search-form-filter.html.twig" with {
@@ -16,19 +16,19 @@
 		</div>
 	</div>
 	<!-- /.row -->
-	
-	
+
+
       <div class="row">
         <div class="col-md-12">
         	<div class="box">
         		<div class="box-body">
                 	<div id="myCarousel" class="carousel slide" data-ride="carousel">
-                    
+
                       <!-- Wrapper for slides -->
                       <div class="carousel-inner">
                       	{% for item in data.hits.hits %}
                             <div class="item {% if loop.first %}active{% endif %}">
-                          		{% set path = 'https://github.com/ems-project/EMSCoreBundle/blob/master/Resources/public/images/logo.png' %}
+                          		{% set path = asset('images/logo.svg', 'emscore') %}
     	                        {% if attribute(item._source, view.options.imageField) is defined %}
                                     {% set file = attribute(item._source, view.options.imageField) %}
                                     {% set path = path('ems.file.view', {'sha1':file.sha1, 'type':file.mimetype, 'name':file.filename }) %}
@@ -41,8 +41,8 @@
                      				    {% set path = path('ems_asset_processor', {'hash':view.options.missingImageHash, 'processor': view.options.imageAssetConfigIdentifier }) %}
                      				{% endif %}
 	                            {% endif %}
-                              <img 
-                              	src="{{ path }}" 
+                              <img
+                              	src="{{ path }}"
                               	alt="{% if view.options.imageAltFields and attribute(item._source, view.options.imageAltFields) is defined %}{{ attribute(item._source, view.options.imageAltFields) }}{% endif %}"
                               	class="img-responsive center-block"
                               >
@@ -52,7 +52,7 @@
                             </div>
                         {% endfor %}
                       </div>
-                    
+
                       <!-- Left and right controls -->
                       <a class="left carousel-control" href="#myCarousel" data-slide="prev">
                         <span class="glyphicon glyphicon-chevron-left"></span>
@@ -64,14 +64,14 @@
                       </a>
                     </div>
         		</div>
-        		
+
  				{% if view.options.thumbnailAssetConfigIdentifier %}
             		<div class="box-body">
             			<div class="table-responsive">
                           <table class="table">
                           	<tr>
                               	{% for item in data.hits.hits %}
-                              		{% set path = 'https://github.com/ems-project/EMSCoreBundle/blob/master/Resources/public/images/logo.png' %}
+                              		{% set path = asset('images/logo.svg', 'emscore') %}
         	                        {% if attribute(item._source, view.options.imageField) is defined %}
     	                                {% set file = attribute(item._source, view.options.imageField) %}
                        				    {% set path = path('ems_asset_processor', {'hash':file.sha1, 'processor': view.options.thumbnailAssetConfigIdentifier }) %}
@@ -79,13 +79,13 @@
                        				    {% set path = path('ems_asset_processor', {'hash':view.options.missingImageHash, 'processor': view.options.thumbnailAssetConfigIdentifier }) %}
     	                            {% endif %}
                      				 <td data-target="#myCarousel" data-slide-to="{{ loop.index0 }}" >
-                                      <img 
-                                      	src="{{ path }}" 
+                                      <img
+                                      	src="{{ path }}"
                                       	alt="{% if view.options.imageAltFields and attribute(item._source, view.options.imageAltFields) is defined %}{{ attribute(item._source, view.options.imageAltFields) }}{% endif %}"
                                       	class=""
                                       >
                                       </td>
-                                      
+
                                 {% endfor %}
                           	</tr>
                           </table>
@@ -98,4 +98,4 @@
       </div>
       <!-- /.row -->
 
-{% endblock %} 
+{% endblock %}

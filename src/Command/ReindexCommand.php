@@ -175,9 +175,6 @@ class ReindexCommand extends EmsCommand
 
                 $em->flush();
                 $em->clear();
-                foreach ($paginator as $revision) {
-                    $em->detach($revision);
-                }
 
                 ++$page;
                 $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);

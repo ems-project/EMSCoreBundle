@@ -189,7 +189,10 @@ class AjaxModal {
 }
 
 const ajaxModal = new AjaxModal('#ajax-modal');
+const pickFileModal = new AjaxModal('#pick-file-server-modal');
+
 export default ajaxModal;
+export {pickFileModal};
 
 
 

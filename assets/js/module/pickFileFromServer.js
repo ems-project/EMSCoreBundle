@@ -1,4 +1,4 @@
-import ajaxModal from "./../helper/ajaxModal";
+import {pickFileModal} from "../helper/ajaxModal";
 import {observeDom} from '../helper/observeDom';
 
 export default class PickFileFromServer {
@@ -14,7 +14,7 @@ export default class PickFileFromServer {
     }
 
     onClick(button) {
-        ajaxModal.load({ url: button.dataset.href, title: button.textContent, size: 'lg' },
+        pickFileModal.load({ url: button.dataset.href, title: button.textContent, size: 'lg' },
             (json, modal) => {
 
             const addClickCallbacks = function(linkList){
@@ -27,14 +27,15 @@ export default class PickFileFromServer {
                         const data =  JSON.parse(event.target.parentNode.dataset.json)
                         const row = button.closest('.file-uploader-row');
                         row.dispatchEvent(new CustomEvent('updateAssetData', {detail: data}));
-                        ajaxModal.close();
+                        pickFileModal.close();
+                        observer.disconnect();
                     };
                 }
             }
 
             const linkList = modal.querySelectorAll('div[data-json] > a');
             addClickCallbacks(linkList);
-            observeDom(modal, function(mutationList) {
+            const observer = observeDom(modal, function(mutationList) {
                 [].forEach.call(mutationList, function(mutation) {
                     if(mutation.addedNodes.length < 1) {
                         return;

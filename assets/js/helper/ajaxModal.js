@@ -9,7 +9,6 @@ class AjaxModal {
         this.modal = document.querySelector(this.selector);
         if (this.modal) {
             this.loadingElement = this.modal.querySelector('.modal-loading');
-            this.ajaxDataElements = this.modal.querySelectorAll('.ajax-data');
             $(document).on('hide.bs.modal', '.core-modal', (e) => {
                 if (e.target.id === this.modal.id) {
                     this.reset();
@@ -18,8 +17,12 @@ class AjaxModal {
         }
 
         this.onKeyDown = (event) => {
-            let btnAjaxSubmit = this.modal.querySelector('#ajax-modal-submit')
-            if (btnAjaxSubmit && event.key === "Enter") {
+            if (event.key !== 'Enter' || event.shiftKey) return
+
+            let btnAjaxSubmit = this.modal.querySelector('#ajax-modal-submit');
+            let blockTargetElements = ['textarea', 'input', 'select', 'button', 'a'];
+
+            if (btnAjaxSubmit && !Array.from(blockTargetElements).includes(event.target.nodeName.toLowerCase())) {
                 event.preventDefault();
                 btnAjaxSubmit.click();
             }

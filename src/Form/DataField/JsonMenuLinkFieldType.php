@@ -67,7 +67,8 @@ class JsonMenuLinkFieldType extends DataFieldType
                 'body' => $options['query'],
             ]);
 
-            $alreadyAssignedUids = $this->collectAlreadyAssignedJsonMenuUids($fieldType, $options['raw_data'] ?? []);
+            $isMigration = $options['migration'] ?? false;
+            $alreadyAssignedUuids = !$isMigration ? $this->collectAlreadyAssignedJsonUuids($fieldType, $options['raw_data'] ?? []) : [];
 
             $scroll = $this->elasticaService->scroll($search);
             foreach ($scroll as $resultSet) {
@@ -85,7 +86,7 @@ class JsonMenuLinkFieldType extends DataFieldType
 
                     $jsonMenu = $this->decoder->jsonMenuDecode($result->getSource()[$options['json_menu_field']] ?? '{}', '/');
                     foreach ($jsonMenu->getUids() as $uid) {
-                        if (!\in_array($uid, $alreadyAssignedUids)) {
+                        if (!\in_array($uid, $alreadyAssignedUuids)) {
                             if (($jsonMenu->getItem($uid)['contentType'] ?? false) === $fieldType->giveContentType()->getName()) {
                                 $choices[$label.$jsonMenu->getSlug($uid)] = $uid;
                             }
@@ -198,31 +199,27 @@ class JsonMenuLinkFieldType extends DataFieldType
     public function viewTransform(DataField $dataField)
     {
         $temp = parent::viewTransform($dataField);
+        $out = [];
 
         if (empty($temp)) {
-            return ['value' => []];
-        }
-
-        if (\is_string($temp)) {
-            return ['value' => [$temp]];
-        }
-
-        if (\is_array($temp)) {
+            $out = [];
+        } elseif (\is_string($temp)) {
+            $out = [$temp];
+        } elseif (\is_array($temp)) {
             $out = [];
             foreach ($temp as $item) {
                 if (\is_string($item) || \is_integer($item)) {
                     $out[] = $item;
                 } else {
-                    $dataField->addMessage('Was not able to import the data : '.\json_encode($temp, JSON_THROW_ON_ERROR));
+                    $dataField->addMessage('Was not able to import the data : '.\json_encode($item, JSON_THROW_ON_ERROR));
                 }
             }
-
-            return ['value' => $out];
+        } else {
+            $dataField->addMessage('Was not able to import the data : '.\json_encode($out));
+            $out = [];
         }
 
-        $dataField->addMessage('Was not able to import the data : '.\json_encode($temp, JSON_THROW_ON_ERROR));
-
-        return ['value' => []];
+        return ['value' => $out];
     }
 
     /**
@@ -230,7 +227,7 @@ class JsonMenuLinkFieldType extends DataFieldType
      *
      * @return array<mixed>
      */
-    private function collectAlreadyAssignedJsonMenuUids(FieldType $fieldType, array $rawData): array
+    private function collectAlreadyAssignedJsonUuids(FieldType $fieldType, array $rawData): array
     {
         $search = $this->elasticaService->convertElasticsearchSearch([
             'size' => 500,
@@ -250,14 +247,14 @@ class JsonMenuLinkFieldType extends DataFieldType
             ],
         ]);
 
-        $uids = [];
+        $uuids = [];
         $scroll = $this->elasticaService->scroll($search);
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
-                $uids = \array_merge($uids, $result->getSource()[$fieldType->getName()] ?? []);
+                $uuids = \array_merge($uuids, $result->getSource()[$fieldType->getName()] ?? []);
             }
         }
 
-        return \array_diff($uids, $rawData[$fieldType->getName()] ?? []);
+        return \array_diff($uuids, $rawData[$fieldType->getName()] ?? []);
     }
 }

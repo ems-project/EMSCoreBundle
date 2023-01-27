@@ -50,6 +50,11 @@ class JsonClass implements \JsonSerializable
         return $this->class;
     }
 
+    public function getProperty(string $name): mixed
+    {
+        return $this->properties[$name] ?? null;
+    }
+
     public function removeProperty(string $name): void
     {
         unset($this->properties[$name]);

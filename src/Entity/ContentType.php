@@ -15,6 +15,7 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
 use EMS\CoreBundle\Roles;
 use EMS\Helpers\Standard\DateTime;
+use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
 
 /**
@@ -815,16 +816,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         throw new \RuntimeException(\sprintf('Action id %d not found for content type %s', $actionId, $this->getSingularName()));
     }
 
-    /**
-     * Add template.
-     *
-     * @return ContentType
-     */
-    public function addTemplate(Template $template)
+    public function addTemplate(Template $template): void
     {
-        $this->templates[] = $template;
+        if ($this->templates->contains($template)) {
+            $this->templates->removeElement($template);
+        }
 
-        return $this;
+        $this->templates->add($template);
     }
 
     public function removeTemplate(Template $template): void
@@ -840,16 +838,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->templates;
     }
 
-    /**
-     * Add view.
-     *
-     * @return ContentType
-     */
-    public function addView(View $view)
+    public function addView(View $view): void
     {
-        $this->views[] = $view;
+        if ($this->views->contains($view)) {
+            $this->views->removeElement($view);
+        }
 
-        return $this;
+        $this->views->add($view);
     }
 
     public function removeView(View $view): void
@@ -863,6 +858,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getViews(): Collection
     {
         return $this->views;
+    }
+
+    public function getViewByName(string $name): ?View
+    {
+        $view = $this->views->filter(fn (View $view) => $view->getName() === $name)->first();
+
+        return $view instanceof View ? $view : null;
     }
 
     public function getFirstViewByType(string $type): ?View
@@ -1060,15 +1062,29 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     {
         switch ($name) {
             case 'templates':
-                /** @var Template $template */
-                foreach ($this->deserializeArray($value) as $template) {
+                foreach ($value as $item) {
+                    $json = JsonClass::fromJsonString(Json::encode($item));
+
+                    $name = $json->getProperty('name');
+                    $currentAction = \is_string($name) ? $this->getActionByName($name) : null;
+
+                    /** @var Template $template */
+                    $template = $json->jsonDeserialize($currentAction);
+
                     $this->addTemplate($template);
                     $template->setContentType($this);
                 }
                 break;
             case 'views':
-                /** @var View $view */
-                foreach ($this->deserializeArray($value) as $view) {
+                foreach ($value as $item) {
+                    $json = JsonClass::fromJsonString(Json::encode($item));
+
+                    $name = $json->getProperty('name');
+                    $currentView = \is_string($name) ? $this->getViewByName($name) : null;
+
+                    /** @var View $view */
+                    $view = $json->jsonDeserialize($currentView);
+
                     $this->addView($view);
                     $view->setContentType($this);
                 }

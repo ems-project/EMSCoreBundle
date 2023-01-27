@@ -645,7 +645,7 @@ class ContentTypeService implements EntityServiceInterface
             throw new \RuntimeException('unexpected non ContentType entity');
         }
 
-        return $this->updateFromJson($entity, $json, true, true);
+        return $this->updateFromJson($entity, $json, false, false);
     }
 
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface

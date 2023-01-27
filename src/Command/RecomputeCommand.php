@@ -180,6 +180,7 @@ final class RecomputeCommand extends Command
                 $revisionType->setData($newRevision); // bind new revision on form
 
                 if ($this->optionDeep) {
+                    $newRevision->setRawData([]);
                     $viewData = $this->dataService->getSubmitData($revisionType->get('data')); // get view data of new revision
                     $revisionType->submit(['data' => $viewData]); // submit new revision (reverse model transformers called
                 }

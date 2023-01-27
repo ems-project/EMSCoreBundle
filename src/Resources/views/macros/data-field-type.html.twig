@@ -235,7 +235,7 @@
 {% block EMS_CoreBundle_Form_DataField_CollectionFieldType %}
 	{% set collapsible = dataField.fieldType.displayOptions.collapsible|default(false) %}
 	{% set compareCollectionRawData = (attribute(compareRawData, dataField.fieldType.name) is defined?attribute(compareRawData, dataField.fieldType.name):null) %}
-	{% set diffCount = dataField.children|length - compareCollectionRawData|length %}
+	{% set diffCount = dataField.getChildren|length - compareCollectionRawData|length %}
 
 	<div class="panel panel-default {% if collapsible %}collapsible-collection{% endif %}">
 		<div class="panel-heading">
@@ -268,7 +268,7 @@
 		</div>
 		<div class="panel-body {% if collapsible %}collapse{% endif %}">
 			{% for idx, rawChild in dataField.rawData %}
-				{%  set child = dataField.children[loop.index0] %}
+				{%  set child = dataField.getChildren[loop.index0] %}
 				{%  set subpath = path|merge([loop.index0]) %}
 				<div class="{% if dataField.fieldType.displayOptions.itemBootstrapClass is defined and dataField.fieldType.displayOptions.itemBootstrapClass %}{{ dataField.fieldType.displayOptions.itemBootstrapClass }}{% else %}col-md-12{% endif %}">
                     <div class="panel panel-default">
@@ -294,7 +294,7 @@
 						</div>
 						<div class="panel-body container-fluid {% if collapsible %}collapse{% endif %}">
 							<div class="row">
-								{% for grandchild in child.children %}
+								{% for grandchild in child.getChildren %}
 									<div class="{% if grandchild.fieldType.displayOptions.class is defined and grandchild.fieldType.displayOptions.class  %}{{ grandchild.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
 										{{ _self.renderDataFieldBlock(grandchild, source, compare, (attribute(compareCollectionRawData, idx) is defined?attribute(compareCollectionRawData, idx):null), '', subpath) }}
 									</div>
@@ -336,8 +336,7 @@
 	{% endif %}
 
 	<div class="row">
-		{% for child in dataField.children|filter(c => false == c.fieldType.deleted) %}
-		
+		{% for child in dataField.getChildren|filter(c => false == c.fieldType.deleted) %}
 			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
 				{{ _self.renderDataFieldBlock(child, source, compare, compareRawData, '', path) }}
 			</div>
@@ -376,7 +375,7 @@
 		{% set compareSubRawData = attribute(compareRawData, dataField.fieldType.name) %}
 	{% endif %}
 
-    {% for child in dataField.children|filter(child => not child.fieldType.deleted) %}
+    {% for child in dataField.getChildren|filter(child => not child.fieldType.deleted) %}
 	<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
 				{{ _self.renderDataFieldBlock(child, source, compare, compareSubRawData, '', path) }}
 			</div>
@@ -420,7 +419,7 @@
 				<div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~loop.index0 }}__tab">
 					{% set childData = source[value]|default([]) %}
 					{% set childCompareData = compareRawData[value]|default([]) %}
-					{% for grandchild in dataField.children.get(value).children|default([]) %}
+					{% for grandchild in dataField.getChildren.get(value).getChildren|default([]) %}
 						{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([loop.index0])) }}
 					{% endfor %}
 				</div>
@@ -445,7 +444,7 @@
 	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
 			{% set counter = 1 %}
-            {% for child in dataField.children|filter(child => not child.fieldType.deleted) %}
+            {% for child in dataField.getChildren|filter(child => not child.fieldType.deleted) %}
 				{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == child.fieldType.type|default(null) %}
 					{% set labels = child.fieldType.displayOptions.labels|default('')|replace({"\r":''})|split('\n') %}
 					{% set values = child.fieldType.displayOptions.values|default('')|replace({"\r":''})|split('\n')%}
@@ -459,7 +458,7 @@
 
 					{% for value in values %}
 						{% with {
-							'child': child.children[value],
+							'child': child.getChildren[value],
 							'counter': counter,
 							'label': attribute(choices, value),
 							'path': path|merge([counter]),
@@ -485,9 +484,9 @@
 		</ul>
 		<div class="tab-content">
 			{% set counter = 1 %}
-			{% for child in dataField.children|filter(child => not child.fieldType.deleted) %}
+			{% for child in dataField.getChildren|filter(child => not child.fieldType.deleted) %}
 				{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == child.fieldType.type|default(null) %}
-					{% for key, item in  child.children %}
+					{% for key, item in  child.getChildren %}
 						{% with {
 							'child': item,
 							'counter': counter,
@@ -496,7 +495,7 @@
 							<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~counter }}__tab">
 								{% set childData = source[key]|default([]) %}
 								{% set childCompareData = compareRawData[key]|default([]) %}
-								{% for grandchild in child.children|default([]) %}
+								{% for grandchild in child.getChildren|default([]) %}
 									{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([counter])) }}
 								{% endfor %}
 							</div>

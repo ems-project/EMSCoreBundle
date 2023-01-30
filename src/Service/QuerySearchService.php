@@ -102,7 +102,7 @@ final class QuerySearchService implements EntityServiceInterface
 
     public function getEntityName(): string
     {
-        return 'query_search';
+        return 'query-search';
     }
 
     /**

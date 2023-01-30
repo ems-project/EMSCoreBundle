@@ -150,7 +150,7 @@ class EnvironmentRepository extends EntityRepository
                 'alias' => $record['alias'],
                 'managed' => $record['managed'],
                 'baseUrl' => $record['baseUrl'],
-                'circles' => $record['circles'],
+                'circles' => $record['circles'] ?? [],
             ];
         }
 

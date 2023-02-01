@@ -15,6 +15,7 @@ use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
+use EMS\CoreBundle\Exception\SkipNotificationException;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use Psr\Log\LoggerInterface;
@@ -190,13 +191,10 @@ class NotificationService
                 $notification->setUsername($this->userService->getCurrentUser()->getUsername());
             }
 
+            $this->sendEmail($notification);
+
             $em->persist($notification);
             $em->flush();
-
-            try {
-                $this->sendEmail($notification);
-            } catch (\Throwable $e) {
-            }
 
             $this->logger->notice('service.notification.send', [
                 'label' => $notification->getRevision()->getLabel(),
@@ -207,6 +205,14 @@ class NotificationService
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
             ]);
             $out = true;
+        } catch (SkipNotificationException $e) {
+            $this->logger->warning($e->getMessage(), [
+                'action_name' => $template->getName(),
+                'action_label' => $template->getLabel(),
+                'contenttype_name' => $revision->giveContentType(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
         } catch (\Exception $e) {
             $this->logger->error('service.notification.send_error', [
                 'action_name' => $template->getName(),
@@ -493,8 +499,12 @@ class NotificationService
         if ('pending' == $notification->getStatus()) {
             try {
                 $body = $this->twig->createTemplate($notification->getTemplate()->getBody())->render($params);
-            } catch (\Exception $e) {
-                $body = 'Error in body template: '.$e->getMessage();
+            } catch (\Throwable $e) {
+                $previousException = $e->getPrevious();
+                if ($previousException instanceof SkipNotificationException) {
+                    throw $previousException;
+                }
+                throw $e;
             }
 
             $email

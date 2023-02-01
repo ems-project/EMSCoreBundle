@@ -26,6 +26,7 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Sequence;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
+use EMS\CoreBundle\Exception\SkipNotificationException;
 use EMS\CoreBundle\Form\Data\Condition\InMyCircles;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
@@ -116,6 +117,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_get_default_environment_names', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames']),
             new TwigFunction('emsco_get_content_types', [ContentTypeRuntime::class, 'getContentTypes']),
             new TwigFunction('emsco_get_content_type_version_tags', [ContentTypeRuntime::class, 'getContentTypeVersionTags']),
+            new TwigFunction('emsco_skip_notification', $this->skipNotificationException(...), ['is_safe' => ['html']]),
             // deprecated
             new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames'], ['deprecated' => true, 'alternative' => 'emsco_get_default_environment_names']),
             new TwigFunction('get_content_types', [ContentTypeRuntime::class, 'getContentTypes'], ['deprecated' => true, 'alternative' => 'emsco_get_content_types']),
@@ -1117,6 +1119,11 @@ class AppExtension extends AbstractExtension
     public function getName(): string
     {
         return 'app_extension';
+    }
+
+    public function skipNotificationException(string $message = 'This notification has been skipped'): never
+    {
+        throw new SkipNotificationException($message);
     }
 
     /**

@@ -4,18 +4,19 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_core_submission_ajax" path="/datatable.json"
-           controller="EMS\CoreBundle\Controller\Form\SubmissionController::ajaxDataTable"
-           methods="GET"/>
-    <route id="form.submissions" path="/submissions"
-           controller="EMS\CoreBundle\Controller\Form\SubmissionController::indexAction"
-           methods="GET|POST"/>
-    <route id="form.submissions.process" path="/submissions/process/{formSubmission}"
-           controller="EMS\CoreBundle\Controller\Form\SubmissionController::process"
-           methods="POST"/>
-    <route id="form.submissions.download" path="/submissions/download/{formSubmission}"
-           controller="EMS\CoreBundle\Controller\Form\SubmissionController::download"
-           methods="GET">
-        <requirement key="id">\S+</requirement>
-    </route>
+  <route id="emsco_form_admin_index" path="/admin/form"
+         controller="EMS\CoreBundle\Controller\Form\FormController::index"
+         methods="GET|POST"/>
+  <route id="emsco_form_admin_index_ajax" path="/admin/form/datatable.json"
+         controller="EMS\CoreBundle\Controller\Form\FormController::datatable"
+         methods="GET"/>
+  <route id="emsco_form_admin_add" path="/admin/form/add"
+         controller="EMS\CoreBundle\Controller\Form\FormController::add"
+         methods="GET|POST"/>
+  <route id="emsco_form_admin_edit" path="/admin/form/edit/{form}"
+         controller="EMS\CoreBundle\Controller\Form\FormController::edit"
+         methods="GET|POST"/>
+  <route id="emsco_form_admin_delete" path="/admin/form/delete/{form}"
+         controller="EMS\CoreBundle\Controller\Form\FormController::delete"
+         methods="POST"/>
 </routes>

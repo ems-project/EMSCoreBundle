@@ -1,7 +1,29 @@
 audio/aac: 'AAC audio file'
 application/x-abiword: 'AbiWord document'
 video/x-msvideo: 'AVI: Audio Video Interleave'
-application/vnd.amazon.ebook: 'Amazon Kindle eBook format'
+application/vnd:
+    amazon:
+        ebook: 'Amazon Kindle eBook format'
+    openxmlformats-officedocument:
+        wordprocessingml:
+            document: 'Microsoft Word'
+        presentationml:
+            presentation: 'Microsoft PowerPoint'
+        spreadsheetml:
+            sheet: 'Microsoft Excel'
+    apple:
+        installer+xml: 'Apple Installer Package'
+    oasis:
+        opendocument:
+            presentation: 'OpenDocuemnt presentation document'
+            spreadsheet: 'OpenDocuemnt spreadsheet document'
+            text: 'OpenDocument text document'
+    ms-powerpoint: 'Microsoft PowerPoint'
+    visio: 'Microsft Visio'
+    ms-excel: 'Microsoft Excel'
+    ms-excel.sheet.macroenabled.12: 'Microsoft Excel'
+    mozilla:
+        xul+xml: XUL
 application/octet-stream: 'Any kind of binary data'
 application/x-bzip: 'BZip archive'
 application/x-bzip2: 'BZip2 archive'
@@ -9,7 +31,6 @@ application/x-csh: 'C-Shell script'
 text/css: 'Cascading Style Sheets (CSS)'
 text/csv: 'Comma-separated values (CSV)'
 application/msword: 'Microsoft Word'
-application/vnd.openxmlformats-officedocument.wordprocessingml.document: 'Microsoft Word'
 application/epub+zip: 'Electronic publication (EPUB)'
 image/gif: 'Graphics Interchange Format (GIF)'
 text/html: 'HyperText Markup Language (HTML)'
@@ -22,16 +43,10 @@ application/json: 'JSON format'
 audio/midi: 'Musical Instrument Digital Interface (MIDI)'
 video/mpeg: 'MPEG Video'
 video/mp4: 'MP4 Video'
-application/vnd.apple.installer+xml: 'Apple Installer Package'
-application/vnd.oasis.opendocument.presentation: 'OpenDocuemnt presentation document'
-application/vnd.oasis.opendocument.spreadsheet: 'OpenDocuemnt spreadsheet document'
-application/vnd.oasis.opendocument.text: 'OpenDocument text document'
 audio/ogg: 'OGG audio'
 video/ogg: 'OGG video'
 application/ogg: OGG
 application/pdf: 'Adobe Portable Document Format (PDF)'
-application/vnd.ms-powerpoint: 'Microsoft PowerPoint'
-application/vnd.openxmlformats-officedocument.presentationml.presentation: 'Microsoft PowerPoint'
 application/x-rar-compressed: 'RAR archive'
 application/rtf: 'Rich Text Format (RTF)'
 application/x-sh: 'Bourne shell script'
@@ -40,18 +55,13 @@ application/x-shockwave-flash: 'Small web format (SWF) or Adobe Flash document'
 application/x-tar: 'Tape Archive (TAR)'
 image/tiff: 'Tagged Image File Format (TIFF)'
 application/x-font-ttf: 'TrueType Font'
-application/vnd.visio: 'Microsft Visio'
 audio/x-wav: 'Waveform Audio Format'
 audio/webm: 'WEBM audio'
 video/webm: 'WEBM video'
 image/webp: 'WEBP image'
 application/x-font-woff: 'Web Open Font Format (WOFF)'
 application/xhtml+xml: XHTML
-application/vnd.ms-excel: 'Microsoft Excel'
-application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: 'Microsoft Excel'
-application/vnd.ms-excel.sheet.macroenabled.12: 'Microsoft Excel'
 application/xml: XML
-application/vnd.mozilla.xul+xml: XUL
 application/zip: 'ZIP archive'
 video/3gpp: '3GPP video container'
 video/3gpp2: '3GPP2 video container'

@@ -41,6 +41,9 @@
         <service id="ems.repository.dashboard" class="EMS\CoreBundle\Repository\DashboardRepository">
             <argument type="service" id="doctrine"/>
         </service>
+        <service id="ems.repository.form" class="EMS\CoreBundle\Repository\FormRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
         <service id="ems.repository.release" class="EMS\CoreBundle\Repository\ReleaseRepository">
            <argument type="service" id="doctrine"/>
         </service>

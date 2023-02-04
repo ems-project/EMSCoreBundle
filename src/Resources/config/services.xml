@@ -37,6 +37,16 @@
             <argument type="service" id="security.authorization_checker"/>
             <tag name="emsco.entity.service"/>
         </service>
+        <service id="ems.form.field-type.manager" class="EMS\CoreBundle\Core\Form\FieldTypeManager">
+          <argument type="service" id="logger"/>
+          <argument type="service" id="form.registry" />
+            <tag name="emsco.entity.service"/>
+        </service>
+        <service id="ems.form.manager" class="EMS\CoreBundle\Core\Form\FormManager">
+            <argument type="service" id="ems.repository.form"/>
+            <argument type="service" id="logger"/>
+            <tag name="emsco.entity.service"/>
+        </service>
         <service id="ems.service.channel" class="EMS\CoreBundle\Service\Channel\ChannelService">
             <argument type="service" id="ems.repository.channel"/>
             <argument type="service" id="logger"/>

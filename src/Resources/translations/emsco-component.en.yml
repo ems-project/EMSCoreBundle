@@ -1,10 +1,10 @@
 media_library:
-    home: 'Home'
+    home: Home
     folder:
         add:
             title: 'Add folder'
-            submit: 'Create'
-            cancel: 'Cancel'
+            submit: Create
+            cancel: Cancel
     file:
         add:
-            title: 'Upload'
+            title: Upload

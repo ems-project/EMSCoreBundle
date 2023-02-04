@@ -1,3 +1,417 @@
+log:
+    service:
+        form:
+            delete: 'Form %name% has been deleted'
+        action:
+            delete: 'The action %label% has been deleted'
+        channel:
+            delete: 'The channel %name% has been deleted'
+        content-type:
+            get-unreferenced-content-type:
+                unexpected-error: 'Unexpected error while get unreferenced content type from environment %environment%: %error_message%'
+        release:
+            delete: 'The Release %name% has been deleted'
+            not:
+                environments:
+                    defined: 'Environments source or/and target not defined for Release %name%'
+                ready: 'Status of Release %name% is not ready'
+        release_revision:
+            preceding:
+                revision:
+                    in:
+                        release: 'Has a previous revision related to Release %name%'
+        query_search:
+            delete: 'The QuerySearch %name% has been deleted'
+        xliff:
+            to-many-current-translations: 'The are %counter% translation documents when only one is expected for the translation id %translationId% and the target locale %targetLocale% in the environment %environment%'
+        dashboard:
+            delete: 'Dashboard %name% has been deleted'
+        schedule:
+            delete: 'Schedule %name% has been deleted'
+    action:
+        added: 'A new action %action_name% has been created'
+        deleted: 'The action %action_name% has been deleted'
+        twig:
+            error: 'Error during the Twig generation of %template_id% with the error message: %error_message%'
+        updated: 'The action %action_name% has been updated'
+    analyzer:
+        created: 'The analyzer %analyzer_name% has been created'
+        deleted: 'The analyzer %analyzer_name% has been deleted'
+        updated: 'The analyzer %analyzer_name% has been updated'
+    channel:
+        alias_not_found: 'The channel %channel% can''t be registered as it''s alias %alias% is missing'
+    contenttype:
+        action_not_found: 'Action not found on the content type %contenttype%'
+        created: 'The content type %contenttype% has been created'
+        deleted: 'The content type %contenttype% has been deleted'
+        dirty: 'The content type %contenttype% is dirty (its mapping might be out-of date), try to update its mapping'
+        field:
+            added: 'A field %field_name% has been added'
+            deleted: 'The field %field_name% has been deleted'
+            name_mandatory: 'The field name is mandatory'
+            name_not_valid: 'The field is not valid : (format: %field_format%)'
+            reordered: 'The the subfields of the field %field_name% have been reordered'
+        mapping:
+            not_found: 'Content type %contenttype%''s mapping not found'
+        not_found: 'Content type %contenttype% not found'
+        referenced: 'The content type %contenttype% has been referenced'
+        reordered: 'Content types have been reordered'
+        subfield:
+            added: 'A subfield %field_name% has been added'
+            name_mandatory: 'The subfield name is mandatory'
+            name_not_valid: 'The subfield is not valid : (format: %field_format%)'
+        unreferenced_not_found: 'Unreferenced content type not found'
+        updated: 'The content type %contenttype% has been updated'
+    controller:
+        channel:
+            unknown_action: 'Unknown action'
+        query_search:
+            unknown_action: 'Unknown action'
+        release:
+            unknown_action: 'Unknown action'
+        uploaded-file-logs:
+            unknown_action: 'Unknown action'
+        draft-in-progress:
+            discard_draft: 'Draft "%revision%" has been deleted'
+            unknown_action: 'Unknown action'
+            draft-not-found: 'Draft (%revisionId%) not found'
+        schedule:
+            unknown_action: 'Unknown action'
+    crud:
+        create_error: 'The revision for contenttype %contenttype% can not be created, reason: %error_message%'
+        delete_error: 'The revision %revision_id% for contenttype %contenttype% can not be deleted, reason: %error_message%'
+        deleted: 'The document "%label%" has been deleted'
+        discard_error: 'The revision %revision_id% for contenttype %contenttype% can not be discarded, reason: %error_message%'
+        finalize_error: 'The revision %revision_id% for content type %contenttype% can not be finalized, reason: %error_message%'
+        merge_error: 'The revision %revision_id% for contenttype %contenttype% can not be merged/updated, reason: %error_message%'
+        read_error: 'The revision for contenttype %contenttype% can not be found, reason: %error_message%'
+        replace_error: 'The revision %revision_id% for contenttype %contenttype% can not be replaced/updated, reason: %error_message%'
+    data:
+        document:
+            cant_duplicate_when_waiting_ouuid: 'It''s impossible to duplicate the document "%label%" has the content type %contenttype% requests first an OUUID'
+            compare: 'Compare the revision %revision_id% of the document %contenttype%:%ouuid% with the revision %compare_revision_id% of the document %compare_contenttype%:%compare_ouuid%'
+            copy: 'The content of the document "%label%" has been copied into the clipboard'
+            duplicated: 'The document "%label%" has been used to initiate a new document'
+            paste: 'Clipboard''s content has been paste in the document "%label%"'
+        job:
+            done: 'The job %job_id% is done'
+            initialize_failed: 'A job "%template_label%" has failed in the environment %environment%'
+            initialized: 'A job "%template_label%" has been initialized in the environment %environment%'
+            started: 'A job "%template_label%" has been started in the environment %environment%'
+        revision:
+            add_from_json_error: 'It was not possible to initiate a new %contenttype% document due to an internal error'
+            ajax_update_on_finalized: 'It''s impossible to save the document "%label%" has this revision is already finalized'
+            auto_publish_rollback: 'The document "%label%" has been silently published back in %environment%'
+            auto_save_off_with_auto_publish: 'The auto-save has been disabled as the auto-publish is enabled for the content type %contenttype%. Press Ctrl+S (Cmd+S) in order to save and publish in %environment%'
+            can_finalized: 'The document "%label%" can''t be finalized as it is'
+            can_finalized_as_invalid: '{1} The document "%label%" can''t be finalized has there is one error |]1,Inf[ The document "%label%" can''t be finalized as there is %count% errors'
+            can_finalized_as_pending_auto_save: 'The document "%label%" can''t be finalized as an auto save is pending'
+            can_finalized_error: 'The document "%label%" can''t be finalized due to an error: %error_message%'
+            cant_delete_has_published: 'The document "%label%" can''t be deleted as it is published in %environment%'
+            compare: 'Compare the revision %revision_id% of the document %contenttype%:%ouuid% with the revision %compare_revision_id%'
+            compare_more_recent: 'Compare the revision %revision_id% of the document %contenttype%:%ouuid% with the revision %compare_revision_id%, wich one is more recent'
+            compare_revision_not_found: 'Impossible to compare the revision %revision_id% of the document %contenttype%:%ouuid% with the revision id %compare_revision_id% as this revision does not exists'
+            init_document_from_array: 'It was not possible to initiate a new %contenttype% document due to an internal error'
+            load_from_auto_save: 'Data were loaded from an auto-saved version'
+            not_completed_request: 'Incomplete request! It''s not possible to save the document "%label%". Please check your PHP/Web configuration (i.e.: max_input_vars in php.ini)'
+            not_found_in_environment: 'It''s impossible to identify a revision for the document "%label%" in the environment %environment%'
+            only_super_can_finalize_an_archive: 'Only a super user can finalize an archived revision'
+            reindex: 'The document "%label%" has been reindex in %environment%'
+            reindex_failed: 'The document "%label%" has encountered an exception during its reindexing "%error_message%"'
+            reindex_failed_in: 'The document "%label%" has encountered an exception during its reindexing in %environment%'
+            added_to_release: 'Document "%label%" has been added to release "%release%"'
+            can_not_add_draft_in_release: 'Revision in draft mode can not be added to a release'
+            document_already_in_release_but_updated: 'Document "%label%" has been updated with a new revision in release "%release%"'
+            already_in_release: 'This revision of document "%label%" was already in release "%release%"'
+    elasticsearch:
+        alias_added: 'A new alias "%alias_name%" has been added to the index "%index_name%"'
+        cluster_red: 'There is something wrong with the cluster, actions are required now!'
+        cluster_yellow: 'There is something wrong with the cluster, status color: %color_status%'
+        default_search: 'This search has been defined as default search'
+        default_search_for_content_type: 'This search has been defined as default search form for the content type %contenttype%'
+        index_deleted: 'The index %index_name% has been deleted'
+        index_not_found: 'Index %index_name% not found'
+        not_able_to_deserialize_filters: 'Error during the deserialization of the filters'
+        paging_limit_exceeded: 'The paging is limited to the first %paging% items'
+        search_deleted: 'A search has been deleted'
+        search_not_accurate: 'The search result is limited to the first %total% documents'
+        template_error: 'There is something wrong with the template %template_label%'
+        template_filename_error: 'There is something wrong with the template %template_label%''s filename'
+        too_few_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
+        too_many_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
+    environment:
+        alia_missing: 'The alias for the environment %environment% is missing, consider to rebuild a brand new alias'
+        alias_attached: 'The alias %alias% has been attached'
+        alias_not_found: 'Alias %alias% not found'
+        alias_removed: 'The alias %alias% has been removed'
+        aligned: 'Environment %environment% and %with_environment% are aligned for those content types'
+        cant_align_default_environment: 'The document "%label%" cant''t be published in %environment% has it''s  the %contenttype%''s default environment'
+        cant_attach_xti_alias_to_environment: 'Can''t attach %alias% as it''s an alias with multiple indexes'
+        created: 'The environment %environment% has been created'
+        deleted: 'The environment %environment% has been deleted'
+        dont_have_publish_role: 'You don''t have enough privileges to publish "%contenttype%" documents'
+        is_default: 'The environment %environment% is used as default environment for at least one content type'
+        not_empty: 'The environment %environment% is not empty'
+        rebuild_unknown_option: 'Impossible to rebuild the environment %environment% due to unknown option "%option%"'
+        reordered: 'The environments have been reordered'
+        updated: 'The environment %environment% has been updated'
+        wrong_ouuid: 'Malformed OUUID %ouuid%'
+    error: 'This page/action has encountered an error: %error_message%'
+    file:
+        upload_error: 'Error during file upload: %error_message%'
+    filter:
+        deleted: 'The filter %filter_name% has been deleted'
+    index:
+        delete_orphan_index: 'Elasticsearch index %index_name% has been deleted'
+        index_with_aliases: 'The index %index_name% is referenced by %counter% aliases and can''t be deleted'
+        index_not_found: 'Elasticsearch index %index_name% not found'
+        column:
+            created: Created
+            channel: Channel
+            level_name: Severity
+            message: Message
+            username: Username
+            impersonator: Impersonator
+    job:
+        prepared: 'A job %job_id% has been prepared (%command%)'
+    managed_alias:
+        created: 'Managed alias %managed_alias_name% has been created'
+        deleted: 'Managed alias %managed_alias_name% has been deleted'
+        updated: 'Managed alias %managed_alias_name% has been updated'
+    nature:
+        issue_with_document: 'It was impossible to reorder the document "%label%": %error_message%'
+        not_authorized: 'Your user does not have privileges to to reorder the content type %contenttype%'
+        order_field_is_missing: 'The order field %order_field_name% is missing for the content type %contenttype%'
+        order_field_not_defined: 'The content type %contenttype% does not have any order field defined'
+        reordered: 'The content type %contenttype%''s documents have been reordered'
+        too_many_documents: 'The content type %contenttype% have to much documents (%total%) to be reorder all at once'
+    notification:
+        notification_not_found: 'Notification #%notification_id% not found'
+    reindex:
+        revision:
+            deleted_but_referenced: 'The document "%label%" is marked as deleted but is still referenced in %environment%'
+            error: 'En error occurred while indexing the document "%label%"'
+    revision_error: 'Error "%error_message%" with the document "%label%"'
+    locked_exception_error: 'Document "%label%" is currently locked by %username%'
+    privilege_exception_error: 'You don''t have enough privileges to edit this document'
+    user:
+        api_key: 'New API key for the user %user_display_name%: %api_key%'
+        deleted: 'The user %user_display_name% has been deleted'
+        disabled: 'The user %user_display_name% has been disabled'
+        enabled: 'The user %user_display_name% has been enabled'
+        locked: 'The user %user_display_name% has been locked'
+        unlocked: 'The user %user_display_name% has been unlocked'
+        updated: 'The user %user_display_name% has been updated'
+    view:
+        calendar:
+            document_not_found: 'The document "%label%" is missing'
+            from_date_is_missing: 'From date is missing!'
+        created: 'A new view %view_label% has been created'
+        criteria:
+            added: 'A criteria has been added for field %field_name% with value %field_data%'
+            already_exists: 'A criteria already exist for field %field_name% with value %field_data%'
+            already_missing: 'A criteria is already missing for field %field_name% with value %field_data%'
+            document_key_not_found: 'Document reference "%document_reference%" not found for the document "%label%"'
+            draft_in_progress: '{0} A draft is in progress for the document "%label%", it''s not possible to update it|{1} There is one drafts in progress. You won’t be able to update it from here.|]1,Inf[ There are %count% drafts in progress. You won’t be able to update them from here.'
+            field_not_found: 'Field path %field_path% not found'
+            locked_revision: 'Impossible to update the the document "%label%" as the revision is locked by %locked_by%'
+            new_criteria: 'A new criteria has been created for %target_field_name%:%target_field_data%'
+            not_found: 'Criteria not found for the field %field_name%'
+            removed: 'A criteria has been removed for field %field_name% with value %field_data%'
+            too_many_criteria: 'Too many criteria found (%total%). There is something wrong with this combination of criteria!: %message%'
+            update_not_authorized: 'You don''t have enough privileges to use this view to updates criterion'
+            update_privilege_issue: 'You are not authorized to update the document "%label%"'
+        deleted: 'A new view %view_label% has been deleted'
+        keywords:
+            warning:
+                bucket_not_found: 'Bucket %bucketPath% not found'
+        not_found: 'View %view_id% not found'
+        updated: 'A new view %view_label% has been updated'
+    warning:
+        asset_extract:
+            file_to_large: 'As this file is larger (%filesize%) than %max_size% its content has not been automatically extracted. You can either force the extraction or specify it manually in the "Info" menu.'
+    schedule:
+        created: 'Schedule %name% has been created'
+        updated: 'Schedule %name% has been updated'
+form:
+    field-type-type:
+        root: 'Form''s root'
+    actions:
+        delete_selected: 'Delete selected forms'
+        delete_confirm: 'Are you sure?'
+        delete: Delete
+        edit: Edit
+    index:
+        reorder: Reorder
+        column:
+            name: Name
+            label: Label
+    analyzer:
+        char_filter:
+            html_strip: 'HTML Strip'
+            label: 'Char Filter'
+        filter:
+            built_in:
+                asciifolding: 'ASCII Folding'
+                edge_n_gram: 'Edge NGram'
+                flatten_graph: 'Flatten graph'
+                label: Built-in
+                lowercase: Lowercase
+                n_gram: NGram
+                porter_stem: 'Porter Stem'
+                standard: Standard
+                stop: Stop
+                uppercase: Uppercase
+                word_delimiter: 'Word Delimiter'
+            customized: Customized
+            label: Filter
+        flags:
+            canon_eq: CANON_EQ
+            case_insensitive: CASE_INSENSITIVE
+            comments: COMMENTS
+            dotall: DOTALL
+            label: Flags
+            literal: LITERAL
+            multiline: MULTILINE
+            unicode_case: UNICODE_CASE
+            unicode_character_class: UNICODE_CHARACTER_CLASS
+            unix_lines: UNIX_LINES
+        label: Label
+        lowercase: Lowercase
+        max_output_size: 'Max Output Size'
+        max_token_length: 'Max Token Length'
+        name: Name
+        pattern: Pattern
+        position_increment_gap: 'Position Increment Gap'
+        save: Save
+        separator: Separator
+        stopwords:
+            _arabic_: Arabic
+            _armenian_: Armenian
+            _basque_: Basque
+            _brazilian_: Brazilian
+            _bulgarian_: Bulgarian
+            _catalan_: Catalan
+            _cjk_: CJK
+            _czech_: Czech
+            _danish_: Danish
+            _dutch_: Dutch
+            _english_: English
+            _finnish_: Finnish
+            _french_: French
+            _galician_: Galician
+            _german_: German
+            _greek_: Greek
+            _hindi_: Hindi
+            _hungarian_: Hungarian
+            _indonesian_: Indonesian
+            _irish_: Irish
+            _italian_: Italian
+            _latvian_: Latvian
+            _lithuanian_: Lithuanian
+            _none_: None
+            _norwegian_: Norwegian
+            _persian_: Persian
+            _portuguese_: Portuguese
+            _romanian_: Romanian
+            _russian_: Russian
+            _sorani_: Sorani
+            _spanish_: Spanish
+            _swedish_: Swedish
+            _thai_: Thai
+            _turkish_: Turkish
+            label: Stopwords
+        tokenizer:
+            classic: Classic
+            edge_ngram: 'Edge N-Gram'
+            keyword: Keyword
+            label: Tokenizer
+            letter: Letter
+            lowercase: Lowercase
+            ngram: N-Gram
+            path_hierarchy: Path
+            pattern: Pattern
+            standard: Standard
+            thai: Thai
+            uax_url_email: 'UAX URL Email'
+            whitespace: Whitespace
+        type:
+            custom: Custom
+            fingerprint: Fingerprint
+            label: Type
+            pattern: Pattern
+            standard: Standard
+            stop: Stop
+    contenttype:
+        json_update:
+            deleteExitingTemplates: 'Delete existing templates'
+            deleteExitingViews: 'Delete existing views'
+            filename: Filename
+            json: 'Content Type''s JSON file'
+            mimetype: 'Media Type'
+            subtitle: 'from a Content Type''s JSON file'
+            title: 'Update the content type "%content_type%"'
+            update: 'Update content type from JSON'
+    data:
+        bool_table_collum:
+            false_value: disable
+            true_value: enable
+    data_field:
+        collection:
+            import_not_an_array: 'Some data were not imported for the collection field %field_name% as is was not an array'
+        file_attachment:
+            file_not_found: 'File not found with the hash "%file_hash%"'
+    email: Email
+    form:
+        channel:
+            alias: Alias
+            label: Label
+            name: Name
+            public: 'Make channel available for non-authenticated users ?'
+        query_search:
+            environments: Environments
+            label: Label
+            name: Name
+        release:
+            environmentSource: 'Environment source'
+            environmentTarget: 'Environment target'
+            execution_date: 'Execution date'
+            name: Name
+        revision-type:
+            copy-label: Copy
+            paste-label: Paste
+            save-draft-label: 'Save as draft'
+            save-label: Save
+            publish-label: 'Save and publish in %environment%'
+    form_field:
+        wysiwyg:
+            content_css:
+                label: 'Content CSS (override styles sets''s config)'
+            format_tags:
+                label: 'Format tags (override styles sets config)'
+    subform:
+        channel:
+            attributes: 'Request extra attributes'
+            entryPath: 'Default entry path'
+            searchConfig: 'Search config'
+        searchquery:
+            query: 'Default query'
+            searchConfig: 'Search config'
+    username: Username
+    view:
+        hierarchical:
+            error_with_document: 'It was impossible to update the document "%label%" : %error_message%'
+            reorganized: 'The %contenttype%''s documents have been reorganized with the view "%view_label%"'
+        sorter:
+            error_with_document: 'It was impossible to update the document "%label%" : %error_message%'
+            ordered: 'The %contenttype%''s documents have been ordered with the view "%view_label%"'
+            too_many_documents: 'This content type have to much document (%total%) to be reorder them all in once'
+    wysiwyg_style_set:
+        table_default_css:
+            title: 'Default Table class attribute'
+    header:
+        checkbo:
+            select-all: 'Select all'
 ROLE_ADMIN: Administrator
 ROLE_ALLOW_ALIGN: 'Align Environment'
 ROLE_API: API
@@ -12,722 +426,607 @@ ROLE_SUPER_ADMIN: 'Super Admin'
 ROLE_SUPER_AUTHOR: 'Super Author'
 ROLE_SUPER_PUBLISHER: 'Super Publisher'
 ROLE_SUPER_USER: 'Super User'
-dashboard.index.reorder: Reorder
+dashboard:
+    index:
+        reorder: Reorder
+        column:
+            name: Name
+            label: Label
+            type: Type
+            landing_page: 'Landing page'
+            quick_search: 'Quick search'
+            public: Public
+    actions:
+        delete_selected: 'Deleted selected'
+        edit: Edit
+        set_quick_search: 'As quick search'
+        set_quick_search_confirm: 'Do you confirm'
+        set_landing_page: 'As landing page'
+        set_landing_page_confirm: 'Do you confirm'
+        delete: Delete
+        delete_confirm: 'Do you confirm'
 ROLE_SUPER_WEBMASTER: 'Super Webmaster'
 ROLE_TASK_MANAGER: 'Task Manager'
 ROLE_TRADUCTOR: Traductor
-ROLE_COPYWRITER: 'Copywriter'
+ROLE_COPYWRITER: Copywriter
 ROLE_AUDITOR: Auditor
 ROLE_USER: User
 ROLE_USER_MANAGEMENT: 'User Management'
 ROLE_USER_READ: 'User read'
 ROLE_WEBMASTER: Webmaster
-action.actions.delete: Delete
-action.actions.delete_confirm: 'Delete the "%label%" action?'
-action.actions.delete_selected: 'Delete selected'
-action.actions.delete_selected_confirm: 'Delete all selected actions?'
-action.actions.edit: Edit
-action.index.column.name: Name
-action.index.column.label: Label
-action.index.column.public: Public
-action.index.column.type: Type
-action.index.reorder: Reorder
-channel.actions.delete: Delete
-channel.actions.delete_confirm: 'Delete the "%label%" channel?'
-channel.actions.delete_selected: 'Delete selected'
-channel.actions.delete_selected_confirm: 'Delete all selected channels?'
-channel.actions.edit: Edit
-channel.add.save: Create
-channel.add.title: 'Add a channel'
-channel.edit.save: Save
-channel.edit.title: 'Edit a channel'
-channel.index.column.alias: Alias
-channel.index.column.label: Label
-channel.index.column.name: Name
-channel.index.column.public: 'Public access'
-channel.index.reorder: 'Reorder channels'
-channel.index.title: 'List of channels'
-channel.menu: Channels
-command.reindex.end: 'The content type %contenttype%''s documents have been reindexed in %environment% (index: %index%)'
-command.reindex.environment_not_found: 'Environment named %environment% not found'
-command.reindex.start: 'Start reindexing %contenttype% in %environment%'
-contenttype.action.update_from_json: 'Update from JSON'
-controller.revision.edit-controller.warning.edit-draft: 'You are editing an already published revision, It''s safer to <a href="%path%" class="btn btn-primary"><span class="fa fa-pencil"></span> edit a draft</a>'
-controller.environment.index.reorder_submit_button: Reorder
-data.custom-view.pagetitle: 'View %name% of the %contentType% "%label%" as indexed in %environment%'
-field_type.json_menu_editor.add: Add
-field_type.json_menu_editor.add_item: 'Add a new item %singular%'
-field_type.json_menu_editor.add_node: 'Add a new node %singular%'
-field_type.json_menu_editor.collapse_all_button: 'Expand/Collapse all'
-field_type.json_menu_editor.collapse_button: Expand/Collapse
-field_type.json_menu_editor.delete_item: 'Delete this entry'
-field_type.json_menu_editor.edit: Edit
-field_type.json_menu_editor.item_label_placeholder: 'Define a label for this entry'
-field_type.json_menu_editor.move_item: Move
-field_type.json_menu_editor.copy: Copy
-field_type.json_menu_editor.copy_all: 'Copy all'
-field_type.json_menu_editor.paste: Paste
-form.analyzer.char_filter.html_strip: 'HTML Strip'
-form.analyzer.char_filter.label: 'Char Filter'
-form.analyzer.filter.built_in.asciifolding: 'ASCII Folding'
-form.analyzer.filter.built_in.edge_n_gram: 'Edge NGram'
-form.analyzer.filter.built_in.flatten_graph: 'Flatten graph'
-form.analyzer.filter.built_in.label: Built-in
-form.analyzer.filter.built_in.lowercase: Lowercase
-form.analyzer.filter.built_in.n_gram: NGram
-form.analyzer.filter.built_in.porter_stem: 'Porter Stem'
-form.analyzer.filter.built_in.standard: Standard
-form.analyzer.filter.built_in.stop: Stop
-form.analyzer.filter.built_in.uppercase: Uppercase
-form.analyzer.filter.built_in.word_delimiter: 'Word Delimiter'
-form.analyzer.filter.customized: Customized
-form.analyzer.filter.label: Filter
-form.analyzer.flags.canon_eq: CANON_EQ
-form.analyzer.flags.case_insensitive: CASE_INSENSITIVE
-form.analyzer.flags.comments: COMMENTS
-form.analyzer.flags.dotall: DOTALL
-form.analyzer.flags.label: Flags
-form.analyzer.flags.literal: LITERAL
-form.analyzer.flags.multiline: MULTILINE
-form.analyzer.flags.unicode_case: UNICODE_CASE
-form.analyzer.flags.unicode_character_class: UNICODE_CHARACTER_CLASS
-form.analyzer.flags.unix_lines: UNIX_LINES
-form.analyzer.label: Label
-form.analyzer.lowercase: Lowercase
-form.analyzer.max_output_size: 'Max Output Size'
-form.analyzer.max_token_length: 'Max Token Length'
-form.analyzer.name: Name
-form.analyzer.pattern: Pattern
-form.analyzer.position_increment_gap: 'Position Increment Gap'
-form.analyzer.save: Save
-form.analyzer.separator: Separator
-form.analyzer.stopwords._arabic_: Arabic
-form.analyzer.stopwords._armenian_: Armenian
-form.analyzer.stopwords._basque_: Basque
-form.analyzer.stopwords._brazilian_: Brazilian
-form.analyzer.stopwords._bulgarian_: Bulgarian
-form.analyzer.stopwords._catalan_: Catalan
-form.analyzer.stopwords._cjk_: CJK
-form.analyzer.stopwords._czech_: Czech
-form.analyzer.stopwords._danish_: Danish
-form.analyzer.stopwords._dutch_: Dutch
-form.analyzer.stopwords._english_: English
-form.analyzer.stopwords._finnish_: Finnish
-form.analyzer.stopwords._french_: French
-form.analyzer.stopwords._galician_: Galician
-form.analyzer.stopwords._german_: German
-form.analyzer.stopwords._greek_: Greek
-form.analyzer.stopwords._hindi_: Hindi
-form.analyzer.stopwords._hungarian_: Hungarian
-form.analyzer.stopwords._indonesian_: Indonesian
-form.analyzer.stopwords._irish_: Irish
-form.analyzer.stopwords._italian_: Italian
-form.analyzer.stopwords._latvian_: Latvian
-form.analyzer.stopwords._lithuanian_: Lithuanian
-form.analyzer.stopwords._none_: None
-form.analyzer.stopwords._norwegian_: Norwegian
-form.analyzer.stopwords._persian_: Persian
-form.analyzer.stopwords._portuguese_: Portuguese
-form.analyzer.stopwords._romanian_: Romanian
-form.analyzer.stopwords._russian_: Russian
-form.analyzer.stopwords._sorani_: Sorani
-form.analyzer.stopwords._spanish_: Spanish
-form.analyzer.stopwords._swedish_: Swedish
-form.analyzer.stopwords._thai_: Thai
-form.analyzer.stopwords._turkish_: Turkish
-form.analyzer.stopwords.label: Stopwords
-form.analyzer.tokenizer.classic: Classic
-form.analyzer.tokenizer.edge_ngram: 'Edge N-Gram'
-form.analyzer.tokenizer.keyword: Keyword
-form.analyzer.tokenizer.label: Tokenizer
-form.analyzer.tokenizer.letter: Letter
-form.analyzer.tokenizer.lowercase: Lowercase
-form.analyzer.tokenizer.ngram: N-Gram
-form.analyzer.tokenizer.path_hierarchy: Path
-form.analyzer.tokenizer.pattern: Pattern
-form.analyzer.tokenizer.standard: Standard
-form.analyzer.tokenizer.thai: Thai
-form.analyzer.tokenizer.uax_url_email: 'UAX URL Email'
-form.analyzer.tokenizer.whitespace: Whitespace
-form.analyzer.type.custom: Custom
-form.analyzer.type.fingerprint: Fingerprint
-form.analyzer.type.label: Type
-form.analyzer.type.pattern: Pattern
-form.analyzer.type.standard: Standard
-form.analyzer.type.stop: Stop
-form.contenttype.json_update.deleteExitingTemplates: 'Delete existing templates'
-form.contenttype.json_update.deleteExitingViews: 'Delete existing views'
-form.contenttype.json_update.filename: Filename
-form.contenttype.json_update.json: 'Content Type''s JSON file'
-form.contenttype.json_update.mimetype: 'Media Type'
-form.contenttype.json_update.subtitle: 'from a Content Type''s JSON file'
-form.contenttype.json_update.title: 'Update the content type "%content_type%"'
-form.contenttype.json_update.update: 'Update content type from JSON'
-form.data.bool_table_collum.false_value: disable
-form.data.bool_table_collum.true_value: enable
-form.data_field.collection.import_not_an_array: 'Some data were not imported for the collection field %field_name% as is was not an array'
-form.data_field.file_attachment.file_not_found: 'File not found with the hash "%file_hash%"'
-form.email: Email
-form.form.channel.alias: Alias
-form.form.channel.label: Label
-form.form.channel.name: Name
-form.form.channel.public: 'Make channel available for non-authenticated users ?'
-form.form.query_search.environments: Environments
-form.form.query_search.label: Label
-form.form.query_search.name: Name
-form.form.release.environmentSource: 'Environment source'
-form.form.release.environmentTarget: 'Environment target'
-form.form.release.execution_date: 'Execution date'
-form.form.release.name: Name
-form.form.revision-type.copy-label: Copy
-form.form.revision-type.paste-label: Paste
-form.form.revision-type.save-draft-label: 'Save as draft'
-form.form.revision-type.save-label: 'Save'
-form.form.revision-type.publish-label: 'Save and publish in %environment%'
-form.form_field.wysiwyg.content_css.label: 'Content CSS (override styles sets''s config)'
-form.form_field.wysiwyg.format_tags.label: 'Format tags (override styles sets config)'
-form.subform.channel.attributes: 'Request extra attributes'
-form.subform.channel.entryPath: 'Default entry path'
-form.subform.channel.searchConfig: 'Search config'
-form.subform.searchquery.query: 'Default query'
-form.subform.searchquery.searchConfig: 'Search config'
-form.username: Username
-form.view.hierarchical.error_with_document: 'It was impossible to update the document "%label%" : %error_message%'
-form.view.hierarchical.reorganized: 'The %contenttype%''s documents have been reorganized with the view "%view_label%"'
-form.view.sorter.error_with_document: 'It was impossible to update the document "%label%" : %error_message%'
-form.view.sorter.ordered: 'The %contenttype%''s documents have been ordered with the view "%view_label%"'
-form.view.sorter.too_many_documents: 'This content type have to much document (%total%) to be reorder them all in once'
-form.wysiwyg_style_set.table_default_css.title: 'Default Table class attribute'
-form-submission.form-submissions.confirm: 'Confirm Deletion'
-form-submission.form-submissions.delete: Delete
-form-submission.form-submissions.delete_confirm: 'Delete the "%label%" submission?'
-form-submission.form-submissions.delete_selected: 'Delete selected'
-form-submission.form-submissions.delete_selected_confirm: 'Delete all selected submissions?'
-form-submission.form-submissions.download: Download
-form-submission.form-submissions.download_selected: 'Download selected'
-form-submission.form-submissions.edit: Edit
-form-submission.form-submissions.export_selected: 'Export selected'
-form-submission.form-submissions.process: 'Delete Submission'
-form-submission.index.column.created: 'Created At'
-form-submission.index.column.expire_date: 'Expire Date'
-form-submission.index.column.form: Form
-form-submission.index.column.id: ID
-form-submission.index.column.instance: Instance
-form-submission.index.column.label: Label
-form-submission.index.column.locale: Locale
-form-submission.index.column.name: Name
-form-submission.index.column.public: Public
-form-submission.index.column.type: Type
-form-submission.index.reorder: Reorder
-form_submissions.download: Download
-form_submissions.overview: Overview
-form_submissions.process.button: 'Delete Submission'
-form_submissions.process.confirm_body: "After confirmation you can NOT download the form data anymore!\nAre you sure, you want to delete the form submission?\n"
-form_submissions.process.confirm_title: 'Confirm deletion'
-form_submissions.process.error: 'Form deletion failed!'
-form_submissions.process.success: 'Form submission with id "%id%" has been deleted!'
-form_submissions.title: 'Form Submissions'
-log.action.added: 'A new action %action_name% has been created'
-log.action.deleted: 'The action %action_name% has been deleted'
-log.action.twig.error: 'Error during the Twig generation of %template_id% with the error message: %error_message%'
-log.action.updated: 'The action %action_name% has been updated'
-log.analyzer.created: 'The analyzer %analyzer_name% has been created'
-log.analyzer.deleted: 'The analyzer %analyzer_name% has been deleted'
-log.analyzer.updated: 'The analyzer %analyzer_name% has been updated'
-log.channel.alias_not_found: 'The channel %channel% can''t be registered as it''s alias %alias% is missing'
-log.contenttype.action_not_found: 'Action not found on the content type %contenttype%'
-log.contenttype.created: 'The content type %contenttype% has been created'
-log.contenttype.deleted: 'The content type %contenttype% has been deleted'
-log.contenttype.dirty: 'The content type %contenttype% is dirty (its mapping might be out-of date), try to update its mapping'
-log.contenttype.field.added: 'A field %field_name% has been added'
-log.contenttype.field.deleted: 'The field %field_name% has been deleted'
-log.contenttype.field.name_mandatory: 'The field name is mandatory'
-log.contenttype.field.name_not_valid: 'The field is not valid : (format: %field_format%)'
-log.contenttype.field.reordered: 'The the subfields of the field %field_name% have been reordered'
-log.contenttype.mapping.not_found: 'Content type %contenttype%''s mapping not found'
-log.contenttype.not_found: 'Content type %contenttype% not found'
-log.contenttype.referenced: 'The content type %contenttype% has been referenced'
-log.contenttype.reordered: 'Content types have been reordered'
-log.contenttype.subfield.added: 'A subfield %field_name% has been added'
-log.contenttype.subfield.name_mandatory: 'The subfield name is mandatory'
-log.contenttype.subfield.name_not_valid: 'The subfield is not valid : (format: %field_format%)'
-log.contenttype.unreferenced_not_found: 'Unreferenced content type not found'
-log.contenttype.updated: 'The content type %contenttype% has been updated'
-log.controller.channel.unknown_action: 'Unknown action'
-log.controller.query_search.unknown_action: 'Unknown action'
-log.controller.release.unknown_action: 'Unknown action'
-log.controller.uploaded-file-logs.unknown_action: 'Unknown action'
-log.crud.create_error: 'The revision for contenttype %contenttype% can not be created, reason: %error_message%'
-log.crud.delete_error: 'The revision %revision_id% for contenttype %contenttype% can not be deleted, reason: %error_message%'
-log.crud.deleted: 'The document "%label%" has been deleted'
-log.crud.discard_error: 'The revision %revision_id% for contenttype %contenttype% can not be discarded, reason: %error_message%'
-log.crud.finalize_error: 'The revision %revision_id% for content type %contenttype% can not be finalized, reason: %error_message%'
-log.crud.merge_error: 'The revision %revision_id% for contenttype %contenttype% can not be merged/updated, reason: %error_message%'
-log.crud.read_error: 'The revision for contenttype %contenttype% can not be found, reason: %error_message%'
-log.crud.replace_error: 'The revision %revision_id% for contenttype %contenttype% can not be replaced/updated, reason: %error_message%'
-log.data.document.cant_duplicate_when_waiting_ouuid: 'It''s impossible to duplicate the document "%label%" has the content type %contenttype% requests first an OUUID'
-log.data.document.compare: 'Compare the revision %revision_id% of the document %contenttype%:%ouuid% with the revision %compare_revision_id% of the document %compare_contenttype%:%compare_ouuid%'
-log.data.document.copy: 'The content of the document "%label%" has been copied into the clipboard'
-log.data.document.duplicated: 'The document "%label%" has been used to initiate a new document'
-log.data.document.paste: 'Clipboard''s content has been paste in the document "%label%"'
-log.data.job.done: 'The job %job_id% is done'
-log.data.job.initialize_failed: 'A job "%template_label%" has failed in the environment %environment%'
-log.data.job.initialized: 'A job "%template_label%" has been initialized in the environment %environment%'
-log.data.job.started: 'A job "%template_label%" has been started in the environment %environment%'
-log.data.revision.add_from_json_error: 'It was not possible to initiate a new %contenttype% document due to an internal error'
-log.data.revision.ajax_update_on_finalized: 'It''s impossible to save the document "%label%" has this revision is already finalized'
-log.data.revision.auto_publish_rollback: 'The document "%label%" has been silently published back in %environment%'
-log.data.revision.auto_save_off_with_auto_publish: 'The auto-save has been disabled as the auto-publish is enabled for the content type %contenttype%. Press Ctrl+S (Cmd+S) in order to save and publish in %environment%'
-log.data.revision.can_finalized: 'The document "%label%" can''t be finalized as it is'
-log.data.revision.can_finalized_as_invalid: '{1} The document "%label%" can''t be finalized has there is one error |]1,Inf[ The document "%label%" can''t be finalized as there is %count% errors'
-log.data.revision.can_finalized_as_pending_auto_save: 'The document "%label%" can''t be finalized as an auto save is pending'
-log.data.revision.can_finalized_error: 'The document "%label%" can''t be finalized due to an error: %error_message%'
-log.data.revision.cant_delete_has_published: 'The document "%label%" can''t be deleted as it is published in %environment%'
-log.data.revision.compare: 'Compare the revision %revision_id% of the document %contenttype%:%ouuid% with the revision %compare_revision_id%'
-log.data.revision.compare_more_recent: 'Compare the revision %revision_id% of the document %contenttype%:%ouuid% with the revision %compare_revision_id%, wich one is more recent'
-log.data.revision.compare_revision_not_found: 'Impossible to compare the revision %revision_id% of the document %contenttype%:%ouuid% with the revision id %compare_revision_id% as this revision does not exists'
-log.data.revision.init_document_from_array: 'It was not possible to initiate a new %contenttype% document due to an internal error'
-log.data.revision.load_from_auto_save: 'Data were loaded from an auto-saved version'
-log.data.revision.not_completed_request: 'Incomplete request! It''s not possible to save the document "%label%". Please check your PHP/Web configuration (i.e.: max_input_vars in php.ini)'
-log.data.revision.not_found_in_environment: 'It''s impossible to identify a revision for the document "%label%" in the environment %environment%'
-log.data.revision.only_super_can_finalize_an_archive: 'Only a super user can finalize an archived revision'
-log.data.revision.reindex: 'The document "%label%" has been reindex in %environment%'
-log.data.revision.reindex_failed: 'The document "%label%" has encountered an exception during its reindexing "%error_message%"'
-log.data.revision.reindex_failed_in: 'The document "%label%" has encountered an exception during its reindexing in %environment%'
-log.elasticsearch.alias_added: 'A new alias "%alias_name%" has been added to the index "%index_name%"'
-log.elasticsearch.cluster_red: 'There is something wrong with the cluster, actions are required now!'
-log.elasticsearch.cluster_yellow: 'There is something wrong with the cluster, status color: %color_status%'
-log.elasticsearch.default_search: 'This search has been defined as default search'
-log.elasticsearch.default_search_for_content_type: 'This search has been defined as default search form for the content type %contenttype%'
-log.elasticsearch.index_deleted: 'The index %index_name% has been deleted'
-log.elasticsearch.index_not_found: 'Index %index_name% not found'
-log.elasticsearch.not_able_to_deserialize_filters: 'Error during the deserialization of the filters'
-log.elasticsearch.paging_limit_exceeded: 'The paging is limited to the first %paging% items'
-log.elasticsearch.search_deleted: 'A search has been deleted'
-log.elasticsearch.search_not_accurate: 'The search result is limited to the first %total% documents'
-log.elasticsearch.template_error: 'There is something wrong with the template %template_label%'
-log.elasticsearch.template_filename_error: 'There is something wrong with the template %template_label%''s filename'
-log.elasticsearch.too_few_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
-log.elasticsearch.too_many_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
-log.environment.alia_missing: 'The alias for the environment %environment% is missing, consider to rebuild a brand new alias'
-log.environment.alias_attached: 'The alias %alias% has been attached'
-log.environment.alias_not_found: 'Alias %alias% not found'
-log.environment.alias_removed: 'The alias %alias% has been removed'
-log.environment.aligned: 'Environment %environment% and %with_environment% are aligned for those content types'
-log.environment.cant_align_default_environment: 'The document "%label%" cant''t be published in %environment% has it''s  the %contenttype%''s default environment'
-log.environment.cant_attach_xti_alias_to_environment: 'Can''t attach %alias% as it''s an alias with multiple indexes'
-log.environment.created: 'The environment %environment% has been created'
-log.environment.deleted: 'The environment %environment% has been deleted'
-log.environment.dont_have_publish_role: 'You don''t have enough privileges to publish "%contenttype%" documents'
-log.environment.is_default: 'The environment %environment% is used as default environment for at least one content type'
-log.environment.not_empty: 'The environment %environment% is not empty'
-log.environment.rebuild_unknown_option: 'Impossible to rebuild the environment %environment% due to unknown option "%option%"'
-log.environment.reordered: 'The environments have been reordered'
-log.environment.updated: 'The environment %environment% has been updated'
-log.environment.wrong_ouuid: 'Malformed OUUID %ouuid%'
-log.error: 'This page/action has encountered an error: %error_message%'
-log.file.upload_error: 'Error during file upload: %error_message%'
-log.filter.deleted: 'The filter %filter_name% has been deleted'
-log.index.delete_orphan_index: 'Elasticsearch index %index_name% has been deleted'
-log.index.index_with_aliases: 'The index %index_name% is referenced by %counter% aliases and can''t be deleted'
-log.index.index_not_found: 'Elasticsearch index %index_name% not found'
-log.job.prepared: 'A job %job_id% has been prepared (%command%)'
-log.managed_alias.created: 'Managed alias %managed_alias_name% has been created'
-log.managed_alias.deleted: 'Managed alias %managed_alias_name% has been deleted'
-log.managed_alias.updated: 'Managed alias %managed_alias_name% has been updated'
-log.nature.issue_with_document: 'It was impossible to reorder the document "%label%": %error_message%'
-log.nature.not_authorized: 'Your user does not have privileges to to reorder the content type %contenttype%'
-log.nature.order_field_is_missing: 'The order field %order_field_name% is missing for the content type %contenttype%'
-log.nature.order_field_not_defined: 'The content type %contenttype% does not have any order field defined'
-log.nature.reordered: 'The content type %contenttype%''s documents have been reordered'
-log.nature.too_many_documents: 'The content type %contenttype% have to much documents (%total%) to be reorder all at once'
-log.notification.notification_not_found: 'Notification #%notification_id% not found'
-log.reindex.revision.deleted_but_referenced: 'The document "%label%" is marked as deleted but is still referenced in %environment%'
-log.reindex.revision.error: 'En error occurred while indexing the document "%label%"'
-log.revision_error: 'Error "%error_message%" with the document "%label%"'
-log.locked_exception_error: 'Document "%label%" is currently locked by %username%'
-log.privilege_exception_error: 'You don''t have enough privileges to edit this document'
-log.service.action.delete: 'The action %label% has been deleted'
-log.service.channel.delete: 'The channel %name% has been deleted'
-log.service.content-type.get-unreferenced-content-type.unexpected-error: 'Unexpected error while get unreferenced content type from environment %environment%: %error_message%'
-log.service.release.delete: 'The Release %name% has been deleted'
-log.service.release.not.environments.defined: 'Environments source or/and target not defined for Release %name%'
-log.service.release.not.ready: 'Status of Release %name% is not ready'
-log.service.release_revision.preceding.revision.in.release: 'Has a previous revision related to Release %name%'
-log.service.query_search.delete: 'The QuerySearch %name% has been deleted'
-log.service.xliff.to-many-current-translations: 'The are %counter% translation documents when only one is expected for the translation id %translationId% and the target locale %targetLocale% in the environment %environment%'
-log.user.api_key: 'New API key for the user %user_display_name%: %api_key%'
-log.user.deleted: 'The user %user_display_name% has been deleted'
-log.user.disabled: 'The user %user_display_name% has been disabled'
-log.user.enabled: 'The user %user_display_name% has been enabled'
-log.user.locked: 'The user %user_display_name% has been locked'
-log.user.unlocked: 'The user %user_display_name% has been unlocked'
-log.user.updated: 'The user %user_display_name% has been updated'
-log.view.calendar.document_not_found: 'The document "%label%" is missing'
-log.view.calendar.from_date_is_missing: 'From date is missing!'
-log.view.created: 'A new view %view_label% has been created'
-log.view.criteria.added: 'A criteria has been added for field %field_name% with value %field_data%'
-log.view.criteria.already_exists: 'A criteria already exist for field %field_name% with value %field_data%'
-log.view.criteria.already_missing: 'A criteria is already missing for field %field_name% with value %field_data%'
-log.view.criteria.document_key_not_found: 'Document reference "%document_reference%" not found for the document "%label%"'
-log.view.criteria.draft_in_progress: '{0} A draft is in progress for the document "%label%", it''s not possible to update it|{1} There is one drafts in progress. You won’t be able to update it from here.|]1,Inf[ There are %count% drafts in progress. You won’t be able to update them from here.'
-log.view.criteria.field_not_found: 'Field path %field_path% not found'
-log.view.criteria.locked_revision: 'Impossible to update the the document "%label%" as the revision is locked by %locked_by%'
-log.view.criteria.new_criteria: 'A new criteria has been created for %target_field_name%:%target_field_data%'
-log.view.criteria.not_found: 'Criteria not found for the field %field_name%'
-log.view.criteria.removed: 'A criteria has been removed for field %field_name% with value %field_data%'
-log.view.criteria.too_many_criteria: 'Too many criteria found (%total%). There is something wrong with this combination of criteria!: %message%'
-log.view.criteria.update_not_authorized: 'You don''t have enough privileges to use this view to updates criterion'
-log.view.criteria.update_privilege_issue: 'You are not authorized to update the document "%label%"'
-log.view.deleted: 'A new view %view_label% has been deleted'
-log.view.keywords.warning.bucket_not_found: 'Bucket %bucketPath% not found'
-log.view.not_found: 'View %view_id% not found'
-log.view.updated: 'A new view %view_label% has been updated'
-log.warning.asset_extract.file_to_large: 'As this file is larger (%filesize%) than %max_size% its content has not been automatically extracted. You can either force the extraction or specify it manually in the "Info" menu.'
-query_search.actions.delete: Delete
-query_search.actions.delete_confirm: 'Delete the "%label%" QuerySearch?'
-query_search.actions.delete_selected: 'Delete selected'
-query_search.actions.delete_selected_confirm: 'Delete all selected QuerySearch?'
-query_search.actions.edit: Edit
-query_search.add.save: Create
-query_search.add.title: 'Add a QuerySearch'
-query_search.edit.save: Save
-query_search.edit.title: 'Edit a QuerySearch'
-query_search.index.column.alias: Alias
-query_search.index.column.label: Label
-query_search.index.column.name: Name
-query_search.index.column.public: 'Public access'
-query_search.index.reorder: 'Reorder QuerySearch'
-query_search.index.title: 'List of QuerySearch'
-query_search.menu: QuerySearch
-release.actions.add_revisions: 'Add documents'
-release.actions.delete: Delete
-release.actions.delete_confirm: 'Delete the Release?'
-release.actions.delete_selected: 'Delete selected'
-release.actions.delete_selected_confirm: 'Delete all selected Releases?'
-release.actions.edit: Edit
-release.actions.publish_release: 'Publish now'
-release.actions.publish_confirm: 'Publish the release?'
-release.actions.set_status_canceled: 'Cancel release'
-release.actions.set_status_ready: 'Validate release'
-release.actions.set_status_wip: 'Rework release'
-release.actions.show: View
-release.add.save: Create
-release.add.title: 'Add a Release'
-release.edit.save: Save
-release.edit.saveAndClose: 'Save and Close'
-release.edit.title: 'Edit a Release'
-release.index.column.env_source: 'Environment source'
-release.index.column.env_target: 'Environment target'
-release.index.column.execution_date: 'Execution date'
-release.index.column.name: Name
-release.index.column.status: Status
-release.index.column.docs_count: '# Documents'
-release.index.title: 'List of Releases'
-release.menu: Releases
-release.revision.actions.add: 'Add document'
-release.revision.action.add: 'Add document to release'
-release.revision.actions.add_confirm: 'Do you confirm ?'
-release.revision.actions.remove: 'Remove documents'
-release.revision.index.column.CT: 'Content Type'
-release.revision.index.column.label: Label
-release.revision.index.column.minRevId: 'Environment source'
-release.revision.index.column.maxRevId: 'Environment target'
-release.revision.index.title: 'List of documents available for release'
-release.revision.menu: 'Add documents'
-release.revision.index.column.revision: Revision
-release.revision.index.column.document: Document
-release.revision.index.column.action: Action
-release.revision.index.column.previous: 'Previous revision'
-release.revision.index.column.not-applicable: 'not applicable'
-release.revision.view.title: 'Release''s documents'
-release.status.wip: Draft
-release.status.ready: Ready
-release.status.applied: Applied
-release.status.canceled: Canceled
-release.status.scheduled: Scheduled
-release.status.rollbacked: 'Rolled back'
-release.revision.index.column.still_in_target: 'Still in %target%'
-release.all_releases.label: 'All releases'
-search.aggregate_option_label: 'Aggregate Option'
-search.search_field_option_label: 'Search Field Option'
-search.sort_option_label: 'Sort Option'
-service.alias.too_many_indexes: 'There is too many indexes'
-service.asset_extractor.extract_error: 'An issue has been raised while extracting information from the asset/file %file_hash% : %error_message%'
-service.asset_extractor.persist_error: 'An issue has been raised while persisting the information extracted from the asset/file %file_hash% : %error_message%'
-service.contenttype.field_not_found: 'Field %field_id% not found and ignored'
-service.contenttype.reordered: 'Content type "%contenttype% has been reordered'
-service.contenttype.update_mapping_exception: 'Error on updating %environments%''s mapping : %elasticsearch_error%'
-service.entity.created: '%entity_type% %entity_name% has been created'
-service.entity.deleted: '%entity_type% %entity_name% has been deleted'
-service.entity.updated: '%entity_type% %entity_name% has been updated'
-service.notification.another_one_is_pending: 'Another notification %notification_name% is already pending for document "%label%" in %environment% by %notification_username%'
-service.notification.notification_will_be_lost_finalize: 'An "%notification_name%" notification will be lost for this %contenttype% document (%ouuid%) on finalize'
-service.notification.send: '%notification_name% for document "%label%" in %environment% has been send'
-service.notification.send_error: 'Error while sending notification (%action_label%) for %contenttype_name% : %error_message%'
-service.notification.treated: '%notification_name% for document "%label%" in %environment% has been %status%'
-service.notification.update: 'A "%notification_name%" notification has been %notification_status% for a "%contenttype%" document (%ouuid%)'
-service.object_choice_cache.alias_not_found: 'Alias not found for content type %contenttype%'
-service.object_choice_cache.contenttype_not_found: 'Content type %contenttype% not found'
-service.object_choice_cache.limited_result_set: 'The data link picker is limited to the first %limit% of %count% documents'
-service.object_choice_cache.object_key_not_found: 'Object key %object_key% not found'
-service.publish.already_published: 'The document "%label%" is already published in %environment%'
-service.publish.already_unpublished: 'The document "%label%" was already unpublished from %environment%'
-service.publish.draft_published: 'A draft of the document "%label%" has been published in %environment%'
-service.publish.not_authorized: 'You can not (un)publish the content type %contenttype%'
-service.publish.not_in_circles: 'You can not (un)publish the content type %contenttype% as you don''t share any circle'
-service.publish.not_in_default_environment: 'You can not (un)publish in the default environment %environment% of the document "%label%"'
-service.publish.publish_failed: 'The publication of the document "%label%" failed!'
-service.publish.publish_draft_error: 'A draft of the document "%label%" can''t be published in %environment% : %error_message%'
-service.publish.revision_not_found_in_source: 'Missing revision in the environment %environment% for the document "%label%"'
-service.publish.unpublished: 'The document "%label%" has been unpublished from %environment%'
-service.wysiwyg_profile.deleted: 'Profile %profile_name% has been deleted'
-service.wysiwyg_profile.updated: 'Profile %profile_name% has been updated'
-service.wysiwyg_styles_set.deleted: 'Style set "%wysiwyg_styles_set_name% has been deleted'
-service.wysiwyg_styles_set.updated: 'Style set "%wysiwyg_styles_set_name% has been updated'
-table.index.button.add: Add
-table.index.button.close: Close
-table.index.button.reorder: Reorder
-table.index.column.actions: Actions
-table.index.column.loop_count: '#'
-table.index.empty: 'Nothing to show here'
-task.assigned_to: 'Assigned to '
-task.create.button: 'Add a task'
-task.create.submit: 'Create task'
-task.create.success: 'Task "%title%" successfully created.'
-task.create.title: 'Add a new task'
-task.dashboard.action.edit_revision: 'Edit revision'
-task.dashboard.action.go_revision: Revision
-task.dashboard.column.version_tag: 'New version'
-task.dashboard.column.actions: Actions
-task.dashboard.column.assignee: Assignee
-task.dashboard.column.deadline: Deadline
-task.dashboard.column.modified: Last modification
-task.dashboard.column.label: Document
-task.dashboard.column.requester: Requester
-task.dashboard.column.status: Status
-task.dashboard.column.title: Task
-task.dashboard.tab.manager: 'All tasks'
-task.dashboard.tab.requester: 'Requested tasks'
-task.dashboard.tab.user: 'Assigned to me'
-task.delete.submit: 'Delete task'
-task.delete.success: 'Task "%title%" successfully deleted.'
-task.delete.title: 'Deleted task : %title%'
-task.error.ajax: 'Error: something went wrong!'
-task.field.assignee: Assignee
-task.field.deadline: Deadline
-task.field.description: Description
-task.field.title: Title
-task.finished.hide: 'Hide finished tasks (%number%)'
-task.finished.show: 'Show finished tasks (%number%)'
-task.for: for
-task.close: Close
-task.history: History
-task.in_progress: 'This task is '
-task.info.change_order: 'Change task order'
-task.info.empty: 'No tasks for this document'
-task.info.locked: 'Revision locked by %user% until %time%'
-task.mail.approved: 'Approved task "%title%" for "%document%"'
-task.mail.assignee_changed: 'Assignee changed task "%title%" for "%document%"'
-task.mail.completed: 'Ready for validation, task "%title%" for "%document%"'
-task.mail.created: 'New task "%title%" for "%document%"'
-task.mail.deleted: 'Deleted task "%title%" for "%document%"'
-task.mail.rejected: 'Rejected task "%title%" for "%document%"'
-task.mail.updated: 'Update task "%title%" for "%document%"'
-task.status.approved: Approved
-task.status.completed: Completed
-task.status.history.approved: '%user% approved the task'
-task.status.history.completed: '%user% completed the task'
-task.status.history.created: '%user% created the task'
-task.status.history.planned: '%user% planned the task'
-task.status.history.progress: 'The task became active for %assignee%'
-task.status.history.rejected: '%user% rejected the task'
-task.status.history.updated: '%user% updated the task'
-task.status.planned: Planned
-task.status.progress: 'In progress'
-task.status.rejected: Rejected
-task.title: Tasks
-task.update.submit: 'Edit task'
-task.update.success: 'Task "%title%" successfully updated.'
-task.update.tab.history: History
-task.update.tab.info: Information
-task.update.title: 'Edit task : %title%'
-task.validation.approve: Approve
-task.validation.comment: 'Comment for validation'
-task.validation.done: Finish
-task.validation.reject: Reject
-task.validation.send: Send
-task.filters: Filters
-task.filter.status: Statuses
-task.filter.version: Versions
-task.filter.assignee: Assignees
-task.filter.requester: Requesters
-task.filter.submit: Search
-task.filter.reset: Clear
-uploaded-file.action.download_selected: 'Download selected'
-uploaded-file.action.hide-show: Hide/Show
-uploaded-file.action.soft-delete: Delete
-uploaded-file.hide-show-confirm: 'Toggle file visibility ?'
-uploaded-file.uploaded-file.hide-show: 'Toggle visibility'
-uploaded-file.index.column.available: Available
-uploaded-file.index.column.created: 'Uploaded at'
-uploaded-file.index.column.head_last: 'Last seen'
-uploaded-file.index.column.hidden: Hidden
-uploaded-file.index.column.modified: 'Last modified'
-uploaded-file.index.column.name: Name
-uploaded-file.index.column.sha1: 'Hash signature'
-uploaded-file.index.column.size: Size
-uploaded-file.index.column.kind: Kind
-uploaded-file.index.column.date-modified: 'Date modified'
-uploaded-file.index.column.date-added: 'Date added'
-uploaded-file.index.column.type: 'Mime type'
-uploaded-file.index.column.username: By
-uploaded-file.index.title: 'Uploaded Files'
-uploaded-file.menu: 'Uploaded files'
-uploaded-file.soft-delete-confirm: 'Are you sure you want to delete this file?'
-uploaded-file.uploaded-file.download_selected: 'Download selected'
-uploaded-file.uploaded-file.soft_delete_selected: 'Delete selected'
-uploaded-file.uploaded-file.delete-all_confirm: 'Selected files will be removed'
-uploaded-file.delete-all: 'Delete selected'
-uploaded-file.delete-confirm: 'This will be removed'
-uploaded-file.action.delete: Delete
-user.action.delete: Delete
-user.action.delete_confirm: 'Delete this user?'
-user.action.disable: Disable
-user.action.disable_confirm: 'Disable this user?'
-user.action.edit: Edit
-user.action.generate_api: 'API key'
-user.action.generate_api_confirm: 'Generate API key for this user?'
-user.action.switch: 'Switch user'
-user.index.column.circles: Circles
-user.index.column.displayname: 'Display name'
-user.index.column.email: E-mail
-user.index.column.email_notification: 'E-mail notifications'
-user.index.column.enabled: Enabled
-user.index.column.id: 'User ID'
-user.index.column.lastLogin: 'Last Login'
-user.index.column.roles: Roles
-user.index.column.username: Username
-user.index.column.locale_preferred: 'Locale preferred'
-user.index.column.locale_ui: UI
-view.breadcrumb.wysiwyg-options: 'WYSIWYG Options'
-view.contenttype.reorder_item.edit_field_button: 'Edit %name%'
-view.contenttype.reorder_item.edit_main_container_button: 'Edit the main container'
-view.data.json-menu-nested-json-preview.field-type-not-found: 'The type definition associated to this item is missing (probably deleted).'
-view.data.json-menu-nested.out_of_sync: 'Out of sync, please refresh and retry!'
-view.elements.side-menu.chanel-admin.index-link: Channels
-view.elements.side-menu.release-admin.index-link: Releases
-view.elements.side-menu.query_search.index-link: QuerySearch
-view.environment.index.action_label: Action
-view.environment.index.add_alias_button: 'Add alias'
-view.environment.index.add_environment_button: 'Add Environment'
-view.environment.index.add_managed_alias_button: 'Add managed alias'
-view.environment.index.alias_label: Alias
-view.environment.index.all_indexes_are_referenced: 'All aliases are referenced'
-view.environment.index.attach_alias_confirm: 'Attache the alias %name%?'
-view.environment.index.attach_button: Atach
-view.environment.index.close_modal_button: Close
-view.environment.index.confirm_delete: 'Do you want to delete %name%?'
-view.environment.index.confirm_dettach: 'Do you want to detach %name%?'
-view.environment.index.count_label: '#'
-view.environment.index.delete_alias_confirm: 'Do you want to delete the alias %name%?'
-view.environment.index.delete_all_button: 'Delete all'
-view.environment.index.delete_all_ophan_indexes_confirm: 'Do you confirm?'
-view.environment.index.delete_button: Delete
-view.environment.index.delete_index_button: Delete
-view.environment.index.delete_index_confirm: 'Are you sure to delete the index %name%?'
-view.environment.index.delete_managed_environemnt_button: Delete
-view.environment.index.dettach_button: Detach
-view.environment.index.edit_button: Edit
-view.environment.index.environment_breadcrumb: Environments
-view.environment.index.environment_index_count: '{0} There are no index|{1} There is one index|]1,Inf[ There are %count% indexes'
-view.environment.index.environment_indexes_modal_title: Indexes
-view.environment.index.external_environments_title: 'External environments'
-view.environment.index.index_breadcrumb: List
-view.environment.index.indexes_label: Indexes
-view.environment.index.label: Label
-view.environment.index.local_environment_label: 'Local Environments'
-view.environment.index.managed_alias_title: 'Managed alias'
-view.environment.index.name_label: Name
-view.environment.index.no_environment_yet: 'There is no environment defined yet.'
-view.environment.index.no_external_environment_yet: 'There is no external environment defined yet.'
-view.environment.index.orphan_index_title: 'Orphan indexes'
-view.environment.index.pagetitle: 'All Environments'
-view.environment.index.rebuild_button: Rebuild
-view.environment.index.reorder_button: Reorder
-view.environment.index.reorder_title: Reorder
-view.environment.index.there_is_no_orphan_index: 'There is no orphan indexes'
-view.environment.index.title: 'All Environments'
-view.environment.index.total_in_ems: 'Total in ems'
-view.environment.index.total_indexed_label: 'Total in ES'
-view.environment.index.total_label: Total
-view.environment.index.total_mark_has_deleted: 'Total deleted'
-view.environment.index.unreferenced_aliases_title: 'Unreferenced aliases'
-view.environment.index.view_button: View
-view.form.fields.asset.clear-button: Clear
-view.form.fields.asset.close-modal: Close
-view.form.fields.asset.drag-n-drop-file: 'Drag and drop your file here'
-view.form.fields.asset.drag-n-drop-files: 'Drag and drop your files here'
-view.form.fields.asset.file-hash: 'File''s hash'
-view.form.fields.asset.file-info: 'File''s information'
-view.form.fields.asset.info-modal-button: Info
-view.form.fields.asset.init-upload: 'Upload is starting'
-view.form.fields.asset.move-button: Move
-view.form.fields.asset.preview: 'File preview of field %label%'
-view.form.fields.asset.remove-button: Remove
-view.form.fields.asset.upload-file: 'Upload file'
-view.form.fields.asset.browse-server: 'Pick a file from the server'
-view.form.fields.asset.upload-files: 'Upload files'
-view.form.fields.asset.view-button: View
-view.form-submission.index.title: 'Form Submissions Overview'
-view.icon.class.channel: 'fa fa-eye'
-view.icon.class.release: 'fa fa-cube'
-view.icon.class.query_search: 'fa fa-list-alt'
-view.macros.data-field-type.macros.data-field-type.collection_added_items: '{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added'
-view.macros.data-field-type.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
-view.macros.data-field-type.menu-option-button: View
-view.macros.data-field-type.modal-close-button: Close
-view.user.index.title: 'User list'
-views.elements.object-views-button.action-dropdown-icon-class: 'fa fa-eye'
-views.elements.object-views-button.action-dropdown-sr-only: 'Toggle dropdown of %environment%''s actions'
-views.elements.object-views-button.copy-data: 'Copy data'
-views.elements.object-views-button.copy-data-icon-class: 'fa fa-copy'
-views.elements.object-views-button.raw-view: 'Raw view'
-views.elements.object-views-button.raw-view-icon-class: 'fa fa-th'
-views.elements.object-views-button.action-dropdown-label: 'Actions in %environment%'
-wysiwyg.invalid_config_format: 'Format not valid: %msg%'
-view.macros.data-field-type.collection_removed_items: '{0} Nothing has been removed.|{1} One item has been removed.|]1,Inf[ %count% item have been removed.'
-view.macros.data-field-type.collection_added_items: '{0} Nothing has been added.|{1} One item has been added.|]1,Inf[ %count% items have been added.'
-view.icon.class.uploaded-file: 'fa fa-upload'
-revision.draft-in-progress.column.label: Label
-revision.draft-in-progress.column.created: Created
-revision.draft-in-progress.column.modified: 'Last update'
-revision.draft-in-progress.column.auto-save-by: By
-revision.draft-in-progress.column.locked: 'Locked until'
-revision.draft-in-progress.column.locked-by: 'Locked by'
-revision.draft-in-progress.column.view-revision: 'View draft in progress'
-revision.draft-in-progress.column.edit-draft: 'Edit draft'
-revision.draft-in-progress.column.discard-draft: 'Delete this draft'
-revision.draft-in-progress.column.confirm-discard-draft: 'Modifications made in this draft will be lost'
-revision.draft-in-progress.action.discard-selected-draft: 'Delete selected drafts'
-revision.draft-in-progress.action.discard-selected-confirm: 'All modifications made on those drafts will lost'
-revision.draft-in-progress.title: '%contentType% in progress'
-revision.draft-in-progress.breadcrumb: '%contentType% in progress'
-log.controller.draft-in-progress.discard_draft: 'Draft "%revision%" has been deleted'
-log.controller.draft-in-progress.unknown_action: 'Unknown action'
-log.controller.draft-in-progress.draft-not-found: 'Draft (%revisionId%) not found'
-form.header.checkbo.select-all: 'Select all'
+action:
+    actions:
+        delete: Delete
+        delete_confirm: 'Delete the "%label%" action?'
+        delete_selected: 'Delete selected'
+        delete_selected_confirm: 'Delete all selected actions?'
+        edit: Edit
+    index:
+        column:
+            name: Name
+            label: Label
+            public: Public
+            type: Type
+        reorder: Reorder
+channel:
+    actions:
+        delete: Delete
+        delete_confirm: 'Delete the "%label%" channel?'
+        delete_selected: 'Delete selected'
+        delete_selected_confirm: 'Delete all selected channels?'
+        edit: Edit
+    add:
+        save: Create
+        title: 'Add a channel'
+    edit:
+        save: Save
+        title: 'Edit a channel'
+    index:
+        column:
+            alias: Alias
+            label: Label
+            name: Name
+            public: 'Public access'
+        reorder: 'Reorder channels'
+        title: 'List of channels'
+    menu: Channels
+command:
+    reindex:
+        end: 'The content type %contenttype%''s documents have been reindexed in %environment% (index: %index%)'
+        environment_not_found: 'Environment named %environment% not found'
+        start: 'Start reindexing %contenttype% in %environment%'
+contenttype:
+    action:
+        update_from_json: 'Update from JSON'
+controller:
+    revision:
+        edit-controller:
+            warning:
+                edit-draft: 'You are editing an already published revision, It''s safer to <a href="%path%" class="btn btn-primary"><span class="fa fa-pencil"></span> edit a draft</a>'
+    environment:
+        index:
+            reorder_submit_button: Reorder
+data:
+    custom-view:
+        pagetitle: 'View %name% of the %contentType% "%label%" as indexed in %environment%'
+    actions:
+        add_to_release: 'Add to release'
+        add_to_release_confirm: 'Do you confirm ?'
+field_type:
+    json_menu_editor:
+        add: Add
+        add_item: 'Add a new item %singular%'
+        add_node: 'Add a new node %singular%'
+        collapse_all_button: 'Expand/Collapse all'
+        collapse_button: Expand/Collapse
+        delete_item: 'Delete this entry'
+        edit: Edit
+        item_label_placeholder: 'Define a label for this entry'
+        move_item: Move
+        copy: Copy
+        copy_all: 'Copy all'
+        paste: Paste
+form-submission:
+    form-submissions:
+        confirm: 'Confirm Deletion'
+        delete: Delete
+        delete_confirm: 'Delete the "%label%" submission?'
+        delete_selected: 'Delete selected'
+        delete_selected_confirm: 'Delete all selected submissions?'
+        download: Download
+        download_selected: 'Download selected'
+        edit: Edit
+        export_selected: 'Export selected'
+        process: 'Delete Submission'
+    index:
+        column:
+            created: 'Created At'
+            expire_date: 'Expire Date'
+            form: Form
+            id: ID
+            instance: Instance
+            label: Label
+            locale: Locale
+            name: Name
+            public: Public
+            type: Type
+        reorder: Reorder
+form_submissions:
+    download: Download
+    overview: Overview
+    process:
+        button: 'Delete Submission'
+        confirm_body: "After confirmation you can NOT download the form data anymore!\nAre you sure, you want to delete the form submission?\n"
+        confirm_title: 'Confirm deletion'
+        error: 'Form deletion failed!'
+        success: 'Form submission with id "%id%" has been deleted!'
+    title: 'Form Submissions'
+query_search:
+    actions:
+        delete: Delete
+        delete_confirm: 'Delete the "%label%" QuerySearch?'
+        delete_selected: 'Delete selected'
+        delete_selected_confirm: 'Delete all selected QuerySearch?'
+        edit: Edit
+    add:
+        save: Create
+        title: 'Add a QuerySearch'
+    edit:
+        save: Save
+        title: 'Edit a QuerySearch'
+    index:
+        column:
+            alias: Alias
+            label: Label
+            name: Name
+            public: 'Public access'
+        reorder: 'Reorder QuerySearch'
+        title: 'List of QuerySearch'
+    menu: QuerySearch
+release:
+    actions:
+        add_revisions: 'Add documents'
+        delete: Delete
+        delete_confirm: 'Delete the Release?'
+        delete_selected: 'Delete selected'
+        delete_selected_confirm: 'Delete all selected Releases?'
+        edit: Edit
+        publish_release: 'Publish now'
+        publish_confirm: 'Publish the release?'
+        set_status_canceled: 'Cancel release'
+        set_status_ready: 'Validate release'
+        set_status_wip: 'Rework release'
+        show: View
+    add:
+        save: Create
+        title: 'Add a Release'
+    edit:
+        save: Save
+        saveAndClose: 'Save and Close'
+        title: 'Edit a Release'
+    index:
+        column:
+            env_source: 'Environment source'
+            env_target: 'Environment target'
+            execution_date: 'Execution date'
+            name: Name
+            status: Status
+            docs_count: '# Documents'
+        title: 'List of Releases'
+    menu: Releases
+    revision:
+        actions:
+            add: 'Add document'
+            add_confirm: 'Do you confirm ?'
+            remove: 'Remove documents'
+        action:
+            add: 'Add document to release'
+        index:
+            column:
+                CT: 'Content Type'
+                label: Label
+                minRevId: 'Environment source'
+                maxRevId: 'Environment target'
+                revision: Revision
+                document: Document
+                action: Action
+                previous: 'Previous revision'
+                not-applicable: 'not applicable'
+                still_in_target: 'Still in %target%'
+                compare: Compare
+            title: 'List of documents available for release'
+        menu: 'Add documents'
+        view:
+            title: 'Release''s documents'
+        table:
+            rollback:
+                action: Rollback
+                confirm: 'Do you confirm ?'
+    status:
+        wip: Draft
+        ready: Ready
+        applied: Applied
+        canceled: Canceled
+        scheduled: Scheduled
+        rollbacked: 'Rolled back'
+    all_releases:
+        label: 'All releases'
+search:
+    aggregate_option_label: 'Aggregate Option'
+    search_field_option_label: 'Search Field Option'
+    sort_option_label: 'Sort Option'
+service:
+    alias:
+        too_many_indexes: 'There is too many indexes'
+    asset_extractor:
+        extract_error: 'An issue has been raised while extracting information from the asset/file %file_hash% : %error_message%'
+        persist_error: 'An issue has been raised while persisting the information extracted from the asset/file %file_hash% : %error_message%'
+    contenttype:
+        field_not_found: 'Field %field_id% not found and ignored'
+        reordered: 'Content type "%contenttype% has been reordered'
+        update_mapping_exception: 'Error on updating %environments%''s mapping : %elasticsearch_error%'
+    entity:
+        created: '%entity_type% %entity_name% has been created'
+        deleted: '%entity_type% %entity_name% has been deleted'
+        updated: '%entity_type% %entity_name% has been updated'
+    notification:
+        another_one_is_pending: 'Another notification %notification_name% is already pending for document "%label%" in %environment% by %notification_username%'
+        notification_will_be_lost_finalize: 'An "%notification_name%" notification will be lost for this %contenttype% document (%ouuid%) on finalize'
+        send: '%notification_name% for document "%label%" in %environment% has been send'
+        send_error: 'Error while sending notification (%action_label%) for %contenttype_name% : %error_message%'
+        treated: '%notification_name% for document "%label%" in %environment% has been %status%'
+        update: 'A "%notification_name%" notification has been %notification_status% for a "%contenttype%" document (%ouuid%)'
+    object_choice_cache:
+        alias_not_found: 'Alias not found for content type %contenttype%'
+        contenttype_not_found: 'Content type %contenttype% not found'
+        limited_result_set: 'The data link picker is limited to the first %limit% of %count% documents'
+        object_key_not_found: 'Object key %object_key% not found'
+    publish:
+        already_published: 'The document "%label%" is already published in %environment%'
+        already_unpublished: 'The document "%label%" was already unpublished from %environment%'
+        draft_published: 'A draft of the document "%label%" has been published in %environment%'
+        not_authorized: 'You can not (un)publish the content type %contenttype%'
+        not_in_circles: 'You can not (un)publish the content type %contenttype% as you don''t share any circle'
+        not_in_default_environment: 'You can not (un)publish in the default environment %environment% of the document "%label%"'
+        publish_failed: 'The publication of the document "%label%" failed!'
+        publish_draft_error: 'A draft of the document "%label%" can''t be published in %environment% : %error_message%'
+        revision_not_found_in_source: 'Missing revision in the environment %environment% for the document "%label%"'
+        unpublished: 'The document "%label%" has been unpublished from %environment%'
+    wysiwyg_profile:
+        deleted: 'Profile %profile_name% has been deleted'
+        updated: 'Profile %profile_name% has been updated'
+    wysiwyg_styles_set:
+        deleted: 'Style set "%wysiwyg_styles_set_name% has been deleted'
+        updated: 'Style set "%wysiwyg_styles_set_name% has been updated'
+table:
+    index:
+        button:
+            add: Add
+            close: Close
+            reorder: Reorder
+        column:
+            actions: Actions
+            loop_count: '#'
+        empty: 'Nothing to show here'
+task:
+    assigned_to: 'Assigned to '
+    create:
+        button: 'Add a task'
+        submit: 'Create task'
+        success: 'Task "%title%" successfully created.'
+        title: 'Add a new task'
+    dashboard:
+        action:
+            edit_revision: 'Edit revision'
+            go_revision: Revision
+        column:
+            version_tag: 'New version'
+            actions: Actions
+            assignee: Assignee
+            deadline: Deadline
+            modified: 'Last modification'
+            label: Document
+            requester: Requester
+            status: Status
+            title: Task
+        tab:
+            manager: 'All tasks'
+            requester: 'Requested tasks'
+            user: 'Assigned to me'
+    delete:
+        submit: 'Delete task'
+        success: 'Task "%title%" successfully deleted.'
+        title: 'Deleted task : %title%'
+    error:
+        ajax: 'Error: something went wrong!'
+    field:
+        assignee: Assignee
+        deadline: Deadline
+        description: Description
+        title: Title
+    finished:
+        hide: 'Hide finished tasks (%number%)'
+        show: 'Show finished tasks (%number%)'
+    for: for
+    close: Close
+    history: History
+    in_progress: 'This task is '
+    info:
+        change_order: 'Change task order'
+        empty: 'No tasks for this document'
+        locked: 'Revision locked by %user% until %time%'
+    mail:
+        approved: 'Approved task "%title%" for "%document%"'
+        assignee_changed: 'Assignee changed task "%title%" for "%document%"'
+        completed: 'Ready for validation, task "%title%" for "%document%"'
+        created: 'New task "%title%" for "%document%"'
+        deleted: 'Deleted task "%title%" for "%document%"'
+        rejected: 'Rejected task "%title%" for "%document%"'
+        updated: 'Update task "%title%" for "%document%"'
+    status:
+        approved: Approved
+        completed: Completed
+        history:
+            approved: '%user% approved the task'
+            completed: '%user% completed the task'
+            created: '%user% created the task'
+            planned: '%user% planned the task'
+            progress: 'The task became active for %assignee%'
+            rejected: '%user% rejected the task'
+            updated: '%user% updated the task'
+        planned: Planned
+        progress: 'In progress'
+        rejected: Rejected
+    title: Tasks
+    update:
+        submit: 'Edit task'
+        success: 'Task "%title%" successfully updated.'
+        tab:
+            history: History
+            info: Information
+        title: 'Edit task : %title%'
+    validation:
+        approve: Approve
+        comment: 'Comment for validation'
+        done: Finish
+        reject: Reject
+        send: Send
+    filters: Filters
+    filter:
+        status: Statuses
+        version: Versions
+        assignee: Assignees
+        requester: Requesters
+        submit: Search
+        reset: Clear
+uploaded-file:
+    action:
+        download_selected: 'Download selected'
+        hide-show: Hide/Show
+        soft-delete: Delete
+        delete: Delete
+    hide-show-confirm: 'Toggle file visibility ?'
+    uploaded-file:
+        hide-show: 'Toggle visibility'
+        download_selected: 'Download selected'
+        soft_delete_selected: 'Delete selected'
+        delete-all_confirm: 'Selected files will be removed'
+    index:
+        column:
+            available: Available
+            created: 'Uploaded at'
+            head_last: 'Last seen'
+            hidden: Hidden
+            modified: 'Last modified'
+            name: Name
+            sha1: 'Hash signature'
+            size: Size
+            kind: Kind
+            date-modified: 'Date modified'
+            date-added: 'Date added'
+            type: 'Mime type'
+            username: By
+        title: 'Uploaded Files'
+    menu: 'Uploaded files'
+    soft-delete-confirm: 'Are you sure you want to delete this file?'
+    delete-all: 'Delete selected'
+    delete-confirm: 'This will be removed'
+user:
+    action:
+        delete: Delete
+        delete_confirm: 'Delete this user?'
+        disable: Disable
+        disable_confirm: 'Disable this user?'
+        edit: Edit
+        generate_api: 'API key'
+        generate_api_confirm: 'Generate API key for this user?'
+        switch: 'Switch user'
+    index:
+        column:
+            circles: Circles
+            displayname: 'Display name'
+            email: E-mail
+            email_notification: 'E-mail notifications'
+            enabled: Enabled
+            id: 'User ID'
+            lastLogin: 'Last Login'
+            roles: Roles
+            username: Username
+            locale_preferred: 'Locale preferred'
+            locale_ui: UI
+    add:
+        button: 'Add user'
+    export:
+        excel: 'Excel export'
+        csv: 'CSV export'
+view:
+    breadcrumb:
+        wysiwyg-options: 'WYSIWYG Options'
+    contenttype:
+        reorder_item:
+            edit_field_button: 'Edit %name%'
+            edit_main_container_button: 'Edit the main container'
+    data:
+        json-menu-nested-json-preview:
+            field-type-not-found: 'The type definition associated to this item is missing (probably deleted).'
+        json-menu-nested:
+            out_of_sync: 'Out of sync, please refresh and retry!'
+    elements:
+        side-menu:
+            chanel-admin:
+                index-link: Channels
+            release-admin:
+                index-link: Releases
+            query_search:
+                index-link: QuerySearch
+    environment:
+        index:
+            action_label: Action
+            add_alias_button: 'Add alias'
+            add_environment_button: 'Add Environment'
+            add_managed_alias_button: 'Add managed alias'
+            alias_label: Alias
+            all_indexes_are_referenced: 'All aliases are referenced'
+            attach_alias_confirm: 'Attache the alias %name%?'
+            attach_button: Atach
+            close_modal_button: Close
+            confirm_delete: 'Do you want to delete %name%?'
+            confirm_dettach: 'Do you want to detach %name%?'
+            count_label: '#'
+            delete_alias_confirm: 'Do you want to delete the alias %name%?'
+            delete_all_button: 'Delete all'
+            delete_all_ophan_indexes_confirm: 'Do you confirm?'
+            delete_button: Delete
+            delete_index_button: Delete
+            delete_index_confirm: 'Are you sure to delete the index %name%?'
+            delete_managed_environemnt_button: Delete
+            dettach_button: Detach
+            edit_button: Edit
+            environment_breadcrumb: Environments
+            environment_index_count: '{0} There are no index|{1} There is one index|]1,Inf[ There are %count% indexes'
+            environment_indexes_modal_title: Indexes
+            external_environments_title: 'External environments'
+            index_breadcrumb: List
+            indexes_label: Indexes
+            label: Label
+            local_environment_label: 'Local Environments'
+            managed_alias_title: 'Managed alias'
+            name_label: Name
+            no_environment_yet: 'There is no environment defined yet.'
+            no_external_environment_yet: 'There is no external environment defined yet.'
+            orphan_index_title: 'Orphan indexes'
+            pagetitle: 'All Environments'
+            rebuild_button: Rebuild
+            reorder_button: Reorder
+            reorder_title: Reorder
+            there_is_no_orphan_index: 'There is no orphan indexes'
+            title: 'All Environments'
+            total_in_ems: 'Total in ems'
+            total_indexed_label: 'Total in ES'
+            total_label: Total
+            total_mark_has_deleted: 'Total deleted'
+            unreferenced_aliases_title: 'Unreferenced aliases'
+            view_button: View
+    form:
+        fields:
+            asset:
+                clear-button: Clear
+                close-modal: Close
+                drag-n-drop-file: 'Drag and drop your file here'
+                drag-n-drop-files: 'Drag and drop your files here'
+                file-hash: 'File''s hash'
+                file-info: 'File''s information'
+                info-modal-button: Info
+                init-upload: 'Upload is starting'
+                move-button: Move
+                preview: 'File preview of field %label%'
+                remove-button: Remove
+                upload-file: 'Upload file'
+                browse-server: 'Pick a file from the server'
+                upload-files: 'Upload files'
+                view-button: View
+    form-submission:
+        index:
+            title: 'Form Submissions Overview'
+    icon:
+        class:
+            channel: 'fa fa-eye'
+            release: 'fa fa-cube'
+            query_search: 'fa fa-list-alt'
+            uploaded-file: 'fa fa-upload'
+    macros:
+        data-field-type:
+            macros:
+                data-field-type:
+                    collection_added_items: '{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added'
+                    collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
+            menu-option-button: View
+            modal-close-button: Close
+            collection_removed_items: '{0} Nothing has been removed.|{1} One item has been removed.|]1,Inf[ %count% item have been removed.'
+            collection_added_items: '{0} Nothing has been added.|{1} One item has been added.|]1,Inf[ %count% items have been added.'
+    user:
+        index:
+            title: 'User list'
+    index:
+        reorder: 'Reorder views'
+        column:
+            name: Name
+            label: Label
+    actions:
+        edit: Edit
+        duplicate: Duplicate
+        duplicate_confirm: 'Do you confirm?'
+        delete: Delete
+        delete_confirm: 'Do you confirm?'
+        delete_selected: 'Delete selected views'
+        view: Details
+views:
+    elements:
+        object-views-button:
+            action-dropdown-icon-class: 'fa fa-eye'
+            action-dropdown-sr-only: 'Toggle dropdown of %environment%''s actions'
+            copy-data: 'Copy data'
+            copy-data-icon-class: 'fa fa-copy'
+            raw-view: 'Raw view'
+            raw-view-icon-class: 'fa fa-th'
+            action-dropdown-label: 'Actions in %environment%'
+        revision-toolbar-html:
+            add-to-release: 'Add to release'
+wysiwyg:
+    invalid_config_format: 'Format not valid: %msg%'
+revision:
+    draft-in-progress:
+        column:
+            label: Label
+            created: Created
+            modified: 'Last update'
+            auto-save-by: By
+            locked: 'Locked until'
+            locked-by: 'Locked by'
+            view-revision: 'View draft in progress'
+            edit-draft: 'Edit draft'
+            discard-draft: 'Delete this draft'
+            confirm-discard-draft: 'Modifications made in this draft will be lost'
+        action:
+            discard-selected-draft: 'Delete selected drafts'
+            discard-selected-confirm: 'All modifications made on those drafts will lost'
+        title: '%contentType% in progress'
+        breadcrumb: '%contentType% in progress'
+    version_tag: 'Yes as %version_tag%'
+    version_tag.empty: 'No (Silent publish)'
 'An Error Occurred': 'An Error Occurred'
 'Oops! An Error Occurred': 'Oops! An Error Occurred'
 'The server returned a %status_code%': 'The server returned a %status_code%'
-'With the message "%status_text%".': 'With the message "%status_text%".'
+'With the message "%status_text%"':
+    '': 'With the message "%status_text%".'
 'Add an Analyzer': 'Add an Analyzer'
 'expert mode': 'expert mode'
 Analyzers: Analyzers
 'Add an analyzer': 'Add an analyzer'
 'Edit an Analyzer': 'Edit an Analyzer'
 Notice: Notice
-'All environments have to be re-builded each times that the analyzers configuration is updated.': 'All environments have to be re-builded each times that the analyzers configuration is updated.'
+'All environments have to be re-builded each times that the analyzers configuration is updated':
+    '': 'All environments have to be re-builded each times that the analyzers configuration is updated.'
 'List analyzers': 'List analyzers'
 'Add analyzer': 'Add analyzer'
 '#': '#'
@@ -745,8 +1044,18 @@ Reorder: Reorder
 'Reorder the content type "%content_type%"': 'Reorder the content type "%content_type%"'
 'Reorder %name%''s fields': 'Reorder %name%''s fields'
 'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID': 'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID'
-'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.': 'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.'
-'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.': 'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.'
+'This operation will not index a new object ‘<em>%content_type%</em>’ immediately':
+    ' It will start a new draft without any previous revision':
+        ' <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>':
+            ' This means you will not be able to see it in any list view (such as the index, map, calendar':
+                '':
+                    '':
+                        '), but all drafts in progress can be found in the ‘Draft in progress’ section':
+                            '': 'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.'
+'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course)':
+    ' If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save':
+        ' It is not possible to update the object unique identifier later':
+            '': 'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.'
 'Template is missing': 'Template is missing'
 OUUID: OUUID
 Locked: Locked
@@ -779,7 +1088,8 @@ Environments: Environments
 'Edit managed alias': 'Edit managed alias'
 'Add a Filter': 'Add a Filter'
 'Edit a Filter': 'Edit a Filter'
-'All environments have to be re-builded each times that the filters configuration is updated.': 'All environments have to be re-builded each times that the filters configuration is updated.'
+'All environments have to be re-builded each times that the filters configuration is updated':
+    '': 'All environments have to be re-builded each times that the filters configuration is updated.'
 'List filters': 'List filters'
 Add: Add
 'Asset options': 'Asset options'
@@ -842,63 +1152,17 @@ Views: Views
 'no revision in %env%': 'no revision in %env%'
 'Unpublish in %env%': 'Unpublish in %env%'
 'replace by revision %date%': 'replace by revision %date%'
-dashboard.actions.delete_selected: 'Deleted selected'
-dashboard.actions.edit: Edit
-dashboard.actions.set_quick_search: 'As quick search'
-dashboard.actions.set_quick_search_confirm: 'Do you confirm'
-dashboard.actions.set_landing_page: 'As landing page'
-dashboard.actions.set_landing_page_confirm: 'Do you confirm'
-dashboard.actions.delete: Delete
-dashboard.actions.delete_confirm: 'Do you confirm'
-dashboard.index.column.name: Name
-dashboard.index.column.label: Label
-log.service.dashboard.delete: 'Dashboard %name% has been deleted'
-dashboard.index.column.type: Type
-dashboard.index.column.landing_page: 'Landing page'
-dashboard.index.column.quick_search: 'Quick search'
-release.revision.table.rollback.action: Rollback
-release.revision.table.rollback.confirm: 'Do you confirm ?'
-release.revision.index.column.compare: Compare
-view.index.reorder: 'Reorder views'
-view.index.column.name: Name
-view.index.column.label: Label
-view.actions.edit: Edit
-view.actions.duplicate: Duplicate
-view.actions.duplicate_confirm: 'Do you confirm?'
-view.actions.delete: Delete
-view.actions.delete_confirm: 'Do you confirm?'
-view.actions.delete_selected: 'Delete selected views'
-dashboard.index.column.public: Public
-schedule.index.column.name: Name
-log.schedule.created: 'Schedule %name% has been created'
-log.schedule.updated: 'Schedule %name% has been updated'
-schedule.index.reorder: Prioritize
-schedule.actions.delete_selected: 'Delete selected'
-schedule.actions.delete_selected_confirm: 'Do you confirm ?'
-schedule.index.column.command: Command
-schedule.index.column.cron: Cron
-schedule.index.column.previous-run: 'Previous run'
-schedule.index.column.next-run: 'Next run'
-log.controller.schedule.unknown_action: 'Unknown action'
-log.service.schedule.delete: 'Schedule %name% has been deleted'
-user.add.button: 'Add user'
-user.export.excel: 'Excel export'
-user.export.csv: 'CSV export'
-log.index.column.created: Created
-log.index.column.channel: Channel
-log.index.column.level_name: Severity
-log.index.column.message: Message
-log.index.column.username: Username
-log.index.column.impersonator: Impersonator
-view.actions.view: Details
-pick-a-release.title: 'Pick a release for "%label%"'
-data.actions.add_to_release: 'Add to release'
-data.actions.add_to_release_confirm: 'Do you confirm ?'
-views.elements.revision-toolbar-html.add-to-release: 'Add to release'
-log.data.revision.added_to_release: 'Document "%label%" has been added to release "%release%"'
-log.data.revision.can_not_add_draft_in_release: 'Revision in draft mode can not be added to a release'
-log.data.revision.document_already_in_release_but_updated: 'Document "%label%" has been updated with a new revision in release "%release%"'
-log.data.revision.already_in_release: 'This revision of document "%label%" was already in release "%release%"'
-revision.version_tag: 'Yes as %version_tag%'
-revision.version_tag.empty: 'No (Silent publish)'
-
+schedule:
+    index:
+        column:
+            name: Name
+            command: Command
+            cron: Cron
+            previous-run: 'Previous run'
+            next-run: 'Next run'
+        reorder: Prioritize
+    actions:
+        delete_selected: 'Delete selected'
+        delete_selected_confirm: 'Do you confirm ?'
+pick-a-release:
+    title: 'Pick a release for "%label%"'

@@ -32,17 +32,17 @@
 
 {% block container_field_type_row %}
 <div id="{{ form.vars.id }}" class="container-fluid">
-	<div class="row">	
+	<div class="row">
     	<div class="panel panel-default">
         	<div class="panel-heading with-border">
         		<h3 class="panel-title text-">{{- form_label(form) -}}</h3>
         	</div>
-    	  	
+
     	  	<div class="panel-body">
     	  		{{- form_widget(form) -}}
     	  	</div>
     	    {{- form_errors(form) -}}
-    	</div>               
+    	</div>
 	</div>
 </div>
 {% endblock container_field_type_row %}
@@ -370,9 +370,9 @@
 	{% for button in buttons %}
 		<a class="btn btn-sm btn-primary" href="/meta/environment/switch/39"> <span
 			class="fa fa-share-square-o"></span>&nbsp; Switch</a>
-			
+
             {{- form_row(button) -}}
-		
+
 	{% endfor %}
 </div>
 {%- endblock bouttongroup_row %}
@@ -439,10 +439,10 @@
 {# 					</fieldset>#}
 				</div>
 			</div>
-			
+
 			{{- form_errors(form) -}}
-		</div>  
-	</div>             
+		</div>
+	</div>
 {%- endblock search_filter_row %}
 
 
@@ -563,7 +563,7 @@
               {% endfor %}
             </div>
             <!-- /.tab-content -->
-         </div>             
+         </div>
 {# 	</div>#}
 {%- endblock tabsfieldtype_widget %}
 
@@ -617,7 +617,7 @@
 			{{- form_widget(form) -}}
 		</div>
 		{{- form_errors(form) -}}
-	</div>               
+	</div>
 {# </div>#}
 {% endblock collectionfieldtype_row %}
 
@@ -640,8 +640,8 @@
                     <div class="clearfix"></div>
                 {% endif %}
 			</div>
-	  	</div>		
-		
+	  	</div>
+
 	  	<div class="panel-body {% if collapsible %}collapse{% endif %}">
 	  		<div class="row">
 	  		{% for child in form.iterator|filter(c => c.vars.name not in ['remove_collection_item', '_ems_internal_deleted']) %}
@@ -903,7 +903,7 @@
 {% block datefieldtype_row %}
 <div class="form-group">
 	<div id="{{ form.vars.id}}__label">
-        {{ form_label(form.value) }} 
+        {{ form_label(form.value) }}
 	</div>
 	<div class="input-group">
     	<div class="input-group-addon">
@@ -1013,7 +1013,7 @@
 <div class="panel panel-default file-uploader-row{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}"{% if form.vars.multiple|default(false) %} data-multiple="{{ multipleTemplate|e('html_attr') }}"{% endif %}>
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			<i class="fa fa-file-o"></i> 				
+			<i class="fa fa-file-o"></i>
 			{{ form_label(form) }}
 		</h3>
 	</div>
@@ -1062,9 +1062,9 @@
         </div>
         <div class="tab-pane asset-preview-tab {% if form.vars.value.sha1 is not defined or not form.vars.value.sha1 %}hidden{% endif %}" id="asset-preview-tab-{{ form.vars.id }}">
         	<div class="text-center">
-            	<img 
+            	<img
             		data-src="{{ path('ems_asset_processor', {'hash':'_asset_hash_', 'processor': 'preview', 'type':'_asset_mimetype_', 'name': '_asset_name_' }) }}"
-            		{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %} 
+            		{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}
             			src="{{ emsco_asset_path(form.vars.value, 'preview') }}"
             		{% endif %}
             		class="img-responsive center-block" alt="{{ 'view.form.fields.asset.preview'|trans({'%label%': form_label(form)|striptags }) }}"
@@ -1200,13 +1200,15 @@
 	<h4>
 	{% if form.vars.data.parent %}
 {# 			<i class="glyphicon glyphicon-move move-handle"></i>#}
-		<strong>{{ form.vars.data.name }}</strong> 
+		<strong>{{ form.vars.data.name }}</strong>
 		<small>{{ form.vars.data.type }}</small>
-	{% else %}
+	{% elseif (form.vars.data.contentType.singularName is defined) %}
 		<strong>{{ form.vars.data.contentType.singularName }}</strong>
+	{% else %}
+		<strong>{{ 'form.field-type-type.root'|trans }}</strong>
 	{% endif %}
 	<div class="btn-group pull-right">
-		{% if form.add is defined %}		
+		{% if form.add is defined %}
 			<!-- Modal windows add field -->
 			<div class="modal fade" id="{{ form.vars.id }}_modal_add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			  <div class="modal-dialog" role="document">
@@ -1214,7 +1216,7 @@
 			      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			        <h4 class="modal-title" id="myModalLabel">
-						Add a field to <strong>{{ form.vars.data.name }}</strong>	
+						Add a field to <strong>{{ form.vars.data.name }}</strong>
 					</h4>
 			      </div>
 			      <div class="modal-body">
@@ -1233,8 +1235,8 @@
 			<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_modal_add">
 				<i class="fa fa-plus"></i> Field
 			</button>
-		{% endif %}	
-		
+		{% endif %}
+
 		{% if form.subfield is defined %}
 			<div class="modal fade" id="{{ form.vars.id }}_modal_add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			  <div class="modal-dialog" role="document">
@@ -1242,7 +1244,7 @@
 			      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			        <h4 class="modal-title" id="myModalLabel">
-						Add a subfield to <strong>{{ form.vars.data.name }}</strong>	
+						Add a subfield to <strong>{{ form.vars.data.name }}</strong>
 					</h4>
 			      </div>
 			      <div class="modal-body">
@@ -1256,14 +1258,14 @@
 			      </div>
 			    </div>
 			  </div>
-			</div>	
+			</div>
 			<div class="modal fade" id="{{ form.vars.id }}_duplicate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			  <div class="modal-dialog" role="document">
 			    <div class="modal-content">
 			      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			        <h4 class="modal-title" id="myModalLabel">
-						Duplicate <strong>{{ form.vars.data.name }}</strong>	
+						Duplicate <strong>{{ form.vars.data.name }}</strong>
 					</h4>
 			      </div>
 			      <div class="modal-body">
@@ -1296,11 +1298,11 @@
 			      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			        <h4 class="modal-title" id="myModalLabel">
-						Options for the field <strong>{{ form.vars.data.name }}</strong> <small>({{ form.vars.data.type }})</small>	
+						Options for the field <strong>{{ form.vars.data.name }}</strong> <small>({{ form.vars.data.type }})</small>
 					</h4>
 			      </div>
 			      <div class="modal-body">
-		
+
 						<div class="nav-tabs-custom">
 							<ul class="nav nav-tabs">
 								{% set active='active' %}
@@ -1338,7 +1340,7 @@
 				  <i class="fa fa-sliders"></i> Options
 			</button>
 		{% endif %}
-		
+
 		{% if form.reorder is defined %}
 			<div class="modal fade" id="{{ form.vars.id }}_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="myModalReorderLabel">
 			  <div class="modal-dialog" role="document">
@@ -1346,7 +1348,7 @@
 			      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			        <h4 class="modal-title" id="myModalReorderLabel">
-						Reorder fields in <strong>{{ form.vars.data.name }}</strong>	
+						Reorder fields in <strong>{{ form.vars.data.name }}</strong>
 					</h4>
 			      </div>
 			      <div class="modal-body">
@@ -1358,7 +1360,7 @@
 			      				{{ form_row( attribute(attribute(form, 'ems_'~child.name), 'name')) }}
 			      			</li>
 			      		{% endfor %}
-					</ul>	
+					</ul>
 				  </div>
 			      <div class="modal-footer">
 			      	<div class="btn-group">
@@ -1367,7 +1369,7 @@
 			      </div>
 			    </div>
 			  </div>
-			</div>	
+			</div>
 			<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_modal_reorder">
 				<i class="fa fa-reorder"></i> Reorder
 			</button>
@@ -1375,8 +1377,8 @@
 		{% if form.remove is defined %}
 			{{ form_widget(form.remove) }}
 		{% endif %}
-		
-	</div> 
+
+	</div>
 
 	</h4>
 
@@ -1412,7 +1414,7 @@
 						<a class="btn btn-danger btn-remove form-control" href="#">
 							<i class="fa fa-trash"></i>
 						</a>
-					{% endif %}					
+					{% endif %}
 			</div>
 			<div class="clearfix visible-xs-block"></div>
 		</div>
@@ -1420,7 +1422,7 @@
 			{{- form_row(form.text) -}}
 		</div>
 		{{- form_errors(form) -}}
-	</div>             
+	</div>
 {%- endblock i18n_content_row %}
 
 {%- block ems_version_tag_row -%}

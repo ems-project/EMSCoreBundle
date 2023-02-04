@@ -1,56 +1,60 @@
 log:
-  contenttype:
-    action:
-      import:
-        error:
-          failed: 'Import failed'
-          missing_columns: 'Missing columns in import file, required columns "%columns%"'
-          missing_data: 'Missing data in import file'
-  revision:
-    draft:
-      created: 'A new draft has been initiated for the document "%label%"'
-      updated: 'Updated draft for the document "%label%"'
-      deleted: 'Draft discard for the document "%label%"'
-    finalized: 'The document "%label%" has been published in %environment%'
-    deleted: 'The document "%label%" has been deleted'
-    restored: 'The document "%label%" has been restored'
-  published:
-    success: 'The document "%label%" has been published in %environment%'
-  unpublished:
-    success: 'The document "%label%" has been unpublished from %environment%'
-  user:
-    profile:
-      updated: 'The profile has been updated.'
-      changed_password: 'The password has been changed.'
-    resetting:
-      success: 'The password has been reset successfully.'
-
-service.contenttype.mappings_error: 'Mappings update for %contenttype% in %environments% failed : %elasticsearch_dump%'
-service.contenttype.mappings_updated: 'Mappings successfully updated for content type %contenttype% in %environments%'
-service.data.not_able_to_load_the_private_key: 'It''s impossible to load the private key %private_key_filename% : %error_message%'
-service.data.not_a_data_field: 'Unexpected %field_name% field in the revision form'
-service.data.already_unpublished: 'The document "%label%" was already unpublished from %environment%'
-service.data.cant_finalize_field: '%error_message%'
-service.data.check_signature_failed: 'Signature mismatch in %environment% for the document "%label%"'
-service.data.computed_hash_mismatch: 'Computed hash mismatch in %environment% for document "%label%"'
-service.data.data_not_consumed: '{1} A data of this revision was not consumed: %data%|]1,Inf[ Some data (%count%} of this revision were not consumed: %data%'
-service.data.default_value_error: 'It was not possible to initiate the default value (json_decode) for the content type %contenttype%, please check the content type''s configuration'
-service.data.default_value_template_error: 'It was not possible to initiate the default value (compile template) for the content type %contenttype%, please check the content type''s configuration'
-service.data.error_check_signature: 'Error checking signature in %environment% the revisions''s data for the document "%label%" : %error_message%'
-service.data.error_with_fields: 'The field %path% is in error with the message %error_message%'
-service.data.hash_mismatch: 'Hash mismatch in %environment% for the document "%label%"'
-service.data.hash_missing: 'Hash missing in %environment% for document "%label%"'
-service.data.integrity_failed: 'Issue in %environment% while checking integrity of the document "%label%": %error_message%'
-service.data.json_parse_post_processing_error: 'Error to JSON parse the result of the post processing script of field %field_name% (|json_encode|raw): %template%'
-service.data.not_a_draft: 'The document "%label%" is already finalized'
-service.data.not_able_to_sign: 'It was not possible to sign the document : %error_message%'
-service.data.post_finalize_failed: 'Error while finalize the post processing of the document "%label%" : %error_message%'
-service.data.revision_not_signed: 'Revision not signed in %environment% for document "%label%"'
-service.data.template_parse_error: 'Error to parse the computed field %computed_field_name%: %error_message%'
-service.data.unknown_update_type: 'The document "%label%" has not been replaced or replaced as the update type "%update_type%" is unknown'
-service.data.update_referrers_error: 'It was impossible to update document''s referrers'
-service.data.unlock_revisions_error: 'Unexpected unlock exception'
-api.admin.entities.create: 'An %entity% has been created with id %id%'
-api.admin.entities.update: 'An %entity% has been updated with id %id%'
-api.admin.entities.delete: 'An %entity% has been deleted with id %id%'
-
+    contenttype:
+        action:
+            import:
+                error:
+                    failed: 'Import failed'
+                    missing_columns: 'Missing columns in import file, required columns "%columns%"'
+                    missing_data: 'Missing data in import file'
+    revision:
+        draft:
+            created: 'A new draft has been initiated for the document "%label%"'
+            updated: 'Updated draft for the document "%label%"'
+            deleted: 'Draft discard for the document "%label%"'
+        finalized: 'The document "%label%" has been published in %environment%'
+        deleted: 'The document "%label%" has been deleted'
+        restored: 'The document "%label%" has been restored'
+    published:
+        success: 'The document "%label%" has been published in %environment%'
+    unpublished:
+        success: 'The document "%label%" has been unpublished from %environment%'
+    user:
+        profile:
+            updated: 'The profile has been updated.'
+            changed_password: 'The password has been changed.'
+        resetting:
+            success: 'The password has been reset successfully.'
+service:
+    contenttype:
+        mappings_error: 'Mappings update for %contenttype% in %environments% failed : %elasticsearch_dump%'
+        mappings_updated: 'Mappings successfully updated for content type %contenttype% in %environments%'
+    data:
+        not_able_to_load_the_private_key: 'It''s impossible to load the private key %private_key_filename% : %error_message%'
+        not_a_data_field: 'Unexpected %field_name% field in the revision form'
+        already_unpublished: 'The document "%label%" was already unpublished from %environment%'
+        cant_finalize_field: '%error_message%'
+        check_signature_failed: 'Signature mismatch in %environment% for the document "%label%"'
+        computed_hash_mismatch: 'Computed hash mismatch in %environment% for document "%label%"'
+        data_not_consumed: '{1} A data of this revision was not consumed: %data%|]1,Inf[ Some data (%count%} of this revision were not consumed: %data%'
+        default_value_error: 'It was not possible to initiate the default value (json_decode) for the content type %contenttype%, please check the content type''s configuration'
+        default_value_template_error: 'It was not possible to initiate the default value (compile template) for the content type %contenttype%, please check the content type''s configuration'
+        error_check_signature: 'Error checking signature in %environment% the revisions''s data for the document "%label%" : %error_message%'
+        error_with_fields: 'The field %path% is in error with the message %error_message%'
+        hash_mismatch: 'Hash mismatch in %environment% for the document "%label%"'
+        hash_missing: 'Hash missing in %environment% for document "%label%"'
+        integrity_failed: 'Issue in %environment% while checking integrity of the document "%label%": %error_message%'
+        json_parse_post_processing_error: 'Error to JSON parse the result of the post processing script of field %field_name% (|json_encode|raw): %template%'
+        not_a_draft: 'The document "%label%" is already finalized'
+        not_able_to_sign: 'It was not possible to sign the document : %error_message%'
+        post_finalize_failed: 'Error while finalize the post processing of the document "%label%" : %error_message%'
+        revision_not_signed: 'Revision not signed in %environment% for document "%label%"'
+        template_parse_error: 'Error to parse the computed field %computed_field_name%: %error_message%'
+        unknown_update_type: 'The document "%label%" has not been replaced or replaced as the update type "%update_type%" is unknown'
+        update_referrers_error: 'It was impossible to update document''s referrers'
+        unlock_revisions_error: 'Unexpected unlock exception'
+api:
+    admin:
+        entities:
+            create: 'An %entity% has been created with id %id%'
+            update: 'An %entity% has been updated with id %id%'
+            delete: 'An %entity% has been deleted with id %id%'

@@ -1,2 +1,2 @@
 core:
-  version: 'Version %core% with Symfony %symfony%'
+    version: 'Version %core% with Symfony %symfony%'

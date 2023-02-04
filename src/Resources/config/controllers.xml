@@ -83,7 +83,7 @@
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.mapping" />
-            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.form.field-type.manager" />
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -211,6 +211,16 @@
         </service>
 
         <!-- Form -->
+        <service id="EMS\CoreBundle\Controller\Form\FormController" public="true">
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.form.manager" />
+            <argument type="service" id="ems.form.field-type.manager" />
+            <call method="setContainer"/>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Submission -->
         <service id="EMS\CoreBundle\Controller\Form\SubmissionController" public="true">
             <argument type="service" id="ems.form_submission" />
             <argument type="service" id="logger" />

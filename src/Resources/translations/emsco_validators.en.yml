@@ -1,2 +1,6 @@
-entity.release.violation.same_source_and_target: 'The target environment must be different from the source environment'
-cron.invalid-format: 'Invalid cron format'
+entity:
+    release:
+        violation:
+            same_source_and_target: 'The target environment must be different from the source environment'
+cron:
+    invalid-format: 'Invalid cron format'

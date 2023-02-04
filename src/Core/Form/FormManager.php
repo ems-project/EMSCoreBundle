@@ -1,0 +1,153 @@
+<?php
+
+declare(strict_types=1);
+
+namespace EMS\CoreBundle\Core\Form;
+
+use EMS\CommonBundle\Entity\EntityInterface;
+use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CoreBundle\Entity\Form;
+use EMS\CoreBundle\Repository\FormRepository;
+use EMS\CoreBundle\Service\EntityServiceInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+class FormManager implements EntityServiceInterface
+{
+    public function __construct(private readonly FormRepository $formRepository, private readonly LoggerInterface $logger)
+    {
+    }
+
+    public function isSortable(): bool
+    {
+        return true;
+    }
+
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    {
+        if (null !== $context) {
+            throw new \RuntimeException('Unexpected not null context');
+        }
+
+        return $this->formRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'form';
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAliasesName(): array
+    {
+        return [
+            'forms',
+            'Form',
+            'Forms',
+        ];
+    }
+
+    public function count(string $searchValue = '', $context = null): int
+    {
+        if (null !== $context) {
+            throw new \RuntimeException('Unexpected not null context');
+        }
+
+        return $this->formRepository->counter($searchValue);
+    }
+
+    public function update(Form $form): void
+    {
+        if (0 === $form->getOrderKey()) {
+            $form->setOrderKey($this->formRepository->counter() + 1);
+        }
+        $encoder = new Encoder();
+        $name = $form->getName();
+        $webalized = $encoder->webalize($name);
+        $form->setName($webalized);
+        $this->formRepository->create($form);
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function reorderByIds(array $ids): void
+    {
+        $counter = 1;
+        foreach ($ids as $id) {
+            $channel = $this->formRepository->getById($id);
+            $channel->setOrderKey($counter++);
+            $this->formRepository->create($channel);
+        }
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function deleteByIds(array $ids): void
+    {
+        foreach ($this->formRepository->getByIds($ids) as $form) {
+            $this->delete($form);
+        }
+    }
+
+    public function delete(Form $form): void
+    {
+        $name = $form->getName();
+        $this->formRepository->delete($form);
+        $this->logger->warning('log.service.form.delete', [
+            'name' => $name,
+        ]);
+    }
+
+    public function getByName(string $name): Form
+    {
+        $form = $this->formRepository->getByName($name);
+        if (null === $form) {
+            throw new NotFoundHttpException('Form not found');
+        }
+
+        return $form;
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->formRepository->getByName($name);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        if (!$entity instanceof Form) {
+            throw new \RuntimeException('Unexpected form object');
+        }
+        $form = Form::fromJson($json, $entity);
+        $this->formRepository->create($form);
+
+        return $form;
+    }
+
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    {
+        $form = Form::fromJson($json);
+        if (null !== $name && $form->getName() !== $name) {
+            throw new \RuntimeException(\sprintf('Form name mismatched: %s vs %s', $form->getName(), $name));
+        }
+        $this->formRepository->create($form);
+
+        return $form;
+    }
+
+    public function deleteByItemName(string $name): string
+    {
+        $form = $this->formRepository->getByName($name);
+        if (null === $form) {
+            throw new \RuntimeException(\sprintf('Form %s not found', $name));
+        }
+        $id = $form->getId();
+        $this->formRepository->delete($form);
+
+        return $id;
+    }
+}

@@ -323,6 +323,9 @@
             <argument type="service" id="ems_core.dashboard.dashboards"/>
             <tag name="form.type"/>
         </service>
+        <service id="ems_core.form.form_type" class="EMS\CoreBundle\Form\Form\FormType">
+            <tag name="form.type"/>
+        </service>
         <service id="ems_core.form.view_type" class="EMS\CoreBundle\Form\Form\ViewType">
             <argument type="service" id="service_container"/>
             <tag name="form.type"/>

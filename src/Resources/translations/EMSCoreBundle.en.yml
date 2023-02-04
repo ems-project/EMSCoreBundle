@@ -437,12 +437,12 @@ dashboard:
             quick_search: 'Quick search'
             public: Public
     actions:
+        define:
+            title: 'Define'
+            set_quick_search: 'As quick search'
+            set_landing_page: 'As landing page'
         delete_selected: 'Deleted selected'
         edit: Edit
-        set_quick_search: 'As quick search'
-        set_quick_search_confirm: 'Do you confirm'
-        set_landing_page: 'As landing page'
-        set_landing_page_confirm: 'Do you confirm'
         delete: Delete
         delete_confirm: 'Do you confirm'
 ROLE_SUPER_WEBMASTER: 'Super Webmaster'

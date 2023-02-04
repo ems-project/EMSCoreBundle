@@ -27,8 +27,7 @@ abstract class TableAbstract implements TableInterface
     private array $reordered = [];
     /** @var TableColumn[] */
     private array $columns = [];
-    /** @var TableItemAction[] */
-    private array $itemActions = [];
+    private TableItemActionCollection $itemActionCollection;
     /** @var TableAction[] */
     private array $tableActions = [];
     private ?string $orderField = null;
@@ -45,6 +44,7 @@ abstract class TableAbstract implements TableInterface
 
     public function __construct(private readonly ?string $ajaxUrl, private int $from, private int $size)
     {
+        $this->itemActionCollection = new TableItemActionCollection();
     }
 
     public function isSortable(): bool
@@ -137,15 +137,20 @@ abstract class TableAbstract implements TableInterface
         return $this->columns;
     }
 
+    public function addItemActionCollection(?string $labelKey = null, ?string $icon = null): TableItemActionCollection
+    {
+        $itemActionCollection = new TableItemActionCollection($labelKey, $icon);
+        $this->itemActionCollection->addItemActionCollection($itemActionCollection);
+
+        return $itemActionCollection;
+    }
+
     /**
      * @param array<mixed> $routeParameters
      */
     public function addItemGetAction(string $route, string $labelKey, string $icon, array $routeParameters = []): TableItemAction
     {
-        $action = TableItemAction::getAction($route, $labelKey, $icon, $routeParameters);
-        $this->itemActions[] = $action;
-
-        return $action;
+        return $this->itemActionCollection->addItemGetAction($route, $labelKey, $icon, $routeParameters);
     }
 
     /**
@@ -153,10 +158,7 @@ abstract class TableAbstract implements TableInterface
      */
     public function addItemPostAction(string $route, string $labelKey, string $icon, string $messageKey, array $routeParameters = []): TableItemAction
     {
-        $action = TableItemAction::postAction($route, $labelKey, $icon, $messageKey, $routeParameters);
-        $this->itemActions[] = $action;
-
-        return $action;
+        return $this->itemActionCollection->addItemPostAction($route, $labelKey, $icon, $messageKey, $routeParameters);
     }
 
     /**
@@ -164,10 +166,7 @@ abstract class TableAbstract implements TableInterface
      */
     public function addDynamicItemPostAction(string $route, string $labelKey, string $icon, string $messageKey, array $routeParameters = []): TableItemAction
     {
-        $action = TableItemAction::postDynamicAction($route, $labelKey, $icon, $messageKey, $routeParameters);
-        $this->itemActions[] = $action;
-
-        return $action;
+        return $this->itemActionCollection->addDynamicItemPostAction($route, $labelKey, $icon, $messageKey, $routeParameters);
     }
 
     /**
@@ -175,18 +174,12 @@ abstract class TableAbstract implements TableInterface
      */
     public function addDynamicItemGetAction(string $route, string $labelKey, string $icon, array $routeParameters = []): TableItemAction
     {
-        $action = TableItemAction::getDynamicAction($route, $labelKey, $icon, $routeParameters);
-        $this->itemActions[] = $action;
-
-        return $action;
+        return $this->itemActionCollection->addDynamicItemGetAction($route, $labelKey, $icon, $routeParameters);
     }
 
-    /**
-     * @return TableItemAction[]
-     */
-    public function getItemActions(): iterable
+    public function getItemActions(): TableItemActionCollection
     {
-        return $this->itemActions;
+        return $this->itemActionCollection;
     }
 
     public function addTableAction(string $name, string $icon, string $labelKey, string $confirmationKey): TableAction

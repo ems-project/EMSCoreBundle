@@ -194,46 +194,72 @@
 {% endblock emsco_form_table_column_action_checkbox %}
 
 {% block emsco_form_table_column_row_actions %}
+    {% trans_default_domain 'EMSCoreBundle' %}
     <div class="btn-group {{ table.rowActionsClass }}">
         {% for action in table.itemActions %}
-            {% if action.valid(line.data) %}
-                {%  if action.dynamic == true %}
-                    {% set routeParameters = {} %}
-                    {% for name, property in action.routeParameters %}
-                        {% set data = line.data %}
-                        {% for token in property|split('.') %}
-                            {% set data = attribute(data, token)|default(property) %}
+            {% if action is iterable and action|length > 0 %}
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% if action.icon|default(false) %}
+                            <span class="{{ action.icon starts with 'glyphicon-' ? "glyphicon #{action.icon}" : "fa fa-#{action.icon}" }}"></span>&nbsp;
+                        {% endif %}
+                        {% if action.label|default(false) %}{{ action.label|trans }}{% endif %}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% for childAction in action %}
+                            <li>
+                                {% with { 'action': childAction, 'btnClass': '' } %}
+                                {{ block('emsco_form_table_item_action') }}
+                                {% endwith %}
+                            </li>
                         {% endfor %}
-                        {% set routeParameters = routeParameters|merge({ (name): data }) %}
-                    {%  endfor %}
-                {% else %}
-                    {% set routeParameters = action.routeParameters|merge({(table.attributeName): line.data.id}) %}
-                {% endif %}
-                {% if action.post %}
-                    {% if action.route != 'EMS_user_apikey' or 'ROLE_API' in line.data.roles  %}
-                        {% include '@EMSCore/elements/post-button.html.twig' with {
-                            'url': path(action.route, routeParameters),
-                            'message': action.messageKey,
-                            'label': action.labelKey,
-                            'btnType': action.buttonType,
-                            'itemLabel': attribute(line.data, table.labelAttribute),
-                            'icon': action.icon,
-                            'group_class': loop.last ? 'pull-right' : '',
-                        }%}
-                    {% endif %}
-                {% else %}
-                    {% include '@EMSCore/elements/get-button.html.twig' with {
-                        'url':  path(action.route, routeParameters),
-                        'label': action.labelKey,
-                        'itemLabel': attribute(line.data, table.labelAttribute),
-                        'btnType': action.buttonType,
-                        'icon': action.icon,
-                    }%}
-                {% endif %}
+                    </ul>
+                </div>
+            {% else %}
+                 {{ block('emsco_form_table_item_action') }}
             {% endif %}
         {% endfor %}
     </div>
 {% endblock emsco_form_table_column_row_actions %}
+
+{% block emsco_form_table_item_action %}
+    {% if action.valid(line.data) %}
+        {%  if action.dynamic == true %}
+            {% set routeParameters = {} %}
+            {% for name, property in action.routeParameters %}
+                {% set data = line.data %}
+                {% for token in property|split('.') %}
+                    {% set data = attribute(data, token)|default(property) %}
+                {% endfor %}
+                {% set routeParameters = routeParameters|merge({ (name): data }) %}
+            {%  endfor %}
+        {% else %}
+            {% set routeParameters = action.routeParameters|merge({(table.attributeName): line.data.id}) %}
+        {% endif %}
+        {% if action.post %}
+            {% if action.route != 'EMS_user_apikey' or 'ROLE_API' in line.data.roles  %}
+                {% include '@EMSCore/elements/post-button.html.twig' with {
+                    'url': path(action.route, routeParameters),
+                    'message': action.messageKey,
+                    'label': action.labelKey,
+                    'btnType': action.buttonType,
+                    'itemLabel': attribute(line.data, table.labelAttribute),
+                    'icon': action.icon,
+                    'group_class': loop.last ? 'pull-right' : '',
+                }%}
+            {% endif %}
+        {% else %}
+            {% include '@EMSCore/elements/get-button.html.twig' with {
+                'url':  path(action.route, routeParameters),
+                'label': action.labelKey,
+                'itemLabel': attribute(line.data, table.labelAttribute),
+                'btnType': action.buttonType,
+                'icon': action.icon,
+            }%}
+        {% endif %}
+    {% endif %}
+{% endblock emsco_form_table_item_action %}
 
 
 {% block emsco_form_table_type_widget %}

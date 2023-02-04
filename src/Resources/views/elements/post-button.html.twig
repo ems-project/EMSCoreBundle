@@ -1,101 +1,38 @@
-{% trans_default_domain 'EMSCoreBundle' %}{% if message is defined %}
-<div class="btn-group{% if group_class is defined %} {{ group_class }}{% endif %}">
-  <button type="button" class="btn {% if class is defined %}{{ class }}{% else %}btn-sm{% endif %} btn-{{ btnType|default('primary') }} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    	{% if icon is defined %}
-			{% if icon|slice(0,10) == 'glyphicon-'  %}
-				<span class="glyphicon {{ icon }}"></span>&nbsp;
-			{% else %}
-				<span class="fa fa-{{ icon }}"></span>&nbsp;
-			{% endif  %}
-		{% endif %}
-		{% if label is defined %}
-			{{ label|trans({'%label%' : itemLabel|default('%label%')}) }}
-		{% elseif rawlabel is defined %}
-			{{ rawlabel|raw }}
-		{% endif %} 
-    <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu">
-    <li><a href="{{ url }}"
-		onclick=" 
-			{% if destinationFormName is defined %}
-				var f = document.getElementById('{{ destinationFormName }}');
-				var my_tb=document.createElement('INPUT');
-				my_tb.style.display='none'; 
-				my_tb.type='TEXT';
-				my_tb.name='source_url';
-				my_tb.value={{ url|json_encode }};
-				f.appendChild(my_tb);
-				{% if action is defined %}
-					f.action={{ action|json_encode }};
-				{% endif %}
-			{% else %}
-			 	var f=document.createElement('form'); 
-				f.style.display='none'; 
-				this.parentNode.appendChild(f); 
-				f.method='post'; 
-				f.action=this.href;
+{% trans_default_domain 'EMSCoreBundle' %}
+{%- set settings = {
+	'form': (destinationFormName|default(false)),
+	'action': (action is defined ? action|json_encode : false),
+	'name': (name is defined  ? name|json_encode : false),
+	'value': (value is defined  ? value|json_encode : false),
+}|filter(v => v != false) -%}
+{% if message is defined and message != null %}
+	<div class="btn-group{% if group_class is defined %} {{ group_class }}{% endif %}">
+	  <button type="button" class="btn {% if class is defined %}{{ class }}{% else %}btn-sm{% endif %} btn-{{ btnType|default('primary') }} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			{% if icon is defined %}
+				<span class="{{ icon starts with 'glyphicon-' ? "glyphicon #{icon}" : "fa fa-#{icon}" }}"></span>&nbsp;
 			{% endif %}
-			
-			{% if value is defined and name is defined %}
-				var my_tb=document.createElement('INPUT');
-				my_tb.style.display='none'; 
-				my_tb.type='TEXT';
-				my_tb.name={{ name|json_encode }};
-				my_tb.value={{ value|json_encode }};
-				f.appendChild(my_tb);
+			{% if label is defined %}
+				{{ label|trans({'%label%' : itemLabel|default('%label%')}) }}
+			{% elseif rawlabel is defined %}
+				{{ rawlabel|raw }}
 			{% endif %}
-			f.submit(); 
-			
-			return false;">{{ message|trans({'%label%' : itemLabel|default('%label%')}) }}</a></li>
-  </ul>
-</div>
+		<span class="caret"></span>
+	  </button>
+	  <ul class="dropdown-menu">
+		<li>
+			<a href="{{ url }}"
+			   data-post-settings="{{ settings|json_encode|escape('html_attr') }}"
+			   class="core-post-button">{{ message|trans({'%label%' : itemLabel|default('%label%')}) }}</a>
+		</li>
+	  </ul>
+	</div>
 {% else %}
-	<a  class="{% if btnClass is defined %}{{ btnClass }}{% else %}btn btn-sm btn-{{ btnType|default('primary') }}{% endif %}" href="{{ url }}"
-		onclick=" 
-		{% if destinationFormName is defined %}
-		var f = document.getElementById('{{ destinationFormName }}');
-		var my_tb=document.createElement('INPUT');
-		my_tb.style.display='none'; 
-		my_tb.type='TEXT';
-		my_tb.name='source_url';
-		my_tb.value={{ url|json_encode }};
-		f.appendChild(my_tb);
-		{% if action is defined %}
-			f.action={{ action|json_encode }};
-		{% endif %}
-	{% else %}
-	 	var f=document.createElement('form'); 
-		f.style.display='none'; 
-		this.parentNode.appendChild(f); 
-		f.method='post'; 
-		f.action=this.href;
-	{% endif %}
-	
-	{% if value is defined and name is defined %}
-		var my_tb=document.createElement('INPUT');
-		my_tb.style.display='none'; 
-		my_tb.type='TEXT';
-		my_tb.name={{ name|json_encode }};
-		my_tb.value={{ value|json_encode }};
-		f.appendChild(my_tb);
-	{% endif %}
-	f.submit(); 
-	
-	return false;">
-		
+	<a class="core-post-button {% if btnClass is defined %}{{ btnClass }}{% else %}btn btn-sm btn-{{ btnType|default('primary') }}{% endif %}"
+		data-post-settings="{{ settings|json_encode|escape('html_attr') }}"
+		href="{{ url }}">
 		{% if icon is defined %}
-			{% if icon|slice(0,9) == 'glyphicon'  %}
-				<span class="glyphicon {{ icon }}"></span>&nbsp;
-			{% else %}
-				<span class="fa fa-{{ icon }}"></span>&nbsp;
-			{% endif  %}
+			<span class="{{ icon starts with 'glyphicon-' ? "glyphicon #{icon}" : "fa fa-#{icon}" }}"></span>&nbsp;
 		{% endif %}
-		{% if label is defined %}
-			{{ label }}
-		{% endif %}
-	
+		{% if label is defined %}{{ label|trans }}{% endif %}
 	</a>
 {% endif %}
-
-

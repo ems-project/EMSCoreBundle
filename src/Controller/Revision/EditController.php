@@ -143,6 +143,7 @@ class EditController extends AbstractController
                 if (isset($requestRevision['paste'])) {
                     $this->logger->notice('log.data.revision.paste', LogRevisionContext::update($revision));
                     $objectArray = \array_merge($objectArray, $request->getSession()->get('ems_clipboard', []));
+                    $this->revisionService->save($revision, $objectArray);
                     $this->logger->debug('Paste data have been merged');
                 }
 

@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Helper;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class EmsCoreResponse
 {
@@ -19,7 +20,9 @@ class EmsCoreResponse
             return new JsonResponse($body);
         }
 
-        $bag = $request->getSession()->getFlashBag();
+        /** @var Session $session */
+        $session = $request->getSession();
+        $bag = $session->getFlashBag();
         foreach (['notice', 'warning', 'error'] as $level) {
             $messages = $bag->get($level);
             if (!empty($messages)) {

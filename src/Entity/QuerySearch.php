@@ -17,7 +17,9 @@ use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Table(name="query_search")
+ *
  * @ORM\Entity()
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityInterface
@@ -25,8 +27,11 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
     use CreatedModifiedTrait;
     /**
      * @ORM\Id
+     *
      * @ORM\Column(type="uuid", unique=true)
+     *
      * @ORM\GeneratedValue(strategy="CUSTOM")
+     *
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
     private UuidInterface $id;
@@ -45,6 +50,7 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
      * @var Collection <int,Environment>
      *
      * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
+     *
      * @ORM\JoinTable(name="environment_query_search",
      *      joinColumns={@ORM\JoinColumn(name="query_search_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="environment_id", referencedColumnName="id")}

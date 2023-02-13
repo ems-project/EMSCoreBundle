@@ -13,7 +13,9 @@ use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Table(name="task")
+ *
  * @ORM\Entity()
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class Task implements EntityInterface
@@ -22,6 +24,7 @@ class Task implements EntityInterface
 
     /**
      * @ORM\Id
+     *
      * @ORM\Column(type="uuid", unique=true)
      */
     private UuidInterface $id;

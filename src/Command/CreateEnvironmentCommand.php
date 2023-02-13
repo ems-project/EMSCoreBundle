@@ -101,6 +101,8 @@ class CreateEnvironmentCommand extends Command
 
         $this->io->success(\sprintf('The environment "%s" was created.', $environmentName));
 
+        $this->environmentService->clearCache();
+
         return 0;
     }
 

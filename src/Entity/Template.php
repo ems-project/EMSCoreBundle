@@ -12,7 +12,9 @@ use EMS\Helpers\Standard\Type;
 
 /**
  * @ORM\Table(name="template")
+ *
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\TemplateRepository")
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class Template extends JsonDeserializer implements \JsonSerializable, EntityInterface, \Stringable
@@ -20,7 +22,9 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     use CreatedModifiedTrait;
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected ?int $id = null;
@@ -69,6 +73,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
 
     /**
      * @ORM\ManyToOne(targetEntity="ContentType", inversedBy="templates")
+     *
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
     protected ?ContentType $contentType = null;
@@ -112,6 +117,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
      * @var Collection<int, Environment>
      *
      * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
+     *
      * @ORM\JoinTable(name="environment_template",
      *      joinColumns={@ORM\JoinColumn(name="template_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="environment_id", referencedColumnName="id")}
@@ -186,6 +192,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
 
     /**
      * @ORM\PrePersist
+     *
      * @ORM\PreUpdate
      */
     public function updateOrder(): void

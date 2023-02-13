@@ -6,19 +6,23 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="search_filter")
+ *
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SearchFilterRepository")
  */
 class SearchFilter implements \JsonSerializable
 {
     /**
      * @ORM\Column(name="id", type="bigint")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Search", inversedBy="filters")
+     *
      * @ORM\JoinColumn(name="search_id", referencedColumnName="id")
      */
     private ?Search $search = null;

@@ -117,6 +117,8 @@ class AlignCommand extends AbstractEnvironmentCommand
         }
         $this->io->progressFinish();
 
+        $this->environmentService->clearCache();
+
         if ($input->getOption(self::OPTION_SNAPSHOT)) {
             $snapShot = $this->environmentService->giveByName($this->target->getName());
             $this->environmentService->setSnapshotTag($snapShot);

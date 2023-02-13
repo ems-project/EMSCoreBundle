@@ -9,7 +9,9 @@ use EMS\Helpers\Standard\DateTime;
  * DataField.
  *
  * @ORM\Table(name="search_field_option")
+ *
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SearchFieldOptionRepository")
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class SearchFieldOption
@@ -17,7 +19,9 @@ class SearchFieldOption
     use CreatedModifiedTrait;
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;

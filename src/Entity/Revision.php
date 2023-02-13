@@ -19,7 +19,9 @@ use Ramsey\Uuid\UuidInterface;
  * Revision.
  *
  * @ORM\Table(name="revision", uniqueConstraints={@ORM\UniqueConstraint(name="tuple_index", columns={"end_time", "ouuid"})})
+ *
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\RevisionRepository")
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class Revision implements EntityInterface, \Stringable
@@ -28,7 +30,9 @@ class Revision implements EntityInterface, \Stringable
     use CreatedModifiedTrait;
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private ?int $id = null;
@@ -46,12 +50,14 @@ class Revision implements EntityInterface, \Stringable
     private bool $deleted = false;
     /**
      * @ORM\ManyToOne(targetEntity="ContentType")
+     *
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
     private ?ContentType $contentType = null;
     private ?DataField $dataField = null;
     /**
      * @ORM\Column(name="version", type="integer")
+     *
      * @ORM\Version
      */
     private int $version = 0;
@@ -104,7 +110,9 @@ class Revision implements EntityInterface, \Stringable
      * @var ArrayCollection<int, Environment>|Environment[]
      *
      * @ORM\ManyToMany(targetEntity="Environment", inversedBy="revisions", cascade={"persist"})
+     *
      * @ORM\JoinTable(name="environment_revision")
+     *
      * @ORM\OrderBy({"orderKey":"ASC"})
      */
     private Collection $environments;
@@ -112,6 +120,7 @@ class Revision implements EntityInterface, \Stringable
      * @var Collection<int, Notification>
      *
      * @ORM\OneToMany(targetEntity="Notification", mappedBy="revision", cascade={"persist", "remove"})
+     *
      * @ORM\OrderBy({"created" = "ASC"})
      */
     private Collection $notifications;
@@ -174,6 +183,7 @@ class Revision implements EntityInterface, \Stringable
 
     /**
      * @ORM\PrePersist
+     *
      * @ORM\PreUpdate
      */
     public function checkLock(): void

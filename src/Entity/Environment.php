@@ -13,7 +13,9 @@ use EMS\Helpers\Standard\DateTime;
  * Environment.
  *
  * @ORM\Table(name="environment")
+ *
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\EnvironmentRepository")
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class Environment extends JsonDeserializer implements \JsonSerializable, EntityInterface, \Stringable
@@ -23,7 +25,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;

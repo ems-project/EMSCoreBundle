@@ -14,7 +14,9 @@ use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Table(name="dashboard")
+ *
  * @ORM\Entity()
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInterface
@@ -22,8 +24,11 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
     use CreatedModifiedTrait;
     /**
      * @ORM\Id
+     *
      * @ORM\Column(type="uuid", unique=true)
+     *
      * @ORM\GeneratedValue(strategy="CUSTOM")
+     *
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
     private UuidInterface $id;

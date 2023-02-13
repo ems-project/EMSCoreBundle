@@ -6,12 +6,14 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="session")
+ *
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SessionRepository")
  */
 class Session
 {
     /**
      * @ORM\Column(name="id", type="string", length=128, nullable=false)
+     *
      * @ORM\Id
      */
     private ?string $id = null;

@@ -7,7 +7,9 @@ use EMS\Helpers\Standard\DateTime;
 
 /**
  * @ORM\Table(name="notification")
+ *
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\NotificationRepository")
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class Notification implements \Stringable
@@ -17,13 +19,16 @@ class Notification implements \Stringable
 
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Template")
+     *
      * @ORM\JoinColumn(name="template_id", referencedColumnName="id")
      */
     private ?Template $template = null;
@@ -60,12 +65,14 @@ class Notification implements \Stringable
 
     /**
      * @ORM\ManyToOne(targetEntity="Revision", inversedBy="notifications")
+     *
      * @ORM\JoinColumn(name="revision_id", referencedColumnName="id")
      */
     private ?Revision $revision = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Environment")
+     *
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
     private ?Environment $environment = null;

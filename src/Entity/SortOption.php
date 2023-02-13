@@ -7,7 +7,9 @@ use EMS\Helpers\Standard\DateTime;
 
 /**
  * @ORM\Table(name="sort_option")
+ *
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SortOptionRepository")
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class SortOption
@@ -15,7 +17,9 @@ class SortOption
     use CreatedModifiedTrait;
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;

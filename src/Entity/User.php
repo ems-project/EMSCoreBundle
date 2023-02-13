@@ -13,7 +13,9 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 /**
  * @ORM\Entity
+ *
  * @ORM\Table(name="`user`")
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserInterface, \Stringable
@@ -21,7 +23,9 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     use CreatedModifiedTrait;
     /**
      * @ORM\Id
+     *
      * @ORM\Column(type="integer")
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private ?int $id = null;
@@ -41,6 +45,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     private ?bool $allowedToConfigureWysiwyg = null;
     /**
      * @ORM\ManyToOne(targetEntity="EMS\CoreBundle\Entity\WysiwygProfile", cascade={})
+     *
      * @ORM\JoinColumn(name="wysiwyg_profile_id", referencedColumnName="id")
      */
     private ?WysiwygProfile $wysiwygProfile = null;
@@ -68,6 +73,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      * @var Collection<int,AuthToken>
      *
      * @ORM\OneToMany(targetEntity="AuthToken", mappedBy="user", cascade={"remove"})
+     *
      * @ORM\OrderBy({"created" = "ASC"})
      */
     private Collection $authTokens;

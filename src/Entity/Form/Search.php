@@ -11,13 +11,16 @@ use EMS\CoreBundle\Entity\ContentType;
  * Search.
  *
  * @ORM\Table(name="search")
+ *
  * @ORM\Entity()
  */
 class Search implements \JsonSerializable
 {
     /**
      * @ORM\Column(name="id", type="bigint")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
@@ -60,6 +63,7 @@ class Search implements \JsonSerializable
 
     /**
      * @ORM\OneToOne(targetEntity="EMS\CoreBundle\Entity\ContentType", cascade={})
+     *
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
     private ?ContentType $contentType = null;

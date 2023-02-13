@@ -331,9 +331,6 @@ class EnvironmentService implements EntityServiceInterface
         });
     }
 
-    /**
-     * @deprecated  https://github.com/ems-project/EMSCoreBundle/issues/281
-     */
     public function clearCache(): void
     {
         $this->environments = [];

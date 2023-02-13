@@ -11,7 +11,9 @@ use EMS\Helpers\Standard\DateTime;
 
 /**
  * @ORM\Table(name="view")
+ *
  * @ORM\Entity()
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class View extends JsonDeserializer implements \JsonSerializable, EntityInterface
@@ -19,7 +21,9 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     use CreatedModifiedTrait;
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected int $id;
@@ -60,6 +64,7 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
 
     /**
      * @ORM\ManyToOne(targetEntity="ContentType", inversedBy="views")
+     *
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
     protected ContentType $contentType;

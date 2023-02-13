@@ -11,7 +11,9 @@ use EMS\Helpers\Standard\DateTime;
  * DataField.
  *
  * @ORM\Table(name="wysiwyg_styles_set")
+ *
  * @ORM\Entity()
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, EntityInterface
@@ -19,7 +21,9 @@ class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, En
     use CreatedModifiedTrait;
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;

@@ -13,7 +13,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Table(name="release_entity")
+ *
  * @ORM\Entity()
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class Release implements EntityInterface
@@ -27,7 +29,9 @@ class Release implements EntityInterface
 
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
@@ -49,12 +53,14 @@ class Release implements EntityInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="Environment")
+     *
      * @ORM\JoinColumn(name="environment_source_id", referencedColumnName="id")
      */
     private Environment $environmentSource;
 
     /**
      * @ORM\ManyToOne(targetEntity="Environment")
+     *
      * @ORM\JoinColumn(name="environment_target_id", referencedColumnName="id")
      */
     private Environment $environmentTarget;

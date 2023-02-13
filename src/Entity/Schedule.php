@@ -15,7 +15,9 @@ use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Table(name="schedule")
+ *
  * @ORM\Entity()
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInterface
@@ -23,8 +25,11 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
     use CreatedModifiedTrait;
     /**
      * @ORM\Id
+     *
      * @ORM\Column(type="uuid", unique=true)
+     *
      * @ORM\GeneratedValue(strategy="CUSTOM")
+     *
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
     private UuidInterface $id;
@@ -36,6 +41,7 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
 
     /**
      * @EMSAssert\Cron()
+     *
      * @ORM\Column(name="cron", type="string", length=255)
      */
     protected string $cron = '';

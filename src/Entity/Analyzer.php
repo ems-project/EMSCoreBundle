@@ -12,7 +12,9 @@ use EMS\Helpers\Standard\DateTime;
  * Analyzer.
  *
  * @ORM\Table(name="analyzer")
+ *
  * @ORM\Entity()
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInterface
@@ -22,7 +24,9 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;

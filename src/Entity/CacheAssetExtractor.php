@@ -7,7 +7,9 @@ use EMS\Helpers\Standard\DateTime;
 
 /**
  * @ORM\Table(name="cache_asset_extractor")
+ *
  * @ORM\Entity()
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class CacheAssetExtractor
@@ -15,7 +17,9 @@ class CacheAssetExtractor
     use CreatedModifiedTrait;
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;

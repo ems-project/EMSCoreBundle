@@ -10,7 +10,9 @@ use EMS\Helpers\Standard\DateTime;
  * DataField.
  *
  * @ORM\Table(name="uploaded_asset")
+ *
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\UploadedAssetRepository")
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class UploadedAsset implements EntityInterface
@@ -18,7 +20,9 @@ class UploadedAsset implements EntityInterface
     use CreatedModifiedTrait;
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;

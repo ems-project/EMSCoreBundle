@@ -16,6 +16,7 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -53,7 +54,9 @@ class MediaLibraryController
                 $folderName = (string) $form->get('folder_name')->getData();
 
                 if ($this->mediaLibraryService->createFolder($config, $folderName, $path)) {
-                    $request->getSession()->getFlashBag()->clear();
+                    /** @var Session $session */
+                    $session = $request->getSession();
+                    $session->getFlashBag()->clear();
 
                     return $this->getAjaxModal()->getSuccessResponse(['path' => $path]);
                 }
@@ -75,13 +78,15 @@ class MediaLibraryController
         $requestJson = Json::decode($request->getContent());
         $file = $requestJson['file'];
 
+        /** @var Session $session */
+        $session = $request->getSession();
+
         if (!$this->mediaLibraryService->createFile($config, $fileHash, $file, $this->getPath($request))) {
             return new JsonResponse([
-                'messages' => $request->getSession()->getFlashBag()->all(),
+                'messages' => $session->getFlashBag()->all(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        $request->getSession()->getFlashBag()->clear();
+        $session->getFlashBag()->clear();
 
         return new JsonResponse([], Response::HTTP_CREATED);
     }

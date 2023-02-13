@@ -19,6 +19,7 @@ trait CreatedModifiedTrait
 
     /**
      * @ORM\PrePersist
+     *
      * @ORM\PreUpdate
      */
     public function updateModified(): void

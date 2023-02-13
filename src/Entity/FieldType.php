@@ -16,7 +16,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * FieldType.
  *
  * @ORM\Table(name="field_type")
+ *
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\FieldTypeRepository")
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class FieldType extends JsonDeserializer implements \JsonSerializable
@@ -27,7 +29,9 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
@@ -48,6 +52,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
 
     /**
      * @ORM\OneToOne(targetEntity="ContentType")
+     *
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
     protected ?ContentType $contentType = null;
@@ -84,6 +89,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      * @var ?FieldType
      *
      * @ORM\ManyToOne(targetEntity="FieldType", inversedBy="children", cascade={"persist"})
+     *
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
      */
     protected ?FieldType $parent = null;
@@ -92,6 +98,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      * @var Collection<int, FieldType>
      *
      * @ORM\OneToMany(targetEntity="FieldType", mappedBy="parent", cascade={"persist", "remove"})
+     *
      * @ORM\OrderBy({"orderKey" = "ASC"})
      */
     protected Collection $children;

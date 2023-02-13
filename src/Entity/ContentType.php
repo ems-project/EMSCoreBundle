@@ -20,7 +20,9 @@ use EMS\Helpers\Standard\Type;
 
 /**
  * @ORM\Table(name="content_type")
+ *
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\ContentTypeRepository")
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class ContentType extends JsonDeserializer implements \JsonSerializable, EntityInterface, \Stringable
@@ -30,7 +32,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @var int
      *
      * @ORM\Column(name="id", type="bigint")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
@@ -124,6 +128,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     /**
      * @ORM\OneToOne(targetEntity="FieldType", cascade={"persist"})
+     *
      * @ORM\JoinColumn(name="field_types_id", referencedColumnName="id")
      *
      * @var ?FieldType
@@ -182,12 +187,14 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      * @var Environment|null
      *
      * @ORM\ManyToOne(targetEntity="Environment", inversedBy="contentTypesHavingThisAsDefault")
+     *
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
     protected $environment;
 
     /**
      * @ORM\OneToMany(targetEntity="Template", mappedBy="contentType", cascade={"persist", "remove"})
+     *
      * @ORM\OrderBy({"orderKey" = "ASC"})
      *
      * @var Collection<int, Template>
@@ -196,6 +203,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     /**
      * @ORM\OneToMany(targetEntity="View", mappedBy="contentType", cascade={"persist", "remove"})
+     *
      * @ORM\OrderBy({"orderKey" = "ASC"})
      *
      * @var Collection<int, View>

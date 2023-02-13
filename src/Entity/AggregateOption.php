@@ -10,7 +10,9 @@ use EMS\Helpers\Standard\DateTime;
  * DataField.
  *
  * @ORM\Table(name="aggregate_option")
+ *
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\AggregateOptionRepository")
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class AggregateOption
@@ -18,7 +20,9 @@ class AggregateOption
     use CreatedModifiedTrait;
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;

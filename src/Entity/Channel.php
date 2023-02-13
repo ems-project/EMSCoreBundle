@@ -14,7 +14,9 @@ use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Table(name="channel")
+ *
  * @ORM\Entity()
+ *
  * @ORM\HasLifecycleCallbacks()
  */
 class Channel extends JsonDeserializer implements \JsonSerializable, EntityInterface
@@ -22,8 +24,11 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
     use CreatedModifiedTrait;
     /**
      * @ORM\Id
+     *
      * @ORM\Column(type="uuid", unique=true)
+     *
      * @ORM\GeneratedValue(strategy="CUSTOM")
+     *
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
     private UuidInterface $id;

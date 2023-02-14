@@ -172,8 +172,7 @@ function editRevisionEventListeners(target, onChangeCallback = null){
                     headers: { 'Content-Type': 'application/json' }
                 }).then((response) => {
                     return response.ok ? response.json().then((json) => {
-                        event.data.dataValue = json.content;
-                        editor.fire( 'paste', event.data);
+                        editor.fire( 'paste', { type: 'auto', dataValue: json.content, method: 'paste' } );
                     }): Promise.reject(response)
                 }).catch(() => { console.error('error pasting') })
             });

@@ -6,22 +6,19 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Form\Field\IconPickerType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ContainerFieldType extends DataFieldType
+class HolderFieldType extends DataFieldType
 {
     public function getLabel(): string
     {
-        return 'Visual container (invisible in Elasticsearch)';
+        return 'Invisible container (Holder)';
     }
 
     public function getBlockPrefix(): string
     {
-        return 'container_field_type';
+        return 'holder_field_type';
     }
 
     /**
@@ -46,7 +43,7 @@ class ContainerFieldType extends DataFieldType
 
     public static function getIcon(): string
     {
-        return 'glyphicon glyphicon-modal-window';
+        return 'fa fa-square-o';
     }
 
     /**
@@ -65,20 +62,10 @@ class ContainerFieldType extends DataFieldType
         }
     }
 
-    /**
-     * @param FormInterface<FormInterface> $form
-     * @param array<string, mixed>         $options
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options): void
-    {
-        parent::buildView($view, $form, $options);
-        $view->vars['icon'] = $options['icon'];
-    }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
-        $resolver->setDefault('icon', null);
+        $resolver->setDefault('is_visible', false);
     }
 
     /**
@@ -96,6 +83,11 @@ class ContainerFieldType extends DataFieldType
         return true;
     }
 
+    public static function isVisible(): bool
+    {
+        return false;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -105,11 +97,9 @@ class ContainerFieldType extends DataFieldType
         $optionsForm = $builder->get('options');
         $optionsForm->remove('mappingOptions');
         $optionsForm->remove('migrationOptions');
+        $optionsForm->remove('displayOptions');
         $optionsForm->get('restrictionOptions')->remove('mandatory');
         $optionsForm->get('restrictionOptions')->remove('mandatory_if');
-        $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
-                'required' => false,
-        ]);
     }
 
     /**

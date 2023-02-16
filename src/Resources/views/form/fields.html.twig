@@ -30,6 +30,12 @@
 {%- endblock checkbox_radio_label %}
 
 
+{% block holder_field_type_row %}
+    {{- form_widget(form) -}}
+    {{- form_errors(form) -}}
+{% endblock holder_field_type_row %}
+
+
 {% block container_field_type_row %}
 <div id="{{ form.vars.id }}" class="container-fluid">
 	<div class="row">
@@ -341,6 +347,8 @@
 		</div>
 	{% endif %}
 {%- endblock container_label %}
+
+{% block holder_label -%}{%- endblock holder_label %}
 
 {% block collectionfieldtype_label -%}
 	{% if data.fieldType.displayOptions.label is defined  %}
@@ -671,13 +679,48 @@
 {# {% endblock data_field_type_row %}#}
 
 
+{% block form_field_type_row %}
+    {% for child in form.iterator %}
+        {% if not child.vars.isVisible is defined or child.vars.isVisible %}
+            <div class="{% if child.vars.data.fieldType.options.displayOptions.class is defined %}{{ child.vars.data.fieldType.options.displayOptions.class }}{% endif %}{% if child.vars.errors|length > 0 and not child.vars.isContainer|default(false)  %} has-error{% endif %}">
+                {{- form_row(child) -}}
+            </div>
+        {% else %}
+            {{- form_row(child) -}}
+        {% endif %}
+        {% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
+            </div><div class="row">
+        {% endif %}
+    {% endfor %}
+{% endblock form_field_type_row %}
+
+{% block holder_field_type_widget %}
+    {% for child in form.iterator %}
+        {% if not child.vars.isVisible is defined or child.vars.isVisible %}
+            <div class="{% if child.vars.data.fieldType.options.displayOptions.class is defined %}{{ child.vars.data.fieldType.options.displayOptions.class }}{% endif %}{% if child.vars.errors|length > 0 and not child.vars.isContainer|default(false)  %} has-error{% endif %}">
+                {{- form_row(child) -}}
+            </div>
+        {% else %}
+            {{- form_row(child) -}}
+        {% endif %}
+        {% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
+            </div><div class="row">
+        {% endif %}
+    {% endfor %}
+{% endblock holder_field_type_widget %}
+
+
 {% block container_field_type_widget %}
 	<div id="{{ form.vars.id }}" class="container-fluid">
 		<div class="row">
 			{% for child in form.iterator %}
-				<div class="{% if child.vars.data.fieldType.options.displayOptions.class is defined %}{{ child.vars.data.fieldType.options.displayOptions.class }}{% endif %}{% if child.vars.errors|length > 0 and not child.vars.isContainer|default(false)  %} has-error{% endif %}">
-    				{{- form_row(child) -}}
-				</div>
+                {% if not child.vars.isVisible is defined or child.vars.isVisible %}
+                    <div class="{% if child.vars.data.fieldType.options.displayOptions.class is defined %}{{ child.vars.data.fieldType.options.displayOptions.class }}{% endif %}{% if child.vars.errors|length > 0 and not child.vars.isContainer|default(false)  %} has-error{% endif %}">
+                        {{- form_row(child) -}}
+                    </div>
+                {% else %}
+                    {{- form_row(child) -}}
+                {% endif %}
 				{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
 					</div><div class="row">
 				{% endif %}

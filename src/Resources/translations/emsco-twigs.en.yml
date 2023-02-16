@@ -146,6 +146,7 @@ views:
             admin: Admin
             content-types: 'Content types'
             environments: Environments
+            forms: Forms
             search: Search
             i18n: I18N
             jobs: Jobs

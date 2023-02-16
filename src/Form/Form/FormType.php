@@ -68,7 +68,6 @@ final class FormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Form::class,
-            'label_format' => 'form.%name%',
             'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
             'create' => false,
         ]);

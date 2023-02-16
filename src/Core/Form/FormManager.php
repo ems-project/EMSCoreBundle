@@ -150,4 +150,12 @@ class FormManager implements EntityServiceInterface
 
         return $id;
     }
+
+    /**
+     * @return Form[]
+     */
+    public function getAll(): array
+    {
+        return $this->formRepository->getAll();
+    }
 }

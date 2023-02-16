@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
-use EMS\CoreBundle\Form\DataField\ContainerFieldType;
+use EMS\CoreBundle\Form\DataField\HolderFieldType;
 use EMS\Helpers\Standard\DateTime;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
@@ -97,7 +97,7 @@ class Form extends JsonDeserializer implements \JsonSerializable, EntityInterfac
         if (null == $this->fieldType) {
             $this->fieldType = new FieldType();
             $this->fieldType->setName('source');
-            $this->fieldType->setType(ContainerFieldType::class);
+            $this->fieldType->setType(HolderFieldType::class);
         }
 
         return $this->fieldType;

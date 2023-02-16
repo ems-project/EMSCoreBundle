@@ -956,6 +956,9 @@ view:
             uploaded-file: 'fa fa-upload'
     macros:
         data-field-type:
+            form:
+                not-defined: 'Form not defined'
+                not-found: 'Form not found'
             macros:
                 data-field-type:
                     collection_added_items: '{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added'

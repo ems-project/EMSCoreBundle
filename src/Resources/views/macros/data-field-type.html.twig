@@ -51,7 +51,7 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			<i class="{% if dataField.fieldType.displayOptions.icon is defined %}{{ dataField.fieldType.displayOptions.icon }}{% else %}fa fa-file-o{% endif %}"></i> 				
+			<i class="{% if dataField.fieldType.displayOptions.icon is defined %}{{ dataField.fieldType.displayOptions.icon }}{% else %}fa fa-file-o{% endif %}"></i>
 				{% if dataField.fieldType.displayOptions.label is defined %}
 					{{ dataField.fieldType.displayOptions.label }}
 				{% else %}
@@ -275,7 +275,7 @@
 						<div class="panel-heading">
 							<h3 class="panel-title">
 								{% if dataField.fieldType.displayOptions.icon is defined %}
-									<i class="{{ dataField.fieldType.displayOptions.icon }}"></i> 
+									<i class="{{ dataField.fieldType.displayOptions.icon }}"></i>
 								{% endif %}
 								{% if dataField.fieldType.displayOptions.singularLabel is defined %}
 									{{ dataField.fieldType.displayOptions.singularLabel }}
@@ -311,6 +311,13 @@
 	</div>
 	{{ _self.messages(dataField) }}
 {% endblock %}
+
+{% block EMS_CoreBundle_Form_DataField_HolderFieldType %}
+    {% for child in dataField.getChildren|filter(c => false == c.fieldType.deleted) %}
+        {{ _self.renderDataFieldBlock(child, source, compare, compareRawData, '', path) }}
+    {% endfor %}
+{% endblock EMS_CoreBundle_Form_DataField_HolderFieldType %}
+
 
 {% block EMS_CoreBundle_Form_DataField_ContainerFieldType %}
 	{% set parent = dataField.fieldType.parent %}
@@ -358,7 +365,7 @@
 			<div class="panel-heading">
 				<h3 class="panel-title">
 					{% if dataField.fieldType.displayOptions.icon is defined %}
-						<i class="{{ dataField.fieldType.displayOptions.icon }}"></i> 
+						<i class="{{ dataField.fieldType.displayOptions.icon }}"></i>
 					{% endif %}
 					{% if dataField.fieldType.displayOptions.label is defined %}
 						{{ dataField.fieldType.displayOptions.label }}
@@ -554,7 +561,7 @@
 			<ul>
             	{{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
 			</ul>
-		
+
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
@@ -1140,8 +1147,8 @@
 		{% if attribute(dataField.rawData, dataField.fieldType.mappingOptions.toDateMachineName) is defined %}
 			{% set dateTo = attribute(dataField.rawData, dataField.fieldType.mappingOptions.toDateMachineName) %}
 		{% endif %}
-		
-		
+
+
 		<dd>
 			<ul>
 				{% set child = compareRawData %}
@@ -1159,13 +1166,13 @@
 					<li>
 						<b>From </b>
                         {{ diff_date(dateFrom, compare, dataField.fieldType.mappingOptions.fromDateMachineName, child, dataField.fieldType.displayOptions.locale.format|convertJavascriptDateRangeFormat, false, constant('\\DateTime::ISO8601')) }}
-					</li>	
-				{% endif %}		
+					</li>
+				{% endif %}
 				{% if dateTo %}
 					<li>
 						<b>To </b>
                         {{ diff_date(dateTo, compare, dataField.fieldType.mappingOptions.toDateMachineName, child, dataField.fieldType.displayOptions.locale.format|convertJavascriptDateRangeFormat, false, constant('\\DateTime::ISO8601')) }}
-					</li>	
+					</li>
 				{% endif %}
 				{% if dateFrom and dateTo %}
 					<li>
@@ -1245,4 +1252,23 @@
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
+{% endblock %}
+
+{% block EMS_CoreBundle_Form_DataField_FormFieldType %}
+    {% if dataField.fieldType.displayOptions.form is defined %}
+        {% set form = emsco_get_form(dataField.fieldType.displayOptions.form, dataField.rawData) %}
+        {% set errorMessage = 'view.macros.data-field-type.form.not-found' %}
+    {% endif %}
+    {% if form is defined and form %}
+        {{ _self.renderDataFieldBlock(emsco_get_data_field(form), source, compare, compareRawData, '', path) }}
+    {% else %}
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                {{ dataField.fieldType.displayOptions.label|default(dataField.fieldType.name) }}{% if is_super() %} ({{ dataField.fieldType.name }}){% endif %}
+            </div>
+            <div class="panel-body">
+                {{ errorMessage|default('view.macros.data-field-type.form.not-defined')|trans }}
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

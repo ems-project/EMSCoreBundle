@@ -1445,7 +1445,7 @@ class DataService
     /**
      * @throws \Exception
      */
-    public function loadDataStructure(Revision $revision): void
+    public function loadDataStructure(Revision $revision, bool $ignoreNotConsumed = false): void
     {
         $data = new DataField();
         $data->setFieldType($revision->giveContentType()->getFieldType());
@@ -1462,6 +1462,10 @@ class DataService
         unset($object[Mapping::FINALIZATION_DATETIME_FIELD]);
         unset($object[Mapping::VERSION_TAG]);
         unset($object[Mapping::VERSION_UUID]);
+        if ($ignoreNotConsumed) {
+            return;
+        }
+
         if ((\is_countable($object) ? \count($object) : 0) > 0) {
             $html = DataService::arrayToHtml($object);
 

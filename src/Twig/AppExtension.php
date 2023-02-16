@@ -118,6 +118,8 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_get_content_types', [ContentTypeRuntime::class, 'getContentTypes']),
             new TwigFunction('emsco_get_content_type_version_tags', [ContentTypeRuntime::class, 'getContentTypeVersionTags']),
             new TwigFunction('emsco_skip_notification', $this->skipNotificationException(...), ['is_safe' => ['html']]),
+            new TwigFunction('emsco_get_form', [FormRuntime::class, 'getFormByName']),
+            new TwigFunction('emsco_get_data_field', [FormRuntime::class, 'getDataField']),
             // deprecated
             new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames'], ['deprecated' => true, 'alternative' => 'emsco_get_default_environment_names']),
             new TwigFunction('get_content_types', [ContentTypeRuntime::class, 'getContentTypes'], ['deprecated' => true, 'alternative' => 'emsco_get_content_types']),

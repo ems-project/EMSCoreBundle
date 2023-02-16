@@ -4,8 +4,6 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
-use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -57,22 +55,7 @@ class NestedFieldType extends DataFieldType
 
         /** @var FieldType $fieldType */
         foreach ($fieldType->getChildren() as $fieldType) {
-            if (!$fieldType->getDeleted()) {
-                /* merge the default options with the ones specified by the user */
-                $options = \array_merge([
-                        'metadata' => $fieldType,
-                        'migration' => $options['migration'],
-                        'with_warning' => $options['with_warning'],
-                        'label' => false,
-                        'disabled_fields' => $options['disabled_fields'],
-                        'referrer-ems-id' => $options['referrer-ems-id'],
-                ], $fieldType->getDisplayOptions());
-                $builder->add($fieldType->getName(), $fieldType->getType(), $options);
-
-                $builder->get($fieldType->getName())
-                    ->addViewTransformer(new DataFieldViewTransformer($fieldType, $this->formRegistry))
-                    ->addModelTransformer(new DataFieldModelTransformer($fieldType, $this->formRegistry));
-            }
+            $this->buildChildForm($fieldType, $options, $builder);
         }
     }
 

@@ -87,10 +87,10 @@ class RevisionService implements RevisionServiceInterface
         return $compareRevision->getRawData();
     }
 
-    public function createRevisionForm(Revision $revision): FormInterface
+    public function createRevisionForm(Revision $revision, bool $ignoreNotConsumed = false): FormInterface
     {
         if (null == $revision->getDatafield()) {
-            $this->dataService->loadDataStructure($revision);
+            $this->dataService->loadDataStructure($revision, $ignoreNotConsumed);
         }
 
         return $this->formFactory->createBuilder(RevisionType::class, $revision, [

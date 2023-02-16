@@ -1,8 +1,8 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Edit user "{{ user.displayName }}"{% endblock %}
-{% block pagetitle %}Edit user "{{ user.displayName }}"{% endblock %} 
-{% block subtitle %}<small>User administration</small>{% endblock %} 
+{% block pagetitle %}Edit user "{{ user.displayName }}"{% endblock %}
+{% block subtitle %}<small>User administration</small>{% endblock %}
 
 {% block body %}
 	<div class="box box-primary">
@@ -28,6 +28,11 @@
 			} %}
     	</div>
     	<div class="col-md-6">
+            {% if form.userOptions.custom_options is defined %}
+                <div class="row">
+                    {{ form_row(form.userOptions.custom_options) }}
+                </div>
+            {% endif %}
 			{{ form_row(form.userOptions) }}
 	    	{{ form_row(form.roles) }}
     	</div>

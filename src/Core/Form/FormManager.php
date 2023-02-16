@@ -106,7 +106,7 @@ class FormManager implements EntityServiceInterface
     {
         $form = $this->formRepository->getByName($name);
         if (null === $form) {
-            throw new NotFoundHttpException('Form not found');
+            throw new NotFoundHttpException(\sprintf('Form %s not found', $name));
         }
 
         return $form;

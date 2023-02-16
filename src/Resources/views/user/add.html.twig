@@ -1,9 +1,9 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Add a user{% endblock %}
-{% block pagetitle %}New user{% endblock %} 
+{% block pagetitle %}New user{% endblock %}
 
-{% block subtitle %}<small>A new user in town?</small>{% endblock %} 
+{% block subtitle %}<small>A new user in town?</small>{% endblock %}
 
 {% block body %}
 <div class="box box-primary">
@@ -31,6 +31,11 @@
 {# 	    	{{ form_row(form.expiresAt) }}#}
     	</div>
     	<div class="col-md-6">
+            {% if form.userOptions.custom_options is defined %}
+                <div class="row">
+                    {{ form_row(form.userOptions.custom_options) }}
+                </div>
+            {% endif %}
 	    	{{ form_row(form.userOptions) }}
 	    	{{ form_row(form.roles) }}
     	</div>

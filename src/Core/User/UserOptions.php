@@ -5,30 +5,37 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\User;
 
 /**
- * @implements \ArrayAccess<string, bool>
+ * @implements \ArrayAccess<string, bool|mixed|null>
  */
 class UserOptions implements \ArrayAccess
 {
-    /** @var array<string, bool> */
+    /** @var array{simplified_ui?: bool, custom_options?: mixed} */
     private array $options = [];
 
     final public const SIMPLIFIED_UI = 'simplified_ui';
+    final public const CUSTOM_OPTIONS = 'custom_options';
+    private const ALL_MEMBERS = [self::SIMPLIFIED_UI, self::CUSTOM_OPTIONS];
 
     /**
-     * @param array<string, bool> $data
+     * @param array{simplified_ui?: bool, custom_options?: mixed} $data
      */
     public function __construct(array $data)
     {
-        $this->options[self::SIMPLIFIED_UI] = $data[self::SIMPLIFIED_UI] ?? false;
+        $this->options[self::SIMPLIFIED_UI] = ($data[self::SIMPLIFIED_UI] ?? false);
+        $this->options[self::CUSTOM_OPTIONS] = ($data[self::CUSTOM_OPTIONS] ?? []);
     }
 
     public function isEnabled(string $option): bool
     {
-        return true === $this->options[$option];
+        if (!\in_array($option, [self::SIMPLIFIED_UI])) {
+            throw new \RuntimeException(\sprintf('The field %s is not a boolean field', $option));
+        }
+
+        return true === ($this->options[$option] ?? null);
     }
 
     /**
-     * @return array<string, bool>
+     * @return array{simplified_ui?: bool, custom_options?: mixed}
      */
     public function getOptions(): array
     {
@@ -37,10 +44,14 @@ class UserOptions implements \ArrayAccess
 
     public function offsetExists($offset): bool
     {
+        if (!\in_array($offset, self::ALL_MEMBERS)) {
+            throw new \RuntimeException(\sprintf('The field %s is not supported', $offset));
+        }
+
         return isset($this->options[$offset]);
     }
 
-    public function offsetGet($offset): ?bool
+    public function offsetGet($offset): mixed
     {
         return $this->options[$offset] ?? null;
     }

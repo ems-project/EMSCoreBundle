@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Wysiwyg;
 
-use EMS\CoreBundle\Service\UserService;
+use EMS\CoreBundle\Core\Dashboard\DashboardManager;
+use EMS\CoreBundle\Core\User\UserManager;
+use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -14,20 +16,16 @@ final class WysiwygRuntime implements RuntimeExtensionInterface
 {
     public function __construct(
         private readonly WysiwygStylesSetService $wysiwygStylesSetService,
-        private readonly UserService $userService,
-        private readonly UrlGeneratorInterface $urlGenerator
+        private readonly UserManager $userManager,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly DashboardManager $dashboardManager
     ) {
     }
 
     public function getInfo(): string
     {
-        $config = $this->getConfig();
-        $config['imageUploadUrl'] = $this->urlGenerator->generate('ems_image_upload_url');
-        $config['imageBrowser_listUrl'] = $this->urlGenerator->generate('ems_images_index');
-        $config['ems_filesUrl'] = $this->urlGenerator->generate('ems_core_uploaded_file_wysiwyg_index');
-
         return Json::encode([
-            'config' => $config,
+            'config' => \array_merge_recursive($this->getDefaultConfig(), $this->getConfig()),
             'styles' => $this->getStyles(),
         ]);
     }
@@ -37,29 +35,46 @@ final class WysiwygRuntime implements RuntimeExtensionInterface
      */
     private function getConfig(): array
     {
-        try {
-            $user = $this->userService->getCurrentUser();
-        } catch (\RuntimeException) {
+        $profile = $this->userManager->getUser()?->getWysiwygProfile();
+
+        if (null === $profile || null === $profileConfig = $profile->getConfig()) {
             return [];
         }
 
-        $profile = $user->getWysiwygProfile();
+        $config = Json::decode($profileConfig);
 
-        if ($profile && null !== $jsonConfig = $profile->getConfig()) {
-            $config = Json::decode($jsonConfig);
-
-            if (isset($config['ems']['paste'])) {
-                $config['emsAjaxPaste'] = $this->urlGenerator->generate('emsco_wysiwyg_ajax_paste', [
-                    'wysiwygProfileId' => $profile->getId(),
-                ]);
-            }
-
-            return $config;
+        if (isset($config['ems']['paste'])) {
+            $config['emsAjaxPaste'] = $this->urlGenerator->generate('emsco_wysiwyg_ajax_paste', [
+                'wysiwygProfileId' => $profile->getId(),
+            ]);
         }
 
-        $wysiwygOptions = $user->getWysiwygOptions();
+        return $config;
+    }
 
-        return null !== $wysiwygOptions && Json::isJson($wysiwygOptions) ? Json::decode($wysiwygOptions) : [];
+    /**
+     * @return array<string, mixed>
+     */
+    private function getDefaultConfig(): array
+    {
+        $config = [
+            'imageUploadUrl' => $this->urlGenerator->generate('ems_image_upload_url'),
+            'imageBrowser_listUrl' => $this->urlGenerator->generate('ems_images_index'),
+            'ems_filesUrl' => $this->urlGenerator->generate('ems_core_uploaded_file_wysiwyg_index'),
+        ];
+
+        foreach (Dashboard::DASHBOARD_BROWSERS as $definition) {
+            if ($dashboard = $this->dashboardManager->getDefinition($definition)) {
+                $config['emsBrowsers'][$definition] = [
+                    'label' => $dashboard->getLabel(),
+                    'url' => $this->urlGenerator->generate('emsco_dashboard_browse', [
+                        'dashboardName' => $dashboard->getName(),
+                    ]),
+                ];
+            }
+        }
+
+        return $config;
     }
 
     /**

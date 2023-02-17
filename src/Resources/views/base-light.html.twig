@@ -55,11 +55,14 @@
       data-hash-algo="{{ ems_hash_algo|e('html_attr') }}"
       data-status-url="{{ path('elasticsearch.status', {_format: 'json'})|e('html_attr') }}"
       data-wysiwyg-type-filters="{{ type_filters|json_encode|e('html_attr') }}"
+      data-wysiwyg-info="{{ emsco_wysiwyg_info()|e('html_attr') }}"
       data-search-api="{{ path('elasticsearch.api.search')|e('html_attr') }}"
       data-asset-path="{{ asset('')|e('html_attr') }}"
       data-init-upload="{{ path('emsco_file_data_init_upload')|e('html_attr') }}"
+      data-file-view="{{ path('ems.file.view', { sha1: '__file_identifier__', name: '__file_name__' })|e('html_attr') }}"
       data-file-extract="{{ path('ems_file_extract', { sha1: '__file_identifier__', name: '__file_name__' })|e('html_attr') }}"
       data-file-extract-forced="{{ path('ems_file_extract_forced', { sha1: '__file_identifier__', name: '__file_name__' })|e('html_attr') }}">
+    {% block main %}
 <div class="main">
 
   <!-- container Main. Contains page content -->
@@ -86,6 +89,8 @@
   <!-- /.container -->
 </div>
 <!-- ./main -->
+{% endblock main %}
+    {% embed '@EMSCore/core/modal.html.twig' with {'id': 'ajax-modal'} %}{% endembed %}
 
 
     <!-- centralized webpack javascript -->

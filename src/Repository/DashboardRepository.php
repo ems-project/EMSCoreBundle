@@ -6,6 +6,8 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Dashboard;
 
@@ -135,13 +137,19 @@ final class DashboardRepository extends ServiceEntityRepository
         return $this->findOneBy(['name' => $name]);
     }
 
-    public function getQuickSearch(): ?Dashboard
+    /**
+     * @return Collection<string, Dashboard>
+     */
+    public function getDefinitions(): Collection
     {
-        return $this->findOneBy(['quickSearch' => true]);
+        $qb = $this->createQueryBuilder('d', 'd.definition');
+        $qb->andWhere($qb->expr()->isNotNull('d.definition'));
+
+        return new ArrayCollection($qb->getQuery()->getResult());
     }
 
-    public function getLandingPage(): ?Dashboard
+    public function getDefinition(string $definition): ?Dashboard
     {
-        return $this->findOneBy(['landingPage' => true]);
+        return $this->findOneBy(['definition' => $definition]);
     }
 }

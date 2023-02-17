@@ -9,7 +9,6 @@ use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -18,7 +17,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
 
-final class RevisionTask extends AbstractType implements DashboardInterface
+final class RevisionTask implements DashboardInterface
 {
     public function __construct(private readonly Environment $twig, private readonly RouterInterface $router, private readonly RequestStack $requestStack, private readonly FormFactoryInterface $formFactory, private readonly TaskManager $taskManager)
     {

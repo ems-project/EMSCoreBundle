@@ -71,6 +71,7 @@ module.exports = (env, argv) => {
             'criteria-view': './assets/criteria-view.js',
             'criteria-table': './assets/criteria-table.js',
             'i18n': './assets/i18n.js',
+            'dashboard-browser': './assets/js/module/dashboardBrowser.js',
         },
         output: {
             path: path.resolve(__dirname, 'src/Resources/public'),

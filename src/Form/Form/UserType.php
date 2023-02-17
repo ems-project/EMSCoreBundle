@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\WysiwygProfile;
-use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Service\UserService;
@@ -73,9 +72,6 @@ final class UserType extends AbstractType
             ->add('enabled', CheckboxType::class, [
                 'required' => false,
             ])
-            ->add('allowedToConfigureWysiwyg', CheckboxType::class, [
-                'required' => false,
-            ])
             ->add('wysiwygProfile', EntityType::class, [
                 'required' => false,
                 'label' => 'WYSIWYG profile',
@@ -86,12 +82,6 @@ final class UserType extends AbstractType
                     'data-live-search' => true,
                     'class' => 'wysiwyg-profile-picker',
                 ],
-            ])
-            ->add('wysiwygOptions', CodeEditorType::class, [
-                'label' => 'WYSIWYG Options',
-                'required' => false,
-                'language' => 'ace/mode/json',
-                'attr' => ['class' => 'wysiwyg-profile-options'],
             ])
             ->add('roles', ChoiceType::class, [
                 'choices' => $this->userService->getExistingRoles(),

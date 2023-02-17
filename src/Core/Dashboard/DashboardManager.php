@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Dashboard;
 
+use Doctrine\Common\Collections\Collection;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Core\UI\Menu;
@@ -17,6 +18,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class DashboardManager implements EntityServiceInterface
 {
+    /** @var ?Collection<string, Dashboard> */
+    private ?Collection $definitions = null;
+
     public function __construct(private readonly DashboardRepository $dashboardRepository, private readonly LoggerInterface $logger, private readonly AuthorizationCheckerInterface $authorizationChecker)
     {
     }
@@ -141,42 +145,30 @@ class DashboardManager implements EntityServiceInterface
         return $menu;
     }
 
-    public function setQuickSearch(Dashboard $dashboard): void
+    public function getDefinition(string $definition): ?Dashboard
     {
-        if ($dashboard->isQuickSearch()) {
-            return;
+        return $this->getDefinitions()->get($definition);
+    }
+
+    public function define(Dashboard $dashboard, string $definition): void
+    {
+        if (!\in_array($definition, Dashboard::DEFINITIONS)) {
+            throw new \Exception(\sprintf('Invalid definition passed "%s"', $definition));
         }
-        $quickSearch = $this->dashboardRepository->getQuickSearch();
-        if (null !== $quickSearch) {
-            $quickSearch->setQuickSearch(false);
-            $this->update($quickSearch);
+
+        if (null !== $currentDefinition = $this->dashboardRepository->getDefinition($definition)) {
+            $currentDefinition->setDefinition(null);
+            $this->update($dashboard);
         }
-        $dashboard->setQuickSearch(true);
+
+        $dashboard->setDefinition($definition);
         $this->update($dashboard);
     }
 
-    public function setLandingPage(Dashboard $dashboard): void
+    public function undefine(Dashboard $dashboard): void
     {
-        if ($dashboard->isLandingPage()) {
-            return;
-        }
-        $landingPage = $this->dashboardRepository->getLandingPage();
-        if (null !== $landingPage) {
-            $landingPage->setLandingPage(false);
-            $this->update($landingPage);
-        }
-        $dashboard->setLandingPage(true);
+        $dashboard->setDefinition(null);
         $this->update($dashboard);
-    }
-
-    public function getLandingPage(): ?Dashboard
-    {
-        return $this->dashboardRepository->getLandingPage();
-    }
-
-    public function getQuickSearch(): ?Dashboard
-    {
-        return $this->dashboardRepository->getQuickSearch();
     }
 
     public function getByItemName(string $name): ?EntityInterface
@@ -216,5 +208,17 @@ class DashboardManager implements EntityServiceInterface
         $this->dashboardRepository->delete($dashboard);
 
         return $id;
+    }
+
+    /**
+     * @return Collection<string, Dashboard>
+     */
+    private function getDefinitions(): Collection
+    {
+        if (null === $this->definitions) {
+            $this->definitions = $this->dashboardRepository->getDefinitions();
+        }
+
+        return $this->definitions;
     }
 }

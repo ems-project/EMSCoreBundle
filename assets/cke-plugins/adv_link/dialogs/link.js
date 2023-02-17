@@ -109,17 +109,31 @@
 			anchors;
 
 
-		let urlTypes =  emsConfig.urlTypes !== undefined ? emsConfig.urlTypes : ['url', 'anchor', 'localPage', 'fileLink', 'email'];
-
+		let urlTypes = emsConfig.hasOwnProperty('urlTypes') ? emsConfig.urlTypes : ['url', 'anchor', 'localPage', 'fileLink', 'email'];
 		let items = [];
-		if (urlTypes.includes('url')) items.push([ linkLang.toUrl, 'url' ]);
-		if (urlTypes.includes('anchor')) items.push([ linkLang.toAnchor, 'anchor' ]);
-		if (urlTypes.includes('localPage')) items.push([ linkLang.localPages, 'localPage' ]);
-		if (urlTypes.includes('fileLink')) items.push([ linkLang.file, 'fileLink' ]);
-		if (urlTypes.includes('email')) items.push([ linkLang.toEmail, 'email' ]);
+
+		urlTypes.forEach((urlType) => {
+			switch (urlType) {
+				case 'url':
+					items.push([linkLang.toUrl, 'url'])
+					break;
+				case 'anchor':
+					items.push([linkLang.toAnchor, 'anchor'])
+					break;
+				case 'localPage':
+					items.push([linkLang.localPages, 'localPage'])
+					break;
+				case 'fileLink':
+					items.push([linkLang.file, 'fileLink'])
+					break;
+				case 'email':
+					items.push([linkLang.toEmail, 'email'])
+					break;
+			}
+		});
 
 		let localContentTypes = ems_wysiwyg_type_filters;
-		if (emsConfig.urlAllContentTypes !== undefined && !emsConfig.urlAllContentTypes) {
+		if (emsConfig.hasOwnProperty('urlAllContentTypes') && !emsConfig.urlAllContentTypes) {
 			localContentTypes = localContentTypes.filter(values => !values.includes('All content types'));
 		}
 
@@ -135,11 +149,11 @@
 					id: 'linkType',
 					type: 'select',
 					label: linkLang.type,
-					'default': 'url',
+					'default': urlTypes[0],
 					items: items,
 					onChange: linkTypeChanged,
 					setup: function( data ) {
-						this.setValue( data.type || 'url' );
+						this.setValue( data.type || urlTypes[0]);
 					},
 					commit: function( data ) {
 						data.type = this.getValue();
@@ -173,12 +187,26 @@
 						className : 'select2',
 						title : linkLang.selectPageTitle,
 						items : [],
+						onChange: function (event) {
+							if (typeof event.data.value === 'object') {
+								let id = event.data.value.id;
+								let text = event.data.value.text;
+
+								this.select2.val(null).trigger('change');
+								if (this.select2.find("option[value='" + id + "']").length) {
+									this.select2.val(id).trigger('change');
+								} else {
+									let newOption = new Option(text, id, true, true);
+									this.select2.append(newOption).trigger('change');
+								}
+							}
+						},
 						onLoad : function(element) {
 
 							var objectPicker = $('#'+this.domId);
 							var typeFilter = objectPicker.parents('.cke_dialog_contents_body').find('select.adv_link_type_filter');
 
-							objectPicker.find('select').select2({
+							this.select2 = objectPicker.find('select').select2({
 								ajax: {
 									url: object_search_url,
 							    	dataType: 'json',
@@ -267,7 +295,7 @@
 						items : []
 					},{
                         type: 'button',
-                        id: 'browse',
+                        id: 'fileBrowse',
                         hidden: 'true',
                         filebrowser: 'info:fileTxt',
                         label: commonLang.browseServer

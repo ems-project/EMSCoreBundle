@@ -20,17 +20,9 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
 
     public function getDisplayName(): string;
 
-    public function setAllowedToConfigureWysiwyg(bool $allowedToConfigureWysiwyg): self;
-
-    public function getAllowedToConfigureWysiwyg(): ?bool;
-
     public function setWysiwygProfile(?WysiwygProfile $wysiwygProfile): self;
 
     public function getWysiwygProfile(): ?WysiwygProfile;
-
-    public function setWysiwygOptions(?string $wysiwygOptions): self;
-
-    public function getWysiwygOptions(): ?string;
 
     public function setLayoutBoxed(bool $layoutBoxed): self;
 

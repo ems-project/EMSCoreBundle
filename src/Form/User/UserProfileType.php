@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\WysiwygProfile;
-use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Form\UserOptionsType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -77,14 +76,6 @@ class UserProfileType extends AbstractType
                 'attr' => [
                     'data-live-search' => true,
                     'class' => 'wysiwyg-profile-picker',
-                ],
-            ])
-            ->add('wysiwygOptions', CodeEditorType::class, [
-                'label' => 'user.wysiwyg_options',
-                'required' => false,
-                'language' => 'ace/mode/json',
-                'attr' => [
-                    'class' => 'wysiwyg-profile-options',
                 ],
             ]);
     }

@@ -25,12 +25,16 @@
     <route id="emsco_dashboard_admin_delete" path="/admin/dashboard/delete/{dashboard}"
            controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::delete"
            methods="POST"/>
-    <route id="emsco_dashboard_admin_set_landing_page" path="/admin/dashboard/as-landing-page/{dashboard}"
-           controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::setLandingPage"
+    <route id="emsco_dashboard_admin_define" path="/admin/dashboard/{dashboard}/define/{definition}"
+           controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::define"
            methods="POST"/>
-    <route id="emsco_dashboard_admin_set_quick_search" path="/admin/dashboard/as-quick-search/{dashboard}"
-           controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::setQuickSearch"
+    <route id="emsco_dashboard_admin_undefine" path="/admin/dashboard/{dashboard}/undefine"
+           controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::undefine"
            methods="POST"/>
+
+    <route id="emsco_dashboard_browse" path="/dashboard/browse/{dashboardName}"
+           controller="EMS\CoreBundle\Controller\Dashboard\DashboardBrowserController"
+           methods="GET" />
 
     <route id="ems_core_dashboard" path="/dashboard"
            controller="EMS\CoreBundle\Controller\DashboardController::landing"

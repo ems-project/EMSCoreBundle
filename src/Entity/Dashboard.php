@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Core\Dashboard\DashboardOptions;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\Helpers\Standard\DateTime;
@@ -13,7 +14,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 /**
- * @ORM\Table(name="dashboard")
+ * @ORM\Table(name="dashboard", uniqueConstraints={@ORM\UniqueConstraint(name="definition_uniq", columns={"definition"})})
  *
  * @ORM\Entity()
  *
@@ -59,14 +60,9 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
     protected bool $notificationMenu = false;
 
     /**
-     * @ORM\Column(name="landing_page", type="boolean", options={"default" : 0})
+     * @ORM\Column(name="definition", type="string", nullable=true)
      */
-    protected bool $landingPage = false;
-
-    /**
-     * @ORM\Column(name="quick_search", type="boolean", options={"default" : 0})
-     */
-    protected bool $quickSearch = false;
+    protected ?string $definition = null;
 
     /**
      * @ORM\Column(name="type", type="string", length=2048)
@@ -95,10 +91,28 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
      */
     protected int $orderKey;
 
+    public const DEFINITION_LANDING_PAGE = 'landing_page';
+    public const DEFINITION_QUICK_SEARCH = 'quick_search';
+    public const DEFINITION_BROWSER_IMAGE = 'browser_image';
+    public const DEFINITION_BROWSER_OBJECT = 'browser_object';
+    public const DEFINITION_BROWSER_FILE = 'browser_file';
+
+    public const DEFINITIONS = [
+        self::DEFINITION_QUICK_SEARCH,
+        self::DEFINITION_LANDING_PAGE,
+        self::DEFINITION_BROWSER_IMAGE,
+        self::DEFINITION_BROWSER_OBJECT,
+        self::DEFINITION_BROWSER_FILE,
+    ];
+
+    public const DASHBOARD_BROWSERS = [
+        self::DEFINITION_BROWSER_IMAGE,
+        self::DEFINITION_BROWSER_OBJECT,
+        self::DEFINITION_BROWSER_FILE,
+    ];
+
     public function __construct()
     {
-        $now = new \DateTime();
-
         $this->id = Uuid::uuid4();
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
@@ -129,20 +143,19 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
         $this->label = $label;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function getOptions(): array
+    public function getOption(string $option): ?string
     {
-        return $this->options ?? [];
+        return $this->getOptions()[$option];
     }
 
-    /**
-     * @param array<string, mixed> $options
-     */
-    public function setOptions(array $options): void
+    public function getOptions(): DashboardOptions
     {
-        $this->options = $options;
+        return new DashboardOptions($this->options ?? []);
+    }
+
+    public function setOptions(DashboardOptions $options): void
+    {
+        $this->options = $options->getOptions();
     }
 
     public function getOrderKey(): int
@@ -185,6 +198,16 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
         $this->notificationMenu = $notificationMenu;
     }
 
+    public function getDefinition(): ?string
+    {
+        return $this->definition;
+    }
+
+    public function setDefinition(?string $definition): void
+    {
+        $this->definition = $definition;
+    }
+
     public function getType(): string
     {
         return $this->type;
@@ -213,26 +236,6 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
     public function setColor(?string $color): void
     {
         $this->color = $color;
-    }
-
-    public function isLandingPage(): bool
-    {
-        return $this->landingPage;
-    }
-
-    public function setLandingPage(bool $landingPage): void
-    {
-        $this->landingPage = $landingPage;
-    }
-
-    public function isQuickSearch(): bool
-    {
-        return $this->quickSearch;
-    }
-
-    public function setQuickSearch(bool $quickSearch): void
-    {
-        $this->quickSearch = $quickSearch;
     }
 
     public function jsonSerialize(): JsonClass

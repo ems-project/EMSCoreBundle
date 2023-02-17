@@ -40,19 +40,11 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      */
     private ?string $displayName = null;
     /**
-     * @ORM\Column(name="allowed_to_configure_wysiwyg", type="boolean", nullable=true)
-     */
-    private ?bool $allowedToConfigureWysiwyg = null;
-    /**
      * @ORM\ManyToOne(targetEntity="EMS\CoreBundle\Entity\WysiwygProfile", cascade={})
      *
      * @ORM\JoinColumn(name="wysiwyg_profile_id", referencedColumnName="id")
      */
     private ?WysiwygProfile $wysiwygProfile = null;
-    /**
-     * @ORM\Column(name="wysiwyg_options", type="text", nullable=true)
-     */
-    private ?string $wysiwygOptions = null;
     /**
      * @ORM\Column(name="layout_boxed", type="boolean")
      */
@@ -225,18 +217,6 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this->displayName;
     }
 
-    public function setAllowedToConfigureWysiwyg(bool $allowedToConfigureWysiwyg): self
-    {
-        $this->allowedToConfigureWysiwyg = $allowedToConfigureWysiwyg;
-
-        return $this;
-    }
-
-    public function getAllowedToConfigureWysiwyg(): ?bool
-    {
-        return $this->allowedToConfigureWysiwyg;
-    }
-
     public function setWysiwygProfile(?WysiwygProfile $wysiwygProfile): self
     {
         $this->wysiwygProfile = $wysiwygProfile;
@@ -247,18 +227,6 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     public function getWysiwygProfile(): ?WysiwygProfile
     {
         return $this->wysiwygProfile;
-    }
-
-    public function setWysiwygOptions(?string $wysiwygOptions): self
-    {
-        $this->wysiwygOptions = $wysiwygOptions;
-
-        return $this;
-    }
-
-    public function getWysiwygOptions(): ?string
-    {
-        return $this->wysiwygOptions;
     }
 
     public function setLayoutBoxed(bool $layoutBoxed): self

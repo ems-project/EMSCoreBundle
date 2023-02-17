@@ -18,8 +18,8 @@ class Routes
     final public const DASHBOARD_ADMIN_ADD = 'emsco_dashboard_admin_add';
     final public const DASHBOARD_ADMIN_EDIT = 'emsco_dashboard_admin_edit';
     final public const DASHBOARD_ADMIN_DELETE = 'emsco_dashboard_admin_delete';
-    final public const DASHBOARD_ADMIN_SET_QUICK_SEARCH = 'emsco_dashboard_admin_set_quick_search';
-    final public const DASHBOARD_ADMIN_SET_LANDING_PAGE = 'emsco_dashboard_admin_set_landing_page';
+    final public const DASHBOARD_ADMIN_DEFINE = 'emsco_dashboard_admin_define';
+    final public const DASHBOARD_ADMIN_UNDEFINE = 'emsco_dashboard_admin_undefine';
     final public const DASHBOARD = 'emsco_dashboard';
     final public const DASHBOARD_HOME = 'emsco_dashboard_home';
     final public const FORM_ADMIN_INDEX = 'emsco_form_admin_index';

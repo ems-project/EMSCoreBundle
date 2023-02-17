@@ -16,12 +16,10 @@
         <service id="ems_core.dashboard.template" class="EMS\CoreBundle\Core\Dashboard\Services\Template">
             <argument type="service" id="twig" />
             <tag name="ems.dashboard" alias="template" />
-            <tag name="form.type" />
         </service>
         <service id="ems_core.dashboard.export" class="EMS\CoreBundle\Core\Dashboard\Services\Export">
             <argument type="service" id="twig" />
             <tag name="ems.dashboard" alias="export" />
-            <tag name="form.type" />
         </service>
         <service id="ems_core.dashboard.revision_task" class="EMS\CoreBundle\Core\Dashboard\Services\RevisionTask">
             <argument type="service" id="twig" />
@@ -30,7 +28,6 @@
             <argument type="service" id="form.factory" />
             <argument type="service" id="ems_core.core_revision_task.task_manager" />
             <tag name="ems.dashboard" alias="revision_task" />
-            <tag name="form.type" />
         </service>
     </services>
 </container>

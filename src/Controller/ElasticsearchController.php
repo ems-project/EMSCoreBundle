@@ -16,6 +16,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\Document\DataLinks;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Form\Search;
@@ -177,7 +178,7 @@ class ElasticsearchController extends AbstractController
 
     public function quickSearchAction(Request $request): Response
     {
-        $dashboard = $this->dashboardManager->getQuickSearch();
+        $dashboard = $this->dashboardManager->getDefinition(Dashboard::DEFINITION_QUICK_SEARCH);
         if (null !== $dashboard) {
             return $this->redirectToRoute(Routes::DASHBOARD, ['name' => $dashboard->getName(), 'q' => $query = $request->query->get('q', '')]);
         }

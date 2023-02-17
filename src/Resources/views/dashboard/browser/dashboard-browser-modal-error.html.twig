@@ -1,0 +1,8 @@
+{% extends '@EMSCore/base-light.html.twig' %}
+{% trans_default_domain 'emsco-core' %}
+
+{% block title %}{{ dashboard.label }}{% endblock %}
+
+{% block main %}
+    <pre>{{ exception.message }}</pre>
+{% endblock %}

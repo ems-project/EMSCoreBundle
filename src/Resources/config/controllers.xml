@@ -209,6 +209,11 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Dashboard\DashboardBrowserController" public="true">
+            <argument type="service" id="ems.dashboard.manager" />
+            <argument type="service" id="twig"/>
+            <tag name="controller.service_arguments"/>
+        </service>
 
         <!-- Form -->
         <service id="EMS\CoreBundle\Controller\Form\FormController" public="true">

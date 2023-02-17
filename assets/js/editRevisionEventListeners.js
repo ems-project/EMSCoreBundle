@@ -1,30 +1,11 @@
 import EmsListeners from "./EmsListeners";
-
-let CKEditorConfig = false;
-function initCKEditor() {
-    if (false === CKEditorConfig) {
-        const assetPath = document.querySelector("BODY").getAttribute('data-asset-path') ;
-        CKEDITOR.plugins.addExternal('adv_link', assetPath+'bundles/emscore/js/cke-plugins/adv_link/plugin.js', '' );
-        CKEDITOR.plugins.addExternal('div', assetPath+'bundles/emscore/js/cke-plugins/div/plugin.js', '' );
-        CKEDITOR.plugins.addExternal('imagebrowser', assetPath+'bundles/emscore/js/cke-plugins/imagebrowser/plugin.js', '' );
-
-        const wysiwygInfo = JSON.parse(document.querySelector('body').dataset.wysiwygInfo);
-
-        if (wysiwygInfo.hasOwnProperty('styles')) {
-            const stylesSets = wysiwygInfo.styles;
-            for(let i=0; i < stylesSets.length; ++i) {
-                CKEDITOR.stylesSet.add(stylesSets[i].name, stylesSets[i].config);
-            }
-        }
-        CKEditorConfig = wysiwygInfo.config;
-    }
-
-    return CKEditorConfig;
-}
+import {CKEditorConfig} from "./CKEditorConfig";
 
 function editRevisionEventListeners(target, onChangeCallback = null){
-    const ckconfig = initCKEditor();
+    const ckconfig = CKEditorConfig
     new EmsListeners(target.get(0), onChangeCallback);
+
+
 
     target.find('.remove-content-button').on('click', function(e) {
         // prevent the link from creating a "#" on the URL

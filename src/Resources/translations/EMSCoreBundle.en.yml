@@ -433,14 +433,23 @@ dashboard:
             name: Name
             label: Label
             type: Type
-            landing_page: 'Landing page'
-            quick_search: 'Quick search'
+            definition: Definition
             public: Public
+    definition:
+        quick_search: 'Quick search'
+        landing_page: 'Landing page'
+        browser_image: 'Image browser'
+        browser_object: 'Object browser'
+        browser_file: 'File browser'
     actions:
         define:
             title: 'Define'
-            set_quick_search: 'As quick search'
-            set_landing_page: 'As landing page'
+            quick_search: 'As quick search'
+            landing_page: 'As landing page'
+            browser_image: 'As image browser'
+            browser_object: 'As object browser'
+            browser_file: 'As file browser'
+        undefine: 'Undefine'
         delete_selected: 'Deleted selected'
         edit: Edit
         delete: Delete

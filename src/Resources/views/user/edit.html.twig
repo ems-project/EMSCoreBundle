@@ -22,10 +22,7 @@
 	    	{% if form.circles is defined %}
 	    	    {{ form_row(form.circles) }}
 	    	{% endif %}
-	    	{{ form_row(form.allowedToConfigureWysiwyg) }}
-            {% include "@EMSCore/user/wysiwygOptions.html.twig" with {
-				form: form
-			} %}
+			{{ form_row(form.wysiwygProfile) }}
     	</div>
     	<div class="col-md-6">
             {% if form.userOptions.custom_options is defined %}

@@ -6,8 +6,8 @@ namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\Core\Form\FormManager;
 use EMS\CoreBundle\Core\User\UserOptions;
-use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
+use EMS\CoreBundle\Form\DataTransformer\FormModelTransformer;
 use EMS\CoreBundle\Service\DataService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -51,7 +51,7 @@ class UserOptionsType extends AbstractType
 
             $builder->get(UserOptions::CUSTOM_OPTIONS)
                 ->addViewTransformer(new DataFieldViewTransformer($form->getFieldType(), $this->formRegistry))
-                ->addModelTransformer(new DataFieldModelTransformer($form->getFieldType(), $this->formRegistry));
+                ->addModelTransformer(new FormModelTransformer($form->getFieldType(), $this->formRegistry));
         }
     }
 

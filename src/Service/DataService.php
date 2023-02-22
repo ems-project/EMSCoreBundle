@@ -33,6 +33,7 @@ use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\DataLinkFieldType;
+use EMS\CoreBundle\Form\DataField\FormFieldType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -1630,6 +1631,12 @@ class DataService
             $dataFieldType->isValid($dataField, $parent, $masterRawData);
         }
         $isValid = true;
+
+        if ($dataFieldType instanceof FormFieldType) {
+            foreach ($form->all() as $child) {
+                $this->isValid($child, $dataField, $masterRawData);
+            }
+        }
         if (null !== $dataFieldType && $dataFieldType->isContainer()) {// If dataField is container or type is null => Container => Recursive
             $formChildren = $form->all();
             foreach ($formChildren as $child) {

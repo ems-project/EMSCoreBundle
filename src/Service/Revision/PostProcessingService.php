@@ -14,6 +14,7 @@ use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 use EMS\CoreBundle\Form\DataField\ComputedFieldType;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Form\DataField\FormFieldType;
 use EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType;
 use EMS\CoreBundle\Form\DataField\MultiplexedTabContainerFieldType;
 use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
@@ -159,6 +160,10 @@ final class PostProcessingService
                 unset($objectArray[$fieldType->getName()]);
             }
             $found = true;
+        } elseif ($form->getConfig()->getType()->getInnerType() instanceof FormFieldType) {
+            foreach ($form->all() as $child) {
+                $found = $this->postProcessing($child, $contentType, $objectArray, $context, $parent, $path) || $found;
+            }
         }
 
         if ($dataFieldType->isContainer() && $form instanceof \IteratorAggregate) {

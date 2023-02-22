@@ -1223,6 +1223,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this->getSettings()[ContentTypeSettings::TASKS_ENABLED] ?? false;
     }
 
+    public function hideRevisionSidebarEnabled(): bool
+    {
+        return $this->getSettings()[ContentTypeSettings::HIDE_REVISION_SIDEBAR] ?? false;
+    }
+
     public function getSettings(): ContentTypeSettings
     {
         return new ContentTypeSettings($this->settings ?? []);

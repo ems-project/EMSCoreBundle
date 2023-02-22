@@ -48,13 +48,20 @@
 
 {% block body %}
 	<div class="row">
-		<div class="col-md-3">
-			{{ block('revisionSidebar') }}
-		</div>
-		<div class="col-md-9">
-			{{ block('revisionToolbar') }}
-			{{ block('revisionBody') }}
-		</div>
+        {% if revision.contentType.hideRevisionSidebarEnabled %}
+            <div class="col-md-12">
+                {{ block('revisionToolbar') }}
+                {{ block('revisionBody') }}
+            </div>
+        {% else %}
+            <div class="col-md-3">
+                {{ block('revisionSidebar') }}
+            </div>
+            <div class="col-md-9">
+                {{ block('revisionToolbar') }}
+                {{ block('revisionBody') }}
+            </div>
+        {% endif %}
 	</div>
 	<div class="row">
 		<div class="col-xs-12">

@@ -19,6 +19,7 @@ class ContentTypeSettingsType extends AbstractType
     {
         $builder
             ->add(ContentTypeSettings::TASKS_ENABLED, CheckboxType::class, ['required' => false])
+            ->add(ContentTypeSettings::HIDE_REVISION_SIDEBAR, CheckboxType::class, ['required' => false])
         ;
     }
 }

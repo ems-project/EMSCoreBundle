@@ -13,9 +13,11 @@ class ContentTypeSettings implements \ArrayAccess
     private array $settings = [];
 
     final public const TASKS_ENABLED = 'tasks_enabled';
+    final public const HIDE_REVISION_SIDEBAR = 'hide_revision_sidebar';
 
     private const SETTINGS = [
         self::TASKS_ENABLED,
+        self::HIDE_REVISION_SIDEBAR,
     ];
 
     /**

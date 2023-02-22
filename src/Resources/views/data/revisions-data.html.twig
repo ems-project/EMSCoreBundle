@@ -215,7 +215,7 @@
 			<hr>
 			<strong><i class=" {% if circleContentType.icon %}{{ circleContentType.icon }}{% else %}fa fa-circle-o{% endif %} margin-r-5"></i> {{ circleContentType.pluralName }}</strong>
 			<p class="text-muted">
-				{% for circle in revision.circles %}{{ circle|data_link|raw }}{% endfor %}
+				{% for circle in revision.circles %}{{ circle|data_link|raw }} {% endfor %}
 			</p>
 		{% endif %}
 	{% endif %}

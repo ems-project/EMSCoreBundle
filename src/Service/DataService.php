@@ -764,10 +764,12 @@ class DataService
         $objectArray = $revision->getRawData();
 
         $this->updateDataStructure($revision->giveContentType()->getFieldType(), $form->get('data')->getNormData());
+        $this->setCircles($revision);
         try {
             if ($computeFields && $this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->giveContentType(), $revision->giveContentType()->getName(), $revision->getOuuid())) {
                 $revision->setRawData($objectArray);
             }
+            $this->setCircles($revision);
         } catch (CantBeFinalizedException $e) {
             $form->addError(new FormError($e->getMessage()));
         }

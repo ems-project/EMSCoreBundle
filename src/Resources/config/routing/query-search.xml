@@ -10,10 +10,10 @@
     <route id="ems_core_query_search_add" path="/add"
            controller="EMS\CoreBundle\Controller\QuerySearchController::add"
            methods="GET|POST"/>
-    <route id="ems_core_query_search_edit" path="/edit/{query_search}"
+    <route id="ems_core_query_search_edit" path="/edit/{query-search}"
            controller="EMS\CoreBundle\Controller\QuerySearchController::edit"
            methods="GET|POST"/>
-    <route id="ems_core_query_search_delete" path="/delete/{query_search}"
+    <route id="ems_core_query_search_delete" path="/delete/{query-search}"
            controller="EMS\CoreBundle\Controller\QuerySearchController::delete"
            methods="POST"/>
     <route id="ems_core_query_search" path="/datatable.json"

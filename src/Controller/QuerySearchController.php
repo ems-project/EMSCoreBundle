@@ -75,13 +75,13 @@ final class QuerySearchController extends AbstractController
         return $this->edit($request, $querySearch, '@EMSCore/query-search/add.html.twig');
     }
 
-    public function edit(Request $request, QuerySearch $query_search, string $view = '@EMSCore/query-search/edit.html.twig'): Response
+    public function edit(Request $request, QuerySearch $querySearch, string $view = '@EMSCore/query-search/edit.html.twig'): Response
     {
-        $form = $this->createForm(QuerySearchType::class, $query_search);
+        $form = $this->createForm(QuerySearchType::class, $querySearch);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->querySearchService->update($query_search);
+            $this->querySearchService->update($querySearch);
 
             return $this->redirectToRoute('ems_core_query_search_index');
         }
@@ -91,9 +91,9 @@ final class QuerySearchController extends AbstractController
         ]);
     }
 
-    public function delete(QuerySearch $query_search): RedirectResponse
+    public function delete(QuerySearch $querySearch): RedirectResponse
     {
-        $this->querySearchService->delete($query_search);
+        $this->querySearchService->delete($querySearch);
 
         return $this->redirectToRoute('ems_core_query_search_index');
     }

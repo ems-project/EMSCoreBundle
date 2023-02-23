@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\Helpers\Standard\Json;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -11,16 +15,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Defined a Container content type.
- * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- */
 class JSONFieldType extends DataFieldType
 {
-    /* to refactor */
-
     public function getLabel(): string
     {
         return 'JSON field';
@@ -40,21 +36,21 @@ class JSONFieldType extends DataFieldType
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
         $builder->add('value', TextareaType::class, [
-                'attr' => [
-                        'rows' => $options['rows'],
-                ],
-                'label' => (null != $options['label'] ? $options['label'] : $fieldType->getName()),
-                'required' => false,
-                'disabled' => $this->isDisabled($options),
+            'attr' => ['rows' => $options['rows']],
+            'label' => (null != $options['label'] ? $options['label'] : $fieldType->getName()),
+            'required' => false,
+            'disabled' => $this->isDisabled($options),
         ]);
     }
 
     /**
-     * {@inheritDoc}
+     * @return array{'value': string}
      */
-    public function viewTransform(DataField $dataField)
+    public function viewTransform(DataField $dataField): array
     {
-        return ['value' => \json_encode($dataField->getRawData(), JSON_THROW_ON_ERROR)];
+        $prettyPrint = (bool) $dataField->giveFieldType()->getDisplayOption('prettyPrint', false);
+
+        return ['value' => Json::encode($dataField->getRawData(), $prettyPrint)];
     }
 
     /**
@@ -64,21 +60,18 @@ class JSONFieldType extends DataFieldType
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
-        $dataValues = parent::reverseViewTransform($data, $fieldType);
-        $options = $fieldType->getOptions();
-        if (null === $data) {
-            $dataValues->setRawData(null);
-        } else {
-            $json = @\json_decode((string) $data['value']);
-            if (null === $json
-                    && JSON_ERROR_NONE !== \json_last_error()) {
-                $dataValues->setRawData($data['value']);
-            } else {
-                $dataValues->setRawData($json);
+        $dataField = parent::reverseViewTransform($data, $fieldType);
+
+        $json = $data['value'] ?? null;
+        if ($json) {
+            try {
+                $dataField->setRawData(Json::decode($json));
+            } catch (\Throwable $e) {
+                $dataField->addMessage($e->getMessage());
             }
         }
 
-        return $dataValues;
+        return $dataField;
     }
 
     /**
@@ -87,10 +80,6 @@ class JSONFieldType extends DataFieldType
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
-            /*
-             * by default it serialize the text value.
-             * It can be overrided.
-             */
             $out[$data->giveFieldType()->getName()] = $data->getRawData();
         }
     }
@@ -109,18 +98,7 @@ class JSONFieldType extends DataFieldType
             return true;
         }
 
-        $isValid = parent::isValid($dataField, $parent, $masterRawData);
-        $rawData = $dataField->getRawData();
-        if (null !== $rawData) {
-            $data = @\json_decode((string) $rawData);
-
-            if (JSON_ERROR_NONE !== \json_last_error()) {
-                $isValid = false;
-                $dataField->addMessage('Not a valid JSON');
-            }
-        }
-
-        return $isValid;
+        return parent::isValid($dataField, $parent, $masterRawData);
     }
 
     /**
@@ -129,17 +107,16 @@ class JSONFieldType extends DataFieldType
      */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        /* get options for twig context */
         parent::buildView($view, $form, $options);
         $view->vars['icon'] = $options['icon'];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
         $resolver->setDefault('icon', null);
         $resolver->setDefault('rows', null);
+        $resolver->setDefault('prettyPrint', false);
     }
 
     /**
@@ -148,7 +125,7 @@ class JSONFieldType extends DataFieldType
     public function generateMapping(FieldType $current): array
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
-            return [$current->getName() => \json_decode((string) $current->getMappingOptions()['mappingOptions'], true, 512, JSON_THROW_ON_ERROR)];
+            return [$current->getName(), Json::decode($current->getMappingOptions()['mappingOptions'])];
         }
 
         return [];
@@ -161,18 +138,18 @@ class JSONFieldType extends DataFieldType
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
+        $optionsForm->get('displayOptions')
+            ->add('rows', IntegerType::class, ['required' => false])
+            ->add('prettyPrint', CheckboxType::class, ['required' => false]);
 
         if ($optionsForm->has('mappingOptions')) {
-            $optionsForm->get('mappingOptions')->remove('index')->remove('analyzer')->add('mappingOptions', TextareaType::class, [
+            $optionsForm->get('mappingOptions')
+                ->remove('index')
+                ->remove('analyzer')
+                ->add('mappingOptions', TextareaType::class, [
                     'required' => false,
-                    'attr' => [
-                        'rows' => 8,
-                    ],
+                    'attr' => ['rows' => 8],
             ]);
         }
-
-        $optionsForm->get('displayOptions')->add('rows', IntegerType::class, [
-                'required' => false,
-        ]);
     }
 }

@@ -665,7 +665,13 @@
                         <pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|get_string(dataField.fieldType.name)|internal_links }}</pre>
                         <pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|internal_links }}</pre>
                     {% else %}
-                        <pre class="ems-code-editor" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|internal_links }}</pre>
+                        <pre class="ems-code-editor" data-language="ace/mode/json" data-them="ace/theme/chrome">
+							{%- if dataField.fieldType.displayOptions.prettyPrint|default(false) -%}
+								{{- dataField.rawData|json_encode(constant('JSON_PRETTY_PRINT'))|internal_links -}}
+							{%- else -%}
+								{{ dataField.rawData|json_encode|internal_links }}
+							{%- endif -%}
+						</pre>
                     {% endif %}
                 </div>
             </div>

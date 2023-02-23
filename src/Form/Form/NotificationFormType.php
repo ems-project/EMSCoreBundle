@@ -34,16 +34,7 @@ class NotificationFormType extends AbstractType
 '<i class="'.$value->getContentType()->getIcon().' text-'.$value->getContentType()->getColor().'"></i>&nbsp;&nbsp;'.$value->getName().' for '.$value->getContentType()->getSingularName(),
             'multiple' => true,
             'required' => false,
-            'choice_value' => function ($value) {
-                if (null != $value) {
-                    return $value->getId();
-                }
-
-                return $value;
-            },
-            'attr' => [
-                    'class' => 'select2',
-            ],
+            'attr' => ['class' => 'select2'],
         ])
         ->add('environment', ChoiceType::class, [
                 'attr' => [
@@ -74,23 +65,12 @@ class NotificationFormType extends AbstractType
                 'choice_label' => fn ($value, $key, $index) => '<i class="'.$value->getIcon().' text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getSingularName(),
                 'multiple' => true,
                 'required' => false,
-                'choice_value' => function ($value) {
-                    if (null != $value) {
-                        return $value->getId();
-                    }
-
-                    return $value;
-                },
-                'attr' => [
-                        'class' => 'select2',
-                ],
+                'attr' => ['class' => 'select2'],
         ])
 
         ->add('filter', SubmitEmsType::class, [
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-                'attr' => [
-                        'class' => 'btn-primary btn-md',
-                ],
+                'attr' => ['class' => 'btn btn-primary btn-sm'],
                 'icon' => 'fa fa-columns',
         ]);
     }

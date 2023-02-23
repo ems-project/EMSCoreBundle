@@ -175,7 +175,7 @@ class NotificationController extends AbstractController
 
         $rejectedNotifications = [];
         if ('sent' == $folder) {
-            $notifications = $this->notificationService->listSentNotifications(($page - 1) * $paging_size, $paging_size, $filters);
+            $notifications = $this->notificationService->listSentNotifications(($page - 1) * $paging_size, $paging_size, $notificationFilter);
             $lastPage = \ceil($countSent / $paging_size);
         } else {
             $notifications = $this->notificationService->listInboxNotifications(($page - 1) * $paging_size, $paging_size, $filters);

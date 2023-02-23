@@ -4,8 +4,10 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Form\NotificationFilter;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
@@ -65,9 +67,9 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int[] $contentTypes
-     * @param int[] $environments
-     * @param int[] $templates
+     * @param ContentType[] $contentTypes
+     * @param Environment[] $environments
+     * @param Template[]    $templates
      */
     public function countPendingByUserRoleAndCircle(UserInterface $user, array $contentTypes = null, array $environments = null, array $templates = null): int
     {
@@ -116,79 +118,49 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int[] $contentTypes
-     * @param int[] $environments
-     * @param int[] $templates
-     *
      * @return Notification[]
      */
-    public function findByPendingAndRoleAndCircleForUserSent(UserInterface $user, int $from, int $limit, array $contentTypes = null, array $environments = null, array $templates = null): array
+    public function findByPendingAndRoleAndCircleForUserSent(UserInterface $user, int $from, int $limit, NotificationFilter $notificationFilter): array
     {
-        $templateIds = $this->getTemplatesIdsForUserFrom($user, $contentTypes ?? []);
+        $qb = $this->getQueryBuilderForSent($user, $notificationFilter->contentType->toArray());
+        $qb->select('n')->setFirstResult($from)->setMaxResults($limit);
 
-        $qb = $this->createQueryBuilder('n')
-            ->select('n')
-            ->join('n.revision', 'r', 'WITH', 'n.revision = r.id')
-            ->join('n.environment', 'e', 'WITH', 'n.environment = e.id')
-            ->where('n.status = :status')
-            ->andwhere('n.template IN (:ids)')
-            ->andwhere('r.deleted = :false')
-            ->andwhere('r.id = n.revision');
-
-        $params = [
-                'status' => 'pending',
-                'ids' => $templateIds,
-                'false' => false,
-            ];
-
-        if (null != $environments) {
-            $qb->andWhere('n.environment IN (:envs)');
-            $params['envs'] = $environments;
-        }
-        if (null != $templates) {
-            $qb->andWhere('n.template IN (:templates)');
-            $params['templates'] = $templates;
+        if (\count($notificationFilter->environment) > 0) {
+            $qb->andWhere('n.environment IN (:envs)')->setParameter('envs', $notificationFilter->environment);
         }
 
-        $orCircles = $qb->expr()->orX();
-        $orCircles->add('r.circles is null');
-
-        $counter = 0;
-        foreach ($user->getCircles() as $circle) {
-            $orCircles->add('r.circles like :circle_'.$counter);
-            $params['circle_'.$counter] = '%'.$circle.'%';
-            ++$counter;
+        if ($notificationFilter->template->count() > 0) {
+            $qb->andWhere('n.template IN (:templates)')->setParameter('templates', $notificationFilter->template->toArray());
         }
-
-        $qb->andWhere($orCircles);
-
-        $qb->setParameters($params)
-            ->setFirstResult($from)
-            ->setMaxResults($limit);
 
         return $qb->getQuery()->getResult();
     }
 
     public function countForSent(UserInterface $user): int
     {
-        $templateIds = $this->getTemplatesIdsForUserFrom($user);
+        $qb = $this->getQueryBuilderForSent($user);
 
-        $qb = $this->createQueryBuilder('n')
-            ->select('COUNT(n)')
+        return (int) $qb->select('count(n.id)')->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * @param ContentType[] $contentTypes
+     */
+    private function getQueryBuilderForSent(UserInterface $user, array $contentTypes = []): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('n');
+        $qb
             ->join('n.revision', 'r', 'WITH', 'n.revision = r.id')
             ->join('n.environment', 'e', 'WITH', 'n.environment = e.id')
-            ->where('n.status = :status')
-            ->andwhere('r.deleted = :false')
-            ->andwhere('r.id = n.revision');
+            ->andWhere('n.status = :status')
+            ->andwhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
+            ->andwhere('r.id = n.revision')
+            ->setParameter('status', 'pending');
 
-        $params = [
-                'status' => 'pending',
-                'false' => false,
-        ];
+        $templateIds = $this->getTemplatesIdsForUserFrom($user, $contentTypes);
 
-        if (!empty($templateIds)) {
-            $qb->andwhere('n.template IN (:ids)');
-            $params['ids'] = $templateIds;
+        if (\count($templateIds) > 0) {
+            $qb->andwhere('n.template IN (:ids)')->setParameter('ids', $templateIds);
         }
 
         $orCircles = $qb->expr()->orX();
@@ -197,15 +169,13 @@ class NotificationRepository extends ServiceEntityRepository
         $counter = 0;
         foreach ($user->getCircles() as $circle) {
             $orCircles->add('r.circles like :circle_'.$counter);
-            $params['circle_'.$counter] = '%'.$circle.'%';
+            $qb->setParameter('circle_'.$counter, '%'.$circle.'%');
             ++$counter;
         }
 
         $qb->andWhere($orCircles);
 
-        $qb->setParameters($params);
-
-        return (int) $qb->getQuery()->getSingleScalarResult();
+        return $qb;
     }
 
     /**
@@ -240,9 +210,9 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int[] $contentTypes
-     * @param int[] $environments
-     * @param int[] $templates
+     * @param ContentType[] $contentTypes
+     * @param Environment[] $environments
+     * @param Template[]    $templates
      *
      * @return Notification[]
      */
@@ -276,7 +246,7 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int[] $contentTypes
+     * @param ContentType[] $contentTypes
      *
      * @return int[]
      */
@@ -310,7 +280,7 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int[] $contentTypes
+     * @param ContentType[] $contentTypes
      *
      * @return int[]
      */

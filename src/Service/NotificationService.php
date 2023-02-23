@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Form\NotificationFilter;
 use EMS\CoreBundle\Entity\Form\TreatNotifications;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
@@ -385,39 +386,15 @@ class NotificationService
     }
 
     /**
-     * @param ?array<mixed> $filters
-     *
      * @return Notification[]
      */
-    public function listSentNotifications(int $from, int $limit, array $filters = null): array
+    public function listSentNotifications(int $from, int $limit, NotificationFilter $notificationFilter): array
     {
-        $contentTypes = null;
-        $environments = null;
-        $templates = null;
-
-        if (null != $filters) {
-            if (isset($filters['contentType'])) {
-                $contentTypes = $filters['contentType'];
-            } elseif (isset($filters['environment'])) {
-                $environments = $filters['environment'];
-            } elseif (isset($filters['template'])) {
-                $templates = $filters['template'];
-            }
-        }
-
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
         $repository = $em->getRepository(Notification::class);
-        $notifications = $repository->findByPendingAndRoleAndCircleForUserSent($this->userService->getCurrentUser(), $from, $limit, $contentTypes, $environments, $templates);
 
-//         /**@var Notification $notification*/
-//         foreach ($notifications as $notification) {
-//             $result = $repository->countNotificationByUuidAndContentType($notification->getRevision()->getOuuid(), $notification->getRevision()->getContentType());
-
-//             $notification->setCounter($result);
-//         }
-
-        return $notifications;
+        return $repository->findByPendingAndRoleAndCircleForUserSent($this->userService->getCurrentUser(), $from, $limit, $notificationFilter);
     }
 
     private function response(Notification $notification, TreatNotifications $treatNotifications, string $status): void

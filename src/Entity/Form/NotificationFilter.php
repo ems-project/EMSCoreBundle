@@ -4,50 +4,25 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity\Form;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Template;
 
 class NotificationFilter
 {
-    private ?Template $template = null;
-    private ?Environment $environment = null;
+    /** @var Collection<int, Template> */
+    public Collection $template;
+    /** @var Environment[] */
+    public array $environment;
+    /** @var Collection<int, ContentType> */
+    public Collection $contentType;
 
-    private ?ContentType $contentType = null;
-
-    public function setTemplate(?Template $template): NotificationFilter
+    public function __construct()
     {
-        $this->template = $template;
-
-        return $this;
-    }
-
-    public function getTemplate(): ?Template
-    {
-        return $this->template;
-    }
-
-    public function setEnvironment(?Environment $environment): NotificationFilter
-    {
-        $this->environment = $environment;
-
-        return $this;
-    }
-
-    public function getEnvironment(): ?Environment
-    {
-        return $this->environment;
-    }
-
-    public function setContentType(?ContentType $contentType): NotificationFilter
-    {
-        $this->contentType = $contentType;
-
-        return $this;
-    }
-
-    public function getContentType(): ?ContentType
-    {
-        return $this->contentType;
+        $this->template = new ArrayCollection();
+        $this->contentType = new ArrayCollection();
+        $this->environment = [];
     }
 }

@@ -62,6 +62,7 @@ final class ChannelRegistrar
             Environment::ALIAS_CONFIG => $alias,
             Environment::ROUTE_PREFIX => \sprintf('channel/%s', $channelName),
             Environment::REGEX_CONFIG => \sprintf('/^%s.*/', \preg_quote($baseUrl, '/')),
+            Environment::DEFAULT => false,
             'search_config' => $searchConfig,
         ];
 

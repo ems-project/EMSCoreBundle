@@ -93,6 +93,8 @@
             <argument type="service" id="ems.form.manager"/>
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="form.factory" />
+            <argument type="service" id="request_stack" />
             <tag name="twig.runtime" />
         </service>
     </services>

@@ -22,7 +22,7 @@ class FormModelTransformer implements DataTransformerInterface
 
     public function transform($data): DataField
     {
-        $data = RawDataTransformer::transform($this->fieldType, $data);
+        $data = RawDataTransformer::transform($this->fieldType, $data ?? []);
 
         return $this->nestedTransformer->transform($data);
     }

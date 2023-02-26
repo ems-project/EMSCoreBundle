@@ -9,13 +9,21 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Form;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Form\Form\FieldHolderType;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class FormRuntime
 {
-    public function __construct(protected FormManager $formManager, protected DataService $dataService, protected RevisionService $revisionService)
+    public function __construct(
+        protected FormManager $formManager,
+        protected DataService $dataService,
+        protected RevisionService $revisionService,
+        protected FormFactoryInterface $formFactory,
+        private readonly RequestStack $requestStack)
     {
     }
 
@@ -45,5 +53,18 @@ class FormRuntime
     public function getDataField(FormInterface $form): DataField
     {
         return $this->dataService->getDataFieldsStructure($form);
+    }
+
+    /**
+     * @param mixed[] $data
+     */
+    public function handleForm(string $name, array $data = []): FormInterface
+    {
+        $form = $this->formFactory->create(FieldHolderType::class, $data, [
+            'form_name' => $name,
+        ]);
+        $form->handleRequest($this->requestStack->getCurrentRequest());
+
+        return $form;
     }
 }

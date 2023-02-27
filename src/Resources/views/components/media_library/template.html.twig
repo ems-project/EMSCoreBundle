@@ -1,0 +1,44 @@
+{% trans_default_domain 'emsco-component' %}
+
+{%- block mediaLibraryHeaderLeft -%}
+    {% apply spaceless %}
+        <div class="media-lib-container">
+            {{ buttonHome|raw }}
+        </div>
+    {% endapply %}
+{%- endblock mediaLibraryHeaderLeft -%}
+
+{%- block mediaLibraryHeader -%}
+    {% apply spaceless %}
+        <div class="media-lib-container">
+            {{ buttonAddFolder|raw }}
+            {{ buttonUpload|raw }}
+            {{ breadcrumb|raw }}
+        </div>
+    {% endapply %}
+{%- endblock mediaLibraryHeader -%}
+
+{%- block mediaLibraryFileRowHeader -%}
+    {% apply spaceless %}
+        <li>
+            <div>Name</div>
+            <div>Type</div>
+            <div class="text-right">Size</div>
+        </li>
+    {% endapply %}
+{%- endblock mediaLibraryFileRowHeader -%}
+
+{%- block mediaLibraryFileRow -%}
+    {% apply spaceless %}
+        <li>
+            <div><a href="{{ url }}" download="{{ media.file.filename }}">{{ media.file.filename }}</a></div>
+            <div>{{ media.file.mimetype|trans({}, 'emsco-mimetypes') }}</div>
+            <div class="text-right">{{ media.file.filesize|format_bytes }}</div>
+        </li>
+    {% endapply %}
+{%- endblock mediaLibraryFileRow -%}
+
+{%- block mediaLibraryFooter -%}
+    <div class="media-lib-container"></div>
+{%- endblock mediaLibraryFooter -%}
+

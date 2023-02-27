@@ -14,13 +14,16 @@ class MediaLibraryConfig implements ConfigInterface
     public array $defaultValue = [];
     /** @var array<mixed> */
     public array $searchQuery = [];
+    public ?string $template = null;
+    /** @var array<string, mixed> */
+    public array $context = [];
 
     public function __construct(
         private readonly string $hash,
         private readonly string $id,
         public readonly ContentType $contentType,
         public readonly string $fieldPath,
-        public readonly string $fieldLocation,
+        public readonly string $fieldFolder,
         public readonly string $fieldFile
     ) {
     }

@@ -1,0 +1,24 @@
+{% trans_default_domain 'emsco-component' %}
+
+{% block buttonHome %}
+    <button class="btn btn-sm btn-primary btn-home">
+        <i class="fa fa-home" aria-hidden="true"></i> {{ 'media_library.home'|trans }}
+    </button>
+{% endblock %}
+
+{% block buttonAddFolder %}
+    <button class="btn btn-sm btn-primary btn-add-folder">
+        <i class="fa fa-folder" aria-hidden="true"></i> {{ 'media_library.folder.add.title'|trans }}
+    </button>
+{% endblock %}
+
+{% block buttonUpload %}
+    <input type="file" id="media-lib-upload-{{ id }}" class="file-uploader-input" multiple="multiple">
+    <label class="btn btn-sm btn-primary" for="media-lib-upload-{{ id }}">
+        <i class="fa fa-upload"></i> {{ 'media_library.file.add.title'|trans }}
+    </label>
+{% endblock %}
+
+{% block breadcrumb %}
+    <ul class="media-lib-list-breadcrumb"></ul>
+{% endblock %}

@@ -22,11 +22,13 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory implements ConfigF
      *   id: string,
      *   contentTypeName: string,
      *   fieldPath: string,
-     *   fieldLocation: string,
+     *   fieldFolder: string,
      *   fieldFile: string,
      *   fieldPathOrder: ?string,
+     *   template: ?string,
+     *   context: array<string, mixed>,
      *   defaultValue: array<mixed>,
-     *   searchQuery: array<mixed>
+     *   searchQuery: array<mixed>,
      * } $options
      */
     public function create(string $hash, array $options): MediaLibraryConfig
@@ -38,13 +40,15 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory implements ConfigF
             (string) $options['id'],
             $contentType,
             $this->getField($contentType, $options['fieldPath'])->getName(),
-            $this->getField($contentType, $options['fieldLocation'])->getName(),
+            $this->getField($contentType, $options['fieldFolder'])->getName(),
             $this->getField($contentType, $options['fieldFile'])->getName()
         );
 
         $config->fieldPathOrder = $options['fieldPathOrder'];
         $config->defaultValue = $options['defaultValue'];
         $config->searchQuery = $options['searchQuery'];
+        $config->template = $options['template'];
+        $config->context = $options['context'];
 
         return $config;
     }
@@ -62,19 +66,26 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory implements ConfigF
         $resolver = new OptionsResolver();
         $resolver
             ->setDefaults([
+                'contentTypeName' => 'media_file',
                 'fieldPath' => 'media_path',
                 'fieldPathOrder' => 'media_path.alpha_order',
-                'fieldLocation' => 'media_location',
+                'fieldFolder' => 'media_folder',
                 'fieldFile' => 'media_file',
                 'defaultValue' => [],
                 'searchQuery' => [],
+                'context' => [],
+                'template' => null,
             ])
             ->setRequired([
                 'id',
                 'contentTypeName',
+                'fieldPath',
+                'fieldFolder',
+                'fieldFile',
             ])
             ->setAllowedTypes('defaultValue', 'array')
-            ->setAllowedTypes('searchQuery', 'array');
+            ->setAllowedTypes('searchQuery', 'array')
+            ->setAllowedTypes('context', 'array');
 
         /** @var array{contentTypeName: string} $resolved */
         $resolved = $resolver->resolve($options);

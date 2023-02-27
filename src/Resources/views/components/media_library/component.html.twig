@@ -1,0 +1,32 @@
+{% trans_default_domain 'emsco-component' %}
+{% use '@EMSCore/components/media_library/component_elements.html.twig' %}
+<div class="media-lib" id="{{ id }}" data-hash="{{ hash }}">
+    <div class="media-lib-content">
+        <div class="media-lib-left-column">
+            <div class="media-nav-bar">
+                {{ template.block('mediaLibraryHeaderLeft', {
+                    'buttonHome': block('buttonHome')
+                })|raw }}
+            </div>
+            <div class="media-lib-folders">
+                <ul class="media-lib-list-folders"></ul>
+            </div>
+        </div>
+        <div class="media-lib-right-column">
+            <div class="media-nav-bar">
+                {{ template.block('mediaLibraryHeader', {
+                    'buttonAddFolder': block('buttonAddFolder'),
+                    'buttonUpload': block('buttonUpload'),
+                    'breadcrumb': block('breadcrumb')
+                })|raw }}
+            </div>
+            <div class="media-lib-files">
+                <ul class="media-lib-list-uploads"></ul>
+                <ul class="media-lib-list-files"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="media-lib-footer">
+        {{ template.block('mediaLibraryFooter')|raw }}
+    </div>
+</div>

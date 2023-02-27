@@ -22,13 +22,17 @@
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="EMS\CoreBundle\Service\DataService" />
             <argument type="service" id="ems.service.file" />
-            <argument type="service" id="translator" />
+            <argument type="service" id="router" />
+            <argument type="service" id="emsco.core.media_library.template_factory" />
         </service>
         <service id="emsco.core.media_library.config_factory"
                  class="EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryConfigFactory"
                  parent="emsco.config.abstract_config_factory">
             <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
             <tag name="emsco.config.factory" config="EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryConfig" />
+        </service>
+        <service id="emsco.core.media_library.template_factory" class="EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryTemplateFactory">
+            <argument type="service" id="twig" />
         </service>
     </services>
 </container>

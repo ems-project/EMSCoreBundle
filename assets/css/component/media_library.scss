@@ -4,6 +4,10 @@ div.media-lib {
   border: solid 1px #ddd;
   color: #333333;
 
+  .media-lib-container {
+    background-color: #f5f5f5;
+  }
+
   button[disabled], label[disabled] {
     opacity: 100%;
     cursor: progress;
@@ -25,15 +29,16 @@ div.media-lib {
     height: calc(90vh - 200px);
 
     div.media-nav-bar {
-      padding: 8px;
-      background-color: #f5f5f5;
-      border-bottom: 1px solid #DCDCDC;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      column-gap: 8px;
-      row-gap: 8px;
-      align-items: center;
+      & > div  {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        column-gap: 8px;
+        row-gap: 8px;
+        align-items: center;
+        padding: 8px;
+        border-bottom: 1px solid #DCDCDC;
+      }
 
       ul.media-lib-list-breadcrumb {
         display: none;
@@ -71,8 +76,8 @@ div.media-lib {
       flex-direction: column;
       resize: horizontal;
       overflow: auto;
-      width: 20%;
-      min-width: 10%;
+      width: 25%;
+      min-width: 20%;
       max-width: 50%;
       flex-shrink: 0;
       background-color: #d2d6de;
@@ -207,15 +212,7 @@ div.media-lib {
               text-decoration: underline;
             }
 
-            > div {
-              flex: 1;
-
-              &:last-child {
-                flex: none;
-                width: 120px;
-                text-align: right;
-              }
-            }
+            > div { flex: 1; }
           }
         }
       }
@@ -223,10 +220,12 @@ div.media-lib {
   }
 
   div.media-lib-footer {
-    min-height: 30px;
     flex-shrink: 0;
-    padding: 8px;
-    background-color: #f5f5f5;
-    border-top: 1px solid #DCDCDC;
+    & > div {
+      border-top: 1px solid #DCDCDC;
+      padding: 8px;
+      height: 100%;
+      min-height: 30px;
+    }
   }
 }

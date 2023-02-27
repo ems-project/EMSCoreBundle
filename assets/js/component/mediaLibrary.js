@@ -24,7 +24,7 @@ export default class MediaLibrary {
             listUploads: el.querySelector('ul.media-lib-list-uploads'),
             listBreadcrumb: el.querySelector('ul.media-lib-list-breadcrumb')
         };
-        this.#elements.uploadLabel = el.querySelector(`label[for="${this.#elements.inputUpload.id}"]`);
+        if (this.#elements.inputUpload) this.#elements.uploadLabel = el.querySelector(`label[for="${this.#elements.inputUpload.id}"]`);
 
         this._init();
     }
@@ -39,17 +39,17 @@ export default class MediaLibrary {
 
     _disableButtons() {
         this.#el.querySelectorAll('button').forEach(button => button.disabled = true);
-        this.#elements.uploadLabel.setAttribute('disabled', 'disabled');
+        if (this.#elements.uploadLabel) this.#elements.uploadLabel.setAttribute('disabled', 'disabled');
     }
     _enableButtons() {
         this.#el.querySelectorAll('button').forEach(button => button.disabled = false);
-        this.#elements.uploadLabel.removeAttribute('disabled');
+        if (this.#elements.uploadLabel) this.#elements.uploadLabel.removeAttribute('disabled');
     }
 
     _addEventListeners() {
-        this.#elements.btnAddFolder.onclick = () => this._addFolder();
-        this.#elements.btnHome.onclick = () => this._loadFolder();
-        this.#elements.inputUpload.onchange = (event) => { this._addFiles(Array.from(event.target.files)); };
+        if (this.#elements.btnAddFolder) this.#elements.btnAddFolder.onclick = () => this._addFolder();
+        if (this.#elements.btnHome) this.#elements.btnHome.onclick = () => this._loadFolder();
+        if (this.#elements.inputUpload) this.#elements.inputUpload.onchange = (event) => { this._addFiles(Array.from(event.target.files)); };
         this.#el.onclick = (event) => {
             if (event.target.classList.contains('media-lib-link-folder')) {
                 this._loadFolder(event.target.dataset.path, event.target);
@@ -176,14 +176,17 @@ export default class MediaLibrary {
     }
 
     _getFiles(path) {
-        return new Promise((resolve) => {
-            this.#elements.listFiles.innerHTML = '';
-            this._appendBreadcrumbItems(path, this.#elements.listBreadcrumb);
-            ajaxJsonGet(this._makeUrl('files'), (files) => {
-                this._appendFileItems(files, this.#elements.listFiles);
-                resolve();
-            });
-        })
+        this.#elements.listFiles.innerHTML = '';
+        this._appendBreadcrumbItems(path, this.#elements.listBreadcrumb);
+
+        return fetch(this._makeUrl('files'), {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json'}
+        }).then((response) => {
+            return response.ok ? response.json().then((json) => {
+                json.forEach((listItem) => { this.#elements.listFiles.innerHTML += listItem; })
+            }) : Promise.reject(response);
+        });
     }
     _getFolders(openPath) {
         return new Promise((resolve) => {
@@ -197,6 +200,8 @@ export default class MediaLibrary {
     }
 
     _appendBreadcrumbItems(path, list) {
+        if (null === list) return;
+
         list.style.display = 'flex';
         list.innerHTML = '';
         path = ''.concat('/home', path || '');
@@ -211,40 +216,6 @@ export default class MediaLibrary {
             item.appendChild(this._makeFolderButton(folderName, currentPath));
 
             list.appendChild(item);
-        });
-    }
-    _appendFileItems(files, list) {
-        if (files.length > 0) {
-            let liHeading = document.createElement("li");
-            ['Name', 'Type', 'Size'].forEach(fileProperty => {
-                let divProperty = document.createElement("div");
-                divProperty.textContent = fileProperty;
-                liHeading.appendChild(divProperty);
-            });
-            list.appendChild(liHeading);
-        }
-
-        files.forEach((file) => {
-            let nameLink = document.createElement('a');
-            nameLink.download = file['file']['name'];
-            nameLink.href = this.#options.urlFileView
-                .replace(/__file_identifier__/g, file['file']['hash'])
-                .replace(/__file_name__/g, file['file']['name']);
-            nameLink.textContent = file['file']['name'];
-
-            let divName = document.createElement("div");
-            divName.appendChild(nameLink);
-
-            let divType = document.createElement("div");
-            divType.textContent = file['file']['type'];
-
-            let divSize = document.createElement("div");
-            divSize.textContent = file['file']['size'];
-
-            let liFile = document.createElement("li");
-            liFile.append(divName, divType, divSize);
-
-            list.appendChild(liFile);
         });
     }
     _appendFolderItems(folders, list) {

@@ -98,6 +98,6 @@ class MediaLibraryController
 
     private function getAjaxModal(): AjaxModal
     {
-        return $this->ajax->newAjaxModel('@EMSCore/components/media_library_modal.html.twig');
+        return $this->ajax->newAjaxModel('@EMSCore/components/media_library/modal.html.twig');
     }
 }

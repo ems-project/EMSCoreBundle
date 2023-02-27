@@ -4,22 +4,19 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Component\MediaLibrary;
 
-use Elastica\Document;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\Exists;
 use Elastica\Query\Nested;
 use Elastica\Query\Term;
-use Elastica\ResultSet;
-use EMS\CommonBundle\Common\Converter;
+use EMS\CommonBundle\Elasticsearch\Response\Response;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class MediaLibraryService
 {
@@ -28,7 +25,8 @@ class MediaLibraryService
         private readonly RevisionService $revisionService,
         private readonly DataService $dataService,
         private readonly FileService $fileService,
-        private readonly TranslatorInterface $translator
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly MediaLibraryTemplateFactory $templateFactory
     ) {
     }
 
@@ -41,7 +39,7 @@ class MediaLibraryService
 
         return $this->create($config, [
             $config->fieldPath => $path.$file['filename'],
-            $config->fieldLocation => $path,
+            $config->fieldFolder => $path,
             $config->fieldFile => \array_filter(\array_merge($file, [
                 'sha1' => $fileHash,
             ])),
@@ -52,15 +50,12 @@ class MediaLibraryService
     {
         return $this->create($config, [
             $config->fieldPath => $path.$folderName,
-            $config->fieldLocation => $path,
+            $config->fieldFolder => $path,
         ]);
     }
 
     /**
-     * @return array<int, array{
-     *      path: string,
-     *      file?: array{name: string, size: string, type: string, hash: string }
-     * }>
+     * @return string[]
      */
     public function getFiles(MediaLibraryConfig $config, string $path): array
     {
@@ -68,12 +63,26 @@ class MediaLibraryService
         $searchQuery->addMust((new Nested())->setPath($config->fieldFile)->setQuery(new Exists($config->fieldFile)));
 
         if ($path) {
-            $searchQuery->addMust((new Term())->setTerm($config->fieldLocation, $path));
+            $searchQuery->addMust((new Term())->setTerm($config->fieldFolder, $path));
         }
 
-        $docs = $this->search($config, $searchQuery)->getDocuments();
+        $template = $this->templateFactory->create($config);
+        $documents = $this->search($config, $searchQuery)->getDocuments();
 
-        return \array_map(fn (Document $doc) => $this->getFile($config, $doc)->toArray(), $docs);
+        $files = [$template->block(MediaLibraryTemplate::BLOCK_FILE_ROW_HEADER)];
+
+        foreach ($documents as $document) {
+            $mediaLibraryFile = new MediaLibraryFile($config, $document);
+            $files[] = $template->block(MediaLibraryTemplate::BLOCK_FILE_ROW, [
+                'media' => $mediaLibraryFile,
+                'url' => $this->urlGenerator->generate('ems.file.view', [
+                    'sha1' => $mediaLibraryFile->file['sha1'],
+                    'filename' => $mediaLibraryFile->file['filename'],
+                ]),
+            ]);
+        }
+
+        return $files;
     }
 
     /**
@@ -89,7 +98,7 @@ class MediaLibraryService
         $folders = new MediaLibraryFolders();
 
         foreach ($docs as $document) {
-            $folderPath = $document->get($config->fieldPath);
+            $folderPath = $document->getValue($config->fieldPath);
             $currentPath = \array_filter(\explode('/', $folderPath));
             $folderName = \basename($folderPath);
             $folders->add($currentPath, $folderName, $folderPath);
@@ -114,18 +123,6 @@ class MediaLibraryService
         return 0 === $form->getErrors(true)->count();
     }
 
-    private function getFile(MediaLibraryConfig $config, Document $document): MediaLibraryFile
-    {
-        $file = MediaLibraryFile::createFromDocument($config, $document);
-        $file->size = Converter::formatBytes((int) $file->size);
-
-        if ($file->type) {
-            $file->type = $this->translator->trans($file->type, [], EMSCoreBundle::TRANS_MIMETYPES);
-        }
-
-        return $file;
-    }
-
     private function getMimeType(string $fileHash): string
     {
         $tempFile = $this->fileService->temporaryFilename($fileHash);
@@ -136,7 +133,7 @@ class MediaLibraryService
         return $type ?: 'application/bin';
     }
 
-    private function search(MediaLibraryConfig $config, BoolQuery $query): ResultSet
+    private function search(MediaLibraryConfig $config, BoolQuery $query): Response
     {
         if ($config->searchQuery) {
             $query->addMust($config->searchQuery);
@@ -151,6 +148,6 @@ class MediaLibraryService
             $search->setSort([$config->fieldPathOrder => ['order' => 'asc']]);
         }
 
-        return $this->elasticaService->search($search);
+        return Response::fromResultSet($this->elasticaService->search($search));
     }
 }

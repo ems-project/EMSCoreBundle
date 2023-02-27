@@ -255,7 +255,6 @@ import ajaxModal from "./helper/ajaxModal";
             new MediaLibrary(el, {
                 urlMediaLib: '/component/media-lib',
                 urlInitUpload: bodyData.initUpload,
-                urlFileView: bodyData.fileView,
                 hashAlgo: bodyData.hashAlgo,
             });
         });

@@ -200,7 +200,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
             return $choices;
         }
 
-        $user = $this->userService->getCurrentUser(true);
+        $user = $this->userService->isCliSession() ? null : $this->userService->getCurrentUser(true);
         if (!$user instanceof User || null === $localePreferred = $user->getLocalePreferred()) {
             return $choices;
         }

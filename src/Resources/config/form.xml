@@ -451,7 +451,7 @@
             <argument>%ems_core.custom_user_options_form%</argument>
             <tag name="form.type"/>
         </service>
-        <service id="ems_core.form.user" class="EMS\CoreBundle\Form\Form\FieldHolderType">
+        <service id="ems_core.form.field-holder" class="EMS\CoreBundle\Form\Form\FieldHolderType">
             <argument type="service" id="ems.form.manager" />
             <argument type="service" id="form.registry" />
             <argument type="service" id="ems.service.data" />

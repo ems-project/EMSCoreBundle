@@ -46,7 +46,7 @@ class Notification implements \Stringable
     /**
      * @ORM\Column(name="sent_timestamp", type="datetime")
      */
-    private \DateTime $sentTimestamp;
+    private ?\DateTime $sentTimestamp = null;
 
     /**
      * @ORM\Column(name="response_text", type="text", nullable=true)
@@ -56,7 +56,7 @@ class Notification implements \Stringable
     /**
      * @ORM\Column(name="response_timestamp", type="datetime", nullable=true)
      */
-    private \DateTime $responseTimestamp;
+    private ?\DateTime $responseTimestamp = null;
 
     /**
      * @ORM\Column(name="response_by", type="string", length=100, nullable=true)
@@ -177,14 +177,7 @@ class Notification implements \Stringable
         return $this->status;
     }
 
-    /**
-     * Set sentTimestamp.
-     *
-     * @param \DateTime $sentTimestamp
-     *
-     * @return Notification
-     */
-    public function setSentTimestamp($sentTimestamp)
+    public function setSentTimestamp(\DateTime $sentTimestamp): Notification
     {
         $this->sentTimestamp = $sentTimestamp;
 
@@ -206,12 +199,7 @@ class Notification implements \Stringable
         return $this;
     }
 
-    /**
-     * Get sentTimestamp.
-     *
-     * @return \DateTime
-     */
-    public function getSentTimestamp()
+    public function getSentTimestamp(): ?\DateTime
     {
         return $this->sentTimestamp;
     }
@@ -228,26 +216,14 @@ class Notification implements \Stringable
         return $this->responseText;
     }
 
-    /**
-     * Set responseTimestamp.
-     *
-     * @param \DateTime $responseTimestamp
-     *
-     * @return Notification
-     */
-    public function setResponseTimestamp($responseTimestamp)
+    public function setResponseTimestamp(\DateTime $responseTimestamp): Notification
     {
         $this->responseTimestamp = $responseTimestamp;
 
         return $this;
     }
 
-    /**
-     * Get responseTimestamp.
-     *
-     * @return \DateTime
-     */
-    public function getResponseTimestamp()
+    public function getResponseTimestamp(): ?\DateTime
     {
         return $this->responseTimestamp;
     }

@@ -57,12 +57,12 @@ class FormRuntime
 
     /**
      * @param mixed[] $data
+     * @param mixed[] $options
      */
-    public function handleForm(string $name, array $data = []): FormInterface
+    public function handleForm(string $name, array $data = [], $options = []): FormInterface
     {
-        $form = $this->formFactory->create(FieldHolderType::class, $data, [
-            'form_name' => $name,
-        ]);
+        $options = \array_merge($options, ['form_name' => $name]);
+        $form = $this->formFactory->create(FieldHolderType::class, [$name => $data], $options);
         $form->handleRequest($this->requestStack->getCurrentRequest());
 
         return $form;

@@ -619,6 +619,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
 
     public function addChild(FieldType $child, bool $prepend = false): self
     {
+        $child->setParent($this);
         if ($prepend) {
             $children = $this->children->toArray();
             \array_unshift($children, $child);
@@ -739,6 +740,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');
+        $json->removeProperty('parent');
         $json->updateProperty('children', $this->getValidChildren());
 
         return $json;

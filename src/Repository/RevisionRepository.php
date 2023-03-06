@@ -100,6 +100,9 @@ class RevisionRepository extends EntityRepository
         if (isset($search['archived'])) {
             $qb->andWhere($qb->expr()->eq('r.archived', ':archived'))->setParameter('archived', $search['archived']);
         }
+        if (isset($search['deleted'])) {
+            $qb->andWhere($qb->expr()->eq('r.deleted', ':deleted'))->setParameter('deleted', $search['deleted']);
+        }
         if (\array_key_exists('endTime', $search)) {
             if (null === $search['endTime']) {
                 $qb->andWhere($qb->expr()->isNull('r.endTime'));

@@ -221,7 +221,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     {
         $temp = parent::viewTransform($dataField);
         $out = [];
-        if ($dataField->giveFieldType()->getDisplayOptions()['multiple']) {
+        if ($dataField->giveFieldType()->getDisplayOption('multiple', false)) {
             if (empty($temp)) {
                 $out = [];
             } elseif (\is_string($temp)) {
@@ -285,10 +285,18 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         $scroll = $this->elasticaService->scroll($search);
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
-                $uuids = \array_merge($uuids, $result->getSource()[$fieldType->getName()] ?? []);
+                $sourceValue = $result->getSource()[$fieldType->getName()] ?? null;
+
+                if ($sourceValue) {
+                    $mergeValue = \is_array($sourceValue) ? $sourceValue : [$sourceValue];
+                    $uuids = \array_merge($uuids, $mergeValue);
+                }
             }
         }
 
-        return \array_diff($uuids, $rawData[$fieldType->getName()] ?? []);
+        $rawDataValue = $rawData[$fieldType->getName()] ?? null;
+
+        return $rawDataValue ?
+            \array_diff($uuids, \is_array($rawDataValue) ? $rawDataValue : [$rawDataValue]) : $uuids;
     }
 }

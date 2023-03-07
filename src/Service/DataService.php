@@ -790,7 +790,7 @@ class DataService
                 if ($item) {
                     $this->lockRevision($item, null, false, $username);
                     $previousObjectArray = $item->getRawData();
-                    $item->removeEnvironment($revision->giveContentType()->giveEnvironment());
+                    $item->close(new \DateTime('now'));
                     $em->persist($item);
                     $this->unlockRevision($item, $username);
                 }

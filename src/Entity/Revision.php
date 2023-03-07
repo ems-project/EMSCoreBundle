@@ -343,7 +343,9 @@ class Revision implements EntityInterface, \Stringable
      */
     public function close(\DateTime $endTime): void
     {
-        $this->setEndTime($endTime);
+        if (null === $this->endTime) {
+            $this->setEndTime($endTime);
+        }
         $this->setDraft(false);
         $this->setAutoSave(null);
         $this->removeEnvironment($this->giveContentType()->giveEnvironment());

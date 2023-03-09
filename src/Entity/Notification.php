@@ -16,6 +16,7 @@ class Notification implements \Stringable
 {
     use CreatedModifiedTrait;
     final public const PENDING = 'pending';
+    final public const IN_TRANSIT = 'in-transit';
 
     /**
      * @ORM\Column(name="id", type="integer")

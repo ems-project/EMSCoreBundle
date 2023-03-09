@@ -8,6 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -182,6 +183,14 @@ final class RecomputeCommand extends Command
                     $viewData = $this->dataService->getSubmitData($revisionType->get('data')); // get view data of new revision
                     $revisionType->submit(['data' => $viewData]); // submit new revision (reverse model transformers called
                 }
+                $notifications = [];
+                foreach ($revision->getNotifications() as $notification) {
+                    if (Notification::PENDING !== $notification->getStatus()) {
+                        continue;
+                    }
+                    $notification->setStatus(Notification::IN_TRANSIT);
+                    $notifications[] = $notification;
+                }
 
                 $objectArray = $newRevision->getRawData();
 
@@ -190,6 +199,16 @@ final class RecomputeCommand extends Command
                 $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $this->contentType, $this->contentType->getName(), $newRevision->getOuuid(), true);
                 $newRevision->setRawData($objectArray);
                 $this->dataService->finalizeDraft($newRevision, $revisionType, self::LOCK_BY);
+
+                foreach ($notifications as $notification) {
+                    if (Notification::IN_TRANSIT !== $notification->getStatus()) {
+                        continue;
+                    }
+                    $notification->setStatus(Notification::PENDING);
+                    $notification->setRevision($newRevision);
+                    $this->em->persist($notification);
+                    $this->em->flush($notification);
+                }
 
                 if (!$input->getOption('no-align')) {
                     foreach ($revision->getEnvironments() as $environment) {

@@ -1,4 +1,4 @@
-class CKEditorConfigFactory {
+export class CKEditorConfig {
     #config
 
     constructor() {
@@ -66,5 +66,3 @@ function emsBrowsers(config) {
         }, null, null, 1);
     }
 }
-
-export const CKEditorConfig = new CKEditorConfigFactory().getConfig();

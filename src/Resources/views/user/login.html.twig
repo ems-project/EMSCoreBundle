@@ -41,14 +41,14 @@
                 <span class="fa fa-user-secret form-control-feedback"></span>
             </div>
             <div class="form-group has-feedback">
-                <input type="password" id="password" name="_password" class="form-control" placeholder="{{ 'user.login.password'|trans }}" required="required" />
+                <input type="password" id="password" name="_password" class="form-control" placeholder="{{ 'user.login.password'|trans }}" required="required" autocomplete="on" />
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
             <div class="row">
                 <div class="col-xs-8">
                     <div class="form-group checkbox icheck">
                         <label>
-                            <input type="checkbox" id="remember_me" name="_remember_me" value="on" />{{ 'user.login.remember_me'|trans }}
+                            <input type="checkbox" id="remember_me" name="_remember_me" value="on" />&nbsp;{{ 'user.login.remember_me'|trans }}
                         </label>
                     </div>
                 </div>

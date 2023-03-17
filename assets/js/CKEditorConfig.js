@@ -7,17 +7,19 @@ export class CKEditorConfig {
         CKEDITOR.plugins.addExternal('div', assetPath+'bundles/emscore/js/cke-plugins/div/plugin.js', '' )
         CKEDITOR.plugins.addExternal('imagebrowser', assetPath+'bundles/emscore/js/cke-plugins/imagebrowser/plugin.js', '' )
 
-        const wysiwygInfo = JSON.parse(document.querySelector('body').dataset.wysiwygInfo)
+        if (document.querySelector('body').hasAttribute('data-wysiwyg-info')) {
+            const wysiwygInfo = JSON.parse(document.querySelector('body').dataset.wysiwygInfo);
 
-        if (wysiwygInfo.hasOwnProperty('styles')) {
-            const stylesSets = wysiwygInfo.styles
-            for(let i=0; i < stylesSets.length; ++i) {
-                CKEDITOR.stylesSet.add(stylesSets[i].name, stylesSets[i].config)
+            if (wysiwygInfo.hasOwnProperty('styles')) {
+                const stylesSets = wysiwygInfo.styles
+                for(let i=0; i < stylesSets.length; ++i) {
+                    CKEDITOR.stylesSet.add(stylesSets[i].name, stylesSets[i].config)
+                }
             }
-        }
 
-        this.#config = wysiwygInfo.config
-        emsBrowsers(this.#config)
+            this.#config = wysiwygInfo.config
+            emsBrowsers(this.#config)
+        }
     }
 
     getConfig() {

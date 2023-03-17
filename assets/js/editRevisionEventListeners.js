@@ -1,8 +1,14 @@
 import EmsListeners from "./EmsListeners";
-import {CKEditorConfig, CKEditorConfigFactory} from "./CKEditorConfig";
+import {CKEditorConfig} from "./CKEditorConfig";
+
+let ckconfig = false;
 
 function editRevisionEventListeners(target, onChangeCallback = null){
     new EmsListeners(target.get(0), onChangeCallback);
+
+    if (false === ckconfig) {
+        ckconfig = new CKEditorConfig().getConfig()
+    }
 
     target.find('.remove-content-button').on('click', function(e) {
         // prevent the link from creating a "#" on the URL
@@ -55,7 +61,6 @@ function editRevisionEventListeners(target, onChangeCallback = null){
 
     target.find('.selectpicker').selectpicker();
 
-    const ckconfig = target.get(0).getElementsByClassName('ckeditor_ems') ? new CKEditorConfig().getConfig() : {};
     target.find(".ckeditor_ems").each(function(){
 
         let height = $( this ).attr('data-height');

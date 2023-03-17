@@ -32,4 +32,12 @@ class ObjectChoiceListFactory extends DefaultChoiceListFactory
     {
         return $loader->loadChoiceList($value);
     }
+
+    /**
+     * @param iterable<mixed> $choices
+     */
+    public function createListFromChoices(iterable $choices, callable $value = null, callable $filter = null): ChoiceListInterface
+    {
+        return parent::createListFromChoices($choices, $value, $filter);
+    }
 }

@@ -15,6 +15,7 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
@@ -59,6 +60,7 @@ final class RecomputeCommand extends Command
         private readonly ContentTypeService $contentTypeService,
         private readonly ContentTypeRepository $contentTypeRepository,
         private readonly RevisionRepository $revisionRepository,
+        private readonly IndexService $indexService,
         private readonly SearchService $searchService
     ) {
         parent::__construct();
@@ -198,7 +200,20 @@ final class RecomputeCommand extends Command
 
                 $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $this->contentType, $this->contentType->getName(), $newRevision->getOuuid(), true);
                 $newRevision->setRawData($objectArray);
-                $this->dataService->finalizeDraft($newRevision, $revisionType, self::LOCK_BY);
+
+                $revision->close(new \DateTime('now'));
+                $newRevision->setDraft(false);
+                $newRevision->setFinalizedBy(self::LOCK_BY);
+                $newRevision->setRawDataFinalizedBy(self::LOCK_BY);
+
+                $this->dataService->sign($revision);
+                $this->dataService->sign($newRevision);
+
+                $this->em->persist($revision);
+                $this->em->persist($newRevision);
+                $this->em->flush();
+
+                $this->indexService->indexRevision($newRevision);
 
                 foreach ($notifications as $notification) {
                     if (Notification::IN_TRANSIT !== $notification->getStatus()) {

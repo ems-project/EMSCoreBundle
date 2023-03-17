@@ -213,6 +213,7 @@
             <argument type="service" id="ems.service.contenttype"/>
             <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
+            <argument type="service" id="ems.service.index"/>
             <argument type="service" id="ems.service.search"/>
             <tag name="console.command"/>
         </service>

@@ -1,68 +1,51 @@
 import '../../css/modules/styleset-preview.scss';
-import {observeDom} from '../helper/observeDom';
 
 export default class IframePreview {
-    constructor(observableSelector) {
-        const iframes = document.querySelectorAll('iframe[data-iframe-body]');
+    constructor() {
         const self = this;
-        this.loadIframes(iframes)
-        if (observableSelector === undefined) {
+        window.addEventListener('message', function(event) {
+            self.onMessage(event);
+        });
+    }
+
+    onMessage(event) {
+        let iframe = null;
+        const iframes = document.querySelectorAll("iframe");
+        for (let i = 0; i < iframes.length; i++) {
+            if (event.source === iframes[i].contentWindow) {
+                iframe = iframes[i];
+                break;
+            }
+        }
+        if (null === iframe) {
+            console.log('Received message from a unknown iframe');
             return;
         }
-        observeDom(document.querySelector(observableSelector), function(mutations) {
-            self.observeDom(mutations);
-        });
+        if ('ready' === event.data) {
+            this.loadBody(iframe);
+        } else if ('resize' === event.data) {
+            this.adjustHeight(iframe);
+        } else {
+            console.log('Unknown event type: ' + event.data);
+        }
+
     }
 
     loadBody(iframe) {
         let body = iframe.getAttribute('data-iframe-body');
         body = this.#changeSelfTargetLinksToParent(body);
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        iframeDoc.body.insertAdjacentHTML('afterbegin', body+iframeDoc.body.innerHTML);
-        this.adjustHeight(iframe);
-        const emsPreview = iframeDoc.createEvent('Event');
-        emsPreview.initEvent('ems-preview', true, true);
-        iframeDoc.dispatchEvent(emsPreview);
+        const window = iframe.contentWindow || iframe.contentDocument.defaultView;
+        window.postMessage(body, '*');
     }
 
     adjustHeight(iframe) {
-        if(null === iframe.contentWindow) {
-            return;
-        }
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-        const height = 30 + iframeDoc.body.offsetHeight;
-        iframe.style.height = height + 'px';
-    }
-
-    loadIframes(iframes) {
-        const self = this;
-        [].forEach.call(iframes, function(iframe) {
-            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-            if (iframeDoc.readyState  === 'complete') {
-                self.loadBody(iframe);
-            }
-            iframe.addEventListener('load', function () {
-                self.loadBody(iframe);
-            });
-            iframe.contentWindow.addEventListener('resize',function () {
-                self.adjustHeight(iframe);
-            });
-            iframe.contentWindow.addEventListener('redraw',function () {
-                self.adjustHeight(iframe);
-            });
-        });
-    }
-
-    observeDom(mutationList) {
-        const self = this;
-        [].forEach.call(mutationList, function(mutation) {
-            if(mutation.addedNodes.length < 1) {
-                return;
-            }
-            const iframes = mutation.target.querySelectorAll('iframe[data-iframe-body]');
-            self.loadIframes(iframes)
-        });
+        const window = iframe.contentWindow || iframe.contentDocument.defaultView;
+        let height = parseInt(window.getComputedStyle(iframe, null).getPropertyValue('border-top-width').replace('px',''), 10);
+        height += parseInt(window.getComputedStyle(iframe, null).getPropertyValue('border-bottom-width').replace('px',''), 10);
+        height += parseInt(window.getComputedStyle(iframe, null).getPropertyValue('padding-top').replace('px',''), 10);
+        height += parseInt(window.getComputedStyle(iframe, null).getPropertyValue('padding-bottom').replace('px',''), 10);
+        height += parseInt(window.document.body.scrollHeight, 10);
+        iframe.height = height;
     }
 
     #changeSelfTargetLinksToParent(body) {

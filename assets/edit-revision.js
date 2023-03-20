@@ -10,7 +10,7 @@ import EmsListeners from './js/EmsListeners';
 import {editRevisionEventListeners} from "./js/editRevisionEventListeners";
 window.EmsListeners = EmsListeners;
 
-new IframePreview('#ajax-modal');
+new IframePreview();
 
 
 let waitingResponse = false;

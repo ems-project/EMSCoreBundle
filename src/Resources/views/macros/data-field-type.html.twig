@@ -694,7 +694,7 @@
 		<dd>
 			<div class="panel panel-default">
 				{% set panelBody = diff_html(dataField.rawData, compare, dataField.fieldType.name, compareRawData) %}
-				{% if dataField.fieldType.displayOptions.styles_set_preview|default(false) %}
+				{% if dataField.rawData and dataField.fieldType.displayOptions.styles_set_preview|default(false) %}
 					{% set displayOptions = dataField.fieldType.displayOptions %}
 					{% set iframeUrl = path('emsco_wysiwyg_styleset_iframe', {
 						'name': displayOptions.styles_set|default('default'),

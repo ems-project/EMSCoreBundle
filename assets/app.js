@@ -13,5 +13,5 @@ window.EmsListeners = EmsListeners;
 
 new EmsListeners(document);
 new RevisionTask();
-new IframePreview('#ajax-modal');
+new IframePreview();
 

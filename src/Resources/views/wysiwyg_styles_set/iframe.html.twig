@@ -17,5 +17,35 @@
 {% if null != styleSet.contentJs %}
     <script src="{{ asset(styleSet.contentJs, styleSet.saveDir == null ? 'emsch' : null) }}"></script>
 {% endif %}
+    <script type="application/javascript">
+        let loaded = false;
+        const resizeFct = function() {
+            if (!loaded) {
+                return;
+            }
+            window.parent.postMessage("resize", "{{ app.request.getSchemeAndHttpHost() }}");
+        };
+        const startReady = function() {
+            if (loaded) {
+                return;
+            }
+            window.parent.postMessage("ready", "{{ app.request.getSchemeAndHttpHost() }}");
+            setTimeout(startReady, 1000);
+        };
+
+        window.addEventListener('message', function(event) {
+            if (event.source !== window.parent) {
+                console.log('Not a parent\'s message');
+                return;
+            }
+            loaded = true;
+            document.body.insertAdjacentHTML('afterbegin', event.data);
+            resizeFct();
+        });
+        window.addEventListener("resize", resizeFct);
+        window.addEventListener("redraw", resizeFct);
+        window.addEventListener("load", resizeFct);
+        startReady();
+    </script>
 </body>
 </html>

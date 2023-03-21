@@ -46,6 +46,14 @@ final class UserManager
         }
     }
 
+    /**
+     * @return array{count: int, results: iterable<User>}
+     */
+    public function countFindAll(?string $email): array
+    {
+        return $this->userRepository->countFindAll($email);
+    }
+
     public function getAuthenticatedUser(): User
     {
         $token = $this->getToken();

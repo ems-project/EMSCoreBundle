@@ -27,6 +27,7 @@ final class Commands
     public const USER_DEACTIVATE = 'emsco:user:deactivate';
     public const USER_DEMOTE = 'emsco:user:demote';
     public const USER_PROMOTE = 'emsco:user:promote';
+    public const USER_UPDATE_OPTION = 'emsco:user:update-option';
 
     public const XLIFF_EXTRACT = 'emsco:xliff:extract';
     public const XLIFF_UPDATE = 'emsco:xliff:update';

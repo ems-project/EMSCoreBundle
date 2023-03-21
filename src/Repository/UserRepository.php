@@ -33,6 +33,25 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * @return array{count: int, results: iterable<User>}
+     */
+    public function countFindAll(?string $email = null): array
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        if ($email) {
+            $qb
+                ->andWhere($qb->expr()->like('u.email', ':email'))
+                ->setParameter('email', $email);
+        }
+
+        return [
+            'count' => (int) $qb->select('count(u.id)')->getQuery()->getSingleScalarResult(),
+            'results' => $qb->select('u')->getQuery()->toIterable(),
+        ];
+    }
+
     public function findUserByUsernameOrThrowException(string $username): User
     {
         $user = $this->findOneBy(['usernameCanonical' => Canonicalizer::canonicalize($username)]);

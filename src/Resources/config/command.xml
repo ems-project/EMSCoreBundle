@@ -140,6 +140,9 @@
             <tag name="console.command"/>
             <tag name="console.command" command="fos:user:promote" />
         </service>
+        <service id="ems.command.update_user_option" class="EMS\CoreBundle\Command\User\UpdateUserOptionCommand" parent="ems_core.command_user.abstract_user_command">
+            <tag name="console.command"/>
+        </service>
 
         <service id="ems.command.xliff.extract" class="EMS\CoreBundle\Command\Xliff\ExtractCommand">
             <argument type="service" id="ems.service.contenttype"/>

@@ -24,7 +24,7 @@ class HolderFieldType extends DataFieldType
     /**
      * {@inheritDoc}
      */
-    public function postFinalizeTreatment(string $type, string $id, DataField $dataField, ?array $previousData): ?array
+    public function postFinalizeTreatment(string $type, string $id, DataField $dataField, mixed $previousData): mixed
     {
         if (!empty($previousData[$dataField->giveFieldType()->getName()])) {
             return $previousData[$dataField->giveFieldType()->getName()];

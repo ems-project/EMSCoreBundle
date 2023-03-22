@@ -229,6 +229,7 @@
         <service id="EMS\CoreBundle\Controller\Form\SubmissionController" public="true">
             <argument type="service" id="ems.form_submission" />
             <argument type="service" id="logger" />
+            <argument type="service" id="EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface"/>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>

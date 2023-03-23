@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Command\User;
 
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\User\UserOptions;
-use EMS\CoreBundle\Entity\User;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,7 +20,7 @@ class UpdateUserOptionCommand extends AbstractUserCommand
     {
         $this
             ->setDescription('Update a user option.')
-            ->addArgument('option', InputArgument::REQUIRED, 'simplified_ui|custom_options')
+            ->addArgument('option', InputArgument::REQUIRED, \implode('|', UserOptions::ALL_MEMBERS))
             ->addArgument('value', InputArgument::REQUIRED, 'value for updating')
             ->addOption('email', null, InputOption::VALUE_OPTIONAL, 'use wildcard % (%@example.dev)')
             ->setHelp(<<<'EOT'
@@ -29,6 +28,9 @@ The <info>emsco:user:update-option</info> command changes an option of a user(s)
 
   Enable "simplified_ui" for all users  
   <info>php %command.full_name% simplified_ui true</info>
+  
+  Enable "allowed_configure_wysiwyg" for all users  
+  <info>php %command.full_name% allowed_configure_wysiwyg true</info>
   
   Set country "Belgium" for all users with a .be email address  
   <info>php %command.full_name% custom_options '{"country":"Belgium"}' --email='%.be'</info>
@@ -44,7 +46,8 @@ EOT
 
         try {
             match ($option) {
-                UserOptions::SIMPLIFIED_UI => $this->updateSimplifiedUI(),
+                UserOptions::SIMPLIFIED_UI => $this->updateBool(UserOptions::SIMPLIFIED_UI),
+                UserOptions::ALLOWED_CONFIGURE_WYSIWYG => $this->updateBool(UserOptions::ALLOWED_CONFIGURE_WYSIWYG),
                 UserOptions::CUSTOM_OPTIONS => $this->updateCustomOptions(),
                 default => throw new \RuntimeException(\sprintf('Invalid option "%s" passed', $option))
             };
@@ -57,14 +60,12 @@ EOT
         }
     }
 
-    private function updateSimplifiedUI(): void
+    private function updateBool(string $option): void
     {
-        $simplifiedUI = 'true' === $this->getArgumentString('value');
+        $value = 'true' === $this->getArgumentString('value');
 
-        foreach ($this->updateUsers() as $user) {
-            $userOptions = $user->getUserOptions();
-            $userOptions[UserOptions::SIMPLIFIED_UI] = $simplifiedUI;
-            $user->setUserOptions($userOptions);
+        foreach ($this->updateUsersOptions() as $userOptions) {
+            $userOptions[$option] = $value;
         }
     }
 
@@ -72,27 +73,27 @@ EOT
     {
         $customOptions = Json::decode($this->getArgumentString('value'));
 
-        foreach ($this->updateUsers() as $user) {
-            $userOptions = $user->getUserOptions();
+        foreach ($this->updateUsersOptions() as $userOptions) {
             $userOptions[UserOptions::CUSTOM_OPTIONS] = \array_merge_recursive(
                 $userOptions[UserOptions::CUSTOM_OPTIONS],
                 $customOptions
             );
-            $user->setUserOptions($userOptions);
         }
     }
 
     /**
-     * @return \Generator<User>
+     * @return \Generator<UserOptions>
      */
-    private function updateUsers(): \Generator
+    private function updateUsersOptions(): \Generator
     {
         $email = $this->getOptionStringNull('email');
         $countFindAll = $this->userManager->countFindAll($email);
         $progressBar = $this->io->createProgressBar($countFindAll['count']);
 
         foreach ($countFindAll['results'] as $user) {
-            yield $user;
+            $userOptions = $user->getUserOptions();
+            yield $userOptions;
+            $user->setUserOptions($userOptions);
             $this->userManager->update($user);
         }
 

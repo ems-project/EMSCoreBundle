@@ -34,26 +34,10 @@ div#revision-tabs {
   .task-loading { text-align: center; color: #ccc; padding: 25px 0; }
   p.task-comment { font-size: 12px; margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; }
 
-  form[name="validation"], form[name="request-validation"] {
+  form[name="revision_task_handle"] {
     label { color: #666; font-size: 12px; }
     textarea { resize: none; }
     div.form-group {margin-bottom: 10px;}
-  }
-
-  div#tab_task {
-    padding: 15px;
-    div#task-title { font-size: 14px; margin-bottom: 5px; font-weight: bold; }
-    div#task-info {
-      font-size: 12px;
-      span#task-deadline { font-weight: bold;}
-      span#task-deadline-red { color: red; }
-    }
-    p#task-description { font-size: 12px; margin: 10px 0; }
-    div#task-send-validation {
-      hr { border-color: #f5f5f5; margin: 10px 0; }
-      label { color: #666; font-size: 12px; }
-      textarea { margin-bottom: 10px; resize: none; }
-    }
   }
 
   div#tab_tasks {
@@ -63,7 +47,7 @@ div#revision-tabs {
     &.reorder {
       button#btn-task-create-modal,
       button.btn-task-update-modal,
-      div#tasks-item-validation,
+      div#tasks-item-handle,
       span.task-current-status { display: none; }
 
       ul#revision-tasks { i.task-icon { color: #000 !important; &::before { content: "\f047" !important; } }}
@@ -86,7 +70,6 @@ div#revision-tabs {
         padding: 0;
         border: 0;
         border-radius: 0;
-        border: 0;
         border-bottom: 2px solid $gray-lighter;
         background: #FFF;
 
@@ -103,7 +86,8 @@ div#revision-tabs {
 
         i.task-icon { padding: 3px 10px 0 0; @include fa-icon(); }
 
-        div#tasks-item-validation { padding: 0 10px 10px 30px; }
+        div#tasks-item-handle { padding: 0 10px 10px 30px; }
+
         div.tasks-item-block{
           display: flex;
           justify-content: space-between;

@@ -756,7 +756,6 @@ task:
     finished:
         hide: 'Hide finished tasks (%number%)'
         show: 'Show finished tasks (%number%)'
-    for: for
     close: Close
     history: History
     in_progress: 'This task is '

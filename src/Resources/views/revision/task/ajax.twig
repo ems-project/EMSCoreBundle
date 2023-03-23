@@ -1,39 +1,5 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
-{% block currentTask %}
-    {%- if task == null -%}
-        <div>No task found!</div>
-    {%- else -%}
-        <div id="task-title"> <i class="{{ task.statusIcon }}"></i> {{ task.title }}</div>
-        <div id="task-info">
-            {%- if task.hasDeadline -%}
-                <span id="task-deadline {{ task.deadline.timestamp < 'now'|date('U') ? 'task-deadline-red' }}">
-                    <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{ task.deadline.format(date_format) }}
-                </span>
-            {%- endif -%}
-            <span>{{ 'task.for'|trans }}&nbsp;{{ task.assignee|displayname }}</span>
-        </div>
-        <span class="label label-{{ task.statusLabel }}">{{ "task.status.#{task.status}"|trans }}</span>
-        {%- if task.hasDescription -%}<p id="task-description">{{ task.description }}</p>{%- endif -%}
-        {% if formRequestValidation is defined and formRequestValidation != null %}
-            {% set logRejection = task.getLatestRejection %}
-            <div id="task-send-validation">
-                <hr />
-                {%- if null != logRejection -%}<p class="task-comment bg-danger">{{ logRejection.comment }}</p>{%- endif -%}
-                {{ form(formRequestValidation) }}
-                <button id="btn-validation-request" class="btn btn-sm btn-primary"> <i class="fa fa-paper-plane"></i>&nbsp;{{ 'task.validation.send'|trans  }}</button>
-            </div>
-        {% endif %}
-        <div class="clearfix">
-            <button class="btn-modal-history-task btn btn-sm btn-default pull-right"
-                    data-url="{{ path('ems_core_task_ajax_modal_history', {'revisionId': revisionId, 'taskId': task.id }) }}"
-                    data-title="{{ 'task.history'|trans }} : {{ task.title }}">
-                    <i class="fa fa-history" aria-hidden="true"></i>
-            </button>
-        </div>
-    {%- endif -%}
-{% endblock %}
-
 {% block taskItem %}
     <li class="list-group-item tasks-item {{ isCurrent|default(false) ? 'tasks-item-current' }}" data-id="{{ task.id }}">
         <div class="tasks-item-block">
@@ -41,7 +7,14 @@
                 <i class="task-icon {{ task.statusIcon }}"></i>
                 <div>
                     <div class="tasks-item-title">{{ task.title }}</div>
-                    <div>{{ 'task.assigned_to'|trans }}<strong>{{ task.assignee|displayname }}</strong></div>
+                    <div id="task-info">
+                        {%- if task.hasDeadline -%}
+                            <span id="task-deadline {{ task.deadline.timestamp < 'now'|date('U') ? 'task-deadline-red' }}">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{ task.deadline.format(date_format) }}
+                            </span>
+                        {%- endif -%}
+                        <span>{{ 'task.assigned_to'|trans }}<strong>{{ task.assignee|displayname }}</strong></span>
+                    </div>
                     {% if isCurrent|default(false) %}
                         <div><span class="task-current-status label label-{{ task.statusLabel }}">{{ "task.status.#{task.status}"|trans }}</span></div>
                     {% endif %}
@@ -53,27 +26,48 @@
                 <i class="fa fa-pencil-square-o"></i>
             </button>
         </div>
-        {% if formValidation is defined %}
-            <div id="tasks-item-validation">
+        {% if formHandle is defined %}
+            <div id="tasks-item-handle">
+                {{ form_start(formHandle) }}
                 {% set logCompleted = task.getLatestCompleted %}
-                {% if task.assignee != app.user.username and logCompleted != null %}
+                {% if formHandle.approve is defined and logCompleted %}
                     <p class="task-comment bg-gray-light">{{ logCompleted.comment }}</p>
                 {% endif %}
-                {{ form(formValidation) }}
-                {% if task.assignee == app.user.username %}
-                    <button id="btn-task-validation-approve" class="btn btn-sm btn-primary">
-                        <i class="fa fa-check"></i>&nbsp;{{ 'task.validation.done'|trans  }}
-                    </button>
-                {% else %}
-                    <button id="btn-task-validation-approve" class="btn btn-sm btn-primary">
-                        <i class="fa fa-check"></i>&nbsp;{{ 'task.validation.approve'|trans  }}
-                    </button>
-                    {% if task.status != 'rejected' %}
-                        <button id="btn-task-validation-reject" class="btn btn-sm btn-default pull-right">
-                            <i class="fa fa-close"></i>&nbsp;{{ 'task.validation.reject'|trans  }}
-                        </button>
-                    {% endif %}
+
+                {% set logRejection = task.getLatestRejection %}
+                {% if formHandle.send is defined and logRejection %}
+                    <p class="task-comment bg-danger">{{ logRejection.comment }}</p>
                 {% endif %}
+
+                {% if formHandle.comment is defined %}
+                    {{ form_row(formHandle.comment) }}
+                {% endif %}
+
+                {% if formHandle.send is defined %}
+                    {{ form_widget(formHandle.send, {
+                        'id': 'btn-handle-send',
+                        'label': '<i class="fa fa-paper-plane"></i> ' ~ 'task.validation.send'|trans,
+                        'label_html': true,
+                        'attr': {'class': 'btn btn-sm btn-primary'}
+                    }) }}
+                {% endif %}
+                {% if formHandle.approve is defined %}
+                    {{ form_widget(formHandle.approve, {
+                        'id': 'btn-handle-approve',
+                        'label': '<i class="fa fa-check"></i> ' ~ 'task.validation.approve'|trans,
+                        'label_html': true,
+                        'attr': {'class': 'btn btn-sm btn-primary'}
+                    }) }}
+                {% endif %}
+                {% if formHandle.reject is defined %}
+                    {{ form_widget(formHandle.reject, {
+                        'id': 'btn-handle-reject',
+                        'label': '<i class="fa fa-close"></i> ' ~ 'task.validation.reject'|trans,
+                        'label_html': true,
+                        'attr': {'class': 'btn btn-sm btn-default pull-right'}
+                    }) }}
+                {% endif %}
+                {{ form_end(formHandle) }}
             </div>
         {% endif %}
     </li>
@@ -200,14 +194,14 @@
         {%- endif -%}
         <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">{{ 'task.close'|trans }}</button>
     </div>
-    <div class="pull-right">
-        <button type="button" id="btn-task-delete"
-                data-url="{{ path('ems_core_task_ajax_delete', {'revisionId': revisionId, 'taskId': task.id}) }}"
-                class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> {{ 'task.delete.submit'|trans }}</button>
-    </div>
+    {% if task.createdBy == app.user.userIdentifier or is_granted('ROLE_TASK_MANAGER') %}
+        <div class="pull-right">
+            <button type="button" id="btn-task-delete"
+                    data-url="{{ path('ems_core_task_ajax_delete', {'revisionId': revisionId, 'taskId': task.id}) }}"
+                    class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> {{ 'task.delete.submit'|trans }}</button>
+        </div>
+    {% endif %}
 {% endblock %}
-
-{% block modalHistoryBody %}{{ block('renderHistoryTimeline') }}{% endblock %}
 
 {% block taskForm %}
     {{ form_start(form) }}

@@ -23,9 +23,6 @@
         <default key="tab">user</default>
     </route>
 
-    <route id="ems_core_task_ajax_task" path="/data/revisions/{revisionId}/task"
-           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTask"
-           methods="GET|POST"/>
     <route id="ems_core_task_ajax_tasks" path="/data/revisions/{revisionId}/tasks"
            controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTasks"
            methods="GET|POST"/>
@@ -42,9 +39,6 @@
     <route id="ems_core_task_ajax_modal_update" path="/data/revisions/{revisionId}/update-modal/{taskId}"
            controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalUpdate"
            methods="GET|POST"/>
-    <route id="ems_core_task_ajax_modal_history" path="/data/revisions/{revisionId}/history-modal/{taskId}"
-           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalHistory"
-           methods="GET"/>
     <route id="ems_core_task_ajax_delete" path="/data/revisions/{revisionId}/delete/{taskId}"
            controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxDelete"
            methods="POST"/>

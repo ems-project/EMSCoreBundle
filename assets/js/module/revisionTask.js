@@ -1,15 +1,10 @@
 import ajaxModal from "./../helper/ajaxModal";
-import {ajaxJsonGet, ajaxJsonPost, ajaxJsonSubmit} from "./../helper/ajax";
+import {ajaxJsonGet, ajaxJsonPost} from "./../helper/ajax";
 import Sortable from 'sortablejs';
 
 export default class RevisionTask {
     constructor() {
         this.dashboard();
-
-        this.taskTab = document.querySelector('#tab_task');
-        if (this.taskTab !== null) {
-            this.loadTask();
-        }
 
         this.tasksTab = document.querySelector('#tab_tasks');
         if (this.tasksTab !== null) {
@@ -50,40 +45,6 @@ export default class RevisionTask {
         });
     }
 
-    loadTask() {
-        var revisionTask = this.taskTab.querySelector('#revision-task');
-
-        var url = revisionTask.dataset.url;
-        var loading = this.taskTab.querySelector('.task-loading');
-        loading.style.display = 'block';
-
-        var callbackRequest = (json, request) => {
-            if (400 === request.status) { location.reload(); }
-            if (200 !== request.status) { return; }
-
-            loading.style.display = 'none';
-            if (json.hasOwnProperty('html')) { revisionTask.innerHTML = json.html; }
-
-            var buttonRequestValidation = this.taskTab.querySelector('#btn-validation-request');
-            if (buttonRequestValidation) {
-                buttonRequestValidation.onclick = (event) => {
-                    event.preventDefault();
-                    var formData = $('form[name="validation-request"]').serialize();
-                    revisionTask.innerHTML = '';
-                    loading.style.display = 'block';
-                    ajaxJsonSubmit(url, formData, callbackRequest);
-                }
-            }
-            this.taskTab.querySelectorAll('.btn-modal-history-task').forEach((btn) => {
-                btn.onclick = (event) => {
-                    event.preventDefault();
-                    ajaxModal.load({ url: btn.dataset.url, title: btn.dataset.title});
-                }
-            });
-        };
-
-        ajaxJsonGet(url, callbackRequest);
-    }
     loadTasks() {
         this.tasksClear();
         ajaxJsonGet(this.tasksList.dataset.url, this.callbackGetTasks());
@@ -107,7 +68,7 @@ export default class RevisionTask {
     }
     callbackGetTasks() {
         return (json, request) => {
-            if (200 !== request.status) { return; }
+            if (request && 200 !== request.status) { return; }
 
             this.tasksList.querySelector('.task-loading').style.display = 'none';
 
@@ -118,7 +79,7 @@ export default class RevisionTask {
 
             if (tasks.length > 0) {
                 this.btnTaskUpdateModal();
-                this.btnTaskValidation();
+                this.formHandle();
                 if (tasks.length > 1) { this.reorderTasks(); } else {  }
             } else {
                 this.tasksEmpty.style.display = 'block';
@@ -181,30 +142,30 @@ export default class RevisionTask {
             });
         }
     }
-    btnTaskValidation() {
-        var sendValidation = (action) => {
-            return (event) => {
-                event.preventDefault();
-                var formElement = this.tasksTab.querySelector('form[name="validation"]');
-                var formData = new FormData(formElement);
-                formData.append('action', action);
-                var submitData = Array.from(formData, e => e.map(encodeURIComponent).join('=')).join('&');
 
-                this.tasksClear();
-                ajaxJsonSubmit(this.tasksList.dataset.url, submitData, (json, request) => {
-                    if (400 === request.status) { location.reload(); }
-                    if (200 !== request.status) { return; }
+    formHandle() {
+        let btnSend = this.tasksTab.querySelector('#btn-handle-send');
+        if (btnSend) btnSend.onclick = () => this.handle('send');
 
-                    this.callbackGetTasks()(json, request);
-                });
-            }
-        };
+        let btnApprove = this.tasksTab.querySelector('#btn-handle-approve');
+        if (btnApprove) btnApprove.onclick = () => this.handle('approve');
 
-        var btnApprove = this.tasksTab.querySelector('#btn-task-validation-approve');
-        if (btnApprove) { btnApprove.onclick = sendValidation('approve'); }
-        var btnReject = this.tasksTab.querySelector('#btn-task-validation-reject');
-        if (btnReject) { btnReject.onclick = sendValidation('reject'); }
+        let btnReject = this.tasksTab.querySelector('#btn-handle-reject');
+        if (btnReject) btnReject.onclick = () => this.handle('reject');
     }
+
+    handle(handle) {
+        let formData = new FormData(this.tasksTab.querySelector("form"));
+        formData.set('handle', handle);
+
+        this.tasksClear();
+
+        fetch(this.tasksList.dataset.url, { method: 'POST', body: formData})
+            .then((response) => { return response.json() })
+            .then((json) => this.callbackGetTasks()(json))
+            .catch(() => { location.reload(); });
+    }
+
     btnTasksApproved() {
         var button = this.tasksTab.querySelector('#btn-tasks-approved');
         if (!button) { return; }

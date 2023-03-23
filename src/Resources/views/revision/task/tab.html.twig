@@ -1,17 +1,8 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 {# @var revision EMS\CoreBundle\Entity\Revision #}
 
-{% block task %}
-    <div class="task-loading">
-        <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
-    </div>
-    <div id="revision-task" data-url="{{ path('ems_core_task_ajax_task', { revisionId: revision.id  }) }}">
-        {# ajax loaded #}
-    </div>
-{% endblock %}
-
 {% block tasks %}
-    {% if revision.isLockedFor(app.user.username) %}
+    {% if revision.isLockedFor(app.user.userIdentifier) %}
         <div class="revision-tasks-info">{{- 'task.info.locked'|trans({
             '%user%': revision.lockBy|displayname,
             '%time%': revision.lockUntil.format(date_time_format)

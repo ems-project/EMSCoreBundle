@@ -10,6 +10,7 @@ use EMS\CoreBundle\Core\Revision\Task\TaskLog;
 use EMS\Helpers\Standard\DateTime;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Table(name="task")
@@ -168,6 +169,16 @@ class Task implements EntityInterface
     public function getAssignee(): string
     {
         return $this->assignee;
+    }
+
+    public function isAssignee(UserInterface $user): bool
+    {
+        return $this->assignee === $user->getUserIdentifier();
+    }
+
+    public function isRequester(UserInterface $user): bool
+    {
+        return $this->createdBy === $user->getUserIdentifier();
     }
 
     public function hasDescription(): bool

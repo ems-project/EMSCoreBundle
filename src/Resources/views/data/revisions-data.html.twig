@@ -120,11 +120,7 @@
 {% block revisionSidebar %}
 	{% set tabs = [{name: 'tab_about_revision', label: 'views.data.revisions-data-html.revision'|trans}] %}
 	{% if revision.giveContentType.tasksEnabled %}
-		{% if revision.hasTaskCurrent and revision.taskCurrent.assignee == app.user.userIdentifier %}
-			{% set tabs = tabs|merge([{ name: 'tab_task', label: 'task.tab_task'|trans }]) %}
-		{% else %}
-			{% set tabs = tabs|merge([{ name: 'tab_tasks', label: 'task.tab_tasks'|trans }]) %}
-		{% endif %}
+		{% set tabs = tabs|merge([{ name: 'tab_tasks', label: 'task.tab_tasks'|trans }]) %}
 	{% endif %}
 	<div id="revision-tabs" class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
@@ -140,9 +136,7 @@
 					{% if tab.name == 'tab_about_revision' %}
 						{{ block('revisionTabAboutRevision') }}
 					{% elseif tab.name == 'tab_tasks' %}
-						{{ block('tasks', '@EMSCore/revision/task/tabs.html.twig') }}
-					{% elseif tab.name == 'tab_task' %}
-						{{ block('task', '@EMSCore/revision/task/tabs.html.twig') }}
+						{{ block('tasks', '@EMSCore/revision/task/tab.html.twig') }}
 					{% endif %}
 				</div>
 			{% endfor %}

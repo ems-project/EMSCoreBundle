@@ -196,7 +196,6 @@ form_submissions:
     title: 'Form Submissions'
 not-applicable: N/A
 task:
-    tab_task: Task
     tab_tasks: Tasks
 uploaded-file-logs:
     index:

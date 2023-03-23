@@ -35,6 +35,10 @@ class UserOptionsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add(UserOptions::ALLOWED_CONFIGURE_WYSIWYG, CheckboxType::class, [
+                'required' => false,
+                'label' => 'user.option.allowed_configure_wysiwyg',
+            ])
             ->add(UserOptions::SIMPLIFIED_UI, CheckboxType::class, [
                 'required' => false,
                 'label' => 'user.option.simplified_ui',

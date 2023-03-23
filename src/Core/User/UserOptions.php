@@ -9,25 +9,27 @@ namespace EMS\CoreBundle\Core\User;
  */
 class UserOptions implements \ArrayAccess
 {
-    /** @var array{simplified_ui?: bool, custom_options?: mixed} */
+    /** @var array{simplified_ui?: bool, allowed_configure_wysiwyg?: bool, custom_options?: mixed} */
     private array $options = [];
 
     final public const SIMPLIFIED_UI = 'simplified_ui';
+    final public const ALLOWED_CONFIGURE_WYSIWYG = 'allowed_configure_wysiwyg';
     final public const CUSTOM_OPTIONS = 'custom_options';
-    private const ALL_MEMBERS = [self::SIMPLIFIED_UI, self::CUSTOM_OPTIONS];
+    private const ALL_MEMBERS = [self::SIMPLIFIED_UI, self::ALLOWED_CONFIGURE_WYSIWYG, self::CUSTOM_OPTIONS];
 
     /**
-     * @param array{simplified_ui?: bool, custom_options?: mixed} $data
+     * @param array{simplified_ui?: bool, allowed_configure_wysiwyg?: bool, custom_options?: mixed} $data
      */
     public function __construct(array $data)
     {
         $this->options[self::SIMPLIFIED_UI] = ($data[self::SIMPLIFIED_UI] ?? false);
+        $this->options[self::ALLOWED_CONFIGURE_WYSIWYG] = ($data[self::ALLOWED_CONFIGURE_WYSIWYG] ?? false);
         $this->options[self::CUSTOM_OPTIONS] = ($data[self::CUSTOM_OPTIONS] ?? []);
     }
 
     public function isEnabled(string $option): bool
     {
-        if (!\in_array($option, [self::SIMPLIFIED_UI])) {
+        if (!\in_array($option, [self::SIMPLIFIED_UI, self::ALLOWED_CONFIGURE_WYSIWYG])) {
             throw new \RuntimeException(\sprintf('The field %s is not a boolean field', $option));
         }
 

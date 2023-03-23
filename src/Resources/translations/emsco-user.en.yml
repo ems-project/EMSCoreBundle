@@ -2,6 +2,7 @@ user:
     option:
         title: Options
         simplified_ui: 'Simplified UI'
+        allowed_configure_wysiwyg: 'Allow user to switch WYSIWYG''s profile'
     login:
         title: 'Sign in to start your session'
         username: Username

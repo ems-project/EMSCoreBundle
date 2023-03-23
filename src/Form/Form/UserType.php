@@ -66,9 +66,13 @@ final class UserType extends AbstractType
                 'required' => false,
             ])
             ->add('displayName', null, [
+                'required' => true,
                 'label' => 'Display name',
             ])
 
+            ->add('enabled', CheckboxType::class, [
+                'required' => false,
+            ])
             ->add('enabled', CheckboxType::class, [
                 'required' => false,
             ])

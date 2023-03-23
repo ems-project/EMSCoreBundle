@@ -51,9 +51,9 @@ final class ExtractCommand extends AbstractCommand
     public const OPTION_FILENAME = 'filename';
     public const OPTION_BASE_URL = 'base-url';
     public const OPTION_TRANSLATION_FIELD = 'translation-field';
-    public const OPTION_ENCODE_HTML = 'encode-html';
     public const OPTION_LOCALE_FIELD = 'locale-field';
     public const OPTION_ENCODING = 'encoding';
+    public const OPTION_WITH_BASELINE = 'with-baseline';
 
     protected static $defaultName = Commands::XLIFF_EXTRACT;
     private string $xliffFilename;
@@ -66,7 +66,7 @@ final class ExtractCommand extends AbstractCommand
     private string $translationField;
     private string $localeField;
     private string $encoding;
-    private bool $encodeHtml;
+    private bool $withBaseline;
 
     public function __construct(
         private readonly ContentTypeService $contentTypeService,
@@ -95,7 +95,7 @@ final class ExtractCommand extends AbstractCommand
             ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', 'locale')
             ->addOption(self::OPTION_ENCODING, null, InputOption::VALUE_OPTIONAL, 'Encoding used to generate the XLIFF file', 'UTF-8')
             ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', 'translation_id')
-            ->addOption(self::OPTION_ENCODE_HTML, null, InputOption::VALUE_NONE, 'HTML fields will be encoded in simple fields');
+            ->addOption(self::OPTION_WITH_BASELINE, null, InputOption::VALUE_NONE, 'The baseline has been checked and can be used to flag field as final');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -118,7 +118,7 @@ final class ExtractCommand extends AbstractCommand
         $this->translationField = $this->getOptionString(self::OPTION_TRANSLATION_FIELD);
         $this->localeField = $this->getOptionString(self::OPTION_LOCALE_FIELD);
         $this->encoding = $this->getOptionString(self::OPTION_ENCODING);
-        $this->encodeHtml = $this->getOptionBool(self::OPTION_ENCODE_HTML);
+        $this->withBaseline = $this->getOptionBool(self::OPTION_WITH_BASELINE);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -142,7 +142,7 @@ final class ExtractCommand extends AbstractCommand
                 try {
                     $contentType = $this->contentTypeService->giveByName($source->getContentType());
                     $fieldTypes = $this->getFieldTypes($contentType);
-                    $this->xliffService->extract($contentType, $source, $extractor, $fieldTypes, $this->sourceEnvironment, $this->targetEnvironment, $this->targetLocale, $this->localeField, $this->translationField, $this->encodeHtml);
+                    $this->xliffService->extract($contentType, $source, $extractor, $fieldTypes, $this->sourceEnvironment, $this->targetEnvironment, $this->targetLocale, $this->localeField, $this->translationField, $this->withBaseline);
                 } catch (\Throwable $e) {
                     $this->io->warning($e->getMessage());
                 }
@@ -158,7 +158,7 @@ final class ExtractCommand extends AbstractCommand
         if (null !== $this->baseUrl) {
             $this->xliffFilename = $this->baseUrl.$this->assetRuntime->assetPath(
                 [
-                    EmsFields::CONTENT_FILE_NAME_FIELD_ => 'extract.xlf',
+                    EmsFields::CONTENT_FILE_NAME_FIELD_ => \basename($this->xliffFilename),
                     EmsFields::CONTENT_FILE_HASH_FIELD_ => \sha1_file($this->xliffFilename),
                 ],
                 [

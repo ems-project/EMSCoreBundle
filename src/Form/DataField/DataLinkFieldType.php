@@ -39,7 +39,7 @@ class DataLinkFieldType extends DataFieldType
     /**
      * {@inheritDoc}
      */
-    public function postFinalizeTreatment(string $type, string $id, DataField $dataField, ?array $previousData): ?array
+    public function postFinalizeTreatment(string $type, string $id, DataField $dataField, mixed $previousData): mixed
     {
         $name = $dataField->giveFieldType()->getName();
 

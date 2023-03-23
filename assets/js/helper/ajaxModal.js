@@ -22,7 +22,10 @@ class AjaxModal {
             let btnAjaxSubmit = this.modal.querySelector('#ajax-modal-submit');
             let blockTargetElements = ['textarea', 'input', 'select', 'button', 'a'];
 
-            if (btnAjaxSubmit && !Array.from(blockTargetElements).includes(event.target.nodeName.toLowerCase())) {
+            if (btnAjaxSubmit
+                && !Array.from(blockTargetElements).includes(event.target.nodeName.toLowerCase())
+                && !event.target.classList.contains('select2-selection')
+            ) {
                 event.preventDefault();
                 btnAjaxSubmit.click();
             }

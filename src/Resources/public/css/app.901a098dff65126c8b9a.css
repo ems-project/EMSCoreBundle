@@ -11632,5 +11632,24 @@ hr {
     white-space: normal !important;
   }
 }
+.select2-container--default.select2-container--focus,
+.select2-selection.select2-container--focus,
+.select2-container--default:focus,
+.select2-selection:focus,
+.select2-container--default:active,
+.select2-selection:active {
+  box-shadow: none !important;
+}
+.select2-container--default.select2-container--focus:focus,
+.select2-selection.select2-container--focus:focus,
+.select2-container--default:focus:focus,
+.select2-selection:focus:focus,
+.select2-container--default:active:focus,
+.select2-selection:active:focus {
+  border-color: #3c8dbc;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(60, 141, 188, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(60, 141, 188, 0.6);
+}
 
 iframe.styleset-preview{border-width:0;width:100%}

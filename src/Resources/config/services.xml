@@ -204,6 +204,7 @@
             <argument type="service" id="ems_core.core_mail.mailer_service" />
             <argument type="service" id="ems.repository.user" />
             <argument type="service" id="security.user_password_hasher" />
+            <argument>%ems_core.fallback_locale%</argument>
         </service>
 
         <service id="ems.service.mapping" class="EMS\CoreBundle\Service\Mapping">
@@ -256,6 +257,9 @@
             <argument type="service" id="emsco.logger.audit" />
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
             <argument type="service" id="ems.service.publish" />
+            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService"/>
+            <argument type="service" id="emsco.manager.user"/>
+            <argument type="service" id="EMS\CommonBundle\Contracts\ExpressionServiceInterface"/>
         </service>
         <service id="ems.service.alias" class="EMS\CoreBundle\Service\AliasService">
             <argument type="service" id="logger" />

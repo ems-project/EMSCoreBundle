@@ -2,7 +2,6 @@
 
 {% import "@EMSCore/macros/data-field-type.html.twig" as macros %}
 
-{% set title = revision.ouuid %}
 {% set revisionColor = revision.contentType.color %}
 
 {% if revision.hasVersionTag %}
@@ -13,13 +12,11 @@
 	{%- if versionTo != 'now' -%}{%- set revisionColor = 'gray' -%}{%- endif -%}
 {% endif %}
 
-
-{% if revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) is defined %}
-	{% set title = attribute(revision.rawData, revision.contentType.labelField) %}
-{% endif %}
-
 {% block title %}
-	{{ 'views.data.revisions-data-html.title'|trans({'%content-type%': revision.contentType.singularName, '%title%': title}) }}
+	{{ 'views.data.revisions-data-html.title'|trans({
+		'%content-type%': revision.contentType.singularName,
+		'%title%': revision|emsco_display
+	}) }}
 {% endblock %}
 
 {% block pagetitle %}

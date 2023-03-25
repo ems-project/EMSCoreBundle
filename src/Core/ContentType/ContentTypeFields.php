@@ -14,6 +14,7 @@ class ContentTypeFields implements \ArrayAccess
     /** @var array<string, ?string> */
     private array $fields = [];
 
+    final public const DISPLAY = 'display';
     final public const LABEL = 'label';
     final public const COLOR = 'color';
     final public const SORT = 'sort';
@@ -24,6 +25,7 @@ class ContentTypeFields implements \ArrayAccess
     final public const ASSET = 'asset';
 
     private const FIELDS = [
+        self::DISPLAY,
         self::LABEL,
         self::COLOR,
         self::SORT,

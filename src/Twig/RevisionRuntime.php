@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Twig;
 
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
@@ -16,6 +17,11 @@ class RevisionRuntime implements RuntimeExtensionInterface
 {
     public function __construct(private readonly RevisionService $revisionService)
     {
+    }
+
+    public function display(Revision|Document|string $display, ?string $expression = null): string
+    {
+        return $this->revisionService->display($display, $expression);
     }
 
     public function getRevision(string $ouuid, string $contentTypeName): ?Revision

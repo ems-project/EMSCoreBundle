@@ -5,17 +5,22 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service\Revision;
 
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Contracts\ExpressionServiceInterface;
+use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Contracts\Revision\RevisionServiceInterface;
+use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Core\Revision\Revisions;
+use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
@@ -31,7 +36,10 @@ class RevisionService implements RevisionServiceInterface
         private readonly LoggerInterface $logger,
         private readonly LoggerInterface $auditLogger,
         private readonly RevisionRepository $revisionRepository,
-        private readonly PublishService $publishService
+        private readonly PublishService $publishService,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly UserManager $userManager,
+        private readonly ExpressionServiceInterface $expressionService
     ) {
     }
 
@@ -114,6 +122,46 @@ class RevisionService implements RevisionServiceInterface
     public function deleteOldest(ContentType $contentType): int
     {
         return $this->revisionRepository->deleteOldest($contentType);
+    }
+
+    public function display(Revision|Document|string $value, ?string $expression = null): string
+    {
+        if (\is_string($value)) {
+            if (null === $object = $this->getByEmsLink(EMSLink::fromText($value))) {
+                return $value;
+            }
+        } else {
+            $object = $value;
+        }
+
+        $contentType = match (true) {
+            ($object instanceof Revision) => $object->giveContentType(),
+            ($object instanceof Document) => $this->contentTypeService->giveByName($object->getContentType())
+        };
+
+        $rawData = match (true) {
+            ($object instanceof Revision) => $object->getRawData(),
+            ($object instanceof Document) => $object->getSource()
+        };
+
+        $expression = $expression ?? $contentType->getFields()[ContentTypeFields::DISPLAY];
+        $evaluateDisplay = $expression ? $this->expressionService->evaluateToString($expression, [
+            'rawData' => $rawData,
+            'userLocale' => $this->userManager->getUserLocale(),
+        ]) : null;
+
+        if ($evaluateDisplay) {
+            return $evaluateDisplay;
+        }
+
+        if ($contentType->hasLabelField() && isset($rawData[$contentType->giveLabelField()])) {
+            return $rawData[$contentType->giveLabelField()];
+        }
+
+        return match (true) {
+            ($object instanceof Revision) => $object->giveOuuid(),
+            ($object instanceof Document) => $object->getId()
+        };
     }
 
     public function find(int $revisionId): ?Revision

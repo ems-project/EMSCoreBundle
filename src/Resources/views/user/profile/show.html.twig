@@ -32,10 +32,10 @@
                             <b>{{ 'user.option.simplified_ui'|trans({}, 'emsco-user') }}</b> <i class="pull-right fa fa-2x fa-{% if attribute(user.userOptions, 'simplified_ui') %}check-{% endif %}square-o"></i>
                         </li>
                         <li class="list-group-item">
-                            <b>{{ 'view.profile.show.locale'|trans }}</b> <i class="pull-right">{{ user.locale }}</i>
+                            <b>{{ 'view.profile.show.locale'|trans }}</b> <i class="pull-right">{{ user.locale|language_name  }}</i>
                         </li>
                         <li class="list-group-item">
-                            <b>{{ 'view.profile.show.locale_preferred'|trans }}</b> <i class="pull-right">{{ user.localePreferred }}</i>
+                            <b>{{ 'view.profile.show.locale_preferred'|trans }}</b> <i class="pull-right">{{ user.localePreferred|locale_name }}</i>
                         </li>
                         {% if circles_object and circles_object|get_content_type %}
                             <li class="list-group-item">

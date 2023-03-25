@@ -14,14 +14,21 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
+use function Symfony\Component\String\u;
+
 final class UserManager
 {
     public const PASSWORD_RETRY_TTL = 7200;
     public const CONFIRMATION_TOKEN_TTL = 86400;
     private const MAIL_TEMPLATE = '@EMSCore/user/mail.twig';
 
-    public function __construct(private readonly TokenStorageInterface $tokenStorage, private readonly MailerService $mailerService, private readonly UserRepository $userRepository, private readonly UserPasswordHasherInterface $userPasswordHasher)
-    {
+    public function __construct(
+        private readonly TokenStorageInterface $tokenStorage,
+        private readonly MailerService $mailerService,
+        private readonly UserRepository $userRepository,
+        private readonly UserPasswordHasherInterface $userPasswordHasher,
+        private string $fallbackLocale
+    ) {
     }
 
     public function create(string $username, string $password, string $email, bool $active, bool $superAdmin): User
@@ -44,6 +51,13 @@ final class UserManager
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    public function getUserLocale(): string
+    {
+        $preferredLocale = $this->getUser()?->getLocalePreferred() ?? $this->fallbackLocale;
+
+        return u($preferredLocale)->slice(0, 2)->toString();
     }
 
     /**

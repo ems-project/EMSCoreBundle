@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Form\Form;
 use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
 use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -26,6 +27,7 @@ class ContentTypeFieldsType extends AbstractType
         ];
 
         $builder
+            ->add(ContentTypeFields::DISPLAY, TextType::class, ['required' => false])
             ->add(ContentTypeFields::LABEL, ContentTypeFieldPickerType::class, $defaultOptions)
             ->add(ContentTypeFields::COLOR, ContentTypeFieldPickerType::class, $defaultOptions)
             ->add(ContentTypeFields::SORT, ContentTypeFieldPickerType::class, $defaultOptions)

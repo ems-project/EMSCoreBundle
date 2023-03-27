@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Revision\Action;
 
-use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
+use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Service\Pdf\Pdf;
 use EMS\CommonBundle\Service\Pdf\PdfPrinterInterface;
 use EMS\CommonBundle\Service\Pdf\PdfPrintOptions;
@@ -48,7 +48,7 @@ class ActionController
         }
 
         $environment = $this->environmentService->giveByName($environmentName);
-        $document = $this->searchService->get($environment, $action->giveContentType(), $ouuid);
+        $document = $this->searchService->getDocument($action->giveContentType(), $ouuid, $environment);
 
         $body = $this->twig->createTemplate($action->getBody());
 
@@ -133,7 +133,7 @@ class ActionController
         return $response;
     }
 
-    private function generateFilename(Template $action, Environment $environment, Document $document, bool $_download): string
+    private function generateFilename(Template $action, Environment $environment, DocumentInterface $document, bool $_download): string
     {
         $template = $action->getFilename();
         $template ??= (RenderOptionType::PDF === $action->getRenderOption() ? 'document.pdf' : $document->getOuuid());

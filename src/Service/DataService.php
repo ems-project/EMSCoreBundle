@@ -6,8 +6,9 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Elasticsearch\Document\Document;
+use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -327,7 +328,7 @@ class DataService
     /**
      * @param array<mixed> $hit
      */
-    public function hitToBusinessDocument(ContentType $contentType, array $hit): Document
+    public function hitToBusinessDocument(ContentType $contentType, array $hit): DocumentInterface
     {
         $revision = $this->getEmptyRevision($contentType);
         $revision->setRawData($hit['_source']);
@@ -354,7 +355,7 @@ class DataService
         });
         unset($revisionType);
 
-        return new Document($contentType->getName(), $hit['_id'], $result);
+        return Document::fromArray($result);
     }
 
     /**
@@ -1932,7 +1933,7 @@ class DataService
     /**
      * @param array<mixed> $rawData
      */
-    public function hitFromBusinessIdToDataLink(ContentType $contentType, string $ouuid, array $rawData): Document
+    public function hitFromBusinessIdToDataLink(ContentType $contentType, string $ouuid, array $rawData): DocumentInterface
     {
         $revision = $this->getEmptyRevision($contentType);
         $revision->setRawData($rawData);
@@ -1964,7 +1965,7 @@ class DataService
         });
         unset($revisionType);
 
-        return new Document($contentType->getName(), $ouuid, $result);
+        return Document::fromArray($result);
     }
 
     public function lockAllRevisions(\DateTime $until, string $by): int

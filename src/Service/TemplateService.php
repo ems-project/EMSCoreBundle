@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Service;
 
-use EMS\CommonBundle\Common\Document;
+use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
 use EMS\Helpers\Standard\Type;
@@ -51,7 +51,7 @@ class TemplateService
     /**
      * @param mixed[] $extraContext
      */
-    public function render(Document $document, ContentType $contentType, string $environment, array $extraContext = []): string
+    public function render(DocumentInterface $document, ContentType $contentType, string $environment, array $extraContext = []): string
     {
         if (null === $this->twigTemplate) {
             throw new \RuntimeException('unexpected null twigTemplate');
@@ -63,7 +63,7 @@ class TemplateService
     /**
      * @param mixed[] $extraContext
      */
-    public function renderFilename(Document $document, ContentType $contentType, string $environment, array $extraContext = []): string
+    public function renderFilename(DocumentInterface $document, ContentType $contentType, string $environment, array $extraContext = []): string
     {
         if (null === $this->filenameTwigTemplate) {
             throw new \RuntimeException('unexpected null filenameTwigTemplate');
@@ -123,7 +123,7 @@ class TemplateService
     /**
      * @param mixed[] $extraContext
      */
-    public function renderTemplate(array $extraContext, string $environment, ContentType $contentType, Document $document, TemplateWrapper $template): string
+    public function renderTemplate(array $extraContext, string $environment, ContentType $contentType, DocumentInterface $document, TemplateWrapper $template): string
     {
         $context = \array_merge($extraContext, [
             'environment' => $environment,

@@ -527,7 +527,7 @@ class DataController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $document = $this->searchService->get($env, $template->giveContentType(), $ouuid);
+        $document = $this->searchService->getDocument($template->giveContentType(), $ouuid, $env);
 
         $success = false;
         try {

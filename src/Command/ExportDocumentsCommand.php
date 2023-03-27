@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Command;
 
-use EMS\CommonBundle\Common\Document;
+use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Twig\AssetRuntime;
@@ -207,7 +207,7 @@ class ExportDocumentsCommand extends EmsCommand
                 if ($withBusinessId) {
                     $document = $this->dataService->hitToBusinessDocument($contentType, $result->getHit());
                 } else {
-                    $document = new Document($contentType->getName(), $result->getId(), $result->getData());
+                    $document = Document::fromResult($result);
                 }
 
                 if ($useTemplate && $this->templateService->hasFilenameTemplate()) {

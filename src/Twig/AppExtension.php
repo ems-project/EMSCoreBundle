@@ -22,20 +22,18 @@ use EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer;
 use EMS\CoreBundle\Core\Revision\Wysiwyg\WysiwygRuntime;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Sequence;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\SkipNotificationException;
-use EMS\CoreBundle\Form\Data\Condition\InMyCircles;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
-use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\SequenceRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
@@ -60,6 +58,7 @@ class AppExtension extends AbstractExtension
         private readonly Registry $doctrine,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly UserService $userService,
+        private readonly RevisionService $revisionService,
         private readonly ContentTypeService $contentTypeService,
         private readonly RouterInterface $router,
         private readonly TwigEnvironment $twig,
@@ -148,7 +147,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('one_granted', $this->oneGranted(...)),
             new TwigFilter('in_my_circles', $this->inMyCircles(...)),
             new TwigFilter('data_link', $this->dataLink(...), ['is_safe' => ['html']]),
-            new TwigFilter('data_label', $this->dataLabel(...), ['is_safe' => ['html']]),
+
             new TwigFilter('emsco_get_environment', [EnvironmentRuntime::class, 'getEnvironment']),
             new TwigFilter('generate_from_template', $this->generateFromTemplate(...)),
             new TwigFilter('objectChoiceLoader', $this->objectChoiceLoader(...)),
@@ -185,6 +184,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('emsco_webalize', Encoder::webalize(...), ['deprecated' => true, 'alternative' => 'ems_webalize']),
             new TwigFilter('get_environment', [EnvironmentRuntime::class, 'getEnvironment'], ['deprecated' => true, 'alternative' => 'emsco_get_environment']),
             new TwigFilter('get_content_type', [ContentTypeRuntime::class, 'getContentType'], ['deprecated' => true, 'alternative' => 'emsco_get_contentType']),
+            new TwigFilter('data_label', $this->dataLabel(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_display']),
         ];
     }
 
@@ -841,9 +841,7 @@ class AppExtension extends AbstractExtension
      */
     public function inMyCircles(string|array $circles): bool
     {
-        $condition = new InMyCircles($this->userService, $this->authorizationChecker);
-
-        return $condition->inMyCircles($circles);
+        return $this->userService->inMyCircles($circles);
     }
 
     /**
@@ -890,12 +888,7 @@ class AppExtension extends AbstractExtension
 
     public function dataLabel(string $key): string
     {
-        $emsLink = EMSLink::fromText($key);
-        if (!$emsLink->isValid() || !$contentType = $this->contentTypeService->getByName($emsLink->getContentType())) {
-            return $key;
-        }
-
-        return $this->makeDataLabel($contentType, $emsLink)['text'];
+        return $this->revisionService->display($key);
     }
 
     public function dataLink(string $key, string $revisionId = null, string $diffMod = null): string
@@ -905,28 +898,45 @@ class AppExtension extends AbstractExtension
             return $key;
         }
 
-        $label = $this->makeDataLabel($contentType, $emsLink);
+        $label = \sprintf('<i class="%s"></i>&nbsp;&nbsp;', $contentType->getIcon() ?? 'fa fa-book');
+
+        try {
+            $document = $this->searchService->getDocument($contentType, $emsLink->getOuuid());
+            $emsLink = $document->getEmsLink(); // versioned documents
+            $emsSource = $document->getEMSSource();
+            $label .= $this->revisionService->display($document);
+        } catch (NotFoundException) {
+            $label .= $emsLink->getEmsId();
+        }
+
+        $color = isset($emsSource) && $contentType->hasColorField() ? $emsSource->get($contentType->giveColorField()) : null;
+        if ($color) {
+            $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
+            $label = '<span class="" style="color:'.$contrasted.';">'.$label.'</span>';
+        }
 
         $attributes = [];
-        $out = $label['text'];
+        $out = $label;
 
         if (null !== $diffMod) {
             $out = '<'.$diffMod.' class="diffmod">'.$out.'<'.$diffMod.'>';
         }
-        if (isset($label['tooltip'])) {
-            $attributes = ['data-toggle="tooltip"', 'data-placement="top"', \sprintf('title="%s"', $label['tooltip'])];
+
+        $tooltipField = $contentType->field(ContentTypeFields::TOOLTIP);
+        if ($tooltipField && isset($emsSource) && $tooltip = $emsSource->get($tooltipField, false)) {
+            $attributes = ['data-toggle="tooltip"', 'data-placement="top"', \sprintf('title="%s"', $tooltip)];
         }
 
         if (!$this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::VIEW))) {
-            if (isset($label['color'])) {
-                $attributes = [...$attributes, \sprintf('style="color: %s"', $label['color'])];
+            if ($color) {
+                $attributes = [...$attributes, \sprintf('style="color: %s"', $color)];
             }
 
             return \sprintf('<span %s>%s</span>', \implode(' ', $attributes), $out);
         }
 
-        if (isset($label['color'])) {
-            $attributes = [...$attributes, 'style="background-color: '.$label['color'].';border-color: '.$label['color'].';"'];
+        if (isset($color)) {
+            $attributes = [...$attributes, 'style="background-color: '.$color.';border-color: '.$color.';"'];
         }
 
         $link = $this->router->generate('data.revisions', [
@@ -1128,51 +1138,5 @@ class AppExtension extends AbstractExtension
     public function skipNotificationException(string $message = 'This notification has been skipped'): never
     {
         throw new SkipNotificationException($message);
-    }
-
-    /**
-     * @return array{"text": string, "color"?: string, "tooltip"?: string}
-     */
-    private function makeDataLabel(ContentType $contentType, EMSLink $emsLink): array
-    {
-        $data = [];
-        $out = \sprintf('<i class="%s"></i>&nbsp;&nbsp;', $contentType->getIcon() ?? 'fa fa-book');
-
-        try {
-            $document = $this->searchService->getDocument($contentType, $emsLink->getOuuid());
-            $emsSource = $document->getEMSSource();
-
-            if ($contentType->hasLabelField()) {
-                $label = $emsSource->get($contentType->giveLabelField(), $emsLink->getEmsId());
-                $out .= (\strlen((string) $label) > 0 ? $label : $emsLink->getEmsId());
-            } else {
-                $out .= $emsLink->getEmsId();
-            }
-
-            $color = $contentType->hasColorField() ? $emsSource->get($contentType->giveColorField()) : null;
-            if ($color) {
-                $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
-                $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
-                $data['color'] = $color;
-            }
-
-            $tooltipField = $contentType->field(ContentTypeFields::TOOLTIP);
-            if ($tooltipField && $tooltip = $emsSource->get($tooltipField, false)) {
-                $data['tooltip'] = $tooltip;
-            }
-        } catch (\Elastica\Exception\NotFoundException $e) {
-            /** @var RevisionRepository $revisionRepository */
-            $revisionRepository = $this->doctrine->getManager()->getRepository(Revision::class);
-            $revision = $revisionRepository->findLatestByOuuid($emsLink->getOuuid());
-            $revisionLabel = $revision ? ($revision->getLabelField() ?? $emsLink->getEmsId()) : $emsLink->getEmsId();
-
-            $out .= (\strlen($revisionLabel) > 0 ? $revisionLabel : $emsLink->getEmsId());
-        } catch (\Throwable $e) {
-            $this->logger->debug(\sprintf('dataLink failed for : %s', $emsLink->getEmsId()), ['e' => $e]);
-        }
-
-        $data['text'] = $out;
-
-        return $data;
     }
 }

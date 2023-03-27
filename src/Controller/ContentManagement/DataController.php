@@ -216,6 +216,7 @@ class DataController extends AbstractController
         }
 
         return $this->render('@EMSCore/data/view-data.html.twig', [
+            'document' => $document,
             'object' => $document->getRaw(),
             'environment' => $environment,
             'contentType' => $contentType,

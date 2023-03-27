@@ -11,6 +11,7 @@ use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
 
 class UserService implements EntityServiceInterface
@@ -22,8 +23,15 @@ class UserService implements EntityServiceInterface
     /**
      * @param array<mixed> $securityRoles
      */
-    public function __construct(private readonly Registry $doctrine, private readonly TokenStorageInterface $tokenStorage, private readonly Security $security, private readonly UserRepository $userRepository, private readonly SearchRepository $searchRepository, private readonly array $securityRoles)
-    {
+    public function __construct(
+        private readonly Registry $doctrine,
+        private readonly TokenStorageInterface $tokenStorage,
+        private readonly Security $security,
+        private readonly UserRepository $userRepository,
+        private readonly SearchRepository $searchRepository,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly array $securityRoles
+    ) {
     }
 
     public function searchUser(string $search): ?UserInterface
@@ -297,5 +305,24 @@ class UserService implements EntityServiceInterface
     public function isCliSession(): bool
     {
         return 'cli' === \php_sapi_name();
+    }
+
+    public function inMyCircles(mixed $circles): bool
+    {
+        if (\is_array($circles) && 0 === \count($circles)) {
+            return true;
+        }
+
+        if ($this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
+            return true;
+        }
+
+        $user = $this->getCurrentUser(UserService::DONT_DETACH);
+
+        if (\is_array($circles)) {
+            return \count(\array_intersect($circles, $user->getCircles())) > 0;
+        }
+
+        return \in_array($circles, $user->getCircles());
     }
 }

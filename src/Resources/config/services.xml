@@ -155,7 +155,6 @@
         <service id="ems_core.service.uploaded-file" alias="EMS\CoreBundle\Service\DatatableService"/>
         <service id="ems_core.core_revision.draft_in_progress" class="EMS\CoreBundle\Core\Revision\DraftInProgress">
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
-            <argument type="service" id="security.authorization_checker"/>
             <argument type="service" id="ems.service.user"/>
         </service>
 
@@ -235,7 +234,6 @@
             <argument type="service" id="emsco.logger.audit" />
             <argument type="service" id="ems_common.storage.manager" />
             <argument type="service" id="twig" />
-            <argument type="service" id="app.twig_extension" />
             <argument type="service" id="ems.service.user" />
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
             <argument type="service" id="ems.service.environment" />
@@ -317,6 +315,7 @@
             <argument type="service" id="security.helper" />
             <argument type="service" id="ems.repository.user" />
             <argument type="service" id="ems.repository.search" />
+            <argument type="service" id="security.authorization_checker" />
             <argument>%security.role_hierarchy.roles%</argument>
         </service>
         <service id="ems.service.wysiwyg_profile" class="EMS\CoreBundle\Service\WysiwygProfileService">

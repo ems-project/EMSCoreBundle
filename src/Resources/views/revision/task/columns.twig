@@ -8,6 +8,8 @@
     </a>
 {%- endblock -%}
 
+{%- block label -%}{{ data|emsco_display }}{%- endblock -%}
+
 {%- block version_tag -%}
     {%- if data.versionTagField -%}
         {{- 'revision.version_tag'|trans({'%version_tag%': data.versionTagField}) -}}

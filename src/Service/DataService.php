@@ -96,7 +96,6 @@ class DataService
         private readonly LoggerInterface $auditLogger,
         private readonly StorageManager $storageManager,
         protected TwigEnvironment $twig,
-        protected AppExtension $appTwig,
         protected UserService $userService,
         protected RevisionRepository $revRepository,
         private readonly EnvironmentService $environmentService,
@@ -145,11 +144,11 @@ class DataService
         if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
         }
-        if (!empty($publishEnv) && \is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !$this->appTwig->inMyCircles($publishEnv->getCircles())) {
+        if (!empty($publishEnv) && \is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !$this->userService->inMyCircles($publishEnv->getCircles())) {
             throw new PrivilegeException($revision, 'You don\'t share any circle with this content');
         }
         if (null === $username && empty($publishEnv) && !empty($revision->giveContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->giveContentType()->getCirclesField()])) {
-            if (!$this->appTwig->inMyCircles($revision->getRawData()[$revision->giveContentType()->getCirclesField()] ?? [])) {
+            if (!$this->userService->inMyCircles($revision->getRawData()[$revision->giveContentType()->getCirclesField()] ?? [])) {
                 throw new PrivilegeException($revision);
             }
         }

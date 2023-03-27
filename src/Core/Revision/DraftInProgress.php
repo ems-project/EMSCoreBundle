@@ -16,14 +16,15 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 use EMS\CoreBundle\Service\UserService;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class DraftInProgress implements EntityServiceInterface
 {
     final public const DISCARD_SELECTED_DRAFT = 'DISCARD_SELECTED_DRAFT';
 
-    public function __construct(private readonly RevisionRepository $revisionRepository, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly UserService $userService)
-    {
+    public function __construct(
+        private readonly RevisionRepository $revisionRepository,
+        private readonly UserService $userService
+    ) {
     }
 
     public function isSortable(): bool
@@ -78,7 +79,7 @@ class DraftInProgress implements EntityServiceInterface
         $lockBy = new UserTableColumn('revision.draft-in-progress.column.locked-by', 'lockBy');
         $lockBy->addCondition($condition);
         $table->addColumnDefinition($lockBy);
-        $inMyCircles = new InMyCircles($this->userService, $this->authorizationChecker);
+        $inMyCircles = new InMyCircles($this->userService);
         $table->addDynamicItemGetAction(Routes::EDIT_REVISION, 'revision.draft-in-progress.column.edit-draft', 'pencil', [
             'revisionId' => 'id',
         ])->addCondition($inMyCircles)->setButtonType('primary');

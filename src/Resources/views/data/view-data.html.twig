@@ -5,14 +5,12 @@
     <i class="{% if contentType and contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
     {{ object._source._contenttype|humanize }} :
 
-    {% if contentType and (contentType.labelField) and (attribute(attribute(object, '_source'), contentType.labelField)  is defined ) %}
-        {{ attribute(attribute(object, '_source'), contentType.labelField) }}
-        <small>{{ object._id }}</small>
+    {% set title = document|emsco_display %}
+    {% if title != object._id %}
+        {{ title }} <small>{{ object._id }}</small>
     {% else %}
         {{ object._id }}
     {% endif %}
-
-
     as indexed in
     <span class="badge bg-{{ environment.color|raw }}">{{ environment.label }}</span>
 {% endblock %} 

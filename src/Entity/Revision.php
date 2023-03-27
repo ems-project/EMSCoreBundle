@@ -746,43 +746,10 @@ class Revision implements EntityInterface, \Stringable
 
     public function getLabel(): string
     {
-        $label = $this->createLabel();
-
-        if (null !== $this->versionUuid) {
-            $from = $this->getVersionDate('from');
-            $toDate = $this->getVersionDate('to');
-
-            return \vsprintf('%s - %s (%s%s)', [
-                $this->versionTag,
-                $label,
-                $from ? $from->format('d/m/Y') : '',
-                $toDate ? ' - '.$toDate->format('d/m/Y') : '',
-            ]);
-        }
-
-        return $label;
-    }
-
-    private function createLabel(): string
-    {
-        if (null !== $rawDataLabel = $this->createLabelFromRawData()) {
-            return $rawDataLabel;
-        }
-
-        if (null !== $labelField = $this->getLabelField()) {
-            return $labelField;
-        }
-
-        return '';
-    }
-
-    private function createLabelFromRawData(): ?string
-    {
-        $contentType = $this->giveContentType();
-        $contentTypeLabelField = $contentType->getLabelField();
+        $contentTypeLabelField = $this->giveContentType()->getLabelField();
 
         if (null === $contentTypeLabelField) {
-            return null;
+            return $this->ouuid ?? '';
         }
 
         $label = $this->rawData[$contentTypeLabelField] ?? null;
@@ -795,7 +762,7 @@ class Revision implements EntityInterface, \Stringable
             return $label;
         }
 
-        return null;
+        return $this->ouuid ?? '';
     }
 
     public function setLabelField(?string $labelField): self

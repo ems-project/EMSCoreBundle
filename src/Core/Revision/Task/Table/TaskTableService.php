@@ -28,7 +28,7 @@ final class TaskTableService implements EntityServiceInterface
 
     public const COLUMNS = [
         self::COL_TITLE => ['type' => 'block', 'column' => 'taskTitle', 'mapping' => 't.title'],
-        self::COL_DOCUMENT => ['column' => 'label', 'mapping' => 'r.labelField'],
+        self::COL_DOCUMENT => ['type' => 'block', 'column' => 'label', 'mapping' => 'r.labelField'],
         self::COL_VERSION_TAG => ['type' => 'block'],
         self::COL_REQUESTER => ['type' => 'block', 'column' => 'requester', 'mapping' => 't.createdBy'],
         self::COL_ASSIGNEE => ['type' => 'block', 'column' => 'taskAssignee', 'mapping' => 't.assignee'],

@@ -1,9 +1,6 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
-{% set label = object.ouuid %}
-{% if (contentType.labelField) and (attribute(object.source, contentType.labelField)  is defined ) %}
-	{% set label = attribute(object.source, contentType.labelField) %}
-{% endif %}
+{% set label = object|emsco_display %}
 
 {% block title %}{{ 'data.custom-view.pagetitle'|trans({ '%name%':template.label, '%contentType%': contentType.singularName, '%label%': label, '%environment%': environment.label  }) }}{% endblock %}
 {% block pagetitle %}

@@ -56,7 +56,10 @@ class UserProfileType extends AbstractType
             ->add('layoutBoxed', null, ['label' => 'user.layout_boxed'])
             ->add('sidebarMini', null, ['label' => 'user.sidebar_mini'])
             ->add('sidebarCollapse', null, ['label' => 'user.sidebar_collapse'])
-            ->add('userOptions', UserOptionsType::class, ['label' => 'user.option.title'])
+            ->add('userOptions', UserOptionsType::class, [
+                'label' => 'user.option.title',
+                'context' => UserOptionsType::CONTEXT_PROFILE,
+            ])
             ->add('locale', ChoiceType::class, [
                 'label' => 'user.locale',
                 'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,

@@ -108,7 +108,10 @@ final class UserType extends AbstractType
                 'choices' => \array_flip(Locales::getNames()),
                 'choice_translation_domain' => false,
             ])
-            ->add('userOptions', UserOptionsType::class, ['label' => 'user.option.title'])
+            ->add('userOptions', UserOptionsType::class, [
+                'label' => 'user.option.title',
+                'context' => UserOptionsType::CONTEXT_USER_MANAGEMENT,
+            ])
         ;
 
         if ($this->circleObject) {

@@ -23,7 +23,11 @@
                     {{ form_row(form.sidebarMini) }}
                     {{ form_row(form.sidebarCollapse) }}
 
-                    {{ form_row(form.userOptions) }}
+                    {% if form.userOptions.children|length > 0 %}
+                        {{ form_row(form.userOptions) }}
+                    {% else %}
+                        {{ form_widget(form.userOptions) }}
+                    {% endif %}
 
                     {{ form_row(form.locale) }}
                     {{ form_row(form.localePreferred) }}

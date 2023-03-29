@@ -20,6 +20,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class UserOptionsType extends AbstractType
 {
+    public const CONTEXT_PROFILE = 'user_profile';
+    public const CONTEXT_USER_MANAGEMENT = 'user_management';
+
     public function __construct(
         private readonly FormManager $formManager,
         protected FormRegistryInterface $formRegistry,
@@ -34,15 +37,20 @@ class UserOptionsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add(UserOptions::ALLOWED_CONFIGURE_WYSIWYG, CheckboxType::class, [
-                'required' => false,
-                'label' => 'user.option.allowed_configure_wysiwyg',
-            ])
-            ->add(UserOptions::SIMPLIFIED_UI, CheckboxType::class, [
-                'required' => false,
-                'label' => 'user.option.simplified_ui',
-            ]);
+        $context = $options['context'];
+
+        if (self::CONTEXT_USER_MANAGEMENT === $context) {
+            $builder
+                ->add(UserOptions::ALLOWED_CONFIGURE_WYSIWYG, CheckboxType::class, [
+                    'required' => false,
+                    'label' => 'user.option.allowed_configure_wysiwyg',
+                ])
+                ->add(UserOptions::SIMPLIFIED_UI, CheckboxType::class, [
+                    'required' => false,
+                    'label' => 'user.option.simplified_ui',
+                ]);
+        }
+
         if (null !== $this->customUserOptionsForm) {
             $form = $this->formManager->getByName($this->customUserOptionsForm);
             $builder->add(UserOptions::CUSTOM_OPTIONS, $form->getFieldType()->getType(), [
@@ -61,7 +69,10 @@ class UserOptionsType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['translation_domain' => 'emsco-user']);
+        $resolver
+            ->setDefaults(['translation_domain' => 'emsco-user'])
+            ->setRequired(['context'])
+            ->setAllowedValues('context', [self::CONTEXT_PROFILE, self::CONTEXT_USER_MANAGEMENT]);
     }
 
     /**

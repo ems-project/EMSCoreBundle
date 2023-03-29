@@ -147,7 +147,6 @@ class AppExtension extends AbstractExtension
             new TwigFilter('one_granted', $this->oneGranted(...)),
             new TwigFilter('in_my_circles', $this->inMyCircles(...)),
             new TwigFilter('data_link', $this->dataLink(...), ['is_safe' => ['html']]),
-
             new TwigFilter('emsco_get_environment', [EnvironmentRuntime::class, 'getEnvironment']),
             new TwigFilter('generate_from_template', $this->generateFromTemplate(...)),
             new TwigFilter('objectChoiceLoader', $this->objectChoiceLoader(...)),
@@ -898,15 +897,15 @@ class AppExtension extends AbstractExtension
             return $key;
         }
 
-        $label = \sprintf('<i class="%s"></i>&nbsp;&nbsp;', $contentType->getIcon() ?? 'fa fa-book');
+        $label = \sprintf('<i class="%s"></i>', $contentType->getIcon() ?? 'fa fa-book');
 
         try {
             $document = $this->searchService->getDocument($contentType, $emsLink->getOuuid());
             $emsLink = $document->getEmsLink(); // versioned documents
             $emsSource = $document->getEMSSource();
-            $label .= $this->revisionService->display($document);
+            $label .= \sprintf('<span>%s</span>', $this->revisionService->display($document));
         } catch (NotFoundException) {
-            $label .= $emsLink->getEmsId();
+            $label .= \sprintf('<span>%s</span>', $emsLink->getEmsId());
         }
 
         $color = isset($emsSource) && $contentType->hasColorField() ? $emsSource->get($contentType->giveColorField()) : null;

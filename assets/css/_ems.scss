@@ -158,3 +158,12 @@ div.core-js-progress {
     margin-bottom: 0;
   }
 }
+
+.ems-data-link {
+  display: flex;
+  align-items: baseline;
+  white-space: normal;
+  text-align: left;
+
+  & i { padding-right: 10px;}
+}

@@ -1,3 +1,7 @@
+__views:
+    elements:
+        revision-toolbar-html:
+            add-to-release: Add to release
 log:
     service:
         form:

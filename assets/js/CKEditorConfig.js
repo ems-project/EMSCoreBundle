@@ -36,13 +36,15 @@ function emsBrowsers(config) {
             if (e.data.name !== 'link') return
             let infoTab = e.data.definition.getContents('info')
             let localPageOptions = infoTab.get('localPageOptions')
-            localPageOptions.children.push({
-                type: 'button',
-                id: 'objectBrowse',
-                hidden: 'true',
-                filebrowser: { action: 'Browse', url: browserObject.url},
-                label: browserObject.label
-            });
+            if (localPageOptions) {
+                localPageOptions.children.push({
+                    type: 'button',
+                    id: 'objectBrowse',
+                    hidden: 'true',
+                    filebrowser: { action: 'Browse', url: browserObject.url},
+                    label: browserObject.label
+                });
+            }
         }, null, null, 1)
     }
 
@@ -52,8 +54,10 @@ function emsBrowsers(config) {
             if (e.data.name !== 'link') return
             let infoTab = e.data.definition.getContents('info')
             let fileBrowseButton = infoTab.get('fileBrowse')
-            fileBrowseButton.label = browserFile.label
-            fileBrowseButton.filebrowser = { action: 'Browse', url: browserFile.url}
+            if (fileBrowseButton) {
+                fileBrowseButton.label = browserFile.label
+                fileBrowseButton.filebrowser = { action: 'Browse', url: browserFile.url}
+            }
         }, null, null, 1)
     }
 
@@ -63,8 +67,10 @@ function emsBrowsers(config) {
             if (e.data.name !== 'image2') return
             let infoTab =  e.data.definition.getContents( 'info' )
             let imageBrowseButton = infoTab.get('browse')
-            imageBrowseButton.label = browserImage.label
-            imageBrowseButton.filebrowser = { action: 'Browse', url: browserImage.url }
+            if (imageBrowseButton) {
+                imageBrowseButton.label = browserImage.label
+                imageBrowseButton.filebrowser = { action: 'Browse', url: browserImage.url }
+            }
         }, null, null, 1);
     }
 }

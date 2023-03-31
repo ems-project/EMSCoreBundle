@@ -15,10 +15,13 @@ class MediaLibraryFile
     public string $folder;
 
     public DocumentInterface $document;
+    public string $emsId;
 
     public function __construct(MediaLibraryConfig $config, DocumentInterface $document)
     {
         $this->document = $document;
+        $this->emsId = (string) $document->getEmsLink();
+
         $this->file = $document->getValue($config->fieldFile);
         $this->path = $document->getValue($config->fieldPath);
         $this->folder = $document->getValue($config->fieldFolder);

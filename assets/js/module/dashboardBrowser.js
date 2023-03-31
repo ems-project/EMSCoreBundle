@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
 
         let url = new URL(event.target.href)
         let text = event.target.innerText;
+        let emsId = event.target.dataset.emsId;
 
         window.opener.CKEDITOR.tools.callFunction(params.get('CKEditorFuncNum'), url, function () {
             let dialog = this.getDialog();
@@ -24,12 +25,15 @@ document.addEventListener('DOMContentLoaded', function (e) {
                     dialog.getContentElement('info', 'src').setValue(url.pathname + url.search);
                     break
                 case 'browser_object':
-                    dialog.getContentElement('info', 'localPage').setValue({'id': url.toString(), 'text': text })
+                    dialog.getContentElement('info', 'localPage').setValue({
+                        'id': emsId ? emsId.replace('ems://object', '') : url.toString(),
+                        'text': text
+                    })
                     break
                 case 'browser_file':
                     let fileLink = dialog.getContentElement( 'info', 'fileLink' )
                     fileLink.setValue(text)
-                    fileLink.getInputElement().$.setAttribute('data-link', url.toString())
+                    fileLink.getInputElement().$.setAttribute('data-link', emsId ?? url.toString())
                     break
             }
         })
